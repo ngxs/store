@@ -1,0 +1,68 @@
+{
+  "name": "ngxs",
+  "version": "1.0.0",
+  "description": "State Mangement for Angular",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ng-packagr -p package.json",
+    "test": "ngc -p tsconfig.spec.json && jasmine dist/spec/*.spec.js",
+    "publish": "npm publish dist",
+    "precommit": "lint-staged",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "prettier": "prettier --parser typescript --single-quote es5 --write \"**/*.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://amcdnl@github.com/amcdnl/ngxs.git"
+  },
+  "keywords": [
+    "ngrx",
+    "redux",
+    "state",
+    "store",
+    "state-mangement"
+  ],
+  "author": "Austin McDaniel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/amcdnl/ngxs/issues"
+  },
+  "homepage": "https://github.com/amcdnl/ngxs#readme",
+  "peerDependencies": {
+    "@angular/core": "^5.0.0",
+    "rxjs": "^5.5.6"
+  },
+  "devDependencies": {
+    "@angular/compiler": "^5.1.3",
+    "@angular/compiler-cli": "^5.1.3",
+    "@angular/core": "^5.1.3",
+    "@types/jasmine": "^2.8.0",
+    "husky": "^0.14.3",
+    "jasmine": "^2.8.0",
+    "lint-staged": "^6.0.0",
+    "ng-packagr": "^2.0.0-rc.9",
+    "prettier": "^1.9.2",
+    "reflect-metadata": "^0.1.10",
+    "rxjs": "^5.5.6",
+    "tsickle": "^0.26.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2",
+    "zone.js": "^0.8.4"
+  },
+  "ngPackage": {
+    "lib": {
+      "entryFile": "src/index.ts"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run prettier",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 120,
+    "tabWidth": 2
+  }
+}

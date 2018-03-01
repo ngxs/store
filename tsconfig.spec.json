@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "strictNullChecks": false
+  },
+  "files": ["src/spec/index.spec.ts"]
+}
