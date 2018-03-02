@@ -1,5 +1,6 @@
 <p align="center">
- <img src="assets/logo.png">
+  <img src="assets/logo.png">
+  <br />
   NGX is a state management pattern + library for Angular.
 </p>
 
