@@ -369,6 +369,7 @@ export class RouteHandler {
         this.eventStream.pipe(ofEvent(NewAnimal)).subscribe((action) => alert('New Animal!'));
     }
 }
+```
 
 ## Roadmap
 We have lots planned for the future, here is a break down of whats coming next!
