@@ -60,7 +60,7 @@ export class StoreFactory {
   }
 
   invokeActions(state, action) {
-    const results = [];
+    const results: any[] = [];
     for (const reducerMeta of this.stores) {
       const name = action.constructor.type || action.constructor.name;
       const actionMeta = reducerMeta.actions[name];
