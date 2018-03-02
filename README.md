@@ -353,6 +353,23 @@ export class LoggerPlugin implements NgxsPlugin {
 Our plugins can also have injectables, simply decorator it with
 the `Injectable` decorator and pass it to your providers.
 
+To register them with NGXS, pass them via the options parameter
+in the module hookup like:
+
+```javascript
+@NgModule({
+    imports: [
+        NgxsModule.forRoot([
+            ZooStore
+        ], {
+            plugins: [LoggerPlugin]
+        })
+    ]
+})
+```
+
+It also works with `forFeature`.
+
 ### Pub sub
 Lets you want to listen to events outside of your store or perhaps you want to
 create a pub sub scenario where an event might not be tied to a store at all.

@@ -3,7 +3,7 @@
     "baseUrl": "tsconfig",
     "lib": [
       "es2015",
-      "DOM"
+      "dom"
     ],
     "module": "commonjs",
     "moduleResolution": "node",
