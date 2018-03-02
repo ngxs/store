@@ -1,10 +1,10 @@
 {
   "name": "ngxs",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "State Mangement for Angular",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
-    "build": "ng-packagr -p package.json",
+    "build": "ngc",
     "test": "ngc -p tsconfig.spec.json && jasmine dist/spec/*.spec.js",
     "publish": "npm publish dist",
     "precommit": "lint-staged",
@@ -40,7 +40,7 @@
     "husky": "^0.14.3",
     "jasmine": "^2.8.0",
     "lint-staged": "^7.0.0",
-    "ng-packagr": "^2.1.0",
+    "ng-packagr": "2.0.0-rc.9",
     "prettier": "^1.11.1",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.5.6",
