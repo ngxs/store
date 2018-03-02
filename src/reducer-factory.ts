@@ -4,7 +4,7 @@ import { materialize } from 'rxjs/operators';
 
 @Injectable()
 export class ReducerFactory {
-  reducers = [];
+  reducers: any[] = [];
 
   constructor(private _injector: Injector) {}
 
@@ -66,7 +66,7 @@ export class ReducerFactory {
       const actionMeta = reducerMeta.actions[name];
       if (actionMeta) {
         const local = state[reducerMeta.namespace];
-        const result = reducerMeta.instance[actionMeta.fn]({ state: local, dispatch }, action);
+        const result = reducerMeta.instance[actionMeta.fn](local, action);
         if (result) {
           if (result.subscribe) {
             result.pipe(materialize()).subscribe(res => dispatch(res));
