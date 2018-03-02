@@ -1,4 +1,5 @@
 ![ngxs](assets/logo.png)
+
 NGX is a state management pattern + library for Angular.
 
 - [Changelog](CHANGELOG.md)
