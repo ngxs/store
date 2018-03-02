@@ -4,8 +4,7 @@ import { ReducerFactory } from './reducer-factory';
 import { ActionStream } from './action-stream';
 import { Store } from './store';
 import { SelectFactory } from './select';
-import { startWith } from 'rxjs/operators';
-import { InitState } from './actions';
+import { StateStream } from './state-stream';
 
 @NgModule({})
 export class NgxsModule {
@@ -16,6 +15,7 @@ export class NgxsModule {
         ReducerFactory,
         ActionStream,
         Store,
+        StateStream,
         SelectFactory,
         {
           provide: REDUCER_TOKEN,
@@ -28,30 +28,32 @@ export class NgxsModule {
   static forFeature(reducers: any[]): ModuleWithProviders {
     return {
       ngModule: NgxsModule,
-      providers: [
-        ReducerFactory,
-        ActionStream,
-        Store,
-        SelectFactory
-      ]
+      providers: [ReducerFactory, ActionStream, Store, SelectFactory, StateStream]
     };
   }
 
   constructor(
     factory: ReducerFactory,
-      store: Store,
-      actionStream: ActionStream,
+    store: Store,
+    stateStream: StateStream,
+    actionStream: ActionStream,
     select: SelectFactory,
-    @Optional() @Inject(REDUCER_TOKEN) reducers: any[]) {
-        const init = {};
-        factory.add(reducers).forEach(meta => {
-            init[meta.namespace] = meta.initialState;
-        });
-        const cur = actionStream.getValue();
-        actionStream.next(new InitState({
-            ...cur,
-            ...init
-        }));
-        select.connect(store);
+    @Optional()
+    @Inject(REDUCER_TOKEN)
+    reducers: any[]
+  ) {
+    if (reducers) {
+      const init = {};
+      factory.add(reducers).forEach((meta: any) => {
+        init[meta.namespace] = meta.initialState;
+      });
+      const cur = stateStream.getValue();
+      stateStream.next({
+        ...cur,
+        ...init
+      });
+    }
+
+    select.connect(store);
   }
 }

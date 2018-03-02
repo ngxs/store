@@ -9,21 +9,16 @@ import { map } from 'rxjs/operator/map';
 export class Store {
   private _destroy$ = new Subject();
 
-  constructor(
-    private _actionStream: ActionStream,
-    private _reducerFactory: ReducerFactory
-  ) {
+  constructor(private _actionStream: ActionStream, private _reducerFactory: ReducerFactory) {
     this._actionStream
       .pipe(
         scan((state, action) => {
-            if (action.constructor.name === 'InitState') {
-                return action.payload;
-            }
           const next = this._reducerFactory.invokeMutations(state, action);
           this._reducerFactory.invokeActions(next, action, this.dispatch.bind(this));
           return next;
         }),
-        takeUntil(this._destroy$))
+        takeUntil(this._destroy$)
+      )
       .subscribe(() => {});
   }
 
@@ -36,8 +31,6 @@ export class Store {
   }
 
   select(mapFn) {
-      return map
-        .call(this._actionStream, mapFn)
-        .pipe(distinctUntilChanged.call(this._actionStream));
+    return map.call(this._actionStream, mapFn).pipe(distinctUntilChanged.call(this._actionStream));
   }
 }
