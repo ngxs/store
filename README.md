@@ -38,7 +38,7 @@ import { NgxsModule } from 'ngxs';
 })
 ```
 
-### Concepts
+## Concepts
 ### Events
 Lets define what our store is going to do. We call these event classes. They
 will be what we dispatch and our stores respond to. For this store, we will define
