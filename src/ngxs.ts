@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
 import { EventStream } from './event-stream';
 import { StoreFactory } from './factory';
-import { distinctUntilChanged, materialize } from 'rxjs/operators';
-import { map } from 'rxjs/operator/map';
 import { StateStream } from './state-stream';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { fromPromise } from 'rxjs/observable/fromPromise';
-import { Observable } from 'rxjs/Observable';
 import { PluginManager } from './plugin-manager';
+import { Observable } from 'rxjs/Observable';
+import { distinctUntilChanged, map, materialize } from 'rxjs/operators';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { Subject } from 'rxjs/Subject';
+import { fromPromise } from 'rxjs/observable/fromPromise';
 
 @Injectable()
 export class Ngxs {

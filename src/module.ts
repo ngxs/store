@@ -8,7 +8,7 @@ import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 
 @NgModule({
-  providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory]
+  providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory, PluginManager]
 })
 export class NgxsModule {
   static forRoot(stores: any[], options?: NgxsOptions): ModuleWithProviders {
