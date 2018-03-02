@@ -1,13 +1,11 @@
 import { Injector, Injectable } from '@angular/core';
 import { META_KEY } from './symbols';
-import { materialize } from 'rxjs/operators';
-import { EventStream } from './event-stream';
 
 @Injectable()
 export class StoreFactory {
   stores: any[] = [];
 
-  constructor(private _eventStream: EventStream, private _injector: Injector) {}
+  constructor(private _injector: Injector) {}
 
   add(store: any | any[]) {
     if (!Array.isArray(store)) {

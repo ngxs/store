@@ -2,13 +2,13 @@ import { Injectable, Optional, Inject } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { EventStream } from './event-stream';
 import { StoreFactory } from './factory';
-import { scan, distinctUntilChanged, materialize } from 'rxjs/operators';
+import { distinctUntilChanged, materialize } from 'rxjs/operators';
 import { map } from 'rxjs/operator/map';
 import { StateStream } from './state-stream';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { Observable } from 'rxjs/Observable';
-import { STORE_OPTIONS_TOKEN, StoreOptions, LAZY_STORE_OPTIONS_TOKEN } from './symbols';
+import { PluginManager } from './plugin-manager';
 
 @Injectable()
 export class Ngxs {
@@ -16,12 +16,7 @@ export class Ngxs {
     private _eventStream: EventStream,
     private _storeFactory: StoreFactory,
     private _stateStream: StateStream,
-    @Optional()
-    @Inject(STORE_OPTIONS_TOKEN)
-    private _storeOptions: StoreOptions,
-    @Optional()
-    @Inject(LAZY_STORE_OPTIONS_TOKEN)
-    private _featureStoreOptions: StoreOptions
+    private _pluginManager: PluginManager
   ) {}
 
   dispatch(action: any | any[]): Observable<any> {
@@ -43,18 +38,12 @@ export class Ngxs {
     const newState = this._storeFactory.invokeMutations(curState, action);
     this._stateStream.next(newState);
 
-    const results = this._storeFactory.invokeActions(newState, action);
-    const plugins = [
-      ...(this._storeOptions && this._storeOptions.plugins ? this._storeOptions.plugins : []),
-      ...(this._featureStoreOptions && this._featureStoreOptions.plugins ? this._featureStoreOptions.plugins : [])
-    ];
+    const results: any[] = this._storeFactory.invokeActions(newState, action);
 
-    if (plugins) {
-      for (const plugin of plugins) {
-        const res = plugin.handle(newState, action);
-        if (res) {
-          results.push(...this._handleNesting([res]));
-        }
+    for (const plugin of this._pluginManager.plugins) {
+      const res = plugin.handle(newState, action);
+      if (res) {
+        results.push(...this._handleNesting([res]));
       }
     }
 
@@ -69,7 +58,7 @@ export class Ngxs {
   }
 
   private _handleNesting(actionResults) {
-    const results = [];
+    const results: any[] = [];
     for (const actionResult of actionResults) {
       if (actionResult.subscribe) {
         const actionResultStream = new Subject();

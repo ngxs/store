@@ -5,4 +5,4 @@ export { Ngxs } from './ngxs';
 export { Store } from './store';
 export { Select } from './select';
 export { EventStream } from './event-stream';
-export { ofAction } from './of-action';
+export { ofEvent } from './of-event';

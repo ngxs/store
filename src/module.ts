@@ -1,16 +1,17 @@
 import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
-import { STORE_TOKEN, LAZY_STORE_TOKEN, STORE_OPTIONS_TOKEN, LAZY_STORE_OPTIONS_TOKEN, StoreOptions } from './symbols';
+import { STORE_TOKEN, LAZY_STORE_TOKEN, STORE_OPTIONS_TOKEN, LAZY_STORE_OPTIONS_TOKEN, NgxsOptions } from './symbols';
 import { StoreFactory } from './factory';
 import { EventStream } from './event-stream';
 import { Ngxs } from './ngxs';
 import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
+import { PluginManager } from './plugin-manager';
 
 @NgModule({
   providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory]
 })
 export class NgxsModule {
-  static forRoot(stores: any[], options?: StoreOptions): ModuleWithProviders {
+  static forRoot(stores: any[], options?: NgxsOptions): ModuleWithProviders {
     return {
       ngModule: NgxsModule,
       providers: [
@@ -19,6 +20,7 @@ export class NgxsModule {
         Ngxs,
         StateStream,
         SelectFactory,
+        PluginManager,
         {
           provide: STORE_TOKEN,
           useValue: stores
@@ -31,7 +33,7 @@ export class NgxsModule {
     };
   }
 
-  static forFeature(stores: any[], options?: StoreOptions): ModuleWithProviders {
+  static forFeature(stores: any[], options?: NgxsOptions): ModuleWithProviders {
     return {
       ngModule: NgxsModule,
       providers: [
@@ -57,11 +59,13 @@ export class NgxsModule {
     stores: any[],
     @Optional()
     @Inject(LAZY_STORE_TOKEN)
-    lazyStores: any[]
+    lazyStores: any[],
+    pluginManager: PluginManager
   ) {
     this.initStores(stores);
     this.initStores(lazyStores);
     select.connect(store);
+    pluginManager.register();
   }
 
   initStores(stores) {
