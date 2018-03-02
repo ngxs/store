@@ -1,6 +1,8 @@
 export { NgxsModule } from './module';
 export { Action } from './action';
 export { Mutation } from './mutation';
-export { Container } from './container';
+export { Ngxs } from './ngxs';
 export { Store } from './store';
 export { Select } from './select';
+export { EventStream } from './event-stream';
+export { ofAction } from './of-action';

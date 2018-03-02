@@ -1,59 +1,80 @@
 import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
-import { REDUCER_TOKEN } from './symbols';
-import { ReducerFactory } from './reducer-factory';
-import { ActionStream } from './action-stream';
-import { Store } from './store';
+import { STORE_TOKEN, LAZY_STORE_TOKEN, STORE_OPTIONS_TOKEN, LAZY_STORE_OPTIONS_TOKEN, StoreOptions } from './symbols';
+import { StoreFactory } from './factory';
+import { EventStream } from './event-stream';
+import { Ngxs } from './ngxs';
 import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
 
-@NgModule({})
+@NgModule({
+  providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory]
+})
 export class NgxsModule {
-  static forRoot(reducers: any[]): ModuleWithProviders {
+  static forRoot(stores: any[], options?: StoreOptions): ModuleWithProviders {
     return {
       ngModule: NgxsModule,
       providers: [
-        ReducerFactory,
-        ActionStream,
-        Store,
+        StoreFactory,
+        EventStream,
+        Ngxs,
         StateStream,
         SelectFactory,
         {
-          provide: REDUCER_TOKEN,
-          useValue: reducers
+          provide: STORE_TOKEN,
+          useValue: stores
+        },
+        {
+          provide: STORE_OPTIONS_TOKEN,
+          useValue: options
         }
       ]
     };
   }
 
-  static forFeature(reducers: any[]): ModuleWithProviders {
+  static forFeature(stores: any[], options?: StoreOptions): ModuleWithProviders {
     return {
       ngModule: NgxsModule,
-      providers: [ReducerFactory, ActionStream, Store, SelectFactory, StateStream]
+      providers: [
+        {
+          provide: LAZY_STORE_TOKEN,
+          useValue: stores
+        },
+        {
+          provide: LAZY_STORE_OPTIONS_TOKEN,
+          useValue: options
+        }
+      ]
     };
   }
 
   constructor(
-    factory: ReducerFactory,
-    store: Store,
-    stateStream: StateStream,
-    actionStream: ActionStream,
+    private _factory: StoreFactory,
+    private _stateStream: StateStream,
+    store: Ngxs,
     select: SelectFactory,
     @Optional()
-    @Inject(REDUCER_TOKEN)
-    reducers: any[]
+    @Inject(STORE_TOKEN)
+    stores: any[],
+    @Optional()
+    @Inject(LAZY_STORE_TOKEN)
+    lazyStores: any[]
   ) {
-    if (reducers) {
+    this.initStores(stores);
+    this.initStores(lazyStores);
+    select.connect(store);
+  }
+
+  initStores(stores) {
+    if (stores) {
       const init = {};
-      factory.add(reducers).forEach((meta: any) => {
-        init[meta.namespace] = meta.initialState;
+      this._factory.add(stores).forEach((meta: any) => {
+        init[meta.name] = meta.defaults;
       });
-      const cur = stateStream.getValue();
-      stateStream.next({
+      const cur = this._stateStream.getValue();
+      this._stateStream.next({
         ...cur,
         ...init
       });
     }
-
-    select.connect(store);
   }
 }

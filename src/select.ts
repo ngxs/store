@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Store } from './store';
+import { Ngxs } from './ngxs';
 import { fastPropGetter } from './internals';
 
 @Injectable()
 export class SelectFactory {
-  static store: Store | undefined = undefined;
-  connect(store: Store) {
+  static store: Ngxs | undefined = undefined;
+  connect(store: Ngxs) {
     SelectFactory.store = store;
   }
 }

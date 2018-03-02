@@ -5,7 +5,7 @@ export function ensureStoreMetadata(target) {
     const defaultMetadata = {
       mutations: {},
       actions: {},
-      initialState: {}
+      defaults: {}
     };
     Object.defineProperty(target, META_KEY, { value: defaultMetadata });
   }
