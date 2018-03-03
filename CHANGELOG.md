@@ -1,5 +1,8 @@
 # 1.1.0 2/3/18
-- Feature: Middleware improvements
+- Fix: Export plugin interface
+
+# 1.1.0 2/3/18
+- Feature: Plugins improvements
 - Feature: Init event
 - Feature: Logger plugin
 
