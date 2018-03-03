@@ -1,10 +1,12 @@
 <p align="center">
   <img src="assets/logo.png">
   <br />
-  NGX is a state management pattern + library for Angular.
+  NGX is a state management pattern + library for Angular
+  <br />
 </p>
 
-See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple);
+- See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
+- Learn about abouts at the [changelog](CHANGELOG.md)
 
 ## What is NGXS?
 NGX is a state management pattern + library for Angular. It acts as a single source of
@@ -397,6 +399,3 @@ We have lots planned for the future, here is a break down of whats coming next!
 - [ ] Reactive forms plugin
 - [ ] Localstorage plugin
 - [ ] Web worker plugin
-
-## Changelog
-See [Changelog](CHANGELOG.md) for latest changes.
