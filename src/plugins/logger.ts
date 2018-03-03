@@ -12,7 +12,7 @@ export interface LoggerPluginOptions {
 }
 
 export class LoggerPlugin implements NgxsPlugin {
-  static _options: LoggerPluginOptions;
+  static _options: LoggerPluginOptions | undefined = undefined;
 
   static forRoot(options: LoggerPluginOptions) {
     this._options = options;
