@@ -501,3 +501,7 @@ We have lots planned for the future, here is a break down of whats coming next!
 - [ ] Reactive forms plugin
 - [ ] Router plugin
 - [ ] Web worker plugin
+
+## Shameless plug
+If you are using this tool and need support with it or with Angular in general, I offer full service
+consulting. My contact information is in my Github profile.
