@@ -16,7 +16,13 @@
     "type": "git",
     "url": "git+https://amcdnl@github.com/amcdnl/ngxs.git"
   },
-  "keywords": ["ngrx", "redux", "state", "store", "state-mangement"],
+  "keywords": [
+    "ngrx",
+    "redux",
+    "state",
+    "store",
+    "state-mangement"
+  ],
   "author": "Austin McDaniel",
   "license": "MIT",
   "bugs": {
@@ -46,7 +52,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "lint-staged": "^7.0.0",
-    "ng-packagr": "2.0.0",
+    "ng-packagr": "^2.1.0",
     "prettier": "^1.11.1",
     "redux-devtools-extension": "^2.13.2",
     "reflect-metadata": "^0.1.10",
@@ -58,11 +64,15 @@
   },
   "ngPackage": {
     "lib": {
-      "entryFile": "src/index.ts"
+      "entryFile": "src/index.ts",
+      "flatModuleFile": "ngxs-api"
     }
   },
   "lint-staged": {
-    "*.ts": ["npm run prettier", "git add"]
+    "*.ts": [
+      "npm run prettier",
+      "git add"
+    ]
   },
   "prettier": {
     "singleQuote": true,
