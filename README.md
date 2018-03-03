@@ -6,24 +6,23 @@
 </p>
 
 ## What is NGXS?
-NGX is a state management pattern + library for Angular. It acts as a single source of
-truth for your application's state providing simple rules for predictable state mutations.
+NGXS is a state management pattern + library for Angular. It acts as a single source of
+truth for your application's state, providing simple rules for predictable state mutations.
 
 NGXS is modeled after the CQRS pattern popularly implemented in libraries like Redux and NGRX
-but reduces much of the boilerplate that is usually associated with those patterns by using
-modern TypeScript language features such as classes and decorators.
+but reduces boilerplate by using modern TypeScript features such as classes and decorators.
 
 - See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
 - Learn about updates on the [changelog](CHANGELOG.md)
 
 ## Installing
-To get started, lets install the package thru npm:
+To get started, install the package thru npm:
 
 ```
 npm i ngxs --S
 ```
 
-then in our `app.module.ts` file, lets import the NgModule:
+then in `app.module.ts`, import the NgModule:
 
 ```javascript
 import { NgModule } from '@angular/core';
@@ -38,15 +37,20 @@ import { NgxsModule } from 'ngxs';
 })
 ```
 
-when we include the module in the import, you can pass root stores
-along with options. If you are lazy loading, you can use the `forFeature`
-option with the same arguments.
+When you include the module in the import, you can pass root stores
+along with options. 
+//: you 'can' pass or you 'must' pass? Will it work if you don't pass 
+//: a root store? If not, this should say 'you will pass' or something like that.
+
+If you are lazy loading, you can use the `forFeature` option with the same arguments.
+
+When you initialize the module, you'll pass in a root store and you can also pass in options. 
+//: where can we find the optional parameters? 
 
 ## Concepts
 ### Events
 Lets define what our store is going to do. We call these event classes. They
-will be what we dispatch and our stores respond to. For this store, we will define
-the following:
+will be dispatched and trigger a response from the store. Here's an example store: 
 
 ```javascript
 export class FeedAnimals {}
@@ -56,12 +60,11 @@ export class NewAnimal {
 export class NewAnimalSuccess {}
 ```
 
-In the above events, we have `FeedAnimals` which has payload for it. Its just
-going to flip a simple flag in our store for us. In the `NewAnimal` event we define
-a payload which will contain the animal type. Unlike with redux, we don't need to
-define a type property since our store is smart enough to read the class as the type.
-You can optionally include a type if you want to make the event more descriptive, that
-looks like this:
+In this example, `FeedAnimals` has no payload. It will only flip a simple flag
+in our store . The `NewAnimal` event has a payload which contains the animal type. 
+Unlike redux, the type property is not required in this store because it can use 
+the class as the type. If you'd like to include a type to make the event more descriptive, 
+it would look like this:
 
 ```javascript
 export class NewAnimal {
@@ -70,13 +73,12 @@ export class NewAnimal {
 ```
 
 ### Stores
-Next lets define a store class. To do this we create a ES6 class
-and decorate it with a `Store` decorator. The `Store` decorator
-accepts a few different options:
+Next, lets define a store class. To do this we create an ES6 class
+with a `Store` decorator. The `Store` decorator accepts these options:
 
-- `name`: Optional name of the store. If not pass it will take
-the name of the class, camel case it and remove the word `Store` from the end.
-- `defaults`: A set of default options to initialize our store with.
+- `name`: (optional) If not provided, store name will be generated from class name.
+- `defaults`: (optional) 
+//: where are the default/optional settings? 
 
 So here is our basic store:
 
@@ -92,8 +94,9 @@ import { Store } from 'ngxs';
 export class ZooStore {}
 ```
 
-because I didn't pass a name, it will use the name `zoo`. Next,
-let define a `Mutation`. 
+because I didn't pass a name, it will name the store `zoo`. 
+
+Next, let define a `Mutation`. 
 
 ### Mutations
 A mutation is function that will manipulate the state.
@@ -116,31 +119,32 @@ export class ZooStore {
 ```
 
 The above mutation listens for the `FeedAnimals` event to be dispatched
-and then updates the `feed` flag in our store. Our stores are immutable
-so when updating properties make sure you return new instances. You don't
-need to return a new instance of the state because ngxs will handle doing
-a shallow clone for you.
+and then updates the `feed` flag in our store. Our stores are immutable 
+//: can we hyperlink the word immutable to a wikipedia page or blog post 
+//: for anyone not familiar? Maybe https://redux.js.org/recipes/structuring-reducers/immutable-update-patterns 
+so when updating properties make sure you return new instances. NGXS will
+do a shallow clone so you don't need to return a new instance of state.
 
 The arguments of the mutation are the current state along with the event.
-In the above example I used destructuring to get the payload out. But remember
-events don't have to have payloads.
+In the above example I used destructuring to extract the payload, but remember
+the payload is not required.
 
-The `Mutation` decorator can also take multiple actions, so you could do:
+The `Mutation` decorator can also take multiple actions, for instance:
 
 ```javascript
 @Mutation([FeedAnimals, WaterAnimals])
 ```
 
 ### Actions
-Mutations should not reach out to backend services or do async operations.
-Those are reserved for `Action`. Similarly actions should not mutate state.
-Lets say for our `NewAnimal` event we want to reach out to the backend and save the
-new animal before we add it to the UI.
+__Mutations should not interact with backend services or do async operations.__
+__Those are reserved for `Action`. Similarly, actions should not mutate state.__
 
-Our stores can also participate in depedency injection so when we want to
-reach out to our backend injectable service, we can just inject it. When
-using DI, its important to remember to add the `Injectable` decorator
-and also add your store to your module's providers.
+Lets say for our `NewAnimal` event, we want to save the new animal to the server
+before we add it to the UI.
+
+NGXS can also handle depedency injection, so if we have a service to interact with
+our server or database, we can just inject it! When using DI, just remember to add 
+the `Injectable` decorator and also add your store to your module's providers.
 
 The arguments of the function are similar to those of the mutation, passing
 the state and the action. Lets see what this looks like:
@@ -165,9 +169,9 @@ export class ZooStore {
 }
 ```
 
-In this example our `AnimalService` calls out to our backend and returns an observable.
-We map the result of that observable into a new event passing the results as the payload.
-It will automatically map observables, promises and raw events for you. So you can do things like:
+In this example, `AnimalService` calls out to our backend and returns an observable.
+We map the result of that observable into a new event, passing the results as the payload.
+NGXS will automatically map observables, promises, and raw events so you can do things like:
 
 ```javascript
 /** Returns a observable event */
@@ -207,14 +211,12 @@ async newAnimal(state, { payload }) {
 }
 ```
 
-Its pretty flexible, it doesn't try to push you into a certain
-way but provides you a mechanism to handle your control flows
-how you want.
+__NGXS was designed to be flexible, providing a mechanism which__
+__allows you to handle and customize your own control flow.__
 
-Now that we have called out to the backend and saved the animal,
-we need to connect the dots and save the animal to our store. Thats
-super easy, since its just another mutation that adds our animal
-to the store:
+Now that we have successfully sent the animal to our server,
+we're ready to save the animal to our store. We'll do that with 
+another mutation:
 
 ```javascript
 @Store({
@@ -240,8 +242,8 @@ export class ZooStore {
 
 ### Dispatching events
 So we've covered what our store looks like, but how do we trigger these events? In
-your component, you simply inject the `Ngxs` service and call dispatch with the event
-class from there.
+your component, simply inject the `Ngxs` service and call dispatch with the event
+class from there. 
 
 ```javascript
 import { Ngxs } from 'ngxs';
@@ -257,8 +259,7 @@ export class ZooComponent {
 }
 ```
 
-And the rest is magic! You can also dispatch multiple events at the same
-time by passing an array of actions like:
+If you'd like to dispatch a series of events, it looks like this:
 
 ```javascript
 this.ngxs.dispatch([
@@ -267,9 +268,9 @@ this.ngxs.dispatch([
 ]);
 ```
 
-Lets say after the action executes you want to clear
-the form. Our `dispatch` function actually returns an observable, so we can
-subscribe very easily and reset the form after it was successful.
+Lets say you want to clear the form after the action executes. 
+`dispatch` returns an observable, so it's easy to
+subscribe and reset the form after it was successful.
 
 ```javascript
 import { Ngxs } from 'ngxs';
@@ -287,14 +288,17 @@ export class ZooComponent {
 }
 ```
 
-The subscription doesn't return any data, so if you need that
-you will need to get the data using a select. Speaking of a
-getting the data, lets talk about Selects now. 
+The subscription doesn't return data, so if you need to access data you'll want to
+use a select.  
 
 ### Selects
-Its important to note that READS and WRITES are completely seperate in ngxs. To read data
-out of the store, we can either call the `select` method on the 
-`ngxs` service. First lets look at the `select` method.
+Its important to note that READS and WRITES are handled separately in NGXS. To read data
+out of the store, we can either call the `select` method on the `ngxs` service. 
+//: huh? You lost me here - should this say select OR ngxs? 
+//: you talked about select below but I scrolled down and didn't find the other option...
+//: I are confuzed...ngxs service? The next section is plugins, is that the same thing?
+
+First lets look at the `select` method.
 
 ```javascript
 import { Ngxs } from 'ngxs';
@@ -309,8 +313,7 @@ export class ZooComponent {
 }
 ```
 
-Thats pretty similar to Redux and NGRX. We can use a handy decorator
-the same way but with some other options.
+NGXS uses a decorator similar to Redux and NGRX, but allows additional options for accessing data.
 
 
 ```javascript
@@ -336,12 +339,10 @@ export class ZooComponent {
 }
 ```
 
-Pretty cool huh? Lots of options to get data out! 
-
 ### Plugins
-Next lets talk about plugins. Similar to Redux's meta reducers, we have
-a plugins interface that allows you to build a global plugin for your state. Lets 
-take a basic example of a logger:
+Similar to Redux's meta reducers, NGXS provides a plugins interface 
+which allows you to build a global plugin for your state. Here's a 
+basic example of a logger:
 
 ```javascript
 import { NgxsPlugin } from 'ngxs';
@@ -353,11 +354,11 @@ export class LoggerPlugin implements NgxsPlugin {
 }
 ```
 
-Our plugins can also have injectables, simply decorator it with
+NGXS plugins can also contain injectables, simply include
 the `Injectable` decorator and pass it to your providers.
 
 To register them with NGXS, pass them via the options parameter
-in the module hookup like:
+in the module hookup:
 
 ```javascript
 @NgModule({
@@ -374,11 +375,11 @@ in the module hookup like:
 It also works with `forFeature`.
 
 ### Pub sub
-Lets you want to listen to events outside of your store or perhaps you want to
+You might want to listen to events outside of your store or to
 create a pub sub scenario where an event might not be tied to a store at all.
-To do this, we can inject the `EventStream` observable and just listen in.
-To make determining if the event is what we actually want to listen to, we have a 
-RxJS pippeable operator called `ofEvent(NewAnimal)` we can use too!
+To do this, inject the `EventStream` observable and just listen in.
+To determine if the event is what we want, we have a 
+RxJS pipeable operator called `ofEvent(NewAnimal)` we can use too!
 
 ```javascript
 import { EventStream, ofEvent } from 'ngxs';
