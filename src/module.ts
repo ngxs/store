@@ -62,9 +62,9 @@ export class NgxsModule {
     lazyStores: any[],
     pluginManager: PluginManager
   ) {
+    select.connect(store);
     this.initStores(stores);
     this.initStores(lazyStores);
-    select.connect(store);
     pluginManager.register();
   }
 

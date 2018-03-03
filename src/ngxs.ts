@@ -4,9 +4,10 @@ import { StoreFactory } from './factory';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { Observable } from 'rxjs/Observable';
-import { distinctUntilChanged, map, materialize } from 'rxjs/operators';
+import { distinctUntilChanged, materialize } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Subject } from 'rxjs/Subject';
+import { map } from 'rxjs/operator/map';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 
 @Injectable()
