@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "project": {
+    "name": "ngxs"
+  },
+  "apps": [
+    {
+      "root": "",
+      "assets": [],
+      "test": "test.ts",
+      "main": "src/ngxs.ts",
+      "polyfills": "polyfills.ts",
+      "testTsconfig": "./tsconfig.spec.json"
+    }
+  ],
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  }
+}
