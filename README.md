@@ -127,7 +127,7 @@ events don't have to have payloads.
 
 The `Mutation` decorator can also take multiple actions, so you could do:
 
-```
+```javascript
 @Mutation([FeedAnimals, WaterAnimals])
 ```
 
