@@ -15,3 +15,8 @@ export interface NgxsOptions {
 export interface NgxsPlugin {
   handle(state, mutation, next): any;
 }
+
+export interface StoreOptions {
+  name: string;
+  defaults: any;
+}

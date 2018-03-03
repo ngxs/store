@@ -1,5 +1,6 @@
 import { Injector, Injectable } from '@angular/core';
 import { META_KEY } from './symbols';
+import { getTypeFromInstance } from './internals';
 
 @Injectable()
 export class StoreFactory {
@@ -36,13 +37,14 @@ export class StoreFactory {
 
   invokeMutations(state, mutation) {
     for (const reducerMeta of this.stores) {
-      const name = mutation.constructor.type || mutation.constructor.name;
+      const name = getTypeFromInstance(mutation);
       const mutationMeta = reducerMeta.mutations[name];
 
       if (mutationMeta) {
         const local = state[reducerMeta.name];
         let result = reducerMeta.instance[mutationMeta.fn](local, mutation);
 
+        // if no result returned, lets shallow copy the state
         if (!result) {
           if (Array.isArray(local)) {
             result = [...local];
@@ -56,13 +58,15 @@ export class StoreFactory {
         };
       }
     }
+
     return state;
   }
 
   invokeActions(state, action) {
     const results: any[] = [];
+
     for (const reducerMeta of this.stores) {
-      const name = action.constructor.type || action.constructor.name;
+      const name = getTypeFromInstance(action);
       const actionMeta = reducerMeta.actions[name];
       if (actionMeta) {
         const local = state[reducerMeta.name];
@@ -72,6 +76,7 @@ export class StoreFactory {
         }
       }
     }
+
     return results;
   }
 }

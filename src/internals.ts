@@ -1,5 +1,8 @@
 import { META_KEY } from './symbols';
 
+/**
+ * Ensures metadata is attached to the klass and returns it
+ */
 export function ensureStoreMetadata(target) {
   if (!target.hasOwnProperty(META_KEY)) {
     const defaultMetadata = {
@@ -32,4 +35,29 @@ export function fastPropGetter(paths: string[]): (x: any) => any {
   const fn = new Function('store', 'return ' + expr + ';');
 
   return <(x: any) => any>fn;
+}
+
+/**
+ * Returns the type from a event class
+ */
+export function getTypeFromKlass(event) {
+  if (event.type) {
+    return event.type;
+  } else if (event.name) {
+    return event.name;
+  }
+}
+
+/**
+ * Returns the type from a event instance
+ */
+export function getTypeFromInstance(event) {
+  if (event.constructor.type) {
+    return event.constructor.type;
+  } else if (event.constructor.name) {
+    return event.constructor.name;
+  } else if (event.type) {
+    // events from dev tools are plain objects
+    return event.type;
+  }
 }

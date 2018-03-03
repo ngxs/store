@@ -1,6 +1,10 @@
 import { ensureStoreMetadata } from './internals';
+import { StoreOptions } from './symbols';
 
-export function Store(options) {
+/**
+ * Decorates a class with ngxs store information.
+ */
+export function Store(options: StoreOptions) {
   return function(target: Function) {
     const meta = ensureStoreMetadata(target);
     meta.defaults = options.defaults;

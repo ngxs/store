@@ -20,6 +20,9 @@ export class Ngxs {
     private _pluginManager: PluginManager
   ) {}
 
+  /**
+   * Dispatchess an event(s).
+   */
   dispatch(action: any | any[]): Observable<any> {
     if (Array.isArray(action)) {
       return forkJoin(action.map(a => this._dispatch(a)));
@@ -28,6 +31,9 @@ export class Ngxs {
     }
   }
 
+  /**
+   * Selects a slice of data from the store.
+   */
   select(mapFn) {
     return map.call(this._stateStream, mapFn).pipe(distinctUntilChanged.call(this._stateStream));
   }
