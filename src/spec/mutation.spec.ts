@@ -5,7 +5,7 @@ import { NgxsModule } from '../module';
 import { Store } from '../store';
 import { Mutation } from '../mutation';
 
-describe('Action', () => {
+describe('Mutation', () => {
   let ngxs: Ngxs;
 
   class AddTodo {
