@@ -1,3 +1,7 @@
+# 1.3.0 2/3/18
+- Feature: Localstore plugin
+- Fix: Better dev tools init
+
 # 1.2.1 2/3/18
 - Fix: Dev tools init
 - Fix: Plugins not recieving proper context

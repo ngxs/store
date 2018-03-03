@@ -18,10 +18,10 @@ export class LoggerPlugin implements NgxsPlugin {
     this._options = options;
   }
 
-  handle(state, mutation, next) {
+  handle(state, event, next) {
     const options = LoggerPlugin._options || <any>{};
     const logger = options.logger || console;
-    const mutationName = mutation.constructor.type || mutation.constructor.name;
+    const mutationName = event.constructor.type || event.constructor.name;
     const time = new Date();
     // tslint:disable-next-line
     const formattedTime = ` @ ${pad(time.getHours(), 2)}:${pad(time.getMinutes(), 2)}:${pad(
@@ -39,7 +39,7 @@ export class LoggerPlugin implements NgxsPlugin {
     }
 
     logger.log('%c prev state', 'color: #9E9E9E; font-weight: bold', state);
-    const nextState = next(state, mutation);
+    const nextState = next(state, event);
     logger.log('%c next state', 'color: #4CAF50; font-weight: bold', nextState);
 
     try {

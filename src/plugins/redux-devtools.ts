@@ -1,7 +1,6 @@
 import { NgxsPlugin } from '../symbols';
 import { Injectable } from '@angular/core';
 import { getTypeFromInstance } from '../internals';
-import { Ngxs } from '../ngxs';
 import { first } from 'rxjs/operators';
 
 /**
@@ -22,27 +21,25 @@ export class ReduxDevtoolsPlugin implements NgxsPlugin {
   private readonly devtoolsExtension: DevtoolsExtension | null = null;
   private readonly windowObj: any = typeof window !== 'undefined' ? window : {};
 
-  constructor(ngxs: Ngxs) {
+  constructor() {
     const globalDevtools = this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
     if (globalDevtools) {
       this.devtoolsExtension = globalDevtools.connect() as DevtoolsExtension;
-
-      if (ngxs) {
-        ngxs
-          .select(state => state)
-          .pipe(first())
-          .subscribe(state => this.devtoolsExtension && this.devtoolsExtension.init(state));
-      } else {
-        this.devtoolsExtension.init({});
-      }
     }
   }
 
-  handle(state: any, mutation: any, next: any) {
+  handle(state: any, event: any, next: any) {
     if (!this.devtoolsExtension) {
-      return next(state, mutation);
+      return next(state, event);
     }
-    this.devtoolsExtension.send(getTypeFromInstance(mutation), state);
-    return next(state, mutation);
+
+    const isInitAction = getTypeFromInstance(event) === '@@INIT';
+    if (isInitAction) {
+      this.devtoolsExtension.init(state);
+    } else {
+      this.devtoolsExtension.send(getTypeFromInstance(event), state);
+    }
+
+    return next(state, event);
   }
 }

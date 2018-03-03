@@ -471,8 +471,34 @@ import { NgxsModule, ReduxDevtoolsPlugin } from 'ngxs';
     NgxsModule.forRoot([], {
       plugins: [ReduxDevtoolsPlugin]
     })
-  ],
-  providers: [ReduxDevtoolsPlugin]
+  ]
+})
+export class MyModule{}
+```
+
+#### Localstorage
+You can back your stores with localstorage by including the `LocalstoragePlugin` plugin.
+
+```javascript
+import { NgxsModule, ReduxDevtoolsPlugin } from 'ngxs';
+
+@NgModule({
+  imports: [
+    NgxsModule.forRoot([], {
+      plugins: [
+        // These are optional, you can just pass `LocalstoragePlugin` without calling `forRoot`
+        LocalstoragePlugin.forRoot({
+          // Default, you can pass single string or array of strings
+          // that could be deeply nested too
+          key: '@@STATE',
+          // Custom serailizer, defaults to JSON
+          serialize: JSON.stringify,
+          // Custom deseralizer, defaults to JSON
+          deserialize: JSON.parse
+        })
+      ]
+    })
+  ]
 })
 export class MyModule{}
 ```
@@ -544,10 +570,8 @@ Below are suggestions for naming and style conventions.
 We have lots planned for the future, here is a break down of whats coming next!
 
 - [ ] Reactive forms plugin
-- [ ] Localstorage plugin
-- [ ] Reactive forms plugin
 - [ ] Router plugin
-- [ ] Web worker plugin
+- [ ] Web worker plugin (not sure this is possible w/ ng-cli atm)
 
 ## Shameless plug
 If you are using this tool and need support with it or with Angular in general, I offer full service

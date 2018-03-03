@@ -7,5 +7,4 @@ export { Select } from './select';
 export { EventStream } from './event-stream';
 export { ofEvent } from './of-event';
 export { NgxsPlugin } from './symbols';
-export { ReduxDevtoolsPlugin } from './plugins/redux-devtools';
-export { LoggerPlugin } from './plugins/logger';
+export { ReduxDevtoolsPlugin, LoggerPlugin, LocalstoragePlugin } from './plugins';
