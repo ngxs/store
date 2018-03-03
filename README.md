@@ -6,7 +6,7 @@
 </p>
 
 - See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
-- Learn about abouts at the [changelog](CHANGELOG.md)
+- Learn about updates on the [changelog](CHANGELOG.md)
 
 ## What is NGXS?
 NGX is a state management pattern + library for Angular. It acts as a single source of
