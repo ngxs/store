@@ -1,11 +1,12 @@
 {
   "name": "ngxs",
-  "version": "1.0.4",
+  "version": "1.1.1",
   "description": "State Mangement for Angular",
   "main": "index.js",
   "scripts": {
     "build": "ngc",
     "test": "ng test",
+    "build:packagr": "ng-packagr -p package.json",
     "publish": "npm publish dist",
     "precommit": "lint-staged",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",

@@ -33,7 +33,7 @@ import { NgxsModule } from 'ngxs';
     imports: [
         NgxsModule.forRoot([
             ZooStore
-        ], { /* options */ })
+        ], { /* optional options */ })
     ]
 })
 ```
@@ -56,7 +56,7 @@ export class NewAnimal {
 export class NewAnimalSuccess {}
 ```
 
-In the above events, we have `FeedAnimals` which has payload for it. Its just
+In the above events, we have `FeedAnimals` which has no payload for it. Its just
 going to flip a simple flag in our store for us. In the `NewAnimal` event we define
 a payload which will contain the animal type. Unlike with redux, we don't need to
 define a type property since our store is smart enough to read the class as the type.
@@ -294,7 +294,7 @@ getting the data, lets talk about Selects now.
 ### Selects
 Its important to note that READS and WRITES are completely seperate in ngxs. To read data
 out of the store, we can either call the `select` method on the 
-`ngxs` service. First lets look at the `select` method.
+`ngxs` service or a `@Select` decorator. First lets look at the `select` method.
 
 ```javascript
 import { Ngxs } from 'ngxs';
@@ -340,21 +340,53 @@ Pretty cool huh? Lots of options to get data out!
 
 ### Plugins
 Next lets talk about plugins. Similar to Redux's meta reducers, we have
-a plugins interface that allows you to build a global plugin for your state. Lets 
-take a basic example of a logger:
+a plugins interface that allows you to build a global plugin for your state. 
+
+Lets  take a basic example of a logger:
 
 ```javascript
 import { NgxsPlugin } from 'ngxs';
 
 export class LoggerPlugin implements NgxsPlugin {
-    handle(state, action) {
-        console.log('Action happened!');
+    handle(state, mutation, next) {
+        console.log('Mutation started!', state);
+        const result = next(state, mutation);
+        console.log('Mutation happened!', result);
+        return result;
     }
 }
 ```
 
 Our plugins can also have injectables, simply decorator it with
-the `Injectable` decorator and pass it to your providers.
+the `Injectable` decorator and pass it to your providers. If your plugins
+has options associated with it, we suggest defining a static method called
+`forRoot` similar to Angular's pattern. This would look like:
+
+```javascript
+export class LoggerPlugin implements NgxsPlugin {
+    static _options;
+    static forRoot(options) { this._options = options; }
+    handle(state, mutation, next) {
+        console.log('Custom options!', LoggerPlugin._options);
+        return next(state, mutation);
+    }
+}
+```
+
+This pattern allows us to define options while presevering the constructor
+for use with DI.
+
+You can also use pure functions for plugins, the above example in a pure function
+would look like this:
+
+```javascript
+export function logPlugin(state, mutation, next) {
+    console.log('Mutation started!', state);
+    const result = next(state, mutation);
+    console.log('Mutation happened!', result);
+    return result;
+}
+```
 
 To register them with NGXS, pass them via the options parameter
 in the module hookup like:
@@ -373,6 +405,34 @@ in the module hookup like:
 
 It also works with `forFeature`.
 
+#### Logger Plugin
+NGXS comes with a logger plugin for common debugging usage. To take advantage of this
+simply import it, configure it and add it to your plugins options.
+
+```javascript
+import { LoggerPlugin } from 'ngxs/plugins/logger';
+
+@NgModule({
+    imports: [
+        NgxsModule.forRoot([ZooStore], {
+            plugins: [
+                // Default setup
+                LoggerPlugin
+
+                // Pass custom options
+                LoggerPlugin.forRoot({
+                  // custom console.log implement
+                  logger: console,
+
+                  // expand results by default
+                  expanded: true
+                })
+            ]
+        })
+    ]
+})
+```
+
 ### Pub sub
 Lets you want to listen to events outside of your store or perhaps you want to
 create a pub sub scenario where an event might not be tied to a store at all.
@@ -386,9 +446,37 @@ import { EventStream, ofEvent } from 'ngxs';
 @Injectable()
 export class RouteHandler {
     constructor(private eventStream: EventStream, private router: Router) {
-        this.eventStream.pipe(ofEvent(NewAnimal)).subscribe((action) => alert('New Animal!'));
+        this.eventStream
+          .pipe(ofEvent(NewAnimal))
+          .subscribe((action) => alert('New Animal!'));
     }
 }
+```
+
+### Unit Testing
+Unit testing is easy since, we just need to dispatch events and then listen in on the changes and
+perform our expectation there. A basic test looks like this:
+
+```javascript
+describe('Zoo', () => {
+  let ngxs: Ngxs;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([ZooStore])],
+      providers: [ZooStore],
+    }).compileComponents();
+    ngxs = TestBed.get(Ngxs);
+  }));
+
+  it('it toggles feed', () => {
+    ngxs.dispatch(new FeedAnimals());
+    ngxs.select(state => state.zoo.feed).subscribe(feed => {
+      expect(feed).toBe(true);
+    });
+  });
+
+});
 ```
 
 ### Style Guide
@@ -401,8 +489,9 @@ Below are suggestions for naming and style conventions.
 - Global stores should be organized under `src/shared/store`
 - Feature stores should live within the respective feature folder structure `src/app/my-feature`
 - Events should NOT have a a suffix
+- Unit tests for the store should be named `my-store-name.store.spec.ts`
 - Events should ALWAYS use the `payload` public name
-- Actions can live within the store file but are recommended to be a seperate file like: `zoo.actions.ts`
+- Actions can live within the store file but are recommended to be a seperate file like: `zoo.events.ts`
 - Mutations should NEVER perform async operations
 - Actions should NEVER mutate the state directly
 - Actions should NOT deal with view related operations (i.e. showing popups/etc)
@@ -411,6 +500,11 @@ Below are suggestions for naming and style conventions.
 We have lots planned for the future, here is a break down of whats coming next!
 
 - [ ] Devtools
-- [ ] Reactive forms plugin
 - [ ] Localstorage plugin
+- [ ] Reactive forms plugin
+- [ ] Router plugin
 - [ ] Web worker plugin
+
+## Shameless plug
+If you are using this tool and need support with it or with Angular in general, I offer full service
+consulting. My contact information is in my Github profile.

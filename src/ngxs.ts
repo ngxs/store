@@ -9,6 +9,7 @@ import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operator/map';
 import { fromPromise } from 'rxjs/observable/fromPromise';
+import { compose } from './compose';
 
 @Injectable()
 export class Ngxs {
@@ -32,21 +33,12 @@ export class Ngxs {
   }
 
   private _dispatch(action) {
-    this._eventStream.next(action);
-
     const curState = this._stateStream.getValue();
-    const newState = this._storeFactory.invokeMutations(curState, action);
-    this._stateStream.next(newState);
 
-    const results: any[] = this._storeFactory.invokeActions(newState, action);
+    const plugins = this._pluginManager.plugins;
+    const nextState = compose([...plugins, this._dispatchMutation.bind(this)])(curState, action);
 
-    for (const plugin of this._pluginManager.plugins) {
-      const res = plugin.handle(newState, action);
-      if (res) {
-        results.push(...this._handleNesting([res]));
-      }
-    }
-
+    const results: any[] = this._storeFactory.invokeActions(nextState, action);
     if (results.length) {
       return forkJoin(this._handleNesting(results));
     }
@@ -55,6 +47,13 @@ export class Ngxs {
     resultStream.next();
     resultStream.complete();
     return resultStream;
+  }
+
+  private _dispatchMutation(state, action) {
+    this._eventStream.next(action);
+    const newState = this._storeFactory.invokeMutations(state, action);
+    this._stateStream.next(newState);
+    return newState;
   }
 
   private _handleNesting(actionResults) {
