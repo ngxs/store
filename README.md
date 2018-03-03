@@ -6,24 +6,23 @@
 </p>
 
 ## What is NGXS?
-NGX is a state management pattern + library for Angular. It acts as a single source of
-truth for your application's state providing simple rules for predictable state mutations.
+NGXS is a state management pattern + library for Angular. It acts as a single source of
+truth for your application's state, providing simple rules for predictable state mutations.
 
 NGXS is modeled after the CQRS pattern popularly implemented in libraries like Redux and NGRX
-but reduces much of the boilerplate that is usually associated with those patterns by using
-modern TypeScript language features such as classes and decorators.
+but reduces boilerplate by using modern TypeScript features such as classes and decorators.
 
 - See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
 - Learn about updates on the [changelog](CHANGELOG.md)
 
 ## Installing
-To get started, lets install the package thru npm:
+To get started, install the package thru npm:
 
 ```
 npm i ngxs --S
 ```
 
-then in our `app.module.ts` file, lets import the NgModule:
+then in `app.module.ts`, import the `NgModule`:
 
 ```javascript
 import { NgModule } from '@angular/core';
@@ -38,9 +37,8 @@ import { NgxsModule } from 'ngxs';
 })
 ```
 
-when we include the module in the import, you can pass root stores
-along with options. If you are lazy loading, you can use the `forFeature`
-option with the same arguments.
+When you include the module in the import, you can pass root stores along with options.
+If you are lazy loading, you can use the `forFeature` option with the same arguments.
 
 ## Concepts
 ### Events
