@@ -471,7 +471,8 @@ import { NgxsModule, ReduxDevtoolsPlugin } from 'ngxs';
     NgxsModule.forRoot([], {
       plugins: [ReduxDevtoolsPlugin]
     })
-  ]
+  ],
+  providers: [ReduxDevtoolsPlugin]
 })
 export class MyModule{}
 ```

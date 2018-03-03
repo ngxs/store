@@ -1,3 +1,8 @@
+# 1.2.1 2/3/18
+- Fix: Dev tools init
+- Fix: Plugins not recieving proper context
+- Fix: Allow multiple forFeature
+
 # 1.2.0 2/3/18
 - Feature: Dev Tools Integration
 - Chore: Tests!

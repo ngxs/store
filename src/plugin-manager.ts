@@ -10,7 +10,7 @@ export class PluginManager {
     for (const plugin of plugins) {
       if (plugin.prototype.handle) {
         const inst = this._injector.get(plugin, new plugin());
-        this.plugins.push(inst.handle);
+        this.plugins.push(inst.handle.bind(inst));
       } else {
         this.plugins.push(plugin);
       }

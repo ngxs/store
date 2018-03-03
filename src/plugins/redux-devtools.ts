@@ -1,6 +1,8 @@
 import { NgxsPlugin } from '../symbols';
 import { Injectable } from '@angular/core';
 import { getTypeFromInstance } from '../internals';
+import { Ngxs } from '../ngxs';
+import { first } from 'rxjs/operators';
 
 /**
  * Interface for the redux-devtools-extension API.
@@ -20,18 +22,19 @@ export class ReduxDevtoolsPlugin implements NgxsPlugin {
   private readonly devtoolsExtension: DevtoolsExtension | null = null;
   private readonly windowObj: any = typeof window !== 'undefined' ? window : {};
 
-  constructor() {
+  constructor(ngxs: Ngxs) {
     const globalDevtools = this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
     if (globalDevtools) {
       this.devtoolsExtension = globalDevtools.connect() as DevtoolsExtension;
-      /**
-       * todo: initial state sending is not possible due to DI problem in the constructor (injections are undefined).
-       * Possible implementation:
-       * (this.ngxs.select(state => state) as Observable<any>)
-       *   .pipe(first())
-       *   .subscribe(state => this.devtoolsExtension.init(state));
-       */
-      this.devtoolsExtension.init({});
+
+      if (ngxs) {
+        ngxs
+          .select(state => state)
+          .pipe(first())
+          .subscribe(state => this.devtoolsExtension && this.devtoolsExtension.init(state));
+      } else {
+        this.devtoolsExtension.init({});
+      }
     }
   }
 
