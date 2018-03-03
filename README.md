@@ -31,11 +31,11 @@ import { NgModule } from '@angular/core';
 import { NgxsModule } from 'ngxs';
 
 @NgModule({
-    imports: [
-        NgxsModule.forRoot([
-            ZooStore
-        ], { /* optional options */ })
-    ]
+  imports: [
+    NgxsModule.forRoot([
+      ZooStore
+    ], { /* optional options */ })
+  ]
 })
 ```
 
@@ -66,7 +66,7 @@ the following:
 ```javascript
 export class FeedAnimals {}
 export class NewAnimal {
-    constructor(public payload: string) {}
+  constructor(public payload: string) {}
 }
 export class NewAnimalSuccess {}
 ```
@@ -80,7 +80,7 @@ looks like this:
 
 ```javascript
 export class NewAnimal {
-    readonly static type = 'I got a new animal today!';
+  readonly static type = 'I got a new animal today!';
 }
 ```
 
@@ -99,10 +99,10 @@ So here is our basic store:
 import { Store } from 'ngxs';
 
 @Store({
-    defaults: {
-        feed: false,
-        animals: []
-    }
+  defaults: {
+    feed: false,
+    animals: []
+  }
 })
 export class ZooStore {}
 ```
@@ -117,16 +117,16 @@ A mutation is function that will manipulate the state.
 import { Store, Mutation } from 'ngxs';
 
 @Store({
-    defaults: {
-        feed: false,
-        animals: []
-    }
+  defaults: {
+    feed: false,
+    animals: []
+  }
 })
 export class ZooStore {
-    @Mutation(FeedAnimals)
-    feedAnimals(state, { payload }) {
-        state.feed = true;
-    }
+  @Mutation(FeedAnimals)
+  feedAnimals(state, { payload }) {
+    state.feed = true;
+  }
 }
 ```
 
@@ -142,10 +142,10 @@ you can just return the state as is and it won't copy it, like this:
 ```javascript
 @Mutation(FeedAnimals)
 feedAnimals(state, { payload }) {
-    if (state.feed === payload) {
-        // return without touching and ngxs won't shallow copy
-        return state;
-    }
+  if (state.feed === payload) {
+    // return without touching and ngxs won't shallow copy
+    return state;
+  }
 }
 ```
 
@@ -178,18 +178,18 @@ import { Store, Action } from 'ngxs';
 
 @Injectable()
 @Store({
-    defaults: {
-        feed: false,
-        animals: []
-    }
+  defaults: {
+    feed: false,
+    animals: []
+  }
 })
 export class ZooStore {
-    constructor(private animalService: AnimalService) {}
+  constructor(private animalService: AnimalService) {}
 
-    @Action(NewAnimal)
-    newAnimal(state, { payload }) {
-        return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
-    }
+  @Action(NewAnimal)
+  newAnimal(state, { payload }) {
+    return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
+  }
 }
 ```
 
@@ -201,37 +201,37 @@ It will automatically map observables, promises and raw events for you. So you c
 /** Returns a observable event */
 @Action(NewAnimal)
 newAnimal(state, { payload }) {
-    return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
+  return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
 }
 
 /** Returns a observable with an array of events */
 @Action(NewAnimal)
 newAnimal(state, { payload }) {
-    return this.animalService.save(payload).map((res) => [
-        new AnimalSuccess(res),
-        new AlertZooKeeper()
-    ]);
+  return this.animalService.save(payload).map((res) => [
+    new AnimalSuccess(res),
+    new AlertZooKeeper()
+  ]);
 }
 
 /** Return a raw event */
 @Action(NewAnimal)
 newAnimal(state, { payload }) {
-    return new AnimalSuccess();
+  return new AnimalSuccess();
 }
 
 /** Return promises */
 @Action(NewAnimal)
 newAnimal(state, { payload }) {
-    return new Promise((resolve, reject) => {
-        resolve();
-    });
+  return new Promise((resolve, reject) => {
+    resolve(new AnimalSuccess());
+  });
 }
 
 /** Async/Await */
 @Action(NewAnimal)
 async newAnimal(state, { payload }) {
-    await this.animalService.save(payload);
-    return new AnimalSuccess();
+  await this.animalService.save(payload);
+  return new AnimalSuccess();
 }
 ```
 
@@ -246,23 +246,23 @@ to the store:
 
 ```javascript
 @Store({
-    defaults: {
-        feed: false,
-        animals: []
-    }
+  defaults: {
+    feed: false,
+    animals: []
+  }
 })
 export class ZooStore {
-    constructor(private animalService: AnimalService) {}
+  constructor(private animalService: AnimalService) {}
 
-    @Mutation(NewAnimalSuccess)
-    newAnimalSuccess(state, { payload }) {
-        state.animals = [...state.animals, payload];
-    }
+  @Mutation(NewAnimalSuccess)
+  newAnimalSuccess(state, { payload }) {
+    state.animals = [...state.animals, payload];
+  }
 
-    @Action(NewAnimal)
-    newAnimal(state, { payload }) {
-        return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
-    }
+  @Action(NewAnimal)
+  newAnimal(state, { payload }) {
+    return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
+  }
 }
 ```
 
@@ -277,11 +277,11 @@ import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
-    constructor(private ngxs: Ngxs) {}
+  constructor(private ngxs: Ngxs) {}
 
-    addAnimal(name) {
-        this.ngxs.dispatch(new AddAnimal(name));
-    }
+  addAnimal(name) {
+    this.ngxs.dispatch(new AddAnimal(name));
+  }
 }
 ```
 
@@ -290,8 +290,8 @@ time by passing an array of actions like:
 
 ```javascript
 this.ngxs.dispatch([
-    new AddAnimal('Panda'),
-    new AddAnimal('Zebra')
+  new AddAnimal('Panda'),
+  new AddAnimal('Zebra')
 ]);
 ```
 
@@ -305,13 +305,13 @@ import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
-    constructor(private ngxs: Ngxs) {}
+  constructor(private ngxs: Ngxs) {}
 
-    addAnimal(name) {
-        this.ngxs.dispatch(new AddAnimal(name)).subscribe(() => {
-            this.form.reset();
-        })
-    }
+  addAnimal(name) {
+    this.ngxs.dispatch(new AddAnimal(name)).subscribe(() => {
+      this.form.reset();
+    });
+  }
 }
 ```
 
@@ -330,10 +330,10 @@ import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
-    animals$: Observable<string[]>;
-    constructor(private ngxs: Ngxs) {
-        this.animals$ = this.ngxs.select(state => state.zoo.animals);
-    }
+  animals$: Observable<string[]>;
+  constructor(private ngxs: Ngxs) {
+    this.animals$ = this.ngxs.select(state => state.zoo.animals);
+  }
 }
 ```
 
@@ -347,20 +347,20 @@ import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
-    // Reads the name of the property minus the $
-    @Select() animals$: Observable<string[]>;
+  // Reads the name of the property minus the $
+  @Select() animals$: Observable<string[]>;
 
-    // Reads the parameter passed to the select decorator
-    @Select('animals') animals$: Observable<string[]>;
+  // Reads the parameter passed to the select decorator
+  @Select('animals') animals$: Observable<string[]>;
 
-    // These properties can be nested too
-    @Select('animals.names') animals$: Observable<string[]>;
+  // These properties can be nested too
+  @Select('animals.names') animals$: Observable<string[]>;
 
-    // These properties can be in the form of an array too
-    @Select(['animals', 'names']) animals$: Observable<string[]>;
+  // These properties can be in the form of an array too
+  @Select(['animals', 'names']) animals$: Observable<string[]>;
 
-    // Also accepts a function like our select method
-    @Select(state => state.animals) animals$: Observable<string[]>;
+  // Also accepts a function like our select method
+  @Select(state => state.animals) animals$: Observable<string[]>;
 }
 ```
 
@@ -376,12 +376,12 @@ Lets  take a basic example of a logger:
 import { NgxsPlugin } from 'ngxs';
 
 export class LoggerPlugin implements NgxsPlugin {
-    handle(state, mutation, next) {
-        console.log('Mutation started!', state);
-        const result = next(state, mutation);
-        console.log('Mutation happened!', result);
-        return result;
-    }
+  handle(state, mutation, next) {
+    console.log('Mutation started!', state);
+    const result = next(state, mutation);
+    console.log('Mutation happened!', result);
+    return result;
+  }
 }
 ```
 
@@ -392,12 +392,12 @@ has options associated with it, we suggest defining a static method called
 
 ```javascript
 export class LoggerPlugin implements NgxsPlugin {
-    static _options;
-    static forRoot(options) { this._options = options; }
-    handle(state, mutation, next) {
-        console.log('Custom options!', LoggerPlugin._options);
-        return next(state, mutation);
-    }
+  static _options;
+  static forRoot(options) { this._options = options; }
+  handle(state, mutation, next) {
+    console.log('Custom options!', LoggerPlugin._options);
+    return next(state, mutation);
+  }
 }
 ```
 
@@ -409,10 +409,10 @@ would look like this:
 
 ```javascript
 export function logPlugin(state, mutation, next) {
-    console.log('Mutation started!', state);
-    const result = next(state, mutation);
-    console.log('Mutation happened!', result);
-    return result;
+  console.log('Mutation started!', state);
+  const result = next(state, mutation);
+  console.log('Mutation happened!', result);
+  return result;
 }
 ```
 
@@ -421,14 +421,11 @@ in the module hookup like:
 
 ```javascript
 @NgModule({
-    imports: [
-        NgxsModule.forRoot([
-            ZooStore
-        ], {
-            plugins: [LoggerPlugin]
-        })
-    ]
+  imports: [
+    NgxsModule.forRoot([ZooStore], { plugins: [LoggerPlugin] })
+  ]
 })
+export class MyModule {}
 ```
 
 It also works with `forFeature`.
@@ -441,24 +438,25 @@ simply import it, configure it and add it to your plugins options.
 import { LoggerPlugin } from 'ngxs';
 
 @NgModule({
-    imports: [
-        NgxsModule.forRoot([ZooStore], {
-            plugins: [
-                // Default setup
-                LoggerPlugin
+  imports: [
+    NgxsModule.forRoot([ZooStore], {
+      plugins: [
+        // Default setup
+        LoggerPlugin
 
-                // Pass custom options
-                LoggerPlugin.forRoot({
-                  // custom console.log implement
-                  logger: console,
+        // Pass custom options
+        LoggerPlugin.forRoot({
+          // custom console.log implement
+          logger: console,
 
-                  // expand results by default
-                  expanded: true
-                })
-            ]
+          // expand results by default
+          expanded: true
         })
-    ]
+      ]
+    })
+  ]
 })
+export class MyModule {}
 ```
 
 #### Redux Devtools
@@ -469,12 +467,13 @@ add the following plugin to your `forRoot` configuration:
 import { NgxsModule, ReduxDevtoolsPlugin } from 'ngxs';
 
 @NgModule({
-    imports: [
-        NgxsModule.forRoot([], {
-            plugins: [ReduxDevtoolsPlugin]
-        })
-    ]
+  imports: [
+    NgxsModule.forRoot([], {
+      plugins: [ReduxDevtoolsPlugin]
+    })
+  ]
 })
+export class MyModule{}
 ```
 
 ### Pub sub
@@ -489,11 +488,11 @@ import { EventStream, ofEvent } from 'ngxs';
 
 @Injectable()
 export class RouteHandler {
-    constructor(private eventStream: EventStream, private router: Router) {
-        this.eventStream
-          .pipe(ofEvent(NewAnimal))
-          .subscribe((action) => alert('New Animal!'));
-    }
+  constructor(private eventStream: EventStream, private router: Router) {
+    this.eventStream
+      .pipe(ofEvent(NewAnimal))
+      .subscribe((action) => alert('New Animal!'));
+  }
 }
 ```
 
