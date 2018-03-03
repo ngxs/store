@@ -294,7 +294,7 @@ getting the data, lets talk about Selects now.
 ### Selects
 Its important to note that READS and WRITES are completely seperate in ngxs. To read data
 out of the store, we can either call the `select` method on the 
-`ngxs` service. First lets look at the `select` method.
+`ngxs` service or a `@Select` decorator. First lets look at the `select` method.
 
 ```javascript
 import { Ngxs } from 'ngxs';
@@ -389,6 +389,32 @@ export class RouteHandler {
         this.eventStream.pipe(ofEvent(NewAnimal)).subscribe((action) => alert('New Animal!'));
     }
 }
+```
+
+### Unit Testing
+Unit testing is easy since, we just need to dispatch events and then listen in on the changes and
+perform our expectation there. A basic test looks like this:
+
+```javascript
+describe('Zoo', () => {
+  let ngxs: Ngxs;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([ZooStore])],
+      providers: [ZooStore],
+    }).compileComponents();
+    ngxs = TestBed.get(Ngxs);
+  }));
+
+  it('it toggles feed', () => {
+    ngxs.dispatch(new FeedAnimals());
+    ngxs.select(state => state.zoo.feed).subscribe(feed => {
+      expect(feed).toBe(true);
+    });
+  });
+
+});
 ```
 
 ### Style Guide
