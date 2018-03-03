@@ -7,9 +7,10 @@ import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitStore } from './events/init';
+import { ReduxDevtoolsPlugin } from './plugins/redux-devtools';
 
 @NgModule({
-  providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory, PluginManager]
+  providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory, PluginManager, ReduxDevtoolsPlugin]
 })
 export class NgxsModule {
   static forRoot(stores: any[], options?: NgxsOptions): ModuleWithProviders {
@@ -29,7 +30,8 @@ export class NgxsModule {
         {
           provide: STORE_OPTIONS_TOKEN,
           useValue: options
-        }
+        },
+        ReduxDevtoolsPlugin
       ]
     };
   }

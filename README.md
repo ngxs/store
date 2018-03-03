@@ -492,6 +492,24 @@ describe('Zoo', () => {
 });
 ```
 
+### Redux Devtools
+
+To enable support for the [Redux Devtools extension](http://extension.remotedev.io/), add the following plugin to your `forRoot` configuration:
+
+```javascript
+import { ReduxDevtoolsPlugin } from 'ngxs';
+
+@NgModule({
+    imports: [
+        NgxsModule.forRoot([
+            ZooStore
+        ], {
+            plugins: [ReduxDevtoolsPlugin]
+        })
+    ]
+})
+```
+
 ### Style Guide
 Below are suggestions for naming and style conventions.
 
@@ -512,7 +530,7 @@ Below are suggestions for naming and style conventions.
 ## Roadmap
 We have lots planned for the future, here is a break down of whats coming next!
 
-- [ ] Devtools
+- [ ] Reactive forms plugin
 - [ ] Localstorage plugin
 - [ ] Reactive forms plugin
 - [ ] Router plugin
