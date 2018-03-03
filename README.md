@@ -5,9 +5,6 @@
   <br />
 </p>
 
-- See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
-- Learn about updates on the [changelog](CHANGELOG.md)
-
 ## What is NGXS?
 NGX is a state management pattern + library for Angular. It acts as a single source of
 truth for your application's state providing simple rules for predictable state mutations.
@@ -15,6 +12,9 @@ truth for your application's state providing simple rules for predictable state 
 NGXS is modeled after the CQRS pattern popularly implemented in libraries like Redux and NGRX
 but reduces much of the boilerplate that is usually associated with those patterns by using
 modern TypeScript language features such as classes and decorators.
+
+- See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
+- Learn about updates on the [changelog](CHANGELOG.md)
 
 ## Installing
 To get started, lets install the package thru npm:
