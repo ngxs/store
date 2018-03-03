@@ -6,6 +6,7 @@ import { Ngxs } from './ngxs';
 import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
+import { InitStore } from './events/init';
 
 @NgModule({
   providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory, PluginManager]
@@ -52,6 +53,13 @@ export class NgxsModule {
   constructor(
     private _factory: StoreFactory,
     private _stateStream: StateStream,
+    @Optional()
+    @Inject(STORE_OPTIONS_TOKEN)
+    private _storeOptions: NgxsOptions,
+    @Optional()
+    @Inject(LAZY_STORE_OPTIONS_TOKEN)
+    private _featureStoreOptions: NgxsOptions,
+    private _pluginManager: PluginManager,
     store: Ngxs,
     select: SelectFactory,
     @Optional()
@@ -59,13 +67,13 @@ export class NgxsModule {
     stores: any[],
     @Optional()
     @Inject(LAZY_STORE_TOKEN)
-    lazyStores: any[],
-    pluginManager: PluginManager
+    lazyStores: any[]
   ) {
     select.connect(store);
+    this.registerPlugins();
     this.initStores(stores);
     this.initStores(lazyStores);
-    pluginManager.register();
+    store.dispatch(new InitStore());
   }
 
   initStores(stores) {
@@ -80,5 +88,14 @@ export class NgxsModule {
         ...init
       });
     }
+  }
+
+  registerPlugins() {
+    const rootPlugins = this._storeOptions && this._storeOptions.plugins ? this._storeOptions.plugins : [];
+
+    const featurePlugins =
+      this._featureStoreOptions && this._featureStoreOptions.plugins ? this._featureStoreOptions.plugins : [];
+
+    this._pluginManager.use([...rootPlugins, ...featurePlugins]);
   }
 }

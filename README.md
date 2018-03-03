@@ -340,21 +340,53 @@ Pretty cool huh? Lots of options to get data out!
 
 ### Plugins
 Next lets talk about plugins. Similar to Redux's meta reducers, we have
-a plugins interface that allows you to build a global plugin for your state. Lets 
-take a basic example of a logger:
+a plugins interface that allows you to build a global plugin for your state. 
+
+Lets  take a basic example of a logger:
 
 ```javascript
 import { NgxsPlugin } from 'ngxs';
 
 export class LoggerPlugin implements NgxsPlugin {
-    handle(state, action) {
-        console.log('Action happened!');
+    handle(state, mutation, next) {
+        console.log('Mutation started!', state);
+        const result = next(state, mutation);
+        console.log('Mutation happened!', result);
+        return result;
     }
 }
 ```
 
 Our plugins can also have injectables, simply decorator it with
-the `Injectable` decorator and pass it to your providers.
+the `Injectable` decorator and pass it to your providers. If your plugins
+has options associated with it, we suggest defining a static method called
+`forRoot` similar to Angular's pattern. This would look like:
+
+```javascript
+export class LoggerPlugin implements NgxsPlugin {
+    static _options;
+    static forRoot(options) { this._options = options; }
+    handle(state, mutation, next) {
+        console.log('Custom options!', LoggerPlugin._options);
+        return next(state, mutation);
+    }
+}
+```
+
+This pattern allows us to define options while presevering the constructor
+for use with DI.
+
+You can also use pure functions for plugins, the above example in a pure function
+would look like this:
+
+```javascript
+export function logPlugin(state, mutation, next) {
+    console.log('Mutation started!', state);
+    const result = next(state, mutation);
+    console.log('Mutation happened!', result);
+    return result;
+}
+```
 
 To register them with NGXS, pass them via the options parameter
 in the module hookup like:
@@ -372,6 +404,34 @@ in the module hookup like:
 ```
 
 It also works with `forFeature`.
+
+#### Logger Plugin
+NGXS comes with a logger plugin for common debugging usage. To take advantage of this
+simply import it, configure it and add it to your plugins options.
+
+```
+import { LoggerPlugin } from 'ngxs/plugins/logger';
+
+@NgModule({
+    imports: [
+        NgxsModule.forRoot([ZooStore], {
+            plugins: [
+                // Default setup
+                LoggerPlugin
+
+                // Pass custom options
+                LoggerPlugin.forRoot({
+                  // custom console.log implement
+                  logger: console,
+
+                  // expand results by default
+                  expanded: true
+                })
+            ]
+        })
+    ]
+})
+```
 
 ### Pub sub
 Lets you want to listen to events outside of your store or perhaps you want to
@@ -437,6 +497,7 @@ Below are suggestions for naming and style conventions.
 We have lots planned for the future, here is a break down of whats coming next!
 
 - [ ] Devtools
-- [ ] Reactive forms plugin
 - [ ] Localstorage plugin
+- [ ] Reactive forms plugin
+- [ ] Router plugin
 - [ ] Web worker plugin
