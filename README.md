@@ -43,6 +43,19 @@ When you include the module in the import, you can pass root stores along with o
 If you are lazy loading, you can use the `forFeature` option with the same arguments.
 
 ## Concepts
+There are 4 major concepts to NGXS:
+
+- Events: Classes dispatched to stores with optional payload
+- Actions: Events that perform async operations
+- Mutations: Events that mutate the store data
+- Selects: State getters
+
+These concepts create a circular control flow traveling from an component
+dispatching an event, to a store reacting to the event back to the component
+through a state select.
+
+![diagram)[assets/diagram.png]
+
 ### Events
 Lets define what our store is going to do. We call these event classes. They
 will be what we dispatch and our stores respond to. For this store, we will define
