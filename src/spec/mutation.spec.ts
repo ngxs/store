@@ -13,6 +13,7 @@ describe('Mutation', () => {
   }
 
   @Store({
+    name: 'todos',
     defaults: []
   })
   class TodoStore {
