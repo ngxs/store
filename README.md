@@ -2,9 +2,10 @@
   <img src="assets/logo.png">
   <br />
   NGXS is a state management pattern + library for Angular
-  [![Join the chat at https://gitter.im/ngxs-community/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ngxs-community/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  [![npm version](https://badge.fury.io/js/ngxs.svg)](https://badge.fury.io/js/ngxs) [![Maintainability](https://api.codeclimate.com/v1/badges/8cfd57431e95ce1b994c/maintainability)](https://codeclimate.com/github/amcdnl/ngxs/maintainability)
   <br />
 </p>
+
+[![Join the chat at https://gitter.im/ngxs-community/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ngxs-community/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  [![npm version](https://badge.fury.io/js/ngxs.svg)](https://badge.fury.io/js/ngxs) [![Maintainability](https://api.codeclimate.com/v1/badges/8cfd57431e95ce1b994c/maintainability)](https://codeclimate.com/github/amcdnl/ngxs/maintainability)
 
 ## What is NGXS?
 NGXS is a state management pattern + library for Angular. It acts as a single source of
