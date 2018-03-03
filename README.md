@@ -54,7 +54,7 @@ These concepts create a circular control flow traveling from an component
 dispatching an event, to a store reacting to the event back to the component
 through a state select.
 
-!(diagram)[assets/diagram.png]
+![diagram](assets/diagram.png)
 
 ### Events
 Lets define what our store is going to do. We call these event classes. They
