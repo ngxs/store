@@ -1,7 +1,6 @@
 import { NgxsPlugin } from '../symbols';
 import { Injectable } from '@angular/core';
 import { getTypeFromInstance } from '../internals';
-import { first } from 'rxjs/operators';
 
 /**
  * Interface for the redux-devtools-extension API.

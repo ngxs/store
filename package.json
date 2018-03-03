@@ -1,12 +1,11 @@
 {
   "name": "ngxs",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "State Mangement for Angular",
   "main": "index.js",
   "scripts": {
     "test": "ng test",
     "build": "ng-packagr -p package.json",
-    "publish": "npm publish dist",
     "precommit": "lint-staged",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "prettier": "prettier --parser typescript --single-quote es5 --write \"**/*.ts\""

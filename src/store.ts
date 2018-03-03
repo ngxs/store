@@ -1,5 +1,5 @@
 import { ensureStoreMetadata } from './internals';
-import { StoreOptions } from './symbols';
+import { StoreOptions, META_KEY } from './symbols';
 
 /**
  * Gets the name of the constructor and remove suffix if applicable.
@@ -17,8 +17,22 @@ const getNameFromClass = name => {
  * Decorates a class with ngxs store information.
  */
 export function Store(options: StoreOptions) {
-  return function(target: Function) {
+  return function(target: any) {
     const meta = ensureStoreMetadata(target);
+
+    if (target.__proto__.hasOwnProperty(META_KEY)) {
+      const parentMeta = target.__proto__[META_KEY];
+      meta.mutations = {
+        ...meta.mutations,
+        ...parentMeta.mutations
+      };
+
+      meta.actions = {
+        ...meta.actions,
+        ...parentMeta.actions
+      };
+    }
+
     meta.defaults = options.defaults;
     if (options.name) {
       meta.name = options.name;

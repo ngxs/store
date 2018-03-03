@@ -1,3 +1,6 @@
+# 1.4.0 2/3/18
+- Feature: Composition
+
 # 1.3.0 2/3/18
 - Feature: Localstore plugin
 - Fix: Better dev tools init

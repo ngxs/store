@@ -523,6 +523,26 @@ export class RouteHandler {
 }
 ```
 
+### Composition
+You can compose multiple stores together using class inheritance. This is REALLY
+simple:
+
+```javascript
+@Store({})
+class ZooStore {
+  @Mutation(Eat)
+  eat() {}
+}
+
+@Store({})
+class StLouisZooStore extends ZooStore {
+  @Mutation(Drink)
+  drink() {}
+}
+```
+
+now when `StLouisZooStore` is invoked, it will share the mutations or actions of the `ZooStore`.
+
 ### Unit Testing
 Unit testing is easy since, we just need to dispatch events and then listen in on the changes and
 perform our expectation there. A basic test looks like this:
