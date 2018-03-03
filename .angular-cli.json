@@ -10,7 +10,8 @@
       "test": "test.ts",
       "main": "src/ngxs.ts",
       "polyfills": "polyfills.ts",
-      "testTsconfig": "./tsconfig.spec.json"
+      "tsconfig": "tsconfig.spec.json",
+      "testTsconfig": "tsconfig.spec.json"
     }
   ],
   "test": {

@@ -1,9 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "strictNullChecks": false
+    "outDir": "./out-tsc/spec",
+    "module": "commonjs",
+    "target": "es5",
+    "types": ["jasmine"]
   },
   "files": ["test.ts"],
-  "include": ["**/*.spec.ts", "**/*.d.ts", "**/*.module.ts"],
+  "include": ["**/*.spec.ts"],
   "exclude": []
 }
