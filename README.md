@@ -188,7 +188,6 @@ newAnimal(state, { payload }) {
 /** Return a raw event */
 @Action(NewAnimal)
 newAnimal(state, { payload }) {
-    return this.animalService.save(payload);
     return new AnimalSuccess();
 }
 
