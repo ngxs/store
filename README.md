@@ -423,7 +423,7 @@ NGXS comes with a logger plugin for common debugging usage. To take advantage of
 simply import it, configure it and add it to your plugins options.
 
 ```javascript
-import { LoggerPlugin } from 'ngxs/plugins/logger';
+import { LoggerPlugin } from 'ngxs';
 
 @NgModule({
     imports: [
@@ -441,6 +441,22 @@ import { LoggerPlugin } from 'ngxs/plugins/logger';
                   expanded: true
                 })
             ]
+        })
+    ]
+})
+```
+
+#### Redux Devtools
+To enable support for the [Redux Devtools extension](http://extension.remotedev.io/),
+add the following plugin to your `forRoot` configuration:
+
+```javascript
+import { NgxsModule, ReduxDevtoolsPlugin } from 'ngxs';
+
+@NgModule({
+    imports: [
+        NgxsModule.forRoot([], {
+            plugins: [ReduxDevtoolsPlugin]
         })
     ]
 })
@@ -490,24 +506,6 @@ describe('Zoo', () => {
   });
 
 });
-```
-
-### Redux Devtools
-
-To enable support for the [Redux Devtools extension](http://extension.remotedev.io/), add the following plugin to your `forRoot` configuration:
-
-```javascript
-import { ReduxDevtoolsPlugin } from 'ngxs';
-
-@NgModule({
-    imports: [
-        NgxsModule.forRoot([
-            ZooStore
-        ], {
-            plugins: [ReduxDevtoolsPlugin]
-        })
-    ]
-})
 ```
 
 ### Style Guide
