@@ -33,7 +33,7 @@ import { NgxsModule } from 'ngxs';
     imports: [
         NgxsModule.forRoot([
             ZooStore
-        ], { /* options */ })
+        ], { /* optional options */ })
     ]
 })
 ```
@@ -409,7 +409,7 @@ It also works with `forFeature`.
 NGXS comes with a logger plugin for common debugging usage. To take advantage of this
 simply import it, configure it and add it to your plugins options.
 
-```
+```javascript
 import { LoggerPlugin } from 'ngxs/plugins/logger';
 
 @NgModule({
