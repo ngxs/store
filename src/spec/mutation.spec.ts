@@ -51,7 +51,7 @@ describe('Mutation', () => {
   xit('should add a todo', () => {
     ngxs.dispatch(new AddTodo('Get Milk'));
 
-    ngxs.select(state => state.todo).subscribe(state => {
+    ngxs.select(state => state.todos).subscribe(state => {
       expect(state.length).toBe(1);
     });
   });
