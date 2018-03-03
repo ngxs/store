@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "ngc",
-    "test": "ngc -p tsconfig.spec.json && jasmine dist/spec/*.spec.js",
+    "test": "ng test",
     "publish": "npm publish dist",
     "precommit": "lint-staged",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
@@ -15,13 +15,7 @@
     "type": "git",
     "url": "git+https://amcdnl@github.com/amcdnl/ngxs.git"
   },
-  "keywords": [
-    "ngrx",
-    "redux",
-    "state",
-    "store",
-    "state-mangement"
-  ],
+  "keywords": ["ngrx", "redux", "state", "store", "state-mangement"],
   "author": "Austin McDaniel",
   "license": "MIT",
   "bugs": {
@@ -33,20 +27,31 @@
     "rxjs": "^5.5.6"
   },
   "devDependencies": {
+    "@angular/cli": "^1.7.2",
+    "@angular/common": "^5.2.7",
     "@angular/compiler": "^5.2.7",
     "@angular/compiler-cli": "^5.2.7",
     "@angular/core": "^5.2.7",
+    "@angular/platform-browser": "^5.2.7",
+    "@angular/platform-browser-dynamic": "^5.2.7",
     "@types/jasmine": "^2.8.0",
     "husky": "^0.14.3",
     "jasmine": "^2.8.0",
+    "jasmine-core": "~2.8.0",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "~2.0.0",
+    "karma-chrome-launcher": "~2.2.0",
+    "karma-coverage-istanbul-reporter": "^1.2.1",
+    "karma-jasmine": "~1.1.0",
+    "karma-jasmine-html-reporter": "^0.2.2",
     "lint-staged": "^7.0.0",
-    "ng-packagr": "2.0.0-rc.9",
+    "ng-packagr": "2.0.0",
     "prettier": "^1.11.1",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.5.6",
     "tsickle": "^0.27.2",
     "tslint": "^5.8.0",
-    "typescript": "^2.6.2",
+    "typescript": "~2.6.2",
     "zone.js": "^0.8.4"
   },
   "ngPackage": {
@@ -55,10 +60,7 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "npm run prettier",
-      "git add"
-    ]
+    "*.ts": ["npm run prettier", "git add"]
   },
   "prettier": {
     "singleQuote": true,
