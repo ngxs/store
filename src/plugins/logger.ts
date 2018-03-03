@@ -19,7 +19,8 @@ export class LoggerPlugin implements NgxsPlugin {
   }
 
   handle(state, mutation, next) {
-    const logger = LoggerPlugin._options.logger || console;
+    const options = LoggerPlugin._options || <any>{};
+    const logger = options.logger || console;
     const mutationName = mutation.constructor.type || mutation.constructor.name;
     const time = new Date();
     // tslint:disable-next-line
@@ -29,7 +30,7 @@ export class LoggerPlugin implements NgxsPlugin {
     )}.${pad(time.getMilliseconds(), 3)}`;
     const message = `mutation ${mutationName}${formattedTime}`;
 
-    const startMessage = LoggerPlugin._options.collapsed ? logger.groupCollapsed : logger.group;
+    const startMessage = options.collapsed ? logger.groupCollapsed : logger.group;
 
     try {
       startMessage.call(logger, message);
