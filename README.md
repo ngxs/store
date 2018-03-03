@@ -16,10 +16,6 @@ NGXS is modeled after the CQRS pattern popularly implemented in libraries like R
 but reduces much of the boilerplate that is usually associated with those patterns by using
 modern TypeScript language features such as classes and decorators.
 
-when in include the module in the import, you can pass root stores
-along with options. If you are lazy loading, you can use the `forFeature`
-option with the same arguments.
-
 ## Installing
 To get started, lets install the package thru npm:
 
@@ -41,6 +37,10 @@ import { NgxsModule } from 'ngxs';
     ]
 })
 ```
+
+when we include the module in the import, you can pass root stores
+along with options. If you are lazy loading, you can use the `forFeature`
+option with the same arguments.
 
 ## Concepts
 ### Events
