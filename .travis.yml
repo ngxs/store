@@ -1,0 +1,61 @@
+sudo: false
+language: node_js
+node_js: "8"
+
+notifications:
+  email: false
+
+git:
+  depth: 3
+  submodules: false
+
+stages:
+  - <<: *stage
+    name: precache
+  - <<: *stage
+    name: lint
+  - <<: *stage
+    name: test
+  - <<: *stage
+    name: build
+
+install:
+  - npm install
+
+jobs:
+  fast_finish: true
+  include:
+# precache npm and apt dependencies
+    - stage: precache
+      install: npm install > /dev/null
+      script: true
+      addons:
+        firefox: latest
+        chrome: stable
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          # required by node-gyp to build some packages
+          packages:
+          - g++-4.8
+
+#   lint code
+    - stage: lint
+      install: true
+      script: npm run lint
+
+#   test
+    - &test
+      stage: test
+      script: npm run test
+
+#    check prod build
+    - &build
+      stage: build
+      script: npm run build
+
+cache:
+  apt: true
+  npm: true
+  directories:
+    - node_modules
