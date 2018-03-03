@@ -1,5 +1,6 @@
 import { NgxsPlugin } from '../symbols';
 import { Injectable } from '@angular/core';
+import { getTypeFromInstance } from '../internals';
 
 /**
  * Interface for the redux-devtools-extension API.
@@ -34,10 +35,11 @@ export class ReduxDevtoolsPlugin implements NgxsPlugin {
     }
   }
 
-  handle(state: any, action: any) {
+  handle(state: any, mutation: any, next: any) {
     if (!this.devtoolsExtension) {
-      return;
+      return next(state, mutation);
     }
-    this.devtoolsExtension.send(action.constructor.name, state);
+    this.devtoolsExtension.send(getTypeFromInstance(mutation), state);
+    return next(state, mutation);
   }
 }
