@@ -3,6 +3,10 @@ import { OperatorFunction } from 'rxjs/interfaces';
 
 export function ofEvent<T>(allowedType): OperatorFunction<any, T>;
 export function ofEvent<T>(...allowedTypes): OperatorFunction<any, T>;
+
+/**
+ * RxJS operator for selecting out specific events.
+ */
 export function ofEvent(...allowedTypes: any[]): OperatorFunction<any, any> {
   const allowedMap = {};
   allowedTypes.forEach(klass => (allowedMap[klass.type || klass.name] = true));

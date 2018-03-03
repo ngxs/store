@@ -10,6 +10,9 @@ export class SelectFactory {
   }
 }
 
+/**
+ * Decorates a member with a select signature
+ */
 export function Select(selectorOrFeature?, ...paths: string[]) {
   return function(target: any, name: string) {
     const selectorFnName = '__' + name + '__selector';
