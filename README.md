@@ -4,6 +4,8 @@
   NGX is a state management pattern + library for Angular.
 </p>
 
+See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple);
+
 ## What is NGXS?
 NGX is a state management pattern + library for Angular. It acts as a single source of
 truth for your application's state providing simple rules for predictable state mutations.

@@ -10,7 +10,7 @@ export class SelectFactory {
   }
 }
 
-export function Select(selectorOrFeature, ...paths: string[]) {
+export function Select(selectorOrFeature?, ...paths: string[]) {
   return function(target: any, name: string) {
     const selectorFnName = '__' + name + '__selector';
     let fn;
