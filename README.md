@@ -56,7 +56,7 @@ export class NewAnimal {
 export class NewAnimalSuccess {}
 ```
 
-In the above events, we have `FeedAnimals` which has payload for it. Its just
+In the above events, we have `FeedAnimals` which has no payload for it. Its just
 going to flip a simple flag in our store for us. In the `NewAnimal` event we define
 a payload which will contain the animal type. Unlike with redux, we don't need to
 define a type property since our store is smart enough to read the class as the type.
@@ -446,7 +446,9 @@ import { EventStream, ofEvent } from 'ngxs';
 @Injectable()
 export class RouteHandler {
     constructor(private eventStream: EventStream, private router: Router) {
-        this.eventStream.pipe(ofEvent(NewAnimal)).subscribe((action) => alert('New Animal!'));
+        this.eventStream
+          .pipe(ofEvent(NewAnimal))
+          .subscribe((action) => alert('New Animal!'));
     }
 }
 ```
@@ -487,6 +489,7 @@ Below are suggestions for naming and style conventions.
 - Global stores should be organized under `src/shared/store`
 - Feature stores should live within the respective feature folder structure `src/app/my-feature`
 - Events should NOT have a a suffix
+- Unit tests for the store should be named `my-store-name.store.spec.ts`
 - Events should ALWAYS use the `payload` public name
 - Actions can live within the store file but are recommended to be a seperate file like: `zoo.events.ts`
 - Mutations should NEVER perform async operations
