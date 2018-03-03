@@ -17,6 +17,6 @@ export interface NgxsPlugin {
 }
 
 export interface StoreOptions {
-  name: string;
-  defaults: any;
+  name?: string;
+  defaults?: any;
 }

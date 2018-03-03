@@ -1,22 +1,22 @@
-import { Action } from '../action';
+import { Mutation } from '../mutation';
 import { Store } from '../store';
 import { ensureStoreMetadata } from '../internals';
 
-describe('Action', () => {
+describe('Mutation', () => {
   it('supports multiple actions', () => {
-    class Action1 {}
-    class Action2 {}
+    class Mutation1 {}
+    class Mutation2 {}
 
     @Store({})
     class BarStore {
-      @Action([Action1, Action2])
+      @Mutation([Mutation1, Mutation2])
       foo(state) {
         state.foo = false;
       }
     }
 
     const meta = ensureStoreMetadata(BarStore);
-    expect(meta.actions['Action1']).toBeDefined();
-    expect(meta.actions['Action2']).toBeDefined();
+    expect(meta.mutations['Mutation1']).toBeDefined();
+    expect(meta.mutations['Mutation2']).toBeDefined();
   });
 });
