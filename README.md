@@ -428,7 +428,7 @@ Below are suggestions for naming and style conventions.
 - Feature stores should live within the respective feature folder structure `src/app/my-feature`
 - Events should NOT have a a suffix
 - Events should ALWAYS use the `payload` public name
-- Actions can live within the store file but are recommended to be a seperate file like: `zoo.actions.ts`
+- Actions can live within the store file but are recommended to be a seperate file like: `zoo.events.ts`
 - Mutations should NEVER perform async operations
 - Actions should NEVER mutate the state directly
 - Actions should NOT deal with view related operations (i.e. showing popups/etc)
