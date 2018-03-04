@@ -31,6 +31,7 @@ export class LocalStoragePlugin implements NgxsPlugin {
 
   static forRoot(options) {
     this._options = options;
+    return this;
   }
 
   constructor() {

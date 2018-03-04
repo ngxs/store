@@ -11,14 +11,25 @@ export interface DevtoolsExtension {
   subscribe(fn: (message: string) => void);
 }
 
+export interface DevtoolsOptions {
+  disabled: boolean;
+}
+
 /**
  * Adds support for the Redux Devtools extension:
  * http://extension.remotedev.io/
  */
 @Injectable()
 export class ReduxDevtoolsPlugin implements NgxsPlugin {
+  private static _options: DevtoolsOptions | undefined = undefined;
+
   private readonly devtoolsExtension: DevtoolsExtension | null = null;
   private readonly windowObj: any = typeof window !== 'undefined' ? window : {};
+
+  static forRoot(options) {
+    this._options = options;
+    return this;
+  }
 
   constructor() {
     const globalDevtools = this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
@@ -28,7 +39,8 @@ export class ReduxDevtoolsPlugin implements NgxsPlugin {
   }
 
   handle(state: any, event: any, next: any) {
-    if (!this.devtoolsExtension) {
+    const isDisabled = ReduxDevtoolsPlugin._options && ReduxDevtoolsPlugin._options.disabled;
+    if (!this.devtoolsExtension || isDisabled) {
       return next(state, event);
     }
 

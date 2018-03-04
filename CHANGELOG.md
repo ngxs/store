@@ -1,3 +1,8 @@
+# 1.4.1 2/4/18
+- Fix: Misc type improvement
+- Fix: `forRoot` plugins not working properly
+- Fix: LocalStorage plugin name spelling
+
 # 1.4.0 2/3/18
 - Feature: Composition
 

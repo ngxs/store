@@ -438,7 +438,7 @@ import { LoggerPlugin } from 'ngxs';
   imports: [
     NgxsModule.forRoot([ZooStore], {
       plugins: [
-        // Optionally pass custom options
+        // `forRoot` is optional if you want to pass options
         LoggerPlugin.forRoot({
           // custom console.log implement
           logger: console,
@@ -463,7 +463,12 @@ import { NgxsModule, ReduxDevtoolsPlugin } from 'ngxs';
 @NgModule({
   imports: [
     NgxsModule.forRoot([], {
-      plugins: [ReduxDevtoolsPlugin]
+      plugins: [
+        // `forRoot` is optional if you want to pass options
+        ReduxDevtoolsPlugin.forRoot({
+          disabled: false // Set to true for prod mode
+        })
+      ]
     })
   ]
 })
@@ -480,7 +485,7 @@ import { NgxsModule, LocalStoragePlugin } from 'ngxs';
   imports: [
     NgxsModule.forRoot([], {
       plugins: [
-        // These are optional, you can just pass `LocalStoragePlugin` without calling `forRoot`
+        // `forRoot`is optional if you want to pass options
         LocalStoragePlugin.forRoot({
           // Default, you can pass single string or array of strings
           // that could be deeply nested too

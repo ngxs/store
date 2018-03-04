@@ -16,6 +16,7 @@ export class LoggerPlugin implements NgxsPlugin {
 
   static forRoot(options: LoggerPluginOptions) {
     this._options = options;
+    return this;
   }
 
   handle(state, event, next) {
