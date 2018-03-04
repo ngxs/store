@@ -8,9 +8,10 @@
       "root": "",
       "assets": [],
       "test": "test.ts",
-      "main": "src/ngxs.ts",
+      "index": "integration/index.html",
+      "main": "integration/main.ts",
       "polyfills": "polyfills.ts",
-      "tsconfig": "tsconfig.spec.json",
+      "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json"
     }
   ],
