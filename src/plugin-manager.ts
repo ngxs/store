@@ -1,8 +1,9 @@
 import { Injectable, Injector } from '@angular/core';
+import { NgxsPluginFn } from './symbols';
 
 @Injectable()
 export class PluginManager {
-  plugins: any = [];
+  plugins: NgxsPluginFn[] = [];
 
   constructor(private _injector: Injector) {}
 
