@@ -165,18 +165,15 @@ Those are reserved for `Action`. Similarly actions should not mutate state.
 Lets say for our `NewAnimal` event we want to reach out to the backend and save the
 new animal before we add it to the UI.
 
-Our stores can also participate in depedency injection so when we want to
-reach out to our backend injectable service, we can just inject it. When
-using DI, its important to remember to add the `Injectable` decorator
-and also add your store to your module's providers.
-
-The arguments of the function are similar to those of the mutation, passing
+Our stores can also participate in dependency injection so when we want to 
+reach out to our backend injectable service, we can just inject it. When 
+using DI, its important to add your store to your module's providers.
+The arguments of the function are similar to those of the mutation, passing 
 the state and the action. Lets see what this looks like:
 
 ```javascript
 import { Store, Action } from 'ngxs';
 
-@Injectable()
 @Store({
   defaults: {
     feed: false,
