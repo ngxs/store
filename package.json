@@ -4,7 +4,7 @@
   "description": "State Mangement for Angular",
   "main": "index.js",
   "scripts": {
-    "serve-demo": "ng serve --aot",
+    "start": "ng serve --aot",
     "build": "ng-packagr -p package.json",
     "precommit": "lint-staged",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
