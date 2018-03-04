@@ -1,0 +1,14 @@
+---
+engines:
+  tslint:
+    enabled: true
+    config: tslint.json
+  nodesecurity:
+    enabled: true
+exclude_paths:
+  - ".github/"
+  - "assets/"
+  - "docs/"
+ratings:
+   paths:
+   - "src/**/**.ts"
