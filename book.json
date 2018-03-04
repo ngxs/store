@@ -1,0 +1,31 @@
+{
+    "gitbook": "3.x.x",
+    "title": "NGXS",
+    "root": "/docs",
+    "plugins": [
+        "highlight",
+        "github",
+        "include-codeblock",
+        "versions",
+        "anchors",
+        "youtube",
+        "githubcontributors",
+        "collapsible-chapters"
+    ],
+    "pluginsConfig": {
+        "github": {
+            "url": "https://github.com/amcdnl/ngxs/"
+        },
+        "theme-api": {
+            "theme": "dark"
+        },
+        "versions": {
+            "gitbookConfigURL": "https://unpkg.com/amcdnl/book.json",
+            "type": "tags"
+        },
+        "githubcontributors": {
+          "githubOwner": "amcdnl",
+          "githubRepository": "ngxs"
+        }
+    }
+}
