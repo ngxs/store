@@ -9,4 +9,4 @@
 
 - Learn about it on the [docs site](https://amcdnl.gitbooks.io/ngxs/content/)
 - See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
-- Learn about updates on the [changelog](CHANGELOG.md)
+- Learn about updates from the [changelog](CHANGELOG.md)
