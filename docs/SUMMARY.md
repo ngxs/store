@@ -16,4 +16,5 @@
   * [Devtools](plugins/devtools.md)
   * [Local Storage](plugins/localstorage.md)
 * [Style Guide](style-guide.md)
+* [Community](community.md)
 * [Support](support.md)
