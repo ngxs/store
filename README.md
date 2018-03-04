@@ -317,7 +317,7 @@ you will need to get the data using a select. Speaking of a
 getting the data, lets talk about Selects now. 
 
 ### Selects
-Its important to note that READS and WRITES are completely seperate in ngxs. To read data
+Its important to note that READS and WRITES are completely separate in ngxs. To read data
 out of the store, we can either call the `select` method on the 
 `ngxs` service or a `@Select` decorator. First lets look at the `select` method.
 
@@ -398,7 +398,7 @@ export class LoggerPlugin implements NgxsPlugin {
 }
 ```
 
-This pattern allows us to define options while presevering the constructor
+This pattern allows us to define options while preserving the constructor
 for use with DI.
 
 You can also use pure functions for plugins, the above example in a pure function
@@ -502,7 +502,7 @@ Lets say you want to listen to events outside of your store or perhaps you want 
 create a pub sub scenario where an event might not be tied to a store at all.
 To do this, we can inject the `EventStream` observable and just listen in.
 To make determining if the event is what we actually want to listen to, we have a 
-RxJS pippeable operator called `ofEvent(NewAnimal)` we can use too!
+RxJS pipeable operator called `ofEvent(NewAnimal)` we can use too!
 
 ```javascript
 import { EventStream, ofEvent } from 'ngxs';
@@ -575,7 +575,7 @@ Below are suggestions for naming and style conventions.
 - Events should NOT have a a suffix
 - Unit tests for the store should be named `my-store-name.store.spec.ts`
 - Events should ALWAYS use the `payload` public name
-- Actions can live within the store file but are recommended to be a seperate file like: `zoo.events.ts`
+- Actions can live within the store file but are recommended to be a separate file like: `zoo.events.ts`
 - Mutations should NEVER perform async operations
 - Actions should NEVER mutate the state directly
 - Actions should NOT deal with view related operations (i.e. showing popups/etc)
