@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Ngxs, Select } from 'ngxs';
 import { Observable } from 'rxjs/Observable';
 
-import { AddTodo, RemoveTodo } from './stores/todo.store';
+import { AddTodo, RemoveTodo } from './todo.store';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +19,8 @@ import { AddTodo, RemoveTodo } from './stores/todo.store';
   `
 })
 export class AppComponent {
-  @Select() todos$: Observable<string[]>;
+  @Select(state => state.todos)
+  todos$: Observable<string[]>;
 
   constructor(private ngxs: Ngxs) {}
 
