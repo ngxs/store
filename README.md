@@ -165,7 +165,7 @@ Those are reserved for `Action`. Similarly actions should not mutate state.
 Lets say for our `NewAnimal` event we want to reach out to the backend and save the
 new animal before we add it to the UI.
 
-Our stores can also participate in depedency injection so when we want to
+Our stores can also participate in dependency injection so when we want to
 reach out to our backend injectable service, we can just inject it. When
 using DI, its important to remember to add the `Injectable` decorator
 and also add your store to your module's providers.
@@ -320,7 +320,7 @@ you will need to get the data using a select. Speaking of a
 getting the data, lets talk about Selects now. 
 
 ### Selects
-Its important to note that READS and WRITES are completely seperate in ngxs. To read data
+Its important to note that READS and WRITES are completely separate in ngxs. To read data
 out of the store, we can either call the `select` method on the 
 `ngxs` service or a `@Select` decorator. First lets look at the `select` method.
 
@@ -473,24 +473,24 @@ import { NgxsModule, ReduxDevtoolsPlugin } from 'ngxs';
 export class MyModule{}
 ```
 
-#### Localstorage
-You can back your stores with localstorage by including the `LocalstoragePlugin` plugin.
+#### LocalStorage
+You can back your stores with LocalStorage by including the `LocalStoragePlugin` plugin.
 
 ```javascript
-import { NgxsModule, LocalstoragePlugin } from 'ngxs';
+import { NgxsModule, LocalStoragePlugin } from 'ngxs';
 
 @NgModule({
   imports: [
     NgxsModule.forRoot([], {
       plugins: [
-        // These are optional, you can just pass `LocalstoragePlugin` without calling `forRoot`
-        LocalstoragePlugin.forRoot({
+        // These are optional, you can just pass `LocalStoragePlugin` without calling `forRoot`
+        LocalStoragePlugin.forRoot({
           // Default, you can pass single string or array of strings
           // that could be deeply nested too
           key: '@@STATE',
-          // Custom serailizer, defaults to JSON
+          // Custom serializer, defaults to JSON
           serialize: JSON.stringify,
-          // Custom deseralizer, defaults to JSON
+          // Custom deserializer, defaults to JSON
           deserialize: JSON.parse
         })
       ]
@@ -505,7 +505,7 @@ Lets say you want to listen to events outside of your store or perhaps you want 
 create a pub sub scenario where an event might not be tied to a store at all.
 To do this, we can inject the `EventStream` observable and just listen in.
 To make determining if the event is what we actually want to listen to, we have a 
-RxJS pippeable operator called `ofEvent(NewAnimal)` we can use too!
+RxJS pipeable operator called `ofEvent(NewAnimal)` we can use too!
 
 ```javascript
 import { EventStream, ofEvent } from 'ngxs';
@@ -578,7 +578,7 @@ Below are suggestions for naming and style conventions.
 - Events should NOT have a a suffix
 - Unit tests for the store should be named `my-store-name.store.spec.ts`
 - Events should ALWAYS use the `payload` public name
-- Actions can live within the store file but are recommended to be a seperate file like: `zoo.events.ts`
+- Actions can live within the store file but are recommended to be a separate file like: `zoo.events.ts`
 - Mutations should NEVER perform async operations
 - Actions should NEVER mutate the state directly
 - Actions should NOT deal with view related operations (i.e. showing popups/etc)

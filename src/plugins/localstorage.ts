@@ -2,7 +2,7 @@ import { NgxsPlugin } from '../symbols';
 import { Injectable } from '@angular/core';
 import { getTypeFromInstance } from '../internals';
 
-export interface LocalstoragePluginOptions {
+export interface LocalStoragePluginOptions {
   key: string | string[] | undefined;
   serialize(obj: any);
   deserialize(obj: any);
@@ -26,16 +26,16 @@ const setValue = (obj, prop, val) => {
 const getValue = (obj, prop) => prop.split('.').reduce((acc, part) => acc && acc[part], obj);
 
 @Injectable()
-export class LocalstoragePlugin implements NgxsPlugin {
-  private static _options: LocalstoragePluginOptions | undefined = undefined;
+export class LocalStoragePlugin implements NgxsPlugin {
+  private static _options: LocalStoragePluginOptions | undefined = undefined;
 
   static forRoot(options) {
     this._options = options;
   }
 
   constructor() {
-    if (!LocalstoragePlugin._options) {
-      LocalstoragePlugin._options = {
+    if (!LocalStoragePlugin._options) {
+      LocalStoragePlugin._options = {
         key: '@@STATE',
         serialize: JSON.stringify,
         deserialize: JSON.parse
@@ -44,7 +44,7 @@ export class LocalstoragePlugin implements NgxsPlugin {
   }
 
   handle(state, event, next) {
-    const options = LocalstoragePlugin._options || <any>{};
+    const options = LocalStoragePlugin._options || <any>{};
     const isInitAction = getTypeFromInstance(event) === '@@INIT';
     const keys = Array.isArray(options.key) ? options.key : [options.key];
 
