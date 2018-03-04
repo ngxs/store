@@ -6,5 +6,5 @@ export { Store } from './store';
 export { Select } from './select';
 export { EventStream } from './event-stream';
 export { ofEvent } from './of-event';
-export { NgxsPlugin } from './symbols';
+export { NgxsPlugin, NgxsPluginFn } from './symbols';
 export { ReduxDevtoolsPlugin, LoggerPlugin, LocalstoragePlugin } from './plugins';
