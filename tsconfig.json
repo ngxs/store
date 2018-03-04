@@ -10,7 +10,6 @@
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
     "noImplicitAny": false,
-    "strict": true,
     "noUnusedLocals": true,
     "sourceMap": true,
     "declaration": false,
