@@ -8,8 +8,8 @@
       "root": "",
       "assets": [],
       "test": "test.ts",
-      "index": "demo/index.html",
-      "main": "demo/main.ts",
+      "index": "integration/index.html",
+      "main": "integration/main.ts",
       "polyfills": "polyfills.ts",
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json"
