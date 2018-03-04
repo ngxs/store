@@ -9,7 +9,6 @@ export class RemoveTodo {
 }
 
 @Store({
-  name: 'todos',
   defaults: []
 })
 export class TodoStore {
