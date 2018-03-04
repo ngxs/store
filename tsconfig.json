@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
+    "paths": {
+      "ngxs": ["src/index.ts"]
+    },
     "module": "commonjs",
     "noEmitHelpers": false,
     "noEmitOnError": false,
