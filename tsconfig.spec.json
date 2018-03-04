@@ -7,6 +7,5 @@
     "types": ["jasmine"]
   },
   "files": ["test.ts"],
-  "include": ["**/*.spec.ts"],
-  "exclude": []
+  "include": ["**/*.spec.ts"]
 }
