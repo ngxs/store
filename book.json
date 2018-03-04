@@ -8,8 +8,7 @@
         "include-codeblock",
         "versions",
         "anchors",
-        "youtube",
-        "githubcontributors"
+        "youtube"
     ],
     "pluginsConfig": {
         "github": {
@@ -21,10 +20,6 @@
         "versions": {
             "gitbookConfigURL": "https://unpkg.com/amcdnl/book.json",
             "type": "tags"
-        },
-        "githubcontributors": {
-          "githubOwner": "amcdnl",
-          "githubRepository": "ngxs"
         }
     }
 }
