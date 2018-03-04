@@ -52,7 +52,7 @@ export class LocalStoragePlugin implements NgxsPlugin {
     if (isInitAction) {
       for (const key of keys) {
         let val = localStorage.getItem(key);
-        if (val !== 'undefined') {
+        if (val !== 'undefined' && val !== null) {
           val = options.deserialize(val);
           if (key !== '@@STATE') {
             state = setValue(state, key, val);

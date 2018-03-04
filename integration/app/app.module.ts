@@ -1,14 +1,18 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgxsModule } from 'ngxs';
+import { NgxsModule, LocalStoragePlugin } from 'ngxs';
 
 import { TodoStore } from './todo.store';
 import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, NgxsModule.forRoot([TodoStore])],
-  providers: [],
+  imports: [
+    BrowserModule,
+    NgxsModule.forRoot([TodoStore], {
+      plugins: [LocalStoragePlugin]
+    })
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
