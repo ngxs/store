@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgxsModule, LocalStoragePlugin } from 'ngxs';
+import { NgxsModule } from 'ngxs';
 
 import { TodoStore } from './todo.store';
 import { AppComponent } from './app.component';
