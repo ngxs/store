@@ -501,7 +501,7 @@ export class MyModule{}
 ```
 
 ### Pub sub
-Lets you want to listen to events outside of your store or perhaps you want to
+Lets say you want to listen to events outside of your store or perhaps you want to
 create a pub sub scenario where an event might not be tied to a store at all.
 To do this, we can inject the `EventStream` observable and just listen in.
 To make determining if the event is what we actually want to listen to, we have a 
