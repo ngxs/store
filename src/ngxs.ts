@@ -21,7 +21,7 @@ export class Ngxs {
   ) {}
 
   /**
-   * Dispatchess an event(s).
+   * Dispatches an event(s).
    */
   dispatch(action: any | any[]): Observable<any> {
     if (Array.isArray(action)) {
