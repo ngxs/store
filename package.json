@@ -8,8 +8,7 @@
     "precommit": "lint-staged",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "test": "ng test",
-    "test:cov": "ng test --single-run -cc",
-    "test:ci": "ng test -cc --browsers ChromeHeadless --single-run",
+    "test:ci": "ng test -cc --browsers ChromeHeadless --single-run -cc",
     "prettier": "prettier --parser typescript --single-quote es5 --write \"**/*.ts\""
   },
   "repository": {

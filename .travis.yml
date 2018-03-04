@@ -6,6 +6,9 @@ before_install:
 script:
   - npm run lint
   - npm run test:ci
+install:
+  - npm install
+  - npm install codeclimate-test-reporter
 branches:
   only:
     - master
@@ -16,3 +19,12 @@ addons:
 before_script:
   - "sudo chown root /opt/google/chrome/chrome-sandbox"
   - "sudo chmod 4755 /opt/google/chrome/chrome-sandbox"
+notifications:
+  email:
+    on_failure: change
+    on_success: change
+addons:
+  code_climate:
+    repo_token: 6bafa487cdb209bf57416c1194ee975fd3854791c2c839f7839b83283d62b45b
+after_script:
+  - codeclimate-test-reporter < coverage/lcov.info
