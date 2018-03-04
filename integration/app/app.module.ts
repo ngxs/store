@@ -7,12 +7,7 @@ import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    NgxsModule.forRoot([TodoStore], {
-      plugins: [LocalStoragePlugin]
-    })
-  ],
+  imports: [BrowserModule, NgxsModule.forRoot([TodoStore])],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
