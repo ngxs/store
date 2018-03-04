@@ -1,46 +1,12 @@
 language: node_js
-node_js: "8"
-
-notifications:
-  email: false
-
-git:
-  depth: 3
-  submodules: false
-
-stages:
-  - <<: *stage
-    name: precache
-  - <<: *stage
-    name: lint
-  - <<: *stage
-    name: test
-  - <<: *stage
-    name: build
-
-install:
-  - npm install
-
-jobs:
-  fast_finish: true
-  include:
-
-#   lint code
-    - stage: lint
-      install: true
-      script: npm run lint
-
-#   test
-    - &test
-      stage: test
-      script: npm run test
-
-#    check prod build
-    - &build
-      stage: build
-      script: npm run build
-
-cache:
-  npm: true
-  directories:
-    - node_modules
+node_js:
+  - "8"
+before_install:
+  - npm i -g npm
+script:
+  - npm run lint
+  - npm run test
+branches:
+  only:
+    - master
+    - next
