@@ -11,5 +11,5 @@ dispatching an event, to a store reacting to the event back to the component
 through a state select.
 
 <p align="center">
-  <img src="assets/diagram.png">
+  <img src="../assets/diagram.png">
 </p>
