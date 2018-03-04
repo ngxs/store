@@ -15,7 +15,7 @@ export class StoreFactory {
 
     this.stores.push(
       ...store.map(klass => {
-        const instance = this._injector.get(klass, new klass());
+        const instance = this._injector.get(klass);
 
         if (!klass[META_KEY]) {
           throw new Error('Stores must be decorated with @Store() decorator');

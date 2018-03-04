@@ -1,3 +1,6 @@
+# 1.4.3 2/4/18
+- Fix: Stores init'd twice
+
 # 1.4.2 2/4/18
 - Fix: Feature stores throwing errors
 
