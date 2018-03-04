@@ -6,6 +6,6 @@
     "module": "es2015",
     "types": []
   },
-  "include": ["demo/**/*.ts", "polyfills.ts"],
+  "include": ["integration/**/*.ts", "polyfills.ts"],
   "exclude": ["test.ts", "**/*.spec.ts"]
 }
