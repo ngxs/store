@@ -1,3 +1,6 @@
+# 1.4.2 2/4/18
+- Fix: Feature stores throwing errors
+
 # 1.4.1 2/4/18
 - Fix: Misc type improvement
 - Fix: `forRoot` plugins not working properly

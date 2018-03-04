@@ -42,13 +42,11 @@ export class NgxsModule {
       providers: [
         {
           provide: LAZY_STORE_TOKEN,
-          useValue: stores,
-          multi: true
+          useValue: stores
         },
         {
           provide: LAZY_STORE_OPTIONS_TOKEN,
-          useValue: options,
-          multi: true
+          useValue: options
         }
       ]
     };
