@@ -18,4 +18,5 @@
   * [Unit Testing](advanced/unit-testing.md)
   * [Style Guide](advanced/style-guide.md)
 * [Community](community.md)
+* [Contributing](contributing.md)
 * [Support](support.md)
