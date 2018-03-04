@@ -473,24 +473,24 @@ import { NgxsModule, ReduxDevtoolsPlugin } from 'ngxs';
 export class MyModule{}
 ```
 
-#### Localstorage
-You can back your stores with localstorage by including the `LocalstoragePlugin` plugin.
+#### LocalStorage
+You can back your stores with LocalStorage by including the `LocalStoragePlugin` plugin.
 
 ```javascript
-import { NgxsModule, LocalstoragePlugin } from 'ngxs';
+import { NgxsModule, LocalStoragePlugin } from 'ngxs';
 
 @NgModule({
   imports: [
     NgxsModule.forRoot([], {
       plugins: [
-        // These are optional, you can just pass `LocalstoragePlugin` without calling `forRoot`
-        LocalstoragePlugin.forRoot({
+        // These are optional, you can just pass `LocalStoragePlugin` without calling `forRoot`
+        LocalStoragePlugin.forRoot({
           // Default, you can pass single string or array of strings
           // that could be deeply nested too
           key: '@@STATE',
-          // Custom serailizer, defaults to JSON
+          // Custom serializer, defaults to JSON
           serialize: JSON.stringify,
-          // Custom deseralizer, defaults to JSON
+          // Custom deserializer, defaults to JSON
           deserialize: JSON.parse
         })
       ]
