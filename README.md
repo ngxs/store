@@ -441,10 +441,7 @@ import { LoggerPlugin } from 'ngxs';
   imports: [
     NgxsModule.forRoot([ZooStore], {
       plugins: [
-        // Default setup
-        LoggerPlugin
-
-        // Pass custom options
+        // Optionally pass custom options
         LoggerPlugin.forRoot({
           // custom console.log implement
           logger: console,
@@ -480,7 +477,7 @@ export class MyModule{}
 You can back your stores with localstorage by including the `LocalstoragePlugin` plugin.
 
 ```javascript
-import { NgxsModule, ReduxDevtoolsPlugin } from 'ngxs';
+import { NgxsModule, LocalstoragePlugin } from 'ngxs';
 
 @NgModule({
   imports: [
