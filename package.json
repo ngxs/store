@@ -4,6 +4,7 @@
   "description": "State Mangement for Angular",
   "main": "index.js",
   "scripts": {
+    "serve-demo": "ng serve --aot",
     "build": "ng-packagr -p package.json",
     "precommit": "lint-staged",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
@@ -15,13 +16,7 @@
     "type": "git",
     "url": "git+https://amcdnl@github.com/amcdnl/ngxs.git"
   },
-  "keywords": [
-    "ngrx",
-    "redux",
-    "state",
-    "store",
-    "state-mangement"
-  ],
+  "keywords": ["ngrx", "redux", "state", "store", "state-mangement"],
   "author": "Austin McDaniel",
   "license": "MIT",
   "bugs": {
@@ -68,10 +63,7 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "npm run prettier",
-      "git add"
-    ]
+    "*.ts": ["npm run prettier", "git add"]
   },
   "prettier": {
     "singleQuote": true,
