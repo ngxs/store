@@ -9,8 +9,7 @@
         "versions",
         "anchors",
         "youtube",
-        "githubcontributors",
-        "collapsible-chapters"
+        "githubcontributors"
     ],
     "pluginsConfig": {
         "github": {
