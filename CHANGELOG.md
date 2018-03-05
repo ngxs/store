@@ -1,5 +1,8 @@
+# 1.4.6 2/4/18
+- Fix: Plugin injector errors
+
 # 1.4.5 2/4/18
-- Fix: Store and Plugin injector errors
+- Fix: Store injector errors
 - Fix: Empty local storage throwing null error
 
 # 1.4.4 2/4/18
