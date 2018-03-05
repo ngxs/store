@@ -1,3 +1,6 @@
+# 1.4.8 2/5/18
+- Fix: Typo in return
+
 # 1.4.7 2/5/18
 - Fix: Catch multiple stores being init'd
 - Fix: Clone defaults to prevent mutations

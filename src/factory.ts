@@ -46,7 +46,7 @@ export class StoreFactory {
     }
 
     this.stores.push(...mappedStores);
-    return stores;
+    return mappedStores;
   }
 
   invokeMutations(state, mutation) {
