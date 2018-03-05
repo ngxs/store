@@ -9,16 +9,12 @@ export const META_KEY = 'NGXS_META';
 export type NgxsPluginConstructor = new (...args: any[]) => NgxsPlugin;
 
 export interface NgxsOptions {
-  plugins: Array<NgxsPluginConstructor | NgxsPluginFn>;
+  plugins: NgxsPluginConstructor[];
 }
-
-export type NgxsNextPluginFn = (state: any, mutation: any) => any;
 
 export interface NgxsPlugin {
-  handle(state: any, mutation: any, next: NgxsNextPluginFn): any;
+  handle(state, mutation, next): any;
 }
-
-export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
 export interface StoreOptions {
   name?: string;

@@ -1,24 +1,3 @@
-# 1.4.6 2/4/18
-- Fix: Plugin injector errors
-
-# 1.4.5 2/4/18
-- Fix: Store injector errors
-- Fix: Empty local storage throwing null error
-
-# 1.4.4 2/4/18
-- Fix: Stores injector errors
-
-# 1.4.3 2/4/18
-- Fix: Stores init'd twice
-
-# 1.4.2 2/4/18
-- Fix: Feature stores throwing errors
-
-# 1.4.1 2/4/18
-- Fix: Misc type improvement
-- Fix: `forRoot` plugins not working properly
-- Fix: LocalStorage plugin name spelling
-
 # 1.4.0 2/3/18
 - Feature: Composition
 

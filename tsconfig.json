@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "paths": {
-      "ngxs": ["src/index.ts"]
-    },
     "module": "commonjs",
     "noEmitHelpers": false,
     "noEmitOnError": false,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
     "noImplicitAny": false,
+    "strict": true,
     "noUnusedLocals": true,
     "sourceMap": true,
     "declaration": false,
@@ -18,5 +16,7 @@
     "experimentalDecorators": true,
     "target": "es5",
     "lib": ["es2017", "dom"]
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/spec/**/*"]
 }

@@ -10,13 +10,7 @@ declare const require: any;
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
 // Then we find all the tests.
-const libContext = require.context('./src', true, /\.spec\.ts$/);
+const context = require.context('./src', true, /\.spec\.ts$/);
 // And load the modules.
-libContext.keys().map(libContext);
-
-// Then we find all the tests.
-const integrationContext = require.context('./integration', true, /\.spec\.ts$/);
-// And load the modules.
-integrationContext.keys().map(integrationContext);
+context.keys().map(context);

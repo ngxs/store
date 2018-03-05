@@ -13,7 +13,7 @@ import { ReduxDevtoolsPlugin } from './plugins/redux-devtools';
   providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory, PluginManager, ReduxDevtoolsPlugin]
 })
 export class NgxsModule {
-  static forRoot(stores: any[], options: NgxsOptions = { plugins: [] }): ModuleWithProviders {
+  static forRoot(stores: any[], options?: NgxsOptions): ModuleWithProviders {
     return {
       ngModule: NgxsModule,
       providers: [
@@ -23,8 +23,6 @@ export class NgxsModule {
         StateStream,
         SelectFactory,
         PluginManager,
-        stores,
-        options.plugins,
         {
           provide: STORE_TOKEN,
           useValue: stores
@@ -38,19 +36,19 @@ export class NgxsModule {
     };
   }
 
-  static forFeature(stores: any[], options: NgxsOptions = { plugins: [] }): ModuleWithProviders {
+  static forFeature(stores: any[], options?: NgxsOptions): ModuleWithProviders {
     return {
       ngModule: NgxsModule,
       providers: [
-        stores,
-        options.plugins,
         {
           provide: LAZY_STORE_TOKEN,
-          useValue: stores
+          useValue: stores,
+          multi: true
         },
         {
           provide: LAZY_STORE_OPTIONS_TOKEN,
-          useValue: options
+          useValue: options,
+          multi: true
         }
       ]
     };

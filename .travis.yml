@@ -1,30 +1,61 @@
+sudo: false
 language: node_js
-node_js:
-  - "8"
-before_install:
-  - npm i -g npm
-script:
-  - npm run lint
-  - npm run test:ci
+node_js: "8"
+
+notifications:
+  email: false
+
+git:
+  depth: 3
+  submodules: false
+
+stages:
+  - <<: *stage
+    name: precache
+  - <<: *stage
+    name: lint
+  - <<: *stage
+    name: test
+  - <<: *stage
+    name: build
+
 install:
   - npm install
-  - npm install codeclimate-test-reporter
-branches:
-  only:
-    - master
-    - next
-sudo: required
-addons:
-  chrome: stable
-before_script:
-  - "sudo chown root /opt/google/chrome/chrome-sandbox"
-  - "sudo chmod 4755 /opt/google/chrome/chrome-sandbox"
-notifications:
-  email:
-    on_failure: change
-    on_success: change
-addons:
-  code_climate:
-    repo_token: 6bafa487cdb209bf57416c1194ee975fd3854791c2c839f7839b83283d62b45b
-after_script:
-  - codeclimate-test-reporter < coverage/lcov.info
+
+jobs:
+  fast_finish: true
+  include:
+# precache npm and apt dependencies
+    - stage: precache
+      install: npm install > /dev/null
+      script: true
+      addons:
+        firefox: latest
+        chrome: stable
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          # required by node-gyp to build some packages
+          packages:
+          - g++-4.8
+
+#   lint code
+    - stage: lint
+      install: true
+      script: npm run lint
+
+#   test
+    - &test
+      stage: test
+      script: npm run test
+
+#    check prod build
+    - &build
+      stage: build
+      script: npm run build
+
+cache:
+  apt: true
+  npm: true
+  directories:
+    - node_modules
