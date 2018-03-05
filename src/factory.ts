@@ -62,15 +62,15 @@ export class StoreFactory {
     return state;
   }
 
-  invokeActions(state, action) {
+  invokeEvents(state, event) {
     const results: any[] = [];
 
     for (const reducerMeta of this.stores) {
-      const name = getTypeFromInstance(action);
+      const name = getTypeFromInstance(event);
       const actionMeta = reducerMeta.actions[name];
       if (actionMeta) {
         const local = state[reducerMeta.name];
-        const result = reducerMeta.instance[actionMeta.fn](local, action);
+        const result = reducerMeta.instance[actionMeta.fn](local, event);
         if (result) {
           results.push(result);
         }

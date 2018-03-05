@@ -2,8 +2,8 @@
 There are 4 major concepts to NGXS:
 
 - Events: Classes dispatched to stores with optional payload
-- Actions: Events that perform async operations
-- Mutations: Events that mutate the store data
+- Actions: Event handlers that perform async operations
+- Mutations: Event handlers that mutate the store data
 - Selects: State getters
 
 These concepts create a circular control flow traveling from an component

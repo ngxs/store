@@ -23,11 +23,11 @@ export class Ngxs {
   /**
    * Dispatches an event(s).
    */
-  dispatch(action: any | any[]): Observable<any> {
-    if (Array.isArray(action)) {
-      return forkJoin(action.map(a => this._dispatch(a)));
+  dispatch(event: any | any[]): Observable<any> {
+    if (Array.isArray(event)) {
+      return forkJoin(event.map(a => this._dispatch(a)));
     } else {
-      return this._dispatch(action);
+      return this._dispatch(event);
     }
   }
 
@@ -38,13 +38,13 @@ export class Ngxs {
     return map.call(this._stateStream, mapFn).pipe(distinctUntilChanged.call(this._stateStream));
   }
 
-  private _dispatch(action) {
+  private _dispatch(event) {
     const curState = this._stateStream.getValue();
 
     const plugins = this._pluginManager.plugins;
-    const nextState = compose([...plugins, this._dispatchMutation.bind(this)])(curState, action);
+    const nextState = compose([...plugins, this._dispatchMutation.bind(this)])(curState, event);
 
-    const results: any[] = this._storeFactory.invokeActions(nextState, action);
+    const results: any[] = this._storeFactory.invokeEvents(nextState, event);
     if (results.length) {
       return forkJoin(this._handleNesting(results));
     }
@@ -55,34 +55,34 @@ export class Ngxs {
     return resultStream;
   }
 
-  private _dispatchMutation(state, action) {
-    this._eventStream.next(action);
-    const newState = this._storeFactory.invokeMutations(state, action);
+  private _dispatchMutation(state, event) {
+    this._eventStream.next(event);
+    const newState = this._storeFactory.invokeMutations(state, event);
     this._stateStream.next(newState);
     return newState;
   }
 
-  private _handleNesting(actionResults) {
+  private _handleNesting(eventResults) {
     const results: any[] = [];
-    for (const actionResult of actionResults) {
-      if (actionResult.subscribe) {
-        const actionResultStream = new Subject();
-        actionResult.pipe(materialize()).subscribe(res => {
+    for (const eventResult of eventResults) {
+      if (eventResult.subscribe) {
+        const eventResultStream = new Subject();
+        eventResult.pipe(materialize()).subscribe(res => {
           if (res.value) {
             this.dispatch(res.value).subscribe(() => {
-              actionResultStream.next();
-              actionResultStream.complete();
+              eventResultStream.next();
+              eventResultStream.complete();
             });
           } else {
-            actionResultStream.next();
-            actionResultStream.complete();
+            eventResultStream.next();
+            eventResultStream.complete();
           }
         });
-        results.push(actionResultStream);
-      } else if (actionResult.then) {
-        results.push(fromPromise(actionResult));
+        results.push(eventResultStream);
+      } else if (eventResult.then) {
+        results.push(fromPromise(eventResult));
       } else {
-        results.push(this.dispatch(actionResult));
+        results.push(this.dispatch(eventResult));
       }
     }
     return results;

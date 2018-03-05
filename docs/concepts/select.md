@@ -5,7 +5,7 @@ out of the store, we can either call the `select` method on the
 
 ```javascript
 import { Ngxs } from 'ngxs';
-import { AddAnimal } from './animal.actions';
+import { AddAnimal } from './animal.events';
 
 @Component({ ... })
 export class ZooComponent {
@@ -22,7 +22,7 @@ the same way but with some other options.
 
 ```javascript
 import { Ngxs } from 'ngxs';
-import { AddAnimal } from './animal.actions';
+import { AddAnimal } from './animal.events';
 
 @Component({ ... })
 export class ZooComponent {
