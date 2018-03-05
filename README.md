@@ -46,8 +46,8 @@ If you are lazy loading, you can use the `forFeature` option with the same argum
 There are 4 major concepts to NGXS:
 
 - Events: Classes dispatched to stores with optional payload
-- Actions: Events that perform async operations
-- Mutations: Events that mutate the store data
+- Actions: Event handlers that perform async operations
+- Mutations: Event handlers that mutate the store data
 - Selects: State getters
 
 These concepts create a circular control flow traveling from an component
@@ -153,7 +153,7 @@ The arguments of the mutation are the current state along with the event.
 In the above example I used destructuring to get the payload out. But remember
 events don't have to have payloads.
 
-The `Mutation` decorator can also take multiple actions, so you could do:
+The `Mutation` decorator can also take multiple events, so you could do:
 
 ```javascript
 @Mutation([FeedAnimals, WaterAnimals])
@@ -261,7 +261,7 @@ export class ZooStore {
 
   @Action(NewAnimal)
   newAnimal(state, { payload }) {
-    return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
+    return this.animalService.save(payload).map((res) => new NewAnimalSuccess(res));
   }
 }
 ```
@@ -273,7 +273,7 @@ class from there.
 
 ```javascript
 import { Ngxs } from 'ngxs';
-import { AddAnimal } from './animal.actions';
+import { AddAnimal } from './animal.events';
 
 @Component({ ... })
 export class ZooComponent {
@@ -286,7 +286,7 @@ export class ZooComponent {
 ```
 
 And the rest is magic! You can also dispatch multiple events at the same
-time by passing an array of actions like:
+time by passing an array of events like:
 
 ```javascript
 this.ngxs.dispatch([
@@ -326,7 +326,7 @@ out of the store, we can either call the `select` method on the
 
 ```javascript
 import { Ngxs } from 'ngxs';
-import { AddAnimal } from './animal.actions';
+import { AddAnimal } from './animal.events';
 
 @Component({ ... })
 export class ZooComponent {
@@ -343,7 +343,7 @@ the same way but with some other options.
 
 ```javascript
 import { Ngxs } from 'ngxs';
-import { AddAnimal } from './animal.actions';
+import { AddAnimal } from './animal.events';
 
 @Component({ ... })
 export class ZooComponent {
