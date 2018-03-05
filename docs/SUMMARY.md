@@ -7,7 +7,7 @@
   * [Store](concepts/store.md)
   * [Mutations](concepts/mutation.md)
   * [Action](concepts/action.md)
-  * [Select](concepts/action.md)
+  * [Select](concepts/select.md)
 * [Plugins](plugins/README.md)
   * [Logger](plugins/logger.md)
   * [Devtools](plugins/devtools.md)
