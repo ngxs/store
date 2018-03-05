@@ -90,8 +90,8 @@ to the store:
 export class ZooStore {
   constructor(private animalService: AnimalService) {}
 
-  @Mutation(NewAnimalSuccess)
-  newAnimalSuccess(state, { payload }) {
+  @Mutation(AnimalSuccess)
+  AnimalSuccess(state, { payload }) {
     state.animals = [...state.animals, payload];
   }
 
