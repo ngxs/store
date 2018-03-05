@@ -33,7 +33,7 @@ class from there.
 
 ```javascript
 import { Ngxs } from 'ngxs';
-import { AddAnimal } from './animal.actions';
+import { AddAnimal } from './animal.events';
 
 @Component({ ... })
 export class ZooComponent {
@@ -46,7 +46,7 @@ export class ZooComponent {
 ```
 
 And the rest is magic! You can also dispatch multiple events at the same
-time by passing an array of actions like:
+time by passing an array of events like:
 
 ```javascript
 this.ngxs.dispatch([
@@ -55,13 +55,13 @@ this.ngxs.dispatch([
 ]);
 ```
 
-Lets say after the action executes you want to clear
+Lets say after the event executes you want to clear
 the form. Our `dispatch` function actually returns an observable, so we can
 subscribe very easily and reset the form after it was successful.
 
 ```javascript
 import { Ngxs } from 'ngxs';
-import { AddAnimal } from './animal.actions';
+import { AddAnimal } from './animal.events';
 
 @Component({ ... })
 export class ZooComponent {

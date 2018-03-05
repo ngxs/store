@@ -41,7 +41,7 @@ The arguments of the mutation are the current state along with the event.
 In the above example I used destructuring to get the payload out. But remember
 events don't have to have payloads.
 
-The `Mutation` decorator can also take multiple actions, so you could do:
+The `Mutation` decorator can also take multiple events, so you could do:
 
 ```javascript
 @Mutation([FeedAnimals, WaterAnimals])
