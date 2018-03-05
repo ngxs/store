@@ -5,7 +5,7 @@ To get started, install the package thru npm:
 npm i ngxs --S
 ```
 
-then in `app.module.ts`, import the `NgModule`:
+then in `app.module.ts`, import the `NgxsModule`:
 
 ```javascript
 import { NgModule } from '@angular/core';
