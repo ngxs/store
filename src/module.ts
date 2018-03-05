@@ -85,7 +85,9 @@ export class NgxsModule {
   initStores(stores) {
     if (stores) {
       const init = {};
+      // bind the stores
       this._factory.add(stores).forEach((meta: any) => {
+        // transpose the defaults onto our state stream
         init[meta.name] = meta.defaults;
       });
       const cur = this._stateStream.getValue();

@@ -1,3 +1,7 @@
+# 1.4.7 2/5/18
+- Fix: Catch multiple stores being init'd
+- Fix: Clone defaults to prevent mutations
+
 # 1.4.6 2/4/18
 - Fix: Plugin injector errors
 

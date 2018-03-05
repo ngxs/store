@@ -8,31 +8,45 @@ export class StoreFactory {
 
   constructor(private _injector: Injector) {}
 
-  add(store: any | any[]) {
-    if (!Array.isArray(store)) {
-      store = [store];
+  add(stores: any | any[]): any[] {
+    if (!Array.isArray(stores)) {
+      stores = [stores];
     }
 
-    this.stores.push(
-      ...store.map(klass => {
-        const instance = this._injector.get(klass);
+    const mappedStores = [];
+    for (const klass of stores) {
+      if (!klass[META_KEY]) {
+        throw new Error('Stores must be decorated with @Store() decorator');
+      }
 
-        if (!klass[META_KEY]) {
-          throw new Error('Stores must be decorated with @Store() decorator');
-        }
+      const { actions, mutations, name } = klass[META_KEY];
+      let { defaults } = klass[META_KEY];
 
-        const { actions, mutations, defaults, name } = klass[META_KEY];
-        return {
-          actions,
-          mutations,
-          instance,
-          defaults,
-          name
-        };
-      })
-    );
+      // ensure our store hasn't already been added
+      const has = this.stores.find(s => s.name === name);
+      if (has) {
+        throw new Error(`Store has already been added ${name}`);
+      }
 
-    return this.stores;
+      // create new instance of defaults
+      if (Array.isArray(defaults)) {
+        defaults = [...defaults];
+      } else {
+        defaults = { ...defaults };
+      }
+
+      const instance = this._injector.get(klass);
+      mappedStores.push({
+        actions,
+        mutations,
+        instance,
+        defaults,
+        name
+      });
+    }
+
+    this.stores.push(...mappedStores);
+    return stores;
   }
 
   invokeMutations(state, mutation) {
