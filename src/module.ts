@@ -9,7 +9,7 @@ import { PluginManager } from './plugin-manager';
 import { InitStore } from './events/init';
 
 @NgModule({
-  providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory, PluginManager]
+  providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory, PluginManager],
 })
 export class NgxsModule {
   static forRoot(stores: any[], options: NgxsOptions = { plugins: [] }): ModuleWithProviders {
@@ -26,13 +26,13 @@ export class NgxsModule {
         options.plugins,
         {
           provide: STORE_TOKEN,
-          useValue: stores
+          useValue: stores,
         },
         {
           provide: STORE_OPTIONS_TOKEN,
-          useValue: options
-        }
-      ]
+          useValue: options,
+        },
+      ],
     };
   }
 
@@ -43,14 +43,14 @@ export class NgxsModule {
         stores,
         options.plugins,
         {
-          provide: LAZY_STORE_TOKEN,
-          useValue: stores
+          provide: STORE_TOKEN,
+          useValue: stores,
         },
         {
-          provide: LAZY_STORE_OPTIONS_TOKEN,
-          useValue: options
-        }
-      ]
+          provide: STORE_OPTIONS_TOKEN,
+          useValue: options,
+        },
+      ],
     };
   }
 
@@ -60,23 +60,16 @@ export class NgxsModule {
     @Optional()
     @Inject(STORE_OPTIONS_TOKEN)
     private _storeOptions: NgxsOptions,
-    @Optional()
-    @Inject(LAZY_STORE_OPTIONS_TOKEN)
-    private _featureStoreOptions: NgxsOptions,
     private _pluginManager: PluginManager,
     store: Ngxs,
     select: SelectFactory,
     @Optional()
     @Inject(STORE_TOKEN)
-    stores: any[],
-    @Optional()
-    @Inject(LAZY_STORE_TOKEN)
-    lazyStores: any[]
+    stores: any[]
   ) {
     select.connect(store);
     this.registerPlugins();
     this.initStores(stores);
-    this.initStores(lazyStores);
     store.dispatch(new InitStore());
   }
 
@@ -91,17 +84,12 @@ export class NgxsModule {
       const cur = this._stateStream.getValue();
       this._stateStream.next({
         ...cur,
-        ...init
+        ...init,
       });
     }
   }
 
   registerPlugins() {
-    const rootPlugins = this._storeOptions && this._storeOptions.plugins ? this._storeOptions.plugins : [];
-
-    const featurePlugins =
-      this._featureStoreOptions && this._featureStoreOptions.plugins ? this._featureStoreOptions.plugins : [];
-
-    this._pluginManager.use([...rootPlugins, ...featurePlugins]);
+    this._pluginManager.use(this._storeOptions && this._storeOptions.plugins ? this._storeOptions.plugins : []);
   }
 }
