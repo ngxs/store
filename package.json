@@ -8,6 +8,7 @@
     "build": "ng-packagr -p package.json",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "test": "ng test",
+    "prettier": "prettier --write \"**/*.ts\"",
     "test:ci": "ng test -cc --browsers ChromeHeadless --single-run -cc && ng build --prod"
   },
   "repository": {

@@ -46,7 +46,7 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
       Object.defineProperty(target, selectorFnName, {
         writable: true,
         enumerable: false,
-        configurable: true,
+        configurable: true
       });
 
       Object.defineProperty(target, name, {
@@ -54,7 +54,7 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
           return this[selectorFnName] || (this[selectorFnName] = createSelect.apply(this));
         },
         enumerable: true,
-        configurable: true,
+        configurable: true
       });
     }
   };

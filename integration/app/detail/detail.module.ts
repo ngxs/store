@@ -8,6 +8,6 @@ import { routes } from './detail.routes';
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes), NgxsModule.forFeature([DetailStore])],
-  declarations: [DetailComponent],
+  declarations: [DetailComponent]
 })
 export class DetailModule {}

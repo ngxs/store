@@ -9,7 +9,7 @@ import { Select } from 'ngxs';
       <a [routerLink]="['/detail']">Detail</a>
       {{list$ | async}}
     </div>
-  `,
+  `
 })
 export class ListComponent {
   @Select('list') list$: Observable<string[]>;

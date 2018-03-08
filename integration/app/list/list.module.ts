@@ -8,6 +8,6 @@ import { routes } from './list.routes';
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes), NgxsModule.forFeature([ListStore])],
-  declarations: [ListComponent],
+  declarations: [ListComponent]
 })
 export class ListModule {}

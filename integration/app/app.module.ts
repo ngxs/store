@@ -10,6 +10,6 @@ import { routes } from './app.routes';
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, RouterModule.forRoot(routes), NgxsModule.forRoot([TodoStore])],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-detail',
   template: `
     <a [routerLink]="['/list']">List</a>
-  `,
+  `
 })
 export class DetailComponent {}

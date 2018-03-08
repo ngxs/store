@@ -21,7 +21,7 @@ import { AddTodo, RemoveTodo } from './todo.store';
     </div>
   `,
   styleUrls: ['./app.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
   @Select(state => state.todos)

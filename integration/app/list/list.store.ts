@@ -2,6 +2,6 @@ import { Store } from 'ngxs';
 
 @Store({
   name: 'list',
-  defaults: ['foo'],
+  defaults: ['foo']
 })
 export class ListStore {}

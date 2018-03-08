@@ -9,7 +9,7 @@ import { PluginManager } from './plugin-manager';
 import { InitStore } from './events/init';
 
 @NgModule({
-  providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory, PluginManager],
+  providers: [StoreFactory, EventStream, Ngxs, StateStream, SelectFactory, PluginManager]
 })
 export class NgxsModule {
   static forRoot(stores: any[], options: NgxsOptions = { plugins: [] }): ModuleWithProviders {
@@ -26,13 +26,13 @@ export class NgxsModule {
         options.plugins,
         {
           provide: STORE_TOKEN,
-          useValue: stores,
+          useValue: stores
         },
         {
           provide: STORE_OPTIONS_TOKEN,
-          useValue: options,
-        },
-      ],
+          useValue: options
+        }
+      ]
     };
   }
 
@@ -44,13 +44,13 @@ export class NgxsModule {
         options.plugins,
         {
           provide: STORE_TOKEN,
-          useValue: stores,
+          useValue: stores
         },
         {
           provide: STORE_OPTIONS_TOKEN,
-          useValue: options,
-        },
-      ],
+          useValue: options
+        }
+      ]
     };
   }
 
