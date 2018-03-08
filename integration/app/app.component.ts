@@ -11,13 +11,13 @@ import { AddTodo, RemoveTodo } from './todo.store';
       <div class="add-todo">
         <input placeholder="New Todo" #text>
         <button (click)="addTodo(text.value)">Add</button>
-        <router-outlet></router-outlet>
       </div>
       <ul>
         <li class="todo" *ngFor="let todo of todos$ | async; let i = index">
           {{todo}} <button (click)="removeTodo(i)">🗑</button>
         </li>
       </ul>
+      <router-outlet></router-outlet>
     </div>
   `,
   styleUrls: ['./app.component.scss'],

@@ -67,7 +67,6 @@ export class NgxsModule {
     @Inject(STORE_TOKEN)
     stores: any[]
   ) {
-    select.connect(store);
     this.registerPlugins();
     this.initStores(stores);
     store.dispatch(new InitStore());
@@ -75,17 +74,20 @@ export class NgxsModule {
 
   initStores(stores) {
     if (stores) {
-      const init = {};
-      // bind the stores
-      this._factory.add(stores).forEach((meta: any) => {
+      const init = this._factory
+        // bind the stores
+        .add(stores)
         // transpose the defaults onto our state stream
-        init[meta.name] = meta.defaults;
-      });
+        .reduce((result, meta) => {
+          result[meta.name] = meta.defaults;
+          return result;
+        }, {});
+
+      // get our current stream
       const cur = this._stateStream.getValue();
-      this._stateStream.next({
-        ...cur,
-        ...init,
-      });
+
+      // set the state to the current + new
+      this._stateStream.next({ ...cur, ...init });
     }
   }
 
