@@ -16,7 +16,7 @@ const getNameFromClass = name => {
 /**
  * Decorates a class with ngxs store information.
  */
-export function Store(options: StoreOptions) {
+export function Store<T>(options: StoreOptions<T>) {
   return function(target: any) {
     const meta = ensureStoreMetadata(target);
 

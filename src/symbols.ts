@@ -18,7 +18,7 @@ export interface NgxsPlugin {
 
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
-export interface StoreOptions {
+export interface StoreOptions<T> {
   name?: string;
-  defaults?: any;
+  defaults?: T;
 }

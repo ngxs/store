@@ -32,6 +32,7 @@ describe('Store', () => {
   it('handles extending', () => {
     class Eat {}
     class Drink {}
+
     @Store({
       name: 'moo'
     })

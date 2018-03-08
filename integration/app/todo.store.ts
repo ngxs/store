@@ -8,7 +8,7 @@ export class RemoveTodo {
   constructor(public readonly payload: number) {}
 }
 
-@Store({
+@Store<string[]>({
   name: 'todos',
   defaults: []
 })
