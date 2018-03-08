@@ -1,4 +1,4 @@
-import { Injector, Injectable } from '@angular/core';
+import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { META_KEY } from './symbols';
 import { getTypeFromInstance } from './internals';
 
@@ -6,7 +6,12 @@ import { getTypeFromInstance } from './internals';
 export class StoreFactory {
   stores: any[] = [];
 
-  constructor(private _injector: Injector) {}
+  constructor(
+    private _injector: Injector,
+    @Optional()
+    @SkipSelf()
+    private _parentFactory: StoreFactory
+  ) {}
 
   add(stores: any | any[]): any[] {
     if (!Array.isArray(stores)) {
@@ -45,8 +50,17 @@ export class StoreFactory {
       });
     }
 
-    this.stores.push(...mappedStores);
+    const globalStores = this._parentFactory ? this._parentFactory.stores : this.stores;
+
+    globalStores.push(...mappedStores);
     return mappedStores;
+  }
+
+  addAndReturnDefaults(stores) {
+    return this.add(stores).reduce((result, meta) => {
+      result[meta.name] = meta.defaults;
+      return result;
+    }, {});
   }
 
   invokeMutations(state, mutation) {
