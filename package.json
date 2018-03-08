@@ -14,7 +14,13 @@
     "type": "git",
     "url": "git+https://amcdnl@github.com/amcdnl/ngxs.git"
   },
-  "keywords": ["ngrx", "redux", "state", "store", "state-mangement"],
+  "keywords": [
+    "ngrx",
+    "redux",
+    "state",
+    "store",
+    "state-mangement"
+  ],
   "author": "Austin McDaniel",
   "license": "MIT",
   "bugs": {
@@ -28,6 +34,7 @@
   "devDependencies": {
     "@angular/cli": "^1.7.2",
     "@angular/common": "^5.2.7",
+    "@angular/router": "^5.2.7",
     "@angular/compiler": "^5.2.7",
     "@angular/compiler-cli": "^5.2.7",
     "@angular/core": "^5.2.7",

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { Ngxs, Select } from 'ngxs';
 import { Observable } from 'rxjs/Observable';
 
@@ -7,16 +7,21 @@ import { AddTodo, RemoveTodo } from './todo.store';
 @Component({
   selector: 'app-root',
   template: `
-    <input placeholder="New Todo" #text>
-
-    <button (click)="addTodo(text.value)">Add</button>
-
-    <ul>
-      <li *ngFor="let todo of todos$ | async; let i = index">
-        {{todo}} <button (click)="removeTodo(i)">remove</button>
-      </li>
-    </ul>
-  `
+    <div class="todo-list">
+      <div class="add-todo">
+        <input placeholder="New Todo" #text>
+        <button (click)="addTodo(text.value)">Add</button>
+        <router-outlet></router-outlet>
+      </div>
+      <ul>
+        <li class="todo" *ngFor="let todo of todos$ | async; let i = index">
+          {{todo}} <button (click)="removeTodo(i)">🗑</button>
+        </li>
+      </ul>
+    </div>
+  `,
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {
   @Select(state => state.todos)
