@@ -1,5 +1,5 @@
 import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
-import { STORE_TOKEN, LAZY_STORE_TOKEN, STORE_OPTIONS_TOKEN, LAZY_STORE_OPTIONS_TOKEN, NgxsOptions } from './symbols';
+import { STORE_TOKEN, STORE_OPTIONS_TOKEN, NgxsOptions } from './symbols';
 import { StoreFactory } from './factory';
 import { EventStream } from './event-stream';
 import { Ngxs } from './ngxs';

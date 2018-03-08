@@ -1,19 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ErrorHandler } from '@angular/core';
 import { EventStream } from './event-stream';
 import { StoreFactory } from './factory';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { Observable } from 'rxjs/Observable';
-import { distinctUntilChanged, materialize } from 'rxjs/operators';
+import { distinctUntilChanged, materialize, catchError } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operator/map';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { compose } from './compose';
+import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class Ngxs {
   constructor(
+    private _errorHandler: ErrorHandler,
     private _eventStream: EventStream,
     private _storeFactory: StoreFactory,
     private _stateStream: StateStream,
@@ -24,11 +26,16 @@ export class Ngxs {
    * Dispatches an event(s).
    */
   dispatch(event: any | any[]): Observable<any> {
+    let result;
     if (Array.isArray(event)) {
-      return forkJoin(event.map(a => this._dispatch(a)));
+      result = forkJoin(event.map(a => this._dispatch(a)));
     } else {
-      return this._dispatch(event);
+      result = this._dispatch(event);
     }
+
+    result.pipe(catchError(err => of(this._errorHandler.handleError(err))));
+
+    return result;
   }
 
   /**

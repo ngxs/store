@@ -15,6 +15,7 @@
 * Advanced
   * [Pub Sub](advanced/pubsub.md)
   * [Composition](advanced/composition.md)
+  * [Error Handling](advanced/errors.md)
   * [Unit Testing](advanced/unit-testing.md)
   * [Style Guide](advanced/style-guide.md)
 * [Community](community.md)
