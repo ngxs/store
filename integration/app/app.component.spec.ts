@@ -2,6 +2,7 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 
 import { AppModule } from './app.module';
 import { AppComponent } from './app.component';
+import { APP_BASE_HREF } from '@angular/common';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -9,7 +10,8 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [AppModule]
+      imports: [AppModule],
+      providers: [{ provide: APP_BASE_HREF, useValue: '/' }]
     });
 
     fixture = TestBed.createComponent(AppComponent);
