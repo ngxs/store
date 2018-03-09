@@ -97,7 +97,7 @@ export class LocalStoragePluginModule {
         {
           provide: LOCAL_STORAGE_PLUGIN_OPTIONS,
           useValue: {
-            key: '@@STATE',
+            key: options.key || '@@STATE',
             serialize: options.serialize || serialize,
             deserialize: options.deserialize || deserialize
           }
