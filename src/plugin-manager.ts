@@ -15,7 +15,7 @@ export class PluginManager {
   }
 
   private register() {
-    this.plugins = this._plugins.map(plugin => {
+    this.plugins = this._plugins.filter(plugin => plugin).map(plugin => {
       if (plugin.handle) {
         return plugin.handle.bind(plugin);
       } else {

@@ -10,7 +10,7 @@ import { PluginManager } from './plugin-manager';
 import { InitStore } from './events/init';
 
 @NgModule({
-  providers: [{ provide: NGXS_PLUGINS, useValue: [] }]
+  providers: [{ provide: NGXS_PLUGINS, useValue: null, multi: true }]
 })
 export class NgxsRootModule {
   constructor(
