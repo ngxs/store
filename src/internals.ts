@@ -1,17 +1,24 @@
 import { META_KEY } from './symbols';
 
+export interface MetaDataModel {
+  mutations: any;
+  actions: any;
+  defaults: any;
+}
 /**
  * Ensures metadata is attached to the klass and returns it
  */
 export function ensureStoreMetadata(target) {
   if (!target.hasOwnProperty(META_KEY)) {
-    const defaultMetadata = {
+    const defaultMetadata: MetaDataModel = {
       mutations: {},
       actions: {},
       defaults: {}
     };
+
     Object.defineProperty(target, META_KEY, { value: defaultMetadata });
   }
+
   return target[META_KEY];
 }
 
