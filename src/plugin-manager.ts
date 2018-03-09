@@ -17,18 +17,20 @@ export class PluginManager {
   }
 
   private register() {
-    if (this._plugins) {
-      this.plugins = this._plugins.map(plugin => {
-        if (plugin.handle) {
-          return plugin.handle.bind(plugin);
-        } else {
-          return plugin;
-        }
-      });
+    if (!this.plugins) {
+      return;
+    }
 
-      if (this._parentManager) {
-        this._parentManager.plugins.push(...this.plugins);
+    this.plugins = this._plugins.map(plugin => {
+      if (plugin.handle) {
+        return plugin.handle.bind(plugin);
+      } else {
+        return plugin;
       }
+    });
+
+    if (this._parentManager) {
+      this._parentManager.plugins.push(...this.plugins);
     }
   }
 }
