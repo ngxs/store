@@ -10,9 +10,11 @@ export class PluginManager {
     @SkipSelf()
     private _parentManager: PluginManager,
     @Inject(NGXS_PLUGINS) private _plugins: NgxsPlugin[]
-  ) {}
+  ) {
+    this.register();
+  }
 
-  use(plugins: any[]) {
+  private register() {
     this.plugins = this._plugins.map(plugin => {
       if (plugin.handle) {
         return plugin.handle.bind(plugin);

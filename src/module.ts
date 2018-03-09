@@ -1,5 +1,6 @@
 import { NgModule, ModuleWithProviders, Optional, Inject, SkipSelf } from '@angular/core';
-import { STORE_TOKEN, STORE_OPTIONS_TOKEN, NgxsOptions } from './symbols';
+
+import { STORE_TOKEN, STORE_OPTIONS_TOKEN, NgxsOptions, NGXS_PLUGINS } from './symbols';
 import { StoreFactory } from './factory';
 import { EventStream } from './event-stream';
 import { Ngxs } from './ngxs';
@@ -8,22 +9,19 @@ import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitStore } from './events/init';
 
-@NgModule({})
+@NgModule({
+  providers: [{ provide: NGXS_PLUGINS, useValue: [] }]
+})
 export class NgxsRootModule {
   constructor(
     private _factory: StoreFactory,
     private _stateStream: StateStream,
-    @Optional()
-    @Inject(STORE_OPTIONS_TOKEN)
-    private _storeOptions: NgxsOptions,
-    private _pluginManager: PluginManager,
     store: Ngxs,
     select: SelectFactory,
     @Optional()
     @Inject(STORE_TOKEN)
     stores: any[]
   ) {
-    this.registerPlugins();
     this.initStores(stores);
     store.dispatch(new InitStore());
   }
@@ -38,10 +36,6 @@ export class NgxsRootModule {
       // set the state to the current + new
       this._stateStream.next({ ...cur, ...init });
     }
-  }
-
-  registerPlugins() {
-    this._pluginManager.use(this._storeOptions && this._storeOptions.plugins ? this._storeOptions.plugins : []);
   }
 }
 
