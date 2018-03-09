@@ -1,5 +1,6 @@
 import { NgModule, ModuleWithProviders, Optional, Inject, SkipSelf } from '@angular/core';
-import { STORE_TOKEN, STORE_OPTIONS_TOKEN, NgxsOptions } from './symbols';
+
+import { STORE_TOKEN } from './symbols';
 import { StoreFactory } from './factory';
 import { EventStream } from './event-stream';
 import { Ngxs } from './ngxs';
@@ -8,22 +9,17 @@ import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitStore } from './events/init';
 
-@NgModule({})
+@NgModule()
 export class NgxsRootModule {
   constructor(
     private _factory: StoreFactory,
     private _stateStream: StateStream,
-    @Optional()
-    @Inject(STORE_OPTIONS_TOKEN)
-    private _storeOptions: NgxsOptions,
-    private _pluginManager: PluginManager,
     store: Ngxs,
     select: SelectFactory,
     @Optional()
     @Inject(STORE_TOKEN)
     stores: any[]
   ) {
-    this.registerPlugins();
     this.initStores(stores);
     store.dispatch(new InitStore());
   }
@@ -39,10 +35,6 @@ export class NgxsRootModule {
       this._stateStream.next({ ...cur, ...init });
     }
   }
-
-  registerPlugins() {
-    this._pluginManager.use(this._storeOptions && this._storeOptions.plugins ? this._storeOptions.plugins : []);
-  }
 }
 
 @NgModule({})
@@ -52,15 +44,10 @@ export class NgxsFeatureModule {
     @SkipSelf()
     private _stateStream: StateStream,
     private _factory: StoreFactory,
-    private _pluginManager: PluginManager,
-    @Optional()
-    @Inject(STORE_OPTIONS_TOKEN)
-    private _storeOptions: NgxsOptions,
     @Optional()
     @Inject(STORE_TOKEN)
     stores: any[]
   ) {
-    this.registerPlugins();
     this.initStores(stores);
   }
 
@@ -76,15 +63,11 @@ export class NgxsFeatureModule {
       this._stateStream.next({ ...cur, ...init });
     }
   }
-
-  registerPlugins() {
-    this._pluginManager.use(this._storeOptions && this._storeOptions.plugins ? this._storeOptions.plugins : []);
-  }
 }
 
 @NgModule({})
 export class NgxsModule {
-  static forRoot(stores: any[], options: NgxsOptions = { plugins: [] }): ModuleWithProviders {
+  static forRoot(stores: any[]): ModuleWithProviders {
     return {
       ngModule: NgxsRootModule,
       providers: [
@@ -95,34 +78,24 @@ export class NgxsModule {
         SelectFactory,
         PluginManager,
         stores,
-        options.plugins,
         {
           provide: STORE_TOKEN,
           useValue: stores
-        },
-        {
-          provide: STORE_OPTIONS_TOKEN,
-          useValue: options
         }
       ]
     };
   }
 
-  static forFeature(stores: any[], options: NgxsOptions = { plugins: [] }): ModuleWithProviders {
+  static forFeature(stores: any[]): ModuleWithProviders {
     return {
       ngModule: NgxsFeatureModule,
       providers: [
         stores,
-        options.plugins,
         StoreFactory,
         PluginManager,
         {
           provide: STORE_TOKEN,
           useValue: stores
-        },
-        {
-          provide: STORE_OPTIONS_TOKEN,
-          useValue: options
         }
       ]
     };

@@ -1,5 +1,5 @@
-import { Injectable, Injector, Optional, SkipSelf } from '@angular/core';
-import { NgxsPluginFn } from './symbols';
+import { Injectable, Optional, SkipSelf, Inject } from '@angular/core';
+import { NgxsPluginFn, NGXS_PLUGINS, NgxsPlugin } from './symbols';
 
 @Injectable()
 export class PluginManager {
@@ -9,23 +9,28 @@ export class PluginManager {
     @Optional()
     @SkipSelf()
     private _parentManager: PluginManager,
-    private _injector: Injector
-  ) {}
+    @Inject(NGXS_PLUGINS)
+    @Optional()
+    private _plugins: NgxsPlugin[]
+  ) {
+    this.register();
+  }
 
-  use(plugins: any[]) {
-    const mappedPlugins = [];
-
-    for (const plugin of plugins) {
-      if (plugin.prototype.handle) {
-        const inst = this._injector.get(plugin);
-        mappedPlugins.push(inst.handle.bind(inst));
-      } else {
-        mappedPlugins.push(plugin);
-      }
+  private register() {
+    if (!this._plugins) {
+      return;
     }
 
-    const globalPlugins = this._parentManager ? this._parentManager.plugins : this.plugins;
+    this.plugins = this._plugins.map(plugin => {
+      if (plugin.handle) {
+        return plugin.handle.bind(plugin);
+      } else {
+        return plugin;
+      }
+    });
 
-    globalPlugins.push(...mappedPlugins);
+    if (this._parentManager) {
+      this._parentManager.plugins.push(...this.plugins);
+    }
   }
 }
