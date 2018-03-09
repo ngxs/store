@@ -52,15 +52,10 @@ export class NgxsFeatureModule {
     @SkipSelf()
     private _stateStream: StateStream,
     private _factory: StoreFactory,
-    private _pluginManager: PluginManager,
-    @Optional()
-    @Inject(STORE_OPTIONS_TOKEN)
-    private _storeOptions: NgxsOptions,
     @Optional()
     @Inject(STORE_TOKEN)
     stores: any[]
   ) {
-    this.registerPlugins();
     this.initStores(stores);
   }
 
@@ -75,10 +70,6 @@ export class NgxsFeatureModule {
       // set the state to the current + new
       this._stateStream.next({ ...cur, ...init });
     }
-  }
-
-  registerPlugins() {
-    this._pluginManager.use(this._storeOptions && this._storeOptions.plugins ? this._storeOptions.plugins : []);
   }
 }
 
