@@ -16,6 +16,8 @@ export interface NgxsPlugin {
   handle(state: any, mutation: any, next: NgxsNextPluginFn): any;
 }
 
+export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
+
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
 export interface StoreOptions {

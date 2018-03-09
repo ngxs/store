@@ -1,6 +1,6 @@
 import { Injectable, Inject, InjectionToken, NgModule, ModuleWithProviders } from '@angular/core';
 
-import { NgxsPlugin } from '../symbols';
+import { NgxsPlugin, NGXS_PLUGINS } from '../symbols';
 
 const repeat = (str, times) => new Array(times + 1).join(str);
 const pad = (num, maxLength) => repeat('0', maxLength - num.toString().length) + num;
@@ -61,7 +61,11 @@ export class LoggerPluginModule {
     return {
       ngModule: LoggerPluginModule,
       providers: [
-        LoggerPlugin,
+        {
+          provide: NGXS_PLUGINS,
+          useClass: LoggerPlugin,
+          multi: true
+        },
         {
           provide: LOGGER_PLUGIN_OPTIONS,
           useValue: {

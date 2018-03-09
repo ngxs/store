@@ -1,5 +1,6 @@
-import { NgxsPlugin } from '../symbols';
-import { Injectable } from '@angular/core';
+import { Injectable, NgModule, Inject, InjectionToken, ModuleWithProviders } from '@angular/core';
+
+import { NgxsPlugin, NGXS_PLUGINS } from '../symbols';
 import { getTypeFromInstance } from '../internals';
 
 /**
@@ -15,31 +16,27 @@ export interface DevtoolsOptions {
   disabled: boolean;
 }
 
+export const DEVTOOLS_OPTIONS = new InjectionToken('DEVTOOLS_OPTIONS');
+
 /**
  * Adds support for the Redux Devtools extension:
  * http://extension.remotedev.io/
  */
 @Injectable()
 export class ReduxDevtoolsPlugin implements NgxsPlugin {
-  private static _options: DevtoolsOptions | undefined = undefined;
-
   private readonly devtoolsExtension: DevtoolsExtension | null = null;
   private readonly windowObj: any = typeof window !== 'undefined' ? window : {};
 
-  static forRoot(options) {
-    this._options = options;
-    return this;
-  }
-
-  constructor() {
+  constructor(@Inject(DEVTOOLS_OPTIONS) private _options: DevtoolsOptions) {
     const globalDevtools = this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
+
     if (globalDevtools) {
       this.devtoolsExtension = globalDevtools.connect() as DevtoolsExtension;
     }
   }
 
   handle(state: any, event: any, next: any) {
-    const isDisabled = ReduxDevtoolsPlugin._options && ReduxDevtoolsPlugin._options.disabled;
+    const isDisabled = this._options && this._options.disabled;
     if (!this.devtoolsExtension || isDisabled) {
       return next(state, event);
     }
@@ -52,5 +49,25 @@ export class ReduxDevtoolsPlugin implements NgxsPlugin {
     }
 
     return next(state, event);
+  }
+}
+
+@NgModule()
+export class ReduxDevtoolsPluginModule {
+  static forRoot(options?: DevtoolsOptions): ModuleWithProviders {
+    return {
+      ngModule: ReduxDevtoolsPlugin,
+      providers: [
+        {
+          provide: NGXS_PLUGINS,
+          useClass: ReduxDevtoolsPlugin,
+          multi: true
+        },
+        {
+          provide: DEVTOOLS_OPTIONS,
+          useValue: options
+        }
+      ]
+    };
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable, NgModule, ModuleWithProviders, Inject, InjectionToken } from '@angular/core';
 
-import { NgxsPlugin } from '../symbols';
+import { NgxsPlugin, NGXS_PLUGINS } from '../symbols';
 import { getTypeFromInstance } from '../internals';
 
 export interface LocalStoragePluginOptions {
@@ -81,7 +81,11 @@ export class LocalStoragePluginModule {
     return {
       ngModule: LocalStoragePluginModule,
       providers: [
-        LocalStoragePlugin,
+        {
+          provide: NGXS_PLUGINS,
+          useClass: LocalStoragePlugin,
+          multi: true
+        },
         {
           provide: LOCAL_STORAGE_PLUGIN_OPTION,
           useValue: {
