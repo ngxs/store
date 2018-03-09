@@ -1,49 +1,68 @@
 # Plugins
+
 Next lets talk about plugins. Similar to Redux's meta reducers, we have
-a plugins interface that allows you to build a global plugin for your state. 
+a plugins interface that allows you to build a global plugin for your state.
 
-Lets  take a basic example of a logger:
+All you have to do is provide a class to the NGXS_PLUGINS token.
+If your plugins has options associated with it, we suggest defining an injection token and then a forRoot method on your module
 
-```javascript
-import { NgxsPlugin } from 'ngxs';
+Lets take a basic example of a logger:
 
+```TS
+import { Injectable, Inject, NgModule } from '@angular/core';
+import { NgxsPlugin, NGXS_PLUGINS } from 'ngxs';
+
+export const LOGGER_PLUGIN_OPTIONS = new InjectionToken('LOGGER_PLUGIN_OPTIONS');
+
+@Injectable()
 export class LoggerPlugin implements NgxsPlugin {
+  constructor(@Inject() private options: any) {}
+
   handle(state, mutation, next) {
     console.log('Mutation started!', state);
+
     const result = next(state, mutation);
+
     console.log('Mutation happened!', result);
+
     return result;
   }
 }
-```
 
-Our plugins can also have injectables, simply decorator it with
-the `Injectable` decorator and pass it to your providers. If your plugins
-has options associated with it, we suggest defining a static method called
-`forRoot` similar to Angular's pattern. This would look like:
-
-```javascript
-export class LoggerPlugin implements NgxsPlugin {
-  static _options;
-  static forRoot(options) { this._options = options; }
-  handle(state, mutation, next) {
-    console.log('Custom options!', LoggerPlugin._options);
-    return next(state, mutation);
+@NgModule()
+export class LoggerPluginModule {
+  static forRoot(config?: any): ModuleWithProviders = {
+    return {
+      ngModule: LoggerPluginModule,
+      providers: [
+        {
+          provide: NGXS_PLUGINS,
+          useClass: LoggerPlugin,
+          multi: truem  
+        },
+        {
+          provide: LOGGER_PLUGIN_OPTIONS,
+          useValue: config
+        }
+      ]
+    }
   }
 }
 ```
-
-This pattern allows us to define options while preserving the constructor
-for use with DI.
 
 You can also use pure functions for plugins, the above example in a pure function
 would look like this:
 
+NOTE: when providing a pure function make sure to use "useValue" instead of "useClass"
+
 ```javascript
 export function logPlugin(state, mutation, next) {
   console.log('Mutation started!', state);
+
   const result = next(state, mutation);
+
   console.log('Mutation happened!', result);
+
   return result;
 }
 ```
@@ -53,9 +72,7 @@ in the module hookup like:
 
 ```javascript
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([ZooStore], { plugins: [LoggerPlugin] })
-  ]
+  imports: [NgxsModule.forRoot([ZooStore]), LoggerPluginModule.forRoot({})]
 })
 export class MyModule {}
 ```
