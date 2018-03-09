@@ -41,6 +41,10 @@ export class ReduxDevtoolsPlugin implements NgxsPlugin {
       return next(state, event);
     }
 
+    // process the state
+    state = next(state, event);
+
+    // if init action, send initial state to dev tools
     const isInitAction = getTypeFromInstance(event) === '@@INIT';
     if (isInitAction) {
       this.devtoolsExtension.init(state);
@@ -48,7 +52,8 @@ export class ReduxDevtoolsPlugin implements NgxsPlugin {
       this.devtoolsExtension.send(getTypeFromInstance(event), state);
     }
 
-    return next(state, event);
+    // return our newly processed state
+    return state;
   }
 }
 
