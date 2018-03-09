@@ -1,6 +1,6 @@
 import { NgModule, ModuleWithProviders, Optional, Inject, SkipSelf } from '@angular/core';
 
-import { STORE_TOKEN, STORE_OPTIONS_TOKEN, NgxsOptions, NGXS_PLUGINS } from './symbols';
+import { STORE_TOKEN, NGXS_PLUGINS } from './symbols';
 import { StoreFactory } from './factory';
 import { EventStream } from './event-stream';
 import { Ngxs } from './ngxs';
@@ -69,7 +69,7 @@ export class NgxsFeatureModule {
 
 @NgModule({})
 export class NgxsModule {
-  static forRoot(stores: any[], options: NgxsOptions = { plugins: [] }): ModuleWithProviders {
+  static forRoot(stores: any[]): ModuleWithProviders {
     return {
       ngModule: NgxsRootModule,
       providers: [
@@ -80,34 +80,24 @@ export class NgxsModule {
         SelectFactory,
         PluginManager,
         stores,
-        options.plugins,
         {
           provide: STORE_TOKEN,
           useValue: stores
-        },
-        {
-          provide: STORE_OPTIONS_TOKEN,
-          useValue: options
         }
       ]
     };
   }
 
-  static forFeature(stores: any[], options: NgxsOptions = { plugins: [] }): ModuleWithProviders {
+  static forFeature(stores: any[]): ModuleWithProviders {
     return {
       ngModule: NgxsFeatureModule,
       providers: [
         stores,
-        options.plugins,
         StoreFactory,
         PluginManager,
         {
           provide: STORE_TOKEN,
           useValue: stores
-        },
-        {
-          provide: STORE_OPTIONS_TOKEN,
-          useValue: options
         }
       ]
     };
