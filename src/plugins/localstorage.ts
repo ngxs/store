@@ -4,12 +4,12 @@ import { NgxsPlugin, NGXS_PLUGINS } from '../symbols';
 import { getTypeFromInstance } from '../internals';
 
 export interface LocalStoragePluginOptions {
-  key: string | string[] | undefined;
-  serialize(obj: any);
-  deserialize(obj: any);
+  key?: string | string[] | undefined;
+  serialize?(obj: any);
+  deserialize?(obj: any);
 }
 
-export const LOCAL_STORAGE_PLUGIN_OPTION = new InjectionToken('LOCAL_STORAGE_PLUGIN_OPTION');
+export const LOCAL_STORAGE_PLUGIN_OPTIONS = new InjectionToken('LOCAL_STORAGE_PLUGIN_OPTION');
 
 const setValue = (obj, prop: string, val) => {
   obj = { ...obj };
@@ -34,7 +34,7 @@ const getValue = (obj, prop: string) => prop.split('.').reduce((acc, part) => ac
 
 @Injectable()
 export class LocalStoragePlugin implements NgxsPlugin {
-  constructor(@Inject(LOCAL_STORAGE_PLUGIN_OPTION) private _options: LocalStoragePluginOptions) {}
+  constructor(@Inject(LOCAL_STORAGE_PLUGIN_OPTIONS) private _options: LocalStoragePluginOptions) {}
 
   handle(state, event, next) {
     const options = this._options || <any>{};
@@ -75,9 +75,17 @@ export class LocalStoragePlugin implements NgxsPlugin {
   }
 }
 
+export function serialize(val: any) {
+  return JSON.stringify(val);
+}
+
+export function deserialize(val: any) {
+  return JSON.parse(val);
+}
+
 @NgModule()
 export class LocalStoragePluginModule {
-  static forRoot(options?: LocalStoragePluginOptions): ModuleWithProviders {
+  static forRoot(options: LocalStoragePluginOptions = {}): ModuleWithProviders {
     return {
       ngModule: LocalStoragePluginModule,
       providers: [
@@ -87,14 +95,11 @@ export class LocalStoragePluginModule {
           multi: true
         },
         {
-          provide: LOCAL_STORAGE_PLUGIN_OPTION,
+          provide: LOCAL_STORAGE_PLUGIN_OPTIONS,
           useValue: {
-            ...{
-              key: '@@STATE',
-              serialize: JSON.stringify,
-              deserialize: JSON.parse
-            },
-            ...options
+            key: '@@STATE',
+            serialize: options.serialize || serialize,
+            deserialize: options.deserialize || deserialize
           }
         }
       ]
