@@ -17,7 +17,7 @@ export class PluginManager {
   }
 
   private register() {
-    if (!this.plugins) {
+    if (!this._plugins) {
       return;
     }
 
