@@ -1,6 +1,6 @@
 import { NgModule, ModuleWithProviders, Optional, Inject, SkipSelf } from '@angular/core';
 
-import { STORE_TOKEN, NGXS_PLUGINS } from './symbols';
+import { STORE_TOKEN } from './symbols';
 import { StoreFactory } from './factory';
 import { EventStream } from './event-stream';
 import { Ngxs } from './ngxs';
@@ -9,9 +9,7 @@ import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitStore } from './events/init';
 
-@NgModule({
-  providers: [{ provide: NGXS_PLUGINS, useValue: null, multi: true }]
-})
+@NgModule()
 export class NgxsRootModule {
   constructor(
     private _factory: StoreFactory,

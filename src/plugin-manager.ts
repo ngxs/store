@@ -9,22 +9,26 @@ export class PluginManager {
     @Optional()
     @SkipSelf()
     private _parentManager: PluginManager,
-    @Inject(NGXS_PLUGINS) private _plugins: NgxsPlugin[]
+    @Inject(NGXS_PLUGINS)
+    @Optional()
+    private _plugins: NgxsPlugin[]
   ) {
     this.register();
   }
 
   private register() {
-    this.plugins = this._plugins.filter(plugin => plugin).map(plugin => {
-      if (plugin.handle) {
-        return plugin.handle.bind(plugin);
-      } else {
-        return plugin;
-      }
-    });
+    if (this._plugins) {
+      this.plugins = this._plugins.map(plugin => {
+        if (plugin.handle) {
+          return plugin.handle.bind(plugin);
+        } else {
+          return plugin;
+        }
+      });
 
-    if (this._parentManager) {
-      this._parentManager.plugins.push(...this.plugins);
+      if (this._parentManager) {
+        this._parentManager.plugins.push(...this.plugins);
+      }
     }
   }
 }
