@@ -1,5 +1,7 @@
 # 1.5.0 2/11/18
 - Feature: Updated Plugin System
+- Feature: Add generics to store
+- Feature: Implement global error handling
 - Fix: Fix dev tools showing previous state
 - Chore: Remove redux dev tools by default
 

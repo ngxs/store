@@ -33,7 +33,13 @@ export class Ngxs {
       result = this._dispatch(event);
     }
 
-    result.pipe(catchError(err => of(this._errorHandler.handleError(err))));
+    result.pipe(
+      catchError(err => {
+        // handle error through angular error system
+        this._errorHandler.handleError(err);
+        return of(err);
+      })
+    );
 
     return result;
   }
