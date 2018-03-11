@@ -3,7 +3,7 @@
 You can back your stores with LocalStorage by including the `LocalStoragePlugin` plugin.
 
 ```TS
-import { NgxsModule, LocalStoragePluginModule } from 'ngxs';
+import { NgxsModule, LocalStoragePluginModule, StorageStrategy } from 'ngxs';
 
 @NgModule({
   imports: [
@@ -14,6 +14,8 @@ import { NgxsModule, LocalStoragePluginModule } from 'ngxs';
       key: '@@STATE',
       // Custom serializer, defaults to JSON
       serialize: JSON.stringify,
+      // Local storage or session storage strategy
+      strategy: StorageStrategy.localStorage |  StorageStrategy.sessionStorage,
       // Custom deserializer, defaults to JSON
       deserialize: JSON.parse
     )

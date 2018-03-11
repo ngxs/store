@@ -1,3 +1,6 @@
+# 1.5.1 2/11/18
+- Feature: Add `sessionStorage` strategy to local storage plugin
+
 # 1.5.0 2/11/18
 - Feature: Updated Plugin System
 - Feature: Add generics to store

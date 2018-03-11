@@ -12,6 +12,7 @@ export {
   LoggerPlugin,
   LocalStoragePlugin,
   LocalStoragePluginModule,
+  StorageStrategy,
   LoggerPluginModule,
   ReduxDevtoolsPluginModule
 } from './plugins';
