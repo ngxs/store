@@ -2,6 +2,7 @@
 - Feature: Updated Plugin System
 - Feature: Add generics to store
 - Feature: Implement global error handling
+- Fix: Improve DI for lazy loadedd stores
 - Fix: Fix dev tools showing previous state
 - Chore: Remove redux dev tools by default
 
