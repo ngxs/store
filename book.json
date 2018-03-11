@@ -21,6 +21,10 @@
         "versions": {
             "gitbookConfigURL": "https://unpkg.com/amcdnl/book.json",
             "type": "tags"
+        },
+        "githubcontributors": {
+          "githubOwner": "amcdnl",
+          "githubRepository": "ngxs"
         }
     }
 }
