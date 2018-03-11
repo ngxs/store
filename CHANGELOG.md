@@ -1,3 +1,8 @@
+# 1.5.0 2/11/18
+- Feature: Updated Plugin System
+- Fix: Fix dev tools showing previous state
+- Chore: Remove redux dev tools by default
+
 # 1.4.8 2/5/18
 - Fix: Typo in return
 
