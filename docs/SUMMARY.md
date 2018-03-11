@@ -13,6 +13,7 @@
   * [Devtools](plugins/devtools.md)
   * [Local Storage](plugins/localstorage.md)
 * Advanced
+  * [Lazy Loading](advanced/lazy.md)
   * [Pub Sub](advanced/pubsub.md)
   * [Composition](advanced/composition.md)
   * [Error Handling](advanced/errors.md)
