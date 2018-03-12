@@ -1,6 +1,7 @@
 # Selects
+
 Its important to note that READS and WRITES are completely separate in ngxs. To read data
-out of the store, we can either call the `select` method on the 
+out of the store, we can either call the `select` method on the
 `ngxs` service or a `@Select` decorator. First lets look at the `select` method.
 
 ```javascript
@@ -19,13 +20,17 @@ export class ZooComponent {
 Thats pretty similar to Redux and NGRX. We can use a handy decorator
 the same way but with some other options.
 
-
 ```javascript
 import { Ngxs } from 'ngxs';
+
+import { ZooStore } from './zoo.store';
 import { AddAnimal } from './animal.events';
 
 @Component({ ... })
 export class ZooComponent {
+ // Reads the name of the store from the store class
+  @Select(ZooStore) animals$: Observable<string[]>;
+
   // Reads the name of the property minus the $
   @Select() animals$: Observable<string[]>;
 
@@ -43,4 +48,4 @@ export class ZooComponent {
 }
 ```
 
-Pretty cool huh? Lots of options to get data out! 
+Pretty cool huh? Lots of options to get data out!
