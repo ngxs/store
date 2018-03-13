@@ -77,8 +77,12 @@ export class Ngxs {
 
   private _handleNesting(eventResults) {
     const results: any[] = [];
-    for (const eventResult of eventResults) {
-      if (eventResult.subscribe) {
+    for (let eventResult of eventResults) {
+      if (eventResult instanceof Promise) {
+        eventResult = fromPromise(eventResult);
+      }
+
+      if (eventResult instanceof Observable) {
         const eventResultStream = new Subject();
         eventResult.pipe(materialize()).subscribe(res => {
           if (res.value) {
@@ -92,8 +96,6 @@ export class Ngxs {
           }
         });
         results.push(eventResultStream);
-      } else if (eventResult.then) {
-        results.push(fromPromise(eventResult));
       } else {
         results.push(this.dispatch(eventResult));
       }

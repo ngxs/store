@@ -1,3 +1,6 @@
+# 1.5.3 2/12/18
+- Fix: Promises not emitting results
+
 # 1.5.2 2/12/18
 - Fix: Devtools plugin not returning correct value
 
