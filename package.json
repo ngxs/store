@@ -1,6 +1,6 @@
 {
   "name": "ngxs",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "State Mangement for Angular",
   "main": "index.js",
   "scripts": {

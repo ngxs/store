@@ -1,3 +1,6 @@
+# 1.5.2 2/12/18
+- Fix: Devtools plugin not returning correct value
+
 # 1.5.1 2/11/18
 - Feature: Add `sessionStorage` strategy to local storage plugin
 
