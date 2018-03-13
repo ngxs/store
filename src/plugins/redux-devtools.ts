@@ -61,7 +61,7 @@ export class ReduxDevtoolsPlugin implements NgxsPlugin {
 export class ReduxDevtoolsPluginModule {
   static forRoot(options?: DevtoolsOptions): ModuleWithProviders {
     return {
-      ngModule: ReduxDevtoolsPlugin,
+      ngModule: ReduxDevtoolsPluginModule,
       providers: [
         {
           provide: NGXS_PLUGINS,
