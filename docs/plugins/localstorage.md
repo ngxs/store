@@ -8,17 +8,17 @@ import { NgxsModule, LocalStoragePluginModule, StorageStrategy } from 'ngxs';
 @NgModule({
   imports: [
     NgxsModule.forRoot([]),
-    LocalStoragePluginModule.forRoot(
+    LocalStoragePluginModule.forRoot({
       // Default, you can pass single string or array of strings
       // that could be deeply nested too
       key: '@@STATE',
       // Custom serializer, defaults to JSON
       serialize: JSON.stringify,
       // Local storage or session storage strategy
-      strategy: StorageStrategy.localStorage |  StorageStrategy.sessionStorage,
+      strategy: StorageStrategy.localStorage,
       // Custom deserializer, defaults to JSON
       deserialize: JSON.parse
-    )
+    })
   ]
 })
 export class MyModule {}
