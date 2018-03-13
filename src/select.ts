@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+
 import { Ngxs } from './ngxs';
 import { fastPropGetter } from './internals';
+import { META_KEY } from './symbols';
 
 @Injectable()
 export class SelectFactory {
@@ -25,16 +27,21 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
 
     if (typeof selectorOrFeature === 'string') {
       const propsArray = paths.length ? [selectorOrFeature, ...paths] : selectorOrFeature.split('.');
+
       fn = fastPropGetter(propsArray);
+    } else if (selectorOrFeature[META_KEY] && selectorOrFeature[META_KEY].name) {
+      fn = fastPropGetter(selectorOrFeature[META_KEY].name.split('.'));
     } else {
       fn = selectorOrFeature;
     }
 
     const createSelect = () => {
       const store = SelectFactory.store;
+
       if (!store) {
         throw new Error('SelectFactory not connected to store!');
       }
+
       return store.select(fn);
     };
 

@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { distinctUntilChanged, materialize, catchError } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Subject } from 'rxjs/Subject';
-import { map } from 'rxjs/operator/map';
+import { map } from 'rxjs/operators/map';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { compose } from './compose';
 import { of } from 'rxjs/observable/of';
@@ -48,7 +48,7 @@ export class Ngxs {
    * Selects a slice of data from the store.
    */
   select(mapFn) {
-    return map.call(this._stateStream, mapFn).pipe(distinctUntilChanged.call(this._stateStream));
+    return this._stateStream.pipe(map(mapFn), distinctUntilChanged());
   }
 
   private _dispatch(event) {

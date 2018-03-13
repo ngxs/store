@@ -20,7 +20,7 @@ export class LocalStoragePluginModule {
           provide: LOCAL_STORAGE_PLUGIN_OPTIONS,
           useValue: {
             key: options.key || '@@STATE',
-            strategy: StorageStrategy.localstorage,
+            strategy: options.strategy || StorageStrategy.localstorage,
             serialize: options.serialize || serialize,
             deserialize: options.deserialize || deserialize
           }
