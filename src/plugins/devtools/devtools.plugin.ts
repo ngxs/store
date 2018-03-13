@@ -1,22 +1,7 @@
-import { Injectable, NgModule, Inject, InjectionToken, ModuleWithProviders } from '@angular/core';
-
-import { NgxsPlugin, NGXS_PLUGINS } from '../symbols';
-import { getTypeFromInstance } from '../internals';
-
-/**
- * Interface for the redux-devtools-extension API.
- */
-export interface DevtoolsExtension {
-  init(state);
-  send(action: string, state?: any);
-  subscribe(fn: (message: string) => void);
-}
-
-export interface DevtoolsOptions {
-  disabled: boolean;
-}
-
-export const DEVTOOLS_OPTIONS = new InjectionToken('DEVTOOLS_OPTIONS');
+import { NgxsPlugin } from '../../symbols';
+import { getTypeFromInstance } from '../../internals';
+import { Injectable, Inject } from '@angular/core';
+import { DevtoolsExtension, DevtoolsOptions, DEVTOOLS_OPTIONS } from './symbols';
 
 /**
  * Adds support for the Redux Devtools extension:
@@ -54,25 +39,5 @@ export class ReduxDevtoolsPlugin implements NgxsPlugin {
 
     // return our newly processed state
     return state;
-  }
-}
-
-@NgModule()
-export class ReduxDevtoolsPluginModule {
-  static forRoot(options?: DevtoolsOptions): ModuleWithProviders {
-    return {
-      ngModule: ReduxDevtoolsPluginModule,
-      providers: [
-        {
-          provide: NGXS_PLUGINS,
-          useClass: ReduxDevtoolsPlugin,
-          multi: true
-        },
-        {
-          provide: DEVTOOLS_OPTIONS,
-          useValue: options
-        }
-      ]
-    };
   }
 }
