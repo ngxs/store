@@ -13,8 +13,8 @@ import { NgxsModule, LoggerPluginModule } from 'ngxs';
       // custom console.log implement
       logger: console,
 
-      // expand results by default
-      expanded: true
+      // collapse results by default
+      collapsed: true
     })
   ]
 })
