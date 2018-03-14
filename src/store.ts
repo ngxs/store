@@ -4,7 +4,7 @@ import { StateFactory } from './state-factory';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { Observable } from 'rxjs/Observable';
-import { distinctUntilChanged, materialize, catchError, take } from 'rxjs/operators';
+import { distinctUntilChanged, materialize, catchError, take, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operators/map';
@@ -42,6 +42,9 @@ export class Store {
       })
     );
 
+    // noop subscribe
+    result.subscribe(() => {});
+
     return result;
   }
 
@@ -72,7 +75,7 @@ export class Store {
 
         this._eventStream.next(event);
 
-        return this._dispatchActions(nextAction).pipe(map(() => this._stateStream.getValue()));
+        return this._dispatchActions(nextAction).pipe(materialize(), map(() => this._stateStream.getValue()));
       }
     ])(prevState, action);
   }
@@ -84,11 +87,7 @@ export class Store {
       action
     );
 
-    if (results.length) {
-      return forkJoin(this._handleNesting(results));
-    }
-
-    return empty();
+    return results.length ? forkJoin(this._handleNesting(results)) : empty();
   }
 
   private _handleNesting(eventResults): Observable<any>[] {

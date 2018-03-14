@@ -34,6 +34,8 @@ export class AppComponent {
   }
 
   removeTodo(index: number) {
-    this.store.dispatch(new RemoveTodo(index));
+    this.store.dispatch(new RemoveTodo(index)).subscribe(() => {
+      console.log('Removed!');
+    });
   }
 }
