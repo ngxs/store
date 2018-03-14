@@ -1,4 +1,4 @@
-import { Store, Mutation } from 'ngxs';
+import { State, Mutation } from 'ngxs';
 
 export class AddTodo {
   constructor(public readonly payload: string) {}
@@ -8,11 +8,11 @@ export class RemoveTodo {
   constructor(public readonly payload: number) {}
 }
 
-@Store<string[]>({
+@State<string[]>({
   name: 'todos',
   defaults: []
 })
-export class TodoStore {
+export class TodoState {
   @Mutation(AddTodo)
   addTodo(state: string[], action: AddTodo) {
     return [action.payload, ...state];

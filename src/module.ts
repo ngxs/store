@@ -3,7 +3,7 @@ import { NgModule, ModuleWithProviders, Optional, Inject, SkipSelf } from '@angu
 import { STORE_TOKEN } from './symbols';
 import { StoreFactory } from './factory';
 import { EventStream } from './event-stream';
-import { Ngxs } from './ngxs';
+import { Store } from './store';
 import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
@@ -14,7 +14,7 @@ export class NgxsRootModule {
   constructor(
     private _factory: StoreFactory,
     private _stateStream: StateStream,
-    store: Ngxs,
+    store: Store,
     select: SelectFactory,
     @Optional()
     @Inject(STORE_TOKEN)
@@ -73,7 +73,7 @@ export class NgxsModule {
       providers: [
         StoreFactory,
         EventStream,
-        Ngxs,
+        Store,
         StateStream,
         SelectFactory,
         PluginManager,

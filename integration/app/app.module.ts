@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { NgxsModule, ReduxDevtoolsPluginModule } from 'ngxs';
 import { RouterModule } from '@angular/router';
 
-import { TodoStore } from './todo.store';
+import { TodoState } from './todo.state';
 import { AppComponent } from './app.component';
 import { routes } from './app.routes';
 
@@ -12,7 +12,7 @@ import { routes } from './app.routes';
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
-    NgxsModule.forRoot([TodoStore]),
+    NgxsModule.forRoot([TodoState]),
     ReduxDevtoolsPluginModule.forRoot()
   ],
   bootstrap: [AppComponent]

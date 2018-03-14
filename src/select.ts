@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { Ngxs } from './ngxs';
+import { Store } from './store';
 import { fastPropGetter } from './internals';
 import { META_KEY } from './symbols';
 
 @Injectable()
 export class SelectFactory {
-  static store: Ngxs | undefined = undefined;
-  constructor(store: Ngxs) {
+  static store: Store | undefined = undefined;
+  constructor(store: Store) {
     SelectFactory.store = store;
   }
 }
