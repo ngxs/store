@@ -22,11 +22,6 @@ export function State<T>(options: StoreOptions<T>) {
 
     if (target.__proto__.hasOwnProperty(META_KEY)) {
       const parentMeta = target.__proto__[META_KEY];
-      meta.mutations = {
-        ...meta.mutations,
-        ...parentMeta.mutations
-      };
-
       meta.actions = {
         ...meta.actions,
         ...parentMeta.actions

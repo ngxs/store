@@ -3,14 +3,14 @@ import { META_KEY } from './symbols';
 import { getTypeFromInstance } from './internals';
 
 @Injectable()
-export class StoreFactory {
+export class StateFactory {
   stores: any[] = [];
 
   constructor(
     private _injector: Injector,
     @Optional()
     @SkipSelf()
-    private _parentFactory: StoreFactory
+    private _parentFactory: StateFactory
   ) {}
 
   add(stores: any | any[]): any[] {

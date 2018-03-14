@@ -1,18 +1,18 @@
 import { NgModule, ModuleWithProviders, Optional, Inject, SkipSelf } from '@angular/core';
 
 import { STORE_TOKEN } from './symbols';
-import { StoreFactory } from './factory';
+import { StateFactory } from './state-factory';
 import { EventStream } from './event-stream';
 import { Store } from './store';
 import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
-import { InitStore } from './events/init';
+import { InitStore } from './actions/init';
 
 @NgModule()
 export class NgxsRootModule {
   constructor(
-    private _factory: StoreFactory,
+    private _factory: StateFactory,
     private _stateStream: StateStream,
     store: Store,
     select: SelectFactory,
@@ -43,7 +43,7 @@ export class NgxsFeatureModule {
     @Optional()
     @SkipSelf()
     private _stateStream: StateStream,
-    private _factory: StoreFactory,
+    private _factory: StateFactory,
     @Optional()
     @Inject(STORE_TOKEN)
     stores: any[]
@@ -71,7 +71,7 @@ export class NgxsModule {
     return {
       ngModule: NgxsRootModule,
       providers: [
-        StoreFactory,
+        StateFactory,
         EventStream,
         Store,
         StateStream,
@@ -91,7 +91,7 @@ export class NgxsModule {
       ngModule: NgxsFeatureModule,
       providers: [
         stores,
-        StoreFactory,
+        StateFactory,
         PluginManager,
         {
           provide: STORE_TOKEN,
