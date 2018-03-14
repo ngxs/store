@@ -4,7 +4,7 @@ import { getTypeFromInstance } from './internals';
 
 @Injectable()
 export class StateFactory {
-  stores: any[] = [];
+  states: any[] = [];
 
   constructor(
     private _injector: Injector,
@@ -28,7 +28,7 @@ export class StateFactory {
       let { defaults } = klass[META_KEY];
 
       // ensure our store hasn't already been added
-      const has = this.stores.find(s => s.name === name);
+      const has = this.states.find(s => s.name === name);
       if (has) {
         throw new Error(`Store has already been added ${name}`);
       }
@@ -49,7 +49,7 @@ export class StateFactory {
       });
     }
 
-    const globalStores = this._parentFactory ? this._parentFactory.stores : this.stores;
+    const globalStores = this._parentFactory ? this._parentFactory.states : this.states;
 
     globalStores.push(...mappedStores);
     return mappedStores;
@@ -65,7 +65,7 @@ export class StateFactory {
   invokeActions(getState, setState, action): any[] {
     const results = [];
 
-    for (const metadata of this.stores) {
+    for (const metadata of this.states) {
       const name = getTypeFromInstance(action);
       const actionMeta = metadata.actions[name];
 

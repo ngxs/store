@@ -3,6 +3,7 @@ import { NgxsPlugin } from '../../symbols';
 import { LocalStoragePluginOptions, LOCAL_STORAGE_PLUGIN_OPTIONS, StorageStrategy } from './symbols';
 import { getTypeFromInstance } from '../../internals';
 import { setValue, getValue } from './utils';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class LocalStoragePlugin implements NgxsPlugin {
@@ -30,20 +31,20 @@ export class LocalStoragePlugin implements NgxsPlugin {
       }
     }
 
-    state = next(state, event);
+    return next(state, event).pipe(
+      tap(nextState => {
+        if (!isInitAction) {
+          for (const key of keys) {
+            let val = nextState;
 
-    if (!isInitAction) {
-      for (const key of keys) {
-        let val = state;
+            if (key !== '@@STATE') {
+              val = getValue(nextState, key);
+            }
 
-        if (key !== '@@STATE') {
-          val = getValue(state, key);
+            engine.setItem(key, options.serialize(val));
+          }
         }
-
-        engine.setItem(key, options.serialize(val));
-      }
-    }
-
-    return state;
+      })
+    );
   }
 }
