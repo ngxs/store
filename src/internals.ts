@@ -1,7 +1,6 @@
 import { META_KEY } from './symbols';
 
 export interface MetaDataModel {
-  mutations: any;
   actions: any;
   defaults: any;
 }
@@ -11,7 +10,6 @@ export interface MetaDataModel {
 export function ensureStoreMetadata(target) {
   if (!target.hasOwnProperty(META_KEY)) {
     const defaultMetadata: MetaDataModel = {
-      mutations: {},
       actions: {},
       defaults: {}
     };

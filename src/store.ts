@@ -2,14 +2,14 @@ import { Injectable, ErrorHandler } from '@angular/core';
 import { EventStream } from './event-stream';
 import { StoreFactory } from './factory';
 import { StateStream } from './state-stream';
-import { PluginManager } from './plugin-manager';
+// import { PluginManager } from './plugin-manager';
 import { Observable } from 'rxjs/Observable';
-import { distinctUntilChanged, materialize, catchError } from 'rxjs/operators';
+import { distinctUntilChanged, materialize, catchError, take } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operators/map';
 import { fromPromise } from 'rxjs/observable/fromPromise';
-import { compose } from './compose';
+// import { compose } from './compose';
 import { of } from 'rxjs/observable/of';
 
 @Injectable()
@@ -18,9 +18,9 @@ export class Store {
     private _errorHandler: ErrorHandler,
     private _eventStream: EventStream,
     private _storeFactory: StoreFactory,
-    private _stateStream: StateStream,
-    private _pluginManager: PluginManager
-  ) {}
+    private _stateStream: StateStream
+  ) // private _pluginManager: PluginManager
+  {}
 
   /**
    * Dispatches an event(s).
@@ -51,13 +51,32 @@ export class Store {
     return this._stateStream.pipe(map(mapFn), distinctUntilChanged());
   }
 
-  private _dispatch(event) {
-    const curState = this._stateStream.getValue();
+  /**
+   * Select one slice of data from the store.
+   */
+  selectOnce(mapFn) {
+    return this.select(mapFn).pipe(take(1));
+  }
 
+  private _dispatch(action) {
+    // const curState = this._stateStream.getValue();
+
+    /*
     const plugins = this._pluginManager.plugins;
-    const nextState = compose([...plugins, this._dispatchMutation.bind(this)])(curState, event);
+    const nextState = compose([...plugins, () => {
+      // todo: here?
+    }])(curState, action);
+    */
 
-    const results: any[] = this._storeFactory.invokeEvents(nextState, event);
+    // trigger our event stream
+    this._eventStream.next(event);
+
+    const results: any[] = this._storeFactory.invokeActions(
+      () => this._stateStream.getValue(),
+      newState => this._stateStream.next(newState),
+      action
+    );
+
     if (results.length) {
       return forkJoin(this._handleNesting(results));
     }
@@ -66,13 +85,6 @@ export class Store {
     resultStream.next();
     resultStream.complete();
     return resultStream;
-  }
-
-  private _dispatchMutation(state, event) {
-    this._eventStream.next(event);
-    const newState = this._storeFactory.invokeMutations(state, event);
-    this._stateStream.next(newState);
-    return newState;
   }
 
   private _handleNesting(eventResults) {

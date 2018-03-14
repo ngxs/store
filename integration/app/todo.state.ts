@@ -1,4 +1,4 @@
-import { State, Mutation } from 'ngxs';
+import { State, Action, StateContext } from 'ngxs';
 
 export class AddTodo {
   constructor(public readonly payload: string) {}
@@ -13,13 +13,13 @@ export class RemoveTodo {
   defaults: []
 })
 export class TodoState {
-  @Mutation(AddTodo)
-  addTodo(state: string[], action: AddTodo) {
-    return [action.payload, ...state];
+  @Action(AddTodo)
+  addTodo({ state, setState }: StateContext<string[]>, { payload }: AddTodo) {
+    setState([...state, payload]);
   }
 
-  @Mutation(RemoveTodo)
-  removeTodo(state: string[], action: RemoveTodo) {
-    return state.filter((_, i) => i !== action.payload);
+  @Action(RemoveTodo)
+  removeTodo({ state, setState }: StateContext<string[]>, { payload }: RemoveTodo) {
+    setState(state.filter((_, i) => i !== payload));
   }
 }

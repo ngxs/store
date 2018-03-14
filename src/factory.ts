@@ -21,7 +21,7 @@ export class StoreFactory {
     const mappedStores = [];
     for (const klass of stores) {
       if (!klass[META_KEY]) {
-        throw new Error('Stores must be decorated with @Store() decorator');
+        throw new Error('States must be decorated with @State() decorator');
       }
 
       const { actions, mutations, name } = klass[META_KEY];
@@ -63,42 +63,27 @@ export class StoreFactory {
     }, {});
   }
 
-  invokeMutations(state, mutation) {
-    for (const reducerMeta of this.stores) {
-      const name = getTypeFromInstance(mutation);
-      const mutationMeta = reducerMeta.mutations[name];
-
-      if (mutationMeta) {
-        const local = state[reducerMeta.name];
-        let result = reducerMeta.instance[mutationMeta.fn](local, mutation);
-
-        // if no result returned, lets shallow copy the state
-        if (!result) {
-          if (Array.isArray(local)) {
-            result = [...local];
-          } else {
-            result = { ...local };
-          }
-        }
-        state = {
-          ...state,
-          [reducerMeta.name]: result
-        };
-      }
-    }
-
-    return state;
-  }
-
-  invokeEvents(state, event) {
+  invokeActions(getState, setState, action) {
     const results: any[] = [];
 
-    for (const reducerMeta of this.stores) {
-      const name = getTypeFromInstance(event);
-      const actionMeta = reducerMeta.actions[name];
+    for (const metadata of this.stores) {
+      const name = getTypeFromInstance(action);
+      const actionMeta = metadata.actions[name];
       if (actionMeta) {
-        const local = state[reducerMeta.name];
-        const result = reducerMeta.instance[actionMeta.fn](local, event);
+        const stateContext = {
+          get state() {
+            const state = getState();
+            return state[metadata.name];
+          },
+          setState(val) {
+            const state = getState();
+            setState({
+              ...state,
+              [metadata.name]: val
+            });
+          }
+        };
+        const result = metadata.instance[actionMeta.fn](stateContext, action);
         if (result) {
           results.push(result);
         }
