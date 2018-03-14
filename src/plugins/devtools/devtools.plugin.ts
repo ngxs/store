@@ -2,6 +2,7 @@ import { NgxsPlugin } from '../../symbols';
 import { getTypeFromInstance } from '../../internals';
 import { Injectable, Inject } from '@angular/core';
 import { DevtoolsExtension, DevtoolsOptions, DEVTOOLS_OPTIONS } from './symbols';
+import { tap } from 'rxjs/operators';
 
 /**
  * Adds support for the Redux Devtools extension:
@@ -20,24 +21,23 @@ export class ReduxDevtoolsPlugin implements NgxsPlugin {
     }
   }
 
-  handle(state: any, event: any, next: any) {
+  handle(state: any, action: any, next: any) {
     const isDisabled = this._options && this._options.disabled;
     if (!this.devtoolsExtension || isDisabled) {
-      return next(state, event);
+      return next(state, action);
     }
 
     // process the state
-    state = next(state, event);
-
-    // if init action, send initial state to dev tools
-    const isInitAction = getTypeFromInstance(event) === '@@INIT';
-    if (isInitAction) {
-      this.devtoolsExtension.init(state);
-    } else {
-      this.devtoolsExtension.send(getTypeFromInstance(event), state);
-    }
-
-    // return our newly processed state
-    return state;
+    return next(state, action).pipe(
+      tap(newState => {
+        // if init action, send initial state to dev tools
+        const isInitAction = getTypeFromInstance(action) === '@@INIT';
+        if (isInitAction) {
+          this.devtoolsExtension.init(state);
+        } else {
+          this.devtoolsExtension.send(getTypeFromInstance(action), state);
+        }
+      })
+    );
   }
 }

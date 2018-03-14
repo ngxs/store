@@ -24,7 +24,7 @@ export class StoreFactory {
         throw new Error('States must be decorated with @State() decorator');
       }
 
-      const { actions, mutations, name } = klass[META_KEY];
+      const { actions, name } = klass[META_KEY];
       let { defaults } = klass[META_KEY];
 
       // ensure our store hasn't already been added
@@ -43,7 +43,6 @@ export class StoreFactory {
       const instance = this._injector.get(klass);
       mappedStores.push({
         actions,
-        mutations,
         instance,
         defaults,
         name
@@ -63,12 +62,13 @@ export class StoreFactory {
     }, {});
   }
 
-  invokeActions(getState, setState, action) {
-    const results: any[] = [];
+  invokeActions(getState, setState, action): any[] {
+    const results = [];
 
     for (const metadata of this.stores) {
       const name = getTypeFromInstance(action);
       const actionMeta = metadata.actions[name];
+
       if (actionMeta) {
         const stateContext = {
           get state() {
@@ -83,6 +83,7 @@ export class StoreFactory {
             });
           }
         };
+
         const result = metadata.instance[actionMeta.fn](stateContext, action);
         if (result) {
           results.push(result);
