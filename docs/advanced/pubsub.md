@@ -12,7 +12,7 @@ import { EventStream, ofEvent } from 'ngxs';
 export class RouteHandler {
   constructor(private eventStream: EventStream, private router: Router) {
     this.eventStream
-      .pipe(ofEvent(NewAnimal))
+      .pipe(ofAction(NewAnimal))
       .subscribe((action) => alert('New Animal!'));
   }
 }

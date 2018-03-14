@@ -1,103 +1,76 @@
-# Action
-Mutations should not reach out to backend services or do async operations.
-Those are reserved for `Action`. Similarly actions should not mutate state.
-Lets say for our `NewAnimal` event we want to reach out to the backend and save the
-new animal before we add it to the UI.
+# Events
 
-Our stores can also participate in dependency injection so when we want to 
-reach out to our backend injectable service, we can just inject it. When 
-using DI, its important to add your store to your module's providers.
-The arguments of the function are similar to those of the mutation, passing 
-the state and the action. Lets see what this looks like:
+## What is an Action?
+Lets define what our store is going to do. We call these event classes. They
+will be what we dispatch and our stores respond to. For this store, we will define
+the following:
 
 ```javascript
-import { Store, Action } from 'ngxs';
+export class FeedAnimals {}
+export class NewAnimal {
+  constructor(public payload: string) {}
+}
+export class NewAnimalSuccess {}
+```
 
-@Store({
-  defaults: {
-    feed: false,
-    animals: []
-  }
-})
-export class ZooStore {
-  constructor(private animalService: AnimalService) {}
+In the above events, we have `FeedAnimals` which has no payload for it. Its just
+going to flip a simple flag in our store for us. In the `NewAnimal` event we define
+a payload which will contain the animal type. Unlike with redux, we don't need to
+define a type property since our store is smart enough to read the class as the type.
+You can optionally include a type if you want to make the event more descriptive, that
+looks like this:
 
-  @Action(NewAnimal)
-  newAnimal(state, { payload }) {
-    return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
+```javascript
+export class NewAnimal {
+  readonly static type = 'I got a new animal today!';
+}
+```
+
+### Dispatching actions
+So we've covered what our events looks like, but how do we trigger these events? In
+your component, you simply inject the `Action` service and call dispatch with the event
+class from there.
+
+```javascript
+import { Store } from 'ngxs';
+import { AddAnimal } from './animal.events';
+
+@Component({ ... })
+export class ZooComponent {
+  constructor(private store: Store) {}
+
+  addAnimal(name) {
+    this.store.dispatch(new AddAnimal(name));
   }
 }
 ```
 
-In this example our `AnimalService` calls out to our backend and returns an observable.
-We map the result of that observable into a new event passing the results as the payload.
-It will automatically map observables, promises and raw events for you. So you can do things like:
+And the rest is magic! You can also dispatch multiple events at the same
+time by passing an array of events like:
 
 ```javascript
-/** Returns a observable event */
-@Action(NewAnimal)
-newAnimal(state, { payload }) {
-  return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
-}
-
-/** Returns a observable with an array of events */
-@Action(NewAnimal)
-newAnimal(state, { payload }) {
-  return this.animalService.save(payload).map((res) => [
-    new AnimalSuccess(res),
-    new AlertZooKeeper()
-  ]);
-}
-
-/** Return a raw event */
-@Action(NewAnimal)
-newAnimal(state, { payload }) {
-  return new AnimalSuccess();
-}
-
-/** Return promises */
-@Action(NewAnimal)
-newAnimal(state, { payload }) {
-  return new Promise((resolve, reject) => {
-    resolve(new AnimalSuccess());
-  });
-}
-
-/** Async/Await */
-@Action(NewAnimal)
-async newAnimal(state, { payload }) {
-  await this.animalService.save(payload);
-  return new AnimalSuccess();
-}
+this.store.dispatch([
+  new AddAnimal('Panda'),
+  new AddAnimal('Zebra')
+]);
 ```
 
-Its pretty flexible, it doesn't try to push you into a certain
-way but provides you a mechanism to handle your control flows
-how you want.
-
-Now that we have called out to the backend and saved the animal,
-we need to connect the dots and save the animal to our store. Thats
-super easy, since its just another mutation that adds our animal
-to the store:
+Lets say after the event executes you want to clear
+the form. Our `dispatch` function actually returns an observable, so we can
+subscribe very easily and reset the form after it was successful.
 
 ```javascript
-@Store({
-  defaults: {
-    feed: false,
-    animals: []
-  }
-})
-export class ZooStore {
-  constructor(private animalService: AnimalService) {}
+import { Store } from 'ngxs';
+import { AddAnimal } from './animal.events';
 
-  @Mutation(NewAnimalSuccess)
-  newAnimalSuccess(state, { payload }) {
-    state.animals = [...state.animals, payload];
-  }
+@Component({ ... })
+export class ZooComponent {
+  constructor(private store: Store) {}
 
-  @Action(NewAnimal)
-  newAnimal(state, { payload }) {
-    return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
+  addAnimal(name) {
+    this.store.dispatch(new AddAnimal(name)).subscribe(() => {
+      this.form.reset();
+    });
   }
 }
 ```

@@ -4,7 +4,7 @@ export { Store } from './store';
 export { State } from './state';
 export { Select } from './select';
 export { EventStream } from './event-stream';
-export { ofEvent } from './of-event';
+export { ofAction } from './of-action';
 export { NgxsPlugin, NgxsPluginFn, StateContext } from './symbols';
 export {
   ReduxDevtoolsPlugin,

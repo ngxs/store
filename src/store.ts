@@ -112,8 +112,6 @@ export class Store {
           }
         });
         results.push(eventResultStream);
-      } else {
-        results.push(this.dispatch(eventResult));
       }
     }
     return results;

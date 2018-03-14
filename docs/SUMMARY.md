@@ -3,10 +3,8 @@
 * [Introduction](README.md)
 * [Installation](installation.md)
 * [Concepts](concepts/README.md)
-  * [Event](concepts/event.md)
-  * [Store](concepts/store.md)
-  * [Mutations](concepts/mutation.md)
   * [Action](concepts/action.md)
+  * [State](concepts/state.md)
   * [Select](concepts/select.md)
 * Advanced
   * [Lazy Loading](advanced/lazy.md)

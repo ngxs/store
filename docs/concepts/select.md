@@ -2,17 +2,17 @@
 
 Its important to note that READS and WRITES are completely separate in ngxs. To read data
 out of the store, we can either call the `select` method on the
-`ngxs` service or a `@Select` decorator. First lets look at the `select` method.
+`Store` service or a `@Select` decorator. First lets look at the `select` method.
 
 ```javascript
-import { Ngxs } from 'ngxs';
+import { Store } from 'ngxs';
 import { AddAnimal } from './animal.events';
 
 @Component({ ... })
 export class ZooComponent {
   animals$: Observable<string[]>;
-  constructor(private ngxs: Ngxs) {
-    this.animals$ = this.ngxs.select(state => state.zoo.animals);
+  constructor(private store: Store) {
+    this.animals$ = this.store.select(state => state.zoo.animals);
   }
 }
 ```
@@ -23,13 +23,13 @@ the same way but with some other options.
 ```javascript
 import { Ngxs } from 'ngxs';
 
-import { ZooStore } from './zoo.store';
-import { AddAnimal } from './animal.events';
+import { ZooState } from './zoo.state';
+import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
  // Reads the name of the store from the store class
-  @Select(ZooStore) animals$: Observable<string[]>;
+  @Select(ZooState) animals$: Observable<string[]>;
 
   // Reads the name of the property minus the $
   @Select() animals$: Observable<string[]>;

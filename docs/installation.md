@@ -14,8 +14,8 @@ import { NgxsModule } from 'ngxs';
 @NgModule({
   imports: [
     NgxsModule.forRoot([
-      ZooStore
-    ], { /* optional options */ })
+      ZooState
+    ])
   ]
 })
 ```
