@@ -14,7 +14,7 @@ import { NgxsModule, LoggerPluginModule } from 'ngxs';
       logger: console,
 
       // expand results by default
-      expanded: true
+      collapsed: false
     })
   ]
 })
