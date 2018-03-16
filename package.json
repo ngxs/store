@@ -1,33 +1,32 @@
 {
-  "name": "ngxs-build",
+  "name": "ngxs",
   "version": "1.5.3",
   "description": "State Mangement for Angular",
+  "main": "index.js",
   "scripts": {
     "start": "ng serve --aot --app integration",
-    "build": "ng-packagr -p src/package.json",
+    "build": "ng-packagr -p package.json",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "test": "ng test --app lib",
     "test:integration": "npm run build && npm link ./dist && ng build --preserve-symlinks --app integration --prod",
     "prettier": "prettier --write \"**/*.ts\"",
-    "test:ci": "ng test -cc --browsers ChromeHeadless --single-run -cc && ng build --prod"
+    "test:ci": "ng test -cc --browsers ChromeHeadless --single-run -cc && npm run test:integration"
   },
   "repository": {
     "type": "git",
     "url": "git+https://amcdnl@github.com/amcdnl/ngxs.git"
   },
-  "keywords": [
-    "ngrx",
-    "redux",
-    "state",
-    "store",
-    "state-mangement"
-  ],
+  "keywords": ["ngrx", "redux", "state", "store", "state-mangement"],
   "author": "Austin McDaniel",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/amcdnl/ngxs/issues"
   },
   "homepage": "https://github.com/amcdnl/ngxs#readme",
+  "peerDependencies": {
+    "@angular/core": "^5.0.0",
+    "rxjs": "^5.5.6"
+  },
   "devDependencies": {
     "@angular/cli": "^1.7.2",
     "@angular/core": "^5.0.0",
@@ -59,5 +58,11 @@
     "tslint": "^5.8.0",
     "typescript": "~2.6.2",
     "zone.js": "^0.8.4"
+  },
+  "ngPackage": {
+    "lib": {
+      "entryFile": "src/index.ts",
+      "flatModuleFile": "ngxs-api"
+    }
   }
 }

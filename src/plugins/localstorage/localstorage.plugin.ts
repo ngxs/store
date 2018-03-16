@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
 import { tap } from 'rxjs/operators';
 
-import { NgxsPlugin } from '../../lib/symbols';
-import { getTypeFromInstance } from '../../lib/internals';
+import { NgxsPlugin } from '../../symbols';
+import { getTypeFromInstance } from '../../internals';
 
 import { LocalStoragePluginOptions, LOCAL_STORAGE_PLUGIN_OPTIONS, StorageStrategy } from './symbols';
 import { setValue, getValue } from './utils';

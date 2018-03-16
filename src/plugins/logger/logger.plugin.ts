@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
 import { tap } from 'rxjs/operators';
 
-import { NgxsPlugin } from '../../lib/symbols';
-import { getTypeFromInstance } from '../../lib/internals';
+import { NgxsPlugin } from '../../symbols';
+import { getTypeFromInstance } from '../../internals';
 
 import { LOGGER_PLUGIN_OPTIONS, LoggerPluginOptions } from './symbols';
 import { pad } from './internals';

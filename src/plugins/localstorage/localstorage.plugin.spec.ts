@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NgxsModule } from '../../lib/module';
-import { State } from '../../lib/state';
-import { Store } from '../../lib/store';
-import { Action } from '../../lib/action';
-import { StateContext } from '../../lib/symbols';
+import { NgxsModule } from '../../module';
+import { State } from '../../state';
+import { Store } from '../../store';
+import { Action } from '../../action';
+import { StateContext } from '../../symbols';
 
 import { LocalStoragePluginModule } from './localstorage.module';
 

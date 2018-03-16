@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "paths": {},
+    "paths": {
+      "@angular/*": ["node_modules/@angular/*"]
+    },
     "module": "commonjs",
     "noEmitHelpers": false,
     "noEmitOnError": false,

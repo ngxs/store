@@ -1,6 +1,6 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 
-import { NGXS_PLUGINS } from '../../lib/symbols';
+import { NGXS_PLUGINS } from '../../symbols';
 
 import { DevtoolsOptions, DEVTOOLS_OPTIONS } from './symbols';
 import { ReduxDevtoolsPlugin } from './devtools.plugin';
