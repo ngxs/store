@@ -23,7 +23,7 @@
       "index": "integration/index.html",
       "main": "integration/main.ts",
       "polyfills": "polyfills.ts",
-      "tsconfig": "tsconfig.app.json",
+      "tsconfig": "tsconfig.app.integration.json",
       "testTsconfig": "tsconfig.spec.integration.json"
     }
   ],
