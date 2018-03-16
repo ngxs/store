@@ -1,10 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "paths": {},
     "outDir": "./out-tsc/app",
-    "paths": {
-      "ngxs": ["src/index.ts"]
-    },
     "baseUrl": "./",
     "module": "es2015",
     "types": []

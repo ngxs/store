@@ -4,13 +4,13 @@
   "description": "State Mangement for Angular",
   "main": "index.js",
   "scripts": {
-    "start": "ng serve --aot --app integration",
+    "start": "ng serve --aot",
+    "test": "ng test",
+    "test:integration": "npm run build && npm link ./dist && ng build --preserve-symlinks --app integration --prod",
+    "test:ci": "ng test -cc --browsers ChromeHeadless --single-run -cc && npm run test:integration",
     "build": "ng-packagr -p package.json",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "test": "ng test --app lib",
-    "test:integration": "npm run build && npm link ./dist && ng build --preserve-symlinks --app integration --prod",
-    "prettier": "prettier --write \"**/*.ts\"",
-    "test:ci": "ng test -cc --browsers ChromeHeadless --single-run -cc && npm run test:integration"
+    "prettier": "prettier --write \"**/*.ts\""
   },
   "repository": {
     "type": "git",

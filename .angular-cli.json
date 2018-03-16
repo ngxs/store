@@ -7,15 +7,17 @@
     {
       "name": "lib",
       "root": "",
+      "outDir": "dist-lib/",
       "test": "test.ts",
-      "main": "test.ts",
+      "index": "integration/index.html",
+      "main": "integration/main.ts",
       "polyfills": "polyfills.ts",
+      "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json"
     },
     {
       "name": "integration",
       "root": "",
-      "assets": [],
       "outDir": "dist-integration/",
       "test": "test.integration.ts",
       "index": "integration/index.html",
