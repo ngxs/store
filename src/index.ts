@@ -1,17 +1,12 @@
-export { NgxsModule } from './module';
-export { Action } from './action';
-export { Store } from './store';
-export { State } from './state';
-export { Select } from './select';
-export { EventStream } from './event-stream';
-export { ofAction } from './of-action';
-export { NgxsPlugin, NgxsPluginFn, StateContext } from './symbols';
-export {
-  ReduxDevtoolsPlugin,
-  LoggerPlugin,
-  LocalStoragePlugin,
-  LocalStoragePluginModule,
-  StorageStrategy,
-  LoggerPluginModule,
-  ReduxDevtoolsPluginModule
-} from './plugins';
+export { NgxsModule } from './lib/module';
+export { Action } from './lib/action';
+export { Store } from './lib/store';
+export { State } from './lib/state';
+export { Select } from './lib/select';
+export { EventStream } from './lib/event-stream';
+export { ofAction } from './lib/of-action';
+export { NgxsPlugin, NgxsPluginFn, StateContext } from './lib/symbols';
+
+export { ReduxDevtoolsPlugin, ReduxDevtoolsPluginModule } from './plugins/devtools/index';
+export { LoggerPlugin, LoggerPluginModule } from './plugins/logger/index';
+export { LocalStoragePlugin, LocalStoragePluginModule } from './plugins/localstorage/index';

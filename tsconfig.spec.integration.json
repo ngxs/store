@@ -6,6 +6,6 @@
     "target": "es5",
     "types": ["jasmine"]
   },
-  "files": ["test.ts"],
-  "include": ["src/**/*.spec.ts"]
+  "files": ["test.integration.ts"],
+  "include": ["integration/**/*.spec.ts"]
 }

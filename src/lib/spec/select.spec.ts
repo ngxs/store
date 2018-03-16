@@ -1,15 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Store, NgxsModule, Select } from 'ngxs';
+
+import { NgxsModule } from '../module';
+import { Select } from '../select';
+import { State } from '../state';
 
 describe('Select', () => {
-  interface State {
+  interface StateModel {
     foo: string;
     bar: string;
   }
 
-  @Store<State>({
+  @State<StateModel>({
     name: 'counter',
     defaults: {
       foo: 'Hello',
@@ -23,7 +26,7 @@ describe('Select', () => {
     template: ''
   })
   class StringSelectComponent {
-    @Select('counter') state: Observable<State>;
+    @Select('counter') state: Observable<StateModel>;
   }
 
   @Component({
@@ -31,7 +34,7 @@ describe('Select', () => {
     template: ''
   })
   class StoreSelectComponent {
-    @Select(MyStore) state: Observable<State>;
+    @Select(MyStore) state: Observable<StateModel>;
   }
 
   beforeEach(() => {

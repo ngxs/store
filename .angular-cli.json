@@ -5,14 +5,24 @@
   },
   "apps": [
     {
+      "name": "lib",
+      "root": "",
+      "test": "test.ts",
+      "main": "test.ts",
+      "polyfills": "polyfills.ts",
+      "testTsconfig": "tsconfig.spec.json"
+    },
+    {
+      "name": "integration",
       "root": "",
       "assets": [],
-      "test": "test.ts",
+      "outDir": "dist-integration/",
+      "test": "test.integration.ts",
       "index": "integration/index.html",
       "main": "integration/main.ts",
       "polyfills": "polyfills.ts",
       "tsconfig": "tsconfig.app.json",
-      "testTsconfig": "tsconfig.spec.json"
+      "testTsconfig": "tsconfig.spec.integration.json"
     }
   ],
   "test": {

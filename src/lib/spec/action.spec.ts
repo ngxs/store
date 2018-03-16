@@ -1,5 +1,5 @@
 import { Action } from '../action';
-import { Store } from '../store';
+import { State } from '../state';
 import { ensureStoreMetadata } from '../internals';
 
 describe('Action', () => {
@@ -7,12 +7,10 @@ describe('Action', () => {
     class Action1 {}
     class Action2 {}
 
-    @Store({})
+    @State({})
     class BarStore {
       @Action([Action1, Action2])
-      foo(state) {
-        state.foo = false;
-      }
+      foo() {}
     }
 
     const meta = ensureStoreMetadata(BarStore);

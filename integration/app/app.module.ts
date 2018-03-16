@@ -9,12 +9,7 @@ import { routes } from './app.routes';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    RouterModule.forRoot(routes),
-    NgxsModule.forRoot([TodoState]),
-    ReduxDevtoolsPluginModule.forRoot()
-  ],
+  imports: [BrowserModule, RouterModule.forRoot(routes), NgxsModule.forRoot([TodoState]), ReduxDevtoolsPluginModule],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
