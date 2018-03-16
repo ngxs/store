@@ -8,6 +8,7 @@
   * [Select](concepts/select.md)
 * Advanced
   * [Lazy Loading](advanced/lazy.md)
+  * [Sub States](advanced/sub-states.md)
   * [Caching](advanced/cache.md)
   * [Pub Sub](advanced/pubsub.md)
   * [Composition](advanced/composition.md)
