@@ -9,4 +9,4 @@ export { NgxsPlugin, NgxsPluginFn, StateContext } from './symbols';
 
 export { ReduxDevtoolsPlugin, ReduxDevtoolsPluginModule } from './plugins/devtools/index';
 export { LoggerPlugin, LoggerPluginModule } from './plugins/logger/index';
-export { LocalStoragePlugin, LocalStoragePluginModule, StorageStrategy } from './plugins/localstorage/index';
+export { LocalStoragePlugin, LocalStoragePluginModule } from './plugins/localstorage/index';
