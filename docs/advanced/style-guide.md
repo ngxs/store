@@ -13,6 +13,9 @@ Selects should have a `$` suffix. Right: `animals$` Wrong: `animals`
 ### Plugin Suffix
 Plugins should end with the `Plugin` suffix
 
+### Plugin Filenames
+Plugins file names should end with `.plugin.ts`
+
 ### Folder Organization
 Global states should be organized under `src/shared/state`.
 Feature states should live within the respective feature folder structure `src/app/my-feature`.
@@ -28,4 +31,6 @@ Unit tests for the state should be named `my-store-name.state.spec.ts`
 Actions should ALWAYS use the `payload` public name
 
 ### Action Operations
-Actions should NOT deal with view related operations (i.e. showing popups/etc)
+Actions should NOT deal with view related operations (i.e. showing popups/etc). Use the event
+stream to handle these types of operations.
+

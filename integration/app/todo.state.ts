@@ -8,8 +8,12 @@ export class RemoveTodo {
   constructor(public readonly payload: number) {}
 }
 
+export class TodoStateModel {
+  todo: string[];
+}
+
 @State<string[]>({
-  name: 'todos',
+  name: 'todo',
   defaults: []
 })
 export class TodoState {
@@ -23,3 +27,9 @@ export class TodoState {
     setState(state.filter((_, i) => i !== payload));
   }
 }
+
+@State<TodoStateModel>({
+  name: 'todos',
+  children: [TodoState]
+})
+export class TodosState {}

@@ -8,6 +8,7 @@ accepts a few different options:
 * `name`: Optional name of the store. If not pass it will take
   the name of the class, camel case it and remove the word `State` from the end.
 * `defaults`: A set of default options to initialize our store with.
+* `children`: Sub states associated to this state.
 
 So here is our basic store:
 

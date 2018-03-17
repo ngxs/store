@@ -3,6 +3,7 @@
 * [Introduction](README.md)
 * [Installation](installation.md)
 * [Concepts](concepts/README.md)
+  * [Store](concepts/store.md)
   * [Action](concepts/action.md)
   * [State](concepts/state.md)
   * [Select](concepts/select.md)

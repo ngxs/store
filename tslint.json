@@ -6,7 +6,6 @@
       true,
       "check-space"
     ],
-    "curly": true,
     "eofline": true,
     "import-blacklist": [
       true,

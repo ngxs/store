@@ -20,6 +20,7 @@ export function State<T>(options: StoreOptions<T>) {
   return function(target: any) {
     const meta = ensureStoreMetadata(target);
 
+    // Handle inheritance
     if (target.__proto__.hasOwnProperty(META_KEY)) {
       const parentMeta = target.__proto__[META_KEY];
       meta.actions = {
@@ -28,7 +29,9 @@ export function State<T>(options: StoreOptions<T>) {
       };
     }
 
+    meta.children = options.children;
     meta.defaults = options.defaults;
+
     if (options.name) {
       meta.name = options.name;
     } else {

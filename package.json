@@ -1,6 +1,6 @@
 {
   "name": "ngxs",
-  "version": "1.5.3",
+  "version": "2.0.0-rc.0",
   "description": "State Mangement for Angular",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,11 @@
     "ngrx",
     "redux",
     "state",
+    "rxjs",
+    "angular",
+    "ngx",
+    "angular2",
+    "cqrs",
     "store",
     "state-mangement"
   ],

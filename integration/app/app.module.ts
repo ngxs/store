@@ -3,16 +3,16 @@ import { NgModule } from '@angular/core';
 import { NgxsModule, ReduxDevtoolsPluginModule } from 'ngxs';
 import { RouterModule } from '@angular/router';
 
-import { TodoState } from './todo.state';
 import { AppComponent } from './app.component';
 import { routes } from './app.routes';
+import { states } from './app.state';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
-    NgxsModule.forRoot([TodoState]),
+    NgxsModule.forRoot(states),
     ReduxDevtoolsPluginModule.forRoot()
   ],
   bootstrap: [AppComponent]

@@ -24,7 +24,7 @@ export class Store {
   ) {}
 
   /**
-   * Dispatches an event(s).
+   * Dispatches event(s).
    */
   dispatch(event: any | any[]): Observable<any> {
     let result;

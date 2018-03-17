@@ -1,8 +1,7 @@
 # Composition
-You can compose multiple stores together using class inheritance. This is REALLY
-simple:
+You can compose multiple stores together using class inheritance. This is REALLY simple:
 
-```javascript
+```TS
 @State({})
 class ZooState {
   @Action(Eat)
@@ -16,4 +15,4 @@ class StLouisZooState extends ZooStore {
 }
 ```
 
-now when `StLouisZooState` is invoked, it will share the mutations or actions of the `ZooState`.
+now when `StLouisZooState` is invoked, it will share the actions of the `ZooState`.

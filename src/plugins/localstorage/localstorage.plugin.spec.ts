@@ -1,35 +1,35 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NgxsModule, LocalStoragePluginModule, Store, Mutation, Ngxs } from 'ngxs';
+import { NgxsModule, LocalStoragePluginModule, State, Action, Store } from 'ngxs';
 
 describe('LocalStoragePlugin', () => {
-  let ngxs: Ngxs;
+  let store: Store;
 
   class Increment {}
 
   class Decrement {}
 
-  interface State {
+  interface StateModel {
     count: number;
   }
 
-  @Store<State>({
+  @State<StateModel>({
     name: 'counter',
     defaults: { count: 0 }
   })
   class MyStore {
-    @Mutation(Increment)
-    increment(state: State) {
-      return {
+    @Action(Increment)
+    increment({ state, setState }) {
+      setState({
         count: Number(state.count) + 1
-      };
+      });
     }
 
-    @Mutation(Decrement)
-    decrement(state: State) {
-      return {
+    @Action(Decrement)
+    decrement({ state, setState }) {
+      setState({
         count: Number(state.count) - 1
-      };
+      });
     }
   }
 
@@ -40,7 +40,7 @@ describe('LocalStoragePlugin', () => {
       imports: [LocalStoragePluginModule.forRoot(), NgxsModule.forRoot([MyStore])]
     });
 
-    ngxs = TestBed.get(Ngxs);
+    store = TestBed.get(Store);
   });
 
   afterEach(() => {
@@ -50,19 +50,19 @@ describe('LocalStoragePlugin', () => {
   it('should get initial data from localstorage', () => {
     localStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
 
-    ngxs.select(state => state.counter).subscribe((state: State) => {
+    store.select(state => state.counter).subscribe((state: StateModel) => {
       expect(state.count).toBe(100);
     });
   });
 
   it('should save data to localstorage', () => {
-    ngxs.dispatch(new Increment());
-    ngxs.dispatch(new Increment());
-    ngxs.dispatch(new Increment());
-    ngxs.dispatch(new Increment());
-    ngxs.dispatch(new Increment());
+    store.dispatch(new Increment());
+    store.dispatch(new Increment());
+    store.dispatch(new Increment());
+    store.dispatch(new Increment());
+    store.dispatch(new Increment());
 
-    ngxs.select(state => state.counter).subscribe((state: State) => {
+    store.select(state => state.counter).subscribe((state: StateModel) => {
       expect(state.count).toBe(105);
 
       expect(localStorage.getItem('@@STATE')).toBe(JSON.stringify({ counter: { count: 105 } }));

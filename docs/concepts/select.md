@@ -4,21 +4,10 @@ Its important to note that READS and WRITES are completely separate in ngxs. To 
 out of the store, we can either call the `select` method on the
 `Store` service or a `@Select` decorator. First lets look at the `select` method.
 
-```javascript
-import { Store } from 'ngxs';
-import { AddAnimal } from './animal.events';
-
-@Component({ ... })
-export class ZooComponent {
-  animals$: Observable<string[]>;
-  constructor(private store: Store) {
-    this.animals$ = this.store.select(state => state.zoo.animals);
-  }
-}
-```
-
-Thats pretty similar to Redux and NGRX. We can use a handy decorator
-the same way but with some other options.
+### Select Decorators
+You can select slices of data from the store using the `@Select` decorator. It has a few
+different ways to get your data out, whether passing the state class, a function or dot notation
+of the object graph.
 
 ```javascript
 import { Ngxs } from 'ngxs';
@@ -40,12 +29,26 @@ export class ZooComponent {
   // These properties can be nested too
   @Select('animals.names') animals$: Observable<string[]>;
 
-  // These properties can be in the form of an array too
-  @Select(['animals', 'names']) animals$: Observable<string[]>;
-
   // Also accepts a function like our select method
   @Select(state => state.animals) animals$: Observable<string[]>;
 }
 ```
 
-Pretty cool huh? Lots of options to get data out!
+### Store Select Function
+The `Store` class also has a `select` function:
+
+```javascript
+import { Store } from 'ngxs';
+import { AddAnimal } from './animal.events';
+
+@Component({ ... })
+export class ZooComponent {
+  animals$: Observable<string[]>;
+  constructor(private store: Store) {
+    this.animals$ = this.store.select(state => state.zoo.animals);
+  }
+}
+```
+
+This is most helpful to programatic selects where we can't statically
+declare them with the select decorator.

@@ -3,6 +3,7 @@ Complex and large state graphs are difficult to manage. Oftentimes we need
 to break these down into sub states that we can manage the items on a individual
 basis. With NGXS, we can use a concept called sub states to handle this.
 
+## Example
 Let's take the following example state graph:
 
 ```javascript
@@ -63,3 +64,7 @@ and wire up it, we need to import both of these into the `NgxsModule`:
 ```
 
 And the store will automatically recongnize the relationship and bind them together.
+
+## Caveats
+This is only intended to work with nested objects, so trying to create stores on
+nested array objects will not work.

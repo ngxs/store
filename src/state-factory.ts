@@ -1,10 +1,21 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { META_KEY } from './symbols';
-import { getTypeFromInstance } from './internals';
+import {
+  getTypeFromInstance,
+  topologicalSort,
+  buildGraph,
+  findFullParentPath,
+  nameToState,
+  setValue,
+  getValue
+} from './internals';
 
 @Injectable()
 export class StateFactory {
-  states: any[] = [];
+  get states() {
+    return this._parentFactory ? this._parentFactory.states : this._states;
+  }
+  private _states = [];
 
   constructor(
     private _injector: Injector,
@@ -13,24 +24,31 @@ export class StateFactory {
     private _parentFactory: StateFactory
   ) {}
 
-  add(stores: any | any[]): any[] {
-    if (!Array.isArray(stores)) {
-      stores = [stores];
+  add(states: any | any[]): any[] {
+    if (!Array.isArray(states)) {
+      states = [states];
     }
 
+    const stateGraph = buildGraph(states);
+    const sortedStates = topologicalSort(stateGraph);
+    const depths = findFullParentPath(stateGraph);
+    const nameGraph = nameToState(states);
+
     const mappedStores = [];
-    for (const klass of stores) {
+    for (const name of sortedStates) {
+      const klass = nameGraph[name];
       if (!klass[META_KEY]) {
         throw new Error('States must be decorated with @State() decorator');
       }
 
-      const { actions, name } = klass[META_KEY];
+      const depth = depths[name];
+      const { actions } = klass[META_KEY];
       let { defaults } = klass[META_KEY];
 
       // ensure our store hasn't already been added
       const has = this.states.find(s => s.name === name);
       if (has) {
-        throw new Error(`Store has already been added ${name}`);
+        throw new Error(`Store has already been added: ${name}`);
       }
 
       // create new instance of defaults
@@ -45,21 +63,17 @@ export class StateFactory {
         actions,
         instance,
         defaults,
-        name
+        name,
+        depth
       });
     }
 
-    const globalStores = this._parentFactory ? this._parentFactory.states : this.states;
-
-    globalStores.push(...mappedStores);
+    this.states.push(...mappedStores);
     return mappedStores;
   }
 
-  addAndReturnDefaults(stores) {
-    return this.add(stores).reduce((result, meta) => {
-      result[meta.name] = meta.defaults;
-      return result;
-    }, {});
+  addAndReturnDefaults(stores: any[]): any {
+    return this.add(stores).reduce((result, meta) => setValue(result, meta.depth, meta.defaults), {});
   }
 
   invokeActions(getState, setState, action): any[] {
@@ -71,16 +85,14 @@ export class StateFactory {
 
       if (actionMeta) {
         const stateContext = {
-          get state() {
+          get state(): any {
             const state = getState();
-            return state[metadata.name];
+            return getValue(state, metadata.depth);
           },
-          setState(val) {
-            const state = getState();
-            setState({
-              ...state,
-              [metadata.name]: val
-            });
+          setState(val: any): void {
+            let state = { ...getState() };
+            state = setValue(state, metadata.depth, val);
+            setState(state);
           }
         };
 

@@ -28,4 +28,5 @@ export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) =
 export interface StoreOptions<T> {
   name?: string;
   defaults?: T;
+  children?: any[];
 }
