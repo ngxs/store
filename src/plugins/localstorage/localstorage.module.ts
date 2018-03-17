@@ -1,6 +1,7 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 
 import { NGXS_PLUGINS } from '../../symbols';
+
 import { LocalStoragePlugin } from './localstorage.plugin';
 import { serialize, deserialize } from './utils';
 import { LocalStoragePluginOptions, LOCAL_STORAGE_PLUGIN_OPTIONS, StorageStrategy } from './symbols';

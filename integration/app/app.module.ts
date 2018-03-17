@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { TodoState } from './todo.state';
 import { AppComponent } from './app.component';
 import { routes } from './app.routes';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
@@ -13,7 +14,9 @@ import { routes } from './app.routes';
     BrowserModule,
     RouterModule.forRoot(routes),
     NgxsModule.forRoot([TodoState]),
-    ReduxDevtoolsPluginModule.forRoot()
+    ReduxDevtoolsPluginModule.forRoot({
+      disabled: environment.production
+    })
   ],
   bootstrap: [AppComponent]
 })

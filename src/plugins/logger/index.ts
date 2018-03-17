@@ -1,3 +1,2 @@
-export * from './logger.module';
-export * from './logger.plugin';
-export * from './symbols';
+export { LoggerPluginModule } from './logger.module';
+export { LoggerPlugin } from './logger.plugin';

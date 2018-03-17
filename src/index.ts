@@ -6,12 +6,7 @@ export { Select } from './select';
 export { EventStream } from './event-stream';
 export { ofAction } from './of-action';
 export { NgxsPlugin, NgxsPluginFn, StateContext } from './symbols';
-export {
-  ReduxDevtoolsPlugin,
-  LoggerPlugin,
-  LocalStoragePlugin,
-  LocalStoragePluginModule,
-  StorageStrategy,
-  LoggerPluginModule,
-  ReduxDevtoolsPluginModule
-} from './plugins';
+
+export { ReduxDevtoolsPlugin, ReduxDevtoolsPluginModule } from './plugins/devtools/index';
+export { LoggerPlugin, LoggerPluginModule } from './plugins/logger/index';
+export { LocalStoragePlugin, LocalStoragePluginModule } from './plugins/localstorage/index';

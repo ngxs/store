@@ -1,3 +1,2 @@
-export * from './devtools.module';
-export * from './devtools.plugin';
-export * from './symbols';
+export { ReduxDevtoolsPluginModule } from './devtools.module';
+export { ReduxDevtoolsPlugin } from './devtools.plugin';

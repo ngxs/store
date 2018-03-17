@@ -15,7 +15,7 @@ export class RemoveTodo {
 export class TodoState {
   @Action(AddTodo)
   addTodo({ state, setState }: StateContext<string[]>, { payload }: AddTodo) {
-    setState([...state, payload]);
+    setState([payload, ...state]);
   }
 
   @Action(RemoveTodo)

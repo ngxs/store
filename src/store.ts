@@ -1,8 +1,4 @@
 import { Injectable, ErrorHandler } from '@angular/core';
-import { EventStream } from './event-stream';
-import { StateFactory } from './state-factory';
-import { StateStream } from './state-stream';
-import { PluginManager } from './plugin-manager';
 import { Observable } from 'rxjs/Observable';
 import { distinctUntilChanged, materialize, catchError, take } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
@@ -12,6 +8,11 @@ import { fromPromise } from 'rxjs/observable/fromPromise';
 import { compose } from './compose';
 import { of } from 'rxjs/observable/of';
 import { empty } from 'rxjs/observable/empty';
+
+import { EventStream } from './event-stream';
+import { StateFactory } from './state-factory';
+import { StateStream } from './state-stream';
+import { PluginManager } from './plugin-manager';
 
 @Injectable()
 export class Store {

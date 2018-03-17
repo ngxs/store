@@ -1,6 +1,8 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { LoggerPluginOptions, LOGGER_PLUGIN_OPTIONS } from './symbols';
+
 import { NGXS_PLUGINS } from '../../symbols';
+
+import { LoggerPluginOptions, LOGGER_PLUGIN_OPTIONS } from './symbols';
 import { LoggerPlugin } from './logger.plugin';
 
 @NgModule()

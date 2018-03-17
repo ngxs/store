@@ -5,23 +5,18 @@
   "main": "index.js",
   "scripts": {
     "start": "ng serve --aot",
+    "test": "ng test",
+    "test:integration": "npm run build && npm link ./dist && ng build --preserve-symlinks --app integration --prod",
+    "test:ci": "ng test -cc --browsers ChromeHeadless --single-run -cc && npm run test:integration",
     "build": "ng-packagr -p package.json",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "test": "ng test",
-    "prettier": "prettier --write \"**/*.ts\"",
-    "test:ci": "ng test -cc --browsers ChromeHeadless --single-run -cc && ng build --prod"
+    "prettier": "prettier --write \"**/*.ts\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://amcdnl@github.com/amcdnl/ngxs.git"
   },
-  "keywords": [
-    "ngrx",
-    "redux",
-    "state",
-    "store",
-    "state-mangement"
-  ],
+  "keywords": ["ngrx", "redux", "state", "store", "state-mangement"],
   "author": "Austin McDaniel",
   "license": "MIT",
   "bugs": {
@@ -34,13 +29,13 @@
   },
   "devDependencies": {
     "@angular/cli": "^1.7.2",
-    "@angular/common": "^5.2.7",
-    "@angular/router": "^5.2.7",
-    "@angular/compiler": "^5.2.7",
-    "@angular/compiler-cli": "^5.2.7",
-    "@angular/core": "^5.2.7",
-    "@angular/platform-browser": "^5.2.7",
-    "@angular/platform-browser-dynamic": "^5.2.7",
+    "@angular/core": "^5.0.0",
+    "@angular/common": "^5.0.0",
+    "@angular/router": "^5.0.0",
+    "@angular/compiler": "^5.0.0",
+    "@angular/compiler-cli": "^5.0.0",
+    "@angular/platform-browser": "^5.0.0",
+    "@angular/platform-browser-dynamic": "^5.0.0",
     "@commitlint/cli": "^6.1.3",
     "@commitlint/config-conventional": "^6.1.3",
     "@types/jasmine": "^2.8.0",

@@ -1,8 +1,10 @@
+import { Injectable, Inject } from '@angular/core';
+import { tap } from 'rxjs/operators';
+
 import { NgxsPlugin } from '../../symbols';
 import { getTypeFromInstance } from '../../internals';
-import { Injectable, Inject } from '@angular/core';
+
 import { DevtoolsExtension, DevtoolsOptions, DEVTOOLS_OPTIONS } from './symbols';
-import { tap } from 'rxjs/operators';
 
 /**
  * Adds support for the Redux Devtools extension:
