@@ -3,9 +3,9 @@
 Next let's talk about plugins. Similar to Redux's meta reducers, we have
 a plugins interface that allows you to build a global plugin for your state.
 
-All you have to do is provide a class to the NGXS_PLUGINS token.
+All you have to do is provide a class to the `NGXS_PLUGINS` token.
 If your plugins has options associated with it, we suggest defining an injection token 
-and then a forRoot method on your module
+and then a `forRoot` method on your module
 
 Let's take a basic example of a logger:
 
