@@ -9,6 +9,7 @@
 - Events are now just called Actions
 - `ofEvent` is now called `ofAction`
 - Plugins `next` fn now returns an observable
+- Local Storage plugins removed Strategy in favor of passing your own engine
 
 ## Features
 - Simplified APIs by removing Mutations, decreased boilerplate

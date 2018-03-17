@@ -10,7 +10,10 @@ import { NgxsModule, ReduxDevtoolsPluginModule } from 'ngxs';
   imports: [
     NgxsModule.forRoot([]),
     ReduxDevtoolsPluginModule.forRoot({
-      disabled: false // Set to true for prod mode
+      /**
+       * Disable the devtools, useful to disabling during production
+       */
+      disabled: false
     })
   ]
 })
