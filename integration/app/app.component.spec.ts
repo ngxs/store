@@ -29,7 +29,7 @@ describe('AppComponent', () => {
   it('should remove a todo', () => {
     component.addTodo('Get Milk');
     component.addTodo('Clean Bathroom');
-    component.removeTodo(0);
+    component.removeTodo(1);
 
     component.todos$.subscribe(state => {
       expect(state.length).toBe(1);
