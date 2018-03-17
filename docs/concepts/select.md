@@ -1,8 +1,11 @@
 # Selects
+Selects are functions that slice a specific portion of state from the global state container.
 
-Its important to note that READS and WRITES are completely separate in ngxs. To read data
-out of the store, we can either call the `select` method on the
-`Store` service or a `@Select` decorator. First lets look at the `select` method.
+In CQRS and Redux patterns, we keep READS and write seperate, we follow this pattern in NGXS.
+When we want to read data out of our store, we use a select operator to retrieve this data.
+
+In NGXS, there are 2 methods of select state, we can either call the `select` method on the
+`Store` service or a `@Select` decorator. First lets look at the `select` decorator.
 
 ### Select Decorators
 You can select slices of data from the store using the `@Select` decorator. It has a few

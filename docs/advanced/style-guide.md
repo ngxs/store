@@ -7,6 +7,10 @@ A state should always be suffixed with the word `State`. Right: `ZooState` Wrong
 ### State Filenames
 States should have a `.state.ts` suffix for the filename
 
+### State Interfaces
+State interfaces should be named the name of the state followed by the `Model` stuffix. If my
+state were called `ZooState`, we would call my state interface `ZooStateModel`.
+
 ### Select suffix
 Selects should have a `$` suffix. Right: `animals$` Wrong: `animals`
 
