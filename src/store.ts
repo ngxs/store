@@ -84,6 +84,7 @@ export class Store {
     const results = this._storeFactory.invokeActions(
       () => this._stateStream.getValue(),
       newState => this._stateStream.next(newState),
+      actions => this.dispatch(actions),
       action
     );
 

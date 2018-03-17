@@ -9,6 +9,7 @@ import {
   setValue,
   getValue
 } from './internals';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class StateFactory {
@@ -76,7 +77,7 @@ export class StateFactory {
     return this.add(stores).reduce((result, meta) => setValue(result, meta.depth, meta.defaults), {});
   }
 
-  invokeActions(getState, setState, action): any[] {
+  invokeActions(getState, setState, dispatch, action): any[] {
     const results = [];
 
     for (const metadata of this.states) {
@@ -93,6 +94,10 @@ export class StateFactory {
             let state = { ...getState() };
             state = setValue(state, metadata.depth, val);
             setState(state);
+            return state;
+          },
+          dispatch(actions: any | any[]): Observable<any> {
+            return dispatch(actions);
           }
         };
 

@@ -15,6 +15,7 @@
 - Added sub state capability
 - Add `store.selectOnce()` shortcut function
 - Better tpyings
+- Add `dispatch` function in state context for easier dispatching
 
 ## Bug Fixes
 - `dispatch().subscribe()` now works correctly
