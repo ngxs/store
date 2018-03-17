@@ -1,6 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NgxsModule, LocalStoragePluginModule, State, Action, Store } from 'ngxs';
+import { NgxsModule } from '../../module';
+import { State } from '../../state';
+import { Store } from '../../store';
+import { Action } from '../../action';
+import { LocalStoragePluginModule } from './localstorage.module';
 
 describe('LocalStoragePlugin', () => {
   let store: Store;

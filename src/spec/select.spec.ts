@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { State, NgxsModule, Select } from 'ngxs';
+import { NgxsModule } from '../module';
+import { Select } from '../select';
+import { State } from '../state';
 
 describe('Select', () => {
   interface StateModel {
