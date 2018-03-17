@@ -1,7 +1,8 @@
 # Summary
 
 * [Introduction](README.md)
-* [Installation](installation.md)
+  * [Why](introduction/wny.md)
+  * [Installation](introduction/installation.md)
 * [Concepts](concepts/README.md)
   * [Store](concepts/store.md)
   * [Action](concepts/action.md)
@@ -20,6 +21,8 @@
   * [Logger](plugins/logger.md)
   * [Devtools](plugins/devtools.md)
   * [Local Storage](plugins/localstorage.md)
-* [Community](community.md)
-* [Contributing](contributing.md)
-* [Support](support.md)
+* Community
+  * [Community Projects](community/projects.md)
+  * [Contributors](community/contributors.md)
+  * [Contributing](community/contributing.md)
+  * [Support](community/support.md)
