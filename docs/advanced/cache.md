@@ -21,15 +21,15 @@ export class ZooState {
   constructor(private animalService: AnimalService) {}
 
   @Action(GetAnimals)
-  get({ state }, { payload }) {
+  get({ state, setState, dispatch }, { payload }) {
     // payload = id of animal
     const idx = state.animals.findIndex(animal => animal.id === payload);
     if (idx > -1) {
       // if we have the cache, just return it from the store
-      return of(new GetAnimalsSuccess(state.animals[idx]));
+      return dispatch(new GetAnimalsSuccess(state.animals[idx]));
     } else {
       return this.animalService.get(payload)
-        .pipe(map(resp => new GetAnimalsSuccess(resp)));
+        .pipe(map(resp => dispatch(new GetAnimalsSuccess(resp))));
     }
   }
 }
