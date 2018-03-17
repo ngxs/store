@@ -19,12 +19,12 @@
       "name": "integration",
       "root": "",
       "outDir": "dist-integration/",
-      "test": "test.integration.ts",
+      "test": "integration/test.integration.ts",
       "index": "integration/index.html",
       "main": "integration/main.ts",
       "polyfills": "polyfills.ts",
-      "tsconfig": "tsconfig.app.integration.json",
-      "testTsconfig": "tsconfig.spec.integration.json"
+      "tsconfig": "integration/tsconfig.app.integration.json",
+      "testTsconfig": "integration/tsconfig.spec.integration.json"
     }
   ],
   "test": {

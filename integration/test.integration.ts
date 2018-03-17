@@ -12,6 +12,6 @@ declare const require: any;
 getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
 // Then we find all the tests.
-const integrationContext = require.context('./integration', true, /\.spec\.ts$/);
+const integrationContext = require.context('./', true, /\.spec\.ts$/);
 // And load the modules.
 integrationContext.keys().map(integrationContext);
