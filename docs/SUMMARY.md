@@ -1,7 +1,7 @@
 # Summary
 
 * [Introduction](README.md)
-  * [Why](introduction/wny.md)
+  * [Why](introduction/why.md)
   * [Installation](introduction/installation.md)
 * [Concepts](concepts/README.md)
   * [Store](concepts/store.md)

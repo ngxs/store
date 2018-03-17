@@ -1,8 +1,8 @@
 # Selects
 
-Its important to note that READS and WRITES are completely separate in ngxs. To read data
+It's important to note that READS and WRITES are completely separate in ngxs. To read data
 out of the store, we can either call the `select` method on the
-`Store` service or a `@Select` decorator. First lets look at the `select` method.
+`Store` service or a `@Select` decorator. First let's look at the `select` method.
 
 ### Select Decorators
 You can select slices of data from the store using the `@Select` decorator. It has a few
@@ -50,5 +50,5 @@ export class ZooComponent {
 }
 ```
 
-This is most helpful to programatic selects where we can't statically
+This is most helpful to programmatic selects where we can't statically
 declare them with the select decorator.
