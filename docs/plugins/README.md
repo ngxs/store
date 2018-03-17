@@ -4,7 +4,8 @@ Next lets talk about plugins. Similar to Redux's meta reducers, we have
 a plugins interface that allows you to build a global plugin for your state.
 
 All you have to do is provide a class to the NGXS_PLUGINS token.
-If your plugins has options associated with it, we suggest defining an injection token and then a forRoot method on your module
+If your plugins has options associated with it, we suggest defining an injection token 
+and then a forRoot method on your module
 
 Lets take a basic example of a logger:
 
@@ -18,14 +19,11 @@ export const LOGGER_PLUGIN_OPTIONS = new InjectionToken('LOGGER_PLUGIN_OPTIONS')
 export class LoggerPlugin implements NgxsPlugin {
   constructor(@Inject() private options: any) {}
 
-  handle(state, mutation, next) {
-    console.log('Mutation started!', state);
-
-    const result = next(state, mutation);
-
-    console.log('Mutation happened!', result);
-
-    return result;
+  handle(state, action, next) {
+    console.log('Action started!', state);
+    return next(state, mutation).pipe(tap(result) => {
+      console.log('Action happened!', result);
+    });
   }
 }
 
@@ -53,26 +51,26 @@ export class LoggerPluginModule {
 You can also use pure functions for plugins, the above example in a pure function
 would look like this:
 
-NOTE: when providing a pure function make sure to use "useValue" instead of "useClass"
-
 ```javascript
-export function logPlugin(state, mutation, next) {
-  console.log('Mutation started!', state);
-
-  const result = next(state, mutation);
-
-  console.log('Mutation happened!', result);
-
-  return result;
+export function logPlugin(state, action, next) {
+  console.log('Action started!', state);
+  return next(state, mutation).pipe(tap(result) => {
+    console.log('Action happened!', result);
+  });
 }
 ```
+
+NOTE: when providing a pure function make sure to use `useValue` instead of `useClass`.
 
 To register them with NGXS, pass them via the options parameter
 in the module hookup like:
 
 ```javascript
 @NgModule({
-  imports: [NgxsModule.forRoot([ZooStore]), LoggerPluginModule.forRoot({})]
+  imports: [
+    NgxsModule.forRoot([ZooStore]),
+    LoggerPluginModule.forRoot({})
+  ]
 })
 export class MyModule {}
 ```

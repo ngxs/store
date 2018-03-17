@@ -1,35 +1,27 @@
 # Selects
+Selects are functions that slice a specific portion of state from the global state container.
 
-Its important to note that READS and WRITES are completely separate in ngxs. To read data
-out of the store, we can either call the `select` method on the
-`ngxs` service or a `@Select` decorator. First lets look at the `select` method.
+In CQRS and Redux patterns, we keep READS and write seperate, we follow this pattern in NGXS.
+When we want to read data out of our store, we use a select operator to retrieve this data.
 
-```javascript
-import { Ngxs } from 'ngxs';
-import { AddAnimal } from './animal.events';
+In NGXS, there are 2 methods of select state, we can either call the `select` method on the
+`Store` service or a `@Select` decorator. First lets look at the `select` decorator.
 
-@Component({ ... })
-export class ZooComponent {
-  animals$: Observable<string[]>;
-  constructor(private ngxs: Ngxs) {
-    this.animals$ = this.ngxs.select(state => state.zoo.animals);
-  }
-}
-```
-
-Thats pretty similar to Redux and NGRX. We can use a handy decorator
-the same way but with some other options.
+### Select Decorators
+You can select slices of data from the store using the `@Select` decorator. It has a few
+different ways to get your data out, whether passing the state class, a function or dot notation
+of the object graph.
 
 ```javascript
 import { Ngxs } from 'ngxs';
 
-import { ZooStore } from './zoo.store';
-import { AddAnimal } from './animal.events';
+import { ZooState } from './zoo.state';
+import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
  // Reads the name of the store from the store class
-  @Select(ZooStore) animals$: Observable<string[]>;
+  @Select(ZooState) animals$: Observable<string[]>;
 
   // Reads the name of the property minus the $
   @Select() animals$: Observable<string[]>;
@@ -40,12 +32,26 @@ export class ZooComponent {
   // These properties can be nested too
   @Select('animals.names') animals$: Observable<string[]>;
 
-  // These properties can be in the form of an array too
-  @Select(['animals', 'names']) animals$: Observable<string[]>;
-
   // Also accepts a function like our select method
   @Select(state => state.animals) animals$: Observable<string[]>;
 }
 ```
 
-Pretty cool huh? Lots of options to get data out!
+### Store Select Function
+The `Store` class also has a `select` function:
+
+```javascript
+import { Store } from 'ngxs';
+import { AddAnimal } from './animal.events';
+
+@Component({ ... })
+export class ZooComponent {
+  animals$: Observable<string[]>;
+  constructor(private store: Store) {
+    this.animals$ = this.store.select(state => state.zoo.animals);
+  }
+}
+```
+
+This is most helpful to programatic selects where we can't statically
+declare them with the select decorator.

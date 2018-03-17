@@ -7,26 +7,26 @@ using the store's current values and returning it instead of calling the HTTP
 service.
 
 ```javascript
-import { Store, Action } from 'ngxs';
+import { State, Action } from 'ngxs';
 import { of } from 'rxjs/observable/of';
 import { tap } from 'rxjs/operators';
 
-@Store({
+@State<ZooStateModel>({
   defaults: {
     animals: []
   }
 })
-export class ZooStore {
+export class ZooState {
 
   constructor(private animalService: AnimalService) {}
 
   @Action(GetAnimals)
-  get(state, { payload }) {
+  get({ state }, { payload }) {
     // payload = id of animal
     const idx = state.animals.findIndex(animal => animal.id === payload);
     if (idx > -1) {
       // if we have the cache, just return it from the store
-      return new GetAnimalsSuccess(state.animals[idx]);
+      return of(new GetAnimalsSuccess(state.animals[idx]));
     } else {
       return this.animalService.get(payload)
         .pipe(map(resp => new GetAnimalsSuccess(resp)));

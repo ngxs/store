@@ -4,19 +4,18 @@ perform our expectation there. A basic test looks like this:
 
 ```javascript
 describe('Zoo', () => {
-  let ngxs: Ngxs;
+  let store: Store;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([ZooStore])],
-      providers: [ZooStore],
+      imports: [NgxsModule.forRoot([ZooState])],
     }).compileComponents();
-    ngxs = TestBed.get(Ngxs);
+    store = TestBed.get(Store);
   }));
 
   it('it toggles feed', () => {
-    ngxs.dispatch(new FeedAnimals());
-    ngxs.select(state => state.zoo.feed).subscribe(feed => {
+    store.dispatch(new FeedAnimals());
+    store.select(state => state.zoo.feed).subscribe(feed => {
       expect(feed).toBe(true);
     });
   });

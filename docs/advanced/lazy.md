@@ -6,7 +6,7 @@ and describe them are the same. For example:
 ```javascript
 @NgModule({
   imports: [
-    NgxsModule.forFeature([LazyStore])
+    NgxsModule.forFeature([LazyState])
   ]
 })
 export class LazyModule{}

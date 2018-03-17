@@ -1,103 +1,36 @@
-# Action
-Mutations should not reach out to backend services or do async operations.
-Those are reserved for `Action`. Similarly actions should not mutate state.
-Lets say for our `NewAnimal` event we want to reach out to the backend and save the
-new animal before we add it to the UI.
+# Actions
+Actions is a set of instructions for what we want to do along with payload data
+associated to it.
 
-Our stores can also participate in dependency injection so when we want to 
-reach out to our backend injectable service, we can just inject it. When 
-using DI, its important to add your store to your module's providers.
-The arguments of the function are similar to those of the mutation, passing 
-the state and the action. Lets see what this looks like:
+## Simple Action
+Let's say we want to update the status of whether the animals have been feed
+in our Zoo. We would describe a class like:
 
-```javascript
-import { Store, Action } from 'ngxs';
+```TS
+export class FeedAnimals {}
+```
 
-@Store({
-  defaults: {
-    feed: false,
-    animals: []
-  }
-})
-export class ZooStore {
-  constructor(private animalService: AnimalService) {}
+Later in our state container, we will listen to this action and mutate our
+state, in this case flipping a boolean flag.
 
-  @Action(NewAnimal)
-  newAnimal(state, { payload }) {
-    return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
-  }
+Now you might notice, I didn't describe a type property on this like
+Redux or NGRX requires. That is because with NGXS we use the class signature
+eliminating the need for types at all.
+
+## Actions with Data
+Often you need an action to have some data associated with it. Let's take that
+original `FeedAnimals` action and modify it to have which animal we have feed
+by adding a payload member like:
+
+```TS
+export class FeedAnimals {
+  constructor(public payload: string) {}
 }
 ```
 
-In this example our `AnimalService` calls out to our backend and returns an observable.
-We map the result of that observable into a new event passing the results as the payload.
-It will automatically map observables, promises and raw events for you. So you can do things like:
+The `payload` object will represent the name of the animal we are feeding.
+You don't have to describe your data as `payload` but for consistency practices
+we like to follow the [FSA Standard](https://github.com/redux-utilities/flux-standard-action).
 
-```javascript
-/** Returns a observable event */
-@Action(NewAnimal)
-newAnimal(state, { payload }) {
-  return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
-}
-
-/** Returns a observable with an array of events */
-@Action(NewAnimal)
-newAnimal(state, { payload }) {
-  return this.animalService.save(payload).map((res) => [
-    new AnimalSuccess(res),
-    new AlertZooKeeper()
-  ]);
-}
-
-/** Return a raw event */
-@Action(NewAnimal)
-newAnimal(state, { payload }) {
-  return new AnimalSuccess();
-}
-
-/** Return promises */
-@Action(NewAnimal)
-newAnimal(state, { payload }) {
-  return new Promise((resolve, reject) => {
-    resolve(new AnimalSuccess());
-  });
-}
-
-/** Async/Await */
-@Action(NewAnimal)
-async newAnimal(state, { payload }) {
-  await this.animalService.save(payload);
-  return new AnimalSuccess();
-}
-```
-
-Its pretty flexible, it doesn't try to push you into a certain
-way but provides you a mechanism to handle your control flows
-how you want.
-
-Now that we have called out to the backend and saved the animal,
-we need to connect the dots and save the animal to our store. Thats
-super easy, since its just another mutation that adds our animal
-to the store:
-
-```javascript
-@Store({
-  defaults: {
-    feed: false,
-    animals: []
-  }
-})
-export class ZooStore {
-  constructor(private animalService: AnimalService) {}
-
-  @Mutation(NewAnimalSuccess)
-  newAnimalSuccess(state, { payload }) {
-    state.animals = [...state.animals, payload];
-  }
-
-  @Action(NewAnimal)
-  newAnimal(state, { payload }) {
-    return this.animalService.save(payload).map((res) => new AnimalSuccess(res));
-  }
-}
-```
+## Dispatching Actions
+See [Store](store.md) documentation for how to dispatch actions.

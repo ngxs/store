@@ -3,7 +3,7 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { NGXS_PLUGINS } from '../../symbols';
 import { LocalStoragePlugin } from './localstorage.plugin';
 import { serialize, deserialize } from './utils';
-import { LocalStoragePluginOptions, LOCAL_STORAGE_PLUGIN_OPTIONS, StorageStrategy } from './symbols';
+import { LocalStoragePluginOptions, LOCAL_STORAGE_PLUGIN_OPTIONS } from './symbols';
 
 @NgModule()
 export class LocalStoragePluginModule {
@@ -20,7 +20,7 @@ export class LocalStoragePluginModule {
           provide: LOCAL_STORAGE_PLUGIN_OPTIONS,
           useValue: {
             key: options.key || '@@STATE',
-            strategy: options.strategy || StorageStrategy.localstorage,
+            storage: localStorage,
             serialize: options.serialize || serialize,
             deserialize: options.deserialize || deserialize
           }

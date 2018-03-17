@@ -10,11 +10,15 @@ import { NgxsModule, LoggerPluginModule } from 'ngxs';
   imports: [
     NgxsModule.forRoot([ZooStore]),
     LoggerPluginModule.forRoot({
-      // custom console.log implement
+      /**
+       * Logger to implement. Defaults to console.
+       */
       logger: console,
 
-      // expand results by default
-      collapsed: false
+      /**
+       * Collapse the log by default or not. Defaults to true.
+       */
+      collapsed: true
     })
   ]
 })

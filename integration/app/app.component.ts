@@ -1,8 +1,9 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { Ngxs, Select } from 'ngxs';
+import { Store, Select } from 'ngxs';
 import { Observable } from 'rxjs/Observable';
 
-import { AddTodo, RemoveTodo } from './todo.store';
+import { AddTodo, RemoveTodo } from './todo.state';
+import { AppState } from './app.state';
 
 @Component({
   selector: 'app-root',
@@ -24,16 +25,18 @@ import { AddTodo, RemoveTodo } from './todo.store';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  @Select(state => state.todos)
+  @Select((state: AppState) => state.todos.todo)
   todos$: Observable<string[]>;
 
-  constructor(private ngxs: Ngxs) {}
+  constructor(private store: Store) {}
 
   addTodo(todo: string) {
-    this.ngxs.dispatch(new AddTodo(todo));
+    this.store.dispatch(new AddTodo(todo));
   }
 
   removeTodo(index: number) {
-    this.ngxs.dispatch(new RemoveTodo(index));
+    this.store.dispatch(new RemoveTodo(index)).subscribe(() => {
+      console.log('Removed!');
+    });
   }
 }

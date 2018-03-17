@@ -1,3 +1,27 @@
+# 2.0.0-rc.0
+## Breaking
+- `@Store()` decorator is now `@State()`
+- `Ngxs` service is now `Store`
+- Stores should be now renamed to State. Before: `ZooStore` should be `ZooState`
+- `@Mutation` is gone in favor of just `@Action`
+- Action's first argument is state context object, `{ state, setState }`
+- You use `setState` to set the state now rather than returning it in actions
+- Events are now just called Actions
+- `ofEvent` is now called `ofAction`
+- Plugins `next` fn now returns an observable
+- Local Storage plugins removed Strategy in favor of passing your own engine
+
+## Features
+- Simplified APIs by removing Mutations, decreased boilerplate
+- Added sub state capability
+- Add `store.selectOnce()` shortcut function
+- Better tpyings
+- Add `dispatch` function in state context for easier dispatching
+
+## Bug Fixes
+- `dispatch().subscribe()` now works correctly
+- Promises now resolve correctly
+
 # 1.5.3 2/12/18
 - Fix: Promises not emitting results
 

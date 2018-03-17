@@ -10,6 +10,11 @@ export interface NgxsOptions {
   plugins: Array<NgxsPluginConstructor | NgxsPluginFn>;
 }
 
+export interface StateContext<T> {
+  state: T;
+  setState(val: T);
+}
+
 export type NgxsNextPluginFn = (state: any, mutation: any) => any;
 
 export interface NgxsPlugin {
@@ -23,4 +28,5 @@ export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) =
 export interface StoreOptions<T> {
   name?: string;
   defaults?: T;
+  children?: any[];
 }

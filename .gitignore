@@ -35,6 +35,8 @@ npm-debug.log
 testem.log
 /typings
 .test-results.json
+/dist-lib
+/dist-integration
 
 # e2e
 /e2e/*.js

@@ -9,15 +9,27 @@ import { NgxsModule, LocalStoragePluginModule, StorageStrategy } from 'ngxs';
   imports: [
     NgxsModule.forRoot([]),
     LocalStoragePluginModule.forRoot({
-      // Default, you can pass single string or array of strings
-      // that could be deeply nested too
+      /**
+       * Default key to persist. You can pass a string or array of string
+       * that can be deeply nested via dot notation.
+       */
       key: '@@STATE',
-      // Custom serializer, defaults to JSON
+      
+      /**
+       * Storage strategy to use. Thie defaults to localStorage but you
+       * can pass sessionStorage or anything that implements the localStorage API.
+       */
+      storage: localStorage,
+
+      /**
+       * Custom deseralizer. Defaults to JSON.parse
+       */
+      deserialize: JSON.parse,
+
+      /**
+       * Custom serializer, defaults to JSON.stringify
+       */
       serialize: JSON.stringify,
-      // Local storage or session storage strategy
-      strategy: StorageStrategy.localStorage,
-      // Custom deserializer, defaults to JSON
-      deserialize: JSON.parse
     })
   ]
 })

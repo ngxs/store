@@ -1,27 +1,77 @@
 # Store
+The store is a global state manager that dispatches actions your state 
+containers listen to and provides a way to select data slices out from
+the global state.
 
-Next lets define a store class. To do this we create a ES6 class
-and decorate it with a `Store` decorator. The `Store` decorator
-accepts a few different options:
+### Dispatching actions
+To dispatch actions, you need to inject the `Store` service into your component/service
+and invoke the `dispatch` function with a action or a array of actions you wish to trigger.
 
-* `name`: Optional name of the store. If not pass it will take
-  the name of the class, camel case it and remove the word `Store` from the end.
-* `defaults`: A set of default options to initialize our store with.
-
-So here is our basic store:
-
-```TS
+```javascript
 import { Store } from 'ngxs';
+import { AddAnimal } from './animal.events';
 
-export interface AnimalModel { ... }
+@Component({ ... })
+export class ZooComponent {
+  constructor(private store: Store) {}
 
-@Store<Animal[]>({
-  defaults: {
-    feed: false,
-    animals: []
+  addAnimal(name) {
+    this.store.dispatch(new AddAnimal(name));
   }
-})
-export class ZooStore {}
+}
 ```
 
-because I didn't pass a name, it will use the name `zoo`.
+You can also dispatch multiple events at the same time by passing an array of events like:
+
+```javascript
+this.store.dispatch([
+  new AddAnimal('Panda'),
+  new AddAnimal('Zebra')
+]);
+```
+
+Lets say after the event executes you want to clear
+the form. Our `dispatch` function actually returns an observable, so we can
+subscribe very easily and reset the form after it was successful.
+
+```javascript
+import { Store } from 'ngxs';
+import { AddAnimal } from './animal.events';
+
+@Component({ ... })
+export class ZooComponent {
+  constructor(private store: Store) {}
+
+  addAnimal(name) {
+    this.store.dispatch(new AddAnimal(name)).subscribe(() => {
+      this.form.reset();
+    });
+  }
+}
+```
+
+The observable has not result arguments since this a action can lead
+to multiple different control flows affecting multiple different state
+containers therefore its not realistically possible to return the state
+from that action. If you need to get the state after this, simply use a 
+select in the chain like:
+
+```javascript
+import { Store } from 'ngxs';
+import { AddAnimal } from './animal.events';
+
+@Component({ ... })
+export class ZooComponent {
+  @Select(state => state.animals) animals$: Observable<any>;
+  constructor(private store: Store) {}
+
+  addAnimal(name) {
+    this.store.dispatch(new AddAnimal(name)).map(() => this.animals$).subscribe((animals) => {
+      this.form.reset();
+    });
+  }
+}
+```
+
+### Selecting State
+See the [select](select.md) page for details on how to use the store to select out data.
