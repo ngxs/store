@@ -1,13 +1,8 @@
 import { InjectionToken } from '@angular/core';
 
-export enum StorageStrategy {
-  localstorage,
-  sessionStorage
-}
-
 export interface LocalStoragePluginOptions {
   key?: string | string[] | undefined;
-  strategy?: StorageStrategy;
+  storage?: any;
   serialize?(obj: any);
   deserialize?(obj: any);
 }

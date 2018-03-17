@@ -1,27 +1,36 @@
 # Actions
+Actions is a set of instructions for what we want to do along with payload data
+associated to it.
 
-## What is an Action?
-Let's define what our store is going to do. We call these event classes. They
-will be what we dispatch and our stores respond to. For this store, we will define
-the following:
+## Simple Action
+Let's say we want to update the status of whether the animals have been feed
+in our Zoo. We would describe a class like:
 
-```javascript
+```TS
 export class FeedAnimals {}
-export class NewAnimal {
+```
+
+Later in our state container, we will listen to this action and mutate our
+state, in this case flipping a boolean flag.
+
+Now you might notice, I didn't describe a type property on this like
+Redux or NGRX requires. That is because with NGXS we use the class signature
+eliminating the need for types at all.
+
+## Actions with Data
+Often you need an action to have some data associated with it. Let's take that
+original `FeedAnimals` action and modify it to have which animal we have feed
+by adding a payload member like:
+
+```TS
+export class FeedAnimals {
   constructor(public payload: string) {}
 }
-export class NewAnimalSuccess {}
 ```
 
-In the above events, we have `FeedAnimals` which has no payload for it. It's just
-going to flip a simple flag in our store for us. In the `NewAnimal` event we define
-a payload which will contain the animal type. Unlike with redux, we don't need to
-define a type property since our store is smart enough to read the class as the type.
-You can optionally include a type if you want to make the event more descriptive, that
-looks like this:
+The `payload` object will represent the name of the animal we are feeding.
+You don't have to describe your data as `payload` but for consistency practices
+we like to follow the [FSA Standard](https://github.com/redux-utilities/flux-standard-action).
 
-```javascript
-export class NewAnimal {
-  readonly static type = 'I got a new animal today!';
-}
-```
+## Dispatching Actions
+See [Store](store.md) documentation for how to dispatch actions.

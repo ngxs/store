@@ -1,3 +1,2 @@
-export * from './localstorage.module';
-export * from './localstorage.plugin';
-export * from './symbols';
+export { LocalStoragePluginModule } from './localstorage.module';
+export { LocalStoragePlugin } from './localstorage.plugin';

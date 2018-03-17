@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { NgxsPlugin } from '../../symbols';
-import { LocalStoragePluginOptions, LOCAL_STORAGE_PLUGIN_OPTIONS, StorageStrategy } from './symbols';
+import { LocalStoragePluginOptions, LOCAL_STORAGE_PLUGIN_OPTIONS } from './symbols';
 import { getTypeFromInstance, setValue, getValue } from '../../internals';
 import { tap } from 'rxjs/operators';
 
@@ -12,7 +12,7 @@ export class LocalStoragePlugin implements NgxsPlugin {
     const options = this._options || <any>{};
     const isInitAction = getTypeFromInstance(event) === '@@INIT';
     const keys = Array.isArray(options.key) ? options.key : [options.key];
-    const engine = options.strategy === StorageStrategy.localstorage ? localStorage : sessionStorage;
+    const engine = !options.storage ? localStorage : options.storage;
 
     if (isInitAction) {
       for (const key of keys) {

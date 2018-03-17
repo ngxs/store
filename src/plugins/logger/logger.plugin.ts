@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { NgxsPlugin } from 'ngxs';
+import { NgxsPlugin } from '../../symbols';
 import { LOGGER_PLUGIN_OPTIONS, LoggerPluginOptions } from './symbols';
 import { pad } from './internals';
 import { tap } from 'rxjs/operators';
