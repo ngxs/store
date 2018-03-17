@@ -6,8 +6,8 @@ There are 4 major concepts to NGXS:
 - State: Class definition of the state
 - Selects: State slice selectors
 
-These concepts create a circular control flow traveling from an component
-dispatching an action, to a store reacting to the action back to the component
+These concepts create a circular control flow traveling from a component
+dispatching an action, to a store reacting to the action, back to the component
 through a state select.
 
 <p align="center">

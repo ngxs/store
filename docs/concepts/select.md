@@ -1,11 +1,11 @@
 # Selects
 Selects are functions that slice a specific portion of state from the global state container.
 
-In CQRS and Redux patterns, we keep READS and write seperate, we follow this pattern in NGXS.
+In CQRS and Redux patterns, we keep READS and write separate, we follow this pattern in NGXS.
 When we want to read data out of our store, we use a select operator to retrieve this data.
 
 In NGXS, there are 2 methods of select state, we can either call the `select` method on the
-`Store` service or a `@Select` decorator. First lets look at the `select` decorator.
+`Store` service or a `@Select` decorator. First let's look at the `select` decorator.
 
 ### Select Decorators
 You can select slices of data from the store using the `@Select` decorator. It has a few
@@ -53,5 +53,5 @@ export class ZooComponent {
 }
 ```
 
-This is most helpful to programatic selects where we can't statically
+This is most helpful to programmatic selects where we can't statically
 declare them with the select decorator.

@@ -25,11 +25,11 @@ include:
 - `children`: Child sub state associations. 
 
 ## Defining Actions
-Our state's listen to actions via a `@Action` decorator. The action decorator
+Our states listen to actions via a `@Action` decorator. The action decorator
 accepts a action class or an array of action classes. 
 
 ### Simple Actions
-Lets define a state that will listen to a `FeedAction` to toggle whether the animals have been feed:
+Let's define a state that will listen to a `FeedAction` to toggle whether the animals have been feed:
 
 ```TS
 import { State, Action } from 'ngxs';
@@ -55,15 +55,15 @@ export class ZooState {
 ```
 
 The `feedAnimals` function has one argument called `StateContext`. This
-context state slice pointer and a function to set the state. Its important
+context state slice pointer and a function to set the state. It's important
 to note that the `state` property is a getter that will always return
 the freshest state slice from the global store each time it is accessed. This
-ensures if you are performancing async operations you can ensure the state
+ensures if you are performing async operations you can ensure the state
 is always fresh. If you want a snapshot, you can always clone the state
 in the method.
 
 ### Actions with Payload
-This action was simple, it had no payload. Lets take that same concept of
+This action was simple, it had no payload. Let's take that same concept of
 feeding animals and enhance it to accept a payload of the animal name
 that has been feed.
 
@@ -98,8 +98,8 @@ Actions can perform async operations and update the state after a operation.
 
 Typically in Redux your actions are pure functions and you have some other system like a saga or effect to perform
 these operations and dispatch another action back to your state to mutate the state. There are some
-reasons why but for the most part it can be redudant and just add boilerplate. The great thing here is
-we give you the flexibility to make that decesion yourself based on your requirements.
+reasons why but for the most part it can be redundant and just add boilerplate. The great thing here is
+we give you the flexibility to make that decision yourself based on your requirements.
 
 Let's take a look at a simple async action:
 

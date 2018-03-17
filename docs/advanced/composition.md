@@ -9,7 +9,7 @@ class ZooState {
 }
 
 @State({})
-class StLouisZooState extends ZooStore {
+class StLouisZooState extends ZooState {
   @Action(Drink)
   drink() {}
 }
