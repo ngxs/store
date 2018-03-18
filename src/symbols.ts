@@ -14,7 +14,7 @@ export interface NgxsOptions {
 export interface StateContext<T> {
   getState(): T;
   setState(val: T);
-  patchValue(val: T);
+  patchValue(val: any);
   dispatch(actions: any | any[]): Observable<void>;
 }
 
