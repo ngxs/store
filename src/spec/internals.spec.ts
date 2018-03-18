@@ -1,4 +1,4 @@
-import { findFullParentPath } from '../internals';
+import { findFullParentPath, topologicalSort } from '../internals';
 
 describe('graph', () => {
   it('should build graph', () => {
@@ -33,5 +33,15 @@ describe('graph', () => {
 
     const actual = findFullParentPath(t);
     expect(actual).toEqual(r);
+  });
+
+  it('should correctly sort dependencies', () => {
+    const sorted = topologicalSort({
+      saved: ['items'],
+      items: [],
+      cart: ['saved']
+    });
+
+    expect(sorted).toEqual(['cart', 'saved', 'items']);
   });
 });
