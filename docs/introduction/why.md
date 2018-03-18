@@ -57,6 +57,10 @@ To be honest, that feels like something that shouldn't even be in the state
 to begin with. It'd be nice to have an easy way to just listen to when something we dispatch is completed,
 and subscribe to dispatches with NGXS.
 
+### Spreads galore
+Since the states need to be immutable, we need to clone our objects/arrays each time we manipulate them.
+This leads to `{ ... }` code everywhere. Why not let the framework handle that?
+
 ### Promises
 Observables are great but they aren't a silver bullet. Sometimes we just want to deal with promises.
 NGXS allows us to use either.
