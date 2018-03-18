@@ -22,7 +22,7 @@ describe('AppComponent', () => {
     component.addTodo('Clean Bathroom');
 
     component.todos$.subscribe(state => {
-      expect(state.todo.length).toBe(2);
+      expect(state.length).toBe(2);
     });
   });
 
@@ -32,8 +32,8 @@ describe('AppComponent', () => {
     component.removeTodo(1);
 
     component.todos$.subscribe(state => {
-      expect(state.todo.length).toBe(1);
-      expect(state.todo[0]).toBe('Get Milk');
+      expect(state.length).toBe(1);
+      expect(state[0]).toBe('Get Milk');
     });
   });
 });

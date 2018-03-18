@@ -24,7 +24,7 @@ import { AddTodo, RemoveTodo, TodosState, TodoState } from './todo.state';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  @Select(TodoState) todos$: Observable<{ todo: string[] }>;
+  @Select(TodoState) todos$: Observable<string[]>;
 
   constructor(private store: Store) {}
 
