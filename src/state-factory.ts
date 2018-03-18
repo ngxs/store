@@ -44,8 +44,6 @@ export class StateFactory {
         throw new Error('States must be decorated with @State() decorator');
       }
 
-      klass[META_KEY].path = depths[name];
-
       const depth = depths[name];
       const { actions } = klass[META_KEY];
       let { defaults } = klass[META_KEY];
