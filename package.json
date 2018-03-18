@@ -6,7 +6,8 @@
   "scripts": {
     "start": "ng serve --aot",
     "test": "ng test",
-    "test:integration": "npm run build && npm link ./dist && ng build --preserve-symlinks --app integration --prod",
+    "test:integration":
+      "npm run build && npm link ./dist && ng build -ps --app 1 --prod && ng test -ps --app 1 --prod --sr",
     "test:ci": "ng test -cc --browsers ChromeHeadless --single-run -cc && npm run test:integration",
     "build": "ng-packagr -p package.json",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
@@ -16,18 +17,7 @@
     "type": "git",
     "url": "git+https://amcdnl@github.com/amcdnl/ngxs.git"
   },
-  "keywords": [
-    "ngrx",
-    "redux",
-    "state",
-    "rxjs",
-    "angular",
-    "ngx",
-    "angular2",
-    "cqrs",
-    "store",
-    "state-mangement"
-  ],
+  "keywords": ["ngrx", "redux", "state", "rxjs", "angular", "ngx", "angular2", "cqrs", "store", "state-mangement"],
   "author": "Austin McDaniel",
   "license": "MIT",
   "bugs": {

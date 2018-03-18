@@ -37,5 +37,13 @@ export function State<T>(options: StoreOptions<T>) {
     } else {
       meta.name = getNameFromClass(target.name);
     }
+
+    meta.path = meta.name;
+
+    if (meta.children && meta.children.length) {
+      meta.children.forEach(child => {
+        child[META_KEY].path = meta.name + '.' + child[META_KEY].path;
+      });
+    }
   };
 }

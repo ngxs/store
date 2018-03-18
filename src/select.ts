@@ -29,8 +29,8 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
       const propsArray = paths.length ? [selectorOrFeature, ...paths] : selectorOrFeature.split('.');
 
       fn = fastPropGetter(propsArray);
-    } else if (selectorOrFeature[META_KEY] && selectorOrFeature[META_KEY].name) {
-      fn = fastPropGetter(selectorOrFeature[META_KEY].name.split('.'));
+    } else if (selectorOrFeature[META_KEY] && selectorOrFeature[META_KEY].path) {
+      fn = fastPropGetter(selectorOrFeature[META_KEY].path.split('.'));
     } else {
       fn = selectorOrFeature;
     }

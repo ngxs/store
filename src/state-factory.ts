@@ -36,11 +36,15 @@ export class StateFactory {
     const nameGraph = nameToState(states);
 
     const mappedStores = [];
+
     for (const name of sortedStates) {
       const klass = nameGraph[name];
+
       if (!klass[META_KEY]) {
         throw new Error('States must be decorated with @State() decorator');
       }
+
+      klass[META_KEY].path = depths[name];
 
       const depth = depths[name];
       const { actions } = klass[META_KEY];
@@ -48,6 +52,7 @@ export class StateFactory {
 
       // ensure our store hasn't already been added
       const has = this.states.find(s => s.name === name);
+
       if (has) {
         throw new Error(`Store has already been added: ${name}`);
       }
@@ -60,6 +65,7 @@ export class StateFactory {
       }
 
       const instance = this._injector.get(klass);
+
       mappedStores.push({
         actions,
         instance,
@@ -70,6 +76,7 @@ export class StateFactory {
     }
 
     this.states.push(...mappedStores);
+
     return mappedStores;
   }
 
