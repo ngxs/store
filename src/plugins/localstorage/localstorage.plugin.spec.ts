@@ -23,14 +23,16 @@ describe('LocalStoragePlugin', () => {
   })
   class MyStore {
     @Action(Increment)
-    increment({ state, setState }) {
+    increment({ getState, setState }) {
+      const state = getState();
       setState({
         count: Number(state.count) + 1
       });
     }
 
     @Action(Decrement)
-    decrement({ state, setState }) {
+    decrement({ getState, setState }) {
+      const state = getState();
       setState({
         count: Number(state.count) - 1
       });
