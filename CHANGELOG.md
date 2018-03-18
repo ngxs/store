@@ -1,3 +1,6 @@
+# 2.0.0-rc.8 3/18/18
+- Fix: Patch value not updating state
+
 # 2.0.0-rc.7 3/18/18
 - Fix: Patch value patching wrong path
 

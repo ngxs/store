@@ -1,6 +1,6 @@
 {
   "name": "ngxs",
-  "version": "2.0.0-rc.7",
+  "version": "2.0.0-rc.8",
   "description": "State Mangement for Angular",
   "main": "index.js",
   "scripts": {

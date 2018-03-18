@@ -110,6 +110,7 @@ export class StateFactory {
               local[k] = val[k];
             }
             state = setValue(state, metadata.depth, { ...local });
+            setState(state);
             return state;
           },
           setState(val: any): any {
