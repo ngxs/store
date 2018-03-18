@@ -18,24 +18,13 @@ export class SelectFactory {
 export function Select(selectorOrFeature?, ...paths: string[]) {
   return function(target: any, name: string) {
     const selectorFnName = '__' + name + '__selector';
-    let fn;
 
     if (!selectorOrFeature) {
       // if foo$ => make it just foo
       selectorOrFeature = name.lastIndexOf('$') === name.length - 1 ? name.substring(0, name.length - 1) : name;
     }
 
-    if (typeof selectorOrFeature === 'string') {
-      const propsArray = paths.length ? [selectorOrFeature, ...paths] : selectorOrFeature.split('.');
-
-      fn = fastPropGetter(propsArray);
-    } else if (selectorOrFeature[META_KEY] && selectorOrFeature[META_KEY].name) {
-      fn = fastPropGetter(selectorOrFeature[META_KEY].name.split('.'));
-    } else {
-      fn = selectorOrFeature;
-    }
-
-    const createSelect = () => {
+    const createSelect = fn => {
       const store = SelectFactory.store;
 
       if (!store) {
@@ -43,6 +32,18 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
       }
 
       return store.select(fn);
+    };
+
+    const createSelector = () => {
+      if (typeof selectorOrFeature === 'string') {
+        const propsArray = paths.length ? [selectorOrFeature, ...paths] : selectorOrFeature.split('.');
+
+        return fastPropGetter(propsArray);
+      } else if (selectorOrFeature[META_KEY] && selectorOrFeature[META_KEY].path) {
+        return fastPropGetter(selectorOrFeature[META_KEY].path.split('.'));
+      } else {
+        return selectorOrFeature;
+      }
     };
 
     if (target[selectorFnName]) {
@@ -58,7 +59,7 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
 
       Object.defineProperty(target, name, {
         get: function() {
-          return this[selectorFnName] || (this[selectorFnName] = createSelect.apply(this));
+          return this[selectorFnName] || (this[selectorFnName] = createSelect.apply(this, [createSelector()]));
         },
         enumerable: true,
         configurable: true

@@ -1,4 +1,6 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
 import { META_KEY } from './symbols';
 import {
   getTypeFromInstance,
@@ -7,9 +9,9 @@ import {
   findFullParentPath,
   nameToState,
   setValue,
-  getValue
+  getValue,
+  MetaDataModel
 } from './internals';
-import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class StateFactory {
@@ -36,18 +38,23 @@ export class StateFactory {
     const nameGraph = nameToState(states);
 
     const mappedStores = [];
+
     for (const name of sortedStates) {
       const klass = nameGraph[name];
+
       if (!klass[META_KEY]) {
         throw new Error('States must be decorated with @State() decorator');
       }
 
       const depth = depths[name];
-      const { actions } = klass[META_KEY];
-      let { defaults } = klass[META_KEY];
+      const { actions } = klass[META_KEY] as MetaDataModel;
+      let { defaults } = klass[META_KEY] as MetaDataModel;
+
+      (klass[META_KEY] as MetaDataModel).path = depth;
 
       // ensure our store hasn't already been added
       const has = this.states.find(s => s.name === name);
+
       if (has) {
         throw new Error(`Store has already been added: ${name}`);
       }
@@ -60,6 +67,7 @@ export class StateFactory {
       }
 
       const instance = this._injector.get(klass);
+
       mappedStores.push({
         actions,
         instance,
@@ -70,6 +78,7 @@ export class StateFactory {
     }
 
     this.states.push(...mappedStores);
+
     return mappedStores;
   }
 

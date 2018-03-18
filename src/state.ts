@@ -23,6 +23,7 @@ export function State<T>(options: StoreOptions<T>) {
     // Handle inheritance
     if (target.__proto__.hasOwnProperty(META_KEY)) {
       const parentMeta = target.__proto__[META_KEY];
+
       meta.actions = {
         ...meta.actions,
         ...parentMeta.actions
