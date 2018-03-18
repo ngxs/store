@@ -90,6 +90,10 @@ describe('Select', () => {
       expect(state.hello).toBe(true);
       expect(state.world).toBe(true);
     });
+
+    comp.componentInstance.subSubState.subscribe(state => {
+      expect(state.name).toBe('Danny');
+    });
   });
 
   it('should select the correct state using a state class', () => {
