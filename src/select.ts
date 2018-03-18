@@ -34,6 +34,18 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
       return store.select(fn);
     };
 
+    const createSelector = () => {
+      if (typeof selectorOrFeature === 'string') {
+        const propsArray = paths.length ? [selectorOrFeature, ...paths] : selectorOrFeature.split('.');
+
+        return fastPropGetter(propsArray);
+      } else if (selectorOrFeature[META_KEY] && selectorOrFeature[META_KEY].path) {
+        return fastPropGetter(selectorOrFeature[META_KEY].path.split('.'));
+      } else {
+        return selectorOrFeature;
+      }
+    };
+
     if (target[selectorFnName]) {
       throw new Error('You cannot use @Select decorator and a ' + selectorFnName + ' property.');
     }
@@ -47,19 +59,7 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
 
       Object.defineProperty(target, name, {
         get: function() {
-          let fn;
-
-          if (typeof selectorOrFeature === 'string') {
-            const propsArray = paths.length ? [selectorOrFeature, ...paths] : selectorOrFeature.split('.');
-
-            fn = fastPropGetter(propsArray);
-          } else if (selectorOrFeature[META_KEY] && selectorOrFeature[META_KEY].path) {
-            fn = fastPropGetter(selectorOrFeature[META_KEY].path.split('.'));
-          } else {
-            fn = selectorOrFeature;
-          }
-
-          return this[selectorFnName] || (this[selectorFnName] = createSelect.apply(this, [fn]));
+          return this[selectorFnName] || (this[selectorFnName] = createSelect.apply(this, [createSelector()]));
         },
         enumerable: true,
         configurable: true
