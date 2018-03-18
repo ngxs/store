@@ -68,3 +68,7 @@ And the store will automatically recongnize the relationship and bind them toget
 ## Caveats
 This is only intended to work with nested objects, so trying to create stores on
 nested array objects will not work.
+
+Sub states can only be used once, reuse implies several restrictions that would eliminate
+some high value features. If you want to re-use them, just create a new state and inherit
+from it.
