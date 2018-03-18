@@ -1,3 +1,7 @@
+# 2.0.0-rc.2
+### Features
+- Add `patchValue` to make updating state easier
+
 # 2.0.0-rc.1
 ## Bug Fixes
 - Action `state` arguments cached when destructured, switch to `getState()`

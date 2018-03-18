@@ -98,7 +98,20 @@ export class StateFactory {
             const state = getState();
             return getValue(state, metadata.depth);
           },
-          setState(val: any): void {
+          patchState(val: any): void {
+            if (Array.isArray(val)) {
+              throw new Error('Patching arrays is not supported.');
+            }
+
+            const state = { ...getState() };
+            for (const k in val) {
+              state[k] = val[k];
+            }
+
+            setState(state);
+            return state;
+          },
+          setState(val: any): any {
             let state = { ...getState() };
             state = setValue(state, metadata.depth, val);
             setState(state);
