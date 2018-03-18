@@ -2,7 +2,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { Store, Select } from 'ngxs';
 import { Observable } from 'rxjs/Observable';
 
-import { AddTodo, RemoveTodo, TodosState, TodoState } from './todo.state';
+import { AddTodo, RemoveTodo, TodoState } from './todo.state';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +16,9 @@ import { AddTodo, RemoveTodo, TodosState, TodoState } from './todo.state';
         <li class="todo" *ngFor="let todo of todos$ | async; let i = index">
           {{todo}} <button (click)="removeTodo(i)">🗑</button>
         </li>
+        <li *ngFor="let todo of pandas$ | async">
+          🐼
+        </li>
       </ul>
       <router-outlet></router-outlet>
     </div>
@@ -25,6 +28,7 @@ import { AddTodo, RemoveTodo, TodosState, TodoState } from './todo.state';
 })
 export class AppComponent {
   @Select(TodoState) todos$: Observable<string[]>;
+  @Select(TodoState.pandas) pandas$: Observable<string[]>;
 
   constructor(private store: Store) {}
 

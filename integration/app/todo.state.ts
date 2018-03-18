@@ -1,4 +1,4 @@
-import { State, Action, StateContext } from 'ngxs';
+import { State, Action, StateContext, Selector } from 'ngxs';
 
 export class AddTodo {
   constructor(public readonly payload: string) {}
@@ -17,6 +17,11 @@ export class TodoStateModel {
   defaults: []
 })
 export class TodoState {
+  @Selector()
+  static pandas(state: string[]) {
+    return state.filter(s => s.indexOf('panda') > -1);
+  }
+
   @Action(AddTodo)
   addTodo({ getState, setState }: StateContext<string[]>, { payload }: AddTodo) {
     setState([...getState(), payload]);
