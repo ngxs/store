@@ -1,31 +1,29 @@
-# 2.0.0-rc.6
-### Fix
-- Fix topological sort
-- Fix defaults not working correctly if plain boolean/string/number
+# 2.0.0-rc.7 3/18/18
+- Fix: Patch value patching wrong path
 
-# 2.0.0-rc.5
-### Fix
-- Fix patchState typings
+# 2.0.0-rc.6 3/18/18
+- Fix: topological sort
+- Fix: defaults not working correctly if plain boolean/string/number
 
-# 2.0.0-rc.4
-### Fix
-- Fix patchState typings
+# 2.0.0-rc.5 3/18/18
+- Fix: patchState typings
 
-# 2.0.0-rc.3
-### Fix
-- Add typings for patchState
+# 2.0.0-rc.4 3/18/18
+- Fix: patchState typings
 
-# 2.0.0-rc.2
-### Features
-- Add `patchValue` to make updating state easier
+# 2.0.0-rc.3 3/18/18
+- Fix: Add typings for patchState
 
-# 2.0.0-rc.1
+# 2.0.0-rc.2 3/18/18
+- Feature: Add `patchValue` to make updating state easier
+
+# 2.0.0-rc.1 3/18/18
 ## Bug Fixes
 - Action `state` arguments cached when destructured, switch to `getState()`
 - Class selectors not working with sub stores
 - Fix missing dispatch on state context interface
 
-# 2.0.0-rc.0
+# 2.0.0-rc.0 3/17/18
 First off, 2.0 is a huge change. I want to appologize to everyone about that but
 given all the community feedback and ideas, I really wanted to get these ideas in
 before it was too late and we were stuck on a API. I can promise that there will
