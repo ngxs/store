@@ -1,10 +1,14 @@
+# 2.0.0-rc.5
+### Fix
+- Fix patchState typings
+
 # 2.0.0-rc.4
 ### Fix
-- Better typings
+- Fix patchState typings
 
 # 2.0.0-rc.3
 ### Fix
-- Better typings
+- Add typings for patchState
 
 # 2.0.0-rc.2
 ### Features
