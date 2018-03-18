@@ -2,9 +2,12 @@ import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
+import { Store } from '../store';
 import { NgxsModule } from '../module';
 import { Select } from '../select';
 import { State } from '../state';
+import { Action } from '../action';
+import { last, first } from 'rxjs/operators';
 
 describe('Select', () => {
   interface SubSubStateModel {
@@ -22,6 +25,8 @@ describe('Select', () => {
     bar: string;
     subProperty?: SubStateModel;
   }
+
+  class FooIt {}
 
   @State<SubSubStateModel>({
     name: 'baz',
@@ -49,7 +54,12 @@ describe('Select', () => {
     },
     children: [MySubState]
   })
-  class MyState {}
+  class MyState {
+    @Action(FooIt)
+    fooIt({ setState }) {
+      setState({ foo: 'bar' });
+    }
+  }
 
   const states = [MySubState, MySubSubState, MyState];
 
@@ -116,6 +126,60 @@ describe('Select', () => {
 
     comp.componentInstance.subSubState.subscribe(state => {
       expect(state.name).toBe('Danny');
+    });
+  });
+
+  it('should select the correct state using a function', () => {
+    @Component({
+      selector: 'my-component-1',
+      template: ''
+    })
+    class StoreSelectComponent {
+      @Select(state => state.counter.foo)
+      counter$: Observable<string>;
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [StoreSelectComponent]
+    });
+
+    const comp = TestBed.createComponent(StoreSelectComponent);
+
+    comp.componentInstance.counter$.subscribe(state => {
+      expect(state).toBe('Hello');
+    });
+  });
+
+  it('should select the correct state after timeout', () => {
+    @Component({
+      selector: 'my-component-1',
+      template: ''
+    })
+    class StoreSelectComponent {
+      @Select(state => state.counter.foo)
+      counter$: Observable<string>;
+
+      constructor(store: Store) {
+        setTimeout(() => {
+          store.dispatch(new FooIt());
+        }, 500);
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [StoreSelectComponent]
+    });
+
+    const comp = TestBed.createComponent(StoreSelectComponent);
+
+    comp.componentInstance.counter$.pipe(first()).subscribe(state2 => {
+      expect(state2).toBe('Hello');
+    });
+
+    comp.componentInstance.counter$.pipe(last()).subscribe(state2 => {
+      expect(state2).toBe('bar');
     });
   });
 });
