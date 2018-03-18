@@ -1,3 +1,6 @@
+# Master
+- Fix: Default to empty object if no default passed
+
 # 2.0.0-rc.8 3/18/18
 - Fix: Patch value not updating state
 

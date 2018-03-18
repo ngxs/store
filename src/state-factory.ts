@@ -64,6 +64,8 @@ export class StateFactory {
         defaults = [...defaults];
       } else if (isObject(defaults)) {
         defaults = { ...defaults };
+      } else if (defaults === undefined) {
+        defaults = {};
       }
 
       const instance = this._injector.get(klass);
