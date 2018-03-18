@@ -1,4 +1,6 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
 import { META_KEY } from './symbols';
 import {
   getTypeFromInstance,
@@ -9,7 +11,6 @@ import {
   setValue,
   getValue
 } from './internals';
-import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class StateFactory {
@@ -47,6 +48,8 @@ export class StateFactory {
       const depth = depths[name];
       const { actions } = klass[META_KEY];
       let { defaults } = klass[META_KEY];
+
+      klass[META_KEY].path = depth;
 
       // ensure our store hasn't already been added
       const has = this.states.find(s => s.name === name);

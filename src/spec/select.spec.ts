@@ -1,28 +1,43 @@
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+
 import { NgxsModule } from '../module';
 import { Select } from '../select';
 import { State } from '../state';
 
 describe('Select', () => {
+  interface SubSubStateModel {
+    name: string;
+  }
+
+  interface SubStateModel {
+    hello: boolean;
+    world: boolean;
+    subSubProperty?: SubSubStateModel;
+  }
+
   interface StateModel {
     foo: string;
     bar: string;
     subProperty?: SubStateModel;
   }
 
-  interface SubStateModel {
-    hello: boolean;
-    world: boolean;
-  }
+  @State<SubSubStateModel>({
+    name: 'baz',
+    defaults: {
+      name: 'Danny'
+    }
+  })
+  class MySubSubState {}
 
   @State<SubStateModel>({
     name: 'boo',
     defaults: {
       hello: true,
       world: true
-    }
+    },
+    children: [MySubSubState]
   })
   class MySubState {}
 
@@ -43,6 +58,7 @@ describe('Select', () => {
   class StringSelectComponent {
     @Select('counter') state: Observable<StateModel>;
     @Select('counter.boo') subState: Observable<SubStateModel>;
+    @Select('counter.boo.baz') subSubState: Observable<SubSubStateModel>;
   }
 
   @Component({
@@ -52,11 +68,12 @@ describe('Select', () => {
   class StoreSelectComponent {
     @Select(MyState) state: Observable<StateModel>;
     @Select(MySubState) subState: Observable<SubStateModel>;
+    @Select(MySubSubState) subSubState: Observable<SubSubStateModel>;
   }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState, MySubState])],
+      imports: [NgxsModule.forRoot([MyState, MySubState, MySubSubState])],
       declarations: [StringSelectComponent, StoreSelectComponent]
     });
   });
@@ -86,6 +103,10 @@ describe('Select', () => {
     comp.componentInstance.subState.subscribe(state => {
       expect(state.hello).toBe(true);
       expect(state.world).toBe(true);
+    });
+
+    comp.componentInstance.subSubState.subscribe(state => {
+      expect(state.name).toBe('Danny');
     });
   });
 });
