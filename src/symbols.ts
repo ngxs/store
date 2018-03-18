@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 
 export const STORE_TOKEN = new InjectionToken<any>('STORE_TOKEN');
 export const STORE_OPTIONS_TOKEN = new InjectionToken<any>('STORE_OPTIONS_TOKEN');
@@ -13,6 +14,7 @@ export interface NgxsOptions {
 export interface StateContext<T> {
   getState(): T;
   setState(val: T);
+  dispatch(actions: any | any[]): Observable<void>;
 }
 
 export type NgxsNextPluginFn = (state: any, mutation: any) => any;

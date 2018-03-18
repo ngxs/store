@@ -2,6 +2,7 @@
 ## Bug Fixes
 - Action `state` arguments cached when destructured, switch to `getState()`
 - Class selectors not working with sub stores
+- Fix missing dispatch on state context interface
 
 # 2.0.0-rc.0
 First off, 2.0 is a huge change. I want to appologize to everyone about that but
