@@ -9,7 +9,8 @@ import {
   findFullParentPath,
   nameToState,
   setValue,
-  getValue
+  getValue,
+  MetaDataModel
 } from './internals';
 
 @Injectable()
@@ -46,10 +47,10 @@ export class StateFactory {
       }
 
       const depth = depths[name];
-      const { actions } = klass[META_KEY];
-      let { defaults } = klass[META_KEY];
+      const { actions } = klass[META_KEY] as MetaDataModel;
+      let { defaults } = klass[META_KEY] as MetaDataModel;
 
-      klass[META_KEY].path = depth;
+      (klass[META_KEY] as MetaDataModel).path = depth;
 
       // ensure our store hasn't already been added
       const has = this.states.find(s => s.name === name);
