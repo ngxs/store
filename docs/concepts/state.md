@@ -60,8 +60,9 @@ export interface ZooStateModel {
 export class ZooState {
   @Action(FeedAnimals)
   feedAnimals({ getState, setState }: StateContext<ZooStateModel>) {
+    const state = getState();
     setState({
-      ...getState(),
+      ...state,
       feed: !state.feed
     });
   }
@@ -96,8 +97,9 @@ export interface ZooStateModel {
 export class ZooState {
   @Action(FeedAnimals)
   feedAnimals({ getState, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
+    const state = getState();
     setState({
-      ...getState(),
+      ...state,
       feedAnimals: [ ...state.feedAnimals, payload ]
     });
   }
@@ -149,8 +151,9 @@ export class ZooState {
   @Action(FeedAnimals)
   feedAnimals({ getState, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
     return this.animalService.feed(payload).pipe(tap(result) => {
+      const state = getState();
       setState({
-        ...getState(),
+        ...state,
         feedAnimals: [ ...state.feedAnimals, result ]
       });
     });
@@ -190,8 +193,9 @@ export class ZooState {
   @Action(FeedAnimals)
   async feedAnimals({ getState, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
     const result = await this.animalService.feed(payload);
+    const state = getState();
     setState({
-      ...getState(),
+      ...state,
       feedAnimals: [ ...state.feedAnimals, result ]
     });
   }
@@ -224,9 +228,10 @@ export class ZooState {
   */
   @Action(FeedAnimals)
   feedAnimals({ getState, setState, dispatch }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
+    const state = getState();
     setState({
-      ...getState(),
-      feedAnimals: [ ...getState().feedAnimals, result ]
+      ...state,
+      feedAnimals: [ ...state.feedAnimals, result ]
     });
 
     return dispatch(TakeAnimalsOutside);
