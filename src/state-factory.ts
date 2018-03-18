@@ -104,12 +104,12 @@ export class StateFactory {
               throw new Error('Patching arrays is not supported.');
             }
 
-            const state = { ...getState() };
+            let state = { ...getState() };
+            const local = getValue(state, metadata.depth);
             for (const k in val) {
-              state[k] = val[k];
+              local[k] = val[k];
             }
-
-            setState(state);
+            state = setValue(state, metadata.depth, { ...local });
             return state;
           },
           setState(val: any): any {
