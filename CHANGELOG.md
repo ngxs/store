@@ -1,3 +1,7 @@
+# 2.0.0-rc.3
+### Fix
+- Better typings
+
 # 2.0.0-rc.2
 ### Features
 - Add `patchValue` to make updating state easier
