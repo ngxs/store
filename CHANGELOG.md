@@ -1,3 +1,8 @@
+# 2.0.0-rc.6
+### Fix
+- Fix topological sort
+- Fix defaults not working correctly if plain boolean/string/number
+
 # 2.0.0-rc.5
 ### Fix
 - Fix patchState typings

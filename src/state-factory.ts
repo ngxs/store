@@ -10,7 +10,8 @@ import {
   nameToState,
   setValue,
   getValue,
-  MetaDataModel
+  MetaDataModel,
+  isObject
 } from './internals';
 
 @Injectable()
@@ -61,7 +62,7 @@ export class StateFactory {
       // create new instance of defaults
       if (Array.isArray(defaults)) {
         defaults = [...defaults];
-      } else {
+      } else if (isObject(defaults)) {
         defaults = { ...defaults };
       }
 

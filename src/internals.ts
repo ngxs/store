@@ -247,3 +247,10 @@ export const setValue = (obj: any, prop: string, val: any) => {
  */
 export const getValue = (obj: any, prop: string) =>
   prop.split('.').reduce((acc: any, part: string) => acc && acc[part], obj);
+
+/**
+ * Returns if the parameter is a object or not.
+ */
+export function isObject(obj) {
+  return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';
+}
