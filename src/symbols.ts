@@ -11,7 +11,7 @@ export interface NgxsOptions {
 }
 
 export interface StateContext<T> {
-  state: T;
+  getState(): T;
   setState(val: T);
 }
 

@@ -10,7 +10,7 @@ describe('Action', () => {
     @State({})
     class BarStore {
       @Action([Action1, Action2])
-      foo({ state, setState }) {
+      foo({ setState }) {
         setState({ foo: false });
       }
     }

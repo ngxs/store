@@ -18,13 +18,13 @@ export class TodoStateModel {
 })
 export class TodoState {
   @Action(AddTodo)
-  addTodo({ state, setState }: StateContext<string[]>, { payload }: AddTodo) {
-    setState([...state, payload]);
+  addTodo({ getState, setState }: StateContext<string[]>, { payload }: AddTodo) {
+    setState([...getState(), payload]);
   }
 
   @Action(RemoveTodo)
-  removeTodo({ state, setState }: StateContext<string[]>, { payload }: RemoveTodo) {
-    setState(state.filter((_, i) => i !== payload));
+  removeTodo({ getState, setState }: StateContext<string[]>, { payload }: RemoveTodo) {
+    setState(getState().filter((_, i) => i !== payload));
   }
 }
 

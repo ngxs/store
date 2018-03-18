@@ -1,8 +1,14 @@
+# 2.0.0-rc.1
+## Bug Fixes
+- Action `state` arguments cached when destructured, switch to `getState()`
+- Class selectors not working with sub stores
+
 # 2.0.0-rc.0
 First off, 2.0 is a huge change. I want to appologize to everyone about that but
 given all the community feedback and ideas, I really wanted to get these ideas in
 before it was too late and we were stuck on a API. I can promise that there will
-not be this big of a breaking change in the future without first deprecation periods.
+not be this big of a breaking change after this release in the future without 
+first deprecation periods.
 
 ## Breaking
 - `@Store()` decorator is now `@State()`

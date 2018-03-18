@@ -22,7 +22,21 @@ include:
 - `name`: The name of the state slice. If not provided it will 
   infer the name based on the state class signature removing the `State` suffix.
 - `defaults`: Default set of object/array for this state slice.
-- `children`: Child sub state associations. 
+- `children`: Child sub state associations.
+
+Our states can also partipate in depedency injection, this is hooked up automatically
+so all you need to do is inject your depedencies such as services in the constructor.
+
+```TS
+@State<ZooStateModel>({
+  defaults: {
+    feed: false
+  }
+})
+export class ZooState {
+  constructor(private zooService: ZooService) {}
+}
+```
 
 ## Defining Actions
 Our states listen to actions via a `@Action` decorator. The action decorator
@@ -45,9 +59,9 @@ export interface ZooStateModel {
 })
 export class ZooState {
   @Action(FeedAnimals)
-  feedAnimals({ state, setState }: StateContext<ZooStateModel>) {
+  feedAnimals({ getState, setState }: StateContext<ZooStateModel>) {
     setState({
-      ...state,
+      ...getState(),
       feed: !state.feed
     });
   }
@@ -81,9 +95,9 @@ export interface ZooStateModel {
 })
 export class ZooState {
   @Action(FeedAnimals)
-  feedAnimals({ state, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
+  feedAnimals({ getState, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
     setState({
-      ...state,
+      ...getState(),
       feedAnimals: [ ...state.feedAnimals, payload ]
     });
   }
@@ -120,10 +134,10 @@ export class ZooState {
   constructor(private animalService: AnimalService) {}
 
   @Action(FeedAnimals)
-  feedAnimals({ state, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
+  feedAnimals({ getState, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
     return this.animalService.feed(payload).pipe(tap(result) => {
       setState({
-        ...state,
+        ...getState(),
         feedAnimals: [ ...state.feedAnimals, result ]
       });
     });
@@ -161,10 +175,10 @@ export class ZooState {
   constructor(private animalService: AnimalService) {}
 
   @Action(FeedAnimals)
-  async feedAnimals({ state, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
+  async feedAnimals({ getState, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
     const result = await this.animalService.feed(payload);
     setState({
-      ...state,
+      ...getState(),
       feedAnimals: [ ...state.feedAnimals, result ]
     });
   }
@@ -196,10 +210,10 @@ export class ZooState {
   * Simple Example
   */
   @Action(FeedAnimals)
-  feedAnimals({ state, setState, dispatch }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
+  feedAnimals({ getState, setState, dispatch }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
     setState({
-      ...state,
-      feedAnimals: [ ...state.feedAnimals, result ]
+      ...getState(),
+      feedAnimals: [ ...getState().feedAnimals, result ]
     });
 
     return dispatch(TakeAnimalsOutside);
@@ -209,7 +223,7 @@ export class ZooState {
    * Async Example
    */
   @Action(FeedAnimals)
-  feedAnimals2({ state, setState, dispatch }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
+  feedAnimals2({ dispatch }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
     return this.animalService.feed(payload).pipe(map() => dispatch(TakeAnimalsOutside));
   }
 }

@@ -36,7 +36,6 @@ export class StateFactory {
     const sortedStates = topologicalSort(stateGraph);
     const depths = findFullParentPath(stateGraph);
     const nameGraph = nameToState(states);
-
     const mappedStores = [];
 
     for (const name of sortedStates) {
@@ -95,7 +94,7 @@ export class StateFactory {
 
       if (actionMeta) {
         const stateContext = {
-          get state(): any {
+          getState(): any {
             const state = getState();
             return getValue(state, metadata.depth);
           },
