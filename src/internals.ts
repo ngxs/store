@@ -183,27 +183,31 @@ export function findFullParentPath(obj: any, newObj: any = {}) {
  *
  */
 export function topologicalSort(graph) {
-  const sorted = []; // sorted list of IDs ( returned value )
-  const visited = {}; // hash: id of already visited node => true
+  const sorted = [];
+  const visited = {};
+  const visit = (name, ancestors: any = []) => {
+    if (!Array.isArray(ancestors)) {
+      ancestors = [];
+    }
 
-  // 2. topological sort
-  Object.keys(graph).forEach(function visit(name, ancestors: any) {
-    if (!Array.isArray(ancestors)) ancestors = [];
     ancestors.push(name);
     visited[name] = true;
 
-    graph[name].forEach(function(dep) {
-      if (ancestors.indexOf(dep) >= 0)
-        // if already in ancestors, a closed chain exists.
-        throw new Error('Circular dependency "' + dep + '" is required by "' + name + '": ' + ancestors.join(' -> '));
+    graph[name].forEach(dep => {
+      if (ancestors.indexOf(dep) >= 0) {
+        throw new Error(`Circular dependency '${dep}' is required by '${name}': ${ancestors.join(' -> ')}`);
+      }
 
-      // if already exists, do nothing
       if (visited[dep]) return;
-      visit(dep, ancestors.slice(0)); // recursive call
+      visit(dep, ancestors.slice(0));
     });
 
-    if (sorted.indexOf(name) < 0) sorted.push(name);
-  });
+    if (sorted.indexOf(name) < 0) {
+      sorted.push(name);
+    }
+  };
+
+  Object.keys(graph).forEach(k => visit(k));
 
   return sorted.reverse();
 }
