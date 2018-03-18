@@ -51,34 +51,24 @@ describe('Select', () => {
   })
   class MyState {}
 
-  @Component({
-    selector: 'my-component-0',
-    template: ''
-  })
-  class StringSelectComponent {
-    @Select('counter') state: Observable<StateModel>;
-    @Select('counter.boo') subState: Observable<SubStateModel>;
-    @Select('counter.boo.baz') subSubState: Observable<SubSubStateModel>;
-  }
-
-  @Component({
-    selector: 'my-component-1',
-    template: ''
-  })
-  class StoreSelectComponent {
-    @Select(MyState) state: Observable<StateModel>;
-    @Select(MySubState) subState: Observable<SubStateModel>;
-    @Select(MySubSubState) subSubState: Observable<SubSubStateModel>;
-  }
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState, MySubState, MySubSubState])],
-      declarations: [StringSelectComponent, StoreSelectComponent]
-    });
-  });
+  const states = [MySubState, MySubSubState, MyState];
 
   it('should select the correct state using string', () => {
+    @Component({
+      selector: 'my-component-0',
+      template: ''
+    })
+    class StringSelectComponent {
+      @Select('counter') state: Observable<StateModel>;
+      @Select('counter.boo') subState: Observable<SubStateModel>;
+      @Select('counter.boo.baz') subSubState: Observable<SubSubStateModel>;
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [StringSelectComponent]
+    });
+
     const comp = TestBed.createComponent(StringSelectComponent);
 
     comp.componentInstance.state.subscribe(state => {
@@ -97,6 +87,21 @@ describe('Select', () => {
   });
 
   it('should select the correct state using a state class', () => {
+    @Component({
+      selector: 'my-component-1',
+      template: ''
+    })
+    class StoreSelectComponent {
+      @Select(MyState) state: Observable<StateModel>;
+      @Select(MySubState) subState: Observable<SubStateModel>;
+      @Select(MySubSubState) subSubState: Observable<SubSubStateModel>;
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [StoreSelectComponent]
+    });
+
     const comp = TestBed.createComponent(StoreSelectComponent);
 
     comp.componentInstance.state.subscribe(state => {
