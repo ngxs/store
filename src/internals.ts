@@ -91,7 +91,19 @@ export function getTypeFromInstance(event) {
  *
  */
 export function buildGraph(states) {
-  const findName = klass => states.find(g => g === klass)[META_KEY].name;
+  const findName = klass => {
+    const meta = states.find(g => g === klass);
+    if (!meta) {
+      throw new Error(`Child state not found: ${klass}`);
+    }
+
+    if (!meta[META_KEY]) {
+      throw new Error('States must be decorated with @State() decorator');
+    }
+
+    return meta[META_KEY].name;
+  };
+
   return states.reduce((result, klass) => {
     if (!klass[META_KEY]) {
       throw new Error('States must be decorated with @State() decorator');
