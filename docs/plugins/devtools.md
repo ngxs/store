@@ -4,12 +4,12 @@ To enable support for the [Redux Devtools extension](http://extension.remotedev.
 add the following plugin to your `forRoot` configuration:
 
 ```javascript
-import { NgxsModule, ReduxDevtoolsPluginModule } from 'ngxs';
+import { NgxsModule, NgxsReduxDevtoolsPluginModule } from 'ngxs';
 
 @NgModule({
   imports: [
     NgxsModule.forRoot([]),
-    ReduxDevtoolsPluginModule.forRoot({
+    NgxsReduxDevtoolsPluginModule.forRoot({
       /**
        * Disable the devtools, useful to disabling during production
        */

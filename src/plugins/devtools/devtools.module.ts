@@ -1,23 +1,16 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { NGXS_PLUGINS } from '../../symbols';
-import { DevtoolsOptions, DEVTOOLS_OPTIONS } from './symbols';
-import { ReduxDevtoolsPlugin } from './devtools.plugin';
+import { NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS } from './symbols';
+import { NgxsReduxDevtoolsPlugin } from './devtools.plugin';
 
 @NgModule()
-export class ReduxDevtoolsPluginModule {
-  static forRoot(options?: DevtoolsOptions): ModuleWithProviders {
+export class NgxsReduxDevtoolsPluginModule {
+  static forRoot(options?: NgxsDevtoolsOptions): ModuleWithProviders {
     return {
-      ngModule: ReduxDevtoolsPluginModule,
+      ngModule: NgxsReduxDevtoolsPluginModule,
       providers: [
-        {
-          provide: NGXS_PLUGINS,
-          useClass: ReduxDevtoolsPlugin,
-          multi: true
-        },
-        {
-          provide: DEVTOOLS_OPTIONS,
-          useValue: options
-        }
+        { provide: NGXS_PLUGINS, useClass: NgxsReduxDevtoolsPlugin, multi: true },
+        { provide: NGXS_DEVTOOLS_OPTIONS, useValue: options }
       ]
     };
   }

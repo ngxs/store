@@ -4,9 +4,9 @@ import { NgxsModule } from '../../module';
 import { State } from '../../state';
 import { Store } from '../../store';
 import { Action } from '../../action';
-import { LocalStoragePluginModule } from './localstorage.module';
+import { NgxsLocalStoragePluginModule } from './localstorage.module';
 
-describe('LocalStoragePlugin', () => {
+describe('NgxsLocalStoragePlugin', () => {
   let store: Store;
 
   class Increment {}
@@ -43,7 +43,7 @@ describe('LocalStoragePlugin', () => {
     localStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
 
     TestBed.configureTestingModule({
-      imports: [LocalStoragePluginModule.forRoot(), NgxsModule.forRoot([MyStore])]
+      imports: [NgxsLocalStoragePluginModule.forRoot(), NgxsModule.forRoot([MyStore])]
     });
 
     store = TestBed.get(Store);

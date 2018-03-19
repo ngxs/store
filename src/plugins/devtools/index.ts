@@ -1,2 +1,2 @@
-export { ReduxDevtoolsPluginModule } from './devtools.module';
-export { ReduxDevtoolsPlugin } from './devtools.plugin';
+export { NgxsReduxDevtoolsPluginModule } from './devtools.module';
+export { NgxsReduxDevtoolsPlugin } from './devtools.plugin';

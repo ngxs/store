@@ -1,7 +1,7 @@
 import { NgxsPlugin } from '../../symbols';
 import { getTypeFromInstance } from '../../internals';
 import { Injectable, Inject } from '@angular/core';
-import { DevtoolsExtension, DevtoolsOptions, DEVTOOLS_OPTIONS } from './symbols';
+import { NgxsDevtoolsExtension, NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS } from './symbols';
 import { tap } from 'rxjs/operators';
 
 /**
@@ -9,15 +9,15 @@ import { tap } from 'rxjs/operators';
  * http://extension.remotedev.io/
  */
 @Injectable()
-export class ReduxDevtoolsPlugin implements NgxsPlugin {
-  private readonly devtoolsExtension: DevtoolsExtension | null = null;
+export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
+  private readonly devtoolsExtension: NgxsDevtoolsExtension | null = null;
   private readonly windowObj: any = typeof window !== 'undefined' ? window : {};
 
-  constructor(@Inject(DEVTOOLS_OPTIONS) private _options: DevtoolsOptions) {
+  constructor(@Inject(NGXS_DEVTOOLS_OPTIONS) private _options: NgxsDevtoolsOptions) {
     const globalDevtools = this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
 
     if (globalDevtools) {
-      this.devtoolsExtension = globalDevtools.connect() as DevtoolsExtension;
+      this.devtoolsExtension = globalDevtools.connect() as NgxsDevtoolsExtension;
     }
   }
 

@@ -1,2 +1,2 @@
-export { LoggerPluginModule } from './logger.module';
-export { LoggerPlugin } from './logger.plugin';
+export { NgxsLoggerPluginModule } from './logger.module';
+export { NgxsLoggerPlugin } from './logger.plugin';
