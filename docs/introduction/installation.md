@@ -22,3 +22,6 @@ import { NgxsModule } from 'ngxs';
 
 When you include the module in the import, you can pass root stores along with options.
 If you are lazy loading, you can use the `forFeature` option with the same arguments.
+
+Its important that you add `NgxsModule.forRoot([])` at the root of your module even if
+all your states are feature states.
