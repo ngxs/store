@@ -3,10 +3,6 @@
  * Oringinally from: https://github.com/lodash/lodash/blob/master/memoize.js with some modifications
  */
 export function memoize(func, resolver?) {
-  if (typeof func !== 'function' || (resolver !== null && typeof resolver !== 'function')) {
-    throw new TypeError('Expected a function');
-  }
-
   const memoized: any = function(...args) {
     const key = resolver ? resolver.apply(this, args) : args[0];
     const cache = memoized.cache;

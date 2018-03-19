@@ -55,3 +55,37 @@ export class ZooComponent {
 
 This is most helpful to programmatic selects where we can't statically
 declare them with the select decorator.
+
+### Memoized Selectors
+Oftentimes you will use the same selector in several different places
+or have complex selectors you want to keep seperate from your component.
+NGXS has a `Selector` decorator that will help us out here. This decorator
+will memoize the function for performance as well as automatically slice
+the state portion you are dealing with.
+
+Let's create a selector that will return a list of pandas from the animals.
+
+```TS
+@State<string[]>({
+  name: 'animals',
+  defaults: []
+})
+export class ZooState {
+  @Selector()
+  static pandas(state: string[]) {
+    return state.filter(s => s.indexOf('panda') > -1);
+  }
+}
+```
+
+Notice, my `state` is just the local state for this `ZooState` class. Now in our component,
+we simply do:
+
+```TS
+@Component({...})
+export class AppComponent {
+  @Select(ZooState.pandas) pandas$: Observable<string[]>;
+}
+```
+
+and our `pandas$` will only return animals with the name panda in them.

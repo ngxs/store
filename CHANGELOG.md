@@ -1,4 +1,5 @@
-# Master
+# 2.0.0-rc.9 3/18/18
+- Feature: Memoized Selectors
 - Fix: Default to empty object if no default passed
 
 # 2.0.0-rc.8 3/18/18

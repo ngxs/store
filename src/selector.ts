@@ -1,19 +1,29 @@
 import { memoize } from './memoize';
+import { META_KEY } from './symbols';
+import { getValue } from './internals';
 
-export function Selector() {
-  return (target: any, key: string, descriptor: PropertyDescriptor): void => {
-    /*
-    const prevFunction = descriptor.value;
-    let memoized;
-    descriptor.value = () => {
-      if (memoized) {
-        return memoize();
-      } else {
-        const result = prevFunction([]);
-        memoized = (memoize)
-      }
-      return prevFunction;
-    };
-    */
+/**
+ * Decorates a method as a selector and memoize it.
+ */
+export function Selector(...args) {
+  return (target: any, key: string, descriptor: PropertyDescriptor) => {
+    const metadata = target[META_KEY];
+    if (descriptor.value !== null) {
+      const prev = descriptor.value;
+
+      const fn = state => {
+        const local = getValue(state, metadata.path);
+        return prev(local);
+      };
+
+      return {
+        configurable: true,
+        get() {
+          return memoize.apply(null, [fn, ...args]);
+        }
+      };
+    } else {
+      throw new Error('Selectors only work on methods');
+    }
   };
 }
