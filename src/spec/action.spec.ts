@@ -7,7 +7,9 @@ describe('Action', () => {
     class Action1 {}
     class Action2 {}
 
-    @State({})
+    @State({
+      name: 'bar'
+    })
     class BarStore {
       @Action([Action1, Action2])
       foo({ setState }) {

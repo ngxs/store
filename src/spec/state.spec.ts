@@ -3,22 +3,6 @@ import { State } from '../state';
 import { Action } from '../action';
 
 describe('Store', () => {
-  it('infers correct name', () => {
-    @State({})
-    class BarState {}
-
-    const meta = ensureStoreMetadata(BarState);
-    expect(meta.name).toBe('bar');
-  });
-
-  it('infers correct name without suffix', () => {
-    @State({})
-    class Bar {}
-
-    const meta = ensureStoreMetadata(Bar);
-    expect(meta.name).toBe('bar');
-  });
-
   it('describes correct name', () => {
     @State({
       name: 'moo'
