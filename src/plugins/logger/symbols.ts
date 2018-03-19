@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
-export interface LoggerPluginOptions {
+export interface NgxsLoggerPluginOptions {
   /** Auto expand logged mutations  */
   collapsed: boolean;
 
@@ -8,4 +8,4 @@ export interface LoggerPluginOptions {
   logger: any;
 }
 
-export const LOGGER_PLUGIN_OPTIONS = new InjectionToken('LOGGER_PLUGIN_OPTIONS');
+export const NGXS_LOGGER_PLUGIN_OPTIONS = new InjectionToken('NGXS_LOGGER_PLUGIN_OPTIONS');

@@ -4,7 +4,7 @@ Next let's talk about plugins. Similar to Redux's meta reducers, we have
 a plugins interface that allows you to build a global plugin for your state.
 
 All you have to do is provide a class to the `NGXS_PLUGINS` token.
-If your plugins has options associated with it, we suggest defining an injection token 
+If your plugins has options associated with it, we suggest defining an injection token
 and then a `forRoot` method on your module
 
 Let's take a basic example of a logger:
@@ -13,7 +13,7 @@ Let's take a basic example of a logger:
 import { Injectable, Inject, NgModule } from '@angular/core';
 import { NgxsPlugin, NGXS_PLUGINS } from 'ngxs';
 
-export const LOGGER_PLUGIN_OPTIONS = new InjectionToken('LOGGER_PLUGIN_OPTIONS');
+export const NGXS_LOGGER_PLUGIN_OPTIONS = new InjectionToken('NGXS_LOGGER_PLUGIN_OPTIONS');
 
 @Injectable()
 export class LoggerPlugin implements NgxsPlugin {
@@ -28,10 +28,10 @@ export class LoggerPlugin implements NgxsPlugin {
 }
 
 @NgModule()
-export class LoggerPluginModule {
+export class NgxsLoggerPluginModule {
   static forRoot(config?: any): ModuleWithProviders = {
     return {
-      ngModule: LoggerPluginModule,
+      ngModule: NgxsLoggerPluginModule,
       providers: [
         {
           provide: NGXS_PLUGINS,
@@ -39,7 +39,7 @@ export class LoggerPluginModule {
           multi: true  
         },
         {
-          provide: LOGGER_PLUGIN_OPTIONS,
+          provide: NGXS_LOGGER_PLUGIN_OPTIONS,
           useValue: config
         }
       ]
@@ -67,10 +67,7 @@ in the module hookup like:
 
 ```javascript
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([ZooStore]),
-    LoggerPluginModule.forRoot({})
-  ]
+  imports: [NgxsModule.forRoot([ZooStore]), NgxsLoggerPluginModule.forRoot({})]
 })
 export class MyModule {}
 ```

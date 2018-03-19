@@ -8,6 +8,6 @@ export { ofAction } from './of-action';
 export { NgxsPlugin, NgxsPluginFn, StateContext } from './symbols';
 export { Selector } from './selector';
 
-export { ReduxDevtoolsPlugin, ReduxDevtoolsPluginModule } from './plugins/devtools/index';
-export { LoggerPlugin, LoggerPluginModule } from './plugins/logger/index';
-export { LocalStoragePlugin, LocalStoragePluginModule } from './plugins/localstorage/index';
+export { NgxsReduxDevtoolsPlugin, NgxsReduxDevtoolsPluginModule } from './plugins/devtools/index';
+export { NgxsLoggerPlugin, NgxsLoggerPluginModule } from './plugins/logger/index';
+export { NgxsLocalStoragePlugin, NgxsLocalStoragePluginModule } from './plugins/localstorage/index';

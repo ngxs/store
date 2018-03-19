@@ -1,21 +1,21 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { LoggerPluginOptions, LOGGER_PLUGIN_OPTIONS } from './symbols';
+import { NgxsLoggerPluginOptions, NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';
 import { NGXS_PLUGINS } from '../../symbols';
-import { LoggerPlugin } from './logger.plugin';
+import { NgxsLoggerPlugin } from './logger.plugin';
 
 @NgModule()
-export class LoggerPluginModule {
-  static forRoot(options: LoggerPluginOptions): ModuleWithProviders {
+export class NgxsLoggerPluginModule {
+  static forRoot(options: NgxsLoggerPluginOptions): ModuleWithProviders {
     return {
-      ngModule: LoggerPluginModule,
+      ngModule: NgxsLoggerPluginModule,
       providers: [
         {
           provide: NGXS_PLUGINS,
-          useClass: LoggerPlugin,
+          useClass: NgxsLoggerPlugin,
           multi: true
         },
         {
-          provide: LOGGER_PLUGIN_OPTIONS,
+          provide: NGXS_LOGGER_PLUGIN_OPTIONS,
           useValue: {
             ...{
               logger: console,

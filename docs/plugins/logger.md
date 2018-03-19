@@ -4,12 +4,12 @@ NGXS comes with a logger plugin for common debugging usage. To take advantage of
 simply import it, configure it and add it to your plugins options.
 
 ```javascript
-import { NgxsModule, LoggerPluginModule } from 'ngxs';
+import { NgxsModule, NgxsLoggerPluginModule } from 'ngxs';
 
 @NgModule({
   imports: [
     NgxsModule.forRoot([ZooStore]),
-    LoggerPluginModule.forRoot({
+    NgxsLoggerPluginModule.forRoot({
       /**
        * Logger to implement. Defaults to console.
        */

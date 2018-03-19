@@ -1,13 +1,13 @@
 import { Injectable, Inject } from '@angular/core';
 import { NgxsPlugin } from '../../symbols';
-import { LOGGER_PLUGIN_OPTIONS, LoggerPluginOptions } from './symbols';
+import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
 import { pad } from './internals';
 import { tap } from 'rxjs/operators';
 import { getTypeFromInstance } from '../../internals';
 
 @Injectable()
-export class LoggerPlugin implements NgxsPlugin {
-  constructor(@Inject(LOGGER_PLUGIN_OPTIONS) private _options: LoggerPluginOptions) {}
+export class NgxsLoggerPlugin implements NgxsPlugin {
+  constructor(@Inject(NGXS_LOGGER_PLUGIN_OPTIONS) private _options: NgxsLoggerPluginOptions) {}
 
   handle(state, event, next) {
     const options = this._options || <any>{};

@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@angular/core';
 import { NgxsPlugin } from '../../symbols';
-import { LocalStoragePluginOptions, LOCAL_STORAGE_PLUGIN_OPTIONS } from './symbols';
+import { NgxsLocalStoragePluginOptions, NGXS_LOCAL_STORAGE_PLUGIN_OPTIONS } from './symbols';
 import { getTypeFromInstance, setValue, getValue } from '../../internals';
 import { tap } from 'rxjs/operators';
 
 @Injectable()
-export class LocalStoragePlugin implements NgxsPlugin {
-  constructor(@Inject(LOCAL_STORAGE_PLUGIN_OPTIONS) private _options: LocalStoragePluginOptions) {}
+export class NgxsLocalStoragePlugin implements NgxsPlugin {
+  constructor(@Inject(NGXS_LOCAL_STORAGE_PLUGIN_OPTIONS) private _options: NgxsLocalStoragePluginOptions) {}
 
   handle(state, event, next) {
     const options = this._options || <any>{};
