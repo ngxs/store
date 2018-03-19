@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 /**
- * Event stream that is emitted anytime an event is dispatched.
+ * Action stream that is emitted anytime an action is dispatched.
  * You can listen to this in services to react without stores.
  */
 @Injectable()
-export class EventStream extends BehaviorSubject<any> {
+export class Actions extends BehaviorSubject<any> {
   constructor() {
     super({});
   }

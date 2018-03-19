@@ -1,3 +1,7 @@
+# 2.0.0-rc.10 3/19/18
+- BREAKING: Rename `EventStream` to `Actions`
+- BREAKING: Rename plugins to have NGXS Prefix
+
 # 2.0.0-rc.9 3/18/18
 - Feature: Memoized Selectors
 - Fix: Default to empty object if no default passed
@@ -26,9 +30,9 @@
 
 # 2.0.0-rc.1 3/18/18
 ## Bug Fixes
-- Action `state` arguments cached when destructured, switch to `getState()`
-- Class selectors not working with sub stores
-- Fix missing dispatch on state context interface
+- Fix: Action `state` arguments cached when destructured, switch to `getState()`
+- Fix: Class selectors not working with sub stores
+- Fix: missing dispatch on state context interface
 
 # 2.0.0-rc.0 3/17/18
 First off, 2.0 is a huge change. I want to appologize to everyone about that but
@@ -37,28 +41,23 @@ before it was too late and we were stuck on a API. I can promise that there will
 not be this big of a breaking change after this release in the future without 
 first deprecation periods.
 
-## Breaking
-- `@Store()` decorator is now `@State()`
-- `Ngxs` service is now `Store`
-- Stores should be now renamed to State. Before: `ZooStore` should be `ZooState`
-- `@Mutation` is gone in favor of just `@Action`
-- Action's first argument is state context object, `{ state, setState }`
-- You use `setState` to set the state now rather than returning it in actions
-- Events are now just called Actions
-- `ofEvent` is now called `ofAction`
-- Plugins `next` fn now returns an observable
-- Local Storage plugins removed Strategy in favor of passing your own engine
-
-## Features
-- Simplified APIs by removing Mutations, decreased boilerplate
-- Added sub state capability
-- Add `store.selectOnce()` shortcut function
-- Better tpyings
-- Add `dispatch` function in state context for easier dispatching
-
-## Bug Fixes
-- `dispatch().subscribe()` now works correctly
-- Promises now resolve correctly
+- Breaking: `@Store()` decorator is now `@State()`
+- Breaking: `Ngxs` service is now `Store`
+- Breaking: Stores should be now renamed to State. Before: `ZooStore` should be `ZooState`
+- Breaking: `@Mutation` is gone in favor of just `@Action`
+- Breaking: Action's first argument is state context object, `{ state, setState }`
+- Breaking: You use `setState` to set the state now rather than returning it in actions
+- Breaking: Events are now just called Actions
+- Breaking: `ofEvent` is now called `ofAction`
+- Breaking: Plugins `next` fn now returns an observable
+- Breaking: Local Storage plugins removed Strategy in favor of passing your own engine
+- Feature: Simplified APIs by removing Mutations, decreased boilerplate
+- Feature: Added sub state capability
+- Feature: Add `store.selectOnce()` shortcut function
+- Feature: Better tpyings
+- Feature: Add `dispatch` function in state context for easier dispatching
+- Fix: `dispatch().subscribe()` now works correctly
+- Fix: Promises now resolve correctly
 
 # 1.5.3 2/12/18
 - Fix: Promises not emitting results

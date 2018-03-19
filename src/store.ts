@@ -1,5 +1,5 @@
 import { Injectable, ErrorHandler } from '@angular/core';
-import { EventStream } from './event-stream';
+import { Actions } from './actions-stream';
 import { StateFactory } from './state-factory';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
@@ -17,7 +17,7 @@ import { empty } from 'rxjs/observable/empty';
 export class Store {
   constructor(
     private _errorHandler: ErrorHandler,
-    private _eventStream: EventStream,
+    private _eventStream: Actions,
     private _storeFactory: StateFactory,
     private _stateStream: StateStream,
     private _pluginManager: PluginManager
