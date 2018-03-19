@@ -21,5 +21,9 @@ export function State<T>(options: StoreOptions<T>) {
     meta.children = options.children;
     meta.defaults = options.defaults;
     meta.name = options.name;
+
+    if (!options.name) {
+      throw new Error(`States must register a 'name' property`);
+    }
   };
 }

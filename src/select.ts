@@ -13,7 +13,7 @@ export class SelectFactory {
 }
 
 /**
- * Decorates a member with a select signature
+ * Decorator for selecting a slice of state from the store.
  */
 export function Select(selectorOrFeature?, ...paths: string[]) {
   return function(target: any, name: string) {

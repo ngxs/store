@@ -10,6 +10,9 @@ export interface NgxsDevtoolsExtension {
 }
 
 export interface NgxsDevtoolsOptions {
+  /**
+   * Whether the dev tools is enabled or note. Useful for setting during production.
+   */
   disabled: boolean;
 }
 

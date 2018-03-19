@@ -3,7 +3,7 @@ import { META_KEY } from './symbols';
 import { getValue } from './internals';
 
 /**
- * Decorates a method as a selector and memoize it.
+ * Decorator for memoizing a state selector.
  */
 export function Selector(...args) {
   return (target: any, key: string, descriptor: PropertyDescriptor) => {

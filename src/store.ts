@@ -17,7 +17,7 @@ import { empty } from 'rxjs/observable/empty';
 export class Store {
   constructor(
     private _errorHandler: ErrorHandler,
-    private _eventStream: Actions,
+    private _actions: Actions,
     private _storeFactory: StateFactory,
     private _stateStream: StateStream,
     private _pluginManager: PluginManager
@@ -73,7 +73,7 @@ export class Store {
           this._stateStream.next(nextState);
         }
 
-        this._eventStream.next(event);
+        this._actions.next(event);
 
         return this._dispatchActions(nextAction).pipe(materialize(), map(() => this._stateStream.getValue()));
       }

@@ -5,7 +5,7 @@ export function ofAction<T>(allowedType): OperatorFunction<any, T>;
 export function ofAction<T>(...allowedTypes): OperatorFunction<any, T>;
 
 /**
- * RxJS operator for selecting out specific events.
+ * RxJS operator for selecting out specific actions.
  */
 export function ofAction(...allowedTypes: any[]): OperatorFunction<any, any> {
   const allowedMap = {};
