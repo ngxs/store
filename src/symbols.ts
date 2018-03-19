@@ -29,7 +29,7 @@ export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
 export interface StoreOptions<T> {
-  name?: string;
+  name: string;
   defaults?: T;
   children?: any[];
 }
