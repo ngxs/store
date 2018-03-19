@@ -53,6 +53,12 @@ export class NgxsFeatureModule {
 
   initStores(stores) {
     if (stores) {
+      if (!this._stateStream) {
+        throw new Error(`
+          'NgxsModule.forRoot()' was not called at the root module.
+          Please add it to the root module even if you don't have any root states.`);
+      }
+
       // bind the stores
       const init = this._factory.addAndReturnDefaults(stores);
 
