@@ -1,3 +1,6 @@
+# 2.0.0-rc.12 3/20/18
+- Fix: Dev tools showing wrong state
+
 # 2.0.0-rc.11 3/20/18
 - BREAKING: Remove string selects, they re not type safe and bad idea
 - Feature: Extend `store.select` to support class selectors
