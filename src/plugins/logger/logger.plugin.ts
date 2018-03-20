@@ -2,7 +2,6 @@ import { Injectable, Inject } from '@angular/core';
 import { NgxsPlugin } from '../../symbols';
 import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
 import { pad } from './internals';
-import { tap } from 'rxjs/operators';
 import { getTypeFromInstance } from '../../internals';
 
 @Injectable()
