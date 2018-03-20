@@ -1,17 +1,21 @@
 import { Injectable, ErrorHandler } from '@angular/core';
-import { Actions } from './actions-stream';
-import { StateFactory } from './state-factory';
-import { StateStream } from './state-stream';
-import { PluginManager } from './plugin-manager';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { distinctUntilChanged, materialize, catchError, take } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operators/map';
 import { fromPromise } from 'rxjs/observable/fromPromise';
-import { compose } from './compose';
 import { of } from 'rxjs/observable/of';
 import { empty } from 'rxjs/observable/empty';
+
+import { compose } from './compose';
+import { Actions } from './actions-stream';
+import { StateFactory } from './state-factory';
+import { StateStream } from './state-stream';
+import { PluginManager } from './plugin-manager';
+import { fastPropGetter } from './internals';
+import { META_KEY } from './symbols';
 
 @Injectable()
 export class Store {
@@ -51,8 +55,14 @@ export class Store {
   /**
    * Selects a slice of data from the store.
    */
-  select(mapFn): Observable<any> {
-    return this._stateStream.pipe(map(mapFn), distinctUntilChanged());
+  select(selector: any): Observable<any> {
+    if (selector[META_KEY] && selector[META_KEY].path) {
+      const getter = fastPropGetter(selector[META_KEY].path.split('.'));
+
+      return this._stateStream.pipe(map(getter), distinctUntilChanged());
+    }
+
+    return this._stateStream.pipe(map(selector), distinctUntilChanged());
   }
 
   /**
@@ -60,6 +70,13 @@ export class Store {
    */
   selectOnce(mapFn): Observable<any> {
     return this.select(mapFn).pipe(take(1));
+  }
+
+  /**
+   * Allow the user to subscribe to the root of the state
+   */
+  subscribe(fn?: any): Subscription {
+    return this._stateStream.subscribe(fn);
   }
 
   private _dispatch(action): Observable<any> {
