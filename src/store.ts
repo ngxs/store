@@ -3,7 +3,6 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { distinctUntilChanged, materialize, catchError, take } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
-import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operators/map';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { of } from 'rxjs/observable/of';
@@ -116,19 +115,7 @@ export class Store {
       }
 
       if (eventResult instanceof Observable) {
-        const eventResultStream = new Subject();
-        eventResult.pipe(materialize()).subscribe(res => {
-          if (res.value) {
-            this.dispatch(res.value).subscribe(() => {
-              eventResultStream.next();
-              eventResultStream.complete();
-            });
-          } else {
-            eventResultStream.next();
-            eventResultStream.complete();
-          }
-        });
-        results.push(eventResultStream);
+        results.push(eventResult);
       }
     }
     return results;
