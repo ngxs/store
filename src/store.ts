@@ -1,7 +1,7 @@
 import { Injectable, ErrorHandler } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { distinctUntilChanged, catchError, take, share } from 'rxjs/operators';
+import { distinctUntilChanged, catchError, take } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { map } from 'rxjs/operators/map';
 import { fromPromise } from 'rxjs/observable/fromPromise';
@@ -44,7 +44,7 @@ export class Store {
       })
     );
 
-    return result.pipe(share());
+    return result;
   }
 
   /**
