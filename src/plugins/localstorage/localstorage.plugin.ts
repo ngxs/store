@@ -30,20 +30,22 @@ export class NgxsLocalStoragePlugin implements NgxsPlugin {
       }
     }
 
-    return next(state, event).pipe(
-      tap(nextState => {
-        if (!isInitAction) {
-          for (const key of keys) {
-            let val = nextState;
+    const res = next(state, event);
 
-            if (key !== '@@STATE') {
-              val = getValue(nextState, key);
-            }
+    res.subscribe(nextState => {
+      if (!isInitAction) {
+        for (const key of keys) {
+          let val = nextState;
 
-            engine.setItem(key, options.serialize(val));
+          if (key !== '@@STATE') {
+            val = getValue(nextState, key);
           }
+
+          engine.setItem(key, options.serialize(val));
         }
-      })
-    );
+      }
+    });
+
+    return res;
   }
 }

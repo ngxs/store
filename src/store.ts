@@ -1,12 +1,11 @@
 import { Injectable, ErrorHandler } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { distinctUntilChanged, materialize, catchError, take } from 'rxjs/operators';
+import { distinctUntilChanged, catchError, take, share } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { map } from 'rxjs/operators/map';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { of } from 'rxjs/observable/of';
-import { empty } from 'rxjs/observable/empty';
 
 import { compose } from './compose';
 import { Actions } from './actions-stream';
@@ -45,10 +44,7 @@ export class Store {
       })
     );
 
-    // noop subscribe
-    result.subscribe(() => {});
-
-    return result;
+    return result.pipe(share());
   }
 
   /**
@@ -57,7 +53,6 @@ export class Store {
   select(selector: any): Observable<any> {
     if (selector[META_KEY] && selector[META_KEY].path) {
       const getter = fastPropGetter(selector[META_KEY].path.split('.'));
-
       return this._stateStream.pipe(map(getter), distinctUntilChanged());
     }
 
@@ -91,7 +86,7 @@ export class Store {
 
         this._actions.next(event);
 
-        return this._dispatchActions(nextAction).pipe(materialize(), map(() => this._stateStream.getValue()));
+        return this._dispatchActions(nextAction).pipe(map(() => this._stateStream.getValue()));
       }
     ])(prevState, action);
   }
@@ -104,7 +99,7 @@ export class Store {
       action
     );
 
-    return results.length ? forkJoin(this._handleNesting(results)) : empty();
+    return results.length ? forkJoin(this._handleNesting(results)) : of({}).pipe(take(1));
   }
 
   private _handleNesting(eventResults): Observable<any>[] {

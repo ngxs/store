@@ -32,16 +32,17 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
 
     logger.log('%c prev state', 'color: #9E9E9E; font-weight: bold', state);
 
-    return next(state, event).pipe(
-      tap(nextState => {
-        logger.log('%c next state', 'color: #4CAF50; font-weight: bold', nextState);
+    const res = next(state, event);
 
-        try {
-          logger.groupEnd();
-        } catch (e) {
-          logger.log('—— log end ——');
-        }
-      })
-    );
+    res.subscribe(nextState => {
+      logger.log('%c next state', 'color: #4CAF50; font-weight: bold', nextState);
+      try {
+        logger.groupEnd();
+      } catch (e) {
+        logger.log('—— log end ——');
+      }
+    });
+
+    return res;
   }
 }
