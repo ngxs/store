@@ -1,4 +1,4 @@
-# Master
+# 2.0.0-rc.11 3/20/18
 - BREAKING: Remove string selects, they re not type safe and bad idea
 - Feature: Extend `store.select` to support class selectors
 - Feature: Expose state stream for users to subscribe to
