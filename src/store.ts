@@ -1,19 +1,19 @@
 import { Injectable, ErrorHandler } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { distinctUntilChanged, materialize, catchError, take } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { Subject } from 'rxjs/Subject';
 import { map } from 'rxjs/operators/map';
 import { fromPromise } from 'rxjs/observable/fromPromise';
-import { compose } from './compose';
 import { of } from 'rxjs/observable/of';
 import { empty } from 'rxjs/observable/empty';
 
+import { compose } from './compose';
 import { Actions } from './actions-stream';
 import { StateFactory } from './state-factory';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
-import { Subscription } from 'rxjs/Subscription';
 import { fastPropGetter } from './internals';
 import { META_KEY } from './symbols';
 
