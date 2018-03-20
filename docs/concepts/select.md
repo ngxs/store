@@ -26,12 +26,6 @@ export class ZooComponent {
   // Reads the name of the property minus the $
   @Select() animals$: Observable<string[]>;
 
-  // Reads the parameter passed to the select decorator
-  @Select('animals') animals$: Observable<string[]>;
-
-  // These properties can be nested too
-  @Select('animals.names') animals$: Observable<string[]>;
-
   // Also accepts a function like our select method
   @Select(state => state.animals) animals$: Observable<string[]>;
 }

@@ -1,3 +1,8 @@
+# Master
+- BREAKING: Remove string selects, they re not type safe and bad idea
+- Feature: Extend `store.select` to support class selectors
+- Feature: Expose state stream for users to subscribe to
+
 # 2.0.0-rc.10 3/19/18
 - BREAKING: Rename `EventStream` to `Actions`
 - BREAKING: Rename plugins to have NGXS Prefix
