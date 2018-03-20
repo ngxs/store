@@ -30,7 +30,6 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
     const res = next(state, action);
 
     res.subscribe(newState => {
-      console.log('here', action);
       // if init action, send initial state to dev tools
       const isInitAction = getTypeFromInstance(action) === '@@INIT';
       if (isInitAction) {
