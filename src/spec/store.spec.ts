@@ -93,7 +93,17 @@ describe('Store', () => {
 
   it('should select the correct state use a state class', () => {
     store.select(MyState).subscribe(state => {
-      expect(state.first).toBe('Hello');
+      expect(state).toEqual({
+        first: 'Hello',
+        second: 'World',
+        bar: {
+          hello: true,
+          world: true,
+          baz: {
+            name: 'Danny'
+          }
+        }
+      });
     });
 
     store.select(MySubState).subscribe((state: SubStateModel) => {
