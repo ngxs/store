@@ -15,10 +15,14 @@ describe('Zoo', () => {
 
   it('it toggles feed', () => {
     store.dispatch(new FeedAnimals());
-    store.select(state => state.zoo.feed).subscribe(feed => {
+    store.selectOnce(state => state.zoo.feed).subscribe(feed => {
       expect(feed).toBe(true);
     });
   });
 
 });
 ```
+
+You might notice I use `selectOnce` rather than just `select`, this is a shortcut
+method that lets us only listen for one emit which is typically what we want
+for unit testing.

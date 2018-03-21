@@ -50,6 +50,9 @@ export class ZooComponent {
 This is most helpful to programmatic selects where we can't statically
 declare them with the select decorator.
 
+There is also a `selectOnce` that will basically do `select().pipe(take(1))` for
+you automatically as a shortcut method. This is very useful for unit testing.
+
 ### Memoized Selectors
 Oftentimes you will use the same selector in several different places
 or have complex selectors you want to keep seperate from your component.
