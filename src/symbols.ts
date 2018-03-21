@@ -25,7 +25,7 @@ export interface StateContext<T> {
   /**
    * Patch the existing state with the provided value.
    */
-  patchState(val: any);
+  patchState(val: Partial<T>);
 
   /**
    * Dispatch a new action and return the dispatched observable.
