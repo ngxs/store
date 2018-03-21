@@ -29,6 +29,10 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
       console.log(message);
     }
 
+    if (typeof event.payload !== 'undefined') {
+      logger.log('%c payload', 'color: #9E9E9E; font-weight: bold', event.payload);
+    }
+
     logger.log('%c prev state', 'color: #9E9E9E; font-weight: bold', state);
 
     const res = next(state, event);
