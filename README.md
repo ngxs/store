@@ -9,7 +9,7 @@
 
 ---
 
-- Learn about it on the [docs site](https://amcdnl.gitbooks.io/ngxs/content/)
+- Learn about it on the [docs site](https://ngxs.gitbooks.io/ngxs/)
 - See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
 - Checkout the [sample application](https://github.com/amcdnl/ngxs/tree/master/integration)
 - Learn about updates from the [changelog](CHANGELOG.md)
