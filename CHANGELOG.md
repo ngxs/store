@@ -1,3 +1,6 @@
+# 2.0.0-rc.15 3/20/18
+- Fix: Lazy load issue introduced by #126
+
 # 2.0.0-rc.14 3/20/18
 - Feature: NgxsLoggerPlugin log action payload if present
 - Fix: Issues with feature states #126
