@@ -1,13 +1,13 @@
-import { NgModule, ModuleWithProviders, Optional, Inject, SkipSelf } from '@angular/core';
+import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
 
-import { STORE_TOKEN } from './symbols';
+import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN } from './symbols';
 import { StateFactory } from './state-factory';
 import { Actions } from './actions-stream';
 import { Store } from './store';
 import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
-import { InitStore } from './actions/init';
+import { InitState } from './actions/init';
 
 @NgModule()
 export class NgxsRootModule {
@@ -17,16 +17,23 @@ export class NgxsRootModule {
     store: Store,
     select: SelectFactory,
     @Optional()
-    @Inject(STORE_TOKEN)
-    stores: any[]
+    @Inject(ROOT_STATE_TOKEN)
+    states: any[]
   ) {
-    this.initStores(stores);
-    store.dispatch(new InitStore());
+    this.initStates(states);
+    store.dispatch(new InitState());
   }
 
-  initStores(stores) {
-    if (stores) {
-      const init = this._factory.addAndReturnDefaults(stores);
+  initStates(states) {
+    if (states) {
+      if (!this._stateStream) {
+        throw new Error(
+          // tslint:disable-next-line
+          `'NgxsModule.forRoot()' was not called at the root module. Please add it to the root module even if you don't have any root states.`
+        );
+      }
+      // add stores to the state graph and return their defaults
+      const init = this._factory.addAndReturnDefaults(states);
 
       // get our current stream
       const cur = this._stateStream.getValue();
@@ -40,40 +47,21 @@ export class NgxsRootModule {
 @NgModule({})
 export class NgxsFeatureModule {
   constructor(
+    root: NgxsRootModule,
+    store: Store,
     @Optional()
-    @SkipSelf()
-    private _stateStream: StateStream,
-    private _factory: StateFactory,
-    @Optional()
-    @Inject(STORE_TOKEN)
-    stores: any[]
+    @Inject(FEATURE_STATE_TOKEN)
+    states: any[][]
   ) {
-    this.initStores(stores);
-  }
-
-  initStores(stores) {
-    if (stores) {
-      if (!this._stateStream) {
-        throw new Error(`
-          'NgxsModule.forRoot()' was not called at the root module.
-          Please add it to the root module even if you don't have any root states.`);
-      }
-
-      // bind the stores
-      const init = this._factory.addAndReturnDefaults(stores);
-
-      // get our current stream
-      const cur = this._stateStream.getValue();
-
-      // set the state to the current + new
-      this._stateStream.next({ ...cur, ...init });
-    }
+    // since FEATURE_STATE_TOKEN is a multi token, we need to flatten it [[Feature1State, Feature2State], [Feature3State]]
+    const flattenedStates = ([] as any[]).concat(...states);
+    root.initStates(flattenedStates);
   }
 }
 
 @NgModule({})
 export class NgxsModule {
-  static forRoot(stores: any[]): ModuleWithProviders {
+  static forRoot(states: any[] = []): ModuleWithProviders {
     return {
       ngModule: NgxsRootModule,
       providers: [
@@ -83,25 +71,26 @@ export class NgxsModule {
         StateStream,
         SelectFactory,
         PluginManager,
-        stores,
+        ...states,
         {
-          provide: STORE_TOKEN,
-          useValue: stores
+          provide: ROOT_STATE_TOKEN,
+          useValue: states
         }
       ]
     };
   }
 
-  static forFeature(stores: any[]): ModuleWithProviders {
+  static forFeature(states: any[]): ModuleWithProviders {
     return {
       ngModule: NgxsFeatureModule,
       providers: [
-        stores,
         StateFactory,
         PluginManager,
+        ...states,
         {
-          provide: STORE_TOKEN,
-          useValue: stores
+          provide: FEATURE_STATE_TOKEN,
+          multi: true,
+          useValue: states
         }
       ]
     };

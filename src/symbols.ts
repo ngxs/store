@@ -1,8 +1,8 @@
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-export const STORE_TOKEN = new InjectionToken<any>('STORE_TOKEN');
-export const STORE_OPTIONS_TOKEN = new InjectionToken<any>('STORE_OPTIONS_TOKEN');
+export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
+export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
 export const META_KEY = 'NGXS_META';
 
 export type NgxsPluginConstructor = new (...args: any[]) => NgxsPlugin;
