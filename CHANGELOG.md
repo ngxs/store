@@ -1,5 +1,6 @@
-# Master
+# 2.0.0-rc.14 3/20/18
 - Feature: NgxsLoggerPlugin log action payload if present
+- Fix: Issues with feature states #126
 
 # 2.0.0-rc.13 3/20/18
 - Feature: State can listen to action multiple times
