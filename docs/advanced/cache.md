@@ -21,7 +21,7 @@ export class ZooState {
   constructor(private animalService: AnimalService) {}
 
   @Action(GetAnimals)
-  get({ getState(), setState, dispatch }, { payload }) {
+  get({ getState, setState, dispatch }, { payload }) {
     const state = getState();
     // payload = id of animal
     const idx = state.animals.findIndex(animal => animal.id === payload);
