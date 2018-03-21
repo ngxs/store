@@ -93,42 +93,44 @@ export class StateFactory {
 
     for (const metadata of this.states) {
       const name = getTypeFromInstance(action);
-      const actionMeta = metadata.actions[name];
+      const actionMetas = metadata.actions[name];
 
-      if (actionMeta) {
-        const stateContext = {
-          getState(): any {
-            const state = getState();
-            return getValue(state, metadata.depth);
-          },
-          patchState(val: any): void {
-            if (Array.isArray(val)) {
-              throw new Error('Patching arrays is not supported.');
-            }
+      if (actionMetas) {
+        for (const actionMeta of actionMetas) {
+          const stateContext = {
+            getState(): any {
+              const state = getState();
+              return getValue(state, metadata.depth);
+            },
+            patchState(val: any): void {
+              if (Array.isArray(val)) {
+                throw new Error('Patching arrays is not supported.');
+              }
 
-            let state = getState();
-            const local = getValue(state, metadata.depth);
-            for (const k in val) {
-              local[k] = val[k];
+              let state = getState();
+              const local = getValue(state, metadata.depth);
+              for (const k in val) {
+                local[k] = val[k];
+              }
+              state = setValue(state, metadata.depth, { ...local });
+              setState(state);
+              return state;
+            },
+            setState(val: any): any {
+              let state = getState();
+              state = setValue(state, metadata.depth, val);
+              setState(state);
+              return state;
+            },
+            dispatch(actions: any | any[]): Observable<any> {
+              return dispatch(actions);
             }
-            state = setValue(state, metadata.depth, { ...local });
-            setState(state);
-            return state;
-          },
-          setState(val: any): any {
-            let state = getState();
-            state = setValue(state, metadata.depth, val);
-            setState(state);
-            return state;
-          },
-          dispatch(actions: any | any[]): Observable<any> {
-            return dispatch(actions);
+          };
+
+          const result = metadata.instance[actionMeta.fn](stateContext, action);
+          if (result) {
+            results.push(result);
           }
-        };
-
-        const result = metadata.instance[actionMeta.fn](stateContext, action);
-        if (result) {
-          results.push(result);
         }
       }
     }

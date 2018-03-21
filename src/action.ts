@@ -13,10 +13,14 @@ export function Action(actions: any | any[]) {
 
     for (const action of actions) {
       const type = getTypeFromKlass(action);
-      meta.actions[type] = {
+      if (!meta.actions[type]) {
+        meta.actions[type] = [];
+      }
+
+      meta.actions[type].push({
         fn: name,
         type
-      };
+      });
     }
   };
 }
