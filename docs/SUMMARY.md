@@ -22,7 +22,7 @@
   * [Devtools](plugins/devtools.md)
   * [Local Storage](plugins/localstorage.md)
 * Community
-  * [Community Projects](community/projects.md)
+  * [Resources](community/projects.md)
   * [Contributors](community/contributors.md)
   * [Contributing](community/contributing.md)
   * [Support](community/support.md)
