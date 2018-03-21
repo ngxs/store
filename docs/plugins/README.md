@@ -21,7 +21,7 @@ export class LoggerPlugin implements NgxsPlugin {
 
   handle(state, action, next) {
     console.log('Action started!', state);
-    return next(state, mutation).pipe(tap(result) => {
+    return next(state, action).pipe(tap(result) => {
       console.log('Action happened!', result);
     });
   }
@@ -54,7 +54,7 @@ would look like this:
 ```javascript
 export function logPlugin(state, action, next) {
   console.log('Action started!', state);
-  return next(state, mutation).pipe(tap(result) => {
+  return next(state, action).pipe(tap(result) => {
     console.log('Action happened!', result);
   });
 }
