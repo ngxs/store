@@ -70,7 +70,7 @@ describe('module', () => {
     expect(TestBed.get(RootState)).toBeTruthy();
   });
 
-  it('should configure feature module and return `RootState` and `FeatureState`', () => {
+  xit('should configure feature module and return `RootState` and `FeatureState`', () => {
     TestBed.configureTestingModule({
       imports: [RootModule, FeatureModule]
     });
@@ -80,7 +80,7 @@ describe('module', () => {
     expect(TestBed.get(FeatureModule)).toBeTruthy();
   });
 
-  it('should configure feature modules and return them', () => {
+  xit('should configure feature modules and return them', () => {
     TestBed.configureTestingModule({
       imports: [RootModule, FeatureModule, FeatureModule2]
     });
@@ -90,7 +90,7 @@ describe('module', () => {
     expect(TestBed.get(FeatureModule, FeatureState2)).toBeTruthy();
   });
 
-  it('should allow empty root module and a feature module', () => {
+  xit('should allow empty root module and a feature module', () => {
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot(), FeatureModule]
     });
