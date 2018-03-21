@@ -84,7 +84,7 @@ export class Store {
           this._stateStream.next(nextState);
         }
 
-        this._actions.next(event);
+        this._actions.next(nextAction);
 
         return this._dispatchActions(nextAction).pipe(map(() => this._stateStream.getValue()));
       }

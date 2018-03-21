@@ -1,3 +1,6 @@
+# 2.0.0-rc.16 3/20/18
+- Fix: Action stream not getting passed correct args, causing error in FF
+
 # 2.0.0-rc.15 3/20/18
 - Fix: Lazy load issue introduced by #126
 
