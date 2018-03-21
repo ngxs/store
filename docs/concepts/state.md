@@ -45,7 +45,7 @@ accepts a action class or an array of action classes.
 Let's define a state that will listen to a `FeedAction` to toggle whether the animals have been feed:
 
 ```TS
-import { State, Action } from 'ngxs';
+import { State, Action, StateContext } from 'ngxs';
 
 export interface ZooStateModel {
   feed: boolean;
@@ -82,7 +82,7 @@ feeding animals and enhance it to accept a payload of the animal name
 that has been feed.
 
 ```TS
-import { State, Action } from 'ngxs';
+import { State, Action, StateContext } from 'ngxs';
 
 export interface ZooStateModel {
   feedAnimals: string[];
@@ -132,7 +132,7 @@ we give you the flexibility to make that decision yourself based on your require
 Let's take a look at a simple async action:
 
 ```TS
-import { State, Action } from 'ngxs';
+import { State, Action, StateContext } from 'ngxs';
 import { tap } from 'rxjs/operators';
 
 export interface ZooStateModel {
@@ -207,7 +207,7 @@ that is contained in the state context object.
 
 
 ```TS
-import { State, Action } from 'ngxs';
+import { State, Action, StateContext } from 'ngxs';
 import { map } from 'rxjs/operators';
 
 export interface ZooStateModel {

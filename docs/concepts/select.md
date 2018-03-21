@@ -13,7 +13,7 @@ different ways to get your data out, whether passing the state class, a function
 of the object graph.
 
 ```javascript
-import { Ngxs } from 'ngxs';
+import { Select } from 'ngxs';
 
 import { ZooState } from './zoo.state';
 import { AddAnimal } from './animal.actions';
