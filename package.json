@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ng serve --aot",
+    "start:integration": "ng serve --aot --app 1",
     "test": "ng test",
     "test:integration":
       "npm run build && npm link ./dist && ng test --preserve-symlinks --app 1 -sr --browsers ChromeHeadless &&  ng build --preserve-symlinks --app 1 --prod",

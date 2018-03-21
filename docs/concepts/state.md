@@ -115,6 +115,7 @@ could be reduced to this:
 ```TS
 @Action(FeedAnimals)
   feedAnimals({ getState, patchValue }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
+  const state = getState();
   patchValue({
     feedAnimals: [ ...state.feedAnimals, payload ]
   });
