@@ -63,6 +63,7 @@ jobs:
       - *persist_workspace
 
   lint:
+    <<: *job_defaults
     steps:
       - *attach_workspace
       - run:
@@ -70,6 +71,7 @@ jobs:
           command: yarn lint
 
   unit_tests:
+    <<: *job_defaults
     steps:
       - *attach_workspace
       - run:
@@ -78,6 +80,7 @@ jobs:
       - *persist_coverage
 
   integration_tests:
+    <<: *job_defaults
     steps:
       - *attach_workspace
       - run:

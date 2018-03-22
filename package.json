@@ -19,7 +19,8 @@
 
     "//": "Dev Tools",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "prettier": "prettier --write \"**/*.ts\""
+    "prettier": "prettier --write \"**/*.ts\"",
+    "circleci:validate": "circleci config validate -c .circleci/config.yml"
   },
   "repository": {
     "type": "git",
