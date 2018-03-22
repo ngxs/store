@@ -30,18 +30,20 @@ yarn_install_var: &yarn_install
 
 # Persist the whole working space so we can share it between jobs
 persist_workspace_var: &persist_workspace
-  # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-  # taken to be the root directory of the workspace.
-  root: /root
-  # Must be relative path from root
-  paths:
-    - app
+  persist_to_workspace:
+    # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+    # taken to be the root directory of the workspace.
+    root: /root
+    # Must be relative path from root
+    paths:
+      - app
 
 # Persist test coverage
 persist_coverage_var: &persist_coverage
-  root: /root/app
-  paths:
-    - coverage
+  persist_to_workspace:
+    root: /root/app
+    paths:
+      - coverage
 
 # Attach working space
 attach_workspace_var: &attach_workspace
