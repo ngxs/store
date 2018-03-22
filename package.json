@@ -1,6 +1,6 @@
 {
-  "name": "ngxs",
-  "version": "2.0.0-rc.18",
+  "name": "@ngxs/core",
+  "version": "2.0.0-rc.20",
   "description": "State Mangement for Angular",
   "main": "index.js",
   "scripts": {
@@ -13,8 +13,8 @@
     "test:integration": "yarn build && yarn link --frozen-lockfile --silent && ng test --progress=false --preserve-symlinks --app 1 -sr --browsers ChromeHeadless",
 
     "//": "Ci Testing",
-    "test:ci": "ng test --code-coverage --progress=false --browsers ChromeHeadless --single-run",
-    "test:ci:integration": "yarn build && yarn link --frozen-lockfile --silent && ng test --progress=false --preserve-symlinks --app 1 --single-run --browsers ChromeHeadless && ng build --prod --progress=false --preserve-symlinks --app 1",
+    "test:ci": "ng test --code-coverage --progress=false --single-run --browsers ChromeHeadless",
+    "test:ci:integration": "yarn link --frozen-lockfile --silent && ng test --progress=false --preserve-symlinks --app 1 --single-run --browsers ChromeHeadless && ng build --prod --progress=false --preserve-symlinks --app 1",
 
     "//": "Building",
     "build": "ng-packagr -p package.json",
@@ -90,5 +90,9 @@
   },
   "dependencies": {
     "npm": "^5.7.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "next"
   }
 }
