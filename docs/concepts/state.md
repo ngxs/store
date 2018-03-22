@@ -242,7 +242,7 @@ export class ZooState {
    */
   @Action(FeedAnimals)
   feedAnimals2({ dispatch }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
-    return this.animalService.feed(payload).pipe(map() => dispatch(TakeAnimalsOutside));
+    return this.animalService.feed(payload).pipe(map(() => dispatch(TakeAnimalsOutside));
   }
 }
 ```
