@@ -6,6 +6,7 @@ before_install:
 script:
   - npm run lint
   - npm run test:ci
+  - npm run test:ci:integration
 install:
   - npm install
   - npm install codeclimate-test-reporter

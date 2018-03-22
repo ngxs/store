@@ -1,0 +1,125 @@
+version: 2
+
+# Configuration
+job_defaults_var: &job_defaults
+  working_directory: /root/app
+  docker:
+    - image: circleci/node:8-browsers
+
+# Yarn cache key
+cache_var: &cache_key yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+
+# Save yarn cache
+save_cache_var: &save_cache
+  save_cache:
+    name: Save Yarn Package Cache
+    key: *cache_key
+
+# Restore yarn cache
+restore_cache_var: &restore_cache
+  restore_cache:
+    name: Restore Yarn Package Cache
+    keys: *cache_key
+
+# Install yarn packages
+yarn_install_var: &yarn_install
+  run:
+    name: Yarn Install Packages
+    # We install deps based on the frozen yarn file, so we know it's always the same
+    command: yarn install --frozen-lockfile --non-interactive
+
+# Persist the whole working space so we can share it between jobs
+persist_workspace_var: &persist_workspace
+  # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+  # taken to be the root directory of the workspace.
+  root: /root
+  # Must be relative path from root
+  paths:
+    - app
+
+# Persist test coverage
+persist_coverage_var: &persist_coverage
+  root: /root/app
+  paths:
+    - coverage
+
+# Attach working space
+attach_workspace_var: &attach_workspace
+  attach_workspace:
+    # Must be absolute path or relative path from working_directory
+    at: /root
+
+#
+# Jobs
+#
+jobs:
+  build:
+    <<: *job_defaults
+    steps:
+      - checkout
+      - *restore_cache
+      - *yarn_install
+      - *save_cache
+      - *persist_workspace
+
+  lint:
+    steps:
+      - *attach_workspace
+      - run:
+          name: Lint
+          command: yarn lint
+
+  unit_tests:
+    steps:
+      - *attach_workspace
+      - run:
+          name: Unit Tests
+          command: yarn test:ci
+      - *persist_coverage
+
+  integration_tests:
+    steps:
+      - *attach_workspace
+      - run:
+          name: Integration Tests
+          command: yarn test:ci:integration
+      - *persist_coverage
+
+  upload_coverage:
+    <<: *job_defaults
+    environment:
+      - CC_TEST_REPORTER_ID: 773daba318367797acb253047e7e1e6977098258e30d16990e880cf4df8d8240
+    steps:
+      - *attach_workspace
+      - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
+      - run: chmod +x /tmp/cc-test-reporter
+      - run:
+          name: Upload coverage results to Code Climate
+          command: /tmp/cc-test-reporter < coverage/lcov.info
+
+#
+# Workflow
+#
+workflows:
+  version: 2
+  build-workflow:
+    jobs:
+
+      - build
+
+      - lint:
+          requires:
+            - build
+
+      - unit_tests:
+          requires:
+            - build
+
+      - integration_tests:
+          requires:
+            - build
+
+      - upload_coverage:
+          requires:
+            - unit_tests
+            - integration_tests

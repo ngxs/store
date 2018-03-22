@@ -4,13 +4,20 @@
   "description": "State Mangement for Angular",
   "main": "index.js",
   "scripts": {
+    "//": "Start the applications",
     "start": "ng serve --aot",
     "start:integration": "ng serve --aot --app 1",
+
+    "//": "Testing",
     "test": "ng test",
-    "test:integration":
-      "npm run build && npm link ./dist && ng test --preserve-symlinks --app 1 -sr --browsers ChromeHeadless &&  ng build --preserve-symlinks --app 1 --prod",
-    "test:ci": "ng test -cc --browsers ChromeHeadless --single-run && npm run test:integration",
+    "test:integration": "yarn build && yarn link && ng test --preserve-symlinks --app 1 -sr --browsers ChromeHeadless && ng build --preserve-symlinks --app 1 --prod",
+    "test:ci": "ng test -cc --browsers ChromeHeadless --single-run",
+    "test:ci:integration": "yarn test:integration",
+
+    "//": "Building",
     "build": "ng-packagr -p package.json",
+
+    "//": "Dev Tools",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "prettier": "prettier --write \"**/*.ts\""
   },
@@ -18,7 +25,18 @@
     "type": "git",
     "url": "git+https://amcdnl@github.com/amcdnl/ngxs.git"
   },
-  "keywords": ["ngrx", "redux", "state", "rxjs", "angular", "ngx", "angular2", "cqrs", "store", "state-mangement"],
+  "keywords": [
+    "ngrx",
+    "redux",
+    "state",
+    "rxjs",
+    "angular",
+    "ngx",
+    "angular2",
+    "cqrs",
+    "store",
+    "state-mangement"
+  ],
   "author": "Austin McDaniel",
   "license": "MIT",
   "bugs": {
@@ -66,5 +84,8 @@
       "entryFile": "src/index.ts",
       "flatModuleFile": "ngxs-api"
     }
+  },
+  "dependencies": {
+    "npm": "^5.7.1"
   }
 }
