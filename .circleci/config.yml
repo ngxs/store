@@ -9,24 +9,26 @@ job_defaults_var: &job_defaults
 # Yarn cache key
 cache_var: &cache_key yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
+# Install yarn packages
+yarn_install_var: &yarn_install
+  run:
+    name: Yarn Install Packages
+    # We install deps based on the frozen yarn file, so we know it's always the same
+    command: yarn install --cache-folder /root/.yarn-cache --frozen-lockfile --non-interactive
+
 # Save yarn cache
 save_cache_var: &save_cache
   save_cache:
     name: Save Yarn Package Cache
     key: *cache_key
+    paths:
+      - /root/.yarn-cache
 
 # Restore yarn cache
 restore_cache_var: &restore_cache
   restore_cache:
     name: Restore Yarn Package Cache
     keys: *cache_key
-
-# Install yarn packages
-yarn_install_var: &yarn_install
-  run:
-    name: Yarn Install Packages
-    # We install deps based on the frozen yarn file, so we know it's always the same
-    command: yarn install --frozen-lockfile --non-interactive
 
 # Persist the whole working space so we can share it between jobs
 persist_workspace_var: &persist_workspace
