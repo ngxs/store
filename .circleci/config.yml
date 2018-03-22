@@ -2,7 +2,7 @@ version: 2
 
 # Configuration
 job_defaults_var: &job_defaults
-  working_directory: /root/app
+  working_directory: ~/workspace/app
   docker:
     - image: circleci/node:8-browsers
 
@@ -14,7 +14,7 @@ yarn_install_var: &yarn_install
   run:
     name: Yarn Install Packages
     # We install deps based on the frozen yarn file, so we know it's always the same
-    command: yarn install --cache-folder /root/.yarn-cache --frozen-lockfile --non-interactive
+    command: yarn install --cache-folder ~/.yarn-cache --frozen-lockfile --non-interactive
 
 # Save yarn cache
 save_cache_var: &save_cache
@@ -22,7 +22,7 @@ save_cache_var: &save_cache
     name: Save Yarn Package Cache
     key: *cache_key
     paths:
-      - /root/.yarn-cache
+      - ~/.yarn-cache
 
 # Restore yarn cache
 restore_cache_var: &restore_cache
@@ -35,7 +35,7 @@ persist_workspace_var: &persist_workspace
   persist_to_workspace:
     # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
     # taken to be the root directory of the workspace.
-    root: /root
+    root: ~/workspace
     # Must be relative path from root
     paths:
       - app
@@ -43,7 +43,7 @@ persist_workspace_var: &persist_workspace
 # Persist test coverage
 persist_coverage_var: &persist_coverage
   persist_to_workspace:
-    root: /root/app
+    root: ~/workspace/app
     paths:
       - coverage
 
@@ -51,7 +51,7 @@ persist_coverage_var: &persist_coverage
 attach_workspace_var: &attach_workspace
   attach_workspace:
     # Must be absolute path or relative path from working_directory
-    at: /root
+    at: ~/workspace
 
 #
 # Jobs
