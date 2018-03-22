@@ -50,6 +50,8 @@ export class Store {
   /**
    * Selects a slice of data from the store.
    */
+  select<T>(selector: (state: any) => T): Observable<T>;
+  select(selector: string | any): Observable<any>;
   select(selector: any): Observable<any> {
     if (selector[META_KEY] && selector[META_KEY].path) {
       const getter = fastPropGetter(selector[META_KEY].path.split('.'));
