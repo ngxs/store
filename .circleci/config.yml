@@ -23,6 +23,7 @@ save_cache_var: &save_cache
     key: *cache_key
     paths:
       - ~/.yarn-cache
+      - node_modules
 
 # Restore yarn cache
 restore_cache_var: &restore_cache
@@ -68,6 +69,12 @@ jobs:
       - *yarn_install
       - *save_cache
       - *persist_workspace
+      - store_artifacts:
+          path: ~/workspace/app/dist
+          destination: dist
+      - store_artifacts:
+          path: ~/workspace/app/docs
+          destination: docs
 
   lint:
     <<: *job_defaults
@@ -107,6 +114,13 @@ jobs:
           name: Upload coverage results to Code Climate
           command: /tmp/cc-test-reporter < ~/workspace/app/coverage/lcov.info
 
+  publish_next:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Publish Build to @next
+          command: yarn publish --tag next
 #
 # Workflow
 #
@@ -133,3 +147,11 @@ workflows:
           requires:
             - unit_tests
             - integration_tests
+
+#      - publish_next:
+#          filters:
+#            branches:
+#              - master
+#          requires:
+#            - unit_tests
+#            - integration_tests

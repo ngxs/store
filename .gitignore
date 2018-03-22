@@ -46,3 +46,4 @@ testem.log
 .DS_Store
 Thumbs.db
 /storybook-static
+/yarn-error.log
