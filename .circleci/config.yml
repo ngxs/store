@@ -43,9 +43,9 @@ persist_workspace_var: &persist_workspace
 # Persist test coverage
 persist_coverage_var: &persist_coverage
   persist_to_workspace:
-    root: ~/workspace/app
+    root: ~/workspace
     paths:
-      - coverage/lcov.info
+      - app/coverage
 
 # Attach working space
 attach_workspace_var: &attach_workspace
@@ -102,7 +102,7 @@ jobs:
       - run: chmod +x /tmp/cc-test-reporter
       - run:
           name: Upload coverage results to Code Climate
-          command: /tmp/cc-test-reporter < coverage/lcov.info
+          command: /tmp/cc-test-reporter < ~/workspace/app/coverage/lcov.info
 
 #
 # Workflow
