@@ -45,7 +45,7 @@ persist_coverage_var: &persist_coverage
   persist_to_workspace:
     root: ~/workspace/app
     paths:
-      - coverage
+      - coverage/lcov.info
 
 # Attach working space
 attach_workspace_var: &attach_workspace
@@ -90,7 +90,7 @@ jobs:
       - run:
           name: Integration Tests
           command: yarn test:ci:integration
-      - *persist_coverage
+      # - *persist_coverage // we don't run code coverage for integration tests
 
   upload_coverage:
     <<: *job_defaults
