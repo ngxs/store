@@ -38,6 +38,9 @@ testem.log
 /dist-lib
 /dist-integration
 
+# testing
+/junit/
+
 # e2e
 /e2e/*.js
 /e2e/*.map

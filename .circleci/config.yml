@@ -44,13 +44,6 @@ persist_workspace_var: &persist_workspace
     paths:
       - app
 
-# Persist test coverage
-persist_coverage_var: &persist_coverage
-  persist_to_workspace:
-    root: ~/workspace
-    paths:
-      - app/coverage
-
 # Attach working space
 attach_workspace_var: &attach_workspace
   attach_workspace:
@@ -92,12 +85,23 @@ jobs:
 
   unit_tests:
     <<: *job_defaults
+    environment:
+      # variables used by karma to export a circleci test insights
+      JUNIT_REPORT_PATH: ~/workspace/app/junit/unit_tests
+      JUNIT_REPORT_NAME: test-results.xml
     steps:
       - *attach_workspace
       - run:
           name: Unit Tests
           command: yarn test:ci
-      - *persist_coverage
+      - store_test_results:
+          path: junit
+      - store_artifacts:
+          path: junit
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - app/coverage
 
   integration_tests:
     <<: *job_defaults

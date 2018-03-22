@@ -71,6 +71,7 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "karma-junit-reporter": "^1.2.0",
     "lint-staged": "^7.0.0",
     "ng-packagr": "^2.1.0",
     "prettier": "^1.11.1",
