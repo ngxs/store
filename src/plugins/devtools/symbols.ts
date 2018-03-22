@@ -21,7 +21,7 @@ export interface NgxsDevtoolsOptions {
   /**
    * Whether the dev tools is enabled or note. Useful for setting during production.
    */
-  disabled: boolean;
+  disabled?: boolean;
 
   /**
    * Max number of entiries to keep.
@@ -31,12 +31,12 @@ export interface NgxsDevtoolsOptions {
   /**
    * Reformat actions before sending to dev tools
    */
-  actionSanitizer(action: any);
+  actionSanitizer?: (action: any) => void;
 
   /**
    * Reformat state before sending to devtools
    */
-  stateSanitizer(state: any);
+  stateSanitizer?: (state: any) => void;
 }
 
 export const NGXS_DEVTOOLS_OPTIONS = new InjectionToken('NGXS_DEVTOOLS_OPTIONS');
