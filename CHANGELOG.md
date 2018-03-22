@@ -1,3 +1,7 @@
+# 2.0.0-rc.17 3/20/18
+- Feature: Extend devtool options
+- Feature: Jump to Action and Jump to State in Dev Tools
+
 # 2.0.0-rc.16 3/20/18
 - Fix: Action stream not getting passed correct args, causing error in FF
 
