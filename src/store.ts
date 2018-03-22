@@ -64,8 +64,10 @@ export class Store {
   /**
    * Select one slice of data from the store.
    */
-  selectOnce(mapFn): Observable<any> {
-    return this.select(mapFn).pipe(take(1));
+  selectOnce<T>(selector: (state: any) => T): Observable<T>;
+  selectOnce(selector: string | any): Observable<any>;
+  selectOnce(selector: any): Observable<any> {
+    return this.select(selector).pipe(take(1));
   }
 
   /**
