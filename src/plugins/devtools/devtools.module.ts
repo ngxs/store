@@ -13,7 +13,7 @@ export class NgxsReduxDevtoolsPluginModule {
       ngModule: NgxsReduxDevtoolsPluginModule,
       providers: [
         { provide: NGXS_PLUGINS, useClass: NgxsReduxDevtoolsPlugin, multi: true },
-        { provide: NGXS_DEVTOOLS_OPTIONS, useValue: options }
+        { provide: NGXS_DEVTOOLS_OPTIONS, useValue: options ? options : {} }
       ]
     };
   }
