@@ -70,7 +70,7 @@ jobs:
       - *persist_workspace
       - store_artifacts:
           path: ngxs-core.tgz
-          destination: dist
+          destination: dist/ngxs-core.tgz
       - store_artifacts:
           path: docs
           destination: docs
@@ -87,17 +87,17 @@ jobs:
     <<: *job_defaults
     environment:
       # variables used by karma to export a circleci test insights
-      JUNIT_REPORT_PATH: ~/workspace/app/junit/unit_tests
-      JUNIT_REPORT_NAME: test-results.xml
+      JUNIT_REPORT_PATH: coverage/junit/unit_tests
     steps:
       - *attach_workspace
       - run:
           name: Unit Tests
           command: yarn test:ci
       - store_test_results:
-          path: junit
+          path: coverage/junit
       - store_artifacts:
-          path: junit
+          path: coverage/junit
+          destination: junit
       - persist_to_workspace:
           root: ~/workspace
           paths:

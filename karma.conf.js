@@ -21,7 +21,7 @@ module.exports = function(config) {
       fixWebpackSourcePaths: true
     },
     junitReporter: {
-      outputDir: process.env.JUNIT_REPORT_PATH || 'coverage',
+      outputDir: process.env.JUNIT_REPORT_PATH || 'coverage/junit',
       outputFile: process.env.JUNIT_REPORT_NAME || 'test-results.xml',
       useBrowserName: false
     },
