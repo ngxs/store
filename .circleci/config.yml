@@ -68,12 +68,17 @@ jobs:
       - *restore_cache
       - *yarn_install
       - *save_cache
+      - run:
+          name: Compile NGXS
+          command: yarn build
+      - run:
+          name: Create Pack
+          command: yarn pack --filename ngxs-core.tgz
       - *persist_workspace
       - store_artifacts:
-          path: ~/workspace/app/dist
-          destination: dist
+          path: ngxs-core.tgz
       - store_artifacts:
-          path: ~/workspace/app/docs
+          path: docs
           destination: docs
 
   lint:
@@ -114,13 +119,18 @@ jobs:
           name: Upload coverage results to Code Climate
           command: /tmp/cc-test-reporter < ~/workspace/app/coverage/lcov.info
 
-  publish_next:
+  # Publish latest build to npm under the @next tag
+  publish_build_to_npm:
     <<: *job_defaults
     steps:
       - *attach_workspace
       - run:
-          name: Publish Build to @next
-          command: yarn publish --tag next
+          name: Publish Build to NPM @ngxs/core@next
+          command: |
+            CURRENT_VERSION=$(node -pe "require('./package.json').version")
+            SHORT_SHA1=$(echo $CIRCLE_SHA1 | cut -c -7)
+            yarn publish --access public --non-interactive --new-version $CURRENT_VERSION+dev.$SHORT_SHA1 --tag next
+
 #
 # Workflow
 #
@@ -148,10 +158,10 @@ workflows:
             - unit_tests
             - integration_tests
 
-#      - publish_next:
-#          filters:
-#            branches:
-#              - master
-#          requires:
-#            - unit_tests
-#            - integration_tests
+      - publish_build_to_npm:
+          filters:
+            branches:
+              - master
+          requires:
+            - unit_tests
+            - integration_tests
