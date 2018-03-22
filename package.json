@@ -4,22 +4,23 @@
   "description": "State Mangement for Angular",
   "main": "index.js",
   "scripts": {
-    "//": "Start the applications",
-    "start": "ng serve --aot",
-    "start:integration": "ng serve --aot --app 1",
+    "// - APPS": "Start the applications",
+    "start": "ng serve --aot --app 1",
 
-    "//": "Testing",
+    "// - TESTING": "Testing",
     "test": "ng test",
-    "test:integration": "yarn build && yarn link --frozen-lockfile --silent && ng test --progress=false --preserve-symlinks --app 1 -sr --browsers ChromeHeadless",
+    "test:integration":
+      "yarn build && yarn link --frozen-lockfile --silent && ng test --progress=false --preserve-symlinks --app 1 -sr --browsers ChromeHeadless",
 
-    "//": "Ci Testing",
+    "// - CI": "Ci Testing",
     "test:ci": "ng test --code-coverage --progress=false --browsers ChromeHeadless --single-run",
-    "test:ci:integration": "yarn build && yarn link --frozen-lockfile --silent && ng test --progress=false --preserve-symlinks --app 1 --single-run --browsers ChromeHeadless && ng build --prod --progress=false --preserve-symlinks --app 1",
+    "test:ci:integration":
+      "yarn build && yarn link --frozen-lockfile --silent && ng test --progress=false --preserve-symlinks --app 1 --single-run --browsers ChromeHeadless && ng build --prod --progress=false --preserve-symlinks --app 1",
 
-    "//": "Building",
+    "// - BUILDING": "Building",
     "build": "ng-packagr -p package.json",
 
-    "//": "Dev Tools",
+    "// - DEV TOOLS": "Dev Tools",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "prettier": "prettier --write \"**/*.ts\"",
     "circleci:validate": "circleci config validate -c .circleci/config.yml"
@@ -28,18 +29,7 @@
     "type": "git",
     "url": "git+https://amcdnl@github.com/amcdnl/ngxs.git"
   },
-  "keywords": [
-    "ngrx",
-    "redux",
-    "state",
-    "rxjs",
-    "angular",
-    "ngx",
-    "angular2",
-    "cqrs",
-    "store",
-    "state-mangement"
-  ],
+  "keywords": ["ngrx", "redux", "state", "rxjs", "angular", "ngx", "angular2", "cqrs", "store", "state-mangement"],
   "author": "Austin McDaniel",
   "license": "MIT",
   "bugs": {
