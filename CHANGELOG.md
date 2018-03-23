@@ -1,3 +1,8 @@
+# 2.0.0-rc.19 3/23/18
+- Feature: add overloading to select method in Store #130
+- Fix: add empty options object, to prevent errors #131
+- Fix: feature-module bugs #135
+
 # 2.0.0-rc.18 3/20/18
 - Fix: Types on devtools
 
