@@ -6,7 +6,7 @@ import {
   ChangeDetectorRef
 } from "@angular/core";
 import { FormGroupDirective } from "@angular/forms";
-import { Store } from "ngxs";
+import { Store } from "../../store";
 import { Subject } from "rxjs/Subject";
 import { takeUntil } from "rxjs/operators/takeUntil";
 import { debounceTime } from "rxjs/operators/debounceTime";
@@ -41,7 +41,6 @@ export class FormDirective implements OnInit, OnDestroy {
       .select(state => getValue(state, `${this.path}.model`))
       .pipe(takeUntil(this._destroy$))
       .subscribe(model => {
-        console.warn("model ", model);
         //        if (!this._updating) {
         //          this._updating = false;
         if (model) {
