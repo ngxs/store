@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Store, Select } from 'ngxs';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { AddTodo, RemoveTodo, TodoState } from './todo.state';
 

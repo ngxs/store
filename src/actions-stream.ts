@@ -1,5 +1,5 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Action stream that is emitted anytime an action is dispatched.

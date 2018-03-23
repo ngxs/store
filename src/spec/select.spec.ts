@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { Store } from '../store';
 import { NgxsModule } from '../module';
