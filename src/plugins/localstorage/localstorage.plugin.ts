@@ -11,7 +11,7 @@ export class NgxsLocalStoragePlugin implements NgxsPlugin {
     const options = this._options || <any>{};
     const isInitAction = getTypeFromInstance(event) === '@@INIT';
     const keys = Array.isArray(options.key) ? options.key : [options.key];
-    const engine = !options.storage ? localStorage : options.storage;
+    const engine = options.storage || localStorage;
 
     if (isInitAction) {
       for (const key of keys) {
