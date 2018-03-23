@@ -108,15 +108,15 @@ export class ZooState {
 In this example, we have a second argument that represents the action and we destructure it
 to pull out the payload and use it in our action.
 
-There is also a shortcut `patchValue` function to make updating the state easier. In this case,
+There is also a shortcut `patchState` function to make updating the state easier. In this case,
 you pass the properties you want to update on the state only and it handles the rest. The above function
 could be reduced to this:
 
 ```TS
 @Action(FeedAnimals)
-  feedAnimals({ getState, patchValue }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
+  feedAnimals({ getState, patchState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
   const state = getState();
-  patchValue({
+  patchState({
     feedAnimals: [ ...state.feedAnimals, payload ]
   });
 }
