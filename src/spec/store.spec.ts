@@ -86,7 +86,7 @@ describe('Store', () => {
   });
 
   it('should select the correct state use a function', () => {
-    store.select(state => state.foo.first).subscribe(state => {
+    store.select((state: { foo: StateModel }) => state.foo.first).subscribe(state => {
       expect(state).toBe('Hello');
     });
   });

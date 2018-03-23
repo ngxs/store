@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders, Optional, Inject, SkipSelf } from '@angular/core';
+import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
 
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN } from './symbols';
 import { StateFactory } from './state-factory';
@@ -43,8 +43,6 @@ export class NgxsFeatureModule {
   constructor(
     root: NgxsRootModule,
     store: Store,
-    @Optional()
-    @SkipSelf()
     private _stateStream: StateStream,
     private _factory: StateFactory,
     @Optional()
@@ -58,12 +56,6 @@ export class NgxsFeatureModule {
 
   initStates(stores) {
     if (stores) {
-      if (!this._stateStream) {
-        throw new Error(`
-          'NgxsModule.forRoot()' was not called at the root module.
-          Please add it to the root module even if you don't have any root states.`);
-      }
-
       // bind the stores
       const init = this._factory.addAndReturnDefaults(stores);
 

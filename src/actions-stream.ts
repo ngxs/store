@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 /**
@@ -7,7 +7,15 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
  */
 @Injectable()
 export class Actions extends BehaviorSubject<any> {
-  constructor() {
+  constructor(
+    @Optional()
+    @SkipSelf()
+    parent: Actions
+  ) {
     super({});
+
+    if (parent) {
+      Object.assign(this, parent);
+    }
   }
 }
