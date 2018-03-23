@@ -1,3 +1,7 @@
+# 2.0.0-rc.20 3/23/18
+- Fix: devtools not sending payload #132
+- Fix: better if condition for localstorage
+
 # 2.0.0-rc.19 3/23/18
 - Feature: add overloading to select method in Store #130
 - Fix: add empty options object, to prevent errors #131
