@@ -5,7 +5,7 @@ import { InjectionToken } from '@angular/core';
  */
 export interface NgxsDevtoolsExtension {
   init(state);
-  send(action: string, state?: any);
+  send(action: any, state?: any);
   subscribe(fn: (message: NgxsDevtoolsAction) => void);
 }
 
