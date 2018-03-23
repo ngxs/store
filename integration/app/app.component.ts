@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { Store, Select } from 'ngxs';
+import { Store, Select, UpdateFormDirty } from 'ngxs';
 import { Observable } from 'rxjs/Observable';
+import { FormBuilder } from "@angular/forms";
 
 import { AddTodo, RemoveTodo, TodoState } from './todo.state';
 
@@ -8,6 +9,13 @@ import { AddTodo, RemoveTodo, TodoState } from './todo.state';
   selector: 'app-root',
   template: `
     <div class="todo-list">
+    <div>
+      <h3>Reactive Form</h3>
+        <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.myForm">
+            <input type="text" formControlName="toppings" />
+            <button type="submit">Mark Pristine</button>
+        </form>      
+      </div>
       <div class="add-todo">
         <input placeholder="New Todo" #text>
         <button (click)="addTodo(text.value)">Add</button>
@@ -30,7 +38,11 @@ export class AppComponent {
   @Select(TodoState) todos$: Observable<string[]>;
   @Select(TodoState.pandas) pandas$: Observable<string[]>;
 
-  constructor(private store: Store) {}
+  pizzaForm = this.formBuilder.group({
+    toppings: [""]
+  });
+  constructor(private store: Store, private formBuilder: FormBuilder) {}
+
 
   addTodo(todo: string) {
     this.store.dispatch(new AddTodo(todo));
@@ -40,5 +52,11 @@ export class AppComponent {
     this.store.dispatch(new RemoveTodo(index)).subscribe(() => {
       console.log('Removed!');
     });
+  }
+
+  onSubmit() {
+    this.store.dispatch(new UpdateFormDirty({
+      dirty: false, path: 'todos.myForm'
+    }));
   }
 }

@@ -6,20 +6,14 @@
   "scripts": {
     "// - APPS": "Start the applications",
     "start": "ng serve --aot --app 1",
-
     "// - TESTING": "Testing",
     "test": "ng test",
-    "test:integration":
-      "yarn build && yarn link --frozen-lockfile --silent && ng test --progress=false --preserve-symlinks --app 1 -sr",
-
+    "test:integration": "yarn build && yarn link --frozen-lockfile --silent && ng test --progress=false --preserve-symlinks --app 1 -sr",
     "// - CI": "Ci Testing",
     "test:ci": "ng test --code-coverage --progress=false --browsers ChromeHeadless --single-run",
-    "test:ci:integration":
-      "yarn build && yarn link --frozen-lockfile --silent && ng test --progress=false --preserve-symlinks --app 1 --single-run && ng build --prod --progress=false --preserve-symlinks --app 1",
-
+    "test:ci:integration": "yarn build && yarn link --frozen-lockfile --silent && ng test --progress=false --preserve-symlinks --app 1 --single-run && ng build --prod --progress=false --preserve-symlinks --app 1",
     "// - BUILDING": "Building",
     "build": "ng-packagr -p package.json",
-
     "// - DEV TOOLS": "Dev Tools",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "prettier": "prettier --write \"**/*.ts\"",
@@ -29,7 +23,18 @@
     "type": "git",
     "url": "git+https://amcdnl@github.com/amcdnl/ngxs.git"
   },
-  "keywords": ["ngrx", "redux", "state", "rxjs", "angular", "ngx", "angular2", "cqrs", "store", "state-mangement"],
+  "keywords": [
+    "ngrx",
+    "redux",
+    "state",
+    "rxjs",
+    "angular",
+    "ngx",
+    "angular2",
+    "cqrs",
+    "store",
+    "state-mangement"
+  ],
   "author": "Austin McDaniel",
   "license": "MIT",
   "bugs": {
@@ -80,6 +85,7 @@
     }
   },
   "dependencies": {
+    "@angular/forms": "^5.2.9",
     "npm": "^5.7.1"
   }
 }
