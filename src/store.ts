@@ -1,7 +1,6 @@
 import { Injectable, ErrorHandler } from '@angular/core';
-import { Observable, Subscription, forkJoin, of } from 'rxjs';
+import { Observable, Subscription, forkJoin, of, from } from 'rxjs';
 import { map, distinctUntilChanged, catchError, take } from 'rxjs/operators';
-import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 
 import { compose } from './compose';
 import { Actions } from './actions-stream';
@@ -106,7 +105,7 @@ export class Store {
     const results = [];
     for (let eventResult of eventResults) {
       if (eventResult instanceof Promise) {
-        eventResult = fromPromise(eventResult);
+        eventResult = from(eventResult);
       }
 
       if (eventResult instanceof Observable) {
