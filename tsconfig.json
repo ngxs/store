@@ -1,16 +1,11 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@ngxs/store": ["src/index.ts"],
+      "@ngxs/store": ["packages/store/index.ts"],
       "@angular/*": ["node_modules/@angular/*"]
     },
-    "module": "commonjs",
-    "noEmitHelpers": false,
-    "noEmitOnError": false,
-    "skipDefaultLibCheck": true,
-    "skipLibCheck": true,
-    "noImplicitAny": false,
     "noUnusedLocals": true,
     "sourceMap": true,
     "declaration": false,
@@ -18,6 +13,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",
-    "lib": ["es2017", "dom"]
+    "lib": ["es2017", "dom"],
+    "typeRoots": ["node_modules/@types"]
   }
 }

@@ -10,7 +10,6 @@ module.exports = function(config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
-      require('karma-junit-reporter'), // circleci insights
       require('@angular/cli/plugins/karma')
     ],
     client: {
@@ -20,12 +19,10 @@ module.exports = function(config) {
       reports: ['html', 'lcovonly'],
       fixWebpackSourcePaths: true
     },
-    junitReporter: {
-      outputDir: process.env.JUNIT_REPORT_PATH || 'coverage/junit',
-      outputFile: process.env.JUNIT_REPORT_NAME || 'test-results.xml',
-      useBrowserName: false
+    angularCli: {
+      environment: 'dev'
     },
-    reporters: ['progress', 'kjhtml', 'junit'],
+    reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,

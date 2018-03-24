@@ -1,14 +1,11 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./out-tsc/app",
+    "outDir": "../out-tsc/app",
     "baseUrl": "./",
     "module": "es2015",
-    "types": [],
-    "paths": {
-      "@ngxs/store": ["src/index.ts"]
-    }
+    "types": ["googlemaps"]
   },
-  "include": ["integration/**/*.ts", "polyfills.ts"],
-  "exclude": ["test.ts", "**/*.spec.ts"]
+  "exclude": ["test.ts", "**/*.spec.ts", "node_modules/@ngxs/**/*.spec.ts"],
+  "include": ["demo/**/*.ts", "node_modules/@ngxs/**/*.ts"]
 }
