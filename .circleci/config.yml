@@ -122,7 +122,7 @@ jobs:
       - run: chmod +x /tmp/cc-test-reporter
       - deploy:
           name: Upload coverage results to Code Climate
-          command: /tmp/cc-test-reporter after-build --exit-code $EXIT_CODE
+          command: /tmp/cc-test-reporter after-build --coverage-input-type lcov --exit-code 0
 
   # Publish latest build to npm under the @next tag
   publish_build_to_npm:
