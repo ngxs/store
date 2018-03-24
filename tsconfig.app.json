@@ -7,5 +7,5 @@
     "types": ["googlemaps"]
   },
   "exclude": ["test.ts", "**/*.spec.ts", "node_modules/@ngxs/**/*.spec.ts"],
-  "include": ["demo/**/*.ts", "node_modules/@ngxs/**/*.ts"]
+  "include": ["integration/**/*.ts", "node_modules/@ngxs/**/*.ts"]
 }
