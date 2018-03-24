@@ -1,7 +1,7 @@
 import { Injectable, ErrorHandler } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { distinctUntilChanged, catchError, take } from 'rxjs/operators';
+import { distinctUntilChanged, catchError, take, shareReplay } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { map } from 'rxjs/operators/map';
 import { fromPromise } from 'rxjs/observable/fromPromise';
@@ -21,15 +21,16 @@ export class Store {
     private _errorHandler: ErrorHandler,
     private _actions: Actions,
     private _storeFactory: StateFactory,
-    private _stateStream: StateStream,
-    private _pluginManager: PluginManager
+    private _pluginManager: PluginManager,
+    private _stateStream: StateStream
   ) {}
 
   /**
    * Dispatches event(s).
    */
   dispatch(event: any | any[]): Observable<any> {
-    let result;
+    let result: Observable<any>;
+
     if (Array.isArray(event)) {
       result = forkJoin(event.map(a => this._dispatch(a)));
     } else {
@@ -43,6 +44,8 @@ export class Store {
         return of(err);
       })
     );
+
+    result.subscribe();
 
     return result;
   }
@@ -81,7 +84,7 @@ export class Store {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return compose([
+    return (compose([
       ...plugins,
       (nextState, nextAction) => {
         if (nextState !== prevState) {
@@ -92,7 +95,7 @@ export class Store {
 
         return this._dispatchActions(nextAction).pipe(map(() => this._stateStream.getValue()));
       }
-    ])(prevState, action);
+    ])(prevState, action) as Observable<any>).pipe(shareReplay());
   }
 
   private _dispatchActions(action): Observable<any> {

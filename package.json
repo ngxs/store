@@ -78,8 +78,5 @@
       "entryFile": "src/index.ts",
       "flatModuleFile": "ngxs-api"
     }
-  },
-  "dependencies": {
-    "npm": "^5.7.1"
   }
 }
