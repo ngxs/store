@@ -9,7 +9,7 @@ then in `app.module.ts`, import the `NgxsModule`:
 
 ```javascript
 import { NgModule } from '@angular/core';
-import { NgxsModule } from 'ngxs';
+import { NgxsModule } from '@ngxs/store';
 
 @NgModule({
   imports: [

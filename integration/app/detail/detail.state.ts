@@ -1,4 +1,4 @@
-import { State } from 'ngxs';
+import { State } from '@ngxs/store';
 
 @State({
   name: 'detail',

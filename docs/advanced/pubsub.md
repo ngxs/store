@@ -7,7 +7,7 @@ To make determining if the event is what we actually want to listen to, we have 
 RxJS pipeable operator called `ofAction(NewAnimal)` we can use too!
 
 ```TS
-import { Actions, ofAction } from 'ngxs';
+import { Actions, ofAction } from '@ngxs/store';
 
 @Injectable()
 export class RouteHandler {

@@ -11,7 +11,7 @@ Let's take a basic example of a logger:
 
 ```TS
 import { Injectable, Inject, NgModule } from '@angular/core';
-import { NgxsPlugin, NGXS_PLUGINS } from 'ngxs';
+import { NgxsPlugin, NGXS_PLUGINS } from '@ngxs/store';
 
 export const NGXS_LOGGER_PLUGIN_OPTIONS = new InjectionToken('NGXS_LOGGER_PLUGIN_OPTIONS');
 

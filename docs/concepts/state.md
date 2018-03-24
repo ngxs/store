@@ -7,7 +7,7 @@ and action mappings. To define a state container, let's create a
 ES2015 class and decorator it with the `State` decorator.
 
 ```TS
-import { State } from 'ngxs';
+import { State } from '@ngxs/store';
 
 @State<string[]>({
   name: 'animals',
@@ -45,7 +45,7 @@ accepts a action class or an array of action classes.
 Let's define a state that will listen to a `FeedAction` to toggle whether the animals have been feed:
 
 ```TS
-import { State, Action, StateContext } from 'ngxs';
+import { State, Action, StateContext } from '@ngxs/store';
 
 export interface ZooStateModel {
   feed: boolean;
@@ -82,7 +82,7 @@ feeding animals and enhance it to accept a payload of the animal name
 that has been feed.
 
 ```TS
-import { State, Action, StateContext } from 'ngxs';
+import { State, Action, StateContext } from '@ngxs/store';
 
 export interface ZooStateModel {
   feedAnimals: string[];
@@ -133,7 +133,7 @@ we give you the flexibility to make that decision yourself based on your require
 Let's take a look at a simple async action:
 
 ```TS
-import { State, Action, StateContext } from 'ngxs';
+import { State, Action, StateContext } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
 export interface ZooStateModel {
@@ -175,7 +175,7 @@ Observables are not a requirement, you can use promises too. We could swap
 that observable chain to look like this:
 
 ```TS
-import { State, Action } from 'ngxs';
+import { State, Action } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
 export interface ZooStateModel {
@@ -208,7 +208,7 @@ that is contained in the state context object.
 
 
 ```TS
-import { State, Action, StateContext } from 'ngxs';
+import { State, Action, StateContext } from '@ngxs/store';
 import { map } from 'rxjs/operators';
 
 export interface ZooStateModel {
