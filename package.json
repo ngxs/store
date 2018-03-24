@@ -38,7 +38,7 @@
   "homepage": "https://github.com/amcdnl/ngxs#readme",
   "peerDependencies": {
     "@angular/core": ">=5.0.0 <7.0.0 || >6.0.0-beta <7.0.0",
-    "rxjs": ">=6.0.0 || ^5.6.0-forward-compat.0 || ^6.0.0-beta.1"
+    "rxjs": ">=6.0.0 || ^5.6.0-forward-compat.1 || ^6.0.0-beta.1"
   },
   "devDependencies": {
     "@angular/cli": "^1.7.3",
@@ -80,6 +80,6 @@
     }
   },
   "dependencies": {
-    "npm": "^5.7.1"
+    "npm": "^5.8.0"
   }
 }
