@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Select } from 'ngxs';
+import { Select } from '@ngxs/store';
 
 @Component({
   selector: 'app-list',

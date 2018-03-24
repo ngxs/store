@@ -130,7 +130,7 @@ jobs:
     steps:
       - *attach_workspace
       - deploy:
-          name: Publish Build to NPM @ngxs/core@next
+          name: Publish Build to NPM @ngxs/store@next
           command: |
             CURRENT_VERSION=$(node -pe "require('./package.json').version")
             SHORT_SHA1=$(echo $CIRCLE_SHA1 | cut -c -7)

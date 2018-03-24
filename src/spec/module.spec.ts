@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule, Store } from 'ngxs';
+import { NgxsModule, Store } from '@ngxs/store';
 
 import { State } from '../state';
 
