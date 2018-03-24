@@ -4,28 +4,26 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectorRef
-} from "@angular/core";
-import { FormGroupDirective } from "@angular/forms";
-import { Store } from "../../store";
-import { Subject } from "rxjs/Subject";
-import { takeUntil } from "rxjs/operators/takeUntil";
-import { debounceTime } from "rxjs/operators/debounceTime";
+} from '@angular/core';
+import { FormGroupDirective } from '@angular/forms';
+import { Store } from '../../store';
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators/takeUntil';
+import { debounceTime } from 'rxjs/operators/debounceTime';
 import {
   UpdateFormStatus,
   UpdateFormValue,
   UpdateFormDirty,
   UpdateFormErrors,
   UpdateForm
-} from "./actions";
+} from './actions';
+import { getValue } from '../../internals';
 
-const getValue = (obj, prop) =>
-  prop.split(".").reduce((acc, part) => acc && acc[part], obj);
-
-@Directive({ selector: "[ngxsForm]" })
+@Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
-  @Input("ngxsForm") path: string;
-  @Input("ngxsFormDebounce") debounce = 100;
-  @Input("ngxsFormClearOnDestroy") clearDestroy: boolean;
+  @Input('ngxsForm') path: string;
+  @Input('ngxsFormDebounce') debounce = 100;
+  @Input('ngxsFormClearOnDestroy') clearDestroy: boolean;
 
   private _destroy$ = new Subject<null>();
   //  private _updating = false;
@@ -84,25 +82,19 @@ export class FormDirective implements OnInit, OnDestroy {
       .pipe(debounceTime(this.debounce), takeUntil(this._destroy$))
       .subscribe(value => {
         //        this._updating = true;
-        this._store.dispatch(
+        this._store.dispatch([
           new UpdateFormValue({
             path: this.path,
             value
-          })
-        );
-
-        this._store.dispatch(
+          }),
           new UpdateFormDirty({
             path: this.path,
             dirty: this._formGroupDirective.dirty
-          })
-        );
-
-        this._store.dispatch(
+          }),
           new UpdateFormErrors({
             path: this.path,
             errors: this._formGroupDirective.errors
-          })
+          })]
         );
       });
 

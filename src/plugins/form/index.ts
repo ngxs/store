@@ -1,2 +1,2 @@
-export { NgxsFormPluginModule } from "./form.module";
-export { NgxsFormPlugin } from "./form.plugin";
+export { NgxsFormPluginModule } from './form.module';
+export { NgxsFormPlugin } from './form.plugin';

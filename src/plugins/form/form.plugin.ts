@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { NgxsPlugin } from "../../symbols";
-import { getTypeFromInstance, setValue } from "../../internals";
+import { Injectable } from '@angular/core';
+import { NgxsPlugin } from '../../symbols';
+import { getTypeFromInstance, setValue } from '../../internals';
 
 @Injectable()
 export class NgxsFormPlugin implements NgxsPlugin {
@@ -11,13 +11,13 @@ export class NgxsFormPlugin implements NgxsPlugin {
 
     let nextState = state;
 
-    if (type === "UpdateFormValue" || type === "UpdateForm") {
+    if (type === 'UpdateFormValue' || type === 'UpdateForm') {
       nextState = setValue(nextState, `${event.payload.path}.model`, {
         ...event.payload.value
       });
     }
 
-    if (type === "UpdateFormStatus" || type === "UpdateForm") {
+    if (type === 'UpdateFormStatus' || type === 'UpdateForm') {
       nextState = setValue(
         nextState,
         `${event.payload.path}.status`,
@@ -25,13 +25,13 @@ export class NgxsFormPlugin implements NgxsPlugin {
       );
     }
 
-    if (type === "UpdateFormErrors" || type === "UpdateForm") {
+    if (type === 'UpdateFormErrors' || type === 'UpdateForm') {
       nextState = setValue(nextState, `${event.payload.path}.errors`, {
         ...event.payload.errors
       });
     }
 
-    if (type === "UpdateFormDirty" || type === "UpdateForm") {
+    if (type === 'UpdateFormDirty' || type === 'UpdateForm') {
       nextState = setValue(
         nextState,
         `${event.payload.path}.dirty`,
@@ -39,19 +39,19 @@ export class NgxsFormPlugin implements NgxsPlugin {
       );
     }
 
-    if (type === "SetFormDirty") {
+    if (type === 'SetFormDirty') {
       nextState = setValue(nextState, `${event.payload}.dirty`, true);
     }
 
-    if (type === "SetFormPrestine") {
+    if (type === 'SetFormPrestine') {
       nextState = setValue(nextState, `${event.payload}.dirty`, false);
     }
 
-    if (type === "SetFormDisabled") {
+    if (type === 'SetFormDisabled') {
       nextState = setValue(nextState, `${event.payload}.disabled`, true);
     }
 
-    if (type === "SetFormEnabled") {
+    if (type === 'SetFormEnabled') {
       nextState = setValue(nextState, `${event.payload}.disabled`, false);
     }
 

@@ -43,6 +43,7 @@
   "homepage": "https://github.com/amcdnl/ngxs#readme",
   "peerDependencies": {
     "@angular/core": "^5.0.0",
+    "@angular/forms": "^5.0.0",
     "rxjs": "^5.5.6"
   },
   "devDependencies": {
@@ -85,7 +86,6 @@
     }
   },
   "dependencies": {
-    "@angular/forms": "^5.2.9",
     "npm": "^5.7.1"
   }
 }
