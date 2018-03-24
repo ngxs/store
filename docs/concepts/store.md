@@ -8,7 +8,7 @@ To dispatch actions, you need to inject the `Store` service into your component/
 and invoke the `dispatch` function with a action or a array of actions you wish to trigger.
 
 ```javascript
-import { Store } from 'ngxs';
+import { Store } from '@ngxs/store';
 import { AddAnimal } from './animal.events';
 
 @Component({ ... })
@@ -35,7 +35,7 @@ the form. Our `dispatch` function actually returns an observable, so we can
 subscribe very easily and reset the form after it was successful.
 
 ```javascript
-import { Store } from 'ngxs';
+import { Store } from '@ngxs/store';
 import { AddAnimal } from './animal.events';
 
 @Component({ ... })
@@ -57,7 +57,7 @@ from that action. If you need to get the state after this, simply use a
 select in the chain like:
 
 ```javascript
-import { Store } from 'ngxs';
+import { Store } from '@ngxs/store';
 import { AddAnimal } from './animal.events';
 
 @Component({ ... })

@@ -13,7 +13,7 @@ different ways to get your data out, whether passing the state class, a function
 of the object graph.
 
 ```javascript
-import { Select } from 'ngxs';
+import { Select } from '@ngxs/store';
 
 import { ZooState } from './zoo.state';
 import { AddAnimal } from './animal.actions';
@@ -35,7 +35,7 @@ export class ZooComponent {
 The `Store` class also has a `select` function:
 
 ```javascript
-import { Store } from 'ngxs';
+import { Store } from '@ngxs/store';
 import { AddAnimal } from './animal.events';
 
 @Component({ ... })

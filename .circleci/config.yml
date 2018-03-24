@@ -120,17 +120,17 @@ jobs:
       - *attach_workspace
       - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
       - run: chmod +x /tmp/cc-test-reporter
-      - run:
+      - deploy:
           name: Upload coverage results to Code Climate
-          command: /tmp/cc-test-reporter < ~/workspace/app/coverage/lcov.info
+          command: /tmp/cc-test-reporter after-build --coverage-input-type lcov --exit-code 0
 
   # Publish latest build to npm under the @next tag
   publish_build_to_npm:
     <<: *job_defaults
     steps:
       - *attach_workspace
-      - run:
-          name: Publish Build to NPM @ngxs/core@next
+      - deploy:
+          name: Publish Build to NPM @ngxs/store@next
           command: |
             CURRENT_VERSION=$(node -pe "require('./package.json').version")
             SHORT_SHA1=$(echo $CIRCLE_SHA1 | cut -c -7)

@@ -6,7 +6,7 @@
     "module": "es2015",
     "types": [],
     "paths": {
-      "ngxs": ["src/index.ts"]
+      "@ngxs/store": ["src/index.ts"]
     }
   },
   "include": ["integration/**/*.ts", "polyfills.ts"],

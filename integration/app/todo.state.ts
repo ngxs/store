@@ -1,4 +1,4 @@
-import { State, Action, StateContext, Selector } from 'ngxs';
+import { State, Action, StateContext, Selector } from '@ngxs/store';
 
 export class AddTodo {
   constructor(public readonly payload: string) {}
