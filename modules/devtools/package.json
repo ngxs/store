@@ -1,0 +1,10 @@
+{
+  "name": "@ngxs/devtools-plugin",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "index.js",
+  "peerDependencies": {
+    "@ngxs/store": "^0.0.0",
+    "@angular/core": "^5.0.0"
+  }
+}

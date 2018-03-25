@@ -1,0 +1,11 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../builds/devtools",
+  "lib": {
+    "flatModuleFile": "ngxs-devtools-plugin",
+    "entryFile": "index.ts",
+    "umdModuleIds": {
+      "@ngxs/store": "ngxs-store"
+    }
+  }
+}

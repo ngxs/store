@@ -1,0 +1,10 @@
+{
+  "name": "@ngxs/storage-plugin",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "peerDependencies": {
+    "@ngxs/store": "^0.0.0",
+    "@angular/core": "^5.0.0"
+  }
+}

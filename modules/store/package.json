@@ -1,0 +1,9 @@
+{
+  "name": "@ngxs/store",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "index.js",
+  "peerDependencies": {
+    "@angular/core": "^5.0.0"
+  }
+}
