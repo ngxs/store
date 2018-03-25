@@ -4,6 +4,7 @@ import { Store } from '../store';
 import { NgxsModule } from '../module';
 import { State } from '../state';
 import { Action } from '../action';
+import { Observable } from 'rxjs/Observable';
 
 describe('Store', () => {
   interface SubSubStateModel {
@@ -53,7 +54,12 @@ describe('Store', () => {
   class MyState {
     @Action(FooIt)
     fooIt({ setState }) {
-      setState({ foo: 'bar' });
+      return new Observable(observer => {
+        setState({ foo: 'bar' });
+
+        observer.next();
+        observer.complete();
+      });
     }
   }
 
@@ -122,4 +128,6 @@ describe('Store', () => {
       });
     });
   });
+
+  it('should not require you to subscrube in order to dispatch', () => {});
 });
