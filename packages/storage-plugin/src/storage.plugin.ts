@@ -1,21 +1,23 @@
 import { Inject, Injectable } from '@angular/core';
 import { NgxsPlugin, getActionTypeFromInstance, setValue, getValue } from '@ngxs/store';
 
-import { NgxsStoragePluginOptions, NGXS_STORAGE_PLUGIN_OPTIONS } from './symbols';
+import { NgxsStoragePluginOptions, NGXS_STORAGE_PLUGIN_OPTIONS, STORAGE_ENGINE, StorageEngine } from './symbols';
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
-  constructor(@Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions) {}
+  constructor(
+    @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
+    @Inject(STORAGE_ENGINE) private _engine: StorageEngine
+  ) {}
 
   handle(state, event, next) {
     const options = this._options || <any>{};
     const isInitAction = getActionTypeFromInstance(event) === '@@INIT';
     const keys = Array.isArray(options.key) ? options.key : [options.key];
-    const engine = options.storage || localStorage;
 
     if (isInitAction) {
       for (const key of keys) {
-        let val = engine.getItem(key);
+        let val = this._engine.getItem(key);
 
         if (val !== 'undefined' && val !== null) {
           val = options.deserialize(val);
@@ -40,7 +42,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             val = getValue(nextState, key);
           }
 
-          engine.setItem(key, options.serialize(val));
+          this._engine.setItem(key, options.serialize(val));
         }
       }
     });
