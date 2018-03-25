@@ -3,7 +3,7 @@
 'use strict';
 
 import { exec } from 'child_process';
-import { valid, parse, SemVer } from 'semver';
+import { parse, SemVer } from 'semver';
 
 function execute(script: string): Promise<any> {
   return new Promise((resolve, reject) => {
