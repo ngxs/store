@@ -1,7 +1,10 @@
-# New NPM Location
-We moved the npm package from `ngxs` to `@ngxs/store`!
+# MASTER
+- BREAKING: Plugins are now their own packages
+- Fix: Subscribe firing multiple times
+- Fix: Devtools only passing type and payload
 
 # 2.0.0-rc.20 3/23/18
+- BREAKING: We moved the npm package from `ngxs` to `@ngxs/store`!
 - Fix: devtools not sending payload #132
 - Fix: better if condition for localstorage
 
