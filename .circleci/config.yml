@@ -133,6 +133,9 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
+      - run:
+          name: Set NPM publish token
+          command: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - deploy:
           name: Publish development builds to all @ngxs packages
           command: yarn publish:dev
