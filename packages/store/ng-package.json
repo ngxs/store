@@ -1,0 +1,9 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../builds/store",
+  "lib": {
+    "flatModuleFile": "ngxs-store",
+    "entryFile": "index.ts",
+    "umdModuleIds": {}
+  }
+}

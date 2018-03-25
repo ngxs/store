@@ -57,6 +57,10 @@ jobs:
   build:
     <<: *job_defaults
     steps:
+      # npm link will fail if we don't override the global install path to a path where we have right permissions
+      - run:
+          name: Set NPM global path
+          command: echo 'prefix = ~/.npm' > ~/.npmrc
       - checkout
       - *restore_cache
       - *yarn_install

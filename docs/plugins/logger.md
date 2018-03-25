@@ -5,6 +5,7 @@ simply import it, configure it and add it to your plugins options.
 
 ```javascript
 import { NgxsModule, NgxsLoggerPluginModule } from '@ngxs/store';
+import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 
 @NgModule({
   imports: [

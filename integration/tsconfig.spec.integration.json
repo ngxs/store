@@ -1,6 +1,10 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@ngxs/*": ["../builds/*"]
+    },
     "outDir": "./out-tsc/spec",
     "module": "commonjs",
     "target": "es5",
