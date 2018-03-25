@@ -7,15 +7,15 @@
   "scripts": {
     "// - APPS": "Run Apps in dev and with packaged modules",
     "serve:dev": "ng serve --aot",
-    "serve:integration": "ng serve --prod --app 1 ",
+    "serve:integration": "ng serve --prod --app 1 #requires yarn package",
 
     "// - BUILDING": "Run Apps in dev and with packaged modules",
     "package": "ts-node tools/package && ts-node tools/set-version",
-    "build:integration": "ng build --prod --app 1",
+    "build:integration": "ng build --prod --app 1 #requires yarn package",
 
     "// - TESTING": "Test all modules",
     "test": "ng test",
-    "test:integration": "ng test --app 1",
+    "test:integration": "ng test --app 1 #requires yarn package",
 
     "// - UTILS": "Utility Scripts",
     "lint": "ng lint"
