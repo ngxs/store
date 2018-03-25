@@ -32,7 +32,7 @@ import { NgxsLocalStoragePluginModule, StorageOption } from '@ngxs/storage-plugi
       /**
        * Custom serializer, defaults to JSON.stringify
        */
-      serialize: JSON.stringify,
+      serialize: JSON.stringify
     })
   ]
 })
