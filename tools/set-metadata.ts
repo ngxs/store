@@ -5,7 +5,7 @@ import { writeFileSync } from 'fs';
 
 const ngxsJson = require('../package.json');
 
-const keysToCopy = ['repository', 'keywords', 'author', 'contributors', 'license', 'bugs', 'homepage'];
+const keysToCopy = ['version', 'repository', 'keywords', 'author', 'contributors', 'license', 'bugs', 'homepage'];
 
 ngxsJson.packages.forEach(m => {
   const modulePath = resolve(__dirname, `../builds/${m.split('/')[1]}/package.json`);
@@ -15,9 +15,6 @@ ngxsJson.packages.forEach(m => {
   for (const key of keysToCopy) {
     modulePackage[key] = ngxsJson[key];
   }
-
-  // set the version of all packages to be the same as root package.json version
-  modulePackage.version = ngxsJson.version;
 
   // set all the packages peerDependencies to be the same as root package.json version
   ngxsJson.packages.forEach(p => {
