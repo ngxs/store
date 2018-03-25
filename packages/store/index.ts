@@ -3,4 +3,3 @@
  */
 
 export * from './src/public_api';
-export * from './src/plugin_api';
