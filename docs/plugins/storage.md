@@ -13,14 +13,14 @@ import { NgxsLocalStoragePluginModule, StorageOption } from '@ngxs/storage-plugi
     NgxsModule.forRoot([]),
     NgxsLocalStoragePluginModule.forRoot({
       /**
-       * Default key to persist. You can pass a string or array of string
+       * Default key to persist. You can pass a string or array of strings
        * that can be deeply nested via dot notation.
        */
       key: '@@STATE',
 
       /**
-       * Storage strategy to use. Thie defaults to LocalStorage but you
-       * can pass SessionStorage or anything that implements the localStorage API.
+       * Storage strategy to use. This defaults to LocalStorage but you
+       * can pass SessionStorage or anything that implements the StorageEngine API.
        */
       storage: StorageOption.LocalStorage,
 
