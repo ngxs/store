@@ -4,7 +4,6 @@ import { NgxsModule, NGXS_PLUGINS } from '@ngxs/store';
 import { NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS } from './symbols';
 import { NgxsReduxDevtoolsPlugin } from './devtools.plugin';
 
-
 @NgModule({
   imports: [NgxsModule]
 })

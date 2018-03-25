@@ -1,13 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
-import {
-  NgxsPlugin,
-  getActionTypeFromInstance,
-  setValue,
-  getValue,
-} from '@ngxs/store';
+import { NgxsPlugin, getActionTypeFromInstance, setValue, getValue } from '@ngxs/store';
 
 import { NgxsStoragePluginOptions, NGXS_STORAGE_PLUGIN_OPTIONS } from './symbols';
-
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {

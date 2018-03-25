@@ -16,7 +16,7 @@ const p = packages => {
     const name = path[path.length - 1];
 
     build(m).then(() => {
-      exec(`cd builds/${name} && npm link`, err => {
+      exec(`npm link builds/${name}`, err => {
         if (err) {
           throw new Error(err.message);
         }

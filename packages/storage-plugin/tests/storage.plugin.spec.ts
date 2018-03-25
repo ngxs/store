@@ -41,10 +41,7 @@ describe('NgxsStoragePlugin', () => {
     localStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([MyStore]),
-        NgxsStoragePluginModule.forRoot(),
-      ]
+      imports: [NgxsModule.forRoot([MyStore]), NgxsStoragePluginModule.forRoot()]
     });
 
     store = TestBed.get(Store);

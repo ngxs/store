@@ -8,7 +8,7 @@ export const defaultStoragePluginOptions: NgxsStoragePluginOptions = {
   key: '@@STATE',
   storage: localStorage,
   serialize: JSON.stringify,
-  deserialize: JSON.parse,
+  deserialize: JSON.parse
 };
 
 @NgModule()
@@ -26,7 +26,7 @@ export class NgxsStoragePluginModule {
           provide: NGXS_STORAGE_PLUGIN_OPTIONS,
           useValue: {
             ...defaultStoragePluginOptions,
-            ...options,
+            ...options
           }
         }
       ]
