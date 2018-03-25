@@ -24,7 +24,7 @@
     "serve:integration": "ng serve --prod --app 1 #requires yarn package",
 
     "// - BUILDING": "Run Apps in dev and with packaged modules",
-    "package": "ts-node tools/package && ts-node tools/set-metadata",
+    "build": "ts-node tools/package && ts-node tools/set-metadata",
     "build:integration": "ng build --prod --app 1 #requires yarn package",
 
     "// - TESTING": "Test all modules",
