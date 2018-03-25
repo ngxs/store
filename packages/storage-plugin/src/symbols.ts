@@ -1,5 +1,10 @@
 import { InjectionToken } from '@angular/core';
 
+export enum StorageOption {
+  LocalStorage,
+  SessionStorage
+}
+
 export interface NgxsStoragePluginOptions {
   /**
    * Key for the state slice to store in the storage engine.
@@ -8,9 +13,10 @@ export interface NgxsStoragePluginOptions {
 
   /**
    * Storage engine to use. Deaults to localStorage but can provide
-   * sessionStorage or anything that implements those interfaces.
+   *
+   * sessionStorage or custom implementation of the StorageEngine interface
    */
-  storage?: any;
+  storage?: StorageOption;
 
   /**
    * Serailizer for the object before its pushed into the engine.
@@ -24,3 +30,11 @@ export interface NgxsStoragePluginOptions {
 }
 
 export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_STORAGE_PLUGIN_OPTION');
+
+export const STORAGE_ENGINE = new InjectionToken('STORAGE_ENGINE');
+
+export interface StorageEngine {
+  getItem(key): any;
+  setItem(key, val): void;
+  removeItem(key): void;
+}

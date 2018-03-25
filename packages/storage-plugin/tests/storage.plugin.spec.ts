@@ -4,7 +4,7 @@ import { NgxsModule, State, Store, Action } from '@ngxs/store';
 
 import { NgxsStoragePluginModule } from '../';
 
-describe('NgxsStoragePlugin', () => {
+fdescribe('NgxsStoragePlugin', () => {
   let store: Store;
 
   class Increment {}
