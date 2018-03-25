@@ -47,7 +47,7 @@ async function main() {
 
     await execute(`
       cd builds/${name} &&
-      yarn publish --access public --non-interactive --new-version ${newVersion} --tag dev
+      yarn publish --access public --non-interactive --no-git-tag-version --new-version ${newVersion} --tag dev
     `);
   }
 }
