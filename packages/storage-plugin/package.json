@@ -1,8 +1,7 @@
 {
   "name": "@ngxs/storage-plugin",
+  "description": "extendable storage plugin for @ngxs/store",
   "version": "0.0.0",
-  "license": "MIT",
-  "private": true,
   "peerDependencies": {
     "@ngxs/store": "^0.0.0",
     "@angular/core": "^5.0.0"
