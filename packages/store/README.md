@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.png">
+  <img src="../docs/assets/logo.png">
   <br />
   NGXS is a state management pattern + library for Angular
   <br />
