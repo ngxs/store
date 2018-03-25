@@ -3,7 +3,12 @@
   "version": "2.0.0-rc.20",
   "license": "MIT",
   "packageScope": "@ngxs",
-  "packages": ["packages/store"],
+  "packages": [
+    "packages/store",
+    "packages/logger",
+    "packages/devtools",
+    "packages/storage"
+  ],
   "scripts": {
     "// - APPS": "Run Apps in dev and with packaged modules",
     "serve:dev": "ng serve --aot",
