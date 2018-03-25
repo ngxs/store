@@ -1,3 +1,6 @@
+# Master
+- BREAKING: Storage plugin fixes #154
+
 # 2.0.0-rc.21 3/25/18
 - BREAKING: Plugins are now their own packages
 - Fix: Subscribe firing multiple times
