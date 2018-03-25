@@ -167,7 +167,8 @@ workflows:
       - publish_build_to_npm:
           filters:
             branches:
-              - master
+              only:
+                - master
           requires:
             - unit_tests
             - integration_tests
