@@ -1,26 +1,26 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 
 import { NGXS_PLUGINS } from '../../symbols';
-import { NgxsLocalStoragePlugin } from './localstorage.plugin';
+import { NgxsStoragePlugin } from './storage.plugin';
 import { serialize, deserialize } from './utils';
-import { NgxsLocalStoragePluginOptions, NGXS_LOCAL_STORAGE_PLUGIN_OPTIONS } from './symbols';
+import { NgxsStoragePluginOptions, NGXS_STORAGE_PLUGIN_OPTIONS, NgxStorageStrategy } from './symbols';
 
 @NgModule()
-export class NgxsLocalStoragePluginModule {
-  static forRoot(options: NgxsLocalStoragePluginOptions = {}): ModuleWithProviders {
+export class NgxsStoragePluginModule {
+  static forRoot(options: NgxsStoragePluginOptions = {}): ModuleWithProviders {
     return {
-      ngModule: NgxsLocalStoragePluginModule,
+      ngModule: NgxsStoragePluginModule,
       providers: [
         {
           provide: NGXS_PLUGINS,
-          useClass: NgxsLocalStoragePlugin,
+          useClass: NgxsStoragePlugin,
           multi: true
         },
         {
-          provide: NGXS_LOCAL_STORAGE_PLUGIN_OPTIONS,
+          provide: NGXS_STORAGE_PLUGIN_OPTIONS,
           useValue: {
             key: options.key || '@@STATE',
-            storage: localStorage,
+            storage: options.storage || NgxStorageStrategy.localStorage,
             serialize: options.serialize || serialize,
             deserialize: options.deserialize || deserialize
           }

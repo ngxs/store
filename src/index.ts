@@ -10,4 +10,4 @@ export { Selector } from './selector';
 
 export { NgxsReduxDevtoolsPlugin, NgxsReduxDevtoolsPluginModule } from './plugins/devtools/index';
 export { NgxsLoggerPlugin, NgxsLoggerPluginModule } from './plugins/logger/index';
-export { NgxsLocalStoragePlugin, NgxsLocalStoragePluginModule } from './plugins/localstorage/index';
+export { NgxsStoragePlugin, NgxsStoragePluginModule } from './plugins/storage/index';
