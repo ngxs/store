@@ -1,6 +1,6 @@
 # Storage
 
-You can back your stores with LocalStorage by including the `NgxsLocalStoragePlugin` plugin.
+You can back your stores with localStorage or sessionStorage by including the `NgxsStoragePlugin` plugin.
 
 NOTE: all options are OPTIONAL and are shown with their defaults
 
