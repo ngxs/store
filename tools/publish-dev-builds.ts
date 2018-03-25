@@ -26,17 +26,15 @@ async function main() {
   let commit = process.env.CIRCLE_SHA1;
   if (!commit) {
     const lastCommit = await execute('git rev-parse HEAD');
-    commit = lastCommit
-      .toString()
-      .trim()
-      .slice(0, 7);
+    commit = lastCommit.toString().trim();
   }
+
+  // shorten commit
+  commit = commit.slice(0, 7);
 
   // construct new version from base version 2.0.0 to become 2.0.0+dev.shortsha
   const version: SemVer = parse(json.version);
   const newVersion = `${version.major}.${version.minor}.${version.patch}-dev.${commit}`;
-  // const newVersion = `${json.version}+${commit}`;
-  console.log('valid?', valid(newVersion));
 
   console.log('publishing new version', newVersion);
 
