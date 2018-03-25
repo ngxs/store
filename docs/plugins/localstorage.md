@@ -3,7 +3,8 @@
 You can back your stores with LocalStorage by including the `NgxsLocalStoragePlugin` plugin.
 
 ```TS
-import { NgxsModule, NgxsLocalStoragePluginModule, StorageStrategy } from '@ngxs/store';
+import { NgxsModule } from '@ngxs/store';
+import { NgxsLocalStoragePluginModule, StorageStrategy } from '@ngxs/localstorage-plugin';
 
 @NgModule({
   imports: [
