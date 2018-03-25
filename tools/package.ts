@@ -2,6 +2,9 @@
 
 'use strict';
 
+import { exec } from 'child_process';
+import { removeSync } from 'fs-extra';
+
 import build from './build';
 
 const json = require('../package.json');
@@ -9,11 +12,24 @@ const json = require('../package.json');
 const p = packages => {
   const go = i => {
     const m = packages[i];
+    const path = m.split('/');
+    const name = path[path.length - 1];
 
     build(m).then(() => {
-      if (i < packages.length - 1) {
-        go(i + 1);
-      }
+      exec(`cd builds/${name} && npm link`, err => {
+        if (err) {
+          throw new Error(err.message);
+        }
+
+        removeSync(`builds/${name}/package-lock.json`);
+        removeSync(`builds/${name}/node_modules`);
+
+        console.log(`${json.packageScope}/${name} linked`);
+
+        if (i < packages.length - 1) {
+          go(i + 1);
+        }
+      });
     });
   };
 
