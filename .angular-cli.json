@@ -13,7 +13,18 @@
       "polyfills": "integration/polyfills.ts",
       "tsconfig": "tsconfig.app.json",
       "test": "test.ts",
-      "testTsconfig": "tsconfig.spec.json",
+      "testTsconfig": "tsconfig.spec.json"
+    },
+    {
+      "name": "integration",
+      "root": "",
+      "outDir": "dist-integration/",
+      "test": "integration/test.integration.ts",
+      "index": "integration/index.html",
+      "main": "integration/main.ts",
+      "polyfills": "integration/polyfills.ts",
+      "tsconfig": "integration/tsconfig.app.integration.json",
+      "testTsconfig": "integration/tsconfig.spec.integration.json",
       "environmentSource": "integration/environments/environment.ts",
       "environments": {
         "dev": "integration/environments/environment.ts",

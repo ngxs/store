@@ -6,18 +6,19 @@
   "packages": ["packages/store"],
   "scripts": {
     "// - APPS": "Run Apps in dev and with packaged modules",
-    "serve:dev": "yarn link-dev && ng serve --preserve-symlinks",
-    "serve:packaged": "yarn package && ng serve --preserve-symlinks",
+    "serve:dev": "ng serve --aot",
+    "serve:integration": "ng serve --prod --app 1 ",
 
     "// - BUILDING": "Run Apps in dev and with packaged modules",
     "package": "ts-node tools/package && ts-node tools/set-version",
-    "build": "ng build --prod --preserve-symlinks",
+    "build:integration": "ng build --prod --app 1",
 
     "// - TESTING": "Test all modules",
-    "test": "yarn link-dev && ng test --preserve-symlinks",
+    "test": "ng test",
+    "test:integration": "ng test --app 1",
 
     "// - UTILS": "Utility Scripts",
-    "lint": "yarn link-dev && ng lint",
+    "lint": "ng lint",
     "link-dev": "ts-node tools/link-dev"
   },
   "private": true,
@@ -50,7 +51,7 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "ng-packagr": "2.0.0",
+    "ng-packagr": "^2.3.0",
     "prettier": "^1.8.2",
     "rxjs": "^5.5.2",
     "ts-node": "~3.2.0",

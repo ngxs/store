@@ -4,8 +4,8 @@
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
     "module": "es2015",
-    "types": ["googlemaps"]
+    "types": []
   },
-  "exclude": ["test.ts", "**/*.spec.ts", "node_modules/@ngxs/**/*.spec.ts"],
-  "include": ["integration/**/*.ts", "node_modules/@ngxs/**/*.ts"]
+  "exclude": ["test.ts", "**/*.spec.ts", "packages/**/*.spec.ts"],
+  "include": ["integration/**/*.ts", "packages/**/*.ts"]
 }

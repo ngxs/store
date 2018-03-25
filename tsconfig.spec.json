@@ -8,5 +8,5 @@
     "types": ["jasmine", "node"]
   },
   "files": ["test.ts"],
-  "include": ["node_modules/@ngxs/**/*.ts", "packages/**/*.spec.ts"]
+  "include": ["packages/**/*.ts", "packages/**/*.spec.ts"]
 }

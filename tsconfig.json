@@ -3,8 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@ngxs/store": ["packages/store/index.ts"],
-      "@angular/*": ["node_modules/@angular/*"]
+      "@ngxs/store": ["packages/store/index.ts"]
     },
     "noUnusedLocals": true,
     "sourceMap": true,

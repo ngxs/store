@@ -6,19 +6,21 @@ import { exec } from 'child_process';
 
 import build from './build';
 
+const json = require('../package.json');
+
 const p = packages => {
   const go = i => {
     const m = packages[i];
+    const path = m.split('/');
+    const name = path[path.length - 1];
 
     build(m).then(() => {
-      exec(`cd ${m} && yarn link`, err => {
+      exec(`cd builds/${name} && yarn link`, err => {
         if (err) {
           throw new Error(err.message);
         }
 
-        const path = m.split('/');
-
-        console.log(`${path[path.length - 1]} linked`);
+        console.log(`${json.packageScope}/${name} linked`);
 
         if (i < packages.length - 1) {
           go(i + 1);
@@ -31,4 +33,4 @@ const p = packages => {
 };
 
 // package all modules starting from first in the list
-p(require('../package.json').packages)(0);
+p(json.packages)(0);
