@@ -18,8 +18,7 @@
     "test:integration": "ng test --app 1",
 
     "// - UTILS": "Utility Scripts",
-    "lint": "ng lint",
-    "link-dev": "ts-node tools/link-dev"
+    "lint": "ng lint"
   },
   "private": true,
   "devDependencies": {
