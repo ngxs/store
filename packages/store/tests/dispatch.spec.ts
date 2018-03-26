@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
+import { timer } from 'rxjs/observable/timer';
+import { tap, skip } from 'rxjs/operators';
 
 import { State } from '../src/state';
 import { Action } from '../src/action';
@@ -56,12 +57,11 @@ describe('Dispatch', () => {
     class MyState {
       @Action(Increment)
       increment({ getState, setState }: StateContext<number>) {
-        return new Observable(observer => {
-          setState(getState() + 1);
-
-          observer.next();
-          observer.complete();
-        });
+        return timer(10).pipe(
+          tap(() => {
+            setState(getState() + 1);
+          })
+        );
       }
 
       @Action(Decrement)
@@ -76,14 +76,88 @@ describe('Dispatch', () => {
 
     const store: Store = TestBed.get(Store);
 
-    store.dispatch(new Increment()).subscribe();
-    store.dispatch(new Increment()).subscribe();
     store.dispatch(new Increment());
     store.dispatch(new Increment());
-    store.dispatch(new Decrement());
 
-    store.select(MyState).subscribe(res => {
-      expect(res).toBe(3);
+    store
+      .dispatch([new Increment(), new Increment(), new Increment(), new Increment(), new Decrement()])
+      .subscribe(() => {
+        store.select(MyState).subscribe(res => {
+          expect(res).toBe(5);
+        });
+      });
+  });
+
+  it('should correctly dispatch events from other events', () => {
+    class Increment {}
+
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    class MyState {
+      @Action(Increment)
+      increment({ getState, setState, dispatch }: StateContext<number>) {
+        const state = getState();
+
+        if (state < 10) {
+          setState(state + 1);
+
+          dispatch(new Increment());
+        }
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([MyState])]
     });
+
+    const store: Store = TestBed.get(Store);
+
+    store.dispatch([new Increment()]).subscribe(() => {
+      store.selectOnce(MyState).subscribe(res => {
+        expect(res).toBe(10);
+      });
+    });
+  });
+
+  it('should correctly dispatch events from other async actions', () => {
+    class Increment {}
+
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    class MyState {
+      @Action(Increment)
+      increment({ getState, setState, dispatch }: StateContext<number>) {
+        return timer(0).pipe(
+          tap(() => {
+            const state = getState();
+
+            if (state < 10) {
+              setState(state + 1);
+
+              dispatch(new Increment());
+            }
+          })
+        );
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([MyState])]
+    });
+
+    const store: Store = TestBed.get(Store);
+
+    store
+      .select(MyState)
+      .pipe(skip(10))
+      .subscribe(res => {
+        expect(res).toBe(10);
+      });
+
+    store.dispatch([new Increment()]);
   });
 });
