@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { NgxsPlugin, getActionTypeFromInstance, setValue, getValue } from '@ngxs/store';
 
 import { NgxsStoragePluginOptions, NGXS_STORAGE_PLUGIN_OPTIONS, STORAGE_ENGINE, StorageEngine } from './symbols';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
@@ -31,22 +32,20 @@ export class NgxsStoragePlugin implements NgxsPlugin {
       }
     }
 
-    const res = next(state, event);
+    return next(state, event).pipe(
+      tap(nextState => {
+        if (!isInitAction) {
+          for (const key of keys) {
+            let val = nextState;
 
-    res.subscribe(nextState => {
-      if (!isInitAction) {
-        for (const key of keys) {
-          let val = nextState;
+            if (key !== '@@STATE') {
+              val = getValue(nextState, key);
+            }
 
-          if (key !== '@@STATE') {
-            val = getValue(nextState, key);
+            this._engine.setItem(key, options.serialize(val));
           }
-
-          this._engine.setItem(key, options.serialize(val));
         }
-      }
-    });
-
-    return res;
+      })
+    );
   }
 }
