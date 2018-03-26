@@ -6,12 +6,12 @@ NOTE: all options are OPTIONAL and are shown with their defaults
 
 ```TS
 import { NgxsModule } from '@ngxs/store';
-import { NgxsLocalStoragePluginModule, StorageOption } from '@ngxs/storage-plugin';
+import { NgxsStoragePluginModule, StorageOption } from '@ngxs/storage-plugin';
 
 @NgModule({
   imports: [
     NgxsModule.forRoot([]),
-    NgxsLocalStoragePluginModule.forRoot({
+    NgxsStoragePluginModule.forRoot({
       /**
        * Default key to persist. You can pass a string or array of strings
        * that can be deeply nested via dot notation.
@@ -39,17 +39,17 @@ import { NgxsLocalStoragePluginModule, StorageOption } from '@ngxs/storage-plugi
 export class MyModule {}
 ```
 
-Implementing your own storage mechanism
+Implementing your own storage mechanism:
 
 ```TS
-import { NgxsLocalStoragePluginModule, StorageEngine, STORAGE_ENGINE } from '@ngxs/storage-plugin';
+import { NgxsStoragePluginModule, StorageEngine, STORAGE_ENGINE } from '@ngxs/storage-plugin';
 
 export class MyStorageEngine implements StorageEngine { ... }
 
 @NgModule({
   imports: [
     NgxsModule.forRoot([]),
-    NgxsLocalStoragePluginModule.forRoot(),
+    NgxsStoragePluginModule.forRoot()
   ],
   providers: [
     {
