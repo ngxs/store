@@ -84,7 +84,7 @@ export class Store {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return (compose([
+    return compose([
       ...plugins,
       (nextState, nextAction) => {
         if (nextState !== prevState) {
@@ -95,7 +95,7 @@ export class Store {
 
         return this._dispatchActions(nextAction).pipe(map(() => this._stateStream.getValue()));
       }
-    ])(prevState, action) as Observable<any>).pipe(shareReplay());
+    ])(prevState, action) as Observable<any>;
   }
 
   private _dispatchActions(action): Observable<any> {
@@ -106,7 +106,7 @@ export class Store {
       action
     );
 
-    return results.length ? forkJoin(this._handleNesting(results)) : of({});
+    return results.length ? forkJoin(this._handleNesting(results)).pipe(shareReplay()) : of({});
   }
 
   private _handleNesting(eventResults): Observable<any>[] {
