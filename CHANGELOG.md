@@ -1,5 +1,6 @@
-# Master
+# 2.0.0-rc.22 3/26/18
 - BREAKING: Storage plugin fixes #154
+- Fix: AoT Regression in Storage Plugin
 
 # 2.0.0-rc.21 3/25/18
 - BREAKING: Plugins are now their own packages
