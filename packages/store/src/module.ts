@@ -7,7 +7,7 @@ import { Store } from './store';
 import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
-import { InitState } from './actions/init';
+import { InitState, UpdateState } from './actions';
 
 @NgModule()
 export class NgxsRootModule {
@@ -49,9 +49,11 @@ export class NgxsFeatureModule {
     @Inject(FEATURE_STATE_TOKEN)
     states: any[][]
   ) {
-    // since FEATURE_STATE_TOKEN is a multi token, we need to flatten it [[Feature1State, Feature2State], [Feature3State]]
+    // since FEATURE_STATE_TOKEN is a multi token, we need to
+    // flatten it [[Feature1State, Feature2State], [Feature3State]]
     const flattenedStates = ([] as any[]).concat(...states);
     this.initStates(flattenedStates);
+    store.dispatch(new UpdateState());
   }
 
   initStates(stores) {

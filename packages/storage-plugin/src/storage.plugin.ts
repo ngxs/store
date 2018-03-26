@@ -13,7 +13,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
   handle(state, event, next) {
     const options = this._options || <any>{};
-    const isInitAction = getActionTypeFromInstance(event) === '@@INIT';
+    const actionType = getActionTypeFromInstance(event);
+    const isInitAction = actionType === '@@INIT' || actionType === '@@UPDATE_STATE';
     const keys = Array.isArray(options.key) ? options.key : [options.key];
 
     if (isInitAction) {
