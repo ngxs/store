@@ -1,0 +1,11 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../builds/form-plugin",
+  "lib": {
+    "flatModuleFile": "ngxs-form-plugin",
+    "entryFile": "index.ts",
+    "umdModuleIds": {
+      "@ngxs/store": "ngxs-store"
+    }
+  }
+}

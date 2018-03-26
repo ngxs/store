@@ -10,6 +10,7 @@ export class RemoveTodo {
 
 export class TodoStateModel {
   todo: string[];
+  pizza: { model: any };
 }
 
 @State<string[]>({
@@ -33,8 +34,21 @@ export class TodoState {
   }
 }
 
+export class SetPrefix {}
+
 @State<TodoStateModel>({
   name: 'todos',
+  defaults: {
+    todo: [],
+    pizza: { model: undefined }
+  },
   children: [TodoState]
 })
-export class TodosState {}
+export class TodosState {
+  @Action(SetPrefix)
+  setPrefix({ getState, setState, patchState }) {
+    const state = getState();
+    const pizza = state.pizza.model.toppings;
+    patchState({ pizza: { model: { toppings: 'Mr. ' + pizza } } });
+  }
+}

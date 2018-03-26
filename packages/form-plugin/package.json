@@ -1,0 +1,10 @@
+{
+  "name": "@ngxs/form-plugin",
+  "description": "form plugin for @ngxs/store",
+  "version": "0.0.0",
+  "peerDependencies": {
+    "@ngxs/store": "^0.0.0",
+    "@angular/core": "^5.0.0",
+    "@angular/forms": "^5.0.0"
+  }
+}

@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/ngxs/store#readme",
   "packageScope": "@ngxs",
-  "packages": ["packages/store", "packages/logger-plugin", "packages/devtools-plugin", "packages/storage-plugin"],
+  "packages": ["packages/store", "packages/logger-plugin", "packages/devtools-plugin", "packages/storage-plugin", "packages/form-plugin"],
   "scripts": {
     "// - APPS": "Run Apps in dev and with packaged modules",
     "start": "ng serve --aot",
