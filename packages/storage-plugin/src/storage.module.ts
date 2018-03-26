@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
 import { NGXS_PLUGINS } from '@ngxs/store';
 
 import { NgxsStoragePlugin } from './storage.plugin';
@@ -32,6 +32,8 @@ export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine 
   return null;
 }
 
+export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
+
 @NgModule()
 export class NgxsStoragePluginModule {
   static forRoot(options?: NgxsStoragePluginOptions): ModuleWithProviders {
@@ -39,7 +41,7 @@ export class NgxsStoragePluginModule {
       ngModule: NgxsStoragePluginModule,
       providers: [
         {
-          provide: 'USER_OPTIONS',
+          provide: USER_OPTIONS,
           useValue: options
         },
         {
@@ -50,7 +52,7 @@ export class NgxsStoragePluginModule {
         {
           provide: NGXS_STORAGE_PLUGIN_OPTIONS,
           useFactory: storageOptionsFactory,
-          deps: ['USER_OPTIONS']
+          deps: [USER_OPTIONS]
         },
         {
           provide: STORAGE_ENGINE,
