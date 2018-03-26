@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { State } from '../src/state';
 import { Action } from '../src/action';
