@@ -20,7 +20,7 @@
 * [Plugins](plugins/README.md)
   * [Logger](plugins/logger.md)
   * [Devtools](plugins/devtools.md)
-  * [Local Storage](plugins/localstorage.md)
+  * [Storage](plugins/storage.md)
 * Community
   * [Resources](community/projects.md)
   * [Contributors](community/contributors.md)
