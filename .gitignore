@@ -5,6 +5,7 @@
 /tmp
 /out-tsc
 /src/environments/version.ts
+/builds
 
 # dependencies
 /node_modules
@@ -18,6 +19,9 @@
 .settings/
 *.sublime-workspace
 *.bak
+/builds
+/dist-integration
+/dist
 
 # IDE - VSCode
 .vscode/*
