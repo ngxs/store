@@ -1,3 +1,6 @@
+# 2.0.0-rc.23 3/26/18
+- Fix: Subscriptions firing twice
+
 # 2.0.0-rc.22 3/26/18
 - BREAKING: Storage plugin fixes #154
 - Fix: AoT Regression in Storage Plugin
