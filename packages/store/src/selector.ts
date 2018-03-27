@@ -1,13 +1,14 @@
 import { memoize } from './memoize';
-import { META_KEY } from './symbols';
 import { getValue } from './utils';
+import { ensureStoreMetadata } from './internals';
 
 /**
  * Decorator for memoizing a state selector.
  */
 export function Selector(...args) {
   return (target: any, key: string, descriptor: PropertyDescriptor) => {
-    const metadata = target[META_KEY];
+    const metadata = ensureStoreMetadata(target);
+
     if (descriptor.value !== null) {
       const prev = descriptor.value;
 
