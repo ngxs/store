@@ -1,3 +1,8 @@
+# Master
+- Fix: Prevent null exceptions when accessing state before loaded
+- Fix: Move action stream to subject
+- Fix: Ensure metadata exists for a Selector (#181)
+
 # 2.0.0-rc.24 3/26/18
 - Feature: Expose Init and Update Actions
 - Fix: Devtools showing duplicate entries
