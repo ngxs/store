@@ -11,7 +11,7 @@ export class Actions extends Subject<any> {
   constructor(
     @Optional()
     @SkipSelf()
-    parent: Actions
+      parent: Actions
   ) {
     super();
 
