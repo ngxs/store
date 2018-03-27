@@ -1,4 +1,10 @@
-# Master
+# 2.0.0 3/27/18
+First off, 2.0 is a huge change. I want to appologize to everyone about that but
+given all the community feedback and ideas, I really wanted to get these ideas in
+before it was too late and we were stuck on a API. I can promise that there will
+not be this big of a breaking change after this release in the future without 
+first deprecation periods.
+
 - Fix: Prevent null exceptions when accessing state before loaded
 - Fix: Move action stream to subject
 - Fix: Ensure metadata exists for a Selector (#181)
@@ -96,12 +102,6 @@
 - Fix: missing dispatch on state context interface
 
 # 2.0.0-rc.0 3/17/18
-First off, 2.0 is a huge change. I want to appologize to everyone about that but
-given all the community feedback and ideas, I really wanted to get these ideas in
-before it was too late and we were stuck on a API. I can promise that there will
-not be this big of a breaking change after this release in the future without 
-first deprecation periods.
-
 - Breaking: `@Store()` decorator is now `@State()`
 - Breaking: `Ngxs` service is now `Store`
 - Breaking: Stores should be now renamed to State. Before: `ZooStore` should be `ZooState`
