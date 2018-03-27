@@ -1,3 +1,8 @@
+# 2.0.0-rc.24 3/26/18
+- Feature: Expose Init and Update Actions
+- Fix: Devtools showing duplicate entries
+- Fix: Storage plugin not populating for lazy loaded states
+
 # 2.0.0-rc.23 3/26/18
 - Fix: Subscriptions firing twice
 
