@@ -17,7 +17,7 @@
   * [Error Handling](advanced/errors.md)
   * [Unit Testing](advanced/unit-testing.md)
   * [Style Guide](advanced/style-guide.md)
-  * [Upgrade Guide](advanced/upgrade.md)
+* [FAQ](faq.md)
 * [Plugins](plugins/README.md)
   * [Logger](plugins/logger.md)
   * [Devtools](plugins/devtools.md)
