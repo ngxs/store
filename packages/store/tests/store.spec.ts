@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 
 import { Store } from '../src/store';
@@ -73,10 +73,41 @@ describe('Store', () => {
     store = TestBed.get(Store);
   });
 
-  it('should subscribe to the root state', () => {
-    store.subscribe(state => {
-      expect(state).toEqual({
-        foo: {
+  it(
+    'should subscribe to the root state',
+    async(() => {
+      store.subscribe(state => {
+        expect(state).toEqual({
+          foo: {
+            first: 'Hello',
+            second: 'World',
+            bar: {
+              hello: true,
+              world: true,
+              baz: {
+                name: 'Danny'
+              }
+            }
+          }
+        });
+      });
+    })
+  );
+
+  it(
+    'should select the correct state use a function',
+    async(() => {
+      store.select((state: { foo: StateModel }) => state.foo.first).subscribe(state => {
+        expect(state).toBe('Hello');
+      });
+    })
+  );
+
+  it(
+    'should select the correct state use a state class: Root State',
+    async(() => {
+      store.select(MyState).subscribe(state => {
+        expect(state).toEqual({
           first: 'Hello',
           second: 'World',
           bar: {
@@ -86,48 +117,36 @@ describe('Store', () => {
               name: 'Danny'
             }
           }
-        }
+        });
       });
-    });
-  });
+    })
+  );
 
-  it('should select the correct state use a function', () => {
-    store.select((state: { foo: StateModel }) => state.foo.first).subscribe(state => {
-      expect(state).toBe('Hello');
-    });
-  });
-
-  it('should select the correct state use a state class', () => {
-    store.select(MyState).subscribe(state => {
-      expect(state).toEqual({
-        first: 'Hello',
-        second: 'World',
-        bar: {
+  it(
+    'should select the correct state use a state class: Sub State',
+    async(() => {
+      store.select(MySubState).subscribe((state: SubStateModel) => {
+        expect(state).toEqual({
           hello: true,
           world: true,
           baz: {
             name: 'Danny'
           }
-        }
+        });
       });
-    });
+    })
+  );
 
-    store.select(MySubState).subscribe((state: SubStateModel) => {
-      expect(state).toEqual({
-        hello: true,
-        world: true,
-        baz: {
+  it(
+    'should select the correct state use a state class: Sub Sub State',
+    async(() => {
+      store.select(MySubSubState).subscribe((state: SubSubStateModel) => {
+        expect(state).toEqual({
           name: 'Danny'
-        }
+        });
       });
-    });
+    })
+  );
 
-    store.select(MySubSubState).subscribe((state: SubSubStateModel) => {
-      expect(state).toEqual({
-        name: 'Danny'
-      });
-    });
-  });
-
-  it('should not require you to subscrube in order to dispatch', () => {});
+  // it('should not require you to subscrube in order to dispatch', () => {});
 });

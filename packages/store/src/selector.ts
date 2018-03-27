@@ -14,7 +14,16 @@ export function Selector(...args) {
 
       const fn = state => {
         const local = getValue(state, metadata.path);
-        return prev(local);
+        // if the lambda tries to access a something on the state that doesn't exist, it will throw a TypeError.
+        // since this is quite usual behaviour, we simply return undefined if so.
+        try {
+          return prev(local);
+        } catch (ex) {
+          if (ex instanceof TypeError) {
+            return undefined;
+          }
+          throw ex;
+        }
       };
 
       return {
