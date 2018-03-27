@@ -18,6 +18,7 @@
   * [Unit Testing](advanced/unit-testing.md)
   * [Style Guide](advanced/style-guide.md)
 * [FAQ](faq.md)
+* [News](news.md)
 * [Plugins](plugins/README.md)
   * [Logger](plugins/logger.md)
   * [Devtools](plugins/devtools.md)
