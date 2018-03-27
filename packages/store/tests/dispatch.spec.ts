@@ -1,5 +1,6 @@
-import { TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs';
+import { async, TestBed } from '@angular/core/testing';
+import { timer } from 'rxjs';
+import { tap, skip } from 'rxjs/operators';
 
 import { State } from '../src/state';
 import { Action } from '../src/action';
@@ -8,82 +9,167 @@ import { NgxsModule } from '../src/module';
 import { StateContext } from '../src/symbols';
 
 describe('Dispatch', () => {
-  it('should correctly dispatch the event', () => {
-    class Increment {}
-    class Decrement {}
+  it(
+    'should correctly dispatch the event',
+    async(() => {
+      class Increment {}
+      class Decrement {}
 
-    @State<number>({
-      name: 'counter',
-      defaults: 0
-    })
-    class MyState {
-      @Action(Increment)
-      increment({ getState, setState }: StateContext<number>) {
-        setState(getState() + 1);
-      }
-
-      @Action(Decrement)
-      decrement({ getState, setState }: StateContext<number>) {
-        setState(getState() - 1);
-      }
-    }
-
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
-    });
-
-    const store: Store = TestBed.get(Store);
-
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-    store.dispatch(new Decrement());
-
-    store.selectOnce(MyState).subscribe(res => {
-      expect(res).toBe(3);
-    });
-  });
-
-  it('should correctly dispatch an async event', () => {
-    class Increment {}
-    class Decrement {}
-
-    @State<number>({
-      name: 'counter',
-      defaults: 0
-    })
-    class MyState {
-      @Action(Increment)
-      increment({ getState, setState }: StateContext<number>) {
-        return new Observable(observer => {
+      @State<number>({
+        name: 'counter',
+        defaults: 0
+      })
+      class MyState {
+        @Action(Increment)
+        increment({ getState, setState }: StateContext<number>) {
           setState(getState() + 1);
+        }
 
-          observer.next();
-          observer.complete();
+        @Action(Decrement)
+        decrement({ getState, setState }: StateContext<number>) {
+          setState(getState() - 1);
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyState])]
+      });
+
+      const store: Store = TestBed.get(Store);
+
+      store.dispatch(new Increment());
+      store.dispatch(new Increment());
+      store.dispatch(new Increment());
+      store.dispatch(new Increment());
+      store.dispatch(new Decrement());
+
+      store.selectOnce(MyState).subscribe(res => {
+        expect(res).toBe(3);
+      });
+    })
+  );
+
+  it(
+    'should correctly dispatch an async event',
+    async(() => {
+      class Increment {}
+      class Decrement {}
+
+      @State<number>({
+        name: 'counter',
+        defaults: 0
+      })
+      class MyState {
+        @Action(Increment)
+        increment({ getState, setState }: StateContext<number>) {
+          return timer(10).pipe(
+            tap(() => {
+              setState(getState() + 1);
+            })
+          );
+        }
+
+        @Action(Decrement)
+        decrement({ getState, setState }: StateContext<number>) {
+          setState(getState() - 1);
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyState])]
+      });
+
+      const store: Store = TestBed.get(Store);
+
+      store.dispatch(new Increment());
+      store.dispatch(new Increment());
+
+      store
+        .dispatch([new Increment(), new Increment(), new Increment(), new Increment(), new Decrement()])
+        .subscribe(() => {
+          store.select(MyState).subscribe(res => {
+            expect(res).toBe(5);
+          });
         });
+    })
+  );
+
+  it(
+    'should correctly dispatch events from other events',
+    async(() => {
+      class Increment {}
+
+      @State<number>({
+        name: 'counter',
+        defaults: 0
+      })
+      class MyState {
+        @Action(Increment)
+        increment({ getState, setState, dispatch }: StateContext<number>) {
+          const state = getState();
+
+          if (state < 10) {
+            setState(state + 1);
+
+            dispatch(new Increment());
+          }
+        }
       }
 
-      @Action(Decrement)
-      decrement({ getState, setState }: StateContext<number>) {
-        setState(getState() - 1);
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyState])]
+      });
+
+      const store: Store = TestBed.get(Store);
+
+      store.dispatch([new Increment()]).subscribe(() => {
+        store.selectOnce(MyState).subscribe(res => {
+          expect(res).toBe(10);
+        });
+      });
+    })
+  );
+
+  it(
+    'should correctly dispatch events from other async actions',
+    async(() => {
+      class Increment {}
+
+      @State<number>({
+        name: 'counter',
+        defaults: 0
+      })
+      class MyState {
+        @Action(Increment)
+        increment({ getState, setState, dispatch }: StateContext<number>) {
+          return timer(0).pipe(
+            tap(() => {
+              const state = getState();
+
+              if (state < 10) {
+                setState(state + 1);
+
+                dispatch(new Increment());
+              }
+            })
+          );
+        }
       }
-    }
 
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
-    });
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyState])]
+      });
 
-    const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.get(Store);
 
-    store.dispatch(new Increment()).subscribe();
-    store.dispatch(new Increment()).subscribe();
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-    store.dispatch(new Decrement());
+      store
+        .select(MyState)
+        .pipe(skip(10))
+        .subscribe(res => {
+          expect(res).toBe(10);
+        });
 
-    store.select(MyState).subscribe(res => {
-      expect(res).toBe(3);
-    });
-  });
+      store.dispatch([new Increment()]);
+    })
+  );
 });

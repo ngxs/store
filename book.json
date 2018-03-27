@@ -13,18 +13,18 @@
     ],
     "pluginsConfig": {
         "github": {
-            "url": "https://github.com/amcdnl/ngxs/"
+            "url": "https://github.com/ngxs/store/"
         },
         "theme-api": {
             "theme": "dark"
         },
         "versions": {
-            "gitbookConfigURL": "https://unpkg.com/amcdnl/book.json",
+            "gitbookConfigURL": "https://raw.githubusercontent.com/ngxs/store/master/book.json",
             "type": "tags"
         },
         "githubcontributors": {
-          "githubOwner": "amcdnl",
-          "githubRepository": "ngxs"
+          "githubOwner": "ngsx",
+          "githubRepository": "store"
         }
     }
 }

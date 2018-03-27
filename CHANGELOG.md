@@ -1,5 +1,25 @@
-# Master
+# 2.0.0 3/27/18
+First off, 2.0 is a huge change. I want to appologize to everyone about that but
+given all the community feedback and ideas, I really wanted to get these ideas in
+before it was too late and we were stuck on a API. I can promise that there will
+not be this big of a breaking change after this release in the future without 
+first deprecation periods.
+
+- Fix: Prevent null exceptions when accessing state before loaded
+- Fix: Move action stream to subject
+- Fix: Ensure metadata exists for a Selector (#181)
+
+# 2.0.0-rc.24 3/26/18
+- Feature: Expose Init and Update Actions
+- Fix: Devtools showing duplicate entries
+- Fix: Storage plugin not populating for lazy loaded states
+
+# 2.0.0-rc.23 3/26/18
+- Fix: Subscriptions firing twice
+
+# 2.0.0-rc.22 3/26/18
 - BREAKING: Storage plugin fixes #154
+- Fix: AoT Regression in Storage Plugin
 
 # 2.0.0-rc.21 3/25/18
 - BREAKING: Plugins are now their own packages
@@ -82,12 +102,6 @@
 - Fix: missing dispatch on state context interface
 
 # 2.0.0-rc.0 3/17/18
-First off, 2.0 is a huge change. I want to appologize to everyone about that but
-given all the community feedback and ideas, I really wanted to get these ideas in
-before it was too late and we were stuck on a API. I can promise that there will
-not be this big of a breaking change after this release in the future without 
-first deprecation periods.
-
 - Breaking: `@Store()` decorator is now `@State()`
 - Breaking: `Ngxs` service is now `Store`
 - Breaking: Stores should be now renamed to State. Before: `ZooStore` should be `ZooState`

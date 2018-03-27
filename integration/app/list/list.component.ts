@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Select } from '@ngxs/store';
+import { ListState } from './list.state';
 
 @Component({
   selector: 'app-list',
@@ -8,9 +9,13 @@ import { Select } from '@ngxs/store';
     <div>
       <a [routerLink]="['/detail']">Detail</a>
       {{list$ | async}}
+
+      {{foo | async}}
     </div>
   `
 })
 export class ListComponent {
-  @Select('list') list$: Observable<string[]>;
+  @Select(ListState) list$: Observable<string[]>;
+
+  @Select(ListState.hello) foo;
 }

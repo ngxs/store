@@ -55,7 +55,7 @@ you automatically as a shortcut method. This is very useful for unit testing.
 
 ### Memoized Selectors
 Oftentimes you will use the same selector in several different places
-or have complex selectors you want to keep seperate from your component.
+or have complex selectors you want to keep separate from your component.
 NGXS has a `Selector` decorator that will help us out here. This decorator
 will memoize the function for performance as well as automatically slice
 the state portion you are dealing with.
