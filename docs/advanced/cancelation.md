@@ -15,7 +15,7 @@ export class ZooState {
   constructor(private animalService: AnimalService) {}
 
   @Action(FeedAnimals)
-  get({ getState, setState, dispatch }, { payload }) {
+  get({ getState, setState }, { payload }) {
     return this.animalService.get(payload).pipe(
       tap((res) => {
         setState(res)
