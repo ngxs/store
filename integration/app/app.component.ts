@@ -16,7 +16,7 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix } from './todo.state';
             <br><hr>
             <button type="submit">set Dirty false</button>
             <button type="button" (click)="onPrefix()">Set Prfix</button>
-        </form>      
+        </form>
       </div>
 
       <div class="add-todo">
