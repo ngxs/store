@@ -58,9 +58,9 @@ select in the chain like:
 
 ```javascript
 import { Store } from '@ngxs/store';
-import { AddAnimal } from './animal.events';
 import { withLatestFrom } from 'rxjs/oprators';
 import { Observable } from 'rxjs/Observable';
+import { AddAnimal } from './animal.events';
 
 @Component({ ... })
 export class ZooComponent {
