@@ -12,7 +12,7 @@ import { tap } from 'rxjs/operators';
   }
 })
 export class ZooState {
-  constructor(private animalService: AnimalService) {}
+  constructor(private animalService: AnimalService, private actions$: Actions) {}
 
   @Action(FeedAnimals)
   get({ getState, setState }, { payload }) {
@@ -20,7 +20,7 @@ export class ZooState {
       tap((res) => {
         setState(res)
       }),
-      takeUntil(this.actions.pipe(ofAction(RemoveTodo)))
+      takeUntil(this.actions$.pipe(ofAction(RemoveTodo)))
     ));
   }
 }
