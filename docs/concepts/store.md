@@ -59,6 +59,8 @@ select in the chain like:
 ```javascript
 import { Store } from '@ngxs/store';
 import { AddAnimal } from './animal.events';
+import { withLatestFrom } from 'rxjs/oprators';
+import { Observable } from 'rxjs/Observable';
 
 @Component({ ... })
 export class ZooComponent {
@@ -66,9 +68,12 @@ export class ZooComponent {
   constructor(private store: Store) {}
 
   addAnimal(name) {
-    this.store.dispatch(new AddAnimal(name)).map(() => this.animals$).subscribe((animals) => {
-      this.form.reset();
-    });
+    this.store.dispatch(new AddAnimal(name))
+      .pipe(withLatestFrom(this.animals$))
+      .subscribe(([,animals]) => {
+        // do something with animals
+        this.form.reset();
+      });
   }
 }
 ```
