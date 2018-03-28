@@ -49,7 +49,7 @@ read, maintain and teach to other devs. It feels like we need to be an RxJS expe
 and its really easy to cause unwanted side effects.
 
 ### Listening to Dispatched Actions
-It's extremely common for us to dispatch a action that will reach out to a service and save
+It's extremely common for us to dispatch an action that will reach out to a service and save
 something and then, after that happens, we need to show something in our component related
 to the result of that. There is not an easy way to know when that action chain has been completed,
 often times we end up creating pseudo models in our state and listening for those in our view.
