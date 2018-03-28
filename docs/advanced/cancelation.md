@@ -1,4 +1,4 @@
-# Cancelling
+# Canceling
 
 If you have an async action sometimes you want to cancel a previous observable if the action is dispatched again. We can handle this with the `takeUntil` operator.
 
