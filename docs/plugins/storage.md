@@ -1,50 +1,56 @@
 # Storage
+Back your stores with `localStorage`, `sessionStorage` or any other mechanism you wish.
 
-You can back your stores with localStorage or sessionStorage by including the `NgxsStoragePlugin` plugin.
+## Install
+Devtools is a seperate install from NPM, run the following to install it:
 
-NOTE: all options are OPTIONAL and are shown with their defaults
+```
+npm i @ngxs/storage-plugin --S
+```
+
+## Usage
+Import the `NgxsStoragePluginModule` into your app module like:
 
 ```TS
 import { NgxsModule } from '@ngxs/store';
-import { NgxsStoragePluginModule, StorageOption } from '@ngxs/storage-plugin';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 
 @NgModule({
   imports: [
     NgxsModule.forRoot([]),
-    NgxsStoragePluginModule.forRoot({
-      /**
-       * Default key to persist. You can pass a string or array of strings
-       * that can be deeply nested via dot notation.
-       */
-      key: '@@STATE',
-
-      /**
-       * Storage strategy to use. This defaults to LocalStorage but you
-       * can pass SessionStorage or anything that implements the StorageEngine API.
-       */
-      storage: StorageOption.LocalStorage,
-
-      /**
-       * Custom deseralizer. Defaults to JSON.parse
-       */
-      deserialize: JSON.parse,
-
-      /**
-       * Custom serializer, defaults to JSON.stringify
-       */
-      serialize: JSON.stringify
-    })
+    NgxsStoragePluginModule.forRoot()
   ]
 })
-export class MyModule {}
+export class AppModule {}
 ```
 
-Implementing your own storage mechanism:
+It is recommended you register the storage plugin before other plugins so
+initial state can be picked up by those plugins.
+
+### Options
+The plugin has the following optional options:
+
+- `key`: Default key to persist. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided it defaults to all states using the `@@STATE` key.
+- `storage`: Storage strategy to use. This defaults to LocalStorage but you can pass SessionStorage or anything that implements the StorageEngine API.
+- `deserialize`: Custom deseralizer. Defaults to `JSON.parse`
+- `serialize`: Custom serializer, defaults to `JSON.stringify`
+
+### Custom Storage Engine
+You can implement your own storage engine by providing a engine that
+implements `setItem` and `getItem`.
 
 ```TS
 import { NgxsStoragePluginModule, StorageEngine, STORAGE_ENGINE } from '@ngxs/storage-plugin';
 
-export class MyStorageEngine implements StorageEngine { ... }
+export class MyStorageEngine implements StorageEngine {
+  getItem(name) {
+    // Your logic here
+  }
+
+  setItem(key, value) {
+    // Your logic here
+  }
+}
 
 @NgModule({
   imports: [

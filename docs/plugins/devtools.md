@@ -21,11 +21,11 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
     NgxsReduxDevtoolsPluginModule.forRoot()
   ]
 })
-export class MyModule {}
+export class AppModule {}
 ```
 
 ### Options
-the plugin supports the following options passed via the `forRoot` method:
+The plugin supports the following options passed via the `forRoot` method:
 
 - `disabled`: Disable the devtools during production
 - `maxAge`: Max number of entiries to keep.
