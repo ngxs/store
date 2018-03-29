@@ -46,4 +46,4 @@ export const setValue = (obj: any, prop: string, val: any) => {
  *
  */
 export const getValue = (obj: any, prop: string) =>
-  prop.split('.').reduce((acc: any, part: string) => acc && acc[part], obj);
+  prop && prop.split('.').reduce((acc: any, part: string) => acc && acc[part], obj);
