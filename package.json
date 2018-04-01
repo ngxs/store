@@ -33,25 +33,26 @@
   },
   "homepage": "https://github.com/ngxs/store#readme",
   "packageScope": "@ngxs",
-  "packages": ["packages/store", "packages/logger-plugin", "packages/devtools-plugin", "packages/storage-plugin"],
+  "packages": [
+    "packages/store",
+    "packages/logger-plugin",
+    "packages/devtools-plugin",
+    "packages/storage-plugin"
+  ],
   "scripts": {
     "// - APPS": "Run Apps in dev and with packaged modules",
     "start": "ng serve --aot",
     "serve:integration": "ng serve --prod --app 1 #requires yarn package",
-
     "// - BUILDING": "Run Apps in dev and with packaged modules",
     "build": "ts-node tools/package && ts-node tools/set-metadata",
     "build:integration": "ng build --prod --app 1 #requires yarn package",
-
     "// - TESTING": "Test all modules",
     "test": "ng test",
     "test:integration": "ng test --app 1 #requires yarn package",
-
     "// - CI": "Ci Testing",
     "test:ci": "ng test --code-coverage --progress=false --single-run",
     "test:ci:integration": "ng test --progress=false --app 1 --single-run && ng build --prod --progress=false --app 1",
     "publish:dev": "ts-node tools/publish-dev-builds",
-
     "// - UTILS": "Utility Scripts",
     "lint": "ng lint"
   },
@@ -93,6 +94,8 @@
     "prettier": "^1.8.2",
     "rxjs": "^5.5.2",
     "ts-node": "~5.0.1",
+    "tsickle": "^0.27.2",
+    "tslib": "^1.9.0",
     "tslint": "^5.8.0",
     "typescript": "~2.6.2",
     "zone.js": "^0.8.17"
