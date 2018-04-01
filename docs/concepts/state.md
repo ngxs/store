@@ -19,7 +19,7 @@ export class AnimalsState {}
 In the state decorator, we define some metadata about the state. These options
 include:
 
-- `name`: The name of the state slice.
+- `name`: The name of the state slice. Note: The name must be unique for the entire application.
 - `defaults`: Default set of object/array for this state slice.
 - `children`: Child sub state associations.
 

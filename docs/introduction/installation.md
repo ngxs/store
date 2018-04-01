@@ -2,7 +2,7 @@
 To get started, install the package thru npm:
 
 ```
-npm i ngxs --S
+npm i @ngxs/store --S
 ```
 
 then in `app.module.ts`, import the `NgxsModule`:

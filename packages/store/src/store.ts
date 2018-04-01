@@ -61,7 +61,19 @@ export class Store {
       return this._stateStream.pipe(map(getter), distinctUntilChanged());
     }
 
-    return this._stateStream.pipe(map(selector), distinctUntilChanged());
+    return this._stateStream.pipe(
+      map(selector),
+      catchError(err => {
+        // if error is TypeError we swallow it to prevent usual errors with property access
+        if (err instanceof TypeError) {
+          return of(undefined);
+        }
+
+        // rethrow other errors
+        throw err;
+      }),
+      distinctUntilChanged()
+    );
   }
 
   /**
@@ -106,7 +118,7 @@ export class Store {
       action
     );
 
-    return results.length ? forkJoin(this._handleNesting(results)) : of({});
+    return (results.length ? forkJoin(this._handleNesting(results)) : of({})).pipe(shareReplay());
   }
 
   private _handleNesting(eventResults): Observable<any>[] {

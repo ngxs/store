@@ -2,20 +2,9 @@ import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 import { META_KEY } from './symbols';
-import {
-  topologicalSort,
-  buildGraph,
-  findFullParentPath,
-  nameToState,
-  MetaDataModel,
-  isObject
-} from './internals';
+import { topologicalSort, buildGraph, findFullParentPath, nameToState, MetaDataModel, isObject } from './internals';
 
-import {
-  getActionTypeFromInstance,
-  setValue,
-  getValue,
-} from './utils';
+import { getActionTypeFromInstance, setValue, getValue } from './utils';
 
 @Injectable()
 export class StateFactory {

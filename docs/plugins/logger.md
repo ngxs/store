@@ -1,7 +1,15 @@
 # Logger Plugin
+A simple console log plugin to log actions as they are processed.
 
-NGXS comes with a logger plugin for common debugging usage. To take advantage of this
-simply import it, configure it and add it to your plugins options.
+## Install
+Devtools is a seperate install from NPM, run the following to install it:
+
+```
+npm i @ngxs/logger-plugin --S
+```
+
+## Usage
+Add the `NgxsLoggerPluginModule` plugin to your root app module:
 
 ```javascript
 import { NgxsModule, NgxsLoggerPluginModule } from '@ngxs/store';
@@ -9,19 +17,20 @@ import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 
 @NgModule({
   imports: [
-    NgxsModule.forRoot([ZooStore]),
-    NgxsLoggerPluginModule.forRoot({
-      /**
-       * Logger to implement. Defaults to console.
-       */
-      logger: console,
-
-      /**
-       * Collapse the log by default or not. Defaults to true.
-       */
-      collapsed: true
-    })
+    NgxsModule.forRoot([]),
+    NgxsLoggerPluginModule.forRoot()
   ]
 })
-export class MyModule {}
+export class AppModule {}
 ```
+
+### Options
+The plugin supports the following options passed via the `forRoot` method:
+
+- `logger`: Supply a different logger, useful for logging to backend. Defaults to `console`.
+- `collasped`: Collapse the log by default or not. Defaults to true.
+
+### Notes
+You should always include the logger as the last plugin in your configuration.
+For instance, if you were to include logger before a plugin like the storage
+plugin, the initial state would not be reflected.

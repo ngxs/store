@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
 import { NGXS_PLUGINS } from '@ngxs/store';
 
 import { NgxsStoragePlugin } from './storage.plugin';
@@ -10,31 +10,31 @@ import {
   StorageEngine
 } from './symbols';
 
-export const defaultStoragePluginOptions: NgxsStoragePluginOptions = {
-  key: '@@STATE',
-  storage: StorageOption.LocalStorage,
-  serialize: JSON.stringify,
-  deserialize: JSON.parse
-};
+export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
+  return {
+    key: '@@STATE',
+    storage: StorageOption.LocalStorage,
+    serialize: JSON.stringify,
+    deserialize: JSON.parse,
+    ...options
+  };
+}
 
-export function engineFactory(engine: StorageOption): StorageEngine {
-  if (engine === StorageOption.LocalStorage) {
+export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine {
+  if (options.storage === StorageOption.LocalStorage) {
     return localStorage;
-  } else if (engine === StorageOption.SessionStorage) {
+  } else if (options.storage === StorageOption.SessionStorage) {
     return sessionStorage;
   }
 
   return null;
 }
 
+export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
+
 @NgModule()
 export class NgxsStoragePluginModule {
   static forRoot(options?: NgxsStoragePluginOptions): ModuleWithProviders {
-    const combinedOptions = {
-      ...defaultStoragePluginOptions,
-      ...options
-    };
-
     return {
       ngModule: NgxsStoragePluginModule,
       providers: [
@@ -44,12 +44,18 @@ export class NgxsStoragePluginModule {
           multi: true
         },
         {
+          provide: USER_OPTIONS,
+          useValue: options
+        },
+        {
           provide: NGXS_STORAGE_PLUGIN_OPTIONS,
-          useValue: combinedOptions
+          useFactory: storageOptionsFactory,
+          deps: [USER_OPTIONS]
         },
         {
           provide: STORAGE_ENGINE,
-          useFactory: () => engineFactory(combinedOptions.storage)
+          useFactory: engineFactory,
+          deps: [NGXS_STORAGE_PLUGIN_OPTIONS]
         }
       ]
     };

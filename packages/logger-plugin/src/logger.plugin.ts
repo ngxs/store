@@ -3,6 +3,7 @@ import { NgxsPlugin } from '@ngxs/store';
 import { getActionTypeFromInstance } from '@ngxs/store';
 import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
 import { pad } from './internals';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class NgxsLoggerPlugin implements NgxsPlugin {
@@ -35,17 +36,15 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
 
     logger.log('%c prev state', 'color: #9E9E9E; font-weight: bold', state);
 
-    const res = next(state, event);
-
-    res.subscribe(nextState => {
-      logger.log('%c next state', 'color: #4CAF50; font-weight: bold', nextState);
-      try {
-        logger.groupEnd();
-      } catch (e) {
-        logger.log('—— log end ——');
-      }
-    });
-
-    return res;
+    return next(state, event).pipe(
+      tap(nextState => {
+        logger.log('%c next state', 'color: #4CAF50; font-weight: bold', nextState);
+        try {
+          logger.groupEnd();
+        } catch (e) {
+          logger.log('—— log end ——');
+        }
+      })
+    );
   }
 }

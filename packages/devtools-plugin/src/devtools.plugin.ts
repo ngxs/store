@@ -1,5 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { NgxsPlugin, getActionTypeFromInstance, StateStream } from '@ngxs/store';
+import { tap } from 'rxjs/operators';
+
 import { NgxsDevtoolsExtension, NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS, NgxsDevtoolsAction } from './symbols';
 
 /**
@@ -15,13 +17,7 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
     const globalDevtools = this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
 
     if (globalDevtools) {
-      this.devtoolsExtension = globalDevtools.connect({
-        name: 'NGXS',
-        maxAge: _options.maxAge,
-        actionSanitizer: _options.actionSanitizer,
-        stateSanitizer: _options.stateSanitizer
-      }) as NgxsDevtoolsExtension;
-
+      this.devtoolsExtension = globalDevtools.connect(_options) as NgxsDevtoolsExtension;
       this.devtoolsExtension.subscribe(a => this.dispatched(a));
     }
   }
@@ -35,21 +31,18 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
       return next(state, action);
     }
 
-    // process the state
-    const res = next(state, action);
-
-    res.subscribe(newState => {
-      // if init action, send initial state to dev tools
-      const isInitAction = getActionTypeFromInstance(action) === '@@INIT';
-      if (isInitAction) {
-        this.devtoolsExtension.init(state);
-      } else {
-        const type = getActionTypeFromInstance(action);
-        this.devtoolsExtension.send({ ...action, type }, newState);
-      }
-    });
-
-    return res;
+    return next(state, action).pipe(
+      tap(newState => {
+        // if init action, send initial state to dev tools
+        const isInitAction = getActionTypeFromInstance(action) === '@@INIT';
+        if (isInitAction) {
+          this.devtoolsExtension.init(state);
+        } else {
+          const type = getActionTypeFromInstance(action);
+          this.devtoolsExtension.send({ ...action, type }, newState);
+        }
+      })
+    );
   }
 
   /**

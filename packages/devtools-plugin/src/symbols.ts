@@ -19,6 +19,11 @@ export interface NgxsDevtoolsAction {
 
 export interface NgxsDevtoolsOptions {
   /**
+   * The name of the extension
+   */
+  name?: string;
+
+  /**
    * Whether the dev tools is enabled or note. Useful for setting during production.
    */
   disabled?: boolean;
