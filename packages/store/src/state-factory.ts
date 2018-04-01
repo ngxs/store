@@ -5,6 +5,11 @@ import { META_KEY } from './symbols';
 import { topologicalSort, buildGraph, findFullParentPath, nameToState, MetaDataModel, isObject } from './internals';
 
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
+import { fromPromise } from 'rxjs/observable/fromPromise';
+import { of } from 'rxjs/observable/of';
+import { shareReplay, takeUntil, map } from 'rxjs/operators';
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { ofAction } from './of-action';
 
 @Injectable()
 export class StateFactory {
@@ -93,7 +98,7 @@ export class StateFactory {
     }
   }
 
-  invokeActions(getState, setState, dispatch, action): any[] {
+  invokeActions(getState, setState, dispatch, actions$, action) {
     const results = [];
 
     for (const metadata of this.states) {
@@ -103,15 +108,25 @@ export class StateFactory {
       if (actionMetas) {
         for (const actionMeta of actionMetas) {
           const stateContext = this.createStateContext(getState, setState, dispatch, metadata);
-          const result = metadata.instance[actionMeta.fn](stateContext, action);
-          if (result) {
+          let result = metadata.instance[actionMeta.fn](stateContext, action);
+          if (result === undefined) {
+            result = of({}).pipe(shareReplay());
+          } else if (result instanceof Promise) {
+            result = fromPromise(result);
+          }
+
+          if (result instanceof Observable) {
+            result = result.pipe(
+              actionMeta.options.cancellable ? takeUntil(actions$.pipe(ofAction(action.type))) : map(r => r)
+            ); // act like a noop
+
             results.push(result);
           }
         }
       }
     }
 
-    return results;
+    return forkJoin(results);
   }
 
   createStateContext(getState, setState, dispatch, metadata) {

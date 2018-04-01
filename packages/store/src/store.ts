@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { distinctUntilChanged, catchError, take, shareReplay } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { map } from 'rxjs/operators/map';
-import { fromPromise } from 'rxjs/observable/fromPromise';
 import { of } from 'rxjs/observable/of';
 
 import { compose } from './compose';
@@ -105,34 +104,16 @@ export class Store {
 
         this._actions.next(nextAction);
 
-        return this._dispatchActions(nextAction).pipe(map(() => this._stateStream.getValue()));
+        return this._storeFactory
+          .invokeActions(
+            () => this._stateStream.getValue(),
+            newState => this._stateStream.next(newState),
+            actions => this.dispatch(actions),
+            this._actions,
+            action
+          )
+          .pipe(map(() => this._stateStream.getValue()));
       }
     ])(prevState, action) as Observable<any>).pipe(shareReplay());
-  }
-
-  private _dispatchActions(action): Observable<any> {
-    const results = this._storeFactory.invokeActions(
-      () => this._stateStream.getValue(),
-      newState => this._stateStream.next(newState),
-      actions => this.dispatch(actions),
-      action
-    );
-
-    return (results.length ? forkJoin(this._handleNesting(results)) : of({})).pipe(shareReplay());
-  }
-
-  private _handleNesting(eventResults): Observable<any>[] {
-    const results = [];
-
-    for (let eventResult of eventResults) {
-      if (eventResult instanceof Promise) {
-        eventResult = fromPromise(eventResult);
-      }
-
-      if (eventResult instanceof Observable) {
-        results.push(eventResult);
-      }
-    }
-    return results;
   }
 }
