@@ -1,5 +1,5 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { META_KEY } from './symbols';
 import {

@@ -1,5 +1,5 @@
 import { filter } from 'rxjs/operators';
-import { OperatorFunction } from 'rxjs/interfaces';
+import { OperatorFunction } from 'rxjs';
 
 export function ofAction<T>(allowedType): OperatorFunction<any, T>;
 export function ofAction<T>(...allowedTypes): OperatorFunction<any, T>;

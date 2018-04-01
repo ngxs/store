@@ -1,11 +1,6 @@
 import { Injectable, ErrorHandler } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { distinctUntilChanged, catchError, take, shareReplay } from 'rxjs/operators';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { map } from 'rxjs/operators/map';
-import { fromPromise } from 'rxjs/observable/fromPromise';
-import { of } from 'rxjs/observable/of';
+import { Observable, Subscription, forkJoin, of, from } from 'rxjs';
+import { map, distinctUntilChanged, catchError, take, shareReplay } from 'rxjs/operators';
 
 import { compose } from './compose';
 import { Actions } from './actions-stream';
@@ -126,7 +121,7 @@ export class Store {
 
     for (let eventResult of eventResults) {
       if (eventResult instanceof Promise) {
-        eventResult = fromPromise(eventResult);
+        eventResult = from(eventResult);
       }
 
       if (eventResult instanceof Observable) {

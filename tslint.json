@@ -4,7 +4,7 @@
     "class-name": true,
     "comment-format": [true, "check-space"],
     "eofline": true,
-    "import-blacklist": [true, "rxjs"],
+    "import-blacklist": [true],
     "import-spacing": true,
     "indent": [true, "spaces"],
     "label-position": true,
