@@ -33,12 +33,7 @@
   },
   "homepage": "https://github.com/ngxs/store#readme",
   "packageScope": "@ngxs",
-  "packages": [
-    "packages/store",
-    "packages/logger-plugin",
-    "packages/devtools-plugin",
-    "packages/storage-plugin"
-  ],
+  "packages": ["packages/store", "packages/logger-plugin", "packages/devtools-plugin", "packages/storage-plugin"],
   "scripts": {
     "// - APPS": "Run Apps in dev and with packaged modules",
     "start": "ng serve --aot",
@@ -98,8 +93,6 @@
     "prettier": "^1.8.2",
     "rxjs": "^5.5.2",
     "ts-node": "~5.0.1",
-    "tsickle": "^0.27.2",
-    "tslib": "^1.7.1",
     "tslint": "^5.8.0",
     "typescript": "~2.6.2",
     "zone.js": "^0.8.17"
