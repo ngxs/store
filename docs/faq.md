@@ -5,4 +5,4 @@ If you want to use NGXS with Angular 6, its recommended to use `"rxjs": "^5.6.0-
 
 ## Is this ready for production?
 Yes, we made a huge effort with 2.0 to ensure stability and good test coverage. There are several individuals who
-are usuing this in production today.
+are using this in production today.
