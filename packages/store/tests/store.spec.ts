@@ -1,5 +1,5 @@
 import { async, TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';

@@ -1,5 +1,5 @@
 import { async, TestBed } from '@angular/core/testing';
-import { timer } from 'rxjs';
+import { timer } from 'rxjs/observable/timer';
 import { tap, skip } from 'rxjs/operators';
 
 import { State } from '../src/state';

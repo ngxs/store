@@ -1,5 +1,5 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 
 /**
  * Action stream that is emitted anytime an action is dispatched.
@@ -11,7 +11,7 @@ export class Actions extends Subject<any> {
   constructor(
     @Optional()
     @SkipSelf()
-      parent: Actions
+    parent: Actions
   ) {
     super();
 
