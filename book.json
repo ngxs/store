@@ -19,7 +19,6 @@
             "theme": "dark"
         },
         "versions": {
-            "gitbookConfigURL": "https://raw.githubusercontent.com/ngxs/store/master/book.json",
             "type": "tags"
         },
         "githubcontributors": {
