@@ -12,12 +12,10 @@ import {
 
 export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
   return {
-    ...{
-      key: '@@STATE',
-      storage: StorageOption.LocalStorage,
-      serialize: JSON.stringify,
-      deserialize: JSON.parse
-    },
+    key: '@@STATE',
+    storage: StorageOption.LocalStorage,
+    serialize: JSON.stringify,
+    deserialize: JSON.parse,
     ...options
   };
 }
@@ -41,13 +39,13 @@ export class NgxsStoragePluginModule {
       ngModule: NgxsStoragePluginModule,
       providers: [
         {
-          provide: USER_OPTIONS,
-          useValue: options
-        },
-        {
           provide: NGXS_PLUGINS,
           useClass: NgxsStoragePlugin,
           multi: true
+        },
+        {
+          provide: USER_OPTIONS,
+          useValue: options
         },
         {
           provide: NGXS_STORAGE_PLUGIN_OPTIONS,

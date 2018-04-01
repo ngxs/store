@@ -3,9 +3,14 @@ import { NGXS_PLUGINS } from '@ngxs/store';
 import { NgxsLoggerPluginOptions, NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';
 import { NgxsLoggerPlugin } from './logger.plugin';
 
+export const defaultLoggerPluginOptions: NgxsLoggerPluginOptions = {
+  logger: console,
+  collapsed: false
+};
+
 @NgModule()
 export class NgxsLoggerPluginModule {
-  static forRoot(options: NgxsLoggerPluginOptions): ModuleWithProviders {
+  static forRoot(options?: NgxsLoggerPluginOptions): ModuleWithProviders {
     return {
       ngModule: NgxsLoggerPluginModule,
       providers: [
@@ -17,10 +22,7 @@ export class NgxsLoggerPluginModule {
         {
           provide: NGXS_LOGGER_PLUGIN_OPTIONS,
           useValue: {
-            ...{
-              logger: console,
-              collapsed: false
-            },
+            ...defaultLoggerPluginOptions,
             ...options
           }
         }

@@ -17,13 +17,7 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
     const globalDevtools = this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
 
     if (globalDevtools) {
-      this.devtoolsExtension = globalDevtools.connect({
-        name: 'NGXS',
-        maxAge: _options.maxAge,
-        actionSanitizer: _options.actionSanitizer,
-        stateSanitizer: _options.stateSanitizer
-      }) as NgxsDevtoolsExtension;
-
+      this.devtoolsExtension = globalDevtools.connect(_options) as NgxsDevtoolsExtension;
       this.devtoolsExtension.subscribe(a => this.dispatched(a));
     }
   }
