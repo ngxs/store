@@ -16,6 +16,7 @@
   * [Pub Sub](advanced/pubsub.md)
   * [Composition](advanced/composition.md)
   * [Error Handling](advanced/errors.md)
+  * [Life-cycle](advanced/life-cycle.md)
   * [Unit Testing](advanced/unit-testing.md)
   * [Style Guide](advanced/style-guide.md)
   * [FAQ](faq.md)
@@ -23,6 +24,7 @@
   * [Logger](plugins/logger.md)
   * [Devtools](plugins/devtools.md)
   * [Storage](plugins/storage.md)
+  * [Forms](plugins/forms.md)
 * Community
   * [News](news.md)
   * [Resources](community/projects.md)

@@ -76,8 +76,21 @@ export class StateFactory {
     return mappedStores;
   }
 
-  addAndReturnDefaults(stores: any[]): any {
-    return this.add(stores).reduce((result, meta) => setValue(result, meta.depth, meta.defaults), {});
+  addAndReturnDefaults(stateKlasses: any[]): { defaults: any; states: any[] } {
+    if (stateKlasses) {
+      const states = this.add(stateKlasses);
+      const defaults = states.reduce((result, meta) => setValue(result, meta.depth, meta.defaults), {});
+      return { defaults, states };
+    }
+  }
+
+  invokeInit(getState, setState, dispatch, stateMetadatas) {
+    for (const metadata of stateMetadatas) {
+      if (metadata.instance.onInit) {
+        const stateContext = this.createStateContext(getState, setState, dispatch, metadata);
+        metadata.instance.onInit(stateContext);
+      }
+    }
   }
 
   invokeActions(getState, setState, dispatch, action): any[] {
@@ -89,36 +102,7 @@ export class StateFactory {
 
       if (actionMetas) {
         for (const actionMeta of actionMetas) {
-          const stateContext = {
-            getState(): any {
-              const state = getState();
-              return getValue(state, metadata.depth);
-            },
-            patchState(val: any): void {
-              if (Array.isArray(val)) {
-                throw new Error('Patching arrays is not supported.');
-              }
-
-              let state = getState();
-              const local = getValue(state, metadata.depth);
-              for (const k in val) {
-                local[k] = val[k];
-              }
-              state = setValue(state, metadata.depth, { ...local });
-              setState(state);
-              return state;
-            },
-            setState(val: any): any {
-              let state = getState();
-              state = setValue(state, metadata.depth, val);
-              setState(state);
-              return state;
-            },
-            dispatch(actions: any | any[]): Observable<any> {
-              return dispatch(actions);
-            }
-          };
-
+          const stateContext = this.createStateContext(getState, setState, dispatch, metadata);
           const result = metadata.instance[actionMeta.fn](stateContext, action);
           if (result) {
             results.push(result);
@@ -128,5 +112,37 @@ export class StateFactory {
     }
 
     return results;
+  }
+
+  createStateContext(getState, setState, dispatch, metadata) {
+    return {
+      getState(): any {
+        const state = getState();
+        return getValue(state, metadata.depth);
+      },
+      patchState(val: any): void {
+        if (Array.isArray(val)) {
+          throw new Error('Patching arrays is not supported.');
+        }
+
+        let state = getState();
+        const local = getValue(state, metadata.depth);
+        for (const k in val) {
+          local[k] = val[k];
+        }
+        state = setValue(state, metadata.depth, { ...local });
+        setState(state);
+        return state;
+      },
+      setState(val: any): any {
+        let state = getState();
+        state = setValue(state, metadata.depth, val);
+        setState(state);
+        return state;
+      },
+      dispatch(actions: any | any[]): Observable<any> {
+        return dispatch(actions);
+      }
+    };
   }
 }

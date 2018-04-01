@@ -45,6 +45,10 @@ export class SetPrefix {}
   children: [TodoState]
 })
 export class TodosState {
+  onInit() {
+    console.log('here');
+  }
+
   @Action(SetPrefix)
   setPrefix({ getState, setState, patchState }) {
     const state = getState();

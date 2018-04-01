@@ -12,28 +12,33 @@ import { InitState, UpdateState } from './actions';
 @NgModule()
 export class NgxsRootModule {
   constructor(
-    private _factory: StateFactory,
-    private _stateStream: StateStream,
+    factory: StateFactory,
+    stateStream: StateStream,
     store: Store,
     select: SelectFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
     states: any[]
   ) {
-    this.initStates(states);
-    store.dispatch(new InitState());
-  }
-
-  initStates(states) {
-    if (states) {
-      // add stores to the state graph and return their defaults
-      const init = this._factory.addAndReturnDefaults(states);
-
+    // add stores to the state graph and return their defaults
+    const results = factory.addAndReturnDefaults(states);
+    if (results) {
       // get our current stream
-      const cur = this._stateStream.getValue();
+      const cur = stateStream.getValue();
 
       // set the state to the current + new
-      this._stateStream.next({ ...cur, ...init });
+      stateStream.next({ ...cur, ...results.defaults });
+    }
+
+    store.dispatch(new InitState());
+
+    if (results) {
+      factory.invokeInit(
+        () => stateStream.getValue(),
+        newState => stateStream.next(newState),
+        actions => store.dispatch(actions),
+        results.states
+      );
     }
   }
 }
@@ -41,31 +46,36 @@ export class NgxsRootModule {
 @NgModule({})
 export class NgxsFeatureModule {
   constructor(
-    root: NgxsRootModule,
     store: Store,
-    private _stateStream: StateStream,
-    private _factory: StateFactory,
+    stateStream: StateStream,
+    factory: StateFactory,
     @Optional()
     @Inject(FEATURE_STATE_TOKEN)
     states: any[][]
   ) {
-    // since FEATURE_STATE_TOKEN is a multi token, we need to
+    // Since FEATURE_STATE_TOKEN is a multi token, we need to
     // flatten it [[Feature1State, Feature2State], [Feature3State]]
     const flattenedStates = ([] as any[]).concat(...states);
-    this.initStates(flattenedStates);
-    store.dispatch(new UpdateState());
-  }
 
-  initStates(stores) {
-    if (stores) {
-      // bind the stores
-      const init = this._factory.addAndReturnDefaults(stores);
-
+    // add stores to the state graph and return their defaults
+    const results = factory.addAndReturnDefaults(flattenedStates);
+    if (results) {
       // get our current stream
-      const cur = this._stateStream.getValue();
+      const cur = stateStream.getValue();
 
       // set the state to the current + new
-      this._stateStream.next({ ...cur, ...init });
+      stateStream.next({ ...cur, ...results.defaults });
+    }
+
+    store.dispatch(new UpdateState());
+
+    if (results) {
+      factory.invokeInit(
+        () => stateStream.getValue(),
+        newState => stateStream.next(newState),
+        actions => store.dispatch(actions),
+        results.states
+      );
     }
   }
 }

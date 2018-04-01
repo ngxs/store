@@ -1,3 +1,7 @@
+# Master
+- Feature: Lifecycle events
+- Feature: Forms plugin
+
 # 2.0.0 3/27/18
 First off, 2.0 is a huge change. I want to appologize to everyone about that but
 given all the community feedback and ideas, I really wanted to get these ideas in
