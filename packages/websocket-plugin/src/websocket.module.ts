@@ -9,7 +9,7 @@ import { noop } from './symbols';
   imports: [NgxsModule]
 })
 export class NgxsWebsocketPluginModule {
-  static forRoot(options?: Partial<NgxsWebsocketPluginOptions>): ModuleWithProviders {
+  static forRoot(options?: NgxsWebsocketPluginOptions): ModuleWithProviders {
     return {
       ngModule: NgxsWebsocketPluginModule,
       providers: [

@@ -11,7 +11,7 @@ export const configDefaults: Partial<NgxsWebsocketPluginOptions> = {
 
 export interface NgxsWebsocketPluginOptions {
   url: string;
-  typeKey: string;
+  typeKey?: string;
   reconnectInterval?: number;
   reconnectAttempts?: number;
   serializer?: (data: any) => string;

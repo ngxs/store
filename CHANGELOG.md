@@ -1,3 +1,7 @@
+# 2.1.0-beta.2 4/2/18
+- Feature: Devtools can now trigger actions adhoc
+- Fix: Websocket optional typekey
+
 # 2.1.0-beta.1 4/2/18
 - Fix: Websocket pass options as partial
 
