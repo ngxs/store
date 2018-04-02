@@ -4,7 +4,10 @@ import { ensureStoreMetadata } from '../src/internals';
 
 describe('Action', () => {
   it('supports multiple actions', () => {
-    class Action1 {}
+    class Action1 {
+      static type = 'ACTION 1';
+    }
+
     class Action2 {}
 
     @State({
@@ -18,7 +21,7 @@ describe('Action', () => {
     }
 
     const meta = ensureStoreMetadata(BarStore);
-    expect(meta.actions['Action1']).toBeDefined();
-    expect(meta.actions['Action2']).toBeDefined();
+    expect(meta.actions[Action1.type]).toBeDefined();
+    expect(meta.actions[Action2['type']]).toBeDefined();
   });
 });
