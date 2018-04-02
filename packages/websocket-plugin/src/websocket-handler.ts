@@ -25,7 +25,7 @@ export class WebSocketHandler {
     socket.subscribe(msg => {
       const type = getValue(msg, config.typeKey);
       store.dispatch({
-        payload: msg,
+        ...msg,
         type
       });
     });

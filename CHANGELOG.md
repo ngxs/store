@@ -1,3 +1,6 @@
+# 2.1.0-beta.7 4/3/18
+Fix: Websocket plugin sending dupe objects
+
 # 2.1.0-beta.6 4/3/18
 - Fix: Action types on objects not matching correctly
 
