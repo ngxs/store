@@ -1,15 +1,5 @@
-import { ensureStoreMetadata, uuid } from './internals';
+import { ensureStoreMetadata, getTypeFromKlass } from './internals';
 import { ActionOptions } from './symbols';
-
-export class ActionToken {
-  private readonly stamp = uuid();
-
-  constructor(public readonly desc: string) {}
-
-  toString(): string {
-    return `ActionToken ${this.desc} ${this.stamp}`;
-  }
-}
 
 /**
  * Decorates a method with a action information.
@@ -23,20 +13,15 @@ export function Action(actions: any | any[], options?: ActionOptions) {
     }
 
     for (const action of actions) {
-      if (typeof action.type === 'string') {
-        action.type = new ActionToken(action.type);
-      } else if (!action.type) {
-        action.type = new ActionToken(action.name);
+      const type = getTypeFromKlass(action);
+      if (!meta.actions[type]) {
+        meta.actions[type] = [];
       }
 
-      if (!meta.actions[action.type]) {
-        meta.actions[action.type] = [];
-      }
-
-      meta.actions[action.type].push({
+      meta.actions[type].push({
         fn: name,
         options: options || {},
-        type: action.type
+        type
       });
     }
   };
