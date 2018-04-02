@@ -1,6 +1,9 @@
-# Master
+# 2.1.0-beta.0 4/2/18
 - Feature: Lifecycle events
 - Feature: Forms plugin
+- Fature: takeLast on actions
+- Feature: Websocket plugin
+- Feature: Snapshot selects
 
 # 2.0.0 3/27/18
 First off, 2.0 is a huge change. I want to appologize to everyone about that but

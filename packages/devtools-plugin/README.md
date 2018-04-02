@@ -1,2 +1,2 @@
 # @ngxs/devtools-plugin
-Storage plugin for NGXS. See [repo](https://github.com/ngxs/store) for more info.
+Devtools plugin for NGXS. See [repo](https://github.com/ngxs/store) for more info.
