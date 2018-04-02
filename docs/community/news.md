@@ -8,6 +8,7 @@ that are available now via beta package are:
 - Websocket Plugin
 - Cancellable Actions
 - State snapshots
+- Life cycle events
 
 Just to name a few! You can take advantage of all of these features today but it is
 important to note they are in beta state and not fully tested/stable yet so use at
