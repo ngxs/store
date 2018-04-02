@@ -61,5 +61,5 @@ export interface ActionOptions {
   /**
    * Cancel the previous uncompleted request(s).
    */
-  cancellable: boolean;
+  takeLast: boolean;
 }

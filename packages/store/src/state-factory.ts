@@ -5,7 +5,7 @@ import { of } from 'rxjs/observable/of';
 import { shareReplay, takeUntil, map } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
-import { META_KEY, StateContext } from './symbols';
+import { META_KEY, StateContext, ActionOptions } from './symbols';
 import { topologicalSort, buildGraph, findFullParentPath, nameToState, MetaDataModel, isObject } from './internals';
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
 import { ofAction } from './of-action';
@@ -15,6 +15,7 @@ export class StateFactory {
   get states() {
     return this._parentFactory ? this._parentFactory.states : this._states;
   }
+
   private _states = [];
 
   constructor(
@@ -117,7 +118,9 @@ export class StateFactory {
 
           if (result instanceof Observable) {
             result = result.pipe(
-              actionMeta.options.cancellable ? takeUntil(actions$.pipe(ofAction(action.constructor))) : map(r => r)
+              (<ActionOptions>actionMeta.options).takeLast
+                ? takeUntil(actions$.pipe(ofAction(action.constructor)))
+                : map(r => r)
             ); // act like a noop
           }
 
