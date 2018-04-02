@@ -1,3 +1,6 @@
+# 2.1.0-beta.1 4/2/18
+- Fix: Websocket pass options as partial
+
 # 2.1.0-beta.0 4/2/18
 - Feature: Lifecycle events
 - Feature: Forms plugin
