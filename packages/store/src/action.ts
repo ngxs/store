@@ -29,8 +29,6 @@ export function Action(actions: any | any[], options?: ActionOptions) {
         action.type = new ActionToken(action.name);
       }
 
-      console.log(action.type.toString());
-
       if (!meta.actions[action.type]) {
         meta.actions[action.type] = [];
       }
