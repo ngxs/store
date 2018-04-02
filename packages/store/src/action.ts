@@ -7,7 +7,7 @@ export class ActionToken {
   constructor(public readonly desc: string) {}
 
   toString() {
-    return `InjectionToken ${this.desc}`;
+    return `ActionToken ${this.desc}`;
   }
 }
 
