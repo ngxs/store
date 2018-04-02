@@ -7,10 +7,10 @@ import { WebSocketSubject } from './websocket-subject';
 @NgModule({
   imports: [NgxsModule]
 })
-export class NgxsReduxDevtoolsPluginModule {
+export class NgxsWebsocketPluginModule {
   static forRoot(options?: NgxsWebsocketPluginOptions): ModuleWithProviders {
     return {
-      ngModule: NgxsReduxDevtoolsPluginModule,
+      ngModule: NgxsWebsocketPluginModule,
       providers: [
         WebSocketSubject,
         WebSocketHandler,
