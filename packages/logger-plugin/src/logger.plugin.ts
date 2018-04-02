@@ -21,7 +21,7 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
       2
     )}.${pad(time.getMilliseconds(), 3)}`;
 
-    const message = `action ${actionName}${formattedTime}`;
+    const message = `action ${actionName.desc || actionName}${formattedTime}`;
     const startMessage = options.collapsed ? logger.groupCollapsed : logger.group;
 
     try {
