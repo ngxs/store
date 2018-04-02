@@ -24,8 +24,6 @@
   * [Logger](plugins/logger.md)
   * [Devtools](plugins/devtools.md)
   * [Storage](plugins/storage.md)
-  * [Forms](plugins/forms.md)
-  * [Websocket](plugins/websocket.md)
 * Community
   * [News](news.md)
   * [Resources](community/projects.md)
