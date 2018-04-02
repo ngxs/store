@@ -53,6 +53,32 @@ declare them with the select decorator.
 There is also a `selectOnce` that will basically do `select().pipe(take(1))` for
 you automatically as a shortcut method. This is very useful for unit testing.
 
+### Snapshot Selects
+On the store, there is a `selectSnapshot` function that allows you to pull out the
+raw value. This is helpful for cases where you need to get a static value but can't
+use observables. A good use case for this would be a interceptor that needs to get
+the token from the auth state.
+
+```TS
+@Injectable()
+export class JWTInterceptor implements HttpInterceptor {
+
+  constructor(private _store: Store) {}
+
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const token = this._store.selectSnapshot<string>((state: AppState) => state.auth.token);
+    req = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    return next.handle(req);
+  }
+
+}
+```
+
 ### Memoized Selectors
 Oftentimes you will use the same selector in several different places
 or have complex selectors you want to keep separate from your component.
