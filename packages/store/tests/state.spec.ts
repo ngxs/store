@@ -34,7 +34,7 @@ describe('Store', () => {
     }
 
     const meta = ensureStoreMetadata(BarS2tore);
-    expect(meta.actions[Eat['type']]).toBeDefined();
-    expect(meta.actions[Drink['type']]).toBeDefined();
+    expect(meta.actions['Eat']).toBeDefined();
+    expect(meta.actions['Drink']).toBeDefined();
   });
 });

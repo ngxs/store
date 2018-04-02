@@ -13,7 +13,6 @@ describe('Dispatch', () => {
     'should correctly dispatch the event',
     async(() => {
       class Increment {}
-
       class Decrement {}
 
       @State<number>({
