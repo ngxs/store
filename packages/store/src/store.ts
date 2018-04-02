@@ -87,7 +87,7 @@ export class Store {
   /**
    * Select a snapshot from the state.
    */
-  selectSnapshot<T>(selector: (state: any) => T): any {
+  selectSnapshot<T>(selector: (state: any) => T): T {
     return selector(this._stateStream.getValue());
   }
 
@@ -101,7 +101,7 @@ export class Store {
   /**
    * Return the raw value of the state.
    */
-  snapshot() {
+  snapshot(): any {
     return this._stateStream.getValue();
   }
 
