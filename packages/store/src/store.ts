@@ -98,6 +98,13 @@ export class Store {
     return this._stateStream.subscribe(fn);
   }
 
+  /**
+   * Return the raw value of the state.
+   */
+  snapshot() {
+    return this._stateStream.getValue();
+  }
+
   private _dispatch(action): Observable<any> {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
