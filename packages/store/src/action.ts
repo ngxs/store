@@ -1,4 +1,6 @@
-import { ensureStoreMetadata, getTypeFromKlass } from './internals';
+import { InjectionToken } from '@angular/core';
+
+import { ensureStoreMetadata } from './internals';
 import { ActionOptions } from './symbols';
 
 /**
@@ -13,15 +15,16 @@ export function Action(actions: any | any[], options?: ActionOptions) {
     }
 
     for (const action of actions) {
-      const type = getTypeFromKlass(action);
-      if (!meta.actions[type]) {
-        meta.actions[type] = [];
+      action.type = action.type || new InjectionToken(action.name);
+
+      if (!meta.actions[action.type]) {
+        meta.actions[action.type] = [];
       }
 
-      meta.actions[type].push({
+      meta.actions[action.type].push({
         fn: name,
         options: options || {},
-        type
+        type: action.type
       });
     }
   };

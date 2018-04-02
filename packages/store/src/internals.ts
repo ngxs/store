@@ -49,17 +49,6 @@ export function fastPropGetter(paths: string[]): (x: any) => any {
 }
 
 /**
- * Returns the type from a event class.
- */
-export function getTypeFromKlass(event) {
-  if (event.type) {
-    return event.type;
-  } else if (event.name) {
-    return event.name;
-  }
-}
-
-/**
  * Given an array of states, it will return a object graph. Example:
  *    const states = [
  *      Cart,
