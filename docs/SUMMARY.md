@@ -17,6 +17,7 @@
   * [Composition](advanced/composition.md)
   * [Error Handling](advanced/errors.md)
   * [Life-cycle](advanced/life-cycle.md)
+  * [Shared State](advanced/shared-state.md)
   * [Unit Testing](advanced/unit-testing.md)
   * [Style Guide](advanced/style-guide.md)
   * [FAQ](faq.md)
