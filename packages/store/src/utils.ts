@@ -4,7 +4,7 @@
 export function getActionTypeFromInstance(event) {
   if (event.constructor.type) {
     return event.constructor.type;
-  } else if (event.constructor.name) {
+  } else if (event.constructor.name && event.constructor.name !== 'Object') {
     return event.constructor.name;
   } else if (event.type) {
     // events from dev tools are plain objects

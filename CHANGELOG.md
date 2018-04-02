@@ -1,3 +1,6 @@
+# 2.1.0-beta.6 4/3/18
+- Fix: Action types on objects not matching correctly
+
 # 2.1.0-beta.5 4/3/18
 - Fix: Revert #206
 - Fix: Websocket send message correctly
