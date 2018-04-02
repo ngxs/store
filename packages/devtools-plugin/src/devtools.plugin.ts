@@ -58,7 +58,7 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
         const prevState = JSON.parse(action.state);
         this._state.next(prevState);
       } else if (action.payload.type === 'TOGGLE_ACTION') {
-        // TODO
+        console.warn('Skip is not supported at this time.');
       }
     } else if (action.type === 'ACTION') {
       const actionPayload = JSON.parse(action.payload);
