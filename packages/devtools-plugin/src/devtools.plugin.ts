@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { NgxsPlugin, getActionTypeFromInstance, StateStream, Store } from '@ngxs/store';
+import { NgxsPlugin, getActionTypeFromInstance, StateStream } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
 import { NgxsDevtoolsExtension, NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS, NgxsDevtoolsAction } from './symbols';
@@ -13,11 +13,7 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
   private readonly devtoolsExtension: NgxsDevtoolsExtension | null = null;
   private readonly windowObj: any = typeof window !== 'undefined' ? window : {};
 
-  constructor(
-    @Inject(NGXS_DEVTOOLS_OPTIONS) private _options: NgxsDevtoolsOptions,
-    private _state: StateStream,
-    private _store: Store
-  ) {
+  constructor(@Inject(NGXS_DEVTOOLS_OPTIONS) private _options: NgxsDevtoolsOptions, private _state: StateStream) {
     const globalDevtools = this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
 
     if (globalDevtools) {
@@ -61,8 +57,9 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
         console.warn('Skip is not supported at this time.');
       }
     } else if (action.type === 'ACTION') {
-      const actionPayload = JSON.parse(action.payload);
-      this._store.dispatch(actionPayload);
+      console.warn('Dispatch is not supported at this time.');
+      // const actionPayload = JSON.parse(action.payload);
+      // this._store.dispatch(actionPayload);
     }
   }
 }
