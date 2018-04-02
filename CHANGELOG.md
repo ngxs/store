@@ -1,3 +1,7 @@
+# 2.1.0-beta.5 4/3/18
+- Fix: Revert #206
+- Fix: Websocket send message correctly
+
 # 2.1.0-beta.4 4/3/18
 - Feature: Added `snapshot` method to store to get raw value
 - Fix: Return `T` from `selectSnapshot`

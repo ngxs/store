@@ -23,7 +23,7 @@ export class WebSocketHandler {
     actions.pipe(filter(t => t instanceof DisconnectWebSocket)).subscribe(event => socket.disconnect());
     actions.pipe(filter(t => t instanceof SendWebSocketMessage)).subscribe(({ payload }) => socket.send(payload));
     socket.subscribe(msg => {
-      const type = getValue(msg, msg[config.typeKey]);
+      const type = getValue(msg, config.typeKey);
       store.dispatch({
         payload: msg,
         type
