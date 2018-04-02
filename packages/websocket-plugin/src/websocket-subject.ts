@@ -50,7 +50,7 @@ export class WebSocketSubject extends Subject<any> {
   connect() {
     this._socket = new RxWebSocketSubject(this._internalConfig);
     this._socket.subscribe(
-      message => this.next(this._config.deserializer(message)),
+      message => this.next(message),
       (error: Event) => {
         if (!this._socket) {
           this.reconnect();
@@ -78,7 +78,7 @@ export class WebSocketSubject extends Subject<any> {
     });
   }
 
-  next(data: any): void {
+  send(data: any): void {
     this._socket.next(this._config.serializer(data));
   }
 }

@@ -5,8 +5,7 @@ export const configDefaults: Partial<NgxsWebsocketPluginOptions> = {
   reconnectInterval: 5000,
   reconnectAttempts: 10,
   typeKey: 'type',
-  serializer: JSON.stringify,
-  deserializer: JSON.parse
+  serializer: JSON.stringify
 };
 
 export interface NgxsWebsocketPluginOptions {
@@ -15,7 +14,6 @@ export interface NgxsWebsocketPluginOptions {
   reconnectInterval?: number;
   reconnectAttempts?: number;
   serializer?: (data: any) => string;
-  deserializer?: (data: string) => any;
 }
 
 export function noop(arg) {
