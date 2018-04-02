@@ -2,10 +2,12 @@ import { ensureStoreMetadata } from './internals';
 import { ActionOptions } from './symbols';
 
 export class ActionToken {
+  private readonly stamp = Date.now();
+
   constructor(public readonly desc: string) {}
 
   toString() {
-    return `ActionToken ${this.desc}`;
+    return `ActionToken ${this.desc} ${this.stamp}`;
   }
 }
 
