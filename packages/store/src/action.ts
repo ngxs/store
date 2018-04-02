@@ -1,7 +1,15 @@
-import { InjectionToken } from '@angular/core';
+// import { InjectionToken } from '@angular/core';
 
 import { ensureStoreMetadata } from './internals';
 import { ActionOptions } from './symbols';
+
+export class ActionToken {
+  constructor(public readonly desc: string) {}
+
+  toString() {
+    return `InjectionToken ${this.desc}`;
+  }
+}
 
 /**
  * Decorates a method with a action information.
@@ -15,7 +23,7 @@ export function Action(actions: any | any[], options?: ActionOptions) {
     }
 
     for (const action of actions) {
-      action.type = action.type || new InjectionToken(action.name);
+      action.type = action.type || new ActionToken(action.name);
 
       if (!meta.actions[action.type]) {
         meta.actions[action.type] = [];

@@ -5,7 +5,7 @@ import { ensureStoreMetadata } from '../src/internals';
 describe('Action', () => {
   it('supports multiple actions', () => {
     class Action1 {
-      static type = Symbol();
+      static type = 'ACTION 1';
     }
 
     class Action2 {}
