@@ -85,6 +85,13 @@ export class Store {
   }
 
   /**
+   * Select a snapshot from the state.
+   */
+  selectSnapshot<T>(selector: (state: any) => T): any {
+    return selector(this._stateStream.getValue());
+  }
+
+  /**
    * Allow the user to subscribe to the root of the state
    */
   subscribe(fn?: any): Subscription {
