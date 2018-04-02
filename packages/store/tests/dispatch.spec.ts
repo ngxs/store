@@ -216,7 +216,6 @@ describe('Dispatch', () => {
         .select(MyState)
         .pipe(skip(1))
         .subscribe(res => {
-          console.log(res);
           expect(res).toBe(1);
         });
     })

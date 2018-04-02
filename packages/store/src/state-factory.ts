@@ -1,14 +1,13 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-
-import { META_KEY } from './symbols';
-import { topologicalSort, buildGraph, findFullParentPath, nameToState, MetaDataModel, isObject } from './internals';
-
-import { getActionTypeFromInstance, setValue, getValue } from './utils';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { of } from 'rxjs/observable/of';
 import { shareReplay, takeUntil, map } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
+
+import { META_KEY, StateContext } from './symbols';
+import { topologicalSort, buildGraph, findFullParentPath, nameToState, MetaDataModel, isObject } from './internals';
+import { getActionTypeFromInstance, setValue, getValue } from './utils';
 import { ofAction } from './of-action';
 
 @Injectable()
@@ -109,6 +108,7 @@ export class StateFactory {
         for (const actionMeta of actionMetas) {
           const stateContext = this.createStateContext(getState, setState, dispatch, metadata);
           let result = metadata.instance[actionMeta.fn](stateContext, action);
+
           if (result === undefined) {
             result = of({}).pipe(shareReplay());
           } else if (result instanceof Promise) {
@@ -117,11 +117,11 @@ export class StateFactory {
 
           if (result instanceof Observable) {
             result = result.pipe(
-              actionMeta.options.cancellable ? takeUntil(actions$.pipe(ofAction(action.type))) : map(r => r)
+              actionMeta.options.cancellable ? takeUntil(actions$.pipe(ofAction(action.constructor))) : map(r => r)
             ); // act like a noop
-
-            results.push(result);
           }
+
+          results.push(result);
         }
       }
     }
@@ -129,7 +129,7 @@ export class StateFactory {
     return forkJoin(results);
   }
 
-  createStateContext(getState, setState, dispatch, metadata) {
+  createStateContext(getState, setState, dispatch, metadata): StateContext<any> {
     return {
       getState(): any {
         const state = getState();
