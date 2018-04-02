@@ -78,5 +78,9 @@ export class ZooComponent {
 }
 ```
 
+### Snapshots
+You can get a snapshot of the state by calling `store.snapshot()`. It will return the entire
+value of the store for that point in time.
+
 ### Selecting State
 See the [select](select.md) page for details on how to use the store to select out data.
