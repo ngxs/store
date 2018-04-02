@@ -1,6 +1,34 @@
 # Canceling
+If you have an async action sometimes you want to cancel a previous observable if the action is dispatched again.
+This is useful for canceling previous requests like in a typeahead.
 
-If you have an async action sometimes you want to cancel a previous observable if the action is dispatched again. We can handle this with the `takeUntil` operator.
+## Basic
+For basic scenarios, we can use the `takeLast` action decorator option.
+
+```TS
+import { State, Action } from '@ngxs/store';
+
+@State<ZooStateModel>({
+  defaults: {
+    animals: []
+  }
+})
+export class ZooState {
+  constructor(private animalService: AnimalService, private actions$: Actions) {}
+
+  @Action(FeedAnimals, { takeLast: true })
+  get({ setState }, { payload }) {
+    return this.animalService.get(payload).pipe(
+      tap((res) => {
+        setState(res)
+      })
+    ));
+  }
+}
+```
+
+## Advanced
+For more advanced cases such as using specifying based on tokens, we can use normal Rx operators.
 
 ```TS
 import { State, Action, Actions, ofAction } from '@ngxs/store';
@@ -15,7 +43,7 @@ export class ZooState {
   constructor(private animalService: AnimalService, private actions$: Actions) {}
 
   @Action(FeedAnimals)
-  get({ getState, setState }, { payload }) {
+  get({ setState }, { payload }) {
     return this.animalService.get(payload).pipe(
       tap((res) => {
         setState(res)
