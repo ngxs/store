@@ -18,6 +18,10 @@ export interface NgxsWebsocketPluginOptions {
   deserializer?: (data: string) => any;
 }
 
+export function noop(arg) {
+  return function() {};
+}
+
 export class ConnectWebSocket {}
 export class DisconnectWebSocket {}
 export class SendWebSocketMessage {

@@ -3,6 +3,7 @@ import { NgxsModule } from '@ngxs/store';
 import { NgxsWebsocketPluginOptions, NGXS_WEBSOCKET_OPTIONS, configDefaults } from './symbols';
 import { WebSocketHandler } from './websocket-handler';
 import { WebSocketSubject } from './websocket-subject';
+import { noop } from './symbols';
 
 @NgModule({
   imports: [NgxsModule]
@@ -23,7 +24,7 @@ export class NgxsWebsocketPluginModule {
         },
         {
           provide: APP_INITIALIZER,
-          useFactory: (handler: WebSocketHandler) => () => {},
+          useFactory: noop,
           deps: [WebSocketHandler],
           multi: true
         }

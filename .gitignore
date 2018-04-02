@@ -54,3 +54,4 @@ testem.log
 Thumbs.db
 /storybook-static
 /yarn-error.log
+.ng_pkg_build/
