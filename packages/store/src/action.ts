@@ -1,12 +1,12 @@
-import { ensureStoreMetadata } from './internals';
+import { ensureStoreMetadata, uuid } from './internals';
 import { ActionOptions } from './symbols';
 
 export class ActionToken {
-  private readonly stamp = Date.now();
+  private readonly stamp = uuid();
 
   constructor(public readonly desc: string) {}
 
-  toString() {
+  toString(): string {
     return `ActionToken ${this.desc} ${this.stamp}`;
   }
 }
@@ -23,7 +23,13 @@ export function Action(actions: any | any[], options?: ActionOptions) {
     }
 
     for (const action of actions) {
-      action.type = action.type || new ActionToken(action.name);
+      if (typeof action.type === 'string') {
+        action.type = new ActionToken(action.type);
+      } else if (!action.type) {
+        action.type = new ActionToken(action.name);
+      }
+
+      console.log(action.type.toString());
 
       if (!meta.actions[action.type]) {
         meta.actions[action.type] = [];

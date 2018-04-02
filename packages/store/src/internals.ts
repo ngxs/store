@@ -8,6 +8,18 @@ export interface MetaDataModel {
   children: any[];
 }
 
+/* FROM: https://gist.github.com/jed/982883 */
+/* tslint:disable  */
+export function uuid(a?, b?) {
+  for (
+    b = a = '';
+    a++ < 36;
+    b += (a * 51) & 52 ? (a ^ 15 ? 8 ^ (Math.random() * (a ^ 20 ? 16 : 4)) : 4).toString(16) : '-'
+  );
+
+  return b;
+}
+
 /**
  * Ensures metadata is attached to the klass and returns it.
  */
