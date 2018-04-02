@@ -23,9 +23,7 @@ export function Action(actions: any | any[], options?: ActionOptions) {
     }
 
     for (const action of actions) {
-      if (typeof action.type === 'string') {
-        action.type = new ActionToken(action.type);
-      } else if (!action.type) {
+      if (!action.type) {
         action.type = new ActionToken(action.name);
       }
 
