@@ -172,4 +172,53 @@ describe('Dispatch', () => {
       store.dispatch([new Increment()]);
     })
   );
+
+  it(
+    'should correctly cancel previous actions',
+    async(() => {
+      class Increment {}
+
+      @State<number>({
+        name: 'counter',
+        defaults: 0
+      })
+      class MyState {
+        @Action(Increment, { cancellable: true })
+        increment({ getState, setState, dispatch }: StateContext<number>) {
+          return timer(0).pipe(
+            tap(() => {
+              const state = getState();
+
+              setState(state + 1);
+            })
+          );
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyState])]
+      });
+
+      const store: Store = TestBed.get(Store);
+
+      store.dispatch([
+        new Increment(),
+        new Increment(),
+        new Increment(),
+        new Increment(),
+        new Increment(),
+        new Increment()
+      ]);
+
+      store.dispatch([new Increment()]);
+
+      store
+        .select(MyState)
+        .pipe(skip(1))
+        .subscribe(res => {
+          console.log(res);
+          expect(res).toBe(1);
+        });
+    })
+  );
 });
