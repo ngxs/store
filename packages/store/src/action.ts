@@ -1,5 +1,3 @@
-// import { InjectionToken } from '@angular/core';
-
 import { ensureStoreMetadata } from './internals';
 import { ActionOptions } from './symbols';
 
