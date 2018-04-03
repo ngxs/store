@@ -12,11 +12,11 @@ import { ofAction } from './of-action';
 
 @Injectable()
 export class StateFactory {
-  get states() {
+  get states(): MetaDataModel[] {
     return this._parentFactory ? this._parentFactory.states : this._states;
   }
 
-  private _states = [];
+  private _states: MetaDataModel[] = [];
 
   constructor(
     private _injector: Injector,
@@ -101,9 +101,7 @@ export class StateFactory {
   invokeActions(getState, setState, dispatch, actions$, action) {
     const results = [];
 
-    for (const data of this.states) {
-      const metadata: MetaDataModel = data;
-
+    for (const metadata of this.states) {
       const name = getActionTypeFromInstance(action);
 
       const actionMetas = metadata.actions[name.toString()];
@@ -113,19 +111,21 @@ export class StateFactory {
           const stateContext = this.createStateContext(getState, setState, dispatch, metadata);
           let result = metadata.instance[actionMeta.fn](stateContext, action);
 
-          if (!result) {
+          if (result === undefined) {
             result = of({}).pipe(shareReplay());
           } else if (result instanceof Promise) {
             result = fromPromise(result);
           }
 
-          result = result.pipe(
-            (<ActionOptions>actionMeta.options).takeLast
-              ? takeUntil(actions$.pipe(ofAction(action.constructor)))
-              : map(r => r)
-          ); // act like a noop
+          if (result instanceof Observable) {
+            result = result.pipe(
+              (<ActionOptions>actionMeta.options).takeLast
+                ? takeUntil(actions$.pipe(ofAction(action.constructor)))
+                : map(r => r)
+            ); // act like a noop
 
-          results.push(result);
+            results.push(result);
+          }
         }
       }
     }
