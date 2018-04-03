@@ -18,6 +18,7 @@ import { NgxsModule } from '@ngxs/store';
     ])
   ]
 })
+export class AppModule {}
 ```
 
 When you include the module in the import, you can pass root stores along with options.

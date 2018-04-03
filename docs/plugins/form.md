@@ -1,5 +1,4 @@
-# Form Plugin
-
+# Form Plugin - Expiremental Status
 Often when building Reactive Forms in Angular, you need to bind values from the
 store to form and vice versus. The values from the store are observable and
 the reactive form accepts raw objects, as a result we end up monkey patching
@@ -18,12 +17,19 @@ This is an excellent use case for stores and we can conquer that case with this 
 
 In a nutshell, this plugin helps to keep your forms and state in sync.
 
-### Configuration
+## Install
+Forms is a seperate install from NPM, run the following to install it:
+
+```
+npm i @ngxs/form-plugin --S
+```
+
+## Usage
 In the root module of your application, import `NgxsFormPluginModule`
 and include it in the imports. 
 
 ```TS
-import { NgxsFormPluginModule } from 'ngxs';
+import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 
 @NgModule({
   imports: [
@@ -49,6 +55,7 @@ Define your default form state as part of your application state.
     }
   }
 })
+export class TodosState {}
 ```
 
 ### Form Setup
@@ -59,17 +66,17 @@ The directive uses this path to connect itself to the store and setup bindings.
 
 ```TS
 @Component({
-    template: `
-        <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizzaForm">
-            <input type="text" formControlName="toppings" />
-            <button type="submit">Order</button>
-        </form>
-    `
+  template: `
+    <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizzaForm">
+      <input type="text" formControlName="toppings" />
+      <button type="submit">Order</button>
+    </form>
+  `
 })
 export class PizzaComponent {
-    pizzaForm = this.formBuilder.group({
-        toppings: ['']
-    });
+  pizzaForm = this.formBuilder.group({
+    toppings: ['']
+  });
 }
 ```
 
@@ -86,13 +93,14 @@ manually dispatch actions for things like resetting the form state. For example:
 
 ```TS
 this.store.dispatch(
-    new UpdateFormDirty({
-        dirty: false, path: 'todos.pizzaForm'
-    })
+  new UpdateFormDirty({
+    dirty: false,
+    path: 'todos.pizzaForm'
+  })
 );
 ```
 
-The form plugin comes with following ```actions``` out of the box are:
+The form plugin comes with following `actions` out of the box are:
 - `UpdateFormStatus({ status, path })` - Update the form status
 - `UpdateFormValue({ value, path })` - Update the form value
 - `UpdateFormDirty({ dirty, path })` - Update the form dirty status

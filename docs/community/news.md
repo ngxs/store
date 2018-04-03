@@ -1,5 +1,19 @@
 # News
 
+## 2.1 Beta - 4/2/18
+2.1 has kicked off and its packed with lots of new features and fixes! Some notable items
+that are available now via beta package are:
+
+- Forms Plugin
+- Websocket Plugin
+- Cancellable Actions
+- State snapshots
+- Life cycle events
+
+Just to name a few! You can take advantage of all of these features today but it is
+important to note they are in beta state and not fully tested/stable yet so use at
+your own risk! We plan to launch 2.1 official in the coming weeks.
+
 ## 2.0 Release - 3/27/18
 Today we launched 2.0, a huge improvement from our 1.0 release. Its really exciting
 to see the community come together to make this a truley great project! We had
