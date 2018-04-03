@@ -40,19 +40,20 @@ export class SetPrefix {}
   name: 'todos',
   defaults: {
     todo: [],
-    pizza: { model: undefined }
+    pizza: { model: undefined}
   },
   children: [TodoState]
 })
 export class TodosState {
-  onInit() {
-    console.log('here');
+  @Selector()
+  static pizza(state: TodoStateModel) {
+    return state.pizza;
   }
 
   @Action(SetPrefix)
   setPrefix({ getState, setState, patchState }) {
     const state = getState();
-    const pizza = state.pizza.model.toppings;
-    patchState({ pizza: { model: { toppings: 'Mr. ' + pizza } } });
+   const pizza1 = state.pizza.model.toppings;
+   patchState({ pizza: { model: { toppings: 'Mr. ' + pizza1 } } });
   }
 }
