@@ -1,3 +1,6 @@
+# 2.1.0-beta.8 4/4/18
+- Fix: Minification issues #212
+
 # 2.1.0-beta.7 4/3/18
 Fix: Websocket plugin sending dupe objects
 
