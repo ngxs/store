@@ -37,11 +37,11 @@ This means that if you want the bleeding edge of `@ngxs/store` or any of the plu
 npm install @ngxs/store@dev
 npm install @ngxs/logger-plugin@dev
 
-// or if you are using yarn
+# or if you are using yarn
 yarn add @ngxs/store@dev
 yarn add @ngxs/logger-plugin@dev
 
-// of if you want to update multiple things at the same time
+# of if you want to update multiple things at the same time
 yarn add @ngxs/{store,logger-plugin,devtools-plugin}@dev
 
 ```
