@@ -1,10 +1,13 @@
-import { Action } from '../src/action';
+import { Action, ActionToken } from '../src/action';
 import { State } from '../src/state';
-import { ensureStoreMetadata } from '../src/internals';
+import { META_KEY } from '../src/symbols';
 
 describe('Action', () => {
   it('supports multiple actions', () => {
-    class Action1 {}
+    class Action1 {
+      static type = 'ACTION 1';
+    }
+
     class Action2 {}
 
     @State({
@@ -12,13 +15,15 @@ describe('Action', () => {
     })
     class BarStore {
       @Action([Action1, Action2])
-      foo({ setState }) {
-        setState({ foo: false });
-      }
+      foo() {}
     }
 
-    const meta = ensureStoreMetadata(BarStore);
-    expect(meta.actions['Action1']).toBeDefined();
-    expect(meta.actions['Action2']).toBeDefined();
+    const meta = BarStore[META_KEY];
+
+    expect(meta.actions[Action1.type]).toBeDefined();
+    expect(meta.actions[(<ActionToken>Action2['type']).toString()]).toBeDefined();
+
+    // NOTE: becuase Jasmine type will change when more actions are added to tests.
+    expect((<ActionToken>Action2['type']).toString()).toBe('ActionToken Action2 5');
   });
 });

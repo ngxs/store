@@ -12,11 +12,11 @@ import { ofAction } from './of-action';
 
 @Injectable()
 export class StateFactory {
-  get states() {
+  get states(): MetaDataModel[] {
     return this._parentFactory ? this._parentFactory.states : this._states;
   }
 
-  private _states = [];
+  private _states: MetaDataModel[] = [];
 
   constructor(
     private _injector: Injector,
@@ -103,7 +103,8 @@ export class StateFactory {
 
     for (const metadata of this.states) {
       const name = getActionTypeFromInstance(action);
-      const actionMetas = metadata.actions[name];
+
+      const actionMetas = metadata.actions[name.toString()];
 
       if (actionMetas) {
         for (const actionMeta of actionMetas) {
@@ -122,9 +123,9 @@ export class StateFactory {
                 ? takeUntil(actions$.pipe(ofAction(action.constructor)))
                 : map(r => r)
             ); // act like a noop
-          }
 
-          results.push(result);
+            results.push(result);
+          }
         }
       }
     }

@@ -6,6 +6,7 @@ export interface MetaDataModel {
   defaults: any;
   path: string;
   children: any[];
+  instance: any;
 }
 
 /**
@@ -18,7 +19,8 @@ export function ensureStoreMetadata(target): MetaDataModel {
       actions: {},
       defaults: {},
       path: null,
-      children: []
+      children: [],
+      instance: null
     };
 
     Object.defineProperty(target, META_KEY, { value: defaultMetadata });
@@ -46,17 +48,6 @@ export function fastPropGetter(paths: string[]): (x: any) => any {
   const fn = new Function('store', 'return ' + expr + ';');
 
   return <(x: any) => any>fn;
-}
-
-/**
- * Returns the type from a event class.
- */
-export function getTypeFromKlass(event) {
-  if (event.type) {
-    return event.type;
-  } else if (event.name) {
-    return event.name;
-  }
 }
 
 /**

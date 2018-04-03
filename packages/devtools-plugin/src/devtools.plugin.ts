@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { NgxsPlugin, getActionTypeFromInstance, StateStream } from '@ngxs/store';
+import { NgxsPlugin, getActionTypeFromInstance, StateStream, getActionNameFromInstance } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
 import { NgxsDevtoolsExtension, NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS, NgxsDevtoolsAction } from './symbols';
@@ -38,7 +38,8 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
         if (isInitAction) {
           this.devtoolsExtension.init(state);
         } else {
-          const type = getActionTypeFromInstance(action);
+          const type = getActionNameFromInstance(action);
+
           this.devtoolsExtension.send({ ...action, type }, newState);
         }
       })
