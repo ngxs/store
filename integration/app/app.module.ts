@@ -24,7 +24,7 @@ import { states } from './app.state';
       disabled: environment.production
     }),
     NgxsFormPluginModule.forRoot(),
-    NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: true })
+    NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: false })
   ],
   bootstrap: [AppComponent]
 })

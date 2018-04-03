@@ -1,5 +1,5 @@
 export class UpdateFormStatus {
-  static readonly type = '[Forms] Update Status';
+  static readonly type = '[Forms] Update Form Status';
   constructor(public payload: { status: string | null; path: string }) {}
 }
 
@@ -32,7 +32,7 @@ export class SetFormDirty {
 }
 
 export class SetFormPristine {
-  static readonly type = '[Forms] Set Form Prestine';
+  static readonly type = '[Forms] Set Form Pristine';
   constructor(public payload: string) {}
 }
 

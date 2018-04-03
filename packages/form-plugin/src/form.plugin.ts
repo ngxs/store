@@ -10,39 +10,39 @@ export class NgxsFormPlugin implements NgxsPlugin {
 
     let nextState = state;
 
-    if (type === 'UpdateFormValue' || type === 'UpdateForm') {
+    if (type === '[Forms] Update Form Value' || type === '[Forms] Update Form') {
       nextState = setValue(nextState, `${event.payload.path}.model`, {
         ...event.payload.value
       });
     }
 
-    if (type === 'UpdateFormStatus' || type === 'UpdateForm') {
+    if (type === '[Forms] Update Form Status' || type === '[Forms] Update Form') {
       nextState = setValue(nextState, `${event.payload.path}.status`, event.payload.status);
     }
 
-    if (type === 'UpdateFormErrors' || type === 'UpdateForm') {
+    if (type === '[Forms] Update Form Errors' || type === '[Forms] Update Form') {
       nextState = setValue(nextState, `${event.payload.path}.errors`, {
         ...event.payload.errors
       });
     }
 
-    if (type === 'UpdateFormDirty' || type === 'UpdateForm') {
+    if (type === '[Forms] Update Form Dirty' || type === '[Forms] Update Form') {
       nextState = setValue(nextState, `${event.payload.path}.dirty`, event.payload.dirty);
     }
 
-    if (type === 'SetFormDirty') {
+    if (type === '[Forms] Set Form Dirty') {
       nextState = setValue(nextState, `${event.payload}.dirty`, true);
     }
 
-    if (type === 'SetFormPrestine') {
+    if (type === '[Forms] Set Form Pristine') {
       nextState = setValue(nextState, `${event.payload}.dirty`, false);
     }
 
-    if (type === 'SetFormDisabled') {
+    if (type === '[Forms] Set Form Disabled') {
       nextState = setValue(nextState, `${event.payload}.disabled`, true);
     }
 
-    if (type === 'SetFormEnabled') {
+    if (type === '[Forms] Set Form Enabled') {
       nextState = setValue(nextState, `${event.payload}.disabled`, false);
     }
 
