@@ -20,8 +20,13 @@ export function noop(arg) {
   return function() {};
 }
 
-export class ConnectWebSocket {}
-export class DisconnectWebSocket {}
+export class ConnectWebSocket {
+  static readonly type = '[Websocket] Connect';
+}
+export class DisconnectWebSocket {
+  static readonly type = '[Websocket] Disconnect';
+}
 export class SendWebSocketMessage {
+  static readonly type = '[Websocket] Send Message';
   constructor(public payload: any) {}
 }

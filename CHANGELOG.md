@@ -1,3 +1,6 @@
+# 2.1.0-beta.9 4/4/18
+- Fix: Websocket and form errors caused by #212
+
 # 2.1.0-beta.8 4/4/18
 - Fix: Minification issues #212
 
