@@ -1,6 +1,6 @@
 import { ActionToken } from './action';
 /**
- * Returns the type from a event instance.
+ * Returns the type from an action instance.
  */
 export function getActionTypeFromInstance(action: any): ActionToken | string {
   if (action.constructor.type) {
@@ -15,6 +15,9 @@ export function getActionTypeFromInstance(action: any): ActionToken | string {
   }
 }
 
+/**
+ * Returns the name of the action from an action instance
+ */
 export function getActionNameFromInstance(action: any): string {
   const type = getActionTypeFromInstance(action);
 

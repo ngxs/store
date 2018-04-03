@@ -35,14 +35,16 @@ export function Action(actions: any | any[], options?: ActionOptions) {
         action.type = new ActionToken(action.name);
       }
 
-      if (!meta.actions[action.type]) {
-        meta.actions[action.type] = [];
+      const type = action.type;
+
+      if (!meta.actions[type]) {
+        meta.actions[type] = [];
       }
 
-      meta.actions[action.type].push({
+      meta.actions[type].push({
         fn: name,
         options: options || {},
-        type: action.type
+        type
       });
     }
   };
