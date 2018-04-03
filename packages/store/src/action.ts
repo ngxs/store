@@ -19,10 +19,15 @@ export class ActionToken {
   }
 }
 
+export class ActionModel {
+  type?: string | ActionToken;
+  name: string;
+}
+
 /**
  * Decorates a method with a action information.
  */
-export function Action(actions: any | any[], options?: ActionOptions) {
+export function Action(actions: ActionModel | ActionModel[], options?: ActionOptions) {
   return function(target: any, name: string, descriptor: TypedPropertyDescriptor<any>) {
     const meta = ensureStoreMetadata(target.constructor);
 
@@ -35,7 +40,7 @@ export function Action(actions: any | any[], options?: ActionOptions) {
         action.type = new ActionToken(action.name);
       }
 
-      const type = action.type;
+      const type = action.type.toString();
 
       if (!meta.actions[type]) {
         meta.actions[type] = [];

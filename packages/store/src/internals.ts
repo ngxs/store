@@ -2,7 +2,7 @@ import { META_KEY } from './symbols';
 
 export interface MetaDataModel {
   name: string;
-  actions: any;
+  actions: { [key: string]: any[] };
   defaults: any;
   path: string;
   children: any[];
