@@ -1,13 +1,14 @@
-import { ensureStoreMetadata, uuid } from './internals';
+import { ensureStoreMetadata, createId } from './internals';
 import { ActionOptions } from './symbols';
 
 export class ActionToken {
-  private readonly stamp = uuid();
+  private readonly stamp = createId();
+  private readonly description = `ActionToken ${this.desc} ${this.stamp}`;
 
   constructor(public readonly desc: string) {}
 
   toString(): string {
-    return `ActionToken ${this.desc} ${this.stamp}`;
+    return this.description;
   }
 }
 

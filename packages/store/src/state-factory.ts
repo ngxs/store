@@ -101,9 +101,12 @@ export class StateFactory {
   invokeActions(getState, setState, dispatch, actions$, action) {
     const results = [];
 
-    for (const metadata of this.states) {
+    for (const data of this.states) {
+      const metadata: MetaDataModel = data;
+
       const name = getActionTypeFromInstance(action);
-      const actionMetas = metadata.actions[name];
+
+      const actionMetas = metadata.actions[name.toString()];
 
       if (actionMetas) {
         for (const actionMeta of actionMetas) {

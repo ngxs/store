@@ -6,18 +6,15 @@ export interface MetaDataModel {
   defaults: any;
   path: string;
   children: any[];
+  instance: any;
 }
 
-/* FROM: https://gist.github.com/jed/982883 */
-/* tslint:disable  */
-export function uuid(a?, b?) {
-  for (
-    b = a = '';
-    a++ < 36;
-    b += (a * 51) & 52 ? (a ^ 15 ? 8 ^ (Math.random() * (a ^ 20 ? 16 : 4)) : 4).toString(16) : '-'
-  );
+let idCounter = 0;
 
-  return b;
+export function createId(): string {
+  idCounter = idCounter + 1;
+
+  return idCounter.toString();
 }
 
 /**
@@ -30,7 +27,8 @@ export function ensureStoreMetadata(target): MetaDataModel {
       actions: {},
       defaults: {},
       path: null,
-      children: []
+      children: [],
+      instance: null
     };
 
     Object.defineProperty(target, META_KEY, { value: defaultMetadata });

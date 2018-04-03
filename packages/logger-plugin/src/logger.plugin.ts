@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { NgxsPlugin } from '@ngxs/store';
-import { getActionTypeFromInstance } from '@ngxs/store';
+import { getActionNameFromInstance } from '@ngxs/store';
+
 import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
 import { pad } from './internals';
 import { tap } from 'rxjs/operators';
@@ -12,7 +13,7 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
   handle(state, event, next) {
     const options = this._options || <any>{};
     const logger = options.logger || console;
-    const actionName = getActionTypeFromInstance(event);
+    const actionName = getActionNameFromInstance(event);
     const time = new Date();
 
     // tslint:disable-next-line
@@ -21,7 +22,7 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
       2
     )}.${pad(time.getMilliseconds(), 3)}`;
 
-    const message = `action ${actionName.desc || actionName}${formattedTime}`;
+    const message = `action ${actionName || actionName}${formattedTime}`;
     const startMessage = options.collapsed ? logger.groupCollapsed : logger.group;
 
     try {

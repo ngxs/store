@@ -1,15 +1,28 @@
+import { ActionToken } from './action';
 /**
  * Returns the type from a event instance.
  */
-export function getActionTypeFromInstance(event) {
-  if (event.constructor.type) {
-    return event.constructor.type;
-  } else if (event.constructor.name) {
-    return event.constructor.name;
-  } else if (event.type) {
+export function getActionTypeFromInstance(action: any): ActionToken | string {
+  if (action.constructor.type) {
+    if (action.constructor.type.desc) {
+      return action.constructor.type as ActionToken;
+    }
+
+    return action.constructor.type as string;
+  } else if (action.type) {
     // events from dev tools are plain objects
-    return event.type;
+    return action.type;
   }
+}
+
+export function getActionNameFromInstance(action: any): string {
+  const type = getActionTypeFromInstance(action);
+
+  if (typeof type === 'string') {
+    return type;
+  }
+
+  return (type as ActionToken).desc;
 }
 
 /**
