@@ -1,5 +1,5 @@
 # Websocket Plugin - Expiremental Status
-Bind server websocket events to Ngxs Store events.
+Bind server websocket events to Ngxs store actions.
 
 ## Install
 Websocket plugin is a seperate install from NPM, run the following to install it:
