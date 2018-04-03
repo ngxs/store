@@ -1,7 +1,7 @@
 ## Installing
 To get started, install the package thru npm:
 
-```
+```bash
 npm i @ngxs/store --S
 ```
 
