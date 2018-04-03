@@ -113,19 +113,17 @@ export class StateFactory {
           const stateContext = this.createStateContext(getState, setState, dispatch, metadata);
           let result = metadata.instance[actionMeta.fn](stateContext, action);
 
-          if (result === undefined) {
+          if (!result) {
             result = of({}).pipe(shareReplay());
           } else if (result instanceof Promise) {
             result = fromPromise(result);
           }
 
-          if (result instanceof Observable) {
-            result = result.pipe(
-              (<ActionOptions>actionMeta.options).takeLast
-                ? takeUntil(actions$.pipe(ofAction(action.constructor)))
-                : map(r => r)
-            ); // act like a noop
-          }
+          result = result.pipe(
+            (<ActionOptions>actionMeta.options).takeLast
+              ? takeUntil(actions$.pipe(ofAction(action.constructor)))
+              : map(r => r)
+          ); // act like a noop
 
           results.push(result);
         }
