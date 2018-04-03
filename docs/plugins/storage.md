@@ -4,7 +4,7 @@ Back your stores with `localStorage`, `sessionStorage` or any other mechanism yo
 ## Install
 Devtools is a seperate install from NPM, run the following to install it:
 
-```
+```bash
 npm i @ngxs/storage-plugin --S
 ```
 

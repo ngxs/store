@@ -20,7 +20,7 @@ In a nutshell, this plugin helps to keep your forms and state in sync.
 ## Install
 Forms is a seperate install from NPM, run the following to install it:
 
-```
+```bash
 npm i @ngxs/form-plugin --S
 ```
 

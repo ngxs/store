@@ -4,7 +4,7 @@ Bind server websocket events to Ngxs store actions.
 ## Install
 Websocket plugin is a seperate install from NPM, run the following to install it:
 
-```
+```bash
 npm i @ngxs/websocket-plugin --S
 ```
 
