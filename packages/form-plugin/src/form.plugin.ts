@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { NgxsPlugin, setValue, getActionTypeFromInstance } from '@ngxs/store';
+import { UpdateForm, UpdateFormDirty, UpdateFormErrors,
+  UpdateFormStatus, UpdateFormValue, SetFormDirty, SetFormDisabled,
+  SetFormEnabled, SetFormPristine } from './actions';
 
 @Injectable()
 export class NgxsFormPlugin implements NgxsPlugin {
@@ -10,39 +13,39 @@ export class NgxsFormPlugin implements NgxsPlugin {
 
     let nextState = state;
 
-    if (type === '[Forms] Update Form Value' || type === '[Forms] Update Form') {
+    if (type === UpdateFormValue.type || type === UpdateForm.type) {
       nextState = setValue(nextState, `${event.payload.path}.model`, {
         ...event.payload.value
       });
     }
 
-    if (type === '[Forms] Update Form Status' || type === '[Forms] Update Form') {
+    if (type === UpdateFormStatus.type || type === UpdateForm.type) {
       nextState = setValue(nextState, `${event.payload.path}.status`, event.payload.status);
     }
 
-    if (type === '[Forms] Update Form Errors' || type === '[Forms] Update Form') {
+    if (type === UpdateFormErrors.type || type === UpdateForm.type) {
       nextState = setValue(nextState, `${event.payload.path}.errors`, {
         ...event.payload.errors
       });
     }
 
-    if (type === '[Forms] Update Form Dirty' || type === '[Forms] Update Form') {
+    if (type === UpdateFormDirty.type || type === UpdateForm.type) {
       nextState = setValue(nextState, `${event.payload.path}.dirty`, event.payload.dirty);
     }
 
-    if (type === '[Forms] Set Form Dirty') {
+    if (type === SetFormDirty.type) {
       nextState = setValue(nextState, `${event.payload}.dirty`, true);
     }
 
-    if (type === '[Forms] Set Form Pristine') {
+    if (type === SetFormPristine.type) {
       nextState = setValue(nextState, `${event.payload}.dirty`, false);
     }
 
-    if (type === '[Forms] Set Form Disabled') {
+    if (type === SetFormDisabled.type) {
       nextState = setValue(nextState, `${event.payload}.disabled`, true);
     }
 
-    if (type === '[Forms] Set Form Enabled') {
+    if (type === SetFormEnabled.type) {
       nextState = setValue(nextState, `${event.payload}.disabled`, false);
     }
 
