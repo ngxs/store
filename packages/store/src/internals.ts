@@ -9,14 +9,6 @@ export interface MetaDataModel {
   instance: any;
 }
 
-let idCounter = 0;
-
-export function createId(): string {
-  idCounter = idCounter + 1;
-
-  return idCounter.toString();
-}
-
 /**
  * Ensures metadata is attached to the klass and returns it.
  */
