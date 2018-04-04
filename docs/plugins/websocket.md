@@ -35,8 +35,7 @@ The plugin has a variet of options that can be passed:
 - `serializer`: Serializer before sending objects to the websocket. Default: `JSON.stringify`
 
 ## Usage
-Once you define the plugin, it will automatically try to connect. Once connected
-any message that comes across the websocket will be bound to the state event stream.
+Once connected any message that comes across the websocket will be bound to the state event stream.
 
 Let's say you have a websocket message that comes in like:
 
