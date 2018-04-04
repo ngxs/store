@@ -1,4 +1,4 @@
-import { Injectable, Optional, SkipSelf } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
 /**
@@ -7,16 +7,4 @@ import { Subject } from 'rxjs/Subject';
  * You can listen to this in services to react without stores.
  */
 @Injectable()
-export class Actions extends Subject<any> {
-  constructor(
-    @Optional()
-    @SkipSelf()
-    parent: Actions
-  ) {
-    super();
-
-    if (parent) {
-      Object.assign(this, parent);
-    }
-  }
-}
+export class Actions extends Subject<any> {}

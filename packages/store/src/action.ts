@@ -1,6 +1,9 @@
 import { ensureStoreMetadata } from './internals';
-import { ActionOptions } from './symbols';
+import { ActionOptions, StateContext } from './symbols';
 
+/**
+ * A way to create unique identifiers for types
+ */
 export class ActionToken {
   static counter = 0;
 
@@ -24,11 +27,15 @@ export class ActionModel {
   name: string;
 }
 
+export type ActionDescriptor = TypedPropertyDescriptor<(c?: StateContext<any>, a?: any) => any>;
+
 /**
  * Decorates a method with a action information.
+ *
+ * All Actions passed in here will be assigned a type token if not type is defined
  */
 export function Action(actions: ActionModel | ActionModel[], options?: ActionOptions) {
-  return function(target: any, name: string, descriptor: TypedPropertyDescriptor<any>) {
+  return function(target: any, name: string, descriptor: ActionDescriptor) {
     const meta = ensureStoreMetadata(target.constructor);
 
     if (!Array.isArray(actions)) {
