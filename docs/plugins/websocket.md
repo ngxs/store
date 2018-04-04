@@ -74,4 +74,45 @@ export class ZooState {
 }
 ```
 
-And thats it! We've now bound our websocket messages to our states.
+to send messages to the server, we can dispatch the `SendWebSocketMessage` with
+the payload being what you want to send.
+
+```TS
+@Component({ ... })
+export class AppComponent {
+
+  constructor(private store: Store) {}
+
+  onClick() {
+    this.store.dispatch(new SendWebSocketMessage({ foo: true }));
+  }
+
+}
+```
+
+When sending the message, remember the send is accepting a JSON-able object.
+
+In order to kick off our websockets we have to dispatch the `ConnectWebSocket`
+action. This will typically happen at startup or if you need to authenticate
+before, after authentication is done.
+
+```TS
+@Component({ ... })
+export class AppComponent {
+
+  constructor(private store: Store) {}
+
+  ngOnInit() {
+    this.store.dispatch(new ConnectWebSocket());
+  }
+
+}
+```
+
+Here is a list of all the available actions you have:
+
+- `ConnectWebSocket`: Action dispatched when the websockets disconnect
+- `DisconnectWebSocket`: Action dispatched when the websockets disconnect
+- `SendWebSocketMessage`: Send a message to the server
+- `WebsocketMessageError`: Error ocurred when recieving a message.
+

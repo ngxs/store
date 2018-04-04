@@ -23,9 +23,16 @@ export function noop(arg) {
 export class ConnectWebSocket {
   static readonly type = '[Websocket] Connect';
 }
+
+export class WebsocketMessageError {
+  static readonly type = '[Websocket] Message Error';
+  constructor(public payload: any) {}
+}
+
 export class DisconnectWebSocket {
   static readonly type = '[Websocket] Disconnect';
 }
+
 export class SendWebSocketMessage {
   static readonly type = '[Websocket] Send Message';
   constructor(public payload: any) {}

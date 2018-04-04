@@ -6,7 +6,8 @@ import {
   DisconnectWebSocket,
   SendWebSocketMessage,
   NGXS_WEBSOCKET_OPTIONS,
-  NgxsWebsocketPluginOptions
+  NgxsWebsocketPluginOptions,
+  WebsocketMessageError
 } from './symbols';
 import { filter } from 'rxjs/operators';
 import { getValue } from '@ngxs/store';
@@ -22,12 +23,12 @@ export class WebSocketHandler {
     actions.pipe(filter(t => t instanceof ConnectWebSocket)).subscribe(event => socket.connect());
     actions.pipe(filter(t => t instanceof DisconnectWebSocket)).subscribe(event => socket.disconnect());
     actions.pipe(filter(t => t instanceof SendWebSocketMessage)).subscribe(({ payload }) => socket.send(payload));
-    socket.subscribe(msg => {
-      const type = getValue(msg, config.typeKey);
-      store.dispatch({
-        ...msg,
-        type
-      });
-    });
+    socket.subscribe(
+      msg => {
+        const type = getValue(msg, config.typeKey);
+        store.dispatch({ ...msg, type });
+      },
+      err => store.dispatch(new WebsocketMessageError(err))
+    );
   }
 }
