@@ -32,5 +32,17 @@ The `payload` object will represent the name of the animal we are feeding.
 You don't have to describe your data as `payload` but for consistency practices
 we like to follow the [FSA Standard](https://github.com/redux-utilities/flux-standard-action).
 
+### Actions with Types
+The action name is inferred from the class name. This works well for development but in production
+names can be less than desirable to read due to minification. If you want rich debugging in production
+or need to manually specify names, you can set the static `type` property on a action and it will
+use that instead.
+
+```TS
+export class FeedAnimals {
+  static readonly type = '[Zoo] Feed Animals';
+}
+```
+
 ## Dispatching Actions
 See [Store](store.md) documentation for how to dispatch actions.
