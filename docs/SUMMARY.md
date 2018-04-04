@@ -20,7 +20,7 @@
   * [Shared State](advanced/shared-state.md)
   * [Unit Testing](advanced/unit-testing.md)
   * [Style Guide](advanced/style-guide.md)
-  * [FAQ](faq.md)
+  * [FAQ](advanced/faq.md)
 * [Plugins](plugins/README.md)
   * [Logger](plugins/logger.md)
   * [Devtools](plugins/devtools.md)
