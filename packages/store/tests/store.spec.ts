@@ -147,6 +147,4 @@ describe('Store', () => {
       });
     })
   );
-
-  // it('should not require you to subscrube in order to dispatch', () => {});
 });

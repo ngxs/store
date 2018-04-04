@@ -1,7 +1,4 @@
 import { async, TestBed } from '@angular/core/testing';
-import { RouterTestingModule, SpyNgModuleFactoryLoader } from '@angular/router/testing';
-import { NgModuleFactoryLoader, NgModule, Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
 import { timer } from 'rxjs/observable/timer';
 import { tap, skip } from 'rxjs/operators';
 
@@ -224,48 +221,4 @@ describe('Dispatch', () => {
         });
     })
   );
-
-  it('should dispatch correctly to lazy loaded modules', () => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule, NgxsModule.forRoot([])]
-    });
-
-    const loader: SpyNgModuleFactoryLoader = TestBed.get(NgModuleFactoryLoader);
-    const router: Router = TestBed.get(Router);
-    const store: Store = TestBed.get(Store);
-
-    class Increment {}
-
-    @State<number>({
-      name: 'counter',
-      defaults: 0
-    })
-    class MyState {
-      @Action(Increment)
-      increment({ getState, setState }: StateContext<number>) {
-        setState(getState() + 1);
-      }
-    }
-
-    @Component({ template: 'Hello World' })
-    class MyComponent {}
-
-    @NgModule({
-      declarations: [MyComponent],
-      imports: [RouterModule.forChild([{ path: '', component: MyComponent }]), NgxsModule.forFeature([MyState])]
-    })
-    class LazyLoadedModule {}
-
-    loader.stubbedModules = { lazyModule: LazyLoadedModule };
-
-    router.resetConfig([{ path: 'lazy', loadChildren: 'lazyModule' }]);
-
-    router.navigateByUrl('/lazy').then(() => {
-      store.dispatch([new Increment(), new Increment(), new Increment(), new Increment(), new Increment()]);
-
-      store.select(MyState).subscribe(state => {
-        expect(state).toBe(5);
-      });
-    });
-  });
 });
