@@ -1,9 +1,9 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Store, Select } from '@ngxs/store';
-import { UpdateFormDirty } from '@ngxs/form-plugin';
+import { UpdateFormValue } from '@ngxs/form-plugin';
 import { Observable } from 'rxjs/Observable';
 import { FormBuilder } from '@angular/forms';
-import { AddTodo, RemoveTodo, TodoState, SetPrefix } from './todo.state';
+import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState } from './todo.state';
 
 @Component({
   selector: 'app-root',
@@ -14,11 +14,12 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix } from './todo.state';
         <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizza">
             <input type="text" formControlName="toppings" />
             <br><hr>
-            <button type="submit">set Dirty false</button>
+            <button type="submit">set olives</button>
             <button type="button" (click)="onPrefix()">Set Prfix</button>
         </form>
       </div>
-
+      <br><br><hr>
+      <h3>Todo Form</h3>
       <div class="add-todo">
         <input placeholder="New Todo" #text>
         <button (click)="addTodo(text.value)">Add</button>
@@ -40,6 +41,7 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix } from './todo.state';
 export class AppComponent {
   @Select(TodoState) todos$: Observable<string[]>;
   @Select(TodoState.pandas) pandas$: Observable<string[]>;
+  @Select(TodosState.pizza) pizza$: Observable<any>;
 
   pizzaForm = this.formBuilder.group({
     toppings: ['']
@@ -58,9 +60,15 @@ export class AppComponent {
   }
 
   onSubmit() {
+    this.pizzaForm.patchValue({
+      toppings: 'olives'
+    });
+  }
+
+  setValue(val) {
     this.store.dispatch(
-      new UpdateFormDirty({
-        dirty: false,
+      new UpdateFormValue({
+        value: {toppings: val},
         path: 'todos.pizza'
       })
     );
