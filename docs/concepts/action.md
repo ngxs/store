@@ -7,15 +7,13 @@ Let's say we want to update the status of whether the animals have been feed
 in our Zoo. We would describe a class like:
 
 ```TS
-export class FeedAnimals {}
+export class FeedAnimals {
+  static readonly type = '[Zoo] Feed Animals';
+}
 ```
 
 Later in our state container, we will listen to this action and mutate our
 state, in this case flipping a boolean flag.
-
-Now you might notice, I didn't describe a type property on this like
-Redux or NGRX requires. That is because with NGXS we use the class signature
-eliminating the need for types at all.
 
 ## Actions with Data
 Often you need an action to have some data associated with it. Let's take that
@@ -24,6 +22,7 @@ by adding a payload member like:
 
 ```TS
 export class FeedAnimals {
+  static readonly type = '[Zoo] Feed Animals';
   constructor(public payload: string) {}
 }
 ```
@@ -31,18 +30,6 @@ export class FeedAnimals {
 The `payload` object will represent the name of the animal we are feeding.
 You don't have to describe your data as `payload` but for consistency practices
 we like to follow the [FSA Standard](https://github.com/redux-utilities/flux-standard-action).
-
-### Actions with Types
-The action name is inferred from the class name. This works well for development but in production
-names can be less than desirable to read due to minification. If you want rich debugging in production
-or need to manually specify names, you can set the static `type` property on a action and it will
-use that instead.
-
-```TS
-export class FeedAnimals {
-  static readonly type = '[Zoo] Feed Animals';
-}
-```
 
 ## Dispatching Actions
 See [Store](store.md) documentation for how to dispatch actions.
