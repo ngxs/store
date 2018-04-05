@@ -1,12 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
 export const NGXS_WEBSOCKET_OPTIONS = new InjectionToken('NGXS_WEBSOCKET_OPTIONS');
-export const configDefaults: Partial<NgxsWebsocketPluginOptions> = {
-  reconnectInterval: 5000,
-  reconnectAttempts: 10,
-  typeKey: 'type',
-  serializer: JSON.stringify
-};
 
 export interface NgxsWebsocketPluginOptions {
   /**
