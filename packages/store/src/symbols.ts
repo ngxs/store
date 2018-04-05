@@ -59,7 +59,7 @@ export interface StoreOptions<T> {
 
 export interface ActionOptions {
   /**
-   * Cancel the previous uncompleted request(s).
+   * Cancel the previous uncompleted observable(s).
    */
-  takeLast: boolean;
+  cancelUncompleted: boolean;
 }

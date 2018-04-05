@@ -119,7 +119,7 @@ export class StateFactory {
 
           if (result instanceof Observable) {
             result = result.pipe(
-              (<ActionOptions>actionMeta.options).takeLast
+              (<ActionOptions>actionMeta.options).cancelUncompleted
                 ? takeUntil(actions$.pipe(ofAction(action.constructor)))
                 : map(r => r)
             ); // act like a noop

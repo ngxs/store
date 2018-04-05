@@ -184,7 +184,7 @@ describe('Dispatch', () => {
         defaults: 0
       })
       class MyState {
-        @Action(Increment, { takeLast: true })
+        @Action(Increment, { cancelUncompleted: true })
         increment({ getState, setState, dispatch }: StateContext<number>) {
           return timer(0).pipe(
             tap(() => {
