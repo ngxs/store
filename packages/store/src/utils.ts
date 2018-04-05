@@ -1,31 +1,13 @@
-import { ActionToken } from './action';
+import { ActionDef } from './symbols';
 /**
  * Returns the type from an action instance.
  */
-export function getActionTypeFromInstance(action: any): ActionToken | string {
-  if (action.constructor.type) {
-    if (action.constructor.type.desc) {
-      return action.constructor.type as ActionToken;
-    }
-
-    return action.constructor.type as string;
-  } else if (action.type) {
-    // events from dev tools are plain objects
-    return action.type;
-  }
-}
-
-/**
- * Returns the name of the action from an action instance
- */
-export function getActionNameFromInstance(action: any): string {
-  const type = getActionTypeFromInstance(action);
-
-  if (typeof type === 'string') {
-    return type;
+export function getActionTypeFromInstance(action: any): string {
+  if (action.constructor) {
+    return (action.constructor as ActionDef).type;
   }
 
-  return (type as ActionToken).desc;
+  return action.type;
 }
 
 /**

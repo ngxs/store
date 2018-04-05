@@ -14,8 +14,12 @@ describe('Store', () => {
   });
 
   it('handles extending', () => {
-    class Eat {}
-    class Drink {}
+    class Eat {
+      static type = 'EAT';
+    }
+    class Drink {
+      static type = 'DRINK';
+    }
 
     @State({
       name: 'bar'

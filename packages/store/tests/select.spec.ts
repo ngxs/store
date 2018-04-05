@@ -27,7 +27,9 @@ describe('Select', () => {
     subProperty?: SubStateModel;
   }
 
-  class FooIt {}
+  class FooIt {
+    static type = 'FooIt';
+  }
 
   @State<SubSubStateModel>({
     name: 'baz',

@@ -7,4 +7,4 @@ export { Actions } from './actions-stream';
 export { ofAction } from './of-action';
 export { NgxsPlugin, NgxsPluginFn, StateContext } from './symbols';
 export { Selector } from './selector';
-export { getActionTypeFromInstance, getActionNameFromInstance } from './utils';
+export { getActionTypeFromInstance } from './utils';

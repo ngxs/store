@@ -1,28 +1,10 @@
 import { ensureStoreMetadata } from './internals';
-import { ActionOptions } from './symbols';
-
-export class ActionToken {
-  static counter = 0;
-
-  private readonly stamp: number;
-  private readonly description: string;
-
-  constructor(public readonly desc: string) {
-    ActionToken.counter++;
-
-    this.stamp = ActionToken.counter;
-    this.description = `ActionToken ${this.desc} ${this.stamp}`;
-  }
-
-  toString(): string {
-    return this.description;
-  }
-}
+import { ActionOptions, ActionDef } from './symbols';
 
 /**
  * Decorates a method with a action information.
  */
-export function Action(actions: any | any[], options?: ActionOptions) {
+export function Action(actions: ActionDef | ActionDef[], options?: ActionOptions) {
   return function(target: any, name: string, descriptor: TypedPropertyDescriptor<any>) {
     const meta = ensureStoreMetadata(target.constructor);
 
@@ -31,10 +13,6 @@ export function Action(actions: any | any[], options?: ActionOptions) {
     }
 
     for (const action of actions) {
-      if (!action.type) {
-        action.type = new ActionToken(action.name);
-      }
-
       const type = action.type;
 
       if (!meta.actions[type]) {

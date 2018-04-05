@@ -1,4 +1,4 @@
-import { Action, ActionToken } from '../src/action';
+import { Action } from '../src/action';
 import { State } from '../src/state';
 import { META_KEY } from '../src/symbols';
 
@@ -8,7 +8,9 @@ describe('Action', () => {
       static type = 'ACTION 1';
     }
 
-    class Action2 {}
+    class Action2 {
+      static type = 'ACTION 2';
+    }
 
     @State({
       name: 'bar'
@@ -21,9 +23,6 @@ describe('Action', () => {
     const meta = BarStore[META_KEY];
 
     expect(meta.actions[Action1.type]).toBeDefined();
-    expect(meta.actions[(<ActionToken>Action2['type']).toString()]).toBeDefined();
-
-    // NOTE: becuase Jasmine type will change when more actions are added to tests.
-    expect((<ActionToken>Action2['type']).toString()).toBe('ActionToken Action2 5');
+    expect(meta.actions[Action2.type]).toBeDefined();
   });
 });
