@@ -4,13 +4,6 @@ store to form and vice versus. The values from the store are observable and
 the reactive form accepts raw objects, as a result we end up monkey patching
 this back and forth. 
 
-Binding the values is not the only thing we commonly do, its not un-typical
-to translate form dirty status or form errors. Typical workflows might include
-reading the errors from the form to show in various decoupled components or for
-use in our effects or using the form dirty status to prevent users from leaving
-a page without saving but without binding a variable we have no way to reset
-the status of the form after a successful save from an effect.
-
 In addition to these issues we encounter, there are workflows where you want
 to fill out a form and leave and then come back and resume your current status.
 This is an excellent use case for stores and we can conquer that case with this plugin.
