@@ -31,7 +31,7 @@ export class RouteHander {
 ```
 
 ## Action Completion Handler
-A good example of a action completion handler, would be something like showing a notiication
+A good example of a action completion handler, would be something like showing a notification
 on delete.
 
 ```TS
