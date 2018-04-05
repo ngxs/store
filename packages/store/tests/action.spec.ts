@@ -6,6 +6,7 @@ import { TestBed } from '@angular/core/testing';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { ActionCompletions } from '../src/actions-completion-stream';
+import { Actions } from '../src/actions-stream';
 import { tap } from 'rxjs/operators';
 
 describe('Action', () => {
@@ -35,8 +36,9 @@ describe('Action', () => {
 });
 
 describe('Actions', () => {
-  fit('basic', () => {
+  it('basic', () => {
     let happened = false;
+
     class Action1 {
       static type = 'ACTION 1';
     }
@@ -54,16 +56,20 @@ describe('Actions', () => {
     });
 
     const store = TestBed.get(Store);
-    const actions = TestBed.get(ActionCompletions);
-    store.dispatch(new Action1());
+    const actions = TestBed.get(Actions);
 
-    actions.subscribe(action => expect(happened).toBeFalsy());
+    actions.subscribe(action => {
+      expect(happened).toBeFalsy();
+    });
+
+    store.dispatch(new Action1());
   });
 });
 
 describe('Action Completions', () => {
   it('basic', () => {
     let happened = false;
+
     class Action1 {
       static type = 'ACTION 1';
     }
@@ -82,8 +88,11 @@ describe('Action Completions', () => {
 
     const store = TestBed.get(Store);
     const actions = TestBed.get(ActionCompletions);
-    store.dispatch(new Action1());
 
-    actions.subscribe(action => expect(happened).toBeTruthy());
+    actions.subscribe(action => {
+      expect(happened).toBeTruthy();
+    });
+
+    store.dispatch(new Action1());
   });
 });

@@ -14,14 +14,9 @@ export class InternalActionCompletions extends Subject<any> {}
  */
 @Injectable()
 export class ActionCompletions extends Observable<any> {
-  private _stream: InternalActionCompletions;
-
-  constructor() {
-    super();
-    this._stream = new InternalActionCompletions();
-  }
-
-  subscribe(fn?) {
-    return this._stream.subscribe(fn);
+  constructor(actions$: InternalActionCompletions) {
+    super(observer => {
+      actions$.subscribe(res => observer.next(res), err => observer.error(err), () => observer.complete());
+    });
   }
 }
