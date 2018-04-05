@@ -20,11 +20,11 @@ import { states } from './app.state';
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
     NgxsModule.forRoot(states),
+    NgxsFormPluginModule.forRoot(),
+    NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: false }),
     NgxsReduxDevtoolsPluginModule.forRoot({
       disabled: environment.production
-    }),
-    NgxsFormPluginModule.forRoot(),
-    NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: false })
+    })
   ],
   bootstrap: [AppComponent]
 })
