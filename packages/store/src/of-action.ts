@@ -1,5 +1,6 @@
 import { filter } from 'rxjs/operators';
 import { OperatorFunction } from 'rxjs/interfaces';
+import { getActionTypeFromInstance } from './utils';
 
 export function ofAction<T>(allowedType): OperatorFunction<any, T>;
 export function ofAction<T>(...allowedTypes): OperatorFunction<any, T>;
@@ -13,5 +14,5 @@ export function ofAction(...allowedTypes: any[]): OperatorFunction<any, any> {
     return acc;
   }, {});
 
-  return filter(action => allowedMap[action.constructor.type || action.type]);
+  return filter(action => allowedMap[getActionTypeFromInstance(action)]);
 }
