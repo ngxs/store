@@ -46,8 +46,8 @@ yarn add @ngxs/{store,logger-plugin,devtools-plugin}@dev
 
 ```
 
-This will install install the version currently tagged as `@dev`
-your package.json file will be locked to that specific version.
+This will install the version currently tagged as `@dev`.
+Your package.json file will be locked to that specific version.
 
 ```json
 {
@@ -56,4 +56,4 @@ your package.json file will be locked to that specific version.
   }
 }
 ```
-if you later want to again update to the bleeding edge, you will have to run the above command again.
+If you later want to again update to the bleeding edge, you will have to run the above command again.
