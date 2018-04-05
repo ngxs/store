@@ -24,6 +24,6 @@ describe('Action', () => {
     expect(meta.actions[(<ActionToken>Action2['type']).toString()]).toBeDefined();
 
     // NOTE: becuase Jasmine type will change when more actions are added to tests.
-    expect((<ActionToken>Action2['type']).toString()).toBe('ActionToken Action2 5');
+    expect((<ActionToken>Action2['type']).toString()).toBe('ActionToken Action2 7');
   });
 });
