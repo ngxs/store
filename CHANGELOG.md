@@ -1,5 +1,9 @@
-# Master
+# 3.0.0-beta.0 4/5/18
+- BREAKING: Types are now required on actions
 - Feature: Devtools can emit actions manually now
+- Feature: Better integration w/ RX6
+- Fix: Various websocket fixes
+- Fix: Fixes for `ofAction`
 
 # 2.1.0-beta.9 4/4/18
 - Fix: Websocket and form errors caused by #212
@@ -8,7 +12,7 @@
 - Fix: Minification issues #212
 
 # 2.1.0-beta.7 4/3/18
-Fix: Websocket plugin sending dupe objects
+- Fix: Websocket plugin sending dupe objects
 
 # 2.1.0-beta.6 4/3/18
 - Fix: Action types on objects not matching correctly
