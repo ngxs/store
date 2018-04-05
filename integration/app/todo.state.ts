@@ -1,10 +1,14 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 
 export class AddTodo {
+  static type = 'AddTodo';
+
   constructor(public readonly payload: string) {}
 }
 
 export class RemoveTodo {
+  static type = 'RemoveTodo';
+
   constructor(public readonly payload: number) {}
 }
 
@@ -34,13 +38,15 @@ export class TodoState {
   }
 }
 
-export class SetPrefix {}
+export class SetPrefix {
+  static type = 'SetPrefix';
+}
 
 @State<TodoStateModel>({
   name: 'todos',
   defaults: {
     todo: [],
-    pizza: { model: undefined}
+    pizza: { model: undefined }
   },
   children: [TodoState]
 })
@@ -53,7 +59,7 @@ export class TodosState {
   @Action(SetPrefix)
   setPrefix({ getState, setState, patchState }) {
     const state = getState();
-   const pizza1 = state.pizza.model.toppings;
-   patchState({ pizza: { model: { toppings: 'Mr. ' + pizza1 } } });
+    const pizza1 = state.pizza.model.toppings;
+    patchState({ pizza: { model: { toppings: 'Mr. ' + pizza1 } } });
   }
 }
