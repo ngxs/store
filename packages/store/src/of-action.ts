@@ -15,6 +15,6 @@ export function ofAction(...allowedTypes: any[]): OperatorFunction<any, any> {
   });
 
   return filter(action => {
-    return allowedMap[action.constructor.type || action.constructor.name];
+    return allowedMap[action.constructor.type || action.type || action.constructor.name];
   });
 }
