@@ -3,7 +3,7 @@ If you have an async action sometimes you want to cancel a previous observable i
 This is useful for canceling previous requests like in a typeahead.
 
 ## Basic
-For basic scenarios, we can use the `takeLast` action decorator option.
+For basic scenarios, we can use the `cancelUncompleted` action decorator option.
 
 ```TS
 import { State, Action } from '@ngxs/store';
@@ -16,7 +16,7 @@ import { State, Action } from '@ngxs/store';
 export class ZooState {
   constructor(private animalService: AnimalService, private actions$: Actions) {}
 
-  @Action(FeedAnimals, { takeLast: true })
+  @Action(FeedAnimals, { cancelUncompleted: true })
   get({ setState }, { payload }) {
     return this.animalService.get(payload).pipe(
       tap((res) => {
