@@ -13,7 +13,7 @@
   * [Sub States](advanced/sub-states.md)
   * [Cancelation](advanced/cancelation.md)
   * [Caching](advanced/cache.md)
-  * [Pub Sub](advanced/pubsub.md)
+  * [Action Handlers](advanced/action-handlers.md)
   * [Composition](advanced/composition.md)
   * [Error Handling](advanced/errors.md)
   * [Life-cycle](advanced/life-cycle.md)
