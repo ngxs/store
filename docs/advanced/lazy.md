@@ -15,7 +15,7 @@ export class LazyModule{}
 Its important to note when you lazy load a store, it is registered in the global
 state so this state object will be persisted globally now. Even though
 its available globally, you should only use it within that feature module so you
-make sure not to create depedencies on things that could not be loaded yet.
+make sure not to create dependencies on things that could not be loaded yet.
 
 You probably defined a `AppState` interface that represents the global state
 graph but since we lazy loaded this we can't really include that in that definition.

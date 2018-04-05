@@ -58,7 +58,7 @@ select in the chain like:
 
 ```javascript
 import { Store } from '@ngxs/store';
-import { withLatestFrom } from 'rxjs/oprators';
+import { withLatestFrom } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { AddAnimal } from './animal.events';
 
