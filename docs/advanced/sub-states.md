@@ -49,7 +49,7 @@ then we describe our substate like normal:
 export class CartSavedState {}
 ```
 
-The relationship between these two are bound by their hiercheal order. To finish this up
+The relationship between these two are bound by their hierarchical order. To finish this up
 and wire up it, we need to import both of these into the `NgxsModule`:
 
 ```javascript
@@ -63,7 +63,7 @@ and wire up it, we need to import both of these into the `NgxsModule`:
 })
 ```
 
-And the store will automatically recongnize the relationship and bind them together.
+And the store will automatically recognize the relationship and bind them together.
 
 ## Caveats
 This is only intended to work with nested objects, so trying to create stores on

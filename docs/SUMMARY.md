@@ -11,7 +11,7 @@
 * Advanced
   * [Lazy Loading](advanced/lazy.md)
   * [Sub States](advanced/sub-states.md)
-  * [Cancelation](advanced/cancelation.md)
+  * [Cancellation](advanced/cancellation.md)
   * [Caching](advanced/cache.md)
   * [Action Handlers](advanced/action-handlers.md)
   * [Composition](advanced/composition.md)
