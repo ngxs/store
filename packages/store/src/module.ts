@@ -8,6 +8,7 @@ import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitState, UpdateState } from './actions';
+import { InternalActionCompletions, ActionCompletions } from '@ngxs/store/src/actions-completion-stream';
 
 @NgModule()
 export class NgxsRootModule {
@@ -88,6 +89,8 @@ export class NgxsModule {
       providers: [
         StateFactory,
         Actions,
+        InternalActionCompletions,
+        ActionCompletions,
         Store,
         StateStream,
         SelectFactory,
