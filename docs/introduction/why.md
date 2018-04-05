@@ -44,7 +44,7 @@ the state from that service. NGXS does its best to reduce all this by creating s
 containers and actions associated to those.
 
 ### Effects can be painful
-NgRX Effects are a awesome approach to observable event streams but they can be painful to construct,
+NgRX Effects are an awesome approach to observable event streams but they can be painful to construct,
 read, maintain and teach to other devs. It feels like we need to be an RxJS expert to write them effectively
 and its really easy to cause unwanted side effects.
 
