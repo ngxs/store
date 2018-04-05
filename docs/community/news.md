@@ -1,5 +1,13 @@
 # News
 
+## Next Release 3.0 - 4/5/18
+Our next release that was planned to be 2.1 is now 3.0. The reason is as we continued
+to use NGXS in large production apps we found issues with minification of class names.
+In a gist, compilers will change the name of the class and there is a likelyhood it could
+overlap with another class name in a closure. 3.0 is a breaking change because now actions
+will be required to have a static type. We REALLY wanted to avoid requiring this and not
+having a breaking change but this is such an issue we were required to do so.
+
 ## 2.1 Beta - 4/2/18
 2.1 has kicked off and its packed with lots of new features and fixes! Some notable items
 that are available now via beta package are:
