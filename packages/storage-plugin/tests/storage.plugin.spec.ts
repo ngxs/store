@@ -5,9 +5,13 @@ import { NgxsModule, State, Store, Action } from '@ngxs/store';
 import { NgxsStoragePluginModule, StorageOption, StorageEngine, STORAGE_ENGINE } from '../';
 
 describe('NgxsStoragePlugin', () => {
-  class Increment {}
+  class Increment {
+    static type = 'INCREMENT';
+  }
 
-  class Decrement {}
+  class Decrement {
+    static type = 'DECREMENT';
+  }
 
   interface StateModel {
     count: number;

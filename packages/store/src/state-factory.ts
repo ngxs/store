@@ -102,9 +102,9 @@ export class StateFactory {
     const results = [];
 
     for (const metadata of this.states) {
-      const name = getActionTypeFromInstance(action);
+      const type = getActionTypeFromInstance(action);
 
-      const actionMetas = metadata.actions[name.toString()];
+      const actionMetas = metadata.actions[type];
 
       if (actionMetas) {
         for (const actionMeta of actionMetas) {

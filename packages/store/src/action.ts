@@ -1,24 +1,6 @@
 import { ensureStoreMetadata } from './internals';
 import { ActionOptions } from './symbols';
 
-export class ActionToken {
-  static counter = 0;
-
-  private readonly stamp: number;
-  private readonly description: string;
-
-  constructor(public readonly desc: string) {
-    ActionToken.counter++;
-
-    this.stamp = ActionToken.counter;
-    this.description = `ActionToken ${this.desc} ${this.stamp}`;
-  }
-
-  toString(): string {
-    return this.description;
-  }
-}
-
 /**
  * Decorates a method with a action information.
  */
@@ -31,11 +13,11 @@ export function Action(actions: any | any[], options?: ActionOptions) {
     }
 
     for (const action of actions) {
-      if (!action.type) {
-        action.type = new ActionToken(action.name);
-      }
-
       const type = action.type;
+
+      if (!action.type) {
+        throw new Error(`Action ${action.name} is missing a static "type" property`);
+      }
 
       if (!meta.actions[type]) {
         meta.actions[type] = [];

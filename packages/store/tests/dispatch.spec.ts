@@ -9,13 +9,17 @@ import { NgxsModule } from '../src/module';
 import { StateContext } from '../src/symbols';
 
 describe('Dispatch', () => {
+  class Increment {
+    static type = 'INCREMENT';
+  }
+
+  class Decrement {
+    static type = 'DECREMENT';
+  }
+
   it(
     'should correctly dispatch the event',
     async(() => {
-      class Increment {}
-
-      class Decrement {}
-
       @State<number>({
         name: 'counter',
         defaults: 0
@@ -53,9 +57,6 @@ describe('Dispatch', () => {
   it(
     'should correctly dispatch an async event',
     async(() => {
-      class Increment {}
-      class Decrement {}
-
       @State<number>({
         name: 'counter',
         defaults: 0
@@ -98,8 +99,6 @@ describe('Dispatch', () => {
   it(
     'should correctly dispatch events from other events',
     async(() => {
-      class Increment {}
-
       @State<number>({
         name: 'counter',
         defaults: 0
@@ -134,8 +133,6 @@ describe('Dispatch', () => {
   it(
     'should correctly dispatch events from other async actions',
     async(() => {
-      class Increment {}
-
       @State<number>({
         name: 'counter',
         defaults: 0
@@ -177,8 +174,6 @@ describe('Dispatch', () => {
   it(
     'should correctly cancel previous actions',
     async(() => {
-      class Increment {}
-
       @State<number>({
         name: 'counter',
         defaults: 0

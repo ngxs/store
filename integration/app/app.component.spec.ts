@@ -13,7 +13,7 @@ describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [AppModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
-      providers: [{provide: ComponentFixtureAutoDetect, useValue: true}]
+      providers: [{ provide: ComponentFixtureAutoDetect, useValue: true }]
     });
 
     fixture = TestBed.createComponent(AppComponent);
@@ -40,28 +40,31 @@ describe('AppComponent', () => {
     });
   });
 
-  it('should set toppings using form control', fakeAsync(() => {
-    component.pizzaForm.patchValue({ toppings: 'oli' });
-    tick(200);
-    component.pizza$.pipe(take(1)).subscribe((pizza:any) => {
-       expect(pizza.model.toppings).toBe('oli');
-    });
-    component.pizzaForm.setValue({ toppings: 'olives'});
-    tick(200);
-    component.pizza$.pipe(take(1)).subscribe((pizza:any) => {
-       expect(pizza.model.toppings).toBe('olives');
-    });
-    discardPeriodicTasks();
-  }));
+  it(
+    'should set toppings using form control',
+    fakeAsync(() => {
+      component.pizzaForm.patchValue({ toppings: 'oli' });
+      tick(200);
+      component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
+        expect(pizza.model.toppings).toBe('oli');
+      });
+      component.pizzaForm.setValue({ toppings: 'olives' });
+      tick(200);
+      component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
+        expect(pizza.model.toppings).toBe('olives');
+      });
+      discardPeriodicTasks();
+    })
+  );
 
   it('should set toppings prefix', () => {
-     component.setValue('cheese');
-     component.onPrefix();
-     component.pizza$.subscribe((pizza:any) => {
-       console.log('pizza ', pizza)
-       console.log('pizza.model ', pizza.model)
+    component.setValue('cheese');
+    component.onPrefix();
+    component.pizza$.subscribe((pizza: any) => {
+      console.log('pizza ', pizza);
+      console.log('pizza.model ', pizza.model);
 
-        expect(pizza.model.toppings).toBe('Mr. cheese');
-     });
+      expect(pizza.model.toppings).toBe('Mr. cheese');
+    });
   });
 });
