@@ -13,3 +13,7 @@ truth for your application's state, providing simple rules for predictable state
 
 NGXS is modeled after the CQRS pattern popularly implemented in libraries like Redux and NGRX
 but reduces boilerplate by using modern TypeScript features such as classes and decorators.
+
+## New to NGXS?
+If your just getting started with NGXS, I recommend you head over to the [concepts](concepts/README.md)
+and then explore the rich ecosystem of examples in the [community resources](community/projects.md) page.
