@@ -28,7 +28,7 @@ export class AppModule {}
 
 The plugin has a variet of options that can be passed:
 
-- `url`: Url of the websocket connection. Required.
+- `url`: Url of the websocket connection. Can be passed here or by the `ConnectWebsocket` action.
 - `typeKey`: Object property that maps the websocket message to a action type. Default: `type`
 - `reconnectInterval`: Interval of which to reconnect if the client is disconnected. Default: `5000`
 - `reconnectAttempts`: Number of times before giving up on connection retries. Default: `10`
@@ -93,7 +93,7 @@ When sending the message, remember the send is accepting a JSON-able object.
 
 In order to kick off our websockets we have to dispatch the `ConnectWebSocket`
 action. This will typically happen at startup or if you need to authenticate
-before, after authentication is done.
+before, after authentication is done. You can optionally pass the URL here.
 
 ```TS
 @Component({ ... })
@@ -110,7 +110,7 @@ export class AppComponent {
 
 Here is a list of all the available actions you have:
 
-- `ConnectWebSocket`: Action dispatched when the websockets disconnect
+- `ConnectWebSocket`: Action dispatched when you want to init the websocket. Optionally pass URL here.
 - `DisconnectWebSocket`: Action dispatched when the websockets disconnect
 - `SendWebSocketMessage`: Send a message to the server
 - `WebsocketMessageError`: Error ocurred when recieving a message.

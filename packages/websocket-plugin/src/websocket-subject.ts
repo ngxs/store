@@ -47,7 +47,12 @@ export class WebSocketSubject extends Subject<any> {
       .subscribe(isConnected => this.reconnect());
   }
 
-  connect() {
+  connect(url?: string) {
+    if (url) {
+      // sometimes you need the ability to override the URL passed
+      this._internalConfig.url = url;
+    }
+
     this._socket = new RxWebSocketSubject(this._internalConfig);
     this._socket.subscribe(
       message => this.next(message),

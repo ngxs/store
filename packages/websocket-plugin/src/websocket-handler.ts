@@ -20,7 +20,7 @@ export class WebSocketHandler {
     socket: WebSocketSubject,
     @Inject(NGXS_WEBSOCKET_OPTIONS) config: NgxsWebsocketPluginOptions
   ) {
-    actions.pipe(filter(t => t instanceof ConnectWebSocket)).subscribe(event => socket.connect());
+    actions.pipe(filter(t => t instanceof ConnectWebSocket)).subscribe(event => socket.connect(event.payload));
     actions.pipe(filter(t => t instanceof DisconnectWebSocket)).subscribe(event => socket.disconnect());
     actions.pipe(filter(t => t instanceof SendWebSocketMessage)).subscribe(({ payload }) => socket.send(payload));
     socket.subscribe(
