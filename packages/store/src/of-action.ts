@@ -8,13 +8,10 @@ export function ofAction<T>(...allowedTypes): OperatorFunction<any, T>;
  * RxJS operator for selecting out specific actions.
  */
 export function ofAction(...allowedTypes: any[]): OperatorFunction<any, any> {
-  const allowedMap = {};
+  const allowedMap = allowedTypes.reduce((acc: any, klass: any) => {
+    acc[klass.type] = true;
+    return acc;
+  }, {});
 
-  allowedTypes.forEach(klass => {
-    allowedMap[klass.type || klass.name] = true;
-  });
-
-  return filter(action => {
-    return allowedMap[action.constructor.type || action.type || action.constructor.name];
-  });
+  return filter(action => allowedMap[action.constructor.type || action.type]);
 }
