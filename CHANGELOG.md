@@ -1,3 +1,6 @@
+# Master
+- Feature: Devtools can emit actions manually now
+
 # 2.1.0-beta.9 4/4/18
 - Fix: Websocket and form errors caused by #212
 
