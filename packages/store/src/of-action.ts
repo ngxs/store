@@ -1,14 +1,16 @@
 import { filter } from 'rxjs/operators';
-import { OperatorFunction } from 'rxjs/interfaces';
 import { getActionTypeFromInstance } from './utils';
 
-export function ofAction<T>(allowedType): OperatorFunction<any, T>;
-export function ofAction<T>(...allowedTypes): OperatorFunction<any, T>;
+// TODO: Fix when RXJS 6 is released
+// import { OperatorFunction } from 'rxjs/interfaces';
+
+export function ofAction<T>(allowedType);
+export function ofAction<T>(...allowedTypes);
 
 /**
  * RxJS operator for selecting out specific actions.
  */
-export function ofAction(...allowedTypes: any[]): OperatorFunction<any, any> {
+export function ofAction(...allowedTypes: any[]) {
   const allowedMap = allowedTypes.reduce((acc: any, klass: any) => {
     acc[klass.type] = true;
     return acc;
