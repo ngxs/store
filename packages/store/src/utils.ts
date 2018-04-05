@@ -1,13 +1,20 @@
-import { ActionDef } from './symbols';
 /**
  * Returns the type from an action instance.
  */
 export function getActionTypeFromInstance(action: any): string {
-  if (action.constructor) {
-    return (action.constructor as ActionDef).type;
+  if (action.constructor && action.constructor.type) {
+    return action.constructor.type;
   }
 
   return action.type;
+}
+
+export function actionMatcher(action1: any) {
+  const type1 = getActionTypeFromInstance(action1);
+
+  return function(action2: any) {
+    return type1 === getActionTypeFromInstance(action2);
+  };
 }
 
 /**

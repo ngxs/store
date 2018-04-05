@@ -1,10 +1,10 @@
 import { ensureStoreMetadata } from './internals';
-import { ActionOptions, ActionDef } from './symbols';
+import { ActionOptions } from './symbols';
 
 /**
  * Decorates a method with a action information.
  */
-export function Action(actions: ActionDef | ActionDef[], options?: ActionOptions) {
+export function Action(actions: any | any[], options?: ActionOptions) {
   return function(target: any, name: string, descriptor: TypedPropertyDescriptor<any>) {
     const meta = ensureStoreMetadata(target.constructor);
 
@@ -14,6 +14,10 @@ export function Action(actions: ActionDef | ActionDef[], options?: ActionOptions
 
     for (const action of actions) {
       const type = action.type;
+
+      if (!action.type) {
+        throw new Error(`Action ${action.name} is missing a static "type" property`);
+      }
 
       if (!meta.actions[type]) {
         meta.actions[type] = [];

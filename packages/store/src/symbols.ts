@@ -57,10 +57,6 @@ export interface StoreOptions<T> {
   children?: any[];
 }
 
-export interface ActionDef {
-  type: string;
-}
-
 export interface ActionOptions {
   /**
    * Cancel the previous uncompleted request(s).

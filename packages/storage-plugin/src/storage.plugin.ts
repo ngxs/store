@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { NgxsPlugin, getActionTypeFromInstance, setValue, getValue, InitState, UpdateState } from '@ngxs/store';
+import { NgxsPlugin, setValue, getValue, InitState, UpdateState, actionMatcher } from '@ngxs/store';
 
 import { NgxsStoragePluginOptions, NGXS_STORAGE_PLUGIN_OPTIONS, STORAGE_ENGINE, StorageEngine } from './symbols';
 import { tap } from 'rxjs/operators';
@@ -13,8 +13,9 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
   handle(state, event, next) {
     const options = this._options || <any>{};
-    const actionType = getActionTypeFromInstance(event);
-    const isInitAction = actionType === InitState.type || actionType === UpdateState.type;
+    const matches = actionMatcher(event);
+    const isInitAction = matches(InitState) || matches(UpdateState);
+
     const keys = Array.isArray(options.key) ? options.key : [options.key];
 
     if (isInitAction) {
