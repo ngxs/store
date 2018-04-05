@@ -2,13 +2,17 @@
 You can compose multiple stores together using class inheritance. This is REALLY simple:
 
 ```TS
-@State({})
+@State({
+  name: 'zoo'
+})
 class ZooState {
   @Action(Eat)
   eat() {}
 }
 
-@State({})
+@State({
+  name: 'stlzoo'
+})
 class StLouisZooState extends ZooState {
   @Action(Drink)
   drink() {}
