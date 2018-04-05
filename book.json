@@ -8,22 +8,14 @@
         "include-codeblock",
         "versions",
         "anchors",
-        "youtube",
-        "githubcontributors"
+        "youtube"
     ],
     "pluginsConfig": {
         "github": {
             "url": "https://github.com/ngxs/store/"
         },
-        "theme-api": {
-            "theme": "dark"
-        },
         "versions": {
-            "type": "tags"
-        },
-        "githubcontributors": {
-          "githubOwner": "ngsx",
-          "githubRepository": "store"
+          "type": "branches"
         }
     }
 }
