@@ -65,8 +65,9 @@ export class WebSocketSubject extends Subject<any> {
   }
 
   disconnect() {
-    super.complete();
-    this._socket.complete();
+    if (this._socket) {
+      this._socket.complete();
+    }
   }
 
   reconnect() {
