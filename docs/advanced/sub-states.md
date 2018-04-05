@@ -61,6 +61,7 @@ and wire up it, we need to import both of these into the `NgxsModule`:
     ])
   ]
 })
+export class AppModule {}
 ```
 
 And the store will automatically recognize the relationship and bind them together.

@@ -33,5 +33,6 @@ export class ZooState {
         .pipe(map(resp => dispatch(new GetAnimalsSuccess(resp))));
     }
   }
+
 }
 ```

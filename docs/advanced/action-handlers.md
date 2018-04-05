@@ -25,9 +25,7 @@ export class RouteHander {
   constructor(private router: Router, private actions$: Actions) {
     this.actions$
       .pipe(ofAction(RouteNavigate))
-      .subscribe(({ payload }) => {
-        this.router.navigate([payload]);
-      });
+      .subscribe(({ payload }) => this.router.navigate([payload]));
   }
 }
 ```

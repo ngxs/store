@@ -43,9 +43,7 @@ export class ZooComponent {
   constructor(private store: Store) {}
 
   addAnimal(name) {
-    this.store.dispatch(new AddAnimal(name)).subscribe(() => {
-      this.form.reset();
-    });
+    this.store.dispatch(new AddAnimal(name)).subscribe(() => this.form.reset());
   }
 }
 ```

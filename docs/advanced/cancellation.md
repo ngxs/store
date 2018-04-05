@@ -19,9 +19,7 @@ export class ZooState {
   @Action(FeedAnimals, { cancelUncompleted: true })
   get({ setState }, { payload }) {
     return this.animalService.get(payload).pipe(
-      tap((res) => {
-        setState(res)
-      })
+      tap((res) => setState(res))
     ));
   }
 }
@@ -45,9 +43,7 @@ export class ZooState {
   @Action(FeedAnimals)
   get({ setState }, { payload }) {
     return this.animalService.get(payload).pipe(
-      tap((res) => {
-        setState(res)
-      }),
+      tap((res) => setState(res)),
       takeUntil(this.actions$.pipe(ofAction(RemoveTodo)))
     ));
   }
