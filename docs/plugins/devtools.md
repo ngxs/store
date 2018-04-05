@@ -2,7 +2,7 @@
 Plugin with integration with the [Redux Devtools extension](http://extension.remotedev.io/).
 
 ## Install
-Devtools is a seperate install from NPM, run the following to install it:
+Devtools is a separate install from NPM, run the following to install it:
 
 ```bash
 npm i @ngxs/devtools-plugin --S
@@ -28,7 +28,7 @@ export class AppModule {}
 The plugin supports the following options passed via the `forRoot` method:
 
 - `disabled`: Disable the devtools during production
-- `maxAge`: Max number of entiries to keep.
+- `maxAge`: Max number of entries to keep.
 - `actionSanitizer`: Reformat actions before sending to dev tools
 - `stateSanitizer`: Reformat state before sending to devtools
 

@@ -23,8 +23,8 @@ include:
 - `defaults`: Default set of object/array for this state slice.
 - `children`: Child sub state associations.
 
-Our states can also partipate in depedency injection, this is hooked up automatically
-so all you need to do is inject your depedencies such as services in the constructor.
+Our states can also participate in dependency injection, this is hooked up automatically
+so all you need to do is inject your dependencies such as services in the constructor.
 
 ```TS
 @State<ZooStateModel>({

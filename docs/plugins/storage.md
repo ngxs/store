@@ -2,7 +2,7 @@
 Back your stores with `localStorage`, `sessionStorage` or any other mechanism you wish.
 
 ## Install
-Devtools is a seperate install from NPM, run the following to install it:
+Devtools is a separate install from NPM, run the following to install it:
 
 ```bash
 npm i @ngxs/storage-plugin --S
@@ -32,7 +32,7 @@ The plugin has the following optional options:
 
 - `key`: Default key to persist. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided it defaults to all states using the `@@STATE` key.
 - `storage`: Storage strategy to use. This defaults to LocalStorage but you can pass SessionStorage or anything that implements the StorageEngine API.
-- `deserialize`: Custom deseralizer. Defaults to `JSON.parse`
+- `deserialize`: Custom deserializer. Defaults to `JSON.parse`
 - `serialize`: Custom serializer, defaults to `JSON.stringify`
 
 ### Custom Storage Engine
