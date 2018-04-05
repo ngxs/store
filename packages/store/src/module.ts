@@ -3,12 +3,12 @@ import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN } from './symbols';
 import { StateFactory } from './state-factory';
 import { Actions } from './actions-stream';
+import { InternalActionCompletions, ActionCompletions } from './actions-completion-stream';
 import { Store } from './store';
 import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitState, UpdateState } from './actions';
-import { InternalActionCompletions, ActionCompletions } from '@ngxs/store/src/actions-completion-stream';
 
 @NgModule()
 export class NgxsRootModule {
