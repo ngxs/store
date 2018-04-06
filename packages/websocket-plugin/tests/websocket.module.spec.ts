@@ -4,8 +4,8 @@ import { NgxsModule, State, Action, Store } from '@ngxs/store';
 
 import {
   NgxsWebsocketPluginModule,
-  ConnectWebSocket,    
-  DisconnectWebSocket,    
+  ConnectWebSocket,
+  DisconnectWebSocket,
   SendWebSocketMessage
 } from '../';
 import { Server } from 'mock-socket';
@@ -33,12 +33,20 @@ describe('NgxsWebsocketPlugin', () => {
     }
   }
 
+  const createMessage = () => {
+    return new SendWebSocketMessage(
+      {'type' : 'SET_MESSAGE', 'payload' : 'from websocket'}
+    );
+  };
+
+  const SOCKET_URL = 'ws://localhost:8400/websock';
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         NgxsModule.forRoot([MyStore]),
         NgxsWebsocketPluginModule.forRoot({
-          url: 'ws://localhost:8400/websock'
+          url: SOCKET_URL
         })
       ]
     });
@@ -46,15 +54,13 @@ describe('NgxsWebsocketPlugin', () => {
 
   it('should not send message if socket is closed', (done) => {
     const store = TestBed.get(Store);
-    const mockServer = new Server('ws://localhost:8400/websock');
+    const mockServer = new Server(SOCKET_URL);
     mockServer.on('message', data => {
       mockServer.send(data);
     });
 
     try {
-      store.dispatch(new SendWebSocketMessage(
-        {'type':'SET_MESSAGE', 'payload': 'from websocket'}
-      ));
+      store.dispatch(createMessage());
       // should not come here
       expect(true).toBe(false);
     } catch (err) {
@@ -68,7 +74,7 @@ describe('NgxsWebsocketPlugin', () => {
 
   it('should not send message if socket is closed after connection', (done) => {
     const store = TestBed.get(Store);
-    const mockServer = new Server('ws://localhost:8400/websock');
+    const mockServer = new Server(SOCKET_URL);
     mockServer.on('message', data => {
       mockServer.send(data);
     });
@@ -76,9 +82,7 @@ describe('NgxsWebsocketPlugin', () => {
     store.dispatch(new ConnectWebSocket());
     store.dispatch(new DisconnectWebSocket());
     try {
-      store.dispatch(new SendWebSocketMessage(
-        {'type':'SET_MESSAGE', 'payload': 'from websocket'}
-      ));
+      store.dispatch(createMessage());
       // should not come here
       expect(true).toBe(false);
     } catch (err) {
@@ -89,18 +93,16 @@ describe('NgxsWebsocketPlugin', () => {
     }, 100);
 
   });
-  
+
   it('should forward socket message to store', (done) => {
     const store = TestBed.get(Store);
-    const mockServer = new Server('ws://localhost:8400/websock');
+    const mockServer = new Server(SOCKET_URL);
     mockServer.on('message', data => {
       mockServer.send(data);
     });
 
     store.dispatch(new ConnectWebSocket());
-    store.dispatch(new SendWebSocketMessage(
-        {'type':'SET_MESSAGE', 'payload': 'from websocket'}
-    ));
+    store.dispatch(createMessage());
     setTimeout(() => {
        store.select(state => state.actions.message).subscribe((message: string) => {
          expect(message).toBe('from websocket');
@@ -108,5 +110,5 @@ describe('NgxsWebsocketPlugin', () => {
        mockServer.stop(done);
     }, 100);
 
-  });  
+  });
 });
