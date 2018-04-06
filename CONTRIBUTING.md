@@ -26,7 +26,7 @@ The following is a set of guidelines for contributing to NGXS and its packages.
 
  * Read our [docs](https://ngxs.gitbook.io/ngxs)
  * Ask a question in our slack [slack](https://now-examples-slackin-eqzjxuxoem.now.sh/).
- * Ask a question on [stackoverflow](https://stackoverflow.com/questions/tagged/ngrx).
+ * Ask a question on [stackoverflow](https://stackoverflow.com/questions/tagged/ngxs).
 
 # How can i help?
 Check the [issues](https://github.com/ngxs/store/issues) where we have labels for help wanted.
