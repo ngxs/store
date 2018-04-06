@@ -4,6 +4,7 @@
 - Feature: Better integration w/ RX6
 - Fix: Various websocket fixes
 - Fix: Fixes for `ofAction`
+- Chore: Rename Beta Feature `takeLast` to `cancelUncompleted`
 
 # 2.1.0-beta.9 4/4/18
 - Fix: Websocket and form errors caused by #212
