@@ -1,12 +1,13 @@
 import { async, TestBed } from '@angular/core/testing';
 import { timer } from 'rxjs/observable/timer';
-import { tap, skip } from 'rxjs/operators';
+import { tap, skip, delay } from 'rxjs/operators';
 
 import { State } from '../src/state';
 import { Action } from '../src/action';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { StateContext } from '../src/symbols';
+import { of } from 'rxjs/observable/of';
 
 describe('Dispatch', () => {
   class Increment {
@@ -216,4 +217,286 @@ describe('Dispatch', () => {
         });
     })
   );
+
+  describe('returns an observable that', () => {
+    describe('when the action handler is synchronous', () => {
+      it(
+        'should notify of the completion of the action handler',
+        async(() => {
+          let actionsHandled = 0;
+
+          @State<number>({
+            name: 'counter',
+            defaults: 0
+          })
+          class MyState {
+            @Action(Increment)
+            increment({ getState, setState, dispatch }: StateContext<number>) {
+              actionsHandled++;
+            }
+          }
+
+          TestBed.configureTestingModule({
+            imports: [NgxsModule.forRoot([MyState])]
+          });
+
+          const store: Store = TestBed.get(Store);
+
+          store.dispatch(new Increment()).subscribe(() => {
+            expect(actionsHandled).toEqual(1);
+          });
+        })
+      );
+
+      it(
+        'should notify of the completion of multiple action handlers',
+        async(() => {
+          let actionsHandled = 0;
+
+          @State<number>({
+            name: 'counter',
+            defaults: 0
+          })
+          class MyState {
+            @Action(Increment)
+            increment({ getState, setState, dispatch }: StateContext<number>) {
+              actionsHandled++;
+            }
+
+            @Action(Increment)
+            incrementAgain({ getState, setState, dispatch }: StateContext<number>) {
+              actionsHandled++;
+            }
+          }
+
+          TestBed.configureTestingModule({
+            imports: [NgxsModule.forRoot([MyState])]
+          });
+
+          const store: Store = TestBed.get(Store);
+
+          store.dispatch(new Increment()).subscribe(() => {
+            expect(actionsHandled).toEqual(2);
+          });
+        })
+      );
+    });
+
+    describe('when the action handler returns a promise', () => {
+      it(
+        'should notify of the completion of the promise',
+        async(() => {
+          let actionsHandled = 0;
+
+          @State<number>({
+            name: 'counter',
+            defaults: 0
+          })
+          class MyState {
+            @Action(Increment)
+            increment({ getState, setState, dispatch }: StateContext<number>) {
+              return new Promise<void>(resolve => setTimeout(resolve, 1)).then(() => actionsHandled++);
+            }
+          }
+
+          TestBed.configureTestingModule({
+            imports: [NgxsModule.forRoot([MyState])]
+          });
+
+          const store: Store = TestBed.get(Store);
+
+          store.dispatch(new Increment()).subscribe(() => {
+            expect(actionsHandled).toEqual(1);
+          });
+        })
+      );
+
+      it(
+        'should notify of the completion of many action handlers returning promises',
+        async(() => {
+          let actionsHandled = 0;
+
+          @State<number>({
+            name: 'counter',
+            defaults: 0
+          })
+          class MyState {
+            @Action(Increment)
+            async increment({ getState, setState, dispatch }: StateContext<number>) {
+              return new Promise<void>(resolve => setTimeout(resolve, 1)).then(() => actionsHandled++);
+            }
+
+            @Action(Increment)
+            incrementAgain({ getState, setState, dispatch }: StateContext<number>) {
+              return new Promise<void>(resolve => setTimeout(resolve, 2)).then(() => actionsHandled++);
+            }
+          }
+
+          TestBed.configureTestingModule({
+            imports: [NgxsModule.forRoot([MyState])]
+          });
+
+          const store: Store = TestBed.get(Store);
+
+          store.dispatch(new Increment()).subscribe(() => {
+            expect(actionsHandled).toEqual(2);
+          });
+        })
+      );
+    });
+
+    describe('when the action handler returns an observable', () => {
+      it(
+        'should notify of the completion of the observable',
+        async(() => {
+          let actionsHandled = 0;
+
+          @State<number>({
+            name: 'counter',
+            defaults: 0
+          })
+          class MyState {
+            @Action(Increment)
+            increment({ getState, setState, dispatch }: StateContext<number>) {
+              return of({}).pipe(delay(1), tap(() => actionsHandled++));
+            }
+          }
+
+          TestBed.configureTestingModule({
+            imports: [NgxsModule.forRoot([MyState])]
+          });
+
+          const store: Store = TestBed.get(Store);
+
+          store.dispatch(new Increment()).subscribe(() => {
+            expect(actionsHandled).toEqual(1);
+          });
+        })
+      );
+
+      it(
+        'should notify of the completion of many action handlers returning observables',
+        async(() => {
+          let actionsHandled = 0;
+
+          @State<number>({
+            name: 'counter',
+            defaults: 0
+          })
+          class MyState {
+            @Action(Increment)
+            increment({ getState, setState, dispatch }: StateContext<number>) {
+              return of({}).pipe(delay(1), tap(() => actionsHandled++));
+            }
+
+            @Action(Increment)
+            incrementAgain({ getState, setState, dispatch }: StateContext<number>) {
+              return of({}).pipe(delay(2), tap(() => actionsHandled++));
+            }
+          }
+
+          TestBed.configureTestingModule({
+            imports: [NgxsModule.forRoot([MyState])]
+          });
+
+          const store: Store = TestBed.get(Store);
+
+          store.dispatch(new Increment()).subscribe(() => {
+            expect(actionsHandled).toEqual(2);
+          });
+        })
+      );
+    });
+
+    describe('when the multiple action handlers for the action return a mix of synchronous, async, and observable', () => {
+      it(
+        'should notify of the completion of all action handlers',
+        async(() => {
+          let actionsHandled = 0;
+
+          @State<number>({
+            name: 'counter',
+            defaults: 0
+          })
+          class MyState {
+            @Action(Increment)
+            incrementSync({ getState, setState, dispatch }: StateContext<number>) {
+              actionsHandled++;
+            }
+
+            @Action(Increment)
+            incrementAsync({ getState, setState, dispatch }: StateContext<number>) {
+              return new Promise<void>(resolve => setTimeout(resolve, 1)).then(() => actionsHandled++);
+            }
+
+            @Action(Increment)
+            incrementObservable({ getState, setState, dispatch }: StateContext<number>) {
+              return of({}).pipe(delay(2), tap(() => actionsHandled++));
+            }
+          }
+
+          TestBed.configureTestingModule({
+            imports: [NgxsModule.forRoot([MyState])]
+          });
+
+          const store: Store = TestBed.get(Store);
+
+          store.dispatch(new Increment()).subscribe(() => {
+            expect(actionsHandled).toEqual(3);
+          });
+        })
+      );
+    });
+
+    describe('when the action handler synchronously returns a primitive', () => {
+      it(
+        'should notify of the completion immediately',
+        async(() => {
+          @State<number>({
+            name: 'counter',
+            defaults: 0
+          })
+          class MyState {
+            @Action(Increment)
+            increment({ getState, setState, dispatch }: StateContext<number>) {
+              return 123;
+            }
+          }
+
+          TestBed.configureTestingModule({
+            imports: [NgxsModule.forRoot([MyState])]
+          });
+
+          const store: Store = TestBed.get(Store);
+          let subscriptionCalled = false;
+          store.dispatch(new Increment()).subscribe(() => (subscriptionCalled = true));
+
+          expect(subscriptionCalled).toBeTruthy();
+        })
+      );
+    });
+
+    describe('when there are no action handlers', () => {
+      it(
+        'should notify of the completion immediately',
+        async(() => {
+          @State<number>({
+            name: 'counter',
+            defaults: 0
+          })
+          class MyState {}
+
+          TestBed.configureTestingModule({
+            imports: [NgxsModule.forRoot([MyState])]
+          });
+
+          const store: Store = TestBed.get(Store);
+          let subscriptionCalled = false;
+          store.dispatch(new Increment()).subscribe(() => (subscriptionCalled = true));
+
+          expect(subscriptionCalled).toBeTruthy();
+        })
+      );
+    });
+  });
 });

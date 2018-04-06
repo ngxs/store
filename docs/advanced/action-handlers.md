@@ -5,7 +5,7 @@ afterwards. Typically, we don't want to tie these types of things in our states
 to avoid mix of concerns.
 
 NGXS has two types of action handlers; dispatched and completed. A dispatched action
-handler is when the store recieved an action to perform a action on. This is triggered
+handler is when the store received an action to perform a action on. This is triggered
 BEFORE the state takes any action on it. The completed stream is when all the actions
 tied to that action have executed (whether sync or async). The completion stream is
 very useful for the type of operation I described above. The completion stream can help
@@ -21,7 +21,7 @@ A good example of a action handler, would be something like triggering a route c
 import { Actions, ofAction } from '@ngxs/store';
 
 @Injectable()
-export class RouteHander {
+export class RouteHandler {
   constructor(private router: Router, private actions$: Actions) {
     this.actions$
       .pipe(ofAction(RouteNavigate))
