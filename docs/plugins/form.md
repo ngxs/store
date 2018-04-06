@@ -1,4 +1,4 @@
-# Form Plugin - Expiremental Status
+# Form Plugin - Experimental Status
 Often when building Reactive Forms in Angular, you need to bind values from the
 store to form and vice versus. The values from the store are observable and
 the reactive form accepts raw objects, as a result we end up monkey patching
@@ -11,7 +11,7 @@ This is an excellent use case for stores and we can conquer that case with this 
 In a nutshell, this plugin helps to keep your forms and state in sync.
 
 ## Install
-Forms is a seperate install from NPM, run the following to install it:
+Forms is a separate install from NPM, run the following to install it:
 
 ```bash
 npm i @ngxs/form-plugin --S
@@ -100,4 +100,4 @@ The form plugin comes with following `actions` out of the box are:
 - `SetFormDisabled(path)` - Set the form to disabled
 - `SetFormEnabled(path)` - Set the form to enabled
 - `SetFormDirty(path)` - Set the form to dirty (shortcut for `UpdateFormDirty`)
-- `SetFormPristine(path)` - Set the form to prestine (shortcut for `UpdateFormDirty`)
+- `SetFormPristine(path)` - Set the form to pristine (shortcut for `UpdateFormDirty`)

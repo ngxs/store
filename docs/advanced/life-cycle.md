@@ -3,7 +3,7 @@ States can implement life-cycle events.
 
 ## `onInit`
 If specified on a state, the `onInit` function will be invoked after
-all the states for that module definition have been initalized and
+all the states for that module definition have been initialized and
 their states pushed into the state stream. The states are invoked in a topological sorted
 order going from parent to child. The function is invoked with the state context object.
 
@@ -14,7 +14,7 @@ order going from parent to child. The function is invoked with the state context
 })
 export class ZooState {
   onInit(state: StateContext<any[]>) {
-    console.log('State initid');
+    console.log('State initialized');
   }
 }
 ```
