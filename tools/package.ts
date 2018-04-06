@@ -1,40 +1,39 @@
-#! /usr/bin/env node
-
+#!/usr/bin/env node
 'use strict';
 
-import { exec } from 'child_process';
-import { removeSync } from 'fs-extra';
+import { remove } from 'fs-extra';
+import { execute, getPackages } from './utils';
+import { ngPackagr } from 'ng-packagr';
 
-import build from './build';
+async function main() {
+  // run through all our packages and build and link them
+  const packages = getPackages();
+  for (const pack of packages) {
+    // build package
+    try {
+      await ngPackagr()
+        .forProject(pack.ngPackagrProjectPath)
+        .build();
+    } catch (err) {
+      console.error('ngPackagr build failed', err);
+      throw err;
+    }
 
-const json = require('../package.json');
+    // link the packages so they can find each other
+    try {
+      await execute(`npm link ${pack.buildPath}`);
+      await remove(`${pack.buildPath}/package-lock.json`);
+      await remove(`${pack.buildPath}/node_modules`);
 
-const p = packages => {
-  const go = i => {
-    const m = packages[i];
-    const path = m.split('/');
-    const name = path[path.length - 1];
+      console.log(`${pack.packageName} linked`);
+    } catch (err) {
+      console.log('failed to link npm builds', err);
+      throw err;
+    }
+  }
+}
 
-    build(m).then(() => {
-      exec(`npm link builds/${name}`, err => {
-        if (err) {
-          throw new Error(err.message);
-        }
-
-        removeSync(`builds/${name}/package-lock.json`);
-        removeSync(`builds/${name}/node_modules`);
-
-        console.log(`${json.packageScope}/${name} linked`);
-
-        if (i < packages.length - 1) {
-          go(i + 1);
-        }
-      });
-    });
-  };
-
-  return go;
-};
-
-// package all modules starting from first in the list
-p(json.packages)(0);
+main().catch(err => {
+  console.error('Error building ngxs', err);
+  process.exit(111);
+});

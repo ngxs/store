@@ -55,6 +55,7 @@
     "test:ci": "ng test --code-coverage --progress=false --single-run",
     "test:ci:integration": "ng test --progress=false --app 1 --single-run && ng build --prod --progress=false --app 1",
     "publish:dev": "ts-node tools/publish-dev-builds",
+    "publish:tagged": "ts-node tools/publish-tagged-builds",
     "// - UTILS": "Utility Scripts",
     "lint": "ng lint"
   },

@@ -129,7 +129,7 @@ jobs:
           command: /tmp/cc-test-reporter after-build --coverage-input-type lcov --exit-code 0
 
   # Publish latest build to npm under the @next tag
-  publish_build_to_npm:
+  publish_dev_build_to_npm:
     <<: *job_defaults
     steps:
       - *attach_workspace
@@ -140,6 +140,17 @@ jobs:
           name: Publish development builds to all @ngxs packages
           command: yarn publish:dev
 
+  # Publish tagged build to npm under the @latest tag
+  publish_tagged_build_to_npm:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Set NPM publish token
+          command: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+      - deploy:
+          name: Publish tagged builds to all @ngxs packages
+          command: yarn publish:tagged
 #
 # Workflow
 #
@@ -147,7 +158,11 @@ workflows:
   version: 2
   build-workflow:
     jobs:
-      - build
+      # Run build for all branches and tags
+      - build:
+          filters:
+            tags:
+              only: /.*/
 
       - lint:
           requires:
@@ -166,11 +181,25 @@ workflows:
             - unit_tests
             - integration_tests
 
-      - publish_build_to_npm:
+      # Publish @dev builds if no tag is specified
+      - publish_dev_build_to_npm:
           filters:
             branches:
               only:
                 - master
+            tags:
+              ignore: /.*/
+          requires:
+            - unit_tests
+            - integration_tests
+
+      # Publish package.version @latest when a v.* git tag is present
+      - publish_tagged_build_to_npm:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
           requires:
             - unit_tests
             - integration_tests

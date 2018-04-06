@@ -1,26 +1,8 @@
-#! /usr/bin/env node
-
-'use strict';
-
-import { exec } from 'child_process';
 import { parse, SemVer } from 'semver';
-
-function execute(script: string): Promise<any> {
-  return new Promise((resolve, reject) => {
-    exec(script, (error, stdout, stderr) => {
-      if (error) {
-        reject(stderr);
-      } else {
-        resolve(stdout);
-      }
-    });
-  });
-}
+import { execute, getPackages } from './utils';
 
 async function main() {
   const json = require('../package.json');
-
-  const packages = json.packages;
 
   // determine commit from either circle ci or last git commit
   let commit = process.env.CIRCLE_SHA1;
@@ -39,12 +21,10 @@ async function main() {
   console.log('publishing new version', newVersion);
 
   // run through all our packages and push them to npm
+  const packages = getPackages();
   for (const pack of packages) {
-    const path = pack.split('/');
-    const name = path[path.length - 1];
-
     await execute(`
-      cd builds/${name} &&
+      cd ${pack.buildPath} &&
       yarn publish --access public --non-interactive --no-git-tag-version --new-version ${newVersion} --tag dev
     `);
   }

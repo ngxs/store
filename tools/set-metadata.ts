@@ -1,30 +1,32 @@
-'use strict';
+import { writeFile } from 'fs';
+import { getPackages } from './utils';
 
-import { resolve } from 'path';
-import { writeFileSync } from 'fs';
+async function main() {
+  const ngxsJson = require('../package.json');
+  const keysToCopy = ['version', 'repository', 'keywords', 'author', 'contributors', 'license', 'bugs', 'homepage'];
 
-const ngxsJson = require('../package.json');
+  const packages = getPackages();
+  for (const pack of packages) {
+    const packPath = `${pack.buildPath}/package.json`;
+    const packPackage = require(packPath);
 
-const keysToCopy = ['version', 'repository', 'keywords', 'author', 'contributors', 'license', 'bugs', 'homepage'];
+    // copy all meta data from the root package.json into all packages
+    for (const key of keysToCopy) {
+      packPackage[key] = ngxsJson[key];
+    }
 
-ngxsJson.packages.forEach(m => {
-  const modulePath = resolve(__dirname, `../builds/${m.split('/')[1]}/package.json`);
-  const modulePackage = require(modulePath);
+    // set all the packages peerDependencies to be the same as root package.json version
+    for (const p of packages) {
+      if (packPackage.peerDependencies[p.packageName]) {
+        packPackage.peerDependencies[p.packageName] = ngxsJson.version;
+      }
+    }
 
-  // copy all meta data from the root package.json into all packages
-  for (const key of keysToCopy) {
-    modulePackage[key] = ngxsJson[key];
+    // save the package file after we have updated the keys and peerDependencies
+    await writeFile(packPath, JSON.stringify(packPackage, null, 2));
   }
 
-  // set all the packages peerDependencies to be the same as root package.json version
-  ngxsJson.packages.forEach(p => {
-    const name = ngxsJson.packageScope + '/' + p.split('/')[1];
-    if (modulePackage.peerDependencies[name]) {
-      modulePackage.peerDependencies[name] = ngxsJson.version;
-    }
-  });
+  console.log(`package version set to ${ngxsJson.version}`);
+}
 
-  writeFileSync(modulePath, JSON.stringify(modulePackage, null, 2));
-
-  console.log(`${m} version set to ${ngxsJson.version}`);
-});
+main();
