@@ -475,5 +475,28 @@ describe('Dispatch', () => {
         })
       );
     });
+
+    describe('when there are no action handlers', () => {
+      it(
+        'should notify of the completion immediately',
+        async(() => {
+          @State<number>({
+            name: 'counter',
+            defaults: 0
+          })
+          class MyState {}
+
+          TestBed.configureTestingModule({
+            imports: [NgxsModule.forRoot([MyState])]
+          });
+
+          const store: Store = TestBed.get(Store);
+          let subscriptionCalled = false;
+          store.dispatch(new Increment()).subscribe(() => (subscriptionCalled = true));
+
+          expect(subscriptionCalled).toBeTruthy();
+        })
+      );
+    });
   });
 });

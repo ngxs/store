@@ -129,6 +129,10 @@ export class StateFactory {
       }
     }
 
+    if (results.length === 0) {
+      results.push(of({}));
+    }
+
     return forkJoin(results);
   }
 
