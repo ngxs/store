@@ -65,6 +65,8 @@ export class WebSocketSubject extends Subject<any> {
   disconnect() {
     if (this._socket) {
       this._socket.complete();
+      // set to undefined so send() can throw error.
+      this._socket = undefined;
     }
   }
 
@@ -83,6 +85,8 @@ export class WebSocketSubject extends Subject<any> {
   }
 
   send(data: any): void {
+    if (!this._socket)
+      throw new Error('You must connect before sending data');
     this._socket.next(this._config.serializer(data));
   }
 }
