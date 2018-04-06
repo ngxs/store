@@ -13,3 +13,4 @@
 - See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
 - Checkout the [sample application](https://github.com/ngxs/store/tree/master/integration)
 - Learn about updates from the [changelog](CHANGELOG.md)
+- Learn how to contribute with the [contributing guide](CONTRIBUTING.md)
