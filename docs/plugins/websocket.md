@@ -1,8 +1,8 @@
-# Websocket Plugin - Expiremental Status
+# Websocket Plugin - Experimental Status
 Bind server websocket events to Ngxs store actions.
 
 ## Install
-Websocket plugin is a seperate install from NPM, run the following to install it:
+Websocket plugin is a separate install from NPM, run the following to install it:
 
 ```bash
 npm i @ngxs/websocket-plugin --S
@@ -26,7 +26,7 @@ import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
 export class AppModule {}
 ```
 
-The plugin has a variet of options that can be passed:
+The plugin has a variety of options that can be passed:
 
 - `url`: Url of the websocket connection. Can be passed here or by the `ConnectWebsocket` action.
 - `typeKey`: Object property that maps the websocket message to a action type. Default: `type`
@@ -113,5 +113,5 @@ Here is a list of all the available actions you have:
 - `ConnectWebSocket`: Action dispatched when you want to init the websocket. Optionally pass URL here.
 - `DisconnectWebSocket`: Action dispatched when the websockets disconnect
 - `SendWebSocketMessage`: Send a message to the server
-- `WebsocketMessageError`: Error ocurred when recieving a message.
+- `WebsocketMessageError`: Error ocurred when receiving a message.
 
