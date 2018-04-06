@@ -39,7 +39,8 @@
     "packages/devtools-plugin",
     "packages/storage-plugin",
     "packages/websocket-plugin",
-    "packages/form-plugin"
+    "packages/form-plugin",
+    "packages/router-plugin"
   ],
   "scripts": {
     "// - APPS": "Run Apps in dev and with packaged modules",
