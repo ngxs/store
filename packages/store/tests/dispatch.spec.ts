@@ -447,5 +447,33 @@ describe('Dispatch', () => {
         })
       );
     });
+
+    describe('when the action handler synchronously returns a primitive', () => {
+      it(
+        'should notify of the completion immediately',
+        async(() => {
+          @State<number>({
+            name: 'counter',
+            defaults: 0
+          })
+          class MyState {
+            @Action(Increment)
+            increment({ getState, setState, dispatch }: StateContext<number>) {
+              return 123;
+            }
+          }
+
+          TestBed.configureTestingModule({
+            imports: [NgxsModule.forRoot([MyState])]
+          });
+
+          const store: Store = TestBed.get(Store);
+          let subscriptionCalled = false;
+          store.dispatch(new Increment()).subscribe(() => (subscriptionCalled = true));
+
+          expect(subscriptionCalled).toBeTruthy();
+        })
+      );
+    });
   });
 });
