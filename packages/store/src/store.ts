@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators/map';
 import { of } from 'rxjs/observable/of';
 
 import { compose } from './compose';
-import { Actions } from './actions-stream';
+import { InternalActions } from './actions-stream';
 import { StateFactory } from './state-factory';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
@@ -19,7 +19,7 @@ import { InternalActionCompletions } from './actions-completion-stream';
 export class Store {
   constructor(
     private _errorHandler: ErrorHandler,
-    private _actions: Actions,
+    private _actions: InternalActions,
     private _actionCompletions: InternalActionCompletions,
     private _storeFactory: StateFactory,
     private _pluginManager: PluginManager,
