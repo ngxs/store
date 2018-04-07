@@ -1,35 +1,29 @@
 import { Component, Provider } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
 import { NgxsRouterPluginModule, NgxsRouterPluginOptions, RouterState } from '../';
+import { Navigate } from '@ngxs/router-plugin/src/router.actions';
 
 describe('NgxsRouterPlugin', () => {
-  it('should work', (done: any) => {
-    // const reducer = (state: string = '', action: RouterAction<any>) => {
-    //   if (action.type === ROUTER_NAVIGATION) {
-    //     return action.payload.routerState.url.toString();
-    //   } else {
-    //     return state;
-    //   }
-    // };
+  it(
+    'should dispatch router state events',
+    async(async () => {
+      createTestModule();
 
-    createTestModule();
+      const router: Router = TestBed.get(Router);
+      const store = TestBed.get(Store);
+      const log = logOfRouterAndStore(router, store);
 
-    const router: Router = TestBed.get(Router);
-    const store = TestBed.get(Store);
-    const log = logOfRouterAndStore(router, store);
-
-    router.navigateByUrl('/').then(() => {
-      console.log(JSON.stringify(log, null, 2));
+      await router.navigateByUrl('/');
 
       expect(log).toEqual([
-        { type: 'state', state: null }, // init event. has nothing to do with the router
+        { type: 'url', state: null }, // init event. has nothing to do with the router
         { type: 'router', event: 'NavigationStart', url: '/' },
         { type: 'router', event: 'RoutesRecognized', url: '/' },
-        { type: 'state', state: '/' }, // RouterNavigation event in the store
+        { type: 'url', state: '/' }, // RouterNavigation event in the store
         { type: 'router', event: 'GuardsCheckStart', url: '/' },
         { type: 'router', event: 'GuardsCheckEnd', url: '/' },
         { type: 'router', event: 'ResolveStart', url: '/' },
@@ -37,30 +31,58 @@ describe('NgxsRouterPlugin', () => {
 
         { type: 'router', event: 'NavigationEnd', url: '/' }
       ]);
-      done();
-    });
-    //      .then(() => {
-    //        log.splice(0);
-    //        return router.navigateByUrl('next');
-    //      })
-    //      .then(() => {
-    //        expect(log).toEqual([
-    //          { type: 'router', event: 'NavigationStart', url: '/next' },
-    //          { type: 'router', event: 'RoutesRecognized', url: '/next' },
-    //          { type: 'state', state: '/next' },
-    //
-    //          /* new Router Lifecycle in Angular 4.3 */
-    //          { type: 'router', event: 'GuardsCheckStart', url: '/next' },
-    //          { type: 'router', event: 'GuardsCheckEnd', url: '/next' },
-    //          { type: 'router', event: 'ResolveStart', url: '/next' },
-    //          { type: 'router', event: 'ResolveEnd', url: '/next' },
-    //
-    //          { type: 'router', event: 'NavigationEnd', url: '/next' },
-    //        ]);
-    //
-    //        done();
-    //      });
-  });
+
+      log.splice(0);
+      await router.navigateByUrl('next');
+
+      expect(log).toEqual([
+        { type: 'router', event: 'NavigationStart', url: '/next' },
+        { type: 'router', event: 'RoutesRecognized', url: '/next' },
+        { type: 'url', state: '/next' },
+        { type: 'router', event: 'GuardsCheckStart', url: '/next' },
+        { type: 'router', event: 'GuardsCheckEnd', url: '/next' },
+        { type: 'router', event: 'ResolveStart', url: '/next' },
+        { type: 'router', event: 'ResolveEnd', url: '/next' },
+
+        { type: 'router', event: 'NavigationEnd', url: '/next' }
+      ]);
+    })
+  );
+
+  it(
+    'should select router state',
+    fakeAsync(async () => {
+      createTestModule();
+
+      const router: Router = TestBed.get(Router);
+      const store: Store = TestBed.get(Store);
+
+      await router.navigateByUrl('/testpath');
+      tick();
+
+      const routerState = store.selectSnapshot(RouterState.state);
+      expect(routerState.url).toEqual('/testpath');
+
+      const routerUrl = store.selectSnapshot(RouterState.url);
+      expect(routerUrl).toEqual('/testpath');
+    })
+  );
+
+  it(
+    'should handle Navigate action',
+    fakeAsync(async () => {
+      createTestModule();
+
+      const store: Store = TestBed.get(Store);
+
+      store.dispatch(new Navigate(['a-path']));
+      tick();
+
+      store.select(RouterState.state).subscribe(routerState => {
+        expect(routerState.url).toEqual('/a-path');
+      });
+    })
+  );
 });
 
 function createTestModule(
@@ -87,19 +109,24 @@ function createTestModule(
     declarations: [AppCmp, SimpleCmp],
     imports: [
       NgxsModule.forRoot(),
-      RouterTestingModule.withRoutes([
-        { path: '', component: SimpleCmp },
+      RouterTestingModule.withRoutes(
+        [
+          { path: '', component: SimpleCmp },
+          {
+            path: ':id',
+            component: SimpleCmp,
+            canActivate: ['CanActivateNext']
+          },
+          {
+            path: 'load',
+            loadChildren: 'test',
+            canLoad: ['CanLoadNext']
+          }
+        ],
         {
-          path: 'next',
-          component: SimpleCmp,
-          canActivate: ['CanActivateNext']
-        },
-        {
-          path: 'load',
-          loadChildren: 'test',
-          canLoad: ['CanLoadNext']
+          paramsInheritanceStrategy: 'always'
         }
-      ]),
+      ),
       NgxsRouterPluginModule.forRoot(opts.config)
     ],
     providers: [
@@ -118,13 +145,6 @@ function createTestModule(
   TestBed.createComponent(AppCmp);
 }
 
-// function waitForNavigation(router: Router): Promise<any> {
-//   return router.events.pipe(
-//     filter(e => e instanceof NavigationEnd),
-//     first(),
-//   ).toPromise();
-// }
-
 function logOfRouterAndStore(router: Router, store: Store): any[] {
   const log: any[] = [];
   router.events.subscribe(e => {
@@ -136,6 +156,6 @@ function logOfRouterAndStore(router: Router, store: Store): any[] {
       });
     }
   });
-  store.select(RouterState.url).subscribe(state => log.push({ type: 'state', state }));
+  store.select(RouterState.url).subscribe(state => log.push({ type: 'url', state }));
   return log;
 }
