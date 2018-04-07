@@ -1,6 +1,6 @@
 # Summary
 
-* [Introduction](README.md)
+* Introduction
   * [Why](introduction/why.md)
   * [Installation](introduction/installation.md)
 * [Concepts](concepts/README.md)

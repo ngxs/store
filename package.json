@@ -78,6 +78,7 @@
     "@types/fs-extra": "^5.0.1",
     "@types/googlemaps": "^3.29.2",
     "@types/jasmine": "~2.8.6",
+    "mock-socket": "^7.1.0",
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~9.6.0",
     "@types/semver": "^5.5.0",

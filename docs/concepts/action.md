@@ -3,7 +3,7 @@ Actions is a set of instructions for what we want to do along with payload data
 associated to it.
 
 ## Simple Action
-Let's say we want to update the status of whether the animals have been feed
+Let's say we want to update the status of whether the animals have been fed
 in our Zoo. We would describe a class like:
 
 ```TS

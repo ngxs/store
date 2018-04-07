@@ -4,6 +4,6 @@
   "version": "0.0.0",
   "peerDependencies": {
     "@ngxs/store": "^0.0.0",
-    "@angular/core": "^5.0.0"
+    "@angular/core": ">=5.0.0 || >6.0.0"
   }
 }

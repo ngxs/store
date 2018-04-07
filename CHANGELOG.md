@@ -1,3 +1,10 @@
+# Master
+- Fix: Observable dispatch issues #235
+- Fix: Websocket error when socket undefined
+- Fix: Devtools not disabling
+- Fix: Action Stream has too much exposed
+- Chore: Loosen ng deps
+
 # 3.0.0-beta.0 4/5/18
 - BREAKING: Types are now required on actions
 - Feature: Devtools can emit actions manually now
