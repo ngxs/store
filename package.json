@@ -93,7 +93,6 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "lint-staged": "^7.0.0",
-    "mock-socket": "^7.1.0",
     "ng-packagr": "^2.3.0",
     "prettier": "^1.8.2",
     "rxjs": "^5.5.2",
