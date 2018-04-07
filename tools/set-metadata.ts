@@ -23,7 +23,7 @@ async function main() {
     }
 
     // save the package file after we have updated the keys and peerDependencies
-    await writeFile(packPath, JSON.stringify(packPackage, null, 2));
+    await writeFile(packPath, JSON.stringify(packPackage, null, 2), () => console.error('Write failed!'));
   }
 
   console.log(`package version set to ${ngxsJson.version}`);
