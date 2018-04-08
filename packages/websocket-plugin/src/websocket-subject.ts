@@ -1,5 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
-import { Subject, Observable, Observer } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
 import { WebSocketSubject as RxWebSocketSubject, WebSocketSubjectConfig } from 'rxjs/observable/dom/WebSocketSubject';
 import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
 import { share, distinctUntilChanged, filter, takeWhile } from 'rxjs/operators';
@@ -85,8 +87,7 @@ export class WebSocketSubject extends Subject<any> {
   }
 
   send(data: any): void {
-    if (!this._socket)
-      throw new Error('You must connect before sending data');
+    if (!this._socket) throw new Error('You must connect before sending data');
     this._socket.next(this._config.serializer(data));
   }
 }
