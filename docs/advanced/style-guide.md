@@ -26,7 +26,7 @@ Feature states should live within the respective feature folder structure `src/a
 Actions can live within the store file but are recommended to be a separate file like: `zoo.actions.ts`
 
 ### Action Suffixes
-Actions should NOT have a a suffix
+Actions should NOT have a suffix
 
 ### Unit tests
 Unit tests for the state should be named `my-store-name.state.spec.ts`
