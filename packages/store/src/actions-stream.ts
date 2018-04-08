@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 /**
  * Internal Action stream that is emitted anytime an action is dispatched.
