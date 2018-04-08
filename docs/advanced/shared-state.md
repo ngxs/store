@@ -8,7 +8,7 @@ preferences in order to be able to sort your animals. This is achievable with `s
 
 ```TS
 @State<PreferencesStateModel>({
-  name: 'animals',
+  name: 'preferences',
   defaults: {
     sort: [{ prop: 'name', dir: 'asc' }]
   }
