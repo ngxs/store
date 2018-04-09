@@ -48,10 +48,12 @@ export class ZooComponent {
 }
 ```
 
-The observable has not result arguments since this a action can lead
-to multiple different control flows affecting multiple different state
-containers therefore its not realistically possible to return the state
-from that action. If you need to get the state after this, simply use a 
+The observable that dispatch returns has a void type, this is because
+there can be multiple states that listen to the same `@Action`,
+therefore its not realistically possible to return the state
+from these actions since we don't know the form of them.
+
+If you need to get the state after this, simply use a 
 select in the chain like:
 
 ```javascript
