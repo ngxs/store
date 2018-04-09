@@ -1,11 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
+import { Subject } from 'rxjs';
+import { Observer, Observable, interval } from 'rxjs';
 import { WebSocketSubject as RxWebSocketSubject, WebSocketSubjectConfig } from 'rxjs/observable/dom/WebSocketSubject';
 import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
 import { share, distinctUntilChanged, filter, takeWhile } from 'rxjs/operators';
-import { interval } from 'rxjs/observable/interval';
 
 /**
  * Websocket Subject
@@ -19,7 +17,7 @@ export class WebSocketSubject extends Subject<any> {
   private _reconnectionObservable: Observable<number>;
   private _reconnectAttempts: number;
   private _connectionObserver: Observer<boolean>;
-  private _internalConfig: WebSocketSubjectConfig;
+  private _internalConfig: WebSocketSubjectConfig<any>;
 
   constructor(@Inject(NGXS_WEBSOCKET_OPTIONS) private _config: NgxsWebsocketPluginOptions) {
     super();

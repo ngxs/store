@@ -1,7 +1,7 @@
 import { Action } from '../src/action';
 import { State } from '../src/state';
 import { META_KEY } from '../src/symbols';
-import { timer } from 'rxjs/observable/timer';
+import { timer } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';

@@ -1,10 +1,7 @@
 import { Injectable, ErrorHandler } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription, of, forkJoin } from 'rxjs';
 import { distinctUntilChanged, catchError, take, shareReplay } from 'rxjs/operators';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { map } from 'rxjs/operators/map';
-import { of } from 'rxjs/observable/of';
+import { map } from 'rxjs/operators';
 
 import { compose } from './compose';
 import { InternalActions } from './actions-stream';
