@@ -1,6 +1,8 @@
 # Redux Devtools
 Plugin with integration with the [Redux Devtools extension](http://extension.remotedev.io/).
 
+![img](assets/devtools.png)
+
 ## Install
 Devtools is a separate install from NPM, run the following to install it:
 
