@@ -7,7 +7,7 @@ npm i @ngxs/store --S
 
 then in `app.module.ts`, import the `NgxsModule`:
 
-```javascript
+```TS
 import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
 

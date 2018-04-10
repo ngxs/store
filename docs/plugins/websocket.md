@@ -11,7 +11,7 @@ npm i @ngxs/websocket-plugin --S
 ## Configuration
 Add the `NgxsWebsocketPluginModule` plugin to your root app module:
 
-```javascript
+```TS
 import { NgxsModule } from '@ngxs/store';
 import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
 
