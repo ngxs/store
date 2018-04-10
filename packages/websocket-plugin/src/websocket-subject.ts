@@ -29,6 +29,8 @@ export class WebSocketSubject extends Subject<any> {
 
     this._internalConfig = {
       url: this._config.url,
+      serializer: this._config.serializer,
+      deserializer: this._config.deserializer,
       closeObserver: {
         next: (e: CloseEvent) => {
           this._socket = null;
@@ -65,6 +67,7 @@ export class WebSocketSubject extends Subject<any> {
   disconnect() {
     if (this._socket) {
       this._socket.complete();
+
       // set to undefined so send() can throw error.
       this._socket = undefined;
     }
@@ -88,6 +91,7 @@ export class WebSocketSubject extends Subject<any> {
     if (!this._socket) {
       throw new Error('You must connect before sending data');
     }
-    this._socket.next(this._config.serializer(data));
+
+    this._socket.next(data);
   }
 }
