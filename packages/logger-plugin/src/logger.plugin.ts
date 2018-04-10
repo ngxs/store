@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { NgxsPlugin } from '@ngxs/store';
-import { getActionTypeFromInstance } from '@ngxs/store';
+import { NgxsPlugin, getActionTypeFromInstance } from '@ngxs/store';
 
 import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
 import { pad } from './internals';

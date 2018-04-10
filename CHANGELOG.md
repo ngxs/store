@@ -1,16 +1,17 @@
-# Master
+# 3.0.0-rc.0 4/10/18
 
 * Fix: Observable dispatch issues #235
 * Fix: Websocket error when socket undefined
 * Fix: Devtools not disabling
 * Fix: Action Stream has too much exposed
 * Chore: Loosen ng deps
+* Chore: Upgrade to ng6/rx6
 
 ### BREAKING
 
 * feat(store): create action stream that shows the action lifecycle #255
 
-To keep the same behavior switch from the ofAction operator to the ofActionDispatched operator
+To keep the same behavior switch from the ofAction operator to the `ofActionDispatched` operator
 
 # 3.0.0-beta.0 4/5/18
 
