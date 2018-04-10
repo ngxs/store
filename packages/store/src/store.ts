@@ -37,7 +37,8 @@ export class Store {
       catchError(err => {
         // handle error through angular error system
         this._errorHandler.handleError(err);
-        return of(err);
+        throw err;
+        // return of(err);
       })
     );
 

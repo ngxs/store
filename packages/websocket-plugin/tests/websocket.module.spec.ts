@@ -2,12 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { NgxsModule, State, Action, Store } from '@ngxs/store';
 
-import {
-  NgxsWebsocketPluginModule,
-  ConnectWebSocket,
-  DisconnectWebSocket,
-  SendWebSocketMessage
-} from '../';
+import { NgxsWebsocketPluginModule, ConnectWebSocket, DisconnectWebSocket, SendWebSocketMessage } from '../';
 import { Server } from 'mock-socket';
 
 describe('NgxsWebsocketPlugin', () => {
@@ -34,11 +29,10 @@ describe('NgxsWebsocketPlugin', () => {
   }
 
   const createMessage = () => {
-    return new SendWebSocketMessage(
-      {'type' : 'SET_MESSAGE', 'payload' : 'from websocket'}
-    );
+    return new SendWebSocketMessage({ type: 'SET_MESSAGE', payload: 'from websocket' });
   };
 
+  let store;
   const SOCKET_URL = 'ws://localhost:8400/websock';
 
   beforeEach(() => {
@@ -50,10 +44,11 @@ describe('NgxsWebsocketPlugin', () => {
         })
       ]
     });
+
+    store = TestBed.get(Store);
   });
 
-  it('should not send message if socket is closed', (done) => {
-    const store = TestBed.get(Store);
+  it('should not send message if socket is closed', done => {
     const mockServer = new Server(SOCKET_URL);
     mockServer.on('message', data => {
       mockServer.send(data);
@@ -66,14 +61,11 @@ describe('NgxsWebsocketPlugin', () => {
     } catch (err) {
       expect(err.message).toBe('You must connect before sending data');
     }
-    setTimeout(() => {
-       mockServer.stop(done);
-    }, 100);
 
+    mockServer.stop(done);
   });
 
-  it('should not send message if socket is closed after connection', (done) => {
-    const store = TestBed.get(Store);
+  it('should not send message if socket is closed after connection', done => {
     const mockServer = new Server(SOCKET_URL);
     mockServer.on('message', data => {
       mockServer.send(data);
@@ -88,14 +80,11 @@ describe('NgxsWebsocketPlugin', () => {
     } catch (err) {
       expect(err.message).toBe('You must connect before sending data');
     }
-    setTimeout(() => {
-       mockServer.stop(done);
-    }, 100);
 
+    mockServer.stop(done);
   });
 
-  it('should forward socket message to store', (done) => {
-    const store = TestBed.get(Store);
+  it('should forward socket message to store', done => {
     const mockServer = new Server(SOCKET_URL);
     mockServer.on('message', data => {
       mockServer.send(data);
@@ -103,12 +92,10 @@ describe('NgxsWebsocketPlugin', () => {
 
     store.dispatch(new ConnectWebSocket());
     store.dispatch(createMessage());
-    setTimeout(() => {
-       store.select(state => state.actions.message).subscribe((message: string) => {
-         expect(message).toBe('from websocket');
-       });
-       mockServer.stop(done);
-    }, 100);
+    store.select(state => state.actions.message).subscribe((message: string) => {
+      expect(message).toBe('from websocket');
+    });
 
+    mockServer.stop(done);
   });
 });

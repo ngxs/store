@@ -26,6 +26,9 @@ export class WebSocketHandler {
     socket.subscribe(
       msg => {
         const type = getValue(msg, config.typeKey);
+        if (!type) {
+          throw new Error(`Type ${type} not found on message`);
+        }
         store.dispatch({ ...msg, type });
       },
       err => store.dispatch(new WebsocketMessageError(err))
