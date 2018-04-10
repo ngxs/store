@@ -1,6 +1,6 @@
 import { Injectable, ErrorHandler } from '@angular/core';
 import { Observable, Subscription, of, forkJoin } from 'rxjs';
-import { distinctUntilChanged, catchError, take, shareReplay, map, of } from 'rxjs/operators';
+import { distinctUntilChanged, catchError, take, shareReplay, map, tap } from 'rxjs/operators';
 
 import { compose } from './compose';
 import { InternalActions, ActionStatus } from './actions-stream';
@@ -36,8 +36,7 @@ export class Store {
       catchError(err => {
         // handle error through angular error system
         this._errorHandler.handleError(err);
-        throw err;
-        // return of(err);
+        return of(err);
       })
     );
 
