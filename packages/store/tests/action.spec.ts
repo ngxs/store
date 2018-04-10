@@ -1,12 +1,12 @@
+import { TestBed } from '@angular/core/testing';
+
 import { Action } from '../src/action';
 import { State } from '../src/state';
 import { META_KEY } from '../src/symbols';
-import { timer } from 'rxjs/observable/timer';
-import { TestBed } from '@angular/core/testing';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
-import { tap } from 'rxjs/operators';
+import { ofActionComplete, ofActionDispatched } from '../src/of-action';
 
 describe('Action', () => {
   it('supports multiple actions', () => {
@@ -31,23 +31,14 @@ describe('Action', () => {
     expect(meta.actions[Action1.type]).toBeDefined();
     expect(meta.actions[Action2.type]).toBeDefined();
   });
-});
 
-describe('Actions', () => {
-  it('basic', () => {
-    let happened = false;
-
+  it('call action on dispatch and on complete', () => {
     class Action1 {
       static type = 'ACTION 1';
     }
 
     @State({ name: 'Bar' })
-    class BarStore {
-      @Action(Action1)
-      bar() {
-        return timer(10).pipe(tap(() => (happened = true)));
-      }
-    }
+    class BarStore {}
 
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([BarStore])]
@@ -56,8 +47,14 @@ describe('Actions', () => {
     const store = TestBed.get(Store);
     const actions = TestBed.get(Actions);
 
-    actions.subscribe(action => {
-      expect(happened).toBeFalsy();
+    let dispatchCalled = false;
+
+    actions.pipe(ofActionDispatched(Action1)).subscribe(action => {
+      dispatchCalled = true;
+    });
+
+    actions.pipe(ofActionComplete(Action1)).subscribe(action => {
+      expect(dispatchCalled).toBe(true);
     });
 
     store.dispatch(new Action1());

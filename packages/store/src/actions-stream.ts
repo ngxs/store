@@ -2,11 +2,21 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
+export enum ActionStatus {
+  Dispatched = 'DISPATCHED',
+  Completed = 'COMPLETED'
+}
+
+export interface ActionContext<T> {
+  status: ActionStatus;
+  action: T;
+}
+
 /**
  * Internal Action stream that is emitted anytime an action is dispatched.
  */
 @Injectable()
-export class InternalActions extends Subject<any> {}
+export class InternalActions extends Subject<ActionContext<any>> {}
 
 /**
  * Action stream that is emitted anytime an action is dispatched.
