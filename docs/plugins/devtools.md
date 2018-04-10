@@ -13,7 +13,7 @@ npm i @ngxs/devtools-plugin --S
 ## Usage
 Add the `NgxsReduxDevtoolsPluginModule` plugin to your root app module:
 
-```javascript
+```TS
 import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 

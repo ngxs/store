@@ -7,7 +7,7 @@ the global state.
 To dispatch actions, you need to inject the `Store` service into your component/service
 and invoke the `dispatch` function with an action or an array of actions you wish to trigger.
 
-```javascript
+```TS
 import { Store } from '@ngxs/store';
 import { AddAnimal } from './animal.actions';
 
@@ -23,7 +23,7 @@ export class ZooComponent {
 
 You can also dispatch multiple actions at the same time by passing an array of actions like:
 
-```javascript
+```TS
 this.store.dispatch([
   new AddAnimal('Panda'),
   new AddAnimal('Zebra')
@@ -34,7 +34,7 @@ Lets say after the action executes you want to clear
 the form. Our `dispatch` function actually returns an observable, so we can
 subscribe very easily and reset the form after it was successful.
 
-```javascript
+```TS
 import { Store } from '@ngxs/store';
 import { AddAnimal } from './animal.actions';
 
@@ -56,7 +56,7 @@ from these actions since we don't know the form of them.
 If you need to get the state after this, simply use a 
 select in the chain like:
 
-```javascript
+```TS
 import { Store } from '@ngxs/store';
 import { withLatestFrom } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
