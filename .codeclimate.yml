@@ -14,4 +14,4 @@ exclude_paths:
   - "tools/"
 ratings:
    paths:
-   - "src/**/**.ts"
+   - "packages/**/**.ts"
