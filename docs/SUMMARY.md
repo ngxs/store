@@ -1,9 +1,10 @@
 # Summary
 
-* Introduction
+* Getting Started
   * [Why](introduction/why.md)
   * [Installation](introduction/installation.md)
-* [Concepts](concepts/README.md)
+* Concepts
+  * [Introduction](concepts/intro.md)
   * [Store](concepts/store.md)
   * [Actions](concepts/actions.md)
   * [State](concepts/state.md)
@@ -21,7 +22,8 @@
   * [Unit Testing](advanced/unit-testing.md)
   * [Style Guide](advanced/style-guide.md)
   * [FAQ](advanced/faq.md)
-* [Plugins](plugins/README.md)
+* Plugins
+  * [Introduction](plugins/intro.md)
   * [Logger](plugins/logger.md)
   * [Devtools](plugins/devtools.md)
   * [Storage](plugins/storage.md)
