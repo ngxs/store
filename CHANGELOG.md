@@ -5,7 +5,12 @@
 * Fix: Devtools not disabling
 * Fix: Action Stream has too much exposed
 * Chore: Loosen ng deps
+
+### BREAKING
+
 * feat(store): create action stream that shows the action lifecycle #255
+
+To keep the same behavior switch from the ofAction operator to the ofActionDispatched operator
 
 # 3.0.0-beta.0 4/5/18
 
