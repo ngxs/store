@@ -100,7 +100,6 @@ export class StateFactory {
 
     for (const metadata of this.states) {
       const type = getActionTypeFromInstance(action);
-
       const actionMetas = metadata.actions[type];
 
       if (actionMetas) {
@@ -111,6 +110,7 @@ export class StateFactory {
           if (result instanceof Promise) {
             result = from(result);
           }
+
           if (result instanceof Observable) {
             result = result.pipe(
               (<ActionOptions>actionMeta.options).cancelUncompleted
@@ -126,7 +126,7 @@ export class StateFactory {
       }
     }
 
-    if (results.length === 0) {
+    if (!results.length) {
       results.push(of({}));
     }
 
