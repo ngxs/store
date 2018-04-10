@@ -9,7 +9,7 @@ exclude_paths:
   - ".github/"
   - "assets/"
   - "docs/"
-  - "packages/**/spec/"
+  - "packages/**/tests/"
   - "integration/"
   - "tools/"
 ratings:
