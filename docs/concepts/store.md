@@ -5,11 +5,11 @@ the global state.
 
 ### Dispatching actions
 To dispatch actions, you need to inject the `Store` service into your component/service
-and invoke the `dispatch` function with a action or a array of actions you wish to trigger.
+and invoke the `dispatch` function with an action or an array of actions you wish to trigger.
 
 ```javascript
 import { Store } from '@ngxs/store';
-import { AddAnimal } from './animal.events';
+import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
@@ -21,7 +21,7 @@ export class ZooComponent {
 }
 ```
 
-You can also dispatch multiple events at the same time by passing an array of events like:
+You can also dispatch multiple actions at the same time by passing an array of actions like:
 
 ```javascript
 this.store.dispatch([
@@ -30,13 +30,13 @@ this.store.dispatch([
 ]);
 ```
 
-Lets say after the event executes you want to clear
+Lets say after the action executes you want to clear
 the form. Our `dispatch` function actually returns an observable, so we can
 subscribe very easily and reset the form after it was successful.
 
 ```javascript
 import { Store } from '@ngxs/store';
-import { AddAnimal } from './animal.events';
+import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
@@ -48,9 +48,9 @@ export class ZooComponent {
 }
 ```
 
-The observable that dispatch returns has a void type, this is because
+The observable that a dispatch returns has a void type, this is because
 there can be multiple states that listen to the same `@Action`,
-therefore its not realistically possible to return the state
+therefore it's not realistically possible to return the state
 from these actions since we don't know the form of them.
 
 If you need to get the state after this, simply use a 
@@ -60,7 +60,7 @@ select in the chain like:
 import { Store } from '@ngxs/store';
 import { withLatestFrom } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
-import { AddAnimal } from './animal.events';
+import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
@@ -83,4 +83,4 @@ You can get a snapshot of the state by calling `store.snapshot()`. It will retur
 value of the store for that point in time.
 
 ### Selecting State
-See the [select](select.md) page for details on how to use the store to select out data.
+See the [select](select.md) page for details on how to use the store to select data.
