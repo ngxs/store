@@ -31,14 +31,14 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
     }
 
     if (typeof event.payload !== 'undefined') {
-      logger.log('%c payload', 'color: #9E9E9E; font-weight: bold', event.payload);
+      this.log('payload', 'color: #9E9E9E; font-weight: bold', event.payload);
     }
 
-    logger.log('%c prev state', 'color: #9E9E9E; font-weight: bold', state);
+    this.log('prev state', 'color: #9E9E9E; font-weight: bold', state);
 
     return next(state, event).pipe(
       tap(nextState => {
-        logger.log('%c next state', 'color: #4CAF50; font-weight: bold', nextState);
+        this.log('next state', 'color: #4CAF50; font-weight: bold', nextState);
         try {
           logger.groupEnd();
         } catch (e) {
@@ -46,5 +46,32 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
         }
       })
     );
+  }
+
+  log(title: string, color: string, payload: any) {
+    const options = this._options || <any>{};
+    const logger = options.logger || console;
+
+    if (this.isIE()) {
+      logger.log(title, payload);
+    } else {
+      logger.log('%c ' + title, color, payload);
+    }
+  }
+
+  isIE(): boolean {
+    const ua = typeof window !== 'undefined' && window.navigator.userAgent
+      ? window.navigator.userAgent
+      : '';
+    let ms_ie = false;
+
+    const old_ie = ua.indexOf('MSIE ');
+    const new_ie = ua.indexOf('Trident/');
+
+    if (old_ie > -1 || new_ie > -1) {
+      ms_ie = true;
+    }
+
+    return ms_ie;
   }
 }

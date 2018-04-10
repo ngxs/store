@@ -18,7 +18,7 @@ describe('Dispatch', () => {
   }
 
   it(
-    'should correctly dispatch the event',
+    'should correctly dispatch the action',
     async(() => {
       @State<number>({
         name: 'counter',

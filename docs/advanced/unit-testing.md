@@ -2,7 +2,7 @@
 Unit testing is easy since, we just need to dispatch events and then listen in on the changes and
 perform our expectation there. A basic test looks like this:
 
-```javascript
+```typescript
 describe('Zoo', () => {
   let store: Store;
 

@@ -9,7 +9,9 @@ exclude_paths:
   - ".github/"
   - "assets/"
   - "docs/"
-  - "src/spec/"
+  - "packages/**/tests/"
+  - "integration/"
+  - "tools/"
 ratings:
    paths:
-   - "src/**/**.ts"
+   - "packages/**/**.ts"

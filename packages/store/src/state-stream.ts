@@ -6,15 +6,7 @@ import { BehaviorSubject } from 'rxjs';
  */
 @Injectable()
 export class StateStream extends BehaviorSubject<any> {
-  constructor(
-    @Optional()
-    @SkipSelf()
-    parent: StateStream
-  ) {
+  constructor() {
     super({});
-
-    if (parent) {
-      Object.assign(this, parent);
-    }
   }
 }

@@ -2,6 +2,10 @@ import { filter } from 'rxjs/operators';
 import { OperatorFunction } from 'rxjs';
 import { getActionTypeFromInstance } from './utils';
 
+import { ActionContext, ActionStatus } from './actions-stream';
+import { map } from 'rxjs/operators/map';
+import { Observable } from 'rxjs/Observable';
+
 // TODO: Fix when RXJS 6 is released
 // import { OperatorFunction } from 'rxjs/interfaces';
 
@@ -10,12 +14,64 @@ export function ofAction<T>(...allowedTypes): OperatorFunction<any, T>;
 
 /**
  * RxJS operator for selecting out specific actions.
+ *
+ * This will grab actions that have just been dispatched as well as actions that have completed
  */
-export function ofAction(...allowedTypes: any[]): OperatorFunction<any, any> {
-  const allowedMap = allowedTypes.reduce((acc: any, klass: any) => {
-    acc[klass.type] = true;
+export function ofAction(...allowedTypes: any[]) {
+  return ofActionOperator(allowedTypes);
+}
+
+/**
+ * RxJS operator for selecting out specific actions.
+ *
+ * This will ONLY grab actions that have just been dispatched
+ */
+export function ofActionDispatched(...allowedTypes: any[]) {
+  return ofActionOperator(allowedTypes, ActionStatus.Dispatched);
+}
+
+/**
+ * RxJS operator for selecting out specific actions.
+ *
+ * This will ONLY grab actions that have just been completed
+ */
+export function ofActionComplete(...allowedTypes: any[]) {
+  return ofActionOperator(allowedTypes, ActionStatus.Completed);
+}
+
+/**
+ * RxJS operator for selecting out specific actions.
+ *
+ * This will ONLY grab actions that have thrown an error
+ */
+export function ofActionErrored(...allowedTypes: any[]) {
+  return ofActionOperator(allowedTypes, ActionStatus.Errored);
+}
+
+function ofActionOperator(allowedTypes: any[], status?: ActionStatus) {
+  const allowedMap = createAllowedMap(allowedTypes);
+
+  return function(o: Observable<any>) {
+    return o.pipe(filterStatus(allowedMap, status), mapAction());
+  };
+}
+
+function filterStatus(allowedTypes: { [key: string]: boolean }, status?: ActionStatus) {
+  return filter((ctx: ActionContext) => {
+    const actionType = getActionTypeFromInstance(ctx.action);
+    const type = allowedTypes[actionType];
+
+    return status ? type && ctx.status === status : type;
+  });
+}
+
+function mapAction() {
+  return map((ctx: ActionContext) => ctx.action);
+}
+
+function createAllowedMap(types: any[]): { [key: string]: boolean } {
+  return types.reduce((acc: any, klass: any) => {
+    acc[getActionTypeFromInstance(klass)] = true;
     return acc;
   }, {});
-
-  return filter(action => allowedMap[getActionTypeFromInstance(action)]);
 }

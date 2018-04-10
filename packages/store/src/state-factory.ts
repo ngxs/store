@@ -5,7 +5,7 @@ import { shareReplay, takeUntil, map } from 'rxjs/operators';
 import { META_KEY, StateContext, ActionOptions } from './symbols';
 import { topologicalSort, buildGraph, findFullParentPath, nameToState, MetaDataModel, isObject } from './internals';
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
-import { ofAction } from './of-action';
+import { ofActionDispatched } from './of-action';
 
 @Injectable()
 export class StateFactory {
@@ -114,7 +114,7 @@ export class StateFactory {
           if (result instanceof Observable) {
             result = result.pipe(
               (<ActionOptions>actionMeta.options).cancelUncompleted
-                ? takeUntil(actions$.pipe(ofAction(action.constructor)))
+                ? takeUntil(actions$.pipe(ofActionDispatched(action)))
                 : map(r => r)
             ); // act like a noop
           } else {

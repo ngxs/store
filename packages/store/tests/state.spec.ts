@@ -1,6 +1,6 @@
-import { ensureStoreMetadata } from '../src/internals';
 import { State } from '../src/state';
 import { Action } from '../src/action';
+import { META_KEY } from '../src/symbols';
 
 describe('Store', () => {
   it('describes correct name', () => {
@@ -9,7 +9,7 @@ describe('Store', () => {
     })
     class BarState {}
 
-    const meta = ensureStoreMetadata(BarState);
+    const meta = BarState[META_KEY];
     expect(meta.name).toBe('moo');
   });
 
@@ -37,8 +37,8 @@ describe('Store', () => {
       drink() {}
     }
 
-    const meta = ensureStoreMetadata(BarS2tore);
-    expect(meta.actions[Eat['type']]).toBeDefined();
-    expect(meta.actions[Drink['type']]).toBeDefined();
+    const meta = BarS2tore[META_KEY];
+    expect(meta.actions[Eat.type]).toBeDefined();
+    expect(meta.actions[Drink.type]).toBeDefined();
   });
 });
