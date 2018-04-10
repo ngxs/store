@@ -133,6 +133,11 @@ export class Store {
             }),
             map(() => {
               return this._stateStream.getValue();
+            }),
+            catchError(err => {
+              this._actions.next({ action, status: ActionStatus.Errored });
+
+              return of(err);
             })
           );
       }

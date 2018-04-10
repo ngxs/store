@@ -6,7 +6,8 @@ import { META_KEY } from '../src/symbols';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
-import { ofActionComplete, ofActionDispatched, ofAction } from '../src/of-action';
+import { ofActionComplete, ofActionDispatched, ofAction, ofActionErrored } from '../src/of-action';
+import { _throw } from 'rxjs/observable/throw';
 
 describe('Action', () => {
   let store: Store;
@@ -20,12 +21,21 @@ describe('Action', () => {
     static type = 'ACTION 2';
   }
 
+  class ErrorAction {
+    static type = 'ErrorAction';
+  }
+
   @State({
     name: 'bar'
   })
   class BarStore {
     @Action([Action1, Action2])
     foo() {}
+
+    @Action(ErrorAction)
+    onError() {
+      return _throw(new Error('this is a test error'));
+    }
   }
 
   beforeEach(() => {
@@ -62,5 +72,29 @@ describe('Action', () => {
     });
 
     store.dispatch(new Action1());
+  });
+
+  it('calls only the dispatched and error action', () => {
+    let callbackCalledCount = 0;
+
+    actions.pipe(ofAction(Action1)).subscribe(action => {
+      callbackCalledCount++;
+    });
+
+    actions.pipe(ofActionDispatched(ErrorAction)).subscribe(action => {
+      callbackCalledCount++;
+    });
+
+    actions.pipe(ofActionComplete(ErrorAction)).subscribe(action => {
+      callbackCalledCount++;
+    });
+
+    actions.pipe(ofActionErrored(ErrorAction)).subscribe(action => {
+      callbackCalledCount++;
+
+      expect(callbackCalledCount).toBe(2);
+    });
+
+    store.dispatch(new ErrorAction());
   });
 });

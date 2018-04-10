@@ -17,11 +17,7 @@ export function ofAction<T>(...allowedTypes);
  * This will grab actions that have just been dispatched as well as actions that have completed
  */
 export function ofAction(...allowedTypes: any[]) {
-  const allowedMap = createAllowedMap(allowedTypes);
-
-  return function(o: Observable<any>) {
-    return o.pipe(filterStatus(allowedMap), mapAction());
-  };
+  return ofActionOperator(allowedTypes);
 }
 
 /**
@@ -30,11 +26,7 @@ export function ofAction(...allowedTypes: any[]) {
  * This will ONLY grab actions that have just been dispatched
  */
 export function ofActionDispatched(...allowedTypes: any[]) {
-  const allowedMap = createAllowedMap(allowedTypes);
-
-  return function(o: Observable<any>) {
-    return o.pipe(filterStatus(allowedMap, ActionStatus.Dispatched), mapAction());
-  };
+  return ofActionOperator(allowedTypes, ActionStatus.Dispatched);
 }
 
 /**
@@ -43,22 +35,32 @@ export function ofActionDispatched(...allowedTypes: any[]) {
  * This will ONLY grab actions that have just been completed
  */
 export function ofActionComplete(...allowedTypes: any[]) {
+  return ofActionOperator(allowedTypes, ActionStatus.Completed);
+}
+
+/**
+ * RxJS operator for selecting out specific actions.
+ *
+ * This will ONLY grab actions that have thrown an error
+ */
+export function ofActionErrored(...allowedTypes: any[]) {
+  return ofActionOperator(allowedTypes, ActionStatus.Errored);
+}
+
+function ofActionOperator(allowedTypes: any[], status?: ActionStatus) {
   const allowedMap = createAllowedMap(allowedTypes);
 
   return function(o: Observable<any>) {
-    return o.pipe(filterStatus(allowedMap, ActionStatus.Completed), mapAction());
+    return o.pipe(filterStatus(allowedMap, status), mapAction());
   };
 }
 
 function filterStatus(allowedTypes: { [key: string]: boolean }, status?: ActionStatus) {
   return filter((ctx: ActionContext) => {
     const actionType = getActionTypeFromInstance(ctx.action);
+    const type = allowedTypes[actionType];
 
-    if (status) {
-      return allowedTypes[actionType] && ctx.status === status;
-    }
-
-    return allowedTypes[actionType];
+    return status ? type && ctx.status === status : type;
   });
 }
 
@@ -68,7 +70,7 @@ function mapAction() {
 
 function createAllowedMap(types: any[]): { [key: string]: boolean } {
   return types.reduce((acc: any, klass: any) => {
-    acc[klass.type] = true;
+    acc[getActionTypeFromInstance(klass)] = true;
 
     return acc;
   }, {});

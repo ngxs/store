@@ -4,7 +4,8 @@ import { Observable } from 'rxjs/Observable';
 
 export enum ActionStatus {
   Dispatched = 'DISPATCHED',
-  Completed = 'COMPLETED'
+  Completed = 'COMPLETED',
+  Errored = 'Errored'
 }
 
 export interface ActionContext {
