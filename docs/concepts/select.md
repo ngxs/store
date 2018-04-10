@@ -12,7 +12,7 @@ You can select slices of data from the store using the `@Select` decorator. It h
 different ways to get your data out, whether passing the state class, a function or dot notation
 of the object graph.
 
-```javascript
+```TS
 import { Select } from '@ngxs/store';
 
 import { ZooState } from './zoo.state';
@@ -34,7 +34,7 @@ export class ZooComponent {
 ### Store Select Function
 The `Store` class also has a `select` function:
 
-```javascript
+```TS
 import { Store } from '@ngxs/store';
 import { AddAnimal } from './animal.events';
 

@@ -28,12 +28,12 @@ export function getPackages(): Package[] {
 }
 
 export function execute(script: string): Promise<any> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolvePromise, rejectPromise) => {
     exec(script, (error, stdout, stderr) => {
       if (error) {
-        reject(stderr);
+        rejectPromise(stderr);
       } else {
-        resolve(stdout);
+        resolvePromise(stdout);
       }
     });
   });

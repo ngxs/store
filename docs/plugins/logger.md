@@ -2,7 +2,7 @@
 A simple console log plugin to log actions as they are processed.
 
 ## Install
-Devtools is a separate install from NPM, run the following to install it:
+Logger is a separate install from NPM, run the following to install it:
 
 ```bash
 npm i @ngxs/logger-plugin --S
@@ -11,7 +11,7 @@ npm i @ngxs/logger-plugin --S
 ## Usage
 Add the `NgxsLoggerPluginModule` plugin to your root app module:
 
-```javascript
+```TS
 import { NgxsModule, NgxsLoggerPluginModule } from '@ngxs/store';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 

@@ -1,7 +1,7 @@
 # FAQ
 
 ## Can I use NGXS with Angular 6?
-Yes! We require you have RXJS `compat` installed until we release a official version for RX6.
+Yes! We require you have `rxjs-compat` installed until we release a official version for RX6.
 
 ## Is this ready for production?
 Yes, we made a huge effort with 2.0 to ensure stability and good test coverage. There are several individuals who

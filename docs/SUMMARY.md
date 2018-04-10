@@ -1,11 +1,11 @@
 # Summary
 
-* [Introduction](README.md)
+* Introduction
   * [Why](introduction/why.md)
   * [Installation](introduction/installation.md)
 * [Concepts](concepts/README.md)
   * [Store](concepts/store.md)
-  * [Action](concepts/action.md)
+  * [Actions](concepts/actions.md)
   * [State](concepts/state.md)
   * [Select](concepts/select.md)
 * Advanced

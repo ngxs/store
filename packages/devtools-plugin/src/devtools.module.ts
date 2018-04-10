@@ -1,12 +1,17 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
 import { NgxsModule, NGXS_PLUGINS } from '@ngxs/store';
 
 import { NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS } from './symbols';
 import { NgxsReduxDevtoolsPlugin } from './devtools.plugin';
 
-export const defaultNgxsDevtoolsOptions: NgxsDevtoolsOptions = {
-  name: 'NGXS'
-};
+export function devtoolsOptionsFactory(options: NgxsDevtoolsOptions) {
+  return {
+    name: 'NGXS',
+    ...options
+  };
+}
+
+export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
 
 @NgModule({
   imports: [NgxsModule]
@@ -22,11 +27,13 @@ export class NgxsReduxDevtoolsPluginModule {
           multi: true
         },
         {
+          provide: USER_OPTIONS,
+          useValue: options
+        },
+        {
           provide: NGXS_DEVTOOLS_OPTIONS,
-          useValue: {
-            ...defaultNgxsDevtoolsOptions,
-            ...options
-          }
+          useFactory: devtoolsOptionsFactory,
+          deps: [USER_OPTIONS]
         }
       ]
     };

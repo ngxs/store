@@ -1,26 +1,25 @@
 import { Injectable, ErrorHandler } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { distinctUntilChanged, catchError, take, shareReplay, tap } from 'rxjs/operators';
+import { distinctUntilChanged, catchError, take, shareReplay } from 'rxjs/operators';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 import { map } from 'rxjs/operators/map';
 import { of } from 'rxjs/observable/of';
+import { tap } from 'rxjs/operators/tap';
 
 import { compose } from './compose';
-import { Actions } from './actions-stream';
+import { InternalActions, ActionStatus } from './actions-stream';
 import { StateFactory } from './state-factory';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { fastPropGetter } from './internals';
 import { META_KEY } from './symbols';
-import { InternalActionCompletions } from './actions-completion-stream';
 
 @Injectable()
 export class Store {
   constructor(
     private _errorHandler: ErrorHandler,
-    private _actions: Actions,
-    private _actionCompletions: InternalActionCompletions,
+    private _actions: InternalActions,
     private _storeFactory: StateFactory,
     private _pluginManager: PluginManager,
     private _stateStream: StateStream
@@ -107,7 +106,7 @@ export class Store {
     return this._stateStream.getValue();
   }
 
-  private _dispatch(action): Observable<any> {
+  private _dispatch(action: any): Observable<any> {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
@@ -118,7 +117,7 @@ export class Store {
           this._stateStream.next(nextState);
         }
 
-        this._actions.next(nextAction);
+        this._actions.next({ action, status: ActionStatus.Dispatched });
 
         return this._storeFactory
           .invokeActions(
@@ -128,7 +127,19 @@ export class Store {
             this._actions,
             action
           )
-          .pipe(tap(() => this._actionCompletions.next(nextAction)), map(() => this._stateStream.getValue()));
+          .pipe(
+            tap(() => {
+              this._actions.next({ action, status: ActionStatus.Completed });
+            }),
+            map(() => {
+              return this._stateStream.getValue();
+            }),
+            catchError(err => {
+              this._actions.next({ action, status: ActionStatus.Errored });
+
+              return of(err);
+            })
+          );
       }
     ])(prevState, action) as Observable<any>).pipe(shareReplay());
   }
