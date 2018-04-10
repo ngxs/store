@@ -119,7 +119,7 @@ jobs:
   upload_coverage:
     <<: *job_defaults
     environment:
-      - CC_TEST_REPORTER_ID: 773daba318367797acb253047e7e1e6977098258e30d16990e880cf4df8d8240
+      - CC_TEST_REPORTER_ID: 3f4c9a9d57ded045e0f9ab5d23e5bbcbf709bb85637bea555f1233e72134b818
     steps:
       - *attach_workspace
       - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
