@@ -17,11 +17,12 @@ The action handler is a observable that recieves all the actions dispatched befo
 
 Actions in NGXS also have a lifecycle. Since any potential action can be async we tag actions showing whether they are "DISPATCHED" or "COMPLETED". This gives you the ability to react to actions at different points in their existence.
 
-Since its an observable, we can use pipes and created 3 of them.
+Since its an observable, we can use pipes and created 4 of them.
 
-* `ofAction`: triggers both when an action has been dispatched and when it completes
+* `ofAction`: triggers when any of the below lifecycle events happen
 * `ofActionDispatched`: triggers when an action has been dispatched but NOT when it completes
 * `ofActionCompleted`: triggers when an action has been completed but NOT when it is dispatched
+* `ofActionErrored`: triggers when an action has caused an error to be thrown
 
 Below is a action handler that filters for `RouteNavigate` actions and then tells the router to navigate to that
 route.
