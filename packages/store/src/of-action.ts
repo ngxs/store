@@ -51,7 +51,7 @@ export function ofActionComplete(...allowedTypes: any[]) {
 }
 
 function filterStatus(allowedTypes: { [key: string]: boolean }, status?: ActionStatus) {
-  return filter((ctx: ActionContext<any>) => {
+  return filter((ctx: ActionContext) => {
     const actionType = getActionTypeFromInstance(ctx.action);
 
     if (status) {
@@ -63,7 +63,7 @@ function filterStatus(allowedTypes: { [key: string]: boolean }, status?: ActionS
 }
 
 function mapAction() {
-  return map((ctx: ActionContext<any>) => ctx.action);
+  return map((ctx: ActionContext) => ctx.action);
 }
 
 function createAllowedMap(types: any[]): { [key: string]: boolean } {

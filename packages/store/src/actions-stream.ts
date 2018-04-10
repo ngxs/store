@@ -7,16 +7,16 @@ export enum ActionStatus {
   Completed = 'COMPLETED'
 }
 
-export interface ActionContext<T> {
+export interface ActionContext {
   status: ActionStatus;
-  action: T;
+  action: any;
 }
 
 /**
  * Internal Action stream that is emitted anytime an action is dispatched.
  */
 @Injectable()
-export class InternalActions extends Subject<ActionContext<any>> {}
+export class InternalActions extends Subject<ActionContext> {}
 
 /**
  * Action stream that is emitted anytime an action is dispatched.
