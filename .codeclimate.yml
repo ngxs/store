@@ -10,6 +10,7 @@ exclude_paths:
   - "assets/"
   - "docs/"
   - "src/spec/"
+  - "*.spec.ts"
 ratings:
    paths:
    - "src/**/**.ts"
