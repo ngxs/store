@@ -9,8 +9,7 @@ exclude_paths:
   - ".github/"
   - "assets/"
   - "docs/"
-  - "src/spec/"
-  - "*.spec.ts"
+  - "packages/**/spec"
 ratings:
    paths:
    - "src/**/**.ts"
