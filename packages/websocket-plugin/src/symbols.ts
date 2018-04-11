@@ -31,6 +31,11 @@ export interface NgxsWebsocketPluginOptions {
    * Default: `json.stringify`
    */
   serializer?: (data: any) => string;
+
+  /**
+   * Deseralizer before publishing the message.
+   */
+  deserializer?: (e: MessageEvent) => any;
 }
 
 export function noop(arg) {

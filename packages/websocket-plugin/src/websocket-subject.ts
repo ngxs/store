@@ -1,11 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
-import { WebSocketSubject as RxWebSocketSubject, WebSocketSubjectConfig } from 'rxjs/observable/dom/WebSocketSubject';
+import { Subject } from 'rxjs';
+import { Observer, Observable, interval } from 'rxjs';
+import { websocket } from 'rxjs/websocket';
 import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
 import { share, distinctUntilChanged, filter, takeWhile } from 'rxjs/operators';
-import { interval } from 'rxjs/observable/interval';
 
 /**
  * Websocket Subject
@@ -15,11 +13,11 @@ import { interval } from 'rxjs/observable/interval';
 @Injectable()
 export class WebSocketSubject extends Subject<any> {
   connectionStatus: Observable<any>;
-  private _socket: RxWebSocketSubject<any>;
+  private _socket: any;
   private _reconnectionObservable: Observable<number>;
   private _reconnectAttempts: number;
   private _connectionObserver: Observer<boolean>;
-  private _internalConfig: WebSocketSubjectConfig;
+  private _internalConfig: any;
 
   constructor(@Inject(NGXS_WEBSOCKET_OPTIONS) private _config: NgxsWebsocketPluginOptions) {
     super();
@@ -31,6 +29,8 @@ export class WebSocketSubject extends Subject<any> {
 
     this._internalConfig = {
       url: this._config.url,
+      serializer: this._config.serializer,
+      deserializer: this._config.deserializer,
       closeObserver: {
         next: (e: CloseEvent) => {
           this._socket = null;
@@ -53,7 +53,7 @@ export class WebSocketSubject extends Subject<any> {
       this._internalConfig.url = url;
     }
 
-    this._socket = new RxWebSocketSubject(this._internalConfig);
+    this._socket = websocket(this._internalConfig);
     this._socket.subscribe(
       message => this.next(message),
       (error: Event) => {
@@ -67,6 +67,7 @@ export class WebSocketSubject extends Subject<any> {
   disconnect() {
     if (this._socket) {
       this._socket.complete();
+
       // set to undefined so send() can throw error.
       this._socket = undefined;
     }
@@ -87,7 +88,10 @@ export class WebSocketSubject extends Subject<any> {
   }
 
   send(data: any): void {
-    if (!this._socket) throw new Error('You must connect before sending data');
-    this._socket.next(this._config.serializer(data));
+    if (!this._socket) {
+      throw new Error('You must connect before sending data');
+    }
+
+    this._socket.next(data);
   }
 }

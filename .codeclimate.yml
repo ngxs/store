@@ -1,10 +1,17 @@
----
-engines:
+version: "2"
+plugins:
   tslint:
     enabled: true
     config: tslint.json
   nodesecurity:
     enabled: true
+checks:
+  method-complexity:
+    config:
+      threshold: 20
+  method-lines:
+    config:
+      threshold: 50
 exclude_paths:
   - ".github/"
   - "assets/"

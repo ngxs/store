@@ -3,11 +3,12 @@ import { TestBed } from '@angular/core/testing';
 import { Action } from '../src/action';
 import { State } from '../src/state';
 import { META_KEY } from '../src/symbols';
+
+import { throwError } from 'rxjs';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
 import { ofActionComplete, ofActionDispatched, ofAction, ofActionErrored } from '../src/of-action';
-import { _throw } from 'rxjs/observable/throw';
 
 describe('Action', () => {
   let store: Store;
@@ -34,7 +35,7 @@ describe('Action', () => {
 
     @Action(ErrorAction)
     onError() {
-      return _throw(new Error('this is a test error'));
+      return throwError(new Error('this is a test error'));
     }
   }
 

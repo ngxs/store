@@ -17,3 +17,6 @@ but reduces boilerplate by using modern TypeScript features such as classes and 
 ## New to NGXS?
 If your just getting started with NGXS, I recommend you head over to the [concepts](concepts/README.md)
 and then explore the rich ecosystem of examples in the [community resources](community/projects.md) page.
+
+## ❤️ Giving Back
+Become a [Contributor](community/contributor.md) or a [Sponsor](community/sponsors.md).

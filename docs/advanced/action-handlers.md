@@ -40,6 +40,28 @@ export class RouteHandler {
 }
 ```
 
+Remember you need to make sure and inject the `RouteHandler` somewhere in your application for DI to hook things up. If
+you want it to happen on application startup, Angular provides a method for doing this:
+
+```TS
+import { NgModule, APP_INITIALIZER } from '@angular/core';
+
+// Noop handler for factory function
+function noop() { return function() {}; };
+
+@NgModule({
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: noop,
+      deps: [RouteHandler],
+      multi: true
+    }
+  ]
+})
+export class AppModule {}
+```
+
 Action handlers can be used in components too. Given the cart deletion example, we might construct something like:
 
 ```TS
