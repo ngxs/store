@@ -12,6 +12,7 @@ export class FormDirective implements OnInit, OnDestroy {
   @Input('ngxsFormClearOnDestroy') clearDestroy: boolean;
 
   private _destroy$ = new Subject<null>();
+  private _updating = false;
 
   constructor(private _store: Store, private _formGroupDirective: FormGroupDirective, private _cd: ChangeDetectorRef) {}
 
@@ -20,7 +21,7 @@ export class FormDirective implements OnInit, OnDestroy {
       .select(state => getValue(state, `${this.path}.model`))
       .pipe(takeUntil(this._destroy$))
       .subscribe(model => {
-        if (model) {
+        if (!this._updating && model) {
           this._formGroupDirective.form.patchValue(model);
           this._cd.markForCheck();
         }
@@ -59,6 +60,7 @@ export class FormDirective implements OnInit, OnDestroy {
     this._formGroupDirective.valueChanges
       .pipe(debounceTime(this.debounce), takeUntil(this._destroy$))
       .subscribe(value => {
+        this._updating = true;
         this._store.dispatch([
           new UpdateFormValue({
             path: this.path,
@@ -72,7 +74,7 @@ export class FormDirective implements OnInit, OnDestroy {
             path: this.path,
             errors: this._formGroupDirective.errors
           })
-        ]);
+        ]).subscribe(() => this._updating = false);
       });
 
     this._formGroupDirective.statusChanges
