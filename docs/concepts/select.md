@@ -36,7 +36,7 @@ The `Store` class also has a `select` function:
 
 ```TS
 import { Store } from '@ngxs/store';
-import { AddAnimal } from './animal.events';
+import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
