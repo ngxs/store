@@ -1,7 +1,5 @@
-import { Observable } from 'rxjs';
+import { OperatorFunction, Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import { OperatorFunction } from 'rxjs/interfaces';
-
 import { getActionTypeFromInstance } from './utils';
 import { ActionContext, ActionStatus } from './actions-stream';
 
