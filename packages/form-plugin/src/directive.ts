@@ -59,7 +59,8 @@ export class FormDirective implements OnInit, OnDestroy {
 
     this._formGroupDirective.valueChanges
       .pipe(debounceTime(this.debounce), takeUntil(this._destroy$))
-      .subscribe(value => {
+      .subscribe(() => {
+        const value = this._formGroupDirective.control.getRawValue();
         this._updating = true;
         this._store.dispatch([
           new UpdateFormValue({

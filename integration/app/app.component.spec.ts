@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ComponentFixtureAutoDetect, discardPeriodicTasks } from '@angular/core/testing';
-import { take } from 'rxjs/operators';
+import { take, last } from 'rxjs/operators';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -26,7 +26,7 @@ describe('AppComponent', () => {
 
     component.todos$.subscribe(state => {
       expect(state.length).toBe(2);
-    });
+    }); 
   });
 
   it('should remove a todo', () => {
@@ -40,18 +40,20 @@ describe('AppComponent', () => {
     });
   });
 
-  it(
-    'should set toppings using form control',
+  it('should set toppings using form control',
     fakeAsync(() => {
       component.pizzaForm.patchValue({ toppings: 'oli' });
+
       tick(200);
       component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
         expect(pizza.model.toppings).toBe('oli');
+        expect(pizza.model.crust).toBe('thin');
       });
-      component.pizzaForm.setValue({ toppings: 'olives' });
+      component.pizzaForm.patchValue({ toppings: 'olives', crust: 'thick' });
       tick(200);
       component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
         expect(pizza.model.toppings).toBe('olives');
+        expect(pizza.model.crust).toBe('thick');
       });
       discardPeriodicTasks();
     })
@@ -60,11 +62,9 @@ describe('AppComponent', () => {
   it('should set toppings prefix', () => {
     component.setValue('cheese');
     component.onPrefix();
-    component.pizza$.subscribe((pizza: any) => {
-      console.log('pizza ', pizza);
-      console.log('pizza.model ', pizza.model);
-
+    component.pizza$.pipe(last()).subscribe((pizza: any) => {
       expect(pizza.model.toppings).toBe('Mr. cheese');
+      expect(pizza.model.crust).toBe('thin');
     });
   });
 });

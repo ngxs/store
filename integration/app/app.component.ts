@@ -12,7 +12,9 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState } from './todo.st
       <div>
         <h3>Reactive Form</h3>
         <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizza">
-            <input type="text" formControlName="toppings" />
+            Toppings: <input type="text" formControlName="toppings" />
+            <br>
+            Crust <input type="text" formControlName="crust" />
             <br><hr>
             <button type="submit">set olives</button>
             <button type="button" (click)="onPrefix()">Set Prfix</button>
@@ -44,7 +46,8 @@ export class AppComponent {
   @Select(TodosState.pizza) pizza$: Observable<any>;
 
   pizzaForm = this.formBuilder.group({
-    toppings: ['']
+    toppings: [''],
+    crust: [{value: 'thin', disabled: true}]
   });
 
   constructor(private store: Store, private formBuilder: FormBuilder) {}
@@ -68,7 +71,7 @@ export class AppComponent {
   setValue(val) {
     this.store.dispatch(
       new UpdateFormValue({
-        value: {toppings: val},
+        value: {toppings: val, crust: 'thin'},
         path: 'todos.pizza'
       })
     );
