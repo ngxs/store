@@ -29,8 +29,8 @@ for unit testing.
 
 ## Prepping State
 
-Often times if your app you need to test what happens when you state is C and you dispatch action X. Since NGXS
-allows you to dispatch multiple actions at once it is simple to create helpers and put your tests into the desired state.
+Often times in your app you want to test what happens when the state is C and you dispatch action X. Since NGXS
+allows you to dispatch multiple actions at once it is simple to create helpers that put your tests into the desired state.
 
 ```TS
 // zoo.state.helpers.ts
