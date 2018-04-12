@@ -1,7 +1,5 @@
-import { Observable } from 'rxjs';
+import { OperatorFunction, Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import { OperatorFunction } from 'rxjs/interfaces';
-
 import { getActionTypeFromInstance } from './utils';
 import { ActionContext, ActionStatus } from './actions-stream';
 
@@ -31,7 +29,7 @@ export function ofActionDispatched(...allowedTypes: any[]) {
  *
  * This will ONLY grab actions that have just been completed
  */
-export function ofActionComplete(...allowedTypes: any[]) {
+export function ofActionCompleted(...allowedTypes: any[]) {
   return ofActionOperator(allowedTypes, ActionStatus.Completed);
 }
 

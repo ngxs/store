@@ -58,8 +58,8 @@ select in the chain like:
 
 ```TS
 import { Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
-import { Observable } from 'rxjs/Observable';
 import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
