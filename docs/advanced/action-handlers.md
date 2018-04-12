@@ -70,7 +70,7 @@ export class CartComponent {
   constructor(private actions$: Actions) {}
 
   ngOnInit() {
-    this.actions$.pipe(ofActionComplete(CartDelete)).subscribe(() => alert('Item deleted'));
+    this.actions$.pipe(ofActionCompleted(CartDelete)).subscribe(() => alert('Item deleted'));
   }
 }
 ```
