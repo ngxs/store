@@ -1,6 +1,6 @@
 {
   "name": "ngxs",
-  "version": "3.0.0-rc.0",
+  "version": "3.0.0-rc.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ngxs/store.git"
@@ -96,7 +96,7 @@
     "mock-socket": "^7.1.0",
     "ng-packagr": "^2.3.0",
     "prettier": "^1.8.2",
-    "rxjs": "^6.0.0-rc.1",
+    "rxjs": "^6.0.0-rc.3",
     "rxjs-compat": "^6.0.0-beta.1",
     "ts-node": "~5.0.1",
     "tsickle": "^0.27.2",
