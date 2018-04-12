@@ -21,7 +21,7 @@ Since its an observable, we can use pipes and created 4 of them.
 
 * `ofAction`: triggers when any of the below lifecycle events happen
 * `ofActionDispatched`: triggers when an action has been dispatched but NOT when it completes
-* `ofActionCompleted`: triggers when an action has been completed but NOT when it is dispatched
+* `ofActionCompletedd`: triggers when an action has been completed but NOT when it is dispatched
 * `ofActionErrored`: triggers when an action has caused an error to be thrown
 
 Below is a action handler that filters for `RouteNavigate` actions and then tells the router to navigate to that
@@ -70,7 +70,7 @@ export class CartComponent {
   constructor(private actions$: Actions) {}
 
   ngOnInit() {
-    this.actions$.pipe(ofActionComplete(CartDelete)).subscribe(() => alert('Item deleted'));
+    this.actions$.pipe(ofActionCompleted(CartDelete)).subscribe(() => alert('Item deleted'));
   }
 }
 ```

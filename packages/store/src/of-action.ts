@@ -29,7 +29,7 @@ export function ofActionDispatched(...allowedTypes: any[]) {
  *
  * This will ONLY grab actions that have just been completed
  */
-export function ofActionComplete(...allowedTypes: any[]) {
+export function ofActionCompleted(...allowedTypes: any[]) {
   return ofActionOperator(allowedTypes, ActionStatus.Completed);
 }
 

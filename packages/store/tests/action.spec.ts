@@ -8,7 +8,7 @@ import { throwError } from 'rxjs';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
-import { ofActionComplete, ofActionDispatched, ofAction, ofActionErrored } from '../src/of-action';
+import { ofActionCompleted, ofActionDispatched, ofAction, ofActionErrored } from '../src/of-action';
 
 describe('Action', () => {
   let store: Store;
@@ -66,7 +66,7 @@ describe('Action', () => {
       callbackCalledCount++;
     });
 
-    actions.pipe(ofActionComplete(Action1)).subscribe(action => {
+    actions.pipe(ofActionCompleted(Action1)).subscribe(action => {
       callbackCalledCount++;
 
       expect(callbackCalledCount).toBe(4);
@@ -86,7 +86,7 @@ describe('Action', () => {
       callbackCalledCount++;
     });
 
-    actions.pipe(ofActionComplete(ErrorAction)).subscribe(action => {
+    actions.pipe(ofActionCompleted(ErrorAction)).subscribe(action => {
       callbackCalledCount++;
     });
 
