@@ -3,8 +3,8 @@ States are classes that define a state container.
 
 ## Defining a State
 States are classes along with decorators to describe metadata
-and action mappings. To define a state container, let's create a
-ES2015 class and decorator it with the `State` decorator.
+and action mappings. To define a state container, let's create an
+ES2015 class and decorate it with the `State` decorator.
 
 ```TS
 import { State } from '@ngxs/store';
@@ -19,7 +19,8 @@ export class AnimalsState {}
 In the state decorator, we define some metadata about the state. These options
 include:
 
-- `name`: The name of the state slice. Note: The name must be unique for the entire application. Names must be object property safe, AKA no dashes, dots, etc.
+- `name`: The name of the state slice. Note: The name is a required parameter and must be unique for the entire application. 
+Names must be object property safe, AKA no dashes, dots, etc.
 - `defaults`: Default set of object/array for this state slice.
 - `children`: Child sub state associations.
 
@@ -28,6 +29,7 @@ so all you need to do is inject your dependencies such as services in the constr
 
 ```TS
 @State<ZooStateModel>({
+  name: 'zoo',
   defaults: {
     feed: false
   }
@@ -39,7 +41,7 @@ export class ZooState {
 
 ## Defining Actions
 Our states listen to actions via a `@Action` decorator. The action decorator
-accepts a action class or an array of action classes. 
+accepts an action class or an array of action classes. 
 
 ### Simple Actions
 Let's define a state that will listen to a `FeedAnimals` action to toggle whether the animals have been feed:
@@ -52,6 +54,7 @@ export interface ZooStateModel {
 }
 
 @State<ZooStateModel>({
+  name: 'zoo'
   defaults: {
     feed: false
   }
@@ -69,17 +72,17 @@ export class ZooState {
 ```
 
 The `feedAnimals` function has one argument called `StateContext`. This
-context state slice pointer and a function to set the state. It's important
+context state has a slice pointer and a function to set the state. It's important
 to note that the `state` property is a getter that will always return
 the freshest state slice from the global store each time it is accessed. This
-ensures if you are performing async operations you can ensure the state
+ensures that when we're performing async operations the state
 is always fresh. If you want a snapshot, you can always clone the state
 in the method.
 
 ### Actions with Payload
 This action was simple, it had no payload. Let's take that same concept of
 feeding animals and enhance it to accept a payload of the animal name
-that has been feed.
+that has been fed.
 
 ```TS
 import { State, Action, StateContext } from '@ngxs/store';
@@ -89,6 +92,7 @@ export interface ZooStateModel {
 }
 
 @State<ZooStateModel>({
+  name: 'zoo',
   defaults: {
     feedAnimals: []
   }
@@ -109,7 +113,7 @@ In this example, we have a second argument that represents the action and we des
 to pull out the payload and use it in our action.
 
 There is also a shortcut `patchState` function to make updating the state easier. In this case,
-you pass the properties you want to update on the state only and it handles the rest. The above function
+you only pass it the properties you want to update on the state and it handles the rest. The above function
 could be reduced to this:
 
 ```TS
@@ -123,11 +127,11 @@ could be reduced to this:
 ```
 
 ### Async Actions
-Actions can perform async operations and update the state after a operation. 
+Actions can perform async operations and update the state after an operation. 
 
-Typically in Redux your actions are pure functions and you have some other system like a saga or effect to perform
+Typically in Redux your actions are pure functions and you have some other system like a saga or an effect to perform
 these operations and dispatch another action back to your state to mutate the state. There are some
-reasons why but for the most part it can be redundant and just add boilerplate. The great thing here is
+reasons why, but for the most part it can be redundant and just add boilerplate. The great thing here is
 we give you the flexibility to make that decision yourself based on your requirements.
 
 Let's take a look at a simple async action:
@@ -141,6 +145,7 @@ export interface ZooStateModel {
 }
 
 @State<ZooStateModel>({
+  name: 'zoo',
   defaults: {
     feedAnimals: []
   }
@@ -176,13 +181,13 @@ that observable chain to look like this:
 
 ```TS
 import { State, Action } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
 
 export interface ZooStateModel {
   feedAnimals: string[];
 }
 
 @State<ZooStateModel>({
+  name: 'zoo'
   defaults: {
     feedAnimals: []
   }
@@ -216,6 +221,7 @@ export interface ZooStateModel {
 }
 
 @State<ZooStateModel>({
+  name: 'zoo',
   defaults: {
     feedAnimals: []
   }
