@@ -28,7 +28,7 @@ Below is a action handler that filters for `RouteNavigate` actions and then tell
 route.
 
 ```TS
-import { Actions, ofAction } from '@ngxs/store';
+import { Actions, ofActionDispatched } from '@ngxs/store';
 
 @Injectable()
 export class RouteHandler {
@@ -70,7 +70,7 @@ export class CartComponent {
   constructor(private actions$: Actions) {}
 
   ngOnInit() {
-    this.actions$.pipe(ofActionComplete(CartDelete)).subscribe(() => alert('Item deleted'));
+    this.actions$.pipe(ofActionCompleted(CartDelete)).subscribe(() => alert('Item deleted'));
   }
 }
 ```

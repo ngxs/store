@@ -1,3 +1,9 @@
+# 3.0.0-rc.1 4/12/18
+
+- Fix: Rename `ofActionComplete` to `ofActionCompleted`
+- Fix: Expose `ofActionErrored`
+- Fix: Form Plugin Recursive Error
+
 # 3.0.0-rc.0 4/10/18
 
 * Fix: Observable dispatch issues #235
