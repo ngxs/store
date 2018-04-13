@@ -6721,7 +6721,7 @@ rxjs@^5.4.2, rxjs@^5.5.0, rxjs@^5.5.6:
   dependencies:
     symbol-observable "1.0.1"
 
-rxjs@^6.0.0-rc.1:
+rxjs@^6.0.0-rc.3:
   version "6.0.0-turbo-rc.4"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.0.0-turbo-rc.4.tgz#5995dab91914f03ee4a68d923678333ae626d2ec"
   dependencies:
