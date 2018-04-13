@@ -67,3 +67,5 @@ export interface ActionOptions {
 export interface NgxsOnInit {
   ngxsOnInit(ctx?: StateContext<any>): void | any;
 }
+
+export type NgxsLifeCycle = Partial<NgxsOnInit>;

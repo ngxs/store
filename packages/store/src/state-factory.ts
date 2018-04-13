@@ -2,7 +2,7 @@ import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { shareReplay, takeUntil, map } from 'rxjs/operators';
 
-import { META_KEY, StateContext, ActionOptions, NgxsOnInit } from './symbols';
+import { META_KEY, StateContext, ActionOptions, NgxsOnInit, NgxsLifeCycle } from './symbols';
 import { topologicalSort, buildGraph, findFullParentPath, nameToState, MetaDataModel, isObject } from './internals';
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
 import { ofActionDispatched } from './of-action';
@@ -88,7 +88,7 @@ export class StateFactory {
 
   invokeInit(getState, setState, dispatch, stateMetadatas) {
     for (const metadata of stateMetadatas) {
-      const instance: NgxsOnInit = metadata.instance;
+      const instance: NgxsLifeCycle = metadata.instance;
 
       if (instance.ngxsOnInit) {
         const stateContext = this.createStateContext(getState, setState, dispatch, metadata);
