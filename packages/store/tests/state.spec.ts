@@ -44,6 +44,8 @@ describe('Store', () => {
   });
 
   it('should throw an error on invalid names', () => {
+    let message: string;
+
     try {
       @State({
         name: 'bar-foo'
@@ -52,7 +54,9 @@ describe('Store', () => {
 
       window['foo'] = MyState; // to help with unread warning
     } catch (err) {
-      expect(err.message).toBe(stateNameErrorMessage('bar-foo'));
+      message = err.message;
     }
+
+    expect(message).toBe(stateNameErrorMessage('bar-foo'));
   });
 });
