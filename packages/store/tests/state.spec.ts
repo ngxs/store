@@ -1,4 +1,4 @@
-import { State } from '../src/state';
+import { State, stateNameErrorMessage } from '../src/state';
 import { Action } from '../src/action';
 import { META_KEY } from '../src/symbols';
 
@@ -10,6 +10,7 @@ describe('Store', () => {
     class BarState {}
 
     const meta = BarState[META_KEY];
+
     expect(meta.name).toBe('moo');
   });
 
@@ -24,7 +25,7 @@ describe('Store', () => {
     @State({
       name: 'bar'
     })
-    class BarStore {
+    class BarState {
       @Action(Eat)
       eat() {}
     }
@@ -32,13 +33,30 @@ describe('Store', () => {
     @State({
       name: 'bar2'
     })
-    class BarS2tore extends BarStore {
+    class Bar2State extends BarState {
       @Action(Drink)
       drink() {}
     }
 
-    const meta = BarS2tore[META_KEY];
+    const meta = Bar2State[META_KEY];
     expect(meta.actions[Eat.type]).toBeDefined();
     expect(meta.actions[Drink.type]).toBeDefined();
+  });
+
+  it('should throw an error on invalid names', () => {
+    let message: string;
+
+    try {
+      @State({
+        name: 'bar-foo'
+      })
+      class MyState {}
+
+      window['foo'] = MyState; // to help with unread warning
+    } catch (err) {
+      message = err.message;
+    }
+
+    expect(message).toBe(stateNameErrorMessage('bar-foo'));
   });
 });
