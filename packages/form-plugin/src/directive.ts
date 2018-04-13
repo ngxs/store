@@ -1,9 +1,8 @@
 import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroupDirective } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
-import { Subject } from 'rxjs/Subject';
-import { takeUntil } from 'rxjs/operators/takeUntil';
-import { debounceTime } from 'rxjs/operators/debounceTime';
+import { Subject } from 'rxjs';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 import { UpdateFormStatus, UpdateFormValue, UpdateFormDirty, UpdateFormErrors, UpdateForm } from './actions';
 
 @Directive({ selector: '[ngxsForm]' })
@@ -13,6 +12,7 @@ export class FormDirective implements OnInit, OnDestroy {
   @Input('ngxsFormClearOnDestroy') clearDestroy: boolean;
 
   private _destroy$ = new Subject<null>();
+  private _updating = false;
 
   constructor(private _store: Store, private _formGroupDirective: FormGroupDirective, private _cd: ChangeDetectorRef) {}
 
@@ -21,7 +21,7 @@ export class FormDirective implements OnInit, OnDestroy {
       .select(state => getValue(state, `${this.path}.model`))
       .pipe(takeUntil(this._destroy$))
       .subscribe(model => {
-        if (model) {
+        if (!this._updating && model) {
           this._formGroupDirective.form.patchValue(model);
           this._cd.markForCheck();
         }
@@ -60,6 +60,7 @@ export class FormDirective implements OnInit, OnDestroy {
     this._formGroupDirective.valueChanges
       .pipe(debounceTime(this.debounce), takeUntil(this._destroy$))
       .subscribe(value => {
+        this._updating = true;
         this._store.dispatch([
           new UpdateFormValue({
             path: this.path,
@@ -73,7 +74,7 @@ export class FormDirective implements OnInit, OnDestroy {
             path: this.path,
             errors: this._formGroupDirective.errors
           })
-        ]);
+        ]).subscribe(() => this._updating = false);
       });
 
     this._formGroupDirective.statusChanges

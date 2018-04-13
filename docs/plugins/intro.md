@@ -51,7 +51,7 @@ export class NgxsLoggerPluginModule {
 You can also use pure functions for plugins, the above example in a pure function
 would look like this:
 
-```javascript
+```TS
 export function logPlugin(state, action, next) {
   console.log('Action started!', state);
   return next(state, action).pipe(tap(result) => {
@@ -65,7 +65,7 @@ NOTE: when providing a pure function make sure to use `useValue` instead of `use
 To register them with NGXS, pass them via the options parameter
 in the module hookup like:
 
-```javascript
+```TS
 @NgModule({
   imports: [NgxsModule.forRoot([ZooStore]), NgxsLoggerPluginModule.forRoot({})]
 })

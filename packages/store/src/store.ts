@@ -1,13 +1,9 @@
 import { Injectable, ErrorHandler } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { distinctUntilChanged, catchError, take, shareReplay } from 'rxjs/operators';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { map } from 'rxjs/operators/map';
-import { of } from 'rxjs/observable/of';
+import { Observable, Subscription, of, forkJoin } from 'rxjs';
+import { distinctUntilChanged, catchError, take, shareReplay, map, tap } from 'rxjs/operators';
 
 import { compose } from './compose';
-import { InternalActions } from './actions-stream';
+import { InternalActions, ActionStatus } from './actions-stream';
 import { StateFactory } from './state-factory';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
@@ -105,7 +101,7 @@ export class Store {
     return this._stateStream.getValue();
   }
 
-  private _dispatch(action): Observable<any> {
+  private _dispatch(action: any): Observable<any> {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
@@ -116,7 +112,7 @@ export class Store {
           this._stateStream.next(nextState);
         }
 
-        this._actions.next(nextAction);
+        this._actions.next({ action, status: ActionStatus.Dispatched });
 
         return this._storeFactory
           .invokeActions(
@@ -126,7 +122,19 @@ export class Store {
             this._actions,
             action
           )
-          .pipe(map(() => this._stateStream.getValue()));
+          .pipe(
+            tap(() => {
+              this._actions.next({ action, status: ActionStatus.Completed });
+            }),
+            map(() => {
+              return this._stateStream.getValue();
+            }),
+            catchError(err => {
+              this._actions.next({ action, status: ActionStatus.Errored });
+
+              return of(err);
+            })
+          );
       }
     ])(prevState, action) as Observable<any>).pipe(shareReplay());
   }

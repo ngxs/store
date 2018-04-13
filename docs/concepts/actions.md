@@ -1,5 +1,5 @@
 # Actions
-Actions is a set of instructions for what we want to do along with payload data
+Actions are a set of instructions for what we want to do along with payload data
 associated to it.
 
 ## Simple Action
@@ -17,7 +17,7 @@ state, in this case flipping a boolean flag.
 
 ## Actions with Data
 Often you need an action to have some data associated with it. Let's take that
-original `FeedAnimals` action and modify it to have which animal we have feed
+original `FeedAnimals` action and modify it to know which animal we have fed
 by adding a payload member like:
 
 ```TS

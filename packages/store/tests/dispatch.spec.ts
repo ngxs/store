@@ -1,5 +1,5 @@
 import { async, TestBed } from '@angular/core/testing';
-import { timer } from 'rxjs/observable/timer';
+import { timer, of } from 'rxjs';
 import { tap, skip, delay } from 'rxjs/operators';
 
 import { State } from '../src/state';
@@ -7,7 +7,6 @@ import { Action } from '../src/action';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { StateContext } from '../src/symbols';
-import { of } from 'rxjs/observable/of';
 
 describe('Dispatch', () => {
   class Increment {
@@ -19,7 +18,7 @@ describe('Dispatch', () => {
   }
 
   it(
-    'should correctly dispatch the event',
+    'should correctly dispatch the action',
     async(() => {
       @State<number>({
         name: 'counter',

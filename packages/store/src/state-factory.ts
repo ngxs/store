@@ -1,14 +1,11 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { fromPromise } from 'rxjs/observable/fromPromise';
-import { of } from 'rxjs/observable/of';
+import { Observable, of, forkJoin, from } from 'rxjs';
 import { shareReplay, takeUntil, map } from 'rxjs/operators';
-import { forkJoin } from 'rxjs/observable/forkJoin';
 
 import { META_KEY, StateContext, ActionOptions } from './symbols';
 import { topologicalSort, buildGraph, findFullParentPath, nameToState, MetaDataModel, isObject } from './internals';
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
-import { ofAction } from './of-action';
+import { ofActionDispatched } from './of-action';
 
 @Injectable()
 export class StateFactory {
@@ -103,7 +100,6 @@ export class StateFactory {
 
     for (const metadata of this.states) {
       const type = getActionTypeFromInstance(action);
-
       const actionMetas = metadata.actions[type];
 
       if (actionMetas) {
@@ -112,12 +108,13 @@ export class StateFactory {
           let result = metadata.instance[actionMeta.fn](stateContext, action);
 
           if (result instanceof Promise) {
-            result = fromPromise(result);
+            result = from(result);
           }
+
           if (result instanceof Observable) {
             result = result.pipe(
               (<ActionOptions>actionMeta.options).cancelUncompleted
-                ? takeUntil(actions$.pipe(ofAction(action.constructor)))
+                ? takeUntil(actions$.pipe(ofActionDispatched(action)))
                 : map(r => r)
             ); // act like a noop
           } else {
@@ -129,7 +126,7 @@ export class StateFactory {
       }
     }
 
-    if (results.length === 0) {
+    if (!results.length) {
       results.push(of({}));
     }
 

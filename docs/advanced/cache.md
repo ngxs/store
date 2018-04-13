@@ -6,7 +6,7 @@ There are many different ways to approach this, below is a simple example of
 using the store's current values and returning it instead of calling the HTTP
 service.
 
-```javascript
+```typescript
 import { State, Action } from '@ngxs/store';
 import { of } from 'rxjs/observable/of';
 import { tap } from 'rxjs/operators';

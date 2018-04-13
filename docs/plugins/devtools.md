@@ -1,6 +1,8 @@
 # Redux Devtools
 Plugin with integration with the [Redux Devtools extension](http://extension.remotedev.io/).
 
+![Devtools Screenshot](../assets/devtools.png)
+
 ## Install
 Devtools is a separate install from NPM, run the following to install it:
 
@@ -11,7 +13,7 @@ npm i @ngxs/devtools-plugin --S
 ## Usage
 Add the `NgxsReduxDevtoolsPluginModule` plugin to your root app module:
 
-```javascript
+```TS
 import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 

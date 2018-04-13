@@ -1,7 +1,7 @@
 # Sponsors
 
 ## Backers
-Thank you to all our backers! 🙏 [Become a backer](https://opencollective.com/ngxs#backer)
+Thank you to all our backers! [Become a backer](https://opencollective.com/ngxs#backer)
 <a href="https://opencollective.com/ngxs#backers" target="_blank"><img src="https://opencollective.com/ngxs/backers.svg?width=890"></a>
 
 ## Sponsors

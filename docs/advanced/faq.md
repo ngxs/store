@@ -1,7 +1,8 @@
 # FAQ
 
-## Can I use NGXS with Angular 6?
-Yes! We require you have RXJS `compat` installed until we release a official version for RX6.
+## Can I use NGXS with Angular 5?
+3.x supports Angular 6 and RXJS 6 out of the box but you can still use it with Angular 5 by upgrading your RXJS version
+and using RXJS compatibility package in your project.
 
 ## Is this ready for production?
 Yes, we made a huge effort with 2.0 to ensure stability and good test coverage. There are several individuals who

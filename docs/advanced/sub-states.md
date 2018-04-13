@@ -6,7 +6,7 @@ basis. With NGXS, we can use a concept called sub states to handle this.
 ## Example
 Let's take the following example state graph:
 
-```javascript
+```typescript
 {
   cart: {
     checkedout: false,
@@ -24,7 +24,12 @@ Beneath that we have a `saved` object which represents another state slice.
 To express this relationship with NGXS, we simply need to use the `children`
 property in the `State` decorator:
 
-```javascript
+```typescript
+export interface CartStateModel {
+  checkedout: boolean;
+  items: CartItem[];
+}
+
 @State<CartStateModel>({
   name: 'cart',
   defaults: {
@@ -38,8 +43,13 @@ export class CartState {}
 
 then we describe our substate like normal:
 
-```javascript
-@State<CartStateModel>({
+```typescript
+export interface CartSavedStateModel {
+  dateSaved: Date;
+  items: CartItem[];
+}
+
+@State<CartSavedStateModel>({
   name: 'saved',
   defaults: {
     dateSaved: new Date(),
@@ -52,7 +62,7 @@ export class CartSavedState {}
 The relationship between these two are bound by their hierarchical order. To finish this up
 and wire up it, we need to import both of these into the `NgxsModule`:
 
-```javascript
+```typescript
 @NgModule({
   imports: [
     NgxsModule.forRoot([
