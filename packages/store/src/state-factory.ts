@@ -2,7 +2,7 @@ import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { shareReplay, takeUntil, map } from 'rxjs/operators';
 
-import { META_KEY, StateContext, ActionOptions, NgxsOnInit, NgxsLifeCycle } from './symbols';
+import { META_KEY, StateContext, ActionOptions, NgxsLifeCycle } from './symbols';
 import { topologicalSort, buildGraph, findFullParentPath, nameToState, MetaDataModel, isObject } from './internals';
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
 import { ofActionDispatched } from './of-action';
