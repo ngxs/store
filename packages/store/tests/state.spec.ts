@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
+import { InitState, UpdateState } from '@ngxs/store';
 import { State, Action, NgxsOnInit, NgxsModule, StateContext, Store } from '../src/public_api';
 
 import { stateNameErrorMessage } from '../src/state';
@@ -10,7 +11,7 @@ describe('Store', () => {
     @State({
       name: 'moo'
     })
-    class BarState {}
+    class BarState { }
 
     const meta = BarState[META_KEY];
 
@@ -30,7 +31,7 @@ describe('Store', () => {
     })
     class BarState {
       @Action(Eat)
-      eat() {}
+      eat() { }
     }
 
     @State({
@@ -38,7 +39,7 @@ describe('Store', () => {
     })
     class Bar2State extends BarState {
       @Action(Drink)
-      drink() {}
+      drink() { }
     }
 
     const meta = Bar2State[META_KEY];
@@ -53,7 +54,7 @@ describe('Store', () => {
       @State({
         name: 'bar-foo'
       })
-      class MyState {}
+      class MyState { }
 
       window['foo'] = MyState; // to help with unread warning
     } catch (err) {
@@ -82,6 +83,109 @@ describe('Store', () => {
 
     store.selectOnce(BarState).subscribe(res => {
       expect(res).toBe(true);
+    });
+  });
+
+  describe('given the ngxsOnInit lifecycle method is present', () => {
+    it('should call the ngxsOnInit method on root module initialisation', () => {
+      const listener: string[] = [];
+
+      @State<number>({
+        name: 'foo',
+        defaults: 0
+      })
+      class FooState implements NgxsOnInit {
+        ngxsOnInit(stateContext: StateContext<number>) {
+          listener.push('onInit');
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([FooState])]
+      });
+
+      TestBed.get(FooState);
+
+      expect(listener).toEqual(['onInit']);
+    });
+
+    it('should call the ngxsOnInit method on feature module initialisation', () => {
+      const listener: string[] = [];
+
+      @State<number>({
+        name: 'foo',
+        defaults: 0
+      })
+      class FooState implements NgxsOnInit {
+        ngxsOnInit(stateContext: StateContext<number>) {
+          listener.push('onInit');
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([]), NgxsModule.forFeature([FooState])]
+      });
+
+      TestBed.get(FooState);
+
+      expect(listener).toEqual(['onInit']);
+    });
+
+    it('should call an InitState action handler before the ngxsOnInit method on root module initialisation', () => {
+      const listener: string[] = [];
+
+      @State<number>({
+        name: 'foo',
+        defaults: 0
+      })
+      class FooState implements NgxsOnInit {
+        ngxsOnInit(stateContext: StateContext<number>) {
+          listener.push('onInit');
+        }
+
+        @Action(InitState)
+        initState(stateContext: StateContext<number>, { }) {
+          listener.push('initState');
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([FooState])]
+      });
+      TestBed.get(FooState);
+
+      expect(listener).toEqual(['initState', 'onInit']);
+    });
+
+    it('should call an UpdateState action handler before the ngxsOnInit method on feature module initialisation', () => {
+      const listener: string[] = [];
+
+      @State<number>({
+        name: 'foo',
+        defaults: 0
+      })
+      class FooState implements NgxsOnInit {
+        ngxsOnInit(stateContext: StateContext<number>) {
+          listener.push('onInit');
+        }
+
+        @Action(InitState)
+        initState(stateContext: StateContext<number>, { }) {
+          listener.push('initState');
+        }
+
+        @Action(UpdateState)
+        updateState(stateContext: StateContext<number>, { }) {
+          listener.push('updateState');
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([]), NgxsModule.forFeature([FooState])]
+      });
+      TestBed.get(FooState);
+
+      expect(listener).toEqual(['updateState', 'onInit']);
     });
   });
 });
