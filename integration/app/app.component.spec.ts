@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ComponentFixtureAutoDetect, discardPeriodicTasks } from '@angular/core/testing';
-import { take, last } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -26,7 +26,7 @@ describe('AppComponent', () => {
 
     component.todos$.subscribe(state => {
       expect(state.length).toBe(2);
-    }); 
+    });
   });
 
   it('should remove a todo', () => {
@@ -38,33 +38,57 @@ describe('AppComponent', () => {
       expect(state.length).toBe(1);
       expect(state[0]).toBe('Get Milk');
     });
+    
   });
 
   it('should set toppings using form control',
-    fakeAsync(() => {
+    () => {
       component.pizzaForm.patchValue({ toppings: 'oli' });
 
-      tick(200);
+      let flag = false;
       component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
+        flag = true;
         expect(pizza.model.toppings).toBe('oli');
         expect(pizza.model.crust).toBe('thin');
       });
+      expect(flag).toBe(true);
+
       component.pizzaForm.patchValue({ toppings: 'olives', crust: 'thick' });
-      tick(200);
+      flag = false;
       component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
+        flag = true;
         expect(pizza.model.toppings).toBe('olives');
         expect(pizza.model.crust).toBe('thick');
       });
-      discardPeriodicTasks();
-    })
-  );
+      expect(flag).toBe(true);
+      
+    });
 
-  it('should set toppings prefix', () => {
-    component.setValue('cheese');
+  it('should set toppings prefix', fakeAsync(() => {
+    component.pizzaForm.patchValue({ toppings: 'cheese' });
+    tick(200);
     component.onPrefix();
-    component.pizza$.pipe(last()).subscribe((pizza: any) => {
+    let flag = false;
+    tick(200);
+    component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
+      flag = true;
+      expect(pizza.model).toBeDefined();
       expect(pizza.model.toppings).toBe('Mr. cheese');
       expect(pizza.model.crust).toBe('thin');
     });
+    expect(flag).toBe(true);
+    discardPeriodicTasks();
+  }));
+
+  it('should load data in pizza form', () => {
+    component.onLoadData();
+    let flag = false;
+    component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
+      flag = true;
+      expect(pizza.model.toppings).toBe('pineapple');
+      expect(pizza.model.crust).toBe('medium');
+      expect(pizza.model.extras).toEqual([false, false, true]);
+    });
+    expect(flag).toBe(true);
   });
 });
