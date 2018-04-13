@@ -1,9 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Store, Select } from '@ngxs/store';
-import { UpdateFormValue } from '@ngxs/form-plugin';
 import { Observable } from 'rxjs/Observable';
-import { FormBuilder } from '@angular/forms';
-import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState } from './todo.state';
+import { FormBuilder, FormArray } from '@angular/forms';
+import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from './todo.state';
 
 @Component({
   selector: 'app-root',
@@ -15,9 +14,15 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState } from './todo.st
             Toppings: <input type="text" formControlName="toppings" />
             <br>
             Crust <input type="text" formControlName="crust" />
+            <br>
+            Extras
+            <span *ngFor='let extra of extras; let i=index'>
+              <input type='checkbox' [formControl]='extra'/> {{allExtras[i].name}}
+            </span>
             <br><hr>
-            <button type="submit">set olives</button>
+            <button type="submit">Set Olives</button>
             <button type="button" (click)="onPrefix()">Set Prfix</button>
+            <button type="button" (click)="onLoadData()">Load Data</button>
         </form>
       </div>
       <br><br><hr>
@@ -45,9 +50,17 @@ export class AppComponent {
   @Select(TodoState.pandas) pandas$: Observable<string[]>;
   @Select(TodosState.pizza) pizza$: Observable<any>;
 
+
+  allExtras = [
+    {name: 'cheese', selected: false},
+    {name: 'mushrooms', selected: false},
+    {name: 'olives', selected: false}
+  ];
+
   pizzaForm = this.formBuilder.group({
     toppings: [''],
-    crust: [{value: 'thin', disabled: true}]
+    crust: [{value: 'thin', disabled: true}],
+    extras: this.createExtras()
   });
 
   constructor(private store: Store, private formBuilder: FormBuilder) {}
@@ -62,22 +75,29 @@ export class AppComponent {
     });
   }
 
+  createExtras() {
+    const arr = this.allExtras.map(extra => {
+      return this.formBuilder.control(extra.selected);
+    });
+    return this.formBuilder.array(arr);
+  }
+
+  get extras() {
+    const ctl: FormArray = <FormArray>this.pizzaForm.get('extras');
+    return ctl.controls;
+  }
+
   onSubmit() {
     this.pizzaForm.patchValue({
       toppings: 'olives'
     });
   }
 
-  setValue(val) {
-    this.store.dispatch(
-      new UpdateFormValue({
-        value: {toppings: val, crust: 'thin'},
-        path: 'todos.pizza'
-      })
-    );
-  }
-
   onPrefix() {
     this.store.dispatch(new SetPrefix());
+  }
+
+  onLoadData() {
+    this.store.dispatch(new LoadData());
   }
 }
