@@ -1,5 +1,8 @@
-import { State, stateNameErrorMessage } from '../src/state';
-import { Action } from '../src/action';
+import { TestBed } from '@angular/core/testing';
+
+import { State, Action, NgxsOnInit, NgxsModule, StateContext, Store } from '../src/public_api';
+
+import { stateNameErrorMessage } from '../src/state';
 import { META_KEY } from '../src/symbols';
 
 describe('Store', () => {
@@ -58,5 +61,27 @@ describe('Store', () => {
     }
 
     expect(message).toBe(stateNameErrorMessage('bar-foo'));
+  });
+
+  it('should call ngxsOnInit if present', () => {
+    @State<boolean>({
+      name: 'moo',
+      defaults: false
+    })
+    class BarState implements NgxsOnInit {
+      ngxsOnInit(ctx: StateContext<boolean>) {
+        ctx.setState(true);
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([BarState])]
+    });
+
+    const store: Store = TestBed.get(Store);
+
+    store.selectOnce(BarState).subscribe(res => {
+      expect(res).toBe(true);
+    });
   });
 });

@@ -5,6 +5,6 @@ export { State } from './state';
 export { Select } from './select';
 export { Actions } from './actions-stream';
 export { ofAction, ofActionCompleted, ofActionDispatched, ofActionErrored } from './of-action';
-export { NgxsPlugin, NgxsPluginFn, StateContext } from './symbols';
+export { NgxsPlugin, NgxsPluginFn, StateContext, NgxsOnInit } from './symbols';
 export { Selector } from './selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils';
