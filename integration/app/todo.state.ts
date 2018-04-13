@@ -1,4 +1,6 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
+import { of } from 'rxjs/observable/of';
+import { tap } from 'rxjs/operators';
 
 export class AddTodo {
   static type = 'AddTodo';
@@ -42,6 +44,10 @@ export class SetPrefix {
   static type = 'SetPrefix';
 }
 
+export class LoadData {
+  static type = 'LoadData';
+}
+
 @State<TodoStateModel>({
   name: 'todos',
   defaults: {
@@ -60,6 +66,22 @@ export class TodosState {
   setPrefix({ getState, setState, patchState }) {
     const state = getState();
     const pizza1 = state.pizza.model.toppings;
-    patchState({ pizza: { model: { toppings: 'Mr. ' + pizza1 } } });
+    patchState({ pizza: { model: {
+      toppings: 'Mr. ' + pizza1
+    } } });
+  }
+
+  @Action(LoadData)
+  loadData({ patchState}) {
+    const data = {
+      toppings: 'pineapple',
+      crust: 'medium',
+      extras: [false, false, true]
+    };
+    return of(data).pipe(tap((vals: any) => {
+      patchState( { pizza: { model: {
+        ...vals
+      }}});
+    }));
   }
 }
