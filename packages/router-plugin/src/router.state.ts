@@ -47,6 +47,23 @@ export class RouterState {
     this.setUpStateRollbackEvents();
   }
 
+  @Action(Navigate)
+  navigate(ctx: StateContext<RouterStateModel>, action: Navigate) {
+    this.router.navigate(action.path, {
+      queryParams: action.queryParams,
+      ...action.extras
+    });
+  }
+
+  @Action([RouterNavigation, RouterError, RouterCancel])
+  angularRouterAction(ctx: StateContext<RouterStateModel>, action: RouterAction<any, RouterStateSnapshot>) {
+    ctx.setState({
+      ...ctx.getState(),
+      state: action.routerState,
+      navigationId: action.event.id
+    });
+  }
+
   /**
    * Hook into the angular router before each navigation action is performed
    * since the route tree can be large, we serialize it into something more manageable
@@ -77,23 +94,6 @@ export class RouterState {
       } else if (e instanceof NavigationError) {
         this.dispatchRouterError(e);
       }
-    });
-  }
-
-  @Action(Navigate)
-  navigate(ctx: StateContext<RouterStateModel>, action: Navigate) {
-    this.router.navigate(action.path, {
-      queryParams: action.queryParams,
-      ...action.extras
-    });
-  }
-
-  @Action([RouterNavigation, RouterError, RouterCancel])
-  angularRouterAction(ctx: StateContext<RouterStateModel>, action: RouterAction<any, RouterStateSnapshot>) {
-    ctx.setState({
-      ...ctx.getState(),
-      state: action.routerState,
-      navigationId: action.event.id
     });
   }
 
