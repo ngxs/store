@@ -17,3 +17,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/ngxs/sponsor/7/website" target="_blank"><img src="https://opencollective.com/ngxs/sponsor/7/avatar.svg"></a>
 <a href="https://opencollective.com/ngxs/sponsor/8/website" target="_blank"><img src="https://opencollective.com/ngxs/sponsor/8/avatar.svg"></a>
 <a href="https://opencollective.com/ngxs/sponsor/9/website" target="_blank"><img src="https://opencollective.com/ngxs/sponsor/9/avatar.svg"></a>
+
+## Other Contributions
+- [DataFrameworks](https://dataframeworks.com/) - Websocket Plugin
+- [Marian Stoica](https://twitter.com/MarianStoica19) - NGXS.io domain name
