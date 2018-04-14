@@ -2,10 +2,32 @@ import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { shareReplay, takeUntil, map } from 'rxjs/operators';
 
-import { META_KEY, StateContext, ActionOptions, NgxsLifeCycle } from './symbols';
-import { topologicalSort, buildGraph, findFullParentPath, nameToState, MetaDataModel, isObject } from './internals';
+import { META_KEY, StateContext, NgxsLifeCycle } from './symbols';
+import {
+  topologicalSort,
+  buildGraph,
+  findFullParentPath,
+  nameToState,
+  isObject,
+  ActionHandlerMetaData,
+  ObjectKeyMap,
+  StateKlass,
+  GetStateFn,
+  SetStateFn,
+  DispatchFn
+} from './internals';
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
 import { ofActionDispatched } from './of-action';
+import { Actions } from '@ngxs/store';
+import { InternalActions } from '@ngxs/store/src/actions-stream';
+
+interface MappedStore {
+  name: string;
+  actions: ObjectKeyMap<ActionHandlerMetaData[]>;
+  defaults: any;
+  instance: any;
+  depth: string;
+}
 
 /**
  * State factory class
@@ -13,11 +35,11 @@ import { ofActionDispatched } from './of-action';
  */
 @Injectable()
 export class StateFactory {
-  get states(): MetaDataModel[] {
+  get states(): MappedStore[] {
     return this._parentFactory ? this._parentFactory.states : this._states;
   }
 
-  private _states: MetaDataModel[] = [];
+  private _states: MappedStore[] = [];
 
   constructor(
     private _injector: Injector,
@@ -29,16 +51,19 @@ export class StateFactory {
   /**
    * Add a new state to the global defs.
    */
-  add(states: any | any[]): any[] {
-    if (!Array.isArray(states)) {
-      states = [states];
+  add(oneOrManyStateKalsses: StateKlass | StateKlass[]): MappedStore[] {
+    let stateKlasses: StateKlass[];
+    if (!Array.isArray(oneOrManyStateKalsses)) {
+      stateKlasses = [oneOrManyStateKalsses];
+    } else {
+      stateKlasses = oneOrManyStateKalsses;
     }
 
-    const stateGraph = buildGraph(states);
+    const stateGraph = buildGraph(stateKlasses);
     const sortedStates = topologicalSort(stateGraph);
     const depths = findFullParentPath(stateGraph);
-    const nameGraph = nameToState(states);
-    const mappedStores = [];
+    const nameGraph = nameToState(stateKlasses);
+    const mappedStores: MappedStore[] = [];
 
     for (const name of sortedStates) {
       const klass = nameGraph[name];
@@ -48,10 +73,10 @@ export class StateFactory {
       }
 
       const depth = depths[name];
-      const { actions } = klass[META_KEY] as MetaDataModel;
-      let { defaults } = klass[META_KEY] as MetaDataModel;
+      const { actions } = klass[META_KEY];
+      let { defaults } = klass[META_KEY];
 
-      (klass[META_KEY] as MetaDataModel).path = depth;
+      klass[META_KEY].path = depth;
 
       // ensure our store hasn't already been added
       const has = this.states.find(s => s.name === name);
@@ -71,7 +96,7 @@ export class StateFactory {
 
       const instance = this._injector.get(klass);
 
-      mappedStores.push({
+      mappedStores.push(<MappedStore>{
         actions,
         instance,
         defaults,
@@ -88,10 +113,10 @@ export class StateFactory {
   /**
    * Add a set of states to the store and return the defaulsts
    */
-  addAndReturnDefaults(stateKlasses: any[]): { defaults: any; states: any[] } {
+  addAndReturnDefaults(stateKlasses: any[]): { defaults: any; states: MappedStore[] } {
     if (stateKlasses) {
       const states = this.add(stateKlasses);
-      const defaults = states.reduce((result, meta) => setValue(result, meta.depth, meta.defaults), {});
+      const defaults = states.reduce((result, meta: MappedStore) => setValue(result, meta.depth, meta.defaults), {});
       return { defaults, states };
     }
   }
@@ -99,7 +124,12 @@ export class StateFactory {
   /**
    * Invoke the init function on the states.
    */
-  invokeInit(getState, setState, dispatch, stateMetadatas) {
+  invokeInit(
+    getState: GetStateFn<any>,
+    setState: SetStateFn<any>,
+    dispatch: DispatchFn,
+    stateMetadatas: MappedStore[]
+  ) {
     for (const metadata of stateMetadatas) {
       const instance: NgxsLifeCycle = metadata.instance;
 
@@ -114,7 +144,13 @@ export class StateFactory {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(getState, setState, dispatch, actions$, action) {
+  invokeActions(
+    getState: GetStateFn<any>,
+    setState: SetStateFn<any>,
+    dispatch: DispatchFn,
+    actions$: InternalActions,
+    action
+  ) {
     const results = [];
 
     for (const metadata of this.states) {
@@ -132,9 +168,7 @@ export class StateFactory {
 
           if (result instanceof Observable) {
             result = result.pipe(
-              (<ActionOptions>actionMeta.options).cancelUncompleted
-                ? takeUntil(actions$.pipe(ofActionDispatched(action)))
-                : map(r => r)
+              actionMeta.options.cancelUncompleted ? takeUntil(actions$.pipe(ofActionDispatched(action))) : map(r => r)
             ); // act like a noop
           } else {
             result = of({}).pipe(shareReplay());
@@ -155,7 +189,12 @@ export class StateFactory {
   /**
    * Create the state context
    */
-  private createStateContext(getState, setState, dispatch, metadata): StateContext<any> {
+  createStateContext(
+    getState: GetStateFn<any>,
+    setState: SetStateFn<any>,
+    dispatch: DispatchFn,
+    metadata: MappedStore
+  ): StateContext<any> {
     return {
       getState(): any {
         const state = getState();
@@ -167,7 +206,7 @@ export class StateFactory {
         }
 
         let state = getState();
-        const local = getValue(state, metadata.depth);
+        const local = this.getState();
         for (const k in val) {
           local[k] = val[k];
         }
