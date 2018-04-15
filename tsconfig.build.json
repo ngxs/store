@@ -6,7 +6,12 @@
     },
     "target": "es2015",
     "module": "es2015",
+    "moduleResolution": "node",
     "declaration": true,
-    "inlineSources": true
+    "sourceMap": true,
+    "inlineSources": true,
+    "skipLibCheck": true,
+    "importHelpers": true,
+    "lib": ["dom", "es2015"]
   }
 }
