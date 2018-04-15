@@ -1,4 +1,4 @@
-import { ensureStoreMetadata, ActionHandlerMetaData } from './internals';
+import { ensureStoreMetadata } from './internals';
 import { ActionOptions } from './symbols';
 
 /**
@@ -13,7 +13,7 @@ export function Action(actions: any | any[], options?: ActionOptions) {
     }
 
     for (const action of actions) {
-      const type: string = action.type;
+      const type = action.type;
 
       if (!action.type) {
         throw new Error(`Action ${action.name} is missing a static "type" property`);
@@ -23,7 +23,7 @@ export function Action(actions: any | any[], options?: ActionOptions) {
         meta.actions[type] = [];
       }
 
-      meta.actions[type].push(<ActionHandlerMetaData>{
+      meta.actions[type].push({
         fn: name,
         options: options || {},
         type
