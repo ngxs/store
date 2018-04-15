@@ -5,9 +5,18 @@ import { remove } from 'fs-extra';
 import { execute, getPackages } from './utils';
 import { ngPackagr } from 'ng-packagr';
 
-async function main() {
+async function main(specificPackage?: string) {
+  // get all packages
+  let packages = getPackages();
+
+  // build a specific package that is passed via the command line
+  // `yarn build:packages router-plugin`
+  if (specificPackage) {
+    console.log(`Specific: ${specificPackage}`);
+    packages = packages.filter(p => p.name === specificPackage);
+  }
+
   // run through all our packages and build and link them
-  const packages = getPackages();
   for (const pack of packages) {
     // build package
     try {
@@ -33,7 +42,7 @@ async function main() {
   }
 }
 
-main().catch(err => {
+main(process.argv[2]).catch(err => {
   console.error('Error building ngxs', err);
   process.exit(111);
 });
