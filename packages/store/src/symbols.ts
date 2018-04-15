@@ -68,9 +68,6 @@ export interface StoreOptions<T> {
 
 /**
  * Actions that can be provided in a action decorator.
- *
- * @export
- * @interface ActionOptions
  */
 export interface ActionOptions {
   /**
