@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
-import { InitState, UpdateState } from '@ngxs/store';
-import { State, Action, NgxsOnInit, NgxsModule, StateContext, Store } from '../src/public_api';
+import { InitState, UpdateState } from '../src/actions';
+import { State, Action, NgxsOnInit, NgxsModule, StateContext } from '../src/public_api';
 
 import { stateNameErrorMessage } from '../src/state';
 import { META_KEY } from '../src/symbols';
@@ -11,7 +11,7 @@ describe('Store', () => {
     @State({
       name: 'moo'
     })
-    class BarState { }
+    class BarState {}
 
     const meta = BarState[META_KEY];
 
@@ -31,7 +31,7 @@ describe('Store', () => {
     })
     class BarState {
       @Action(Eat)
-      eat() { }
+      eat() {}
     }
 
     @State({
@@ -39,7 +39,7 @@ describe('Store', () => {
     })
     class Bar2State extends BarState {
       @Action(Drink)
-      drink() { }
+      drink() {}
     }
 
     const meta = Bar2State[META_KEY];
@@ -54,7 +54,7 @@ describe('Store', () => {
       @State({
         name: 'bar-foo'
       })
-      class MyState { }
+      class MyState {}
 
       window['foo'] = MyState; // to help with unread warning
     } catch (err) {
@@ -62,28 +62,6 @@ describe('Store', () => {
     }
 
     expect(message).toBe(stateNameErrorMessage('bar-foo'));
-  });
-
-  it('should call ngxsOnInit if present', () => {
-    @State<boolean>({
-      name: 'moo',
-      defaults: false
-    })
-    class BarState implements NgxsOnInit {
-      ngxsOnInit(ctx: StateContext<boolean>) {
-        ctx.setState(true);
-      }
-    }
-
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([BarState])]
-    });
-
-    const store: Store = TestBed.get(Store);
-
-    store.selectOnce(BarState).subscribe(res => {
-      expect(res).toBe(true);
-    });
   });
 
   describe('given the ngxsOnInit lifecycle method is present', () => {
@@ -144,7 +122,7 @@ describe('Store', () => {
         }
 
         @Action(InitState)
-        initState(stateContext: StateContext<number>, { }) {
+        initState(stateContext: StateContext<number>, {}) {
           listener.push('initState');
         }
       }
@@ -170,12 +148,12 @@ describe('Store', () => {
         }
 
         @Action(InitState)
-        initState(stateContext: StateContext<number>, { }) {
+        initState(stateContext: StateContext<number>, {}) {
           listener.push('initState');
         }
 
         @Action(UpdateState)
-        updateState(stateContext: StateContext<number>, { }) {
+        updateState(stateContext: StateContext<number>, {}) {
           listener.push('updateState');
         }
       }

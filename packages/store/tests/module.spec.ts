@@ -4,7 +4,7 @@ import { async, TestBed } from '@angular/core/testing';
 import { NgxsModule } from '../src/module';
 import { State } from '../src/state';
 import { Store } from '../src/store';
-import { Selector } from '@ngxs/store';
+import { Selector } from '../src/selector';
 
 interface RootStateModel {
   foo: string;
@@ -111,17 +111,14 @@ describe('module', () => {
     expect(TestBed.get(FeatureModule)).toBeTruthy();
   });
 
-  it(
-    'should initialize all feature modules state',
-    async(() => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(), FeatureModule, FeatureModule2]
-      });
+  it('should initialize all feature modules state', async(() => {
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(), FeatureModule, FeatureModule2]
+    });
 
-      const store = TestBed.get(Store) as Store;
-      expect(store).toBeTruthy();
-      store.select(FeatureState.getBar).subscribe((bar: string) => expect(bar).toEqual('World'));
-      store.select(FeatureState2.getBaz).subscribe((baz: string) => expect(baz).toEqual('!'));
-    })
-  );
+    const store = TestBed.get(Store) as Store;
+    expect(store).toBeTruthy();
+    store.select(FeatureState.getBar).subscribe((bar: string) => expect(bar).toEqual('World'));
+    store.select(FeatureState2.getBaz).subscribe((baz: string) => expect(baz).toEqual('!'));
+  }));
 });
