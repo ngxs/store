@@ -4,50 +4,47 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
-import { NgxsRouterPluginModule, NgxsRouterPluginOptions, RouterState } from '../';
+import { NgxsRouterPluginModule, RouterState } from '../';
 import { Navigate } from '@ngxs/router-plugin/src/router.actions';
 
 describe('NgxsRouterPlugin', () => {
-  it(
-    'should dispatch router state events',
-    async(async () => {
-      createTestModule();
+  it('should dispatch router state events', async(async () => {
+    createTestModule();
 
-      const router: Router = TestBed.get(Router);
-      const store = TestBed.get(Store);
-      const log = logOfRouterAndStore(router, store);
+    const router: Router = TestBed.get(Router);
+    const store = TestBed.get(Store);
+    const log = logOfRouterAndStore(router, store);
 
-      await router.navigateByUrl('/');
+    await router.navigateByUrl('/');
 
-      expect(log).toEqual([
-        { type: 'url', state: null }, // init event. has nothing to do with the router
-        { type: 'router', event: 'NavigationStart', url: '/' },
-        { type: 'router', event: 'RoutesRecognized', url: '/' },
-        { type: 'url', state: '/' }, // RouterNavigation event in the store
-        { type: 'router', event: 'GuardsCheckStart', url: '/' },
-        { type: 'router', event: 'GuardsCheckEnd', url: '/' },
-        { type: 'router', event: 'ResolveStart', url: '/' },
-        { type: 'router', event: 'ResolveEnd', url: '/' },
+    expect(log).toEqual([
+      { type: 'url', state: null }, // init event. has nothing to do with the router
+      { type: 'router', event: 'NavigationStart', url: '/' },
+      { type: 'router', event: 'RoutesRecognized', url: '/' },
+      { type: 'url', state: '/' }, // RouterNavigation event in the store
+      { type: 'router', event: 'GuardsCheckStart', url: '/' },
+      { type: 'router', event: 'GuardsCheckEnd', url: '/' },
+      { type: 'router', event: 'ResolveStart', url: '/' },
+      { type: 'router', event: 'ResolveEnd', url: '/' },
 
-        { type: 'router', event: 'NavigationEnd', url: '/' }
-      ]);
+      { type: 'router', event: 'NavigationEnd', url: '/' }
+    ]);
 
-      log.splice(0);
-      await router.navigateByUrl('next');
+    log.splice(0);
+    await router.navigateByUrl('next');
 
-      expect(log).toEqual([
-        { type: 'router', event: 'NavigationStart', url: '/next' },
-        { type: 'router', event: 'RoutesRecognized', url: '/next' },
-        { type: 'url', state: '/next' },
-        { type: 'router', event: 'GuardsCheckStart', url: '/next' },
-        { type: 'router', event: 'GuardsCheckEnd', url: '/next' },
-        { type: 'router', event: 'ResolveStart', url: '/next' },
-        { type: 'router', event: 'ResolveEnd', url: '/next' },
+    expect(log).toEqual([
+      { type: 'router', event: 'NavigationStart', url: '/next' },
+      { type: 'router', event: 'RoutesRecognized', url: '/next' },
+      { type: 'url', state: '/next' },
+      { type: 'router', event: 'GuardsCheckStart', url: '/next' },
+      { type: 'router', event: 'GuardsCheckEnd', url: '/next' },
+      { type: 'router', event: 'ResolveStart', url: '/next' },
+      { type: 'router', event: 'ResolveEnd', url: '/next' },
 
-        { type: 'router', event: 'NavigationEnd', url: '/next' }
-      ]);
-    })
-  );
+      { type: 'router', event: 'NavigationEnd', url: '/next' }
+    ]);
+  }));
 
   it(
     'should select router state',
@@ -90,7 +87,6 @@ function createTestModule(
     canActivate?: Function;
     canLoad?: Function;
     providers?: Provider[];
-    config?: NgxsRouterPluginOptions;
   } = {}
 ) {
   @Component({
@@ -127,7 +123,7 @@ function createTestModule(
           paramsInheritanceStrategy: 'always'
         }
       ),
-      NgxsRouterPluginModule.forRoot(opts.config)
+      NgxsRouterPluginModule.forRoot()
     ],
     providers: [
       {
