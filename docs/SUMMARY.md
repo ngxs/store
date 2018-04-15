@@ -9,7 +9,16 @@
   * [Actions](concepts/actions.md)
   * [State](concepts/state.md)
   * [Select](concepts/select.md)
-* [API](api/README.md)
+* API
+  * [Action](api/modules/_action_.md)
+  * [Actions](api/modules/_actions_.md)
+  * [ActionsStream](api/modules/_actions_stream_.md)
+  * [Module](api/modules/_module_.md)
+  * [of-action](api/modules/_of_action_.md)
+  * [Select](api/modules/_select_.md)
+  * [Selector](api/modules/_selector_.md)
+  * [State](api/modules/_state_.md)
+  * [Store](api/modules/_store_.md)
 * Advanced
   * [Lazy Loading](advanced/lazy.md)
   * [Sub States](advanced/sub-states.md)
