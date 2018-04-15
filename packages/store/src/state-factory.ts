@@ -199,7 +199,7 @@ export class StateFactory {
         }
 
         let state = getState();
-        const local = this.getState();
+        const local = getValue(state, metadata.depth);
         for (const k in val) {
           local[k] = val[k];
         }
