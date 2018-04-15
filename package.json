@@ -43,10 +43,6 @@
     "packages/router-plugin"
   ],
   "scripts": {
-    "// - CLEAN": "Cleans the generated folders",
-    "clean": "npm-run-all -p clean:*",
-    "clean:build": "rimraf build",
-    "clean:api-docs": "rimraf docs/api",
     "// - APPS": "Run Apps in dev and with packaged modules",
     "start": "ng serve --aot",
     "serve:integration": "ng serve --prod --app 1 #requires yarn package",
