@@ -80,7 +80,7 @@ ___
 
 ###  addAndReturnDefaults
 
-▸ **addAndReturnDefaults**(stateKlasses: *`any`[]*): `object`
+▸ **addAndReturnDefaults**(stateClasses: *`any`[]*): `object`
 
 *Defined in [state-factory.ts:91](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/state-factory.ts#L91)*
 
@@ -90,7 +90,7 @@ Add a set of states to the store and return the defaulsts
 
 | Param | Type | Description |
 | ------ | ------ | ------ |
-| stateKlasses | `any`[]   |  - |
+| stateClasses | `any`[]   |  - |
 
 **Returns:** `object`
 

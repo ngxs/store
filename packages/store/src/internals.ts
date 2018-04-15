@@ -5,7 +5,7 @@ export interface ObjectKeyMap<T> {
   [key: string]: T;
 }
 
-export interface StateKlass {
+export interface StateClass {
   [META_KEY]?: MetaDataModel;
 }
 
@@ -26,12 +26,12 @@ export interface MetaDataModel {
   actions: ObjectKeyMap<ActionHandlerMetaData[]>;
   defaults: any;
   path: string;
-  children: StateKlass[];
+  children: StateClass[];
   instance: any;
 }
 
 /**
- * Ensures metadata is attached to the klass and returns it.
+ * Ensures metadata is attached to the class and returns it.
  *
  * @ignore
  */
@@ -93,11 +93,11 @@ export function fastPropGetter(paths: string[]): (x: any) => any {
  *
  * @ignore
  */
-export function buildGraph(stateKlasses: StateKlass[]): StateKeyGraph {
-  const findName = (klass: StateKlass): string => {
-    const meta: StateKlass = stateKlasses.find(g => g === klass);
+export function buildGraph(stateClasses: StateClass[]): StateKeyGraph {
+  const findName = (stateClass: StateClass) => {
+    const meta = stateClasses.find(g => g === stateClass);
     if (!meta) {
-      throw new Error(`Child state not found: ${klass}`);
+      throw new Error(`Child state not found: ${stateClass}`);
     }
 
     if (!meta[META_KEY]) {
@@ -107,18 +107,15 @@ export function buildGraph(stateKlasses: StateKlass[]): StateKeyGraph {
     return meta[META_KEY].name;
   };
 
-  return stateKlasses.reduce(
-    (result: StateKeyGraph, klass: StateKlass) => {
-      if (!klass[META_KEY]) {
-        throw new Error('States must be decorated with @State() decorator');
-      }
+  return stateClasses.reduce<StateKeyGraph>((result: StateKeyGraph, stateClass: StateClass) => {
+    if (!stateClass[META_KEY]) {
+      throw new Error('States must be decorated with @State() decorator');
+    }
 
-      const { name, children } = klass[META_KEY];
-      result[name] = (children || []).map(findName);
-      return result;
-    },
-    <StateKeyGraph>{}
-  );
+    const { name, children } = stateClass[META_KEY];
+    result[name] = (children || []).map(findName);
+    return result;
+  }, {});
 }
 
 /**
@@ -131,19 +128,16 @@ export function buildGraph(stateKlasses: StateKlass[]): StateKeyGraph {
  *
  * @ignore
  */
-export function nameToState(states: StateKlass[]): ObjectKeyMap<StateKlass> {
-  return states.reduce(
-    (result, klass: StateKlass) => {
-      if (!klass[META_KEY]) {
-        throw new Error('States must be decorated with @State() decorator');
-      }
+export function nameToState(states: StateClass[]): ObjectKeyMap<StateClass> {
+  return states.reduce<ObjectKeyMap<StateClass>>((result: ObjectKeyMap<StateClass>, stateClass: StateClass) => {
+    if (!stateClass[META_KEY]) {
+      throw new Error('States must be decorated with @State() decorator');
+    }
 
-      const meta = klass[META_KEY];
-      result[meta.name] = klass;
-      return result;
-    },
-    <ObjectKeyMap<StateKlass>>{}
-  );
+    const meta = stateClass[META_KEY];
+    result[meta.name] = stateClass;
+    return result;
+  }, {});
 }
 
 /**
@@ -170,7 +164,7 @@ export function findFullParentPath(obj: StateKeyGraph, newObj: ObjectKeyMap<stri
   const visit = (child: StateKeyGraph, keyToFind: string): string => {
     for (const key in child) {
       if (child.hasOwnProperty(key) && child[key].indexOf(keyToFind) >= 0) {
-        const parent: string = visit(child, key);
+        const parent = visit(child, key);
         return parent !== null ? `${parent}.${key}` : key;
       }
     }
@@ -179,7 +173,7 @@ export function findFullParentPath(obj: StateKeyGraph, newObj: ObjectKeyMap<stri
 
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
-      const parent: string = visit(obj, key);
+      const parent = visit(obj, key);
       newObj[key] = parent ? `${parent}.${key}` : key;
     }
   }
