@@ -101,6 +101,9 @@ export class Store {
     return this._stateStream.getValue();
   }
 
+  /**
+   * Dispatches an event and returns observable.
+   */
   private _dispatch(action: any): Observable<any> {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;

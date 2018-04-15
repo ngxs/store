@@ -4,6 +4,10 @@ import { Store } from './store';
 import { fastPropGetter } from './internals';
 import { META_KEY } from './symbols';
 
+/**
+ * Allows the select decorator to get access to the DI store.
+ * @ignore
+ */
 @Injectable()
 export class SelectFactory {
   static store: Store | undefined = undefined;

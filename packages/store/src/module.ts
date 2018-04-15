@@ -9,6 +9,10 @@ import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitState, UpdateState } from './actions';
 
+/**
+ * Root module
+ * @ignore
+ */
 @NgModule()
 export class NgxsRootModule {
   constructor(
@@ -43,6 +47,10 @@ export class NgxsRootModule {
   }
 }
 
+/**
+ * Feature module
+ * @ignore
+ */
 @NgModule({})
 export class NgxsFeatureModule {
   constructor(
@@ -80,8 +88,14 @@ export class NgxsFeatureModule {
   }
 }
 
+/**
+ * Ngxs Module
+ */
 @NgModule({})
 export class NgxsModule {
+  /**
+   * Root module factory
+   */
   static forRoot(states: any[] = []): ModuleWithProviders {
     return {
       ngModule: NgxsRootModule,
@@ -102,6 +116,9 @@ export class NgxsModule {
     };
   }
 
+  /**
+   * Feature module factory
+   */
   static forFeature(states: any[]): ModuleWithProviders {
     return {
       ngModule: NgxsFeatureModule,

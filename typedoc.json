@@ -1,0 +1,11 @@
+{
+  "name": "API",
+  "hideGenerator": true,
+  "readme": "none",
+  "mode": "modules",
+  "out": "docs/api",
+  "theme": "markdown",
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "module": "commonjs"
+}
