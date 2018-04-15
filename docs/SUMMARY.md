@@ -30,9 +30,9 @@
   * [Meta Reducers](advanced/meta-reducer.md)
   * [Shared State](advanced/shared-state.md)
 * Recipes
-  * [Caching](advanced/cache.md)
-  * [Unit Testing](advanced/unit-testing.md)
-  * [Style Guide](advanced/style-guide.md)
+  * [Caching](recipes/cache.md)
+  * [Unit Testing](recipes/unit-testing.md)
+  * [Style Guide](recipes/style-guide.md)
 * Plugins
   * [Introduction](plugins/intro.md)
   * [Logger](plugins/logger.md)

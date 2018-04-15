@@ -5,6 +5,17 @@ in the standard flow. You can easily override this flow by providing your own ha
 ```typescript
 import { NgModule, ErrorHandler } from '@angular/core';
 
+@Injectable()
+export class MyErrorHandler implements ErrorHandler {
+  handleError(error: any) {
+    console.log('ERRORR!, error);
+
+    // Make sure to rethrow so Angular picks it up
+    throw error;
+  }
+}
+
+
 @NgModule({
   imports: [AppComponent],
   providers: [
