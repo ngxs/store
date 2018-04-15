@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@ngxs/*": ["../../builds/*"]
+    },
+    "target": "es2015",
+    "module": "es2015",
+    "declaration": true,
+    "inlineSources": true
+  }
+}
