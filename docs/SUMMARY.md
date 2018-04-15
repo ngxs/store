@@ -40,6 +40,7 @@
   * [Storage](plugins/storage.md)
   * [Forms](plugins/form.md)
   * [Web Socket](plugins/websocket.md)
+  * [Router](plugins/router.md)
 * Community
   * [FAQ](advanced/faq.md)
   * [Resources](community/projects.md)
