@@ -9,7 +9,7 @@
   * [Actions](concepts/actions.md)
   * [State](concepts/state.md)
   * [Select](concepts/select.md)
-* [API](api/README.me)
+* [API](api/README.md)
 * Advanced
   * [Lazy Loading](advanced/lazy.md)
   * [Sub States](advanced/sub-states.md)
