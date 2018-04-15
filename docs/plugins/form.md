@@ -33,6 +33,19 @@ import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 export class AppModule {}
 ```
 
+When your form is used a submodule you have to import `NgxsFormPluginModule` as well:
+
+```TS
+import { NgxsFormPluginModule } from '@ngxs/form-plugin';
+
+@NgModule({
+  imports: [
+    NgxsFormPluginModule,
+  ]
+})
+export class SomeModule {}
+```
+
 ### Form State 
 Define your default form state as part of your application state.
 
