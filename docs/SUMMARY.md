@@ -23,15 +23,16 @@
   * [Lazy Loading](advanced/lazy.md)
   * [Sub States](advanced/sub-states.md)
   * [Cancellation](advanced/cancellation.md)
-  * [Caching](advanced/cache.md)
   * [Action Handlers](advanced/action-handlers.md)
   * [Composition](advanced/composition.md)
   * [Error Handling](advanced/errors.md)
   * [Life-cycle](advanced/life-cycle.md)
+  * [Meta Reducers](advanced/meta-reducer.md)
   * [Shared State](advanced/shared-state.md)
+* Recipes
+  * [Caching](advanced/cache.md)
   * [Unit Testing](advanced/unit-testing.md)
   * [Style Guide](advanced/style-guide.md)
-  * [FAQ](advanced/faq.md)
 * Plugins
   * [Introduction](plugins/intro.md)
   * [Logger](plugins/logger.md)
@@ -40,7 +41,7 @@
   * [Forms](plugins/form.md)
   * [Web Socket](plugins/websocket.md)
 * Community
-  * [News](community/news.md)
+  * [FAQ](advanced/faq.md)
   * [Resources](community/projects.md)
   * [Contributors](community/contributors.md)
   * [Contributing](community/contributing.md)
