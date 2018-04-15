@@ -9,6 +9,9 @@ export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
 export type NgxsPluginConstructor = new (...args: any[]) => NgxsPlugin;
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
+/**
+ * State context provided to the actions in the state.
+ */
 export interface StateContext<T> {
   /**
    * Get the current state.
@@ -33,6 +36,9 @@ export interface StateContext<T> {
 
 export type NgxsNextPluginFn = (state: any, mutation: any) => any;
 
+/**
+ * Plugin interface
+ */
 export interface NgxsPlugin {
   /**
    * Handle the state/action before its submitted to the state handlers.
@@ -40,6 +46,9 @@ export interface NgxsPlugin {
   handle(state: any, action: any, next: NgxsNextPluginFn): any;
 }
 
+/**
+ * Options that can be provided to the store.
+ */
 export interface StoreOptions<T> {
   /**
    * Name of the state. Required.
@@ -57,6 +66,9 @@ export interface StoreOptions<T> {
   children?: any[];
 }
 
+/**
+ * Actions that can be provided in a action decorator.
+ */
 export interface ActionOptions {
   /**
    * Cancel the previous uncompleted observable(s).
@@ -64,6 +76,9 @@ export interface ActionOptions {
   cancelUncompleted: boolean;
 }
 
+/**
+ * On init interface
+ */
 export interface NgxsOnInit {
   ngxsOnInit(ctx?: StateContext<any>): void | any;
 }

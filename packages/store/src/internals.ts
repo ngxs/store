@@ -11,6 +11,8 @@ export interface MetaDataModel {
 
 /**
  * Ensures metadata is attached to the klass and returns it.
+ *
+ * @ignore
  */
 export function ensureStoreMetadata(target): MetaDataModel {
   if (!target.hasOwnProperty(META_KEY)) {
@@ -33,6 +35,8 @@ export function ensureStoreMetadata(target): MetaDataModel {
  * The generated function is faster than:
  * - pluck (Observable operator)
  * - memoize
+ *
+ * @ignore
  */
 export function fastPropGetter(paths: string[]): (x: any) => any {
   const segments = paths;
@@ -66,6 +70,7 @@ export function fastPropGetter(paths: string[]): (x: any) => any {
  *    items: []
  *  };
  *
+ * @ignore
  */
 export function buildGraph(states) {
   const findName = klass => {
@@ -100,6 +105,7 @@ export function buildGraph(states) {
  *    cart: { metadata }
  *  };
  *
+ * @ignore
  */
 export function nameToState(states) {
   return states.reduce((result, klass) => {
@@ -131,6 +137,7 @@ export function nameToState(states) {
  *    items: 'cart.saved.items'
  *  };
  *
+ * @ignore
  */
 export function findFullParentPath(obj: any, newObj: any = {}) {
   const visit = (child: any, keyToFind: string) => {
@@ -170,6 +177,7 @@ export function findFullParentPath(obj: any, newObj: any = {}) {
  *    'cart'
  *  ];
  *
+ * @ignore
  */
 export function topologicalSort(graph) {
   const sorted = [];
@@ -206,6 +214,8 @@ export function topologicalSort(graph) {
 
 /**
  * Returns if the parameter is a object or not.
+ *
+ * @ignore
  */
 export function isObject(obj) {
   return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';

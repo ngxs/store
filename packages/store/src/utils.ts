@@ -1,5 +1,6 @@
 /**
  * Returns the type from an action instance.
+ * @ignore
  */
 export function getActionTypeFromInstance(action: any): string {
   if (action.constructor && action.constructor.type) {
@@ -9,6 +10,10 @@ export function getActionTypeFromInstance(action: any): string {
   return action.type;
 }
 
+/**
+ * Matches a action
+ * @ignore
+ */
 export function actionMatcher(action1: any) {
   const type1 = getActionTypeFromInstance(action1);
 
@@ -24,6 +29,8 @@ export function actionMatcher(action1: any) {
  *      'foo.bar.eat', true) //=> { foo: { bar: { eat: true } } }
  *
  * While it traverses it also creates new objects from top down.
+ *
+ * @ignore
  */
 export const setValue = (obj: any, prop: string, val: any) => {
   obj = { ...obj };
@@ -49,6 +56,7 @@ export const setValue = (obj: any, prop: string, val: any) => {
  *
  *    getValue({ foo: bar: [] }, 'foo.bar') //=> []
  *
+ * @ignore
  */
 export const getValue = (obj: any, prop: string) =>
   prop.split('.').reduce((acc: any, part: string) => acc && acc[part], obj);

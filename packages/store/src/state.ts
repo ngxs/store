@@ -3,6 +3,10 @@ import { StoreOptions, META_KEY } from './symbols';
 
 const stateNameRegex = new RegExp('^[a-zA-Z0-9]+$');
 
+/**
+ * Error message
+ * @ignore
+ */
 export const stateNameErrorMessage = name =>
   `${name} is not a valid state name. It needs to be a valid object property name.`;
 

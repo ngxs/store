@@ -16,6 +16,8 @@
  *      }
  *
  * the last function should not call `next`.
+ *
+ * @ignore
  */
 export const compose = funcs => (...args) => {
   const curr = funcs.shift();

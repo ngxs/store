@@ -1,6 +1,8 @@
 /**
  * Memoize a function.
  * Oringinally from: https://github.com/lodash/lodash/blob/master/memoize.js with some modifications
+ *
+ * @ignore
  */
 export function memoize(func, resolver?) {
   const memoized: any = function(...args) {

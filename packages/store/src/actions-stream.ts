@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
+/**
+ * Status of a dispatched action
+ */
 export enum ActionStatus {
   Dispatched = 'DISPATCHED',
   Completed = 'COMPLETED',

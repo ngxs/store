@@ -7,6 +7,10 @@ import { topologicalSort, buildGraph, findFullParentPath, nameToState, MetaDataM
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
 import { ofActionDispatched } from './of-action';
 
+/**
+ * State factory class
+ * @ignore
+ */
 @Injectable()
 export class StateFactory {
   get states(): MetaDataModel[] {
@@ -22,6 +26,9 @@ export class StateFactory {
     private _parentFactory: StateFactory
   ) {}
 
+  /**
+   * Add a new state to the global defs.
+   */
   add(states: any | any[]): any[] {
     if (!Array.isArray(states)) {
       states = [states];
@@ -78,6 +85,9 @@ export class StateFactory {
     return mappedStores;
   }
 
+  /**
+   * Add a set of states to the store and return the defaulsts
+   */
   addAndReturnDefaults(stateKlasses: any[]): { defaults: any; states: any[] } {
     if (stateKlasses) {
       const states = this.add(stateKlasses);
@@ -86,6 +96,9 @@ export class StateFactory {
     }
   }
 
+  /**
+   * Invoke the init function on the states.
+   */
   invokeInit(getState, setState, dispatch, stateMetadatas) {
     for (const metadata of stateMetadatas) {
       const instance: NgxsLifeCycle = metadata.instance;
@@ -98,6 +111,9 @@ export class StateFactory {
     }
   }
 
+  /**
+   * Invoke actions on the states.
+   */
   invokeActions(getState, setState, dispatch, actions$, action) {
     const results = [];
 
@@ -136,7 +152,10 @@ export class StateFactory {
     return forkJoin(results);
   }
 
-  createStateContext(getState, setState, dispatch, metadata): StateContext<any> {
+  /**
+   * Create the state context
+   */
+  private createStateContext(getState, setState, dispatch, metadata): StateContext<any> {
     return {
       getState(): any {
         const state = getState();
