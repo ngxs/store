@@ -73,7 +73,7 @@ export interface ActionOptions {
   /**
    * Cancel the previous uncompleted observable(s).
    */
-  cancelUncompleted: boolean;
+  cancelUncompleted?: boolean;
 }
 
 /**

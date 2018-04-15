@@ -54,7 +54,7 @@ ___
 
 *Defined in [internals.ts:17](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/internals.ts#L17)*
 
-Ensures metadata is attached to the klass and returns it.
+Ensures metadata is attached to the class and returns it.
 *__ignore__*: 
 
 **Parameters:**

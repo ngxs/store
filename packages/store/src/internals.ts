@@ -1,16 +1,45 @@
-import { META_KEY } from './symbols';
+import { META_KEY, ActionOptions } from './symbols';
+import { Observable } from 'rxjs';
+
+export interface ObjectKeyMap<T> {
+  [key: string]: T;
+}
+
+export interface StateClass {
+  [META_KEY]?: MetaDataModel;
+}
+
+export type StateKeyGraph = ObjectKeyMap<string[]>;
+
+export interface ActionHandlerMetaData {
+  fn: string;
+  options: ActionOptions;
+  type: string;
+}
+
+export type GetStateFn<T> = () => T;
+export type SetStateFn<T> = (newState: T) => void;
+export type DispatchFn = (actions: any | any[]) => Observable<any>;
 
 export interface MetaDataModel {
   name: string;
-  actions: any;
+  actions: ObjectKeyMap<ActionHandlerMetaData[]>;
   defaults: any;
   path: string;
-  children: any[];
+  children: StateClass[];
   instance: any;
 }
 
+export interface MappedStore {
+  name: string;
+  actions: ObjectKeyMap<ActionHandlerMetaData[]>;
+  defaults: any;
+  instance: any;
+  depth: string;
+}
+
 /**
- * Ensures metadata is attached to the klass and returns it.
+ * Ensures metadata is attached to the class and returns it.
  *
  * @ignore
  */
@@ -72,11 +101,11 @@ export function fastPropGetter(paths: string[]): (x: any) => any {
  *
  * @ignore
  */
-export function buildGraph(states) {
-  const findName = klass => {
-    const meta = states.find(g => g === klass);
+export function buildGraph(stateClasses: StateClass[]): StateKeyGraph {
+  const findName = (stateClass: StateClass) => {
+    const meta = stateClasses.find(g => g === stateClass);
     if (!meta) {
-      throw new Error(`Child state not found: ${klass}`);
+      throw new Error(`Child state not found: ${stateClass}`);
     }
 
     if (!meta[META_KEY]) {
@@ -86,12 +115,12 @@ export function buildGraph(states) {
     return meta[META_KEY].name;
   };
 
-  return states.reduce((result, klass) => {
-    if (!klass[META_KEY]) {
+  return stateClasses.reduce<StateKeyGraph>((result: StateKeyGraph, stateClass: StateClass) => {
+    if (!stateClass[META_KEY]) {
       throw new Error('States must be decorated with @State() decorator');
     }
 
-    const { name, children } = klass[META_KEY];
+    const { name, children } = stateClass[META_KEY];
     result[name] = (children || []).map(findName);
     return result;
   }, {});
@@ -107,14 +136,14 @@ export function buildGraph(states) {
  *
  * @ignore
  */
-export function nameToState(states) {
-  return states.reduce((result, klass) => {
-    if (!klass[META_KEY]) {
+export function nameToState(states: StateClass[]): ObjectKeyMap<StateClass> {
+  return states.reduce<ObjectKeyMap<StateClass>>((result: ObjectKeyMap<StateClass>, stateClass: StateClass) => {
+    if (!stateClass[META_KEY]) {
       throw new Error('States must be decorated with @State() decorator');
     }
 
-    const meta = klass[META_KEY];
-    result[meta.name] = klass;
+    const meta = stateClass[META_KEY];
+    result[meta.name] = stateClass;
     return result;
   }, {});
 }
@@ -139,8 +168,8 @@ export function nameToState(states) {
  *
  * @ignore
  */
-export function findFullParentPath(obj: any, newObj: any = {}) {
-  const visit = (child: any, keyToFind: string) => {
+export function findFullParentPath(obj: StateKeyGraph, newObj: ObjectKeyMap<string> = {}): ObjectKeyMap<string> {
+  const visit = (child: StateKeyGraph, keyToFind: string): string => {
     for (const key in child) {
       if (child.hasOwnProperty(key) && child[key].indexOf(keyToFind) >= 0) {
         const parent = visit(child, key);
@@ -179,10 +208,10 @@ export function findFullParentPath(obj: any, newObj: any = {}) {
  *
  * @ignore
  */
-export function topologicalSort(graph) {
-  const sorted = [];
-  const visited = {};
-  const visit = (name, ancestors: any = []) => {
+export function topologicalSort(graph: StateKeyGraph): string[] {
+  const sorted: string[] = [];
+  const visited: ObjectKeyMap<boolean> = {};
+  const visit = (name: string, ancestors: string[] = []) => {
     if (!Array.isArray(ancestors)) {
       ancestors = [];
     }
@@ -190,7 +219,7 @@ export function topologicalSort(graph) {
     ancestors.push(name);
     visited[name] = true;
 
-    graph[name].forEach(dep => {
+    graph[name].forEach((dep: string) => {
       if (ancestors.indexOf(dep) >= 0) {
         throw new Error(`Circular dependency '${dep}' is required by '${name}': ${ancestors.join(' -> ')}`);
       }
