@@ -9,7 +9,7 @@ export interface StateClass {
   [META_KEY]?: MetaDataModel;
 }
 
-type StateKeyGraph = ObjectKeyMap<string[]>;
+export type StateKeyGraph = ObjectKeyMap<string[]>;
 
 export interface ActionHandlerMetaData {
   fn: string;
@@ -28,6 +28,14 @@ export interface MetaDataModel {
   path: string;
   children: StateClass[];
   instance: any;
+}
+
+export interface MappedStore {
+  name: string;
+  actions: ObjectKeyMap<ActionHandlerMetaData[]>;
+  defaults: any;
+  instance: any;
+  depth: string;
 }
 
 /**

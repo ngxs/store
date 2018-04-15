@@ -9,24 +9,15 @@ import {
   findFullParentPath,
   nameToState,
   isObject,
-  ActionHandlerMetaData,
-  ObjectKeyMap,
   StateClass,
   GetStateFn,
   SetStateFn,
-  DispatchFn
+  DispatchFn,
+  MappedStore
 } from './internals';
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
 import { ofActionDispatched } from './of-action';
 import { InternalActions } from './actions-stream';
-
-interface MappedStore {
-  name: string;
-  actions: ObjectKeyMap<ActionHandlerMetaData[]>;
-  defaults: any;
-  instance: any;
-  depth: string;
-}
 
 /**
  * State factory class
