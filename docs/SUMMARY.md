@@ -48,3 +48,4 @@
   * [Contributing](community/contributing.md)
   * [Sponsors](community/sponsors.md)
   * [Support](community/support.md)
+* [Changelog](https://github.com/ngxs/store/blob/master/CHANGELOG.md)
