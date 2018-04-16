@@ -6,7 +6,7 @@ import { State, Action, NgxsOnInit, NgxsModule, StateContext, Store } from '../s
 import { stateNameErrorMessage } from '../src/state';
 import { META_KEY } from '../src/symbols';
 
-describe('Store', () => {
+describe('State', () => {
   it('describes correct name', () => {
     @State({
       name: 'moo'
@@ -118,7 +118,7 @@ describe('Store', () => {
         }
 
         @Action(InitState)
-        initState(ctx: StateContext<string[]>, {}) {
+        initState(ctx: StateContext<string[]>) {
           ctx.setState([...ctx.getState(), 'initState']);
         }
       }
@@ -143,12 +143,12 @@ describe('Store', () => {
         }
 
         @Action(InitState)
-        initState(ctx: StateContext<string[]>, {}) {
+        initState(ctx: StateContext<string[]>) {
           ctx.setState([...ctx.getState(), 'initState']);
         }
 
         @Action(UpdateState)
-        updateState(ctx: StateContext<string[]>, {}) {
+        updateState(ctx: StateContext<string[]>) {
           ctx.setState([...ctx.getState(), 'updateState']);
         }
       }
