@@ -1,5 +1,5 @@
 ## Installing
-To get started, install the package thru npm:
+To get started, install the package thru npm. The latest version (3.x) supports Angular/RX 6, if you want support for Angular5, use version 2.x.
 
 ```bash
 npm i @ngxs/store --S
