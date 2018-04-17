@@ -1,6 +1,8 @@
 <!--
 We will close this issue if you don't provide the needed information.
 For feature requests, delete the form below and describe the requirements and use case.
+NB: For questions, please ask them on stack overflow with the `ngxs` tag:
+  https://stackoverflow.com/questions/ask?tags=ngxs
 -->
 
 ### Versions
