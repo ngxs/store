@@ -44,7 +44,11 @@ export class WebSocketSubject extends Subject<any> {
 
     this.connectionStatus
       .pipe(filter(isConnected => !this._reconnectionObservable && typeof isConnected === 'boolean' && !isConnected))
-      .subscribe(isConnected => this.reconnect());
+      .subscribe(isConnected => {
+        // fix(amcdnl): temp remove reconnect since
+        // its not working correctly with latest rx
+        // this.reconnect();
+      });
   }
 
   connect(url?: string) {
