@@ -1,7 +1,8 @@
 import { NavigationCancel, NavigationError, Router, RouterStateSnapshot, RoutesRecognized } from '@angular/router';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
+import { of } from 'rxjs';
+
 import { Navigate, RouterAction, RouterCancel, RouterError, RouterNavigation } from './router.actions';
-import { of } from 'rxjs/observable/of';
 import { RouterStateSerializer } from './serializer';
 
 export type RouterStateModel<T = RouterStateSnapshot> = {
