@@ -95,8 +95,8 @@ export class AuthGuard implements CanActivate {
 }
 ```
 
-This guard will select the token from the store when the route is
-activated. If the token is invalid it won't let the user goto that page.
+This guard will decide if a route can be activated by using our selector to
+select the token from the store. If the token is invalid it won't let the user go to that page.
 Let's make sure we implement this in our route itself by defining the `AuthGuard`
 in the `canActivate` definition.
 
@@ -112,7 +112,7 @@ export const routes: Routes = [
 
 A common action you want to take is when a user logs out, we want
 to actually redirect the user to the login page. We can use our action
-stream to listen to the `Logout` action and tell the router to goto
+stream to listen to the `Logout` action and tell the router to go to
 the login page.
 
 ```TS
