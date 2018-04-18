@@ -30,6 +30,7 @@
   * [Meta Reducers](advanced/meta-reducer.md)
   * [Shared State](advanced/shared-state.md)
 * Recipes
+  * [Authentication](recipes/authentication.md)
   * [Caching](recipes/cache.md)
   * [Unit Testing](recipes/unit-testing.md)
   * [Style Guide](recipes/style-guide.md)
