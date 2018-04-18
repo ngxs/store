@@ -1,6 +1,6 @@
 # Form Plugin - Experimental Status
 Often when building Reactive Forms in Angular, you need to bind values from the
-store to form and vice versus. The values from the store are observable and
+store to form and vice versa. The values from the store are observable and
 the reactive form accepts raw objects, as a result we end up monkey patching
 this back and forth. 
 
