@@ -38,13 +38,13 @@ describe('AppComponent', () => {
       expect(state.length).toBe(1);
       expect(state[0]).toBe('Get Milk');
     });
-    
   });
 
-  it('should set toppings using form control',
-    () => {
+  it(
+    'should set toppings using form control',
+    fakeAsync(() => {
       component.pizzaForm.patchValue({ toppings: 'oli' });
-
+      tick(200);
       let flag = false;
       component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
         flag = true;
@@ -54,6 +54,7 @@ describe('AppComponent', () => {
       expect(flag).toBe(true);
 
       component.pizzaForm.patchValue({ toppings: 'olives', crust: 'thick' });
+      tick(200);
       flag = false;
       component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
         flag = true;
@@ -61,24 +62,27 @@ describe('AppComponent', () => {
         expect(pizza.model.crust).toBe('thick');
       });
       expect(flag).toBe(true);
-      
-    });
+    })
+  );
 
-  it('should set toppings prefix', fakeAsync(() => {
-    component.pizzaForm.patchValue({ toppings: 'cheese' });
-    tick(200);
-    component.onPrefix();
-    let flag = false;
-    tick(200);
-    component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
-      flag = true;
-      expect(pizza.model).toBeDefined();
-      expect(pizza.model.toppings).toBe('Mr. cheese');
-      expect(pizza.model.crust).toBe('thin');
-    });
-    expect(flag).toBe(true);
-    discardPeriodicTasks();
-  }));
+  it(
+    'should set toppings prefix',
+    fakeAsync(() => {
+      component.pizzaForm.patchValue({ toppings: 'cheese' });
+      tick(200);
+      component.onPrefix();
+      let flag = false;
+      tick(200);
+      component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
+        flag = true;
+        expect(pizza.model).toBeDefined();
+        expect(pizza.model.toppings).toBe('Mr. cheese');
+        expect(pizza.model.crust).toBe('thin');
+      });
+      expect(flag).toBe(true);
+      discardPeriodicTasks();
+    })
+  );
 
   it('should load data in pizza form', () => {
     component.onLoadData();
