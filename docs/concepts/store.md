@@ -30,9 +30,9 @@ this.store.dispatch([
 ]);
 ```
 
-Lets say after the action executes you want to clear
-the form. Our `dispatch` function actually returns an observable, so we can
-subscribe very easily and reset the form after it was successful.
+Let's say after the action executes you want to clear
+the form. Our `dispatch` function actually returns an Observable, so we can
+subscribe to it and reset the form after it was successful.
 
 ```TS
 import { Store } from '@ngxs/store';
@@ -48,13 +48,13 @@ export class ZooComponent {
 }
 ```
 
-The observable that a dispatch returns has a void type, this is because
+The Observable that a dispatch returns has a void type, this is because
 there can be multiple states that listen to the same `@Action`,
 therefore it's not realistically possible to return the state
 from these actions since we don't know the form of them.
 
 If you need to get the state after this, simply use a 
-select in the chain like:
+`@Select` in the chain like:
 
 ```TS
 import { Store } from '@ngxs/store';
@@ -79,7 +79,7 @@ export class ZooComponent {
 ```
 
 ### Snapshots
-You can get a snapshot of the state by calling `store.snapshot()`. It will return the entire
+You can get a snapshot of the state by calling `store.snapshot()`. This will return the entire
 value of the store for that point in time.
 
 ### Selecting State

@@ -61,7 +61,7 @@ In this state class, we have:
 - A login action method that will invoke the authentication service and set the token
 - A logout action method that will invoke the authentication service and remove our state
 
-Now lets wire up the state in our module.
+Now let's wire up the state in our module.
 
 ```TS
 @NgModule({
@@ -75,8 +75,8 @@ Now lets wire up the state in our module.
 export class AppModule {}
 ```
 
-In a typical JWT setup, you want to store your token in your localstorage
-so we actually hookup our storage plugin and tell it to track the token
+In a typical JWT setup, you want to store your token in the `localstorage`. To do this
+so we hookup our storage plugin and tell it to track the token
 key in our state.
 
 Next, we want to make sure that our users can't go to any pages that require authentication.
@@ -132,4 +132,4 @@ export class AppComponent {
 }
 ```
 
-And thats it!
+And that's it!

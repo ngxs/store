@@ -12,14 +12,14 @@ and describe them are the same. For example:
 export class LazyModule{}
 ```
 
-Its important to note when you lazy load a store, it is registered in the global
-state so this state object will be persisted globally now. Even though
-its available globally, you should only use it within that feature module so you
+It's important to note when lazy-loading a store, it is registered in the global
+state so this state object will now be persisted globally. Even though
+it's available globally, you should only use it within that feature module so you
 make sure not to create dependencies on things that could not be loaded yet.
 
 You probably defined a `AppState` interface that represents the global state
-graph but since we lazy loaded this we can't really include that in that definition.
-To handle that, lets just extend the `AppState` and use that in our a component like:
+graph but since we lazy loaded this we can't really include that in the definition.
+To handle this, let's extend the `AppState` and use that in our a component like:
 
 ```TS
 export interface AppState {
@@ -31,4 +31,4 @@ export interface OfficesState extends AppState {
 }
 ```
 
-now when we use our `Select` in our lazy loaded feature module, we can use `OfficesState`.
+Now when we use our `Select` in our lazy loaded feature module, we can use `OfficesState`.

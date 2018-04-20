@@ -2,7 +2,7 @@
 Bind server websocket events to Ngxs store actions.
 
 ## Install
-Websocket plugin is a separate install from NPM, run the following to install it:
+The Websocket plugin can be installed using NPM:
 
 ```bash
 npm i @ngxs/websocket-plugin --S
@@ -32,10 +32,10 @@ The plugin has a variety of options that can be passed:
 - `typeKey`: Object property that maps the websocket message to a action type. Default: `type`
 - `reconnectInterval`: Interval of which to reconnect if the client is disconnected. Default: `5000`
 - `reconnectAttempts`: Number of times before giving up on connection retries. Default: `10`
-- `serializer`: Serializer before sending objects to the websocket. Default: `JSON.stringify`
+- `serializer`: Serializer used before sending objects to the websocket. Default: `JSON.stringify`
 
 ## Usage
-Once connected any message that comes across the websocket will be bound to the state event stream.
+Once connected, any message that comes across the websocket will be bound to the state event stream.
 
 Let's say you have a websocket message that comes in like:
 
@@ -46,7 +46,7 @@ Let's say you have a websocket message that comes in like:
 }
 ```
 
-We will want to make a action that corresponds to this websocket message, that will
+We will want to make an action that corresponds to this websocket message, that will
 look like:
 
 ```TS
@@ -73,7 +73,7 @@ export class ZooState {
 }
 ```
 
-to send messages to the server, we can dispatch the `SendWebSocketMessage` with
+To send messages to the server, we can dispatch the `SendWebSocketMessage` with
 the payload being what you want to send.
 
 ```TS
@@ -111,7 +111,7 @@ export class AppComponent {
 Here is a list of all the available actions you have:
 
 - `ConnectWebSocket`: Action dispatched when you want to init the websocket. Optionally pass URL here.
-- `DisconnectWebSocket`: Action dispatched when the websockets disconnect
-- `SendWebSocketMessage`: Send a message to the server
+- `DisconnectWebSocket`: Action dispatched when the websockets disconnect.
+- `SendWebSocketMessage`: Send a message to the server.
 - `WebsocketMessageError`: Error ocurred when receiving a message.
 

@@ -1,7 +1,7 @@
 # Unit Testing
 
-Unit testing is easy since, we just need to dispatch events and then listen in on the changes and
-perform our expectation there. A basic test looks like this:
+Unit testing is easy with NGXS. To perform a unit test we just dispatch the events, listen to the changes and
+perform our expectation. A basic test looks like this:
 
 ```TS
 describe('Zoo', () => {
@@ -23,8 +23,8 @@ describe('Zoo', () => {
 });
 ```
 
-You might notice I use `selectOnce` rather than just `select`, this is a shortcut
-method that lets us only listen for one emit which is typically what we want
+You might notice the use of `selectOnce` rather than just `select`, this is a shortcut
+method that allows us to only listen for one emit which is typically what we want
 for unit testing.
 
 ## Prepping State

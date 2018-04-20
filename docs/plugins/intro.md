@@ -4,10 +4,10 @@ Next let's talk about plugins. Similar to Redux's meta reducers, we have
 a plugins interface that allows you to build a global plugin for your state.
 
 All you have to do is provide a class to the `NGXS_PLUGINS` token.
-If your plugins has options associated with it, we suggest defining an injection token
-and then a `forRoot` method on your module
+If your plugins have options associated with it, we suggest defining an injection token
+and then a `forRoot` method on your module.
 
-Let's take a basic example of a logger:
+Let's take a look at a basic example of a logger:
 
 ```TS
 import { Injectable, Inject, NgModule } from '@angular/core';
@@ -48,7 +48,7 @@ export class NgxsLoggerPluginModule {
 }
 ```
 
-You can also use pure functions for plugins, the above example in a pure function
+You can also use pure functions for plugins. The above example in a pure function
 would look like this:
 
 ```TS
@@ -60,7 +60,7 @@ export function logPlugin(state, action, next) {
 }
 ```
 
-NOTE: when providing a pure function make sure to use `useValue` instead of `useClass`.
+NOTE: When providing a pure function make sure to use `useValue` instead of `useClass`.
 
 To register them with NGXS, pass them via the options parameter
 in the module hookup like:
@@ -72,4 +72,4 @@ in the module hookup like:
 export class MyModule {}
 ```
 
-It also works with `forFeature`.
+The method also works with `forFeature`.

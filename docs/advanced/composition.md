@@ -1,5 +1,5 @@
 # Composition
-You can compose multiple stores together using class inheritance. This is REALLY simple:
+You can compose multiple stores together using class inheritance. This is quite simple:
 
 ```TS
 @State({
@@ -19,4 +19,4 @@ class StLouisZooState extends ZooState {
 }
 ```
 
-now when `StLouisZooState` is invoked, it will share the actions of the `ZooState`.
+Now when `StLouisZooState` is invoked, it will share the actions of the `ZooState`.

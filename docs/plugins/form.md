@@ -1,17 +1,17 @@
 # Form Plugin - Experimental Status
 Often when building Reactive Forms in Angular, you need to bind values from the
-store to form and vice versa. The values from the store are observable and
+store to the form and vice versa. The values from the store are observable and
 the reactive form accepts raw objects, as a result we end up monkey patching
 this back and forth. 
 
-In addition to these issues we encounter, there are workflows where you want
+In addition to these issues, there are workflows where you want
 to fill out a form and leave and then come back and resume your current status.
 This is an excellent use case for stores and we can conquer that case with this plugin.
 
 In a nutshell, this plugin helps to keep your forms and state in sync.
 
 ## Install
-Forms is a separate install from NPM, run the following to install it:
+The Forms plugin can be installed using NPM:
 
 ```bash
 npm i @ngxs/form-plugin --S
@@ -33,7 +33,7 @@ import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 export class AppModule {}
 ```
 
-When your form is used a submodule you have to import `NgxsFormPluginModule` as well:
+If your form is used in a submodule, it must be imported there as well:
 
 ```TS
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
@@ -65,7 +65,7 @@ export class TodosState {}
 ```
 
 ### Form Setup
-In your component, you would implement the a reactive form and
+In your component, you would implement the reactive form and
 decorate the form with the `ngxsForm` directive with the path
 of your state object. We are passing the _string_ path to `ngxsForm`.
 The directive uses this path to connect itself to the store and setup bindings.
@@ -88,7 +88,7 @@ export class PizzaComponent {
 
 Now anytime your form updates, your state will also reflect the new state.
 
-The directive also has 2 inputs you can utilize as well:
+The directive also has two inputs you can utilize as well:
 
 - `ngxsFormDebounce: number` - Debounce the value changes to the form. Default value: `100`.
 - `ngxsFormClearOnDestroy: boolean` - Clear the state on destroy of the form.
@@ -106,7 +106,7 @@ this.store.dispatch(
 );
 ```
 
-The form plugin comes with following `actions` out of the box are:
+The form plugin comes with the following `actions` out of the box:
 - `UpdateFormStatus({ status, path })` - Update the form status
 - `UpdateFormValue({ value, path })` - Update the form value
 - `UpdateFormDirty({ dirty, path })` - Update the form dirty status

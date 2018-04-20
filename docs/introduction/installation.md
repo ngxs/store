@@ -1,5 +1,5 @@
 ## Installing
-To get started, install the package thru npm. The latest version (3.x) supports Angular/RX 6, if you want support for Angular5, use version 2.x.
+To get started, install the package using npm. The latest version (3.x) supports Angular/RX 6, if you want support for Angular5, use version 2.x.
 
 ```bash
 npm i @ngxs/store --S
@@ -24,8 +24,8 @@ export class AppModule {}
 When you include the module in the import, you can pass root stores along with options.
 If you are lazy loading, you can use the `forFeature` option with the same arguments.
 
-Its important that you add `NgxsModule.forRoot([])` at the root of your module even if
-all your states are feature states.
+It's important that you add `NgxsModule.forRoot([])` at the root of your module even if
+all of your states are feature states.
 
 
 ## Development Builds

@@ -5,7 +5,7 @@ In NGXS, we don't have this concept but you can accomplish
 this with [plugins](plugins/intro.md).
 
 An example of a meta reducer might be to clear the entire
-state when a user logs out, lets implement that like:
+state when a user logs out. An example implementation would be:
 
 ```TS
 import { getActionTypeFromInstance } from '@ngxs/store';
@@ -24,7 +24,7 @@ export function logoutPlugin(state, action, next) {
 }
 ```
 
-then we import that like:
+Then we import that like:
 
 ```TS
 import { NgModule } from '@angular/core';
@@ -43,5 +43,5 @@ import { NGXS_PLUGINS } from '@ngxs/store';
 export class AppModule {}
 ```
 
-now when we dispatch the logout action it will use our new
+Now when we dispatch the logout action it will use our new
 plugin and erase the state.
