@@ -22,7 +22,7 @@ Let's take the following example state graph:
 At the top, we have a `cart` with several items associated to its state.
 Beneath that we have a `saved` object which represents another state slice.
 To express this relationship with NGXS, we simply need to use the `children`
-property in the `State` decorator:
+property in the `@State` decorator:
 
 ```typescript
 export interface CartStateModel {
@@ -41,7 +41,7 @@ export interface CartStateModel {
 export class CartState {}
 ```
 
-then we describe our substate like normal:
+Then we describe our substate like normal:
 
 ```typescript
 export interface CartSavedStateModel {
@@ -59,8 +59,7 @@ export interface CartSavedStateModel {
 export class CartSavedState {}
 ```
 
-The relationship between these two are bound by their hierarchical order. To finish this up
-and wire up it, we need to import both of these into the `NgxsModule`:
+The relationship between these two are bound by their hierarchical order. To finish this up, we need to import both of these into the `NgxsModule`:
 
 ```typescript
 @NgModule({
@@ -74,7 +73,7 @@ and wire up it, we need to import both of these into the `NgxsModule`:
 export class AppModule {}
 ```
 
-And the store will automatically recognize the relationship and bind them together.
+The store will then automatically recognize the relationship and bind them together.
 
 ## Caveats
 This is only intended to work with nested objects, so trying to create stores on

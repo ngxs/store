@@ -4,7 +4,7 @@ Plugin with integration with the [Redux Devtools extension](http://extension.rem
 ![Devtools Screenshot](../assets/devtools.png)
 
 ## Install
-Devtools is a separate install from NPM, run the following to install it:
+The Devtools plugin can be installed using NPM:
 
 ```bash
 npm i @ngxs/devtools-plugin --S

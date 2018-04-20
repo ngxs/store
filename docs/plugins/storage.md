@@ -2,7 +2,7 @@
 Back your stores with `localStorage`, `sessionStorage` or any other mechanism you wish.
 
 ## Install
-Storage is a separate install from NPM, run the following to install it:
+The Storage plugin can be installed using NPM:
 
 ```bash
 npm i @ngxs/storage-plugin --S
@@ -24,13 +24,13 @@ import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 export class AppModule {}
 ```
 
-It is recommended you register the storage plugin before other plugins so
+It is recommended to register the storage plugin before other plugins so
 initial state can be picked up by those plugins.
 
 ### Options
-The plugin has the following optional options:
+The plugin has the following optional values:
 
-- `key`: Default key to persist. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided it defaults to all states using the `@@STATE` key.
+- `key`: Default key to persist. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided, it defaults to all states using the `@@STATE` key.
 - `storage`: Storage strategy to use. This defaults to LocalStorage but you can pass SessionStorage or anything that implements the StorageEngine API.
 - `deserialize`: Custom deserializer. Defaults to `JSON.parse`
 - `serialize`: Custom serializer, defaults to `JSON.stringify`

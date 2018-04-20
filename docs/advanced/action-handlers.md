@@ -2,22 +2,22 @@
 
 Event sourcing involves modeling the state changes made by applications as an immutable sequence or “log” of events.
 Instead of focussing on current state, you focus on the changes that have occurred over time. It is the practice of
-modelling your system as a sequence of events. In NGXS, we called this Action Handlers.
+modeling your system as a sequence of events. In NGXS, we called this Action Handlers.
 
 Typically actions directly correspond to state changes but it can be difficult to always make your component react
 based on state. As a side effect of this paradigm, we end up creating lots of intermediate state properties
 to do things like reset a form/etc. Action handlers let us drive our components based on state along with events
-that emit.
+that are emitted.
 
 For example, if we were to have a shopping cart and we were to delete an item out of it you might want to show
 a notification that it was successfully removed. In a pure state driven application, you might create some kind
 of message array to make the dialog show up. With Action Handlers, we can respond to the action directly.
 
-The action handler is a observable that recieves all the actions dispatched before the state takes any action on it.
+The action handler is an Observable that recieves all the actions dispatched before the state takes any action on it.
 
 Actions in NGXS also have a lifecycle. Since any potential action can be async we tag actions showing whether they are "DISPATCHED" or "COMPLETED". This gives you the ability to react to actions at different points in their existence.
 
-Since its an observable, we can use pipes and created 4 of them.
+Since it's an Observable, we can use the following four pipes:
 
 * `ofAction`: triggers when any of the below lifecycle events happen
 * `ofActionDispatched`: triggers when an action has been dispatched but NOT when it completes

@@ -2,7 +2,7 @@
 A simple console log plugin to log actions as they are processed.
 
 ## Install
-Logger is a separate install from NPM, run the following to install it:
+The Logger plugin can be installed using NPM:
 
 ```bash
 npm i @ngxs/logger-plugin --S

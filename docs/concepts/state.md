@@ -24,8 +24,8 @@ Names must be object property safe, AKA no dashes, dots, etc.
 - `defaults`: Default set of object/array for this state slice.
 - `children`: Child sub state associations.
 
-Our states can also participate in dependency injection, this is hooked up automatically
-so all you need to do is inject your dependencies such as services in the constructor.
+Our states can also participate in dependency injection. This is hooked up automatically
+so all you need to do is inject your dependencies in the constructor.
 
 ```TS
 @State<ZooStateModel>({
@@ -130,8 +130,8 @@ could be reduced to this:
 Actions can perform async operations and update the state after an operation. 
 
 Typically in Redux your actions are pure functions and you have some other system like a saga or an effect to perform
-these operations and dispatch another action back to your state to mutate the state. There are some
-reasons why, but for the most part it can be redundant and just add boilerplate. The great thing here is
+these operations and dispatch another action back to your state to mutate it. There are some
+reasons for this, but for the most part it can be redundant and just add boilerplate. The great thing here is
 we give you the flexibility to make that decision yourself based on your requirements.
 
 Let's take a look at a simple async action:
@@ -170,9 +170,9 @@ In this example, we reach out to the animal service and call `feed` and then
 call `setState` with the result. Remember that we can guarantee that the state
 is fresh since the state property is a getter back to the current state slice.
 
-You might notice I returned the observable and just did a `tap`. If we return
-the observable, the framework will automatically subscribe to it for us, so
-we don't have to deal with that ourselves. Additionally, if we want the store's
+You might notice I returned the Observable and just did a `tap`. If we return
+the Observable, the framework will automatically subscribe to it for us, so
+we don't have to deal with that ourselves. Additionally, if we want the stores
 `dispatch` function to be able to complete only once the operation is completed,
 we need to return that so it knows that.
 

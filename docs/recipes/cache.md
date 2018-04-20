@@ -2,8 +2,8 @@
 Caching requests executed by Actions is a common practice. NGXS does not
 provide this ability out of the box, but it is easy to implement. 
 
-There are many different ways to approach this, below is a simple example of
-using the store's current values and returning it instead of calling the HTTP
+There are many different ways to approach this. Below is a simple example of
+using the store's current values and returning them instead of calling the HTTP
 service.
 
 ```typescript

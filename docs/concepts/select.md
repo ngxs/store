@@ -1,11 +1,11 @@
 # Selects
 Selects are functions that slice a specific portion of state from the global state container.
 
-In CQRS and Redux patterns, we keep READ and WRITE separated, we follow this pattern in NGXS.
+In CQRS and Redux patterns, we keep READ and WRITE separated. This pattern also exists in NGXS.
 When we want to read data out of our store, we use a select operator to retrieve this data.
 
-In NGXS, there are 2 methods to select state, we can either call the `select` method on the
-`Store` service or use the `@Select` decorator. First let's look at the `select` decorator.
+In NGXS, there are two methods to select state, we can either call the `select` method on the
+`Store` service or use the `@Select` decorator. First let's look at the `@Select` decorator.
 
 ### Select Decorators
 You can select slices of data from the store using the `@Select` decorator. It has a few
@@ -49,13 +49,13 @@ export class ZooComponent {
 This is most helpful to programmatic selects where we can't statically
 declare them with the select decorator.
 
-There is also a `selectOnce` that will basically do `select().pipe(take(1))` for
-you automatically as a shortcut method. This is very useful for unit testing.
+There is also a `selectOnce` function that will basically do `select().pipe(take(1))` for
+you automatically as a shortcut. This is very useful for unit testing.
 
 ### Snapshot Selects
 On the store, there is a `selectSnapshot` function that allows you to pull out the
 raw value. This is helpful for cases where you need to get a static value but can't
-use observables. A good use case for this would be a interceptor that needs to get
+use Observables. A good use case for this would be an interceptor that needs to get
 the token from the auth state.
 
 ```TS
@@ -81,7 +81,7 @@ export class JWTInterceptor implements HttpInterceptor {
 ### Memoized Selectors
 Oftentimes you will use the same selectors in several different places
 or have complex selectors you want to keep separate from your component.
-NGXS has a `Selector` decorator that will help us with that. This decorator
+NGXS has a `@Selector` decorator that will help us with that. This decorator
 will memoize the function for performance as well as automatically slice
 the state portion you are dealing with.
 
@@ -100,7 +100,7 @@ export class ZooState {
 }
 ```
 
-Notice, my `state` is just the local state for this `ZooState` class. Now in our component,
+Notice, the `state` is just the local state for this `ZooState` class. Now in our component,
 we simply do:
 
 ```TS
