@@ -32,7 +32,7 @@ export class AnimalState {
     const sort = this.store.selectSnapshot(state => state.preferences.sort);
 
     // do sort magic here
-    return return state.sort(sort);
+    return state.sort(sort);
   }
 
 }
