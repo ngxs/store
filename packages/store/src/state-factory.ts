@@ -1,6 +1,6 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { shareReplay, takeUntil, map } from 'rxjs/operators';
+import { shareReplay, takeUntil, map, tap, catchError, filter } from 'rxjs/operators';
 
 import { META_KEY, StateContext, NgxsLifeCycle } from './symbols';
 import {
@@ -17,7 +17,7 @@ import {
 } from './internals';
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
 import { ofActionDispatched } from './of-action';
-import { InternalActions } from './actions-stream';
+import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
 
 /**
  * State factory class
@@ -35,7 +35,8 @@ export class StateFactory {
     private _injector: Injector,
     @Optional()
     @SkipSelf()
-    private _parentFactory: StateFactory
+    private _parentFactory: StateFactory,
+    private _actions: InternalActions
   ) {}
 
   /**
@@ -114,6 +115,31 @@ export class StateFactory {
     }
   }
 
+  connectActionHandlers(
+    getState: GetStateFn<any>,
+    setState: SetStateFn<any>,
+    dispatch: DispatchFn,
+    mappedStores: MappedStore[]
+  ): any {
+    this._actions
+      .pipe(
+        filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
+        tap(({ action }) => {
+          this.invokeActions(getState, setState, dispatch, this._actions, action)
+            .pipe(
+              tap(() => {
+                this._actions.next({ action, status: ActionStatus.Completed });
+              }),
+              catchError(err => {
+                this._actions.next({ action, status: ActionStatus.Errored });
+                return of(err);
+              })
+            )
+            .subscribe();
+        })
+      )
+      .subscribe();
+  }
   /**
    * Invoke the init function on the states.
    */

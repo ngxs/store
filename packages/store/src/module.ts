@@ -35,16 +35,23 @@ export class NgxsRootModule {
       stateStream.next({ ...cur, ...results.defaults });
     }
 
-    store.dispatch(new InitState());
+    factory.connectActionHandlers(
+      () => stateStream.getValue(),
+      newState => stateStream.next(newState),
+      actions => store.dispatch(actions),
+      results.states
+    );
 
-    if (results) {
-      factory.invokeInit(
-        () => stateStream.getValue(),
-        newState => stateStream.next(newState),
-        actions => store.dispatch(actions),
-        results.states
-      );
-    }
+    store.dispatch(new InitState()).subscribe(() => {
+      if (results) {
+        factory.invokeInit(
+          () => stateStream.getValue(),
+          newState => stateStream.next(newState),
+          actions => store.dispatch(actions),
+          results.states
+        );
+      }
+    });
   }
 }
 
@@ -76,16 +83,23 @@ export class NgxsFeatureModule {
       stateStream.next({ ...cur, ...results.defaults });
     }
 
-    store.dispatch(new UpdateState());
+    factory.connectActionHandlers(
+      () => stateStream.getValue(),
+      newState => stateStream.next(newState),
+      actions => store.dispatch(actions),
+      results.states
+    );
 
-    if (results) {
-      factory.invokeInit(
-        () => stateStream.getValue(),
-        newState => stateStream.next(newState),
-        actions => store.dispatch(actions),
-        results.states
-      );
-    }
+    store.dispatch(new UpdateState()).subscribe(() => {
+      if (results) {
+        factory.invokeInit(
+          () => stateStream.getValue(),
+          newState => stateStream.next(newState),
+          actions => store.dispatch(actions),
+          results.states
+        );
+      }
+    });
   }
 }
 

@@ -1,10 +1,9 @@
 import { Injectable, ErrorHandler } from '@angular/core';
-import { Observable, of, forkJoin } from 'rxjs';
-import { catchError, shareReplay, map, tap } from 'rxjs/operators';
+import { Observable, of, forkJoin, empty } from 'rxjs';
+import { catchError, shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
 
 import { compose } from './compose';
-import { InternalActions, ActionStatus } from './actions-stream';
-import { StateFactory } from './state-factory';
+import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 
@@ -13,7 +12,6 @@ export class InternalDispatcher {
   constructor(
     private _errorHandler: ErrorHandler,
     private _actions: InternalActions,
-    private _storeFactory: StateFactory,
     private _pluginManager: PluginManager,
     private _stateStream: StateStream
   ) {}
@@ -47,23 +45,34 @@ export class InternalDispatcher {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return (compose([
+    return compose([
       ...plugins,
       (nextState, nextAction) => {
         if (nextState !== prevState) {
           this._stateStream.next(nextState);
         }
 
-        this._actions.next({ action, status: ActionStatus.Dispatched });
-
-        return this._storeFactory
-          .invokeActions(
-            () => this._stateStream.getValue(),
-            newState => this._stateStream.next(newState),
-            actions => this.dispatch(actions),
-            this._actions,
-            action
+        const output = this._actions
+          .pipe(
+            filter((ctx: ActionContext) => ctx.action === action && ctx.status !== ActionStatus.Dispatched),
+            take(1),
+            exhaustMap((ctx: ActionContext) => {
+              switch (ctx.status) {
+                case ActionStatus.Completed:
+                  return of(this._stateStream.getValue());
+                case ActionStatus.Errored:
+                  return of(this._stateStream.getValue()); // This was previously the error value
+                // I think that this should rather
+                // return throwError(new Error('the error goes here'))
+                default:
+                  return empty();
+              }
+            })
           )
+          .pipe(shareReplay());
+        /*
+        return this._stateFactory
+          .invokeActions(this._actions, action)
           .pipe(
             tap(() => {
               this._actions.next({ action, status: ActionStatus.Completed });
@@ -77,7 +86,11 @@ export class InternalDispatcher {
               return of(err);
             })
           );
+          */
+        output.subscribe();
+        this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
+        return output;
       }
-    ])(prevState, action) as Observable<any>).pipe(shareReplay());
+    ])(prevState, action) as Observable<any>;
   }
 }
