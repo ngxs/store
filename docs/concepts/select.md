@@ -49,8 +49,11 @@ export class ZooComponent {
 This is most helpful to programmatic selects where we can't statically
 declare them with the select decorator.
 
-There is also a `selectOnce` function that will basically do `select().pipe(take(1))` for
-you automatically as a shortcut. This is very useful for unit testing.
+There is also a `selectOnce` that will basically do `select().pipe(take(1))` for
+you automatically as a shortcut method.
+
+This can be useful in route guards where you only want to check the current state and not continue
+watching the stream. It can also be useful for unit testing.
 
 ### Snapshot Selects
 On the store, there is a `selectSnapshot` function that allows you to pull out the
