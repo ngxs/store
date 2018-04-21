@@ -56,46 +56,50 @@ describe('Action', () => {
   });
 
   it('calls actions on dispatch and on complete', () => {
-    let callbackCalledCount = 0;
+    const callbacksCalled = [];
 
     actions.pipe(ofAction(Action1)).subscribe(action => {
-      callbackCalledCount++;
+      callbacksCalled.push('ofAction');
     });
 
     actions.pipe(ofActionDispatched(Action1)).subscribe(action => {
-      callbackCalledCount++;
+      callbacksCalled.push('ofActionDispatched');
     });
 
     actions.pipe(ofActionCompleted(Action1)).subscribe(action => {
-      callbackCalledCount++;
-
-      expect(callbackCalledCount).toBe(4);
+      callbacksCalled.push('ofActionCompleted');
     });
 
-    store.dispatch(new Action1());
+    store.dispatch(new Action1()).subscribe(() => {
+      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionCompleted']);
+    });
   });
 
   it('calls only the dispatched and error action', () => {
-    let callbackCalledCount = 0;
+    const callbacksCalled = [];
 
     actions.pipe(ofAction(Action1)).subscribe(action => {
-      callbackCalledCount++;
+      callbacksCalled.push('ofAction[Action1]');
+    });
+    actions.pipe(ofAction(ErrorAction)).subscribe(action => {
+      callbacksCalled.push('ofAction');
     });
 
     actions.pipe(ofActionDispatched(ErrorAction)).subscribe(action => {
-      callbackCalledCount++;
+      callbacksCalled.push('ofActionDispatched');
     });
 
     actions.pipe(ofActionCompleted(ErrorAction)).subscribe(action => {
-      callbackCalledCount++;
+      callbacksCalled.push('ofActionCompleted');
     });
 
     actions.pipe(ofActionErrored(ErrorAction)).subscribe(action => {
-      callbackCalledCount++;
-
-      expect(callbackCalledCount).toBe(2);
+      callbacksCalled.push('ofActionErrored');
     });
 
-    store.dispatch(new ErrorAction());
+    store.dispatch(new ErrorAction()).subscribe(action => {
+      console.log({ callbacksCalled });
+      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
+    });
   });
 });

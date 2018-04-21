@@ -1,6 +1,6 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { shareReplay, takeUntil, map, tap, catchError, filter } from 'rxjs/operators';
+import { shareReplay, takeUntil, map, tap, catchError, filter, delay } from 'rxjs/operators';
 
 import { META_KEY, StateContext, NgxsLifeCycle } from './symbols';
 import {
@@ -124,6 +124,7 @@ export class StateFactory {
     this._actions
       .pipe(
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
+        delay(0), // Force onto new task to prevent completion from firing before dispatch event is finished queueing
         tap(({ action }) => {
           this.invokeActions(getState, setState, dispatch, this._actions, action)
             .pipe(
