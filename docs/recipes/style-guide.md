@@ -31,10 +31,6 @@ Actions should NOT have a suffix
 ### Unit tests
 Unit tests for the state should be named `my-store-name.state.spec.ts`
 
-### Event Payload
-Actions should ALWAYS use the `payload` public name
-
 ### Action Operations
 Actions should NOT deal with view related operations (i.e. showing popups/etc). Use the action
 stream to handle these types of operations.
-

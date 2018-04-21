@@ -11,11 +11,16 @@ and invoke the `dispatch` function with an action or an array of actions you wis
 import { Store } from '@ngxs/store';
 import { AddAnimal } from './animal.actions';
 
+export class AddAnimal {
+  static readonly type = '[Zoo] Add Animal';
+  constructor(public name: string) {}
+}
+
 @Component({ ... })
 export class ZooComponent {
   constructor(private store: Store) {}
 
-  addAnimal(name) {
+  addAnimal(name: string) {
     this.store.dispatch(new AddAnimal(name));
   }
 }
@@ -42,7 +47,7 @@ import { AddAnimal } from './animal.actions';
 export class ZooComponent {
   constructor(private store: Store) {}
 
-  addAnimal(name) {
+  addAnimal(name: string) {
     this.store.dispatch(new AddAnimal(name)).subscribe(() => this.form.reset());
   }
 }
@@ -67,9 +72,10 @@ export class ZooComponent {
   @Select(state => state.animals) animals$: Observable<any>;
   constructor(private store: Store) {}
 
-  addAnimal(name) {
-    this.store.dispatch(new AddAnimal(name))
-      .pipe(withLatestFrom(this.animals$))
+  addAnimal(name: string) {
+    this.store.dispatch(new AddAnimal(name)).pipe(
+      withLatestFrom(this.animals$)
+    )
       .subscribe(([animals]) => {
         // do something with animals
         this.form.reset();

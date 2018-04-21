@@ -14,22 +14,29 @@ preferences in order to be able to sort your animals. This is achievable with `s
     sort: [{ prop: 'name', dir: 'asc' }]
   }
 })
-export class PreferencesState {}
+export class PreferencesState {
+  @Selector()
+  static getSort(state: PreferencesStateModel) {
+    return state.sort;
+  }
+}
 
-@State<any[]>({
+@State<AnimalStateModel>({
   name: 'animals',
-  defaults: []
+  defaults: [
+    animals: []
+  ]
 })
 export class AnimalState {
 
   constructor(private store: Store) {}
 
   @Action(GetAnimals)
-  getAnimals({ setState, getState }) {
-    const state = getState();
+  getAnimals(ctx: StateContext<AnimalStateModel>) {
+    const state = ctx.getState();
 
     // select the snapshot state from preferences
-    const sort = this.store.selectSnapshot(state => state.preferences.sort);
+    const sort = this.store.selectSnapshot(PreferencesState.getSort);
 
     // do sort magic here
     return state.sort(sort);

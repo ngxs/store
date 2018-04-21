@@ -41,7 +41,7 @@ Let's say you have a websocket message that comes in like:
 
 ```json
 {
-  "type": "ADD_ANIMALS",
+  "type": "[Zoo] AddAnimals",
   "animals": []
 }
 ```
@@ -51,7 +51,7 @@ look like:
 
 ```TS
 export class AddAnimals {
-  static readonly type = 'ADD_ANIMALS';
+  static readonly type = '[Zoo] AddAnimals';
   constructor(public animals: any[]) {}
 }
 ```
@@ -67,8 +67,8 @@ action:
 })
 export class ZooState {
   @Action(AddAnimals)
-  addAnimals({ setState }: StateContext<ZooStateModel>, { animals }: AddAnimals) {
-    setState({ animals: [...animals] });
+  addAnimals(ctx: StateContext<ZooStateModel>, action: AddAnimals) {
+    ctx.setState({ animals: [...action.animals] });
   }
 }
 ```
