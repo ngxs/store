@@ -4,9 +4,11 @@ import { META_KEY } from './symbols';
 import { Injector } from '@angular/core';
 
 export interface EntityState<V> {
-  ids: string[] | number[];
-  // entities: { [id: string | id: number]: V };
-  entities: { [id: string]: V };
+  ids: (string | number)[];
+  entities: {
+    [id: string]: V;
+    [id: number]: V;
+  };
 }
 
 export enum EntityMutation {
@@ -98,7 +100,7 @@ export abstract class EntityBase<T, S extends EntityState<T>> {
   }
 
   updateOne(update: Partial<T>, state: S): S {
-    
+
   }
   updateMany(updates: Partial<T>[], state: S): S {
 
