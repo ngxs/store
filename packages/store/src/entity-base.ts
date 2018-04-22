@@ -11,6 +11,17 @@ export interface EntityState<V> {
   };
 }
 
+export type EntityUpdateStr<T> = {
+  id: string;
+  changes: Partial<T>;
+};
+
+export type EntityUpdateNum<T> = {
+  id: number;
+  changes: Partial<T>;
+};
+export type EntityUpdate<T> = EntityUpdateStr<T> | EntityUpdateNum<T>;
+
 export enum EntityMutation {
   IdAndEntity,
   Entity,
@@ -18,10 +29,12 @@ export enum EntityMutation {
 }
 
 export abstract class EntityBase<T, S extends EntityState<T>> {
-  static defaults = {
-    ids: [],
-    entities: {}
-  };
+  static defaults() {
+    return {
+      ids: [],
+      entities: {}
+    };
+  }
 
   // @todo Don't like having to pass in an injector to be able to get at the
   // state stream, how could we do this differently?
@@ -76,35 +89,91 @@ export abstract class EntityBase<T, S extends EntityState<T>> {
 
     return didMutate ? EntityMutation.IdAndEntity : EntityMutation.None;
   }
+
+  addAll(entities: T[]): S {
+    const state = this.getState();
+    state.ids = [];
+    state.entities = {};
+
+    this._addMany(state, entities);
+
+    return this.mutateStateIfNeeded(state, EntityMutation.IdAndEntity);
+  }
+
+  removeOne(key: string | number): S {
+    return this.removeMany([key]);
+  }
+
+  removeMany(keys: (string | number)[]): S {
+    const state = this.getState();
+    const mutation = this._removeMany(state, keys);
+    return this.mutateStateIfNeeded(state, mutation);
+  }
+  private _removeMany(state: S, keys: (string | number)[]) {
+    const didMutate = keys.filter(key => key in state.entities).map(key => delete state.entities[key]).length > 0;
+
+    if (didMutate) {
+      state.ids = state.ids.filter((id: any) => id in state.entities);
+    }
+
+    return didMutate ? EntityMutation.IdAndEntity : EntityMutation.None;
+  }
+
+  removeAll(): S {
+    const state = this.getState();
+    const cleanState = Object.assign({}, state, {
+      ids: [],
+      entities: {}
+    });
+    return this.mutateStateIfNeeded(cleanState, EntityMutation.IdAndEntity);
+  }
+
+  updateOne(update: EntityUpdate<T>): S {
+    return this.updateMany([update]);
+  }
+  updateMany(updates: EntityUpdate<T>[]): S {
+    const state = this.getState();
+    const mutation = this._updateMany(state, updates);
+    return this.mutateStateIfNeeded(state, mutation);
+  }
+
+  private _updateMany(state: S, updates: EntityUpdate<T>[]) {
+    const newKeys: { [id: string]: string } = {};
+
+    updates = updates.filter(update => update.id in state.entities);
+
+    const didMutateEntities = updates.length > 0;
+
+    if (didMutateEntities) {
+      const didMutateIds = updates.filter(update => this._takeNewKey(state, newKeys, update)).length > 0;
+
+      if (didMutateIds) {
+        state.ids = state.ids.map((id: any) => newKeys[id] || id);
+        return EntityMutation.IdAndEntity;
+      } else {
+        return EntityMutation.Entity;
+      }
+    }
+
+    return EntityMutation.None;
+  }
+
+  private _takeNewKey(state: S, keys: { [id: string]: any }, update: EntityUpdate<T>): boolean {
+    const original = state.entities[update.id];
+    const updated: T = Object.assign({}, original, update.changes);
+    const newKey = this.selectEntityId(updated);
+    const hasNewKey = newKey !== update.id;
+
+    if (hasNewKey) {
+      keys[update.id] = newKey;
+      delete state.entities[update.id];
+    }
+
+    state.entities[newKey] = updated;
+
+    return hasNewKey;
+  }
   /*
-  addAll(entities: T[], state: S): S {
-
-  }
-
-  removeOne(key: string, state: S): S {
-
-  }
-  removeOne(key: number, state: S): S {
-
-  }
-
-  removeMany(keys: string[], state: S): S {
-
-  }
-  removeMany(keys: number[], state: S): S {
-
-  }
-
-  removeAll(state: S): S {
-
-  }
-
-  updateOne(update: Partial<T>, state: S): S {
-
-  }
-  updateMany(updates: Partial<T>[], state: S): S {
-
-  }
 
   upsertOne(entity: T, state: S): S {
 

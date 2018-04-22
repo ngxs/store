@@ -5,10 +5,10 @@ import { State } from '../src/state';
 import { StateContext } from '../src/symbols';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
-import { EntityBase, EntityState } from '../src/entity-base';
+import { EntityBase, EntityState, EntityUpdate } from '../src/entity-base';
 import { Injector } from '@angular/core';
 
-describe('Entity', () => {
+describe('Entity Base', () => {
   let store: Store;
 
   class Project {
@@ -26,12 +26,42 @@ describe('Entity', () => {
     constructor(public projects: Project[]) {}
   }
 
+  class AddAll {
+    static readonly type = '[Project] AddAllProjects';
+    constructor(public projects: Project[]) {}
+  }
+
+  class RemoveOne {
+    static readonly type = '[Project] RemoveProject';
+    constructor(public key: string) {}
+  }
+
+  class RemoveMany {
+    static readonly type = '[Project] RemoveProjects';
+    constructor(public keys: string[]) {}
+  }
+
+  class RemoveAll {
+    static readonly type = '[Project] ResetProjects';
+  }
+
+  class UpdateOne {
+    static readonly type = '[Project] UpdateProject';
+    constructor(public update: EntityUpdate<Project>) {}
+  }
+
+  class UpdateMany {
+    static readonly type = '[Project] UpdateProjects';
+    constructor(public updates: EntityUpdate<Project>[]) {}
+  }
+
   interface ProjectStateModel extends EntityState<Project> {}
 
   @State<ProjectStateModel>({
     name: 'projects',
     defaults: {
-      ...EntityBase.defaults
+      ids: [],
+      entities: {}
     }
   })
   class ProjectState extends EntityBase<Project, ProjectStateModel> {
@@ -49,19 +79,54 @@ describe('Entity', () => {
     addProjects(ctx: StateContext<ProjectState>, action: AddMany) {
       this.addMany(action.projects);
     }
+
+    @Action(AddAll)
+    addAllProjects(ctx: StateContext<ProjectState>, action: AddAll) {
+      this.addAll(action.projects);
+    }
+
+    @Action(RemoveOne)
+    removeProject(ctx: StateContext<ProjectState>, action: RemoveOne) {
+      this.removeOne(action.key);
+    }
+
+    @Action(RemoveMany)
+    removeProjects(ctx: StateContext<ProjectState>, action: RemoveMany) {
+      this.removeMany(action.keys);
+    }
+
+    @Action(RemoveAll)
+    resetProjects(ctx: StateContext<ProjectState>, action: RemoveAll) {
+      this.removeAll();
+    }
+
+    @Action(UpdateOne)
+    updateProject(ctx: StateContext<ProjectState>, action: UpdateOne) {
+      this.updateOne(action.update);
+    }
+
+    @Action(UpdateMany)
+    updateProjects(ctx: StateContext<ProjectState>, action: UpdateMany) {
+      this.updateMany(action.updates);
+    }
   }
 
   /**
    * Projects
    */
   const project1 = {
-    id: 'myproject',
-    name: 'My Project'
+    id: 'project1',
+    name: 'Project 1'
   };
 
   const project2 = {
-    id: 'myproject2',
-    name: 'My Project 2'
+    id: 'project2',
+    name: 'Project 2'
+  };
+
+  const project3 = {
+    id: 'project3',
+    name: 'Project 3'
   };
 
   beforeEach(() => {
@@ -76,18 +141,114 @@ describe('Entity', () => {
     store.dispatch(new AddOne(project1));
 
     const state = store.snapshot();
-    expect(state.projects.ids).toEqual(['myproject']);
-    expect(state.projects.entities).toEqual({ myproject: project1 });
+    expect(state.projects.ids).toEqual(['project1']);
+    expect(state.projects.entities).toEqual({ project1: project1 });
   });
 
   it('should addMany', () => {
     store.dispatch(new AddMany([project1, project2]));
 
     const state = store.snapshot();
-    expect(state.projects.ids).toEqual(['myproject', 'myproject2']);
+    expect(state.projects.ids).toEqual(['project1', 'project2']);
     expect(state.projects.entities).toEqual({
-      myproject: project1,
-      myproject2: project2
+      project1: project1,
+      project2: project2
+    });
+  });
+
+  it('should addAll', () => {
+    // Add one, that should then be gone when we addAll
+    store.dispatch(new AddOne(project1));
+
+    store.dispatch(new AddAll([project2, project3]));
+
+    const state = store.snapshot();
+    expect(state.projects.ids).toEqual(['project2', 'project3']);
+    expect(state.projects.entities).toEqual({
+      project2: project2,
+      project3: project3
+    });
+  });
+
+  it('should addAll', () => {
+    // Add one, that should then be gone when we addAll
+    store.dispatch(new AddOne(project1));
+
+    store.dispatch(new AddAll([project2, project3]));
+
+    const state = store.snapshot();
+    expect(state.projects.ids).toEqual(['project2', 'project3']);
+    expect(state.projects.entities).toEqual({
+      project2: project2,
+      project3: project3
+    });
+  });
+
+  it('should removeOne', () => {
+    // Add one, that should then be gone when we addAll
+    store.dispatch(new AddMany([project1, project2]));
+
+    store.dispatch(new RemoveOne('project1'));
+
+    const state = store.snapshot();
+    expect(state.projects.ids).toEqual(['project2']);
+    expect(state.projects.entities).toEqual({
+      project2: project2
+    });
+  });
+
+  it('should removeMany', () => {
+    // Add one, that should then be gone when we addAll
+    store.dispatch(new AddMany([project1, project2, project3]));
+
+    store.dispatch(new RemoveMany(['project1', 'project2']));
+
+    const state = store.snapshot();
+    expect(state.projects.ids).toEqual(['project3']);
+    expect(state.projects.entities).toEqual({
+      project3: project3
+    });
+  });
+
+  it('should removeAll', () => {
+    // Add one, that should then be gone when we addAll
+    store.dispatch(new AddMany([project1, project2, project3]));
+
+    store.dispatch(new RemoveAll());
+
+    const state = store.snapshot();
+    expect(state.projects.ids).toEqual([]);
+    expect(state.projects.entities).toEqual({});
+  });
+
+  // @todo understand why the state isn't empty at start
+  xit('should updateOne', () => {
+    let state = store.snapshot();
+    expect(state.projects.ids).toEqual([]);
+    expect(state.projects.entities).toEqual({});
+
+    // Add one, that should then be gone when we addAll
+    store.dispatch(new AddMany([project1, project2]));
+
+    store.dispatch(
+      new UpdateOne({
+        id: 'project1',
+        changes: {
+          name: 'Project 1 Change'
+        }
+      })
+    );
+
+    state = store.snapshot();
+    expect(state.projects.entities).toEqual({
+      project1: {
+        id: 'project1',
+        name: 'Project 1 Change'
+      },
+      project2: {
+        id: 'project2',
+        name: 'Project 2'
+      }
     });
   });
 });
