@@ -22,11 +22,11 @@ graph but since we lazy loaded this we can't really include that in the definiti
 To handle this, let's extend the `AppState` and use that in our a component like:
 
 ```TS
-export interface AppState {
+export interface AppStateModel {
   zoos: Zoo[];
 }
 
-export interface OfficesState extends AppState {
+export interface OfficesStateModel extends AppStateModel {
   offices: Office[];
 }
 ```
