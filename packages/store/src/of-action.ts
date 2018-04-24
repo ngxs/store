@@ -36,6 +36,15 @@ export function ofActionCompleted(...allowedTypes: any[]) {
 /**
  * RxJS operator for selecting out specific actions.
  *
+ * This will ONLY grab actions that have just been completed
+ */
+export function ofActionCancelled(...allowedTypes: any[]) {
+  return ofActionOperator(allowedTypes, ActionStatus.Cancelled);
+}
+
+/**
+ * RxJS operator for selecting out specific actions.
+ *
  * This will ONLY grab actions that have thrown an error
  */
 export function ofActionErrored(...allowedTypes: any[]) {
