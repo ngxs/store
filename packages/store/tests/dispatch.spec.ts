@@ -1,4 +1,4 @@
-import { async, TestBed, flushMicrotasks, fakeAsync } from '@angular/core/testing';
+import { async, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { timer, of } from 'rxjs';
 import { tap, skip, delay } from 'rxjs/operators';
 
@@ -493,7 +493,7 @@ describe('Dispatch', () => {
           store.dispatch(new Increment());
           resolvers[0]();
           resolvers[1]();
-          flushMicrotasks();
+          tick(0);
           expect(subscriptionsCalled).toEqual(['previous complete']);
         })
       );
@@ -537,7 +537,7 @@ describe('Dispatch', () => {
             );
           resolvers[0]();
           resolvers[1]();
-          flushMicrotasks();
+          tick(0);
           expect(subscriptionsCalled).toEqual(['previous complete', 'latest', 'latest complete']);
         })
       );

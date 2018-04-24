@@ -1,6 +1,6 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { shareReplay, takeUntil, map, catchError, filter, mergeMap } from 'rxjs/operators';
+import { shareReplay, takeUntil, map, catchError, filter, mergeMap, defaultIfEmpty } from 'rxjs/operators';
 
 import { META_KEY, StateContext, NgxsLifeCycle } from './symbols';
 import {
@@ -40,7 +40,7 @@ export class StateFactory {
     private _parentFactory: StateFactory,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults
-  ) {}
+  ) { }
 
   /**
    * Add a new state to the global defs.
@@ -133,6 +133,7 @@ export class StateFactory {
             map(() => {
               return <ActionContext>{ action, status: ActionStatus.Completed };
             }),
+            defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Cancelled }),
             catchError(err => {
               return of(<ActionContext>{ action, status: ActionStatus.Errored });
             })

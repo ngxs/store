@@ -7,6 +7,7 @@ import { Observable, Subject } from 'rxjs';
 export enum ActionStatus {
   Dispatched = 'DISPATCHED',
   Completed = 'COMPLETED',
+  Cancelled = 'CANCELLED',
   Errored = 'Errored'
 }
 
