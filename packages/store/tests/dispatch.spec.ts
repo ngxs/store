@@ -459,7 +459,7 @@ describe('Dispatch', () => {
       }));
     });
 
-    describe('when the action is cancelled by a subsequent action', () => {
+    describe('when the action is canceled by a subsequent action', () => {
       it(
         'should not trigger observer, but should complete observable stream',
         fakeAsync(() => {

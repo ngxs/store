@@ -9,7 +9,7 @@ import { throwError, of } from 'rxjs';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
-import { ofActionCompleted, ofActionDispatched, ofAction, ofActionErrored, ofActionCancelled } from '../src/of-action';
+import { ofActionCompleted, ofActionDispatched, ofAction, ofActionErrored, ofActionCanceled } from '../src/of-action';
 
 describe('Action', () => {
   let store: Store;
@@ -157,7 +157,7 @@ describe('Action', () => {
         ]);
       });
 
-      actions.pipe(ofActionCancelled(CancelingAction)).subscribe(action => {
+      actions.pipe(ofActionCanceled(CancelingAction)).subscribe(action => {
         callbacksCalled.push('ofActionCanceled');
         expect(callbacksCalled).toEqual([
           'ofAction',

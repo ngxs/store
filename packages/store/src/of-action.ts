@@ -38,8 +38,8 @@ export function ofActionCompleted(...allowedTypes: any[]) {
  *
  * This will ONLY grab actions that have just been completed
  */
-export function ofActionCancelled(...allowedTypes: any[]) {
-  return ofActionOperator(allowedTypes, ActionStatus.Cancelled);
+export function ofActionCanceled(...allowedTypes: any[]) {
+  return ofActionOperator(allowedTypes, ActionStatus.Canceled);
 }
 
 /**

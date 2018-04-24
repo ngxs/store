@@ -40,7 +40,7 @@ export class StateFactory {
     private _parentFactory: StateFactory,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults
-  ) { }
+  ) {}
 
   /**
    * Add a new state to the global defs.
@@ -133,7 +133,7 @@ export class StateFactory {
             map(() => {
               return <ActionContext>{ action, status: ActionStatus.Completed };
             }),
-            defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Cancelled }),
+            defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
             catchError(err => {
               return of(<ActionContext>{ action, status: ActionStatus.Errored });
             })
