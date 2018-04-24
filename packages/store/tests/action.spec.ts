@@ -68,10 +68,11 @@ describe('Action', () => {
 
     actions.pipe(ofActionCompleted(Action1)).subscribe(action => {
       callbacksCalled.push('ofActionCompleted');
+      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionCompleted']);
     });
 
     store.dispatch(new Action1()).subscribe(() => {
-      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionCompleted']);
+      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched']);
     });
   });
 
@@ -95,11 +96,12 @@ describe('Action', () => {
 
     actions.pipe(ofActionErrored(ErrorAction)).subscribe(action => {
       callbacksCalled.push('ofActionErrored');
+      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
     });
 
     store.dispatch(new ErrorAction()).subscribe(action => {
       console.log({ callbacksCalled });
-      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
+      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched']);
     });
   });
 });
