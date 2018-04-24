@@ -1,6 +1,6 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { shareReplay, takeUntil, map, tap, catchError, filter, delay } from 'rxjs/operators';
+import { shareReplay, takeUntil, map, catchError, filter, mergeMap, delay } from 'rxjs/operators';
 
 import { META_KEY, StateContext, NgxsLifeCycle } from './symbols';
 import {
@@ -30,6 +30,7 @@ export class StateFactory {
   }
 
   private _states: MappedStore[] = [];
+  private _connected = false;
 
   constructor(
     private _injector: Injector,
@@ -121,26 +122,28 @@ export class StateFactory {
     dispatch: DispatchFn,
     mappedStores: MappedStore[]
   ): any {
+    if (this._connected) return;
     this._actions
       .pipe(
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
-        delay(0), // Force onto new task to prevent completion from firing before dispatch event is finished queueing
-        tap(({ action }) => {
-          this.invokeActions(getState, setState, dispatch, this._actions, action)
-            .pipe(
-              tap(() => {
-                this._actions.next({ action, status: ActionStatus.Completed });
-              }),
-              catchError(err => {
-                this._actions.next({ action, status: ActionStatus.Errored });
-                return of(err);
-              })
-            )
-            .subscribe();
-        })
+        mergeMap(({ action }) => {
+          return this.invokeActions(getState, setState, dispatch, this._actions, action).pipe(
+            map(() => {
+              return <ActionContext>{ action, status: ActionStatus.Completed };
+            }),
+            catchError(err => {
+              return of(<ActionContext>{ action, status: ActionStatus.Errored });
+            })
+          );
+        }),
+        delay(0) // Force onto new task to prevent completion from firing before dispatch event is finished queueing
       )
-      .subscribe();
+      .subscribe(ctx => {
+        this._actions.next(ctx);
+      });
+    this._connected = true;
   }
+
   /**
    * Invoke the init function on the states.
    */

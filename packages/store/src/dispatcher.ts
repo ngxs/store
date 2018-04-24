@@ -54,7 +54,7 @@ export class InternalDispatcher {
 
         const output = this._actions
           .pipe(
-            filter((ctx: ActionContext) => ctx.action === action && ctx.status !== ActionStatus.Dispatched),
+            filter((ctx: ActionContext) => ctx.action === nextAction && ctx.status !== ActionStatus.Dispatched),
             take(1),
             exhaustMap((ctx: ActionContext) => {
               switch (ctx.status) {
