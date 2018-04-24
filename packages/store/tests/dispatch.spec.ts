@@ -429,8 +429,11 @@ describe('Dispatch', () => {
         });
 
         const store: Store = TestBed.get(Store);
+
         let subscriptionCalled = false;
-        store.dispatch(new Increment()).subscribe(() => (subscriptionCalled = true));
+        store.dispatch(new Increment()).subscribe(() => {
+          subscriptionCalled = true;
+        });
 
         expect(subscriptionCalled).toBeTruthy();
       }));

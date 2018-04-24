@@ -3,7 +3,7 @@ import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN } from './symbols';
 import { StateFactory } from './state-factory';
 import { Actions, InternalActions } from './actions-stream';
-import { InternalDispatcher } from './dispatcher';
+import { InternalDispatcher, InternalDispatchedActionResults } from './dispatcher';
 import { Store } from './store';
 import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
@@ -119,6 +119,7 @@ export class NgxsModule {
         Actions,
         InternalActions,
         InternalDispatcher,
+        InternalDispatchedActionResults,
         Store,
         StateStream,
         SelectFactory,

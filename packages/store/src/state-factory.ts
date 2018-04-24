@@ -1,6 +1,6 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { shareReplay, takeUntil, map, catchError, filter, mergeMap, delay } from 'rxjs/operators';
+import { shareReplay, takeUntil, map, catchError, filter, mergeMap } from 'rxjs/operators';
 
 import { META_KEY, StateContext, NgxsLifeCycle } from './symbols';
 import {
@@ -18,6 +18,7 @@ import {
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
 import { ofActionDispatched } from './of-action';
 import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
+import { InternalDispatchedActionResults } from './dispatcher';
 
 /**
  * State factory class
@@ -37,7 +38,8 @@ export class StateFactory {
     @Optional()
     @SkipSelf()
     private _parentFactory: StateFactory,
-    private _actions: InternalActions
+    private _actions: InternalActions,
+    private _actionResults: InternalDispatchedActionResults
   ) {}
 
   /**
@@ -135,11 +137,10 @@ export class StateFactory {
               return of(<ActionContext>{ action, status: ActionStatus.Errored });
             })
           );
-        }),
-        delay(0) // Force onto new task to prevent completion from firing before dispatch event is finished queueing
+        })
       )
       .subscribe(ctx => {
-        this._actions.next(ctx);
+        this._actionResults.next(ctx);
       });
     this._connected = true;
   }
