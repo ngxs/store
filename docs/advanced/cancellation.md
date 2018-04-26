@@ -17,9 +17,9 @@ export class ZooState {
   constructor(private animalService: AnimalService, private actions$: Actions) {}
 
   @Action(FeedAnimals, { cancelUncompleted: true })
-  get({ setState }, { payload }) {
-    return this.animalService.get(payload).pipe(
-      tap((res) => setState(res))
+  get(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
+    return this.animalService.get(action.payload).pipe(
+      tap((res) => ctx.setState(res))
     ));
   }
 }
@@ -41,9 +41,9 @@ export class ZooState {
   constructor(private animalService: AnimalService, private actions$: Actions) {}
 
   @Action(FeedAnimals)
-  get({ setState }, { payload }) {
-    return this.animalService.get(payload).pipe(
-      tap((res) => setState(res)),
+  get(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
+    return this.animalService.get(action.payload).pipe(
+      tap((res) => ctx.setState(res)),
       takeUntil(this.actions$.pipe(ofAction(RemoveTodo)))
     ));
   }

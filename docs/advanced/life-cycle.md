@@ -1,20 +1,27 @@
 # Life-cycle
 States can implement life-cycle events.
 
-## `onInit`
-If specified on a state, the `onInit` function will be invoked after
-all the states for that module definition have been initialized and
-their states pushed into the state stream. The states are invoked in a hierarchical
-order going from parent to child. The function is invoked with the state context object.
+## `ngxsOnInit`
+If you implement the `NgxsOnInit` interface the `ngxsOnInit` function will be invoked after
+all the states for that module definition have been initialized and their states pushed into the state stream.
+The states are invoked in a topological sorted order going from parent to child.
+The first parameter is the `StateContext` where you can get the current state and dispatch actions as usual.
 
 ```TS
+export interface ZooStateModel {
+  animals: string[];
+}
+
 @State<any[]>({
   name: 'zoo',
-  defaults: []
+  defaults: {
+    animals: []
+  }
 })
-export class ZooState {
-  onInit(state: StateContext<any[]>) {
-    console.log('State initialized');
+export class ZooState extends NgxsOnInit {
+  ngxsOnInit(ctx: StateContext<ZooStateModel>) {
+    console.log('State initialized, now getting animals');
+    ctx.dispatch(new GetAnimals());
   }
 }
 ```

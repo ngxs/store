@@ -6,31 +6,37 @@ There are many different ways to approach this. Below is a simple example of
 using the store's current values and returning them instead of calling the HTTP
 service.
 
-```typescript
-import { State, Action } from '@ngxs/store';
+```TS
+import { State, Action, StateContext } from '@ngxs/store';
 import { of } from 'rxjs/observable/of';
 import { tap } from 'rxjs/operators';
 
+export class GetZebra {
+  static readonly type = '[Zoo] GetZebra';
+  contstructor(public id: string) {}
+}
+
 @State<ZooStateModel>({
   defaults: {
-    animals: []
+    zebras: []
   }
 })
 export class ZooState {
 
   constructor(private animalService: AnimalService) {}
 
-  @Action(GetAnimals)
-  get({ getState, setState, dispatch }, { payload }) {
-    const state = getState();
+  @Action(GetZebra)
+  getZebra(ctx: StateContext<ZooStateModel>, action: GetZebra) {
+    const state = ctx.getState();
     // payload = id of animal
-    const idx = state.animals.findIndex(animal => animal.id === payload);
+    const idx = state.zebras.findIndex(zebra => zebra.id === action.id);
     if (idx > -1) {
       // if we have the cache, just return it from the store
-      return dispatch(new GetAnimalsSuccess(state.animals[idx]));
+      return dispatch(new GetZebraSuccess(state.zebras[idx]));
     } else {
-      return this.animalService.get(payload)
-        .pipe(map(resp => dispatch(new GetAnimalsSuccess(resp))));
+      return this.animalService.getZebra(action.id).pipe(
+        map(resp => dispatch(new GetZebraSuccess(resp)))
+      );
     }
   }
 
