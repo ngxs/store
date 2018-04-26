@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
-import { Subject } from 'rxjs';
-import { Observer, Observable, interval } from 'rxjs';
+import { Observer, Observable, interval, Subject } from 'rxjs';
 import { webSocket } from 'rxjs/websocket';
-import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
 import { share, distinctUntilChanged, filter, takeWhile } from 'rxjs/operators';
+
+import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
 
 /**
  * Websocket Subject
