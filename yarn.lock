@@ -6870,9 +6870,9 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   dependencies:
     aproba "^1.1.1"
 
-rxjs-compat@^6.0.0-beta.1:
-  version "6.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/rxjs-compat/-/rxjs-compat-6.0.0-beta.1.tgz#ef7289354600f139253f719cbb2f0a6b2d572108"
+rxjs-compat@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/rxjs-compat/-/rxjs-compat-6.0.0.tgz#2496403f74042d07899faeeac0bd703e4bce6710"
 
 rxjs@^5.4.2, rxjs@^5.5.0, rxjs@^5.5.6:
   version "5.5.10"
@@ -6880,9 +6880,9 @@ rxjs@^5.4.2, rxjs@^5.5.0, rxjs@^5.5.6:
   dependencies:
     symbol-observable "1.0.1"
 
-rxjs@^6.0.0-uncanny-rc.7:
-  version "6.0.0-uncanny-rc.7"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.0.0-uncanny-rc.7.tgz#e5d6ebe2c538c583bf4b3600b60112d64a7a6991"
+rxjs@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.0.0.tgz#d647e029b5854617f994c82fe57a4c6747b352da"
   dependencies:
     tslib "^1.9.0"
 
