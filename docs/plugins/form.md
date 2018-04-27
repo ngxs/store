@@ -23,10 +23,11 @@ and include it in the imports.
 
 ```TS
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
+import { PizzaState } from './pizza.state';
 
 @NgModule({
   imports: [
-    NgxsModule.forRoot(states),
+    NgxsModule.forRoot([PizzaState]),
     NgxsFormPluginModule.forRoot(),
   ]
 })
@@ -50,6 +51,8 @@ export class SomeModule {}
 Define your default form state as part of your application state.
 
 ```TS
+import { State } from '@ngxs/store';
+
 @State({
   name: "todos",
   defaults: {
@@ -61,7 +64,7 @@ Define your default form state as part of your application state.
     }
   }
 })
-export class TodosState {}
+export class PizzaState {}
 ```
 
 ### Form Setup
@@ -71,9 +74,13 @@ of your state object. We are passing the _string_ path to `ngxsForm`.
 The directive uses this path to connect itself to the store and setup bindings.
 
 ```TS
+import { Component } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+
 @Component({
+  selector: 'pizza-form',
   template: `
-    <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizzaForm">
+    <form [formGroup]="pizzaForm" novalidate ngxsForm="todos.pizzaForm" (ngSubmit)="onSubmit()">
       <input type="text" formControlName="toppings" />
       <button type="submit">Order</button>
     </form>
@@ -81,8 +88,15 @@ The directive uses this path to connect itself to the store and setup bindings.
 })
 export class PizzaComponent {
   pizzaForm = this.formBuilder.group({
-    toppings: ['']
+    toppings: ''
   });
+
+  constructor(private formBuilder: FormBuilder) {
+  }
+
+  onSubmit() {
+    //
+  }
 }
 ```
 

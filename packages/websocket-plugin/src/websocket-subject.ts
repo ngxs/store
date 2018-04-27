@@ -7,7 +7,6 @@ import { share, distinctUntilChanged, filter, takeWhile } from 'rxjs/operators';
 /**
  * Websocket Subject
  * Heavily Inspired by: https://gearheart.io/blog/auto-websocket-reconnection-with-rxjs/
- * Backoff by: https://github.com/tjmehta/observable-backoff
  */
 @Injectable()
 export class WebSocketSubject extends Subject<any> {
