@@ -1,3 +1,9 @@
+# 3.0.0-rc.2 4/27/18
+
+- Fix: Form update fix #335
+- Chore: Upgrade RxJS to official
+
+
 # 3.0.0-rc.1 4/12/18
 
 - Fix: Rename `ofActionComplete` to `ofActionCompleted`
