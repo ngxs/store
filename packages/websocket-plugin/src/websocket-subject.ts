@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Observer, Observable, interval } from 'rxjs';
-import { websocket } from 'rxjs/websocket';
+import { webSocket } from 'rxjs/websocket';
 import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
 import { share, distinctUntilChanged, filter, takeWhile } from 'rxjs/operators';
 
@@ -56,7 +56,7 @@ export class WebSocketSubject extends Subject<any> {
       this._internalConfig.url = url;
     }
 
-    this._socket = websocket(this._internalConfig);
+    this._socket = webSocket(this._internalConfig);
     this._socket.subscribe(
       message => this.next(message),
       (error: Event) => {
