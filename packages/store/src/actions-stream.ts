@@ -8,7 +8,7 @@ export enum ActionStatus {
   Dispatched = 'DISPATCHED',
   Completed = 'COMPLETED',
   Canceled = 'CANCELED',
-  Errored = 'Errored'
+  Errored = 'ERRORED'
 }
 
 export interface ActionContext {
