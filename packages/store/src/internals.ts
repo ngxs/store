@@ -211,6 +211,7 @@ export function findFullParentPath(obj: StateKeyGraph, newObj: ObjectKeyMap<stri
 export function topologicalSort(graph: StateKeyGraph): string[] {
   const sorted: string[] = [];
   const visited: ObjectKeyMap<boolean> = {};
+
   const visit = (name: string, ancestors: string[] = []) => {
     if (!Array.isArray(ancestors)) {
       ancestors = [];
