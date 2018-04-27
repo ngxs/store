@@ -43,6 +43,14 @@ export class StateFactory {
     private _dispatcher: InternalDispatcher
   ) {}
 
+  private get rootStateOperations(): InternalStateOperations<any> {
+    return {
+      getState: () => this._stateStream.getValue(),
+      setState: newState => this._stateStream.next(newState),
+      dispatch: actions => this._dispatcher.dispatch(actions)
+    };
+  }
+
   /**
    * Add a new state to the global defs.
    */
@@ -136,19 +144,10 @@ export class StateFactory {
           );
         })
       )
-      .subscribe(ctx => {
-        this._actionResults.next(ctx);
-      });
+      .subscribe(ctx => this._actionResults.next(ctx));
     this._connected = true;
   }
 
-  private get rootStateOperations(): InternalStateOperations<any> {
-    return {
-      getState: () => this._stateStream.getValue(),
-      setState: newState => this._stateStream.next(newState),
-      dispatch: actions => this._dispatcher.dispatch(actions)
-    };
-  }
   /**
    * Invoke the init function on the states.
    */
