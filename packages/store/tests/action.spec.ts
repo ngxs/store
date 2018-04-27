@@ -84,7 +84,7 @@ describe('Action', () => {
       });
 
       store.dispatch(new Action1()).subscribe(() => {
-        expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched']);
+        expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionCompleted']);
       });
 
       tick(1);
@@ -118,7 +118,7 @@ describe('Action', () => {
       });
 
       store.dispatch(new ErrorAction()).subscribe(action => {
-        expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched']);
+        expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
       });
 
       tick(1);

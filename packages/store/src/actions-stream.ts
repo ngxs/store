@@ -16,11 +16,30 @@ export interface ActionContext {
   action: any;
 }
 
+export class OrderedSubject<T> extends Subject<T> {
+  private _itemQueue: T[] = [];
+  private _busyPushingNext = false;
+
+  next(value?: T): void {
+    if (this._busyPushingNext) {
+      this._itemQueue.unshift(value);
+      return;
+    }
+    this._busyPushingNext = true;
+    super.next(value);
+    while (this._itemQueue.length > 0) {
+      const nextValue = this._itemQueue.pop();
+      super.next(nextValue);
+    }
+    this._busyPushingNext = false;
+  }
+}
+
 /**
  * Internal Action stream that is emitted anytime an action is dispatched.
  */
 @Injectable()
-export class InternalActions extends Subject<ActionContext> {}
+export class InternalActions extends OrderedSubject<ActionContext> {}
 
 /**
  * Action stream that is emitted anytime an action is dispatched.

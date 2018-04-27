@@ -1,6 +1,6 @@
 import { Injectable, ErrorHandler } from '@angular/core';
 import { Observable, of, forkJoin, empty, Subject } from 'rxjs';
-import { catchError, shareReplay, filter, exhaustMap, take, delay } from 'rxjs/operators';
+import { catchError, shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
 
 import { compose } from './compose';
 import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
@@ -70,31 +70,9 @@ export class InternalDispatcher {
           shareReplay()
         );
 
-        actionResult$
-          .pipe(
-            delay(0) // Force completion onto new task to prevent completion from firing before dispatch event on subsequent observers
-          )
-          .subscribe(ctx => {
-            this._actions.next(ctx);
-          });
-        /*
-        return this._stateFactory
-          .invokeActions(this._actions, action)
-          .pipe(
-            tap(() => {
-              this._actions.next({ action, status: ActionStatus.Completed });
-            }),
-            map(() => {
-              return this._stateStream.getValue();
-            }),
-            catchError(err => {
-              this._actions.next({ action, status: ActionStatus.Errored });
-
-              return of(err);
-            })
-          );
-          */
-
+        actionResult$.subscribe(ctx => {
+          this._actions.next(ctx);
+        });
         this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
 
         return actionResult$
