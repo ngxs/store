@@ -66,162 +66,147 @@ describe('Select', () => {
 
   const states = [MySubState, MySubSubState, MyState];
 
-  it(
-    'should select the correct state using string',
-    async(() => {
-      @Component({
-        selector: 'my-component-0',
-        template: ''
-      })
-      class StringSelectComponent {
-        @Select('counter') state: Observable<StateModel>;
-        @Select('counter.boo') subState: Observable<SubStateModel>;
-        @Select('counter.boo.baz') subSubState: Observable<SubSubStateModel>;
-      }
-
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)],
-        declarations: [StringSelectComponent]
-      });
-
-      const comp = TestBed.createComponent(StringSelectComponent);
-
-      comp.componentInstance.state.subscribe(state => {
-        expect(state.foo).toBe('Hello');
-        expect(state.bar).toBe('World');
-      });
-
-      comp.componentInstance.subState.subscribe(state => {
-        expect(state.hello).toBe(true);
-        expect(state.world).toBe(true);
-      });
-
-      comp.componentInstance.subSubState.subscribe(state => {
-        expect(state.name).toBe('Danny');
-      });
+  it('should select the correct state using string', async(() => {
+    @Component({
+      selector: 'my-component-0',
+      template: ''
     })
-  );
+    class StringSelectComponent {
+      @Select('counter') state: Observable<StateModel>;
+      @Select('counter.boo') subState: Observable<SubStateModel>;
+      @Select('counter.boo.baz') subSubState: Observable<SubSubStateModel>;
+    }
 
-  it(
-    'should select the correct state using a state class',
-    async(() => {
-      @Component({
-        selector: 'my-component-1',
-        template: ''
-      })
-      class StoreSelectComponent {
-        @Select(MyState) state: Observable<StateModel>;
-        @Select(MySubState) subState: Observable<SubStateModel>;
-        @Select(MySubSubState) subSubState: Observable<SubSubStateModel>;
-      }
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [StringSelectComponent]
+    });
 
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)],
-        declarations: [StoreSelectComponent]
-      });
+    const comp = TestBed.createComponent(StringSelectComponent);
 
-      const comp = TestBed.createComponent(StoreSelectComponent);
+    comp.componentInstance.state.subscribe(state => {
+      expect(state.foo).toBe('Hello');
+      expect(state.bar).toBe('World');
+    });
 
-      comp.componentInstance.state.subscribe(state => {
-        expect(state.foo).toBe('Hello');
-        expect(state.bar).toBe('World');
-      });
+    comp.componentInstance.subState.subscribe(state => {
+      expect(state.hello).toBe(true);
+      expect(state.world).toBe(true);
+    });
 
-      comp.componentInstance.subState.subscribe(state => {
-        expect(state.hello).toBe(true);
-        expect(state.world).toBe(true);
-      });
+    comp.componentInstance.subSubState.subscribe(state => {
+      expect(state.name).toBe('Danny');
+    });
+  }));
 
-      comp.componentInstance.subSubState.subscribe(state => {
-        expect(state.name).toBe('Danny');
-      });
+  it('should select the correct state using a state class', async(() => {
+    @Component({
+      selector: 'my-component-1',
+      template: ''
     })
-  );
+    class StoreSelectComponent {
+      @Select(MyState) state: Observable<StateModel>;
+      @Select(MySubState) subState: Observable<SubStateModel>;
+      @Select(MySubSubState) subSubState: Observable<SubSubStateModel>;
+    }
 
-  it(
-    'should select the correct state using a function',
-    async(() => {
-      @Component({
-        selector: 'my-component-1',
-        template: ''
-      })
-      class StoreSelectComponent {
-        @Select(state => state.counter.foo)
-        counter$: Observable<string>;
-      }
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [StoreSelectComponent]
+    });
 
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)],
-        declarations: [StoreSelectComponent]
-      });
+    const comp = TestBed.createComponent(StoreSelectComponent);
 
-      const comp = TestBed.createComponent(StoreSelectComponent);
+    comp.componentInstance.state.subscribe(state => {
+      expect(state.foo).toBe('Hello');
+      expect(state.bar).toBe('World');
+    });
 
-      comp.componentInstance.counter$.subscribe(state => {
-        expect(state).toBe('Hello');
-      });
+    comp.componentInstance.subState.subscribe(state => {
+      expect(state.hello).toBe(true);
+      expect(state.world).toBe(true);
+    });
+
+    comp.componentInstance.subSubState.subscribe(state => {
+      expect(state.name).toBe('Danny');
+    });
+  }));
+
+  it('should select the correct state using a function', async(() => {
+    @Component({
+      selector: 'my-component-1',
+      template: ''
     })
-  );
+    class StoreSelectComponent {
+      @Select(state => state.counter.foo)
+      counter$: Observable<string>;
+    }
 
-  it(
-    'should select the correct state after timeout',
-    async(() => {
-      @Component({
-        selector: 'my-component-1',
-        template: ''
-      })
-      class StoreSelectComponent {
-        @Select(state => state.counter.foo)
-        counter$: Observable<string>;
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [StoreSelectComponent]
+    });
 
-        constructor(store: Store) {
-          setTimeout(() => {
-            store.dispatch(new FooIt());
-          }, 100);
-        }
-      }
+    const comp = TestBed.createComponent(StoreSelectComponent);
 
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)],
-        declarations: [StoreSelectComponent]
-      });
+    comp.componentInstance.counter$.subscribe(state => {
+      expect(state).toBe('Hello');
+    });
+  }));
 
-      const comp = TestBed.createComponent(StoreSelectComponent);
-
-      comp.componentInstance.counter$.pipe(first()).subscribe(state2 => {
-        expect(state2).toBe('Hello');
-      });
-
-      comp.componentInstance.counter$.pipe(last()).subscribe(state2 => {
-        expect(state2).toBe('bar');
-      });
+  it('should select the correct state after timeout', async(() => {
+    @Component({
+      selector: 'my-component-1',
+      template: ''
     })
-  );
+    class StoreSelectComponent {
+      @Select(state => state.counter.foo)
+      counter$: Observable<string>;
 
-  it(
-    'should not fail when TypeError is thrown in select lambda',
-    async(() => {
-      @Component({
-        selector: 'my-component-1',
-        template: ''
-      })
-      class StoreSelectComponent {
-        @Select(state => state.counter.not.here)
-        counter$: Observable<string>;
+      constructor(store: Store) {
+        setTimeout(() => {
+          store.dispatch(new FooIt());
+        }, 100);
       }
+    }
 
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)],
-        declarations: [StoreSelectComponent]
-      });
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [StoreSelectComponent]
+    });
 
-      const comp = TestBed.createComponent(StoreSelectComponent);
+    const comp = TestBed.createComponent(StoreSelectComponent);
 
-      comp.componentInstance.counter$.subscribe(state => {
-        expect(state).toBeUndefined();
-      });
+    comp.componentInstance.counter$.pipe(first()).subscribe(state2 => {
+      expect(state2).toBe('Hello');
+    });
+
+    comp.componentInstance.counter$.pipe(last()).subscribe(state2 => {
+      expect(state2).toBe('bar');
+    });
+  }));
+
+  it('should not fail when TypeError is thrown in select lambda', async(() => {
+    @Component({
+      selector: 'my-component-1',
+      template: ''
     })
-  );
+    class StoreSelectComponent {
+      @Select(state => state.counter.not.here)
+      counter$: Observable<string>;
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [StoreSelectComponent]
+    });
+
+    const comp = TestBed.createComponent(StoreSelectComponent);
+
+    comp.componentInstance.counter$.subscribe(state => {
+      expect(state).toBeUndefined();
+    });
+  }));
 
   @State<any>({
     name: 'nullselector',
@@ -236,27 +221,24 @@ describe('Select', () => {
     }
   }
 
-  it(
-    'should not fail when TypeError is thrown in select lambda',
-    async(() => {
-      @Component({
-        selector: 'my-component-1',
-        template: ''
-      })
-      class StoreSelectComponent {
-        @Select(NullSelectorState.notHere) state$: Observable<any>;
-      }
-
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([NullSelectorState])],
-        declarations: [StoreSelectComponent]
-      });
-
-      const comp = TestBed.createComponent(StoreSelectComponent);
-
-      comp.componentInstance.state$.subscribe(state => {
-        expect(state).toBeUndefined();
-      });
+  it('should not fail when TypeError is thrown in select lambda', async(() => {
+    @Component({
+      selector: 'my-component-1',
+      template: ''
     })
-  );
+    class StoreSelectComponent {
+      @Select(NullSelectorState.notHere) state$: Observable<any>;
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([NullSelectorState])],
+      declarations: [StoreSelectComponent]
+    });
+
+    const comp = TestBed.createComponent(StoreSelectComponent);
+
+    comp.componentInstance.state$.subscribe(state => {
+      expect(state).toBeUndefined();
+    });
+  }));
 });

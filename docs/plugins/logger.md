@@ -12,7 +12,7 @@ npm i @ngxs/logger-plugin --S
 Add the `NgxsLoggerPluginModule` plugin to your root app module:
 
 ```TS
-import { NgxsModule, NgxsLoggerPluginModule } from '@ngxs/store';
+import { NgxsModule } from '@ngxs/store';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 
 @NgModule({

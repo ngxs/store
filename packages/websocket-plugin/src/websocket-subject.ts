@@ -45,7 +45,7 @@ export class WebSocketSubject extends Subject<any> {
     };
 
     this.connectionStatus
-      .pipe(filter(isConnected => !this._reconnectionObservable && isConnected === false))
+      .pipe(filter(isConnected => !this._reconnectionObservable && isConnected === false && this._socket !== undefined))
       .subscribe(isConnected => this.reconnect());
   }
 
