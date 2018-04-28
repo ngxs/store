@@ -1,4 +1,4 @@
-import { async, TestBed, flushMicrotasks, fakeAsync } from '@angular/core/testing';
+import { async, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { timer, of } from 'rxjs';
 import { tap, skip, delay } from 'rxjs/operators';
 
@@ -429,8 +429,11 @@ describe('Dispatch', () => {
         });
 
         const store: Store = TestBed.get(Store);
+
         let subscriptionCalled = false;
-        store.dispatch(new Increment()).subscribe(() => (subscriptionCalled = true));
+        store.dispatch(new Increment()).subscribe(() => {
+          subscriptionCalled = true;
+        });
 
         expect(subscriptionCalled).toBeTruthy();
       }));
@@ -456,7 +459,7 @@ describe('Dispatch', () => {
       }));
     });
 
-    describe('when the action is cancelled by a subsequent action', () => {
+    describe('when the action is canceled by a subsequent action', () => {
       it(
         'should not trigger observer, but should complete observable stream',
         fakeAsync(() => {
@@ -490,7 +493,7 @@ describe('Dispatch', () => {
           store.dispatch(new Increment());
           resolvers[0]();
           resolvers[1]();
-          flushMicrotasks();
+          tick(0);
           expect(subscriptionsCalled).toEqual(['previous complete']);
         })
       );
@@ -534,7 +537,7 @@ describe('Dispatch', () => {
             );
           resolvers[0]();
           resolvers[1]();
-          flushMicrotasks();
+          tick(0);
           expect(subscriptionsCalled).toEqual(['previous complete', 'latest', 'latest complete']);
         })
       );
