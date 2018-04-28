@@ -61,9 +61,9 @@ export class InternalDispatcher {
         if (nextState !== prevState) {
           this._stateStream.next(nextState);
         }
-        const actionResult$ = this.getActionResultStream(action);
+        const actionResult$ = this.getActionResultStream(nextAction);
         actionResult$.subscribe(ctx => this._actions.next(ctx));
-        this._actions.next({ action: action, status: ActionStatus.Dispatched });
+        this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
         return this.createDispatchObservable(actionResult$);
       }
     ])(prevState, action) as Observable<any>;
