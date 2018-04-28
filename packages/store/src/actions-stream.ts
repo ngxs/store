@@ -16,6 +16,21 @@ export interface ActionContext {
   action: any;
 }
 
+/**
+ * Custom Subject that ensures that subscribers are notified of values in the order that they arrived.
+ * A standard Subject does not have this guarantee.
+ * For example, given the following code:
+ * ```typescript
+ *   const subject = new Subject<string>();
+     subject.subscribe(value => {
+       if (value === 'start') subject.next('end');
+     });
+     subject.subscribe(value => { });
+     subject.next('start');
+ * ```
+ * When `subject` is a standard `Subject<T>` the second subscriber would recieve `end` and then `start`.
+ * When `subject` is a `OrderedSubject<T>` the second subscriber would recieve `start` and then `end`.
+ */
 export class OrderedSubject<T> extends Subject<T> {
   private _itemQueue: T[] = [];
   private _busyPushingNext = false;
