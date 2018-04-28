@@ -205,6 +205,7 @@ export class StateFactory {
         }
         state = setValue(state, metadata.depth, { ...local });
         setState(state);
+
         return state;
       },
       setState(val: any): any {

@@ -26,6 +26,7 @@ export class NgxsRootModule {
   ) {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(states);
+
     if (results) {
       // get our current stream
       const cur = stateStream.getValue();
