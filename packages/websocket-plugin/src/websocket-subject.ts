@@ -1,9 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observer, Observable, interval, Subject } from 'rxjs';
-import { webSocket } from 'rxjs/webSocket';
-import { share, distinctUntilChanged, filter, takeWhile } from 'rxjs/operators';
-
+import { Subject, Observer, Observable, interval } from 'rxjs';
+import { WebSocketSubject as RxWebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
 import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
+import { share, distinctUntilChanged, filter, takeWhile } from 'rxjs/operators';
 
 /**
  * Websocket Subject
@@ -11,12 +10,16 @@ import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
  */
 @Injectable()
 export class WebSocketSubject extends Subject<any> {
+  /**
+   * The connection status of the websocket.
+   */
   connectionStatus: Observable<any>;
-  private _socket: any;
+
+  private _socket: RxWebSocketSubject<any>;
   private _reconnectionObservable: Observable<number>;
   private _reconnectAttempts: number;
   private _connectionObserver: Observer<boolean>;
-  private _internalConfig: any;
+  private _internalConfig: WebSocketSubjectConfig<any>;
 
   constructor(@Inject(NGXS_WEBSOCKET_OPTIONS) private _config: NgxsWebsocketPluginOptions) {
     super();
@@ -42,21 +45,21 @@ export class WebSocketSubject extends Subject<any> {
     };
 
     this.connectionStatus
-      .pipe(filter(isConnected => !this._reconnectionObservable && typeof isConnected === 'boolean' && !isConnected))
-      .subscribe(isConnected => {
-        // fix(amcdnl): temp remove reconnect since
-        // its not working correctly with latest rx
-        // this.reconnect();
-      });
+      .pipe(filter(isConnected => !this._reconnectionObservable && isConnected === false && this._socket !== undefined))
+      .subscribe(isConnected => this.reconnect());
   }
 
+  /**
+   * Kickoff the connection to the websocket.
+   */
   connect(url?: string) {
+    // Users can pass the URL via the setup or via
+    // the config. This is needed when the URL is totally dynamic.
     if (url) {
-      // sometimes you need the ability to override the URL passed
       this._internalConfig.url = url;
     }
 
-    this._socket = webSocket(this._internalConfig);
+    this._socket = new RxWebSocketSubject(this._internalConfig);
     this._socket.subscribe(
       message => this.next(message),
       (error: Event) => {
@@ -67,15 +70,19 @@ export class WebSocketSubject extends Subject<any> {
     );
   }
 
+  /**
+   * Disconnected the websocket.
+   */
   disconnect() {
     if (this._socket) {
       this._socket.complete();
-
-      // set to undefined so send() can throw error.
       this._socket = undefined;
     }
   }
 
+  /**
+   * Try to reconnect on a interval.
+   */
   reconnect() {
     this._reconnectionObservable = interval(this._config.reconnectInterval).pipe(
       takeWhile((v, index) => index < this._reconnectAttempts && !this._socket)
@@ -90,6 +97,9 @@ export class WebSocketSubject extends Subject<any> {
     });
   }
 
+  /**
+   * Send data to the websocket.
+   */
   send(data: any): void {
     if (!this._socket) {
       throw new Error('You must connect before sending data');
