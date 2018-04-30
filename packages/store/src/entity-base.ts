@@ -38,31 +38,38 @@ export abstract class EntityBase<T, S extends EntityState<T>> {
 
   // @todo Don't like having to pass in an injector to be able to get at the
   // state stream, how could we do this differently?
-  private stateStream: StateStream;
+  private _stateStream: StateStream;
   constructor(injector: Injector) {
-    this.stateStream = injector.get(StateStream);
+    this._stateStream = injector.get(StateStream);
   }
 
   /**
-   * Select the entity id used to store the entity in the state.
+   * Get the entity id used to store the entity in the state.
    * Can easily be overriden in the state class.
-   * @param entity The entity to select the id from
+   * @param entity The entity to get the id from
    */
-  selectEntityId(entity: T): string | number {
+  getEntityId(entity: T): string | number {
     if (!entity) {
       return undefined;
     }
     return entity['id'] || entity['_id'];
   }
 
+  /**
+   * Add entity to the state, using the `id` key as an identifier
+   * @param entity add this entity to the state
+   */
   addOne(entity: T): S {
     const state = this.getState();
     const didMutate = this._addOne(state, entity);
-    return this.mutateStateIfNeeded(state, didMutate);
+    return this._mutateStateIfNeeded(state, didMutate);
   }
 
+  /**
+   * Helper method that checks if we need to mutate state and if so updates the passed in state
+   */
   private _addOne(state: S, entity: T): EntityMutation {
-    const key = this.selectEntityId(entity);
+    const key = this.getEntityId(entity);
 
     if (key in state.entities) {
       return EntityMutation.None;
@@ -77,9 +84,12 @@ export abstract class EntityBase<T, S extends EntityState<T>> {
   addMany(entities: T[]): S {
     const state = this.getState();
     const didMutate = this._addMany(state, entities);
-    return this.mutateStateIfNeeded(state, didMutate);
+    return this._mutateStateIfNeeded(state, didMutate);
   }
 
+  /**
+   * Helper method that checks if we need to mutate state and if so updates the passed in state
+   */
   private _addMany(state: S, entities: T[]): EntityMutation {
     let didMutate = false;
 
@@ -97,7 +107,7 @@ export abstract class EntityBase<T, S extends EntityState<T>> {
 
     this._addMany(state, entities);
 
-    return this.mutateStateIfNeeded(state, EntityMutation.IdAndEntity);
+    return this._mutateStateIfNeeded(state, EntityMutation.IdAndEntity);
   }
 
   removeOne(key: string | number): S {
@@ -107,8 +117,12 @@ export abstract class EntityBase<T, S extends EntityState<T>> {
   removeMany(keys: (string | number)[]): S {
     const state = this.getState();
     const mutation = this._removeMany(state, keys);
-    return this.mutateStateIfNeeded(state, mutation);
+    return this._mutateStateIfNeeded(state, mutation);
   }
+
+  /**
+   * Helper method that checks if we need to mutate state and if so updates the passed in state
+   */
   private _removeMany(state: S, keys: (string | number)[]) {
     const didMutate = keys.filter(key => key in state.entities).map(key => delete state.entities[key]).length > 0;
 
@@ -125,18 +139,22 @@ export abstract class EntityBase<T, S extends EntityState<T>> {
       ids: [],
       entities: {}
     });
-    return this.mutateStateIfNeeded(cleanState, EntityMutation.IdAndEntity);
+    return this._mutateStateIfNeeded(cleanState, EntityMutation.IdAndEntity);
   }
 
   updateOne(update: EntityUpdate<T>): S {
     return this.updateMany([update]);
   }
+
   updateMany(updates: EntityUpdate<T>[]): S {
     const state = this.getState();
     const mutation = this._updateMany(state, updates);
-    return this.mutateStateIfNeeded(state, mutation);
+    return this._mutateStateIfNeeded(state, mutation);
   }
 
+  /**
+   * Helper method that checks if we need to mutate state and if so updates the passed in state
+   */
   private _updateMany(state: S, updates: EntityUpdate<T>[]) {
     const newKeys: { [id: string]: string } = {};
 
@@ -158,10 +176,13 @@ export abstract class EntityBase<T, S extends EntityState<T>> {
     return EntityMutation.None;
   }
 
+  /**
+   * Helper method that checks if we need to update the id of the entity, and if so, removes the old entity and id first.
+   */
   private _takeNewKey(state: S, keys: { [id: string]: any }, update: EntityUpdate<T>): boolean {
     const original = state.entities[update.id];
     const updated: T = Object.assign({}, original, update.changes);
-    const newKey = this.selectEntityId(updated);
+    const newKey = this.getEntityId(updated);
     const hasNewKey = newKey !== update.id;
 
     if (hasNewKey) {
@@ -182,14 +203,23 @@ export abstract class EntityBase<T, S extends EntityState<T>> {
 
   }*/
 
+  /**
+   * Helper method to get the current state for this state class
+   */
   private getState() {
-    const rootState = this.stateStream.getValue();
+    const rootState = this._stateStream.getValue();
     const stateClass = this.constructor[META_KEY];
     const state = getValue(rootState, stateClass.path);
     return state;
   }
 
-  private mutateStateIfNeeded(state: S, didMutate: EntityMutation) {
+  /**
+   * Updates the entity and or id of entity based on what mutator was invoked
+   * By minimizing the amount of state we change, we have the best performance.
+   * @param state Current state
+   * @param didMutate the helper methods return value, signals how we should update the state
+   */
+  private _mutateStateIfNeeded(state: S, didMutate: EntityMutation) {
     if (didMutate === EntityMutation.None) {
       return state;
     }
@@ -220,7 +250,7 @@ export abstract class EntityBase<T, S extends EntityState<T>> {
 
     // update state
     const newState = setValue(state, path, newLocalState);
-    this.stateStream.next(newState);
+    this._stateStream.next(newState);
 
     // return the local updated state if the user would like to continue proccesing it in the action handler
     return newLocalState;
