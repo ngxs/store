@@ -36,7 +36,7 @@ describe('Dispatch', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [NgxsModule.forRoot([MyState]), NgxsModule.forFeature([])]
     });
 
     const store: Store = TestBed.get(Store);

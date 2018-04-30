@@ -36,8 +36,10 @@ export class NgxsRootModule {
       stateStream.next({ ...cur, ...results.defaults });
     }
 
-    factory.connectActionHandlers(results.states);
+    // connect our actions stream
+    factory.connectActionHandlers();
 
+    // dispatch the init action and invoke init function after
     store.dispatch(new InitState()).subscribe(() => {
       if (results) {
         factory.invokeInit(results.states);
@@ -73,8 +75,6 @@ export class NgxsFeatureModule {
       // set the state to the current + new
       stateStream.next({ ...cur, ...results.defaults });
     }
-
-    factory.connectActionHandlers(results.states);
 
     store.dispatch(new UpdateState()).subscribe(() => {
       if (results) {
