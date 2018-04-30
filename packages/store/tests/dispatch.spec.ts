@@ -17,6 +17,41 @@ describe('Dispatch', () => {
     static type = 'DECREMENT';
   }
 
+  it('should only call action once', async(() => {
+    const spy = jasmine.createSpy('action spy');
+    const spy2 = jasmine.createSpy('subscribe spy');
+    const spy3 = jasmine.createSpy('select spy');
+
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    class MyState {
+      @Action(Increment)
+      increment({ getState, setState }: StateContext<number>) {
+        setState(getState() + 1);
+        spy();
+        return of({});
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([MyState])]
+    });
+
+    const store: Store = TestBed.get(Store);
+    store.dispatch(new Increment()).subscribe(spy2);
+
+    store.select(MyState).subscribe(res => {
+      expect(res).toBe(1);
+      spy3();
+    });
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy2).toHaveBeenCalledTimes(1);
+    expect(spy3).toHaveBeenCalledTimes(1);
+  }));
+
   it('should correctly dispatch the action', async(() => {
     @State<number>({
       name: 'counter',
