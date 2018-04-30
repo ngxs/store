@@ -127,7 +127,10 @@ export class StateFactory {
     }
   }
 
-  connectActionHandlers(mappedStores: MappedStore[]): any {
+  /**
+   * Bind the actions to the handlers
+   */
+  connectActionHandlers() {
     if (this._connected) return;
     this._actions
       .pipe(
