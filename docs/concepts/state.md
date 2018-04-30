@@ -49,6 +49,10 @@ Let's define a state that will listen to a `FeedAnimals` action to toggle whethe
 ```TS
 import { State, Action, StateContext } from '@ngxs/store';
 
+export class FeedAnimals {
+  static readonly type = '[Zoo] FeedAnimals';
+}
+
 export interface ZooStateModel {
   feed: boolean;
 }
@@ -61,9 +65,9 @@ export interface ZooStateModel {
 })
 export class ZooState {
   @Action(FeedAnimals)
-  feedAnimals({ getState, setState }: StateContext<ZooStateModel>) {
-    const state = getState();
-    setState({
+  feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
+    const state = ctx.getState();
+    ctx.setState({
       ...state,
       feed: !state.feed
     });
@@ -71,57 +75,77 @@ export class ZooState {
 }
 ```
 
-The `feedAnimals` function has one argument called `StateContext`. This
+The `feedAnimal` function has one argument called `StateContext`. This
 context state has a slice pointer and a function to set the state. It's important
-to note that the `state` property is a getter that will always return
+to note that the `getState()` method will always return
 the freshest state slice from the global store each time it is accessed. This
 ensures that when we're performing async operations the state
 is always fresh. If you want a snapshot, you can always clone the state
 in the method.
 
-### Actions with Payload
-This action was simple, it had no payload. Let's take that same concept of
-feeding animals and enhance it to accept a payload of the animal name
-that has been fed.
+### Actions with a payload
+Actions can also pass along metadata that has to do with the action.
+Say we want to pass along how much hay and carrots each zebra needs.
 
 ```TS
 import { State, Action, StateContext } from '@ngxs/store';
 
+// This is an interface that is part of your domain model
+export interface ZebraFood {
+  name: string;
+  hay: number;
+  carrots: number;
+}
+
+// naming your action metadata explicitly makes it easier to understand what the action
+// is for and makes debugging easier.
+export class FeedZebra {
+  static readonly type = '[Zoo] FeedZebra';
+  constructor(public zebraToFeed: ZebraFood) {}
+}
+
 export interface ZooStateModel {
-  feedAnimals: string[];
+  zebraFood: ZebraFood[];
 }
 
 @State<ZooStateModel>({
   name: 'zoo',
   defaults: {
-    feedAnimals: []
+    zebraFood: []
   }
 })
 export class ZooState {
-  @Action(FeedAnimals)
-  feedAnimals({ getState, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
-    const state = getState();
+  @Action(FeedZebra)
+  feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
+    const state = ctx.getState();
     setState({
       ...state,
-      feedAnimals: [ ...state.feedAnimals, payload ]
+      zebraFood: [
+        ...state.zebraFood,
+        // this is the new ZebraFood instance that we add to the state
+        action.zebraToFeed,
+      ]
     });
   }
 }
 ```
 
 In this example, we have a second argument that represents the action and we destructure it
-to pull out the payload and use it in our action.
+to pull out the name, hay, and carrots which we then update the state with.
 
 There is also a shortcut `patchState` function to make updating the state easier. In this case,
 you only pass it the properties you want to update on the state and it handles the rest. The above function
 could be reduced to this:
 
 ```TS
-@Action(FeedAnimals)
-  feedAnimals({ getState, patchState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
-  const state = getState();
+@Action(FeedZebra)
+  feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
+  const state = ctx.getState();
   patchState({
-    feedAnimals: [ ...state.feedAnimals, payload ]
+    zebraFood: [
+      ...state.feedAnimals,
+      action.zebraToFeed,
+    ]
   });
 }
 ```
@@ -140,6 +164,11 @@ Let's take a look at a simple async action:
 import { State, Action, StateContext } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
+export interface FeedAnimalsAction {
+  static readonly type = '[Zoo] FeedAnimals';
+  constructor(public animalsToFeed: string) {}
+}
+
 export interface ZooStateModel {
   feedAnimals: string[];
 }
@@ -154,12 +183,15 @@ export class ZooState {
   constructor(private animalService: AnimalService) {}
 
   @Action(FeedAnimals)
-  feedAnimals({ getState, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
-    return this.animalService.feed(payload).pipe(tap(result) => {
-      const state = getState();
-      setState({
+  feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
+    return this.animalService.feed(action.animalsToFeed).pipe(tap(animalsToFeedResult) => {
+      const state = ctx.getState();
+      ctx.setState({
         ...state,
-        feedAnimals: [ ...state.feedAnimals, result ]
+        feedAnimals: [
+          ...state.feedAnimals,
+          animalsToFeedResult,
+        ]
       });
     });
   }
@@ -182,6 +214,11 @@ that observable chain to look like this:
 ```TS
 import { State, Action } from '@ngxs/store';
 
+export interface FeedAnimalsAction {
+  static readonly type = '[Zoo] FeedAnimals';
+  constructor(public animalsToFeed: string) {}
+}
+
 export interface ZooStateModel {
   feedAnimals: string[];
 }
@@ -196,12 +233,15 @@ export class ZooState {
   constructor(private animalService: AnimalService) {}
 
   @Action(FeedAnimals)
-  async feedAnimals({ getState, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
-    const result = await this.animalService.feed(payload);
-    const state = getState();
-    setState({
+  async feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
+    const result = await this.animalService.feed(action.animalsToFeed);
+    const state = ctx.getState();
+    ctx.setState({
       ...state,
-      feedAnimals: [ ...state.feedAnimals, result ]
+      feedAnimals: [
+        ...state.feedAnimals,
+        result,
+      ]
     });
   }
 }
@@ -233,22 +273,27 @@ export class ZooState {
   * Simple Example
   */
   @Action(FeedAnimals)
-  feedAnimals({ getState, setState, dispatch }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
-    const state = getState();
-    setState({
+  feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
+    const state = ctx.getState();
+    ctx.setState({
       ...state,
-      feedAnimals: [ ...state.feedAnimals, result ]
+      feedAnimals: [
+        ...state.feedAnimals,
+        action.animalsToFeed,
+      ]
     });
 
-    return dispatch(TakeAnimalsOutside);
+    return ctx.dispatch(new TakeAnimalsOutside());
   }
 
   /**
    * Async Example
    */
   @Action(FeedAnimals)
-  feedAnimals2({ dispatch }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
-    return this.animalService.feed(payload).pipe(map(() => dispatch(TakeAnimalsOutside));
+  feedAnimals2(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
+    return this.animalService.feed(action.animalsToFeed).pipe(
+      map(() => ctx.dispatch(new TakeAnimalsOutside()))
+    );
   }
 }
 ```

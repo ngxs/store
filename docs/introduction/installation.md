@@ -52,7 +52,7 @@ Your package.json file will be locked to that specific version.
 ```json
 {
   "dependencies": {
-    "@ngxs/store": "2.1.0-dev.a0d076d"
+    "@ngxs/store": "3.0.0-dev.a0d076d"
   }
 }
 ```

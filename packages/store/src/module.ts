@@ -3,6 +3,7 @@ import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN } from './symbols';
 import { StateFactory } from './state-factory';
 import { Actions, InternalActions } from './actions-stream';
+import { InternalDispatcher, InternalDispatchedActionResults } from './dispatcher';
 import { Store } from './store';
 import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
@@ -26,6 +27,7 @@ export class NgxsRootModule {
   ) {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(states);
+
     if (results) {
       // get our current stream
       const cur = stateStream.getValue();
@@ -34,16 +36,13 @@ export class NgxsRootModule {
       stateStream.next({ ...cur, ...results.defaults });
     }
 
-    store.dispatch(new InitState());
+    factory.connectActionHandlers(results.states);
 
-    if (results) {
-      factory.invokeInit(
-        () => stateStream.getValue(),
-        newState => stateStream.next(newState),
-        actions => store.dispatch(actions),
-        results.states
-      );
-    }
+    store.dispatch(new InitState()).subscribe(() => {
+      if (results) {
+        factory.invokeInit(results.states);
+      }
+    });
   }
 }
 
@@ -75,16 +74,13 @@ export class NgxsFeatureModule {
       stateStream.next({ ...cur, ...results.defaults });
     }
 
-    store.dispatch(new UpdateState());
+    factory.connectActionHandlers(results.states);
 
-    if (results) {
-      factory.invokeInit(
-        () => stateStream.getValue(),
-        newState => stateStream.next(newState),
-        actions => store.dispatch(actions),
-        results.states
-      );
-    }
+    store.dispatch(new UpdateState()).subscribe(() => {
+      if (results) {
+        factory.invokeInit(results.states);
+      }
+    });
   }
 }
 
@@ -103,6 +99,8 @@ export class NgxsModule {
         StateFactory,
         Actions,
         InternalActions,
+        InternalDispatcher,
+        InternalDispatchedActionResults,
         Store,
         StateStream,
         SelectFactory,

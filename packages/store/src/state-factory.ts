@@ -1,6 +1,6 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { shareReplay, takeUntil, map } from 'rxjs/operators';
+import { shareReplay, takeUntil, map, catchError, filter, mergeMap, defaultIfEmpty } from 'rxjs/operators';
 
 import { META_KEY, StateContext, NgxsLifeCycle } from './symbols';
 import {
@@ -10,14 +10,14 @@ import {
   nameToState,
   isObject,
   StateClass,
-  GetStateFn,
-  SetStateFn,
-  DispatchFn,
+  InternalStateOperations,
   MappedStore
 } from './internals';
 import { getActionTypeFromInstance, setValue, getValue } from './utils';
 import { ofActionDispatched } from './of-action';
-import { InternalActions } from './actions-stream';
+import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
+import { InternalDispatchedActionResults, InternalDispatcher } from './dispatcher';
+import { StateStream } from './state-stream';
 
 /**
  * State factory class
@@ -30,13 +30,26 @@ export class StateFactory {
   }
 
   private _states: MappedStore[] = [];
+  private _connected = false;
 
   constructor(
     private _injector: Injector,
     @Optional()
     @SkipSelf()
-    private _parentFactory: StateFactory
+    private _parentFactory: StateFactory,
+    private _actions: InternalActions,
+    private _actionResults: InternalDispatchedActionResults,
+    private _stateStream: StateStream,
+    private _dispatcher: InternalDispatcher
   ) {}
+
+  private get rootStateOperations(): InternalStateOperations<any> {
+    return {
+      getState: () => this._stateStream.getValue(),
+      setState: newState => this._stateStream.next(newState),
+      dispatch: actions => this._dispatcher.dispatch(actions)
+    };
+  }
 
   /**
    * Add a new state to the global defs.
@@ -114,20 +127,36 @@ export class StateFactory {
     }
   }
 
+  connectActionHandlers(mappedStores: MappedStore[]): any {
+    if (this._connected) return;
+    this._actions
+      .pipe(
+        filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
+        mergeMap(({ action }) => {
+          return this.invokeActions(this._actions, action).pipe(
+            map(() => {
+              return <ActionContext>{ action, status: ActionStatus.Completed };
+            }),
+            defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
+            catchError(err => {
+              return of(<ActionContext>{ action, status: ActionStatus.Errored });
+            })
+          );
+        })
+      )
+      .subscribe(ctx => this._actionResults.next(ctx));
+    this._connected = true;
+  }
+
   /**
    * Invoke the init function on the states.
    */
-  invokeInit(
-    getState: GetStateFn<any>,
-    setState: SetStateFn<any>,
-    dispatch: DispatchFn,
-    stateMetadatas: MappedStore[]
-  ) {
+  invokeInit(stateMetadatas: MappedStore[]) {
     for (const metadata of stateMetadatas) {
       const instance: NgxsLifeCycle = metadata.instance;
 
       if (instance.ngxsOnInit) {
-        const stateContext = this.createStateContext(getState, setState, dispatch, metadata);
+        const stateContext = this.createStateContext(metadata);
 
         instance.ngxsOnInit(stateContext);
       }
@@ -137,13 +166,7 @@ export class StateFactory {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(
-    getState: GetStateFn<any>,
-    setState: SetStateFn<any>,
-    dispatch: DispatchFn,
-    actions$: InternalActions,
-    action
-  ) {
+  invokeActions(actions$: InternalActions, action) {
     const results = [];
 
     for (const metadata of this.states) {
@@ -152,7 +175,7 @@ export class StateFactory {
 
       if (actionMetas) {
         for (const actionMeta of actionMetas) {
-          const stateContext = this.createStateContext(getState, setState, dispatch, metadata);
+          const stateContext = this.createStateContext(metadata);
           let result = metadata.instance[actionMeta.fn](stateContext, action);
 
           if (result instanceof Promise) {
@@ -182,15 +205,11 @@ export class StateFactory {
   /**
    * Create the state context
    */
-  createStateContext(
-    getState: GetStateFn<any>,
-    setState: SetStateFn<any>,
-    dispatch: DispatchFn,
-    metadata: MappedStore
-  ): StateContext<any> {
+  createStateContext(metadata: MappedStore): StateContext<any> {
+    const root = this.rootStateOperations;
     return {
       getState(): any {
-        const state = getState();
+        const state = root.getState();
         return getValue(state, metadata.depth);
       },
       patchState(val: any): void {
@@ -198,23 +217,23 @@ export class StateFactory {
           throw new Error('Patching arrays is not supported.');
         }
 
-        let state = getState();
+        let state = root.getState();
         const local = getValue(state, metadata.depth);
         for (const k in val) {
           local[k] = val[k];
         }
         state = setValue(state, metadata.depth, { ...local });
-        setState(state);
+        root.setState(state);
         return state;
       },
       setState(val: any): any {
-        let state = getState();
+        let state = root.getState();
         state = setValue(state, metadata.depth, val);
-        setState(state);
+        root.setState(state);
         return state;
       },
       dispatch(actions: any | any[]): Observable<any> {
-        return dispatch(actions);
+        return root.dispatch(actions);
       }
     };
   }

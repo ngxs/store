@@ -17,9 +17,11 @@ export interface ActionHandlerMetaData {
   type: string;
 }
 
-export type GetStateFn<T> = () => T;
-export type SetStateFn<T> = (newState: T) => void;
-export type DispatchFn = (actions: any | any[]) => Observable<any>;
+export interface InternalStateOperations<T> {
+  getState(): T;
+  setState(val: T);
+  dispatch(actions: any | any[]): Observable<void>;
+}
 
 export interface MetaDataModel {
   name: string;
@@ -211,6 +213,7 @@ export function findFullParentPath(obj: StateKeyGraph, newObj: ObjectKeyMap<stri
 export function topologicalSort(graph: StateKeyGraph): string[] {
   const sorted: string[] = [];
   const visited: ObjectKeyMap<boolean> = {};
+
   const visit = (name: string, ancestors: string[] = []) => {
     if (!Array.isArray(ancestors)) {
       ancestors = [];

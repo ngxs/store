@@ -19,7 +19,7 @@ If you're just getting started with NGXS, I recommend you head over to the [conc
 and then explore the rich ecosystem of examples in the [community resources](community/projects.md) page.
 
 ## ❤️ Giving Back
-Become a [Contributor](community/contributor.md) or a [Sponsor](community/sponsors.md).
+Become a [Contributor](community/contributors.md) or a [Sponsor](community/sponsors.md).
 
 ## 😎 Support
 [Get support](community/support.md) for NGXS and Angular.
