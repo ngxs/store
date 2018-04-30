@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { NgxsModule, Actions, ofAction, Store } from '@ngxs/store';
 import { NgxsWebsocketPluginModule, ConnectWebSocket, SendWebSocketMessage } from '../';
 import { Server, WebSocket } from 'mock-socket';
+import { take } from 'rxjs/operators';
 
 describe('NgxsWebsocketPlugin', () => {
   class SetMessage {
@@ -40,7 +41,7 @@ describe('NgxsWebsocketPlugin', () => {
     store.dispatch(new ConnectWebSocket());
     store.dispatch(createMessage());
 
-    actions$.pipe(ofAction(SetMessage)).subscribe(({ payload }) => {
+    actions$.pipe(ofAction(SetMessage), take(1)).subscribe(({ payload }) => {
       expect(payload).toBe('from websocket');
       mockServer.stop(done);
     });

@@ -2,7 +2,6 @@ import { Injectable, Inject } from '@angular/core';
 import { Subject, Observer, Observable } from 'rxjs';
 import { WebSocketSubject as RxWebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
 import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
-import { share, distinctUntilChanged } from 'rxjs/operators';
 
 /**
  * Websocket Subject
@@ -13,19 +12,13 @@ export class WebSocketSubject extends Subject<any> {
   /**
    * The connection status of the websocket.
    */
-  connectionStatus: Observable<any>;
+  connectionStatus = new Subject<boolean>();
 
   private _socket: RxWebSocketSubject<any>;
-  private _connectionObserver: Observer<boolean>;
   private _internalConfig: WebSocketSubjectConfig<any>;
 
   constructor(@Inject(NGXS_WEBSOCKET_OPTIONS) private _config: NgxsWebsocketPluginOptions) {
     super();
-
-    this.connectionStatus = new Observable(observer => (this._connectionObserver = observer)).pipe(
-      share(),
-      distinctUntilChanged()
-    );
 
     this._internalConfig = {
       url: this._config.url,
@@ -34,11 +27,11 @@ export class WebSocketSubject extends Subject<any> {
       closeObserver: {
         next: (e: CloseEvent) => {
           this._socket = null;
-          this._connectionObserver.next(false);
+          this.connectionStatus.next(false);
         }
       },
       openObserver: {
-        next: (e: Event) => this._connectionObserver.next(true)
+        next: (e: Event) => this.connectionStatus.next(true)
       }
     };
   }
@@ -56,19 +49,16 @@ export class WebSocketSubject extends Subject<any> {
       }
 
       if (options.serializer) {
-        this._config.serializer = options.serializer;
+        this._internalConfig.serializer = options.serializer;
       }
 
       if (options.deserializer) {
-        this._config.deserializer = options.deserializer;
+        this._internalConfig.deserializer = options.deserializer;
       }
     }
 
     this._socket = new RxWebSocketSubject(this._internalConfig);
-    this._socket.subscribe(
-      (message: any) => this.next(message),
-      (error: Event) => console.error('Websocket error ocurred', error)
-    );
+    this._socket.subscribe((message: any) => this.next(message));
   }
 
   /**
