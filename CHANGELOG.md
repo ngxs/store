@@ -1,7 +1,12 @@
+# Master
+- BREAKING: Update websocket connect to recieve options object #341
+- Feature: Consolidate action stream to single-source-of-truth #324
+- Fix: Remove reconnection from websocket because of issues  #341
+
 # 3.0.0-rc.2 4/27/18
 
 - Fix: Form update fix #335
-- Chore: Upgrade RxJS to official
+- Chore: Upgrade RxJS to official #332
 
 
 # 3.0.0-rc.1 4/12/18
