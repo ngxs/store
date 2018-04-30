@@ -1,5 +1,5 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
-import { Observable, of, forkJoin, from } from 'rxjs';
+import { Observable, of, forkJoin, from, throwError } from 'rxjs';
 import { shareReplay, takeUntil, map, catchError, filter, mergeMap, defaultIfEmpty } from 'rxjs/operators';
 
 import { META_KEY, StateContext, NgxsLifeCycle } from './symbols';
@@ -132,17 +132,13 @@ export class StateFactory {
     this._actions
       .pipe(
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
-        mergeMap(({ action }) => {
-          return this.invokeActions(this._actions, action).pipe(
-            map(() => {
-              return <ActionContext>{ action, status: ActionStatus.Completed };
-            }),
+        mergeMap(({ action }) =>
+          this.invokeActions(this._actions, action).pipe(
+            map(() => <ActionContext>{ action, status: ActionStatus.Completed }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
-            catchError(err => {
-              return of(<ActionContext>{ action, status: ActionStatus.Errored });
-            })
-          );
-        })
+            catchError(error => of(<ActionContext>{ action, status: ActionStatus.Errored, error }))
+          )
+        )
       )
       .subscribe(ctx => this._actionResults.next(ctx));
     this._connected = true;
@@ -157,7 +153,6 @@ export class StateFactory {
 
       if (instance.ngxsOnInit) {
         const stateContext = this.createStateContext(metadata);
-
         instance.ngxsOnInit(stateContext);
       }
     }
@@ -176,21 +171,27 @@ export class StateFactory {
       if (actionMetas) {
         for (const actionMeta of actionMetas) {
           const stateContext = this.createStateContext(metadata);
-          let result = metadata.instance[actionMeta.fn](stateContext, action);
+          try {
+            let result = metadata.instance[actionMeta.fn](stateContext, action);
 
-          if (result instanceof Promise) {
-            result = from(result);
+            if (result instanceof Promise) {
+              result = from(result);
+            }
+
+            if (result instanceof Observable) {
+              result = result.pipe(
+                actionMeta.options.cancelUncompleted
+                  ? takeUntil(actions$.pipe(ofActionDispatched(action)))
+                  : map(r => r)
+              ); // map acts like a noop
+            } else {
+              result = of({}).pipe(shareReplay());
+            }
+
+            results.push(result);
+          } catch (e) {
+            results.push(throwError(e));
           }
-
-          if (result instanceof Observable) {
-            result = result.pipe(
-              actionMeta.options.cancelUncompleted ? takeUntil(actions$.pipe(ofActionDispatched(action))) : map(r => r)
-            ); // act like a noop
-          } else {
-            result = of({}).pipe(shareReplay());
-          }
-
-          results.push(result);
         }
       }
     }
