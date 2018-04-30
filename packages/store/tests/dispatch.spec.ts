@@ -18,7 +18,7 @@ describe('Dispatch', () => {
     static type = 'DECREMENT';
   }
 
-  fit('should throw error', async(() => {
+  it('should throw error', async(() => {
     const spy = jasmine.createSpy('action spy');
 
     @State<number>({
@@ -51,9 +51,9 @@ describe('Dispatch', () => {
 
     const store: Store = TestBed.get(Store);
 
-    store.dispatch(new Increment());
+    store.dispatch(new Increment()).subscribe(() => {}, err => spy());
 
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledTimes(2);
   }));
 
   it('should only call action once', async(() => {
