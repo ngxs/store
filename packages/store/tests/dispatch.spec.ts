@@ -28,7 +28,7 @@ describe('Dispatch', () => {
     class MyState {
       @Action(Increment)
       increment() {
-        throw new Error('foo');
+        throw new Error();
       }
     }
 
@@ -50,7 +50,9 @@ describe('Dispatch', () => {
     });
 
     const store: Store = TestBed.get(Store);
+
     store.dispatch(new Increment());
+
     expect(spy).toHaveBeenCalledTimes(1);
   }));
 

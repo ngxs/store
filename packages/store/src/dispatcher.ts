@@ -38,15 +38,6 @@ export class InternalDispatcher {
       result = this.dispatchSingle(event);
     }
 
-    result.pipe(
-      catchError(err => {
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!');
-        // handle error through angular error system
-        this._errorHandler.handleError(err);
-        return of(err);
-      })
-    );
-
     result.subscribe();
 
     return result;
@@ -86,6 +77,7 @@ export class InternalDispatcher {
             case ActionStatus.Completed:
               return of(this._stateStream.getValue());
             case ActionStatus.Errored:
+              this._errorHandler.handleError(ctx.error);
               return throwError(ctx.error);
             default:
               return empty();
