@@ -30,7 +30,12 @@ export class InternalDispatcher {
    * Dispatches event(s).
    */
   dispatch(event: any | any[]): Observable<any> {
-    let result = Array.isArray(event) ? forkJoin(event.map(a => this.dispatchSingle(a))) : this.dispatchSingle(event);
+    let result: Observable<any>;
+    if (Array.isArray(event)) {
+      result = forkJoin(event.map(a => this.dispatchSingle(a)));
+    } else {
+      result = this.dispatchSingle(event);
+    }
 
     result = result.pipe(
       catchError(err => {
