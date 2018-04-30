@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { Subject, Observer, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 import { WebSocketSubject as RxWebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
 import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
 
