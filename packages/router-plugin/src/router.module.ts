@@ -3,16 +3,20 @@ import { NgxsModule } from '@ngxs/store';
 import { DefaultRouterStateSerializer, RouterStateSerializer } from './serializer';
 import { RouterState } from './router.state';
 
-export const routerFeatureModule = NgxsModule.forFeature([RouterState]);
-
+// @dynamic
 @NgModule({
-  imports: [routerFeatureModule]
+  imports: [
+    // NOTE: Must mark as `dynamic` due to
+    // https://github.com/dherges/ng-packagr/issues/767
+    NgxsModule.forFeature([RouterState])
+  ],
+  providers: [{ provide: RouterStateSerializer, useClass: DefaultRouterStateSerializer }]
 })
 export class NgxsRouterPluginModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: NgxsRouterPluginModule,
-      providers: [{ provide: RouterStateSerializer, useClass: DefaultRouterStateSerializer }]
+      providers: []
     };
   }
 }
