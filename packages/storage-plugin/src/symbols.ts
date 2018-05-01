@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
-export enum StorageOption {
+export const enum StorageOption {
   LocalStorage,
   SessionStorage
 }
