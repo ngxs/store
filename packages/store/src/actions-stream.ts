@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 /**
  * Status of a dispatched action
  */
-export enum ActionStatus {
+export const enum ActionStatus {
   Dispatched = 'DISPATCHED',
   Completed = 'COMPLETED',
   Canceled = 'CANCELED',
