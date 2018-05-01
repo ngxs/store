@@ -7,6 +7,7 @@ import { Action } from '../src/action';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { StateContext } from '../src/symbols';
+import { ErrorHandler, Injectable } from '@angular/core';
 
 describe('Dispatch', () => {
   class Increment {
@@ -16,6 +17,44 @@ describe('Dispatch', () => {
   class Decrement {
     static type = 'DECREMENT';
   }
+
+  it('should throw error', async(() => {
+    const spy = jasmine.createSpy('action spy');
+
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    class MyState {
+      @Action(Increment)
+      increment() {
+        throw new Error();
+      }
+    }
+
+    @Injectable()
+    class CustomErrorHandler implements ErrorHandler {
+      handleError(error: any) {
+        spy();
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([MyState])],
+      providers: [
+        {
+          provide: ErrorHandler,
+          useClass: CustomErrorHandler
+        }
+      ]
+    });
+
+    const store: Store = TestBed.get(Store);
+
+    store.dispatch(new Increment()).subscribe(() => {}, err => spy());
+
+    expect(spy).toHaveBeenCalledTimes(2);
+  }));
 
   it('should only call action once', async(() => {
     const spy = jasmine.createSpy('action spy');
