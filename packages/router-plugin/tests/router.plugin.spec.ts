@@ -4,8 +4,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
-import { NgxsRouterPluginModule, RouterState } from '../';
-import { Navigate } from '@ngxs/router-plugin/src/router.actions';
+import { NgxsRouterPluginModule, RouterState, Navigate } from '../';
 
 describe('NgxsRouterPlugin', () => {
   it('should dispatch router state events', async(async () => {

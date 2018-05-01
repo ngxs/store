@@ -1,12 +1,11 @@
+import { Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-
 import { Action } from '../src/action';
 import { State } from '../src/state';
 import { StateContext } from '../src/symbols';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
-import { EntityBase, EntityState, EntityUpdate } from '../src/entity-base';
-import { Injector } from '@angular/core';
+import { EntityBase, EntityStateModel, EntityUpdate } from '../src/entity-base';
 
 describe('Entity Base', () => {
   let store: Store;
@@ -55,7 +54,7 @@ describe('Entity Base', () => {
     constructor(public updates: EntityUpdate<Project>[]) {}
   }
 
-  interface ProjectStateModel extends EntityState<Project> {}
+  interface ProjectStateModel extends EntityStateModel<Project> {}
 
   @State<ProjectStateModel>({
     name: 'projects',

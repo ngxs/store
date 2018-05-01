@@ -1,9 +1,9 @@
+import { Injector } from '@angular/core';
 import { StateStream } from './state-stream';
 import { getValue, setValue } from './utils';
 import { META_KEY } from './symbols';
-import { Injector } from '@angular/core';
 
-export interface EntityState<V> {
+export interface EntityStateModel<V> {
   ids: (string | number)[];
   entities: {
     [id: string]: V;
@@ -11,15 +11,16 @@ export interface EntityState<V> {
   };
 }
 
-export type EntityUpdateStr<T> = {
+export interface EntityUpdateStr<T> {
   id: string;
   changes: Partial<T>;
-};
+}
 
-export type EntityUpdateNum<T> = {
+export interface EntityUpdateNum<T> {
   id: number;
   changes: Partial<T>;
-};
+}
+
 export type EntityUpdate<T> = EntityUpdateStr<T> | EntityUpdateNum<T>;
 
 export enum EntityMutation {
@@ -28,7 +29,18 @@ export enum EntityMutation {
   None
 }
 
-export abstract class EntityBase<T, S extends EntityState<T>> {
+export abstract class EntityBase<T, S extends EntityStateModel<T>> {
+  // @todo Don't like having to pass in an injector to be able to get at the
+  // state stream, how could we do this differently?
+  private _stateStream: StateStream;
+
+  constructor(injector: Injector) {
+    this._stateStream = injector.get(StateStream);
+  }
+
+  /**
+   * The defaults for all state classes that inherit from EntityBase
+   */
   static defaults() {
     return {
       ids: [],
@@ -36,11 +48,20 @@ export abstract class EntityBase<T, S extends EntityState<T>> {
     };
   }
 
-  // @todo Don't like having to pass in an injector to be able to get at the
-  // state stream, how could we do this differently?
-  private _stateStream: StateStream;
-  constructor(injector: Injector) {
-    this._stateStream = injector.get(StateStream);
+  static selectIds<T>(state: EntityStateModel<T>) {
+    return state.ids || [];
+  }
+
+  static selectEntities<T>(state: EntityStateModel<T>) {
+    return state.entities || {};
+  }
+
+  static selectAll<T>(state: EntityStateModel<T>) {
+    return (state.ids || []).map((id: any) => state.entities[id]);
+  }
+
+  static selectTotal<T>(state: EntityStateModel<T>) {
+    return (state.ids || []).length;
   }
 
   /**
