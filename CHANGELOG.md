@@ -1,7 +1,10 @@
-# Master
+# 3.0.0-rc.3 5/1/18
+
 - BREAKING: Update websocket connect to recieve options object #341
 - Feature: Consolidate action stream to single-source-of-truth #324
-- Fix: Remove reconnection from websocket because of issues  #341
+- Fix: Remove reconnection from websocket because of issues #341
+- Fix: Enums causing prod build errors #345
+- Fix: Router race case when using prod #345
 
 # 3.0.0-rc.2 4/27/18
 
