@@ -1,3 +1,11 @@
+# 3.0.0-rc.4 5/2/18
+
+- BREAKING: Rename completed to successful #349
+- Feature: Add ability to disable logger #350
+- Fix: Fix options not passed correctly to logger plugin #350
+- Fix: Patch state mutating the original state #348
+- Fix: Router plugin not working in prod #351
+
 # 3.0.0-rc.3 5/1/18
 
 - BREAKING: Update websocket connect to recieve options object #341
