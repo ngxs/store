@@ -9,7 +9,7 @@ import { throwError, of } from 'rxjs';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
-import { ofActionCompleted, ofActionDispatched, ofAction, ofActionErrored, ofActionCanceled } from '../src/of-action';
+import { ofActionSuccessful, ofActionDispatched, ofAction, ofActionErrored, ofActionCanceled } from '../src/of-action';
 
 describe('Action', () => {
   let store: Store;
@@ -78,17 +78,17 @@ describe('Action', () => {
         callbacksCalled.push('ofActionDispatched');
       });
 
-      actions.pipe(ofActionCompleted(Action1)).subscribe(action => {
-        callbacksCalled.push('ofActionCompleted');
-        expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionCompleted']);
+      actions.pipe(ofActionSuccessful(Action1)).subscribe(action => {
+        callbacksCalled.push('ofActionSuccessful');
+        expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionSuccessful']);
       });
 
       store.dispatch(new Action1()).subscribe(() => {
-        expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionCompleted']);
+        expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionSuccessful']);
       });
 
       tick(1);
-      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionCompleted']);
+      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionSuccessful']);
     })
   );
 
@@ -108,8 +108,8 @@ describe('Action', () => {
         callbacksCalled.push('ofActionDispatched');
       });
 
-      actions.pipe(ofActionCompleted(ErrorAction)).subscribe(action => {
-        callbacksCalled.push('ofActionCompleted');
+      actions.pipe(ofActionSuccessful(ErrorAction)).subscribe(action => {
+        callbacksCalled.push('ofActionSuccessful');
       });
 
       actions.pipe(ofActionErrored(ErrorAction)).subscribe(action => {
@@ -143,8 +143,8 @@ describe('Action', () => {
         callbacksCalled.push('ofActionErrored');
       });
 
-      actions.pipe(ofActionCompleted(CancelingAction)).subscribe(action => {
-        callbacksCalled.push('ofActionCompleted');
+      actions.pipe(ofActionSuccessful(CancelingAction)).subscribe(action => {
+        callbacksCalled.push('ofActionSuccessful');
         expect(callbacksCalled).toEqual([
           'ofAction',
           'ofActionDispatched',
@@ -153,7 +153,7 @@ describe('Action', () => {
           'ofAction',
           'ofActionCanceled',
           'ofAction',
-          'ofActionCompleted'
+          'ofActionSuccessful'
         ]);
       });
 
@@ -182,7 +182,7 @@ describe('Action', () => {
         'ofAction',
         'ofActionCanceled',
         'ofAction',
-        'ofActionCompleted'
+        'ofActionSuccessful'
       ]);
     })
   );

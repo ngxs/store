@@ -80,7 +80,7 @@ export class InternalDispatcher {
       .pipe(
         exhaustMap((ctx: ActionContext) => {
           switch (ctx.status) {
-            case ActionStatus.Completed:
+            case ActionStatus.Successful:
               return of(this._stateStream.getValue());
             case ActionStatus.Errored:
               return throwError(ctx.error);
