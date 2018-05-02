@@ -10,6 +10,10 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
   constructor(@Inject(NGXS_LOGGER_PLUGIN_OPTIONS) private _options: NgxsLoggerPluginOptions) {}
 
   handle(state, event, next) {
+    if (this._options.disabled) {
+      return next(state, event);
+    }
+
     const options = this._options || <any>{};
     const logger = options.logger || console;
     const actionName = getActionTypeFromInstance(event);
@@ -60,9 +64,7 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
   }
 
   isIE(): boolean {
-    const ua = typeof window !== 'undefined' && window.navigator.userAgent
-      ? window.navigator.userAgent
-      : '';
+    const ua = typeof window !== 'undefined' && window.navigator.userAgent ? window.navigator.userAgent : '';
     let ms_ie = false;
 
     const old_ie = ua.indexOf('MSIE ');
