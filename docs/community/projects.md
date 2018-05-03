@@ -8,6 +8,7 @@
 - [Angular NGXS Tutorial - An Alternative to Ngrx for State Management](https://coursetro.com/posts/code/152/Angular-NGXS-Tutorial---An-Alternative-to-Ngrx-for-State-Management)
 - [NGXS + Firebase Demo](https://github.com/fisenkodv/itinerary)
 - [Use NGXS in a shared module](https://stackblitz.com/edit/angular-shared-for-root-imports?file=app%2Fshared-components%2Fshared-components.module.ts)
+- [ScuttleButt Client using NGXS](https://github.com/datenknoten/ngx-ssb-client)
 
 ### Media
 - [ngAir 153 - NGXS: A New State Management for Angular Apps with Austin McDaniel and Danny Blue](https://www.youtube.com/watch?v=rkn73khwfWU&feature=youtu.be)
