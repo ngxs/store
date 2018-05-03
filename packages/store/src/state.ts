@@ -16,6 +16,7 @@ export const stateNameErrorMessage = name =>
 export function State<T>(options: StoreOptions<T>) {
   return function(target: any) {
     const meta = ensureStoreMetadata(target);
+
     // Handle inheritance
     if (Object.getPrototypeOf(target).hasOwnProperty(META_KEY)) {
       const parentMeta = Object.getPrototypeOf(target)[META_KEY];
