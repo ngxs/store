@@ -1,3 +1,7 @@
+# 3.0.0 5/3/18
+
+- Chore: Upgrade to official Angular
+
 # 3.0.0-rc.4 5/2/18
 
 - BREAKING: Rename completed to successful #349
