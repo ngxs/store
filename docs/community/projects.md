@@ -5,6 +5,7 @@
 - [Ngxs-Pizza-Order](https://github.com/tommythongnguyen/Ngxs-Pizza-Order)
 - [Ngxs Todo](https://github.com/mailok/todo-ngxs)
 - [EL-3270 Electron IBM Terminal Emulator](https://github.com/mflorence99/el-3270)
+- [_El terminador_ Electron-based Terminal Manager, inspired by iTerm2](https://github.com/mflorence99/el-term)
 - [Angular NGXS Tutorial - An Alternative to Ngrx for State Management](https://coursetro.com/posts/code/152/Angular-NGXS-Tutorial---An-Alternative-to-Ngrx-for-State-Management)
 - [NGXS + Firebase Demo](https://github.com/fisenkodv/itinerary)
 - [Use NGXS in a shared module](https://stackblitz.com/edit/angular-shared-for-root-imports?file=app%2Fshared-components%2Fshared-components.module.ts)
