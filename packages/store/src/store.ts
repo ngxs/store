@@ -21,7 +21,7 @@ export class Store {
   /**
    * Selects a slice of data from the store.
    */
-  select<T>(selector: (state: any) => T): Observable<T>;
+  select<T>(selector: (state: any, states?: any[]) => T): Observable<T>;
   select(selector: string | any): Observable<any>;
   select(selector: any): Observable<any> {
     if (selector[META_KEY] && selector[META_KEY].path) {
@@ -47,7 +47,7 @@ export class Store {
   /**
    * Select one slice of data from the store.
    */
-  selectOnce<T>(selector: (state: any) => T): Observable<T>;
+  selectOnce<T>(selector: (state: any, states?: any[]) => T): Observable<T>;
   selectOnce(selector: string | any): Observable<any>;
   selectOnce(selector: any): Observable<any> {
     return this.select(selector).pipe(take(1));
@@ -56,7 +56,7 @@ export class Store {
   /**
    * Select a snapshot from the state.
    */
-  selectSnapshot<T>(selector: (state: any) => T): T {
+  selectSnapshot<T>(selector: (state: any, states?: any[]) => T): T {
     return selector(this._stateStream.getValue());
   }
 
