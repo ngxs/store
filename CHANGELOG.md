@@ -1,4 +1,8 @@
-# 3.0.0 5/3/18
+# Master
+
+- Feature: Select combinations #51
+
+# 3.0.0/3.0.1 5/3/18
 
 - Chore: Upgrade to official Angular
 
