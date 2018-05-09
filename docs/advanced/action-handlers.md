@@ -15,13 +15,14 @@ of message array to make the dialog show up. With Action Handlers, we can respon
 
 The action handler is an Observable that recieves all the actions dispatched before the state takes any action on it.
 
-Actions in NGXS also have a lifecycle. Since any potential action can be async we tag actions showing whether they are "DISPATCHED" or "COMPLETED". This gives you the ability to react to actions at different points in their existence.
+Actions in NGXS also have a lifecycle. Since any potential action can be async we tag actions showing when they are "DISPATCHED", "SUCCESSFUL", "CANCELED" or "ERRORED". This gives you the ability to react to actions at different points in their existence.
 
 Since it's an Observable, we can use the following four pipes:
 
 * `ofAction`: triggers when any of the below lifecycle events happen
-* `ofActionDispatched`: triggers when an action has been dispatched but NOT when it completes
-* `ofActionCompleted`: triggers when an action has been completed but NOT when it is dispatched
+* `ofActionDispatched`: triggers when an action has been dispatched
+* `ofActionSuccessful`: triggers when an action has been completed successfully
+* `ofActionCanceled`: triggers when an action has been canceled
 * `ofActionErrored`: triggers when an action has caused an error to be thrown
 
 Below is a action handler that filters for `RouteNavigate` actions and then tells the router to navigate to that
@@ -70,7 +71,7 @@ export class CartComponent {
   constructor(private actions$: Actions) {}
 
   ngOnInit() {
-    this.actions$.pipe(ofActionCompleted(CartDelete)).subscribe(() => alert('Item deleted'));
+    this.actions$.pipe(ofActionSuccessful(CartDelete)).subscribe(() => alert('Item deleted'));
   }
 }
 ```

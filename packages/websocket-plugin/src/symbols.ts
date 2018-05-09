@@ -47,7 +47,7 @@ export function noop(arg) {
  */
 export class ConnectWebSocket {
   static readonly type = '[Websocket] Connect';
-  constructor(public payload?: string) {}
+  constructor(public payload?: NgxsWebsocketPluginOptions) {}
 }
 
 /**

@@ -43,7 +43,7 @@ They are usually trigged by user events such as clicking on a button, or selecti
 Names should contain three parts:
 
 * A context as to where the command came from, '[User API]', '[Product Page]', '[Dashboard Page]`.
-* The entity we are acting upon, `User`, `Card`, `ArchiveProject`.
+* The entity we are acting upon, `User`, `Card`, `Project`.
 * A verb describing what we want to do with the entity.
 
 Examples:
@@ -70,4 +70,4 @@ Examples:
 * [Project Stars Component] StarsUpdated
 
 A great video on the topic is [Good Action Hygiene by Mike Ryan](https://www.youtube.com/watch?v=JmnsEvoy-gY)
-It's for NGRX, but the same naming convensions apply to NGXS.
+It's for NGRX, but the same naming conventions apply to NGXS.

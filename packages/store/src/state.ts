@@ -18,8 +18,8 @@ export function State<T>(options: StoreOptions<T>) {
     const meta = ensureStoreMetadata(target);
 
     // Handle inheritance
-    if (target.__proto__.hasOwnProperty(META_KEY)) {
-      const parentMeta = target.__proto__[META_KEY];
+    if (Object.getPrototypeOf(target).hasOwnProperty(META_KEY)) {
+      const parentMeta = Object.getPrototypeOf(target)[META_KEY];
 
       meta.actions = {
         ...meta.actions,

@@ -5,7 +5,7 @@ import { ensureStoreMetadata } from './internals';
 /**
  * Decorator for memoizing a state selector.
  */
-export function Selector(...args) {
+export function Selector(selectors?: any[]) {
   return (target: any, key: string, descriptor: PropertyDescriptor) => {
     const metadata = ensureStoreMetadata(target);
 
@@ -13,11 +13,17 @@ export function Selector(...args) {
       const prev = descriptor.value;
 
       const fn = state => {
-        const local = getValue(state, metadata.path);
-        // if the lambda tries to access a something on the state that doesn't exist, it will throw a TypeError.
+        const results = [getValue(state, metadata.path)];
+
+        if (selectors) {
+          results.push(...selectors.map(a => a(state)));
+        }
+
+        // if the lambda tries to access a something on the
+        // state that doesn't exist, it will throw a TypeError.
         // since this is quite usual behaviour, we simply return undefined if so.
         try {
-          return prev(local);
+          return prev(...results);
         } catch (ex) {
           if (ex instanceof TypeError) {
             return undefined;
@@ -29,7 +35,7 @@ export function Selector(...args) {
       return {
         configurable: true,
         get() {
-          return memoize.apply(null, [fn, ...args]);
+          return memoize.apply(null, [fn]);
         }
       };
     } else {

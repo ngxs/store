@@ -1,54 +1,27 @@
-import { Injectable, ErrorHandler } from '@angular/core';
-import { Observable, Subscription, of, forkJoin } from 'rxjs';
-import { distinctUntilChanged, catchError, take, shareReplay, map, tap } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { Observable, Subscription, of } from 'rxjs';
+import { distinctUntilChanged, catchError, take, map } from 'rxjs/operators';
 
-import { compose } from './compose';
-import { InternalActions, ActionStatus } from './actions-stream';
-import { StateFactory } from './state-factory';
 import { StateStream } from './state-stream';
-import { PluginManager } from './plugin-manager';
 import { fastPropGetter } from './internals';
 import { META_KEY } from './symbols';
+import { InternalDispatcher } from './dispatcher';
 
 @Injectable()
 export class Store {
-  constructor(
-    private _errorHandler: ErrorHandler,
-    private _actions: InternalActions,
-    private _storeFactory: StateFactory,
-    private _pluginManager: PluginManager,
-    private _stateStream: StateStream
-  ) {}
+  constructor(private _stateStream: StateStream, private _dispatcher: InternalDispatcher) {}
 
   /**
    * Dispatches event(s).
    */
   dispatch(event: any | any[]): Observable<any> {
-    let result: Observable<any>;
-
-    if (Array.isArray(event)) {
-      result = forkJoin(event.map(a => this._dispatch(a)));
-    } else {
-      result = this._dispatch(event);
-    }
-
-    result.pipe(
-      catchError(err => {
-        // handle error through angular error system
-        this._errorHandler.handleError(err);
-        return of(err);
-      })
-    );
-
-    result.subscribe();
-
-    return result;
+    return this._dispatcher.dispatch(event);
   }
 
   /**
    * Selects a slice of data from the store.
    */
-  select<T>(selector: (state: any) => T): Observable<T>;
+  select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
   select(selector: string | any): Observable<any>;
   select(selector: any): Observable<any> {
     if (selector[META_KEY] && selector[META_KEY].path) {
@@ -74,7 +47,7 @@ export class Store {
   /**
    * Select one slice of data from the store.
    */
-  selectOnce<T>(selector: (state: any) => T): Observable<T>;
+  selectOnce<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
   selectOnce(selector: string | any): Observable<any>;
   selectOnce(selector: any): Observable<any> {
     return this.select(selector).pipe(take(1));
@@ -83,7 +56,7 @@ export class Store {
   /**
    * Select a snapshot from the state.
    */
-  selectSnapshot<T>(selector: (state: any) => T): T {
+  selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T {
     return selector(this._stateStream.getValue());
   }
 
@@ -99,46 +72,5 @@ export class Store {
    */
   snapshot(): any {
     return this._stateStream.getValue();
-  }
-
-  /**
-   * Dispatches an event and returns observable.
-   */
-  private _dispatch(action: any): Observable<any> {
-    const prevState = this._stateStream.getValue();
-    const plugins = this._pluginManager.plugins;
-
-    return (compose([
-      ...plugins,
-      (nextState, nextAction) => {
-        if (nextState !== prevState) {
-          this._stateStream.next(nextState);
-        }
-
-        this._actions.next({ action, status: ActionStatus.Dispatched });
-
-        return this._storeFactory
-          .invokeActions(
-            () => this._stateStream.getValue(),
-            newState => this._stateStream.next(newState),
-            actions => this.dispatch(actions),
-            this._actions,
-            action
-          )
-          .pipe(
-            tap(() => {
-              this._actions.next({ action, status: ActionStatus.Completed });
-            }),
-            map(() => {
-              return this._stateStream.getValue();
-            }),
-            catchError(err => {
-              this._actions.next({ action, status: ActionStatus.Errored });
-
-              return of(err);
-            })
-          );
-      }
-    ])(prevState, action) as Observable<any>).pipe(shareReplay());
   }
 }

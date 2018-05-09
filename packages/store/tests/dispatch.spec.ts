@@ -1,4 +1,4 @@
-import { async, TestBed, flushMicrotasks, fakeAsync } from '@angular/core/testing';
+import { async, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { timer, of } from 'rxjs';
 import { tap, skip, delay } from 'rxjs/operators';
 
@@ -7,6 +7,7 @@ import { Action } from '../src/action';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { StateContext } from '../src/symbols';
+import { ErrorHandler, Injectable } from '@angular/core';
 
 describe('Dispatch', () => {
   class Increment {
@@ -16,6 +17,79 @@ describe('Dispatch', () => {
   class Decrement {
     static type = 'DECREMENT';
   }
+
+  it('should throw error', async(() => {
+    const spy = jasmine.createSpy('action spy');
+
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    class MyState {
+      @Action(Increment)
+      increment() {
+        throw new Error();
+      }
+    }
+
+    @Injectable()
+    class CustomErrorHandler implements ErrorHandler {
+      handleError(error: any) {
+        spy();
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([MyState])],
+      providers: [
+        {
+          provide: ErrorHandler,
+          useClass: CustomErrorHandler
+        }
+      ]
+    });
+
+    const store: Store = TestBed.get(Store);
+
+    store.dispatch(new Increment()).subscribe(() => {}, err => spy());
+
+    expect(spy).toHaveBeenCalledTimes(2);
+  }));
+
+  it('should only call action once', async(() => {
+    const spy = jasmine.createSpy('action spy');
+    const spy2 = jasmine.createSpy('subscribe spy');
+    const spy3 = jasmine.createSpy('select spy');
+
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    class MyState {
+      @Action(Increment)
+      increment({ getState, setState }: StateContext<number>) {
+        setState(getState() + 1);
+        spy();
+        return of({});
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([MyState]), NgxsModule.forFeature([])]
+    });
+
+    const store: Store = TestBed.get(Store);
+    store.dispatch(new Increment()).subscribe(spy2);
+
+    store.select(MyState).subscribe(res => {
+      expect(res).toBe(1);
+      spy3();
+    });
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy2).toHaveBeenCalledTimes(1);
+    expect(spy3).toHaveBeenCalledTimes(1);
+  }));
 
   it('should correctly dispatch the action', async(() => {
     @State<number>({
@@ -429,8 +503,11 @@ describe('Dispatch', () => {
         });
 
         const store: Store = TestBed.get(Store);
+
         let subscriptionCalled = false;
-        store.dispatch(new Increment()).subscribe(() => (subscriptionCalled = true));
+        store.dispatch(new Increment()).subscribe(() => {
+          subscriptionCalled = true;
+        });
 
         expect(subscriptionCalled).toBeTruthy();
       }));
@@ -456,7 +533,7 @@ describe('Dispatch', () => {
       }));
     });
 
-    describe('when the action is cancelled by a subsequent action', () => {
+    describe('when the action is canceled by a subsequent action', () => {
       it(
         'should not trigger observer, but should complete observable stream',
         fakeAsync(() => {
@@ -490,7 +567,7 @@ describe('Dispatch', () => {
           store.dispatch(new Increment());
           resolvers[0]();
           resolvers[1]();
-          flushMicrotasks();
+          tick(0);
           expect(subscriptionsCalled).toEqual(['previous complete']);
         })
       );
@@ -534,7 +611,7 @@ describe('Dispatch', () => {
             );
           resolvers[0]();
           resolvers[1]();
-          flushMicrotasks();
+          tick(0);
           expect(subscriptionsCalled).toEqual(['previous complete', 'latest', 'latest complete']);
         })
       );

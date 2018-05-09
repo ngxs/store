@@ -27,16 +27,25 @@ export function ofActionDispatched(...allowedTypes: any[]) {
 /**
  * RxJS operator for selecting out specific actions.
  *
- * This will ONLY grab actions that have just been completed
+ * This will ONLY grab actions that have just been successfully completed
  */
-export function ofActionCompleted(...allowedTypes: any[]) {
-  return ofActionOperator(allowedTypes, ActionStatus.Completed);
+export function ofActionSuccessful(...allowedTypes: any[]) {
+  return ofActionOperator(allowedTypes, ActionStatus.Successful);
 }
 
 /**
  * RxJS operator for selecting out specific actions.
  *
- * This will ONLY grab actions that have thrown an error
+ * This will ONLY grab actions that have just been canceled
+ */
+export function ofActionCanceled(...allowedTypes: any[]) {
+  return ofActionOperator(allowedTypes, ActionStatus.Canceled);
+}
+
+/**
+ * RxJS operator for selecting out specific actions.
+ *
+ * This will ONLY grab actions that have just thrown an error
  */
 export function ofActionErrored(...allowedTypes: any[]) {
   return ofActionOperator(allowedTypes, ActionStatus.Errored);

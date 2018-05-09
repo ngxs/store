@@ -18,7 +18,7 @@ export interface ZooStateModel {
     animals: []
   }
 })
-export class ZooState extends NgxsOnInit {
+export class ZooState implements NgxsOnInit {
   ngxsOnInit(ctx: StateContext<ZooStateModel>) {
     console.log('State initialized, now getting animals');
     ctx.dispatch(new GetAnimals());
