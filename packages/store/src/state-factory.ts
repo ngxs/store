@@ -193,16 +193,23 @@ export class StateFactory {
         const state = getState();
         return getValue(state, metadata.depth);
       },
-      patchState(val: any): void {
-        if (Array.isArray(val)) {
+      patchState(val: any): any {
+        const isArray = Array.isArray(val);
+        const isPrimitive = typeof val !== 'object';
+
+        if (isArray) {
           throw new Error('Patching arrays is not supported.');
+        } else if (isPrimitive) {
+          throw new Error('Patching primitives is not supported.');
         }
 
         let state = getState();
         const local = getValue(state, metadata.depth);
+
         for (const k in val) {
           local[k] = val[k];
         }
+
         state = setValue(state, metadata.depth, { ...local });
         setState(state);
         return state;
