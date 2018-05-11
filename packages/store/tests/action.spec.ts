@@ -1,11 +1,11 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { delay } from 'rxjs/operators';
+import { throwError, of } from 'rxjs';
 
 import { Action } from '../src/action';
 import { State } from '../src/state';
 import { META_KEY } from '../src/symbols';
 
-import { throwError, of } from 'rxjs';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
@@ -117,8 +117,9 @@ describe('Action', () => {
         expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
       });
 
-      store.dispatch(new ErrorAction()).subscribe(action => {
-        expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
+      store.dispatch(new ErrorAction()).subscribe({
+        error: error =>
+          expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored'])
       });
 
       tick(1);

@@ -1,5 +1,6 @@
+import { ErrorHandler, Injectable } from '@angular/core';
 import { async, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { timer, of } from 'rxjs';
+import { timer, of, throwError } from 'rxjs';
 import { tap, skip, delay } from 'rxjs/operators';
 
 import { State } from '../src/state';
@@ -7,7 +8,6 @@ import { Action } from '../src/action';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { StateContext } from '../src/symbols';
-import { ErrorHandler, Injectable } from '@angular/core';
 
 describe('Dispatch', () => {
   class Increment {
@@ -19,7 +19,7 @@ describe('Dispatch', () => {
   }
 
   it('should throw error', async(() => {
-    const spy = jasmine.createSpy('action spy');
+    const observedCalls = [];
 
     @State<number>({
       name: 'counter',
@@ -35,7 +35,7 @@ describe('Dispatch', () => {
     @Injectable()
     class CustomErrorHandler implements ErrorHandler {
       handleError(error: any) {
-        spy();
+        observedCalls.push('handleError(...)');
       }
     }
 
@@ -51,9 +51,9 @@ describe('Dispatch', () => {
 
     const store: Store = TestBed.get(Store);
 
-    store.dispatch(new Increment()).subscribe(() => {}, err => spy());
+    store.dispatch(new Increment()).subscribe(() => {}, err => observedCalls.push('observer.error(...)'));
 
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(observedCalls).toEqual(['handleError(...)', 'observer.error(...)']);
   }));
 
   it('should only call action once', async(() => {
@@ -615,6 +615,68 @@ describe('Dispatch', () => {
           expect(subscriptionsCalled).toEqual(['previous complete', 'latest', 'latest complete']);
         })
       );
+    });
+
+    describe('when the action returns an observable error', () => {
+      it('should not trigger observer, but should error the observable stream', async(() => {
+        @State<number>({
+          name: 'counter',
+          defaults: 0
+        })
+        class MyState {
+          @Action(Increment)
+          increment({ getState, setState, dispatch }: StateContext<number>) {
+            return throwError('This is my error message!');
+          }
+        }
+
+        TestBed.configureTestingModule({
+          imports: [NgxsModule.forRoot([MyState])]
+        });
+
+        const store: Store = TestBed.get(Store);
+
+        const subscriptionsCalled: string[] = [];
+        store
+          .dispatch(new Increment())
+          .subscribe(
+            () => subscriptionsCalled.push('next'),
+            error => subscriptionsCalled.push('error: ' + error),
+            () => subscriptionsCalled.push('complete')
+          );
+        expect(subscriptionsCalled).toEqual(['error: This is my error message!']);
+      }));
+    });
+
+    describe('when the action throws an error', () => {
+      it('should not trigger observer, but should error the observable stream', async(() => {
+        @State<number>({
+          name: 'counter',
+          defaults: 0
+        })
+        class MyState {
+          @Action(Increment)
+          increment({ getState, setState, dispatch }: StateContext<number>) {
+            throw new Error('This is my error message!');
+          }
+        }
+
+        TestBed.configureTestingModule({
+          imports: [NgxsModule.forRoot([MyState])]
+        });
+
+        const store: Store = TestBed.get(Store);
+
+        const subscriptionsCalled: string[] = [];
+        store
+          .dispatch(new Increment())
+          .subscribe(
+            () => subscriptionsCalled.push('next'),
+            (error: Error) => subscriptionsCalled.push('error: ' + error.message),
+            () => subscriptionsCalled.push('complete')
+          );
+        expect(subscriptionsCalled).toEqual(['error: This is my error message!']);
+      }));
     });
 
     describe('when many separate actions dispatched return out of order', () => {

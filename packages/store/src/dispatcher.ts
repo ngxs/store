@@ -1,6 +1,6 @@
 import { Injectable, ErrorHandler } from '@angular/core';
 import { Observable, of, forkJoin, empty, Subject, throwError } from 'rxjs';
-import { shareReplay, filter, exhaustMap, take, catchError } from 'rxjs/operators';
+import { shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
 
 import { compose } from './compose';
 import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
@@ -37,14 +37,9 @@ export class InternalDispatcher {
       result = this.dispatchSingle(event);
     }
 
-    result = result.pipe(
-      catchError(err => {
-        this._errorHandler.handleError(err);
-        return of(err);
-      })
-    );
-
-    result.subscribe();
+    result.subscribe({
+      error: error => this._errorHandler.handleError(error)
+    });
 
     return result;
   }
