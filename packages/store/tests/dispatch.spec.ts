@@ -8,6 +8,7 @@ import { Action } from '../src/action';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { StateContext } from '../src/symbols';
+import { NoopErrorHandler } from './helpers/utils';
 
 describe('Dispatch', () => {
   class Increment {
@@ -631,7 +632,8 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [NgxsModule.forRoot([MyState])],
+          providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
         });
 
         const store: Store = TestBed.get(Store);
@@ -662,7 +664,8 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [NgxsModule.forRoot([MyState])],
+          providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
         });
 
         const store: Store = TestBed.get(Store);
