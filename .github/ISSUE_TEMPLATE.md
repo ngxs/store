@@ -27,10 +27,12 @@ Please provide ther version of NGXS that you are using as well as the version of
 ### Repro steps
 
 <!--
-Simple steps to reproduce this bug.
+If possible a link to a http://stackblitz.com (or github) repo with a repro or a failing test would be great.
+Please provide simple steps to reproduce this bug.
 Please include: commands run, packages added, related code changes.
-A link to a sample repo would help too.
 -->
+
+Stackblitz / Github link: https://stackblitz.com/fork/ngxs-simple
 
 * Step 1
 * Step 2
