@@ -1,15 +1,17 @@
+import { ErrorHandler } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { delay } from 'rxjs/operators';
+import { throwError, of } from 'rxjs';
 
 import { Action } from '../src/action';
 import { State } from '../src/state';
 import { META_KEY } from '../src/symbols';
 
-import { throwError, of } from 'rxjs';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
 import { ofActionSuccessful, ofActionDispatched, ofAction, ofActionErrored, ofActionCanceled } from '../src/of-action';
+import { NoopErrorHandler } from './helpers/utils';
 
 describe('Action', () => {
   let store: Store;
@@ -51,7 +53,8 @@ describe('Action', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([BarStore])]
+      imports: [NgxsModule.forRoot([BarStore])],
+      providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
     });
 
     store = TestBed.get(Store);
@@ -117,8 +120,9 @@ describe('Action', () => {
         expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
       });
 
-      store.dispatch(new ErrorAction()).subscribe(action => {
-        expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
+      store.dispatch(new ErrorAction()).subscribe({
+        error: error =>
+          expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored'])
       });
 
       tick(1);
