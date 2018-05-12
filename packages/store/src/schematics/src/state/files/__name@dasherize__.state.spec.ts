@@ -1,0 +1,2 @@
+describe('<%= classify(name) %>State', () => {    
+});
