@@ -1,6 +1,8 @@
 # Master
 
 - Feature: Select combinations #51
+- Performance: Run actions outside of zones #383
+- Fix: Dispatcher error propogation #376
 
 # 3.0.0/3.0.1 5/3/18
 
