@@ -11,6 +11,7 @@
 - [Use NGXS in a shared module](https://stackblitz.com/edit/angular-shared-for-root-imports?file=app%2Fshared-components%2Fshared-components.module.ts)
 - [ScuttleButt Client using NGXS](https://github.com/datenknoten/ngx-ssb-client)
 - [Movies Catalog APP (mobile & desktop) with NGXS, Angular 6, Ionic 4 and Capacitor](https://github.com/abritopach/angular-ionic-ngxs-movies)
+- [NGXS Form Example](https://github.com/kuncevic/ngxs-form-example)
 
 ### Media
 - [ngAir 153 - NGXS: A New State Management for Angular Apps with Austin McDaniel and Danny Blue](https://www.youtube.com/watch?v=rkn73khwfWU&feature=youtu.be)
