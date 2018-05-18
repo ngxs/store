@@ -162,6 +162,7 @@ describe('Entity Base', () => {
     store.dispatch(new AddAll([project2, project3]));
 
     const state = store.snapshot();
+    expect(Object.keys(state)).toEqual(['projects']);
     expect(state.projects.ids).toEqual(['project2', 'project3']);
     expect(state.projects.entities).toEqual({
       project2: project2,
