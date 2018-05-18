@@ -1,4 +1,5 @@
 import { Injector } from '@angular/core';
+import { Store } from './store';
 import { StateStream } from './state-stream';
 import { getValue, setValue } from './utils';
 import { META_KEY } from './symbols';
@@ -33,9 +34,11 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
   // @todo Don't like having to pass in an injector to be able to get at the
   // state stream, how could we do this differently?
   private _stateStream: StateStream;
+  private _store: Store;
 
   constructor(injector: Injector) {
     this._stateStream = injector.get(StateStream);
+    this._store = injector.get(Store);
   }
 
   /**
@@ -270,7 +273,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
     }
 
     // update state
-    const newState = setValue(state, path, newLocalState);
+    const newState = setValue(this._store.snapshot(), path, newLocalState);
     this._stateStream.next(newState);
 
     // return the local updated state if the user would like to continue proccesing it in the action handler
