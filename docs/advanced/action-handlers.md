@@ -48,7 +48,7 @@ you want it to happen on application startup, Angular provides a method for doin
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 
 // Noop handler for factory function
-function noop() { return function() {}; };
+export function noop() { return function() {}; };
 
 @NgModule({
   providers: [
