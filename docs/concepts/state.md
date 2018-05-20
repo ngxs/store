@@ -141,7 +141,7 @@ could be reduced to this:
 @Action(FeedZebra)
   feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
   const state = ctx.getState();
-  patchState({
+  ctx.patchState({
     zebraFood: [
       ...state.feedAnimals,
       action.zebraToFeed,
