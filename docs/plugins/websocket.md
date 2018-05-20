@@ -30,8 +30,6 @@ The plugin has a variety of options that can be passed:
 
 - `url`: Url of the websocket connection. Can be passed here or by the `ConnectWebsocket` action.
 - `typeKey`: Object property that maps the websocket message to a action type. Default: `type`
-- `reconnectInterval`: Interval of which to reconnect if the client is disconnected. Default: `5000`
-- `reconnectAttempts`: Number of times before giving up on connection retries. Default: `10`
 - `serializer`: Serializer used before sending objects to the websocket. Default: `JSON.stringify`
 
 ## Usage
