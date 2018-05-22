@@ -4,6 +4,7 @@
 - Performance: Run actions outside of zones #383
 - Fix: Dispatcher error propogation #376
 - Fix: Add patchState restriction errors #371
+- Fix: Remove error when loading same state multiple times #390
 
 # 3.0.0/3.0.1 5/3/18
 
