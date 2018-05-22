@@ -82,30 +82,29 @@ export class StateFactory {
       stateClass[META_KEY].path = depth;
 
       // ensure our store hasn't already been added
+      // but dont throw since it could be lazy
+      // loaded from different paths
       const has = this.states.find(s => s.name === name);
+      if (!has) {
+        // create new instance of defaults
+        if (Array.isArray(defaults)) {
+          defaults = [...defaults];
+        } else if (isObject(defaults)) {
+          defaults = { ...defaults };
+        } else if (defaults === undefined) {
+          defaults = {};
+        }
 
-      if (has) {
-        throw new Error(`Store has already been added: ${name}`);
+        const instance = this._injector.get(stateClass);
+
+        mappedStores.push({
+          actions,
+          instance,
+          defaults,
+          name,
+          depth
+        });
       }
-
-      // create new instance of defaults
-      if (Array.isArray(defaults)) {
-        defaults = [...defaults];
-      } else if (isObject(defaults)) {
-        defaults = { ...defaults };
-      } else if (defaults === undefined) {
-        defaults = {};
-      }
-
-      const instance = this._injector.get(stateClass);
-
-      mappedStores.push({
-        actions,
-        instance,
-        defaults,
-        name,
-        depth
-      });
     }
 
     this.states.push(...mappedStores);
