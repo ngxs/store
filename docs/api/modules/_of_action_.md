@@ -10,7 +10,7 @@
 * [filterStatus](_of_action_.md#filterstatus)
 * [mapAction](_of_action_.md#mapaction)
 * [ofAction](_of_action_.md#ofaction)
-* [ofActionCompleted](_of_action_.md#ofactioncompleted)
+* [ofActionSuccessful](_of_action_.md#ofactionsuccessful)
 * [ofActionDispatched](_of_action_.md#ofactiondispatched)
 * [ofActionErrored](_of_action_.md#ofactionerrored)
 * [ofActionOperator](_of_action_.md#ofactionoperator)
@@ -111,11 +111,11 @@ This will grab actions that have just been dispatched as well as actions that ha
 
 ___
 
-<a id="ofactioncompleted"></a>
+<a id="ofactionsuccessful"></a>
 
-###  ofActionCompleted
+###  ofActionSuccessful
 
-▸ **ofActionCompleted**(...allowedTypes: *`any`[]*): `(Anonymous function)`
+▸ **ofActionSuccessful**(...allowedTypes: *`any`[]*): `(Anonymous function)`
 
 *Defined in [of-action.ts:32](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/of-action.ts#L32)*
 
