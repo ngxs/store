@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 
 import { Navigate, RouterAction, RouterCancel, RouterError, RouterNavigation } from './router.actions';
 import { RouterStateSerializer } from './serializer';
+import { NgZone } from '@angular/core';
 
 export type RouterStateModel<T = RouterStateSnapshot> = {
   state: T;
@@ -39,9 +40,10 @@ export class RouterState {
   }
 
   constructor(
-    private store: Store,
-    private router: Router,
-    private serializer: RouterStateSerializer<RouterStateSnapshot>
+    private _store: Store,
+    private _router: Router,
+    private _serializer: RouterStateSerializer<RouterStateSnapshot>,
+    private _ngZone: NgZone
   ) {
     this.setUpRouterHook();
     this.setUpStoreListener();
@@ -50,10 +52,12 @@ export class RouterState {
 
   @Action(Navigate)
   navigate(ctx: StateContext<RouterStateModel>, action: Navigate) {
-    this.router.navigate(action.path, {
-      queryParams: action.queryParams,
-      ...action.extras
-    });
+    this._ngZone.run(() =>
+      this._router.navigate(action.path, {
+        queryParams: action.queryParams,
+        ...action.extras
+      })
+    );
   }
 
   @Action([RouterNavigation, RouterError, RouterCancel])
@@ -70,24 +74,24 @@ export class RouterState {
    * since the route tree can be large, we serialize it into something more manageable
    */
   private setUpRouterHook(): void {
-    (<any>this.router).hooks.beforePreactivation = (routerStateSnapshot: RouterStateSnapshot) => {
-      this.routerStateSnapshot = this.serializer.serialize(routerStateSnapshot);
+    (<any>this._router).hooks.beforePreactivation = (routerStateSnapshot: RouterStateSnapshot) => {
+      this.routerStateSnapshot = this._serializer.serialize(routerStateSnapshot);
       if (this.shouldDispatchRouterNavigation()) this.dispatchRouterNavigation();
       return of(true);
     };
   }
 
   private setUpStoreListener(): void {
-    this.store.select(RouterState).subscribe(s => {
+    this._store.select(RouterState).subscribe(s => {
       this.routerState = s;
     });
-    this.store.select(RouterState.state).subscribe(() => {
+    this._store.select(RouterState.state).subscribe(() => {
       this.navigateIfNeeded();
     });
   }
 
   private setUpStateRollbackEvents(): void {
-    this.router.events.subscribe(e => {
+    this._router.events.subscribe(e => {
       if (e instanceof RoutesRecognized) {
         this.lastRoutesRecognized = e;
       } else if (e instanceof NavigationCancel) {
@@ -109,9 +113,9 @@ export class RouterState {
     }
     if (this.dispatchTriggeredByRouter) return;
 
-    if (this.router.url !== this.routerState.state.url) {
+    if (this._router.url !== this.routerState.state.url) {
       this.navigationTriggeredByDispatch = true;
-      this.router.navigateByUrl(this.routerState.state.url);
+      this._ngZone.run(() => this._router.navigateByUrl(this.routerState.state.url));
     }
   }
 
@@ -142,7 +146,7 @@ export class RouterState {
   private dispatchRouterAction<T>(action: RouterAction<T>): void {
     this.dispatchTriggeredByRouter = true;
     try {
-      this.store.dispatch(action);
+      this._store.dispatch(action);
     } finally {
       this.dispatchTriggeredByRouter = false;
       this.navigationTriggeredByDispatch = false;
