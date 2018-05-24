@@ -2,6 +2,7 @@ import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
 
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN } from './symbols';
 import { StateFactory } from './state-factory';
+import { StateContextFactory } from './state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
 import { InternalDispatcher, InternalDispatchedActionResults } from './dispatcher';
 import { Store } from './store';
@@ -97,6 +98,7 @@ export class NgxsModule {
       ngModule: NgxsRootModule,
       providers: [
         StateFactory,
+        StateContextFactory,
         Actions,
         InternalActions,
         InternalDispatcher,

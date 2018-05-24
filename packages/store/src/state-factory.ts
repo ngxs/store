@@ -2,7 +2,7 @@ import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from, throwError } from 'rxjs';
 import { shareReplay, takeUntil, map, catchError, filter, mergeMap, defaultIfEmpty } from 'rxjs/operators';
 
-import { META_KEY, StateContext, NgxsLifeCycle } from './symbols';
+import { META_KEY, NgxsLifeCycle } from './symbols';
 import {
   topologicalSort,
   buildGraph,
@@ -10,14 +10,13 @@ import {
   nameToState,
   isObject,
   StateClass,
-  InternalStateOperations,
   MappedStore
 } from './internals';
-import { getActionTypeFromInstance, setValue, getValue } from './utils';
+import { getActionTypeFromInstance, setValue } from './utils';
 import { ofActionDispatched } from './of-action';
 import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
-import { InternalDispatchedActionResults, InternalDispatcher } from './dispatcher';
-import { StateStream } from './state-stream';
+import { InternalDispatchedActionResults } from './dispatcher';
+import { StateContextFactory } from './state-context-factory';
 
 /**
  * State factory class
@@ -39,17 +38,8 @@ export class StateFactory {
     private _parentFactory: StateFactory,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
-    private _stateStream: StateStream,
-    private _dispatcher: InternalDispatcher
+    private _stateContextFactory: StateContextFactory
   ) {}
-
-  private get rootStateOperations(): InternalStateOperations<any> {
-    return {
-      getState: () => this._stateStream.getValue(),
-      setState: newState => this._stateStream.next(newState),
-      dispatch: actions => this._dispatcher.dispatch(actions)
-    };
-  }
 
   /**
    * Add a new state to the global defs.
@@ -208,44 +198,7 @@ export class StateFactory {
   /**
    * Create the state context
    */
-  createStateContext(metadata: MappedStore): StateContext<any> {
-    const root = this.rootStateOperations;
-    return {
-      getState(): any {
-        const state = root.getState();
-        return getValue(state, metadata.depth);
-      },
-      patchState(val: any): any {
-        const isArray = Array.isArray(val);
-        const isPrimitive = typeof val !== 'object';
-
-        if (isArray) {
-          throw new Error('Patching arrays is not supported.');
-        } else if (isPrimitive) {
-          throw new Error('Patching primitives is not supported.');
-        }
-
-        const state = root.getState();
-        const local = getValue(state, metadata.depth);
-        const clone = { ...local };
-
-        for (const k in val) {
-          clone[k] = val[k];
-        }
-
-        const newState = setValue(state, metadata.depth, clone);
-        root.setState(newState);
-        return newState;
-      },
-      setState(val: any): any {
-        let state = root.getState();
-        state = setValue(state, metadata.depth, val);
-        root.setState(state);
-        return state;
-      },
-      dispatch(actions: any | any[]): Observable<any> {
-        return root.dispatch(actions);
-      }
-    };
+  private createStateContext(metadata: MappedStore) {
+    return this._stateContextFactory.createStateContext(metadata);
   }
 }
