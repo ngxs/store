@@ -222,7 +222,7 @@ describe('Entity Base', () => {
   });
 
   // @todo understand why the state isn't empty at start
-  xit('should updateOne', () => {
+  it('should updateOne', () => {
     let state = store.snapshot();
     expect(state.projects.ids).toEqual([]);
     expect(state.projects.entities).toEqual({});

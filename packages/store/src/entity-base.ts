@@ -126,11 +126,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
 
   addAll(entities: T[]): S {
     const state = this.getState();
-    state.ids = [];
-    state.entities = {};
-
     this._addMany(state, entities);
-
     return this._mutateStateIfNeeded(state, EntityMutation.IdAndEntity);
   }
 
