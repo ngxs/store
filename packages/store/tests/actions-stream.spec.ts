@@ -60,7 +60,7 @@ describe('The Actions stream', () => {
     internalActions.subscribe(({ status }) => callsRecorded.push('1st Subscriber:' + status));
     internalActions.subscribe(({ status }) => {
       callsRecorded.push('2nd Subscriber:' + status);
-      if (status === ActionStatus.Dispatched) internalActions.next({ status: ActionStatus.Completed, action: null });
+      if (status === ActionStatus.Dispatched) internalActions.next({ status: ActionStatus.Successful, action: null });
     });
     internalActions.subscribe(({ status }) => callsRecorded.push('3rd Subscriber:' + status));
 
@@ -70,9 +70,9 @@ describe('The Actions stream', () => {
       '1st Subscriber:DISPATCHED',
       '2nd Subscriber:DISPATCHED',
       '3rd Subscriber:DISPATCHED',
-      '1st Subscriber:COMPLETED',
-      '2nd Subscriber:COMPLETED',
-      '3rd Subscriber:COMPLETED'
+      '1st Subscriber:SUCCESSFUL',
+      '2nd Subscriber:SUCCESSFUL',
+      '3rd Subscriber:SUCCESSFUL'
     ]);
   }));
 });

@@ -1,11 +1,12 @@
-import { Injectable, ErrorHandler } from '@angular/core';
-import { Observable, of, forkJoin, empty, Subject } from 'rxjs';
-import { catchError, shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
+import { Injectable, ErrorHandler, NgZone } from '@angular/core';
+import { Observable, of, forkJoin, empty, Subject, throwError } from 'rxjs';
+import { shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
 
 import { compose } from './compose';
 import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
+import { enterZone } from './zone';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -23,32 +24,27 @@ export class InternalDispatcher {
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
-    private _stateStream: StateStream
+    private _stateStream: StateStream,
+    private _ngZone: NgZone
   ) {}
 
   /**
    * Dispatches event(s).
    */
   dispatch(event: any | any[]): Observable<any> {
-    let result: Observable<any>;
+    const result: Observable<any> = this._ngZone.runOutsideAngular(() => {
+      if (Array.isArray(event)) {
+        return forkJoin(event.map(a => this.dispatchSingle(a)));
+      } else {
+        return this.dispatchSingle(event);
+      }
+    });
 
-    if (Array.isArray(event)) {
-      result = forkJoin(event.map(a => this.dispatchSingle(a)));
-    } else {
-      result = this.dispatchSingle(event);
-    }
+    result.subscribe({
+      error: error => this._ngZone.run(() => this._errorHandler.handleError(error))
+    });
 
-    result.pipe(
-      catchError(err => {
-        // handle error through angular error system
-        this._errorHandler.handleError(err);
-        return of(err);
-      })
-    );
-
-    result.subscribe();
-
-    return result;
+    return result.pipe(enterZone(this._ngZone));
   }
 
   private dispatchSingle(action: any): Observable<any> {
@@ -70,14 +66,11 @@ export class InternalDispatcher {
   }
 
   private getActionResultStream(action: any): Observable<ActionContext> {
-    const actionResult$ = this._actionResults.pipe(
-      filter((ctx: ActionContext) => {
-        return ctx.action === action && ctx.status !== ActionStatus.Dispatched;
-      }),
+    return this._actionResults.pipe(
+      filter((ctx: ActionContext) => ctx.action === action && ctx.status !== ActionStatus.Dispatched),
       take(1),
       shareReplay()
     );
-    return actionResult$;
   }
 
   private createDispatchObservable(actionResult$: Observable<ActionContext>): Observable<any> {
@@ -85,12 +78,10 @@ export class InternalDispatcher {
       .pipe(
         exhaustMap((ctx: ActionContext) => {
           switch (ctx.status) {
-            case ActionStatus.Completed:
+            case ActionStatus.Successful:
               return of(this._stateStream.getValue());
             case ActionStatus.Errored:
-              return of(this._stateStream.getValue()); // This was previously the error value
-            // I think that this should rather
-            // return throwError(new Error('the error goes here'))
+              return throwError(ctx.error);
             default:
               return empty();
           }

@@ -3,6 +3,16 @@ The store is a global state manager that dispatches actions your state
 containers listen to and provides a way to select data slices out from
 the global state.
 
+### Creating actions
+An action example in `animal.actions.ts`.
+
+```TS
+export class AddAnimal {
+  static readonly type = '[Zoo] Add Animal';
+  constructor(public name: string) {}
+}
+```
+
 ### Dispatching actions
 To dispatch actions, you need to inject the `Store` service into your component/service
 and invoke the `dispatch` function with an action or an array of actions you wish to trigger.
@@ -10,11 +20,6 @@ and invoke the `dispatch` function with an action or an array of actions you wis
 ```TS
 import { Store } from '@ngxs/store';
 import { AddAnimal } from './animal.actions';
-
-export class AddAnimal {
-  static readonly type = '[Zoo] Add Animal';
-  constructor(public name: string) {}
-}
 
 @Component({ ... })
 export class ZooComponent {

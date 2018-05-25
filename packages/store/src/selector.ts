@@ -1,11 +1,12 @@
 import { memoize } from './memoize';
 import { getValue } from './utils';
-import { ensureStoreMetadata } from './internals';
+import { ensureStoreMetadata, ensureSelectorMetadata } from './internals';
+import { getSelectorFn } from './selector-utils';
 
 /**
  * Decorator for memoizing a state selector.
  */
-export function Selector(...args) {
+export function Selector(selectors?: any[]) {
   return (target: any, key: string, descriptor: PropertyDescriptor) => {
     const metadata = ensureStoreMetadata(target);
 
@@ -13,11 +14,18 @@ export function Selector(...args) {
       const prev = descriptor.value;
 
       const fn = state => {
-        const local = getValue(state, metadata.path);
-        // if the lambda tries to access a something on the state that doesn't exist, it will throw a TypeError.
+        const results = [getValue(state, metadata.path)];
+
+        if (selectors) {
+          results.push(...selectors.map(a => getSelectorFn(a)(state)));
+          // TODO
+        }
+
+        // if the lambda tries to access a something on the
+        // state that doesn't exist, it will throw a TypeError.
         // since this is quite usual behaviour, we simply return undefined if so.
         try {
-          return prev(local);
+          return prev(...results);
         } catch (ex) {
           if (ex instanceof TypeError) {
             return undefined;
@@ -26,10 +34,17 @@ export function Selector(...args) {
         }
       };
 
+      const memoizedFn = memoize.apply(null, [prev]);
+
+      const selectorMetaData = ensureSelectorMetadata(memoizedFn);
+      selectorMetaData.originalFn = prev;
+      selectorMetaData.storeMetaData = metadata;
+      selectorMetaData.selectFromAppState = fn;
+
       return {
         configurable: true,
         get() {
-          return memoize.apply(null, [fn, ...args]);
+          return memoizedFn;
         }
       };
     } else {
