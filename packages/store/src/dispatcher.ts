@@ -41,7 +41,7 @@ export class InternalDispatcher {
     });
 
     result.subscribe({
-      error: error => this._errorHandler.handleError(error)
+      error: error => this._ngZone.run(() => this._errorHandler.handleError(error))
     });
 
     return result.pipe(enterZone(this._ngZone));

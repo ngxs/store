@@ -74,8 +74,12 @@ describe('Dispatch', () => {
     });
 
     const store: Store = TestBed.get(Store);
-    store.dispatch(new Increment()).subscribe(() => {
+    const zone: NgZone = TestBed.get(NgZone);
+    zone.run(() => {
       expect(NgZone.isInAngularZone()).toBe(true);
+      store.dispatch(new Increment()).subscribe(() => {
+        expect(NgZone.isInAngularZone()).toBe(true);
+      });
     });
   }));
 

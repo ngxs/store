@@ -11,8 +11,12 @@ export function enterZone<T>(zone: NgZone) {
         next(x) {
           zone.run(() => sink.next(x));
         },
-        error: sink.error.bind(sink),
-        complete: sink.complete.bind(sink)
+        error(e) {
+          zone.run(() => sink.error(e));
+        },
+        complete() {
+          zone.run(() => sink.complete());
+        }
       });
     });
   };
