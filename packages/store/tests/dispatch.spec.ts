@@ -1,4 +1,4 @@
-import { ErrorHandler, Injectable } from '@angular/core';
+import { ErrorHandler, Injectable, NgZone } from '@angular/core';
 import { async, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { timer, of, throwError } from 'rxjs';
 import { tap, skip, delay } from 'rxjs/operators';
@@ -55,6 +55,32 @@ describe('Dispatch', () => {
     store.dispatch(new Increment()).subscribe(() => {}, err => observedCalls.push('observer.error(...)'));
 
     expect(observedCalls).toEqual(['handleError(...)', 'observer.error(...)']);
+  }));
+
+  it('should run outside zone and return back in zone', async(() => {
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    class MyState {
+      @Action(Increment)
+      increment() {
+        expect(NgZone.isInAngularZone()).toBe(false);
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([MyState]), NgxsModule.forFeature([])]
+    });
+
+    const store: Store = TestBed.get(Store);
+    const zone: NgZone = TestBed.get(NgZone);
+    zone.run(() => {
+      expect(NgZone.isInAngularZone()).toBe(true);
+      store.dispatch(new Increment()).subscribe(() => {
+        expect(NgZone.isInAngularZone()).toBe(true);
+      });
+    });
   }));
 
   it('should only call action once', async(() => {

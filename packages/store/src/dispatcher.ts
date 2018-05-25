@@ -6,6 +6,7 @@ import { compose } from './compose';
 import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
+import { enterZone } from './zone';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -40,10 +41,10 @@ export class InternalDispatcher {
     });
 
     result.subscribe({
-      error: error => this._errorHandler.handleError(error)
+      error: error => this._ngZone.run(() => this._errorHandler.handleError(error))
     });
 
-    return result;
+    return result.pipe(enterZone(this._ngZone));
   }
 
   private dispatchSingle(action: any): Observable<any> {
