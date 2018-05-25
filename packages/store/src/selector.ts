@@ -1,6 +1,7 @@
 import { memoize } from './memoize';
 import { getValue } from './utils';
-import { ensureStoreMetadata } from './internals';
+import { ensureStoreMetadata, ensureSelectorMetadata } from './internals';
+import { getSelectorFn } from './selector-utils';
 
 /**
  * Decorator for memoizing a state selector.
@@ -16,7 +17,8 @@ export function Selector(selectors?: any[]) {
         const results = [getValue(state, metadata.path)];
 
         if (selectors) {
-          results.push(...selectors.map(a => a(state)));
+          results.push(...selectors.map(a => getSelectorFn(a)(state)));
+          // TODO
         }
 
         // if the lambda tries to access a something on the
@@ -32,10 +34,17 @@ export function Selector(selectors?: any[]) {
         }
       };
 
+      const memoizedFn = memoize.apply(null, [prev]);
+
+      const selectorMetaData = ensureSelectorMetadata(memoizedFn);
+      selectorMetaData.originalFn = prev;
+      selectorMetaData.storeMetaData = metadata;
+      selectorMetaData.selectFromAppState = fn;
+
       return {
         configurable: true,
         get() {
-          return memoize.apply(null, [fn]);
+          return memoizedFn;
         }
       };
     } else {

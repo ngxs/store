@@ -32,6 +32,14 @@ export interface MetaDataModel {
   instance: any;
 }
 
+export type SelectFromState = (state: any) => any;
+
+export interface SelectorMetaDataModel {
+  selectFromAppState: SelectFromState;
+  originalFn: Function;
+  storeMetaData: MetaDataModel;
+}
+
 export interface MappedStore {
   name: string;
   actions: ObjectKeyMap<ActionHandlerMetaData[]>;
@@ -54,6 +62,25 @@ export function ensureStoreMetadata(target): MetaDataModel {
       path: null,
       children: [],
       instance: null
+    };
+
+    Object.defineProperty(target, META_KEY, { value: defaultMetadata });
+  }
+
+  return target[META_KEY];
+}
+
+/**
+ * Ensures metadata is attached to the selector and returns it.
+ *
+ * @ignore
+ */
+export function ensureSelectorMetadata(target): SelectorMetaDataModel {
+  if (!target.hasOwnProperty(META_KEY)) {
+    const defaultMetadata: SelectorMetaDataModel = {
+      selectFromAppState: null,
+      originalFn: null,
+      storeMetaData: null
     };
 
     Object.defineProperty(target, META_KEY, { value: defaultMetadata });
