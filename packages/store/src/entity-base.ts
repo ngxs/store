@@ -100,7 +100,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
     }
 
     state.ids.push(key);
-    state.entities[key] = this.serialize(entity, {});
+    state.entities[key] = this.serialize(entity);
 
     return EntityMutation.IdAndEntity;
   }
@@ -176,7 +176,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
     return this._mutateStateIfNeeded(state, mutation);
   }
 
-  serialize(original, changes): T {
+  serialize(original, changes = {}): T {
     return Object.assign({}, original, changes);
   }
 

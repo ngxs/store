@@ -118,7 +118,7 @@ describe('Entity Base', () => {
     }
   })
   class ProjectStateSerialized extends ProjectState {
-    serialize(instance, changes) {
+    serialize(instance, changes = {}) {
       return Object.assign(new Project(), instance, changes);
     }
   }
