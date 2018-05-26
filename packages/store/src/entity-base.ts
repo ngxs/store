@@ -98,10 +98,11 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
     if (key in state.entities) {
       return EntityMutation.None;
     }
-
-    state.ids.push(key);
-    state.entities[key] = this.serialize(entity);
-
+    state.ids = [...state.ids, key];
+    state.entities = {
+      ...state.entities,
+      ...{ [key]: this.serialize(entity) }
+    };
     return EntityMutation.IdAndEntity;
   }
 
@@ -126,12 +127,15 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
 
   addAll(entities: T[]): S {
     const state = this.getState();
-    state.ids = [];
-    state.entities = {};
-
-    this._addMany(state, entities);
-
-    return this._mutateStateIfNeeded(state, EntityMutation.IdAndEntity);
+    const newState = {
+      ...state,
+      ...{
+        ids: [],
+        entities: {}
+      }
+    };
+    this._addMany(newState, entities);
+    return this._mutateStateIfNeeded(newState, EntityMutation.IdAndEntity);
   }
 
   removeOne(key: string | number): S {
@@ -159,10 +163,13 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
 
   removeAll(): S {
     const state = this.getState();
-    const cleanState = Object.assign({}, state, {
-      ids: [],
-      entities: {}
-    });
+    const cleanState = {
+      ...state,
+      ...{
+        ids: [],
+        entities: {}
+      }
+    };
     return this._mutateStateIfNeeded(cleanState, EntityMutation.IdAndEntity);
   }
 

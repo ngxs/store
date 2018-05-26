@@ -1,7 +1,36 @@
+# Master
+
+- Feature: Select combinations #51
+- Performance: Run actions outside of zones #383
+- Fix: Dispatcher error propogation #376
+- Fix: Add patchState restriction errors #371
+- Fix: Remove error when loading same state multiple times #390
+- Fix: Force route navigation to run in zones
+
+# 3.0.0/3.0.1 5/3/18
+
+- Chore: Upgrade to official Angular
+
+# 3.0.0-rc.4 5/2/18
+
+- BREAKING: Rename completed to successful #349
+- Feature: Add ability to disable logger #350
+- Fix: Fix options not passed correctly to logger plugin #350
+- Fix: Patch state mutating the original state #348
+- Fix: Router plugin not working in prod #351
+
+# 3.0.0-rc.3 5/1/18
+
+- BREAKING: Update websocket connect to recieve options object #341
+- Feature: Consolidate action stream to single-source-of-truth #324
+- Fix: Remove reconnection from websocket because of issues #341
+- Fix: Enums causing prod build errors #345
+- Fix: Router race case when using prod #345
+
 # 3.0.0-rc.2 4/27/18
 
 - Fix: Form update fix #335
-- Chore: Upgrade RxJS to official
+- Chore: Upgrade RxJS to official #332
 
 
 # 3.0.0-rc.1 4/12/18

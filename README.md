@@ -9,8 +9,8 @@
 
 ---
 
-- Learn about it on the [docs site](https://ngxs.gitbooks.io/ngxs/)
-- See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
-- Checkout the [sample application](https://github.com/ngxs/store/tree/master/integration)
-- Learn about updates from the [changelog](CHANGELOG.md)
-- ❤️ Give back by becoming a [Contributor](community/contributor.md) or a [Sponsor](https://github.com/ngxs/store/blob/master/docs/community/sponsors.md)
+- ✨ Learn about it on the [docs site](https://ngxs.gitbooks.io/ngxs/)
+- 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
+- 😎 Checkout the [sample application](integration)
+- 🗄 Learn about updates from the [changelog](CHANGELOG.md)
+- ❤️ Give back by becoming a [Contributor](docs/community/contributors.md) or a [Sponsor](/docs/community/sponsors.md)

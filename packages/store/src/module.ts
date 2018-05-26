@@ -2,6 +2,7 @@ import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
 
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN } from './symbols';
 import { StateFactory } from './state-factory';
+import { StateContextFactory } from './state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
 import { InternalDispatcher, InternalDispatchedActionResults } from './dispatcher';
 import { Store } from './store';
@@ -36,8 +37,10 @@ export class NgxsRootModule {
       stateStream.next({ ...cur, ...results.defaults });
     }
 
-    factory.connectActionHandlers(results.states);
+    // connect our actions stream
+    factory.connectActionHandlers();
 
+    // dispatch the init action and invoke init function after
     store.dispatch(new InitState()).subscribe(() => {
       if (results) {
         factory.invokeInit(results.states);
@@ -74,8 +77,6 @@ export class NgxsFeatureModule {
       stateStream.next({ ...cur, ...results.defaults });
     }
 
-    factory.connectActionHandlers(results.states);
-
     store.dispatch(new UpdateState()).subscribe(() => {
       if (results) {
         factory.invokeInit(results.states);
@@ -97,6 +98,7 @@ export class NgxsModule {
       ngModule: NgxsRootModule,
       providers: [
         StateFactory,
+        StateContextFactory,
         Actions,
         InternalActions,
         InternalDispatcher,

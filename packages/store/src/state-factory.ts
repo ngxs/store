@@ -1,8 +1,8 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
-import { Observable, of, forkJoin, from } from 'rxjs';
+import { Observable, of, forkJoin, from, throwError } from 'rxjs';
 import { shareReplay, takeUntil, map, catchError, filter, mergeMap, defaultIfEmpty } from 'rxjs/operators';
 
-import { META_KEY, StateContext, NgxsLifeCycle } from './symbols';
+import { META_KEY, NgxsLifeCycle } from './symbols';
 import {
   topologicalSort,
   buildGraph,
@@ -10,14 +10,13 @@ import {
   nameToState,
   isObject,
   StateClass,
-  InternalStateOperations,
   MappedStore
 } from './internals';
-import { getActionTypeFromInstance, setValue, getValue } from './utils';
+import { getActionTypeFromInstance, setValue } from './utils';
 import { ofActionDispatched } from './of-action';
 import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
-import { InternalDispatchedActionResults, InternalDispatcher } from './dispatcher';
-import { StateStream } from './state-stream';
+import { InternalDispatchedActionResults } from './dispatcher';
+import { StateContextFactory } from './state-context-factory';
 
 /**
  * State factory class
@@ -39,17 +38,8 @@ export class StateFactory {
     private _parentFactory: StateFactory,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
-    private _stateStream: StateStream,
-    private _dispatcher: InternalDispatcher
+    private _stateContextFactory: StateContextFactory
   ) {}
-
-  private get rootStateOperations(): InternalStateOperations<any> {
-    return {
-      getState: () => this._stateStream.getValue(),
-      setState: newState => this._stateStream.next(newState),
-      dispatch: actions => this._dispatcher.dispatch(actions)
-    };
-  }
 
   /**
    * Add a new state to the global defs.
@@ -82,30 +72,29 @@ export class StateFactory {
       stateClass[META_KEY].path = depth;
 
       // ensure our store hasn't already been added
+      // but dont throw since it could be lazy
+      // loaded from different paths
       const has = this.states.find(s => s.name === name);
+      if (!has) {
+        // create new instance of defaults
+        if (Array.isArray(defaults)) {
+          defaults = [...defaults];
+        } else if (isObject(defaults)) {
+          defaults = { ...defaults };
+        } else if (defaults === undefined) {
+          defaults = {};
+        }
 
-      if (has) {
-        throw new Error(`Store has already been added: ${name}`);
+        const instance = this._injector.get(stateClass);
+
+        mappedStores.push({
+          actions,
+          instance,
+          defaults,
+          name,
+          depth
+        });
       }
-
-      // create new instance of defaults
-      if (Array.isArray(defaults)) {
-        defaults = [...defaults];
-      } else if (isObject(defaults)) {
-        defaults = { ...defaults };
-      } else if (defaults === undefined) {
-        defaults = {};
-      }
-
-      const instance = this._injector.get(stateClass);
-
-      mappedStores.push({
-        actions,
-        instance,
-        defaults,
-        name,
-        depth
-      });
     }
 
     this.states.push(...mappedStores);
@@ -127,22 +116,21 @@ export class StateFactory {
     }
   }
 
-  connectActionHandlers(mappedStores: MappedStore[]): any {
+  /**
+   * Bind the actions to the handlers
+   */
+  connectActionHandlers() {
     if (this._connected) return;
     this._actions
       .pipe(
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
-        mergeMap(({ action }) => {
-          return this.invokeActions(this._actions, action).pipe(
-            map(() => {
-              return <ActionContext>{ action, status: ActionStatus.Completed };
-            }),
+        mergeMap(({ action }) =>
+          this.invokeActions(this._actions, action).pipe(
+            map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
-            catchError(err => {
-              return of(<ActionContext>{ action, status: ActionStatus.Errored });
-            })
-          );
-        })
+            catchError(error => of(<ActionContext>{ action, status: ActionStatus.Errored, error }))
+          )
+        )
       )
       .subscribe(ctx => this._actionResults.next(ctx));
     this._connected = true;
@@ -157,7 +145,6 @@ export class StateFactory {
 
       if (instance.ngxsOnInit) {
         const stateContext = this.createStateContext(metadata);
-
         instance.ngxsOnInit(stateContext);
       }
     }
@@ -176,21 +163,27 @@ export class StateFactory {
       if (actionMetas) {
         for (const actionMeta of actionMetas) {
           const stateContext = this.createStateContext(metadata);
-          let result = metadata.instance[actionMeta.fn](stateContext, action);
+          try {
+            let result = metadata.instance[actionMeta.fn](stateContext, action);
 
-          if (result instanceof Promise) {
-            result = from(result);
+            if (result instanceof Promise) {
+              result = from(result);
+            }
+
+            if (result instanceof Observable) {
+              result = result.pipe(
+                actionMeta.options.cancelUncompleted
+                  ? takeUntil(actions$.pipe(ofActionDispatched(action)))
+                  : map(r => r)
+              ); // map acts like a noop
+            } else {
+              result = of({}).pipe(shareReplay());
+            }
+
+            results.push(result);
+          } catch (e) {
+            results.push(throwError(e));
           }
-
-          if (result instanceof Observable) {
-            result = result.pipe(
-              actionMeta.options.cancelUncompleted ? takeUntil(actions$.pipe(ofActionDispatched(action))) : map(r => r)
-            ); // act like a noop
-          } else {
-            result = of({}).pipe(shareReplay());
-          }
-
-          results.push(result);
         }
       }
     }
@@ -205,36 +198,7 @@ export class StateFactory {
   /**
    * Create the state context
    */
-  createStateContext(metadata: MappedStore): StateContext<any> {
-    const root = this.rootStateOperations;
-    return {
-      getState(): any {
-        const state = root.getState();
-        return getValue(state, metadata.depth);
-      },
-      patchState(val: any): void {
-        if (Array.isArray(val)) {
-          throw new Error('Patching arrays is not supported.');
-        }
-
-        let state = root.getState();
-        const local = getValue(state, metadata.depth);
-        for (const k in val) {
-          local[k] = val[k];
-        }
-        state = setValue(state, metadata.depth, { ...local });
-        root.setState(state);
-        return state;
-      },
-      setState(val: any): any {
-        let state = root.getState();
-        state = setValue(state, metadata.depth, val);
-        root.setState(state);
-        return state;
-      },
-      dispatch(actions: any | any[]): Observable<any> {
-        return root.dispatch(actions);
-      }
-    };
+  private createStateContext(metadata: MappedStore) {
+    return this._stateContextFactory.createStateContext(metadata);
   }
 }

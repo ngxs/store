@@ -1,8 +1,16 @@
 <!--
-We will close this issue if you don't provide the needed information.
+## Feature Request?
 For feature requests, delete the form below and describe the requirements and use case.
-NB: For questions, please ask them on stack overflow with the `ngxs` tag:
-  https://stackoverflow.com/questions/ask?tags=ngxs
+-->
+
+<!--
+## Question?
+For questions, please ask them on stack overflow with the `ngxs` tag:
+
+https://stackoverflow.com/questions/ask?tags=ngxs
+
+This is so that the issue tracker doesn't get overrun with questions.
+And stackoverflow is a better place for questions.
 -->
 
 ### Versions
@@ -19,10 +27,12 @@ Please provide ther version of NGXS that you are using as well as the version of
 ### Repro steps
 
 <!--
-Simple steps to reproduce this bug.
+If possible a link to a http://stackblitz.com (or github) repo with a repro or a failing test would be great.
+Please provide simple steps to reproduce this bug.
 Please include: commands run, packages added, related code changes.
-A link to a sample repo would help too.
 -->
+
+Stackblitz / Github link: https://stackblitz.com/fork/ngxs-simple
 
 * Step 1
 * Step 2

@@ -2,9 +2,10 @@
   "name": "@ngxs/devtools-plugin",
   "description": "redux devtools plugin for @ngxs/store",
   "version": "0.0.0",
+  "sideEffects": true,
   "peerDependencies": {
     "@ngxs/store": "^0.0.0",
-    "@angular/core": ">=5.0.0 <7.0.0 || >6.0.0-rc <7.0.0",
+    "@angular/core": ">=5.0.0 <7.0.0",
     "rxjs": ">=6.0.0 || ^5.6.0-forward-compat.4"
   }
 }

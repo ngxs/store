@@ -265,6 +265,15 @@ describe('Entity Base', () => {
         }
       });
     });
+
+    // @todo understand why the state isn't empty at start
+    it('should updateOne', () => {
+      const state = store.snapshot();
+      expect(state.projects.ids).toEqual([]);
+      expect(state.projects.entities).toEqual({});
+
+      store = TestBed.get(Store);
+    });
   });
 
   describe('Serialized tests', () => {

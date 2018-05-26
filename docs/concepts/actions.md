@@ -43,7 +43,7 @@ They are usually trigged by user events such as clicking on a button, or selecti
 Names should contain three parts:
 
 * A context as to where the command came from, '[User API]', '[Product Page]', '[Dashboard Page]`.
-* The entity we are acting upon, `User`, `Card`, `ArchiveProject`.
+* The entity we are acting upon, `User`, `Card`, `Project`.
 * A verb describing what we want to do with the entity.
 
 Examples:
@@ -57,7 +57,7 @@ Events are actions that have already happended and we now need to react to them.
 
 The same naming conventions apply as to command, but they should always be in past tense.
 
-By using `API` in the context part we now that this event was fired because of a async action to an API.
+By using `API` in the context part we know that this event was fired because of a async action to an API.
 
 Actions are normally dispatched from container components such as router pages.
 By having explicit actions for each page, it's also easier to track where an event came from.
