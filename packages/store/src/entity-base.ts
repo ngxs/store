@@ -100,7 +100,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
     }
 
     state.ids.push(key);
-    state.entities[key] = entity;
+    state.entities[key] = this.serialize(entity, {});
 
     return EntityMutation.IdAndEntity;
   }
@@ -176,6 +176,10 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
     return this._mutateStateIfNeeded(state, mutation);
   }
 
+  serialize(original, changes): T {
+    return Object.assign({}, original, changes);
+  }
+
   /**
    * Helper method that checks if we need to mutate state and if so updates the passed in state
    */
@@ -205,7 +209,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
    */
   private _takeNewKey(state: S, keys: { [id: string]: any }, update: EntityUpdate<T>): boolean {
     const original = state.entities[update.id];
-    const updated: T = Object.assign({}, original, update.changes);
+    const updated: T = this.serialize(original, update.changes);
     const newKey = this.getEntityId(updated);
     const hasNewKey = newKey !== update.id;
 

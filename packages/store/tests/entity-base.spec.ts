@@ -110,6 +110,19 @@ describe('Entity Base', () => {
     }
   }
 
+  @State<ProjectStateModel>({
+    name: 'projects',
+    defaults: {
+      ids: [],
+      entities: {}
+    }
+  })
+  class ProjectStateSerialized extends ProjectState {
+    serialize(instance, changes) {
+      return Object.assign(new Project(), instance, changes);
+    }
+  }
+
   /**
    * Projects
    */
@@ -128,127 +141,162 @@ describe('Entity Base', () => {
     name: 'Project 3'
   };
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([ProjectState])]
+  describe('Original tests', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([ProjectState])]
+      });
+
+      store = TestBed.get(Store);
     });
 
-    store = TestBed.get(Store);
-  });
+    it('should addOne', () => {
+      store.dispatch(new AddOne(project1));
 
-  it('should addOne', () => {
-    store.dispatch(new AddOne(project1));
-
-    const state = store.snapshot();
-    expect(state.projects.ids).toEqual(['project1']);
-    expect(state.projects.entities).toEqual({ project1: project1 });
-  });
-
-  it('should addMany', () => {
-    store.dispatch(new AddMany([project1, project2]));
-
-    const state = store.snapshot();
-    expect(state.projects.ids).toEqual(['project1', 'project2']);
-    expect(state.projects.entities).toEqual({
-      project1: project1,
-      project2: project2
+      const state = store.snapshot();
+      expect(state.projects.ids).toEqual(['project1']);
+      expect(state.projects.entities).toEqual({ project1: project1 });
     });
-  });
 
-  it('should addAll', () => {
-    // Add one, that should then be gone when we addAll
-    store.dispatch(new AddOne(project1));
+    it('should addMany', () => {
+      store.dispatch(new AddMany([project1, project2]));
 
-    store.dispatch(new AddAll([project2, project3]));
-
-    const state = store.snapshot();
-    expect(Object.keys(state)).toEqual(['projects']);
-    expect(state.projects.ids).toEqual(['project2', 'project3']);
-    expect(state.projects.entities).toEqual({
-      project2: project2,
-      project3: project3
+      const state = store.snapshot();
+      expect(state.projects.ids).toEqual(['project1', 'project2']);
+      expect(state.projects.entities).toEqual({
+        project1: project1,
+        project2: project2
+      });
     });
-  });
 
-  it('should addAll', () => {
-    // Add one, that should then be gone when we addAll
-    store.dispatch(new AddOne(project1));
+    it('should addAll', () => {
+      // Add one, that should then be gone when we addAll
+      store.dispatch(new AddOne(project1));
 
-    store.dispatch(new AddAll([project2, project3]));
+      store.dispatch(new AddAll([project2, project3]));
 
-    const state = store.snapshot();
-    expect(state.projects.ids).toEqual(['project2', 'project3']);
-    expect(state.projects.entities).toEqual({
-      project2: project2,
-      project3: project3
+      const state = store.snapshot();
+      expect(Object.keys(state)).toEqual(['projects']);
+      expect(state.projects.ids).toEqual(['project2', 'project3']);
+      expect(state.projects.entities).toEqual({
+        project2: project2,
+        project3: project3
+      });
     });
-  });
 
-  it('should removeOne', () => {
-    // Add one, that should then be gone when we addAll
-    store.dispatch(new AddMany([project1, project2]));
+    it('should addAll', () => {
+      // Add one, that should then be gone when we addAll
+      store.dispatch(new AddOne(project1));
 
-    store.dispatch(new RemoveOne('project1'));
+      store.dispatch(new AddAll([project2, project3]));
 
-    const state = store.snapshot();
-    expect(state.projects.ids).toEqual(['project2']);
-    expect(state.projects.entities).toEqual({
-      project2: project2
+      const state = store.snapshot();
+      expect(state.projects.ids).toEqual(['project2', 'project3']);
+      expect(state.projects.entities).toEqual({
+        project2: project2,
+        project3: project3
+      });
     });
-  });
 
-  it('should removeMany', () => {
-    // Add one, that should then be gone when we addAll
-    store.dispatch(new AddMany([project1, project2, project3]));
+    it('should removeOne', () => {
+      // Add one, that should then be gone when we addAll
+      store.dispatch(new AddMany([project1, project2]));
 
-    store.dispatch(new RemoveMany(['project1', 'project2']));
+      store.dispatch(new RemoveOne('project1'));
 
-    const state = store.snapshot();
-    expect(state.projects.ids).toEqual(['project3']);
-    expect(state.projects.entities).toEqual({
-      project3: project3
+      const state = store.snapshot();
+      expect(state.projects.ids).toEqual(['project2']);
+      expect(state.projects.entities).toEqual({
+        project2: project2
+      });
     });
-  });
 
-  it('should removeAll', () => {
-    // Add one, that should then be gone when we addAll
-    store.dispatch(new AddMany([project1, project2, project3]));
+    it('should removeMany', () => {
+      // Add one, that should then be gone when we addAll
+      store.dispatch(new AddMany([project1, project2, project3]));
 
-    store.dispatch(new RemoveAll());
+      store.dispatch(new RemoveMany(['project1', 'project2']));
 
-    const state = store.snapshot();
-    expect(state.projects.ids).toEqual([]);
-    expect(state.projects.entities).toEqual({});
-  });
+      const state = store.snapshot();
+      expect(state.projects.ids).toEqual(['project3']);
+      expect(state.projects.entities).toEqual({
+        project3: project3
+      });
+    });
 
-  // @todo understand why the state isn't empty at start
-  xit('should updateOne', () => {
-    let state = store.snapshot();
-    expect(state.projects.ids).toEqual([]);
-    expect(state.projects.entities).toEqual({});
+    it('should removeAll', () => {
+      // Add one, that should then be gone when we addAll
+      store.dispatch(new AddMany([project1, project2, project3]));
 
-    // Add one, that should then be gone when we addAll
-    store.dispatch(new AddMany([project1, project2]));
+      store.dispatch(new RemoveAll());
 
-    store.dispatch(
-      new UpdateOne({
-        id: 'project1',
-        changes: {
+      const state = store.snapshot();
+      expect(state.projects.ids).toEqual([]);
+      expect(state.projects.entities).toEqual({});
+    });
+
+    // @todo understand why the state isn't empty at start
+    xit('should updateOne', () => {
+      let state = store.snapshot();
+      expect(state.projects.ids).toEqual([]);
+      expect(state.projects.entities).toEqual({});
+
+      // Add one, that should then be gone when we addAll
+      store.dispatch(new AddMany([project1, project2]));
+
+      store.dispatch(
+        new UpdateOne({
+          id: 'project1',
+          changes: {
+            name: 'Project 1 Change'
+          }
+        })
+      );
+
+      state = store.snapshot();
+      expect(state.projects.entities).toEqual({
+        project1: {
+          id: 'project1',
           name: 'Project 1 Change'
+        },
+        project2: {
+          id: 'project2',
+          name: 'Project 2'
         }
-      })
-    );
+      });
+    });
+  });
 
-    state = store.snapshot();
-    expect(state.projects.entities).toEqual({
-      project1: {
-        id: 'project1',
-        name: 'Project 1 Change'
-      },
-      project2: {
-        id: 'project2',
-        name: 'Project 2'
-      }
+  describe('Serialized tests', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([ProjectStateSerialized])]
+      });
+
+      store = TestBed.get(Store);
+    });
+
+    it('should addOne and UpdateOne and keep class', () => {
+      const instance1 = new Project();
+      instance1.id = 'project1';
+      instance1.name = 'Added';
+
+      store.dispatch(new AddOne(instance1));
+      store
+        .select(state => state.projects)
+        .subscribe(projects => expect(projects.entities['project1'] instanceof Project).toBeTruthy());
+
+      store.dispatch(
+        new UpdateOne({
+          id: 'project1',
+          changes: {
+            name: 'Added and Updated'
+          }
+        })
+      );
+      store
+        .select(state => state.projects)
+        .subscribe(projects => expect(projects.entities['project1'] instanceof Project).toBeTruthy());
     });
   });
 });
