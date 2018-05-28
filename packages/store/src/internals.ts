@@ -1,4 +1,4 @@
-import { META_KEY, ActionOptions } from './symbols';
+import { META_KEY, ActionOptions, StateContext } from './symbols';
 import { Observable } from 'rxjs';
 
 export interface ObjectKeyMap<T> {
@@ -46,6 +46,7 @@ export interface MappedStore {
   defaults: any;
   instance: any;
   depth: string;
+  stateContext: StateContext<any>;
 }
 
 /**
