@@ -1,4 +1,3 @@
-import { Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Action } from '../src/action';
 import { State } from '../src/state';
@@ -64,11 +63,6 @@ describe('Entity Base', () => {
     }
   })
   class ProjectState extends EntityBase<Project, ProjectStateModel> {
-    // pass injector to base class so that we can get and set state
-    constructor(injector: Injector) {
-      super(injector);
-    }
-
     @Action(AddOne)
     addProject(ctx: StateContext<ProjectState>, action: AddOne) {
       this.addOne(action.project);

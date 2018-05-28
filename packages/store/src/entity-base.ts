@@ -1,8 +1,4 @@
-import { Injector } from '@angular/core';
-import { Store } from './store';
-import { StateStream } from './state-stream';
-import { getValue, setValue } from './utils';
-import { META_KEY } from './symbols';
+import { StateBase } from './state-base';
 
 export interface EntityStateModel<V> {
   ids: (string | number)[];
@@ -30,17 +26,7 @@ export enum EntityMutation {
   None
 }
 
-export abstract class EntityBase<T, S extends EntityStateModel<T>> {
-  // @todo Don't like having to pass in an injector to be able to get at the
-  // state stream, how could we do this differently?
-  private _stateStream: StateStream;
-  private _store: Store;
-
-  constructor(injector: Injector) {
-    this._stateStream = injector.get(StateStream);
-    this._store = injector.get(Store);
-  }
-
+export abstract class EntityBase<T, S extends EntityStateModel<T>> extends StateBase<S> {
   /**
    * The defaults for all state classes that inherit from EntityBase
    */
@@ -84,7 +70,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
    * @param entity add this entity to the state
    */
   addOne(entity: T): S {
-    const state = this.getState();
+    const state = this.ctx.getState();
     const didMutate = this._addOne(state, entity);
     return this._mutateStateIfNeeded(state, didMutate);
   }
@@ -107,7 +93,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
   }
 
   addMany(entities: T[]): S {
-    const state = this.getState();
+    const state = this.ctx.getState();
     const didMutate = this._addMany(state, entities);
     return this._mutateStateIfNeeded(state, didMutate);
   }
@@ -126,14 +112,11 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
   }
 
   addAll(entities: T[]): S {
-    const state = this.getState();
-    const newState = {
-      ...state,
-      ...{
-        ids: [],
-        entities: {}
-      }
-    };
+    const state = this.ctx.getState();
+    const newState = Object.assign({}, state, {
+      ids: [],
+      entities: {}
+    });
     this._addMany(newState, entities);
     return this._mutateStateIfNeeded(newState, EntityMutation.IdAndEntity);
   }
@@ -143,7 +126,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
   }
 
   removeMany(keys: (string | number)[]): S {
-    const state = this.getState();
+    const state = this.ctx.getState();
     const mutation = this._removeMany(state, keys);
     return this._mutateStateIfNeeded(state, mutation);
   }
@@ -162,14 +145,11 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
   }
 
   removeAll(): S {
-    const state = this.getState();
-    const cleanState = {
-      ...state,
-      ...{
-        ids: [],
-        entities: {}
-      }
-    };
+    const state = this.ctx.getState();
+    const cleanState = Object.assign({}, state, {
+      ids: [],
+      entities: {}
+    });
     return this._mutateStateIfNeeded(cleanState, EntityMutation.IdAndEntity);
   }
 
@@ -178,7 +158,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
   }
 
   updateMany(updates: EntityUpdate<T>[]): S {
-    const state = this.getState();
+    const state = this.ctx.getState();
     const mutation = this._updateMany(state, updates);
     return this._mutateStateIfNeeded(state, mutation);
   }
@@ -239,16 +219,6 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
   }*/
 
   /**
-   * Helper method to get the current state for this state class
-   */
-  private getState() {
-    const rootState = this._stateStream.getValue();
-    const stateClass = this.constructor[META_KEY];
-    const state = getValue(rootState, stateClass.path);
-    return state;
-  }
-
-  /**
    * Updates the entity and or id of entity based on what mutator was invoked
    * By minimizing the amount of state we change, we have the best performance.
    * @param state Current state
@@ -263,9 +233,6 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
       ids: [...state.ids],
       entities: { ...state.entities }
     };
-
-    const stateClass = this.constructor[META_KEY];
-    const path = stateClass.path;
 
     // set state to old state first
     let newLocalState = state;
@@ -283,9 +250,8 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> {
       };
     }
 
-    // update state
-    const newState = setValue(this._store.snapshot(), path, newLocalState);
-    this._stateStream.next(newState);
+    // set the new state
+    this.ctx.setState(newLocalState);
 
     // return the local updated state if the user would like to continue proccesing it in the action handler
     return newLocalState;
