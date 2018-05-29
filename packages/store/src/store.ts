@@ -3,8 +3,7 @@ import { Observable, Subscription, of } from 'rxjs';
 import { distinctUntilChanged, catchError, take, map } from 'rxjs/operators';
 
 import { StateStream } from './state-stream';
-import { fastPropGetter } from './internals';
-import { META_KEY } from './symbols';
+import { getSelectorFn } from './selector-utils';
 import { InternalDispatcher } from './dispatcher';
 
 @Injectable()
@@ -24,13 +23,9 @@ export class Store {
   select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
   select(selector: string | any): Observable<any>;
   select(selector: any): Observable<any> {
-    if (selector[META_KEY] && selector[META_KEY].path) {
-      const getter = fastPropGetter(selector[META_KEY].path.split('.'));
-      return this._stateStream.pipe(map(getter), distinctUntilChanged());
-    }
-
+    const selectorFn = getSelectorFn(selector);
     return this._stateStream.pipe(
-      map(selector),
+      map(selectorFn),
       catchError(err => {
         // if error is TypeError we swallow it to prevent usual errors with property access
         if (err instanceof TypeError) {
@@ -59,14 +54,8 @@ export class Store {
   selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T;
   selectSnapshot(selector: string | any): any;
   selectSnapshot(selector: any): any {
-    const state = this._stateStream.getValue();
-
-    if (selector[META_KEY] && selector[META_KEY].path) {
-      const getter = fastPropGetter(selector[META_KEY].path.split('.'));
-      return getter(state);
-    }
-
-    return selector(state);
+    const selectorFn = getSelectorFn(selector);
+    return selectorFn(this._stateStream.getValue());
   }
 
   /**

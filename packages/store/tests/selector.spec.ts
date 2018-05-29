@@ -43,6 +43,17 @@ describe('Selector', () => {
     expect(slice).toBe('Hello');
   }));
 
+  it('should still be usable as a function', async(() => {
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([MyState])]
+    });
+
+    const store: Store = TestBed.get(Store);
+    const myState = store.selectSnapshot(<any>MyState);
+    const slice = MyState.foo(myState);
+    expect(slice).toBe('Hello');
+  }));
+
   it('should select multiples', async(() => {
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([MyState, MyState2])]
