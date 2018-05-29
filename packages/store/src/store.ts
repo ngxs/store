@@ -51,7 +51,9 @@ export class Store {
   /**
    * Select a snapshot from the state.
    */
-  selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T {
+  selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T;
+  selectSnapshot(selector: string | any): any;
+  selectSnapshot(selector: any): any {
     const selectorFn = getSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());
   }
