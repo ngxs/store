@@ -1,7 +1,13 @@
 import { Inject, Injectable } from '@angular/core';
 import { NgxsPlugin, setValue, getValue, InitState, UpdateState, actionMatcher } from '@ngxs/store';
 
-import { NgxsStoragePluginOptions, NGXS_STORAGE_PLUGIN_OPTIONS, STORAGE_ENGINE, StorageEngine } from './symbols';
+import {
+  NgxsStoragePluginOptions,
+  NGXS_STORAGE_PLUGIN_OPTIONS,
+  STORAGE_ENGINE,
+  StorageEngine,
+  MigrationStrategy
+} from './symbols';
 import { tap } from 'rxjs/operators';
 
 @Injectable()
@@ -15,11 +21,12 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     const options = this._options || <any>{};
     const matches = actionMatcher(event);
     const isInitAction = matches(InitState) || matches(UpdateState);
-
     const keys = Array.isArray(options.key) ? options.key : [options.key];
+    let hasMigration = false;
 
     if (isInitAction) {
       for (const key of keys) {
+        const isMaster = key === '@@STATE';
         let val = this._engine.getItem(key);
 
         if (val !== 'undefined' && val !== null) {
@@ -30,7 +37,18 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             val = {};
           }
 
-          if (key !== '@@STATE') {
+          if (options.migrations) {
+            options.migrations.forEach((strategy: MigrationStrategy) => {
+              const versionMatch = strategy.version === getValue(val, strategy.versionKey || 'version');
+              const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
+              if (versionMatch && keyMatch) {
+                val = strategy.migrate(val);
+                hasMigration = true;
+              }
+            });
+          }
+
+          if (!isMaster) {
             state = setValue(state, key, val);
           } else {
             state = val;
@@ -41,7 +59,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
     return next(state, event).pipe(
       tap(nextState => {
-        if (!isInitAction) {
+        if (!isInitAction || (isInitAction && hasMigration)) {
           for (const key of keys) {
             let val = nextState;
 

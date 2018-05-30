@@ -78,6 +78,72 @@ describe('NgxsStoragePlugin', () => {
     });
   });
 
+  it('should migrate global localstorage', () => {
+    const data = JSON.stringify({ counter: { count: 100, version: 1 } });
+    localStorage.setItem('@@STATE', data);
+
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([MyStore]),
+        NgxsStoragePluginModule.forRoot({
+          versionKey: 'counter.version',
+          migrations: [
+            {
+              version: 1,
+              migrate: state => {
+                state.counter = {
+                  counts: state.counter.count,
+                  version: 2
+                };
+                return state;
+              }
+            }
+          ]
+        })
+      ]
+    });
+
+    const store = TestBed.get(Store);
+
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(localStorage.getItem('@@STATE')).toBe(JSON.stringify({ counter: { counts: 100, version: 2 } }));
+    });
+  });
+
+  it('should migrate single localstorage', () => {
+    const data = JSON.stringify({ count: 100, version: 1 });
+    localStorage.setItem('counter', data);
+
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([MyStore]),
+        NgxsStoragePluginModule.forRoot({
+          key: 'counter',
+          versionKey: 'version',
+          migrations: [
+            {
+              version: 1,
+              key: 'counter',
+              migrate: state => {
+                state = {
+                  counts: state.count,
+                  version: 2
+                };
+                return state;
+              }
+            }
+          ]
+        })
+      ]
+    });
+
+    const store = TestBed.get(Store);
+
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(localStorage.getItem('counter')).toBe(JSON.stringify({ counts: 100, version: 2 }));
+    });
+  });
+
   it('should correct get data from session storage', () => {
     sessionStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
 

@@ -5,6 +5,28 @@ export const enum StorageOption {
   SessionStorage
 }
 
+export interface MigrationStrategy {
+  /**
+   * Version to key off.
+   */
+  version: number | string;
+
+  /**
+   * Method to migrate the previous state.
+   */
+  migrate: (state: any) => any;
+
+  /**
+   * Key to migrate.
+   */
+  key?: string;
+
+  /**
+   * Key for the version. Defaults to 'version'.
+   */
+  versionKey?: string;
+}
+
 export interface NgxsStoragePluginOptions {
   /**
    * Key for the state slice to store in the storage engine.
@@ -17,6 +39,11 @@ export interface NgxsStoragePluginOptions {
    * sessionStorage or custom implementation of the StorageEngine interface
    */
   storage?: StorageOption;
+
+  /**
+   * Migration strategies.
+   */
+  migrations?: MigrationStrategy[];
 
   /**
    * Serailizer for the object before its pushed into the engine.

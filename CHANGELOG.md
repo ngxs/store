@@ -1,5 +1,6 @@
 # Master
 
+- Feature: Storage engine migrations
 - Feature: Select combinations #51
 - Feature: Snapshot select can use state class now #398
 - Performance: Run actions outside of zones #383
