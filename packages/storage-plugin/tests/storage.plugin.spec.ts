@@ -86,10 +86,10 @@ describe('NgxsStoragePlugin', () => {
       imports: [
         NgxsModule.forRoot([MyStore]),
         NgxsStoragePluginModule.forRoot({
-          versionKey: 'counter.version',
           migrations: [
             {
               version: 1,
+              versionKey: 'counter.version',
               migrate: state => {
                 state.counter = {
                   counts: state.counter.count,
@@ -119,11 +119,11 @@ describe('NgxsStoragePlugin', () => {
         NgxsModule.forRoot([MyStore]),
         NgxsStoragePluginModule.forRoot({
           key: 'counter',
-          versionKey: 'version',
           migrations: [
             {
               version: 1,
               key: 'counter',
+              versionKey: 'version',
               migrate: state => {
                 state = {
                   counts: state.count,
