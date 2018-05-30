@@ -1,13 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { NgxsPlugin, setValue, getValue, InitState, UpdateState, actionMatcher } from '@ngxs/store';
 
-import {
-  NgxsStoragePluginOptions,
-  NGXS_STORAGE_PLUGIN_OPTIONS,
-  STORAGE_ENGINE,
-  StorageEngine,
-  MigrationStrategy
-} from './symbols';
+import { NgxsStoragePluginOptions, NGXS_STORAGE_PLUGIN_OPTIONS, STORAGE_ENGINE, StorageEngine } from './symbols';
 import { tap } from 'rxjs/operators';
 
 @Injectable()
@@ -38,7 +32,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           }
 
           if (options.migrations) {
-            options.migrations.forEach((strategy: MigrationStrategy) => {
+            options.migrations.forEach(strategy => {
               const versionMatch = strategy.version === getValue(val, strategy.versionKey || 'version');
               const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
               if (versionMatch && keyMatch) {
