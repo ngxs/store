@@ -9,12 +9,11 @@ In NGXS, there are two methods to select state, we can either call the `select` 
 
 ### Select Decorators
 You can select slices of data from the store using the `@Select` decorator. It has a few
-different ways to get your data out, whether passing the state class, a function or dot notation
-of the object graph.
+different ways to get your data out, whether passing the state class, a function, a state class
+or a memoized selector.
 
 ```TS
 import { Select } from '@ngxs/store';
-
 import { ZooState } from './zoo.state';
 
 @Component({ ... })
@@ -22,8 +21,8 @@ export class ZooComponent {
  // Reads the name of the store from the store class
   @Select(ZooState) animals$: Observable<string[]>;
 
-  // Reads the name of the property minus the $
-  @Select() animals$: Observable<string[]>;
+  // Uses the pandas memoized selector to only return pandas
+  @Select(ZooState.pandas) pandas$: Observable<string[]>;
 
   // Also accepts a function like our select method
   @Select(state => state.animals) animals$: Observable<string[]>;
@@ -114,3 +113,51 @@ export class AppComponent {
 ```
 
 and our `pandas$` will only return animals with the name panda in them.
+
+#### Joining Selectors
+When defining a selector, you can also pass other selectors into the signature
+of the selector decorator to join other selectors with this state selector.
+
+```TS
+@State({ ... })
+export class PreferencesState { ... }
+
+@State({ ... })
+export class ZooState {
+  @Selector([PreferencesState])
+  static pandas(state: string[], preferencesState) {
+    return state.filter(s =>
+      (s.indexOf('panda') > -1 && s.location === preferencesState.location));
+  }
+}
+```
+
+When using the `Selector` decorator along with a state class, it will still
+inject the state class's state first followed by the other selectors in the other
+they were passed in the signature.
+
+
+#### Meta Selectors
+By default selectors in NGXS are bound to a state. Sometimes you need the ability
+to join to un-related states in a high-performance re-usable fashion. A meta selector
+is a selector allows you to bind N number of selectors together to return a state
+stream.
+
+Let's say we have 2 states; 'zoos' and 'theme parks'. We have a component that needs
+to show all the zoos and theme parks for a given city. These are two very distinct
+state classes that are likely not related in any manner. We can use a meta selector
+to join these two states together like:
+
+```TS
+@Injectable()
+export class CityService {
+  @Selector([Zoo, ThemePark]) static zooThemeParks(zoos, themeParks) {
+    return [
+      ...zoos,
+      ...themeParks
+    ];
+  }
+}
+```
+
+now we can use this `zooThemeParks` selector anywhere in our application.

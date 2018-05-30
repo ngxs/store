@@ -14,11 +14,16 @@ export function Selector(selectors?: any[]) {
       const prev = descriptor.value;
 
       const fn = state => {
-        const results = [getValue(state, metadata.path)];
+        const results = [];
 
+        // If we are on a state class, get the metadata path
+        if (metadata && metadata.path) {
+          results.push(getValue(state, metadata.path));
+        }
+
+        // Allow additional selectors if passed
         if (selectors) {
           results.push(...selectors.map(a => getSelectorFn(a)(state)));
-          // TODO
         }
 
         // if the lambda tries to access a something on the

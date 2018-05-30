@@ -3,6 +3,7 @@
 - Feature: Storage engine migrations
 - Feature: Select combinations #51
 - Feature: Snapshot select can use state class now #398
+- Feature: Meta selectors #386
 - Performance: Run actions outside of zones #383
 - Fix: Dispatcher error propogation #376
 - Fix: Add patchState restriction errors #371
