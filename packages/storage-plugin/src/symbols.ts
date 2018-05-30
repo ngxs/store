@@ -19,6 +19,31 @@ export interface NgxsStoragePluginOptions {
   storage?: StorageOption;
 
   /**
+   * Migration strategies.
+   */
+  migrations?: {
+    /**
+     * Version to key off.
+     */
+    version: number | string;
+
+    /**
+     * Method to migrate the previous state.
+     */
+    migrate: (state: any) => any;
+
+    /**
+     * Key to migrate.
+     */
+    key?: string;
+
+    /**
+     * Key for the version. Defaults to 'version'.
+     */
+    versionKey?: string;
+  }[];
+
+  /**
    * Serailizer for the object before its pushed into the engine.
    */
   serialize?(obj: any);
