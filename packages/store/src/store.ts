@@ -4,17 +4,21 @@ import { distinctUntilChanged, catchError, take, map } from 'rxjs/operators';
 
 import { StateStream } from './state-stream';
 import { getSelectorFn } from './selector-utils';
-import { InternalDispatcher } from './dispatcher';
+import { InternalStateOperations } from './state-operations';
 
 @Injectable()
 export class Store {
-  constructor(private _stateStream: StateStream, private _dispatcher: InternalDispatcher) {}
+  constructor(
+    private _stateStream: StateStream,
+    private _internalStateOperations: InternalStateOperations
+  ) {}
 
   /**
    * Dispatches event(s).
    */
   dispatch(event: any | any[]): Observable<any> {
-    return this._dispatcher.dispatch(event);
+    const operations = this._internalStateOperations.getRootStateOperations();
+    return operations.dispatch(event);
   }
 
   /**
