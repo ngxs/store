@@ -33,6 +33,13 @@ describe('Selector', () => {
     }
   }
 
+  class MetaSelector {
+    @Selector([MyState.foo])
+    static foo(myState) {
+      return myState;
+    }
+  }
+
   it('should select the state', async(() => {
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([MyState])]
@@ -40,6 +47,16 @@ describe('Selector', () => {
 
     const store: Store = TestBed.get(Store);
     const slice = store.selectSnapshot(MyState.foo);
+    expect(slice).toBe('Hello');
+  }));
+
+  it('should select using the meta selector', async(() => {
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([MyState])]
+    });
+
+    const store: Store = TestBed.get(Store);
+    const slice = store.selectSnapshot(MetaSelector.foo);
     expect(slice).toBe('Hello');
   }));
 
