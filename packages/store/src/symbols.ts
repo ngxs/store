@@ -8,6 +8,7 @@ export const META_KEY = 'NGXS_META';
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
 export type NgxsPluginConstructor = new (...args: any[]) => NgxsPlugin;
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
+export type NgxsStateOperationsWrapperFn = (root: StateOperations<any>) => StateOperations<any>;
 
 export interface StateOperations<T> {
   getState(): T;
@@ -50,6 +51,11 @@ export interface NgxsPlugin {
    * Handle the state/action before its submitted to the state handlers.
    */
   handle(state: any, action: any, next: NgxsNextPluginFn): any;
+
+  /**
+   * Wrap the fundamental application store operations (getState, setState and dispatch).
+   */
+  wrapStateOperations?(root: StateOperations<any>): StateOperations<any>;
 }
 
 /**
