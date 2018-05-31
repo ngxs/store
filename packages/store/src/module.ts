@@ -5,6 +5,7 @@ import { StateFactory } from './state-factory';
 import { StateContextFactory } from './state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
 import { InternalDispatcher, InternalDispatchedActionResults } from './dispatcher';
+import { InternalStateOperations } from './state-operations';
 import { Store } from './store';
 import { SelectFactory } from './select';
 import { StateStream } from './state-stream';
@@ -19,7 +20,7 @@ import { InitState, UpdateState } from './actions';
 export class NgxsRootModule {
   constructor(
     factory: StateFactory,
-    stateStream: StateStream,
+    internalStateOperations: InternalStateOperations,
     store: Store,
     select: SelectFactory,
     @Optional()
@@ -29,19 +30,20 @@ export class NgxsRootModule {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(states);
 
+    const stateOperations = internalStateOperations.getRootStateOperations();
     if (results) {
       // get our current stream
-      const cur = stateStream.getValue();
+      const cur = stateOperations.getState();
 
       // set the state to the current + new
-      stateStream.next({ ...cur, ...results.defaults });
+      stateOperations.setState({ ...cur, ...results.defaults });
     }
 
     // connect our actions stream
     factory.connectActionHandlers();
 
     // dispatch the init action and invoke init function after
-    store.dispatch(new InitState()).subscribe(() => {
+    stateOperations.dispatch(new InitState()).subscribe(() => {
       if (results) {
         factory.invokeInit(results.states);
       }
@@ -57,7 +59,7 @@ export class NgxsRootModule {
 export class NgxsFeatureModule {
   constructor(
     store: Store,
-    stateStream: StateStream,
+    internalStateOperations: InternalStateOperations,
     factory: StateFactory,
     @Optional()
     @Inject(FEATURE_STATE_TOKEN)
@@ -69,15 +71,17 @@ export class NgxsFeatureModule {
 
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(flattenedStates);
+
+    const stateOperations = internalStateOperations.getRootStateOperations();
     if (results) {
       // get our current stream
-      const cur = stateStream.getValue();
+      const cur = stateOperations.getState();
 
       // set the state to the current + new
-      stateStream.next({ ...cur, ...results.defaults });
+      stateOperations.setState({ ...cur, ...results.defaults });
     }
 
-    store.dispatch(new UpdateState()).subscribe(() => {
+    stateOperations.dispatch(new UpdateState()).subscribe(() => {
       if (results) {
         factory.invokeInit(results.states);
       }
@@ -103,6 +107,7 @@ export class NgxsModule {
         InternalActions,
         InternalDispatcher,
         InternalDispatchedActionResults,
+        InternalStateOperations,
         Store,
         StateStream,
         SelectFactory,

@@ -9,6 +9,12 @@ export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
 export type NgxsPluginConstructor = new (...args: any[]) => NgxsPlugin;
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
+export interface StateOperations<T> {
+  getState(): T;
+  setState(val: T);
+  dispatch(actions: any | any[]): Observable<void>;
+}
+
 /**
  * State context provided to the actions in the state.
  */
