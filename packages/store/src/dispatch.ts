@@ -1,19 +1,4 @@
-import { Injectable } from '@angular/core';
-
-import { Store } from './store';
-
-/**
- * Allows the dispatch decorator to get access to the DI store.
- * @ignore
- */
-@Injectable()
-export class DispatchFactory {
-  static store: Store | undefined = undefined;
-
-  constructor(store: Store) {
-    DispatchFactory.store = store;
-  }
-}
+import { DecoratorFactory } from './decorator-factory';
 
 /**
  * Decorator for dispatching action to the store.
@@ -29,7 +14,7 @@ export function Dispatch(Action): MethodDecorator {
 
       descriptor.value = function(...args: any[]) {
         const val: any = args[0];
-        const store = DispatchFactory.store;
+        const store = DecoratorFactory.store;
 
         const action = new Action(val);
         store.dispatch(action);

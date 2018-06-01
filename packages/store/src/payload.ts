@@ -1,4 +1,9 @@
-const action: { name: string; type: string } = {} as { name: string; type: string };
+const action: ActionInformation = {} as ActionInformation;
+
+interface ActionInformation {
+  name: string;
+  type: string;
+}
 
 interface ArgsForCheckObjectProps {
   original: any;
@@ -12,7 +17,7 @@ interface ArgsForCheckArrayProps {
 }
 
 /**
- * Decorator for runtime checking
+ * Decorator for runtime checking keys and values types
  */
 export function Payload(ActionType): any {
   const instance = new ActionType();
@@ -59,6 +64,10 @@ export function Payload(ActionType): any {
   };
 }
 
+/**
+ * Function expression that checks array properties
+ * @ignore
+ */
 const checkPayloadPropArray: any = ({ original, propName }: ArgsForCheckArrayProps) => {
   return (payloadValue: any | any[]): void => {
     if (Array.isArray(original) && Array.isArray(payloadValue)) {
@@ -86,6 +95,10 @@ const checkPayloadPropArray: any = ({ original, propName }: ArgsForCheckArrayPro
   };
 };
 
+/**
+ * Function expression that checks object properties
+ * @ignore
+ */
 const checkPayloadPropObject: any = ({ original, payload, propName }: ArgsForCheckObjectProps): any => {
   return ([property, value]: [string, any]): void => {
     if (!(property in original)) {
