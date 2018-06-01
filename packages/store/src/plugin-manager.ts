@@ -1,5 +1,5 @@
 import { Injectable, Optional, SkipSelf, Inject } from '@angular/core';
-import { NgxsPluginFn, NGXS_PLUGINS, NgxsPlugin } from './symbols';
+import { NgxsPluginFn, NGXS_PLUGINS, NgxsPlugin, NgxsStateOperationsWrapperFn } from './symbols';
 
 /**
  * Plugin manager class
@@ -8,6 +8,7 @@ import { NgxsPluginFn, NGXS_PLUGINS, NgxsPlugin } from './symbols';
 @Injectable()
 export class PluginManager {
   plugins: NgxsPluginFn[] = [];
+  stateOperationsPlugins: NgxsStateOperationsWrapperFn[] = [];
 
   constructor(
     @Optional()
@@ -33,8 +34,19 @@ export class PluginManager {
       }
     });
 
+    this.stateOperationsPlugins = this._plugins
+      .map(plugin => {
+        if (plugin.wrapStateOperations) {
+          return plugin.wrapStateOperations.bind(plugin);
+        } else {
+          return null;
+        }
+      })
+      .filter(fn => fn);
+
     if (this._parentManager) {
       this._parentManager.plugins.push(...this.plugins);
+      this._parentManager.stateOperationsPlugins.push(...this.stateOperationsPlugins);
     }
   }
 }
