@@ -3,6 +3,8 @@ export { Action } from './action';
 export { Store } from './store';
 export { State } from './state';
 export { Select } from './select';
+export { Dispatch } from './dispatch';
+export { Payload } from './payload';
 export { Actions } from './actions-stream';
 export { ofAction, ofActionSuccessful, ofActionDispatched, ofActionErrored } from './of-action';
 export { NgxsPlugin, NgxsPluginFn, StateContext, NgxsOnInit } from './symbols';
