@@ -80,4 +80,78 @@ describe('Selector', () => {
     const slice = store.selectSnapshot(MyState2.foo);
     expect(slice).toBe('HelloHello');
   }));
+
+  describe('(memoization)', () => {
+    it('should memoize the last result', async(() => {
+      const selectorCalls = [];
+
+      @State<any>({
+        name: 'counter',
+        defaults: {
+          foo: 'Hello',
+          bar: 'World'
+        }
+      })
+      class TestState {
+        @Selector()
+        static foo(state) {
+          selectorCalls.push('foo');
+          return state.foo;
+        }
+
+        @Selector()
+        static bar(state) {
+          selectorCalls.push('bar');
+          return state.bar;
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TestState])]
+      });
+
+      const store: Store = TestBed.get(Store);
+      store.selectSnapshot(TestState.foo);
+      store.selectSnapshot(TestState.foo);
+      store.selectSnapshot(TestState.bar);
+      store.selectSnapshot(TestState.bar);
+      store.selectSnapshot(TestState.foo);
+      expect(selectorCalls).toEqual(['foo', 'bar']);
+    }));
+
+    it('should memoize the last result of an inner function', async(() => {
+      const selectorCalls = [];
+
+      @State<any>({
+        name: 'counter',
+        defaults: {
+          foo: 'Hello',
+          bar: 'World'
+        }
+      })
+      class TestState {
+        @Selector()
+        static foo(state) {
+          selectorCalls.push('foo[outer]');
+          return () => {
+            selectorCalls.push('foo[inner]');
+            return state.foo;
+          };
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TestState])]
+      });
+
+      const store: Store = TestBed.get(Store);
+      store.selectSnapshot(TestState.foo);
+      store.selectSnapshot(TestState.foo)();
+      const fn = store.selectSnapshot(TestState.foo);
+      fn();
+      fn();
+      store.selectSnapshot(TestState.foo);
+      expect(selectorCalls).toEqual(['foo[outer]', 'foo[inner]']);
+    }));
+  });
 });
