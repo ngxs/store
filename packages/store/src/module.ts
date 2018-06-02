@@ -89,7 +89,7 @@ export class NgxsFeatureModule {
   }
 }
 
-type ModuleOptions = Partial<NgxsConfig>;
+export type ModuleOptions = Partial<NgxsConfig>;
 
 export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
   const config = Object.assign(new NgxsConfig(), options);

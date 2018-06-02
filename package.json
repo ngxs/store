@@ -116,6 +116,8 @@
     "zone.js": "^0.8.26"
   },
   "dependencies": {
+    "@types/deep-freeze-strict": "^1.1.0",
+    "deep-freeze-strict": "^1.1.1",
     "npm-run-all": "^4.1.2"
   }
 }
