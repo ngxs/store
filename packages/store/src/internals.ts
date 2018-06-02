@@ -17,7 +17,7 @@ export interface ActionHandlerMetaData {
   type: string;
 }
 
-export interface InternalStateOperations<T> {
+export interface StateOperations<T> {
   getState(): T;
   setState(val: T);
   dispatch(actions: any | any[]): Observable<void>;
