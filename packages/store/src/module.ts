@@ -1,6 +1,6 @@
-import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
+import { NgModule, ModuleWithProviders, Optional, Inject, InjectionToken } from '@angular/core';
 
-import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN } from './symbols';
+import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
 import { StateFactory } from './state-factory';
 import { StateContextFactory } from './state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
@@ -89,6 +89,15 @@ export class NgxsFeatureModule {
   }
 }
 
+export type ModuleOptions = Partial<NgxsConfig>;
+
+export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
+  const config = Object.assign(new NgxsConfig(), options);
+  return config;
+}
+
+export const ROOT_OPTIONS = new InjectionToken('ROOT_OPTIONS');
+
 /**
  * Ngxs Module
  */
@@ -97,7 +106,7 @@ export class NgxsModule {
   /**
    * Root module factory
    */
-  static forRoot(states: any[] = []): ModuleWithProviders {
+  static forRoot(states: any[] = [], options: ModuleOptions = {}): ModuleWithProviders {
     return {
       ngModule: NgxsRootModule,
       providers: [
@@ -116,6 +125,15 @@ export class NgxsModule {
         {
           provide: ROOT_STATE_TOKEN,
           useValue: states
+        },
+        {
+          provide: ROOT_OPTIONS,
+          useValue: options
+        },
+        {
+          provide: NgxsConfig,
+          useFactory: ngxsConfigFactory,
+          deps: [ROOT_OPTIONS]
         }
       ]
     };

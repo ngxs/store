@@ -10,6 +10,18 @@ export type NgxsPluginConstructor = new (...args: any[]) => NgxsPlugin;
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
 /**
+ * The NGXS config settings.
+ */
+export class NgxsConfig {
+  /**
+   * Run in development mode. This will add additional debugging features:
+   * - Object.freeze on the state and actions to guarantee immutability
+   * (default: false)
+   */
+  developmentMode: boolean;
+}
+
+/**
  * State context provided to the actions in the state.
  */
 export interface StateContext<T> {
