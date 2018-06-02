@@ -12,6 +12,15 @@ export function Selector(selectors?: any[]) {
 
     if (descriptor.value !== null) {
       const prev = descriptor.value;
+      const wrappedFn = function wrappedSelectorFn(...args) {
+        const returnValue = prev(...args);
+        if (returnValue instanceof Function) {
+          const innerMemoizedFn = memoize.apply(null, [returnValue]);
+          return innerMemoizedFn;
+        }
+        return returnValue;
+      };
+      const memoizedFn = memoize(wrappedFn);
 
       const fn = state => {
         const results = [];
@@ -30,7 +39,7 @@ export function Selector(selectors?: any[]) {
         // state that doesn't exist, it will throw a TypeError.
         // since this is quite usual behaviour, we simply return undefined if so.
         try {
-          return prev(...results);
+          return memoizedFn(...results);
         } catch (ex) {
           if (ex instanceof TypeError) {
             return undefined;
@@ -38,8 +47,6 @@ export function Selector(selectors?: any[]) {
           throw ex;
         }
       };
-
-      const memoizedFn = memoize.apply(null, [prev]);
 
       const selectorMetaData = ensureSelectorMetadata(memoizedFn);
       selectorMetaData.originalFn = prev;
