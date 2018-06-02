@@ -19,7 +19,7 @@ export class InternalStateOperations {
     private _config: NgxsConfig
   ) {}
 
-  public getRootStateOperations(): StateOperations<any> {
+  getRootStateOperations(): StateOperations<any> {
     const rootStateOperations = {
       getState: () => this._stateStream.getValue(),
       setState: newState => this._stateStream.next(newState),
