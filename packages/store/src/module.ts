@@ -7,7 +7,7 @@ import { Actions, InternalActions } from './actions-stream';
 import { InternalDispatcher, InternalDispatchedActionResults } from './dispatcher';
 import { InternalStateOperations } from './state-operations';
 import { Store } from './store';
-import { SelectFactory } from './select';
+import { DecoratorFactory } from './decorator-factory';
 import { StateStream } from './state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitState, UpdateState } from './actions';
@@ -22,7 +22,7 @@ export class NgxsRootModule {
     factory: StateFactory,
     internalStateOperations: InternalStateOperations,
     store: Store,
-    select: SelectFactory,
+    decorator: DecoratorFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
     states: any[]
@@ -110,7 +110,7 @@ export class NgxsModule {
         InternalStateOperations,
         Store,
         StateStream,
-        SelectFactory,
+        DecoratorFactory,
         PluginManager,
         ...states,
         {

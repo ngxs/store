@@ -11,6 +11,7 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { routes } from './app.routes';
 import { states } from './app.state';
+import { ChangeValueModule } from './change-value/change-value.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,7 +25,8 @@ import { states } from './app.state';
     NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: false }),
     NgxsReduxDevtoolsPluginModule.forRoot({
       disabled: environment.production
-    })
+    }),
+    ChangeValueModule
   ],
   bootstrap: [AppComponent]
 })

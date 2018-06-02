@@ -49,9 +49,9 @@ export class StateContextFactory {
         return newState;
       },
       setState(val: any): any {
-        let state = root.getState();
-        state = setValue(state, metadata.depth, val);
-        root.setState(state);
+        const state = root.getState();
+        const newState = setValue(state, metadata.depth, val);
+        root.setState(newState);
         return state;
       },
       dispatch(actions: any | any[]): Observable<any> {

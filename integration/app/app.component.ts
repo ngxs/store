@@ -40,6 +40,7 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
           🐼
         </li>
       </ul>
+      <app-change-value></app-change-value>
       <router-outlet></router-outlet>
     </div>
   `,
