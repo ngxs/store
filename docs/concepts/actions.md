@@ -42,15 +42,15 @@ They are usually trigged by user events such as clicking on a button, or selecti
 
 Names should contain three parts:
 
-* A context as to where the command came from, '[User API]', '[Product Page]', '[Dashboard Page]`.
+* A context as to where the command came from, `[User API]`, `[Product Page]`, `[Dashboard Page]`.
 * The entity we are acting upon, `User`, `Card`, `Project`.
 * A verb describing what we want to do with the entity.
 
 Examples:
 
-* [User API] GetUser
-* [Product Page] AddItemToCart
-* [Dashboard Page] ArchiveProject
+* `[User API] GetUser`
+* `[Product Page] AddItemToCart`
+* `[Dashboard Page] ArchiveProject`
 
 ### Event examples
 Events are actions that have already happended and we now need to react to them.
