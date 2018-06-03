@@ -5,6 +5,10 @@
 Feature module
 *__ignore__*: 
 
+## Hierarchy
+
+**NgxsFeatureModule**
+
 ## Index
 
 ### Constructors
@@ -14,22 +18,25 @@ Feature module
 ---
 
 ## Constructors
+
 <a id="constructor"></a>
 
-### ⊕ **new NgxsFeatureModule**(store: *[Store](_store_.store.md)*, stateStream: *[StateStream](_state_stream_.statestream.md)*, factory: *[StateFactory](_state_factory_.statefactory.md)*, states: *`any`[][]*): [NgxsFeatureModule](_module_.ngxsfeaturemodule.md)
+###  constructor
 
-*Defined in [module.ts:55](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/module.ts#L55)*
+⊕ **new NgxsFeatureModule**(store: *[Store](_store_.store.md)*, internalStateOperations: *[InternalStateOperations](_state_operations_.internalstateoperations.md)*, factory: *[StateFactory](_state_factory_.statefactory.md)*, states: *`any`[][]*): [NgxsFeatureModule](_module_.ngxsfeaturemodule.md)
+
+*Defined in [module.ts:59](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/module.ts#L59)*
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| store | [Store](_store_.store.md)   |  - |
-| stateStream | [StateStream](_state_stream_.statestream.md)   |  - |
-| factory | [StateFactory](_state_factory_.statefactory.md)   |  - |
-| states | `any`[][]   |  - |
+| Param | Type |
+| ------ | ------ |
+| store | [Store](_store_.store.md) | 
+| internalStateOperations | [InternalStateOperations](_state_operations_.internalstateoperations.md) | 
+| factory | [StateFactory](_state_factory_.statefactory.md) | 
+| states | `any`[][] | 
 
 **Returns:** [NgxsFeatureModule](_module_.ngxsfeaturemodule.md)
 
----
+___
 

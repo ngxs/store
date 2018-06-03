@@ -11,13 +11,14 @@
 ---
 
 ## Functions
+
 <a id="compose"></a>
 
 ### `<Const>` compose
 
 ▸ **compose**(funcs: *`any`*): `(Anonymous function)`
 
-*Defined in [compose.ts:22](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/compose.ts#L22)*
+*Defined in [compose.ts:22](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/compose.ts#L22)*
 
 Composes a array of functions from left to right. Example:
 
@@ -41,9 +42,9 @@ the last function should not call `next`.
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| funcs | `any`   |  - |
+| Param | Type |
+| ------ | ------ |
+| funcs | `any` | 
 
 **Returns:** `(Anonymous function)`
 

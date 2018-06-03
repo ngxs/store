@@ -1,14 +1,14 @@
-[API](../README.md) > ["actions-stream"](../modules/_actions_stream_.md) > [InternalActions](../classes/_actions_stream_.internalactions.md)
+[API](../README.md) > ["dispatcher"](../modules/_dispatcher_.md) > [InternalDispatchedActionResults](../classes/_dispatcher_.internaldispatchedactionresults.md)
 
-# Class: InternalActions
+# Class: InternalDispatchedActionResults
 
-Internal Action stream that is emitted anytime an action is dispatched.
+Internal Action result stream that is emitted when an action is completed. This is used as a method of returning the action result to the dispatcher for the observable returned by the dispatch(...) call. The dispatcher then asynchronously pushes the result from this stream onto the main action stream as a result.
 
 ## Hierarchy
 
-↳  [OrderedSubject](_actions_stream_.orderedsubject.md)<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
+ `Subject`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
 
-**↳ InternalActions**
+**↳ InternalDispatchedActionResults**
 
 ## Implements
 
@@ -19,36 +19,36 @@ Internal Action stream that is emitted anytime an action is dispatched.
 
 ### Constructors
 
-* [constructor](_actions_stream_.internalactions.md#constructor)
+* [constructor](_dispatcher_.internaldispatchedactionresults.md#constructor)
 
 ### Properties
 
-* [_isScalar](_actions_stream_.internalactions.md#_isscalar)
-* [closed](_actions_stream_.internalactions.md#closed)
-* [hasError](_actions_stream_.internalactions.md#haserror)
-* [isStopped](_actions_stream_.internalactions.md#isstopped)
-* [observers](_actions_stream_.internalactions.md#observers)
-* [operator](_actions_stream_.internalactions.md#operator)
-* [source](_actions_stream_.internalactions.md#source)
-* [thrownError](_actions_stream_.internalactions.md#thrownerror)
-* [create](_actions_stream_.internalactions.md#create)
-* [if](_actions_stream_.internalactions.md#if)
-* [throw](_actions_stream_.internalactions.md#throw)
+* [_isScalar](_dispatcher_.internaldispatchedactionresults.md#_isscalar)
+* [closed](_dispatcher_.internaldispatchedactionresults.md#closed)
+* [hasError](_dispatcher_.internaldispatchedactionresults.md#haserror)
+* [isStopped](_dispatcher_.internaldispatchedactionresults.md#isstopped)
+* [observers](_dispatcher_.internaldispatchedactionresults.md#observers)
+* [operator](_dispatcher_.internaldispatchedactionresults.md#operator)
+* [source](_dispatcher_.internaldispatchedactionresults.md#source)
+* [thrownError](_dispatcher_.internaldispatchedactionresults.md#thrownerror)
+* [create](_dispatcher_.internaldispatchedactionresults.md#create)
+* [if](_dispatcher_.internaldispatchedactionresults.md#if)
+* [throw](_dispatcher_.internaldispatchedactionresults.md#throw)
 
 ### Methods
 
-* [_subscribe](_actions_stream_.internalactions.md#_subscribe)
-* [_trySubscribe](_actions_stream_.internalactions.md#_trysubscribe)
-* [asObservable](_actions_stream_.internalactions.md#asobservable)
-* [complete](_actions_stream_.internalactions.md#complete)
-* [error](_actions_stream_.internalactions.md#error)
-* [forEach](_actions_stream_.internalactions.md#foreach)
-* [lift](_actions_stream_.internalactions.md#lift)
-* [next](_actions_stream_.internalactions.md#next)
-* [pipe](_actions_stream_.internalactions.md#pipe)
-* [subscribe](_actions_stream_.internalactions.md#subscribe)
-* [toPromise](_actions_stream_.internalactions.md#topromise)
-* [unsubscribe](_actions_stream_.internalactions.md#unsubscribe)
+* [_subscribe](_dispatcher_.internaldispatchedactionresults.md#_subscribe)
+* [_trySubscribe](_dispatcher_.internaldispatchedactionresults.md#_trysubscribe)
+* [asObservable](_dispatcher_.internaldispatchedactionresults.md#asobservable)
+* [complete](_dispatcher_.internaldispatchedactionresults.md#complete)
+* [error](_dispatcher_.internaldispatchedactionresults.md#error)
+* [forEach](_dispatcher_.internaldispatchedactionresults.md#foreach)
+* [lift](_dispatcher_.internaldispatchedactionresults.md#lift)
+* [next](_dispatcher_.internaldispatchedactionresults.md#next)
+* [pipe](_dispatcher_.internaldispatchedactionresults.md#pipe)
+* [subscribe](_dispatcher_.internaldispatchedactionresults.md#subscribe)
+* [toPromise](_dispatcher_.internaldispatchedactionresults.md#topromise)
+* [unsubscribe](_dispatcher_.internaldispatchedactionresults.md#unsubscribe)
 
 ---
 
@@ -58,7 +58,7 @@ Internal Action stream that is emitted anytime an action is dispatched.
 
 ###  constructor
 
-⊕ **new InternalActions**(): [InternalActions](_actions_stream_.internalactions.md)
+⊕ **new InternalDispatchedActionResults**(): [InternalDispatchedActionResults](_dispatcher_.internaldispatchedactionresults.md)
 
 *Inherited from Subject.__constructor*
 
@@ -66,7 +66,7 @@ Internal Action stream that is emitted anytime an action is dispatched.
 
 *Defined in /Users/austin/dev/ngxs/node_modules/rxjs/internal/Subject.d.ts:21*
 
-**Returns:** [InternalActions](_actions_stream_.internalactions.md)
+**Returns:** [InternalDispatchedActionResults](_dispatcher_.internaldispatchedactionresults.md)
 
 ___
 
@@ -359,11 +359,9 @@ ___
 
 ▸ **next**(value?: *[ActionContext](../interfaces/_actions_stream_.actioncontext.md)*): `void`
 
-*Inherited from [OrderedSubject](_actions_stream_.orderedsubject.md).[next](_actions_stream_.orderedsubject.md#next)*
+*Inherited from Subject.next*
 
-*Overrides Subject.next*
-
-*Defined in [actions-stream.ts:39](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/actions-stream.ts#L39)*
+*Defined in /Users/austin/dev/ngxs/node_modules/rxjs/internal/Subject.d.ts:26*
 
 **Parameters:**
 

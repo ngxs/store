@@ -4,6 +4,10 @@
 
 Ngxs Module
 
+## Hierarchy
+
+**NgxsModule**
+
 ## Index
 
 ### Methods
@@ -14,41 +18,42 @@ Ngxs Module
 ---
 
 ## Methods
+
 <a id="forfeature"></a>
 
 ### `<Static>` forFeature
 
 ▸ **forFeature**(states: *`any`[]*): `ModuleWithProviders`
 
-*Defined in [module.ts:122](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/module.ts#L122)*
+*Defined in [module.ts:145](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/module.ts#L145)*
 
 Feature module factory
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| states | `any`[]   |  - |
+| Param | Type |
+| ------ | ------ |
+| states | `any`[] | 
 
 **Returns:** `ModuleWithProviders`
 
 ___
-
 <a id="forroot"></a>
 
 ### `<Static>` forRoot
 
-▸ **forRoot**(states?: *`any`[]*): `ModuleWithProviders`
+▸ **forRoot**(states?: *`any`[]*, options?: *[ModuleOptions](../modules/_module_.md#moduleoptions)*): `ModuleWithProviders`
 
-*Defined in [module.ts:99](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/module.ts#L99)*
+*Defined in [module.ts:109](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/module.ts#L109)*
 
 Root module factory
 
 **Parameters:**
 
-| Param | Type | Default value | Description |
-| ------ | ------ | ------ | ------ |
-| states | `any`[]  |  [] |   - |
+| Param | Type | Default value |
+| ------ | ------ | ------ |
+| `Default value` states | `any`[] |  [] | 
+| `Default value` options | [ModuleOptions](../modules/_module_.md#moduleoptions) |  {} | 
 
 **Returns:** `ModuleWithProviders`
 

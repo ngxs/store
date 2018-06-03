@@ -4,6 +4,10 @@
 
 Init action
 
+## Hierarchy
+
+**InitState**
+
 ## Index
 
 ### Properties
@@ -13,13 +17,14 @@ Init action
 ---
 
 ## Properties
+
 <a id="type"></a>
 
 ### `<Static>` type
 
-**●  type**:  *"@@INIT"*  = "@@INIT"
+**● type**: *"@@INIT"* = "@@INIT"
 
-*Defined in [actions.ts:5](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/actions.ts#L5)*
+*Defined in [actions.ts:5](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/actions.ts#L5)*
 
 ___
 

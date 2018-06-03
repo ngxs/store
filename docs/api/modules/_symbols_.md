@@ -4,6 +4,10 @@
 
 ## Index
 
+### Classes
+
+* [NgxsConfig](../classes/_symbols_.ngxsconfig.md)
+
 ### Interfaces
 
 * [ActionOptions](../interfaces/_symbols_.actionoptions.md)
@@ -29,111 +33,107 @@
 ---
 
 ## Type aliases
+
 <a id="ngxslifecycle"></a>
 
 ###  NgxsLifeCycle
 
-**Τ NgxsLifeCycle**:  *`Partial`.<[NgxsOnInit](../interfaces/_symbols_.ngxsoninit.md)>* 
+**ΤNgxsLifeCycle**: *`Partial`<[NgxsOnInit](../interfaces/_symbols_.ngxsoninit.md)>*
 
-*Defined in [symbols.ts:89](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/symbols.ts#L89)*
+*Defined in [symbols.ts:98](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L98)*
 
 ___
-
 <a id="ngxsnextpluginfn"></a>
 
 ###  NgxsNextPluginFn
 
-**Τ NgxsNextPluginFn**:  *`function`* 
+**ΤNgxsNextPluginFn**: *`function`*
 
-*Defined in [symbols.ts:37](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/symbols.ts#L37)*
+*Defined in [symbols.ts:49](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L49)*
 
 #### Type declaration
 ▸(state: *`any`*, mutation: *`any`*): `any`
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| state | `any`   |  - |
-| mutation | `any`   |  - |
+| Param | Type |
+| ------ | ------ |
+| state | `any` | 
+| mutation | `any` | 
 
 **Returns:** `any`
 
 ___
-
 <a id="ngxspluginconstructor"></a>
 
 ###  NgxsPluginConstructor
 
-**Τ NgxsPluginConstructor**:  *`object`* 
+**ΤNgxsPluginConstructor**: *`object`*
 
-*Defined in [symbols.ts:9](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/symbols.ts#L9)*
+*Defined in [symbols.ts:9](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L9)*
 
 #### Type declaration
 
 ___
-
 <a id="ngxspluginfn"></a>
 
 ###  NgxsPluginFn
 
-**Τ NgxsPluginFn**:  *`function`* 
+**ΤNgxsPluginFn**: *`function`*
 
-*Defined in [symbols.ts:10](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/symbols.ts#L10)*
+*Defined in [symbols.ts:10](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L10)*
 
 #### Type declaration
 ▸(state: *`any`*, mutation: *`any`*, next: *[NgxsNextPluginFn](_symbols_.md#ngxsnextpluginfn)*): `any`
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| state | `any`   |  - |
-| mutation | `any`   |  - |
-| next | [NgxsNextPluginFn](_symbols_.md#ngxsnextpluginfn)   |  - |
+| Param | Type |
+| ------ | ------ |
+| state | `any` | 
+| mutation | `any` | 
+| next | [NgxsNextPluginFn](_symbols_.md#ngxsnextpluginfn) | 
 
 **Returns:** `any`
 
 ___
 
 ## Variables
+
 <a id="feature_state_token"></a>
 
 ### `<Const>` FEATURE_STATE_TOKEN
 
-**●  FEATURE_STATE_TOKEN**:  *`InjectionToken`.<`any`>*  =  new InjectionToken<any>('FEATURE_STATE_TOKEN')
+**● FEATURE_STATE_TOKEN**: *`InjectionToken`<`any`>* =  new InjectionToken<any>('FEATURE_STATE_TOKEN')
 
-*Defined in [symbols.ts:5](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/symbols.ts#L5)*
+*Defined in [symbols.ts:5](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L5)*
 
 ___
-
 <a id="meta_key"></a>
 
 ### `<Const>` META_KEY
 
-**●  META_KEY**:  *"NGXS_META"*  = "NGXS_META"
+**● META_KEY**: *"NGXS_META"* = "NGXS_META"
 
-*Defined in [symbols.ts:6](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/symbols.ts#L6)*
+*Defined in [symbols.ts:6](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L6)*
 
 ___
-
 <a id="ngxs_plugins"></a>
 
 ### `<Const>` NGXS_PLUGINS
 
-**●  NGXS_PLUGINS**:  *`InjectionToken`.<`Object`>*  =  new InjectionToken('NGXS_PLUGINS')
+**● NGXS_PLUGINS**: *`InjectionToken`<`Object`>* =  new InjectionToken('NGXS_PLUGINS')
 
-*Defined in [symbols.ts:8](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/symbols.ts#L8)*
+*Defined in [symbols.ts:8](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L8)*
 
 ___
-
 <a id="root_state_token"></a>
 
 ### `<Const>` ROOT_STATE_TOKEN
 
-**●  ROOT_STATE_TOKEN**:  *`InjectionToken`.<`any`>*  =  new InjectionToken<any>('ROOT_STATE_TOKEN')
+**● ROOT_STATE_TOKEN**: *`InjectionToken`<`any`>* =  new InjectionToken<any>('ROOT_STATE_TOKEN')
 
-*Defined in [symbols.ts:4](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/symbols.ts#L4)*
+*Defined in [symbols.ts:4](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L4)*
 
 ___
 

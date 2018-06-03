@@ -10,89 +10,71 @@
 * [filterStatus](_of_action_.md#filterstatus)
 * [mapAction](_of_action_.md#mapaction)
 * [ofAction](_of_action_.md#ofaction)
-* [ofActionSuccessful](_of_action_.md#ofactionsuccessful)
+* [ofActionCanceled](_of_action_.md#ofactioncanceled)
 * [ofActionDispatched](_of_action_.md#ofactiondispatched)
 * [ofActionErrored](_of_action_.md#ofactionerrored)
 * [ofActionOperator](_of_action_.md#ofactionoperator)
+* [ofActionSuccessful](_of_action_.md#ofactionsuccessful)
 
 ---
 
 ## Functions
+
 <a id="createallowedmap"></a>
 
 ###  createAllowedMap
 
 ▸ **createAllowedMap**(types: *`any`[]*): `object`
 
-*Defined in [of-action.ts:64](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/of-action.ts#L64)*
+*Defined in [of-action.ts:73](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/of-action.ts#L73)*
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| types | `any`[]   |  - |
+| Param | Type |
+| ------ | ------ |
+| types | `any`[] | 
 
 **Returns:** `object`
 
 ___
-
 <a id="filterstatus"></a>
 
 ###  filterStatus
 
-▸ **filterStatus**(allowedTypes: *`object`*, status?: *[ActionStatus](../enums/_actions_stream_.actionstatus.md)*): `MonoTypeOperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
+▸ **filterStatus**(allowedTypes: *`object`*, status?: *[ActionStatus](../enums/_actions_stream_.actionstatus.md)*): `MonoTypeOperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
 
-*Defined in [of-action.ts:52](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/of-action.ts#L52)*
+*Defined in [of-action.ts:61](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/of-action.ts#L61)*
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| allowedTypes | `object`   |  - |
-| status | [ActionStatus](../enums/_actions_stream_.actionstatus.md)   |  - |
+| Param | Type |
+| ------ | ------ |
+| allowedTypes | `object` | 
+| `Optional` status | [ActionStatus](../enums/_actions_stream_.actionstatus.md) | 
 
-**Returns:** `MonoTypeOperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
+**Returns:** `MonoTypeOperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
 
 ___
-
 <a id="mapaction"></a>
 
 ###  mapAction
 
-▸ **mapAction**(): `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`any`>
+▸ **mapAction**(): `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `any`>
 
-*Defined in [of-action.ts:60](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/of-action.ts#L60)*
+*Defined in [of-action.ts:69](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/of-action.ts#L69)*
 
-**Returns:** `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`any`>
+**Returns:** `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `any`>
 
 ___
-
 <a id="ofaction"></a>
 
 ###  ofAction
 
-▸ **ofAction**T(allowedType: *`any`*): `OperatorFunction`.<`any`>,.<`T`>
+▸ **ofAction**T(allowedType: *`any`*): `OperatorFunction`<`any`, `T`>
 
-▸ **ofAction**T(...allowedTypes: *`any`[]*): `OperatorFunction`.<`any`>,.<`T`>
+▸ **ofAction**T(...allowedTypes: *`any`[]*): `OperatorFunction`<`any`, `T`>
 
-*Defined in [of-action.ts:6](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/of-action.ts#L6)*
-
-RxJS operator for selecting out specific actions.
-
-This will grab actions that have just been dispatched as well as actions that have completed
-
-**Type parameters:**
-
-#### T 
-**Parameters:**
-
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| allowedType | `any`   |  - |
-
-**Returns:** `OperatorFunction`.<`any`>,.<`T`>
-
-*Defined in [of-action.ts:7](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/of-action.ts#L7)*
+*Defined in [of-action.ts:6](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/of-action.ts#L6)*
 
 RxJS operator for selecting out specific actions.
 
@@ -103,43 +85,58 @@ This will grab actions that have just been dispatched as well as actions that ha
 #### T 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| allowedTypes | `any`[]   |  - |
+| Param | Type |
+| ------ | ------ |
+| allowedType | `any` | 
 
-**Returns:** `OperatorFunction`.<`any`>,.<`T`>
+**Returns:** `OperatorFunction`<`any`, `T`>
+
+*Defined in [of-action.ts:7](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/of-action.ts#L7)*
+
+RxJS operator for selecting out specific actions.
+
+This will grab actions that have just been dispatched as well as actions that have completed
+
+**Type parameters:**
+
+#### T 
+**Parameters:**
+
+| Param | Type |
+| ------ | ------ |
+| `Rest` allowedTypes | `any`[] | 
+
+**Returns:** `OperatorFunction`<`any`, `T`>
 
 ___
+<a id="ofactioncanceled"></a>
 
-<a id="ofactionsuccessful"></a>
+###  ofActionCanceled
 
-###  ofActionSuccessful
+▸ **ofActionCanceled**(...allowedTypes: *`any`[]*): `(Anonymous function)`
 
-▸ **ofActionSuccessful**(...allowedTypes: *`any`[]*): `(Anonymous function)`
-
-*Defined in [of-action.ts:32](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/of-action.ts#L32)*
+*Defined in [of-action.ts:41](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/of-action.ts#L41)*
 
 RxJS operator for selecting out specific actions.
 
-This will ONLY grab actions that have just been completed
+This will ONLY grab actions that have just been canceled
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| allowedTypes | `any`[]   |  - |
+| Param | Type |
+| ------ | ------ |
+| `Rest` allowedTypes | `any`[] | 
 
 **Returns:** `(Anonymous function)`
 
 ___
-
 <a id="ofactiondispatched"></a>
 
 ###  ofActionDispatched
 
 ▸ **ofActionDispatched**(...allowedTypes: *`any`[]*): `(Anonymous function)`
 
-*Defined in [of-action.ts:23](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/of-action.ts#L23)*
+*Defined in [of-action.ts:23](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/of-action.ts#L23)*
 
 RxJS operator for selecting out specific actions.
 
@@ -147,50 +144,69 @@ This will ONLY grab actions that have just been dispatched
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| allowedTypes | `any`[]   |  - |
+| Param | Type |
+| ------ | ------ |
+| `Rest` allowedTypes | `any`[] | 
 
 **Returns:** `(Anonymous function)`
 
 ___
-
 <a id="ofactionerrored"></a>
 
 ###  ofActionErrored
 
 ▸ **ofActionErrored**(...allowedTypes: *`any`[]*): `(Anonymous function)`
 
-*Defined in [of-action.ts:41](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/of-action.ts#L41)*
+*Defined in [of-action.ts:50](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/of-action.ts#L50)*
 
 RxJS operator for selecting out specific actions.
 
-This will ONLY grab actions that have thrown an error
+This will ONLY grab actions that have just thrown an error
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| allowedTypes | `any`[]   |  - |
+| Param | Type |
+| ------ | ------ |
+| `Rest` allowedTypes | `any`[] | 
 
 **Returns:** `(Anonymous function)`
 
 ___
-
 <a id="ofactionoperator"></a>
 
 ###  ofActionOperator
 
 ▸ **ofActionOperator**(allowedTypes: *`any`[]*, status?: *[ActionStatus](../enums/_actions_stream_.actionstatus.md)*): `(Anonymous function)`
 
-*Defined in [of-action.ts:45](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/of-action.ts#L45)*
+*Defined in [of-action.ts:54](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/of-action.ts#L54)*
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| allowedTypes | `any`[]   |  - |
-| status | [ActionStatus](../enums/_actions_stream_.actionstatus.md)   |  - |
+| Param | Type |
+| ------ | ------ |
+| allowedTypes | `any`[] | 
+| `Optional` status | [ActionStatus](../enums/_actions_stream_.actionstatus.md) | 
+
+**Returns:** `(Anonymous function)`
+
+___
+<a id="ofactionsuccessful"></a>
+
+###  ofActionSuccessful
+
+▸ **ofActionSuccessful**(...allowedTypes: *`any`[]*): `(Anonymous function)`
+
+*Defined in [of-action.ts:32](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/of-action.ts#L32)*
+
+RxJS operator for selecting out specific actions.
+
+This will ONLY grab actions that have just been successfully completed
+
+**Parameters:**
+
+| Param | Type |
+| ------ | ------ |
+| `Rest` allowedTypes | `any`[] | 
 
 **Returns:** `(Anonymous function)`
 
