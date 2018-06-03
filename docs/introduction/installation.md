@@ -24,6 +24,11 @@ export class AppModule {}
 When you include the module in the import, you can pass root stores along with options.
 If you are lazy loading, you can use the `forFeature` option with the same arguments.
 
+Options such as `developmentMode` can be passed to the module as the second argument in the `forRoot` method.
+In development mode, plugin authors can add additional runtime checks/etc to enhance the developer experience. Switching
+to development mode will also freeze your store using [deep-freeze-strict](https://www.npmjs.com/package/deep-freeze-strict)
+module.
+
 It's important that you add `NgxsModule.forRoot([])` at the root of your module even if
 all of your states are feature states.
 
