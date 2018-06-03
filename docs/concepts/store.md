@@ -95,3 +95,14 @@ value of the store for that point in time.
 
 ### Selecting State
 See the [select](select.md) page for details on how to use the store to select data.
+
+### Reset
+In certain situations you need the ability to reset the state in its entirity without
+triggering any actions or life-cycle hooks. One example of this would be redux devtools plugin
+when we are doing time travel. Another example would be when we are unit testing and need
+the state to be a specific value for isolated testing.
+
+`store.reset(myNewStateObject)` will reset the entire state to the passed argument without firing
+any actions or life-cycle events.
+
+Warning: Using this can cause unintended side effects if inproperly used and should be used with caution!
