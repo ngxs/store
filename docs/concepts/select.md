@@ -95,8 +95,7 @@ Let's create a selector that will return a list of pandas from the animals.
   defaults: []
 })
 export class ZooState {
-  @Selector()
-  static pandas(state: string[]) {
+  @Selector() static pandas(state: string[]) {
     return state.filter(s => s.indexOf('panda') > -1);
   }
 }
@@ -113,6 +112,23 @@ export class AppComponent {
 ```
 
 and our `pandas$` will only return animals with the name panda in them.
+
+These selectors can also accept arguments. For instance, I can have a selector
+that will only filter my animals to the passed type.
+
+```TS
+@State<string[]>({
+  name: 'animals',
+  defaults: []
+})
+export class ZooState {
+  @Selector() static pandas(type) {
+    return (state) => {
+      return state.filter(s => s.indexOf(type) > -1);
+    };
+  }
+}
+```
 
 #### Joining Selectors
 When defining a selector, you can also pass other selectors into the signature
