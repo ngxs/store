@@ -8,17 +8,13 @@ import { InternalStateOperations } from './state-operations';
 
 @Injectable()
 export class Store {
-  constructor(
-    private _stateStream: StateStream,
-    private _internalStateOperations: InternalStateOperations
-  ) {}
+  constructor(private _stateStream: StateStream, private _internalStateOperations: InternalStateOperations) {}
 
   /**
    * Dispatches event(s).
    */
   dispatch(event: any | any[]): Observable<any> {
-    const operations = this._internalStateOperations.getRootStateOperations();
-    return operations.dispatch(event);
+    return this._internalStateOperations.getRootStateOperations().dispatch(event);
   }
 
   /**
@@ -73,6 +69,14 @@ export class Store {
    * Return the raw value of the state.
    */
   snapshot(): any {
-    return this._stateStream.getValue();
+    return this._internalStateOperations.getRootStateOperations().getState();
+  }
+
+  /**
+   * Reset the state to a specific point in time. This method is useful
+   * for plugin's who need to modify the state directly or unit testing.
+   */
+  reset(state: any) {
+    return this._internalStateOperations.getRootStateOperations().setState(state);
   }
 }
