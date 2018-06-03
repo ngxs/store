@@ -1,4 +1,4 @@
-# Master
+# 3.1.0
 
 - Feature: Add development mode with freeze on state and actions #409
 - Feature: Storage engine migrations #401
