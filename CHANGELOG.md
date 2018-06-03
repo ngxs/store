@@ -1,16 +1,18 @@
 # Master
 
-- Feature: Add development mode with freeze on state and actions
-- Feature: Storage engine migrations
+- Feature: Add development mode with freeze on state and actions #409
+- Feature: Storage engine migrations #401
 - Feature: Select combinations #51
 - Feature: Snapshot select can use state class now #398
 - Feature: Meta selectors #386
+- Feature: Add ability to reset state
 - Performance: Run actions outside of zones #383
 - Fix: Dispatcher error propogation #376
 - Fix: Add patchState restriction errors #371
 - Fix: Remove error when loading same state multiple times #390
 - Fix: Force route navigation to run in zones #393
 - Fix: Selector function should still be usable as a function #398
+- Fix: Memoize inner selector function #410
 
 # 3.0.0/3.0.1 5/3/18
 

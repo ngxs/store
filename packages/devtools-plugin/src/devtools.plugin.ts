@@ -1,5 +1,5 @@
 import { Injectable, Inject, Injector } from '@angular/core';
-import { NgxsPlugin, getActionTypeFromInstance, StateStream, Store } from '@ngxs/store';
+import { NgxsPlugin, getActionTypeFromInstance, Store } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
 import { NgxsDevtoolsExtension, NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS, NgxsDevtoolsAction } from './symbols';
@@ -13,11 +13,7 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
   private readonly devtoolsExtension: NgxsDevtoolsExtension | null = null;
   private readonly windowObj: any = typeof window !== 'undefined' ? window : {};
 
-  constructor(
-    @Inject(NGXS_DEVTOOLS_OPTIONS) private _options: NgxsDevtoolsOptions,
-    private _state: StateStream,
-    private _injector: Injector
-  ) {
+  constructor(@Inject(NGXS_DEVTOOLS_OPTIONS) private _options: NgxsDevtoolsOptions, private _injector: Injector) {
     const globalDevtools = this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
     if (globalDevtools) {
       this.devtoolsExtension = globalDevtools.connect(_options) as NgxsDevtoolsExtension;
@@ -56,7 +52,9 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
     if (action.type === 'DISPATCH') {
       if (action.payload.type === 'JUMP_TO_ACTION' || action.payload.type === 'JUMP_TO_STATE') {
         const prevState = JSON.parse(action.state);
-        this._state.next(prevState);
+        // Lazy get the store for circular depedency issues
+        const store = this._injector.get(Store);
+        store.reset(prevState);
       } else if (action.payload.type === 'TOGGLE_ACTION') {
         console.warn('Skip is not supported at this time.');
       }
