@@ -61,3 +61,21 @@ describe('Zoo', () => {
   });
 });
 ```
+
+## Testing Selectors
+
+Selectors are just plain functions that accept the state as the argument
+so its really easy to test them. A simple test might look like this:
+
+```TS
+import { TestBed } from '@angular/core/testing';
+
+describe('Zoo', () => {
+
+  it('it should select pandas', () => {
+    expect(
+      Zoo.pandas(['pandas', 'zebras'])
+    ).toBe(['pandas']);
+  });
+});
+```
