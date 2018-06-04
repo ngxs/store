@@ -122,8 +122,8 @@ that will only filter my animals to the passed type.
   defaults: []
 })
 export class ZooState {
-  @Selector() static pandas(type) {
-    return (state) => {
+  @Selector() static pandas(state) {
+    return (type) => {
       return state.filter(s => s.indexOf(type) > -1);
     };
   }
