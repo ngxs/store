@@ -4,8 +4,7 @@ import { StateOperations } from './internals';
 import { InternalDispatcher } from './dispatcher';
 import { StateStream } from './state-stream';
 import { NgxsConfig } from './symbols';
-
-const deepFreeze = require('deep-freeze-strict');
+import { deepFreeze } from './freeze';
 
 /**
  * State Context factory class
@@ -19,6 +18,9 @@ export class InternalStateOperations {
     private _config: NgxsConfig
   ) {}
 
+  /**
+   * Returns the root state operators.
+   */
   getRootStateOperations(): StateOperations<any> {
     const rootStateOperations = {
       getState: () => this._stateStream.getValue(),

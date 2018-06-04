@@ -1,4 +1,8 @@
-# 3.1.0
+# 3.1.1 6/4/18
+
+- Fix: Freeze depedencies
+
+# 3.1.0 6/3/18
 
 - Feature: Add development mode with freeze on state and actions #409
 - Feature: Storage engine migrations #401
