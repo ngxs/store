@@ -1,3 +1,7 @@
+# 3.1.2 6/4/18
+
+- Fix: Freeze conflicting issues with router
+
 # 3.1.1 6/4/18
 
 - Fix: Freeze depedencies

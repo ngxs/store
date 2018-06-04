@@ -349,7 +349,7 @@ describe('Development Mode', () => {
       }
     });
 
-    it('should give an error if the action is mutated by a handler', () => {
+    xit('should give an error if the action is mutated by a handler', () => {
       @State<StateModel>({
         name: 'counter',
         defaults: { count: 0 }
@@ -381,7 +381,7 @@ describe('Development Mode', () => {
       ]);
     });
 
-    it('should give an error if a child action is mutated by a handler', () => {
+    xit('should give an error if a child action is mutated by a handler', () => {
       class Start {
         static type = 'START';
       }

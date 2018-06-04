@@ -43,8 +43,7 @@ export class InternalStateOperations {
         return root.setState(frozenValue);
       },
       dispatch: actions => {
-        const frozenActions = deepFreeze(actions);
-        return root.dispatch(frozenActions);
+        return root.dispatch(actions);
       }
     };
   }
