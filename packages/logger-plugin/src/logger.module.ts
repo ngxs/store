@@ -6,9 +6,15 @@ import { NgxsLoggerPlugin } from './logger.plugin';
 export const USER_OPTIONS = new InjectionToken('LOGGER_USER_OPTIONS');
 
 export function loggerOptionsFactory(options: NgxsLoggerPluginOptions) {
-  return {
+  const defaultLoggerOptions: NgxsLoggerPluginOptions = {
     logger: console,
-    collapsed: false
+    collapsed: false,
+    disabled: false
+  };
+
+  return {
+    ...defaultLoggerOptions,
+    ...options
   };
 }
 
