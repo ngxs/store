@@ -1,3 +1,8 @@
+# 3.1.3 6/4/18
+
+- Fix: Subscribe running outside of zone #422
+- Fix: Logger not using custom options #420
+
 # 3.1.2 6/4/18
 
 - Fix: Freeze conflicting issues with router
