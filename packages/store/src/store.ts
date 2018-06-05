@@ -1,14 +1,19 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subscription, of } from 'rxjs';
-import { distinctUntilChanged, catchError, take, map } from 'rxjs/operators';
+import { Injectable, NgZone } from '@angular/core';
+import { Observable, of, Subscription } from 'rxjs';
+import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
 
-import { StateStream } from './state-stream';
 import { getSelectorFn } from './selector-utils';
 import { InternalStateOperations } from './state-operations';
+import { StateStream } from './state-stream';
+import { enterZone } from './zone';
 
 @Injectable()
 export class Store {
-  constructor(private _stateStream: StateStream, private _internalStateOperations: InternalStateOperations) {}
+  constructor(
+    private _ngZone: NgZone,
+    private _stateStream: StateStream,
+    private _internalStateOperations: InternalStateOperations
+  ) {}
 
   /**
    * Dispatches event(s).
@@ -35,7 +40,8 @@ export class Store {
         // rethrow other errors
         throw err;
       }),
-      distinctUntilChanged()
+      distinctUntilChanged(),
+      enterZone(this._ngZone)
     );
   }
 
@@ -62,7 +68,7 @@ export class Store {
    * Allow the user to subscribe to the root of the state
    */
   subscribe(fn?: any): Subscription {
-    return this._stateStream.subscribe(fn);
+    return this._stateStream.pipe(enterZone(this._ngZone)).subscribe(fn);
   }
 
   /**
