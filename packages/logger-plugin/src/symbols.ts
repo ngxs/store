@@ -7,7 +7,7 @@ export interface NgxsLoggerPluginOptions {
   /** Provide alternate console.log implementation */
   logger?: any;
 
-  /** Disable the logger. Useful for prod mopde. */
+  /** Disable the logger. Useful for prod mode. */
   disabled?: boolean;
 }
 
