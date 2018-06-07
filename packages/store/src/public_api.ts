@@ -7,4 +7,5 @@ export { Actions } from './actions-stream';
 export { ofAction, ofActionSuccessful, ofActionDispatched, ofActionErrored } from './of-action';
 export { NgxsPlugin, NgxsPluginFn, StateContext, NgxsOnInit } from './symbols';
 export { Selector } from './selector';
+export { SelectorCreator } from './selector-creator';
 export { getActionTypeFromInstance, actionMatcher } from './utils';
