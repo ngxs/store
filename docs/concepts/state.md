@@ -155,13 +155,13 @@ export class ZooState {
 
   @Action(FeedAnimals)
   feedAnimals({ getState, setState }: StateContext<ZooStateModel>, { payload }: FeedAnimals) {
-    return this.animalService.feed(payload).pipe(tap(result) => {
+    return this.animalService.feed(payload).pipe(tap((result) => {
       const state = getState();
       setState({
         ...state,
         feedAnimals: [ ...state.feedAnimals, result ]
       });
-    });
+    }));
   }
 }
 ```
