@@ -184,7 +184,7 @@ export class ZooState {
 
   @Action(FeedAnimals)
   feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
-    return this.animalService.feed(action.animalsToFeed).pipe(tap(animalsToFeedResult) => {
+    return this.animalService.feed(action.animalsToFeed).pipe(tap((animalsToFeedResult) => {
       const state = ctx.getState();
       ctx.setState({
         ...state,
@@ -193,7 +193,7 @@ export class ZooState {
           animalsToFeedResult,
         ]
       });
-    });
+    }));
   }
 }
 ```
