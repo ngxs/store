@@ -65,7 +65,7 @@ export interface ZooStateModel {
 })
 export class ZooState {
   @Action(FeedAnimals)
-  feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
+  feedAnimals(ctx: StateContext<ZooStateModel>) {
     const state = ctx.getState();
     ctx.setState({
       ...state,
@@ -139,11 +139,11 @@ could be reduced to this:
 
 ```TS
 @Action(FeedZebra)
-  feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
+feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
   const state = ctx.getState();
   ctx.patchState({
     zebraFood: [
-      ...state.feedAnimals,
+      ...state.zebraFood,
       action.zebraToFeed,
     ]
   });
