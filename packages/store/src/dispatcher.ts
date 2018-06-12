@@ -51,7 +51,7 @@ export class InternalDispatcher {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return compose([
+    return (compose([
       ...plugins,
       (nextState, nextAction) => {
         if (nextState !== prevState) {
@@ -62,7 +62,7 @@ export class InternalDispatcher {
         this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
         return this.createDispatchObservable(actionResult$);
       }
-    ])(prevState, action) as Observable<any>;
+    ])(prevState, action) as Observable<any>).pipe(shareReplay());
   }
 
   private getActionResultStream(action: any): Observable<ActionContext> {
