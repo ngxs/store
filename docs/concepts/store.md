@@ -67,7 +67,7 @@ If you need to get the state after this, simply use a
 `@Select` in the chain like:
 
 ```TS
-import { Store } from '@ngxs/store';
+import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs/operators';
 import { AddAnimal } from './animal.actions';
