@@ -68,7 +68,7 @@ Now let's wire up the state in our module.
   imports: [
     NgxsModule.forRoot([AuthState]),
     NgxsStoragePluginModule.forRoot({
-      keys: 'auth.token'
+      key: 'auth.token'
     })
   ]
 })
