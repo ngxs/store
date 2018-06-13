@@ -26,7 +26,7 @@ export class DefaultRouterStateSerializer implements RouterStateSerializer<Seria
       fragment: route.fragment,
       data: route.data,
       outlet: route.outlet,
-      component: route.routeConfig ? route.routeConfig.component : undefined,
+      component: undefined,
       routeConfig: null,
       root: undefined,
       parent: undefined,
