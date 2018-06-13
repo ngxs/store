@@ -1,3 +1,8 @@
+# 3.1.4 6/13/18
+
+- Fix: Remove component reference from router plugin state #441
+- Fix: Fix subscription firing twice #436
+
 # 3.1.3 6/4/18
 
 - Fix: Subscribe running outside of zone #422
