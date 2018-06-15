@@ -21,5 +21,3 @@ and then explore the rich ecosystem of examples in the [community resources](com
 ## ❤️ Giving Back
 Become a [Contributor](community/contributors.md) or a [Sponsor](community/sponsors.md).
 
-## 😎 Support
-[Get support](community/support.md) for NGXS and Angular.

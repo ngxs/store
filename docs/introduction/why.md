@@ -22,4 +22,4 @@ It is very common to want to do something after an action is completed and NGXS 
 Observables are great but they aren't a silver bullet. Sometimes Promises are the preferred option. NGXS allows either to be returned from an action method.
 
 ### Community
-NGXS is entirely community built and driven. The project exists to help people build applications and the team is open to any suggestions that help with that goal. In addition, there is the option for professional support if needed.
+NGXS is entirely community built and driven. The project exists to help people build applications and the team is open to any suggestions that help with that goal.

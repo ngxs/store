@@ -1,3 +1,7 @@
+# Master
+
+- Fix: Expose RouterStateModel interface ##445
+
 # 3.1.4 6/13/18
 
 - Fix: Remove component reference from router plugin state #441
