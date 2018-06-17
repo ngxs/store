@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { StateContext } from './symbols';
-import { MappedStore } from './internals';
-import { setValue, getValue } from './utils';
-import { InternalStateOperations } from './state-operations';
+import { StateContext } from '../symbols';
+import { MappedStore } from '../internal/internals';
+import { setValue, getValue } from '../utils/utils';
+import { InternalStateOperations } from '../internal/state-operations';
 
 /**
  * State Context factory class
@@ -12,9 +12,7 @@ import { InternalStateOperations } from './state-operations';
  */
 @Injectable()
 export class StateContextFactory {
-  constructor(
-    private _internalStateOperations: InternalStateOperations
-  ) {}
+  constructor(private _internalStateOperations: InternalStateOperations) {}
 
   /**
    * Create the state context

@@ -1,5 +1,5 @@
-import { ensureStoreMetadata } from './internals';
-import { ActionOptions } from './symbols';
+import { ensureStoreMetadata } from '../internal/internals';
+import { ActionOptions } from '../symbols';
 
 /**
  * Decorates a method with a action information.

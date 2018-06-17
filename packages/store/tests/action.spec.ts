@@ -3,14 +3,20 @@ import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { delay } from 'rxjs/operators';
 import { throwError, of } from 'rxjs';
 
-import { Action } from '../src/action';
-import { State } from '../src/state';
+import { Action } from '../src/decorators/action';
+import { State } from '../src/decorators/state';
 import { META_KEY } from '../src/symbols';
 
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
-import { ofActionSuccessful, ofActionDispatched, ofAction, ofActionErrored, ofActionCanceled } from '../src/of-action';
+import {
+  ofActionSuccessful,
+  ofActionDispatched,
+  ofAction,
+  ofActionErrored,
+  ofActionCanceled
+} from '../src/operators/of-action';
 import { NoopErrorHandler } from './helpers/utils';
 
 describe('Action', () => {

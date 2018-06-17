@@ -1,14 +1,14 @@
 import { Injectable, ErrorHandler } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { Action } from '../src/action';
-import { State } from '../src/state';
-import { InitState, UpdateState } from '../src/actions';
+import { Action } from '../src/decorators/action';
+import { State } from '../src/decorators/state';
+import { InitState, UpdateState } from '../src/actions/actions';
 
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { StateContext } from '../src/symbols';
-import { Selector } from '../src/selector';
+import { Selector } from '../src/decorators/selector';
 
 import { NoopErrorHandler } from './helpers/utils';
 

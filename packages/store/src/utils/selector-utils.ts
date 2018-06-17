@@ -1,5 +1,5 @@
-import { META_KEY } from './symbols';
-import { SelectFromState, SelectorMetaDataModel, fastPropGetter } from './internals';
+import { META_KEY } from '../symbols';
+import { SelectFromState, SelectorMetaDataModel, fastPropGetter } from '../internal/internals';
 
 /**
  * This function gets the selector function to be used to get the selected slice from the app state

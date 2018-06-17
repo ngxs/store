@@ -3,8 +3,8 @@ import { async, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { timer, of, throwError } from 'rxjs';
 import { tap, skip, delay } from 'rxjs/operators';
 
-import { State } from '../src/state';
-import { Action } from '../src/action';
+import { State } from '../src/decorators/state';
+import { Action } from '../src/decorators/action';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { StateContext } from '../src/symbols';
