@@ -14,6 +14,7 @@
 - [Movies Catalog APP (mobile & desktop) with NGXS, Angular 6, Ionic 4 and Capacitor](https://github.com/abritopach/angular-ionic-ngxs-movies)
 - [NGXS Form Example](https://github.com/kuncevic/ngxs-form-example)
 - [ngxs coffee](https://github.com/chybie/ngxs-coffee)
+- [ngxs vs ngrx](https://github.com/codediodeio/ngrx-vs-ngxs)
 
 ### Media
 - [ngAir 153 - NGXS: A New State Management for Angular Apps with Austin McDaniel and Danny Blue](https://www.youtube.com/watch?v=rkn73khwfWU&feature=youtu.be)
