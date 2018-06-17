@@ -58,7 +58,7 @@
     "test": "ng test",
     "test:integration": "ng test --project integration #requires yarn build",
     "// - CI": "Ci Testing",
-    "test:ci": "ng test --code-coverage --progress=false",
+    "test:ci": "ng test --code-coverage --progress=false --project integration",
     "test:ci:integration": "ng test --progress=false --project integration && ng build --prod --progress=false --project integration",
     "publish:dev": "ts-node tools/publish-dev-builds",
     "publish:tagged": "ts-node tools/publish-tagged-builds",
