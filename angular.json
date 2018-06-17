@@ -75,10 +75,10 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist-integration/",
-            "index": "src/integration/index.html",
-            "main": "src/integration/main.ts",
-            "tsConfig": "src/integration/tsconfig.app.integration.json",
-            "polyfills": "src/integration/polyfills.ts",
+            "index": "./integration/index.html",
+            "main": "./integration/main.ts",
+            "tsConfig": "./integration/tsconfig.app.integration.json",
+            "polyfills": "./integration/polyfills.ts",
             "assets": [],
             "styles": [],
             "scripts": []
