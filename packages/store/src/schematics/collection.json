@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "description": "Adds NGXS to the application",
+      "factory": "./install",
+      "schema": "./install/schema.json"
+    }
+  }
+}

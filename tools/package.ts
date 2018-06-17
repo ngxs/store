@@ -2,7 +2,8 @@
 'use strict';
 
 import { ngPackagr } from 'ng-packagr';
-import { join } from 'path';
+import { join, resolve } from 'path';
+import { copy, ensureDirSync } from 'fs-extra';
 
 import { getPackages } from './utils';
 
@@ -30,6 +31,18 @@ async function main(specificPackage?: string) {
       throw err;
     }
   }
+
+  // copy schematics
+  const source = resolve(__dirname, '../', 'packages', 'store', 'src', 'schematics');
+  const destination = resolve(__dirname, '../', 'builds', 'store', 'schematics');
+  ensureDirSync(destination);
+
+  copy(source, destination)
+    .then(() => console.log('Copy completed!'))
+    .catch(err => {
+      console.log('An error occured while copying the folder.');
+      return console.error(err);
+    });
 }
 
 main(process.argv[2]).catch(err => {
