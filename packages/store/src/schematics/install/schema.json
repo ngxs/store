@@ -1,0 +1,19 @@
+
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsNgxsInstall",
+  "title": "NGXS Install Options Schema",
+  "type": "object",
+  "properties": {
+    "skipPackageJson": {
+      "type": "boolean",
+      "default": false,
+      "description": "Do not add NGXS dependencies to package.json (e.g., --skipPackageJson)"
+    },
+    "project": {
+      "type": "string",
+      "description": "Project for the application. If not provided, uses first project."
+    }
+  },
+  "required": []
+}

@@ -10,6 +10,7 @@
     "target": "es5",
     "types": ["jasmine"]
   },
-  "files": ["test.integration.ts"],
+  "files": ["test.integration.ts"  "integration/polyfills.ts"
+  ,],
   "include": ["**/*.spec.ts"]
 }
