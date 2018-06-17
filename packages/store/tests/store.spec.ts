@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
-import { State } from '../src/state';
-import { Action } from '../src/action';
+import { State } from '../src/decorators/state';
+import { Action } from '../src/decorators/action';
 
 describe('Store', () => {
   interface SubSubStateModel {

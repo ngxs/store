@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
-import { Select } from '../src/select';
-import { Selector } from '../src/selector';
-import { State } from '../src/state';
-import { Action } from '../src/action';
+import { Select } from '../src/decorators/select';
+import { Selector } from '../src/decorators/selector';
+import { State } from '../src/decorators/state';
+import { Action } from '../src/decorators/action';
 import { last, first } from 'rxjs/operators';
 
 describe('Select', () => {

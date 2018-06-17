@@ -1,4 +1,4 @@
-import { META_KEY, ActionOptions } from './symbols';
+import { META_KEY, ActionOptions } from '../symbols';
 import { Observable } from 'rxjs';
 
 export interface ObjectKeyMap<T> {

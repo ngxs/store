@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { StateOperations } from './internals';
-import { InternalDispatcher } from './dispatcher';
+import { StateOperations } from '../internal/internals';
+import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
-import { NgxsConfig } from './symbols';
-import { deepFreeze } from './freeze';
+import { NgxsConfig } from '../symbols';
+import { deepFreeze } from '../utils/freeze';
 
 /**
  * State Context factory class

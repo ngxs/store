@@ -2,7 +2,7 @@ import { async, TestBed } from '@angular/core/testing';
 import { State } from '@ngxs/store';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
-import { Selector } from '../src/selector';
+import { Selector } from '../src/decorators/selector';
 
 describe('Selector', () => {
   @State<any>({

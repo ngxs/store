@@ -1,16 +1,16 @@
 import { NgModule, ModuleWithProviders, Optional, Inject, InjectionToken } from '@angular/core';
 
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
-import { StateFactory } from './state-factory';
-import { StateContextFactory } from './state-context-factory';
+import { StateFactory } from './internal/state-factory';
+import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
-import { InternalDispatcher, InternalDispatchedActionResults } from './dispatcher';
-import { InternalStateOperations } from './state-operations';
+import { InternalDispatcher, InternalDispatchedActionResults } from './internal/dispatcher';
+import { InternalStateOperations } from './internal/state-operations';
 import { Store } from './store';
-import { SelectFactory } from './select';
-import { StateStream } from './state-stream';
+import { SelectFactory } from './decorators/select';
+import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
-import { InitState, UpdateState } from './actions';
+import { InitState, UpdateState } from './actions/actions';
 
 /**
  * Root module

@@ -1,7 +1,7 @@
-import { memoize } from './memoize';
-import { getValue } from './utils';
-import { ensureStoreMetadata, ensureSelectorMetadata } from './internals';
-import { getSelectorFn } from './selector-utils';
+import { memoize } from '../utils/memoize';
+import { getValue } from '../utils/utils';
+import { ensureStoreMetadata, ensureSelectorMetadata } from '../internal/internals';
+import { getSelectorFn } from '../utils/selector-utils';
 
 /**
  * Decorator for memoizing a state selector.

@@ -1,4 +1,4 @@
-import { findFullParentPath, topologicalSort } from '../src/internals';
+import { findFullParentPath, topologicalSort } from '../src/internal/internals';
 
 describe('graph', () => {
   it('should build graph', () => {

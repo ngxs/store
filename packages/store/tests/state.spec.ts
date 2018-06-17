@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
-import { InitState, UpdateState } from '../src/actions';
+import { InitState, UpdateState } from '../src/actions/actions';
 import { State, Action, NgxsOnInit, NgxsModule, StateContext, Store } from '../src/public_api';
 
-import { stateNameErrorMessage } from '../src/state';
+import { stateNameErrorMessage } from '../src/decorators/state';
 import { META_KEY } from '../src/symbols';
 
 describe('State', () => {

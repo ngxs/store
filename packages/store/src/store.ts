@@ -2,10 +2,10 @@ import { Injectable, NgZone } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
 
-import { getSelectorFn } from './selector-utils';
-import { InternalStateOperations } from './state-operations';
-import { StateStream } from './state-stream';
-import { enterZone } from './zone';
+import { getSelectorFn } from './utils/selector-utils';
+import { InternalStateOperations } from './internal/state-operations';
+import { StateStream } from './internal/state-stream';
+import { enterZone } from './operators/zone';
 
 @Injectable()
 export class Store {
