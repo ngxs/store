@@ -15,6 +15,7 @@
 - [NGXS Form Example](https://github.com/kuncevic/ngxs-form-example)
 - [ngxs coffee](https://github.com/chybie/ngxs-coffee)
 - [ngxs vs ngrx](https://github.com/codediodeio/ngrx-vs-ngxs)
+- [Ngxs Effects](https://github.com/hsdgit/State.Of.Angular/tree/effects)
 
 ### Media
 - [ngAir 153 - NGXS: A New State Management for Angular Apps with Austin McDaniel and Danny Blue](https://www.youtube.com/watch?v=rkn73khwfWU&feature=youtu.be)
