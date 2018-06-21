@@ -1,7 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { WebSocketSubject } from './websocket-subject';
-import { Store, getValue, ofActionDispatched } from '@ngxs/store';
-import { InternalActions } from '@ngxs/store/src/actions-stream';
+import { Actions, Store, getValue, ofActionDispatched } from '@ngxs/store';
 import {
   ConnectWebSocket,
   DisconnectWebSocket,
@@ -15,7 +14,7 @@ import {
 export class WebSocketHandler {
   constructor(
     store: Store,
-    actions: InternalActions,
+    actions: Actions,
     socket: WebSocketSubject,
     @Inject(NGXS_WEBSOCKET_OPTIONS) config: NgxsWebsocketPluginOptions
   ) {
