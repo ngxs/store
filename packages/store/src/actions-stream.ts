@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+
+import { enterZone } from './operators/zone';
 
 /**
  * Status of a dispatched action
@@ -64,9 +66,11 @@ export class InternalActions extends OrderedSubject<ActionContext> {}
  */
 @Injectable()
 export class Actions extends Observable<any> {
-  constructor(actions$: InternalActions) {
+  constructor(actions$: InternalActions, ngZone: NgZone) {
     super(observer => {
-      actions$.subscribe(res => observer.next(res), err => observer.error(err), () => observer.complete());
+      actions$
+        .pipe(enterZone(ngZone))
+        .subscribe(res => observer.next(res), err => observer.error(err), () => observer.complete());
     });
   }
 }
