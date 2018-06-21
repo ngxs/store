@@ -15,7 +15,7 @@
     "angular2",
     "cqrs",
     "store",
-    "state-mangement",
+    "state-management",
     "event-stream"
   ],
   "author": "Austin McDaniel",
@@ -25,6 +25,9 @@
     },
     {
       "name": "Leon Radley"
+    },
+    {
+      "name": "Mark Whitfeld"
     }
   ],
   "license": "MIT",
