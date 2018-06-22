@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { FormBuilder, FormArray } from '@angular/forms';
 
 import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from './todo.state';
+import { Dispatch } from '@ngxs/store';
 
 @Component({
   selector: 'app-root',
@@ -65,8 +66,9 @@ export class AppComponent {
 
   constructor(private store: Store, private formBuilder: FormBuilder) {}
 
+  @Dispatch()
   addTodo(todo: string) {
-    this.store.dispatch(new AddTodo(todo));
+    return new AddTodo(todo);
   }
 
   removeTodo(index: number) {
