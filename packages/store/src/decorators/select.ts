@@ -1,20 +1,6 @@
-import { Injectable } from '@angular/core';
-
-import { Store } from '../store';
 import { fastPropGetter } from '../internal/internals';
 import { META_KEY } from '../symbols';
-
-/**
- * Allows the select decorator to get access to the DI store.
- * @ignore
- */
-@Injectable()
-export class SelectFactory {
-  static store: Store | undefined = undefined;
-  constructor(store: Store) {
-    SelectFactory.store = store;
-  }
-}
+import { DecoratorFactory } from './decorator-factory';
 
 /**
  * Decorator for selecting a slice of state from the store.
@@ -29,10 +15,10 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
     }
 
     const createSelect = fn => {
-      const store = SelectFactory.store;
+      const store = DecoratorFactory.store;
 
       if (!store) {
-        throw new Error('SelectFactory not connected to store!');
+        throw new Error('DecoratorFactory not connected to store!');
       }
 
       return store.select(fn);
