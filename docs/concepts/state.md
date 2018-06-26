@@ -44,7 +44,7 @@ Our states listen to actions via a `@Action` decorator. The action decorator
 accepts an action class or an array of action classes. 
 
 ### Simple Actions
-Let's define a state that will listen to a `FeedAnimals` action to toggle whether the animals have been feed:
+Let's define a state that will listen to a `FeedAnimals` action to toggle whether the animals have been fed:
 
 ```TS
 import { State, Action, StateContext } from '@ngxs/store';
