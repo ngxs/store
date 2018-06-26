@@ -18,7 +18,7 @@ import { ZooState } from './zoo.state';
 
 @Component({ ... })
 export class ZooComponent {
- // Reads the name of the store from the store class
+ // Reads the name of the state from the state class
   @Select(ZooState) animals$: Observable<string[]>;
 
   // Uses the pandas memoized selector to only return pandas
