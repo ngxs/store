@@ -1,6 +1,6 @@
 # Sub Stores
 Complex and large state graphs are difficult to manage. Oftentimes we need
-to break these down into sub states that we can manage the items on a individual
+to break these down into sub states that we can manage on a individual
 basis. With NGXS, we can use a concept called sub states to handle this.
 
 ## Example
