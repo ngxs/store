@@ -62,8 +62,7 @@ export function logPlugin(state, action, next) {
 
 NOTE: When providing a pure function make sure to use `useValue` instead of `useClass`.
 
-To register them with NGXS, pass them via the options parameter
-in the module hookup like:
+To register a plugin with NGXS, import the plugin module in your module and optionally pass in the plugin options like this:
 
 ```TS
 @NgModule({
