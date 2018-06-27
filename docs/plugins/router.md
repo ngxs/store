@@ -55,7 +55,7 @@ export class MyApp {
   constructor(private store: Store) {}
 
   onClick() {
-    this.store.dispatch(new Navigate('/admin'))
+    this.store.dispatch(new Navigate(['/admin']))
   }
 
 }
