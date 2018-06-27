@@ -29,6 +29,7 @@ The plugin supports the following options passed via the `forRoot` method:
 
 - `logger`: Supply a different logger, useful for logging to backend. Defaults to `console`.
 - `collapsed`: Collapse the log by default or not. Defaults to true.
+- `disabled`: Disable the logger during production.
 
 ### Notes
 You should always include the logger as the last plugin in your configuration.
