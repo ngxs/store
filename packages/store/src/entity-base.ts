@@ -1,4 +1,4 @@
-import { StateBase } from './state-base';
+import { NgxsOnInit, StateContext } from '@ngxs/store';
 
 export interface EntityStateModel<V> {
   ids: (string | number)[];
@@ -26,7 +26,9 @@ export enum EntityMutation {
   None
 }
 
-export abstract class EntityBase<T, S extends EntityStateModel<T>> extends StateBase<S> {
+export abstract class EntityBase<T, S extends EntityStateModel<T>> implements NgxsOnInit {
+  private ctx: StateContext<S>;
+
   /**
    * The defaults for all state classes that inherit from EntityBase
    */
@@ -51,6 +53,10 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> extends State
 
   static selectTotal<T>(state: EntityStateModel<T>) {
     return (state.ids || []).length;
+  }
+
+  ngxsOnInit(ctx: StateContext<S>) {
+    this.ctx = ctx;
   }
 
   /**
