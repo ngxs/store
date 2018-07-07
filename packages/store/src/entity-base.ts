@@ -1,4 +1,4 @@
-import { NgxsOnInit, StateContext } from '@ngxs/store';
+import { NgxsOnInit, StateContext } from './symbols';
 
 export interface EntityStateModel<V> {
   ids: (string | number)[];
