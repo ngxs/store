@@ -8,3 +8,4 @@ export { ofAction, ofActionSuccessful, ofActionDispatched, ofActionErrored } fro
 export { NgxsPlugin, NgxsPluginFn, StateContext, NgxsOnInit } from './symbols';
 export { Selector } from './decorators/selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
+export { createSelector } from './utils/selector-utils';
