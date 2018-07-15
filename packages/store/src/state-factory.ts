@@ -87,24 +87,13 @@ export class StateFactory {
 
         const instance = this._injector.get(stateClass);
 
-        const mappedStore: MappedStore = {
+        mappedStores.push({
           actions,
           instance,
           defaults,
           name,
-          depth,
-          stateContext: undefined
-        };
-
-        // create the state context for the state
-        mappedStore.stateContext = this._stateContextFactory.createStateContext(mappedStore);
-
-        // if the state class implements StateBase or EntityBase we automatically inject the stateContext
-        if (instance.hasOwnProperty('ctx')) {
-          instance.ctx = mappedStore.stateContext;
-        }
-
-        mappedStores.push(mappedStore);
+          depth
+        });
       }
     }
 
@@ -155,7 +144,8 @@ export class StateFactory {
       const instance: NgxsLifeCycle = metadata.instance;
 
       if (instance.ngxsOnInit) {
-        instance.ngxsOnInit(metadata.stateContext);
+        const stateContext = this.createStateContext(metadata);
+        instance.ngxsOnInit(stateContext);
       }
     }
   }
@@ -172,7 +162,7 @@ export class StateFactory {
 
       if (actionMetas) {
         for (const actionMeta of actionMetas) {
-          const stateContext = metadata.stateContext;
+          const stateContext = this.createStateContext(metadata);
           try {
             let result = metadata.instance[actionMeta.fn](stateContext, action);
 
@@ -203,5 +193,12 @@ export class StateFactory {
     }
 
     return forkJoin(results);
+  }
+
+  /**
+   * Create the state context
+   */
+  private createStateContext(metadata: MappedStore) {
+    return this._stateContextFactory.createStateContext(metadata);
   }
 }
