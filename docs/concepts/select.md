@@ -130,6 +130,22 @@ export class ZooState {
 }
 ```
 
+then you can use `store.select` and pass filter to `rxjs` `map` pipeline function.
+
+```TS
+import { Store } from '@ngxs/store';
+import { map } from 'rxjs/operators';
+
+@Component({ ... })
+export class ZooComponent {
+  babyPandas$: Observable<string[]>;
+  
+    constructor(private store: Store) {
+      this.babyPandas$ = this.store.select(ZooState.pandas).pipe(map(filterFn => filterFn('baby')));
+    }
+}
+```
+
 #### Joining Selectors
 When defining a selector, you can also pass other selectors into the signature
 of the `Selector` decorator to join other selectors with this state selector.
