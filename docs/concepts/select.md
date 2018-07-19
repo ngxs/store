@@ -146,14 +146,14 @@ export class ZooComponent {
 }
 ```
 
-or you can import and use `MemoizedSelect` decorator.
+or you can import and use `Select` decorator and pass data to second argument.
 
 ```TS
-import { MemoizedSelect } from '@ngxs/store';
+import { Select } from '@ngxs/store';
 
 @Component({ ... })
 export class ZooComponent {
-  @MemoizedSelect(ZooState.pandas, 'panda') babyPandas$: Observable<string[]>;
+  @Select(ZooState.pandas, 'panda') babyPandas$: Observable<string[]>;
 }
 ```
 

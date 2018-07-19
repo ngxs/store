@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { Store, Select, MemoizedSelect } from '@ngxs/store';
+import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { FormBuilder, FormArray } from '@angular/forms';
 
@@ -48,7 +48,7 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
 })
 export class AppComponent {
   @Select(TodoState) todos$: Observable<string[]>;
-  @MemoizedSelect(TodoState.pandas, 'panda')
+  @Select(TodoState.pandas, 'panda')
   pandas$: Observable<string[]>;
   @Select(TodosState.pizza) pizza$: Observable<any>;
 
