@@ -93,14 +93,19 @@ the state portion you are dealing with.
 Let's create a selector that will return a list of pandas from the animals.
 
 ```TS
+import { State, Selector } from '@ngxs/store';
+
 @State<string[]>({
   name: 'animals',
   defaults: []
 })
 export class ZooState {
-  @Selector() static pandas(state: string[]) {
+
+  @Selector() 
+  static pandas(state: string[]) {
     return state.filter(s => s.indexOf('panda') > -1);
   }
+
 }
 ```
 
@@ -126,7 +131,7 @@ There are two patterns that allow for this: [Lazy Selectors](#lazy-selectors) or
 To create a lazy selector all that you need to do is return a function from the selector.
 The function returned by the selector will be memoized automatically and the logic inside this function will be evaluated at a later stage when the consumer of the selector executes the function. Note that this function can take any number of arguments (or zero arguments) as it is the consumer's responsibility to supply them.
 
-For instance, I can have a Lazy Selector that will filter my animals to the provided type.
+For instance, I can have a Lazy Selector that will filter my pandas to the provided type of panda.
 
 ```TS
 @State<string[]>({
@@ -138,14 +143,15 @@ export class ZooState {
   @Selector() 
   static pandas(state: string[]) {
     return (type: string) => {
-      return state.filter(s => s.indexOf(type) > -1);
+      return state.filter(s => s.indexOf('panda') > -1)
+                  .filter(s => s.indexOf(type) > -1);
     };
   }
 
 }
 ```
 
-then you can use `store.select` and evaluate the lazy funxtion using the `rxjs` `map` pipeline function.
+then you can use `store.select` and evaluate the lazy function using the `rxjs` `map` pipeline function.
 
 ```TS
 import { Store } from '@ngxs/store';
@@ -165,7 +171,7 @@ export class ZooComponent {
 
 A dynamic selector is created by using the `createSelector` function as opposed to the `@Selector` decorator. It does not need to be created in any special area at any specific time. The typical use case though would be to create a selector that looks like a normal selector but takes an argument to provide to the dynamic selector.
 
-For instance, I can have a Dynamic Selector that will filter my animals to the provided type.
+For instance, I can have a Dynamic Selector that will filter my pandas to the provided type of panda.
 
 ```TS
 @State<string[]>({
@@ -176,8 +182,9 @@ export class ZooState {
 
   static pandas(type: string) {
     return createSelector([ZooState], (state: string[]) => {
-      return state.filter(s => s.indexOf(type) > -1);
-    };
+      return state.filter(s => s.indexOf('panda') > -1)
+                  .filter(s => s.indexOf(type) > -1);
+    });
   }
 
 }
@@ -215,7 +222,7 @@ export class SharedSelectors {
   static getEntities(stateClass) {
     return createSelector([stateClass], (state: { entities: any[] }) => {
       return state.entities;
-    };
+    });
   }
 
 }
@@ -242,16 +249,18 @@ When defining a selector, you can also pass other selectors into the signature
 of the `Selector` decorator to join other selectors with this state selector.
 
 ```TS
-@State({ ... })
+@State<PreferencesStateModel>({ ... })
 export class PreferencesState { ... }
 
-@State({ ... })
+@State<string[]>({ ... })
 export class ZooState {
+
   @Selector([PreferencesState])
-  static pandas(state: string[], preferencesState) {
+  static pandas(state: string[], preferencesState: PreferencesStateModel) {
     return state.filter(s =>
       (s.indexOf('panda') > -1 && s.location === preferencesState.location));
   }
+
 }
 ```
 
@@ -271,14 +280,16 @@ state classes that are likely not related in any manner. We can use a meta selec
 to join these two states together like:
 
 ```TS
-@Injectable()
 export class CityService {
-  @Selector([Zoo, ThemePark]) static zooThemeParks(zoos, themeParks) {
+
+  @Selector([Zoo, ThemePark]) 
+  static zooThemeParks(zoos, themeParks) {
     return [
       ...zoos,
       ...themeParks
     ];
   }
+
 }
 ```
 
