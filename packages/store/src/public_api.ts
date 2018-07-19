@@ -2,7 +2,7 @@ export { NgxsModule } from './module';
 export { Action } from './decorators/action';
 export { Store } from './store';
 export { State } from './decorators/state';
-export { Select } from './decorators/select';
+export { Select, MemoizedSelect } from './decorators/select';
 export { Actions } from './actions-stream';
 export { ofAction, ofActionSuccessful, ofActionDispatched, ofActionErrored } from './operators/of-action';
 export { NgxsPlugin, NgxsPluginFn, StateContext, NgxsOnInit } from './symbols';

@@ -146,6 +146,17 @@ export class ZooComponent {
 }
 ```
 
+or you can import and use `MemoizedSelect` decorator.
+
+```TS
+import { MemoizedSelect } from '@ngxs/store';
+
+@Component({ ... })
+export class ZooComponent {
+  @MemoizedSelect(ZooState.pandas, 'panda') babyPandas$: Observable<string[]>;
+}
+```
+
 #### Joining Selectors
 When defining a selector, you can also pass other selectors into the signature
 of the `Selector` decorator to join other selectors with this state selector.
