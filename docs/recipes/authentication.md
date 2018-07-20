@@ -6,8 +6,8 @@ First, let's define our state model and our actions:
 
 ```TS
 export class AuthStateModel {
-  token: string;
-  username: string;
+  token?: string;
+  username?: string;
 }
 
 export class Login {

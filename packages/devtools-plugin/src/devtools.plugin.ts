@@ -49,18 +49,23 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
    * Handle the action from the dev tools subscription
    */
   dispatched(action: NgxsDevtoolsAction) {
+    // Lazy get the store for circular depedency issues
+    const store = this._injector.get(Store);
     if (action.type === 'DISPATCH') {
       if (action.payload.type === 'JUMP_TO_ACTION' || action.payload.type === 'JUMP_TO_STATE') {
         const prevState = JSON.parse(action.state);
-        // Lazy get the store for circular depedency issues
-        const store = this._injector.get(Store);
         store.reset(prevState);
       } else if (action.payload.type === 'TOGGLE_ACTION') {
         console.warn('Skip is not supported at this time.');
+      } else if (action.payload.type === 'IMPORT_STATE') {
+        const { actionsById, computedStates, currentStateIndex } = action.payload.nextLiftedState;
+        this.devtoolsExtension.init(computedStates[0].state);
+        Object.keys(actionsById)
+          .filter(actionId => actionId !== '0')
+          .forEach(actionId => this.devtoolsExtension.send(actionsById[actionId], computedStates[actionId].state));
+        store.reset(computedStates[currentStateIndex].state);
       }
     } else if (action.type === 'ACTION') {
-      // Lazy get the store for circular depedency issues
-      const store = this._injector.get(Store);
       const actionPayload = JSON.parse(action.payload);
       store.dispatch(actionPayload);
     }

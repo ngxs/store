@@ -1,6 +1,9 @@
-# Master
+# 3.2.0
 
+- Feature: createSelector functions #484
 - Fix: Expose RouterStateModel interface ##445
+- Fix: State not set correctly when duplicate key in path #459
+- Fix: action stream should return in Angular zone #456
 
 # 3.1.4 6/13/18
 

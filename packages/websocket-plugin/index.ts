@@ -4,5 +4,6 @@ export {
   NGXS_WEBSOCKET_OPTIONS,
   ConnectWebSocket,
   DisconnectWebSocket,
-  SendWebSocketMessage
+  SendWebSocketMessage,
+  WebsocketMessageError
 } from './src/symbols';
