@@ -14,11 +14,11 @@ or a memoized selector.
 
 ```TS
 import { Select } from '@ngxs/store';
-import { ZooState } from './zoo.state';
+import { ZooState, ZooStateModel } from './zoo.state';
 
 @Component({ ... })
 export class ZooComponent {
- // Reads the name of the state from the state class
+  // Reads the name of the state from the state class
   @Select(ZooState) animals$: Observable<string[]>;
 
   // Uses the pandas memoized selector to only return pandas
@@ -26,6 +26,9 @@ export class ZooComponent {
 
   // Also accepts a function like our select method
   @Select(state => state.animals) animals$: Observable<string[]>;
+  
+  // Reads the name of the state from the parameter
+  @Select() zoo$: Observable<ZooStateModel>;
 }
 ```
 
