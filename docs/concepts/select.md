@@ -7,7 +7,7 @@ When we want to read data out of our store, we use a select operator to retrieve
 In NGXS, there are two methods to select state, we can either call the `select` method on the
 `Store` service or use the `@Select` decorator. First let's look at the `@Select` decorator.
 
-### Select Decorators
+## Select Decorators
 You can select slices of data from the store using the `@Select` decorator. It has a few
 different ways to get your data out, whether passing the state class, a function, a different state class
 or a memoized selector.
@@ -29,7 +29,7 @@ export class ZooComponent {
 }
 ```
 
-### Store Select Function
+## Store Select Function
 The `Store` class also has a `select` function:
 
 ```TS
@@ -54,7 +54,7 @@ you automatically as a shortcut method.
 This can be useful in route guards where you only want to check the current state and not continue
 watching the stream. It can also be useful for unit testing.
 
-### Snapshot Selects
+## Snapshot Selects
 On the store, there is a `selectSnapshot` function that allows you to pull out the
 raw value. This is helpful for cases where you need to get a static value but can't
 use Observables. A good use case for this would be an interceptor that needs to get
@@ -80,7 +80,7 @@ export class JWTInterceptor implements HttpInterceptor {
 }
 ```
 
-### Memoized Selectors
+## Memoized Selectors
 Oftentimes you will use the same selectors in several different places
 or have complex selectors you want to keep separate from your component.
 NGXS has a `@Selector` decorator that will help us with that. This decorator
@@ -113,8 +113,17 @@ export class AppComponent {
 
 and our `pandas$` will only return animals with the name panda in them.
 
-These selectors can also accept arguments. For instance, I can have a selector
-that will only filter my animals to the passed type.
+### Memoized Selectors with Arguments
+
+Selectors can be configured to accept arguments.  
+There are two patterns that allow for this: [Lazy Selectors](#lazy-selectors) or [Dynamic Selectors](#dynamic-selectors)
+
+#### Lazy Selectors
+
+To create a lazy selector all that you need to do is return a function from the selector.
+The function returned by the selector will be memoized automatically and the logic inside this function will be evaluated at a later stage when the consumer of the selector executes the function. Note that this function can take any number of arguments (or zero arguments) as it is the consumer's responsibility to supply them.
+
+For instance, I can have a Lazy Selector that will filter my animals to the provided type.
 
 ```TS
 @State<string[]>({
@@ -122,15 +131,18 @@ that will only filter my animals to the passed type.
   defaults: []
 })
 export class ZooState {
-  @Selector() static pandas(state) {
-    return (type) => {
+
+  @Selector() 
+  static pandas(state: string[]) {
+    return (type: string) => {
       return state.filter(s => s.indexOf(type) > -1);
     };
   }
+
 }
 ```
 
-then you can use `store.select` and pass filter to `rxjs` `map` pipeline function.
+then you can use `store.select` and evaluate the lazy funxtion using the `rxjs` `map` pipeline function.
 
 ```TS
 import { Store } from '@ngxs/store';
@@ -140,13 +152,15 @@ import { map } from 'rxjs/operators';
 export class ZooComponent {
   babyPandas$: Observable<string[]>;
   
-    constructor(private store: Store) {
-      this.babyPandas$ = this.store.select(ZooState.pandas).pipe(map(filterFn => filterFn('baby')));
-    }
+  constructor(private store: Store) {
+    this.babyPandas$ = this.store.select(ZooState.pandas).pipe(map(filterFn => filterFn('baby')));
+  }
 }
 ```
 
-or you can import and use `Select` decorator and pass data to second argument.
+#### Dynamic Selectors
+
+The example which is shown in the [Lazy Selectors](#lazy-selectors) section you can use as Dynamic Selector.
 
 ```TS
 import { Select } from '@ngxs/store';
@@ -157,7 +171,81 @@ export class ZooComponent {
 }
 ```
 
-#### Joining Selectors
+A dynamic selector is created by using the `createSelector` function as opposed to the `@Selector` decorator. It does not need to be created in any special area at any specific time. The typical use case though would be to create a selector that looks like a normal selector but takes an argument to provide to the dynamic selector.
+
+For instance, I can have a Dynamic Selector that will filter my animals to the provided type.
+
+```TS
+@State<string[]>({
+  name: 'animals',
+  defaults: []
+})
+export class ZooState {
+
+  static pandas(type: string) {
+    return createSelector([ZooState], (state: string[]) => {
+      return state.filter(s => s.indexOf(type) > -1);
+    };
+  }
+
+}
+```
+
+then you can use `@Select` to call this function with the parameter provided.
+
+```TS
+import { Store } from '@ngxs/store';
+import { map } from 'rxjs/operators';
+
+@Component({ ... })
+export class ZooComponent {
+  
+  @Select(ZooState.pandas('baby'))
+  babyPandas$: Observable<string[]>;
+  
+  @Select(ZooState.pandas('adult'))
+  adultPandas$: Observable<string[]>;  
+
+}
+```
+
+Note that each of these selectors have their own separate memoization. Even if two dynamic selectors created in this way are provided the same argument, they will have separate memoization.
+
+These selectors are extremely powerful and are what is used under the hood to create all other selectors. 
+
+_Dynamic Selectors (dynamic state slice)_
+
+An interesting use case would be to allow for a selector to be reused to select from States that have the same structure. For example:
+
+```TS
+export class SharedSelectors {
+
+  static getEntities(stateClass) {
+    return createSelector([stateClass], (state: { entities: any[] }) => {
+      return state.entities;
+    };
+  }
+
+}
+```
+
+then this could be used as follows:
+
+```TS
+
+@Component({ ... })
+export class ZooComponent {
+  
+  @Select(SharedSelectors.getEntities(ZooState))
+  zoos$: Observable<Zoo[]>;
+
+  @Select(SharedSelectors.getEntities(ParkState))
+  parks$: Observable<Park[]>;
+
+}
+```
+
+### Joining Selectors
 When defining a selector, you can also pass other selectors into the signature
 of the `Selector` decorator to join other selectors with this state selector.
 
@@ -179,8 +267,7 @@ When using the `Selector` decorator along with a state class, it will still
 inject the state class's state first followed by the other selectors in the order
 they were passed in the signature.
 
-
-#### Meta Selectors
+### Meta Selectors
 By default selectors in NGXS are bound to a state. Sometimes you need the ability
 to join to un-related states in a high-performance re-usable fashion. A meta selector
 is a selector allows you to bind N number of selectors together to return a state
