@@ -36,6 +36,7 @@
   * [Style Guide](recipes/style-guide.md)
 * Plugins
   * [Introduction](plugins/intro.md)
+  * [CLI](plugins/cli.md)
   * [Logger](plugins/logger.md)
   * [Devtools](plugins/devtools.md)
   * [Storage](plugins/storage.md)
