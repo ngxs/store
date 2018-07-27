@@ -58,7 +58,7 @@ export interface ZooStateModel {
 }
 
 @State<ZooStateModel>({
-  name: 'zoo'
+  name: 'zoo',
   defaults: {
     feed: false
   }
