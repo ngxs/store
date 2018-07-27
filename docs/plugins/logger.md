@@ -1,11 +1,12 @@
 # Logger Plugin
 A simple console log plugin to log actions as they are processed.
 
-## Install
-The Logger plugin can be installed using NPM:
-
+## Installation
 ```bash
-npm i @ngxs/logger-plugin --S
+npm install @ngxs/logger-plugin
+
+# or if you are using yarn
+yarn add @ngxs/logger-plugin
 ```
 
 ## Usage

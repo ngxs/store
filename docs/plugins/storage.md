@@ -1,11 +1,12 @@
 # Storage
 Back your stores with `localStorage`, `sessionStorage` or any other mechanism you wish.
 
-## Install
-The Storage plugin can be installed using NPM:
-
+## Installation
 ```bash
-npm i @ngxs/storage-plugin --S
+npm install @ngxs/storage-plugin
+
+# or if you are using yarn
+yarn add @ngxs/storage-plugin
 ```
 
 ## Usage

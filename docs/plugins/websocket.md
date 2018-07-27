@@ -1,11 +1,12 @@
 # Websocket Plugin - Experimental Status
 Bind server websocket events to Ngxs store actions.
 
-## Install
-The Websocket plugin can be installed using NPM:
-
+## Installation
 ```bash
-npm i @ngxs/websocket-plugin --S
+npm install @ngxs/websocket-plugin
+
+# or if you are using yarn
+yarn add @ngxs/websocket-plugin
 ```
 
 ## Configuration

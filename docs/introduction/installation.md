@@ -1,8 +1,11 @@
-## Installing
-To get started, install the package using npm. The latest version (3.x) supports Angular/RX 6, if you want support for Angular5, use version 2.x.
+## Installation
+To get started, install the package from npm. The latest version (3.x) supports Angular/RX 6, if you want support for Angular5, use version 2.x.
 
 ```bash
-npm i @ngxs/store --S
+npm install @ngxs/store
+
+# or if you are using yarn
+yarn add @ngxs/store
 ```
 
 then in `app.module.ts`, import the `NgxsModule`:
@@ -48,7 +51,6 @@ yarn add @ngxs/logger-plugin@dev
 
 # of if you want to update multiple things at the same time
 yarn add @ngxs/{store,logger-plugin,devtools-plugin}@dev
-
 ```
 
 This will install the version currently tagged as `@dev`.
