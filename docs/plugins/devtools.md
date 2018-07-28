@@ -29,7 +29,7 @@ export class AppModule {}
 ### Options
 The plugin supports the following options passed via the `forRoot` method:
 
-- `name`: Set the name by which this store instance is referenced in devtools (Default 'NGXS')
+- `name`: Set the name by which this store instance is referenced in devtools (Default: 'NGXS')
 - `disabled`: Disable the devtools during production
 - `maxAge`: Max number of entries to keep.
 - `actionSanitizer`: Reformat actions before sending to dev tools
