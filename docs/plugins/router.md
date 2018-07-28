@@ -15,11 +15,12 @@ time-travel debugging, and easy access from any store-connected component.
 
 This plugin binds that state from the Angular router to our NGXS store.
 
-## Install
-The Router plugin can be installed using NPM:
-
+## Installation
 ```bash
-npm i @ngxs/router-plugin --S
+npm install @ngxs/router-plugin --save
+
+# or if you are using yarn
+yarn add @ngxs/router-plugin
 ```
 
 ## Usage

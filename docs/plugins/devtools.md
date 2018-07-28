@@ -3,11 +3,12 @@ Plugin with integration with the [Redux Devtools extension](http://extension.rem
 
 ![Devtools Screenshot](../assets/devtools.png)
 
-## Install
-The Devtools plugin can be installed using NPM:
-
+## Installation
 ```bash
-npm i @ngxs/devtools-plugin --S
+npm install @ngxs/devtools-plugin --save
+
+# or if you are using yarn
+yarn add @ngxs/devtools-plugin
 ```
 
 ## Usage

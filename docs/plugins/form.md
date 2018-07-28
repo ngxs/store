@@ -10,11 +10,12 @@ This is an excellent use case for stores and we can conquer that case with this 
 
 In a nutshell, this plugin helps to keep your forms and state in sync.
 
-## Install
-The Forms plugin can be installed using NPM:
-
+## Installation
 ```bash
-npm i @ngxs/form-plugin --S
+npm install @ngxs/form-plugin --save
+
+# or if you are using yarn
+yarn add @ngxs/form-plugin
 ```
 
 ## Usage
