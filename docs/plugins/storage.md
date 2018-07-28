@@ -3,7 +3,7 @@ Back your stores with `localStorage`, `sessionStorage` or any other mechanism yo
 
 ## Installation
 ```bash
-npm install @ngxs/storage-plugin
+npm install @ngxs/storage-plugin --save
 
 # or if you are using yarn
 yarn add @ngxs/storage-plugin

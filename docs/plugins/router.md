@@ -17,7 +17,7 @@ This plugin binds that state from the Angular router to our NGXS store.
 
 ## Installation
 ```bash
-npm install @ngxs/router-plugin
+npm install @ngxs/router-plugin --save
 
 # or if you are using yarn
 yarn add @ngxs/router-plugin

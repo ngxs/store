@@ -12,7 +12,7 @@ In a nutshell, this plugin helps to keep your forms and state in sync.
 
 ## Installation
 ```bash
-npm install @ngxs/form-plugin
+npm install @ngxs/form-plugin --save
 
 # or if you are using yarn
 yarn add @ngxs/form-plugin

@@ -2,7 +2,7 @@
 To get started, install the package from npm. The latest version (3.x) supports Angular/RX 6, if you want support for Angular5, use version 2.x.
 
 ```bash
-npm install @ngxs/store
+npm install @ngxs/store --save
 
 # or if you are using yarn
 yarn add @ngxs/store
@@ -42,8 +42,8 @@ Our continuous integration server runs all tests on every commit to master and i
 This means that if you want the bleeding edge of `@ngxs/store` or any of the plugins you can simply do:
 
 ```bash
-npm install @ngxs/store@dev
-npm install @ngxs/logger-plugin@dev
+npm install @ngxs/store@dev --save
+npm install @ngxs/logger-plugin@dev --save
 
 # or if you are using yarn
 yarn add @ngxs/store@dev

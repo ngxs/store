@@ -3,7 +3,7 @@ A simple console log plugin to log actions as they are processed.
 
 ## Installation
 ```bash
-npm install @ngxs/logger-plugin
+npm install @ngxs/logger-plugin --save
 
 # or if you are using yarn
 yarn add @ngxs/logger-plugin
