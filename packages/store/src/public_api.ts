@@ -4,7 +4,7 @@ export { Store } from './store';
 export { State } from './decorators/state';
 export { Select } from './decorators/select';
 export { Actions } from './actions-stream';
-export { ofAction, ofActionSuccessful, ofActionDispatched, ofActionErrored } from './operators/of-action';
+export { ofAction, ofActionDispatched, ofActionSuccessful, ofActionCanceled, ofActionErrored } from './operators/of-action';
 export { NgxsPlugin, NgxsPluginFn, StateContext, NgxsOnInit } from './symbols';
 export { Selector } from './decorators/selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
