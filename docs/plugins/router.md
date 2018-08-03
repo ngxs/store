@@ -39,7 +39,7 @@ import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 export class AppModule {}
 ```
 
-Now the route will be reflected in your store under the `route` state name. The
+Now the route will be reflected in your store under the `router` state name. The
 state is represented as a `RouterStateSnapshot` object.
 
 You can also navigate using the store's dispatch method. It accepts the following
