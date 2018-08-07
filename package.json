@@ -28,6 +28,9 @@
     },
     {
       "name": "Mark Whitfeld"
+    },
+    {
+      "name": "Maxim Ivanov"
     }
   ],
   "license": "MIT",
@@ -59,9 +62,10 @@
     "build:integration": "ng build --prod --project integration #requires yarn build",
     "// - TESTING": "Test all modules",
     "test": "ng test",
+    "test:cli": "cd packages/cli && npm i && npm test",
     "test:integration": "ng test --project integration #requires yarn build",
     "// - CI": "Ci Testing",
-    "test:ci": "ng test --watch=false --code-coverage --progress=false --project ngxs",
+    "test:ci": "ng test --watch=false --code-coverage --progress=false --project ngxs && npm run test:cli",
     "test:ci:integration": "ng test --watch=false --progress=false --project integration && ng build --prod --progress=false --project integration",
     "publish:dev": "ts-node tools/publish-dev-builds",
     "publish:tagged": "ts-node tools/publish-tagged-builds",
