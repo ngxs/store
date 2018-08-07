@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ComponentFixtureAutoDetect, discardPeriodicTasks } from '@angular/core/testing';
 import { take } from 'rxjs/operators';
+import { Store } from '@ngxs/store';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -18,6 +19,10 @@ describe('AppComponent', () => {
 
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
+
+    // reset store because of storage plugin
+    const store = TestBed.get(Store);
+    store.reset({});
   });
 
   it('should add a todo', () => {
