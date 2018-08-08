@@ -23,7 +23,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
         const isMaster = key === '@@STATE';
         let val = this._engine.getItem(key);
 
-        if (val !== 'undefined' && val !== null) {
+        if (typeof val !== 'undefined' && val !== null) {
           try {
             val = options.deserialize(val);
           } catch (e) {
