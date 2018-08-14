@@ -32,13 +32,13 @@ import { NGXS_PLUGINS } from '@ngxs/store';
 
 @NgModule({
   imports: [NgxsModule.forRoot([])],
-  providers: {
+  providers: [
     {
       provide: NGXS_PLUGINS,
       useValue: logoutPlugin,
       multi: true  
     }
-  }
+  ]
 })
 export class AppModule {}
 ```
