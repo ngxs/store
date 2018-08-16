@@ -2,11 +2,11 @@ import { Injectable, ErrorHandler, NgZone } from '@angular/core';
 import { Observable, of, forkJoin, empty, Subject, throwError } from 'rxjs';
 import { shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
 
-import { compose } from './compose';
-import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
+import { compose } from '../utils/compose';
+import { InternalActions, ActionStatus, ActionContext } from '../actions-stream';
 import { StateStream } from './state-stream';
-import { PluginManager } from './plugin-manager';
-import { enterZone } from './zone';
+import { PluginManager } from '../plugin-manager';
+import { enterZone } from '../operators/zone';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -51,7 +51,7 @@ export class InternalDispatcher {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return compose([
+    return (compose([
       ...plugins,
       (nextState, nextAction) => {
         if (nextState !== prevState) {
@@ -62,7 +62,7 @@ export class InternalDispatcher {
         this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
         return this.createDispatchObservable(actionResult$);
       }
-    ])(prevState, action) as Observable<any>;
+    ])(prevState, action) as Observable<any>).pipe(shareReplay());
   }
 
   private getActionResultStream(action: any): Observable<ActionContext> {

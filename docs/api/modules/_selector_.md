@@ -11,21 +11,22 @@
 ---
 
 ## Functions
+
 <a id="selector"></a>
 
 ###  Selector
 
-▸ **Selector**(...args: *`any`[]*): `(Anonymous function)`
+▸ **Selector**(selectors?: *`any`[]*): `(Anonymous function)`
 
-*Defined in [selector.ts:8](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/selector.ts#L8)*
+*Defined in [selector.ts:9](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/selector.ts#L9)*
 
 Decorator for memoizing a state selector.
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| args | `any`[]   |  - |
+| Param | Type |
+| ------ | ------ |
+| `Optional` selectors | `any`[] | 
 
 **Returns:** `(Anonymous function)`
 

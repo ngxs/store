@@ -1,47 +1,78 @@
-# Master
+# 3.2.0
 
-- Feature: Select combinations #51
-- Performance: Run actions outside of zones #383
-- Fix: Dispatcher error propogation #376
-- Fix: Add patchState restriction errors #371
-- Fix: Remove error when loading same state multiple times #390
-- Fix: Force route navigation to run in zones
+* Feature: createSelector functions [#484](https://github.com/ngxs/store/pull/484)
+* Fix: Expose RouterStateModel interface [#445](https://github.com/ngxs/store/pull/445)
+* Fix: State not set correctly when duplicate key in path [#459](https://github.com/ngxs/store/pull/459)
+* Fix: action stream should return in Angular zone [#456](https://github.com/ngxs/store/pull/456)
+
+# 3.1.4 6/13/18
+
+* Fix: Remove component reference from router plugin state [#441](https://github.com/ngxs/store/pull/441)
+* Fix: Fix subscription firing twice [#436](https://github.com/ngxs/store/pull/436)
+
+# 3.1.3 6/4/18
+
+* Fix: Subscribe running outside of zone [#422](https://github.com/ngxs/store/pull/422)
+* Fix: Logger not using custom options [#420](https://github.com/ngxs/store/pull/420)
+
+# 3.1.2 6/4/18
+
+* Fix: Freeze conflicting issues with router
+
+# 3.1.1 6/4/18
+
+* Fix: Freeze depedencies
+
+# 3.1.0 6/3/18
+
+* Feature: Add development mode with freeze on state and actions [#409](https://github.com/ngxs/store/pull/409)
+* Feature: Storage engine migrations [#401](https://github.com/ngxs/store/pull/401)
+* Feature: Select combinations [#51](https://github.com/ngxs/store/pull/51)
+* Feature: Snapshot select can use state class now [#398](https://github.com/ngxs/store/pull/398)
+* Feature: Meta selectors [#386](https://github.com/ngxs/store/pull/386)
+* Feature: Add ability to reset state
+* Performance: Run actions outside of zones [#383](https://github.com/ngxs/store/pull/383)
+* Fix: Dispatcher error propogation [#376](https://github.com/ngxs/store/pull/376)
+* Fix: Add patchState restriction errors [#371](https://github.com/ngxs/store/pull/371)
+* Fix: Remove error when loading same state multiple times [#390](https://github.com/ngxs/store/pull/390)
+* Fix: Force route navigation to run in zones [#393](https://github.com/ngxs/store/pull/393)
+* Fix: Selector function should still be usable as a function [#398](https://github.com/ngxs/store/pull/398)
+* Fix: Memoize inner selector function [#410](https://github.com/ngxs/store/pull/410)
 
 # 3.0.0/3.0.1 5/3/18
 
-- Chore: Upgrade to official Angular
+* Chore: Upgrade to official Angular
 
 # 3.0.0-rc.4 5/2/18
 
-- BREAKING: Rename completed to successful #349
-- Feature: Add ability to disable logger #350
-- Fix: Fix options not passed correctly to logger plugin #350
-- Fix: Patch state mutating the original state #348
-- Fix: Router plugin not working in prod #351
+* BREAKING: Rename completed to successful [#349](https://github.com/ngxs/store/pull/349)
+* Feature: Add ability to disable logger [#350](https://github.com/ngxs/store/pull/350)
+* Fix: Fix options not passed correctly to logger plugin [#350](https://github.com/ngxs/store/pull/350)
+* Fix: Patch state mutating the original state [#348](https://github.com/ngxs/store/pull/348)
+* Fix: Router plugin not working in prod [#351](https://github.com/ngxs/store/pull/351)
 
 # 3.0.0-rc.3 5/1/18
 
-- BREAKING: Update websocket connect to recieve options object #341
-- Feature: Consolidate action stream to single-source-of-truth #324
-- Fix: Remove reconnection from websocket because of issues #341
-- Fix: Enums causing prod build errors #345
-- Fix: Router race case when using prod #345
+* BREAKING: Update websocket connect to recieve options object [#341](https://github.com/ngxs/store/pull/341)
+* Feature: Consolidate action stream to single-source-of-truth [#324](https://github.com/ngxs/store/pull/324)
+* Fix: Remove reconnection from websocket because of issues [#341](https://github.com/ngxs/store/pull/341)
+* Fix: Enums causing prod build errors [#345](https://github.com/ngxs/store/pull/345)
+* Fix: Router race case when using prod [#345](https://github.com/ngxs/store/pull/345)
 
 # 3.0.0-rc.2 4/27/18
 
-- Fix: Form update fix #335
-- Chore: Upgrade RxJS to official #332
-
+* Fix: Form update fix [#335](https://github.com/ngxs/store/pull/335)
+* Chore: Upgrade RxJS to official [#332](https://github.com/ngxs/store/pull/332)
 
 # 3.0.0-rc.1 4/12/18
 
-- Fix: Rename `ofActionComplete` to `ofActionCompleted`
-- Fix: Expose `ofActionErrored`
-- Fix: Form Plugin Recursive Error
+* Fix: Rename `ofActionComplete` to `ofActionCompleted`
+* Fix: Expose `ofActionErrored`
+* Fix: Form Plugin Recursive Error
 
 # 3.0.0-rc.0 4/10/18
 
-* Fix: Observable dispatch issues #235
+* Fix: Observable dispatch issues [#235](https://github.com/ngxs/store/pull/235)
 * Fix: Websocket error when socket undefined
 * Fix: Devtools not disabling
 * Fix: Action Stream has too much exposed
@@ -50,7 +81,7 @@
 
 ### BREAKING
 
-* feat(store): create action stream that shows the action lifecycle #255
+* feat(store): create action stream that shows the action lifecycle [#255](https://github.com/ngxs/store/pull/255)
 
 To keep the same behavior switch from the ofAction operator to the `ofActionDispatched` operator
 
@@ -65,11 +96,11 @@ To keep the same behavior switch from the ofAction operator to the `ofActionDisp
 
 # 2.1.0-beta.9 4/4/18
 
-* Fix: Websocket and form errors caused by #212
+* Fix: Websocket and form errors caused by [#212](https://github.com/ngxs/store/pull/212)
 
 # 2.1.0-beta.8 4/4/18
 
-* Fix: Minification issues #212
+* Fix: Minification issues [#212](https://github.com/ngxs/store/pull/212)
 
 # 2.1.0-beta.7 4/3/18
 
@@ -88,7 +119,7 @@ To keep the same behavior switch from the ofAction operator to the `ofActionDisp
 
 * Feature: Added `snapshot` method to store to get raw value
 * Fix: Return `T` from `selectSnapshot`
-* Fix: Minification issues #206
+* Fix: Minification issues [#206](https://github.com/ngxs/store/pull/206)
 * Fix: Websockets not emitting correctly
 
 # 2.1.0-beta.3 4/3/18
@@ -122,7 +153,7 @@ first deprecation periods.
 
 * Fix: Prevent null exceptions when accessing state before loaded
 * Fix: Move action stream to subject
-* Fix: Ensure metadata exists for a Selector (#181)
+* Fix: Ensure metadata exists for a Selector [#181](https://github.com/ngxs/store/pull/181)
 
 # 2.0.0-rc.24 3/26/18
 
@@ -136,7 +167,7 @@ first deprecation periods.
 
 # 2.0.0-rc.22 3/26/18
 
-* BREAKING: Storage plugin fixes #154
+* BREAKING: Storage plugin fixes [#154](https://github.com/ngxs/store/pull/154)
 * Fix: AoT Regression in Storage Plugin
 
 # 2.0.0-rc.21 3/25/18
@@ -148,14 +179,14 @@ first deprecation periods.
 # 2.0.0-rc.20 3/23/18
 
 * BREAKING: We moved the npm package from `ngxs` to `@ngxs/store`!
-* Fix: devtools not sending payload #132
+* Fix: devtools not sending payload [#132](https://github.com/ngxs/store/pull/132)
 * Fix: better if condition for localstorage
 
 # 2.0.0-rc.19 3/23/18
 
-* Feature: add overloading to select method in Store #130
-* Fix: add empty options object, to prevent errors #131
-* Fix: feature-module bugs #135
+* Feature: add overloading to select method in Store [#130](https://github.com/ngxs/store/pull/130)
+* Fix: add empty options object, to prevent errors [#131](https://github.com/ngxs/store/pull/131)
+* Fix: feature-module bugs [#135](https://github.com/ngxs/store/pull/135)
 
 # 2.0.0-rc.18 3/20/18
 
@@ -172,12 +203,12 @@ first deprecation periods.
 
 # 2.0.0-rc.15 3/20/18
 
-* Fix: Lazy load issue introduced by #126
+* Fix: Lazy load issue introduced by [#126](https://github.com/ngxs/store/pull/126)
 
 # 2.0.0-rc.14 3/20/18
 
 * Feature: NgxsLoggerPlugin log action payload if present
-* Fix: Issues with feature states #126
+* Fix: Issues with feature states [#126](https://github.com/ngxs/store/pull/126)
 
 # 2.0.0-rc.13 3/20/18
 

@@ -6,13 +6,13 @@ Internal Action stream that is emitted anytime an action is dispatched.
 
 ## Hierarchy
 
- `Subject`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
+↳  [OrderedSubject](_actions_stream_.orderedsubject.md)<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
 
 **↳ InternalActions**
 
 ## Implements
 
-* `Subscribable`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
+* `Subscribable`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
 * `SubscriptionLike`
 
 ## Index
@@ -53,9 +53,12 @@ Internal Action stream that is emitted anytime an action is dispatched.
 ---
 
 ## Constructors
+
 <a id="constructor"></a>
 
-### ⊕ **new InternalActions**(): [InternalActions](_actions_stream_.internalactions.md)
+###  constructor
+
+⊕ **new InternalActions**(): [InternalActions](_actions_stream_.internalactions.md)
 
 *Inherited from Subject.__constructor*
 
@@ -65,14 +68,15 @@ Internal Action stream that is emitted anytime an action is dispatched.
 
 **Returns:** [InternalActions](_actions_stream_.internalactions.md)
 
----
+___
 
 ## Properties
+
 <a id="_isscalar"></a>
 
 ###  _isScalar
 
-**●  _isScalar**:  *`boolean`* 
+**● _isScalar**: *`boolean`*
 
 *Inherited from Observable._isScalar*
 
@@ -81,60 +85,55 @@ Internal Action stream that is emitted anytime an action is dispatched.
 Internal implementation detail, do not use directly.
 
 ___
-
 <a id="closed"></a>
 
 ###  closed
 
-**●  closed**:  *`boolean`* 
+**● closed**: *`boolean`*
 
 *Inherited from Subject.closed*
 
 *Defined in /Users/austin/dev/ngxs/node_modules/rxjs/internal/Subject.d.ts:18*
 
 ___
-
 <a id="haserror"></a>
 
 ###  hasError
 
-**●  hasError**:  *`boolean`* 
+**● hasError**: *`boolean`*
 
 *Inherited from Subject.hasError*
 
 *Defined in /Users/austin/dev/ngxs/node_modules/rxjs/internal/Subject.d.ts:20*
 
 ___
-
 <a id="isstopped"></a>
 
 ###  isStopped
 
-**●  isStopped**:  *`boolean`* 
+**● isStopped**: *`boolean`*
 
 *Inherited from Subject.isStopped*
 
 *Defined in /Users/austin/dev/ngxs/node_modules/rxjs/internal/Subject.d.ts:19*
 
 ___
-
 <a id="observers"></a>
 
 ###  observers
 
-**●  observers**:  *`Observer`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>[]* 
+**● observers**: *`Observer`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>[]*
 
 *Inherited from Subject.observers*
 
 *Defined in /Users/austin/dev/ngxs/node_modules/rxjs/internal/Subject.d.ts:17*
 
 ___
-
 <a id="operator"></a>
 
 ###  operator
 
-**●  operator**:  *`Operator`.<`any`>,.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>* 
+**● operator**: *`Operator`<`any`, [ActionContext](../interfaces/_actions_stream_.actioncontext.md)>*
 
 *Inherited from Observable.operator*
 
@@ -143,12 +142,11 @@ ___
 *__deprecated__*: This is an internal implementation detail, do not use.
 
 ___
-
 <a id="source"></a>
 
 ###  source
 
-**●  source**:  *`Observable`.<`any`>* 
+**● source**: *`Observable`<`any`>*
 
 *Inherited from Observable.source*
 
@@ -157,24 +155,22 @@ ___
 *__deprecated__*: This is an internal implementation detail, do not use.
 
 ___
-
 <a id="thrownerror"></a>
 
 ###  thrownError
 
-**●  thrownError**:  *`any`* 
+**● thrownError**: *`any`*
 
 *Inherited from Subject.thrownError*
 
 *Defined in /Users/austin/dev/ngxs/node_modules/rxjs/internal/Subject.d.ts:21*
 
 ___
-
 <a id="create"></a>
 
 ### `<Static>` create
 
-**●  create**:  *`Function`* 
+**● create**: *`Function`*
 
 *Inherited from Subject.create*
 
@@ -185,12 +181,11 @@ ___
 *__nocollapse__*: 
 
 ___
-
 <a id="if"></a>
 
 ### `<Static>` if
 
-**●  if**:  *`iif`* 
+**● if**: *`iif`*
 
 *Inherited from Observable.if*
 
@@ -201,12 +196,11 @@ ___
 *__deprecated__*: In favor of iif creation function: import { iif } from 'rxjs';
 
 ___
-
 <a id="throw"></a>
 
 ### `<Static>` throw
 
-**●  throw**:  *`throwError`* 
+**● throw**: *`throwError`*
 
 *Inherited from Observable.throw*
 
@@ -219,11 +213,12 @@ ___
 ___
 
 ## Methods
+
 <a id="_subscribe"></a>
 
 ###  _subscribe
 
-▸ **_subscribe**(subscriber: *`Subscriber`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>*): `Subscription`
+▸ **_subscribe**(subscriber: *`Subscriber`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>*): `Subscription`
 
 *Inherited from Subject._subscribe*
 
@@ -235,19 +230,18 @@ ___
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| subscriber | `Subscriber`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>   |  - |
+| Param | Type |
+| ------ | ------ |
+| subscriber | `Subscriber`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)> | 
 
 **Returns:** `Subscription`
 
 ___
-
 <a id="_trysubscribe"></a>
 
 ###  _trySubscribe
 
-▸ **_trySubscribe**(subscriber: *`Subscriber`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>*): `TeardownLogic`
+▸ **_trySubscribe**(subscriber: *`Subscriber`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>*): `TeardownLogic`
 
 *Inherited from Subject._trySubscribe*
 
@@ -259,28 +253,26 @@ ___
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| subscriber | `Subscriber`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>   |  - |
+| Param | Type |
+| ------ | ------ |
+| subscriber | `Subscriber`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)> | 
 
 **Returns:** `TeardownLogic`
 
 ___
-
 <a id="asobservable"></a>
 
 ###  asObservable
 
-▸ **asObservable**(): `Observable`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
+▸ **asObservable**(): `Observable`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
 
 *Inherited from Subject.asObservable*
 
 *Defined in /Users/austin/dev/ngxs/node_modules/rxjs/internal/Subject.d.ts:34*
 
-**Returns:** `Observable`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
+**Returns:** `Observable`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
 
 ___
-
 <a id="complete"></a>
 
 ###  complete
@@ -294,7 +286,6 @@ ___
 **Returns:** `void`
 
 ___
-
 <a id="error"></a>
 
 ###  error
@@ -307,19 +298,18 @@ ___
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| err | `any`   |  - |
+| Param | Type |
+| ------ | ------ |
+| err | `any` | 
 
 **Returns:** `void`
 
 ___
-
 <a id="foreach"></a>
 
 ###  forEach
 
-▸ **forEach**(next: *`function`*, promiseCtor?: *`PromiseConstructorLike`*): `Promise`.<`void`>
+▸ **forEach**(next: *`function`*, promiseCtor?: *`PromiseConstructorLike`*): `Promise`<`void`>
 
 *Inherited from Observable.forEach*
 
@@ -331,20 +321,19 @@ ___
 
 | Param | Type | Description |
 | ------ | ------ | ------ |
-| next | `function`   |  a handler for each value emitted by the observable |
-| promiseCtor | `PromiseConstructorLike`   |  - |
+| next | `function` |  a handler for each value emitted by the observable |
+| `Optional` promiseCtor | `PromiseConstructorLike` | 
 
-**Returns:** `Promise`.<`void`>
+**Returns:** `Promise`<`void`>
 a promise that either resolves on observable completion or
  rejects with the handled error
 
 ___
-
 <a id="lift"></a>
 
 ###  lift
 
-▸ **lift**R(operator: *`Operator`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`R`>*): `Observable`.<`R`>
+▸ **lift**R(operator: *`Operator`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `R`>*): `Observable`<`R`>
 
 *Inherited from Subject.lift*
 
@@ -357,65 +346,65 @@ ___
 #### R 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| operator | `Operator`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`R`>   |  - |
+| Param | Type |
+| ------ | ------ |
+| operator | `Operator`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `R`> | 
 
-**Returns:** `Observable`.<`R`>
+**Returns:** `Observable`<`R`>
 
 ___
-
 <a id="next"></a>
 
 ###  next
 
 ▸ **next**(value?: *[ActionContext](../interfaces/_actions_stream_.actioncontext.md)*): `void`
 
-*Inherited from Subject.next*
+*Inherited from [OrderedSubject](_actions_stream_.orderedsubject.md).[next](_actions_stream_.orderedsubject.md#next)*
 
-*Defined in /Users/austin/dev/ngxs/node_modules/rxjs/internal/Subject.d.ts:26*
+*Overrides Subject.next*
+
+*Defined in [actions-stream.ts:39](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/actions-stream.ts#L39)*
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| value | [ActionContext](../interfaces/_actions_stream_.actioncontext.md)   |  - |
+| Param | Type |
+| ------ | ------ |
+| `Optional` value | [ActionContext](../interfaces/_actions_stream_.actioncontext.md) | 
 
 **Returns:** `void`
 
 ___
-
 <a id="pipe"></a>
 
 ###  pipe
 
-▸ **pipe**(): `Observable`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
+▸ **pipe**(): `Observable`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
 
-▸ **pipe**A(op1: *`OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>*): `Observable`.<`A`>
+▸ **pipe**A(op1: *`OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`>*): `Observable`<`A`>
 
-▸ **pipe**A,B(op1: *`OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>*, op2: *`OperatorFunction`.<`A`>,.<`B`>*): `Observable`.<`B`>
+▸ **pipe**A,B(op1: *`OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`>*, op2: *`OperatorFunction`<`A`, `B`>*): `Observable`<`B`>
 
-▸ **pipe**A,B,C(op1: *`OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>*, op2: *`OperatorFunction`.<`A`>,.<`B`>*, op3: *`OperatorFunction`.<`B`>,.<`C`>*): `Observable`.<`C`>
+▸ **pipe**A,B,C(op1: *`OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`>*, op2: *`OperatorFunction`<`A`, `B`>*, op3: *`OperatorFunction`<`B`, `C`>*): `Observable`<`C`>
 
-▸ **pipe**A,B,C,D(op1: *`OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>*, op2: *`OperatorFunction`.<`A`>,.<`B`>*, op3: *`OperatorFunction`.<`B`>,.<`C`>*, op4: *`OperatorFunction`.<`C`>,.<`D`>*): `Observable`.<`D`>
+▸ **pipe**A,B,C,D(op1: *`OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`>*, op2: *`OperatorFunction`<`A`, `B`>*, op3: *`OperatorFunction`<`B`, `C`>*, op4: *`OperatorFunction`<`C`, `D`>*): `Observable`<`D`>
 
-▸ **pipe**A,B,C,D,E(op1: *`OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>*, op2: *`OperatorFunction`.<`A`>,.<`B`>*, op3: *`OperatorFunction`.<`B`>,.<`C`>*, op4: *`OperatorFunction`.<`C`>,.<`D`>*, op5: *`OperatorFunction`.<`D`>,.<`E`>*): `Observable`.<`E`>
+▸ **pipe**A,B,C,D,E(op1: *`OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`>*, op2: *`OperatorFunction`<`A`, `B`>*, op3: *`OperatorFunction`<`B`, `C`>*, op4: *`OperatorFunction`<`C`, `D`>*, op5: *`OperatorFunction`<`D`, `E`>*): `Observable`<`E`>
 
-▸ **pipe**A,B,C,D,E,F(op1: *`OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>*, op2: *`OperatorFunction`.<`A`>,.<`B`>*, op3: *`OperatorFunction`.<`B`>,.<`C`>*, op4: *`OperatorFunction`.<`C`>,.<`D`>*, op5: *`OperatorFunction`.<`D`>,.<`E`>*, op6: *`OperatorFunction`.<`E`>,.<`F`>*): `Observable`.<`F`>
+▸ **pipe**A,B,C,D,E,F(op1: *`OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`>*, op2: *`OperatorFunction`<`A`, `B`>*, op3: *`OperatorFunction`<`B`, `C`>*, op4: *`OperatorFunction`<`C`, `D`>*, op5: *`OperatorFunction`<`D`, `E`>*, op6: *`OperatorFunction`<`E`, `F`>*): `Observable`<`F`>
 
-▸ **pipe**A,B,C,D,E,F,G(op1: *`OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>*, op2: *`OperatorFunction`.<`A`>,.<`B`>*, op3: *`OperatorFunction`.<`B`>,.<`C`>*, op4: *`OperatorFunction`.<`C`>,.<`D`>*, op5: *`OperatorFunction`.<`D`>,.<`E`>*, op6: *`OperatorFunction`.<`E`>,.<`F`>*, op7: *`OperatorFunction`.<`F`>,.<`G`>*): `Observable`.<`G`>
+▸ **pipe**A,B,C,D,E,F,G(op1: *`OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`>*, op2: *`OperatorFunction`<`A`, `B`>*, op3: *`OperatorFunction`<`B`, `C`>*, op4: *`OperatorFunction`<`C`, `D`>*, op5: *`OperatorFunction`<`D`, `E`>*, op6: *`OperatorFunction`<`E`, `F`>*, op7: *`OperatorFunction`<`F`, `G`>*): `Observable`<`G`>
 
-▸ **pipe**A,B,C,D,E,F,G,H(op1: *`OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>*, op2: *`OperatorFunction`.<`A`>,.<`B`>*, op3: *`OperatorFunction`.<`B`>,.<`C`>*, op4: *`OperatorFunction`.<`C`>,.<`D`>*, op5: *`OperatorFunction`.<`D`>,.<`E`>*, op6: *`OperatorFunction`.<`E`>,.<`F`>*, op7: *`OperatorFunction`.<`F`>,.<`G`>*, op8: *`OperatorFunction`.<`G`>,.<`H`>*): `Observable`.<`H`>
+▸ **pipe**A,B,C,D,E,F,G,H(op1: *`OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`>*, op2: *`OperatorFunction`<`A`, `B`>*, op3: *`OperatorFunction`<`B`, `C`>*, op4: *`OperatorFunction`<`C`, `D`>*, op5: *`OperatorFunction`<`D`, `E`>*, op6: *`OperatorFunction`<`E`, `F`>*, op7: *`OperatorFunction`<`F`, `G`>*, op8: *`OperatorFunction`<`G`, `H`>*): `Observable`<`H`>
 
-▸ **pipe**A,B,C,D,E,F,G,H,I(op1: *`OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>*, op2: *`OperatorFunction`.<`A`>,.<`B`>*, op3: *`OperatorFunction`.<`B`>,.<`C`>*, op4: *`OperatorFunction`.<`C`>,.<`D`>*, op5: *`OperatorFunction`.<`D`>,.<`E`>*, op6: *`OperatorFunction`.<`E`>,.<`F`>*, op7: *`OperatorFunction`.<`F`>,.<`G`>*, op8: *`OperatorFunction`.<`G`>,.<`H`>*, op9: *`OperatorFunction`.<`H`>,.<`I`>*): `Observable`.<`I`>
+▸ **pipe**A,B,C,D,E,F,G,H,I(op1: *`OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`>*, op2: *`OperatorFunction`<`A`, `B`>*, op3: *`OperatorFunction`<`B`, `C`>*, op4: *`OperatorFunction`<`C`, `D`>*, op5: *`OperatorFunction`<`D`, `E`>*, op6: *`OperatorFunction`<`E`, `F`>*, op7: *`OperatorFunction`<`F`, `G`>*, op8: *`OperatorFunction`<`G`, `H`>*, op9: *`OperatorFunction`<`H`, `I`>*): `Observable`<`I`>
 
-▸ **pipe**R(...operations: *`OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`R`>[]*): `Observable`.<`R`>
+▸ **pipe**R(...operations: *`OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `R`>[]*): `Observable`<`R`>
 
 *Inherited from Observable.pipe*
 
 *Defined in /Users/austin/dev/ngxs/node_modules/rxjs/internal/Observable.d.ts:71*
 
-**Returns:** `Observable`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
+**Returns:** `Observable`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>
 
 *Inherited from Observable.pipe*
 
@@ -426,11 +415,11 @@ ___
 #### A 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| op1 | `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>   |  - |
+| Param | Type |
+| ------ | ------ |
+| op1 | `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`> | 
 
-**Returns:** `Observable`.<`A`>
+**Returns:** `Observable`<`A`>
 
 *Inherited from Observable.pipe*
 
@@ -442,12 +431,12 @@ ___
 #### B 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| op1 | `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>   |  - |
-| op2 | `OperatorFunction`.<`A`>,.<`B`>   |  - |
+| Param | Type |
+| ------ | ------ |
+| op1 | `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`> | 
+| op2 | `OperatorFunction`<`A`, `B`> | 
 
-**Returns:** `Observable`.<`B`>
+**Returns:** `Observable`<`B`>
 
 *Inherited from Observable.pipe*
 
@@ -460,13 +449,13 @@ ___
 #### C 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| op1 | `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>   |  - |
-| op2 | `OperatorFunction`.<`A`>,.<`B`>   |  - |
-| op3 | `OperatorFunction`.<`B`>,.<`C`>   |  - |
+| Param | Type |
+| ------ | ------ |
+| op1 | `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`> | 
+| op2 | `OperatorFunction`<`A`, `B`> | 
+| op3 | `OperatorFunction`<`B`, `C`> | 
 
-**Returns:** `Observable`.<`C`>
+**Returns:** `Observable`<`C`>
 
 *Inherited from Observable.pipe*
 
@@ -480,14 +469,14 @@ ___
 #### D 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| op1 | `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>   |  - |
-| op2 | `OperatorFunction`.<`A`>,.<`B`>   |  - |
-| op3 | `OperatorFunction`.<`B`>,.<`C`>   |  - |
-| op4 | `OperatorFunction`.<`C`>,.<`D`>   |  - |
+| Param | Type |
+| ------ | ------ |
+| op1 | `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`> | 
+| op2 | `OperatorFunction`<`A`, `B`> | 
+| op3 | `OperatorFunction`<`B`, `C`> | 
+| op4 | `OperatorFunction`<`C`, `D`> | 
 
-**Returns:** `Observable`.<`D`>
+**Returns:** `Observable`<`D`>
 
 *Inherited from Observable.pipe*
 
@@ -502,15 +491,15 @@ ___
 #### E 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| op1 | `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>   |  - |
-| op2 | `OperatorFunction`.<`A`>,.<`B`>   |  - |
-| op3 | `OperatorFunction`.<`B`>,.<`C`>   |  - |
-| op4 | `OperatorFunction`.<`C`>,.<`D`>   |  - |
-| op5 | `OperatorFunction`.<`D`>,.<`E`>   |  - |
+| Param | Type |
+| ------ | ------ |
+| op1 | `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`> | 
+| op2 | `OperatorFunction`<`A`, `B`> | 
+| op3 | `OperatorFunction`<`B`, `C`> | 
+| op4 | `OperatorFunction`<`C`, `D`> | 
+| op5 | `OperatorFunction`<`D`, `E`> | 
 
-**Returns:** `Observable`.<`E`>
+**Returns:** `Observable`<`E`>
 
 *Inherited from Observable.pipe*
 
@@ -526,16 +515,16 @@ ___
 #### F 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| op1 | `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>   |  - |
-| op2 | `OperatorFunction`.<`A`>,.<`B`>   |  - |
-| op3 | `OperatorFunction`.<`B`>,.<`C`>   |  - |
-| op4 | `OperatorFunction`.<`C`>,.<`D`>   |  - |
-| op5 | `OperatorFunction`.<`D`>,.<`E`>   |  - |
-| op6 | `OperatorFunction`.<`E`>,.<`F`>   |  - |
+| Param | Type |
+| ------ | ------ |
+| op1 | `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`> | 
+| op2 | `OperatorFunction`<`A`, `B`> | 
+| op3 | `OperatorFunction`<`B`, `C`> | 
+| op4 | `OperatorFunction`<`C`, `D`> | 
+| op5 | `OperatorFunction`<`D`, `E`> | 
+| op6 | `OperatorFunction`<`E`, `F`> | 
 
-**Returns:** `Observable`.<`F`>
+**Returns:** `Observable`<`F`>
 
 *Inherited from Observable.pipe*
 
@@ -552,17 +541,17 @@ ___
 #### G 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| op1 | `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>   |  - |
-| op2 | `OperatorFunction`.<`A`>,.<`B`>   |  - |
-| op3 | `OperatorFunction`.<`B`>,.<`C`>   |  - |
-| op4 | `OperatorFunction`.<`C`>,.<`D`>   |  - |
-| op5 | `OperatorFunction`.<`D`>,.<`E`>   |  - |
-| op6 | `OperatorFunction`.<`E`>,.<`F`>   |  - |
-| op7 | `OperatorFunction`.<`F`>,.<`G`>   |  - |
+| Param | Type |
+| ------ | ------ |
+| op1 | `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`> | 
+| op2 | `OperatorFunction`<`A`, `B`> | 
+| op3 | `OperatorFunction`<`B`, `C`> | 
+| op4 | `OperatorFunction`<`C`, `D`> | 
+| op5 | `OperatorFunction`<`D`, `E`> | 
+| op6 | `OperatorFunction`<`E`, `F`> | 
+| op7 | `OperatorFunction`<`F`, `G`> | 
 
-**Returns:** `Observable`.<`G`>
+**Returns:** `Observable`<`G`>
 
 *Inherited from Observable.pipe*
 
@@ -580,18 +569,18 @@ ___
 #### H 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| op1 | `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>   |  - |
-| op2 | `OperatorFunction`.<`A`>,.<`B`>   |  - |
-| op3 | `OperatorFunction`.<`B`>,.<`C`>   |  - |
-| op4 | `OperatorFunction`.<`C`>,.<`D`>   |  - |
-| op5 | `OperatorFunction`.<`D`>,.<`E`>   |  - |
-| op6 | `OperatorFunction`.<`E`>,.<`F`>   |  - |
-| op7 | `OperatorFunction`.<`F`>,.<`G`>   |  - |
-| op8 | `OperatorFunction`.<`G`>,.<`H`>   |  - |
+| Param | Type |
+| ------ | ------ |
+| op1 | `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`> | 
+| op2 | `OperatorFunction`<`A`, `B`> | 
+| op3 | `OperatorFunction`<`B`, `C`> | 
+| op4 | `OperatorFunction`<`C`, `D`> | 
+| op5 | `OperatorFunction`<`D`, `E`> | 
+| op6 | `OperatorFunction`<`E`, `F`> | 
+| op7 | `OperatorFunction`<`F`, `G`> | 
+| op8 | `OperatorFunction`<`G`, `H`> | 
 
-**Returns:** `Observable`.<`H`>
+**Returns:** `Observable`<`H`>
 
 *Inherited from Observable.pipe*
 
@@ -610,19 +599,19 @@ ___
 #### I 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| op1 | `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`A`>   |  - |
-| op2 | `OperatorFunction`.<`A`>,.<`B`>   |  - |
-| op3 | `OperatorFunction`.<`B`>,.<`C`>   |  - |
-| op4 | `OperatorFunction`.<`C`>,.<`D`>   |  - |
-| op5 | `OperatorFunction`.<`D`>,.<`E`>   |  - |
-| op6 | `OperatorFunction`.<`E`>,.<`F`>   |  - |
-| op7 | `OperatorFunction`.<`F`>,.<`G`>   |  - |
-| op8 | `OperatorFunction`.<`G`>,.<`H`>   |  - |
-| op9 | `OperatorFunction`.<`H`>,.<`I`>   |  - |
+| Param | Type |
+| ------ | ------ |
+| op1 | `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `A`> | 
+| op2 | `OperatorFunction`<`A`, `B`> | 
+| op3 | `OperatorFunction`<`B`, `C`> | 
+| op4 | `OperatorFunction`<`C`, `D`> | 
+| op5 | `OperatorFunction`<`D`, `E`> | 
+| op6 | `OperatorFunction`<`E`, `F`> | 
+| op7 | `OperatorFunction`<`F`, `G`> | 
+| op8 | `OperatorFunction`<`G`, `H`> | 
+| op9 | `OperatorFunction`<`H`, `I`> | 
 
-**Returns:** `Observable`.<`I`>
+**Returns:** `Observable`<`I`>
 
 *Inherited from Observable.pipe*
 
@@ -633,19 +622,18 @@ ___
 #### R 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| operations | `OperatorFunction`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>,.<`R`>[]   |  - |
+| Param | Type |
+| ------ | ------ |
+| `Rest` operations | `OperatorFunction`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md), `R`>[] | 
 
-**Returns:** `Observable`.<`R`>
+**Returns:** `Observable`<`R`>
 
 ___
-
 <a id="subscribe"></a>
 
 ###  subscribe
 
-▸ **subscribe**(observer?: *`PartialObserver`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>*): `Subscription`
+▸ **subscribe**(observer?: *`PartialObserver`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>*): `Subscription`
 
 ▸ **subscribe**(next?: *`function`*, error?: *`function`*, complete?: *`function`*): `Subscription`
 
@@ -655,9 +643,9 @@ ___
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| observer | `PartialObserver`.<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)>   |  - |
+| Param | Type |
+| ------ | ------ |
+| `Optional` observer | `PartialObserver`<[ActionContext](../interfaces/_actions_stream_.actioncontext.md)> | 
 
 **Returns:** `Subscription`
 
@@ -667,25 +655,24 @@ ___
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| next | `function`   |  - |
-| error | `function`   |  - |
-| complete | `function`   |  - |
+| Param | Type |
+| ------ | ------ |
+| `Optional` next | `function` | 
+| `Optional` error | `function` | 
+| `Optional` complete | `function` | 
 
 **Returns:** `Subscription`
 
 ___
-
 <a id="topromise"></a>
 
 ###  toPromise
 
-▸ **toPromise**T(this: *`Observable`.<`T`>*): `Promise`.<`T`>
+▸ **toPromise**T(this: *`Observable`<`T`>*): `Promise`<`T`>
 
-▸ **toPromise**T(this: *`Observable`.<`T`>*, PromiseCtor: *`PromiseConstructor`*): `Promise`.<`T`>
+▸ **toPromise**T(this: *`Observable`<`T`>*, PromiseCtor: *`PromiseConstructor`*): `Promise`<`T`>
 
-▸ **toPromise**T(this: *`Observable`.<`T`>*, PromiseCtor: *`PromiseConstructorLike`*): `Promise`.<`T`>
+▸ **toPromise**T(this: *`Observable`<`T`>*, PromiseCtor: *`PromiseConstructorLike`*): `Promise`<`T`>
 
 *Inherited from Observable.toPromise*
 
@@ -696,11 +683,11 @@ ___
 #### T 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| this | `Observable`.<`T`>   |  - |
+| Param | Type |
+| ------ | ------ |
+| this | `Observable`<`T`> | 
 
-**Returns:** `Promise`.<`T`>
+**Returns:** `Promise`<`T`>
 
 *Inherited from Observable.toPromise*
 
@@ -711,12 +698,12 @@ ___
 #### T 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| this | `Observable`.<`T`>   |  - |
-| PromiseCtor | `PromiseConstructor`   |  - |
+| Param | Type |
+| ------ | ------ |
+| this | `Observable`<`T`> | 
+| PromiseCtor | `PromiseConstructor` | 
 
-**Returns:** `Promise`.<`T`>
+**Returns:** `Promise`<`T`>
 
 *Inherited from Observable.toPromise*
 
@@ -727,15 +714,14 @@ ___
 #### T 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| this | `Observable`.<`T`>   |  - |
-| PromiseCtor | `PromiseConstructorLike`   |  - |
+| Param | Type |
+| ------ | ------ |
+| this | `Observable`<`T`> | 
+| PromiseCtor | `PromiseConstructorLike` | 
 
-**Returns:** `Promise`.<`T`>
+**Returns:** `Promise`<`T`>
 
 ___
-
 <a id="unsubscribe"></a>
 
 ###  unsubscribe

@@ -3,18 +3,28 @@
 # Interface: ActionOptions
 
 Actions that can be provided in a action decorator.
-*__export__*: 
 
-*__interface__*: ActionOptions
+## Hierarchy
+
+**ActionOptions**
+
+## Index
+
+### Properties
+
+* [cancelUncompleted](_symbols_.actionoptions.md#canceluncompleted)
+
+---
 
 ## Properties
+
 <a id="canceluncompleted"></a>
 
-###  cancelUncompleted
+### `<Optional>` cancelUncompleted
 
-**●  cancelUncompleted**:  *`boolean`* 
+**● cancelUncompleted**: *`boolean`*
 
-*Defined in [symbols.ts:79](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/symbols.ts#L79)*
+*Defined in [symbols.ts:88](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L88)*
 
 Cancel the previous uncompleted observable(s).
 

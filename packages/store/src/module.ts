@@ -1,15 +1,16 @@
-import { NgModule, ModuleWithProviders, Optional, Inject } from '@angular/core';
+import { NgModule, ModuleWithProviders, Optional, Inject, InjectionToken } from '@angular/core';
 
-import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN } from './symbols';
-import { StateFactory } from './state-factory';
-import { StateContextFactory } from './state-context-factory';
+import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
+import { StateFactory } from './internal/state-factory';
+import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
-import { InternalDispatcher, InternalDispatchedActionResults } from './dispatcher';
+import { InternalDispatcher, InternalDispatchedActionResults } from './internal/dispatcher';
+import { InternalStateOperations } from './internal/state-operations';
 import { Store } from './store';
-import { SelectFactory } from './select';
-import { StateStream } from './state-stream';
+import { SelectFactory } from './decorators/select';
+import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
-import { InitState, UpdateState } from './actions';
+import { InitState, UpdateState } from './actions/actions';
 
 /**
  * Root module
@@ -19,7 +20,7 @@ import { InitState, UpdateState } from './actions';
 export class NgxsRootModule {
   constructor(
     factory: StateFactory,
-    stateStream: StateStream,
+    internalStateOperations: InternalStateOperations,
     store: Store,
     select: SelectFactory,
     @Optional()
@@ -29,19 +30,20 @@ export class NgxsRootModule {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(states);
 
+    const stateOperations = internalStateOperations.getRootStateOperations();
     if (results) {
       // get our current stream
-      const cur = stateStream.getValue();
+      const cur = stateOperations.getState();
 
       // set the state to the current + new
-      stateStream.next({ ...cur, ...results.defaults });
+      stateOperations.setState({ ...cur, ...results.defaults });
     }
 
     // connect our actions stream
     factory.connectActionHandlers();
 
     // dispatch the init action and invoke init function after
-    store.dispatch(new InitState()).subscribe(() => {
+    stateOperations.dispatch(new InitState()).subscribe(() => {
       if (results) {
         factory.invokeInit(results.states);
       }
@@ -57,7 +59,7 @@ export class NgxsRootModule {
 export class NgxsFeatureModule {
   constructor(
     store: Store,
-    stateStream: StateStream,
+    internalStateOperations: InternalStateOperations,
     factory: StateFactory,
     @Optional()
     @Inject(FEATURE_STATE_TOKEN)
@@ -69,21 +71,32 @@ export class NgxsFeatureModule {
 
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(flattenedStates);
+
+    const stateOperations = internalStateOperations.getRootStateOperations();
     if (results) {
       // get our current stream
-      const cur = stateStream.getValue();
+      const cur = stateOperations.getState();
 
       // set the state to the current + new
-      stateStream.next({ ...cur, ...results.defaults });
+      stateOperations.setState({ ...cur, ...results.defaults });
     }
 
-    store.dispatch(new UpdateState()).subscribe(() => {
+    stateOperations.dispatch(new UpdateState()).subscribe(() => {
       if (results) {
         factory.invokeInit(results.states);
       }
     });
   }
 }
+
+export type ModuleOptions = Partial<NgxsConfig>;
+
+export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
+  const config = Object.assign(new NgxsConfig(), options);
+  return config;
+}
+
+export const ROOT_OPTIONS = new InjectionToken('ROOT_OPTIONS');
 
 /**
  * Ngxs Module
@@ -93,7 +106,7 @@ export class NgxsModule {
   /**
    * Root module factory
    */
-  static forRoot(states: any[] = []): ModuleWithProviders {
+  static forRoot(states: any[] = [], options: ModuleOptions = {}): ModuleWithProviders {
     return {
       ngModule: NgxsRootModule,
       providers: [
@@ -103,6 +116,7 @@ export class NgxsModule {
         InternalActions,
         InternalDispatcher,
         InternalDispatchedActionResults,
+        InternalStateOperations,
         Store,
         StateStream,
         SelectFactory,
@@ -111,6 +125,15 @@ export class NgxsModule {
         {
           provide: ROOT_STATE_TOKEN,
           useValue: states
+        },
+        {
+          provide: ROOT_OPTIONS,
+          useValue: options
+        },
+        {
+          provide: NgxsConfig,
+          useFactory: ngxsConfigFactory,
+          deps: [ROOT_OPTIONS]
         }
       ]
     };

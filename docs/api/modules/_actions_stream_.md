@@ -12,6 +12,7 @@
 
 * [Actions](../classes/_actions_stream_.actions.md)
 * [InternalActions](../classes/_actions_stream_.internalactions.md)
+* [OrderedSubject](../classes/_actions_stream_.orderedsubject.md)
 
 ### Interfaces
 

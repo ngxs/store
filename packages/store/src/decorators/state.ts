@@ -1,5 +1,5 @@
-import { ensureStoreMetadata } from './internals';
-import { StoreOptions, META_KEY } from './symbols';
+import { ensureStoreMetadata } from '../internal/internals';
+import { StoreOptions, META_KEY } from '../symbols';
 
 const stateNameRegex = new RegExp('^[a-zA-Z0-9]+$');
 

@@ -1,11 +1,12 @@
 # Logger Plugin
 A simple console log plugin to log actions as they are processed.
 
-## Install
-The Logger plugin can be installed using NPM:
-
+## Installation
 ```bash
-npm i @ngxs/logger-plugin --S
+npm install @ngxs/logger-plugin --save
+
+# or if you are using yarn
+yarn add @ngxs/logger-plugin
 ```
 
 ## Usage
@@ -29,6 +30,7 @@ The plugin supports the following options passed via the `forRoot` method:
 
 - `logger`: Supply a different logger, useful for logging to backend. Defaults to `console`.
 - `collapsed`: Collapse the log by default or not. Defaults to true.
+- `disabled`: Disable the logger during production.
 
 ### Notes
 You should always include the logger as the last plugin in your configuration.

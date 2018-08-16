@@ -4,22 +4,36 @@
 
 On init interface
 
+## Hierarchy
+
+**NgxsOnInit**
+
+## Index
+
+### Methods
+
+* [ngxsOnInit](_symbols_.ngxsoninit.md#ngxsoninit)
+
+---
+
 ## Methods
+
 <a id="ngxsoninit"></a>
 
 ###  ngxsOnInit
 
-▸ **ngxsOnInit**(ctx?: *[StateContext](_symbols_.statecontext.md)`any`*): `void`⎮`any`
+▸ **ngxsOnInit**(ctx?: *[StateContext](_symbols_.statecontext.md)<`any`>*): `void` |`any`
 
-*Defined in [symbols.ts:86](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/symbols.ts#L86)*
+*Defined in [symbols.ts:95](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L95)*
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| ctx | [StateContext](_symbols_.statecontext.md)`any`   |  - |
+| Param | Type |
+| ------ | ------ |
+| `Optional` ctx | [StateContext](_symbols_.statecontext.md)<`any`> | 
 
-**Returns:** `void`⎮`any`
+**Returns:** `void` |
+`any`
 
 ___
 

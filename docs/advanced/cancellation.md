@@ -26,7 +26,7 @@ export class ZooState {
 ```
 
 ## Advanced
-For more advanced cases such as using specifying based on tokens, we can use normal Rx operators.
+For more advanced cases, we can use normal Rx operators.
 
 ```TS
 import { State, Action, Actions, ofAction } from '@ngxs/store';

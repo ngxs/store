@@ -1,6 +1,5 @@
 # Error Handling
-NGXS uses Angulars default `ErrorHandler` class so if actions error, it will participate
-in the standard flow. You can easily override this flow by providing your own handler like so:
+NGXS uses Angular's default `ErrorHandler` class so if an action throws an error, Angular's `ErrorHandler` is called. You can easily override this flow by providing your own handler like so:
 
 ```TS
 import { NgModule, ErrorHandler } from '@angular/core';

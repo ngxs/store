@@ -1,8 +1,11 @@
-## Installing
-To get started, install the package using npm. The latest version (3.x) supports Angular/RX 6, if you want support for Angular5, use version 2.x.
+## Installation
+To get started, install the package from npm. The latest version (3.x) supports Angular/RX 6, if you want support for Angular5, use version 2.x.
 
 ```bash
-npm i @ngxs/store --S
+npm install @ngxs/store --save
+
+# or if you are using yarn
+yarn add @ngxs/store
 ```
 
 then in `app.module.ts`, import the `NgxsModule`:
@@ -24,6 +27,11 @@ export class AppModule {}
 When you include the module in the import, you can pass root stores along with options.
 If you are lazy loading, you can use the `forFeature` option with the same arguments.
 
+Options such as `developmentMode` can be passed to the module as the second argument in the `forRoot` method.
+In development mode, plugin authors can add additional runtime checks/etc to enhance the developer experience. Switching
+to development mode will also freeze your store using [deep-freeze-strict](https://www.npmjs.com/package/deep-freeze-strict)
+module.
+
 It's important that you add `NgxsModule.forRoot([])` at the root of your module even if
 all of your states are feature states.
 
@@ -34,8 +42,8 @@ Our continuous integration server runs all tests on every commit to master and i
 This means that if you want the bleeding edge of `@ngxs/store` or any of the plugins you can simply do:
 
 ```bash
-npm install @ngxs/store@dev
-npm install @ngxs/logger-plugin@dev
+npm install @ngxs/store@dev --save
+npm install @ngxs/logger-plugin@dev --save
 
 # or if you are using yarn
 yarn add @ngxs/store@dev
@@ -43,7 +51,6 @@ yarn add @ngxs/logger-plugin@dev
 
 # of if you want to update multiple things at the same time
 yarn add @ngxs/{store,logger-plugin,devtools-plugin}@dev
-
 ```
 
 This will install the version currently tagged as `@dev`.

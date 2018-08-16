@@ -5,6 +5,10 @@
 Plugin manager class
 *__ignore__*: 
 
+## Hierarchy
+
+**PluginManager**
+
 ## Index
 
 ### Constructors
@@ -18,31 +22,35 @@ Plugin manager class
 ---
 
 ## Constructors
+
 <a id="constructor"></a>
 
-### ⊕ **new PluginManager**(_parentManager: *[PluginManager](_plugin_manager_.pluginmanager.md)*, _plugins: *[NgxsPlugin](../interfaces/_symbols_.ngxsplugin.md)[]*): [PluginManager](_plugin_manager_.pluginmanager.md)
+###  constructor
 
-*Defined in [plugin-manager.ts:10](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/plugin-manager.ts#L10)*
+⊕ **new PluginManager**(_parentManager: *[PluginManager](_plugin_manager_.pluginmanager.md)*, _plugins: *[NgxsPlugin](../interfaces/_symbols_.ngxsplugin.md)[]*): [PluginManager](_plugin_manager_.pluginmanager.md)
+
+*Defined in [plugin-manager.ts:10](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/plugin-manager.ts#L10)*
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| _parentManager | [PluginManager](_plugin_manager_.pluginmanager.md)   |  - |
-| _plugins | [NgxsPlugin](../interfaces/_symbols_.ngxsplugin.md)[]   |  - |
+| Param | Type |
+| ------ | ------ |
+| _parentManager | [PluginManager](_plugin_manager_.pluginmanager.md) | 
+| _plugins | [NgxsPlugin](../interfaces/_symbols_.ngxsplugin.md)[] | 
 
 **Returns:** [PluginManager](_plugin_manager_.pluginmanager.md)
 
----
+___
 
 ## Properties
+
 <a id="plugins"></a>
 
 ###  plugins
 
-**●  plugins**:  *[NgxsPluginFn](../modules/_symbols_.md#ngxspluginfn)[]*  =  []
+**● plugins**: *[NgxsPluginFn](../modules/_symbols_.md#ngxspluginfn)[]* =  []
 
-*Defined in [plugin-manager.ts:10](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/plugin-manager.ts#L10)*
+*Defined in [plugin-manager.ts:10](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/plugin-manager.ts#L10)*
 
 ___
 

@@ -19,7 +19,7 @@ export class AnimalsState {}
 In the state decorator, we define some metadata about the state. These options
 include:
 
-- `name`: The name of the state slice. Note: The name is a required parameter and must be unique for the entire application. 
+- `name`: The name of the state slice. Note: The name is a required parameter and must be unique for the entire application.
 Names must be object property safe, AKA no dashes, dots, etc.
 - `defaults`: Default set of object/array for this state slice.
 - `children`: Child sub state associations.
@@ -41,10 +41,10 @@ export class ZooState {
 
 ## Defining Actions
 Our states listen to actions via a `@Action` decorator. The action decorator
-accepts an action class or an array of action classes. 
+accepts an action class or an array of action classes.
 
 ### Simple Actions
-Let's define a state that will listen to a `FeedAnimals` action to toggle whether the animals have been feed:
+Let's define a state that will listen to a `FeedAnimals` action to toggle whether the animals have been fed:
 
 ```TS
 import { State, Action, StateContext } from '@ngxs/store';
@@ -58,14 +58,14 @@ export interface ZooStateModel {
 }
 
 @State<ZooStateModel>({
-  name: 'zoo'
+  name: 'zoo',
   defaults: {
     feed: false
   }
 })
 export class ZooState {
   @Action(FeedAnimals)
-  feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
+  feedAnimals(ctx: StateContext<ZooStateModel>) {
     const state = ctx.getState();
     ctx.setState({
       ...state,
@@ -139,11 +139,11 @@ could be reduced to this:
 
 ```TS
 @Action(FeedZebra)
-  feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
+feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
   const state = ctx.getState();
   ctx.patchState({
     zebraFood: [
-      ...state.feedAnimals,
+      ...state.zebraFood,
       action.zebraToFeed,
     ]
   });
@@ -151,7 +151,7 @@ could be reduced to this:
 ```
 
 ### Async Actions
-Actions can perform async operations and update the state after an operation. 
+Actions can perform async operations and update the state after an operation.
 
 Typically in Redux your actions are pure functions and you have some other system like a saga or an effect to perform
 these operations and dispatch another action back to your state to mutate it. There are some
@@ -164,7 +164,7 @@ Let's take a look at a simple async action:
 import { State, Action, StateContext } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
-export interface FeedAnimalsAction {
+export class FeedAnimals {
   static readonly type = '[Zoo] FeedAnimals';
   constructor(public animalsToFeed: string) {}
 }
@@ -184,7 +184,7 @@ export class ZooState {
 
   @Action(FeedAnimals)
   feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
-    return this.animalService.feed(action.animalsToFeed).pipe(tap(animalsToFeedResult) => {
+    return this.animalService.feed(action.animalsToFeed).pipe(tap((animalsToFeedResult) => {
       const state = ctx.getState();
       ctx.setState({
         ...state,
@@ -193,7 +193,7 @@ export class ZooState {
           animalsToFeedResult,
         ]
       });
-    });
+    }));
   }
 }
 ```
@@ -214,7 +214,7 @@ that observable chain to look like this:
 ```TS
 import { State, Action } from '@ngxs/store';
 
-export interface FeedAnimalsAction {
+export class FeedAnimals {
   static readonly type = '[Zoo] FeedAnimals';
   constructor(public animalsToFeed: string) {}
 }

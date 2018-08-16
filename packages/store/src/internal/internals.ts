@@ -1,4 +1,4 @@
-import { META_KEY, ActionOptions } from './symbols';
+import { META_KEY, ActionOptions, SELECTOR_META_KEY } from '../symbols';
 import { Observable } from 'rxjs';
 
 export interface ObjectKeyMap<T> {
@@ -17,7 +17,7 @@ export interface ActionHandlerMetaData {
   type: string;
 }
 
-export interface InternalStateOperations<T> {
+export interface StateOperations<T> {
   getState(): T;
   setState(val: T);
   dispatch(actions: any | any[]): Observable<void>;
@@ -37,7 +37,8 @@ export type SelectFromState = (state: any) => any;
 export interface SelectorMetaDataModel {
   selectFromAppState: SelectFromState;
   originalFn: Function;
-  storeMetaData: MetaDataModel;
+  containerClass: any;
+  selectorName: string;
 }
 
 export interface MappedStore {
@@ -66,7 +67,15 @@ export function ensureStoreMetadata(target): MetaDataModel {
 
     Object.defineProperty(target, META_KEY, { value: defaultMetadata });
   }
+  return getStoreMetadata(target);
+}
 
+/**
+ * Get the metadata attached to the class if it exists.
+ *
+ * @ignore
+ */
+export function getStoreMetadata(target): MetaDataModel {
   return target[META_KEY];
 }
 
@@ -76,17 +85,27 @@ export function ensureStoreMetadata(target): MetaDataModel {
  * @ignore
  */
 export function ensureSelectorMetadata(target): SelectorMetaDataModel {
-  if (!target.hasOwnProperty(META_KEY)) {
+  if (!target.hasOwnProperty(SELECTOR_META_KEY)) {
     const defaultMetadata: SelectorMetaDataModel = {
       selectFromAppState: null,
       originalFn: null,
-      storeMetaData: null
+      containerClass: null,
+      selectorName: null
     };
 
-    Object.defineProperty(target, META_KEY, { value: defaultMetadata });
+    Object.defineProperty(target, SELECTOR_META_KEY, { value: defaultMetadata });
   }
 
-  return target[META_KEY];
+  return getSelectorMetadata(target);
+}
+
+/**
+ * Get the metadata attached to the selector if it exists.
+ *
+ * @ignore
+ */
+export function getSelectorMetadata(target): SelectorMetaDataModel {
+  return target[SELECTOR_META_KEY];
 }
 
 /**

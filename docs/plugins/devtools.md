@@ -3,11 +3,12 @@ Plugin with integration with the [Redux Devtools extension](http://extension.rem
 
 ![Devtools Screenshot](../assets/devtools.png)
 
-## Install
-The Devtools plugin can be installed using NPM:
-
+## Installation
 ```bash
-npm i @ngxs/devtools-plugin --S
+npm install @ngxs/devtools-plugin --save
+
+# or if you are using yarn
+yarn add @ngxs/devtools-plugin
 ```
 
 ## Usage
@@ -29,6 +30,7 @@ export class AppModule {}
 ### Options
 The plugin supports the following options passed via the `forRoot` method:
 
+- `name`: Set the name by which this store instance is referenced in devtools (Default: 'NGXS')
 - `disabled`: Disable the devtools during production
 - `maxAge`: Max number of entries to keep.
 - `actionSanitizer`: Reformat actions before sending to dev tools

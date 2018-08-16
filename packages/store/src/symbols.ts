@@ -4,10 +4,23 @@ import { Observable } from 'rxjs';
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
 export const META_KEY = 'NGXS_META';
+export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
 export type NgxsPluginConstructor = new (...args: any[]) => NgxsPlugin;
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
+
+/**
+ * The NGXS config settings.
+ */
+export class NgxsConfig {
+  /**
+   * Run in development mode. This will add additional debugging features:
+   * - Object.freeze on the state and actions to guarantee immutability
+   * (default: false)
+   */
+  developmentMode: boolean;
+}
 
 /**
  * State context provided to the actions in the state.

@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
-import { State } from '../src/state';
-import { Action } from '../src/action';
+import { State } from '../src/decorators/state';
+import { Action } from '../src/decorators/action';
 
 describe('Store', () => {
   interface SubSubStateModel {
@@ -132,6 +132,21 @@ describe('Store', () => {
       expect(state).toEqual({
         name: 'Danny'
       });
+    });
+  }));
+
+  it('should select snapshot state use a state class', async(() => {
+    const state = store.selectSnapshot(MyState);
+    expect(state).toEqual({
+      first: 'Hello',
+      second: 'World',
+      bar: {
+        hello: true,
+        world: true,
+        baz: {
+          name: 'Danny'
+        }
+      }
     });
   }));
 

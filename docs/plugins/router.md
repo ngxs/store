@@ -15,11 +15,12 @@ time-travel debugging, and easy access from any store-connected component.
 
 This plugin binds that state from the Angular router to our NGXS store.
 
-## Install
-The Router plugin can be installed using NPM:
-
+## Installation
 ```bash
-npm i @ngxs/router-plugin --S
+npm install @ngxs/router-plugin --save
+
+# or if you are using yarn
+yarn add @ngxs/router-plugin
 ```
 
 ## Usage
@@ -38,7 +39,7 @@ import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 export class AppModule {}
 ```
 
-Now the route will be reflected in your store under the `route` state name. The
+Now the route will be reflected in your store under the `router` state name. The
 state is represented as a `RouterStateSnapshot` object.
 
 You can also navigate using the store's dispatch method. It accepts the following
@@ -55,7 +56,7 @@ export class MyApp {
   constructor(private store: Store) {}
 
   onClick() {
-    this.store.dispatch(new Navigate('/admin'))
+    this.store.dispatch(new Navigate(['/admin']))
   }
 
 }

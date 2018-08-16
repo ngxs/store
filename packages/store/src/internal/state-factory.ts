@@ -2,7 +2,7 @@ import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from, throwError } from 'rxjs';
 import { shareReplay, takeUntil, map, catchError, filter, mergeMap, defaultIfEmpty } from 'rxjs/operators';
 
-import { META_KEY, NgxsLifeCycle } from './symbols';
+import { META_KEY, NgxsLifeCycle } from '../symbols';
 import {
   topologicalSort,
   buildGraph,
@@ -12,11 +12,11 @@ import {
   StateClass,
   MappedStore
 } from './internals';
-import { getActionTypeFromInstance, setValue } from './utils';
-import { ofActionDispatched } from './of-action';
-import { InternalActions, ActionStatus, ActionContext } from './actions-stream';
-import { InternalDispatchedActionResults } from './dispatcher';
-import { StateContextFactory } from './state-context-factory';
+import { getActionTypeFromInstance, setValue } from '../utils/utils';
+import { ofActionDispatched } from '../operators/of-action';
+import { InternalActions, ActionStatus, ActionContext } from '../actions-stream';
+import { InternalDispatchedActionResults } from '../internal/dispatcher';
+import { StateContextFactory } from '../internal/state-context-factory';
 
 /**
  * State factory class

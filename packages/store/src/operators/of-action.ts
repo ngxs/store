@@ -1,7 +1,7 @@
 import { OperatorFunction, Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import { getActionTypeFromInstance } from './utils';
-import { ActionContext, ActionStatus } from './actions-stream';
+import { getActionTypeFromInstance } from '../utils/utils';
+import { ActionContext, ActionStatus } from '../actions-stream';
 
 export function ofAction<T>(allowedType): OperatorFunction<any, T>;
 export function ofAction<T>(...allowedTypes): OperatorFunction<any, T>;

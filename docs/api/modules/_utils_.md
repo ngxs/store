@@ -14,55 +14,54 @@
 ---
 
 ## Functions
+
 <a id="actionmatcher"></a>
 
 ###  actionMatcher
 
 ▸ **actionMatcher**(action1: *`any`*): `(Anonymous function)`
 
-*Defined in [utils.ts:17](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/utils.ts#L17)*
+*Defined in [utils.ts:17](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/utils.ts#L17)*
 
 Matches a action
 *__ignore__*: 
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| action1 | `any`   |  - |
+| Param | Type |
+| ------ | ------ |
+| action1 | `any` | 
 
 **Returns:** `(Anonymous function)`
 
 ___
-
 <a id="getactiontypefrominstance"></a>
 
 ###  getActionTypeFromInstance
 
 ▸ **getActionTypeFromInstance**(action: *`any`*): `string`
 
-*Defined in [utils.ts:5](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/utils.ts#L5)*
+*Defined in [utils.ts:5](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/utils.ts#L5)*
 
 Returns the type from an action instance.
 *__ignore__*: 
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| action | `any`   |  - |
+| Param | Type |
+| ------ | ------ |
+| action | `any` | 
 
 **Returns:** `string`
 
 ___
-
 <a id="getvalue"></a>
 
 ### `<Const>` getValue
 
 ▸ **getValue**(obj: *`any`*, prop: *`string`*): `any`
 
-*Defined in [utils.ts:61](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/utils.ts#L61)*
+*Defined in [utils.ts:61](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/utils.ts#L61)*
 
 Get a deeply nested value. Example:
 
@@ -70,22 +69,21 @@ getValue({ foo: bar: \[\] }, 'foo.bar') //=> \[\]
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| obj | `any`   |  - |
-| prop | `string`   |  - |
+| Param | Type |
+| ------ | ------ |
+| obj | `any` | 
+| prop | `string` | 
 
 **Returns:** `any`
 
 ___
-
 <a id="setvalue"></a>
 
 ### `<Const>` setValue
 
 ▸ **setValue**(obj: *`any`*, prop: *`string`*, val: *`any`*): `any`
 
-*Defined in [utils.ts:35](https://github.com/amcdnl/ngxs/blob/bb9eb5a/packages/store/src/utils.ts#L35)*
+*Defined in [utils.ts:35](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/utils.ts#L35)*
 
 Set a deeply nested value. Example:
 
@@ -95,11 +93,11 @@ While it traverses it also creates new objects from top down.
 
 **Parameters:**
 
-| Param | Type | Description |
-| ------ | ------ | ------ |
-| obj | `any`   |  - |
-| prop | `string`   |  - |
-| val | `any`   |  - |
+| Param | Type |
+| ------ | ------ |
+| obj | `any` | 
+| prop | `string` | 
+| val | `any` | 
 
 **Returns:** `any`
 

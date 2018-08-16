@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { StateContext } from './symbols';
-import { InternalStateOperations, MappedStore } from './internals';
-import { setValue, getValue } from './utils';
-import { InternalDispatcher } from './dispatcher';
-import { StateStream } from './state-stream';
+import { StateContext } from '../symbols';
+import { MappedStore } from '../internal/internals';
+import { setValue, getValue } from '../utils/utils';
+import { InternalStateOperations } from '../internal/state-operations';
 
 /**
  * State Context factory class
@@ -13,21 +12,13 @@ import { StateStream } from './state-stream';
  */
 @Injectable()
 export class StateContextFactory {
-  constructor(private _stateStream: StateStream, private _dispatcher: InternalDispatcher) {}
-
-  private get rootStateOperations(): InternalStateOperations<any> {
-    return {
-      getState: () => this._stateStream.getValue(),
-      setState: newState => this._stateStream.next(newState),
-      dispatch: actions => this._dispatcher.dispatch(actions)
-    };
-  }
+  constructor(private _internalStateOperations: InternalStateOperations) {}
 
   /**
    * Create the state context
    */
   createStateContext(metadata: MappedStore): StateContext<any> {
-    const root = this.rootStateOperations;
+    const root = this._internalStateOperations.getRootStateOperations();
     return {
       getState(): any {
         const state = root.getState();
