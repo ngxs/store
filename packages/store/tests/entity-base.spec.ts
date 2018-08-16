@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { Action } from '../src/action';
-import { State } from '../src/state';
+import { Action } from '../src/decorators/action';
+import { State } from '../src/decorators/state';
 import { StateContext } from '../src/symbols';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
