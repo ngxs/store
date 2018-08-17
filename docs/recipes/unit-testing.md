@@ -4,6 +4,8 @@ Unit testing is easy with NGXS. To perform a unit test we just dispatch the even
 perform our expectation. A basic test looks like this:
 
 ```TS
+import { async, TestBed } from '@angular/core/testing';
+
 describe('Zoo', () => {
   let store: Store;
 
@@ -14,12 +16,12 @@ describe('Zoo', () => {
     store = TestBed.get(Store);
   }));
 
-  it('it toggles feed', () => {
+  it('it toggles feed', async(() => {
     store.dispatch(new FeedAnimals());
     store.selectOnce(state => state.zoo.feed).subscribe(feed => {
       expect(feed).toBe(true);
     });
-  });
+  }));
 });
 ```
 
@@ -38,7 +40,7 @@ can use the `store.reset(MyNewState)` to prepare the state for your next operati
 import { TestBed, async } from '@angular/core/testing';
 
 export const SOME_DESIRED_STATE = {
-  animals: ['Panda']
+  animals: ['Panda'],
 };
 
 describe('Zoo', () => {
@@ -53,12 +55,12 @@ describe('Zoo', () => {
     store.reset(SOME_DESIRED_STATE);
   }));
 
-  it('it toggles feed', () => {
+  it('it toggles feed', async(() => {
     store.dispatch(new FeedAnimals());
     store.selectOnce(state => state.zoo.feed).subscribe(feed => {
       expect(feed).toBe(true);
     });
-  });
+  }));
 });
 ```
 
