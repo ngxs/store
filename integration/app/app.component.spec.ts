@@ -11,6 +11,13 @@ describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
 
+  const initialState = {
+    todos: {
+      todo: [],
+      pizza: { model: undefined }
+    }
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [AppModule, RouterTestingModule, FormsModule, ReactiveFormsModule],
@@ -22,7 +29,7 @@ describe('AppComponent', () => {
 
     // reset store because of storage plugin
     const store = TestBed.get(Store);
-    store.reset({});
+    store.reset(initialState);
   });
 
   it('should add a todo', () => {
