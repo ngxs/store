@@ -44,25 +44,58 @@ implements `setItem` and `getItem`.
 ```TS
 import { NgxsStoragePluginModule, StorageEngine, STORAGE_ENGINE } from '@ngxs/storage-plugin';
 
-export class MyStorageEngine implements StorageEngine {
-  getItem(name) {
-    // Your logic here
-  }
+class CustomStorage implements StorageEngine {
+      static Storage: any = {
+        '@@STATE': {
+          count:1,
+          counter: {
+            count: 100
+          }
+        }
+      };
 
-  setItem(key, value) {
-    // Your logic here
-  }
-}
+      get length() {
+        return Object.keys(CustomStorage.Storage).length;
+      }
+
+      getItem(key) {
+        return CustomStorage.Storage[key];
+      }
+
+      setItem(key, val) {
+        //You can replace this, like localForage
+        CustomStorage.Storage[key] = val;
+      }
+
+      removeItem(key) {
+        delete CustomStorage.Storage[key];
+      }
+
+      clear() {
+        CustomStorage.Storage = {};
+      }
+
+      key(index) {
+        return Object.keys(CustomStorage.Storage)[index];
+      }
+    }
 
 @NgModule({
   imports: [
     NgxsModule.forRoot([]),
-    NgxsStoragePluginModule.forRoot()
+    NgxsStoragePluginModule.forRoot({
+          serialize(val) {//must set
+            return val;
+          },
+          deserialize(val) {//must set
+            return val;
+          }
+        })
   ],
   providers: [
     {
       provide: STORAGE_ENGINE,
-      useClass: MyStorageEngine
+      useClass: CustomStorage
     }
   ]
 })
