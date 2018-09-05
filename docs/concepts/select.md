@@ -145,7 +145,7 @@ export class ZooState {
 }
 ```
 
-then you can use `store.select` and evaluate the lazy funxtion using the `rxjs` `map` pipeline function.
+then you can use `store.select` and evaluate the lazy function using the `rxjs` `map` pipeline function.
 
 ```TS
 import { Store } from '@ngxs/store';
@@ -175,7 +175,7 @@ For instance, I can have a Dynamic Selector that will filter my animals to the p
 export class ZooState {
 
   static pandas(type: string) {
-    return createSelector([ZooState], (state: string[]) => {
+    return createSelector([ZooState], state: string[]) => {
       return state.filter(s => s.indexOf(type) > -1);
     };
   }
@@ -213,7 +213,7 @@ An interesting use case would be to allow for a selector to be reused to select 
 export class SharedSelectors {
 
   static getEntities(stateClass) {
-    return createSelector([stateClass], (state: { entities: any[] }) => {
+    return createSelector([stateClass], state: { entities: any[] }) => {
       return state.entities;
     };
   }
