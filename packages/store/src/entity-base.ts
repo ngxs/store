@@ -146,9 +146,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> implements Ng
 
     state.entities = Object.assign(
       {},
-      ...Object.keys(state.entities)
-        .filter(key => keysToChange.indexOf(key) === -1)
-        .map(k => ({ [k]: state.entities[k] }))
+      ...state.ids.filter(key => keysToChange.indexOf(key) === -1).map(k => ({ [k]: state.entities[k] }))
     );
 
     if (didMutate) {
