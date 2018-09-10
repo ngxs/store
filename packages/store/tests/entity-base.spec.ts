@@ -124,7 +124,7 @@ describe('Entity Base', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([ProjectState])]
+      imports: [NgxsModule.forRoot([ProjectState], { developmentMode: true })]
     });
 
     store = TestBed.get(Store);

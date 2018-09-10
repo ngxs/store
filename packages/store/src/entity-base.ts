@@ -76,7 +76,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> implements Ng
    * @param entity add this entity to the state
    */
   addOne(entity: T): S {
-    const state = this.ctx.getState();
+    const state = Object.assign({}, this.ctx.getState());
     const didMutate = this._addOne(state, entity);
     return this._mutateStateIfNeeded(state, didMutate);
   }
@@ -99,7 +99,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> implements Ng
   }
 
   addMany(entities: T[]): S {
-    const state = this.ctx.getState();
+    const state = Object.assign({}, this.ctx.getState());
     const didMutate = this._addMany(state, entities);
     return this._mutateStateIfNeeded(state, didMutate);
   }
@@ -132,7 +132,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> implements Ng
   }
 
   removeMany(keys: (string | number)[]): S {
-    const state = this.ctx.getState();
+    const state = Object.assign({}, this.ctx.getState());
     const mutation = this._removeMany(state, keys);
     return this._mutateStateIfNeeded(state, mutation);
   }
@@ -141,7 +141,15 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> implements Ng
    * Helper method that checks if we need to mutate state and if so updates the passed in state
    */
   private _removeMany(state: S, keys: (string | number)[]) {
-    const didMutate = keys.filter(key => key in state.entities).map(key => delete state.entities[key]).length > 0;
+    const keysToChange = keys.filter(key => key in state.entities);
+    const didMutate = keysToChange.length > 0;
+
+    state.entities = Object.assign(
+      {},
+      ...Object.keys(state.entities)
+        .filter(key => keysToChange.indexOf(key) === -1)
+        .map(k => ({ [k]: state.entities[k] }))
+    );
 
     if (didMutate) {
       state.ids = state.ids.filter((id: any) => id in state.entities);
@@ -164,7 +172,7 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> implements Ng
   }
 
   updateMany(updates: EntityUpdate<T>[]): S {
-    const state = this.ctx.getState();
+    const state = Object.assign({}, this.ctx.getState());
     const mutation = this._updateMany(state, updates);
     return this._mutateStateIfNeeded(state, mutation);
   }
@@ -204,10 +212,11 @@ export abstract class EntityBase<T, S extends EntityStateModel<T>> implements Ng
 
     if (hasNewKey) {
       keys[update.id] = newKey;
-      delete state.entities[update.id];
+      const { [update.id]: entityToDelete, ...newEntities } = state.entities;
+      state.entities = newEntities;
     }
 
-    state.entities[newKey] = updated;
+    state.entities = { ...state.entities, [newKey]: updated };
 
     return hasNewKey;
   }
