@@ -96,7 +96,7 @@ export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
   return config;
 }
 
-export const ROOT_OPTIONS = new InjectionToken('ROOT_OPTIONS');
+export const ROOT_OPTIONS = new InjectionToken<ModuleOptions>('ROOT_OPTIONS');
 
 /**
  * Ngxs Module
