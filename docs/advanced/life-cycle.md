@@ -25,3 +25,26 @@ export class ZooState implements NgxsOnInit {
   }
 }
 ```
+
+### Feature modules order of imports
+
+If you have feature modules they need to be imported after the root module:
+
+```TS
+// feature.module.ts
+@NgModule({
+  imports: [
+    NgxsModule.forFeature([FeatureState])
+  ]
+})
+export class FeatureModule{}
+
+// app.module.ts
+@NgModule({
+  imports: [
+    NgxsModule.forRoot([]),
+    FeatureModule,
+  ]
+})
+export class AppModule {}
+```
