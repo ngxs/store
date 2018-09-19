@@ -20,7 +20,7 @@ export interface ActionHandlerMetaData {
 export interface StateOperations<T> {
   getState(): T;
   setState(val: T);
-  dispatch(actions: any | any[]): Observable<void>;
+  dispatch<U = any>(actions?: U | U[]): Observable<T>;
 }
 
 export interface MetaDataModel {
@@ -47,6 +47,10 @@ export interface MappedStore {
   defaults: any;
   instance: any;
   depth: string;
+}
+
+export interface DispatcherMetaData {
+  type: string;
 }
 
 /**

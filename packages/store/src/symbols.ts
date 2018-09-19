@@ -5,6 +5,7 @@ export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
 export const META_KEY = 'NGXS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
+export const DISPATCHER_META_KEY = 'NGXS_DISPATCHER_META';
 
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
 export type NgxsPluginConstructor = new (...args: any[]) => NgxsPlugin;
@@ -97,3 +98,7 @@ export interface NgxsOnInit {
 }
 
 export type NgxsLifeCycle = Partial<NgxsOnInit>;
+
+export interface DispatchEmitter<T = any, U = any> {
+  emit(payload?: T): Observable<U>;
+}

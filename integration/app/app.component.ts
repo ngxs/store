@@ -1,55 +1,31 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { Store, Select } from '@ngxs/store';
+import { Dispatch, Select, Store, DispatchEmitter } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { FormBuilder, FormArray } from '@angular/forms';
+import { FormArray, FormBuilder } from '@angular/forms';
 
-import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from './todo.state';
+import { AddTodo, LoadData, RemoveTodo, SetPrefix, TodosState, TodoState } from './todo.state';
+import { CounterState, CounterStateModel } from './counter.state';
+import { AppState } from './app.state';
 
 @Component({
   selector: 'app-root',
-  template: `
-    <div class="todo-list">
-      <div>
-        <h3>Reactive Form</h3>
-        <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizza">
-            Toppings: <input type="text" formControlName="toppings" />
-            <br>
-            Crust <input type="text" formControlName="crust" />
-            <br>
-            Extras
-            <span *ngFor='let extra of extras; let i=index'>
-              <input type='checkbox' [formControl]='extra'/> {{allExtras[i].name}}
-            </span>
-            <br><hr>
-            <button type="submit">Set Olives</button>
-            <button type="button" (click)="onPrefix()">Set Prfix</button>
-            <button type="button" (click)="onLoadData()">Load Data</button>
-        </form>
-      </div>
-      <br><br><hr>
-      <h3>Todo Form</h3>
-      <div class="add-todo">
-        <input placeholder="New Todo" #text>
-        <button (click)="addTodo(text.value)">Add</button>
-      </div>
-      <ul>
-        <li class="todo" *ngFor="let todo of todos$ | async; let i = index">
-          {{todo}} <button (click)="removeTodo(i)">🗑</button>
-        </li>
-        <li *ngFor="let todo of pandas$ | async">
-          🐼
-        </li>
-      </ul>
-      <router-outlet></router-outlet>
-    </div>
-  `,
+  templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  @Select(TodoState) todos$: Observable<string[]>;
-  @Select(TodoState.pandas) pandas$: Observable<string[]>;
-  @Select(TodosState.pizza) pizza$: Observable<any>;
+  @Select(TodoState)
+  todos$: Observable<string[]>;
+  @Select(TodoState.pandas)
+  pandas$: Observable<string[]>;
+  @Select(TodosState.pizza)
+  pizza$: Observable<any>;
+  @Select(CounterState)
+  count$: Observable<CounterStateModel>;
+  @Dispatch(CounterState.setValue)
+  counterValue: DispatchEmitter<number>;
+
+  isLoading = false;
 
   allExtras = [
     { name: 'cheese', selected: false },
@@ -99,5 +75,22 @@ export class AppComponent {
 
   onLoadData() {
     this.store.dispatch(new LoadData());
+  }
+
+  counterClear() {
+    this.store
+      .emitter<number, AppState>(CounterState.setValue)
+      .emit(0)
+      .subscribe(({ counter }) => {
+        console.log('Clear!', 'Current counter state: ', counter);
+      });
+  }
+
+  loadCountData() {
+    this.isLoading = true;
+    this.store
+      .emitter(CounterState.loadData)
+      .emit()
+      .subscribe(() => (this.isLoading = false));
   }
 }

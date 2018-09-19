@@ -62,10 +62,9 @@
     "build:integration": "ng build --prod --project integration #requires yarn build",
     "// - TESTING": "Test all modules",
     "test": "ng test",
-    "test:cli": "cd packages/cli && npm i && npm test",
     "test:integration": "ng test --project integration #requires yarn build",
     "// - CI": "Ci Testing",
-    "test:ci": "ng test --watch=false --code-coverage --progress=false --project ngxs && npm run test:cli",
+    "test:ci": "ng test --watch=false --code-coverage --progress=false --project ngxs",
     "test:ci:integration": "ng test --watch=false --progress=false --project integration && ng build --prod --progress=false --project integration",
     "publish:dev": "ts-node tools/publish-dev-builds",
     "publish:tagged": "ts-node tools/publish-tagged-builds",
@@ -123,6 +122,7 @@
     "typescript": "2.7.2",
     "npm-run-all": "^4.1.2",
     "zone.js": "^0.8.26",
-    "@angular-devkit/build-angular": "~0.6.8"
+    "@angular-devkit/build-angular": "~0.6.8",
+    "karma-spec-reporter": "0.0.32"
   }
 }
