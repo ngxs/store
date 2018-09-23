@@ -28,6 +28,7 @@ export interface MetaDataModel {
   actions: ObjectKeyMap<ActionHandlerMetaData[]>;
   defaults: any;
   path: string;
+  selectFromAppState: SelectFromState;
   children: StateClass[];
   instance: any;
 }
@@ -61,6 +62,7 @@ export function ensureStoreMetadata(target): MetaDataModel {
       actions: {},
       defaults: {},
       path: null,
+      selectFromAppState: null,
       children: [],
       instance: null
     };
@@ -106,6 +108,21 @@ export function ensureSelectorMetadata(target): SelectorMetaDataModel {
  */
 export function getSelectorMetadata(target): SelectorMetaDataModel {
   return target[SELECTOR_META_KEY];
+}
+
+/**
+ * Get a deeply nested value. Example:
+ *
+ *    getValue({ foo: bar: [] }, 'foo.bar') //=> []
+ *
+ * Note: This is not as fast as the `fastPropGetter` but is strict Content Security Policy compliant.
+ * See perf hit: https://jsperf.com/fast-value-getter-given-path/1
+ *
+ * @ignore
+ */
+export function compliantPropGetter(paths: string[]): (x: any) => any {
+  const copyOfPaths = [...paths];
+  return obj => copyOfPaths.reduce((acc: any, part: string) => acc && acc[part], obj);
 }
 
 /**

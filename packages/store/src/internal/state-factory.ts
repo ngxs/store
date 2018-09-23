@@ -2,12 +2,14 @@ import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from, throwError } from 'rxjs';
 import { shareReplay, takeUntil, map, catchError, filter, mergeMap, defaultIfEmpty } from 'rxjs/operators';
 
-import { META_KEY, NgxsLifeCycle } from '../symbols';
+import { META_KEY, NgxsLifeCycle, NgxsConfig } from '../symbols';
 import {
   topologicalSort,
   buildGraph,
   findFullParentPath,
   nameToState,
+  compliantPropGetter,
+  fastPropGetter,
   isObject,
   StateClass,
   MappedStore
@@ -33,6 +35,7 @@ export class StateFactory {
 
   constructor(
     private _injector: Injector,
+    private _config: NgxsConfig,
     @Optional()
     @SkipSelf()
     private _parentFactory: StateFactory,
@@ -70,6 +73,12 @@ export class StateFactory {
       let { defaults } = stateClass[META_KEY];
 
       stateClass[META_KEY].path = depth;
+
+      if (this._config && this._config.compatibility && this._config.compatibility.strictContentSecurityPolicy) {
+        stateClass[META_KEY].selectFromAppState = compliantPropGetter(depth.split('.'));
+      } else {
+        stateClass[META_KEY].selectFromAppState = fastPropGetter(depth.split('.'));
+      }
 
       // ensure our store hasn't already been added
       // but dont throw since it could be lazy
