@@ -8,7 +8,7 @@ Plugin with integration with the [Redux Devtools extension](http://extension.rem
 npm install @ngxs/devtools-plugin --save-dev
 
 # or if you are using yarn
-yarn add @ngxs/devtools-plugin
+yarn add @ngxs/devtools-plugin --dev
 ```
 
 ## Usage
