@@ -107,4 +107,17 @@ describe('AppComponent', () => {
     });
     expect(flag).toBe(true);
   });
+
+  it(
+    'should only save when triggered with storeOn',
+    fakeAsync(() => {
+      component.savingForm.patchValue({ toppings: 'cheese' });
+      tick(200);
+      component.saveRequests$.next();
+      component.pizza$.pipe(take(1)).subscribe((pizza: any) => {
+        expect(pizza.model.toppings).toBe('cheese');
+      });
+      discardPeriodicTasks();
+    })
+  );
 });

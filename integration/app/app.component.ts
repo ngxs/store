@@ -1,9 +1,9 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { Store, Select } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { FormBuilder, FormArray } from '@angular/forms';
+import { Select, Store } from '@ngxs/store';
+import { Observable, Subject } from 'rxjs';
+import { FormArray, FormBuilder } from '@angular/forms';
 
-import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from './todo.state';
+import { AddTodo, LoadData, RemoveTodo, SetPrefix, TodosState, TodoState } from './todo.state';
 
 @Component({
   selector: 'app-root',
@@ -12,21 +12,40 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
       <div>
         <h3>Reactive Form</h3>
         <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizza">
-            Toppings: <input type="text" formControlName="toppings" />
-            <br>
-            Crust <input type="text" formControlName="crust" />
-            <br>
-            Extras
-            <span *ngFor='let extra of extras; let i=index'>
+          Toppings: <input type="text" formControlName="toppings"/>
+          <br>
+          Crust <input type="text" formControlName="crust"/>
+          <br>
+          Extras
+          <span *ngFor='let extra of extras; let i=index'>
               <input type='checkbox' [formControl]='extra'/> {{allExtras[i].name}}
             </span>
-            <br><hr>
-            <button type="submit">Set Olives</button>
-            <button type="button" (click)="onPrefix()">Set Prfix</button>
-            <button type="button" (click)="onLoadData()">Load Data</button>
+          <br>
+          <hr>
+          <button type="submit">Set Olives</button>
+          <button type="button" (click)="onPrefix()">Set Prfix</button>
+          <button type="button" (click)="onLoadData()">Load Data</button>
         </form>
       </div>
-      <br><br><hr>
+      <br><br>
+      <div>
+      <h3>Save Form with Button click</h3>
+      <form [formGroup]="savingForm" novalidate (ngSubmit)="saveForm()" ngxsForm="todos.pizza" [ngxsFormStoreOn]="saveRequests$">
+        Toppings: <input type="text" formControlName="toppings"/>
+        <br>
+        Crust <input type="text" formControlName="crust"/>
+        <br>
+        Extras
+        <span *ngFor='let extra of extras; let i=index'>
+              <input type='checkbox' [formControl]='extra'/> {{allExtras[i].name}}
+            </span>
+        <br>
+        <hr>
+        <button type="submit">Save</button>
+      </form>
+    </div>
+      <br><br>
+      <hr>
       <h3>Todo Form</h3>
       <div class="add-todo">
         <input placeholder="New Todo" #text>
@@ -34,7 +53,8 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
       </div>
       <ul>
         <li class="todo" *ngFor="let todo of todos$ | async; let i = index">
-          {{todo}} <button (click)="removeTodo(i)">🗑</button>
+          {{todo}}
+          <button (click)="removeTodo(i)">🗑</button>
         </li>
         <li *ngFor="let todo of pandas$ | async">
           🐼
@@ -47,9 +67,12 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  @Select(TodoState) todos$: Observable<string[]>;
-  @Select(TodoState.pandas) pandas$: Observable<string[]>;
-  @Select(TodosState.pizza) pizza$: Observable<any>;
+  @Select(TodoState)
+  todos$: Observable<string[]>;
+  @Select(TodoState.pandas)
+  pandas$: Observable<string[]>;
+  @Select(TodosState.pizza)
+  pizza$: Observable<any>;
 
   allExtras = [
     { name: 'cheese', selected: false },
@@ -62,6 +85,14 @@ export class AppComponent {
     crust: [{ value: 'thin', disabled: true }],
     extras: this.createExtras()
   });
+
+  savingForm = this.formBuilder.group({
+    toppings: [''],
+    crust: [{ value: 'thin', disabled: true }],
+    extras: this.createExtras()
+  });
+
+  saveRequests$ = new Subject<void>();
 
   constructor(private store: Store, private formBuilder: FormBuilder) {}
 
@@ -91,6 +122,10 @@ export class AppComponent {
     this.pizzaForm.patchValue({
       toppings: 'olives'
     });
+  }
+
+  saveForm() {
+    this.saveRequests$.next();
   }
 
   onPrefix() {
