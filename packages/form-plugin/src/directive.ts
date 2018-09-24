@@ -1,15 +1,20 @@
 import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroupDirective } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
-import { Subject } from 'rxjs';
-import { takeUntil, debounceTime, first } from 'rxjs/operators';
+import { Subject, Observable } from 'rxjs';
+import { takeUntil, debounceTime, first, sample } from 'rxjs/operators';
 import { UpdateFormStatus, UpdateFormValue, UpdateFormDirty, UpdateFormErrors, UpdateForm } from './actions';
 
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
-  @Input('ngxsForm') path: string;
-  @Input('ngxsFormDebounce') debounce = 100;
-  @Input('ngxsFormClearOnDestroy') clearDestroy: boolean;
+  @Input('ngxsForm')
+  path: string;
+  @Input('ngxsFormDebounce')
+  debounce = 100;
+  @Input('ngxsFormClearOnDestroy')
+  clearDestroy: boolean;
+  @Input('ngxsFormStoreOn')
+  storeOn: Observable<any>;
 
   private _destroy$ = new Subject<null>();
   private _updating = false;
@@ -30,7 +35,10 @@ export class FormDirective implements OnInit, OnDestroy {
     // On first state change, sync form model, status and dirty with state
     this._store
       .select(state => getValue(state, `${this.path}`))
-      .pipe(takeUntil(this._destroy$), first())
+      .pipe(
+        takeUntil(this._destroy$),
+        first()
+      )
       .subscribe(state => {
         this._store.dispatch([
           new UpdateFormValue({
@@ -78,7 +86,11 @@ export class FormDirective implements OnInit, OnDestroy {
         }
       });
 
-    this._formGroupDirective.valueChanges.pipe(debounceTime(this.debounce), takeUntil(this._destroy$)).subscribe(() => {
+    const storeStrategy = !!this.storeOn
+      ? source$ => source$.pipe(sample(this.storeOn))
+      : source$ => source$.pipe(debounceTime(this.debounce));
+
+    this._formGroupDirective.valueChanges.pipe(storeStrategy, takeUntil(this._destroy$)).subscribe(() => {
       const value = this._formGroupDirective.control.getRawValue();
       this._updating = true;
       this._store
@@ -103,7 +115,7 @@ export class FormDirective implements OnInit, OnDestroy {
     });
 
     this._formGroupDirective.statusChanges
-      .pipe(debounceTime(this.debounce), takeUntil(this._destroy$))
+      .pipe(storeStrategy, takeUntil(this._destroy$))
       .subscribe((status: string) => {
         this._store.dispatch(
           new UpdateFormStatus({
