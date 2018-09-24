@@ -103,10 +103,11 @@ export class PizzaComponent {
 
 Now anytime your form updates, your state will also reflect the new state.
 
-The directive also has two inputs you can utilize as well:
+The directive also has three inputs you can utilize as well:
 
 - `ngxsFormDebounce: number` - Debounce the value changes to the form. Default value: `100`.
 - `ngxsFormClearOnDestroy: boolean` - Clear the state on destroy of the form.
+- `ngxsFormStoreOn: Observable<any>` - Disables auto saving and lets you control when to update the store with an observable.
 
 ### Actions
 In addition to it automatically keeping track of the form, you can also
