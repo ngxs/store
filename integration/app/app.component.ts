@@ -48,7 +48,8 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
 })
 export class AppComponent {
   @Select(TodoState) todos$: Observable<string[]>;
-  @Select(TodoState.pandas) pandas$: Observable<string[]>;
+  @Select(TodoState.pandas, 'panda')
+  pandas$: Observable<string[]>;
   @Select(TodosState.pizza) pizza$: Observable<any>;
 
   allExtras = [

@@ -169,6 +169,17 @@ export class ZooComponent {
 
 #### Dynamic Selectors
 
+The example which is shown in the [Lazy Selectors](#lazy-selectors) section you can use as Dynamic Selector.
+
+```TS
+import { Select } from '@ngxs/store';
+
+@Component({ ... })
+export class ZooComponent {
+  @Select(ZooState.pandas, 'panda') babyPandas$: Observable<string[]>;
+}
+```
+
 A dynamic selector is created by using the `createSelector` function as opposed to the `@Selector` decorator. It does not need to be created in any special area at any specific time. The typical use case though would be to create a selector that looks like a normal selector but takes an argument to provide to the dynamic selector.
 
 For instance, I can have a Dynamic Selector that will filter my pandas to the provided type of panda.

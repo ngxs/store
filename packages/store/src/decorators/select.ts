@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 
 import { Store } from '../store';
@@ -19,7 +20,7 @@ export class SelectFactory {
 /**
  * Decorator for selecting a slice of state from the store.
  */
-export function Select(selectorOrFeature?, ...paths: string[]) {
+export function Select(selectorOrFeature?: any | string[], ...args: any[]) {
   return function(target: any, name: string) {
     const selectorFnName = '__' + name + '__selector';
 
@@ -35,14 +36,21 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
         throw new Error('SelectFactory not connected to store!');
       }
 
-      return store.select(fn);
+      return store.select(fn).pipe(
+        map(filterFn => {
+          if (typeof filterFn === 'function') {
+            return filterFn(...args);
+          } else {
+            // return not memoized data
+            return filterFn;
+          }
+        })
+      );
     };
 
     const createSelector = () => {
-      if (typeof selectorOrFeature === 'string') {
-        const propsArray = paths.length ? [selectorOrFeature, ...paths] : selectorOrFeature.split('.');
-
-        return fastPropGetter(propsArray);
+      if (Array.isArray(selectorOrFeature)) {
+        return fastPropGetter(selectorOrFeature);
       } else if (selectorOrFeature[META_KEY] && selectorOrFeature[META_KEY].path) {
         return fastPropGetter(selectorOrFeature[META_KEY].path.split('.'));
       } else {

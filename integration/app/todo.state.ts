@@ -26,7 +26,7 @@ export class TodoStateModel {
 export class TodoState {
   @Selector()
   static pandas(state: string[]) {
-    return state.filter(s => s.indexOf('panda') > -1);
+    return type => state.filter(s => s.indexOf(type) > -1);
   }
 
   @Action(AddTodo)
