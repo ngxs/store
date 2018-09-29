@@ -1,10 +1,4 @@
-import {
-  SelectFromState,
-  fastPropGetter,
-  ensureSelectorMetadata,
-  getSelectorMetadata,
-  getStoreMetadata
-} from '../internal/internals';
+import { SelectFromState, ensureSelectorMetadata, getSelectorMetadata, getStoreMetadata } from '../internal/internals';
 import { memoize } from '../utils/memoize';
 
 /**
@@ -76,16 +70,6 @@ export function createSelector(
  * @ignore
  */
 export function getSelectorFn(selector: any): SelectFromState {
-  const selectorMetadata = getSelectorMetadata(selector);
-  if (selectorMetadata) {
-    const selectFromAppState = selectorMetadata.selectFromAppState;
-    if (selectFromAppState) {
-      return selectFromAppState;
-    }
-  }
-  const stateMetadata = getStoreMetadata(selector);
-  if (stateMetadata && stateMetadata.path) {
-    return fastPropGetter(stateMetadata.path.split('.'));
-  }
-  return selector;
+  const metadata = getSelectorMetadata(selector) || getStoreMetadata(selector);
+  return (metadata && metadata.selectFromAppState) || selector;
 }

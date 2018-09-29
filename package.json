@@ -54,7 +54,7 @@
     "ts-node": "ts-node",
     "prettier": "prettier",
     "// - APPS": "Run Apps in dev and with packaged modules",
-    "start": "ng serve --aot",
+    "start": "ng serve --aot --open",
     "serve:integration": "ng serve --prod --project integration #requires yarn package",
     "// - BUILDING": "Run Apps in dev and with packaged modules",
     "build": "yarn build:packages && ts-node tools/set-metadata",
