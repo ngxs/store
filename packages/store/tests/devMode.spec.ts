@@ -1,4 +1,4 @@
-import { Injectable, ErrorHandler } from '@angular/core';
+import { ErrorHandler, Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { Action } from '../src/decorators/action';
@@ -11,10 +11,14 @@ import { StateContext } from '../src/symbols';
 import { Selector } from '../src/decorators/selector';
 
 import { NoopErrorHandler } from './helpers/utils';
+import { Freeze } from '../src/decorators/freeze';
 
 describe('Development Mode', () => {
+
+  @Freeze()
   class Increment {
     static type = 'INCREMENT';
+
     constructor(public amount: number = 1) {}
   }
 
@@ -349,7 +353,7 @@ describe('Development Mode', () => {
       }
     });
 
-    xit('should give an error if the action is mutated by a handler', () => {
+    it('should give an error if the action is mutated by a handler', () => {
       @State<StateModel>({
         name: 'counter',
         defaults: { count: 0 }
@@ -381,7 +385,7 @@ describe('Development Mode', () => {
       ]);
     });
 
-    xit('should give an error if a child action is mutated by a handler', () => {
+    it('should give an error if a child action is mutated by a handler', () => {
       class Start {
         static type = 'START';
       }
