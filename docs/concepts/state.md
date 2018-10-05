@@ -301,7 +301,7 @@ export class ZooState {
           ]
         });
       }),
-      map(() => ctx.dispatch(new TakeAnimalsOutside()))
+      mergeMap(() => ctx.dispatch(new TakeAnimalsOutside()))
     );
   }
 }
