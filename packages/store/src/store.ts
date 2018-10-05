@@ -6,6 +6,8 @@ import { getSelectorFn } from './utils/selector-utils';
 import { InternalStateOperations } from './internal/state-operations';
 import { StateStream } from './internal/state-stream';
 import { enterZone } from './operators/zone';
+import { DispatchEmitter, DISPATCHER_META_KEY } from './symbols';
+import { DispatchAction } from './actions/actions';
 
 @Injectable()
 export class Store {
@@ -18,8 +20,27 @@ export class Store {
   /**
    * Dispatches event(s).
    */
-  dispatch(event: any | any[]): Observable<any> {
+  dispatch<T = any, U = any>(event: T | T[]): Observable<U> {
     return this._internalStateOperations.getRootStateOperations().dispatch(event);
+  }
+
+  /**
+   * Creates action dispatcher.
+   */
+  emitter<T = any, U = any>(dispatcher: Function): DispatchEmitter<T, U> {
+    const dispatcherEvent = dispatcher[DISPATCHER_META_KEY];
+
+    if (!dispatcherEvent) {
+      throw new Error('Dispatcher methods should be decorated using @Dispatcher() decorator');
+    }
+
+    return {
+      emit: (payload?: T): Observable<U> => {
+        DispatchAction.type = dispatcherEvent.type;
+        const action: DispatchAction<T> = new DispatchAction<T>(payload);
+        return this._getRootStateOperations().dispatch<DispatchAction>(action);
+      }
+    };
   }
 
   /**
@@ -75,7 +96,7 @@ export class Store {
    * Return the raw value of the state.
    */
   snapshot(): any {
-    return this._internalStateOperations.getRootStateOperations().getState();
+    return this._getRootStateOperations().getState();
   }
 
   /**
@@ -83,6 +104,10 @@ export class Store {
    * for plugin's who need to modify the state directly or unit testing.
    */
   reset(state: any) {
-    return this._internalStateOperations.getRootStateOperations().setState(state);
+    return this._getRootStateOperations().setState(state);
+  }
+
+  private _getRootStateOperations() {
+    return this._internalStateOperations.getRootStateOperations();
   }
 }
