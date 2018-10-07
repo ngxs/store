@@ -14,8 +14,8 @@ export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
   return {
     key: '@@STATE',
     storage: StorageOption.LocalStorage,
-    serialize: JSON.stringify,
-    deserialize: JSON.parse,
+    serialize: val => JSON.stringify(val),
+    deserialize: val => JSON.parse(val),
     ...options
   };
 }
