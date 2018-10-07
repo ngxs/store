@@ -259,4 +259,60 @@ describe('NgxsStoragePlugin', () => {
       expect(CustomStorage.Storage['@@STATE']).toEqual({ counter: { count: 105 } });
     });
   });
+
+  it('should allow to merge deserialized data with inital value', () => {
+    localStorage.setItem('@@STATE', JSON.stringify({}));
+
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([MyStore]),
+        NgxsStoragePluginModule.forRoot({
+          deserialize: (val, key, state) => ({ ...state, ...JSON.parse(val) })
+        })
+      ]
+    });
+
+    const store = TestBed.get(Store);
+
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(state.count).toBe(0);
+    });
+  });
+
+  it('should allow to use different strategies based on key', () => {
+    localStorage.setItem('counter', btoa(JSON.stringify({ count: 2137 })));
+
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([MyStore]),
+        NgxsStoragePluginModule.forRoot({
+          key: 'counter',
+          serialize: (val, key) => {
+            switch (key) {
+              case 'counter':
+                return btoa(JSON.stringify(val));
+              default:
+                return JSON.stringify(val);
+            }
+          },
+          deserialize: (val, key, state) => {
+            switch (key) {
+              case 'counter':
+                return JSON.parse(atob(val));
+              default:
+                return JSON.parse(val);
+            }
+          }
+        })
+      ]
+    });
+
+    const store = TestBed.get(Store);
+    store.dispatch(new Increment());
+
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(state.count).toBe(2138);
+      expect(localStorage.getItem('counter')).toBe(btoa(JSON.stringify({ count: 2138 })));
+    });
+  });
 });

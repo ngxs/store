@@ -46,12 +46,12 @@ export interface NgxsStoragePluginOptions {
   /**
    * Serailizer for the object before its pushed into the engine.
    */
-  serialize?(obj: any);
+  serialize?(obj: any, key: string);
 
   /**
    * Deserializer for the object before its pulled out of the engine.
    */
-  deserialize?(obj: any);
+  deserialize?(obj: any, key: string, state: any);
 }
 
 export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_STORAGE_PLUGIN_OPTION');

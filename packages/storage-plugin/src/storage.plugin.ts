@@ -25,7 +25,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
         if (typeof val !== 'undefined' && val !== null) {
           try {
-            val = options.deserialize(val);
+            const previousState = isMaster ? state : getValue(state, key);
+            val = options.deserialize(val, key, previousState);
           } catch (e) {
             console.error('Error ocurred while deserializing the store value, falling back to empty object.');
             val = {};
@@ -62,7 +63,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             }
 
             try {
-              this._engine.setItem(key, options.serialize(val));
+              this._engine.setItem(key, options.serialize(val, key));
             } catch (e) {
               console.error('Error ocurred while serializing the store value, value not updated.');
             }
