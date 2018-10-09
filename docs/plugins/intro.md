@@ -29,7 +29,7 @@ export class LoggerPlugin implements NgxsPlugin {
 
 @NgModule()
 export class NgxsLoggerPluginModule {
-  static forRoot(config?: any): ModuleWithProviders = {
+  static forRoot(config?: any): ModuleWithProviders {
     return {
       ngModule: NgxsLoggerPluginModule,
       providers: [
