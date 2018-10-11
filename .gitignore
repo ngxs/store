@@ -56,3 +56,4 @@ Thumbs.db
 /storybook-static
 /yarn-error.log
 .ng_pkg_build/
+package-lock.json
