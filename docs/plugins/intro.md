@@ -17,13 +17,14 @@ export const NGXS_LOGGER_PLUGIN_OPTIONS = new InjectionToken('NGXS_LOGGER_PLUGIN
 
 @Injectable()
 export class LoggerPlugin implements NgxsPlugin {
-  constructor(@Inject() private options: any) {}
+  constructor(@Inject(NGXS_LOGGER_PLUGIN_OPTIONS) private options: any) {}
 
   handle(state, action, next) {
     console.log('Action started!', state);
-    return next(state, action).pipe(tap(result) => {
+    return next(state, action).pipe(
+      tap(result => {
       console.log('Action happened!', result);
-    });
+    }))
   }
 }
 
