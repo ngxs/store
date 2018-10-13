@@ -1,9 +1,18 @@
+# DEV version (to become 3.3.0)
+
+* Feature: Add strictContentSecurityPolicy compatibility rule [#569](https://github.com/ngxs/store/pull/569)
+* Feature: Devtools plugin support for 'IMPORT_STATE' [#507](https://github.com/ngxs/store/pull/507)
+* Feature: Form plugin - path to state can contain array [#587](https://github.com/ngxs/store/pull/587)
+* Fix: Storage Plugin should handle undefined [#538](https://github.com/ngxs/store/pull/538)
+* Fix: Expose ofActionCanceled function [#531](https://github.com/ngxs/store/pull/531)
+* Fix: Expose Websocket Plugin WebsocketMessageError action [#504](https://github.com/ngxs/store/pull/504)
+
 # 3.2.0
 
 * Feature: createSelector functions [#484](https://github.com/ngxs/store/pull/484)
 * Fix: Expose RouterStateModel interface [#445](https://github.com/ngxs/store/pull/445)
 * Fix: State not set correctly when duplicate key in path [#459](https://github.com/ngxs/store/pull/459)
-* Fix: action stream should return in Angular zone [#456](https://github.com/ngxs/store/pull/456)
+* Fix: Action stream should return in Angular zone [#456](https://github.com/ngxs/store/pull/456)
 
 # 3.1.4 6/13/18
 
