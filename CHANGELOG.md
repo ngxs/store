@@ -1,5 +1,6 @@
 # DEV version (to become [3.3.0](https://github.com/ngxs/store/milestone/5))
 
+* Feature: Add [CLI](https://github.com/ngxs/cli) for generate store [#520](https://github.com/ngxs/store/pull/520)
 * Feature: Add strictContentSecurityPolicy compatibility rule [#569](https://github.com/ngxs/store/pull/569)
 * Feature: Devtools plugin support for 'IMPORT_STATE' [#507](https://github.com/ngxs/store/pull/507)
 * Feature: Form plugin - path to state can contain array [#587](https://github.com/ngxs/store/pull/587)
