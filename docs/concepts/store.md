@@ -1,5 +1,5 @@
 # Store
-The store is a global state manager that dispatches actions your state 
+The store is a global state manager that dispatches actions to your state 
 containers listen to and provides a way to select data slices out from
 the global state.
 
