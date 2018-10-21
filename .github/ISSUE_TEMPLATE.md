@@ -1,55 +1,67 @@
 <!--
-## Feature Request?
-For feature requests, delete the form below and describe the requirements and use case.
+PLEASE HELP US PROCESS GITHUB ISSUES FASTER BY PROVIDING THE FOLLOWING INFORMATION.
+
+ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 -->
+
+## I'm submitting a...
+<!-- Check one of the following options with "x" -->
+<pre><code>
+[ ] Regression (a behavior that used to work and stopped working in a new release)
+[ ] Bug report  <!-- Please search GitHub for a similar issue or PR before submitting -->
+[ ] Performance issue
+[ ] Feature request
+[ ] Documentation issue or request
+[ ] Support request => https://github.com/ngxs/store/blob/master/CONTRIBUTING.md
+[ ] Other... Please describe:
+</code></pre>
+
+## Current behavior
+<!-- Describe how the issue manifests. -->
+
+
+## Expected behavior
+<!-- Describe what the desired behavior would be. -->
+
+
+## Minimal reproduction of the problem with instructions
 
 <!--
-## Question?
-For questions, please ask them on stack overflow with the `ngxs` tag:
-
-https://stackoverflow.com/questions/ask?tags=ngxs
-
-This is so that the issue tracker doesn't get overrun with questions.
-And stackoverflow is a better place for questions.
--->
-
-### Versions
-
-<!--
-Please provide ther version of NGXS that you are using as well as the version of Angular
--->
-
-```
-* ngxs:
-* @angular/core:
-```
-
-### Repro steps
-
-<!--
-If possible a link to a http://stackblitz.com (or github) repo with a repro or a failing test would be great.
-Please provide simple steps to reproduce this bug.
-Please include: commands run, packages added, related code changes.
--->
-
-Stackblitz / Github link: https://stackblitz.com/fork/ngxs-simple
+For bug reports please provide the *STEPS TO REPRODUCE* and if possible a *MINIMAL DEMO* of the problem via
+https://stackblitz.com/fork/ngxs-simple
 
 * Step 1
 * Step 2
 * Step 3
 
-### Observed behavior
-
-```
-<!-- Normally this includes a stack trace and some more information. -->
-```
-
-### Desired behavior
-
-<!--
-What would like to see implemented?
-What is the usecase?
-What did you expect to see?
 -->
 
-### Mention any other details that might be useful (optional)
+## What is the motivation / use case for changing the behavior?
+<!-- Describe the motivation or the concrete use case. -->
+
+
+## Environment
+
+<pre><code>
+Libs:
+- @angular/core version: X.Y.Z
+- @ngxs/store version: X.Y.Z
+<!-- Check whether this is still an issue in the most recent Angular version -->
+
+Browser:
+- [ ] Chrome (desktop) version XX
+- [ ] Chrome (Android) version XX
+- [ ] Chrome (iOS) version XX
+- [ ] Firefox version XX
+- [ ] Safari (desktop) version XX
+- [ ] Safari (iOS) version XX
+- [ ] IE version XX
+- [ ] Edge version XX
+ 
+For Tooling issues:
+- Node version: XX  <!-- run `node --version` -->
+- Platform:  <!-- Mac, Linux, Windows -->
+
+Others:
+<!-- Anything else relevant?  Operating system version, IDE, package manager, HTTP server, ... -->
+</code></pre>
