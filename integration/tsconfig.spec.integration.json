@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@ngxs/*": ["../builds/*"]
+      "@ngxs/*": ["../@ngxs/*"]
     },
     "outDir": "./out-tsc/spec",
     "module": "commonjs",

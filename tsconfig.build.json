@@ -6,7 +6,7 @@
   },
   "compilerOptions": {
     "paths": {
-      "@ngxs/*": ["../../builds/*"]
+      "@ngxs/*": ["@ngxs/*"]
     },
     "target": "es2015",
     "module": "es2015",
