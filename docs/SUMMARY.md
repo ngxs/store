@@ -44,8 +44,8 @@
   * [Web Socket](plugins/websocket.md)
   * [Router](plugins/router.md)
 * NGXS Labs
-  * [Introduction](ngxs-labs/intro.md)
-  * [Emitter](ngxs-labs/emitter.md)
+  * [Introduction](labs/intro.md)
+  * [Emitter](labs/emitter.md)
 * Community
   * [FAQ](advanced/faq.md)
   * [Resources](community/projects.md)
