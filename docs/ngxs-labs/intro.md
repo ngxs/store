@@ -1,7 +1,5 @@
 <p align="center">
-
-  ![CLI Screenshot](../assets/ngxs-labs.png)
-
+   <img src="../assets/ngxs-labs.png" align="center" />
 </p>
 
 We announced a new idea called [NGXS Labs](https://github.com/ngxs-labs). The goal of NGXS Labs is to more clearly communicate the balance between new explorations by the team, with the normal stability that our community has come to expect since the release of NGXS.
