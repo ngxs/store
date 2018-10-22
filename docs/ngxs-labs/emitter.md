@@ -2,9 +2,9 @@
 
 > ER is a new pattern that provides the opportunity to feel free from actions
 
-[![Build Status](https://travis-ci.org/ngxs-labs/tools.svg?branch=master)](https://travis-ci.org/ngxs-labs/tools) [![Build Status: Circle](https://circleci.com/gh/ngxs-labs/tools.svg?style=svg)](https://circleci.com/gh/ngxs-labs/tools)
+[![Build Status](https://travis-ci.org/ngxs-labs/emitter.svg?branch=master)](https://travis-ci.org/ngxs-labs/emitter) 
 [![NPM](https://badge.fury.io/js/%40ngxs-labs%2Femitter.svg)](https://www.npmjs.com/package/@ngxs-labs/emitter)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/ngxs-labs/tools/blob/master/license)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/ngxs-labs/emitter/blob/master/license)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/079272acc4104332b904dc6818929d06)](https://www.codacy.com/app/arturovt/emitter?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ngxs-contrib/emitter&amp;utm_campaign=Badge_Grade)
 
 [🚀 See it in action on Stackblitz](https://stackblitz.com/edit/ngxs-emitter-simple)
@@ -16,7 +16,7 @@ Compare these diagrams, we've simplified Redux flow and threw out unnecessary mi
 
 ![ER Flow](https://raw.githubusercontent.com/ngxs-labs/emitter/master/docs/assets/redux-er.png)
 
-## :package: Install
+## Install
 
 To install `@ngxs-labs/emitter` run the following command:
 
@@ -26,7 +26,7 @@ npm install @ngxs-labs/emitter
 yarn add @ngxs-labs/emitter
 ```
 
-## :hammer: Usage
+## Usage
 
 Import the module into your root application module:
 
