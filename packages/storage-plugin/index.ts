@@ -1,3 +1,4 @@
-export { NgxsStoragePluginModule } from './src/storage.module';
-export { NgxsStoragePlugin } from './src/storage.plugin';
-export * from './src/symbols';
+/**
+ * The public api for consumers of @ngxs/storage-plugin
+ */
+export * from './src/public_api';

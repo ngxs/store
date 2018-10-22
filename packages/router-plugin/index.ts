@@ -1,4 +1,4 @@
-export { NgxsRouterPluginModule } from './src/router.module';
-export { RouterState, RouterStateModel } from './src/router.state';
-export { RouterStateSerializer, DefaultRouterStateSerializer, SerializedRouterStateSnapshot } from './src/serializer';
-export * from './src/router.actions';
+/**
+ * The public api for consumers of @ngxs/router-plugin
+ */
+export * from './src/public_api';

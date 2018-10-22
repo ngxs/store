@@ -1,3 +1,4 @@
-export { NgxsFormPluginModule } from './src/form.module';
-export { NgxsFormPlugin } from './src/form.plugin';
-export * from './src/actions';
+/**
+ * The public api for consumers of @ngxs/form-plugin
+ */
+export * from './src/public_api';
