@@ -1,5 +1,8 @@
 # DEV version (to become [3.3.0](https://github.com/ngxs/store/milestone/5))
 
+* Feature: Support Angular 7, TypeScript 3.1 [#615](https://github.com/ngxs/store/issues/615)
+* Feature: [Emitter](https://github.com/ngxs-labs/emitter) plugin (allows you to get rid of actions) [#543](https://github.com/ngxs/store/issues/543)
+* Feature: Announced [NGXS Labs](https://ngxs.gitbook.io/ngxs/ngxs-labs/intro)
 * Feature: Add [CLI](https://github.com/ngxs/cli) for generate store [#520](https://github.com/ngxs/store/pull/520)
 * Feature: Add strictContentSecurityPolicy compatibility rule [#569](https://github.com/ngxs/store/pull/569)
 * Feature: Devtools plugin support for 'IMPORT_STATE' [#507](https://github.com/ngxs/store/pull/507)
