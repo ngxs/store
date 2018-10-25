@@ -13,7 +13,7 @@ For example, if we were to have a shopping cart and we were to delete an item ou
 a notification that it was successfully removed. In a pure state driven application, you might create some kind
 of message array to make the dialog show up. With Action Handlers, we can respond to the action directly.
 
-The action handler is an Observable that recieves all the actions dispatched before the state takes any action on it.
+The action handler is an Observable that receives all the actions dispatched before the state takes any action on it.
 
 Actions in NGXS also have a lifecycle. Since any potential action can be async we tag actions showing when they are "DISPATCHED", "SUCCESSFUL", "CANCELED" or "ERRORED". This gives you the ability to react to actions at different points in their existence.
 
