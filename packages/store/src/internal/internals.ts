@@ -1,4 +1,4 @@
-import { META_KEY, ActionOptions, SELECTOR_META_KEY } from '../symbols';
+import { ActionOptions, META_KEY, SELECTOR_META_KEY } from '../symbols';
 import { Observable } from 'rxjs';
 
 export interface ObjectKeyMap<T> {
@@ -17,10 +17,10 @@ export interface ActionHandlerMetaData {
   type: string;
 }
 
-export interface StateOperations<T> {
+export interface StateOperations<T = any, U = any> {
   getState(): T;
-  setState(val: T);
-  dispatch(actions: any | any[]): Observable<void>;
+  setState(val: T): void;
+  dispatch(actions: U | U[]): Observable<void | T>;
 }
 
 export interface MetaDataModel {

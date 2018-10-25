@@ -7,7 +7,6 @@ export const META_KEY = 'NGXS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
-export type NgxsPluginConstructor = new (...args: any[]) => NgxsPlugin;
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
 /**
@@ -17,7 +16,7 @@ export class NgxsConfig {
   /**
    * Run in development mode. This will add additional debugging features:
    * - Object.freeze on the state and actions to guarantee immutability
-   * (default: false)
+   * (default: true)
    */
   developmentMode: boolean;
   compatibility: {
@@ -30,6 +29,7 @@ export class NgxsConfig {
   };
 
   constructor() {
+    this.developmentMode = true;
     this.compatibility = {
       strictContentSecurityPolicy: false
     };

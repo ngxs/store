@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-
+import { Injectable, Injector } from '@angular/core';
 import { StateOperations } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
@@ -12,39 +11,39 @@ import { deepFreeze } from '../utils/freeze';
  */
 @Injectable()
 export class InternalStateOperations {
-  constructor(
-    private _stateStream: StateStream,
-    private _dispatcher: InternalDispatcher,
-    private _config: NgxsConfig
-  ) {}
+  private stateStream: StateStream;
+  private dispatcher: InternalDispatcher;
+  private readonly developmentMode: boolean;
+
+  constructor(context: Injector) {
+    this.stateStream = context.get(StateStream);
+    this.dispatcher = context.get(InternalDispatcher);
+    this.developmentMode = context.get(NgxsConfig).developmentMode;
+    InternalStateOperations.checkDevelopmentMode(this.developmentMode);
+  }
+
+  private static checkDevelopmentMode(developmentMode: boolean) {
+    if (developmentMode) {
+      console.warn(
+        'NGXS is running in the development mode.\n',
+        'Choose developmentMode to enable the production mode.\n',
+        'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
+      );
+    }
+  }
 
   /**
    * Returns the root state operators.
    */
-  getRootStateOperations(): StateOperations<any> {
-    const rootStateOperations = {
-      getState: () => this._stateStream.getValue(),
-      setState: newState => this._stateStream.next(newState),
-      dispatch: actions => this._dispatcher.dispatch(actions)
+  public getRootStateOperations<T = any, U = any>(): StateOperations<T> {
+    return {
+      getState: (): T => this.stateStream.getValue(),
+      setState: (newState: T) => this.stateStream.next(this.ensureState<T>(newState)),
+      dispatch: (actions: U[]) => this.dispatcher.dispatch(actions)
     };
-
-    if (this._config.developmentMode) {
-      return this.ensureStateAndActionsAreImmutable(rootStateOperations);
-    }
-
-    return rootStateOperations;
   }
 
-  private ensureStateAndActionsAreImmutable(root: StateOperations<any>): StateOperations<any> {
-    return {
-      getState: () => root.getState(),
-      setState: value => {
-        const frozenValue = deepFreeze(value);
-        return root.setState(frozenValue);
-      },
-      dispatch: actions => {
-        return root.dispatch(actions);
-      }
-    };
+  private ensureState<T = any>(state: T): T {
+    return this.developmentMode ? deepFreeze(state) : state;
   }
 }
