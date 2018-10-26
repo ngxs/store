@@ -56,6 +56,16 @@ If you still need actions - it is possible to pass an action as an argument into
 
 ![Actions](https://raw.githubusercontent.com/ngxs-labs/emitter/master/docs/assets/actions.png)
 
+## Emitting multiple value
+
+It's also possible to emit multiple values, just define your state:
+
+![Animal state](https://raw.githubusercontent.com/ngxs-labs/emitter/master/docs/assets/emitmany-state.png)
+
+And use `emitMany` method from `Emittable` object:
+
+![Emit many](https://raw.githubusercontent.com/ngxs-labs/emitter/master/docs/assets/emitmany-component.png)
+
 ## Dependency injection
 
 Assume you have to make some API request and load some data from your server, it is very easy to use services with static methods, Angular provides an `Injector` class for getting instances by reference:
