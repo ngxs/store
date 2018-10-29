@@ -1,5 +1,7 @@
 import { ensureStoreMetadata } from '../internal/internals';
-import { StoreOptions, META_KEY } from '../symbols';
+import { META_KEY, StoreOptions } from '../symbols';
+import { NgxsStateProvidersModule } from '../internal/state-providers/state-providers.module';
+import { Type } from '@angular/core';
 
 const stateNameRegex = new RegExp('^[a-zA-Z0-9]+$');
 
@@ -30,6 +32,15 @@ export function State<T>(options: StoreOptions<T>) {
     meta.children = options.children;
     meta.defaults = options.defaults;
     meta.name = options.name;
+
+    if (options.provideIn) {
+      const provideIn: string | Type<unknown> = options.provideIn;
+      const type: Type<unknown> = typeof provideIn !== 'string' ? provideIn : null;
+      const children = options.children || [];
+      const states = [target, ...children];
+      states.forEach((state: Type<unknown>) => NgxsStateProvidersModule.provideInNgxsModule(state, type));
+      NgxsStateProvidersModule.defineStatesByProvideIn(provideIn, states);
+    }
 
     if (!options.name) {
       throw new Error(`States must register a 'name' property`);

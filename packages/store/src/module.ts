@@ -11,6 +11,7 @@ import { SelectFactory } from './decorators/select';
 import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitState, UpdateState } from './actions/actions';
+import { NgxsStateProvidersModule } from './internal/state-providers/state-providers.module';
 
 /**
  * Root module
@@ -25,8 +26,12 @@ export class NgxsRootModule {
     select: SelectFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
-    states: any[]
+    entryStates: any[]
   ) {
+    // Concat entry states with state providers
+    const ngxsRootStates = NgxsStateProvidersModule.states.ngxsRoot;
+    const states = NgxsStateProvidersModule.flattenedUniqueStates(entryStates, ngxsRootStates);
+
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(states);
 
@@ -63,14 +68,18 @@ export class NgxsFeatureModule {
     factory: StateFactory,
     @Optional()
     @Inject(FEATURE_STATE_TOKEN)
-    states: any[][]
+    entryStates: any[][]
   ) {
     // Since FEATURE_STATE_TOKEN is a multi token, we need to
     // flatten it [[Feature1State, Feature2State], [Feature3State]]
-    const flattenedStates = ([] as any[]).concat(...states);
+    const flattenedStates = ([] as any[]).concat(...entryStates);
+
+    // Concat entry states with state providers
+    const ngxsFeatureStates = NgxsStateProvidersModule.states.ngxsFeature;
+    const states = NgxsStateProvidersModule.flattenedUniqueStates(flattenedStates, ngxsFeatureStates);
 
     // add stores to the state graph and return their defaults
-    const results = factory.addAndReturnDefaults(flattenedStates);
+    const results = factory.addAndReturnDefaults(states);
 
     const stateOperations = internalStateOperations.getRootStateOperations();
     if (results) {
@@ -101,7 +110,9 @@ export const ROOT_OPTIONS = new InjectionToken<ModuleOptions>('ROOT_OPTIONS');
 /**
  * Ngxs Module
  */
-@NgModule({})
+@NgModule({
+  imports: [NgxsStateProvidersModule]
+})
 export class NgxsModule {
   /**
    * Root module factory
@@ -142,7 +153,7 @@ export class NgxsModule {
   /**
    * Feature module factory
    */
-  static forFeature(states: any[]): ModuleWithProviders {
+  static forFeature(states: any[] = []): ModuleWithProviders {
     return {
       ngModule: NgxsFeatureModule,
       providers: [

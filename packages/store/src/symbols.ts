@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
@@ -91,6 +91,11 @@ export interface StoreOptions<T> {
    * Sub states for the given state.
    */
   children?: any[];
+
+  /**
+   * Define states in your root or feature module
+   * */
+  provideIn?: 'ngxsRoot' | Type<unknown> | null;
 }
 
 /**

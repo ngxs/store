@@ -1,43 +1,11 @@
-import { State, Action, StateContext, Selector } from '@ngxs/store';
+import { Action, Selector, State } from '@ngxs/store';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-
-export class AddTodo {
-  static type = 'AddTodo';
-
-  constructor(public readonly payload: string) {}
-}
-
-export class RemoveTodo {
-  static type = 'RemoveTodo';
-
-  constructor(public readonly payload: number) {}
-}
+import { TodoState } from './todo.state';
 
 export class TodoStateModel {
   todo: string[];
   pizza: { model: any };
-}
-
-@State<string[]>({
-  name: 'todo',
-  defaults: []
-})
-export class TodoState {
-  @Selector()
-  static pandas(state: string[]) {
-    return state.filter(s => s.indexOf('panda') > -1);
-  }
-
-  @Action(AddTodo)
-  addTodo({ getState, setState }: StateContext<string[]>, { payload }: AddTodo) {
-    setState([...getState(), payload]);
-  }
-
-  @Action(RemoveTodo)
-  removeTodo({ getState, setState }: StateContext<string[]>, { payload }: RemoveTodo) {
-    setState(getState().filter((_, i) => i !== payload));
-  }
 }
 
 export class SetPrefix {
@@ -54,7 +22,8 @@ export class LoadData {
     todo: [],
     pizza: { model: undefined }
   },
-  children: [TodoState]
+  children: [TodoState],
+  provideIn: 'ngxsRoot'
 })
 export class TodosState {
   @Selector()

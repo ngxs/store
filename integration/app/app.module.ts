@@ -7,20 +7,19 @@ import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
-
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
+import { MenuComponent } from './menu.component';
 import { routes } from './app.routes';
-import { states } from './app.state';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, MenuComponent],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(routes),
-    NgxsModule.forRoot(states),
+    RouterModule.forRoot(routes, { useHash: true }),
+    NgxsModule.forRoot(),
     NgxsStoragePluginModule.forRoot({
       key: ['todos.todo']
     }),

@@ -3,7 +3,8 @@ import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { FormBuilder, FormArray } from '@angular/forms';
 
-import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from './todo.state';
+import { AddTodo, RemoveTodo, TodoState } from './store/todo.state';
+import { LoadData, SetPrefix, TodosState } from './store/todos.state';
 
 @Component({
   selector: 'app-root',
@@ -47,9 +48,12 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  @Select(TodoState) todos$: Observable<string[]>;
-  @Select(TodoState.pandas) pandas$: Observable<string[]>;
-  @Select(TodosState.pizza) pizza$: Observable<any>;
+  @Select(TodoState)
+  todos$: Observable<string[]>;
+  @Select(TodoState.pandas)
+  pandas$: Observable<string[]>;
+  @Select(TodosState.pizza)
+  pizza$: Observable<any>;
 
   allExtras = [
     { name: 'cheese', selected: false },
