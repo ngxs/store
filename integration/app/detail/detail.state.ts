@@ -9,7 +9,7 @@ export interface DetailStateModel {
 @State<DetailStateModel>({
   name: 'detail',
   defaults: { foo: true },
-  provideIn: DetailModule
+  providedIn: DetailModule
 })
 export class DetailState {
   @Action(DetailFooActions)

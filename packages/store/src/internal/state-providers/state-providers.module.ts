@@ -1,5 +1,5 @@
 import { Injectable, NgModule, Type } from '@angular/core';
-import { NgxsProvideIn, NgxsProvides, NgxsStateType } from './state-providers.interfaces';
+import { NgxsProvidedIn, NgxsProvides, NgxsStateType } from './state-providers.interfaces';
 
 @NgModule()
 export class NgxsStateProvidersModule {
@@ -18,7 +18,7 @@ export class NgxsStateProvidersModule {
   }
 
   public static defineStatesByProvideIn(provideIn: string | Type<unknown>, states: NgxsStateType[]): void {
-    const stateSourceKey = typeof provideIn === 'string' ? provideIn : NgxsProvideIn.feature;
+    const stateSourceKey = typeof provideIn === 'string' ? provideIn : NgxsProvidedIn.feature;
     const sources = NgxsStateProvidersModule.states[stateSourceKey] || [];
     sources.push(...states);
   }

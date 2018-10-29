@@ -4,7 +4,7 @@ import { ListModule } from './list.module';
 @State({
   name: 'list',
   defaults: ['foo'],
-  provideIn: ListModule
+  providedIn: ListModule
 })
 export class ListState {
   @Selector()

@@ -2,7 +2,7 @@ import { Type } from '@angular/core';
 
 export type NgxsStateType = Type<unknown>;
 
-export enum NgxsProvideIn {
+export enum NgxsProvidedIn {
   root = 'ngxsRoot',
   feature = 'ngxsFeature'
 }

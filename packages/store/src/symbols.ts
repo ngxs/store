@@ -95,7 +95,7 @@ export interface StoreOptions<T> {
   /**
    * Define states in your root or feature module
    * */
-  provideIn?: 'ngxsRoot' | Type<unknown> | null;
+  providedIn?: 'ngxsRoot' | Type<unknown> | null;
 }
 
 /**

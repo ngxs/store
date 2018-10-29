@@ -23,7 +23,7 @@ export class LoadData {
     pizza: { model: undefined }
   },
   children: [TodoState],
-  provideIn: 'ngxsRoot'
+  providedIn: 'ngxsRoot'
 })
 export class TodosState {
   @Selector()
