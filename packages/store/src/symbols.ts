@@ -17,7 +17,7 @@ export class NgxsConfig {
   /**
    * Run in development mode. This will add additional debugging features:
    * - Object.freeze on the state and actions to guarantee immutability
-   * (default: false)
+   * (default: true)
    */
   developmentMode: boolean;
   compatibility: {
@@ -30,6 +30,7 @@ export class NgxsConfig {
   };
 
   constructor() {
+    this.developmentMode = true;
     this.compatibility = {
       strictContentSecurityPolicy: false
     };
