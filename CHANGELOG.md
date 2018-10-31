@@ -7,6 +7,7 @@
 * Feature: Add strictContentSecurityPolicy compatibility rule [#569](https://github.com/ngxs/store/pull/569)
 * Feature: Devtools plugin support for 'IMPORT_STATE' [#507](https://github.com/ngxs/store/pull/507)
 * Feature: Form plugin - path to state can contain array [#587](https://github.com/ngxs/store/pull/587)
+* Fix: Show warning when we usage development mode in production [#627](https://github.com/ngxs/store/pull/627)
 * Fix: Storage Plugin should handle undefined [#538](https://github.com/ngxs/store/pull/538)
 * Fix: Expose ofActionCanceled function [#531](https://github.com/ngxs/store/pull/531)
 * Fix: Expose Websocket Plugin WebsocketMessageError action [#504](https://github.com/ngxs/store/pull/504)
