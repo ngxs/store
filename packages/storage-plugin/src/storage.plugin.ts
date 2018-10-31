@@ -45,7 +45,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           if (!isMaster) {
             state = setValue(state, key, val);
           } else {
-            state = val;
+            state = { ...state, ...val };
           }
         }
       }

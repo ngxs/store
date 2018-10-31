@@ -37,6 +37,12 @@ describe('NgxsStoragePlugin', () => {
     }
   }
 
+  @State<StateModel>({
+    name: 'lazyLoaded',
+    defaults: { count: 0 }
+  })
+  class LazyLoadedStore {}
+
   afterEach(() => {
     localStorage.removeItem('@@STATE');
     sessionStorage.removeItem('@@STATE');
@@ -257,6 +263,24 @@ describe('NgxsStoragePlugin', () => {
       expect(state.count).toBe(105);
 
       expect(CustomStorage.Storage['@@STATE']).toEqual({ counter: { count: 105 } });
+    });
+  });
+
+  it('should merge unloaded data from feature with local storage', () => {
+    localStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
+
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([MyStore]),
+        NgxsStoragePluginModule.forRoot(),
+        NgxsModule.forFeature([LazyLoadedStore])
+      ]
+    });
+
+    const store = TestBed.get(Store);
+
+    store.select(state => state).subscribe((state: { counter: StateModel; lazyLoaded: StateModel }) => {
+      expect(state.lazyLoaded).toBeDefined();
     });
   });
 });
