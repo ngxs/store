@@ -1,5 +1,5 @@
 import { Injectable, ErrorHandler, NgZone } from '@angular/core';
-import { Observable, of, forkJoin, empty, Subject, throwError } from 'rxjs';
+import { Observable, of, forkJoin, Subject, throwError, EMPTY } from 'rxjs';
 import { shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
 
 import { compose } from '../utils/compose';
@@ -41,6 +41,7 @@ export class InternalDispatcher {
     });
 
     result.subscribe({
+      next: data => console.log({ data }),
       error: error => this._ngZone.run(() => this._errorHandler.handleError(error))
     });
 
@@ -79,11 +80,11 @@ export class InternalDispatcher {
         exhaustMap((ctx: ActionContext) => {
           switch (ctx.status) {
             case ActionStatus.Successful:
-              return of(this._stateStream.getValue());
+              return of(ctx.data);
             case ActionStatus.Errored:
               return throwError(ctx.error);
             default:
-              return empty();
+              return EMPTY;
           }
         })
       )

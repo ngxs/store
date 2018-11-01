@@ -135,8 +135,8 @@ export class StateFactory {
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
         mergeMap(({ action }) =>
           this.invokeActions(this._actions, action).pipe(
-            map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
-            defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
+            map(data => <ActionContext>{ action, data, status: ActionStatus.Successful }),
+            defaultIfEmpty(<ActionContext>{ action, data: null, status: ActionStatus.Canceled }),
             catchError(error => of(<ActionContext>{ action, status: ActionStatus.Errored, error }))
           )
         )

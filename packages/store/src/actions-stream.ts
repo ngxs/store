@@ -17,6 +17,7 @@ export interface ActionContext {
   status: ActionStatus;
   action: any;
   error?: Error;
+  data?: any;
 }
 
 /**
