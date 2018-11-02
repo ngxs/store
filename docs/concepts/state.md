@@ -134,8 +134,8 @@ In this example, we have a second argument that represents the action and we des
 to pull out the name, hay, and carrots which we then update the state with.
 
 There is also a shortcut `patchState` function to make updating the state easier. In this case,
-you only pass it the properties you want to update on the state and it handles the rest. The above function
-could be reduced to this:
+you only pass it the properties you want to update on the state and it handles the rest. 
+The above function could be reduced to this:
 
 ```TS
 @Action(FeedZebra)
@@ -146,6 +146,47 @@ feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
       ...state.zebraFood,
       action.zebraToFeed,
     ]
+  });
+}
+```
+
+The `patchState` function can also be called with a patching function which will be given the
+existing state and should return the new state. 
+All immutability concerns need to be honoured by this function. 
+For example you could use a library like [immer](https://github.com/mweststrate/immer) that can 
+handle these concerns for you and provide a different way of expressing your immutable update 
+through direct mutation of a draft object. Here is the example from above expressed in this way:
+```TS
+import produce from 'immer';
+
+// in class ZooState ...
+@Action(FeedZebra)
+feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
+  ctx.patchState(produce((draft) => {
+    draft.zebraFood.push(action.zebraToFeed);
+  }));  
+}
+```
+Here the `produce` function from the `immer` library is called with just a single parameter 
+so that it returns its' [curried form](https://github.com/mweststrate/immer#currying) 
+that will take a value and return a new value with all the expressed changes applied.
+
+This approach can also allow for the creation of well named helper functions that can be shared 
+between handlers that require the same type of update. 
+The above example could be refactored to this:
+```TS
+import produce from 'immer';
+
+// in class ZooState ...
+@Action(FeedZebra)
+feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
+  ctx.patchState(addToZebraFood(action.zebraToFeed));
+}
+
+// defined elsewhere
+function addToZebraFood(itemToAdd) {
+  return produce((draft) => {
+    draft.zebraFood.push(itemToAdd);
   });
 }
 ```
