@@ -46,7 +46,9 @@ export function noop(arg) {
  * Action to connect to the websocket. Optionally pass a URL.
  */
 export class ConnectWebSocket {
-  static readonly type = '[Websocket] Connect';
+  static get type() {
+    return '[Websocket] Connect';
+  }
   constructor(public payload?: NgxsWebsocketPluginOptions) {}
 }
 
@@ -54,7 +56,9 @@ export class ConnectWebSocket {
  * Action triggered when a error ocurrs
  */
 export class WebsocketMessageError {
-  static readonly type = '[Websocket] Message Error';
+  static get type() {
+    return '[Websocket] Message Error';
+  }
   constructor(public payload: any) {}
 }
 
@@ -62,13 +66,17 @@ export class WebsocketMessageError {
  * Action to disconnect the websocket.
  */
 export class DisconnectWebSocket {
-  static readonly type = '[Websocket] Disconnect';
+  static get type() {
+    return '[Websocket] Disconnect';
+  }
 }
 
 /**
  * Action to send to the server.
  */
 export class SendWebSocketMessage {
-  static readonly type = '[Websocket] Send Message';
+  static get type() {
+    return '[Websocket] Send Message';
+  }
   constructor(public payload: any) {}
 }

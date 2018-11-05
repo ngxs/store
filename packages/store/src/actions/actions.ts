@@ -2,12 +2,16 @@
  * Init action
  */
 export class InitState {
-  static readonly type = '@@INIT';
+  static get type() {
+    return '@@INIT';
+  }
 }
 
 /**
  * Update action
  */
 export class UpdateState {
-  static readonly type = '@@UPDATE_STATE';
+  static get type() {
+    return '@@UPDATE_STATE';
+  }
 }
