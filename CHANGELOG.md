@@ -1,4 +1,4 @@
-# DEV version (to become [3.3.0](https://github.com/ngxs/store/milestone/5))
+# DEV version (to become [4.0.0](https://github.com/ngxs/store/milestone/6))
 
 * Feature: Support Angular 7, TypeScript 3.1 [#615](https://github.com/ngxs/store/issues/615)
 * Feature: [Emitter](https://github.com/ngxs-labs/emitter) plugin (allows you to get rid of actions) [#543](https://github.com/ngxs/store/issues/543)
@@ -11,6 +11,44 @@
 * Fix: Storage Plugin should handle undefined [#538](https://github.com/ngxs/store/pull/538)
 * Fix: Expose ofActionCanceled function [#531](https://github.com/ngxs/store/pull/531)
 * Fix: Expose Websocket Plugin WebsocketMessageError action [#504](https://github.com/ngxs/store/pull/504)
+
+#### Migration guide:
+
+[1]: By default, the development mode is set to true in the new version. 
+You need to enable this option before upgrading and check that everything works.
+
+```ts
+import { environment as env } from '../environments/environment';
+
+@NgModule({
+ imports: [
+    NgxsModule.forRoot(states, { developmentMode: !env.production })
+ ]
+})
+export class AppModule {}
+```
+
+[2]: Upgrade your application to Angular 7, TypeScript 3.
+
+To make updating easy, we can see provide complete instructions in the interactive [Angular Update Guide](https://update.angular.io/).
+
+```
+$ ng update --all --force # for bypassing peer dependencies
+```
+
+[3]: Upgrade NGXS
+
+- Yarn
+
+```
+$ yarn add @ngxs/{store,devtools-plugin,logger-plugin,router-plugin,storage-plugin}@4.0.0
+```
+
+- NPM
+
+```
+$ npm install @ngxs/{store,devtools-plugin,logger-plugin,router-plugin,storage-plugin}@4.0.0
+```
 
 # 3.2.0 2018-07-15
 
