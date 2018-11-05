@@ -21,7 +21,7 @@ Compare these diagrams, we've simplified Redux flow and threw out unnecessary mi
 
 ![ER Flow](https://raw.githubusercontent.com/ngxs-labs/emitter/master/docs/assets/redux-er.png)
 
-## :package: Install
+## 📦Install
 
 To install `@ngxs-labs/emitter` run the following command:
 
@@ -31,7 +31,7 @@ npm install @ngxs-labs/emitter
 yarn add @ngxs-labs/emitter
 ```
 
-## :hammer: Usage
+## 🔨Usage
 
 Import the module into your root application module:
 
