@@ -12,6 +12,7 @@ import {
  */
 export class Navigate {
   static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Router] Navigate';
   }
   constructor(public path: any[], public queryParams?: Params, public extras?: NavigationExtras) {}
@@ -28,6 +29,7 @@ export class Navigate {
  */
 export class RouterNavigation<T = RouterStateSnapshot> {
   static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Router] RouterNavigation';
   }
   constructor(public routerState: T, public event: RoutesRecognized) {}
@@ -38,6 +40,7 @@ export class RouterNavigation<T = RouterStateSnapshot> {
  */
 export class RouterCancel<T, V = RouterStateSnapshot> {
   static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Router] RouterCancel';
   }
   constructor(public routerState: V, public storeState: T, public event: NavigationCancel) {}
@@ -48,6 +51,7 @@ export class RouterCancel<T, V = RouterStateSnapshot> {
  */
 export class RouterError<T, V = RouterStateSnapshot> {
   static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Router] RouterError';
   }
   constructor(public routerState: V, public storeState: T, public event: NavigationError) {}

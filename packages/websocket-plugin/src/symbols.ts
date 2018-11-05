@@ -47,6 +47,7 @@ export function noop(arg) {
  */
 export class ConnectWebSocket {
   static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Websocket] Connect';
   }
   constructor(public payload?: NgxsWebsocketPluginOptions) {}
@@ -57,6 +58,7 @@ export class ConnectWebSocket {
  */
 export class WebsocketMessageError {
   static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Websocket] Message Error';
   }
   constructor(public payload: any) {}
@@ -67,6 +69,7 @@ export class WebsocketMessageError {
  */
 export class DisconnectWebSocket {
   static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Websocket] Disconnect';
   }
 }
@@ -76,6 +79,7 @@ export class DisconnectWebSocket {
  */
 export class SendWebSocketMessage {
   static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Websocket] Send Message';
   }
   constructor(public payload: any) {}
