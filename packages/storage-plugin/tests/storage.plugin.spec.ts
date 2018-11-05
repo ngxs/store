@@ -37,6 +37,12 @@ describe('NgxsStoragePlugin', () => {
     }
   }
 
+  @State<StateModel>({
+    name: 'lazyLoaded',
+    defaults: { count: 0 }
+  })
+  class LazyLoadedStore {}
+
   afterEach(() => {
     localStorage.removeItem('@@STATE');
     sessionStorage.removeItem('@@STATE');
@@ -260,7 +266,25 @@ describe('NgxsStoragePlugin', () => {
     });
   });
 
-  it('should allow to merge deserialized data with inital value', () => {
+  it('should merge unloaded data from feature with local storage', () => {
+    localStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
+
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([MyStore]),
+        NgxsStoragePluginModule.forRoot(),
+        NgxsModule.forFeature([LazyLoadedStore])
+      ]
+    });
+
+    const store = TestBed.get(Store);
+
+    store.select(state => state).subscribe((state: { counter: StateModel; lazyLoaded: StateModel }) => {
+      expect(state.lazyLoaded).toBeDefined();
+    });
+  });
+
+  it('should merge deserialized data with inital value', () => {
     localStorage.setItem('@@STATE', JSON.stringify({}));
 
     TestBed.configureTestingModule({
@@ -279,7 +303,7 @@ describe('NgxsStoragePlugin', () => {
     });
   });
 
-  it('should allow to use different strategies based on key', () => {
+  it('should use different strategies based on key', () => {
     localStorage.setItem('counter', btoa(JSON.stringify({ count: 2137 })));
 
     TestBed.configureTestingModule({

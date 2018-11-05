@@ -12,11 +12,9 @@ import { deepFreeze } from '../utils/freeze';
  */
 @Injectable()
 export class InternalStateOperations {
-  constructor(
-    private _stateStream: StateStream,
-    private _dispatcher: InternalDispatcher,
-    private _config: NgxsConfig
-  ) {}
+  constructor(private _stateStream: StateStream, private _dispatcher: InternalDispatcher, private _config: NgxsConfig) {
+    this.checkDevelopmentMode();
+  }
 
   /**
    * Returns the root state operators.
@@ -33,6 +31,16 @@ export class InternalStateOperations {
     }
 
     return rootStateOperations;
+  }
+
+  private checkDevelopmentMode() {
+    if (this._config.developmentMode) {
+      console.warn(
+        'NGXS is running in the development mode.\n',
+        'Set developmentMode to false on the NgxsModule options to enable the production mode.\n',
+        'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
+      );
+    }
   }
 
   private ensureStateAndActionsAreImmutable(root: StateOperations<any>): StateOperations<any> {

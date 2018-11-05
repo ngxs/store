@@ -8,8 +8,5 @@
     "types": ["jasmine", "node"]
   },
   "files": ["test.ts", "integration/polyfills.ts"],
-  "include": ["packages/**/*.ts", "packages/**/*.spec.ts"],
-  "exclude": [
-    "packages/cli/*"
-  ]
+  "include": ["packages/**/*.ts", "packages/**/*.spec.ts"]
 }
