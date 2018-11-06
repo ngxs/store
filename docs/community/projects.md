@@ -2,6 +2,7 @@
 
 ### Projects
 - [Angular 6 with NGXS and NX](https://xmlking.github.io/ngx-starter-kit/home)
+- [Angular 7, Angular Material and NGXS](https://github.com/adoi/Libnr)
 - [Ngxs-Pizza-Order](https://github.com/tommythongnguyen/Ngxs-Pizza-Order)
 - [Ngxs Todo](https://github.com/mailok/todo-ngxs)
 - [EL-3270 Electron IBM Terminal Emulator](https://github.com/mflorence99/el-3270)
