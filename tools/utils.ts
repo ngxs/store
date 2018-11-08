@@ -10,7 +10,7 @@ interface Package {
 
 export function getPackages(): Package[] {
   const json = require('../package.json');
-  const packages = json.packages;
+  const packages: string[] = json.packages;
 
   return packages.map(pack => {
     const path = pack.split('/');

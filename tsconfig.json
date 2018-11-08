@@ -6,6 +6,7 @@
       "@ngxs/*": ["packages/*"]
     },
     "noUnusedLocals": true,
+    "strictPropertyInitialization": false,
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -14,5 +15,8 @@
     "target": "es5",
     "lib": ["es2017", "dom"],
     "typeRoots": ["node_modules/@types"]
-  }
+  },
+  "exclude": [
+    "@ngxs/**"
+  ]
 }
