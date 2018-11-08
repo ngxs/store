@@ -284,6 +284,30 @@ describe('NgxsStoragePlugin', () => {
     });
   });
 
+  it('should work with JSON stringify and parse passed as ref to function', () => {
+    localStorage.setItem('counter', JSON.stringify({ count: 2137 }));
+
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([MyStore]),
+        NgxsStoragePluginModule.forRoot({
+          key: 'counter',
+          serialize: JSON.stringify,
+          deserialize: JSON.parse
+        })
+      ]
+    });
+
+    const store = TestBed.get(Store);
+
+    store.dispatch(new Increment());
+
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(state.count).toBe(2138);
+      expect(localStorage.getItem('counter')).toBe(JSON.stringify({ count: 2138 }));
+    });
+  });
+
   it('should merge deserialized data with inital value', () => {
     localStorage.setItem('@@STATE', JSON.stringify({}));
 
