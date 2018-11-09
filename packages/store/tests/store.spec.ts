@@ -94,9 +94,11 @@ describe('Store', () => {
   }));
 
   it('should select the correct state use a function', async(() => {
-    store.select((state: { foo: StateModel }) => state.foo.first).subscribe(state => {
-      expect(state).toBe('Hello');
-    });
+    store
+      .select((state: { foo: StateModel }) => state.foo.first)
+      .subscribe(state => {
+        expect(state).toBe('Hello');
+      });
   }));
 
   it('should select the correct state use a state class: Root State', async(() => {

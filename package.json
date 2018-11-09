@@ -71,7 +71,7 @@
     "// - UTILS": "Utility Scripts",
     "lint": "ng lint",
     "docs": "typedoc packages/store/src --options typedoc.json",
-    "format": "prettier --write *.ts"
+    "format": "prettier --write '{packages,integration}/**/*.ts'"
   },
   "private": true,
   "devDependencies": {
@@ -113,7 +113,7 @@
     "mock-socket": "^7.1.0",
     "ng-packagr": "^4.3.1",
     "npm-run-all": "^4.1.2",
-    "prettier": "^1.8.2",
+    "prettier": "^1.15.1",
     "rxjs": "^6.0.0",
     "ts-node": "~5.0.1",
     "tsickle": "^0.33.0",

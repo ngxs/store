@@ -41,9 +41,14 @@ describe('NgxsWebsocketPlugin', () => {
     store.dispatch(new ConnectWebSocket());
     store.dispatch(createMessage());
 
-    actions$.pipe(ofAction(SetMessage), take(1)).subscribe(({ payload }) => {
-      expect(payload).toBe('from websocket');
-      mockServer.stop(done);
-    });
+    actions$
+      .pipe(
+        ofAction(SetMessage),
+        take(1)
+      )
+      .subscribe(({ payload }) => {
+        expect(payload).toBe('from websocket');
+        mockServer.stop(done);
+      });
   });
 });

@@ -1,8 +1,16 @@
 import { Injectable } from '@angular/core';
 import { NgxsPlugin, setValue, getActionTypeFromInstance } from '@ngxs/store';
-import { UpdateForm, UpdateFormDirty, UpdateFormErrors,
-  UpdateFormStatus, UpdateFormValue, SetFormDirty, SetFormDisabled,
-  SetFormEnabled, SetFormPristine } from './actions';
+import {
+  UpdateForm,
+  UpdateFormDirty,
+  UpdateFormErrors,
+  UpdateFormStatus,
+  UpdateFormValue,
+  SetFormDirty,
+  SetFormDisabled,
+  SetFormEnabled,
+  SetFormPristine
+} from './actions';
 
 @Injectable()
 export class NgxsFormPlugin implements NgxsPlugin {
