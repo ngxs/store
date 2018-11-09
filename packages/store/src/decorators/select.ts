@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
 import { Store } from '../store';
-import { fastPropGetter } from '../internal/internals';
-import { META_KEY } from '../symbols';
+import { propGetter } from '../internal/internals';
+import { META_KEY, NgxsConfig } from '../symbols';
 
 /**
  * Allows the select decorator to get access to the DI store.
@@ -11,8 +11,10 @@ import { META_KEY } from '../symbols';
 @Injectable()
 export class SelectFactory {
   static store: Store | undefined = undefined;
-  constructor(store: Store) {
+  static config: NgxsConfig | undefined = undefined;
+  constructor(store: Store, config: NgxsConfig) {
     SelectFactory.store = store;
+    SelectFactory.config = config;
   }
 }
 
@@ -39,12 +41,13 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
     };
 
     const createSelector = () => {
+      const config = SelectFactory.config;
       if (typeof selectorOrFeature === 'string') {
         const propsArray = paths.length ? [selectorOrFeature, ...paths] : selectorOrFeature.split('.');
 
-        return fastPropGetter(propsArray);
+        return propGetter(propsArray, config);
       } else if (selectorOrFeature[META_KEY] && selectorOrFeature[META_KEY].path) {
-        return fastPropGetter(selectorOrFeature[META_KEY].path.split('.'));
+        return propGetter(selectorOrFeature[META_KEY].path.split('.'), config);
       } else {
         return selectorOrFeature;
       }

@@ -8,8 +8,7 @@ import {
   buildGraph,
   findFullParentPath,
   nameToState,
-  compliantPropGetter,
-  fastPropGetter,
+  propGetter,
   isObject,
   StateClass,
   MappedStore
@@ -73,12 +72,7 @@ export class StateFactory {
       let { defaults } = stateClass[META_KEY];
 
       stateClass[META_KEY].path = depth;
-
-      if (this._config && this._config.compatibility && this._config.compatibility.strictContentSecurityPolicy) {
-        stateClass[META_KEY].selectFromAppState = compliantPropGetter(depth.split('.'));
-      } else {
-        stateClass[META_KEY].selectFromAppState = fastPropGetter(depth.split('.'));
-      }
+      stateClass[META_KEY].selectFromAppState = propGetter(depth.split('.'), this._config);
 
       // ensure our store hasn't already been added
       // but dont throw since it could be lazy
