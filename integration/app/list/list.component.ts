@@ -7,10 +7,9 @@ import { ListState } from './list.state';
   selector: 'app-list',
   template: `
     <div>
-      <a [routerLink]="['/detail']">Detail</a>
-      {{list$ | async}}
+      <a [routerLink]="['/detail']">Detail</a> {{ list$ | async }}
 
-      {{foo | async}}
+      {{ foo | async }}
     </div>
   `
 })

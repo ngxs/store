@@ -12,12 +12,7 @@ import { deepFreeze } from '../utils/freeze';
  */
 @Injectable()
 export class InternalStateOperations {
-
-  constructor(
-    private _stateStream: StateStream,
-    private _dispatcher: InternalDispatcher,
-    private _config: NgxsConfig
-  ) {
+  constructor(private _stateStream: StateStream, private _dispatcher: InternalDispatcher, private _config: NgxsConfig) {
     this.checkDevelopmentMode();
   }
 
