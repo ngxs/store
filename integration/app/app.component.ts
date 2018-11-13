@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { FormBuilder, FormArray } from '@angular/forms';
 
 import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from './todo.state';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -59,7 +60,16 @@ export class AppComponent {
     extras: this.createExtras()
   });
 
-  constructor(private store: Store, private formBuilder: FormBuilder) {}
+  constructor(private store: Store, private formBuilder: FormBuilder) {
+    AppComponent.checkHotModuleReplacement();
+  }
+
+  private static checkHotModuleReplacement() {
+    if (environment.hmr) {
+      console.clear();
+      console.log('HMR enabled');
+    }
+  }
 
   addTodo(todo: string) {
     this.store.dispatch(new AddTodo(todo));
