@@ -100,6 +100,14 @@
                   "with": "/integration/environments/environment.prod.ts"
                 }
               ]
+            },
+            "hmr": {
+              "fileReplacements": [
+                {
+                  "replace": "/integration/environments/environment.ts",
+                  "with": "/integration/environments/environment.hmr.ts"
+                }
+              ]
             }
           }
         },
@@ -111,6 +119,10 @@
           "configurations": {
             "production": {
               "browserTarget": "integration:build:production"
+            },
+            "hmr": {
+              "hmr": true,
+              "browserTarget": "integration:build:hmr"
             }
           }
         },
