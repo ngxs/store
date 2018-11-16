@@ -49,8 +49,8 @@ describe('NgxsFormPlugin', () => {
     store
       .select(state => state.actions.studentForm)
       .subscribe((form: Form) => {
-      expect(form.dirty).toBe(true);
-    });
+        expect(form.dirty).toBe(true);
+      });
   });
 
   it('should set form pristine', () => {
@@ -63,7 +63,7 @@ describe('NgxsFormPlugin', () => {
       .select(state => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.dirty).toBe(false);
-    });
+      });
   });
 
   it('should set form disabled', () => {
@@ -74,7 +74,7 @@ describe('NgxsFormPlugin', () => {
       .select(state => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.disabled).toBe(true);
-    });
+      });
   });
 
   it('should set form enabled', () => {
@@ -87,7 +87,7 @@ describe('NgxsFormPlugin', () => {
       .select(state => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.disabled).toBe(false);
-    });
+      });
   });
 
   it('should update form dirty', () => {
@@ -98,7 +98,7 @@ describe('NgxsFormPlugin', () => {
       .select(state => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.dirty).toBe(true);
-    });
+      });
   });
 
   it('should update form status', () => {
@@ -109,7 +109,7 @@ describe('NgxsFormPlugin', () => {
       .select(state => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.status).toBe('VALID');
-    });
+      });
   });
 
   it('should update form errors', () => {
@@ -126,7 +126,7 @@ describe('NgxsFormPlugin', () => {
       .subscribe((form: Form) => {
         expect(form.errors.name).toBe('empty not allowed');
         expect(form.errors.address).toBe('address is too long');
-    });
+      });
   });
 
   it('should update form value', () => {
@@ -143,7 +143,7 @@ describe('NgxsFormPlugin', () => {
       .subscribe((form: Form) => {
         expect(form.model.name).toBe('Lou Grant');
         expect(form.model.address).toBe('waterloo, ontario');
-    });
+      });
   });
 
   it('should update form array value', () => {
@@ -160,7 +160,7 @@ describe('NgxsFormPlugin', () => {
       .subscribe((form: Form) => {
         expect(Array.isArray(form.model)).toBeTruthy();
         expect(form.model).toEqual(['waterloo, ontario', 'Lou Grant']);
-    });
+      });
   });
 
   it('should update form', () => {
@@ -184,6 +184,6 @@ describe('NgxsFormPlugin', () => {
         expect(form.errors.address).toBe('address is too long');
         expect(form.model.name).toBe('Lou Grant');
         expect(form.model.address).toBe('waterloo, ontario');
-    });
+      });
   });
 });
