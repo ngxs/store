@@ -146,6 +146,23 @@ describe('NgxsFormPlugin', () => {
       });
   });
 
+  it('should update form array value', () => {
+    const store = TestBed.get(Store);
+    store.dispatch(
+      new UpdateFormValue({
+        value: ['waterloo, ontario', 'Lou Grant'],
+        path: 'actions.studentForm'
+      })
+    );
+
+    store
+      .select(state => state.actions.studentForm)
+      .subscribe((form: Form) => {
+        expect(Array.isArray(form.model)).toBeTruthy();
+        expect(form.model).toEqual(['waterloo, ontario', 'Lou Grant']);
+      });
+  });
+
   it('should update form', () => {
     const store = TestBed.get(Store);
     store.dispatch(
