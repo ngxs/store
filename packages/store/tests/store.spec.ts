@@ -14,7 +14,7 @@ describe('Store', () => {
   interface SubStateModel {
     hello: boolean;
     world: boolean;
-    baz?: SubSubStateModel;
+    baz_?: SubSubStateModel;
   }
 
   interface StateModel {
@@ -28,7 +28,7 @@ describe('Store', () => {
   }
 
   @State<SubSubStateModel>({
-    name: 'baz',
+    name: 'baz_',
     defaults: {
       name: 'Danny'
     }
@@ -84,7 +84,7 @@ describe('Store', () => {
           bar: {
             hello: true,
             world: true,
-            baz: {
+            baz_: {
               name: 'Danny'
             }
           }
@@ -109,7 +109,7 @@ describe('Store', () => {
         bar: {
           hello: true,
           world: true,
-          baz: {
+          baz_: {
             name: 'Danny'
           }
         }
@@ -122,7 +122,7 @@ describe('Store', () => {
       expect(state).toEqual({
         hello: true,
         world: true,
-        baz: {
+        baz_: {
           name: 'Danny'
         }
       });
@@ -145,7 +145,7 @@ describe('Store', () => {
       bar: {
         hello: true,
         world: true,
-        baz: {
+        baz_: {
           name: 'Danny'
         }
       }
