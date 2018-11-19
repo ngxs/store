@@ -1,4 +1,8 @@
-# DEV version (to become [3.3.0](https://github.com/ngxs/store/milestone/5))
+# DEV version (to become [3.4.0](https://github.com/ngxs/store/milestone/7))
+
+* ...
+
+# 3.3.0 2018-11-19
 
 * Feature: Support Angular 7, TypeScript 3.1 [#615](https://github.com/ngxs/store/issues/615)
 * Feature: [Emitter](https://github.com/ngxs-labs/emitter) plugin (allows you to get rid of actions) [#543](https://github.com/ngxs/store/issues/543)
