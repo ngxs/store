@@ -113,7 +113,7 @@ export class CounterComponent {
 
 ## Custom types
 
-You can define custom types for debbuing purposes (works with `@ngxs/logger-plugin`):
+You can define custom types for debugging purposes (works with `@ngxs/logger-plugin`):
 
 ```typescript
 import { State, StateContext } from '@ngxs/store';
