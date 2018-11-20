@@ -31,5 +31,6 @@
 - 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
 - 😎 Checkout the [sample application](integration)
 - 🔧 Scaffolding application using [NGXS Schematics](https://github.com/ngxs/schematics)
-- 🗄 Learn about updates from the [changelog](CHANGELOG.md)
+- 📖 Read the blog [posts](https://medium.com/ngxs)
+- 📝 Learn about updates from the [changelog](CHANGELOG.md)
 - ❤️ Give back by becoming a [Contributor](docs/community/contributors.md) or a [Sponsor](/docs/community/sponsors.md)
