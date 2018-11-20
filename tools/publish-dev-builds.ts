@@ -1,5 +1,5 @@
 import { parse, SemVer } from 'semver';
-import { execute, getPackages } from './utils';
+import { execute, publishAllPackagesToNpm } from './utils';
 
 async function main() {
   const json = require('../package.json');
@@ -21,13 +21,7 @@ async function main() {
   console.log('publishing new version', newVersion);
 
   // run through all our packages and push them to npm
-  const packages = getPackages();
-  for (const pack of packages) {
-    await execute(`
-      cd ${pack.buildPath} &&
-      yarn publish --access public --non-interactive --no-git-tag-version --new-version ${newVersion} --tag dev
-    `);
-  }
+  await publishAllPackagesToNpm(newVersion, 'dev');
 }
 
 main();
