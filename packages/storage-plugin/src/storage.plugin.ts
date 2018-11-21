@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
-import { NgxsPlugin, setValue, getValue, InitState, UpdateState, actionMatcher } from '@ngxs/store';
+import { actionMatcher, getValue, InitState, NgxsPlugin, setValue, UpdateState } from '@ngxs/store';
 
-import { NgxsStoragePluginOptions, NGXS_STORAGE_PLUGIN_OPTIONS, STORAGE_ENGINE, StorageEngine } from './symbols';
-import { tap } from 'rxjs/operators';
+import { NGXS_STORAGE_PLUGIN_OPTIONS, NgxsStoragePluginOptions, STORAGE_ENGINE, StorageEngine } from './symbols';
+import { concatMap, map, reduce, tap } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
@@ -17,41 +18,45 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     const isInitAction = matches(InitState) || matches(UpdateState);
     const keys = Array.isArray(options.key) ? options.key : [options.key];
     let hasMigration = false;
+    let initAction: Observable<any> = of(state);
 
     if (isInitAction) {
-      for (const key of keys) {
-        const isMaster = key === '@@STATE';
-        let val = this._engine.getItem(key);
+      initAction = from(keys).pipe(
+        concatMap(key => this._engine.getItem(key).pipe(map(val => [key, val]))),
+        reduce((previousState, [key, val]) => {
+          const isMaster = key === '@@STATE';
+          let nextState = previousState;
+          if (typeof val !== 'undefined' && val !== null) {
+            try {
+              val = options.deserialize(val);
+            } catch (e) {
+              console.error('Error ocurred while deserializing the store value, falling back to empty object.');
+              val = {};
+            }
 
-        if (typeof val !== 'undefined' && val !== null) {
-          try {
-            val = options.deserialize(val);
-          } catch (e) {
-            console.error('Error ocurred while deserializing the store value, falling back to empty object.');
-            val = {};
+            if (options.migrations) {
+              options.migrations.forEach(strategy => {
+                const versionMatch = strategy.version === getValue(val, strategy.versionKey || 'version');
+                const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
+                if (versionMatch && keyMatch) {
+                  val = strategy.migrate(val);
+                  hasMigration = true;
+                }
+              });
+            }
+            if (!isMaster) {
+              nextState = setValue(previousState, key, val);
+            } else {
+              nextState = { ...previousState, ...val };
+            }
           }
-
-          if (options.migrations) {
-            options.migrations.forEach(strategy => {
-              const versionMatch = strategy.version === getValue(val, strategy.versionKey || 'version');
-              const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
-              if (versionMatch && keyMatch) {
-                val = strategy.migrate(val);
-                hasMigration = true;
-              }
-            });
-          }
-
-          if (!isMaster) {
-            state = setValue(state, key, val);
-          } else {
-            state = { ...state, ...val };
-          }
-        }
-      }
+          return nextState;
+        }, state)
+      );
     }
 
-    return next(state, event).pipe(
+    return initAction.pipe(
+      concatMap(stateAfterInit => next(stateAfterInit, event)),
       tap(nextState => {
         if (!isInitAction || (isInitAction && hasMigration)) {
           for (const key of keys) {

@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 export const enum StorageOption {
   LocalStorage,
@@ -59,11 +60,38 @@ export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_STORAGE_PLUG
 export const STORAGE_ENGINE = new InjectionToken('STORAGE_ENGINE');
 
 export interface StorageEngine {
-  readonly length: number;
-
-  getItem(key): any;
+  length(): Observable<number>;
+  getItem(key): Observable<any>;
   setItem(key, val): void;
   removeItem(key): void;
   clear(): void;
-  key(val: number): string;
+  key(val: number): Observable<string>;
+}
+
+export class StorageWrapper implements StorageEngine {
+  constructor(private _storage: Storage) {}
+
+  clear(): void {
+    this._storage.clear();
+  }
+
+  getItem(key): Observable<any> {
+    return of(this._storage.getItem(key));
+  }
+
+  key(val: number): Observable<string> {
+    return of(this._storage.key(val));
+  }
+
+  length(): Observable<number> {
+    return of(this._storage.length);
+  }
+
+  removeItem(key): void {
+    this._storage.removeItem(key);
+  }
+
+  setItem(key, val): void {
+    this._storage.setItem(key, val);
+  }
 }

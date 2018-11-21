@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { NgxsModule, State, Store, Action } from '@ngxs/store';
 
 import { NgxsStoragePluginModule, StorageOption, StorageEngine, STORAGE_ENGINE } from '../';
+import { of } from 'rxjs';
 
 describe('NgxsStoragePlugin', () => {
   class Increment {
@@ -218,12 +219,12 @@ describe('NgxsStoragePlugin', () => {
         }
       };
 
-      get length() {
-        return Object.keys(CustomStorage.Storage).length;
+      length() {
+        return of(Object.keys(CustomStorage.Storage).length);
       }
 
       getItem(key) {
-        return CustomStorage.Storage[key];
+        return of(CustomStorage.Storage[key]);
       }
 
       setItem(key, val) {
@@ -239,7 +240,7 @@ describe('NgxsStoragePlugin', () => {
       }
 
       key(index) {
-        return Object.keys(CustomStorage.Storage)[index];
+        return of(Object.keys(CustomStorage.Storage)[index]);
       }
     }
 

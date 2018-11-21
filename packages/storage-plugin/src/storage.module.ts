@@ -7,7 +7,8 @@ import {
   NGXS_STORAGE_PLUGIN_OPTIONS,
   StorageOption,
   STORAGE_ENGINE,
-  StorageEngine
+  StorageEngine,
+  StorageWrapper
 } from './symbols';
 
 export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
@@ -22,9 +23,9 @@ export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
 
 export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine {
   if (options.storage === StorageOption.LocalStorage) {
-    return localStorage;
+    return new StorageWrapper(localStorage);
   } else if (options.storage === StorageOption.SessionStorage) {
-    return sessionStorage;
+    return new StorageWrapper(sessionStorage);
   }
 
   return null;
