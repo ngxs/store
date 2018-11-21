@@ -34,10 +34,10 @@ describe('NgxsWebsocketPlugin', () => {
     actions$ = TestBed.get(Actions);
   });
 
-  it('should forward socket message to store', fakeAsync(done => {
+  it('should forward socket message to store', fakeAsync((done: () => void) => {
     const mockServer = new Server(SOCKET_URL);
 
-    mockServer.on('connection', socket => {
+    mockServer.on('connection', (socket: any) => {
       mockServer.on('message', (data: any) => socket.send(data));
       tick(1000);
 
@@ -49,7 +49,7 @@ describe('NgxsWebsocketPlugin', () => {
           ofAction(SetMessage),
           take(1)
         )
-        .subscribe(({ payload }) => {
+        .subscribe(({ payload }: any) => {
           expect(payload).toBe('from websocket');
           mockServer.stop(done);
         });

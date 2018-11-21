@@ -116,7 +116,7 @@ describe('module', () => {
       imports: [NgxsModule.forRoot(), FeatureModule, FeatureModule2]
     });
 
-    const store = TestBed.get(Store) as Store;
+    const store: Store = TestBed.get(Store);
     expect(store).toBeTruthy();
     store.select(FeatureState.getBar).subscribe((bar: string) => expect(bar).toEqual('World'));
     store.select(FeatureState2.getBaz).subscribe((baz: string) => expect(baz).toEqual('!'));

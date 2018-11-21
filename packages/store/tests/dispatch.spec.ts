@@ -20,7 +20,7 @@ describe('Dispatch', () => {
   }
 
   it('should throw error', async(() => {
-    const observedCalls = [];
+    const observedCalls: string[] = [];
 
     @State<number>({
       name: 'counter',
@@ -778,7 +778,7 @@ describe('Dispatch', () => {
         store
           .dispatch([new Append('dddd'), new Append('a'), new Append('ccc'), new Append('bb')])
           .subscribe(results => {
-            expect(results.map(r => r.text)).toEqual(['abbcccdddd', 'a', 'abbccc', 'abb']);
+            expect(results.map((r: any) => r.text)).toEqual(['abbcccdddd', 'a', 'abbccc', 'abb']);
           });
       }));
     });

@@ -43,77 +43,77 @@ describe('NgxsFormPlugin', () => {
   });
 
   it('should set form dirty', () => {
-    const store = TestBed.get(Store);
+    const store: Store = TestBed.get(Store);
     store.dispatch(new SetFormDirty('actions.studentForm'));
 
     store
-      .select(state => state.actions.studentForm)
+      .select((state: any) => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.dirty).toBe(true);
       });
   });
 
   it('should set form pristine', () => {
-    const store = TestBed.get(Store);
+    const store: Store = TestBed.get(Store);
     // first set dirty, then pristine
     store.dispatch(new SetFormDirty('actions.studentForm'));
     store.dispatch(new SetFormPristine('actions.studentForm'));
 
     store
-      .select(state => state.actions.studentForm)
+      .select((state: any) => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.dirty).toBe(false);
       });
   });
 
   it('should set form disabled', () => {
-    const store = TestBed.get(Store);
+    const store: Store = TestBed.get(Store);
     store.dispatch(new SetFormDisabled('actions.studentForm'));
 
     store
-      .select(state => state.actions.studentForm)
+      .select((state: any) => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.disabled).toBe(true);
       });
   });
 
   it('should set form enabled', () => {
-    const store = TestBed.get(Store);
+    const store: Store = TestBed.get(Store);
     // first set disabled, then enabled.
     store.dispatch(new SetFormDisabled('actions.studentForm'));
     store.dispatch(new SetFormEnabled('actions.studentForm'));
 
     store
-      .select(state => state.actions.studentForm)
+      .select((state: any) => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.disabled).toBe(false);
       });
   });
 
   it('should update form dirty', () => {
-    const store = TestBed.get(Store);
+    const store: Store = TestBed.get(Store);
     store.dispatch(new UpdateFormDirty({ path: 'actions.studentForm', dirty: true }));
 
     store
-      .select(state => state.actions.studentForm)
+      .select((state: any) => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.dirty).toBe(true);
       });
   });
 
   it('should update form status', () => {
-    const store = TestBed.get(Store);
+    const store: Store = TestBed.get(Store);
     store.dispatch(new UpdateFormStatus({ path: 'actions.studentForm', status: 'VALID' }));
 
     store
-      .select(state => state.actions.studentForm)
+      .select((state: any) => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.status).toBe('VALID');
       });
   });
 
   it('should update form errors', () => {
-    const store = TestBed.get(Store);
+    const store: Store = TestBed.get(Store);
     store.dispatch(
       new UpdateFormErrors({
         errors: { address: 'address is too long', name: 'empty not allowed' },
@@ -122,15 +122,15 @@ describe('NgxsFormPlugin', () => {
     );
 
     store
-      .select(state => state.actions.studentForm)
+      .select((state: any) => state.actions.studentForm)
       .subscribe((form: Form) => {
-        expect(form.errors.name).toBe('empty not allowed');
-        expect(form.errors.address).toBe('address is too long');
+        expect(form.errors!.name).toBe('empty not allowed');
+        expect(form.errors!.address).toBe('address is too long');
       });
   });
 
   it('should update form value', () => {
-    const store = TestBed.get(Store);
+    const store: Store = TestBed.get(Store);
     store.dispatch(
       new UpdateFormValue({
         value: { address: 'waterloo, ontario', name: 'Lou Grant' },
@@ -139,7 +139,7 @@ describe('NgxsFormPlugin', () => {
     );
 
     store
-      .select(state => state.actions.studentForm)
+      .select((state: any) => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.model.name).toBe('Lou Grant');
         expect(form.model.address).toBe('waterloo, ontario');
@@ -156,7 +156,7 @@ describe('NgxsFormPlugin', () => {
     );
 
     store
-      .select(state => state.actions.studentForm)
+      .select((state: any) => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(Array.isArray(form.model)).toBeTruthy();
         expect(form.model).toEqual(['waterloo, ontario', 'Lou Grant']);
@@ -164,7 +164,7 @@ describe('NgxsFormPlugin', () => {
   });
 
   it('should update form', () => {
-    const store = TestBed.get(Store);
+    const store: Store = TestBed.get(Store);
     store.dispatch(
       new UpdateForm({
         value: { address: 'waterloo, ontario', name: 'Lou Grant' },
@@ -176,12 +176,12 @@ describe('NgxsFormPlugin', () => {
     );
 
     store
-      .select(state => state.actions.studentForm)
+      .select((state: any) => state.actions.studentForm)
       .subscribe((form: Form) => {
         expect(form.status).toBe('INVALID');
         expect(form.dirty).toBe(true);
-        expect(form.errors.name).toBe('empty not allowed');
-        expect(form.errors.address).toBe('address is too long');
+        expect(form.errors!.name).toBe('empty not allowed');
+        expect(form.errors!.address).toBe('address is too long');
         expect(form.model.name).toBe('Lou Grant');
         expect(form.model.address).toBe('waterloo, ontario');
       });

@@ -7,7 +7,7 @@ const stateNameRegex = new RegExp('^[a-zA-Z0-9_]+$');
  * Error message
  * @ignore
  */
-export const stateNameErrorMessage = name =>
+export const stateNameErrorMessage = (name: string) =>
   `${name} is not a valid state name. It needs to be a valid object property name.`;
 
 /**
