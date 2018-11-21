@@ -86,7 +86,7 @@ describe('Lazy Loading', () => {
     });
   });
 
-  it('should correctly dispatch actions and respond in feature module', () => {
+  xit('should correctly dispatch actions and respond in feature module', () => {
     const store: Store = TestBed.get(Store);
 
     navigate().then(() => {

@@ -1,10 +1,10 @@
 import { OperatorFunction, Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import { getActionTypeFromInstance } from '../utils/utils';
+import { getActionTypeFromInstanceOrClass } from '../utils/utils';
 import { ActionContext, ActionStatus } from '../actions-stream';
 
-export function ofAction<T>(allowedType): OperatorFunction<any, T>;
-export function ofAction<T>(...allowedTypes): OperatorFunction<any, T>;
+export function ofAction<T>(allowedType: any): OperatorFunction<any, T>;
+export function ofAction<T>(...allowedTypes: any[]): OperatorFunction<any, T>;
 
 /**
  * RxJS operator for selecting out specific actions.
@@ -63,7 +63,7 @@ function ofActionOperator(allowedTypes: any[], status?: ActionStatus) {
 
 function filterStatus(allowedTypes: { [key: string]: boolean }, status?: ActionStatus) {
   return filter((ctx: ActionContext) => {
-    const actionType = getActionTypeFromInstance(ctx.action);
+    const actionType = getActionTypeFromInstanceOrClass(ctx.action)!;
     const type = allowedTypes[actionType];
     return status ? type && ctx.status === status : type;
   });
@@ -75,7 +75,7 @@ function mapAction() {
 
 function createAllowedMap(types: any[]): { [key: string]: boolean } {
   return types.reduce((acc: any, klass: any) => {
-    acc[getActionTypeFromInstance(klass)] = true;
+    acc[getActionTypeFromInstanceOrClass(klass)!] = true;
     return acc;
   }, {});
 }

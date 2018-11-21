@@ -38,7 +38,7 @@ export interface NgxsWebsocketPluginOptions {
   deserializer?: (e: MessageEvent) => any;
 }
 
-export function noop(arg) {
+export function noop(...args: any[]) {
   return function() {};
 }
 

@@ -8,6 +8,6 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable()
 export class StateStream extends BehaviorSubject<any> {
   constructor() {
-    super({});
+    super({} as any);
   }
 }

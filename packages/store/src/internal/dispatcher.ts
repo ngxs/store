@@ -31,12 +31,12 @@ export class InternalDispatcher {
   /**
    * Dispatches event(s).
    */
-  dispatch(event: any | any[]): Observable<any> {
+  dispatch(actionOrActions: any | any[]): Observable<any> {
     const result: Observable<any> = this._ngZone.runOutsideAngular(() => {
-      if (Array.isArray(event)) {
-        return forkJoin(event.map(a => this.dispatchSingle(a)));
+      if (Array.isArray(actionOrActions)) {
+        return forkJoin(actionOrActions.map(a => this.dispatchSingle(a)));
       } else {
-        return this.dispatchSingle(event);
+        return this.dispatchSingle(actionOrActions);
       }
     });
 
@@ -53,7 +53,7 @@ export class InternalDispatcher {
 
     return (compose([
       ...plugins,
-      (nextState, nextAction) => {
+      (nextState: any, nextAction: any) => {
         if (nextState !== prevState) {
           this._stateStream.next(nextState);
         }

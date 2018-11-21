@@ -20,7 +20,7 @@ export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
   };
 }
 
-export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine {
+export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine | null {
   if (options.storage === StorageOption.LocalStorage) {
     return localStorage;
   } else if (options.storage === StorageOption.SessionStorage) {

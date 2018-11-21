@@ -1,8 +1,8 @@
 /**
- * Returns the type from an action instance.
+ * Returns the type from an action instance/class.
  * @ignore
  */
-export function getActionTypeFromInstance(action: any): string {
+export function getActionTypeFromInstanceOrClass(action: any): string | undefined {
   if (action.constructor && action.constructor.type) {
     return action.constructor.type;
   }
@@ -10,15 +10,19 @@ export function getActionTypeFromInstance(action: any): string {
   return action.type;
 }
 
+export function getActionTypeFromClass<T = any>(actionClass: any): string {
+  return actionClass.type;
+}
+
 /**
  * Matches a action
  * @ignore
  */
 export function actionMatcher(action1: any) {
-  const type1 = getActionTypeFromInstance(action1);
+  const type1 = getActionTypeFromInstanceOrClass(action1);
 
   return function(action2: any) {
-    return type1 === getActionTypeFromInstance(action2);
+    return type1 === getActionTypeFromInstanceOrClass(action2);
   };
 }
 
@@ -58,5 +62,5 @@ export const setValue = (obj: any, prop: string, val: any) => {
  *
  * @ignore
  */
-export const getValue = (obj: any, prop: string) =>
+export const getValue = (obj: any, prop: string): any =>
   prop.split('.').reduce((acc: any, part: string) => acc && acc[part], obj);

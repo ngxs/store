@@ -63,7 +63,7 @@ export class TodosState {
   }
 
   @Action(SetPrefix)
-  setPrefix({ getState, setState, patchState }) {
+  setPrefix({ getState, setState, patchState }: StateContext<TodoStateModel>) {
     const state = getState();
     const pizza1 = state.pizza.model.toppings;
     patchState({
@@ -76,7 +76,7 @@ export class TodosState {
   }
 
   @Action(LoadData)
-  loadData({ patchState }) {
+  loadData({ patchState }: StateContext<TodoStateModel>) {
     const data = {
       toppings: 'pineapple',
       crust: 'medium',

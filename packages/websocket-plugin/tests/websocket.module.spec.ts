@@ -36,7 +36,7 @@ describe('NgxsWebsocketPlugin', () => {
 
   it('should forward socket message to store', done => {
     const mockServer = new Server(SOCKET_URL);
-    mockServer.on('message', data => mockServer.send(data));
+    mockServer.on('message', (data: any) => mockServer.send(data));
 
     store.dispatch(new ConnectWebSocket());
     store.dispatch(createMessage());
@@ -46,7 +46,7 @@ describe('NgxsWebsocketPlugin', () => {
         ofAction(SetMessage),
         take(1)
       )
-      .subscribe(({ payload }) => {
+      .subscribe(({ payload }: any) => {
         expect(payload).toBe('from websocket');
         mockServer.stop(done);
       });
