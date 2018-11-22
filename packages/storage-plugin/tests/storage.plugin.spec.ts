@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NgxsModule, State, Store, Action } from '@ngxs/store';
+import { Action, NgxsModule, State, Store } from '@ngxs/store';
 
-import { NgxsStoragePluginModule, StorageOption, StorageEngine, STORAGE_ENGINE } from '../';
+import { NgxsStoragePluginModule, STORAGE_ENGINE, StorageEngine, StorageOption } from '../';
 import { Observable, of } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
 
 describe('NgxsStoragePlugin', () => {
   class Increment {
@@ -303,11 +304,62 @@ describe('NgxsStoragePlugin', () => {
 
   it('should save data to IndexedDB using a custom storage engine', () => {
     class IndexedDBStorage implements StorageEngine {
-      getItem(key): Observable<any> {
-        return of();
+      private readonly objectStore = 'store';
+      private initDone = false;
+      private db;
+
+      private getDb(): Observable<any> {
+        if (this.initDone) {
+          return of(this.db);
+        } else {
+          return Observable.create(observer => {
+            const request = window.indexedDB.open('testStorage', 1);
+            request.onerror = err => observer.error(err);
+            request.onsuccess = () => (this.db = request.result);
+            request.onupgradeneeded = (event: any) => {
+              this.db = event.target.result;
+              const objectStore = this.db.createObjectStore(this.objectStore, { autoIncrement: true });
+              objectStore.add({ counter: { count: 105 } }, '@@STATE');
+              observer.next(this.db);
+            };
+          });
+        }
       }
 
-      setItem(key, val) {}
+      getItem(key): Observable<any> {
+        return this.getDb().pipe(
+          concatMap(db =>
+            Observable.create(observer => {
+              const request = db
+                .transaction([this.objectStore], 'readwrite')
+                .objectStore(this.objectStore)
+                .get(key);
+              request.onerror = err => observer.error(err);
+              request.onsuccess = () => observer.next(request.result);
+            })
+          )
+        );
+      }
+
+      setItem(key, val) {
+        this.getDb().subscribe(db => {
+          db.transaction([this.objectStore], 'readwrite')
+            .objectStore(this.objectStore)
+            .add(val, key);
+        });
+      }
+
+      clear(): void {}
+
+      key(val: number): Observable<string> {
+        return undefined;
+      }
+
+      length(): Observable<number> {
+        return undefined;
+      }
+
+      removeItem(key): void {}
     }
 
     TestBed.configureTestingModule({
