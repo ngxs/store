@@ -219,28 +219,12 @@ describe('NgxsStoragePlugin', () => {
         }
       };
 
-      length() {
-        return of(Object.keys(CustomStorage.Storage).length);
-      }
-
       getItem(key) {
         return of(CustomStorage.Storage[key]);
       }
 
       setItem(key, val) {
         CustomStorage.Storage[key] = val;
-      }
-
-      removeItem(key) {
-        delete CustomStorage.Storage[key];
-      }
-
-      clear() {
-        CustomStorage.Storage = {};
-      }
-
-      key(index) {
-        return of(Object.keys(CustomStorage.Storage)[index]);
       }
     }
 

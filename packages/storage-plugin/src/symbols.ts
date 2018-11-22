@@ -64,35 +64,18 @@ export const STORAGE_ENGINE = new InjectionToken('STORAGE_ENGINE');
  * storage engines such as IndexedDB
  */
 export interface StorageEngine {
-  length(): Observable<number>;
   getItem(key): Observable<any>;
   setItem(key, val): void;
-  removeItem(key): void;
-  clear(): void;
-  key(val: number): Observable<string>;
 }
 
+/**
+ * This wrapper allow to use the new StorageEngine API with existing synchronous WebStorage engines (localStorage and sessionStorage)
+ */
 export class WebStorageWrapper implements StorageEngine {
   constructor(private _storage: Storage) {}
 
-  clear(): void {
-    this._storage.clear();
-  }
-
   getItem(key): Observable<any> {
     return of(this._storage.getItem(key));
-  }
-
-  key(val: number): Observable<string> {
-    return of(this._storage.key(val));
-  }
-
-  length(): Observable<number> {
-    return of(this._storage.length);
-  }
-
-  removeItem(key): void {
-    this._storage.removeItem(key);
   }
 
   setItem(key, val): void {
