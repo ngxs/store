@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { NgxsModule, State, Store, Action } from '@ngxs/store';
 
 import { NgxsStoragePluginModule, StorageOption, StorageEngine, STORAGE_ENGINE } from '../';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 describe('NgxsStoragePlugin', () => {
   class Increment {
@@ -219,12 +219,28 @@ describe('NgxsStoragePlugin', () => {
         }
       };
 
+      length() {
+        return of(Object.keys(CustomStorage.Storage).length);
+      }
+
       getItem(key) {
         return of(CustomStorage.Storage[key]);
       }
 
       setItem(key, val) {
         CustomStorage.Storage[key] = val;
+      }
+
+      removeItem(key) {
+        delete CustomStorage.Storage[key];
+      }
+
+      clear() {
+        CustomStorage.Storage = {};
+      }
+
+      key(index) {
+        return of(Object.keys(CustomStorage.Storage)[index]);
       }
     }
 
@@ -282,6 +298,50 @@ describe('NgxsStoragePlugin', () => {
       .select(state => state)
       .subscribe((state: { counter: StateModel; lazyLoaded: StateModel }) => {
         expect(state.lazyLoaded).toBeDefined();
+      });
+  });
+
+  it('should save data to IndexedDB using a custom storage engine', () => {
+    class IndexedDBStorage implements StorageEngine {
+      getItem(key): Observable<any> {
+        return of();
+      }
+
+      setItem(key, val) {}
+    }
+
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([MyStore]),
+        NgxsStoragePluginModule.forRoot({
+          serialize(val) {
+            return val;
+          },
+          deserialize(val) {
+            return val;
+          }
+        })
+      ],
+      providers: [
+        {
+          provide: STORAGE_ENGINE,
+          useClass: IndexedDBStorage
+        }
+      ]
+    });
+
+    const store = TestBed.get(Store);
+
+    store.dispatch(new Increment());
+    store.dispatch(new Increment());
+    store.dispatch(new Increment());
+    store.dispatch(new Increment());
+    store.dispatch(new Increment());
+
+    store
+      .select(state => state.counter)
+      .subscribe((state: StateModel) => {
+        expect(state.count).toBe(105);
       });
   });
 });

@@ -64,8 +64,12 @@ export const STORAGE_ENGINE = new InjectionToken('STORAGE_ENGINE');
  * storage engines such as IndexedDB
  */
 export interface StorageEngine {
+  length(): Observable<number>;
   getItem(key): Observable<any>;
   setItem(key, val): void;
+  removeItem(key): void;
+  clear(): void;
+  key(val: number): Observable<string>;
 }
 
 /**
@@ -74,11 +78,27 @@ export interface StorageEngine {
 export class WebStorageWrapper implements StorageEngine {
   constructor(private _storage: Storage) {}
 
+  length(): Observable<number> {
+    return of(this._storage.length);
+  }
+
   getItem(key): Observable<any> {
     return of(this._storage.getItem(key));
   }
 
   setItem(key, val): void {
     this._storage.setItem(key, val);
+  }
+
+  removeItem(key): void {
+    this._storage.removeItem(key);
+  }
+
+  clear(): void {
+    this._storage.clear();
+  }
+
+  key(val: number): Observable<string> {
+    return of(this._storage.key(val));
   }
 }
