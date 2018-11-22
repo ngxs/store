@@ -45,8 +45,9 @@ implements `setItem` and `getItem`.
 import { NgxsStoragePluginModule, StorageEngine, STORAGE_ENGINE } from '@ngxs/storage-plugin';
 
 export class MyStorageEngine implements StorageEngine {
-  getItem(name) {
+  getItem(key): Observable<any> {
     // Your logic here
+    // It must return an Observable
   }
 
   setItem(key, value) {
