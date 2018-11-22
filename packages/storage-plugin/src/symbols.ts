@@ -59,6 +59,10 @@ export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_STORAGE_PLUG
 
 export const STORAGE_ENGINE = new InjectionToken('STORAGE_ENGINE');
 
+/**
+ * StorageEngine API is similar to the WebStorage API (localStorage or sessionStorage) but can be used with asynchronous
+ * storage engines such as IndexedDB
+ */
 export interface StorageEngine {
   length(): Observable<number>;
   getItem(key): Observable<any>;
@@ -68,7 +72,7 @@ export interface StorageEngine {
   key(val: number): Observable<string>;
 }
 
-export class StorageWrapper implements StorageEngine {
+export class WebStorageWrapper implements StorageEngine {
   constructor(private _storage: Storage) {}
 
   clear(): void {
