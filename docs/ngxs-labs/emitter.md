@@ -21,7 +21,7 @@ Compare these diagrams, we've simplified Redux flow and threw out unnecessary mi
 
 ![ER Flow](https://raw.githubusercontent.com/ngxs-labs/emitter/master/docs/assets/redux-er.png)
 
-## 📦Install
+## 📦 Install
 
 To install `@ngxs-labs/emitter` run the following command:
 
@@ -31,7 +31,7 @@ npm install @ngxs-labs/emitter
 yarn add @ngxs-labs/emitter
 ```
 
-## 🔨Usage
+## 🔨 Usage
 
 Import the module into your root application module:
 
@@ -113,7 +113,7 @@ export class CounterComponent {
 
 ## Custom types
 
-You can define custom types for debugging purposes (works with `@ngxs/logger-plugin`):
+You can define custom types for debbuging purposes (works with `@ngxs/logger-plugin`):
 
 ```typescript
 import { State, StateContext } from '@ngxs/store';
@@ -165,6 +165,38 @@ export class CounterState {
     @Receiver({ action: Decrement })
     public static decrement({ setState, getState }: StateContext<number>) {
         setState(getState() - 1);
+    }
+}
+```
+
+Also it's possible to pass multiple actions:
+
+```typescript
+import { State, StateContext } from '@ngxs/store';
+import { Receiver } from '@ngxs-labs/emitter';
+
+export class Increment {
+    public static readonly type = '[Counter] Increment value';
+}
+
+export class Decrement {
+    public static readonly type = '[Counter] Decrement value';
+}
+
+@State<number>({
+    name: 'counter',
+    defaults: 0
+})
+export class CounterState {
+    @Receiver({ action: [Increment, Decrement] })
+    public static increment({ setState, getState }: StateContext<number>, action: Increment | Decrement) {
+        const state = getState();
+
+        if (action instanceof Increment) {
+            setState(state + 1);
+        } else if (action instanceof Decrement) {
+            setState(state - 1);
+        }
     }
 }
 ```
@@ -433,4 +465,70 @@ it('should increment state', () => {
     const counter = store.selectSnapshot<number>((state) => state.counter);
     expect(counter).toBe(1);
 });
+```
+
+## Interaction
+
+You can easily provide an interaction between different states using ER. Imagine such simple state that stores information if success and error messages exist:
+
+```typescript
+type AppStatusStateModel = {
+    successMessage: string | null;
+    errorMessage: string | null;
+};
+
+@State({
+    name: 'appStatusState',
+    defaults: {
+        successMessage: null,
+        errorMessage: null
+    }
+})
+export class AppStatusState {
+    @Receiver({ type: '[AppStatus] Success' })
+    public static success({ setState }: StateContext<AppStatusStateModel>, { payload }: EmitterAction<string>) {
+        setState({
+            successMessage: payload,
+            errorMessage: null
+        });
+    }
+
+    @Receiver({ type: '[AppStatus] Failure' })
+    public static failure({ setState }: StateContext<AppStatusStateModel>, { payload }: EmitterAction<string>) {
+        setState({
+            successMessage: null,
+            errorMessage: payload
+        });
+    }
+}
+```
+
+You want to emit events from another state that makes requests:
+
+```typescript
+@State({ name: 'appState' })
+class AppState {
+    private static tagService: TagService;
+
+    @Emitter(AppStatusState.success)
+    private static success: Emittable<string>;
+
+    @Emitter(AppStatusState.failure)
+    private static failure: Emittable<string>;
+
+    constructor(injector: Injector) {
+        AppState.tagService = injector.get<TagService>(TagService);
+    }
+
+    @Receiver({ type: '[AppState] Add tag to the DB' })
+    public static addTag(_, { payload }: EmitterAction<string>) {
+        return this.tagService.addOne(payload).pipe(
+            tap((response) => this.success.emit(response.message)),
+            catchError((error) => {
+                this.failure.emit(error.message);
+                return of(error);
+            })
+        );
+    }
+}
 ```
