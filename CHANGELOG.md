@@ -2,6 +2,9 @@
 
 * ...
 
+# 3.3.1 2018-11-24
+* Fix: Storage Plugin should handle 'undefined' string [#671](https://github.com/ngxs/store/pull/671)
+
 # 3.3.0 2018-11-19
 
 * Feature: Support Angular 7, TypeScript 3.1 [#615](https://github.com/ngxs/store/issues/615)
