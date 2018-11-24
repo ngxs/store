@@ -57,11 +57,9 @@ describe('NgxsStoragePlugin', () => {
 
     const store = TestBed.get(Store);
 
-    store
-      .select(state => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(state.count).toBe(100);
-      });
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(state.count).toBe(100);
+    });
   });
 
   it('should save data to localstorage', () => {
@@ -79,13 +77,64 @@ describe('NgxsStoragePlugin', () => {
     store.dispatch(new Increment());
     store.dispatch(new Increment());
 
-    store
-      .select(state => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(state.count).toBe(105);
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(state.count).toBe(105);
 
-        expect(localStorage.getItem('@@STATE')).toBe(JSON.stringify({ counter: { count: 105 } }));
+      expect(localStorage.getItem('@@STATE')).toBe(JSON.stringify({ counter: { count: 105 } }));
+    });
+  });
+
+  describe('when blank values are returned from localstorage', () => {
+    it('should use default data if null retrieved from localstorage', () => {
+      localStorage.setItem('@@STATE', null);
+
+      @State<StateModel>({ name: 'counter', defaults: { count: 123 } })
+      class TestStore {}
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TestStore]), NgxsStoragePluginModule.forRoot()]
       });
+
+      const store = TestBed.get(Store);
+
+      store.select(state => state.counter).subscribe((state: StateModel) => {
+        expect(state.count).toBe(123);
+      });
+    });
+
+    it('should use default data if undefined retrieved from localstorage', () => {
+      localStorage.setItem('@@STATE', undefined);
+
+      @State<StateModel>({ name: 'counter', defaults: { count: 123 } })
+      class TestStore {}
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TestStore]), NgxsStoragePluginModule.forRoot()]
+      });
+
+      const store = TestBed.get(Store);
+
+      store.select(state => state.counter).subscribe((state: StateModel) => {
+        expect(state.count).toBe(123);
+      });
+    });
+
+    it(`should use default data if the string 'undefined' retrieved from localstorage`, () => {
+      localStorage.setItem('@@STATE', 'undefined');
+
+      @State<StateModel>({ name: 'testStore', defaults: { count: 123 } })
+      class TestStore {}
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TestStore]), NgxsStoragePluginModule.forRoot()]
+      });
+
+      const store = TestBed.get(Store);
+
+      store.select(state => state.counter).subscribe((state: StateModel) => {
+        expect(state.count).toBe(123);
+      });
+    });
   });
 
   it('should migrate global localstorage', () => {
@@ -115,11 +164,9 @@ describe('NgxsStoragePlugin', () => {
 
     const store = TestBed.get(Store);
 
-    store
-      .select(state => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(localStorage.getItem('@@STATE')).toBe(JSON.stringify({ counter: { counts: 100, version: 2 } }));
-      });
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(localStorage.getItem('@@STATE')).toBe(JSON.stringify({ counter: { counts: 100, version: 2 } }));
+    });
   });
 
   it('should migrate single localstorage', () => {
@@ -151,11 +198,9 @@ describe('NgxsStoragePlugin', () => {
 
     const store = TestBed.get(Store);
 
-    store
-      .select(state => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(localStorage.getItem('counter')).toBe(JSON.stringify({ counts: 100, version: 2 }));
-      });
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(localStorage.getItem('counter')).toBe(JSON.stringify({ counts: 100, version: 2 }));
+    });
   });
 
   it('should correct get data from session storage', () => {
@@ -172,11 +217,9 @@ describe('NgxsStoragePlugin', () => {
 
     const store = TestBed.get(Store);
 
-    store
-      .select(state => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(state.count).toBe(100);
-      });
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(state.count).toBe(100);
+    });
   });
 
   it('should save data to sessionStorage', () => {
@@ -199,13 +242,11 @@ describe('NgxsStoragePlugin', () => {
     store.dispatch(new Increment());
     store.dispatch(new Increment());
 
-    store
-      .select(state => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(state.count).toBe(105);
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(state.count).toBe(105);
 
-        expect(sessionStorage.getItem('@@STATE')).toBe(JSON.stringify({ counter: { count: 105 } }));
-      });
+      expect(sessionStorage.getItem('@@STATE')).toBe(JSON.stringify({ counter: { count: 105 } }));
+    });
   });
 
   it('should use a custom storage engine', () => {
@@ -271,13 +312,11 @@ describe('NgxsStoragePlugin', () => {
     store.dispatch(new Increment());
     store.dispatch(new Increment());
 
-    store
-      .select(state => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(state.count).toBe(105);
+    store.select(state => state.counter).subscribe((state: StateModel) => {
+      expect(state.count).toBe(105);
 
-        expect(CustomStorage.Storage['@@STATE']).toEqual({ counter: { count: 105 } });
-      });
+      expect(CustomStorage.Storage['@@STATE']).toEqual({ counter: { count: 105 } });
+    });
   });
 
   it('should merge unloaded data from feature with local storage', () => {
@@ -293,10 +332,8 @@ describe('NgxsStoragePlugin', () => {
 
     const store = TestBed.get(Store);
 
-    store
-      .select(state => state)
-      .subscribe((state: { counter: StateModel; lazyLoaded: StateModel }) => {
-        expect(state.lazyLoaded).toBeDefined();
-      });
+    store.select(state => state).subscribe((state: { counter: StateModel; lazyLoaded: StateModel }) => {
+      expect(state.lazyLoaded).toBeDefined();
+    });
   });
 });
