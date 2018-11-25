@@ -121,8 +121,8 @@
     "tsickle": "^0.33.0",
     "tslib": "^1.9.0",
     "tslint": "^5.8.0",
-    "typedoc": "^0.11.1",
-    "typedoc-plugin-markdown": "^1.1.1",
+    "typedoc": "^0.13.0",
+    "typedoc-plugin-markdown": "^1.1.19",
     "typescript": "^3.1.0",
     "zone.js": "^0.8.26"
   }
