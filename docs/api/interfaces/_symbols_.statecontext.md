@@ -27,19 +27,17 @@ State context provided to the actions in the state.
 
 ###  dispatch
 
-▸ **dispatch**(actions: *`any` |`any`[]*): `Observable`<`void`>
+▸ **dispatch**(actions: * `any` &#124; `any`[]*): `Observable`<`void`>
 
-*Defined in [symbols.ts:46](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L46)*
+*Defined in [symbols.ts:61](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L61)*
 
 Dispatch a new action and return the dispatched observable.
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| actions | `any` |
-`any`[]
- | 
+| actions |  `any` &#124; `any`[]|
 
 **Returns:** `Observable`<`void`>
 
@@ -50,7 +48,7 @@ ___
 
 ▸ **getState**(): `T`
 
-*Defined in [symbols.ts:31](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L31)*
+*Defined in [symbols.ts:46](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L46)*
 
 Get the current state.
 
@@ -63,15 +61,15 @@ ___
 
 ▸ **patchState**(val: *`Partial`<`T`>*): `any`
 
-*Defined in [symbols.ts:41](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L41)*
+*Defined in [symbols.ts:56](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L56)*
 
 Patch the existing state with the provided value.
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| val | `Partial`<`T`> | 
+| val | `Partial`<`T`> |
 
 **Returns:** `any`
 
@@ -82,15 +80,15 @@ ___
 
 ▸ **setState**(val: *`T`*): `any`
 
-*Defined in [symbols.ts:36](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L36)*
+*Defined in [symbols.ts:51](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L51)*
 
 Reset the state to a new value.
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| val | `T` | 
+| val | `T` |
 
 **Returns:** `any`
 

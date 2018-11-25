@@ -24,7 +24,7 @@ Actions that can be provided in a action decorator.
 
 **● cancelUncompleted**: *`boolean`*
 
-*Defined in [symbols.ts:88](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L88)*
+*Defined in [symbols.ts:103](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L103)*
 
 Cancel the previous uncompleted observable(s).
 

@@ -22,18 +22,17 @@ On init interface
 
 ###  ngxsOnInit
 
-▸ **ngxsOnInit**(ctx?: *[StateContext](_symbols_.statecontext.md)<`any`>*): `void` |`any`
+▸ **ngxsOnInit**(ctx?: *[StateContext](_symbols_.statecontext.md)<`any`>*):  `void` &#124; `any`
 
-*Defined in [symbols.ts:95](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L95)*
+*Defined in [symbols.ts:110](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L110)*
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| `Optional` ctx | [StateContext](_symbols_.statecontext.md)<`any`> | 
+| `Optional` ctx | [StateContext](_symbols_.statecontext.md)<`any`> |
 
-**Returns:** `void` |
-`any`
+**Returns:**  `void` &#124; `any`
 
 ___
 

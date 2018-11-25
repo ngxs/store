@@ -23,7 +23,7 @@ Status of a dispatched action
 
 **Canceled**:  = "CANCELED"
 
-*Defined in [actions-stream.ts:10](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/actions-stream.ts#L10)*
+*Defined in [actions-stream.ts:12](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/actions-stream.ts#L12)*
 
 ___
 <a id="dispatched"></a>
@@ -32,7 +32,7 @@ ___
 
 **Dispatched**:  = "DISPATCHED"
 
-*Defined in [actions-stream.ts:8](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/actions-stream.ts#L8)*
+*Defined in [actions-stream.ts:10](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/actions-stream.ts#L10)*
 
 ___
 <a id="errored"></a>
@@ -41,7 +41,7 @@ ___
 
 **Errored**:  = "ERRORED"
 
-*Defined in [actions-stream.ts:11](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/actions-stream.ts#L11)*
+*Defined in [actions-stream.ts:13](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/actions-stream.ts#L13)*
 
 ___
 <a id="successful"></a>
@@ -50,7 +50,7 @@ ___
 
 **Successful**:  = "SUCCESSFUL"
 
-*Defined in [actions-stream.ts:9](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/actions-stream.ts#L9)*
+*Defined in [actions-stream.ts:11](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/actions-stream.ts#L11)*
 
 ___
 

@@ -24,7 +24,7 @@
 
 **● action**: *`any`*
 
-*Defined in [actions-stream.ts:16](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/actions-stream.ts#L16)*
+*Defined in [actions-stream.ts:18](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/actions-stream.ts#L18)*
 
 ___
 <a id="error"></a>
@@ -33,7 +33,7 @@ ___
 
 **● error**: *`Error`*
 
-*Defined in [actions-stream.ts:17](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/actions-stream.ts#L17)*
+*Defined in [actions-stream.ts:19](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/actions-stream.ts#L19)*
 
 ___
 <a id="status"></a>
@@ -42,7 +42,7 @@ ___
 
 **● status**: *[ActionStatus](../enums/_actions_stream_.actionstatus.md)*
 
-*Defined in [actions-stream.ts:15](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/actions-stream.ts#L15)*
+*Defined in [actions-stream.ts:17](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/actions-stream.ts#L17)*
 
 ___
 
