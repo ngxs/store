@@ -14,7 +14,7 @@ describe('Store', () => {
   interface SubStateModel {
     hello: boolean;
     world: boolean;
-    baz_?: SubSubStateModel;
+    baz?: SubSubStateModel;
   }
 
   interface StateModel {
@@ -23,12 +23,16 @@ describe('Store', () => {
     bar?: SubStateModel;
   }
 
+  interface OtherStateModel {
+    under: string;
+  }
+
   class FooIt {
     static type = 'FooIt';
   }
 
   @State<SubSubStateModel>({
-    name: 'baz_',
+    name: 'baz',
     defaults: {
       name: 'Danny'
     }
@@ -65,11 +69,19 @@ describe('Store', () => {
     }
   }
 
+  @State<OtherStateModel>({
+    name: 'under_',
+    defaults: {
+      under: 'score'
+    }
+  })
+  class MyOtherState {}
+
   let store: Store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MySubState, MySubSubState, MyState])]
+      imports: [NgxsModule.forRoot([MySubState, MySubSubState, MyState, MyOtherState])]
     });
 
     store = TestBed.get(Store);
@@ -84,10 +96,13 @@ describe('Store', () => {
           bar: {
             hello: true,
             world: true,
-            baz_: {
+            baz: {
               name: 'Danny'
             }
           }
+        },
+        under_: {
+          under: 'score'
         }
       });
     });
@@ -109,7 +124,7 @@ describe('Store', () => {
         bar: {
           hello: true,
           world: true,
-          baz_: {
+          baz: {
             name: 'Danny'
           }
         }
@@ -122,7 +137,7 @@ describe('Store', () => {
       expect(state).toEqual({
         hello: true,
         world: true,
-        baz_: {
+        baz: {
           name: 'Danny'
         }
       });
@@ -145,10 +160,17 @@ describe('Store', () => {
       bar: {
         hello: true,
         world: true,
-        baz_: {
+        baz: {
           name: 'Danny'
         }
       }
+    });
+  }));
+
+  it('should select state with an underscore in name', async(() => {
+    const state = store.selectSnapshot(MyOtherState);
+    expect(state).toEqual({
+      under: 'score'
     });
   }));
 
