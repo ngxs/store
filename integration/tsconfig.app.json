@@ -9,6 +9,5 @@
     "module": "es2015",
     "types": ["node"]
   },
-  "include": ["**/*.ts", "./polyfills.ts"],
-  "exclude": ["test.integration.ts", "**/*.spec.ts"]
+  "exclude": ["test.ts", "**/*.spec.ts"]
 }
