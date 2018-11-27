@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 
 import { StateOperations } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
@@ -38,6 +38,11 @@ export class InternalStateOperations {
       console.warn(
         'NGXS is running in the development mode.\n',
         'Set developmentMode to false on the NgxsModule options to enable the production mode.\n',
+        'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
+      );
+    } else if (isDevMode()) {
+      console.warn(
+        'Set developmentMode to true on the NgxsModule when Angular is running in the development mode',
         'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
       );
     }
