@@ -82,13 +82,15 @@ describe('Zoo', () => {
 });
 ```
 
-Usually in your application you have selectors created dynamically using the createSelector function:
+In your application you may have selectors created dynamically using the createSelector function:
 
 ```TS
 export class ZooSelectors {
-  static animals = () => {
+  static animalNames = (type: string) => {
     return createSelector([ZooState], (state: ZooStateModel) => {
-      return state.animals;
+      return state.animals
+        .filter((animal) => animal.type === type )
+        .map((animal => animal.name ));
     });
   }
 }
@@ -98,11 +100,18 @@ Testing these selectors is really an easy task.
 You just need to mock the state and pass it as parameter to our selector:
 
 ```TS
-it('should select animals from state', () => {
-  const value = ZooSelectors.animals()({
-    animals: ['zebra', 'panda']
-  });
+it('should select requested animal names from state', () => {
+  const zooState = {
+    animals: [ 
+      { type: 'zebra', name: 'Andy'},
+      { type: 'panda', name: 'Betty'},
+      { type: 'zebra', name: 'Crystal'},
+      { type: 'panda', name: 'Donny'},
+    ]
+  };
+  
+  const value = ZooSelectors.animalNames('zebra')(zooState);
     
-  expect(value).toEqual(['zebra', 'panda']);
+  expect(value).toEqual(['Andy', 'Crystal']);
 });
 ```
