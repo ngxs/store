@@ -47,6 +47,8 @@
 * NGXS Labs
   * [Introduction](ngxs-labs/intro.md)
   * [Emitter](ngxs-labs/emitter.md)
+  * [Immer adapter](ngxs-labs/immer-adapter.md)
+  * [Dispatch decorator](ngxs-labs/dispatch-decorator.md)
 * Community
   * [FAQ](advanced/faq.md)
   * [Resources](community/projects.md)
