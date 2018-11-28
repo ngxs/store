@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Action, NgxsModule, State, Store } from '@ngxs/store';
+import { Action, NgxsModule, NgxsOnInit, State, Store } from '@ngxs/store';
 
 import { NgxsStoragePluginModule, STORAGE_ENGINE, StorageEngine, StorageOption } from '../';
 import { Observable, of } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
 
 describe('NgxsStoragePlugin', () => {
   class Increment {
@@ -302,51 +301,62 @@ describe('NgxsStoragePlugin', () => {
       });
   });
 
-  it('should save data to IndexedDB using a custom storage engine', () => {
-    class IndexedDBStorage implements StorageEngine {
-      private readonly objectStore = 'store';
-      private initDone = false;
-      private db;
+  it('should save data to IndexedDB using a custom storage engine', done => {
+    let db;
+    const objectStore = 'store';
 
-      private getDb(): Observable<any> {
-        if (this.initDone) {
-          return of(this.db);
-        } else {
-          return Observable.create(observer => {
-            const request = window.indexedDB.open('testStorage', 1);
-            request.onerror = err => observer.error(err);
-            request.onsuccess = () => (this.db = request.result);
-            request.onupgradeneeded = (event: any) => {
-              this.db = event.target.result;
-              const objectStore = this.db.createObjectStore(this.objectStore, { autoIncrement: true });
-              objectStore.add({ counter: { count: 105 } }, '@@STATE');
-              observer.next(this.db);
+    @State<StateModel>({
+      name: 'counter',
+      defaults: { count: 0 }
+    })
+    class AsyncStore extends MyStore implements NgxsOnInit {
+      ngxsOnInit() {
+        const store = TestBed.get(Store);
+
+        store.dispatch(new Increment());
+        store.dispatch(new Increment());
+        store.dispatch(new Increment());
+        store.dispatch(new Increment());
+        store.dispatch(new Increment());
+
+        store
+          .select(state => state.counter)
+          .subscribe((state: StateModel) => {
+            expect(state.count).toBe(105);
+
+            const request = db
+              .transaction(objectStore, 'readonly')
+              .objectStore(objectStore)
+              .get('@@STATE');
+            request.onsuccess = () => {
+              expect(request.result).toEqual({ counter: { count: 105 } });
+              done();
             };
           });
-        }
       }
+    }
 
+    class IndexedDBStorage implements StorageEngine {
       getItem(key): Observable<any> {
-        return this.getDb().pipe(
-          concatMap(db =>
-            Observable.create(observer => {
-              const request = db
-                .transaction([this.objectStore], 'readwrite')
-                .objectStore(this.objectStore)
-                .get(key);
-              request.onerror = err => observer.error(err);
-              request.onsuccess = () => observer.next(request.result);
-            })
-          )
-        );
+        const request = db
+          .transaction(objectStore, 'readonly')
+          .objectStore(objectStore)
+          .get(key);
+        return Observable.create(observer => {
+          request.onerror = err => observer.error(err);
+          request.onsuccess = () => {
+            observer.next(request.result);
+            observer.complete();
+          };
+        });
       }
 
       setItem(key, val) {
-        this.getDb().subscribe(db => {
-          db.transaction([this.objectStore], 'readwrite')
-            .objectStore(this.objectStore)
-            .add(val, key);
-        });
+        const request = db
+          .transaction(objectStore, 'readwrite')
+          .objectStore(objectStore)
+          .put(val, key);
+        request.onsuccess = () => console.log('setItem');
       }
 
       clear(): void {}
@@ -362,38 +372,39 @@ describe('NgxsStoragePlugin', () => {
       removeItem(key): void {}
     }
 
-    TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([MyStore]),
-        NgxsStoragePluginModule.forRoot({
-          serialize(val) {
-            return val;
-          },
-          deserialize(val) {
-            return val;
-          }
-        })
-      ],
-      providers: [
-        {
-          provide: STORAGE_ENGINE,
-          useClass: IndexedDBStorage
-        }
-      ]
-    });
+    const dbInit = window.indexedDB.open('testStorage', 1);
+    dbInit.onupgradeneeded = (event: any) => {
+      db = event.target.result;
+      const objectStoreInit = db.createObjectStore(objectStore, { autoIncrement: true });
+      objectStoreInit.transaction.oncomplete = () => {
+        const stateInit = db
+          .transaction(objectStore, 'readwrite')
+          .objectStore(objectStore)
+          .add({ counter: { count: 100 } }, '@@STATE');
+        stateInit.onsuccess = () => {
+          TestBed.configureTestingModule({
+            imports: [
+              NgxsModule.forRoot([AsyncStore]),
+              NgxsStoragePluginModule.forRoot({
+                serialize(val) {
+                  return val;
+                },
+                deserialize(val) {
+                  return val;
+                }
+              })
+            ],
+            providers: [
+              {
+                provide: STORAGE_ENGINE,
+                useClass: IndexedDBStorage
+              }
+            ]
+          });
 
-    const store = TestBed.get(Store);
-
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-
-    store
-      .select(state => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(state.count).toBe(105);
-      });
+          TestBed.get(Store);
+        };
+      };
+    };
   });
 });
