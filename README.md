@@ -27,6 +27,8 @@
 
 ---
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ngxs/store.svg)](https://greenkeeper.io/)
+
 - ✨ Learn about it on the [docs site](https://ngxs.gitbooks.io/ngxs/)
 - 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
 - 😎 Checkout the [sample application](integration)
