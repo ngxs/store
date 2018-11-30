@@ -2,8 +2,15 @@ import { TestBed } from '@angular/core/testing';
 
 import { Action, NgxsModule, NgxsOnInit, State, Store } from '@ngxs/store';
 
-import { NgxsStoragePluginModule, STORAGE_ENGINE, StorageEngine, StorageOption } from '../';
-import { Observable, of } from 'rxjs';
+import {
+  AsyncStorageEngine,
+  NgxsStoragePluginModule,
+  STORAGE_ENGINE,
+  StorageEngine,
+  StorageEngineType,
+  StorageOption
+} from '../';
+import { Observable } from 'rxjs';
 
 describe('NgxsStoragePlugin', () => {
   class Increment {
@@ -219,12 +226,12 @@ describe('NgxsStoragePlugin', () => {
         }
       };
 
-      length() {
-        return of(Object.keys(CustomStorage.Storage).length);
+      get length() {
+        return Object.keys(CustomStorage.Storage).length;
       }
 
       getItem(key) {
-        return of(CustomStorage.Storage[key]);
+        return CustomStorage.Storage[key];
       }
 
       setItem(key, val) {
@@ -240,7 +247,7 @@ describe('NgxsStoragePlugin', () => {
       }
 
       key(index) {
-        return of(Object.keys(CustomStorage.Storage)[index]);
+        return Object.keys(CustomStorage.Storage)[index];
       }
     }
 
@@ -336,7 +343,7 @@ describe('NgxsStoragePlugin', () => {
       }
     }
 
-    class IndexedDBStorage implements StorageEngine {
+    class IndexedDBStorage implements AsyncStorageEngine {
       getItem(key): Observable<any> {
         const request = db
           .transaction(objectStore, 'readonly')
@@ -352,11 +359,9 @@ describe('NgxsStoragePlugin', () => {
       }
 
       setItem(key, val) {
-        const request = db
-          .transaction(objectStore, 'readwrite')
+        db.transaction(objectStore, 'readwrite')
           .objectStore(objectStore)
           .put(val, key);
-        request.onsuccess = () => console.log('setItem');
       }
 
       clear(): void {}
@@ -386,6 +391,7 @@ describe('NgxsStoragePlugin', () => {
             imports: [
               NgxsModule.forRoot([AsyncStore]),
               NgxsStoragePluginModule.forRoot({
+                storageEngineType: StorageEngineType.Asynchronous,
                 serialize(val) {
                   return val;
                 },

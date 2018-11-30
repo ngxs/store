@@ -6,6 +6,11 @@ export const enum StorageOption {
   SessionStorage
 }
 
+export const enum StorageEngineType {
+  Synchronous,
+  Asynchronous
+}
+
 export interface NgxsStoragePluginOptions {
   /**
    * Key for the state slice to store in the storage engine.
@@ -18,6 +23,11 @@ export interface NgxsStoragePluginOptions {
    * sessionStorage or custom implementation of the StorageEngine interface
    */
   storage?: StorageOption;
+
+  /**
+   * Type of engine storage engine provided
+   */
+  storageEngineType?: StorageEngineType;
 
   /**
    * Migration strategies.
@@ -59,11 +69,16 @@ export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_STORAGE_PLUG
 
 export const STORAGE_ENGINE = new InjectionToken('STORAGE_ENGINE');
 
-/**
- * StorageEngine API is similar to the WebStorage API (localStorage or sessionStorage) but can be used with asynchronous
- * storage engines such as IndexedDB
- */
 export interface StorageEngine {
+  readonly length: number;
+  getItem(key): any;
+  setItem(key, val): void;
+  removeItem(key): void;
+  clear(): void;
+  key(val: number): string;
+}
+
+export interface AsyncStorageEngine {
   length(): Observable<number>;
   getItem(key): Observable<any>;
   setItem(key, val): void;
@@ -73,32 +88,32 @@ export interface StorageEngine {
 }
 
 /**
- * This wrapper allow to use the new StorageEngine API with existing synchronous WebStorage engines (localStorage and sessionStorage)
+ * @Description Proxy used around synchronous storage engines to provide the same internal API than async engines
  */
-export class WebStorageWrapper implements StorageEngine {
-  constructor(private _storage: Storage) {}
+export class AsyncStorageEngineProxy implements AsyncStorageEngine {
+  constructor(private _storage: StorageEngine) {}
 
-  length(): Observable<number> {
+  public length(): Observable<number> {
     return of(this._storage.length);
   }
 
-  getItem(key): Observable<any> {
+  public getItem<T = any>(key): Observable<T> {
     return of(this._storage.getItem(key));
   }
 
-  setItem(key, val): void {
+  public setItem(key, val): void {
     this._storage.setItem(key, val);
   }
 
-  removeItem(key): void {
+  public removeItem(key): void {
     this._storage.removeItem(key);
   }
 
-  clear(): void {
+  public clear(): void {
     this._storage.clear();
   }
 
-  key(val: number): Observable<string> {
+  public key(val: number): Observable<string> {
     return of(this._storage.key(val));
   }
 }

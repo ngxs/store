@@ -1,20 +1,21 @@
-import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
+import { InjectionToken, ModuleWithProviders, NgModule } from '@angular/core';
 import { NGXS_PLUGINS } from '@ngxs/store';
 
 import { NgxsStoragePlugin } from './storage.plugin';
 import {
-  NgxsStoragePluginOptions,
   NGXS_STORAGE_PLUGIN_OPTIONS,
-  StorageOption,
+  NgxsStoragePluginOptions,
   STORAGE_ENGINE,
   StorageEngine,
-  WebStorageWrapper
+  StorageEngineType,
+  StorageOption
 } from './symbols';
 
 export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
   return {
     key: '@@STATE',
     storage: StorageOption.LocalStorage,
+    storageEngineType: StorageEngineType.Synchronous,
     serialize: JSON.stringify,
     deserialize: JSON.parse,
     ...options
@@ -22,10 +23,11 @@ export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
 }
 
 export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine {
-  if (options.storage === StorageOption.LocalStorage) {
-    return new WebStorageWrapper(localStorage);
-  } else if (options.storage === StorageOption.SessionStorage) {
-    return new WebStorageWrapper(sessionStorage);
+  switch (options.storage) {
+    case StorageOption.LocalStorage:
+      return localStorage;
+    case StorageOption.SessionStorage:
+      return sessionStorage;
   }
 
   return null;

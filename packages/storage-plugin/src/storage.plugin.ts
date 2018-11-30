@@ -1,28 +1,44 @@
 import { Inject, Injectable } from '@angular/core';
 import { actionMatcher, getValue, InitState, NgxsPlugin, setValue, UpdateState } from '@ngxs/store';
 
-import { NGXS_STORAGE_PLUGIN_OPTIONS, NgxsStoragePluginOptions, STORAGE_ENGINE, StorageEngine } from './symbols';
+import {
+  AsyncStorageEngine,
+  AsyncStorageEngineProxy,
+  NGXS_STORAGE_PLUGIN_OPTIONS,
+  NgxsStoragePluginOptions,
+  STORAGE_ENGINE,
+  StorageEngine,
+  StorageEngineType
+} from './symbols';
 import { concatMap, map, reduce, tap } from 'rxjs/operators';
 import { from, Observable, of } from 'rxjs';
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
+  private _asyncEngine: AsyncStorageEngine;
+
   constructor(
     @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
-    @Inject(STORAGE_ENGINE) private _engine: StorageEngine
-  ) {}
+    @Inject(STORAGE_ENGINE) private _engine: StorageEngine | AsyncStorageEngine
+  ) {
+    if (this._options.storageEngineType === StorageEngineType.Synchronous) {
+      this._asyncEngine = new AsyncStorageEngineProxy(<StorageEngine>this._engine);
+    } else {
+      this._asyncEngine = <AsyncStorageEngine>this._engine;
+    }
+  }
 
   handle(state, event, next) {
     const options = this._options || <any>{};
     const matches = actionMatcher(event);
     const isInitAction = matches(InitState) || matches(UpdateState);
-    const keys = Array.isArray(options.key) ? options.key : [options.key];
+    const keys: string[] = Array.isArray(options.key) ? options.key : [options.key];
     let hasMigration = false;
     let initAction: Observable<any> = of(state);
 
     if (isInitAction) {
       initAction = from(keys).pipe(
-        concatMap(key => this._engine.getItem(key).pipe(map(val => [key, val]))),
+        concatMap(key => this._asyncEngine.getItem(key).pipe(map(val => [key, val]))),
         reduce((previousState, [key, val]) => {
           const isMaster = key === '@@STATE';
           let nextState = previousState;
@@ -67,7 +83,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             }
 
             try {
-              this._engine.setItem(key, options.serialize(val));
+              this._asyncEngine.setItem(key, options.serialize(val));
             } catch (e) {
               console.error('Error ocurred while serializing the store value, value not updated.');
             }
