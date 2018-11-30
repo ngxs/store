@@ -42,7 +42,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
         reduce((previousState, [key, val]) => {
           const isMaster = key === '@@STATE';
           let nextState = previousState;
-          if (typeof val !== 'undefined' && val !== null) {
+          if (val !== 'undefined' && typeof val !== 'undefined' && val !== null) {
             try {
               val = options.deserialize(val);
             } catch (e) {

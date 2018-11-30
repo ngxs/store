@@ -1,7 +1,7 @@
 import { ensureStoreMetadata } from '../internal/internals';
 import { StoreOptions, META_KEY } from '../symbols';
 
-const stateNameRegex = new RegExp('^[a-zA-Z0-9]+$');
+const stateNameRegex = new RegExp('^[a-zA-Z0-9_]+$');
 
 /**
  * Error message

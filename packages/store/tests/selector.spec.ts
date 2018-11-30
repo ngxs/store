@@ -180,7 +180,10 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const selector = createSelector([MyState], state => state.foo);
+      const selector = createSelector(
+        [MyState],
+        state => state.foo
+      );
       const slice = store.selectSnapshot(selector);
       expect(slice).toBe('Hello');
     }));
@@ -191,7 +194,10 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const selector = createSelector([MyState.foo], state => state);
+      const selector = createSelector(
+        [MyState.foo],
+        state => state
+      );
       const slice = store.selectSnapshot(selector);
       expect(slice).toBe('Hello');
     }));
@@ -203,7 +209,10 @@ describe('Selector', () => {
 
       const store: Store = TestBed.get(Store);
       const myState = store.selectSnapshot(<any>MyState);
-      const selector = createSelector([MyState], state => state.foo);
+      const selector = createSelector(
+        [MyState],
+        state => state.foo
+      );
       const slice = selector(myState);
       expect(slice).toBe('Hello');
     }));
@@ -214,7 +223,10 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const selector = createSelector([MyState, MyState.foo], (state, foo) => state.foo + foo);
+      const selector = createSelector(
+        [MyState, MyState.foo],
+        (state, foo) => state.foo + foo
+      );
       const slice = store.selectSnapshot(selector);
       expect(slice).toBe('HelloHello');
     }));
@@ -238,14 +250,20 @@ describe('Selector', () => {
 
         const store: Store = TestBed.get(Store);
 
-        const fooSelector = createSelector([TestState], state => {
-          selectorCalls.push('foo');
-          return state.foo;
-        });
-        const barSelector = createSelector([TestState], state => {
-          selectorCalls.push('bar');
-          return state.bar;
-        });
+        const fooSelector = createSelector(
+          [TestState],
+          state => {
+            selectorCalls.push('foo');
+            return state.foo;
+          }
+        );
+        const barSelector = createSelector(
+          [TestState],
+          state => {
+            selectorCalls.push('bar');
+            return state.bar;
+          }
+        );
         store.selectSnapshot(fooSelector);
         store.selectSnapshot(fooSelector);
         store.selectSnapshot(barSelector);
@@ -271,13 +289,16 @@ describe('Selector', () => {
         });
 
         const store: Store = TestBed.get(Store);
-        const fooSelector = createSelector([TestState], state => {
-          selectorCalls.push('foo[outer]');
-          return () => {
-            selectorCalls.push('foo[inner]');
-            return state.foo;
-          };
-        });
+        const fooSelector = createSelector(
+          [TestState],
+          state => {
+            selectorCalls.push('foo[outer]');
+            return () => {
+              selectorCalls.push('foo[inner]');
+              return state.foo;
+            };
+          }
+        );
         store.selectSnapshot(fooSelector);
         store.selectSnapshot(fooSelector)();
         const fn = store.selectSnapshot(fooSelector);

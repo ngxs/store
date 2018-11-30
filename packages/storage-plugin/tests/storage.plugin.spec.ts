@@ -96,6 +96,65 @@ describe('NgxsStoragePlugin', () => {
       });
   });
 
+  describe('when blank values are returned from localstorage', () => {
+    it('should use default data if null retrieved from localstorage', () => {
+      localStorage.setItem('@@STATE', null);
+
+      @State<StateModel>({ name: 'counter', defaults: { count: 123 } })
+      class TestStore {}
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TestStore]), NgxsStoragePluginModule.forRoot()]
+      });
+
+      const store = TestBed.get(Store);
+
+      store
+        .select(state => state.counter)
+        .subscribe((state: StateModel) => {
+          expect(state.count).toBe(123);
+        });
+    });
+
+    it('should use default data if undefined retrieved from localstorage', () => {
+      localStorage.setItem('@@STATE', undefined);
+
+      @State<StateModel>({ name: 'counter', defaults: { count: 123 } })
+      class TestStore {}
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TestStore]), NgxsStoragePluginModule.forRoot()]
+      });
+
+      const store = TestBed.get(Store);
+
+      store
+        .select(state => state.counter)
+        .subscribe((state: StateModel) => {
+          expect(state.count).toBe(123);
+        });
+    });
+
+    it(`should use default data if the string 'undefined' retrieved from localstorage`, () => {
+      localStorage.setItem('@@STATE', 'undefined');
+
+      @State<StateModel>({ name: 'testStore', defaults: { count: 123 } })
+      class TestStore {}
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TestStore]), NgxsStoragePluginModule.forRoot()]
+      });
+
+      const store = TestBed.get(Store);
+
+      store
+        .select(state => state.counter)
+        .subscribe((state: StateModel) => {
+          expect(state.count).toBe(123);
+        });
+    });
+  });
+
   it('should migrate global localstorage', () => {
     const data = JSON.stringify({ counter: { count: 100, version: 1 } });
     localStorage.setItem('@@STATE', data);

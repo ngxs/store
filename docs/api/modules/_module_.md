@@ -6,9 +6,7 @@
 
 ### Classes
 
-* [NgxsFeatureModule](../classes/_module_.ngxsfeaturemodule.md)
 * [NgxsModule](../classes/_module_.ngxsmodule.md)
-* [NgxsRootModule](../classes/_module_.ngxsrootmodule.md)
 
 ### Type aliases
 
@@ -30,9 +28,9 @@
 
 ###  ModuleOptions
 
-**ΤModuleOptions**: *`Partial`<[NgxsConfig](../classes/_symbols_.ngxsconfig.md)>*
+**Ƭ ModuleOptions**: *`Partial`<[NgxsConfig](../classes/_symbols_.ngxsconfig.md)>*
 
-*Defined in [module.ts:92](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/module.ts#L92)*
+*Defined in [module.ts:92](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/module.ts#L92)*
 
 ___
 
@@ -42,9 +40,9 @@ ___
 
 ### `<Const>` ROOT_OPTIONS
 
-**● ROOT_OPTIONS**: *`InjectionToken`<`Object`>* =  new InjectionToken('ROOT_OPTIONS')
+**● ROOT_OPTIONS**: *`InjectionToken`<`object`>* =  new InjectionToken<ModuleOptions>('ROOT_OPTIONS')
 
-*Defined in [module.ts:99](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/module.ts#L99)*
+*Defined in [module.ts:99](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/module.ts#L99)*
 
 ___
 
@@ -56,13 +54,13 @@ ___
 
 ▸ **ngxsConfigFactory**(options: *[ModuleOptions](_module_.md#moduleoptions)*): [NgxsConfig](../classes/_symbols_.ngxsconfig.md)
 
-*Defined in [module.ts:94](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/module.ts#L94)*
+*Defined in [module.ts:94](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/module.ts#L94)*
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| options | [ModuleOptions](_module_.md#moduleoptions) | 
+| options | [ModuleOptions](_module_.md#moduleoptions) |
 
 **Returns:** [NgxsConfig](../classes/_symbols_.ngxsconfig.md)
 

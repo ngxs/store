@@ -8,7 +8,11 @@ export function Selector(selectors?: any[]) {
     if (descriptor.value !== null) {
       const originalFn = descriptor.value;
 
-      const memoizedFn = createSelector(selectors, originalFn, { containerClass: target, selectorName: key });
+      const memoizedFn = createSelector(
+        selectors,
+        originalFn,
+        { containerClass: target, selectorName: key }
+      );
 
       return {
         configurable: true,

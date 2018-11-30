@@ -23,6 +23,10 @@ describe('Store', () => {
     bar?: SubStateModel;
   }
 
+  interface OtherStateModel {
+    under: string;
+  }
+
   class FooIt {
     static type = 'FooIt';
   }
@@ -65,11 +69,19 @@ describe('Store', () => {
     }
   }
 
+  @State<OtherStateModel>({
+    name: 'under_',
+    defaults: {
+      under: 'score'
+    }
+  })
+  class MyOtherState {}
+
   let store: Store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MySubState, MySubSubState, MyState])]
+      imports: [NgxsModule.forRoot([MySubState, MySubSubState, MyState, MyOtherState])]
     });
 
     store = TestBed.get(Store);
@@ -88,6 +100,9 @@ describe('Store', () => {
               name: 'Danny'
             }
           }
+        },
+        under_: {
+          under: 'score'
         }
       });
     });
@@ -149,6 +164,13 @@ describe('Store', () => {
           name: 'Danny'
         }
       }
+    });
+  }));
+
+  it('should select state with an underscore in name', async(() => {
+    const state = store.selectSnapshot(MyOtherState);
+    expect(state).toEqual({
+      under: 'score'
     });
   }));
 
