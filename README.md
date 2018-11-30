@@ -22,6 +22,9 @@
   <a href="https://circleci.com/gh/ngxs/store">
     <img src="https://circleci.com/gh/ngxs/store/tree/master.svg?style=svg" />
   </a>
+  <a href="https://greenkeeper.io/">
+    <img src="https://badges.greenkeeper.io/ngxs/store.svg" alt="Greenkeeper badge" />
+  </a>
 
 </p>
 
