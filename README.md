@@ -22,12 +22,13 @@
   <a href="https://circleci.com/gh/ngxs/store">
     <img src="https://circleci.com/gh/ngxs/store/tree/master.svg?style=svg" />
   </a>
+  <a href="https://greenkeeper.io/">
+    <img src="https://badges.greenkeeper.io/ngxs/store.svg" alt="Greenkeeper badge" />
+  </a>
 
 </p>
 
 ---
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/ngxs/store.svg)](https://greenkeeper.io/)
 
 - ✨ Learn about it on the [docs site](https://ngxs.gitbooks.io/ngxs/)
 - 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
