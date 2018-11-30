@@ -1,0 +1,16 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "package.json",
+        "packages/devtools-plugin/package.json",
+        "packages/form-plugin/package.json",
+        "packages/logger-plugin/package.json",
+        "packages/router-plugin/package.json",
+        "packages/storage-plugin/package.json",
+        "packages/store/package.json",
+        "packages/websocket-plugin/package.json"
+      ]
+    }
+  }
+}
