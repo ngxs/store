@@ -132,4 +132,17 @@ export class AppComponent {
 }
 ```
 
-Notice that it's not necessary if you use an arrow function or a normal class method.
+Notice that it doesn't matter if you use an arrow function or a normal class method.
+
+## Dispatching multiple events
+
+Your dispatchers can also return arrays with events inside:
+
+```typescript
+export class AppComponent {
+    @Dispatch()
+    public setLanguageAndNavigateHome = (language: string) => {
+        return [new SetLanguage(language), new Navigate('/')];
+    }
+}
+```
