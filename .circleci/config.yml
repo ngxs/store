@@ -62,9 +62,13 @@ jobs:
           name: Set NPM global path
           command: echo 'prefix = ~/.npm' > ~/.npmrc
       - checkout
+      - run: yarn global add greenkeeper-lockfile@1
+      - run: yarn install
+      - run: greenkeeper-lockfile-update
       - *restore_cache
       - *yarn_install
       - *save_cache
+      - run: greenkeeper-lockfile-update
       - run:
           name: Compile NGXS
           command: yarn build
