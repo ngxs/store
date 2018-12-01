@@ -2,14 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { Action, NgxsModule, NgxsOnInit, State, Store } from '@ngxs/store';
 
-import {
-  AsyncStorageEngine,
-  NgxsStoragePluginModule,
-  STORAGE_ENGINE,
-  StorageEngine,
-  StorageEngineType,
-  StorageOption
-} from '../';
+import { AsyncStorageEngine, NgxsStoragePluginModule, STORAGE_ENGINE, StorageEngine, StorageOption } from '../';
 import { Observable } from 'rxjs';
 
 describe('NgxsStoragePlugin', () => {
@@ -450,7 +443,6 @@ describe('NgxsStoragePlugin', () => {
             imports: [
               NgxsModule.forRoot([AsyncStore]),
               NgxsStoragePluginModule.forRoot({
-                storageEngineType: StorageEngineType.Asynchronous,
                 serialize(val) {
                   return val;
                 },

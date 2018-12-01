@@ -6,11 +6,6 @@ export const enum StorageOption {
   SessionStorage
 }
 
-export const enum StorageEngineType {
-  Synchronous,
-  Asynchronous
-}
-
 export interface NgxsStoragePluginOptions {
   /**
    * Key for the state slice to store in the storage engine.
@@ -23,11 +18,6 @@ export interface NgxsStoragePluginOptions {
    * sessionStorage or custom implementation of the StorageEngine interface
    */
   storage?: StorageOption;
-
-  /**
-   * Type of engine storage engine provided
-   */
-  storageEngineType?: StorageEngineType;
 
   /**
    * Migration strategies.

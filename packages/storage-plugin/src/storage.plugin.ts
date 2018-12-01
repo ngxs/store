@@ -7,8 +7,7 @@ import {
   NGXS_STORAGE_PLUGIN_OPTIONS,
   NgxsStoragePluginOptions,
   STORAGE_ENGINE,
-  StorageEngine,
-  StorageEngineType
+  StorageEngine
 } from './symbols';
 import { concatMap, map, reduce, tap } from 'rxjs/operators';
 import { from, Observable, of } from 'rxjs';
@@ -21,10 +20,10 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
     @Inject(STORAGE_ENGINE) private _engine: StorageEngine | AsyncStorageEngine
   ) {
-    if (this._options.storageEngineType === StorageEngineType.Synchronous) {
-      this._asyncEngine = new AsyncStorageEngineProxy(<StorageEngine>this._engine);
-    } else {
+    if (typeof this._engine.length === 'function') {
       this._asyncEngine = <AsyncStorageEngine>this._engine;
+    } else {
+      this._asyncEngine = new AsyncStorageEngineProxy(<StorageEngine>this._engine);
     }
   }
 

@@ -7,7 +7,6 @@ import {
   NgxsStoragePluginOptions,
   STORAGE_ENGINE,
   StorageEngine,
-  StorageEngineType,
   StorageOption
 } from './symbols';
 
@@ -15,7 +14,6 @@ export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
   return {
     key: '@@STATE',
     storage: StorageOption.LocalStorage,
-    storageEngineType: StorageEngineType.Synchronous,
     serialize: JSON.stringify,
     deserialize: JSON.parse,
     ...options
