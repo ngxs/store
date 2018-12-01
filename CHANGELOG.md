@@ -14,8 +14,7 @@
 # 3.3.0 2018-11-19
 
 * Feature: Support Angular 7, TypeScript 3.1 [#615](https://github.com/ngxs/store/issues/615)
-* Feature: [Emitter](https://github.com/ngxs-labs/emitter) plugin (allows you to get rid of actions) [#543](https://github.com/ngxs/store/issues/543)
-* Feature: Announced [NGXS Labs](https://ngxs.gitbook.io/ngxs/ngxs-labs/intro)
+(https://github.com/ngxs/store/issues/543)
 * Feature: Add [CLI](https://github.com/ngxs/cli) for generate store [#520](https://github.com/ngxs/store/pull/520)
 * Feature: Add strictContentSecurityPolicy compatibility rule [#569](https://github.com/ngxs/store/pull/569)
 * Feature: Devtools plugin support for 'IMPORT_STATE' [#507](https://github.com/ngxs/store/pull/507)
@@ -25,6 +24,11 @@
 * Fix: Storage Plugin should handle undefined [#538](https://github.com/ngxs/store/pull/538)
 * Fix: Expose ofActionCanceled function [#531](https://github.com/ngxs/store/pull/531)
 * Fix: Expose Websocket Plugin WebsocketMessageError action [#504](https://github.com/ngxs/store/pull/504)
+
+## NGXS-Labs
+
+* Feature: [Emitter](https://github.com/ngxs-labs/emitter) plugin (allows you to get rid of actions) [#543]
+* Feature: Announced [NGXS Labs](https://ngxs.gitbook.io/ngxs/ngxs-labs/intro)
 
 # 3.2.0 2018-07-15
 
