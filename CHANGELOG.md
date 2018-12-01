@@ -4,6 +4,12 @@
 
 # 3.3.1 2018-11-24
 * Fix: Storage Plugin should handle 'undefined' string [#671](https://github.com/ngxs/store/pull/671)
+* Feature: NGXS [Schematics](https://github.com/ngxs/schematics/pull/3)
+
+## NGXS-Labs
+
+* Feature: Announced [immer-adapter](https://github.com/ngxs-labs/immer-adapter)
+* Feature: Announced [dispatch-decorator](https://github.com/ngxs-labs/dispatch-decorator)
 
 # 3.3.0 2018-11-19
 
