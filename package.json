@@ -53,6 +53,7 @@
     "ng": "ng",
     "ts-node": "ts-node",
     "prettier": "prettier",
+    "greenkeeper-lockfile-update": "greenkeeper-lockfile-update",
     "// - APPS": "Run Apps in dev and with packaged modules",
     "start": "ng serve --aot --open",
     "serve:integration": "ng serve --prod --project integration #requires yarn package",

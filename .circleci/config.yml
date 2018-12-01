@@ -64,7 +64,7 @@ jobs:
       - checkout
       - run: npm i -g greenkeeper-lockfile@1
       - run: yarn install
-      - run: greenkeeper-lockfile-update
+      - run: npm run greenkeeper-lockfile-update
       - *restore_cache
       - *yarn_install
       - *save_cache
