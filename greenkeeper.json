@@ -4,12 +4,12 @@
       "packages": [
         "package.json"
       ]
-    },    
+    },
     "store": {
       "packages": [
         "packages/store/package.json"
       ]
-    },    
+    },
     "plugins": {
       "packages": [
         "packages/devtools-plugin/package.json",
