@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 
 import { StateOperations } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
@@ -13,7 +13,7 @@ import { deepFreeze } from '../utils/freeze';
 @Injectable()
 export class InternalStateOperations {
   constructor(private _stateStream: StateStream, private _dispatcher: InternalDispatcher, private _config: NgxsConfig) {
-    this.checkDevelopmentMode();
+    this.verifyDevMode();
   }
 
   /**
@@ -33,14 +33,26 @@ export class InternalStateOperations {
     return rootStateOperations;
   }
 
-  private checkDevelopmentMode() {
-    if (this._config.developmentMode) {
+  private verifyDevMode() {
+    const isNgxsDevMode = this._config.developmentMode;
+    const isNgDevMode = isDevMode();
+    const incorrectProduction = !isNgDevMode && isNgxsDevMode;
+    const incorrectDevelopment = isNgDevMode && !isNgxsDevMode;
+    const example = 'NgxsModule.forRoot(states, { developmentMode: !environment.production })';
+
+    if (incorrectProduction) {
       console.warn(
         'NGXS is running in the development mode.\n',
         'Set developmentMode to false on the NgxsModule options to enable the production mode.\n',
-        'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
+        example
+      );
+    } else if (incorrectDevelopment) {
+      console.warn(
+        'Set developmentMode to true on the NgxsModule when Angular is running in the development mode.\n',
+        example
       );
     }
+
   }
 
   private ensureStateAndActionsAreImmutable(root: StateOperations<any>): StateOperations<any> {
