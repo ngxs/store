@@ -36,20 +36,22 @@ export class InternalStateOperations {
   private verifyDevMode() {
     const isNgxsDevMode = this._config.developmentMode;
     const isNgDevMode = isDevMode();
-    
-    const incorrectProduction  = !isNgDevMode && isNgxsDevMode;
+    const incorrectProduction = !isNgDevMode && isNgxsDevMode;
     const incorrectDevelopment = isNgDevMode && !isNgxsDevMode;
+    const example = 'NgxsModule.forRoot(states, { developmentMode: !environment.production })';
     
     if (incorrectProduction) {
       console.warn(
         'NGXS is running in the development mode.\n',
-        'Set developmentMode to false on the NgxsModule options to enable the production mode.\n',
-        'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
+        'Set developmentMode to false on the NgxsModule ' + 
+        'options to enable the production mode.\n',
+        example
       );
     } else if (incorrectDevelopment) {
       console.warn(
-        'Set developmentMode to true on the NgxsModule when Angular is running in the development mode',
-        'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
+        'Set developmentMode to true on the NgxsModule ' + 
+        'when Angular is running in the development mode.\n',
+        example
       );
     }
   }
