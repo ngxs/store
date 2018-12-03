@@ -20,6 +20,20 @@ export class NgxsConfig {
    * (default: false)
    */
   developmentMode: boolean;
+  compatibility: {
+    /**
+     * Support a strict Content Security Policy.
+     * This will cirumvent some optimisations that violate a strict CSP through the use of `new Function(...)`.
+     * (default: false)
+     */
+    strictContentSecurityPolicy: boolean;
+  };
+
+  constructor() {
+    this.compatibility = {
+      strictContentSecurityPolicy: false
+    };
+  }
 }
 
 /**

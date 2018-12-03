@@ -1,29 +1,61 @@
-# 3.2.0
+# DEV version (to become [3.4.0](https://github.com/ngxs/store/milestone/7))
+
+* ...
+
+# 3.3.1 2018-11-24
+* Fix: Storage Plugin should handle 'undefined' string [#671](https://github.com/ngxs/store/pull/671)
+* Feature: NGXS [Schematics](https://github.com/ngxs/schematics/pull/3)
+
+## NGXS-Labs
+
+* Feature: Announced [immer-adapter](https://github.com/ngxs-labs/immer-adapter)
+* Feature: Announced [dispatch-decorator](https://github.com/ngxs-labs/dispatch-decorator)
+
+# 3.3.0 2018-11-19
+
+* Feature: Support Angular 7, TypeScript 3.1 [#615](https://github.com/ngxs/store/issues/615)
+(https://github.com/ngxs/store/issues/543)
+* Feature: Add [CLI](https://github.com/ngxs/cli) for generate store [#520](https://github.com/ngxs/store/pull/520)
+* Feature: Add strictContentSecurityPolicy compatibility rule [#569](https://github.com/ngxs/store/pull/569)
+* Feature: Devtools plugin support for 'IMPORT_STATE' [#507](https://github.com/ngxs/store/pull/507)
+* Feature: Form plugin - path to state can contain array [#587](https://github.com/ngxs/store/pull/587)
+* Fix: Form plugin to accept form arrays [#659](https://github.com/ngxs/store/pull/659)
+* Fix: Show warning when we usage development mode in production [#627](https://github.com/ngxs/store/pull/627)
+* Fix: Storage Plugin should handle undefined [#538](https://github.com/ngxs/store/pull/538)
+* Fix: Expose ofActionCanceled function [#531](https://github.com/ngxs/store/pull/531)
+* Fix: Expose Websocket Plugin WebsocketMessageError action [#504](https://github.com/ngxs/store/pull/504)
+
+## NGXS-Labs
+
+* Feature: [Emitter](https://github.com/ngxs-labs/emitter) plugin (allows you to get rid of actions) [#543]
+* Feature: Announced [NGXS Labs](https://ngxs.gitbook.io/ngxs/ngxs-labs/intro)
+
+# 3.2.0 2018-07-15
 
 * Feature: createSelector functions [#484](https://github.com/ngxs/store/pull/484)
 * Fix: Expose RouterStateModel interface [#445](https://github.com/ngxs/store/pull/445)
 * Fix: State not set correctly when duplicate key in path [#459](https://github.com/ngxs/store/pull/459)
-* Fix: action stream should return in Angular zone [#456](https://github.com/ngxs/store/pull/456)
+* Fix: Action stream should return in Angular zone [#456](https://github.com/ngxs/store/pull/456)
 
-# 3.1.4 6/13/18
+# 3.1.4 2018-06-13
 
 * Fix: Remove component reference from router plugin state [#441](https://github.com/ngxs/store/pull/441)
 * Fix: Fix subscription firing twice [#436](https://github.com/ngxs/store/pull/436)
 
-# 3.1.3 6/4/18
+# 3.1.3 2018-04-06
 
 * Fix: Subscribe running outside of zone [#422](https://github.com/ngxs/store/pull/422)
 * Fix: Logger not using custom options [#420](https://github.com/ngxs/store/pull/420)
 
-# 3.1.2 6/4/18
+# 3.1.2 2018-04-06
 
 * Fix: Freeze conflicting issues with router
 
-# 3.1.1 6/4/18
+# 3.1.1 2018-04-06
 
 * Fix: Freeze depedencies
 
-# 3.1.0 6/3/18
+# 3.1.0 2018-03-06
 
 * Feature: Add development mode with freeze on state and actions [#409](https://github.com/ngxs/store/pull/409)
 * Feature: Storage engine migrations [#401](https://github.com/ngxs/store/pull/401)
@@ -39,11 +71,11 @@
 * Fix: Selector function should still be usable as a function [#398](https://github.com/ngxs/store/pull/398)
 * Fix: Memoize inner selector function [#410](https://github.com/ngxs/store/pull/410)
 
-# 3.0.0/3.0.1 5/3/18
+# 3.0.0/3.0.1 2018-05-04
 
 * Chore: Upgrade to official Angular
 
-# 3.0.0-rc.4 5/2/18
+# 3.0.0-rc.4 2018-05-02
 
 * BREAKING: Rename completed to successful [#349](https://github.com/ngxs/store/pull/349)
 * Feature: Add ability to disable logger [#350](https://github.com/ngxs/store/pull/350)
@@ -51,7 +83,7 @@
 * Fix: Patch state mutating the original state [#348](https://github.com/ngxs/store/pull/348)
 * Fix: Router plugin not working in prod [#351](https://github.com/ngxs/store/pull/351)
 
-# 3.0.0-rc.3 5/1/18
+# 3.0.0-rc.3 2018-05-01
 
 * BREAKING: Update websocket connect to recieve options object [#341](https://github.com/ngxs/store/pull/341)
 * Feature: Consolidate action stream to single-source-of-truth [#324](https://github.com/ngxs/store/pull/324)
@@ -59,18 +91,18 @@
 * Fix: Enums causing prod build errors [#345](https://github.com/ngxs/store/pull/345)
 * Fix: Router race case when using prod [#345](https://github.com/ngxs/store/pull/345)
 
-# 3.0.0-rc.2 4/27/18
+# 3.0.0-rc.2 2018-04-27
 
 * Fix: Form update fix [#335](https://github.com/ngxs/store/pull/335)
 * Chore: Upgrade RxJS to official [#332](https://github.com/ngxs/store/pull/332)
 
-# 3.0.0-rc.1 4/12/18
+# 3.0.0-rc.1 2018-04-12
 
 * Fix: Rename `ofActionComplete` to `ofActionCompleted`
 * Fix: Expose `ofActionErrored`
 * Fix: Form Plugin Recursive Error
 
-# 3.0.0-rc.0 4/10/18
+# 3.0.0-rc.0 2018-04-10
 
 * Fix: Observable dispatch issues [#235](https://github.com/ngxs/store/pull/235)
 * Fix: Websocket error when socket undefined
@@ -85,7 +117,7 @@
 
 To keep the same behavior switch from the ofAction operator to the `ofActionDispatched` operator
 
-# 3.0.0-beta.0 4/5/18
+# 3.0.0-beta.0 2018-04-05
 
 * BREAKING: Types are now required on actions
 * Feature: Devtools can emit actions manually now
@@ -94,48 +126,48 @@ To keep the same behavior switch from the ofAction operator to the `ofActionDisp
 * Fix: Fixes for `ofAction`
 * Chore: Rename Beta Feature `takeLast` to `cancelUncompleted`
 
-# 2.1.0-beta.9 4/4/18
+# 2.1.0-beta.9 2018-04-04
 
 * Fix: Websocket and form errors caused by [#212](https://github.com/ngxs/store/pull/212)
 
-# 2.1.0-beta.8 4/4/18
+# 2.1.0-beta.8 2018-04-04
 
 * Fix: Minification issues [#212](https://github.com/ngxs/store/pull/212)
 
-# 2.1.0-beta.7 4/3/18
+# 2.1.0-beta.7 2018-04-03
 
 * Fix: Websocket plugin sending dupe objects
 
-# 2.1.0-beta.6 4/3/18
+# 2.1.0-beta.6 2018-04-03
 
 * Fix: Action types on objects not matching correctly
 
-# 2.1.0-beta.5 4/3/18
+# 2.1.0-beta.5 2018-04-03
 
 * Fix: Revert #206
 * Fix: Websocket send message correctly
 
-# 2.1.0-beta.4 4/3/18
+# 2.1.0-beta.4 2018-04-03
 
 * Feature: Added `snapshot` method to store to get raw value
 * Fix: Return `T` from `selectSnapshot`
 * Fix: Minification issues [#206](https://github.com/ngxs/store/pull/206)
 * Fix: Websockets not emitting correctly
 
-# 2.1.0-beta.3 4/3/18
+# 2.1.0-beta.3 2018-04-03
 
 * Fix: Revert devtools trigger, due to circular
 
-# 2.1.0-beta.2 4/2/18
+# 2.1.0-beta.2 2018-04-02
 
 * Feature: Devtools can now trigger actions adhoc
 * Fix: Websocket optional typekey
 
-# 2.1.0-beta.1 4/2/18
+# 2.1.0-beta.1 2018-04-02
 
 * Fix: Websocket pass options as partial
 
-# 2.1.0-beta.0 4/2/18
+# 2.1.0-beta.0 2018-04-02
 
 * Feature: Lifecycle events
 * Feature: Forms plugin
@@ -143,7 +175,7 @@ To keep the same behavior switch from the ofAction operator to the `ofActionDisp
 * Feature: Websocket plugin
 * Feature: Snapshot selects
 
-# 2.0.0 3/27/18
+# 2.0.0 2018-03-27
 
 First off, 2.0 is a huge change. I want to appologize to everyone about that but
 given all the community feedback and ideas, I really wanted to get these ideas in
@@ -155,116 +187,116 @@ first deprecation periods.
 * Fix: Move action stream to subject
 * Fix: Ensure metadata exists for a Selector [#181](https://github.com/ngxs/store/pull/181)
 
-# 2.0.0-rc.24 3/26/18
+# 2.0.0-rc.24 2018-03-26
 
 * Feature: Expose Init and Update Actions
 * Fix: Devtools showing duplicate entries
 * Fix: Storage plugin not populating for lazy loaded states
 
-# 2.0.0-rc.23 3/26/18
+# 2.0.0-rc.23 2018-03-26
 
 * Fix: Subscriptions firing twice
 
-# 2.0.0-rc.22 3/26/18
+# 2.0.0-rc.22 2018-03-26
 
 * BREAKING: Storage plugin fixes [#154](https://github.com/ngxs/store/pull/154)
 * Fix: AoT Regression in Storage Plugin
 
-# 2.0.0-rc.21 3/25/18
+# 2.0.0-rc.21 2018-03-25
 
 * BREAKING: Plugins are now their own packages
 * Fix: Subscribe firing multiple times
 * Fix: Devtools only passing type and payload
 
-# 2.0.0-rc.20 3/23/18
+# 2.0.0-rc.20 2018-03-23
 
 * BREAKING: We moved the npm package from `ngxs` to `@ngxs/store`!
 * Fix: devtools not sending payload [#132](https://github.com/ngxs/store/pull/132)
 * Fix: better if condition for localstorage
 
-# 2.0.0-rc.19 3/23/18
+# 2.0.0-rc.19 2018-03-23
 
 * Feature: add overloading to select method in Store [#130](https://github.com/ngxs/store/pull/130)
 * Fix: add empty options object, to prevent errors [#131](https://github.com/ngxs/store/pull/131)
 * Fix: feature-module bugs [#135](https://github.com/ngxs/store/pull/135)
 
-# 2.0.0-rc.18 3/20/18
+# 2.0.0-rc.18 2018-03-20
 
 * Fix: Types on devtools
 
-# 2.0.0-rc.17 3/20/18
+# 2.0.0-rc.17 2018-03-20
 
 * Feature: Extend devtool options
 * Feature: Jump to Action and Jump to State in Dev Tools
 
-# 2.0.0-rc.16 3/20/18
+# 2.0.0-rc.16 2018-03-20
 
 * Fix: Action stream not getting passed correct args, causing error in FF
 
-# 2.0.0-rc.15 3/20/18
+# 2.0.0-rc.15 2018-03-20
 
 * Fix: Lazy load issue introduced by [#126](https://github.com/ngxs/store/pull/126)
 
-# 2.0.0-rc.14 3/20/18
+# 2.0.0-rc.14 2018-03-20
 
 * Feature: NgxsLoggerPlugin log action payload if present
 * Fix: Issues with feature states [#126](https://github.com/ngxs/store/pull/126)
 
-# 2.0.0-rc.13 3/20/18
+# 2.0.0-rc.13 2018-03-20
 
 * Feature: State can listen to action multiple times
 
-# 2.0.0-rc.12 3/20/18
+# 2.0.0-rc.12 2018-03-20
 
 * Fix: Dev tools showing wrong state
 
-# 2.0.0-rc.11 3/20/18
+# 2.0.0-rc.11 2018-03-20
 
 * BREAKING: Remove string selects, they re not type safe and bad idea
 * Feature: Extend `store.select` to support class selectors
 * Feature: Expose state stream for users to subscribe to
 * Fix: Fix Subscribe dispatching twice #104
 
-# 2.0.0-rc.10 3/19/18
+# 2.0.0-rc.10 2018-03-19
 
 * BREAKING: Rename `EventStream` to `Actions`
 * BREAKING: Rename plugins to have NGXS Prefix
 
-# 2.0.0-rc.9 3/18/18
+# 2.0.0-rc.9 2018-03-18
 
 * Feature: Memoized Selectors
 * Fix: Default to empty object if no default passed
 
-# 2.0.0-rc.8 3/18/18
+# 2.0.0-rc.8 2018-03-18
 
 * Fix: Patch value not updating state
 
-# 2.0.0-rc.7 3/18/18
+# 2.0.0-rc.7 2018-03-18
 
 * Fix: Patch value patching wrong path
 
-# 2.0.0-rc.6 3/18/18
+# 2.0.0-rc.6 2018-03-18
 
 * Fix: topological sort
 * Fix: defaults not working correctly if plain boolean/string/number
 
-# 2.0.0-rc.5 3/18/18
+# 2.0.0-rc.5 2018-03-18
 
 * Fix: patchState typings
 
-# 2.0.0-rc.4 3/18/18
+# 2.0.0-rc.4 2018-03-18
 
 * Fix: patchState typings
 
-# 2.0.0-rc.3 3/18/18
+# 2.0.0-rc.3 2018-03-18
 
 * Fix: Add typings for patchState
 
-# 2.0.0-rc.2 3/18/18
+# 2.0.0-rc.2 2018-03-18
 
 * Feature: Add `patchValue` to make updating state easier
 
-# 2.0.0-rc.1 3/18/18
+# 2.0.0-rc.1 2018-03-18
 
 ## Bug Fixes
 
@@ -272,7 +304,7 @@ first deprecation periods.
 * Fix: Class selectors not working with sub stores
 * Fix: missing dispatch on state context interface
 
-# 2.0.0-rc.0 3/17/18
+# 2.0.0-rc.0 2018-03-17
 
 * Breaking: `@Store()` decorator is now `@State()`
 * Breaking: `Ngxs` service is now `Store`
@@ -292,19 +324,19 @@ first deprecation periods.
 * Fix: `dispatch().subscribe()` now works correctly
 * Fix: Promises now resolve correctly
 
-# 1.5.3 2/12/18
+# 1.5.3 2018-02-12
 
 * Fix: Promises not emitting results
 
-# 1.5.2 2/12/18
+# 1.5.2 2018-02-12
 
 * Fix: Devtools plugin not returning correct value
 
-# 1.5.1 2/11/18
+# 1.5.1 2018-02-11
 
 * Feature: Add `sessionStorage` strategy to local storage plugin
 
-# 1.5.0 2/11/18
+# 1.5.0 2018-02-11
 
 * Feature: Updated Plugin System
 * Feature: Add generics to store
@@ -313,73 +345,73 @@ first deprecation periods.
 * Fix: Fix dev tools showing previous state
 * Chore: Remove redux dev tools by default
 
-# 1.4.8 2/5/18
+# 1.4.8 2018-02-05
 
 * Fix: Typo in return
 
-# 1.4.7 2/5/18
+# 1.4.7 2018-02-05
 
 * Fix: Catch multiple stores being init'd
 * Fix: Clone defaults to prevent mutations
 
-# 1.4.6 2/4/18
+# 1.4.6 2018-02-04
 
 * Fix: Plugin injector errors
 
-# 1.4.5 2/4/18
+# 1.4.5 2018-02-04
 
 * Fix: Store injector errors
 * Fix: Empty local storage throwing null error
 
-# 1.4.4 2/4/18
+# 1.4.4 2018-02-04
 
 * Fix: Stores injector errors
 
-# 1.4.3 2/4/18
+# 1.4.3 2018-02-04
 
 * Fix: Stores init'd twice
 
-# 1.4.2 2/4/18
+# 1.4.2 2018-02-04
 
 * Fix: Feature stores throwing errors
 
-# 1.4.1 2/4/18
+# 1.4.1 2018-02-04
 
 * Fix: Misc type improvement
 * Fix: `forRoot` plugins not working properly
 * Fix: LocalStorage plugin name spelling
 
-# 1.4.0 2/3/18
+# 1.4.0 2018-02-03
 
 * Feature: Composition
 
-# 1.3.0 2/3/18
+# 1.3.0 2018-02-03
 
 * Feature: Localstore plugin
 * Fix: Better dev tools init
 
-# 1.2.1 2/3/18
+# 1.2.1 2018-02-03
 
 * Fix: Dev tools init
 * Fix: Plugins not recieving proper context
 * Fix: Allow multiple forFeature
 
-# 1.2.0 2/3/18
+# 1.2.0 2018-02-03
 
 * Feature: Dev Tools Integration
 * Chore: Tests!
 * Fix: Better builds
 
-# 1.1.0 2/3/18
+# 1.1.0 2018-02-03
 
 * Fix: Export plugin interface
 
-# 1.1.0 2/3/18
+# 1.1.0 2018-02-03
 
 * Feature: Plugins improvements
 * Feature: Init event
 * Feature: Logger plugin
 
-# 1.0.4 2/2/18
+# 1.0.4 2018-02-02
 
 * Inital release!

@@ -38,9 +38,9 @@ export class AuthState {
   constructor(private authService: AuthService) {}
 
   @Action(Login)
-  login({ patchState }: StateContext<AuthStateModel>, { payload: { username } }: Login) {
+  login({ patchState }: StateContext<AuthStateModel>, { payload }: Login) {
     return this.authService.login(payload).pipe(tap((result: { token: string }) => {
-      patchState({ token, username });
+      patchState({ token, username: payload.username });
     }))
   }
 

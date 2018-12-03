@@ -23,6 +23,10 @@ describe('Store', () => {
     bar?: SubStateModel;
   }
 
+  interface OtherStateModel {
+    under: string;
+  }
+
   class FooIt {
     static type = 'FooIt';
   }
@@ -65,11 +69,19 @@ describe('Store', () => {
     }
   }
 
+  @State<OtherStateModel>({
+    name: 'under_',
+    defaults: {
+      under: 'score'
+    }
+  })
+  class MyOtherState {}
+
   let store: Store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MySubState, MySubSubState, MyState])]
+      imports: [NgxsModule.forRoot([MySubState, MySubSubState, MyState, MyOtherState])]
     });
 
     store = TestBed.get(Store);
@@ -88,15 +100,20 @@ describe('Store', () => {
               name: 'Danny'
             }
           }
+        },
+        under_: {
+          under: 'score'
         }
       });
     });
   }));
 
   it('should select the correct state use a function', async(() => {
-    store.select((state: { foo: StateModel }) => state.foo.first).subscribe(state => {
-      expect(state).toBe('Hello');
-    });
+    store
+      .select((state: { foo: StateModel }) => state.foo.first)
+      .subscribe(state => {
+        expect(state).toBe('Hello');
+      });
   }));
 
   it('should select the correct state use a state class: Root State', async(() => {
@@ -147,6 +164,13 @@ describe('Store', () => {
           name: 'Danny'
         }
       }
+    });
+  }));
+
+  it('should select state with an underscore in name', async(() => {
+    const state = store.selectSnapshot(MyOtherState);
+    expect(state).toEqual({
+      under: 'score'
     });
   }));
 

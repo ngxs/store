@@ -29,6 +29,7 @@
 * [META_KEY](_symbols_.md#meta_key)
 * [NGXS_PLUGINS](_symbols_.md#ngxs_plugins)
 * [ROOT_STATE_TOKEN](_symbols_.md#root_state_token)
+* [SELECTOR_META_KEY](_symbols_.md#selector_meta_key)
 
 ---
 
@@ -38,28 +39,28 @@
 
 ###  NgxsLifeCycle
 
-**ΤNgxsLifeCycle**: *`Partial`<[NgxsOnInit](../interfaces/_symbols_.ngxsoninit.md)>*
+**Ƭ NgxsLifeCycle**: *`Partial`<[NgxsOnInit](../interfaces/_symbols_.ngxsoninit.md)>*
 
-*Defined in [symbols.ts:98](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L98)*
+*Defined in [symbols.ts:113](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L113)*
 
 ___
 <a id="ngxsnextpluginfn"></a>
 
 ###  NgxsNextPluginFn
 
-**ΤNgxsNextPluginFn**: *`function`*
+**Ƭ NgxsNextPluginFn**: *`function`*
 
-*Defined in [symbols.ts:49](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L49)*
+*Defined in [symbols.ts:64](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L64)*
 
 #### Type declaration
 ▸(state: *`any`*, mutation: *`any`*): `any`
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| state | `any` | 
-| mutation | `any` | 
+| state | `any` |
+| mutation | `any` |
 
 **Returns:** `any`
 
@@ -68,9 +69,9 @@ ___
 
 ###  NgxsPluginConstructor
 
-**ΤNgxsPluginConstructor**: *`object`*
+**Ƭ NgxsPluginConstructor**: *`object`*
 
-*Defined in [symbols.ts:9](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L9)*
+*Defined in [symbols.ts:10](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L10)*
 
 #### Type declaration
 
@@ -79,20 +80,20 @@ ___
 
 ###  NgxsPluginFn
 
-**ΤNgxsPluginFn**: *`function`*
+**Ƭ NgxsPluginFn**: *`function`*
 
-*Defined in [symbols.ts:10](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L10)*
+*Defined in [symbols.ts:11](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L11)*
 
 #### Type declaration
 ▸(state: *`any`*, mutation: *`any`*, next: *[NgxsNextPluginFn](_symbols_.md#ngxsnextpluginfn)*): `any`
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| state | `any` | 
-| mutation | `any` | 
-| next | [NgxsNextPluginFn](_symbols_.md#ngxsnextpluginfn) | 
+| state | `any` |
+| mutation | `any` |
+| next | [NgxsNextPluginFn](_symbols_.md#ngxsnextpluginfn) |
 
 **Returns:** `any`
 
@@ -106,7 +107,7 @@ ___
 
 **● FEATURE_STATE_TOKEN**: *`InjectionToken`<`any`>* =  new InjectionToken<any>('FEATURE_STATE_TOKEN')
 
-*Defined in [symbols.ts:5](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L5)*
+*Defined in [symbols.ts:5](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L5)*
 
 ___
 <a id="meta_key"></a>
@@ -115,7 +116,7 @@ ___
 
 **● META_KEY**: *"NGXS_META"* = "NGXS_META"
 
-*Defined in [symbols.ts:6](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L6)*
+*Defined in [symbols.ts:6](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L6)*
 
 ___
 <a id="ngxs_plugins"></a>
@@ -124,7 +125,7 @@ ___
 
 **● NGXS_PLUGINS**: *`InjectionToken`<`Object`>* =  new InjectionToken('NGXS_PLUGINS')
 
-*Defined in [symbols.ts:8](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L8)*
+*Defined in [symbols.ts:9](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L9)*
 
 ___
 <a id="root_state_token"></a>
@@ -133,7 +134,16 @@ ___
 
 **● ROOT_STATE_TOKEN**: *`InjectionToken`<`any`>* =  new InjectionToken<any>('ROOT_STATE_TOKEN')
 
-*Defined in [symbols.ts:4](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L4)*
+*Defined in [symbols.ts:4](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L4)*
+
+___
+<a id="selector_meta_key"></a>
+
+### `<Const>` SELECTOR_META_KEY
+
+**● SELECTOR_META_KEY**: *"NGXS_SELECTOR_META"* = "NGXS_SELECTOR_META"
+
+*Defined in [symbols.ts:7](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L7)*
 
 ___
 

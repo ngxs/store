@@ -292,7 +292,16 @@ export class ZooState {
   @Action(FeedAnimals)
   feedAnimals2(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
     return this.animalService.feed(action.animalsToFeed).pipe(
-      map(() => ctx.dispatch(new TakeAnimalsOutside()))
+      tap(animalsToFeedResult => {
+        const state = ctx.getState();
+        ctx.patchState({
+          feedAnimals: [
+            ...state.feedAnimals,
+            animalsToFeedResult,
+          ]
+        });
+      }),
+      mergeMap(() => ctx.dispatch(new TakeAnimalsOutside()))
     );
   }
 }

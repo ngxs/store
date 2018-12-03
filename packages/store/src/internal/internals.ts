@@ -1,4 +1,4 @@
-import { META_KEY, ActionOptions, SELECTOR_META_KEY } from '../symbols';
+import { META_KEY, ActionOptions, SELECTOR_META_KEY, NgxsConfig } from '../symbols';
 import { Observable } from 'rxjs';
 
 export interface ObjectKeyMap<T> {
@@ -28,6 +28,7 @@ export interface MetaDataModel {
   actions: ObjectKeyMap<ActionHandlerMetaData[]>;
   defaults: any;
   path: string;
+  selectFromAppState: SelectFromState;
   children: StateClass[];
   instance: any;
 }
@@ -61,6 +62,7 @@ export function ensureStoreMetadata(target): MetaDataModel {
       actions: {},
       defaults: {},
       path: null,
+      selectFromAppState: null,
       children: [],
       instance: null
     };
@@ -109,13 +111,28 @@ export function getSelectorMetadata(target): SelectorMetaDataModel {
 }
 
 /**
+ * Get a deeply nested value. Example:
+ *
+ *    getValue({ foo: bar: [] }, 'foo.bar') //=> []
+ *
+ * Note: This is not as fast as the `fastPropGetter` but is strict Content Security Policy compliant.
+ * See perf hit: https://jsperf.com/fast-value-getter-given-path/1
+ *
+ * @ignore
+ */
+function compliantPropGetter(paths: string[]): (x: any) => any {
+  const copyOfPaths = [...paths];
+  return obj => copyOfPaths.reduce((acc: any, part: string) => acc && acc[part], obj);
+}
+
+/**
  * The generated function is faster than:
  * - pluck (Observable operator)
  * - memoize
  *
  * @ignore
  */
-export function fastPropGetter(paths: string[]): (x: any) => any {
+function fastPropGetter(paths: string[]): (x: any) => any {
   const segments = paths;
   let seg = 'store.' + segments[0];
   let i = 0;
@@ -129,6 +146,21 @@ export function fastPropGetter(paths: string[]): (x: any) => any {
   const fn = new Function('store', 'return ' + expr + ';');
 
   return <(x: any) => any>fn;
+}
+
+/**
+ * Get a deeply nested value. Example:
+ *
+ *    getValue({ foo: bar: [] }, 'foo.bar') //=> []
+ *
+ * @ignore
+ */
+export function propGetter(paths: string[], config: NgxsConfig) {
+  if (config && config.compatibility && config.compatibility.strictContentSecurityPolicy) {
+    return compliantPropGetter(paths);
+  } else {
+    return fastPropGetter(paths);
+  }
 }
 
 /**

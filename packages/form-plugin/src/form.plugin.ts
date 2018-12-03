@@ -1,8 +1,16 @@
 import { Injectable } from '@angular/core';
 import { NgxsPlugin, setValue, getActionTypeFromInstance } from '@ngxs/store';
-import { UpdateForm, UpdateFormDirty, UpdateFormErrors,
-  UpdateFormStatus, UpdateFormValue, SetFormDirty, SetFormDisabled,
-  SetFormEnabled, SetFormPristine } from './actions';
+import {
+  UpdateForm,
+  UpdateFormDirty,
+  UpdateFormErrors,
+  UpdateFormStatus,
+  UpdateFormValue,
+  SetFormDirty,
+  SetFormDisabled,
+  SetFormEnabled,
+  SetFormPristine
+} from './actions';
 
 @Injectable()
 export class NgxsFormPlugin implements NgxsPlugin {
@@ -14,9 +22,10 @@ export class NgxsFormPlugin implements NgxsPlugin {
     let nextState = state;
 
     if (type === UpdateFormValue.type || type === UpdateForm.type) {
-      nextState = setValue(nextState, `${event.payload.path}.model`, {
-        ...event.payload.value
-      });
+      const { value } = event.payload;
+      const payloadValue = Array.isArray(value) ? [...value] : { ...value };
+
+      nextState = setValue(nextState, `${event.payload.path}.model`, payloadValue);
     }
 
     if (type === UpdateFormStatus.type || type === UpdateForm.type) {

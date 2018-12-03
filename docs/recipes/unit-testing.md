@@ -4,6 +4,8 @@ Unit testing is easy with NGXS. To perform a unit test we just dispatch the even
 perform our expectation. A basic test looks like this:
 
 ```TS
+import { async, TestBed } from '@angular/core/testing';
+
 describe('Zoo', () => {
   let store: Store;
 
@@ -14,12 +16,12 @@ describe('Zoo', () => {
     store = TestBed.get(Store);
   }));
 
-  it('it toggles feed', () => {
+  it('it toggles feed', async(() => {
     store.dispatch(new FeedAnimals());
     store.selectOnce(state => state.zoo.feed).subscribe(feed => {
       expect(feed).toBe(true);
     });
-  });
+  }));
 });
 ```
 
@@ -38,7 +40,7 @@ can use the `store.reset(MyNewState)` to prepare the state for your next operati
 import { TestBed, async } from '@angular/core/testing';
 
 export const SOME_DESIRED_STATE = {
-  animals: ['Panda']
+  animals: ['Panda'],
 };
 
 describe('Zoo', () => {
@@ -53,12 +55,12 @@ describe('Zoo', () => {
     store.reset(SOME_DESIRED_STATE);
   }));
 
-  it('it toggles feed', () => {
+  it('it toggles feed', async(() => {
     store.dispatch(new FeedAnimals());
     store.selectOnce(state => state.zoo.feed).subscribe(feed => {
       expect(feed).toBe(true);
     });
-  });
+  }));
 });
 ```
 
@@ -77,5 +79,39 @@ describe('Zoo', () => {
       Zoo.pandas(['pandas', 'zebras'])
     ).toBe(['pandas']);
   });
+});
+```
+
+In your application you may have selectors created dynamically using the createSelector function:
+
+```TS
+export class ZooSelectors {
+  static animalNames = (type: string) => {
+    return createSelector([ZooState], (state: ZooStateModel) => {
+      return state.animals
+        .filter((animal) => animal.type === type )
+        .map((animal => animal.name ));
+    });
+  }
+}
+```
+
+Testing these selectors is really an easy task. 
+You just need to mock the state and pass it as parameter to our selector:
+
+```TS
+it('should select requested animal names from state', () => {
+  const zooState = {
+    animals: [ 
+      { type: 'zebra', name: 'Andy'},
+      { type: 'panda', name: 'Betty'},
+      { type: 'zebra', name: 'Crystal'},
+      { type: 'panda', name: 'Donny'},
+    ]
+  };
+  
+  const value = ZooSelectors.animalNames('zebra')(zooState);
+    
+  expect(value).toEqual(['Andy', 'Crystal']);
 });
 ```

@@ -1,5 +1,5 @@
 import { parse, SemVer } from 'semver';
-import { execute, getPackages } from './utils';
+import { execute, publishAllPackagesToNpm } from './utils';
 
 async function main() {
   const json = require('../package.json');
@@ -12,22 +12,16 @@ async function main() {
   }
 
   // shorten commit
-  commit = commit.slice(0, 7);
+  commit = commit!.slice(0, 7);
 
   // construct new version from base version 2.0.0 to become 2.0.0+dev.shortsha
-  const version: SemVer = parse(json.version);
+  const version: SemVer = parse(json.version)!;
   const newVersion = `${version.major}.${version.minor}.${version.patch}-dev.master-${commit}`;
 
   console.log('publishing new version', newVersion);
 
   // run through all our packages and push them to npm
-  const packages = getPackages();
-  for (const pack of packages) {
-    await execute(`
-      cd ${pack.buildPath} &&
-      yarn publish --access public --non-interactive --no-git-tag-version --new-version ${newVersion} --tag dev
-    `);
-  }
+  await publishAllPackagesToNpm(newVersion, 'dev');
 }
 
 main();

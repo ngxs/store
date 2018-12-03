@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { FormBuilder, FormArray } from '@angular/forms';
 
 import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from './todo.state';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -12,33 +13,29 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
       <div>
         <h3>Reactive Form</h3>
         <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizza">
-            Toppings: <input type="text" formControlName="toppings" />
-            <br>
-            Crust <input type="text" formControlName="crust" />
-            <br>
-            Extras
-            <span *ngFor='let extra of extras; let i=index'>
-              <input type='checkbox' [formControl]='extra'/> {{allExtras[i].name}}
-            </span>
-            <br><hr>
-            <button type="submit">Set Olives</button>
-            <button type="button" (click)="onPrefix()">Set Prfix</button>
-            <button type="button" (click)="onLoadData()">Load Data</button>
+          Toppings: <input type="text" formControlName="toppings" /> <br />
+          Crust <input type="text" formControlName="crust" /> <br />
+          Extras
+          <span *ngFor="let extra of extras; let i = index">
+            <input type="checkbox" [formControl]="extra" /> {{ allExtras[i].name }}
+          </span>
+          <br />
+          <hr />
+          <button type="submit">Set Olives</button> <button type="button" (click)="onPrefix()">Set Prfix</button>
+          <button type="button" (click)="onLoadData()">Load Data</button>
         </form>
       </div>
-      <br><br><hr>
+      <br /><br />
+      <hr />
       <h3>Todo Form</h3>
       <div class="add-todo">
-        <input placeholder="New Todo" #text>
-        <button (click)="addTodo(text.value)">Add</button>
+        <input placeholder="New Todo" #text /> <button (click)="addTodo(text.value)">Add</button>
       </div>
       <ul>
-        <li class="todo" *ngFor="let todo of todos$ | async; let i = index">
-          {{todo}} <button (click)="removeTodo(i)">🗑</button>
+        <li class="todo" *ngFor="let todo of (todos$ | async); let i = index">
+          {{ todo }} <button (click)="removeTodo(i)">🗑</button>
         </li>
-        <li *ngFor="let todo of pandas$ | async">
-          🐼
-        </li>
+        <li *ngFor="let todo of (pandas$ | async)">🐼</li>
       </ul>
       <router-outlet></router-outlet>
     </div>
@@ -63,7 +60,16 @@ export class AppComponent {
     extras: this.createExtras()
   });
 
-  constructor(private store: Store, private formBuilder: FormBuilder) {}
+  constructor(private store: Store, private formBuilder: FormBuilder) {
+    AppComponent.checkHotModuleReplacement();
+  }
+
+  private static checkHotModuleReplacement() {
+    if (environment.hmr) {
+      console.clear();
+      console.log('HMR enabled');
+    }
+  }
 
   addTodo(todo: string) {
     this.store.dispatch(new AddTodo(todo));

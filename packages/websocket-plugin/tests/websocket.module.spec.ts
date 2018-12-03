@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { NgxsModule, Actions, ofAction, Store } from '@ngxs/store';
 import { NgxsWebsocketPluginModule, ConnectWebSocket, SendWebSocketMessage } from '../';
 import { Server, WebSocket } from 'mock-socket';
@@ -34,16 +34,25 @@ describe('NgxsWebsocketPlugin', () => {
     actions$ = TestBed.get(Actions);
   });
 
-  it('should forward socket message to store', done => {
+  it('should forward socket message to store', fakeAsync(done => {
     const mockServer = new Server(SOCKET_URL);
-    mockServer.on('message', data => mockServer.send(data));
 
-    store.dispatch(new ConnectWebSocket());
-    store.dispatch(createMessage());
+    mockServer.on('connection', socket => {
+      mockServer.on('message', (data: any) => socket.send(data));
+      tick(1000);
 
-    actions$.pipe(ofAction(SetMessage), take(1)).subscribe(({ payload }) => {
-      expect(payload).toBe('from websocket');
-      mockServer.stop(done);
+      store.dispatch(new ConnectWebSocket());
+      store.dispatch(createMessage());
+
+      actions$
+        .pipe(
+          ofAction(SetMessage),
+          take(1)
+        )
+        .subscribe(({ payload }) => {
+          expect(payload).toBe('from websocket');
+          mockServer.stop(done);
+        });
     });
-  });
+  }));
 });

@@ -54,7 +54,10 @@ export function ofActionErrored(...allowedTypes: any[]) {
 function ofActionOperator(allowedTypes: any[], status?: ActionStatus) {
   const allowedMap = createAllowedMap(allowedTypes);
   return function(o: Observable<any>) {
-    return o.pipe(filterStatus(allowedMap, status), mapAction());
+    return o.pipe(
+      filterStatus(allowedMap, status),
+      mapAction()
+    );
   };
 }
 
