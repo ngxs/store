@@ -65,7 +65,7 @@ describe('Dispatch', () => {
     class MyState {
       @Action(Increment)
       increment() {
-        expect(NgZone.isInAngularZone()).toBe(false);
+        expect(NgZone.isInAngularZone()).toBe(true);
       }
     }
 

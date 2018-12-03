@@ -32,7 +32,7 @@ export class InternalDispatcher {
    * Dispatches event(s).
    */
   dispatch(event: any | any[]): Observable<any> {
-    const result: Observable<any> = this._ngZone.runOutsideAngular(() => {
+    const result: Observable<any> = this._ngZone.run(() => {
       if (Array.isArray(event)) {
         return forkJoin(event.map(a => this.dispatchSingle(a)));
       } else {
