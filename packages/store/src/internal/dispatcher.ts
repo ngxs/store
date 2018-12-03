@@ -1,4 +1,5 @@
-import { Injectable, ErrorHandler, NgZone } from '@angular/core';
+import { Injectable, ErrorHandler, NgZone, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 import { Observable, of, forkJoin, empty, Subject, throwError } from 'rxjs';
 import { shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
 
@@ -25,26 +26,41 @@ export class InternalDispatcher {
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
     private _stateStream: StateStream,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
+    @Inject(PLATFORM_ID) private _platformId: Object
   ) {}
 
   /**
    * Dispatches event(s).
    */
   dispatch(event: any | any[]): Observable<any> {
-    const result: Observable<any> = this._ngZone.runOutsideAngular(() => {
-      if (Array.isArray(event)) {
-        return forkJoin(event.map(a => this.dispatchSingle(a)));
-      } else {
-        return this.dispatchSingle(event);
-      }
-    });
+    let result: Observable<any>;
+    if (isPlatformServer(this._platformId)) {
+      result = this._ngZone.run(() => {
+        if (Array.isArray(event)) {
+          return forkJoin(event.map(a => this.dispatchSingle(a)));
+        } else {
+          return this.dispatchSingle(event);
+        }
+      });
+    } else {
+      result = this._ngZone.runOutsideAngular(() => {
+        if (Array.isArray(event)) {
+          return forkJoin(event.map(a => this.dispatchSingle(a)));
+        } else {
+          return this.dispatchSingle(event);
+        }
+      });
+    }
 
     result.subscribe({
       error: error => this._ngZone.run(() => this._errorHandler.handleError(error))
     });
-
-    return result.pipe(enterZone(this._ngZone));
+    if (isPlatformServer(this._platformId)) {
+      return result.pipe();
+    } else {
+      return result.pipe(enterZone(this._ngZone));
+    }
   }
 
   private dispatchSingle(action: any): Observable<any> {
