@@ -42,17 +42,16 @@ export class InternalStateOperations {
 
     if (incorrectProduction) {
       console.warn(
-        'NGXS is running in the development mode.\n',
-        'Set developmentMode to false on the NgxsModule options to enable the production mode.\n',
+        'Angular is running in production mode but NGXS is still running in the development mode!\n',
+        'Please set developmentMode to false on the NgxsModule options when in production mode.\n',
         example
       );
     } else if (incorrectDevelopment) {
       console.warn(
-        'Set developmentMode to true on the NgxsModule when Angular is running in the development mode.\n',
+        'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n',
         example
       );
     }
-
   }
 
   private ensureStateAndActionsAreImmutable(root: StateOperations<any>): StateOperations<any> {
