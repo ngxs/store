@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { FormBuilder, FormArray } from '@angular/forms';
@@ -43,7 +43,15 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  constructor(private store: Store, private formBuilder: FormBuilder) {
+    AppComponent.checkHotModuleReplacement();
+  }
+
+  get extras() {
+    const ctl: FormArray = <FormArray>this.pizzaForm.get('extras');
+    return ctl.controls;
+  }
   @Select(TodoState) todos$: Observable<string[]>;
   @Select(TodoState.pandas) pandas$: Observable<string[]>;
   @Select(TodosState.pizza) pizza$: Observable<any>;
@@ -60,15 +68,14 @@ export class AppComponent {
     extras: this.createExtras()
   });
 
-  constructor(private store: Store, private formBuilder: FormBuilder) {
-    AppComponent.checkHotModuleReplacement();
-  }
-
   private static checkHotModuleReplacement() {
     if (environment.hmr) {
       console.clear();
       console.log('HMR enabled');
     }
+  }
+  ngOnInit(): void {
+    this.store.dispatch(new AddTodo('ngOnInit todo'));
   }
 
   addTodo(todo: string) {
@@ -86,11 +93,6 @@ export class AppComponent {
       return this.formBuilder.control(extra.selected);
     });
     return this.formBuilder.array(arr);
-  }
-
-  get extras() {
-    const ctl: FormArray = <FormArray>this.pizzaForm.get('extras');
-    return ctl.controls;
   }
 
   onSubmit() {

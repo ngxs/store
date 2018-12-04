@@ -1,3 +1,4 @@
+import { NgxsOnInit } from './../../packages/store/src/symbols';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -23,10 +24,14 @@ export class TodoStateModel {
   name: 'todo',
   defaults: []
 })
-export class TodoState {
+export class TodoState implements NgxsOnInit {
   @Selector()
   static pandas(state: string[]) {
     return state.filter(s => s.indexOf('panda') > -1);
+  }
+
+  ngxsOnInit(ctx?: StateContext<any>) {
+    ctx.setState(['NgxsOnInit todo']);
   }
 
   @Action(AddTodo)
