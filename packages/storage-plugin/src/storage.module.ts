@@ -20,11 +20,12 @@ export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
   };
 }
 
-export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine {
+export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine | null {
   if (options.storage === StorageOption.LocalStorage) {
-    return localStorage;
+    // todo: remove any here
+    return <any>localStorage;
   } else if (options.storage === StorageOption.SessionStorage) {
-    return sessionStorage;
+    return <any>sessionStorage;
   }
 
   return null;

@@ -16,5 +16,5 @@ import { ListState } from './list.state';
 export class ListComponent {
   @Select(ListState) list$: Observable<string[]>;
 
-  @Select(ListState.hello) foo;
+  @Select(ListState.hello) foo: Observable<string>;
 }

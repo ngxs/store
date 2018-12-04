@@ -13,7 +13,7 @@ describe('State', () => {
     })
     class BarState {}
 
-    const meta = BarState[META_KEY];
+    const meta = (<any>BarState)[META_KEY];
 
     expect(meta.name).toBe('moo');
   });
@@ -42,13 +42,13 @@ describe('State', () => {
       drink() {}
     }
 
-    const meta = Bar2State[META_KEY];
+    const meta = (<any>Bar2State)[META_KEY];
     expect(meta.actions[Eat.type]).toBeDefined();
     expect(meta.actions[Drink.type]).toBeDefined();
   });
 
   it('should throw an error on invalid names', () => {
-    let message: string;
+    let message = '';
 
     try {
       @State({
@@ -56,7 +56,7 @@ describe('State', () => {
       })
       class MyState {}
 
-      window['foo'] = MyState; // to help with unread warning
+      (<any>window)['foo'] = MyState; // to help with unread warning
     } catch (err) {
       message = err.message;
     }

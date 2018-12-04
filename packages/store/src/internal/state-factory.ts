@@ -10,8 +10,8 @@ import {
   nameToState,
   propGetter,
   isObject,
-  StateClass,
-  MappedStore
+  MappedStore,
+  StateClass
 } from './internals';
 import { getActionTypeFromInstance, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -68,11 +68,11 @@ export class StateFactory {
       }
 
       const depth = depths[name];
-      const { actions } = stateClass[META_KEY];
-      let { defaults } = stateClass[META_KEY];
+      const { actions } = stateClass[META_KEY]!;
+      let { defaults } = stateClass[META_KEY]!;
 
-      stateClass[META_KEY].path = depth;
-      stateClass[META_KEY].selectFromAppState = propGetter(depth.split('.'), this._config);
+      stateClass[META_KEY]!.path = depth;
+      stateClass[META_KEY]!.selectFromAppState = propGetter(depth.split('.'), this._config);
 
       // ensure our store hasn't already been added
       // but dont throw since it could be lazy
@@ -108,7 +108,7 @@ export class StateFactory {
   /**
    * Add a set of states to the store and return the defaulsts
    */
-  addAndReturnDefaults(stateClasses: any[]): { defaults: any; states: MappedStore[] } {
+  addAndReturnDefaults(stateClasses: any[]): { defaults: any; states: MappedStore[] } | undefined {
     if (stateClasses) {
       const states = this.add(stateClasses);
       const defaults = states.reduce(
@@ -128,7 +128,7 @@ export class StateFactory {
       .pipe(
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
         mergeMap(({ action }) =>
-          this.invokeActions(this._actions, action).pipe(
+          this.invokeActions(this._actions, action!).pipe(
             map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
             catchError(error => of(<ActionContext>{ action, status: ActionStatus.Errored, error }))
@@ -156,11 +156,11 @@ export class StateFactory {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(actions$: InternalActions, action) {
+  invokeActions(actions$: InternalActions, action: any) {
     const results = [];
 
     for (const metadata of this.states) {
-      const type = getActionTypeFromInstance(action);
+      const type = getActionTypeFromInstance(action)!;
       const actionMetas = metadata.actions[type];
 
       if (actionMetas) {
@@ -176,7 +176,8 @@ export class StateFactory {
             if (result instanceof Observable) {
               result = result.pipe(
                 actionMeta.options.cancelUncompleted
-                  ? takeUntil(actions$.pipe(ofActionDispatched(action)))
+                  ? // todo: ofActionDispatched should be used with action class
+                    takeUntil(actions$.pipe(ofActionDispatched(action as any)))
                   : map(r => r)
               ); // map acts like a noop
             } else {

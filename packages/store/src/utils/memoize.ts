@@ -1,8 +1,12 @@
-function defaultEqualityCheck(a, b) {
+function defaultEqualityCheck(a: any, b: any) {
   return a === b;
 }
 
-function areArgumentsShallowlyEqual(equalityCheck, prev, next) {
+function areArgumentsShallowlyEqual(
+  equalityCheck: (a: any, b: any) => boolean,
+  prev: IArguments | null,
+  next: IArguments | null
+) {
   if (prev === null || next === null || prev.length !== next.length) {
     return false;
   }
@@ -24,11 +28,11 @@ function areArgumentsShallowlyEqual(equalityCheck, prev, next) {
  *
  * @ignore
  */
-export function memoize(func, equalityCheck = defaultEqualityCheck) {
-  let lastArgs = null;
-  let lastResult = null;
+export function memoize<R, T extends (...args: any[]) => R>(func: T, equalityCheck = defaultEqualityCheck): T {
+  let lastArgs: IArguments | null = null;
+  let lastResult: any = null;
   // we reference arguments instead of spreading them for performance reasons
-  return <(...args) => any>function memoized() {
+  return function memoized() {
     if (!areArgumentsShallowlyEqual(equalityCheck, lastArgs, arguments)) {
       // apply arguments instead of spreading for performance.
       lastResult = func.apply(null, arguments);
@@ -36,5 +40,5 @@ export function memoize(func, equalityCheck = defaultEqualityCheck) {
 
     lastArgs = arguments;
     return lastResult;
-  };
+  } as T;
 }

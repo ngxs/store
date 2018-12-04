@@ -1,3 +1,4 @@
+// tslint:disable:unified-signatures
 import { Injectable, NgZone } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
@@ -67,7 +68,7 @@ export class Store {
   /**
    * Allow the user to subscribe to the root of the state
    */
-  subscribe(fn?: any): Subscription {
+  subscribe(fn?: (value: any) => void): Subscription {
     return this._stateStream.pipe(enterZone(this._ngZone)).subscribe(fn);
   }
 

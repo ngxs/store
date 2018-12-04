@@ -22,8 +22,8 @@ export class InternalStateOperations {
   getRootStateOperations(): StateOperations<any> {
     const rootStateOperations = {
       getState: () => this._stateStream.getValue(),
-      setState: newState => this._stateStream.next(newState),
-      dispatch: actions => this._dispatcher.dispatch(actions)
+      setState: (newState: any) => this._stateStream.next(newState),
+      dispatch: (actions: any[]) => this._dispatcher.dispatch(actions)
     };
 
     if (this._config.developmentMode) {

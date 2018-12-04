@@ -81,8 +81,8 @@ export class FormDirective implements OnInit, OnDestroy {
         }
       });
 
-    this._formGroupDirective.valueChanges
-      .pipe(
+    this._formGroupDirective
+      .valueChanges!.pipe(
         debounceTime(this.debounce),
         takeUntil(this._destroy$)
       )
@@ -110,8 +110,8 @@ export class FormDirective implements OnInit, OnDestroy {
           });
       });
 
-    this._formGroupDirective.statusChanges
-      .pipe(
+    this._formGroupDirective
+      .statusChanges!.pipe(
         debounceTime(this.debounce),
         takeUntil(this._destroy$)
       )
