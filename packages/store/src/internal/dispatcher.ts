@@ -37,11 +37,11 @@ export class InternalDispatcher {
     let result: Observable<any>;
     if (isPlatformServer(this._platformId)) {
       result = this._ngZone.run(() => {
-        return this.dispatchZone(event);
+        return this.dispatchByEvents(event);
       });
     } else {
       result = this._ngZone.runOutsideAngular(() => {
-        return this.dispatchZone(event);
+        return this.dispatchByEvents(event);
       });
     }
 
@@ -56,7 +56,7 @@ export class InternalDispatcher {
     }
   }
 
-  private dispatchZone(event: any | any[]): Observable<any> {
+  private dispatchByEvents(event: any | any[]): Observable<any> {
     if (Array.isArray(event)) {
       return forkJoin(event.map(a => this.dispatchSingle(a)));
     } else {
