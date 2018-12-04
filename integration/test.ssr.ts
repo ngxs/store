@@ -1,23 +1,14 @@
-import { exit } from 'shelljs';
-const request = require('./request-service');
+process.env.TS_NODE_PROJECT = './../tsconfig.spec.json';
+import 'reflect-metadata';
 
-setTimeout(async () => {
-  try {
-    const body: string = await request('http://localhost:4000/list');
-    console.log(body);
-    if (body.indexOf('NgxsOnInit todo') === -1 || body.indexOf('ngOnInit todo') === -1) {
-      console.log('SSR check = false');
-      await exitServer();
-      exit(1);
-    }
-    await exitServer();
-    exit(0);
-  } catch (e) {
-    console.log(e);
-    exit(1);
-  }
-}, 2000);
+require('ts-mocha');
+const Mocha = require('mocha');
 
-async function exitServer(): Promise<any> {
-  await request('http://localhost:4000/test/exit');
-}
+const mocha = new Mocha();
+mocha.addFile(`./tests-ssr/todo.ts`);
+mocha.addFile(`./tests-ssr/exit.ts`);
+mocha.run(failures => {
+  process.on('exit', () => {
+    process.exit(failures); // exit with non-zero status if there were failures
+  });
+});
