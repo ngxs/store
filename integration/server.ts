@@ -23,7 +23,6 @@ const app = express();
 app.use(compression());
 app.use((req, res, next) => {
   console.log(req.url);
-  // special for robots.txt
   if (req.url === '/robots.txt') {
     return;
   }

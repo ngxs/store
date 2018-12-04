@@ -1,11 +1,10 @@
-// angular
 import { NgModule } from '@angular/core';
 import { BrowserTransferStateModule } from '@angular/platform-browser';
-// components
-import { AppComponent } from './app.component';
-import { AppModule } from './app.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+
+import { AppComponent } from './app.component';
+import { AppModule } from './app.module';
 
 @NgModule({
   bootstrap: [AppComponent],
