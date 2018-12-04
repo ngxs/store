@@ -9,5 +9,5 @@
     "module": "es2015",
     "types": ["node"]
   },
-  "exclude": ["test.ts", "**/*.spec.ts"]
+  "exclude": ["test.ts", "**/*.spec.ts", "**/*.mocha.ts"]
 }

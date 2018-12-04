@@ -5,8 +5,8 @@ require('ts-mocha');
 const Mocha = require('mocha');
 
 const mocha = new Mocha();
-mocha.addFile(`./tests-ssr/todo.ts`);
-mocha.addFile(`./tests-ssr/exit.ts`);
+mocha.addFile(`./tests-ssr/todo.mocha.ts`);
+mocha.addFile(`./tests-ssr/exit.mocha.ts`);
 mocha.run(failures => {
   process.on('exit', () => {
     process.exit(failures); // exit with non-zero status if there were failures

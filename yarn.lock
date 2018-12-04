@@ -6076,6 +6076,11 @@ npm-bundled@^1.0.1:
   resolved "https://registry.npmjs.org/npm-bundled/-/npm-bundled-1.0.5.tgz#3c1732b7ba936b3a10325aef616467c0ccbcc979"
   integrity sha512-m/e6jgWu8/v5niCUKQi9qQl8QdeEduFA96xHDDzFGqly0OOjI7c+60KM/2sppfnUU9JJagf+zs+yGhqSOFj71g==
 
+npm-delay@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/npm-delay/-/npm-delay-1.0.4.tgz#91e3de6ffc6b7d579525b6c7de1463482860bc18"
+  integrity sha1-kePeb/xrfVeVJbbH3hRjSChgvBg=
+
 npm-package-arg@^6.0.0, npm-package-arg@^6.1.0:
   version "6.1.0"
   resolved "https://registry.npmjs.org/npm-package-arg/-/npm-package-arg-6.1.0.tgz#15ae1e2758a5027efb4c250554b85a737db7fcc1"
