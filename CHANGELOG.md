@@ -2,9 +2,11 @@
 
 * ...
 
-# 3.3.2 2018-12-**
-* Fix: Removed compromised dependencies [#684](https://github.com/ngxs/store/pull/684)
+# 3.3.2 2018-12-04
+* Fix: Remove compromised dependencies [#684](https://github.com/ngxs/store/pull/684)
 * Fix: Add helper for enable development mode [#674](https://github.com/ngxs/store/pull/674)
+* Fix: Support underscore in state name [#663](https://github.com/ngxs/store/pull/663)
+
 
 # 3.3.1 2018-11-24
 * Fix: Storage Plugin should handle 'undefined' string [#671](https://github.com/ngxs/store/pull/671)
