@@ -40,7 +40,7 @@ export class OrderedSubject<T> extends Subject<T> {
 
   next(value?: T): void {
     if (this._busyPushingNext) {
-      this._itemQueue.unshift(value);
+      this._itemQueue.unshift(value!);
       return;
     }
     this._busyPushingNext = true;

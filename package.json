@@ -1,6 +1,6 @@
 {
   "name": "ngxs",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ngxs/store.git"
@@ -77,7 +77,7 @@
     "// - UTILS": "Utility Scripts",
     "lint": "ng lint",
     "docs": "typedoc packages/store/src --options typedoc.json",
-    "format": "prettier --write '{packages,integration}/**/*.ts'"
+    "format": "prettier --write {packages,integration}/**/*.ts"
   },
   "private": true,
   "devDependencies": {

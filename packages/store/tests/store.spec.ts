@@ -5,6 +5,7 @@ import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
+import { StateContext } from '../src/symbols';
 
 describe('Store', () => {
   interface SubSubStateModel {
@@ -59,9 +60,9 @@ describe('Store', () => {
   })
   class MyState {
     @Action(FooIt)
-    fooIt({ setState }) {
+    fooIt({ setState }: StateContext<StateModel>) {
       return new Observable(observer => {
-        setState({ foo: 'bar' });
+        setState({ foo: 'bar' } as any);
 
         observer.next();
         observer.complete();
@@ -88,7 +89,7 @@ describe('Store', () => {
   });
 
   it('should subscribe to the root state', async(() => {
-    store.subscribe(state => {
+    store.subscribe((state: any) => {
       expect(state).toEqual({
         foo: {
           first: 'Hello',
@@ -133,7 +134,8 @@ describe('Store', () => {
   }));
 
   it('should select the correct state use a state class: Sub State', async(() => {
-    store.select(MySubState).subscribe((state: SubStateModel) => {
+    // todo: remove any
+    store.select<SubStateModel>(<any>MySubState).subscribe((state: SubStateModel) => {
       expect(state).toEqual({
         hello: true,
         world: true,
@@ -145,7 +147,8 @@ describe('Store', () => {
   }));
 
   it('should select the correct state use a state class: Sub Sub State', async(() => {
-    store.select(MySubSubState).subscribe((state: SubSubStateModel) => {
+    // todo: remove any
+    store.select<SubSubStateModel>(<any>MySubSubState).subscribe((state: SubSubStateModel) => {
       expect(state).toEqual({
         name: 'Danny'
       });

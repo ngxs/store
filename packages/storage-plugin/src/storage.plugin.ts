@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { NgxsPlugin, setValue, getValue, InitState, UpdateState, actionMatcher } from '@ngxs/store';
+import { NgxsPlugin, setValue, getValue, InitState, UpdateState, actionMatcher, NgxsNextPluginFn } from '@ngxs/store';
 
 import { NgxsStoragePluginOptions, NGXS_STORAGE_PLUGIN_OPTIONS, STORAGE_ENGINE, StorageEngine } from './symbols';
 import { tap } from 'rxjs/operators';
@@ -11,7 +11,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     @Inject(STORAGE_ENGINE) private _engine: StorageEngine
   ) {}
 
-  handle(state, event, next) {
+  handle(state: any, event: any, next: NgxsNextPluginFn) {
     const options = this._options || <any>{};
     const matches = actionMatcher(event);
     const isInitAction = matches(InitState) || matches(UpdateState);
@@ -21,11 +21,11 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     if (isInitAction) {
       for (const key of keys) {
         const isMaster = key === '@@STATE';
-        let val = this._engine.getItem(key);
+        let val: any = this._engine.getItem(key!);
 
         if (val !== 'undefined' && typeof val !== 'undefined' && val !== null) {
           try {
-            val = options.deserialize(val);
+            val = options.deserialize!(val);
           } catch (e) {
             console.error('Error ocurred while deserializing the store value, falling back to empty object.');
             val = {};
@@ -43,7 +43,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           }
 
           if (!isMaster) {
-            state = setValue(state, key, val);
+            state = setValue(state, key!, val);
           } else {
             state = { ...state, ...val };
           }
@@ -58,11 +58,11 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             let val = nextState;
 
             if (key !== '@@STATE') {
-              val = getValue(nextState, key);
+              val = getValue(nextState, key!);
             }
 
             try {
-              this._engine.setItem(key, options.serialize(val));
+              this._engine.setItem(key!, options.serialize!(val));
             } catch (e) {
               console.error('Error ocurred while serializing the store value, value not updated.');
             }

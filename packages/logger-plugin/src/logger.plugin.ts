@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { NgxsPlugin, getActionTypeFromInstance } from '@ngxs/store';
+import { NgxsPlugin, getActionTypeFromInstance, NgxsNextPluginFn } from '@ngxs/store';
 
 import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
 import { pad } from './internals';
@@ -9,7 +9,7 @@ import { tap } from 'rxjs/operators';
 export class NgxsLoggerPlugin implements NgxsPlugin {
   constructor(@Inject(NGXS_LOGGER_PLUGIN_OPTIONS) private _options: NgxsLoggerPluginOptions) {}
 
-  handle(state, event, next) {
+  handle(state: any, event: any, next: NgxsNextPluginFn) {
     if (this._options.disabled) {
       return next(state, event);
     }

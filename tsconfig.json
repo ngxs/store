@@ -1,11 +1,12 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "outDir": "out-tsc/lib",
     "baseUrl": "./",
     "paths": {
       "@ngxs/*": ["packages/*"]
     },
-    "noUnusedLocals": true,
+    "strict": true,
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "declaration": false,

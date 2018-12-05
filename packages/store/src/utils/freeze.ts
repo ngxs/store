@@ -2,7 +2,7 @@
  * Object freeze code
  * https://github.com/jsdf/deep-freeze
  */
-export const deepFreeze = o => {
+export const deepFreeze = (o: any) => {
   Object.freeze(o);
 
   const oIsFunction = typeof o === 'function';

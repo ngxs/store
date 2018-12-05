@@ -44,7 +44,7 @@ export class InternalDispatcher {
         return this.dispatchByEvents(actionOrActions);
       });
     }
-
+    
     result.subscribe({
       error: error => this._ngZone.run(() => this._errorHandler.handleError(error))
     });
@@ -70,7 +70,7 @@ export class InternalDispatcher {
 
     return (compose([
       ...plugins,
-      (nextState, nextAction) => {
+      (nextState: any, nextAction: any) => {
         if (nextState !== prevState) {
           this._stateStream.next(nextState);
         }

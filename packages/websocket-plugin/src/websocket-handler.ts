@@ -23,7 +23,7 @@ export class WebSocketHandler {
     actions.pipe(ofActionDispatched(SendWebSocketMessage)).subscribe(({ payload }) => socket.send(payload));
     socket.subscribe(
       msg => {
-        const type = getValue(msg, config.typeKey);
+        const type = getValue(msg, config.typeKey!);
         if (!type) {
           throw new Error(`Type ${type} not found on message`);
         }

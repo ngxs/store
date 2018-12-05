@@ -48,12 +48,12 @@ export interface StateContext<T> {
   /**
    * Reset the state to a new value.
    */
-  setState(val: T);
+  setState(val: T): T;
 
   /**
    * Patch the existing state with the provided value.
    */
-  patchState(val: Partial<T>);
+  patchState(val: Partial<T>): T;
 
   /**
    * Dispatch a new action and return the dispatched observable.

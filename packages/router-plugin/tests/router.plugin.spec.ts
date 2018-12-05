@@ -18,7 +18,7 @@ describe('NgxsRouterPlugin', () => {
     await router.navigateByUrl('/');
 
     expect(log).toEqual([
-      { type: 'url', state: null }, // init event. has nothing to do with the router
+      { type: 'url', state: undefined }, // init event. has nothing to do with the router
       { type: 'router', event: 'NavigationStart', url: '/' },
       { type: 'router', event: 'RoutesRecognized', url: '/' },
       { type: 'url', state: '/' }, // RouterNavigation event in the store
@@ -55,7 +55,7 @@ describe('NgxsRouterPlugin', () => {
     await router.navigateByUrl('/testpath');
     tick();
 
-    const routerState = store.selectSnapshot(RouterState.state);
+    const routerState = store.selectSnapshot(RouterState.state)!;
     expect(routerState.url).toEqual('/testpath');
 
     const routerUrl = store.selectSnapshot(RouterState.url);
@@ -71,7 +71,7 @@ describe('NgxsRouterPlugin', () => {
     tick();
 
     store.select(RouterState.state).subscribe(routerState => {
-      expect(routerState.url).toEqual('/a-path');
+      expect(routerState!.url).toEqual('/a-path');
     });
   }));
 });

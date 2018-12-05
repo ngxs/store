@@ -1,3 +1,5 @@
+export type StateFn = (...args: any[]) => any;
+
 /**
  * Composes a array of functions from left to right. Example:
  *
@@ -19,7 +21,7 @@
  *
  * @ignore
  */
-export const compose = funcs => (...args) => {
-  const curr = funcs.shift();
-  return curr(...args, (...nextArgs) => compose(funcs)(...nextArgs));
+export const compose = (funcs: StateFn[]) => (...args: any[]) => {
+  const curr = funcs.shift()!;
+  return curr(...args, (...nextArgs: any[]) => compose(funcs)(...nextArgs));
 };
