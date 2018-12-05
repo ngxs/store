@@ -3,11 +3,10 @@ import 'reflect-metadata';
 
 const fs = require('fs');
 const path = require('path');
-const files = fs.readdirSync(`./../dist-integration-server`);
+const files: string[] = fs.readdirSync(`./../dist-integration-server`);
 
 import { enableProdMode } from '@angular/core';
 import * as express from 'express';
-import * as compression from 'compression';
 const { provideModuleMap } = require('@nguniversal/module-map-ngfactory-loader');
 
 const mainFiles = files.filter(file => file.startsWith('main'));
@@ -20,7 +19,6 @@ const PORT = process.env.PORT || 4000;
 enableProdMode();
 
 const app = express();
-app.use(compression());
 app.use((req, res, next) => {
   console.log(req.url);
   if (req.url === '/robots.txt') {
@@ -53,7 +51,6 @@ app.set('views', '.');
 app.get('*.*', express.static(path.join(__dirname, '..', 'dist-integration')));
 
 app.get('*', (req, res) => {
-  global['navigator'] = req['headers']['user-agent'];
   const http = req.headers['x-forwarded-proto'] === undefined ? 'http' : req.headers['x-forwarded-proto'];
 
   const url = req.originalUrl;

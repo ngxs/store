@@ -12,6 +12,7 @@
   },
   "exclude": [
     "test.ts",
+    "test.ssr.ts",
     "**/*.spec.ts",
     "**/*.mocha.ts",
     "node_modules"
