@@ -33,15 +33,15 @@ export class InternalDispatcher {
   /**
    * Dispatches event(s).
    */
-  dispatch(event: any | any[]): Observable<any> {
+  dispatch(actionOrActions: any | any[]): Observable<any> {
     let result: Observable<any>;
     if (isPlatformServer(this._platformId)) {
       result = this._ngZone.run(() => {
-        return this.dispatchByEvents(event);
+        return this.dispatchByEvents(actionOrActions);
       });
     } else {
       result = this._ngZone.runOutsideAngular(() => {
-        return this.dispatchByEvents(event);
+        return this.dispatchByEvents(actionOrActions);
       });
     }
 
@@ -56,11 +56,11 @@ export class InternalDispatcher {
     }
   }
 
-  private dispatchByEvents(event: any | any[]): Observable<any> {
-    if (Array.isArray(event)) {
-      return forkJoin(event.map(a => this.dispatchSingle(a)));
+  private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
+    if (Array.isArray(actionOrActions)) {
+      return forkJoin(actionOrActions.map(a => this.dispatchSingle(a)));
     } else {
-      return this.dispatchSingle(event);
+      return this.dispatchSingle(actionOrActions);
     }
   }
 
