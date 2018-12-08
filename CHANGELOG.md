@@ -1,6 +1,6 @@
 # DEV version (to become [3.4.0](https://github.com/ngxs/store/milestone/7))
 
-* ...
+* Feature: Support server-side rendering [#698](https://github.com/ngxs/store/pull/698)
 
 # 3.3.2 2018-12-04
 * Fix: Remove compromised dependencies [#684](https://github.com/ngxs/store/pull/684)
