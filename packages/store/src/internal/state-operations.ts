@@ -5,6 +5,7 @@ import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
 import { deepFreeze } from '../utils/freeze';
+import { isAngularInTestMode } from '../utils/angular';
 
 /**
  * State Context factory class
@@ -34,6 +35,8 @@ export class InternalStateOperations {
   }
 
   private verifyDevMode() {
+    if (isAngularInTestMode()) return;
+
     const isNgxsDevMode = this._config.developmentMode;
     const isNgDevMode = isDevMode();
     const incorrectProduction = !isNgDevMode && isNgxsDevMode;
