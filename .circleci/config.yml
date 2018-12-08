@@ -116,6 +116,15 @@ jobs:
           command: yarn test:ci:integration
       # - *persist_coverage // we don't run code coverage for integration tests
 
+  integration_ssr_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Integration Tests
+          command: yarn test:ci:integration:ssr
+      # - *persist_coverage // we don't run code coverage for integration tests
+
   upload_coverage:
     <<: *job_defaults
     environment:
@@ -176,10 +185,15 @@ workflows:
           requires:
             - build
 
+      - integration_ssr_tests:
+          requires:
+            - build
+
       - upload_coverage:
           requires:
             - unit_tests
             - integration_tests
+            - integration_ssr_tests
 
       # Publish @dev builds if no tag is specified
       - publish_dev_build_to_npm:
@@ -192,6 +206,7 @@ workflows:
           requires:
             - unit_tests
             - integration_tests
+            - integration_ssr_tests
 
       # Publish package.version @latest when a v.* git tag is present
       - publish_tagged_build_to_npm:
@@ -203,3 +218,4 @@ workflows:
           requires:
             - unit_tests
             - integration_tests
+            - integration_ssr_tests

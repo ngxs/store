@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxsModule } from '@ngxs/store';
-import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
@@ -16,14 +15,11 @@ import { states } from './app.state';
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'my-app' }),
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
     NgxsModule.forRoot(states),
-    NgxsStoragePluginModule.forRoot({
-      key: ['todos.todo']
-    }),
     NgxsFormPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: false }),
     NgxsReduxDevtoolsPluginModule.forRoot({

@@ -1,4 +1,5 @@
-import { Injectable, ErrorHandler, NgZone } from '@angular/core';
+import { Injectable, ErrorHandler, NgZone, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 import { Observable, of, forkJoin, empty, Subject, throwError } from 'rxjs';
 import { shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
 
@@ -25,26 +26,42 @@ export class InternalDispatcher {
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
     private _stateStream: StateStream,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
+    @Inject(PLATFORM_ID) private _platformId: Object
   ) {}
 
   /**
    * Dispatches event(s).
    */
   dispatch(actionOrActions: any | any[]): Observable<any> {
-    const result: Observable<any> = this._ngZone.runOutsideAngular(() => {
-      if (Array.isArray(actionOrActions)) {
-        return forkJoin(actionOrActions.map(a => this.dispatchSingle(a)));
-      } else {
-        return this.dispatchSingle(actionOrActions);
-      }
-    });
+    let result: Observable<any>;
+    if (isPlatformServer(this._platformId)) {
+      result = this._ngZone.run(() => {
+        return this.dispatchByEvents(actionOrActions);
+      });
+    } else {
+      result = this._ngZone.runOutsideAngular(() => {
+        return this.dispatchByEvents(actionOrActions);
+      });
+    }
 
     result.subscribe({
       error: error => this._ngZone.run(() => this._errorHandler.handleError(error))
     });
 
-    return result.pipe(enterZone(this._ngZone));
+    if (isPlatformServer(this._platformId)) {
+      return result.pipe();
+    } else {
+      return result.pipe(enterZone(this._ngZone));
+    }
+  }
+
+  private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
+    if (Array.isArray(actionOrActions)) {
+      return forkJoin(actionOrActions.map(a => this.dispatchSingle(a)));
+    } else {
+      return this.dispatchSingle(actionOrActions);
+    }
   }
 
   private dispatchSingle(action: any): Observable<any> {

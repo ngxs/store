@@ -58,3 +58,4 @@ Thumbs.db
 /yarn-error.log
 .ng_pkg_build/
 package-lock.json
+dist-integration-server/

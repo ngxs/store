@@ -25,20 +25,15 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "tsconfig.lib.json",
-              "tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["tsconfig.lib.json", "tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
     },
     "integration": {
       "root": "integration",
-      "sourceRoot": "",
+      "sourceRoot": ".",
       "projectType": "application",
       "architect": {
         "build": {
@@ -46,9 +41,12 @@
           "options": {
             "outputPath": "dist-integration/",
             "index": "./integration/index.html",
-            "main": "./integration/main.ts",
+            "main": "./integration/main.browser.ts",
             "tsConfig": "./integration/tsconfig.app.json",
-            "polyfills": "./integration/polyfills.ts"
+            "polyfills": "./integration/polyfills.ts",
+            "assets": [
+              "./integration/favicon.ico"
+            ]
           },
           "configurations": {
             "production": {
@@ -73,6 +71,38 @@
                 {
                   "replace": "/integration/environments/environment.ts",
                   "with": "/integration/environments/environment.hmr.ts"
+                }
+              ]
+            }
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist-integration-server",
+            "main": "./integration/main.server.ts",
+            "tsConfig": "./integration/tsconfig.server.json"
+          },
+          "configurations": {
+            "dev": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": true
+            },
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "fileReplacements": [
+                {
+                  "replace": "/integration/environments/environment.ts",
+                  "with": "/integration/environments/environment.prod.ts"
                 }
               ]
             }
@@ -111,13 +141,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "integration/tsconfig.app.json",
-              "integration/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["integration/tsconfig.app.json", "integration/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
