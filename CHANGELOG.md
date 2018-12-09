@@ -1,4 +1,4 @@
-# DEV version (to become [3.4.0](https://github.com/ngxs/store/milestone/7))
+# DEV version (to become [3.4.0](https://github.com/ngxs/store/milestone/6))
 
 * Feature: Support server-side rendering [#698](https://github.com/ngxs/store/pull/698)
 
