@@ -8,6 +8,10 @@ import { InternalStateOperations } from './internal/state-operations';
 import { StateStream } from './internal/state-stream';
 import { enterZone } from './operators/zone';
 
+export interface StateClass {
+  new (...args: any[]): any;
+}
+
 @Injectable()
 export class Store {
   constructor(
@@ -27,7 +31,7 @@ export class Store {
    * Selects a slice of data from the store.
    */
   select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
-  select(selector: string | any): Observable<any>;
+  select(selector: StateClass): Observable<any>;
   select(selector: any): Observable<any> {
     const selectorFn = getSelectorFn(selector);
     return this._stateStream.pipe(
@@ -49,8 +53,9 @@ export class Store {
   /**
    * Select one slice of data from the store.
    */
+
   selectOnce<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
-  selectOnce(selector: string | any): Observable<any>;
+  selectOnce(selector: StateClass): Observable<any>;
   selectOnce(selector: any): Observable<any> {
     return this.select(selector).pipe(take(1));
   }
@@ -59,8 +64,8 @@ export class Store {
    * Select a snapshot from the state.
    */
   selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T;
-  selectSnapshot(selector: string | any): any;
-  selectSnapshot(selector: any): any {
+  selectSnapshot(selector: StateClass): any;
+  selectSnapshot(selector: any): Observable<any> {
     const selectorFn = getSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());
   }
