@@ -90,42 +90,21 @@ Create a shortcut for this by updating package.json and adding an entry to the s
 }
 ```
 
-### Add dependency for @angularclass/hmr and configure app
+### Add dependency and configure app
 
 In order to get HMR working we need to install the dependency and configure our app to use it.
 
-Install the @angularclass/hmr module as a dev-dependency
-
-Create a file called src/hmr.ts with the following content:
-
-```ts
-import { NgModuleRef, ApplicationRef } from '@angular/core';
-import { createNewHosts } from '@angularclass/hmr';
-
-export const hmrBootstrap = (module: any, bootstrap: () => Promise<NgModuleRef<any>>) => {
-  let ngModule: NgModuleRef<any>;
-  module.hot.accept();
-  bootstrap().then(mod => ngModule = mod);
-  module.hot.dispose(() => {
-    const appRef: ApplicationRef = ngModule.injector.get(ApplicationRef);
-    const elements = appRef.components.map(c => c.location.nativeElement);
-    const makeVisible = createNewHosts(elements);
-    ngModule.destroy();
-    makeVisible();
-  });
-};
-```
+Install the `@angularclass/hmr`, `@ngxs/hmr-plugin` module as a dev-dependency
 
 Update src/main.ts to use the file we just created:
 
 ```ts
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { hmrNgxsBootstrap } from '@ngxs/hmr-plugin';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-
-import { hmrBootstrap } from './hmr';
 
 if (environment.production) {
   enableProdMode();
@@ -135,13 +114,36 @@ const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
 if (environment.hmr) {
   if (module[ 'hot' ]) {
-    hmrBootstrap(module, bootstrap);
+    hmrNgxsBootstrap(module, bootstrap);
   } else {
     console.error('HMR is not enabled for webpack-dev-server!');
     console.log('Are you using the --hmr flag for ng serve?');
   }
 } else {
   bootstrap().catch(err => console.log(err));
+}
+```
+
+### Update src/app/app.module.ts to manage the state in HMR lifecycle:
+
+```ts
+import { StateStream } from '@ngxs/store';
+import { NgxsHmrPlugin, NgxsStoreSnapshot } from '@ngxs/hmr-plugin';
+
+@NgModule({ .. })
+export class AppModule implements NgxsHmrPlugin {
+ 
+  public hmrNgxsStoreOnInit(state: StateStream, snapshot: NgxsStoreSnapshot) {
+    console.log('[NGXS HMR]: Current state', state.getValue());
+    console.log('[NGXS HMR]: Previous state', snapshot);
+    state.next({ ...state.getValue(), ...snapshot });
+  }
+
+  public hmrNgxsStoreOnDestroy(state: StateStream): NgxsStoreSnapshot  {
+    console.log('[NGXS HMR]: Return the necessary HMR state for reuse...');
+    return state.getValue();
+  }
+
 }
 ```
 
@@ -152,6 +154,10 @@ Now that everything is set up we can run the new configuration:
 ```bash
 npm run hmr
 ```
+
+Example:
+
+![hmr](../assets/hmr.gif)
 
 When starting the server Webpack will tell you that it’s enabled:
 

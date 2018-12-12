@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { FormBuilder, FormArray } from '@angular/forms';
 
 import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from './todo.state';
-import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -45,7 +44,6 @@ import { environment } from '../environments/environment';
 })
 export class AppComponent implements OnInit {
   constructor(private store: Store, private formBuilder: FormBuilder) {
-    AppComponent.checkHotModuleReplacement();
   }
 
   get extras() {
@@ -68,14 +66,12 @@ export class AppComponent implements OnInit {
     extras: this.createExtras()
   });
 
-  private static checkHotModuleReplacement() {
-    if (environment.hmr) {
-      console.clear();
-      console.log('HMR enabled');
-    }
-  }
   ngOnInit(): void {
-    this.store.dispatch(new AddTodo('ngOnInit todo'));
+    const payload = 'ngOnInit todo';
+    const state: string[] = this.store.selectSnapshot(TodoState);
+    if (!state.includes(payload)) {
+      this.store.dispatch(new AddTodo(payload));
+    }
   }
 
   addTodo(todo: string) {
