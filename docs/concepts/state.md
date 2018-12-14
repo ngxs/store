@@ -20,7 +20,7 @@ In the state decorator, we define some metadata about the state. These options
 include:
 
 - `name`: The name of the state slice. Note: The name is a required parameter and must be unique for the entire application.
-Names must be object property safe, AKA no dashes, dots, etc.
+Names must be object property safe, (e.g. no dashes, dots, etc).
 - `defaults`: Default set of object/array for this state slice.
 - `children`: Child sub state associations.
 
@@ -40,7 +40,7 @@ export class ZooState {
 ```
 
 ## Defining Actions
-Our states listen to actions via a `@Action` decorator. The action decorator
+Our states listen to actions via an `@Action` decorator. The action decorator
 accepts an action class or an array of action classes.
 
 ### Simple Actions
@@ -75,8 +75,8 @@ export class ZooState {
 }
 ```
 
-The `feedAnimal` function has one argument called `StateContext`. This
-context state has a slice pointer and a function to set the state. It's important
+The `feedAnimals` function has one argument called `ctx` with a type of `StateContext<ZooStateModel>`. This
+context state has a slice pointer and a function exposed to set the state. It's important
 to note that the `getState()` method will always return
 the freshest state slice from the global store each time it is accessed. This
 ensures that when we're performing async operations the state
