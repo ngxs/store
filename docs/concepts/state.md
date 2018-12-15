@@ -150,19 +150,38 @@ feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
 }
 ```
 
-The `patchState` function can also be called with a patching function which will be given the
+The `setState` function can also be called with a function which will be given the
 existing state and should return the new state. 
-All immutability concerns need to be honoured by this function. 
-For example you could use a library like [immer](https://github.com/mweststrate/immer) that can 
-handle these concerns for you and provide a different way of expressing your immutable update 
-through direct mutation of a draft object. Here is the example from above expressed in this way:
+All immutability concerns need to be honoured by this function.
+
+For comparison, here are the two ways that you can invoke the `setState` function...  
+With a new constructed state value:
+```TS
+@Action(MyAction)
+public addValue(ctx: StateContext, { payload }: MyAction) {
+  ctx.setState({ ...ctx.getState(), value: payload  });
+}
+```
+With a function that returns the new state value:
+```TS
+@Action(MyAction)
+public addValue(ctx: StateContext, { payload }: MyAction) {
+  ctx.setState((state) => ({ ...state, value: payload }));
+}
+```
+
+You may ask _"How is this valuable?"_. Well, it opens the door for refactoring of your immutable updates into `state operators` so that your code can become more declarative as opposed to imperitive. We will be adding some standard `state operators` soon that you will be able to use to express your updates to the state. Follow the issue here for updates: https://github.com/ngxs/store/issues/545
+
+As another example you could use a library like [immer](https://github.com/mweststrate/immer) that can 
+handle the immutability updates for you and provide a different way of expressing your immutable update 
+through direct mutation of a draft object. We can use this external library because it supports the same signature as out `state operators` through their curried `produce` function. Here is the example from above expressed in this way:
 ```TS
 import produce from 'immer';
 
 // in class ZooState ...
 @Action(FeedZebra)
 feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
-  ctx.patchState(produce((draft) => {
+  ctx.setState(produce((draft) => {
     draft.zebraFood.push(action.zebraToFeed);
   }));  
 }
@@ -175,15 +194,15 @@ This approach can also allow for the creation of well named helper functions tha
 between handlers that require the same type of update. 
 The above example could be refactored to this:
 ```TS
-import produce from 'immer';
-
 // in class ZooState ...
 @Action(FeedZebra)
 feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
-  ctx.patchState(addToZebraFood(action.zebraToFeed));
+  ctx.setState(addToZebraFood(action.zebraToFeed));
 }
 
 // defined elsewhere
+import produce from 'immer';
+
 function addToZebraFood(itemToAdd) {
   return produce((draft) => {
     draft.zebraFood.push(itemToAdd);
