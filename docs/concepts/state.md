@@ -20,7 +20,7 @@ In the state decorator, we define some metadata about the state. These options
 include:
 
 - `name`: The name of the state slice. Note: The name is a required parameter and must be unique for the entire application.
-Names must be object property safe, AKA no dashes, dots, etc.
+Names must be object property safe, (e.g. no dashes, dots, etc).
 - `defaults`: Default set of object/array for this state slice.
 - `children`: Child sub state associations.
 
@@ -40,7 +40,7 @@ export class ZooState {
 ```
 
 ## Defining Actions
-Our states listen to actions via a `@Action` decorator. The action decorator
+Our states listen to actions via an `@Action` decorator. The action decorator
 accepts an action class or an array of action classes.
 
 ### Simple Actions
@@ -75,8 +75,8 @@ export class ZooState {
 }
 ```
 
-The `feedAnimal` function has one argument called `StateContext`. This
-context state has a slice pointer and a function to set the state. It's important
+The `feedAnimals` function has one argument called `ctx` with a type of `StateContext<ZooStateModel>`. This
+context state has a slice pointer and a function exposed to set the state. It's important
 to note that the `getState()` method will always return
 the freshest state slice from the global store each time it is accessed. This
 ensures that when we're performing async operations the state
@@ -134,8 +134,8 @@ In this example, we have a second argument that represents the action and we des
 to pull out the name, hay, and carrots which we then update the state with.
 
 There is also a shortcut `patchState` function to make updating the state easier. In this case,
-you only pass it the properties you want to update on the state and it handles the rest. The above function
-could be reduced to this:
+you only pass it the properties you want to update on the state and it handles the rest. 
+The above function could be reduced to this:
 
 ```TS
 @Action(FeedZebra)
@@ -146,6 +146,66 @@ feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
       ...state.zebraFood,
       action.zebraToFeed,
     ]
+  });
+}
+```
+
+The `setState` function can also be called with a function which will be given the
+existing state and should return the new state. 
+All immutability concerns need to be honoured by this function.
+
+For comparison, here are the two ways that you can invoke the `setState` function...  
+With a new constructed state value:
+```TS
+@Action(MyAction)
+public addValue(ctx: StateContext, { payload }: MyAction) {
+  ctx.setState({ ...ctx.getState(), value: payload  });
+}
+```
+With a function that returns the new state value:
+```TS
+@Action(MyAction)
+public addValue(ctx: StateContext, { payload }: MyAction) {
+  ctx.setState((state) => ({ ...state, value: payload }));
+}
+```
+
+You may ask _"How is this valuable?"_. Well, it opens the door for refactoring of your immutable updates into `state operators` so that your code can become more declarative as opposed to imperitive. We will be adding some standard `state operators` soon that you will be able to use to express your updates to the state. Follow the issue here for updates: https://github.com/ngxs/store/issues/545
+
+As another example you could use a library like [immer](https://github.com/mweststrate/immer) that can 
+handle the immutability updates for you and provide a different way of expressing your immutable update 
+through direct mutation of a draft object. We can use this external library because it supports the same signature as out `state operators` through their curried `produce` function. Here is the example from above expressed in this way:
+```TS
+import produce from 'immer';
+
+// in class ZooState ...
+@Action(FeedZebra)
+feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
+  ctx.setState(produce((draft) => {
+    draft.zebraFood.push(action.zebraToFeed);
+  }));  
+}
+```
+Here the `produce` function from the `immer` library is called with just a single parameter 
+so that it returns its' [curried form](https://github.com/mweststrate/immer#currying) 
+that will take a value and return a new value with all the expressed changes applied.
+
+This approach can also allow for the creation of well named helper functions that can be shared 
+between handlers that require the same type of update. 
+The above example could be refactored to this:
+```TS
+// in class ZooState ...
+@Action(FeedZebra)
+feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
+  ctx.setState(addToZebraFood(action.zebraToFeed));
+}
+
+// defined elsewhere
+import produce from 'immer';
+
+function addToZebraFood(itemToAdd) {
+  return produce((draft) => {
+    draft.zebraFood.push(itemToAdd);
   });
 }
 ```
