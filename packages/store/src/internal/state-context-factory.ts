@@ -5,7 +5,7 @@ import { StateContext, StateOperator } from '../symbols';
 import { MappedStore } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
 import { InternalStateOperations } from '../internal/state-operations';
-import { simplePatch } from './state-operators';
+import { set, simplePatch } from './state-operators';
 
 /**
  * State Context factory class
@@ -21,45 +21,45 @@ export class StateContextFactory {
   createStateContext<T>(metadata: MappedStore): StateContext<T> {
     const root = this._internalStateOperations.getRootStateOperations();
 
-    function getState(): T {
-      const state = root.getState();
-      return getValue(state, metadata.depth);
+    function getState(currentAppState: any): T {
+      return getValue(currentAppState, metadata.depth);
     }
 
-    function setStateValue(newValue: T): any {
-      const state = root.getState();
-      const newState = setValue(state, metadata.depth, newValue);
-      root.setState(newState);
-      return newState;
+    function setStateValue(currentAppState: any, newValue: T): any {
+      const newAppState = setValue(currentAppState, metadata.depth, newValue);
+      root.setState(newAppState);
+      return newAppState;
       // In doing this refactoring I noticed that there is a 'bug' where the
       // application state is returned instead of this state slice.
       // This has worked this way since the beginning see:
       // https://github.com/ngxs/store/blame/324c667b4b7debd8eb979006c67ca0ae347d88cd/src/state-factory.ts
       // This needs to be fixed, but is a 'breaking' change.
-      // I will do this fix in a subsequent PR and we can decide how to handle
+      // I will do this fix in a subsequent PR and we can decide how to handle it.
+    }
+
+    function setStateFromOperator(currentAppState: any, stateOperator: StateOperator<T>) {
+      const local = getState(currentAppState);
+      const newValue = stateOperator(local);
+      return setStateValue(currentAppState, newValue);
+    }
+
+    function isStateOperator(value: T | StateOperator<T>): value is StateOperator<T> {
+      return typeof value === 'function';
     }
 
     return {
-      getState,
+      getState(): T {
+        const currentAppState = root.getState();
+        return getState(currentAppState);
+      },
       patchState(val: Partial<T>): T {
+        const currentAppState = root.getState();
         const patchOperator = simplePatch<T>(val);
-
-        const local = getState();
-        const clone = patchOperator(local);
-
-        return setStateValue(clone);
+        return setStateFromOperator(currentAppState, patchOperator);
       },
       setState(val: T | StateOperator<T>): T {
-        const isFunction = typeof val === 'function';
-
-        if (isFunction) {
-          const stateOperator = <StateOperator<T>>val;
-          const local = getState();
-          const newValue = stateOperator(local);
-          return setStateValue(newValue);
-        } else {
-          return setStateValue(<T>val);
-        }
+        const currentAppState = root.getState();
+        return isStateOperator(val) ? setStateFromOperator(currentAppState, val) : setStateValue(currentAppState, val);
       },
       dispatch(actions: any | any[]): Observable<void> {
         return root.dispatch(actions);
