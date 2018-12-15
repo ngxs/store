@@ -1,5 +1,5 @@
 // tslint:disable:unified-signatures
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, Type } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
 
@@ -7,10 +7,6 @@ import { getSelectorFn } from './utils/selector-utils';
 import { InternalStateOperations } from './internal/state-operations';
 import { StateStream } from './internal/state-stream';
 import { enterZone } from './operators/zone';
-
-export interface StateClass {
-  new (...args: any[]): any;
-}
 
 @Injectable()
 export class Store {
@@ -31,7 +27,7 @@ export class Store {
    * Selects a slice of data from the store.
    */
   select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
-  select(selector: StateClass): Observable<any>;
+  select<T = any>(selector: string | Type<unknown>): Observable<T>;
   select(selector: any): Observable<any> {
     const selectorFn = getSelectorFn(selector);
     return this._stateStream.pipe(
@@ -55,7 +51,7 @@ export class Store {
    */
 
   selectOnce<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
-  selectOnce(selector: StateClass): Observable<any>;
+  selectOnce<T = any>(selector: string | Type<unknown>): Observable<T>;
   selectOnce(selector: any): Observable<any> {
     return this.select(selector).pipe(take(1));
   }
@@ -64,8 +60,8 @@ export class Store {
    * Select a snapshot from the state.
    */
   selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T;
-  selectSnapshot(selector: StateClass): any;
-  selectSnapshot(selector: any): Observable<any> {
+  selectSnapshot<T = any>(selector: string | Type<unknown>): T;
+  selectSnapshot(selector: any): any {
     const selectorFn = getSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());
   }
