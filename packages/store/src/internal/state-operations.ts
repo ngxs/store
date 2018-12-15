@@ -1,4 +1,4 @@
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable, isDevMode, Optional } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { StateOperations } from '../internal/internals';
@@ -17,7 +17,7 @@ export class InternalStateOperations {
     private _stateStream: StateStream,
     private _dispatcher: InternalDispatcher,
     private _config: NgxsConfig,
-    private _testBed: TestBed
+    @Optional() private _testBed: TestBed
   ) {
     this.verifyDevMode();
   }
