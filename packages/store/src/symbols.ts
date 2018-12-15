@@ -36,7 +36,7 @@ export class NgxsConfig {
   }
 }
 
-export type PatchFunction<T> = (existing: Readonly<T>) => T;
+export type StateOperator<T> = (existing: Readonly<T>) => T;
 
 /**
  * State context provided to the actions in the state.
@@ -50,13 +50,12 @@ export interface StateContext<T> {
   /**
    * Reset the state to a new value.
    */
-  setState(val: T): T;
+  setState(val: T | StateOperator<T>): T;
 
   /**
    * Patch the existing state with the provided value.
    */
   patchState(val: Partial<T>): T;
-  patchState(val: Partial<T> | PatchFunction<T>);
 
   /**
    * Dispatch a new action and return the dispatched observable.

@@ -1,4 +1,4 @@
-import { ErrorHandler } from '@angular/core';
+import { ErrorHandler, Type } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { Action } from '../src/decorators/action';
@@ -18,9 +18,9 @@ describe('Action handlers', () => {
     constructor(public payload?: any) {}
   }
 
-  type _class = { new (...args: any[]) };
+  type IFooStateModel = { name: string; age?: number; updated?: boolean };
 
-  function setup(config: { stores: _class[] }) {
+  function setup(config: { stores: Type<unknown>[] }) {
     config = config || {
       stores: []
     };
@@ -38,13 +38,13 @@ describe('Action handlers', () => {
   describe('for synchronous handlers ', () => {
     it(`should allow for retrieval of the current state`, () => {
       // Arrange
-      let currentState = null;
+      let currentState: any = null;
 
       const defaultState = { name: 'current state' };
-      @State({ name: 'foo', defaults: defaultState })
+      @State<IFooStateModel>({ name: 'foo', defaults: defaultState })
       class FooState {
         @Action(TestAction)
-        test({ getState }: StateContext<any>) {
+        test({ getState }: StateContext<IFooStateModel>) {
           currentState = getState();
         }
       }
@@ -58,10 +58,10 @@ describe('Action handlers', () => {
 
     it(`should allow for the state to be set`, () => {
       // Arrange
-      @State({ name: 'foo', defaults: { name: 'old state' } })
+      @State<IFooStateModel>({ name: 'foo', defaults: { name: 'old state' } })
       class FooState {
         @Action(TestAction)
-        test({ setState }: StateContext<any>, { payload }: TestAction) {
+        test({ setState }: StateContext<IFooStateModel>, { payload }: TestAction) {
           setState(payload);
         }
       }
@@ -75,32 +75,13 @@ describe('Action handlers', () => {
       expect(resultState).toBe(newState);
     });
 
-    it(`should allow for patching the state`, () => {
+    it(`should allow for the state to be set using a function`, () => {
       // Arrange
-      @State({ name: 'foo', defaults: { name: 'my state' } })
+      @State<IFooStateModel>({ name: 'foo', defaults: { name: 'my state' } })
       class FooState {
         @Action(TestAction)
-        test({ patchState }: StateContext<any>, { payload }: TestAction) {
-          patchState({ age: payload });
-        }
-      }
-
-      const { store } = setup({ stores: [FooState] });
-      // Act
-      store.dispatch(new TestAction(21));
-      // Assert
-      const resultState = store.selectSnapshot(FooState);
-      const expectedState = { name: 'my state', age: 21 };
-      expect(resultState).toEqual(expectedState);
-    });
-
-    it(`should allow for patching the state using a function`, () => {
-      // Arrange
-      @State({ name: 'foo', defaults: { name: 'my state' } })
-      class FooState {
-        @Action(TestAction)
-        test({ patchState }: StateContext<any>, { payload }: TestAction) {
-          patchState(existing => {
+        test({ setState }: StateContext<IFooStateModel>, { payload }: TestAction) {
+          setState((existing: IFooStateModel) => {
             return { ...existing, age: payload, updated: true };
           });
         }
@@ -114,18 +95,37 @@ describe('Action handlers', () => {
       const expectedState = { name: 'my state', age: 21, updated: true };
       expect(resultState).toEqual(expectedState);
     });
+
+    it(`should allow for patching the state`, () => {
+      // Arrange
+      @State<IFooStateModel>({ name: 'foo', defaults: { name: 'my state' } })
+      class FooState {
+        @Action(TestAction)
+        test({ patchState }: StateContext<IFooStateModel>, { payload }: TestAction) {
+          patchState({ age: payload });
+        }
+      }
+
+      const { store } = setup({ stores: [FooState] });
+      // Act
+      store.dispatch(new TestAction(21));
+      // Assert
+      const resultState = store.selectSnapshot(FooState);
+      const expectedState = { name: 'my state', age: 21 };
+      expect(resultState).toEqual(expectedState);
+    });
   });
 
   describe('for asynchronous handlers ', () => {
     it(`should allow for retrieval of the current state during the callback`, fakeAsync(() => {
       // Arrange
-      let currentState = null;
+      let currentState: any = null;
 
       const defaultState = { name: 'current state' };
-      @State({ name: 'foo', defaults: defaultState })
+      @State<IFooStateModel>({ name: 'foo', defaults: defaultState })
       class FooState {
         @Action(TestAction)
-        test({ getState }: StateContext<any>) {
+        test({ getState }: StateContext<IFooStateModel>) {
           return timer(0).pipe(
             tap(() => {
               currentState = getState();
@@ -146,10 +146,10 @@ describe('Action handlers', () => {
 
     it(`should allow for the state to be set during the callback`, fakeAsync(() => {
       // Arrange
-      @State({ name: 'foo', defaults: { name: 'old state' } })
+      @State<IFooStateModel>({ name: 'foo', defaults: { name: 'old state' } })
       class FooState {
         @Action(TestAction)
-        test({ setState }: StateContext<any>, { payload }: TestAction) {
+        test({ setState }: StateContext<IFooStateModel>, { payload }: TestAction) {
           return timer(0).pipe(
             tap(() => {
               setState(payload);
@@ -170,12 +170,40 @@ describe('Action handlers', () => {
       expect(resultState).not.toEqual(stateBeforeAsync);
     }));
 
-    it(`should allow for patching the state during the callback`, fakeAsync(() => {
+    it(`should allow for the state to be set using a function during the callback`, fakeAsync(() => {
       // Arrange
-      @State({ name: 'foo', defaults: { name: 'my state' } })
+      @State<IFooStateModel>({ name: 'foo', defaults: { name: 'my state' } })
       class FooState {
         @Action(TestAction)
-        test({ patchState }: StateContext<any>, { payload }: TestAction) {
+        test({ setState }: StateContext<IFooStateModel>, { payload }: TestAction) {
+          return timer(0).pipe(
+            tap(() => {
+              setState(existing => {
+                return { ...existing, age: payload, updated: true };
+              });
+            })
+          );
+        }
+      }
+
+      const { store } = setup({ stores: [FooState] });
+      store.dispatch(new TestAction(21));
+      const stateBeforeAsync = store.selectSnapshot(FooState);
+      // Act
+      tick();
+      // Assert
+      const resultState = store.selectSnapshot(FooState);
+      const expectedState = { name: 'my state', age: 21, updated: true };
+      expect(resultState).toEqual(expectedState);
+      expect(resultState).not.toEqual(stateBeforeAsync);
+    }));
+
+    it(`should allow for patching the state during the callback`, fakeAsync(() => {
+      // Arrange
+      @State<IFooStateModel>({ name: 'foo', defaults: { name: 'my state' } })
+      class FooState {
+        @Action(TestAction)
+        test({ patchState }: StateContext<IFooStateModel>, { payload }: TestAction) {
           return timer(0).pipe(
             tap(() => {
               patchState({ age: payload });
@@ -192,34 +220,6 @@ describe('Action handlers', () => {
       // Assert
       const resultState = store.selectSnapshot(FooState);
       const expectedState = { name: 'my state', age: 21 };
-      expect(resultState).toEqual(expectedState);
-      expect(resultState).not.toEqual(stateBeforeAsync);
-    }));
-
-    it(`should allow for patching the state using a function during the callback`, fakeAsync(() => {
-      // Arrange
-      @State({ name: 'foo', defaults: { name: 'my state' } })
-      class FooState {
-        @Action(TestAction)
-        test({ patchState }: StateContext<any>, { payload }: TestAction) {
-          return timer(0).pipe(
-            tap(() => {
-              patchState(existing => {
-                return { ...existing, age: payload, updated: true };
-              });
-            })
-          );
-        }
-      }
-
-      const { store } = setup({ stores: [FooState] });
-      store.dispatch(new TestAction(21));
-      const stateBeforeAsync = store.selectSnapshot(FooState);
-      // Act
-      tick();
-      // Assert
-      const resultState = store.selectSnapshot(FooState);
-      const expectedState = { name: 'my state', age: 21, updated: true };
       expect(resultState).toEqual(expectedState);
       expect(resultState).not.toEqual(stateBeforeAsync);
     }));
