@@ -29,7 +29,6 @@
   * [Life-cycle](advanced/life-cycle.md)
   * [Meta Reducers](advanced/meta-reducer.md)
   * [Shared State](advanced/shared-state.md)
-  * [Hot Module Replacement](advanced/hmr.md)
 * Recipes
   * [Authentication](recipes/authentication.md)
   * [Caching](recipes/cache.md)
@@ -44,6 +43,7 @@
   * [Forms](plugins/form.md)
   * [Web Socket](plugins/websocket.md)
   * [Router](plugins/router.md)
+  * [Hot Module Replacement](plugins/hmr.md)
 * NGXS Labs
   * [Introduction](ngxs-labs/intro.md)
   * [Emitter](ngxs-labs/emitter.md)

@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
+import { StateOperations } from '@ngxs/store';
 import { BrowserTransferStateModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
-import { NgxsHmrPlugin, NgxsStoreSnapshot } from '@ngxs/hmr-plugin';
-import { StateStream } from '@ngxs/store';
+import { NgxsHmrLifeCycle, NgxsStoreSnapshot } from '@ngxs/hmr-plugin';
 
 import { AppComponent } from './app.component';
 import { AppModule } from './app.module';
@@ -20,17 +20,16 @@ import { AppModule } from './app.module';
   ],
   providers: [{ provide: 'ORIGIN_URL', useValue: location.origin }]
 })
-export class AppBrowserModule implements NgxsHmrPlugin {
-
-  public hmrNgxsStoreOnInit(state: StateStream, snapshot: NgxsStoreSnapshot) {
-    console.log('[NGXS HMR]: Current state', state.getValue());
-    console.log('[NGXS HMR]: Previous state', snapshot);
-    state.next({ ...state.getValue(), ...snapshot });
+export class AppBrowserModule implements NgxsHmrLifeCycle<NgxsStoreSnapshot> {
+  public hmrNgxsStoreOnInit(ctx: StateOperations<NgxsStoreSnapshot>, snapshot: NgxsStoreSnapshot) {
+    console.log('[NGXS HMR] Current state', ctx.getState());
+    console.log('[NGXS HMR] Previous state', snapshot);
+    ctx.setState({ ...ctx.getState(), ...snapshot });
   }
 
-  public hmrNgxsStoreOnDestroy(state: StateStream): NgxsStoreSnapshot  {
-    console.log('[NGXS HMR]: Return the necessary HMR state for reuse...');
-    return state.getValue();
+  public hmrNgxsStoreBeforeOnDestroy(ctx: StateOperations<NgxsStoreSnapshot>): NgxsStoreSnapshot {
+    const snapshot: NgxsStoreSnapshot = ctx.getState();
+    console.log('[NGXS HMR] Saved state before on destroy', snapshot);
+    return snapshot;
   }
-
 }

@@ -127,21 +127,22 @@ if (environment.hmr) {
 ### Update src/app/app.module.ts to manage the state in HMR lifecycle:
 
 ```ts
-import { StateStream } from '@ngxs/store';
-import { NgxsHmrPlugin, NgxsStoreSnapshot } from '@ngxs/hmr-plugin';
+import { StateOperations } from '@ngxs/store';
+import { NgxsHmrLifeCycle, NgxsStoreSnapshot } from '@ngxs/hmr-plugin';
 
 @NgModule({ .. })
-export class AppModule implements NgxsHmrPlugin {
- 
-  public hmrNgxsStoreOnInit(state: StateStream, snapshot: NgxsStoreSnapshot) {
-    console.log('[NGXS HMR]: Current state', state.getValue());
-    console.log('[NGXS HMR]: Previous state', snapshot);
-    state.next({ ...state.getValue(), ...snapshot });
+export class AppBrowserModule implements NgxsHmrLifeCycle<NgxsStoreSnapshot> {
+
+  public hmrNgxsStoreOnInit(ctx: StateOperations<NgxsStoreSnapshot>, snapshot: NgxsStoreSnapshot) {
+    console.log('[NGXS HMR] Current state', ctx.getState());
+    console.log('[NGXS HMR] Previous state', snapshot);
+    ctx.setState({ ...ctx.getState(), ...snapshot });
   }
 
-  public hmrNgxsStoreOnDestroy(state: StateStream): NgxsStoreSnapshot  {
-    console.log('[NGXS HMR]: Return the necessary HMR state for reuse...');
-    return state.getValue();
+  public hmrNgxsStoreBeforeOnDestroy(ctx: StateOperations<NgxsStoreSnapshot>): NgxsStoreSnapshot  {
+    const snapshot: NgxsStoreSnapshot = ctx.getState();
+    console.log('[NGXS HMR] Saved state before on destroy', snapshot);
+    return snapshot;
   }
 
 }

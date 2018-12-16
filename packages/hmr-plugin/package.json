@@ -10,9 +10,11 @@
   },
   "ngPackage": {
     "lib": {
-      "flatModuleFile": "ngxs-store",
+      "flatModuleFile": "ngxs-hmr-plugin",
       "entryFile": "index.ts",
-      "umdModuleIds": {}
+      "umdModuleIds": {
+        "@ngxs/store": "ngxs-store"
+      }
     },
     "dest": "../../@ngxs/hmr-plugin"
   }

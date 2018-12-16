@@ -1,21 +1,31 @@
-import { StateStream } from '@ngxs/store';
+import { StateOperations } from '@ngxs/store';
+import { NgModuleRef } from '@angular/core';
 
-export interface NgxsStoreSnapshot {
-  [key: string]: any;
+export interface NgxsStoreSnapshot<T = any> {
+  [key: string]: T | T[];
 }
 
-export interface NgxsHmrPlugin {
+export enum NGXS_HMR {
+  hmrNgxsStoreOnInit = 'hmrNgxsStoreOnInit',
+  hmrNgxsStoreBeforeOnDestroy = 'hmrNgxsStoreBeforeOnDestroy',
+  SNAPSHOT_KEY = '__NGXS_HMR_SNAPSHOT__'
+}
 
+export interface NgxsHmrLifeCycle<T = NgxsStoreSnapshot> {
   /**
    * hmrNgxsStoreOnInit is called when the AppModule on init
-   * @param stream - current state from Store
+   * @param context - current state from Store
    * @param snapshot - previous state from Store after last hmr on destroy
    */
-  hmrNgxsStoreOnInit(stream: StateStream, snapshot: NgxsStoreSnapshot): void;
+  hmrNgxsStoreOnInit(context: StateOperations<T>, snapshot: Partial<T>): void;
 
   /**
    * hmrNgxsStoreOnInit is called when the AppModule on destroy
-   * @param stream - current state from Store
+   * @param context - current state from Store
    */
-  hmrNgxsStoreOnDestroy(stream: StateStream): NgxsStoreSnapshot;
+  hmrNgxsStoreBeforeOnDestroy(context: StateOperations<T>): T;
 }
+
+export type HmrNgxsStoreOnInitFn<T> = (context: StateOperations<T>, snapshot: Partial<T>) => void;
+export type HmrNgxsStoreOnDestroyFn<T> = (context: StateOperations<T>) => T;
+export type HmrBootstrapFn = (module: any, bootstrap: () => Promise<NgModuleRef<any>>, autoClearLogs?: boolean) => void;
