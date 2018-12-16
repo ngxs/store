@@ -65,7 +65,7 @@ function ofActionOperator(allowedTypes: any[], status?: ActionStatus) {
   return function(o: Observable<any>) {
     return o.pipe(
       filterStatus(allowedMap, status),
-      mapAction()
+      status === ActionStatus.Completed ? mapActionResult() : mapAction()
     );
   };
 }
@@ -74,7 +74,21 @@ function filterStatus(allowedTypes: { [key: string]: boolean }, status?: ActionS
   return filter((ctx: ActionContext) => {
     const actionType = getActionTypeFromInstance(ctx.action)!;
     const type = allowedTypes[actionType];
-    return status ? type && ctx.status === status : type;
+    const isComplete = [ActionStatus.Successful, ActionStatus.Canceled, ActionStatus.Errored].includes(ctx.status);
+    return status ? (type && ctx.status === status) || (status === ActionStatus.Completed && isComplete) : type;
+  });
+}
+
+function mapActionResult() {
+  return map(({ action, status, error }: ActionContext) => {
+    return {
+      action: action,
+      result: {
+        successful: ActionStatus.Successful === status,
+        canceled: ActionStatus.Canceled === status,
+        error: error
+      }
+    };
   });
 }
 

@@ -91,8 +91,13 @@ describe('Action', () => {
       expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionSuccessful']);
     });
 
-    actions.pipe(ofActionCompleted(Action1)).subscribe(action => {
+    actions.pipe(ofActionCompleted(Action1)).subscribe(({ action, result }) => {
       callbacksCalled.push('ofActionCompleted');
+      expect(result).toEqual({
+        canceled: false,
+        error: undefined,
+        successful: true
+      });
     });
 
     store.dispatch(new Action1()).subscribe(() => {
@@ -101,7 +106,6 @@ describe('Action', () => {
         'ofActionDispatched',
         'ofAction',
         'ofActionSuccessful',
-        'ofAction',
         'ofActionCompleted'
       ]);
     });
@@ -112,7 +116,6 @@ describe('Action', () => {
       'ofActionDispatched',
       'ofAction',
       'ofActionSuccessful',
-      'ofAction',
       'ofActionCompleted'
     ]);
   }));
@@ -140,8 +143,13 @@ describe('Action', () => {
       expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
     });
 
-    actions.pipe(ofActionCompleted(ErrorAction)).subscribe(action => {
+    actions.pipe(ofActionCompleted(ErrorAction)).subscribe(({ action, result }) => {
       callbacksCalled.push('ofActionCompleted');
+      expect(result).toEqual({
+        canceled: false,
+        error: Error('this is a test error'),
+        successful: false
+      });
     });
 
     store.dispatch(new ErrorAction()).subscribe({
@@ -151,7 +159,6 @@ describe('Action', () => {
           'ofActionDispatched',
           'ofAction',
           'ofActionErrored',
-          'ofAction',
           'ofActionCompleted'
         ])
     });
@@ -162,7 +169,6 @@ describe('Action', () => {
       'ofActionDispatched',
       'ofAction',
       'ofActionErrored',
-      'ofAction',
       'ofActionCompleted'
     ]);
   }));
@@ -182,10 +188,6 @@ describe('Action', () => {
       callbacksCalled.push('ofActionErrored');
     });
 
-    actions.pipe(ofActionCompleted(CancelingAction)).subscribe(action => {
-      callbacksCalled.push('ofActionCompleted');
-    });
-
     actions.pipe(ofActionSuccessful(CancelingAction)).subscribe(action => {
       callbacksCalled.push('ofActionSuccessful');
       expect(callbacksCalled).toEqual([
@@ -195,8 +197,6 @@ describe('Action', () => {
         'ofActionDispatched',
         'ofAction',
         'ofActionCanceled',
-        'ofAction',
-        'ofActionCompleted',
         'ofAction',
         'ofActionSuccessful'
       ]);
@@ -227,11 +227,7 @@ describe('Action', () => {
       'ofAction',
       'ofActionCanceled',
       'ofAction',
-      'ofActionCompleted',
-      'ofAction',
-      'ofActionSuccessful',
-      'ofAction',
-      'ofActionCompleted'
+      'ofActionSuccessful'
     ]);
   }));
 });

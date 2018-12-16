@@ -131,8 +131,7 @@ export class StateFactory {
           this.invokeActions(this._actions, action!).pipe(
             map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
-            catchError(error => of(<ActionContext>{ action, status: ActionStatus.Errored, error })),
-            finalize(() => this._actions.next(<ActionContext>{ action, status: ActionStatus.Completed }))
+            catchError(error => of(<ActionContext>{ action, status: ActionStatus.Errored, error }))
           )
         )
       )
