@@ -53,11 +53,11 @@ Examples:
 * `[Dashboard Page] ArchiveProject`
 
 ### Event examples
-Events are actions that have already happended and we now need to react to them.
+Events are actions that have already happened and we now need to react to them.
 
-The same naming conventions apply as to command, but they should always be in past tense.
+The same naming conventions apply as commands, but they should always be in past tense.
 
-By using `API` in the context part we know that this event was fired because of a async action to an API.
+By using `API` in the context part of the action name we know that this event was fired because of an async action to an API.
 
 Actions are normally dispatched from container components such as router pages.
 By having explicit actions for each page, it's also easier to track where an event came from.

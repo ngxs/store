@@ -1,6 +1,6 @@
 {
   "name": "ngxs",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ngxs/store.git"
@@ -84,7 +84,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.11.1",
     "@angular/animations": "7.1.1",
-    "@angular/cli": "7.1.1",
+    "@angular/cli": "7.1.3",
     "@angular/common": "7.1.1",
     "@angular/compiler": "7.1.1",
     "@angular/compiler-cli": "7.1.1",
