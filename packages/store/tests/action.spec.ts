@@ -15,7 +15,8 @@ import {
   ofActionDispatched,
   ofAction,
   ofActionErrored,
-  ofActionCanceled
+  ofActionCanceled,
+  ofActionCompleted
 } from '../src/operators/of-action';
 import { NoopErrorHandler } from './helpers/utils';
 
@@ -90,12 +91,30 @@ describe('Action', () => {
       expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionSuccessful']);
     });
 
+    actions.pipe(ofActionCompleted(Action1)).subscribe(action => {
+      callbacksCalled.push('ofActionCompleted');
+    });
+
     store.dispatch(new Action1()).subscribe(() => {
-      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionSuccessful']);
+      expect(callbacksCalled).toEqual([
+        'ofAction',
+        'ofActionDispatched',
+        'ofAction',
+        'ofActionSuccessful',
+        'ofAction',
+        'ofActionCompleted'
+      ]);
     });
 
     tick(1);
-    expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionSuccessful']);
+    expect(callbacksCalled).toEqual([
+      'ofAction',
+      'ofActionDispatched',
+      'ofAction',
+      'ofActionSuccessful',
+      'ofAction',
+      'ofActionCompleted'
+    ]);
   }));
 
   it('calls only the dispatched and error action', fakeAsync(() => {
@@ -121,12 +140,31 @@ describe('Action', () => {
       expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
     });
 
+    actions.pipe(ofActionCompleted(ErrorAction)).subscribe(action => {
+      callbacksCalled.push('ofActionCompleted');
+    });
+
     store.dispatch(new ErrorAction()).subscribe({
-      error: error => expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored'])
+      error: error =>
+        expect(callbacksCalled).toEqual([
+          'ofAction',
+          'ofActionDispatched',
+          'ofAction',
+          'ofActionErrored',
+          'ofAction',
+          'ofActionCompleted'
+        ])
     });
 
     tick(1);
-    expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
+    expect(callbacksCalled).toEqual([
+      'ofAction',
+      'ofActionDispatched',
+      'ofAction',
+      'ofActionErrored',
+      'ofAction',
+      'ofActionCompleted'
+    ]);
   }));
 
   it('calls only the dispatched and canceled action', fakeAsync(() => {
@@ -144,6 +182,10 @@ describe('Action', () => {
       callbacksCalled.push('ofActionErrored');
     });
 
+    actions.pipe(ofActionCompleted(CancelingAction)).subscribe(action => {
+      callbacksCalled.push('ofActionCompleted');
+    });
+
     actions.pipe(ofActionSuccessful(CancelingAction)).subscribe(action => {
       callbacksCalled.push('ofActionSuccessful');
       expect(callbacksCalled).toEqual([
@@ -153,6 +195,8 @@ describe('Action', () => {
         'ofActionDispatched',
         'ofAction',
         'ofActionCanceled',
+        'ofAction',
+        'ofActionCompleted',
         'ofAction',
         'ofActionSuccessful'
       ]);
@@ -183,7 +227,11 @@ describe('Action', () => {
       'ofAction',
       'ofActionCanceled',
       'ofAction',
-      'ofActionSuccessful'
+      'ofActionCompleted',
+      'ofAction',
+      'ofActionSuccessful',
+      'ofAction',
+      'ofActionCompleted'
     ]);
   }));
 });
