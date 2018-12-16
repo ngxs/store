@@ -20,7 +20,7 @@ import { states } from './app.state';
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
-    NgxsModule.forRoot(states),
+    NgxsModule.forRoot(states, { developmentMode: !environment.production }),
     NgxsStoragePluginModule.forRoot({
       key: ['todos.todo']
     }),

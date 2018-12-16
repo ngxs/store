@@ -1,4 +1,5 @@
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable, isDevMode, Optional } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 
 import { StateOperations } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
@@ -12,7 +13,12 @@ import { deepFreeze } from '../utils/freeze';
  */
 @Injectable()
 export class InternalStateOperations {
-  constructor(private _stateStream: StateStream, private _dispatcher: InternalDispatcher, private _config: NgxsConfig) {
+  constructor(
+    private _stateStream: StateStream,
+    private _dispatcher: InternalDispatcher,
+    private _config: NgxsConfig,
+    @Optional() private _testBed: TestBed
+  ) {
     this.verifyDevMode();
   }
 
@@ -34,6 +40,9 @@ export class InternalStateOperations {
   }
 
   private verifyDevMode() {
+    const isTestMode = this._testBed !== null;
+    if (isTestMode) return;
+
     const isNgxsDevMode = this._config.developmentMode;
     const isNgDevMode = isDevMode();
     const incorrectProduction = !isNgDevMode && isNgxsDevMode;
