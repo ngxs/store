@@ -2,6 +2,9 @@
 
 * Feature: Support server-side rendering [#698](https://github.com/ngxs/store/pull/698)
 
+# 3.3.3 2018-12-16
+* Fix: Silence console hints in tests [#706](https://github.com/ngxs/store/pull/706)
+
 # 3.3.2 2018-12-04
 * Fix: Remove compromised dependencies [#684](https://github.com/ngxs/store/pull/684)
 * Fix: Add helper for enable development mode [#674](https://github.com/ngxs/store/pull/674)
