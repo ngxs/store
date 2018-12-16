@@ -1,6 +1,6 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from, throwError } from 'rxjs';
-import { shareReplay, takeUntil, map, catchError, filter, mergeMap, defaultIfEmpty, finalize } from 'rxjs/operators';
+import { shareReplay, takeUntil, map, catchError, filter, mergeMap, defaultIfEmpty } from 'rxjs/operators';
 
 import { META_KEY, NgxsLifeCycle, NgxsConfig } from '../symbols';
 import {
