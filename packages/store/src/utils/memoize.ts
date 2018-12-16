@@ -32,7 +32,7 @@ export function memoize<R, T extends (...args: any[]) => R>(func: T, equalityChe
   let lastArgs: IArguments | null = null;
   let lastResult: any = null;
   // we reference arguments instead of spreading them for performance reasons
-  return function memoized() {
+  function memoized() {
     if (!areArgumentsShallowlyEqual(equalityCheck, lastArgs, arguments)) {
       // apply arguments instead of spreading for performance.
       lastResult = func.apply(null, arguments);
@@ -40,5 +40,11 @@ export function memoize<R, T extends (...args: any[]) => R>(func: T, equalityChe
 
     lastArgs = arguments;
     return lastResult;
-  } as T;
+  }
+  (<any>memoized).reset = function() {
+    // The hidden (for now) ability to reset the memoization
+    lastArgs = null;
+    lastResult = null;
+  };
+  return memoized as T;
 }

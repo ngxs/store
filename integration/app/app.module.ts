@@ -19,7 +19,7 @@ import { states } from './app.state';
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
-    NgxsModule.forRoot(states),
+    NgxsModule.forRoot(states, { developmentMode: !environment.production }),
     NgxsFormPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: false }),
     NgxsReduxDevtoolsPluginModule.forRoot({
