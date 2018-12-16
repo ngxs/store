@@ -1,6 +1,7 @@
 # DEV version (to become [3.4.0](https://github.com/ngxs/store/milestone/6))
 
 * Feature: Support server-side rendering [#698](https://github.com/ngxs/store/pull/698)
+* Feature: Enable state operator extensibility [#635](https://github.com/ngxs/store/pull/635)
 
 # 3.3.3 2018-12-16
 * Fix: Silence console hints in tests [#706](https://github.com/ngxs/store/pull/706)
@@ -9,7 +10,6 @@
 * Fix: Remove compromised dependencies [#684](https://github.com/ngxs/store/pull/684)
 * Fix: Add helper for enable development mode [#674](https://github.com/ngxs/store/pull/674)
 * Fix: Support underscore in state name [#663](https://github.com/ngxs/store/pull/663)
-
 
 # 3.3.1 2018-11-24
 * Fix: Storage Plugin should handle 'undefined' string [#671](https://github.com/ngxs/store/pull/671)
