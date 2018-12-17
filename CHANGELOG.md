@@ -2,6 +2,7 @@
 
 * Feature: Support server-side rendering [#698](https://github.com/ngxs/store/pull/698)
 * Feature: Enable state operator extensibility [#635](https://github.com/ngxs/store/pull/635)
+* Feature: Add `ofActionCompleted` action handler [#712](https://github.com/ngxs/store/pull/712)
 
 # 3.3.3 2018-12-16
 * Fix: Silence console hints in tests [#706](https://github.com/ngxs/store/pull/706)
