@@ -5,11 +5,7 @@ export interface NgxsStoreSnapshot<T = any> {
   [key: string]: T | T[];
 }
 
-export enum NGXS_HMR {
-  hmrNgxsStoreOnInit = 'hmrNgxsStoreOnInit',
-  hmrNgxsStoreBeforeOnDestroy = 'hmrNgxsStoreBeforeOnDestroy',
-  SNAPSHOT_KEY = '__NGXS_HMR_SNAPSHOT__'
-}
+export const NGXS_HMR_SNAPSHOT_KEY = '__NGXS_HMR_SNAPSHOT__';
 
 export interface NgxsHmrLifeCycle<T = NgxsStoreSnapshot> {
   /**
@@ -25,5 +21,3 @@ export interface NgxsHmrLifeCycle<T = NgxsStoreSnapshot> {
    */
   hmrNgxsStoreBeforeOnDestroy(context: StateOperations<T>): T;
 }
-
-export type HmrBootstrapFn = (module: any, bootstrap: () => Promise<NgModuleRef<any>>, autoClearLogs?: boolean) => void;
