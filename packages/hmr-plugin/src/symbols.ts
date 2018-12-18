@@ -26,6 +26,4 @@ export interface NgxsHmrLifeCycle<T = NgxsStoreSnapshot> {
   hmrNgxsStoreBeforeOnDestroy(context: StateOperations<T>): T;
 }
 
-export type HmrNgxsStoreOnInitFn<T> = (context: StateOperations<T>, snapshot: Partial<T>) => void;
-export type HmrNgxsStoreOnDestroyFn<T> = (context: StateOperations<T>) => T;
 export type HmrBootstrapFn = (module: any, bootstrap: () => Promise<NgModuleRef<any>>, autoClearLogs?: boolean) => void;

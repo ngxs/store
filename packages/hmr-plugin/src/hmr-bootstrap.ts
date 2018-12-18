@@ -1,12 +1,12 @@
 import { ApplicationRef, NgModuleRef } from '@angular/core';
 import { createNewHosts } from '@angularclass/hmr';
 
-import { hmrBeforeOnDestroy, hmrDoBootstrap, setStateInHmrStorage, validateExistHmrStorage } from './internal';
-import { HmrBootstrapFn, NgxsStoreSnapshot } from './symbols';
+import { hmrInit, hmrDoBootstrap, hmrDoDispose } from './internal';
+import { HmrBootstrapFn } from './symbols';
 
 export const hmrNgxsBootstrap: HmrBootstrapFn = (module, bootstrap, autoClearLogs = true) => {
   let ngModule: NgModuleRef<any>;
-  validateExistHmrStorage();
+  hmrInit();
   module.hot.accept();
 
   bootstrap().then((ref: NgModuleRef<any>) => (ngModule = hmrDoBootstrap(ref)));
@@ -17,8 +17,7 @@ export const hmrNgxsBootstrap: HmrBootstrapFn = (module, bootstrap, autoClearLog
       console.log('[NGXS HMR] clear old logs...');
     }
 
-    const snapshot: Partial<NgxsStoreSnapshot> = hmrBeforeOnDestroy<NgxsStoreSnapshot>(ngModule);
-    setStateInHmrStorage(snapshot);
+    hmrDoDispose(ngModule);
 
     const appRef: ApplicationRef = ngModule.injector.get(ApplicationRef);
     const elements = appRef.components.map(c => c.location.nativeElement);
