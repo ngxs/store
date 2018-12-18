@@ -30,8 +30,12 @@ export class TodoState implements NgxsOnInit {
     return state.filter(s => s.indexOf('panda') > -1);
   }
 
-  ngxsOnInit(ctx: StateContext<string[]>) {
-    ctx.setState(['NgxsOnInit todo']);
+  ngxsOnInit({ getState, setState }: StateContext<string[]>) {
+    const state: string[] = getState();
+    const payload = 'NgxsOnInit todo';
+    if (!state.includes(payload)) {
+      setState([...state, payload]);
+    }
   }
 
   @Action(AddTodo)

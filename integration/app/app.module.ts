@@ -7,7 +7,7 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 
-import { environment } from '../environments/environment';
+import { environment as env } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { routes } from './app.routes';
 import { states } from './app.state';
@@ -19,13 +19,12 @@ import { states } from './app.state';
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
-    NgxsModule.forRoot(states, { developmentMode: !environment.production }),
     NgxsFormPluginModule.forRoot(),
+    NgxsModule.forRoot(states, { developmentMode: !env.production }),
     NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: false }),
-    NgxsReduxDevtoolsPluginModule.forRoot({
-      disabled: environment.production
-    })
+    NgxsReduxDevtoolsPluginModule.forRoot({ disabled: env.production })
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

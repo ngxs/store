@@ -46,7 +46,8 @@
     "packages/storage-plugin",
     "packages/websocket-plugin",
     "packages/form-plugin",
-    "packages/router-plugin"
+    "packages/router-plugin",
+    "packages/hmr-plugin"
   ],
   "scripts": {
     "// - Binaries": "Run against node_modules/.bin",
