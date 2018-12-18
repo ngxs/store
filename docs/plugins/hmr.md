@@ -127,19 +127,19 @@ if (environment.hmr) {
 ### Update src/app/app.module.ts to manage the state in HMR lifecycle:
 
 ```ts
-import { StateOperations } from '@ngxs/store';
+import { StateContext } from '@ngxs/store';
 import { NgxsHmrLifeCycle, NgxsStoreSnapshot } from '@ngxs/hmr-plugin';
 
 @NgModule({ .. })
 export class AppBrowserModule implements NgxsHmrLifeCycle<NgxsStoreSnapshot> {
 
-  public hmrNgxsStoreOnInit(ctx: StateOperations<NgxsStoreSnapshot>, snapshot: NgxsStoreSnapshot) {
+  public hmrNgxsStoreOnInit(ctx: StateContext<NgxsStoreSnapshot>, snapshot: NgxsStoreSnapshot) {
     console.log('[NGXS HMR] Current state', ctx.getState());
     console.log('[NGXS HMR] Previous state', snapshot);
-    ctx.setState({ ...ctx.getState(), ...snapshot });
+    ctx.patchState(snapshot);
   }
 
-  public hmrNgxsStoreBeforeOnDestroy(ctx: StateOperations<NgxsStoreSnapshot>): NgxsStoreSnapshot  {
+  public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<NgxsStoreSnapshot>): NgxsStoreSnapshot  {
     const snapshot: NgxsStoreSnapshot = ctx.getState();
     console.log('[NGXS HMR] Saved state before on destroy', snapshot);
     return snapshot;
