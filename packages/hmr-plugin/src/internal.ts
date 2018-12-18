@@ -1,8 +1,7 @@
 import { NgModuleRef } from '@angular/core';
-import { InternalStateOperations } from '@ngxs/store';
+import { Store, StateContext, StateOperator } from '@ngxs/store';
 
 import { NGXS_HMR_SNAPSHOT_KEY, NgxsStoreSnapshot, NgxsHmrLifeCycle } from './symbols';
-import { StateOperations } from '@ngxs/store/src/internal/internals';
 
 export function hmrDoBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
   ref: NgModuleRef<T>
@@ -11,9 +10,9 @@ export function hmrDoBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnaps
   const hmrNgxsStoreOnInitFn = ngxsHmrLifeCycle.hmrNgxsStoreOnInit;
 
   if (typeof hmrNgxsStoreOnInitFn === 'function') {
-    const stateOperation = getStateOperations<S>(ref);
-    if (stateOperation) {
-      hmrNgxsStoreOnInitFn(stateOperation, getStateFromHmrStorage());
+    const stateContext = getStateContext<S>(ref);
+    if (stateContext) {
+      hmrNgxsStoreOnInitFn(stateContext, getStateFromHmrStorage());
     }
     setStateInHmrStorage({});
   }
@@ -32,18 +31,44 @@ function hmrBeforeOnDestroy<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot
   const hmrNgxsStoreOnDestroyFn = ngxsHmrLifeCycle.hmrNgxsStoreBeforeOnDestroy;
 
   if (typeof hmrNgxsStoreOnDestroyFn === 'function') {
-    const stateOperation = getStateOperations<S>(ref);
-    if (stateOperation) {
-      resultSnapshot = hmrNgxsStoreOnDestroyFn(stateOperation);
+    const stateContext = getStateContext<S>(ref);
+    if (stateContext) {
+      resultSnapshot = hmrNgxsStoreOnDestroyFn(stateContext);
     }
   }
 
   return resultSnapshot;
 }
 
-function getStateOperations<S = any>(ref: NgModuleRef<any>): StateOperations<S> {
-  const internalFactory: InternalStateOperations = ref.injector.get(InternalStateOperations, null);
-  return internalFactory && internalFactory.getRootStateOperations();
+function getStateContext<S = any>(ref: NgModuleRef<any>): StateContext<S> | undefined {
+  const store: Store = ref.injector.get(Store, null);
+  if (!store) {
+    return undefined;
+  }
+  function isStateOperator(value: S | StateOperator<S>): value is StateOperator<S> {
+    return typeof value === 'function';
+  }
+
+  const stateContext: StateContext<S> = {
+    dispatch(actions) {
+      return store.dispatch(actions);
+    },
+    getState() {
+      return store.snapshot();
+    },
+    setState(val) {
+      if (isStateOperator(val)) {
+        const currentState = store.snapshot();
+        val = val(currentState);
+      }
+      return store.reset(val);
+    },
+    patchState(val) {
+      const currentState = store.snapshot();
+      return store.reset({ ...currentState, ...val });
+    }
+  };
+  return stateContext;
 }
 
 /**
