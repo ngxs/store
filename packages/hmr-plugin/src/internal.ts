@@ -10,7 +10,7 @@ export function hmrDoBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnaps
   const hmrNgxsStoreOnInitFn = ngxsHmrLifeCycle.hmrNgxsStoreOnInit;
 
   if (typeof hmrNgxsStoreOnInitFn === 'function') {
-    const stateContext = getStateContext<S>(ref);
+    const stateContext = getStateContext<T, S>(ref);
     if (stateContext) {
       hmrNgxsStoreOnInitFn(stateContext, getStateFromHmrStorage());
     }
@@ -21,7 +21,7 @@ export function hmrDoBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnaps
 }
 
 export function hmrDoDispose<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(ngModule: NgModuleRef<T>) {
-  const snapshot = hmrBeforeOnDestroy(ngModule);
+  const snapshot = hmrBeforeOnDestroy<T, S>(ngModule);
   setStateInHmrStorage(snapshot);
 }
 
@@ -31,7 +31,7 @@ function hmrBeforeOnDestroy<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot
   const hmrNgxsStoreOnDestroyFn = ngxsHmrLifeCycle.hmrNgxsStoreBeforeOnDestroy;
 
   if (typeof hmrNgxsStoreOnDestroyFn === 'function') {
-    const stateContext = getStateContext<S>(ref);
+    const stateContext = getStateContext<T, S>(ref);
     if (stateContext) {
       resultSnapshot = hmrNgxsStoreOnDestroyFn(stateContext);
     }
@@ -40,7 +40,9 @@ function hmrBeforeOnDestroy<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot
   return resultSnapshot;
 }
 
-function getStateContext<S = any>(ref: NgModuleRef<any>): StateContext<S> | undefined {
+function getStateContext<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
+  ref: NgModuleRef<T>
+): StateContext<S> | undefined {
   const store: Store = ref.injector.get(Store, null);
   if (!store) {
     return undefined;
@@ -54,18 +56,21 @@ function getStateContext<S = any>(ref: NgModuleRef<any>): StateContext<S> | unde
       return store.dispatch(actions);
     },
     getState() {
-      return store.snapshot();
+      return <S>store.snapshot();
     },
     setState(val) {
       if (isStateOperator(val)) {
         const currentState = store.snapshot();
         val = val(currentState);
       }
-      return store.reset(val);
+      store.reset(val);
+      return <S>val;
     },
     patchState(val) {
       const currentState = store.snapshot();
-      return store.reset({ ...currentState, ...val });
+      const newState = { ...currentState, ...(<object>val) };
+      store.reset(newState);
+      return newState;
     }
   };
   return stateContext;

@@ -1,7 +1,7 @@
 import { StateContext } from '@ngxs/store';
 
-export interface NgxsStoreSnapshot<T = any> {
-  [key: string]: T | T[];
+export interface NgxsStoreSnapshot {
+  [key: string]: any;
 }
 
 export const NGXS_HMR_SNAPSHOT_KEY = '__NGXS_HMR_SNAPSHOT__';

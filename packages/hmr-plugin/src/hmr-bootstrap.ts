@@ -13,7 +13,7 @@ export function hmrNgxsBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSna
   hmrInit();
   module.hot.accept();
 
-  const promise = bootstrap().then((ref: NgModuleRef<T>) => (ngModule = hmrDoBootstrap(ref)));
+  const promise = bootstrap().then((ref: NgModuleRef<T>) => (ngModule = hmrDoBootstrap<T, S>(ref)));
 
   module.hot.dispose(() => {
     if (!ngModule) {
@@ -25,7 +25,7 @@ export function hmrNgxsBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSna
       console.log('[NGXS HMR] clear old logs...');
     }
 
-    hmrDoDispose(ngModule);
+    hmrDoDispose<T, S>(ngModule);
 
     const appRef: ApplicationRef = ngModule.injector.get(ApplicationRef);
     const elements = appRef.components.map(c => c.location.nativeElement);
