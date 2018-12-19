@@ -1,7 +1,7 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) (to become [3.4.0](https://github.com/ngxs/store/milestone/6))
 
 ```bash
-$ npm install @ngxs/store@dev --save-dev
+$ npm install @ngxs/store@dev
 ```
 
 * Feature: Support server-side rendering [#698](https://github.com/ngxs/store/pull/698)
