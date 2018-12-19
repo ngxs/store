@@ -3,7 +3,9 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@ngxs/*": ["../@ngxs/*"]
+      "@ngxs/*": ["../@ngxs/*"],
+      "@integration/*": ["./app/*"],
+      "@integration/env/*": ["./environments/*"]
     },
     "outDir": "./out-tsc/spec",
     "module": "commonjs",

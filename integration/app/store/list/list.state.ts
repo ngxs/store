@@ -6,7 +6,7 @@ import { State, Selector } from '@ngxs/store';
 })
 export class ListState {
   @Selector()
-  static hello() {
+  public static hello(): string {
     return 'hello';
   }
 }
