@@ -1,4 +1,10 @@
-import { NgModule, ModuleWithProviders, Optional, Inject, InjectionToken } from '@angular/core';
+import {
+  NgModule,
+  ModuleWithProviders,
+  Optional,
+  Inject,
+  InjectionToken
+} from '@angular/core';
 
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';

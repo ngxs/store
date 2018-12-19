@@ -64,7 +64,10 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
   }
 
   isIE(): boolean {
-    const ua = typeof window !== 'undefined' && window.navigator.userAgent ? window.navigator.userAgent : '';
+    const ua =
+      typeof window !== 'undefined' && window.navigator.userAgent
+        ? window.navigator.userAgent
+        : '';
     let ms_ie = false;
 
     const old_ie = ua.indexOf('MSIE ');

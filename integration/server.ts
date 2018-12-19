@@ -11,7 +11,10 @@ const { provideModuleMap } = require('@nguniversal/module-map-ngfactory-loader')
 
 const mainFiles = files.filter(file => file.startsWith('main'));
 const hash = mainFiles[0].split('.')[1];
-const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require(`./../dist-integration-server/main.${hash}`);
+const {
+  AppServerModuleNgFactory,
+  LAZY_MODULE_MAP
+} = require(`./../dist-integration-server/main.${hash}`);
 import { ngExpressEngine } from '@nguniversal/express-engine';
 import { exit } from 'process';
 const PORT = process.env.PORT || 4000;
@@ -51,7 +54,8 @@ app.set('views', '.');
 app.get('*.*', express.static(path.join(__dirname, '..', 'dist-integration')));
 
 app.get('*', (req, res) => {
-  const http = req.headers['x-forwarded-proto'] === undefined ? 'http' : req.headers['x-forwarded-proto'];
+  const http =
+    req.headers['x-forwarded-proto'] === undefined ? 'http' : req.headers['x-forwarded-proto'];
 
   const url = req.originalUrl;
   // tslint:disable-next-line:no-console

@@ -52,7 +52,9 @@ describe('Dispatch', () => {
 
     const store: Store = TestBed.get(Store);
 
-    store.dispatch(new Increment()).subscribe(() => {}, err => observedCalls.push('observer.error(...)'));
+    store
+      .dispatch(new Increment())
+      .subscribe(() => {}, err => observedCalls.push('observer.error(...)'));
 
     expect(observedCalls).toEqual(['handleError(...)', 'observer.error(...)']);
   }));
@@ -183,7 +185,13 @@ describe('Dispatch', () => {
     store.dispatch(new Increment());
 
     store
-      .dispatch([new Increment(), new Increment(), new Increment(), new Increment(), new Decrement()])
+      .dispatch([
+        new Increment(),
+        new Increment(),
+        new Increment(),
+        new Increment(),
+        new Decrement()
+      ])
       .subscribe(() => {
         store.select(MyState).subscribe(res => {
           expect(res).toBe(5);
@@ -372,7 +380,9 @@ describe('Dispatch', () => {
         class MyState {
           @Action(Increment)
           increment({ getState, setState, dispatch }: StateContext<number>) {
-            return new Promise<void>(resolve => setTimeout(resolve, 1)).then(() => actionsHandled++);
+            return new Promise<void>(resolve => setTimeout(resolve, 1)).then(
+              () => actionsHandled++
+            );
           }
         }
 
@@ -397,12 +407,16 @@ describe('Dispatch', () => {
         class MyState {
           @Action(Increment)
           async increment({ getState, setState, dispatch }: StateContext<number>) {
-            return new Promise<void>(resolve => setTimeout(resolve, 1)).then(() => actionsHandled++);
+            return new Promise<void>(resolve => setTimeout(resolve, 1)).then(
+              () => actionsHandled++
+            );
           }
 
           @Action(Increment)
           incrementAgain({ getState, setState, dispatch }: StateContext<number>) {
-            return new Promise<void>(resolve => setTimeout(resolve, 2)).then(() => actionsHandled++);
+            return new Promise<void>(resolve => setTimeout(resolve, 2)).then(
+              () => actionsHandled++
+            );
           }
         }
 
@@ -500,7 +514,9 @@ describe('Dispatch', () => {
 
           @Action(Increment)
           incrementAsync({ getState, setState, dispatch }: StateContext<number>) {
-            return new Promise<void>(resolve => setTimeout(resolve, 1)).then(() => actionsHandled++);
+            return new Promise<void>(resolve => setTimeout(resolve, 1)).then(
+              () => actionsHandled++
+            );
           }
 
           @Action(Increment)
@@ -646,7 +662,11 @@ describe('Dispatch', () => {
         resolvers[0]();
         resolvers[1]();
         tick(0);
-        expect(subscriptionsCalled).toEqual(['previous complete', 'latest', 'latest complete']);
+        expect(subscriptionsCalled).toEqual([
+          'previous complete',
+          'latest',
+          'latest complete'
+        ]);
       }));
     });
 
@@ -741,9 +761,13 @@ describe('Dispatch', () => {
 
         const store: Store = TestBed.get(Store);
 
-        store.dispatch(new Append('dddd')).subscribe(state => expect(state.text).toEqual('abbcccdddd'));
+        store
+          .dispatch(new Append('dddd'))
+          .subscribe(state => expect(state.text).toEqual('abbcccdddd'));
         store.dispatch(new Append('a')).subscribe(state => expect(state.text).toEqual('a'));
-        store.dispatch(new Append('ccc')).subscribe(state => expect(state.text).toEqual('abbccc'));
+        store
+          .dispatch(new Append('ccc'))
+          .subscribe(state => expect(state.text).toEqual('abbccc'));
         store.dispatch(new Append('bb')).subscribe(state => expect(state.text).toEqual('abb'));
       }));
     });
@@ -778,7 +802,12 @@ describe('Dispatch', () => {
         store
           .dispatch([new Append('dddd'), new Append('a'), new Append('ccc'), new Append('bb')])
           .subscribe(results => {
-            expect(results.map((r: any) => r.text)).toEqual(['abbcccdddd', 'a', 'abbccc', 'abb']);
+            expect(results.map((r: any) => r.text)).toEqual([
+              'abbcccdddd',
+              'a',
+              'abbccc',
+              'abb'
+            ]);
           });
       }));
     });

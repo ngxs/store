@@ -84,7 +84,9 @@ export class InternalDispatcher {
 
   private getActionResultStream(action: any): Observable<ActionContext> {
     return this._actionResults.pipe(
-      filter((ctx: ActionContext) => ctx.action === action && ctx.status !== ActionStatus.Dispatched),
+      filter(
+        (ctx: ActionContext) => ctx.action === action && ctx.status !== ActionStatus.Dispatched
+      ),
       take(1),
       shareReplay()
     );

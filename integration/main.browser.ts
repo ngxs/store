@@ -5,7 +5,6 @@ import { hmrNgxsBootstrap } from '@ngxs/hmr-plugin';
 import { AppBrowserModule } from './app/app.browser.module';
 import { environment } from './environments/environment';
 
-
 if (environment.production) {
   enableProdMode();
 }

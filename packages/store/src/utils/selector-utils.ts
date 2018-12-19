@@ -1,4 +1,9 @@
-import { SelectFromState, ensureSelectorMetadata, getSelectorMetadata, getStoreMetadata } from '../internal/internals';
+import {
+  SelectFromState,
+  ensureSelectorMetadata,
+  getSelectorMetadata,
+  getStoreMetadata
+} from '../internal/internals';
 import { memoize } from '../utils/memoize';
 
 /**

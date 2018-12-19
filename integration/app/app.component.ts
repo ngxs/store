@@ -11,7 +11,12 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
     <div class="todo-list">
       <div>
         <h3>Reactive Form</h3>
-        <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizza">
+        <form
+          [formGroup]="pizzaForm"
+          novalidate
+          (ngSubmit)="onSubmit()"
+          ngxsForm="todos.pizza"
+        >
           Toppings: <input type="text" formControlName="toppings" /> <br />
           Crust <input type="text" formControlName="crust" /> <br />
           Extras
@@ -20,7 +25,8 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
           </span>
           <br />
           <hr />
-          <button type="submit">Set Olives</button> <button type="button" (click)="onPrefix()">Set Prfix</button>
+          <button type="submit">Set Olives</button>
+          <button type="button" (click)="onPrefix()">Set Prfix</button>
           <button type="button" (click)="onLoadData()">Load Data</button>
         </form>
       </div>
@@ -28,7 +34,8 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
       <hr />
       <h3>Todo Form</h3>
       <div class="add-todo">
-        <input placeholder="New Todo" #text /> <button (click)="addTodo(text.value)">Add</button>
+        <input placeholder="New Todo" #text />
+        <button (click)="addTodo(text.value)">Add</button>
       </div>
       <ul>
         <li class="todo" *ngFor="let todo of (todos$ | async); let i = index">
@@ -43,8 +50,7 @@ import { AddTodo, RemoveTodo, TodoState, SetPrefix, TodosState, LoadData } from 
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
-  constructor(private store: Store, private formBuilder: FormBuilder) {
-  }
+  constructor(private store: Store, private formBuilder: FormBuilder) {}
 
   get extras() {
     const ctl: FormArray = <FormArray>this.pizzaForm.get('extras');

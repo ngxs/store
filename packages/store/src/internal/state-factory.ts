@@ -1,6 +1,14 @@
 import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable, of, forkJoin, from, throwError } from 'rxjs';
-import { shareReplay, takeUntil, map, catchError, filter, mergeMap, defaultIfEmpty } from 'rxjs/operators';
+import {
+  shareReplay,
+  takeUntil,
+  map,
+  catchError,
+  filter,
+  mergeMap,
+  defaultIfEmpty
+} from 'rxjs/operators';
 
 import { META_KEY, NgxsLifeCycle, NgxsConfig } from '../symbols';
 import {
@@ -108,7 +116,9 @@ export class StateFactory {
   /**
    * Add a set of states to the store and return the defaulsts
    */
-  addAndReturnDefaults(stateClasses: any[]): { defaults: any; states: MappedStore[] } | undefined {
+  addAndReturnDefaults(
+    stateClasses: any[]
+  ): { defaults: any; states: MappedStore[] } | undefined {
     if (stateClasses) {
       const states = this.add(stateClasses);
       const defaults = states.reduce(
@@ -131,7 +141,9 @@ export class StateFactory {
           this.invokeActions(this._actions, action!).pipe(
             map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
-            catchError(error => of(<ActionContext>{ action, status: ActionStatus.Errored, error }))
+            catchError(error =>
+              of(<ActionContext>{ action, status: ActionStatus.Errored, error })
+            )
           )
         )
       )

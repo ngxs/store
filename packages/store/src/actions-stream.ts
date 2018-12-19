@@ -70,7 +70,11 @@ export class Actions extends Observable<any> {
     super(observer => {
       actions$
         .pipe(enterZone(ngZone))
-        .subscribe(res => observer.next(res), err => observer.error(err), () => observer.complete());
+        .subscribe(
+          res => observer.next(res),
+          err => observer.error(err),
+          () => observer.complete()
+        );
     });
   }
 }

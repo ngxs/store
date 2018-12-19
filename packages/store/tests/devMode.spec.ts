@@ -58,7 +58,10 @@ describe('Development Mode', () => {
       })
       class MyStore {
         @Action(Increment)
-        mutatingIncrement({ getState, setState }: StateContext<StateModel>, { amount }: Increment) {
+        mutatingIncrement(
+          { getState, setState }: StateContext<StateModel>,
+          { amount }: Increment
+        ) {
           const state = getState();
           state.count = Number(getState().count) + amount;
           setState(state);
@@ -174,7 +177,10 @@ describe('Development Mode', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([], { developmentMode: true }), NgxsModule.forFeature([MyStore])],
+        imports: [
+          NgxsModule.forRoot([], { developmentMode: true }),
+          NgxsModule.forFeature([MyStore])
+        ],
         providers: [
           {
             provide: ErrorHandler,
@@ -196,7 +202,10 @@ describe('Development Mode', () => {
       })
       class MyStore {
         @Action(Increment)
-        mutatingIncrement({ getState, setState }: StateContext<StateModel>, { amount }: Increment) {
+        mutatingIncrement(
+          { getState, setState }: StateContext<StateModel>,
+          { amount }: Increment
+        ) {
           const state = getState();
           state.count = Number(getState().count) + amount;
           setState(state);
@@ -238,7 +247,10 @@ describe('Development Mode', () => {
         }
 
         @Action(Increment)
-        mutatingIncrement({ getState, setState }: StateContext<StateModel>, { amount }: Increment) {
+        mutatingIncrement(
+          { getState, setState }: StateContext<StateModel>,
+          { amount }: Increment
+        ) {
           const state = getState();
           state.count = Number(getState().count) + amount;
           setState(state);
@@ -357,7 +369,10 @@ describe('Development Mode', () => {
       })
       class MyStore {
         @Action(Increment)
-        mutatingIncrement({ getState, setState }: StateContext<StateModel>, action: Increment) {
+        mutatingIncrement(
+          { getState, setState }: StateContext<StateModel>,
+          action: Increment
+        ) {
           action.amount++;
           setState({ count: Number(getState().count) + action.amount });
         }
@@ -398,7 +413,10 @@ describe('Development Mode', () => {
         }
 
         @Action(Increment)
-        mutatingIncrement({ getState, setState }: StateContext<StateModel>, action: Increment) {
+        mutatingIncrement(
+          { getState, setState }: StateContext<StateModel>,
+          action: Increment
+        ) {
           action.amount++;
           setState({ count: Number(getState().count) + action.amount });
         }

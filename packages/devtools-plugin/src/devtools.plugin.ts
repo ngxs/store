@@ -2,7 +2,12 @@ import { Injectable, Inject, Injector } from '@angular/core';
 import { NgxsPlugin, getActionTypeFromInstance, Store, NgxsNextPluginFn } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
-import { NgxsDevtoolsExtension, NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS, NgxsDevtoolsAction } from './symbols';
+import {
+  NgxsDevtoolsExtension,
+  NgxsDevtoolsOptions,
+  NGXS_DEVTOOLS_OPTIONS,
+  NgxsDevtoolsAction
+} from './symbols';
 
 /**
  * Adds support for the Redux Devtools extension:
@@ -13,8 +18,12 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
   private readonly devtoolsExtension: NgxsDevtoolsExtension | null = null;
   private readonly windowObj: any = typeof window !== 'undefined' ? window : {};
 
-  constructor(@Inject(NGXS_DEVTOOLS_OPTIONS) private _options: NgxsDevtoolsOptions, private _injector: Injector) {
-    const globalDevtools = this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
+  constructor(
+    @Inject(NGXS_DEVTOOLS_OPTIONS) private _options: NgxsDevtoolsOptions,
+    private _injector: Injector
+  ) {
+    const globalDevtools =
+      this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
     if (globalDevtools) {
       this.devtoolsExtension = globalDevtools.connect(_options) as NgxsDevtoolsExtension;
       this.devtoolsExtension.subscribe(a => this.dispatched(a));
@@ -52,17 +61,26 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
     // Lazy get the store for circular depedency issues
     const store = this._injector.get(Store);
     if (action.type === 'DISPATCH') {
-      if (action.payload.type === 'JUMP_TO_ACTION' || action.payload.type === 'JUMP_TO_STATE') {
+      if (
+        action.payload.type === 'JUMP_TO_ACTION' ||
+        action.payload.type === 'JUMP_TO_STATE'
+      ) {
         const prevState = JSON.parse(action.state);
         store.reset(prevState);
       } else if (action.payload.type === 'TOGGLE_ACTION') {
         console.warn('Skip is not supported at this time.');
       } else if (action.payload.type === 'IMPORT_STATE') {
-        const { actionsById, computedStates, currentStateIndex } = action.payload.nextLiftedState;
+        const {
+          actionsById,
+          computedStates,
+          currentStateIndex
+        } = action.payload.nextLiftedState;
         this.devtoolsExtension!.init(computedStates[0].state);
         Object.keys(actionsById)
           .filter(actionId => actionId !== '0')
-          .forEach(actionId => this.devtoolsExtension!.send(actionsById[actionId], computedStates[actionId].state));
+          .forEach(actionId =>
+            this.devtoolsExtension!.send(actionsById[actionId], computedStates[actionId].state)
+          );
         store.reset(computedStates[currentStateIndex].state);
       }
     } else if (action.type === 'ACTION') {

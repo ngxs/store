@@ -3,7 +3,13 @@ import { FormGroupDirective } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime, first } from 'rxjs/operators';
-import { UpdateFormStatus, UpdateFormValue, UpdateFormDirty, UpdateFormErrors, UpdateForm } from './actions';
+import {
+  UpdateFormStatus,
+  UpdateFormValue,
+  UpdateFormDirty,
+  UpdateFormErrors,
+  UpdateForm
+} from './actions';
 
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
@@ -14,7 +20,11 @@ export class FormDirective implements OnInit, OnDestroy {
   private _destroy$ = new Subject<null>();
   private _updating = false;
 
-  constructor(private _store: Store, private _formGroupDirective: FormGroupDirective, private _cd: ChangeDetectorRef) {}
+  constructor(
+    private _store: Store,
+    private _formGroupDirective: FormGroupDirective,
+    private _cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this._store

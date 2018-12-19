@@ -21,7 +21,10 @@ import { AppModule } from './app.module';
   providers: [{ provide: 'ORIGIN_URL', useValue: location.origin }]
 })
 export class AppBrowserModule implements NgxsHmrLifeCycle<NgxsStoreSnapshot> {
-  public hmrNgxsStoreOnInit(ctx: StateContext<NgxsStoreSnapshot>, snapshot: NgxsStoreSnapshot) {
+  public hmrNgxsStoreOnInit(
+    ctx: StateContext<NgxsStoreSnapshot>,
+    snapshot: NgxsStoreSnapshot
+  ) {
     console.log('[NGXS HMR] Current state', ctx.getState());
     console.log('[NGXS HMR] Previous state', snapshot);
     ctx.patchState(snapshot);

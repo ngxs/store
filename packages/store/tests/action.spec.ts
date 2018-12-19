@@ -88,7 +88,12 @@ describe('Action', () => {
 
     actions.pipe(ofActionSuccessful(Action1)).subscribe(action => {
       callbacksCalled.push('ofActionSuccessful');
-      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionSuccessful']);
+      expect(callbacksCalled).toEqual([
+        'ofAction',
+        'ofActionDispatched',
+        'ofAction',
+        'ofActionSuccessful'
+      ]);
     });
 
     actions.pipe(ofActionCompleted(Action1)).subscribe(({ action, result }) => {
@@ -140,7 +145,12 @@ describe('Action', () => {
 
     actions.pipe(ofActionErrored(ErrorAction)).subscribe(action => {
       callbacksCalled.push('ofActionErrored');
-      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionErrored']);
+      expect(callbacksCalled).toEqual([
+        'ofAction',
+        'ofActionDispatched',
+        'ofAction',
+        'ofActionErrored'
+      ]);
     });
 
     actions.pipe(ofActionCompleted(ErrorAction)).subscribe(({ action, result }) => {
@@ -215,7 +225,12 @@ describe('Action', () => {
     });
 
     store.dispatch([new CancelingAction(), new CancelingAction()]).subscribe(action => {
-      expect(callbacksCalled).toEqual(['ofAction', 'ofActionDispatched', 'ofAction', 'ofActionDispatched']);
+      expect(callbacksCalled).toEqual([
+        'ofAction',
+        'ofActionDispatched',
+        'ofAction',
+        'ofActionDispatched'
+      ]);
     });
 
     tick(1);

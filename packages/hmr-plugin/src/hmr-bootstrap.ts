@@ -13,7 +13,9 @@ export function hmrNgxsBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSna
   hmrInit();
   module.hot.accept();
 
-  const promise = bootstrap().then((ref: NgModuleRef<T>) => (ngModule = hmrDoBootstrap<T, S>(ref)));
+  const promise = bootstrap().then(
+    (ref: NgModuleRef<T>) => (ngModule = hmrDoBootstrap<T, S>(ref))
+  );
 
   module.hot.dispose(() => {
     if (!ngModule) {

@@ -85,7 +85,9 @@ describe('NgxsStoragePlugin', () => {
       .subscribe((state: StateModel) => {
         expect(state.count).toBe(105);
 
-        expect(localStorage.getItem('@@STATE')).toBe(JSON.stringify({ counter: { count: 105 } }));
+        expect(localStorage.getItem('@@STATE')).toBe(
+          JSON.stringify({ counter: { count: 105 } })
+        );
       });
   });
 
@@ -178,7 +180,9 @@ describe('NgxsStoragePlugin', () => {
     store
       .select((state: any) => state.counter)
       .subscribe((state: StateModel) => {
-        expect(localStorage.getItem('@@STATE')).toBe(JSON.stringify({ counter: { counts: 100, version: 2 } }));
+        expect(localStorage.getItem('@@STATE')).toBe(
+          JSON.stringify({ counter: { counts: 100, version: 2 } })
+        );
       });
   });
 
@@ -214,7 +218,9 @@ describe('NgxsStoragePlugin', () => {
     store
       .select((state: any) => state.counter)
       .subscribe((state: StateModel) => {
-        expect(localStorage.getItem('counter')).toBe(JSON.stringify({ counts: 100, version: 2 }));
+        expect(localStorage.getItem('counter')).toBe(
+          JSON.stringify({ counts: 100, version: 2 })
+        );
       });
   });
 
@@ -264,7 +270,9 @@ describe('NgxsStoragePlugin', () => {
       .subscribe((state: StateModel) => {
         expect(state.count).toBe(105);
 
-        expect(sessionStorage.getItem('@@STATE')).toBe(JSON.stringify({ counter: { count: 105 } }));
+        expect(sessionStorage.getItem('@@STATE')).toBe(
+          JSON.stringify({ counter: { count: 105 } })
+        );
       });
   });
 

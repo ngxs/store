@@ -15,7 +15,11 @@ export class Navigate {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Router] Navigate';
   }
-  constructor(public path: any[], public queryParams?: Params, public extras?: NavigationExtras) {}
+  constructor(
+    public path: any[],
+    public queryParams?: Params,
+    public extras?: NavigationExtras
+  ) {}
 }
 
 /**
@@ -60,4 +64,7 @@ export class RouterError<T, V = RouterStateSnapshot> {
 /**
  * An union type of router actions.
  */
-export type RouterAction<T, V = RouterStateSnapshot> = RouterNavigation<V> | RouterCancel<T, V> | RouterError<T, V>;
+export type RouterAction<T, V = RouterStateSnapshot> =
+  | RouterNavigation<V>
+  | RouterCancel<T, V>
+  | RouterError<T, V>;

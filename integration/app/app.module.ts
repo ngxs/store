@@ -26,5 +26,4 @@ import { states } from './app.state';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

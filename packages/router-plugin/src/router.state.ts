@@ -1,8 +1,20 @@
-import { NavigationCancel, NavigationError, Router, RouterStateSnapshot, RoutesRecognized } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationError,
+  Router,
+  RouterStateSnapshot,
+  RoutesRecognized
+} from '@angular/router';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { of } from 'rxjs';
 
-import { Navigate, RouterAction, RouterCancel, RouterError, RouterNavigation } from './router.actions';
+import {
+  Navigate,
+  RouterAction,
+  RouterCancel,
+  RouterError,
+  RouterNavigation
+} from './router.actions';
 import { RouterStateSerializer } from './serializer';
 import { NgZone } from '@angular/core';
 
@@ -61,7 +73,10 @@ export class RouterState {
   }
 
   @Action([RouterNavigation, RouterError, RouterCancel])
-  angularRouterAction(ctx: StateContext<RouterStateModel>, action: RouterAction<any, RouterStateSnapshot>) {
+  angularRouterAction(
+    ctx: StateContext<RouterStateModel>,
+    action: RouterAction<any, RouterStateSnapshot>
+  ) {
     ctx.setState({
       ...ctx.getState(),
       state: action.routerState,
@@ -74,7 +89,9 @@ export class RouterState {
    * since the route tree can be large, we serialize it into something more manageable
    */
   private setUpRouterHook(): void {
-    (<any>this._router).hooks.beforePreactivation = (routerStateSnapshot: RouterStateSnapshot) => {
+    (<any>this._router).hooks.beforePreactivation = (
+      routerStateSnapshot: RouterStateSnapshot
+    ) => {
       this.routerStateSnapshot = this._serializer.serialize(routerStateSnapshot);
       if (this.shouldDispatchRouterNavigation()) this.dispatchRouterNavigation();
       return of(true);
@@ -134,12 +151,18 @@ export class RouterState {
   }
 
   private dispatchRouterCancel(event: NavigationCancel): void {
-    this.dispatchRouterAction(new RouterCancel(this.routerStateSnapshot, this.routerState, event));
+    this.dispatchRouterAction(
+      new RouterCancel(this.routerStateSnapshot, this.routerState, event)
+    );
   }
 
   private dispatchRouterError(event: NavigationError): void {
     this.dispatchRouterAction(
-      new RouterError(this.routerStateSnapshot, this.routerState, new NavigationError(event.id, event.url, `${event}`))
+      new RouterError(
+        this.routerStateSnapshot,
+        this.routerState,
+        new NavigationError(event.id, event.url, `${event}`)
+      )
     );
   }
 

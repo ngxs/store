@@ -9,7 +9,8 @@ export interface SerializedRouterStateSnapshot {
   url: string;
 }
 
-export class DefaultRouterStateSerializer implements RouterStateSerializer<SerializedRouterStateSnapshot> {
+export class DefaultRouterStateSerializer
+  implements RouterStateSerializer<SerializedRouterStateSnapshot> {
   serialize(routerState: RouterStateSnapshot): SerializedRouterStateSnapshot {
     return {
       root: this.serializeRoute(routerState.root),

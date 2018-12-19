@@ -59,7 +59,9 @@ export class StateContextFactory {
       },
       setState(val: T | StateOperator<T>): T {
         const currentAppState = root.getState();
-        return isStateOperator(val) ? setStateFromOperator(currentAppState, val) : setStateValue(currentAppState, val);
+        return isStateOperator(val)
+          ? setStateFromOperator(currentAppState, val)
+          : setStateValue(currentAppState, val);
       },
       dispatch(actions: any | any[]): Observable<void> {
         return root.dispatch(actions);

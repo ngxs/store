@@ -1,6 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
 import { Subject } from 'rxjs';
-import { WebSocketSubject as RxWebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
+import {
+  WebSocketSubject as RxWebSocketSubject,
+  WebSocketSubjectConfig
+} from 'rxjs/webSocket';
 import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
 
 /**

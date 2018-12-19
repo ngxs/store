@@ -57,7 +57,11 @@ export function ofActionCanceled(...allowedTypes: any[]) {
  * This will ONLY grab actions that have just been completed
  */
 export function ofActionCompleted(...allowedTypes: any[]) {
-  const allowedStatuses = [ActionStatus.Successful, ActionStatus.Canceled, ActionStatus.Errored];
+  const allowedStatuses = [
+    ActionStatus.Successful,
+    ActionStatus.Canceled,
+    ActionStatus.Errored
+  ];
   return ofActionOperator(allowedTypes, allowedStatuses, mapActionResult);
 }
 

@@ -28,7 +28,10 @@ function areArgumentsShallowlyEqual(
  *
  * @ignore
  */
-export function memoize<R, T extends (...args: any[]) => R>(func: T, equalityCheck = defaultEqualityCheck): T {
+export function memoize<R, T extends (...args: any[]) => R>(
+  func: T,
+  equalityCheck = defaultEqualityCheck
+): T {
   let lastArgs: IArguments | null = null;
   let lastResult: any = null;
   // we reference arguments instead of spreading them for performance reasons

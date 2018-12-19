@@ -13,7 +13,11 @@ describe('Plugins', () => {
       static readonly type = 'Foo';
     }
 
-    function logPlugin(state: any, action: any, next: (state: any, action: any) => Observable<any>) {
+    function logPlugin(
+      state: any,
+      action: any,
+      next: (state: any, action: any) => Observable<any>
+    ) {
       if (action.constructor && action.constructor.type === 'Foo') {
         spy();
       }

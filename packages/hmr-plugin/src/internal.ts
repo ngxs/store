@@ -20,12 +20,16 @@ export function hmrDoBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnaps
   return ref;
 }
 
-export function hmrDoDispose<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(ngModule: NgModuleRef<T>) {
+export function hmrDoDispose<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
+  ngModule: NgModuleRef<T>
+) {
   const snapshot = hmrBeforeOnDestroy<T, S>(ngModule);
   setStateInHmrStorage(snapshot);
 }
 
-function hmrBeforeOnDestroy<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(ref: NgModuleRef<T>): Partial<S> {
+function hmrBeforeOnDestroy<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
+  ref: NgModuleRef<T>
+): Partial<S> {
   let resultSnapshot: Partial<S> = {};
   const ngxsHmrLifeCycle = ref.instance;
   const hmrNgxsStoreOnDestroyFn = ngxsHmrLifeCycle.hmrNgxsStoreBeforeOnDestroy;

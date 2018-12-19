@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { NgxsPlugin, setValue, getActionTypeFromInstance, NgxsNextPluginFn } from '@ngxs/store';
+import {
+  NgxsPlugin,
+  setValue,
+  getActionTypeFromInstance,
+  NgxsNextPluginFn
+} from '@ngxs/store';
 import {
   UpdateForm,
   UpdateFormDirty,
