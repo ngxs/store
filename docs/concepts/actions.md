@@ -4,6 +4,12 @@ or as the resulting event of something that has already happened.
 
 Each action contains a `type` field which is their unique identifier.
 
+## Internal Actions
+There are two actions that gets triggered in the internals of the library:
+
+1. @@INIT - store being initialized, before all the [ngxsOnInit Life-cycle](../advanced/life-cycle.md) events.
+1. @@UPDATE_STATE - a new [lazy-loaded state](../advanced/lazy.md) being added to the store.
+
 ## Simple Action
 Let's say we want to update the status of whether the animals have been fed
 in our Zoo. We would describe a class like:
@@ -38,7 +44,7 @@ See [Store](store.md) documentation for how to dispatch actions.
 
 ### Commands
 Commands are actions that tell your app to do something.
-They are usually trigged by user events such as clicking on a button, or selecting something.
+They are usually triggered by user events such as clicking on a button, or selecting something.
 
 Names should contain three parts:
 
@@ -55,7 +61,7 @@ Examples:
 ### Event examples
 Events are actions that have already happened and we now need to react to them.
 
-The same naming conventions apply as commands, but they should always be in past tense.
+The same naming conventions apply as commands, but they should always be in the past tense.
 
 By using `API` in the context part of the action name we know that this event was fired because of an async action to an API.
 
