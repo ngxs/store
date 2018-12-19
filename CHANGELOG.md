@@ -1,8 +1,13 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) (to become [3.4.0](https://github.com/ngxs/store/milestone/6))
 
+```bash
+$ npm install @ngxs/store@dev --save-dev
+```
+
 * Feature: Support server-side rendering [#698](https://github.com/ngxs/store/pull/698)
 * Feature: Enable state operator extensibility [#635](https://github.com/ngxs/store/pull/635)
 * Feature: Add `ofActionCompleted` action handler [#712](https://github.com/ngxs/store/pull/712)
+* Feature: Add `Hot Module Replacement` plugin for manage states [#707](https://github.com/ngxs/store/pull/707)
 
 # 3.3.3 2018-12-16
 * Fix: Silence console hints in tests [#706](https://github.com/ngxs/store/pull/706)
