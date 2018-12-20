@@ -2,6 +2,9 @@
 
 * ...
 
+# 3.3.4 2018-12-20
+* Fix: Remove ref to TestBed to rebuce bundle size [#725](https://github.com/ngxs/store/pull/725)
+
 # 3.3.3 2018-12-16
 * Fix: Silence console hints in tests [#706](https://github.com/ngxs/store/pull/706)
 
