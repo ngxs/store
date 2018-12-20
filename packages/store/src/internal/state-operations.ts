@@ -1,11 +1,11 @@
-import { Injectable, isDevMode, Optional } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { Injectable, isDevMode } from '@angular/core';
 
 import { StateOperations } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
 import { deepFreeze } from '../utils/freeze';
+import { isAngularInTestMode } from '../utils/angular';
 
 /**
  * State Context factory class
@@ -16,8 +16,7 @@ export class InternalStateOperations {
   constructor(
     private _stateStream: StateStream,
     private _dispatcher: InternalDispatcher,
-    private _config: NgxsConfig,
-    @Optional() private _testBed: TestBed
+    private _config: NgxsConfig
   ) {
     this.verifyDevMode();
   }
@@ -40,8 +39,7 @@ export class InternalStateOperations {
   }
 
   private verifyDevMode() {
-    const isTestMode = this._testBed !== null;
-    if (isTestMode) return;
+    if (isAngularInTestMode()) return;
 
     const isNgxsDevMode = this._config.developmentMode;
     const isNgDevMode = isDevMode();
