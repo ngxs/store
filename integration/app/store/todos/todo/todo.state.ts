@@ -14,7 +14,7 @@ export class TodoState implements NgxsOnInit {
   }
 
   public ngxsOnInit({ getState, setState }: StateContext<Todo[]>) {
-    const state: string[] = getState();
+    const state: Todo[] = getState();
     const payload: Todo = 'NgxsOnInit todo';
     if (!state.includes(payload)) {
       setState([...state, payload]);

@@ -22,7 +22,7 @@ export class TodosState {
 
   @Action(SetPrefix)
   public setPrefix({ getState, setState, patchState }: StateContext<TodoStateModel>) {
-    const state = getState();
+    const state: TodoStateModel = getState();
     const pizza1 = state.pizza.model.toppings;
     patchState({ pizza: { model: { toppings: 'Mr. ' + pizza1 } } });
   }
