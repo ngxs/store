@@ -7,7 +7,7 @@ import { Store } from '@ngxs/store';
 
 import { AppComponent } from '@integration/app.component';
 import { AppModule } from '@integration/app.module';
-import { Pizza } from '@integration/store/todos/todos.model';
+import { Pizza, Todo } from '@integration/store/todos/todos.model';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -38,7 +38,7 @@ describe('AppComponent', () => {
     component.addTodo('Get Milk');
     component.addTodo('Clean Bathroom');
 
-    component.todos$.subscribe((state: string[]) => {
+    component.todos$.subscribe((state: Todo[]) => {
       expect(state.length).toBe(2);
     });
   });
@@ -48,7 +48,7 @@ describe('AppComponent', () => {
     component.addTodo('Clean Bathroom');
     component.removeTodo(1);
 
-    component.todos$.subscribe((state: string[]) => {
+    component.todos$.subscribe((state: Todo[]) => {
       expect(state.length).toBe(1);
       expect(state[0]).toBe('Get Milk');
     });

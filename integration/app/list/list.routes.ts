@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { ListComponent } from '@integration/lazy/list/list.component';
+import { ListComponent } from '@integration/list/list.component';
 
 export const routes: Routes = [
   {

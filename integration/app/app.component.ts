@@ -5,7 +5,7 @@ import {
   FormControl,
   FormGroup
 } from '@angular/forms';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
@@ -13,20 +13,17 @@ import { TodoState } from '@integration/store/todos/todo/todo.state';
 import { TodosState } from '@integration/store/todos/todos.state';
 import { AddTodo, RemoveTodo } from '@integration/store/todos/todo/todo.actions';
 import { LoadData, SetPrefix } from '@integration/store/todos/todos.actions';
-import { Pizza } from '@integration/store/todos/todos.model';
-import { Extras } from '@integration/app.interface';
+import { Extras, Pizza, Todo } from '@integration/store/todos/todos.model';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
   public allExtras: Extras[];
   public pizzaForm: FormGroup;
-  @Select(TodoState) public todos$: Observable<string[]>;
-  @Select(TodoState.pandas) public pandas$: Observable<string[]>;
+  @Select(TodoState) public todos$: Observable<Todo[]>;
+  @Select(TodoState.pandas) public pandas$: Observable<Todo[]>;
   @Select(TodosState.pizza) public pizza$: Observable<Pizza>;
 
   constructor(private store: Store, private formBuilder: FormBuilder) {}
@@ -53,7 +50,7 @@ export class AppComponent implements OnInit {
     this.addTodoByOnInit();
   }
 
-  public addTodo(todo: string) {
+  public addTodo(todo: Todo) {
     this.store.dispatch(new AddTodo(todo));
   }
 
@@ -84,8 +81,8 @@ export class AppComponent implements OnInit {
   }
 
   private addTodoByOnInit() {
-    const payload = 'ngOnInit todo';
-    const state: string[] = this.store.selectSnapshot(TodoState);
+    const payload: Todo = 'ngOnInit todo';
+    const state: Todo[] = this.store.selectSnapshot(TodoState);
     if (!state.includes(payload)) {
       this.store.dispatch(new AddTodo(payload));
     }

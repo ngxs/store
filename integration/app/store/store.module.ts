@@ -5,20 +5,17 @@ import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 
-import {
-  DEVTOOLS_REDUX_CONFIG,
-  LOGGER_CONFIG,
-  OPTIONS_CONFIG,
-  STATES_MODULES
-} from '@integration/store/store.config';
+import { environment as env } from '@integration/env/environment';
+import { TodosState } from '@integration/store/todos/todos.state';
+import { TodoState } from '@integration/store/todos/todo/todo.state';
 
 @NgModule({
   imports: [
     CommonModule,
     NgxsFormPluginModule.forRoot(),
-    NgxsLoggerPluginModule.forRoot(LOGGER_CONFIG),
-    NgxsReduxDevtoolsPluginModule.forRoot(DEVTOOLS_REDUX_CONFIG),
-    NgxsModule.forRoot(STATES_MODULES, OPTIONS_CONFIG)
+    NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: false }),
+    NgxsReduxDevtoolsPluginModule.forRoot({ disabled: env.production }),
+    NgxsModule.forRoot([TodosState, TodoState], { developmentMode: !env.production })
   ],
   exports: [
     NgxsFormPluginModule,

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
-import { ListState } from '@integration/store/list/list.state';
+import { ListState } from '@integration/list/list.state';
 
 @Component({
   selector: 'app-list',
