@@ -24,7 +24,19 @@ Since it's an Observable, we can use the following four pipes:
 * `ofActionSuccessful`: triggers when an action has been completed successfully
 * `ofActionCanceled`: triggers when an action has been canceled
 * `ofActionErrored`: triggers when an action has caused an error to be thrown
-* `ofActionCompleted`: triggers when an action has been completed whether it was successful or not
+* `ofActionCompleted`: triggers when an action has been completed whether it was successful or not (returns completion summary)
+
+All of the above pipes return the original `action` in the observable except for the `ofActionCompleted` pipe which returns some summary information for the completed action. This summary is an object with the following interface:
+```TS
+interface ActionCompletion<T = any> {
+  action: T;
+  result: {
+    successful: boolean;
+    canceled: boolean;
+    error?: Error;
+  };
+}
+```
 
 Below is a action handler that filters for `RouteNavigate` actions and then tells the router to navigate to that
 route.
