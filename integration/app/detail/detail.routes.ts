@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { DetailComponent } from './detail.component';
+import { DetailComponent } from '@integration/detail/detail.component';
 
 export const routes: Routes = [
   {

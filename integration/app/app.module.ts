@@ -1,29 +1,20 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxsModule } from '@ngxs/store';
-import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
-import { NgxsFormPluginModule } from '@ngxs/form-plugin';
-import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 
-import { environment as env } from '../environments/environment';
-import { AppComponent } from './app.component';
-import { routes } from './app.routes';
-import { states } from './app.state';
+import { AppRoutingModule } from '@integration/app-routing.module';
+import { AppComponent } from '@integration/app.component';
+import { NgxsStoreModule } from '@integration/store/store.module';
 
 @NgModule({
-  declarations: [AppComponent],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'my-app' }),
     FormsModule,
+    NgxsStoreModule,
+    AppRoutingModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(routes),
-    NgxsFormPluginModule.forRoot(),
-    NgxsModule.forRoot(states, { developmentMode: !env.production }),
-    NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: false }),
-    NgxsReduxDevtoolsPluginModule.forRoot({ disabled: env.production })
+    BrowserModule.withServerTransition({ appId: 'my-app' })
   ],
+  declarations: [AppComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

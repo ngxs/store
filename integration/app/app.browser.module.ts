@@ -3,10 +3,11 @@ import { StateContext } from '@ngxs/store';
 import { BrowserTransferStateModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
-import { NgxsHmrLifeCycle, NgxsStoreSnapshot } from '@ngxs/hmr-plugin';
+import { NgxsHmrLifeCycle, NgxsStoreSnapshot as Snapshot } from '@ngxs/hmr-plugin';
 
-import { AppComponent } from './app.component';
-import { AppModule } from './app.module';
+import { AppComponent } from '@integration/app.component';
+import { AppModule } from '@integration/app.module';
+import { TODOS_STORAGE_KEY } from '@integration/store/todos/todos.model';
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -14,24 +15,19 @@ import { AppModule } from './app.module';
     AppModule,
     BrowserAnimationsModule,
     BrowserTransferStateModule,
-    NgxsStoragePluginModule.forRoot({
-      key: ['todos.todo']
-    })
+    NgxsStoragePluginModule.forRoot({ key: [TODOS_STORAGE_KEY] })
   ],
   providers: [{ provide: 'ORIGIN_URL', useValue: location.origin }]
 })
-export class AppBrowserModule implements NgxsHmrLifeCycle<NgxsStoreSnapshot> {
-  public hmrNgxsStoreOnInit(
-    ctx: StateContext<NgxsStoreSnapshot>,
-    snapshot: NgxsStoreSnapshot
-  ) {
+export class AppBrowserModule implements NgxsHmrLifeCycle<Snapshot> {
+  public hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Snapshot) {
     console.log('[NGXS HMR] Current state', ctx.getState());
     console.log('[NGXS HMR] Previous state', snapshot);
     ctx.patchState(snapshot);
   }
 
-  public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<NgxsStoreSnapshot>): NgxsStoreSnapshot {
-    const snapshot: NgxsStoreSnapshot = ctx.getState();
+  public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<Snapshot>): Snapshot {
+    const snapshot: Snapshot = ctx.getState();
     console.log('[NGXS HMR] Saved state before on destroy', snapshot);
     return snapshot;
   }

@@ -3,8 +3,8 @@ import { ServerModule, ServerTransferStateModule } from '@angular/platform-serve
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader';
 
-import { AppComponent } from './app.component';
-import { AppModule } from './app.module';
+import { AppComponent } from '@integration/app.component';
+import { AppModule } from '@integration/app.module';
 
 @NgModule({
   imports: [
@@ -14,7 +14,6 @@ import { AppModule } from './app.module';
     ServerTransferStateModule,
     ModuleMapLoaderModule
   ],
-  bootstrap: [AppComponent],
-  providers: []
+  bootstrap: [AppComponent]
 })
 export class AppServerModule {}
