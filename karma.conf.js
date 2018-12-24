@@ -35,7 +35,13 @@ module.exports = function (config) {
       terminal: true
     },
     autoWatch: !CI,
-    browsers: ['Chrome'],
+    browsers: [ CI ? 'ChromeHeadless' : 'Chrome' ],
+    customLaunchers: {
+      ChromeHeadless: {
+        base: 'Chrome',
+        flags: ['--headless', '--disable-gpu', '--no-sandbox']
+      }
+    },
     singleRun: CI
   });
 };
