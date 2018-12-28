@@ -297,7 +297,7 @@ describe('Development Mode', () => {
       const store: Store = TestBed.get(Store);
 
       // todo: remove any
-      store.select<StateModel>(<any>MyStore).subscribe((state: StateModel) => {
+      store.select<StateModel>(MyStore).subscribe((state: StateModel) => {
         try {
           state.count++;
         } catch (error) {
@@ -352,7 +352,7 @@ describe('Development Mode', () => {
 
       const store: Store = TestBed.get(Store);
 
-      const state = store.selectSnapshot<StateModel>(appState => appState.counter);
+      const state = store.selectSnapshot<StateModel, any>(appState => appState.counter);
       try {
         state.count++;
       } catch (error) {

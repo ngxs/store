@@ -134,8 +134,7 @@ describe('Store', () => {
   }));
 
   it('should select the correct state use a state class: Sub State', async(() => {
-    // todo: remove any
-    store.select<SubStateModel>(<any>MySubState).subscribe((state: SubStateModel) => {
+    store.select<SubStateModel>(MySubState).subscribe((state: SubStateModel) => {
       expect(state).toEqual({
         hello: true,
         world: true,
@@ -147,8 +146,7 @@ describe('Store', () => {
   }));
 
   it('should select the correct state use a state class: Sub Sub State', async(() => {
-    // todo: remove any
-    store.select<SubSubStateModel>(<any>MySubSubState).subscribe((state: SubSubStateModel) => {
+    store.select<SubSubStateModel>(MySubSubState).subscribe((state: SubSubStateModel) => {
       expect(state).toEqual({
         name: 'Danny'
       });

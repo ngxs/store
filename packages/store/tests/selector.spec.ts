@@ -73,7 +73,7 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const myState = store.selectSnapshot(<any>MyState);
+      const myState = store.selectSnapshot(MyState);
       const slice = MyState.foo(myState);
       expect(slice).toBe('Hello');
     }));
@@ -208,7 +208,7 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const myState = store.selectSnapshot(<any>MyState);
+      const myState = store.selectSnapshot(MyState);
       const selector = createSelector(
         [MyState],
         (state: any) => state.foo
