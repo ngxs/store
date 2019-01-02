@@ -1,10 +1,12 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "out-tsc/lib",
     "baseUrl": "./",
+    "outDir": "out-tsc/lib",
     "paths": {
-      "@ngxs/*": ["packages/*"]
+      "@ngxs/*": ["packages/*"],
+      "@integration/*": ["integration/app/*"],
+      "@integration/env/*": ["integration/environments/*"]
     },
     "strict": true,
     "strictPropertyInitialization": false,
