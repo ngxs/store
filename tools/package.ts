@@ -9,9 +9,8 @@ async function main(options: string[]) {
   // get all packages
   let packages = getPackages();
 
-  const isSpecificPlugin: number = options.indexOf(ArgvType.PLUGIN);
-  const specificPackage: string | null =
-    isSpecificPlugin > -1 ? options[isSpecificPlugin + 1] : null;
+  const plugin: number = options.indexOf(ArgvType.PLUGIN);
+  const specificPackage: string = plugin > -1 ? options[plugin + 1] : '';
   const watch: boolean = options.includes(ArgvType.WATCH);
 
   // build a specific package that is passed via the command line
