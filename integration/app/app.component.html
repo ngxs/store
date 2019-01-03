@@ -27,5 +27,15 @@
     </li>
     <li *ngFor="let todo of (pandas$ | async)">🐼</li>
   </ul>
-  <router-outlet></router-outlet>
+
+  <div class="menu">
+    <a [routerLink]="['/list']">List</a>
+    <a [routerLink]="['/detail']">Detail</a>
+    <a [routerLink]="['/counter']">Counter</a>
+  </div>
+
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+
 </div>

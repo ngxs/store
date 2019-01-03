@@ -1,9 +1,10 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { hmrNgxsBootstrap } from '@ngxs/hmr-plugin';
+// import { hmrNgxsBootstrap } from '@ngxs/hmr-plugin';
 
 import { AppBrowserModule } from './app/app.browser.module';
 import { environment } from './environments/environment';
+import { hmrNgxsBootstrap } from '../packages/hmr-plugin';
 
 if (environment.production) {
   enableProdMode();

@@ -2,6 +2,8 @@ import { NgModuleRef } from '@angular/core';
 import { Store, StateContext, StateOperator } from '@ngxs/store';
 
 import { NGXS_HMR_SNAPSHOT_KEY, NgxsStoreSnapshot, NgxsHmrLifeCycle } from './symbols';
+import { StateStream } from '@ngxs/store';
+import { Subscription } from 'rxjs';
 
 export function hmrDoBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
   ref: NgModuleRef<T>
@@ -12,9 +14,22 @@ export function hmrDoBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnaps
   if (typeof hmrNgxsStoreOnInitFn === 'function') {
     const stateContext = getStateContext<T, S>(ref);
     if (stateContext) {
-      hmrNgxsStoreOnInitFn(stateContext, getStateFromHmrStorage());
+      const previousState: NgxsStoreSnapshot = getStateFromHmrStorage();
+
+      if (Object.keys(previousState).length) {
+        const _stateStream: StateStream = ref.injector.get(Store, null)['_stateStream'];
+        let idEvent: number;
+        const stateStreamId: Subscription = _stateStream.subscribe(d => {
+          clearInterval(idEvent);
+          idEvent = window.setTimeout(() => {
+            console.clear();
+            hmrNgxsStoreOnInitFn(stateContext, previousState);
+            setStateInHmrStorage({});
+            stateStreamId.unsubscribe();
+          });
+        });
+      }
     }
-    setStateInHmrStorage({});
   }
 
   return ref;
