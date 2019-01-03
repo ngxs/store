@@ -3,15 +3,19 @@
 
 import { ngPackagr } from 'ng-packagr';
 import { join } from 'path';
+import { ArgvType, getPackages } from './utils';
 
-import { getPackages } from './utils';
-
-async function main(specificPackage?: string) {
+async function main(options: string[]) {
   // get all packages
   let packages = getPackages();
 
+  const isSpecificPlugin: number = options.indexOf(ArgvType.PLUGIN);
+  const specificPackage: string | null =
+    isSpecificPlugin > -1 ? options[isSpecificPlugin + 1] : null;
+  const watch: boolean = options.includes(ArgvType.WATCH);
+
   // build a specific package that is passed via the command line
-  // `yarn build:packages router-plugin`
+  // `yarn build:packages --plugin router-plugin`
   if (specificPackage) {
     console.log(`Specific: ${specificPackage}`);
     packages = packages.filter(p => p.name === specificPackage);
@@ -23,6 +27,7 @@ async function main(specificPackage?: string) {
     try {
       await ngPackagr()
         .forProject(pack.ngPackagrProjectPath)
+        .withOptions({ watch })
         .withTsConfig(join(__dirname, '../tsconfig.build.json'))
         .build();
     } catch (err) {
@@ -32,7 +37,9 @@ async function main(specificPackage?: string) {
   }
 }
 
-main(process.argv[2]).catch(err => {
+const argv: string[] = process.argv.slice(2, process.argv.length) || [];
+
+main(argv).catch(err => {
   console.error('Error building ngxs', err);
   process.exit(111);
 });
