@@ -4,12 +4,18 @@
   NGXS is a state management pattern + library for Angular
   <br /><br />
   
+  <a href="https://travis-ci.org/ngxs/store">
+    <img src="https://api.travis-ci.org/ngxs/store.svg?branch=master" />
+  </a>
   <a href="https://now-examples-slackin-eqzjxuxoem.now.sh/">
-    <img src="https://now-examples-slackin-eqzjxuxoem.now.sh/badge.svg">
-  </a> 
+    <img src="https://now-examples-slackin-eqzjxuxoem.now.sh/badge.svg" />
+  </a>
   <a href="https://badge.fury.io/js/%40ngxs%2Fstore">
     <img src="https://badge.fury.io/js/%40ngxs%2Fstore.svg" />
   </a> 
+  
+  <br />
+  
   <a href="https://npm-stat.com/charts.html?package=%40ngxs%2Fstore&from=2017-01-12">
     <img src="https://img.shields.io/npm/dt/@ngxs/store.svg" />
   </a>
