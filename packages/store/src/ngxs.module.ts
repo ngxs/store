@@ -17,12 +17,12 @@ import { NgxsRootModule } from './modules/ngxs-root.module';
 /**
  * Ngxs Module
  */
-@NgModule({})
+@NgModule()
 export class NgxsModule {
   /**
    * Root module factory
    */
-  static forRoot(
+  public static forRoot(
     states: StateClass[] = [],
     options: NgxsModuleOptions = {}
   ): ModuleWithProviders {
@@ -61,7 +61,7 @@ export class NgxsModule {
   /**
    * Feature module factory
    */
-  static forFeature(states: StateClass[] = []): ModuleWithProviders {
+  public static forFeature(states: StateClass[] = []): ModuleWithProviders {
     return {
       ngModule: NgxsFeatureModule,
       providers: [

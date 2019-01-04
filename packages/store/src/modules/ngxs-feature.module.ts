@@ -11,7 +11,7 @@ import { UpdateState } from '../actions/actions';
  * Feature module
  * @ignore
  */
-@NgModule({})
+@NgModule()
 export class NgxsFeatureModule {
   constructor(
     store: Store,
