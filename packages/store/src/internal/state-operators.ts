@@ -1,9 +1,5 @@
 import { StateOperator } from '../symbols';
 
-export function set<T>(newValue: T): StateOperator<T> {
-  return () => newValue;
-}
-
 export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
   return (existingState: Readonly<T>) => {
     const isArray = Array.isArray(val);
