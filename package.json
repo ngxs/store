@@ -61,6 +61,7 @@
     "// - BUILDING": "Run Apps in dev and with packaged modules",
     "build": "yarn build:packages && ts-node tools/set-metadata",
     "build:packages": "ts-node tools/package",
+    "build:packages:watch": "ts-node tools/package --watch",
     "build:integration": "ng run integration:build:production #requires yarn build",
     "build:integration:ssr": "ng run integration:build:production && ng run integration:server:production #requires yarn build",
     "// - TESTING": "Test all modules",

@@ -1,6 +1,11 @@
 import { exec, ExecOptions } from 'child_process';
 import { resolve } from 'path';
 
+export enum ArgvType {
+  WATCH = '--watch',
+  PACKAGE = '--package'
+}
+
 interface Package {
   name: string;
   packageName: string;
