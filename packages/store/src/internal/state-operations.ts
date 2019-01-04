@@ -1,11 +1,16 @@
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable, isDevMode, Type } from '@angular/core';
 
-import { StateOperations } from '../internal/internals';
+import {
+  DefaultStateRef,
+  NgxsInitializeOptions,
+  StateOperations
+} from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
 import { deepFreeze } from '../utils/freeze';
 import { isAngularInTestMode } from '../utils/angular';
+import { MappedStore } from '@ngxs/store/src/internal/internals';
 
 /**
  * State Context factory class
@@ -24,11 +29,11 @@ export class InternalStateOperations {
   /**
    * Returns the root state operators.
    */
-  getRootStateOperations(): StateOperations<any> {
+  public getRootStateOperations(): StateOperations<any> {
     const rootStateOperations = {
       getState: () => this._stateStream.getValue(),
       setState: (newState: any) => this._stateStream.next(newState),
-      dispatch: (actions: any[]) => this._dispatcher.dispatch(actions)
+      dispatch: (actions: Type<unknown>[]) => this._dispatcher.dispatch(actions)
     };
 
     if (this._config.developmentMode) {
@@ -36,6 +41,49 @@ export class InternalStateOperations {
     }
 
     return rootStateOperations;
+  }
+
+  public ngxsBootstrap(options: NgxsInitializeOptions) {
+    const { factory, states, action, ngxsAfterBootstrap } = options;
+    const results: DefaultStateRef = factory.addAndReturnDefaults(states || []);
+    const stateRootOperations = this.getRootStateOperations();
+
+    const currentStateByRootTree = stateRootOperations.getState();
+    const newStateBySubTree = results.defaults;
+
+    const nameRootStates: string[] = Object.keys(currentStateByRootTree);
+    const nameStates: string[] = Object.keys(newStateBySubTree);
+
+    const unmountedKeys: string[] = nameStates.filter(name => !nameRootStates.includes(name));
+    const uniqueResult: DefaultStateRef = this.findUnmountedState(results, unmountedKeys);
+
+    stateRootOperations.setState({ ...currentStateByRootTree, ...uniqueResult.defaults });
+
+    if (ngxsAfterBootstrap) {
+      ngxsAfterBootstrap();
+    }
+
+    if (uniqueResult.states.length) {
+      stateRootOperations.dispatch(new action()).subscribe(() => {
+        factory.invokeInit(uniqueResult.states);
+      });
+    }
+  }
+
+  private findUnmountedState(result: DefaultStateRef, uniqueKeys: string[]): DefaultStateRef {
+    const newResult: DefaultStateRef = { defaults: {}, states: [] };
+    const defaults = result.defaults;
+    const states: MappedStore[] = result.states;
+
+    for (const options in defaults) {
+      if (defaults.hasOwnProperty(options) && uniqueKeys.includes(options)) {
+        newResult.defaults[options] = defaults[options];
+      }
+    }
+
+    newResult.states = states.filter((meta: MappedStore) => uniqueKeys.includes(meta.name));
+
+    return newResult;
   }
 
   private verifyDevMode() {

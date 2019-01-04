@@ -1,5 +1,7 @@
 import { META_KEY, ActionOptions, SELECTOR_META_KEY, NgxsConfig } from '../symbols';
 import { Observable } from 'rxjs';
+import { Type } from '@angular/core';
+import { StateFactory } from './state-factory';
 
 export interface ObjectKeyMap<T> {
   [key: string]: T;
@@ -11,6 +13,22 @@ export interface StateClassWithoutStaticMembers {}
 export interface StateClass<T = StateClassWithoutStaticMembers> {
   new (...args: any[]): T;
   [META_KEY]?: MetaDataModel;
+}
+
+export interface DefaultStateRef {
+  defaults: any;
+  states: MappedStore[];
+}
+
+export interface Occurrences {
+  [key: string]: string;
+}
+
+export interface NgxsInitializeOptions {
+  factory: StateFactory;
+  states: StateClass[];
+  action: Type<unknown>;
+  ngxsAfterBootstrap?: Function;
 }
 
 export type StateKeyGraph = ObjectKeyMap<string[]>;

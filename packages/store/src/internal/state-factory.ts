@@ -1,29 +1,32 @@
-import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
-import { Observable, of, forkJoin, from, throwError } from 'rxjs';
+import { Injectable, Injector, Optional, SkipSelf } from '@angular/core';
+import { forkJoin, from, Observable, of, throwError } from 'rxjs';
 import {
-  shareReplay,
-  takeUntil,
-  map,
   catchError,
+  defaultIfEmpty,
   filter,
+  map,
   mergeMap,
-  defaultIfEmpty
+  shareReplay,
+  takeUntil
 } from 'rxjs/operators';
 
-import { META_KEY, NgxsLifeCycle, NgxsConfig } from '../symbols';
+import { META_KEY, NgxsConfig, NgxsLifeCycle } from '../symbols';
 import {
-  topologicalSort,
   buildGraph,
+  DefaultStateRef,
   findFullParentPath,
-  nameToState,
-  propGetter,
   isObject,
   MappedStore,
-  StateClass
+  MetaDataModel,
+  nameToState,
+  Occurrences,
+  propGetter,
+  StateClass,
+  topologicalSort
 } from './internals';
 import { getActionTypeFromInstance, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
-import { InternalActions, ActionStatus, ActionContext } from '../actions-stream';
+import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 
@@ -33,11 +36,6 @@ import { StateContextFactory } from '../internal/state-context-factory';
  */
 @Injectable()
 export class StateFactory {
-  get states(): MappedStore[] {
-    return this._parentFactory ? this._parentFactory.states : this._states;
-  }
-
-  private _states: MappedStore[] = [];
   private _connected = false;
 
   constructor(
@@ -51,10 +49,16 @@ export class StateFactory {
     private _stateContextFactory: StateContextFactory
   ) {}
 
+  private _states: MappedStore[] = [];
+
+  public get states(): MappedStore[] {
+    return this._parentFactory ? this._parentFactory.states : this._states;
+  }
+
   /**
    * Add a new state to the global defs.
    */
-  add(oneOrManyStateClasses: StateClass | StateClass[]): MappedStore[] {
+  public add(oneOrManyStateClasses: StateClass | StateClass[]): MappedStore[] {
     let stateClasses: StateClass[];
     if (!Array.isArray(oneOrManyStateClasses)) {
       stateClasses = [oneOrManyStateClasses];
@@ -116,23 +120,20 @@ export class StateFactory {
   /**
    * Add a set of states to the store and return the defaulsts
    */
-  addAndReturnDefaults(
-    stateClasses: any[]
-  ): { defaults: any; states: MappedStore[] } | undefined {
-    if (stateClasses) {
-      const states = this.add(stateClasses);
-      const defaults = states.reduce(
-        (result: any, meta: MappedStore) => setValue(result, meta.depth, meta.defaults),
-        {}
-      );
-      return { defaults, states };
-    }
+  public addAndReturnDefaults(stateClasses: StateClass[]): DefaultStateRef {
+    const uniqueStates = this.checkDuplicateStates(stateClasses || []);
+    const states = this.add(uniqueStates);
+    const defaults = states.reduce(
+      (result: any, meta: MappedStore) => setValue(result, meta.depth, meta.defaults),
+      {}
+    );
+    return { defaults, states };
   }
 
   /**
    * Bind the actions to the handlers
    */
-  connectActionHandlers() {
+  public connectActionHandlers() {
     if (this._connected) return;
     this._actions
       .pipe(
@@ -154,7 +155,7 @@ export class StateFactory {
   /**
    * Invoke the init function on the states.
    */
-  invokeInit(stateMetadatas: MappedStore[]) {
+  public invokeInit(stateMetadatas: MappedStore[]) {
     for (const metadata of stateMetadatas) {
       const instance: NgxsLifeCycle = metadata.instance;
 
@@ -168,7 +169,7 @@ export class StateFactory {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(actions$: InternalActions, action: any) {
+  public invokeActions(actions$: InternalActions, action: any) {
     const results = [];
 
     for (const metadata of this.states) {
@@ -209,6 +210,28 @@ export class StateFactory {
     }
 
     return forkJoin(results);
+  }
+
+  private checkDuplicateStates(stateClasses: StateClass[]): StateClass[] {
+    const unique: StateClass[] = [];
+    const occurrences: Occurrences = {};
+
+    stateClasses
+      .filter((state, position, list) => list.indexOf(state) === position)
+      .forEach(state => {
+        const meta: Partial<MetaDataModel> = state[META_KEY] || {};
+        const stateName: string = String(meta.name);
+        const compareState = occurrences[stateName];
+
+        if (compareState) {
+          console.warn(`State name in ${state.name} already exists also in`, compareState);
+        } else {
+          occurrences[stateName] = state.name;
+          unique.push(state);
+        }
+      });
+
+    return unique;
   }
 
   /**

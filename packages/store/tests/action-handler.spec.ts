@@ -1,5 +1,5 @@
-import { ErrorHandler, Type } from '@angular/core';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ErrorHandler } from '@angular/core';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { Action } from '../src/decorators/action';
 import { State } from '../src/decorators/state';
@@ -11,16 +11,18 @@ import { Actions } from '../src/actions-stream';
 import { NoopErrorHandler } from './helpers/utils';
 import { timer } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { StateClass } from '../src/internal/internals';
 
 describe('Action handlers', () => {
   class TestAction {
     static type = 'TestAction';
+
     constructor(public payload?: any) {}
   }
 
   type IFooStateModel = { name: string; age?: number; updated?: boolean };
 
-  function setup(config: { stores: Type<unknown>[] }) {
+  function setup(config: { stores: StateClass[] }) {
     config = config || {
       stores: []
     };
@@ -41,6 +43,7 @@ describe('Action handlers', () => {
       let currentState: any = null;
 
       const defaultState = { name: 'current state' };
+
       @State<IFooStateModel>({ name: 'foo', defaults: defaultState })
       class FooState {
         @Action(TestAction)
@@ -122,6 +125,7 @@ describe('Action handlers', () => {
       let currentState: any = null;
 
       const defaultState = { name: 'current state' };
+
       @State<IFooStateModel>({ name: 'foo', defaults: defaultState })
       class FooState {
         @Action(TestAction)
