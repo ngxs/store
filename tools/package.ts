@@ -9,12 +9,12 @@ async function main(options: string[]) {
   // get all packages
   let packages = getPackages();
 
-  const plugin: number = options.indexOf(ArgvType.PLUGIN);
-  const specificPackage: string = plugin > -1 ? options[plugin + 1] : '';
+  const packageFlag: number = options.indexOf(ArgvType.PACKAGE);
+  const specificPackage: string = packageFlag > -1 ? options[packageFlag + 1] : '';
   const watch: boolean = options.includes(ArgvType.WATCH);
 
   // build a specific package that is passed via the command line
-  // `yarn build:packages --plugin router-plugin`
+  // `yarn build:packages --package router-plugin`
   if (specificPackage) {
     console.log(`Specific: ${specificPackage}`);
     packages = packages.filter(p => p.name === specificPackage);
