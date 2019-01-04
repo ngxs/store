@@ -2,7 +2,7 @@ import { async, TestBed } from '@angular/core/testing';
 import { Observable } from 'rxjs';
 
 import { Store } from '../src/store';
-import { NgxsModule } from '../src/module';
+import { NgxsModule } from '../src/ngxs.module';
 import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
 import { StateContext } from '../src/symbols';

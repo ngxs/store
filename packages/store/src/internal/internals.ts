@@ -1,6 +1,7 @@
-import { META_KEY, ActionOptions, SELECTOR_META_KEY, NgxsConfig } from '../symbols';
-import { Observable } from 'rxjs';
 import { Type } from '@angular/core';
+import { Observable } from 'rxjs';
+
+import { ActionOptions, META_KEY, NgxsConfig, SELECTOR_META_KEY } from '../symbols';
 import { StateFactory } from './state-factory';
 
 export interface ObjectKeyMap<T> {
@@ -11,9 +12,12 @@ export interface StateClassWithoutStaticMembers {}
 
 // inspired from https://stackoverflow.com/a/43674389
 export interface StateClass<T = StateClassWithoutStaticMembers> {
-  new (...args: any[]): T;
   [META_KEY]?: MetaDataModel;
+
+  new (...args: any[]): T;
 }
+
+export type NgxsModuleOptions = Partial<NgxsConfig>;
 
 export interface DefaultStateRef {
   defaults: any;
@@ -41,7 +45,9 @@ export interface ActionHandlerMetaData {
 
 export interface StateOperations<T> {
   getState(): T;
+
   setState(val: T): T;
+
   dispatch(actions: any | any[]): Observable<void>;
 }
 
@@ -362,4 +368,8 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
  */
 export function isObject(obj: any) {
   return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';
+}
+
+export function ngxsConfigFactory(options: NgxsModuleOptions): NgxsConfig {
+  return Object.assign(new NgxsConfig(), options);
 }

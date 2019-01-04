@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { Store } from '../src/store';
-import { NgxsModule } from '../src/module';
+import { NgxsModule } from '../src/ngxs.module';
 import { State } from '../src/decorators/state';
 
 describe('Duplicate states', () => {

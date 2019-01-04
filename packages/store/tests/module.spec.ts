@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 
-import { NgxsModule } from '../src/module';
+import { NgxsModule } from '../src/ngxs.module';
 import { State } from '../src/decorators/state';
 import { Store } from '../src/store';
 import { Selector } from '../src/decorators/selector';

@@ -1,4 +1,4 @@
-export { NgxsModule } from './module';
+export { NgxsModule } from './ngxs.module';
 export { NGXS_PLUGINS, NgxsPlugin, NgxsNextPluginFn } from './symbols';
 export { StateStream } from './internal/state-stream';
 export { getActionTypeFromInstance, setValue, getValue } from './utils/utils';

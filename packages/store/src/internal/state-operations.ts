@@ -10,7 +10,7 @@ import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
 import { deepFreeze } from '../utils/freeze';
 import { isAngularInTestMode } from '../utils/angular';
-import { MappedStore } from '@ngxs/store/src/internal/internals';
+import { MappedStore } from '../internal/internals';
 
 /**
  * State Context factory class

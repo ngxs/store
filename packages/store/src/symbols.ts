@@ -1,13 +1,15 @@
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { NgxsModuleOptions } from './internal/internals';
+
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
+export const ROOT_OPTIONS = new InjectionToken<NgxsModuleOptions>('ROOT_OPTIONS');
 export const META_KEY = 'NGXS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
-export type NgxsPluginConstructor = new (...args: any[]) => NgxsPlugin;
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
 /**

@@ -1,13 +1,6 @@
-import {
-  Inject,
-  InjectionToken,
-  ModuleWithProviders,
-  NgModule,
-  Optional,
-  Type
-} from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 
-import { FEATURE_STATE_TOKEN, NgxsConfig, ROOT_STATE_TOKEN } from './symbols';
+import { FEATURE_STATE_TOKEN, NgxsConfig, ROOT_OPTIONS, ROOT_STATE_TOKEN } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
@@ -17,58 +10,9 @@ import { Store } from './store';
 import { SelectFactory } from './decorators/select';
 import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
-import { InitState, UpdateState } from './actions/actions';
-import { StateClass } from './internal/internals';
-
-/**
- * Root module
- * @ignore
- */
-@NgModule()
-export class NgxsRootModule {
-  constructor(
-    factory: StateFactory,
-    internalStateOperations: InternalStateOperations,
-    store: Store,
-    select: SelectFactory,
-    @Optional()
-    @Inject(ROOT_STATE_TOKEN)
-    states: StateClass[]
-  ) {
-    const action: Type<unknown> = InitState;
-    const ngxsAfterBootstrap: Function = () => factory.connectActionHandlers();
-    internalStateOperations.ngxsBootstrap({ factory, states, action, ngxsAfterBootstrap });
-  }
-}
-
-/**
- * Feature module
- * @ignore
- */
-@NgModule({})
-export class NgxsFeatureModule {
-  constructor(
-    store: Store,
-    internalStateOperations: InternalStateOperations,
-    factory: StateFactory,
-    @Optional()
-    @Inject(FEATURE_STATE_TOKEN)
-    lazyStates: StateClass[][]
-  ) {
-    const action: Type<unknown> = UpdateState;
-    const states: StateClass[] = [].concat(...(lazyStates as any));
-    internalStateOperations.ngxsBootstrap({ factory, states, action });
-  }
-}
-
-export type ModuleOptions = Partial<NgxsConfig>;
-
-export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
-  const config = Object.assign(new NgxsConfig(), options);
-  return config;
-}
-
-export const ROOT_OPTIONS = new InjectionToken<ModuleOptions>('ROOT_OPTIONS');
+import { ngxsConfigFactory, NgxsModuleOptions, StateClass } from './internal/internals';
+import { NgxsFeatureModule } from './modules/ngxs-feature.module';
+import { NgxsRootModule } from './modules/ngxs-root.module';
 
 /**
  * Ngxs Module
@@ -78,7 +22,10 @@ export class NgxsModule {
   /**
    * Root module factory
    */
-  static forRoot(states: StateClass[] = [], options: ModuleOptions = {}): ModuleWithProviders {
+  static forRoot(
+    states: StateClass[] = [],
+    options: NgxsModuleOptions = {}
+  ): ModuleWithProviders {
     return {
       ngModule: NgxsRootModule,
       providers: [

@@ -1,4 +1,4 @@
-export { NgxsModule } from './module';
+export { NgxsModule } from './ngxs.module';
 export { Action } from './decorators/action';
 export { Store } from './store';
 export { State } from './decorators/state';

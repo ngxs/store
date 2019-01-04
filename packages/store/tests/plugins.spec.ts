@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule } from '../src/module';
+import { NgxsModule } from '../src/ngxs.module';
 import { NGXS_PLUGINS } from '../src/plugin_api';
 import { Store } from '../src/store';
 import { tap } from 'rxjs/operators';

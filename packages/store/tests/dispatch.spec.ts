@@ -6,7 +6,7 @@ import { tap, skip, delay } from 'rxjs/operators';
 import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
 import { Store } from '../src/store';
-import { NgxsModule } from '../src/module';
+import { NgxsModule } from '../src/ngxs.module';
 import { StateContext } from '../src/symbols';
 import { NoopErrorHandler } from './helpers/utils';
 

@@ -5,7 +5,7 @@ import { Action } from '../src/decorators/action';
 import { State } from '../src/decorators/state';
 import { InitState, UpdateState } from '../src/actions/actions';
 
-import { NgxsModule } from '../src/module';
+import { NgxsModule } from '../src/ngxs.module';
 import { Store } from '../src/store';
 import { StateContext } from '../src/symbols';
 import { Selector } from '../src/decorators/selector';

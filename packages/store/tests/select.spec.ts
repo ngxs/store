@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Store } from '../src/store';
-import { NgxsModule } from '../src/module';
+import { NgxsModule } from '../src/ngxs.module';
 import { Select } from '../src/decorators/select';
 import { Selector } from '../src/decorators/selector';
 import { State } from '../src/decorators/state';

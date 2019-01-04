@@ -5,7 +5,7 @@ import { Action } from '../src/decorators/action';
 import { State } from '../src/decorators/state';
 import { StateContext } from '../src/symbols';
 
-import { NgxsModule } from '../src/module';
+import { NgxsModule } from '../src/ngxs.module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
 import { NoopErrorHandler } from './helpers/utils';
