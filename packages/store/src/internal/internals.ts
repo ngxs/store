@@ -19,6 +19,13 @@ export interface StateClass<T = StateClassWithoutStaticMembers> {
 
 export type NgxsModuleOptions = Partial<NgxsConfig>;
 
+export type DefaultReducer<T = any, U = any> = (
+  previousValue: U,
+  currentValue: T,
+  currentIndex: number,
+  array: T[]
+) => U;
+
 export interface DefaultStateRef {
   defaults: any;
   states: MappedStore[];

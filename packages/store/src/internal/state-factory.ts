@@ -13,6 +13,7 @@ import {
 import { META_KEY, NgxsConfig, NgxsLifeCycle } from '../symbols';
 import {
   buildGraph,
+  DefaultReducer,
   DefaultStateRef,
   findFullParentPath,
   isObject,
@@ -118,15 +119,18 @@ export class StateFactory {
   }
 
   /**
-   * Add a set of states to the store and return the defaulsts
+   * Add a set of states to the store and return the defaults
    */
   public addAndReturnDefaults(stateClasses: StateClass[]): DefaultStateRef {
-    const uniqueStates = this.checkDuplicateStates(stateClasses || []);
-    const states = this.add(uniqueStates);
-    const defaults = states.reduce(
-      (result: any, meta: MappedStore) => setValue(result, meta.depth, meta.defaults),
-      {}
-    );
+    const uniqueStates: StateClass[] = this.checkDuplicateStates(stateClasses || []);
+    const states: MappedStore[] = this.add(uniqueStates);
+
+    const initialValue = {};
+    const reducer: DefaultReducer = (result, meta: MappedStore) =>
+      setValue(result, meta.depth, meta.defaults);
+
+    const defaults = states.reduce(reducer, initialValue);
+
     return { defaults, states };
   }
 
@@ -221,10 +225,13 @@ export class StateFactory {
       .forEach(state => {
         const meta: Partial<MetaDataModel> = state[META_KEY] || {};
         const stateName: string = String(meta.name);
-        const compareState = occurrences[stateName];
+        const existComparedState = occurrences[stateName];
 
-        if (compareState) {
-          console.warn(`State name in ${state.name} already exists also in`, compareState);
+        if (existComparedState) {
+          console.warn(
+            `State name in ${state.name} already exists also in`,
+            existComparedState
+          );
         } else {
           occurrences[stateName] = state.name;
           unique.push(state);

@@ -2,6 +2,7 @@ import { Injectable, isDevMode, Type } from '@angular/core';
 
 import {
   DefaultStateRef,
+  MappedStore,
   NgxsInitializeOptions,
   StateOperations
 } from '../internal/internals';
@@ -10,7 +11,6 @@ import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
 import { deepFreeze } from '../utils/freeze';
 import { isAngularInTestMode } from '../utils/angular';
-import { MappedStore } from '../internal/internals';
 
 /**
  * State Context factory class
@@ -51,21 +51,22 @@ export class InternalStateOperations {
     const currentStateByRootTree = stateRootOperations.getState();
     const newStateBySubTree = results.defaults;
 
-    const nameRootStates: string[] = Object.keys(currentStateByRootTree);
-    const nameNewStates: string[] = Object.keys(newStateBySubTree);
+    const rootStatesKeys: string[] = Object.keys(currentStateByRootTree);
+    const newStatesKeys: string[] = Object.keys(newStateBySubTree);
 
-    const unmountedKeys: string[] = nameNewStates.filter(
-      name => !nameRootStates.includes(name)
+    const unmountedKeys: string[] = newStatesKeys.filter(
+      name => !rootStatesKeys.includes(name)
     );
-    const uniqueResult: DefaultStateRef = this.findUnmountedState(results, unmountedKeys);
 
-    stateRootOperations.setState({ ...currentStateByRootTree, ...uniqueResult.defaults });
+    const uniqueResult: DefaultStateRef = this.findUnmountedState(results, unmountedKeys);
+    const canBeUpdateStateTree: boolean = uniqueResult.states.length > 0;
 
     if (ngxsAfterBootstrap) {
       ngxsAfterBootstrap();
     }
 
-    if (uniqueResult.states.length) {
+    if (canBeUpdateStateTree) {
+      stateRootOperations.setState({ ...currentStateByRootTree, ...uniqueResult.defaults });
       stateRootOperations.dispatch(new action()).subscribe(() => {
         factory.invokeInit(uniqueResult.states);
       });
@@ -84,7 +85,7 @@ export class InternalStateOperations {
     }
 
     newResult.states = states.filter((meta: MappedStore) => {
-      return uniqueKeys.some(key => meta.depth.includes(key));
+      return uniqueKeys.some((key: string) => meta.depth.includes(key));
     });
 
     return newResult;
