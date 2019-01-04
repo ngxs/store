@@ -52,9 +52,11 @@ export class InternalStateOperations {
     const newStateBySubTree = results.defaults;
 
     const nameRootStates: string[] = Object.keys(currentStateByRootTree);
-    const nameStates: string[] = Object.keys(newStateBySubTree);
+    const nameNewStates: string[] = Object.keys(newStateBySubTree);
 
-    const unmountedKeys: string[] = nameStates.filter(name => !nameRootStates.includes(name));
+    const unmountedKeys: string[] = nameNewStates.filter(
+      name => !nameRootStates.includes(name)
+    );
     const uniqueResult: DefaultStateRef = this.findUnmountedState(results, unmountedKeys);
 
     stateRootOperations.setState({ ...currentStateByRootTree, ...uniqueResult.defaults });
@@ -81,7 +83,9 @@ export class InternalStateOperations {
       }
     }
 
-    newResult.states = states.filter((meta: MappedStore) => uniqueKeys.includes(meta.name));
+    newResult.states = states.filter((meta: MappedStore) => {
+      return uniqueKeys.some(key => meta.depth.includes(key));
+    });
 
     return newResult;
   }
