@@ -3,7 +3,7 @@ import { resolve } from 'path';
 
 export enum ArgvType {
   WATCH = '--watch',
-  PLUGIN = '--plugin'
+  PACKAGE = '--package'
 }
 
 interface Package {
