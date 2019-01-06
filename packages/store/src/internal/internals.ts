@@ -201,7 +201,7 @@ export function buildGraph(stateClasses: StateClass[]): StateKeyGraph {
     const meta = stateClasses.find(g => g === stateClass);
     if (!meta) {
       throw new Error(
-        `Child state not found: ${stateClass}. You may have forgotten to add states to module`
+        `Child state not found: ${stateClass}. \nYou may have forgotten to add states to module`
       );
     }
 
