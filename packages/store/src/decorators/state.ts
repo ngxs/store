@@ -1,42 +1,28 @@
-import { ensureStoreMetadata } from '../internal/internals';
-import { StoreOptions, META_KEY } from '../symbols';
-
-const stateNameRegex = new RegExp('^[a-zA-Z0-9_]+$');
-
-/**
- * Error message
- * @ignore
- */
-export const stateNameErrorMessage = (name: string) =>
-  `${name} is not a valid state name. It needs to be a valid object property name.`;
+import { ensureStoreMetadata, MetaDataModel, StateClass } from '../internal/internals';
+import { META_KEY, META_OPTIONS_KEY, StoreOptions } from '../symbols';
+import { StoreValidators } from '../utils/store-validators';
 
 /**
  * Decorates a class with ngxs state information.
  */
 export function State<T>(options: StoreOptions<T>) {
-  return function(target: any) {
-    const meta = ensureStoreMetadata(target);
+  return function(target: StateClass) {
+    const meta: MetaDataModel = ensureStoreMetadata(target);
+    const targetReference: StateClass = Object.getPrototypeOf(target);
+    const inheritanceOptions: Partial<StoreOptions<T>> = target[META_OPTIONS_KEY] || {};
+    const { children, defaults, name } = { ...inheritanceOptions, ...options };
 
-    // Handle inheritance
-    if (Object.getPrototypeOf(target).hasOwnProperty(META_KEY)) {
-      const parentMeta = Object.getPrototypeOf(target)[META_KEY];
+    StoreValidators.checkCorrectStateName(name);
 
-      meta.actions = {
-        ...meta.actions,
-        ...parentMeta.actions
-      };
+    if (targetReference.hasOwnProperty(META_KEY)) {
+      const parentMeta: Partial<MetaDataModel> = targetReference[META_KEY] || {};
+      meta.actions = { ...meta.actions, ...parentMeta.actions };
     }
 
-    meta.children = options.children;
-    meta.defaults = options.defaults;
-    meta.name = options.name;
+    meta.children = children;
+    meta.defaults = defaults;
+    meta.name = name;
 
-    if (!options.name) {
-      throw new Error(`States must register a 'name' property`);
-    }
-
-    if (!stateNameRegex.test(options.name)) {
-      throw new Error(stateNameErrorMessage(options.name));
-    }
+    target[META_OPTIONS_KEY] = options;
   };
 }
