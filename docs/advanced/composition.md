@@ -20,7 +20,7 @@ class ZooState {
 })
 class StLouisZooState extends ZooState {
   @Action(Drink)
-  drink() {
+  drink(ctx: StateContext) {
     ctx.setState({ type: 'drink' });
   }
 }

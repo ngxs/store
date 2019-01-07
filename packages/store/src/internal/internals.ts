@@ -22,6 +22,12 @@ export interface StateClass<T = StateClassWithoutStaticMembers, U = any> {
   new (...args: any[]): T;
 }
 
+export interface MutateMetaOptions<T> {
+  meta: MetaDataModel;
+  stateClass: StateClass;
+  optionsWithInheritance: StoreOptions<T>;
+}
+
 export type StateKeyGraph = ObjectKeyMap<string[]>;
 
 export interface ActionHandlerMetaData {
