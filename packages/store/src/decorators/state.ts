@@ -4,7 +4,7 @@ import { StoreValidators } from '../utils/store-validators';
 
 interface MutateMetaOptions<T> {
   meta: MetaDataModel;
-  stateClass: StateClass;
+  inheritedStateClass: StateClass;
   optionsWithInheritance: StoreOptions<T>;
 }
 
@@ -12,13 +12,18 @@ interface MutateMetaOptions<T> {
  * Decorates a class with ngxs state information.
  */
 export function State<T>(options: StoreOptions<T>) {
+  function getStateOptions(stateClass: StateClass): StoreOptions<T> {
+    const inheritanceOptions: Partial<StoreOptions<T>> = stateClass[META_OPTIONS_KEY] || {};
+    return { ...inheritanceOptions, ...options };
+  }
+
   function mutateMetaData(params: MutateMetaOptions<T>): void {
-    const { meta, stateClass, optionsWithInheritance } = params;
+    const { meta, inheritedStateClass, optionsWithInheritance } = params;
     const { children, defaults, name } = optionsWithInheritance;
     StoreValidators.checkCorrectStateName(name);
 
-    if (stateClass.hasOwnProperty(META_KEY)) {
-      const parentMeta: Partial<MetaDataModel> = stateClass[META_KEY] || {};
+    if (inheritedStateClass.hasOwnProperty(META_KEY)) {
+      const parentMeta: Partial<MetaDataModel> = inheritedStateClass[META_KEY] || {};
       meta.actions = { ...meta.actions, ...parentMeta.actions };
     }
 
@@ -29,10 +34,9 @@ export function State<T>(options: StoreOptions<T>) {
 
   return (target: StateClass): void => {
     const meta: MetaDataModel = ensureStoreMetadata(target);
-    const stateClass: StateClass = Object.getPrototypeOf(target);
-    const inheritanceOptions: Partial<StoreOptions<T>> = stateClass[META_OPTIONS_KEY] || {};
-    const optionsWithInheritance: StoreOptions<T> = { ...inheritanceOptions, ...options };
-    mutateMetaData({ meta, stateClass, optionsWithInheritance });
+    const inheritedStateClass: StateClass = Object.getPrototypeOf(target);
+    const optionsWithInheritance: StoreOptions<T> = getStateOptions(inheritedStateClass);
+    mutateMetaData({ meta, inheritedStateClass, optionsWithInheritance });
     target[META_OPTIONS_KEY] = optionsWithInheritance;
   };
 }
