@@ -12,8 +12,9 @@ interface MutateMetaOptions<T> {
  * Decorates a class with ngxs state information.
  */
 export function State<T>(options: StoreOptions<T>) {
-  function getStateOptions(stateClass: StateClass): StoreOptions<T> {
-    const inheritanceOptions: Partial<StoreOptions<T>> = stateClass[META_OPTIONS_KEY] || {};
+  function getStateOptions(inheritedStateClass: StateClass): StoreOptions<T> {
+    const inheritanceOptions: Partial<StoreOptions<T>> =
+      inheritedStateClass[META_OPTIONS_KEY] || {};
     return { ...inheritanceOptions, ...options };
   }
 
@@ -23,8 +24,8 @@ export function State<T>(options: StoreOptions<T>) {
     StoreValidators.checkCorrectStateName(name);
 
     if (inheritedStateClass.hasOwnProperty(META_KEY)) {
-      const parentMeta: Partial<MetaDataModel> = inheritedStateClass[META_KEY] || {};
-      meta.actions = { ...meta.actions, ...parentMeta.actions };
+      const inheritedMeta: Partial<MetaDataModel> = inheritedStateClass[META_KEY] || {};
+      meta.actions = { ...meta.actions, ...inheritedMeta.actions };
     }
 
     meta.children = children;
