@@ -47,7 +47,7 @@ describe('Inheritance @State', () => {
     expect(otherState).toEqual({ value: 'a', child_b: 'child_b' });
   });
 
-  it('should be correct first inherited without other states', () => {
+  it('should be correct first inherited without other states [CHARACTERIZATION]', () => {
     @State<MyStateModel>({
       name: 'child',
       defaults: { value: 'child_value' }
