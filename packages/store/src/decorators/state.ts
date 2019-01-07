@@ -11,11 +11,8 @@ import { StoreValidators } from '../utils/store-validators';
  * Decorates a class with ngxs state information.
  */
 export function State<T>(options: StoreOptions<T>) {
-  function mutateMetaData({
-    meta,
-    stateClass,
-    optionsWithInheritance
-  }: MutateMetaOptions<T>): void {
+  function mutateMetaData(params: MutateMetaOptions<T>): void {
+    const { meta, stateClass, optionsWithInheritance } = params;
     const { children, defaults, name } = optionsWithInheritance;
     StoreValidators.checkCorrectStateName(name);
 
