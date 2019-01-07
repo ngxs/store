@@ -1,11 +1,12 @@
-import {
-  ensureStoreMetadata,
-  MetaDataModel,
-  MutateMetaOptions,
-  StateClass
-} from '../internal/internals';
+import { ensureStoreMetadata, MetaDataModel, StateClass } from '../internal/internals';
 import { META_KEY, META_OPTIONS_KEY, StoreOptions } from '../symbols';
 import { StoreValidators } from '../utils/store-validators';
+
+interface MutateMetaOptions<T> {
+  meta: MetaDataModel;
+  stateClass: StateClass;
+  optionsWithInheritance: StoreOptions<T>;
+}
 
 /**
  * Decorates a class with ngxs state information.
