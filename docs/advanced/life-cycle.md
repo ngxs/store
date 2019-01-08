@@ -26,6 +26,28 @@ export class ZooState implements NgxsOnInit {
 }
 ```
 
+## `ngxsAfterBootstrap`
+If a state implements the `NgxsAfterBootsrap` interface, its `ngxsAfterBootstrap` method will be invoked after the root view and all its children have been rendered.
+
+```TS
+export interface ZooStateModel {
+  animals: string[];
+}
+
+@State<any[]>({
+  name: 'zoo',
+  defaults: {
+    animals: []
+  }
+})
+export class ZooState implements NgxsAfterBootstrap {
+  ngxsAfterBootstrap(ctx: StateContext<ZooStateModel>) {
+    console.log('The application has been fully rendered');
+    ctx.dispatch(new GetAnimals());
+  }
+}
+```
+
 ### Feature modules order of imports
 
 If you have feature modules they need to be imported after the root module:

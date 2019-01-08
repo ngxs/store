@@ -166,6 +166,20 @@ export class StateFactory {
   }
 
   /**
+   * Invoke the bootstrap function on the states.
+   */
+  invokeBootstrap(stateMetadatas: MappedStore[]) {
+    for (const metadata of stateMetadatas) {
+      const instance: NgxsLifeCycle = metadata.instance;
+
+      if (instance.ngxsAfterBootsrap) {
+        const stateContext = this.createStateContext(metadata);
+        instance.ngxsAfterBootsrap(stateContext);
+      }
+    }
+  }
+
+  /**
    * Invoke actions on the states.
    */
   invokeActions(actions$: InternalActions, action: any) {

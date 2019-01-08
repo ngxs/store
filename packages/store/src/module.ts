@@ -3,13 +3,17 @@ import {
   ModuleWithProviders,
   Optional,
   Inject,
-  InjectionToken
+  InjectionToken,
+  APP_BOOTSTRAP_LISTENER
 } from '@angular/core';
+
+import { filter } from 'rxjs/operators';
 
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
+import { Bootstrapper } from './internal/bootstrapper';
 import { InternalDispatcher, InternalDispatchedActionResults } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
 import { Store } from './store';
@@ -31,7 +35,8 @@ export class NgxsRootModule {
     select: SelectFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
-    states: any[]
+    states: any[],
+    bootsrapper: Bootstrapper
   ) {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(states);
@@ -49,10 +54,15 @@ export class NgxsRootModule {
     factory.connectActionHandlers();
 
     // dispatch the init action and invoke init function after
-    stateOperations.dispatch(new InitState()).subscribe(() => {
-      if (results) {
-        factory.invokeInit(results.states);
-      }
+    stateOperations
+      .dispatch(new InitState())
+      .pipe(filter(() => !!results))
+      .subscribe(() => {
+        factory.invokeInit(results!.states);
+      });
+
+    bootsrapper.appBootstrapped$.pipe(filter(() => !!results)).subscribe(() => {
+      factory.invokeBootstrap(results!.states);
     });
   }
 }
@@ -102,6 +112,10 @@ export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
   return config;
 }
 
+export function appBootstrapListenerFactory(bootsrapper: Bootstrapper) {
+  return () => bootsrapper.bootstrap();
+}
+
 export const ROOT_OPTIONS = new InjectionToken<ModuleOptions>('ROOT_OPTIONS');
 
 /**
@@ -120,6 +134,7 @@ export class NgxsModule {
         StateContextFactory,
         Actions,
         InternalActions,
+        Bootstrapper,
         InternalDispatcher,
         InternalDispatchedActionResults,
         InternalStateOperations,
@@ -140,6 +155,12 @@ export class NgxsModule {
           provide: NgxsConfig,
           useFactory: ngxsConfigFactory,
           deps: [ROOT_OPTIONS]
+        },
+        {
+          provide: APP_BOOTSTRAP_LISTENER,
+          useFactory: appBootstrapListenerFactory,
+          multi: true,
+          deps: [Bootstrapper]
         }
       ]
     };
