@@ -3,12 +3,12 @@ import { map, filter } from 'rxjs/operators';
 import { getActionTypeFromInstance } from '../utils/utils';
 import { ActionContext, ActionStatus } from '../actions-stream';
 
-export interface ActionCompletion<T = any> {
+export interface ActionCompletion<T = any, E = Error> {
   action: T;
   result: {
     successful: boolean;
     canceled: boolean;
-    error?: Error;
+    error?: E;
   };
 }
 
@@ -101,11 +101,11 @@ function filterStatus(allowedTypes: FilterMap, allowedStatuses?: FilterMap) {
 function mapActionResult(): OperatorFunction<ActionContext, ActionCompletion> {
   return map(({ action, status, error }: ActionContext) => {
     return <ActionCompletion>{
-      action: action,
+      action,
       result: {
         successful: ActionStatus.Successful === status,
         canceled: ActionStatus.Canceled === status,
-        error: error
+        error
       }
     };
   });
