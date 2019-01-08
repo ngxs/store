@@ -1,17 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ɵViewDefinition } from '@angular/core';
 
 import { Subject, Observable } from 'rxjs';
 
 @Injectable()
 export class Bootstrapper {
-  private _bootstrap$ = new Subject<void>();
+  private bootstrap$ = new Subject<void>();
 
   get appBootstrapped$(): Observable<void> {
-    return this._bootstrap$.asObservable();
+    return this.bootstrap$.asObservable();
   }
 
+  /**
+   * This event will be emitted after attaching `ComponentRef` of the root component
+   * to the tree of views, that's a signal that application has been fully rendered
+   */
   bootstrap(): void {
-    this._bootstrap$.next();
-    this._bootstrap$.complete();
+    this.bootstrap$.next();
+    this.bootstrap$.complete();
   }
 }
