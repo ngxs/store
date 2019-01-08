@@ -1,42 +1,43 @@
-import { ensureStoreMetadata } from '../internal/internals';
-import { StoreOptions, META_KEY } from '../symbols';
+import { ensureStoreMetadata, MetaDataModel, StateClass } from '../internal/internals';
+import { META_KEY, META_OPTIONS_KEY, StoreOptions } from '../symbols';
+import { StoreValidators } from '../utils/store-validators';
 
-const stateNameRegex = new RegExp('^[a-zA-Z0-9_]+$');
-
-/**
- * Error message
- * @ignore
- */
-export const stateNameErrorMessage = (name: string) =>
-  `${name} is not a valid state name. It needs to be a valid object property name.`;
+interface MutateMetaOptions<T> {
+  meta: MetaDataModel;
+  inheritedStateClass: StateClass;
+  optionsWithInheritance: StoreOptions<T>;
+}
 
 /**
  * Decorates a class with ngxs state information.
  */
 export function State<T>(options: StoreOptions<T>) {
-  return function(target: any) {
-    const meta = ensureStoreMetadata(target);
+  function getStateOptions(inheritedStateClass: StateClass): StoreOptions<T> {
+    const inheritanceOptions: Partial<StoreOptions<T>> =
+      inheritedStateClass[META_OPTIONS_KEY] || {};
+    return { ...inheritanceOptions, ...options };
+  }
 
-    // Handle inheritance
-    if (Object.getPrototypeOf(target).hasOwnProperty(META_KEY)) {
-      const parentMeta = Object.getPrototypeOf(target)[META_KEY];
+  function mutateMetaData(params: MutateMetaOptions<T>): void {
+    const { meta, inheritedStateClass, optionsWithInheritance } = params;
+    const { children, defaults, name } = optionsWithInheritance;
+    StoreValidators.checkCorrectStateName(name);
 
-      meta.actions = {
-        ...meta.actions,
-        ...parentMeta.actions
-      };
+    if (inheritedStateClass.hasOwnProperty(META_KEY)) {
+      const inheritedMeta: Partial<MetaDataModel> = inheritedStateClass[META_KEY] || {};
+      meta.actions = { ...meta.actions, ...inheritedMeta.actions };
     }
 
-    meta.children = options.children;
-    meta.defaults = options.defaults;
-    meta.name = options.name;
+    meta.children = children;
+    meta.defaults = defaults;
+    meta.name = name;
+  }
 
-    if (!options.name) {
-      throw new Error(`States must register a 'name' property`);
-    }
-
-    if (!stateNameRegex.test(options.name)) {
-      throw new Error(stateNameErrorMessage(options.name));
-    }
+  return (target: StateClass): void => {
+    const meta: MetaDataModel = ensureStoreMetadata(target);
+    const inheritedStateClass: StateClass = Object.getPrototypeOf(target);
+    const optionsWithInheritance: StoreOptions<T> = getStateOptions(inheritedStateClass);
+    mutateMetaData({ meta, inheritedStateClass, optionsWithInheritance });
+    target[META_OPTIONS_KEY] = optionsWithInheritance;
   };
 }

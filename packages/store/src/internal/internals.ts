@@ -1,4 +1,11 @@
-import { META_KEY, ActionOptions, SELECTOR_META_KEY, NgxsConfig } from '../symbols';
+import {
+  ActionOptions,
+  META_KEY,
+  META_OPTIONS_KEY,
+  NgxsConfig,
+  SELECTOR_META_KEY,
+  StoreOptions
+} from '../symbols';
 import { Observable } from 'rxjs';
 
 export interface ObjectKeyMap<T> {
@@ -8,9 +15,11 @@ export interface ObjectKeyMap<T> {
 export interface StateClassWithoutStaticMembers {}
 
 // inspired from https://stackoverflow.com/a/43674389
-export interface StateClass<T = StateClassWithoutStaticMembers> {
-  new (...args: any[]): T;
+export interface StateClass<T = StateClassWithoutStaticMembers, U = any> {
   [META_KEY]?: MetaDataModel;
+  [META_OPTIONS_KEY]?: StoreOptions<U>;
+
+  new (...args: any[]): T;
 }
 
 export type StateKeyGraph = ObjectKeyMap<string[]>;
@@ -23,7 +32,9 @@ export interface ActionHandlerMetaData {
 
 export interface StateOperations<T> {
   getState(): T;
+
   setState(val: T): T;
+
   dispatch(actions: any | any[]): Observable<void>;
 }
 
@@ -189,7 +200,9 @@ export function buildGraph(stateClasses: StateClass[]): StateKeyGraph {
   const findName = (stateClass: StateClass) => {
     const meta = stateClasses.find(g => g === stateClass);
     if (!meta) {
-      throw new Error(`Child state not found: ${stateClass}`);
+      throw new Error(
+        `Child state not found: ${stateClass}. \r\nYou may have forgotten to add states to module`
+      );
     }
 
     if (!meta[META_KEY]) {

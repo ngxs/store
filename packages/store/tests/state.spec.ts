@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
 import { InitState, UpdateState } from '../src/actions/actions';
-import { State, Action, NgxsOnInit, NgxsModule, StateContext, Store } from '../src/public_api';
+import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../src/public_api';
 
-import { stateNameErrorMessage } from '../src/decorators/state';
 import { META_KEY } from '../src/symbols';
+import { StoreValidators } from '../src/utils/store-validators';
 
 describe('State', () => {
   it('describes correct name', () => {
@@ -22,6 +22,7 @@ describe('State', () => {
     class Eat {
       static type = 'EAT';
     }
+
     class Drink {
       static type = 'DRINK';
     }
@@ -61,7 +62,7 @@ describe('State', () => {
       message = err.message;
     }
 
-    expect(message).toBe(stateNameErrorMessage('bar-foo'));
+    expect(message).toBe(StoreValidators.stateNameErrorMessage('bar-foo'));
   });
 
   describe('given the ngxsOnInit lifecycle method is present', () => {
