@@ -16,7 +16,8 @@ export {
   ofActionSuccessful,
   ofActionCanceled,
   ofActionErrored,
-  ofActionCompleted
+  ofActionCompleted,
+  ActionCompletion
 } from './operators/of-action';
 export { NgxsPlugin, NgxsPluginFn, StateContext, StateOperator, NgxsOnInit } from './symbols';
 export { Selector } from './decorators/selector';
