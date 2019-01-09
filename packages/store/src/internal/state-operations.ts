@@ -1,9 +1,5 @@
 import { Injectable, isDevMode } from '@angular/core';
 
-import { filter, tap, mergeMap } from 'rxjs/operators';
-
-import { Bootstrapper } from './bootstrapper';
-import { StateFactory } from './state-factory';
 import { StateOperations, StatesAndDefaults } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
@@ -89,24 +85,5 @@ export class InternalStateOperations {
     const currentState = stateOperations.getState();
     // Set the state to the current + new
     stateOperations.setState({ ...currentState, ...results.defaults });
-  }
-
-  ngxsBootstrap<T>(
-    action: T,
-    results: StatesAndDefaults,
-    factory: StateFactory,
-    bootsrapper: Bootstrapper
-  ): void {
-    this.getRootStateOperations()
-      .dispatch(action)
-      .pipe(
-        filter(() => !!results),
-        tap(() => factory.invokeInit(results!.states)),
-        mergeMap(() => bootsrapper.appBootstrapped$),
-        filter(appBootrapped => !!appBootrapped)
-      )
-      .subscribe(() => {
-        factory.invokeBootstrap(results!.states);
-      });
   }
 }

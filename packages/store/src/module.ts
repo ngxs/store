@@ -12,6 +12,7 @@ import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
 import { Bootstrapper } from './internal/bootstrapper';
+import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatcher, InternalDispatchedActionResults } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
 import { Store } from './store';
@@ -34,7 +35,8 @@ export class NgxsRootModule {
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
     states: any[],
-    bootsrapper: Bootstrapper
+    bootsrapper: Bootstrapper,
+    lifecycleStateManager: LifecycleStateManager
   ) {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(states);
@@ -45,7 +47,13 @@ export class NgxsRootModule {
     factory.connectActionHandlers();
 
     // dispatch the init action and invoke init and bootstrap functions after
-    internalStateOperations.ngxsBootstrap(new InitState(), results, factory, bootsrapper);
+    lifecycleStateManager.ngxsBootstrap({
+      internalStateOperations,
+      action: new InitState(),
+      results,
+      factory,
+      bootsrapper
+    });
   }
 }
 
@@ -62,7 +70,8 @@ export class NgxsFeatureModule {
     @Optional()
     @Inject(FEATURE_STATE_TOKEN)
     states: any[][],
-    bootsrapper: Bootstrapper
+    bootsrapper: Bootstrapper,
+    lifecycleStateManager: LifecycleStateManager
   ) {
     // Since FEATURE_STATE_TOKEN is a multi token, we need to
     // flatten it [[Feature1State, Feature2State], [Feature3State]]
@@ -74,7 +83,13 @@ export class NgxsFeatureModule {
     internalStateOperations.setStateToTheCurrentWithNew(results);
 
     // dispatch the update action and invoke init and bootstrap functions after
-    internalStateOperations.ngxsBootstrap(new UpdateState(), results, factory, bootsrapper);
+    lifecycleStateManager.ngxsBootstrap({
+      internalStateOperations,
+      action: new UpdateState(),
+      results,
+      factory,
+      bootsrapper
+    });
   }
 }
 
@@ -108,6 +123,7 @@ export class NgxsModule {
         Actions,
         InternalActions,
         Bootstrapper,
+        LifecycleStateManager,
         InternalDispatcher,
         InternalDispatchedActionResults,
         InternalStateOperations,

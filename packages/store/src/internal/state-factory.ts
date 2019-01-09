@@ -151,20 +151,6 @@ export class StateFactory {
   }
 
   /**
-   * Invoke the init function on the states.
-   */
-  invokeInit(stateMetadatas: MappedStore[]) {
-    this.invokeLifecycleHooks(stateMetadatas, LifecycleHooks.NgxsOnInit);
-  }
-
-  /**
-   * Invoke the bootstrap function on the states.
-   */
-  invokeBootstrap(stateMetadatas: MappedStore[]) {
-    this.invokeLifecycleHooks(stateMetadatas, LifecycleHooks.NgxsAfterBootstrap);
-  }
-
-  /**
    * Invoke actions on the states.
    */
   invokeActions(actions$: InternalActions, action: any) {
@@ -210,21 +196,10 @@ export class StateFactory {
     return forkJoin(results);
   }
 
-  private invokeLifecycleHooks(stateMetadatas: MappedStore[], hook: LifecycleHooks): void {
-    for (const metadata of stateMetadatas) {
-      const instance: NgxsLifeCycle = metadata.instance;
-
-      if (instance[hook]) {
-        const stateContext = this.createStateContext(metadata);
-        instance[hook]!(stateContext);
-      }
-    }
-  }
-
   /**
    * Create the state context
    */
-  private createStateContext(metadata: MappedStore) {
+  createStateContext(metadata: MappedStore) {
     return this._stateContextFactory.createStateContext(metadata);
   }
 }
