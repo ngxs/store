@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Component, ApplicationRef, NgModule } from '@angular/core';
+import { Component, ApplicationRef, NgModule, OnInit, AfterViewInit } from '@angular/core';
 import {
   ɵDomAdapter as DomAdapter,
   ɵBrowserDomAdapter as BrowserDomAdapter,
@@ -186,11 +186,28 @@ describe('State', () => {
       adapter.appendChild(document.body, root);
     }
 
+    const enum LifecycleHooks {
+      NgOnInit = 'ngOnInit',
+      NgxsOnInit = 'ngxsOnInit',
+      NgAfterViewInit = 'ngAfterViewInit',
+      NgxsAfterBootstrap = 'ngxsAfterBootstrap'
+    }
+
+    let hooks: LifecycleHooks[] = [];
+
     @Component({
       selector: 'app-root',
       template: ''
     })
-    class MockComponent {}
+    class MockComponent implements OnInit, AfterViewInit {
+      public ngOnInit(): void {
+        hooks.push(LifecycleHooks.NgOnInit);
+      }
+
+      public ngAfterViewInit(): void {
+        hooks.push(LifecycleHooks.NgAfterViewInit);
+      }
+    }
 
     function createModule() {
       @NgModule({
@@ -203,17 +220,17 @@ describe('State', () => {
       return MockModule;
     }
 
-    it('should invoke "ngxsAfterBootstrap" after "ngxsOnInit"', () => {
-      const hooks: (keyof NgxsLifeCycle)[] = [];
+    beforeEach(() => (hooks = []));
 
+    it('should invoke "ngxsAfterBootstrap" after "ngxsOnInit"', () => {
       @State({ name: 'foo' })
       class FooState implements NgxsOnInit, NgxsAfterBootstrap {
         public ngxsOnInit(): void {
-          hooks.push('ngxsOnInit');
+          hooks.push(LifecycleHooks.NgxsOnInit);
         }
 
         public ngxsAfterBootstrap(): void {
-          hooks.push('ngxsAfterBootstrap');
+          hooks.push(LifecycleHooks.NgxsAfterBootstrap);
         }
       }
 
@@ -225,8 +242,12 @@ describe('State', () => {
       createRootNode();
       app.bootstrap(MockComponent);
 
-      expect(hooks[0]).toBe('ngxsOnInit');
-      expect(hooks[1]).toBe('ngxsAfterBootstrap');
+      expect(hooks).toEqual([
+        LifecycleHooks.NgxsOnInit,
+        LifecycleHooks.NgOnInit,
+        LifecycleHooks.NgAfterViewInit,
+        LifecycleHooks.NgxsAfterBootstrap
+      ]);
     });
   });
 });
