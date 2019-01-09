@@ -1,4 +1,4 @@
-import { Injectable, ɵViewDefinition } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { Subject, Observable } from 'rxjs';
 
