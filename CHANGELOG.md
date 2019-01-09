@@ -8,6 +8,8 @@ $ npm install @ngxs/store@dev
 * Feature: Enable state operator extensibility [#635](https://github.com/ngxs/store/pull/635)
 * Feature: Add `ofActionCompleted` action handler [#712](https://github.com/ngxs/store/pull/712)
 * Feature: Add `Hot Module Replacement` plugin for manage states [#707](https://github.com/ngxs/store/pull/707)
+* Feature: Add possible inheritance of state options [#750](https://github.com/ngxs/store/pull/750)
+* Fix: Expose `ActionCompletion` [#752](https://github.com/ngxs/store/pull/752)
 
 # 3.3.4 2018-12-20
 * Fix: Remove ref to TestBed to reduce bundle size [#725](https://github.com/ngxs/store/pull/725)
