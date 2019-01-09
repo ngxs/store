@@ -209,15 +209,16 @@ describe('State', () => {
       }
     }
 
-    function createModule() {
-      @NgModule({
-        imports: [BrowserModule],
-        declarations: [MockComponent],
-        entryComponents: [MockComponent]
-      })
-      class MockModule {}
-
-      return MockModule;
+    @NgModule({
+      imports: [BrowserModule],
+      declarations: [MockComponent],
+      entryComponents: [MockComponent]
+    })
+    class MockModule {
+      public static ngDoBootstrap(app: ApplicationRef): void {
+        createRootNode();
+        app.bootstrap(MockComponent);
+      }
     }
 
     beforeEach(() => (hooks = []));
@@ -235,12 +236,10 @@ describe('State', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [createModule(), NgxsModule.forRoot([FooState])]
+        imports: [MockModule, NgxsModule.forRoot([FooState])]
       });
 
-      const app: ApplicationRef = TestBed.get(ApplicationRef);
-      createRootNode();
-      app.bootstrap(MockComponent);
+      MockModule.ngDoBootstrap(TestBed.get(ApplicationRef));
 
       expect(hooks).toEqual([
         LifecycleHooks.NgxsOnInit,
