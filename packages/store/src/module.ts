@@ -35,7 +35,6 @@ export class NgxsRootModule {
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
     states: any[],
-    bootsrapper: Bootstrapper,
     lifecycleStateManager: LifecycleStateManager
   ) {
     // add stores to the state graph and return their defaults
@@ -47,13 +46,7 @@ export class NgxsRootModule {
     factory.connectActionHandlers();
 
     // dispatch the init action and invoke init and bootstrap functions after
-    lifecycleStateManager.ngxsBootstrap({
-      internalStateOperations,
-      action: new InitState(),
-      results,
-      factory,
-      bootsrapper
-    });
+    lifecycleStateManager.ngxsBootstrap(new InitState(), results);
   }
 }
 
@@ -70,7 +63,6 @@ export class NgxsFeatureModule {
     @Optional()
     @Inject(FEATURE_STATE_TOKEN)
     states: any[][],
-    bootsrapper: Bootstrapper,
     lifecycleStateManager: LifecycleStateManager
   ) {
     // Since FEATURE_STATE_TOKEN is a multi token, we need to
@@ -83,13 +75,7 @@ export class NgxsFeatureModule {
     internalStateOperations.setStateToTheCurrentWithNew(results);
 
     // dispatch the update action and invoke init and bootstrap functions after
-    lifecycleStateManager.ngxsBootstrap({
-      internalStateOperations,
-      action: new UpdateState(),
-      results,
-      factory,
-      bootsrapper
-    });
+    lifecycleStateManager.ngxsBootstrap(new UpdateState(), results);
   }
 }
 
