@@ -222,7 +222,7 @@ describe('State', () => {
 
     beforeEach(() => (hooks = []));
 
-    it('should invoke "ngxsAfterBootstrap" after "ngxsOnInit"', () => {
+    it('should invoke "ngxsAfterBootstrap" after "ngxsOnInit" and after root component\'s "ngAfterViewInit"', () => {
       @State({ name: 'foo' })
       class FooState implements NgxsOnInit, NgxsAfterBootstrap {
         public ngxsOnInit(): void {
