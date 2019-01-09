@@ -65,12 +65,10 @@ export interface MappedStore {
   depth: string;
 }
 
-export type StatesAndDefaults =
-  | {
-      defaults: any;
-      states: MappedStore[];
-    }
-  | undefined;
+export interface StatesAndDefaults {
+  defaults: any;
+  states: MappedStore[];
+}
 
 /**
  * Ensures metadata is attached to the class and returns it.

@@ -11,10 +11,10 @@ export class ListState implements NgxsOnInit, NgxsAfterBootstrap {
   }
 
   public ngxsOnInit({ setState, getState }: StateContext<string[]>): void {
-    setState([...getState(), 'NgxsOnInit lazy']);
+    setState([...getState(), 'NgxsOnInit feature']);
   }
 
   public ngxsAfterBootstrap({ setState, getState }: StateContext<string[]>): void {
-    setState([...getState(), 'NgxsAfterBootstrap lazy']);
+    setState([...getState(), 'NgxsAfterBootstrap feature']);
   }
 }

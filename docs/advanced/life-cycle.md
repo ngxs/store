@@ -27,7 +27,7 @@ export class ZooState implements NgxsOnInit {
 ```
 
 ## `ngxsAfterBootstrap`
-If a state implements the `NgxsAfterBootsrap` interface, its `ngxsAfterBootstrap` method will be invoked after the root view and all its children have been rendered.
+If a state implements the `NgxsAfterBootsrap` interface, its `ngxsAfterBootstrap` method will be invoked after the root view and all its children have been rendered, because Angular invokes functions, retrieved from the injector by `APP_BOOTSTRAP_LISTENER` token, only after creating and attaching `ComponentRef` of the root component to the tree of views.
 
 ```TS
 export interface ZooStateModel {

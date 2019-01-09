@@ -249,9 +249,9 @@ describe('State', () => {
       ]);
     });
 
-    it('should invoke "ngxsAfterBootstrap" for lazy states', () => {
-      @State({ name: 'fooLazy' })
-      class FooLazyState implements NgxsOnInit, NgxsAfterBootstrap {
+    it('should invoke "ngxsAfterBootstrap" for feature states', () => {
+      @State({ name: 'fooFeature' })
+      class FooFeatureState implements NgxsOnInit, NgxsAfterBootstrap {
         public ngxsOnInit(): void {
           hooks.push(LifecycleHooks.NgxsOnInit);
         }
@@ -262,7 +262,7 @@ describe('State', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [MockModule, NgxsModule.forRoot(), NgxsModule.forFeature([FooLazyState])]
+        imports: [MockModule, NgxsModule.forRoot(), NgxsModule.forFeature([FooFeatureState])]
       });
 
       MockModule.ngDoBootstrap(TestBed.get(ApplicationRef));

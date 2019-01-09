@@ -117,7 +117,7 @@ export class StateFactory {
   /**
    * Add a set of states to the store and return the defaults
    */
-  addAndReturnDefaults(stateClasses: any[]): StatesAndDefaults {
+  addAndReturnDefaults(stateClasses: any[]): StatesAndDefaults | undefined {
     if (stateClasses) {
       const states = this.add(stateClasses);
       const defaults = states.reduce(
@@ -162,7 +162,7 @@ export class StateFactory {
 
       if (actionMetas) {
         for (const actionMeta of actionMetas) {
-          const stateContext = this.createStateContext(metadata);
+          const stateContext = this._stateContextFactory.createStateContext(metadata);
           try {
             let result = metadata.instance[actionMeta.fn](stateContext, action);
 
@@ -194,12 +194,5 @@ export class StateFactory {
     }
 
     return forkJoin(results);
-  }
-
-  /**
-   * Create the state context
-   */
-  createStateContext(metadata: MappedStore) {
-    return this._stateContextFactory.createStateContext(metadata);
   }
 }

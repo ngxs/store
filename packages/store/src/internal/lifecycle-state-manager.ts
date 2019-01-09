@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { filter, tap, mergeMap } from 'rxjs/operators';
 
-import { StateFactory } from './state-factory';
+import { StateContextFactory } from './state-context-factory';
 import { Bootstrapper } from './bootstrapper';
 import { InternalStateOperations } from './state-operations';
 import { MappedStore, StatesAndDefaults } from './internals';
@@ -12,11 +12,11 @@ import { LifecycleHooks, NgxsLifeCycle } from '../symbols';
 export class LifecycleStateManager {
   constructor(
     private internalStateOperations: InternalStateOperations,
-    private factory: StateFactory,
+    private stateContextFactory: StateContextFactory,
     private bootstrapper: Bootstrapper
   ) {}
 
-  ngxsBootstrap<T>(action: T, results: StatesAndDefaults): void {
+  ngxsBootstrap<T>(action: T, results: StatesAndDefaults | undefined): void {
     this.internalStateOperations
       .getRootStateOperations()
       .dispatch(action)
@@ -50,7 +50,7 @@ export class LifecycleStateManager {
       const instance: NgxsLifeCycle = metadata.instance;
 
       if (instance[hook]) {
-        const stateContext = this.factory.createStateContext(metadata);
+        const stateContext = this.stateContextFactory.createStateContext(metadata);
         instance[hook]!(stateContext);
       }
     }

@@ -74,7 +74,7 @@ export class InternalStateOperations {
     };
   }
 
-  setStateToTheCurrentWithNew(results: StatesAndDefaults): void {
+  setStateToTheCurrentWithNew(results: StatesAndDefaults | undefined): void {
     if (!results) {
       return;
     }
