@@ -28,7 +28,7 @@ export class TodoState implements NgxsOnInit, NgxsAfterBootstrap {
     }
   }
 
-  public ngxsAfterBootsrap({ getState, setState }: StateContext<Todo[]>): void {
+  public ngxsAfterBootstrap({ getState, setState }: StateContext<Todo[]>): void {
     const state: Todo[] = getState();
     const payload: Todo = 'NgxsAfterBootstrap todo';
     if (!state.includes(payload)) {
