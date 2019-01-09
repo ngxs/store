@@ -10,7 +10,7 @@ import {
   defaultIfEmpty
 } from 'rxjs/operators';
 
-import { META_KEY, NgxsLifeCycle, NgxsConfig } from '../symbols';
+import { META_KEY, NgxsLifeCycle, NgxsConfig, LifecycleHooks } from '../symbols';
 import {
   topologicalSort,
   buildGraph,
@@ -19,7 +19,8 @@ import {
   propGetter,
   isObject,
   MappedStore,
-  StateClass
+  StateClass,
+  StatesAndDefaults
 } from './internals';
 import { getActionTypeFromInstance, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -114,11 +115,9 @@ export class StateFactory {
   }
 
   /**
-   * Add a set of states to the store and return the defaulsts
+   * Add a set of states to the store and return the defaults
    */
-  addAndReturnDefaults(
-    stateClasses: any[]
-  ): { defaults: any; states: MappedStore[] } | undefined {
+  addAndReturnDefaults(stateClasses: any[]): StatesAndDefaults {
     if (stateClasses) {
       const states = this.add(stateClasses);
       const defaults = states.reduce(
@@ -155,14 +154,14 @@ export class StateFactory {
    * Invoke the init function on the states.
    */
   invokeInit(stateMetadatas: MappedStore[]) {
-    this.invokeLifecycleHooks(stateMetadatas, 'ngxsOnInit');
+    this.invokeLifecycleHooks(stateMetadatas, LifecycleHooks.NgxsOnInit);
   }
 
   /**
    * Invoke the bootstrap function on the states.
    */
   invokeBootstrap(stateMetadatas: MappedStore[]) {
-    this.invokeLifecycleHooks(stateMetadatas, 'ngxsAfterBootstrap');
+    this.invokeLifecycleHooks(stateMetadatas, LifecycleHooks.NgxsAfterBootstrap);
   }
 
   /**
@@ -211,10 +210,7 @@ export class StateFactory {
     return forkJoin(results);
   }
 
-  private invokeLifecycleHooks(
-    stateMetadatas: MappedStore[],
-    hook: keyof NgxsLifeCycle
-  ): void {
+  private invokeLifecycleHooks(stateMetadatas: MappedStore[], hook: LifecycleHooks): void {
     for (const metadata of stateMetadatas) {
       const instance: NgxsLifeCycle = metadata.instance;
 

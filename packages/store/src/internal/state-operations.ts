@@ -1,6 +1,10 @@
 import { Injectable, isDevMode } from '@angular/core';
 
-import { StateOperations } from '../internal/internals';
+import { filter, tap, mergeMap } from 'rxjs/operators';
+
+import { Bootstrapper } from './bootstrapper';
+import { StateFactory } from './state-factory';
+import { StateOperations, StatesAndDefaults } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
@@ -72,5 +76,24 @@ export class InternalStateOperations {
         return root.dispatch(actions);
       }
     };
+  }
+
+  dispatchActionAndInvokeLifecyleHooks<T>(
+    action: T,
+    results: StatesAndDefaults,
+    factory: StateFactory,
+    bootsrapper: Bootstrapper
+  ): void {
+    this.getRootStateOperations()
+      .dispatch(action)
+      .pipe(
+        filter(() => !!results),
+        tap(() => factory.invokeInit(results!.states)),
+        mergeMap(() => bootsrapper.appBootstrapped$),
+        filter(appBootrapped => !!appBootrapped)
+      )
+      .subscribe(() => {
+        factory.invokeBootstrap(results!.states);
+      });
   }
 }

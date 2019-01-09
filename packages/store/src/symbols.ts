@@ -106,6 +106,11 @@ export interface ActionOptions {
   cancelUncompleted?: boolean;
 }
 
+export const enum LifecycleHooks {
+  NgxsOnInit = 'ngxsOnInit',
+  NgxsAfterBootstrap = 'ngxsAfterBootstrap'
+}
+
 /**
  * On init interface
  */

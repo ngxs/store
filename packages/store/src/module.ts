@@ -7,8 +7,6 @@ import {
   APP_BOOTSTRAP_LISTENER
 } from '@angular/core';
 
-import { filter, tap, mergeMap } from 'rxjs/operators';
-
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
@@ -53,18 +51,13 @@ export class NgxsRootModule {
     // connect our actions stream
     factory.connectActionHandlers();
 
-    // dispatch the init action and invoke init function after
-    stateOperations
-      .dispatch(new InitState())
-      .pipe(
-        filter(() => !!results),
-        tap(() => factory.invokeInit(results!.states)),
-        mergeMap(() => bootsrapper.appBootstrapped$),
-        filter(appBootrapped => !!appBootrapped)
-      )
-      .subscribe(() => {
-        factory.invokeBootstrap(results!.states);
-      });
+    // dispatch the init action and invoke init and bootstrap functions after
+    internalStateOperations.dispatchActionAndInvokeLifecyleHooks(
+      new InitState(),
+      results,
+      factory,
+      bootsrapper
+    );
   }
 }
 
@@ -99,17 +92,13 @@ export class NgxsFeatureModule {
       stateOperations.setState({ ...cur, ...results.defaults });
     }
 
-    stateOperations
-      .dispatch(new UpdateState())
-      .pipe(
-        filter(() => !!results),
-        tap(() => factory.invokeInit(results!.states)),
-        mergeMap(() => bootsrapper.appBootstrapped$),
-        filter(appBootrapped => !!appBootrapped)
-      )
-      .subscribe(() => {
-        factory.invokeBootstrap(results!.states);
-      });
+    // dispatch the update action and invoke init and bootstrap functions after
+    internalStateOperations.dispatchActionAndInvokeLifecyleHooks(
+      new UpdateState(),
+      results,
+      factory,
+      bootsrapper
+    );
   }
 }
 
