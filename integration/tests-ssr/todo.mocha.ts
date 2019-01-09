@@ -13,4 +13,9 @@ describe('NGXS + SSR', () => {
     body = await request('http://localhost:4000/list');
     expect(body.includes('ngOnInit todo')).to.equal(true);
   });
+
+  it('"NgxsAfterBootstrap todo" should exist', async () => {
+    body = await request('http://localhost:4000/list');
+    expect(body.includes('NgxsAfterBootstrap todo')).to.equal(true);
+  });
 });

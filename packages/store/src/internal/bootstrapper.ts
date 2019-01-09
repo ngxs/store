@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject, Observable } from 'rxjs';
+import { ReplaySubject, Observable } from 'rxjs';
 
 @Injectable()
 export class Bootstrapper {
-  private bootstrap$ = new BehaviorSubject(false);
+  /**
+   * Use `ReplaySubject`, thus we can get cached value even if the stream is completed
+   */
+  private bootstrap$ = new ReplaySubject<boolean>(1);
 
   get appBootstrapped$(): Observable<boolean> {
     return this.bootstrap$.asObservable();

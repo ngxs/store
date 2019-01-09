@@ -117,7 +117,7 @@ export interface NgxsOnInit {
  * After bootstrap interface
  */
 export interface NgxsAfterBootstrap {
-  ngxsAfterBootsrap(ctx?: StateContext<any>): void;
+  ngxsAfterBootstrap(ctx?: StateContext<any>): void;
 }
 
 export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;

@@ -162,7 +162,7 @@ export class StateFactory {
    * Invoke the bootstrap function on the states.
    */
   invokeBootstrap(stateMetadatas: MappedStore[]) {
-    this.invokeLifecycleHooks(stateMetadatas, 'ngxsAfterBootsrap');
+    this.invokeLifecycleHooks(stateMetadatas, 'ngxsAfterBootstrap');
   }
 
   /**

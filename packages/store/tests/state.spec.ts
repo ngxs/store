@@ -1,9 +1,16 @@
 import { TestBed } from '@angular/core/testing';
+import { Component, ApplicationRef, NgModule } from '@angular/core';
+import {
+  ɵDomAdapter as DomAdapter,
+  ɵBrowserDomAdapter as BrowserDomAdapter,
+  BrowserModule,
+  DOCUMENT
+} from '@angular/platform-browser';
 
 import { InitState, UpdateState } from '../src/actions/actions';
 import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../src/public_api';
 
-import { META_KEY } from '../src/symbols';
+import { META_KEY, NgxsAfterBootstrap, NgxsLifeCycle } from '../src/symbols';
 import { StoreValidators } from '../src/utils/store-validators';
 
 describe('State', () => {
@@ -161,6 +168,65 @@ describe('State', () => {
       TestBed.get(FooState);
 
       expect(TestBed.get(Store).snapshot().foo).toEqual(['updateState', 'onInit']);
+    });
+  });
+
+  describe('"ngxsAfterBootstrap" lifecycle hook', () => {
+    function createRootNode(selector = 'app-root'): void {
+      const document = TestBed.get(DOCUMENT);
+      const adapter: DomAdapter = new BrowserDomAdapter();
+
+      const root = adapter.firstChild(
+        adapter.content(adapter.createTemplate(`<${selector}></${selector}>`))
+      );
+
+      const oldRoots = adapter.querySelectorAll(document, selector);
+      oldRoots.forEach(oldRoot => adapter.remove(oldRoot));
+
+      adapter.appendChild(document.body, root);
+    }
+
+    @Component({
+      selector: 'app-root',
+      template: ''
+    })
+    class MockComponent {}
+
+    function createModule() {
+      @NgModule({
+        imports: [BrowserModule],
+        declarations: [MockComponent],
+        entryComponents: [MockComponent]
+      })
+      class MockModule {}
+
+      return MockModule;
+    }
+
+    it('should invoke "ngxsAfterBootstrap" after "ngxsOnInit"', () => {
+      const hooks: (keyof NgxsLifeCycle)[] = [];
+
+      @State({ name: 'foo' })
+      class FooState implements NgxsOnInit, NgxsAfterBootstrap {
+        public ngxsOnInit(): void {
+          hooks.push('ngxsOnInit');
+        }
+
+        public ngxsAfterBootstrap(): void {
+          hooks.push('ngxsAfterBootstrap');
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [createModule(), NgxsModule.forRoot([FooState])]
+      });
+
+      const app: ApplicationRef = TestBed.get(ApplicationRef);
+      createRootNode();
+      app.bootstrap(MockComponent);
+
+      expect(hooks[0]).toBe('ngxsOnInit');
+      expect(hooks[1]).toBe('ngxsAfterBootstrap');
     });
   });
 });

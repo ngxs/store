@@ -80,7 +80,8 @@ export class NgxsFeatureModule {
     factory: StateFactory,
     @Optional()
     @Inject(FEATURE_STATE_TOKEN)
-    states: any[][]
+    states: any[][],
+    bootsrapper: Bootstrapper
   ) {
     // Since FEATURE_STATE_TOKEN is a multi token, we need to
     // flatten it [[Feature1State, Feature2State], [Feature3State]]
@@ -98,11 +99,17 @@ export class NgxsFeatureModule {
       stateOperations.setState({ ...cur, ...results.defaults });
     }
 
-    stateOperations.dispatch(new UpdateState()).subscribe(() => {
-      if (results) {
-        factory.invokeInit(results.states);
-      }
-    });
+    stateOperations
+      .dispatch(new UpdateState())
+      .pipe(
+        filter(() => !!results),
+        tap(() => factory.invokeInit(results!.states)),
+        mergeMap(() => bootsrapper.appBootstrapped$),
+        filter(appBootrapped => !!appBootrapped)
+      )
+      .subscribe(() => {
+        factory.invokeBootstrap(results!.states);
+      });
   }
 }
 
