@@ -23,11 +23,8 @@ describe('NGXS + SSR', () => {
       ngxsAfterBootstrapLazyIndex
     ];
 
-    stringIndexes.forEach(stringIndex => {
-      expect(stringIndex).to.be.greaterThan(-1);
-    });
-
     stringIndexes.forEach((stringIndex, index) => {
+      expect(stringIndex).to.be.greaterThan(-1);
       // If it's not the first in the array
       // every next index should more than previous
       if (index) {
