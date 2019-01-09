@@ -10,7 +10,7 @@ import {
   defaultIfEmpty
 } from 'rxjs/operators';
 
-import { META_KEY, NgxsLifeCycle, NgxsConfig } from '../symbols';
+import { META_KEY, NgxsLifeCycle, NgxsConfig, LifecycleHooks } from '../symbols';
 import {
   topologicalSort,
   buildGraph,
@@ -19,7 +19,8 @@ import {
   propGetter,
   isObject,
   MappedStore,
-  StateClass
+  StateClass,
+  StatesAndDefaults
 } from './internals';
 import { getActionTypeFromInstance, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -114,11 +115,9 @@ export class StateFactory {
   }
 
   /**
-   * Add a set of states to the store and return the defaulsts
+   * Add a set of states to the store and return the defaults
    */
-  addAndReturnDefaults(
-    stateClasses: any[]
-  ): { defaults: any; states: MappedStore[] } | undefined {
+  addAndReturnDefaults(stateClasses: any[]): StatesAndDefaults | undefined {
     if (stateClasses) {
       const states = this.add(stateClasses);
       const defaults = states.reduce(
@@ -152,20 +151,6 @@ export class StateFactory {
   }
 
   /**
-   * Invoke the init function on the states.
-   */
-  invokeInit(stateMetadatas: MappedStore[]) {
-    for (const metadata of stateMetadatas) {
-      const instance: NgxsLifeCycle = metadata.instance;
-
-      if (instance.ngxsOnInit) {
-        const stateContext = this.createStateContext(metadata);
-        instance.ngxsOnInit(stateContext);
-      }
-    }
-  }
-
-  /**
    * Invoke actions on the states.
    */
   invokeActions(actions$: InternalActions, action: any) {
@@ -177,7 +162,7 @@ export class StateFactory {
 
       if (actionMetas) {
         for (const actionMeta of actionMetas) {
-          const stateContext = this.createStateContext(metadata);
+          const stateContext = this._stateContextFactory.createStateContext(metadata);
           try {
             let result = metadata.instance[actionMeta.fn](stateContext, action);
 
@@ -209,12 +194,5 @@ export class StateFactory {
     }
 
     return forkJoin(results);
-  }
-
-  /**
-   * Create the state context
-   */
-  private createStateContext(metadata: MappedStore) {
-    return this._stateContextFactory.createStateContext(metadata);
   }
 }

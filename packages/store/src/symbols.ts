@@ -106,6 +106,11 @@ export interface ActionOptions {
   cancelUncompleted?: boolean;
 }
 
+export const enum LifecycleHooks {
+  NgxsOnInit = 'ngxsOnInit',
+  NgxsAfterBootstrap = 'ngxsAfterBootstrap'
+}
+
 /**
  * On init interface
  */
@@ -113,4 +118,11 @@ export interface NgxsOnInit {
   ngxsOnInit(ctx?: StateContext<any>): void | any;
 }
 
-export type NgxsLifeCycle = Partial<NgxsOnInit>;
+/**
+ * After bootstrap interface
+ */
+export interface NgxsAfterBootstrap {
+  ngxsAfterBootstrap(ctx?: StateContext<any>): void;
+}
+
+export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;

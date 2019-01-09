@@ -1,4 +1,11 @@
-import { Action, Selector, State, StateContext, NgxsOnInit } from '@ngxs/store';
+import {
+  Action,
+  Selector,
+  State,
+  StateContext,
+  NgxsOnInit,
+  NgxsAfterBootstrap
+} from '@ngxs/store';
 
 import { AddTodo, RemoveTodo } from '@integration/store/todos/todo/todo.actions';
 import { Todo } from '@integration/store/todos/todos.model';
@@ -7,7 +14,7 @@ import { Todo } from '@integration/store/todos/todos.model';
   name: 'todo',
   defaults: []
 })
-export class TodoState implements NgxsOnInit {
+export class TodoState implements NgxsOnInit, NgxsAfterBootstrap {
   @Selector()
   public static pandas(state: Todo[]): Todo[] {
     return state.filter(s => s.indexOf('panda') > -1);
@@ -16,6 +23,14 @@ export class TodoState implements NgxsOnInit {
   public ngxsOnInit({ getState, setState }: StateContext<Todo[]>) {
     const state: Todo[] = getState();
     const payload: Todo = 'NgxsOnInit todo';
+    if (!state.includes(payload)) {
+      setState([...state, payload]);
+    }
+  }
+
+  public ngxsAfterBootstrap({ getState, setState }: StateContext<Todo[]>): void {
+    const state: Todo[] = getState();
+    const payload: Todo = 'NgxsAfterBootstrap todo';
     if (!state.includes(payload)) {
       setState([...state, payload]);
     }

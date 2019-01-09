@@ -3,13 +3,16 @@ import {
   ModuleWithProviders,
   Optional,
   Inject,
-  InjectionToken
+  InjectionToken,
+  APP_BOOTSTRAP_LISTENER
 } from '@angular/core';
 
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
+import { Bootstrapper } from './internal/bootstrapper';
+import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatcher, InternalDispatchedActionResults } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
 import { Store } from './store';
@@ -31,29 +34,19 @@ export class NgxsRootModule {
     select: SelectFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
-    states: any[]
+    states: any[],
+    lifecycleStateManager: LifecycleStateManager
   ) {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(states);
 
-    const stateOperations = internalStateOperations.getRootStateOperations();
-    if (results) {
-      // get our current stream
-      const cur = stateOperations.getState();
-
-      // set the state to the current + new
-      stateOperations.setState({ ...cur, ...results.defaults });
-    }
+    internalStateOperations.setStateToTheCurrentWithNew(results);
 
     // connect our actions stream
     factory.connectActionHandlers();
 
-    // dispatch the init action and invoke init function after
-    stateOperations.dispatch(new InitState()).subscribe(() => {
-      if (results) {
-        factory.invokeInit(results.states);
-      }
-    });
+    // dispatch the init action and invoke init and bootstrap functions after
+    lifecycleStateManager.ngxsBootstrap(new InitState(), results);
   }
 }
 
@@ -69,7 +62,8 @@ export class NgxsFeatureModule {
     factory: StateFactory,
     @Optional()
     @Inject(FEATURE_STATE_TOKEN)
-    states: any[][]
+    states: any[][],
+    lifecycleStateManager: LifecycleStateManager
   ) {
     // Since FEATURE_STATE_TOKEN is a multi token, we need to
     // flatten it [[Feature1State, Feature2State], [Feature3State]]
@@ -78,20 +72,10 @@ export class NgxsFeatureModule {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(flattenedStates);
 
-    const stateOperations = internalStateOperations.getRootStateOperations();
-    if (results) {
-      // get our current stream
-      const cur = stateOperations.getState();
+    internalStateOperations.setStateToTheCurrentWithNew(results);
 
-      // set the state to the current + new
-      stateOperations.setState({ ...cur, ...results.defaults });
-    }
-
-    stateOperations.dispatch(new UpdateState()).subscribe(() => {
-      if (results) {
-        factory.invokeInit(results.states);
-      }
-    });
+    // dispatch the update action and invoke init and bootstrap functions after
+    lifecycleStateManager.ngxsBootstrap(new UpdateState(), results);
   }
 }
 
@@ -100,6 +84,10 @@ export type ModuleOptions = Partial<NgxsConfig>;
 export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
   const config = Object.assign(new NgxsConfig(), options);
   return config;
+}
+
+export function appBootstrapListenerFactory(bootsrapper: Bootstrapper) {
+  return () => bootsrapper.bootstrap();
 }
 
 export const ROOT_OPTIONS = new InjectionToken<ModuleOptions>('ROOT_OPTIONS');
@@ -120,6 +108,8 @@ export class NgxsModule {
         StateContextFactory,
         Actions,
         InternalActions,
+        Bootstrapper,
+        LifecycleStateManager,
         InternalDispatcher,
         InternalDispatchedActionResults,
         InternalStateOperations,
@@ -140,6 +130,12 @@ export class NgxsModule {
           provide: NgxsConfig,
           useFactory: ngxsConfigFactory,
           deps: [ROOT_OPTIONS]
+        },
+        {
+          provide: APP_BOOTSTRAP_LISTENER,
+          useFactory: appBootstrapListenerFactory,
+          multi: true,
+          deps: [Bootstrapper]
         }
       ]
     };
