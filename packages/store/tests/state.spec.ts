@@ -252,10 +252,6 @@ describe('State', () => {
     it('should invoke "ngxsAfterBootstrap" for lazy states', () => {
       @State({ name: 'fooLazy' })
       class FooLazyState implements NgxsOnInit, NgxsAfterBootstrap {
-        constructor() {
-          console.log('foolazystate ctor');
-        }
-
         public ngxsOnInit(): void {
           hooks.push(LifecycleHooks.NgxsOnInit);
         }
