@@ -248,5 +248,35 @@ describe('State', () => {
         LifecycleHooks.NgxsAfterBootstrap
       ]);
     });
+
+    it('should invoke "ngxsAfterBootstrap" for lazy states', () => {
+      @State({ name: 'fooLazy' })
+      class FooLazyState implements NgxsOnInit, NgxsAfterBootstrap {
+        constructor() {
+          console.log('foolazystate ctor');
+        }
+
+        public ngxsOnInit(): void {
+          hooks.push(LifecycleHooks.NgxsOnInit);
+        }
+
+        public ngxsAfterBootstrap(): void {
+          hooks.push(LifecycleHooks.NgxsAfterBootstrap);
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [MockModule, NgxsModule.forRoot(), NgxsModule.forFeature([FooLazyState])]
+      });
+
+      MockModule.ngDoBootstrap(TestBed.get(ApplicationRef));
+
+      expect(hooks).toEqual([
+        LifecycleHooks.NgxsOnInit,
+        LifecycleHooks.NgOnInit,
+        LifecycleHooks.NgAfterViewInit,
+        LifecycleHooks.NgxsAfterBootstrap
+      ]);
+    });
   });
 });

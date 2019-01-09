@@ -78,7 +78,20 @@ export class InternalStateOperations {
     };
   }
 
-  dispatchActionAndInvokeLifecyleHooks<T>(
+  setStateToTheCurrentWithNew(results: StatesAndDefaults): void {
+    if (!results) {
+      return;
+    }
+
+    const stateOperations: StateOperations<any> = this.getRootStateOperations();
+
+    // Get our current stream
+    const currentState = stateOperations.getState();
+    // Set the state to the current + new
+    stateOperations.setState({ ...currentState, ...results.defaults });
+  }
+
+  ngxsBootstrap<T>(
     action: T,
     results: StatesAndDefaults,
     factory: StateFactory,

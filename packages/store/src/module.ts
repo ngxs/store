@@ -39,25 +39,13 @@ export class NgxsRootModule {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(states);
 
-    const stateOperations = internalStateOperations.getRootStateOperations();
-    if (results) {
-      // get our current stream
-      const cur = stateOperations.getState();
-
-      // set the state to the current + new
-      stateOperations.setState({ ...cur, ...results.defaults });
-    }
+    internalStateOperations.setStateToTheCurrentWithNew(results);
 
     // connect our actions stream
     factory.connectActionHandlers();
 
     // dispatch the init action and invoke init and bootstrap functions after
-    internalStateOperations.dispatchActionAndInvokeLifecyleHooks(
-      new InitState(),
-      results,
-      factory,
-      bootsrapper
-    );
+    internalStateOperations.ngxsBootstrap(new InitState(), results, factory, bootsrapper);
   }
 }
 
@@ -83,22 +71,10 @@ export class NgxsFeatureModule {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(flattenedStates);
 
-    const stateOperations = internalStateOperations.getRootStateOperations();
-    if (results) {
-      // get our current stream
-      const cur = stateOperations.getState();
-
-      // set the state to the current + new
-      stateOperations.setState({ ...cur, ...results.defaults });
-    }
+    internalStateOperations.setStateToTheCurrentWithNew(results);
 
     // dispatch the update action and invoke init and bootstrap functions after
-    internalStateOperations.dispatchActionAndInvokeLifecyleHooks(
-      new UpdateState(),
-      results,
-      factory,
-      bootsrapper
-    );
+    internalStateOperations.ngxsBootstrap(new UpdateState(), results, factory, bootsrapper);
   }
 }
 
