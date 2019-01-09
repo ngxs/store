@@ -9,7 +9,7 @@ describe('NGXS + SSR', () => {
     expect(body.includes('ngOnInit todo')).to.equal(true);
   });
 
-  it(`"NgxsOnInit todo" + "NgxsAfterBootstrap todo" + "NgxsOnInit lazy" + "NgxsAfterBootstrap lazy" should exist`, async () => {
+  it('lifecycle hooks should exist', async () => {
     body = await request('http://localhost:4000/list');
 
     const ngxsOnInitIndex = body.indexOf('NgxsOnInit todo');
