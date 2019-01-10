@@ -86,8 +86,8 @@ export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
   return config;
 }
 
-export function appBootstrapListenerFactory(bootsrapper: Bootstrapper) {
-  return () => bootsrapper.bootstrap();
+export function appBootstrapListenerFactory(bootstrapper: Bootstrapper) {
+  return () => bootstrapper.bootstrap();
 }
 
 export const ROOT_OPTIONS = new InjectionToken<ModuleOptions>('ROOT_OPTIONS');

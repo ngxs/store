@@ -24,7 +24,7 @@ export class LifecycleStateManager {
         filter(() => !!results),
         tap(() => this.invokeInit(results!.states)),
         mergeMap(() => this.bootstrapper.appBootstrapped$),
-        filter(appBootrapped => !!appBootrapped)
+        filter(appBootstrapped => !!appBootstrapped)
       )
       .subscribe(() => {
         this.invokeBootstrap(results!.states);
