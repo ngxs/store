@@ -9,7 +9,7 @@ $ npm install @ngxs/store@dev
 * Feature: Add `ofActionCompleted` action handler [#712](https://github.com/ngxs/store/pull/712)
 * Feature: Add `Hot Module Replacement` plugin for manage states [#707](https://github.com/ngxs/store/pull/707)
 * Feature: Add possible inheritance of state options [#750](https://github.com/ngxs/store/pull/750)
-* Feature: Add new lifecycle hook `ngxsAfterBootstrap` [753](https://github.com/ngxs/store/pull/753)
+* Feature: Add new lifecycle hook `ngxsAfterBootstrap` [#753](https://github.com/ngxs/store/pull/753)
 * Fix: Expose `ActionCompletion` [#752](https://github.com/ngxs/store/pull/752)
 
 # 3.3.4 2018-12-20
