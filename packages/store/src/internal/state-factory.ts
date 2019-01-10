@@ -10,7 +10,7 @@ import {
   defaultIfEmpty
 } from 'rxjs/operators';
 
-import { META_KEY, NgxsLifeCycle, NgxsConfig, LifecycleHooks } from '../symbols';
+import { META_KEY, NgxsConfig } from '../symbols';
 import {
   topologicalSort,
   buildGraph,

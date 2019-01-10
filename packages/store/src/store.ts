@@ -6,14 +6,16 @@ import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
 import { getSelectorFn } from './utils/selector-utils';
 import { InternalStateOperations } from './internal/state-operations';
 import { StateStream } from './internal/state-stream';
-import { enterZone } from './operators/zone';
+import { NgxsConfig } from './symbols';
+import { wrap } from './operators/wrap';
 
 @Injectable()
 export class Store {
   constructor(
     private _ngZone: NgZone,
     private _stateStream: StateStream,
-    private _internalStateOperations: InternalStateOperations
+    private _internalStateOperations: InternalStateOperations,
+    private config: NgxsConfig
   ) {}
 
   /**
@@ -42,7 +44,7 @@ export class Store {
         throw err;
       }),
       distinctUntilChanged(),
-      enterZone(this._ngZone)
+      wrap(this.config.outsideZone, this._ngZone)
     );
   }
 
@@ -70,7 +72,7 @@ export class Store {
    * Allow the user to subscribe to the root of the state
    */
   subscribe(fn?: (value: any) => void): Subscription {
-    return this._stateStream.pipe(enterZone(this._ngZone)).subscribe(fn);
+    return this._stateStream.pipe(wrap(this.config.outsideZone, this._ngZone)).subscribe(fn);
   }
 
   /**

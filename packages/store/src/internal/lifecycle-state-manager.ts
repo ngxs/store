@@ -32,7 +32,7 @@ export class LifecycleStateManager {
   }
 
   /**
-   * Invoke the bootstrap function on the states.
+   * Invoke the init function on the states.
    */
   invokeInit(stateMetadatas: MappedStore[]): void {
     this.invokeLifecycleHooks(stateMetadatas, LifecycleHooks.NgxsOnInit);

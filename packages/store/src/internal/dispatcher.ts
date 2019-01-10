@@ -7,7 +7,8 @@ import { compose } from '../utils/compose';
 import { InternalActions, ActionStatus, ActionContext } from '../actions-stream';
 import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
-import { enterZone } from '../operators/zone';
+import { NgxsConfig } from '../symbols';
+import { wrap } from '../operators/wrap';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -27,7 +28,8 @@ export class InternalDispatcher {
     private _pluginManager: PluginManager,
     private _stateStream: StateStream,
     private _ngZone: NgZone,
-    @Inject(PLATFORM_ID) private _platformId: Object
+    @Inject(PLATFORM_ID) private _platformId: Object,
+    private config: NgxsConfig
   ) {}
 
   /**
@@ -52,7 +54,7 @@ export class InternalDispatcher {
     if (isPlatformServer(this._platformId)) {
       return result.pipe();
     } else {
-      return result.pipe(enterZone(this._ngZone));
+      return result.pipe(wrap(this.config.outsideZone, this._ngZone));
     }
   }
 

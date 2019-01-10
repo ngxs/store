@@ -29,6 +29,11 @@ export class NgxsConfig {
      */
     strictContentSecurityPolicy: boolean;
   };
+  /**
+   * Determines whether to perform async operations inside or outside Angular's zone, every `zone.run`
+   * causes Angular to run change detection on the whole tree (`app.tick()`)
+   */
+  outsideZone = false;
 
   constructor() {
     this.compatibility = {
