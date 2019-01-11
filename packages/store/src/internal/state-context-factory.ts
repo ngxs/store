@@ -5,7 +5,7 @@ import { StateContext, StateOperator } from '../symbols';
 import { MappedStore } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
 import { InternalStateOperations } from '../internal/state-operations';
-import { set, simplePatch } from './state-operators';
+import { simplePatch } from './state-operators';
 
 /**
  * State Context factory class

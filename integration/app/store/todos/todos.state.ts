@@ -1,4 +1,6 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { patch } from '@ngxs/store/operators';
+
 import { tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -22,9 +24,15 @@ export class TodosState {
 
   @Action(SetPrefix)
   public setPrefix({ getState, setState, patchState }: StateContext<TodoStateModel>) {
-    const state: TodoStateModel = getState();
-    const pizza1 = state.pizza.model.toppings;
-    patchState({ pizza: { model: { toppings: 'Mr. ' + pizza1 } } });
+    setState(
+      patch({
+        pizza: patch({
+          model: patch({
+            toppings: (topping: any) => 'Mr. ' + topping
+          })
+        })
+      })
+    );
   }
 
   @Action(LoadData)

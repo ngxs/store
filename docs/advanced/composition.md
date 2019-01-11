@@ -3,11 +3,16 @@ You can compose multiple stores together using class inheritance. This is quite 
 
 ```TS
 @State({
-  name: 'zoo'
+  name: 'zoo',
+  defaults: {
+    type: null 
+  }
 })
 class ZooState {
   @Action(Eat)
-  eat() {}
+  eat(ctx: StateContext) {
+    ctx.setState({ type: 'eat' });
+  }
 }
 
 @State({
@@ -15,8 +20,11 @@ class ZooState {
 })
 class StLouisZooState extends ZooState {
   @Action(Drink)
-  drink() {}
+  drink(ctx: StateContext) {
+    ctx.setState({ type: 'drink' });
+  }
 }
 ```
 
-Now when `StLouisZooState` is invoked, it will share the actions of the `ZooState`.
+Now when `StLouisZooState` is invoked, it will share the actions of the `ZooState`. 
+Also all state options are inherited.

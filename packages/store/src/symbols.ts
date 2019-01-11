@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
 export const META_KEY = 'NGXS_META';
+export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
@@ -105,6 +106,11 @@ export interface ActionOptions {
   cancelUncompleted?: boolean;
 }
 
+export const enum LifecycleHooks {
+  NgxsOnInit = 'ngxsOnInit',
+  NgxsAfterBootstrap = 'ngxsAfterBootstrap'
+}
+
 /**
  * On init interface
  */
@@ -112,4 +118,11 @@ export interface NgxsOnInit {
   ngxsOnInit(ctx?: StateContext<any>): void | any;
 }
 
-export type NgxsLifeCycle = Partial<NgxsOnInit>;
+/**
+ * After bootstrap interface
+ */
+export interface NgxsAfterBootstrap {
+  ngxsAfterBootstrap(ctx?: StateContext<any>): void;
+}
+
+export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;

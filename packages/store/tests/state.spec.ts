@@ -1,10 +1,17 @@
 import { TestBed } from '@angular/core/testing';
+import { Component, ApplicationRef, NgModule, OnInit, AfterViewInit } from '@angular/core';
+import {
+  ɵDomAdapter as DomAdapter,
+  ɵBrowserDomAdapter as BrowserDomAdapter,
+  BrowserModule,
+  DOCUMENT
+} from '@angular/platform-browser';
 
 import { InitState, UpdateState } from '../src/actions/actions';
-import { State, Action, NgxsOnInit, NgxsModule, StateContext, Store } from '../src/public_api';
+import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../src/public_api';
 
-import { stateNameErrorMessage } from '../src/decorators/state';
-import { META_KEY } from '../src/symbols';
+import { META_KEY, NgxsAfterBootstrap, NgxsLifeCycle } from '../src/symbols';
+import { StoreValidators } from '../src/utils/store-validators';
 
 describe('State', () => {
   it('describes correct name', () => {
@@ -22,6 +29,7 @@ describe('State', () => {
     class Eat {
       static type = 'EAT';
     }
+
     class Drink {
       static type = 'DRINK';
     }
@@ -61,7 +69,7 @@ describe('State', () => {
       message = err.message;
     }
 
-    expect(message).toBe(stateNameErrorMessage('bar-foo'));
+    expect(message).toBe(StoreValidators.stateNameErrorMessage('bar-foo'));
   });
 
   describe('given the ngxsOnInit lifecycle method is present', () => {
@@ -160,6 +168,111 @@ describe('State', () => {
       TestBed.get(FooState);
 
       expect(TestBed.get(Store).snapshot().foo).toEqual(['updateState', 'onInit']);
+    });
+  });
+
+  describe('"ngxsAfterBootstrap" lifecycle hook', () => {
+    function createRootNode(selector = 'app-root'): void {
+      const document = TestBed.get(DOCUMENT);
+      const adapter: DomAdapter = new BrowserDomAdapter();
+
+      const root = adapter.firstChild(
+        adapter.content(adapter.createTemplate(`<${selector}></${selector}>`))
+      );
+
+      const oldRoots = adapter.querySelectorAll(document, selector);
+      oldRoots.forEach(oldRoot => adapter.remove(oldRoot));
+
+      adapter.appendChild(document.body, root);
+    }
+
+    const enum LifecycleHooks {
+      NgOnInit = 'ngOnInit',
+      NgxsOnInit = 'ngxsOnInit',
+      NgAfterViewInit = 'ngAfterViewInit',
+      NgxsAfterBootstrap = 'ngxsAfterBootstrap'
+    }
+
+    let hooks: LifecycleHooks[] = [];
+
+    @Component({
+      selector: 'app-root',
+      template: ''
+    })
+    class MockComponent implements OnInit, AfterViewInit {
+      public ngOnInit(): void {
+        hooks.push(LifecycleHooks.NgOnInit);
+      }
+
+      public ngAfterViewInit(): void {
+        hooks.push(LifecycleHooks.NgAfterViewInit);
+      }
+    }
+
+    @NgModule({
+      imports: [BrowserModule],
+      declarations: [MockComponent],
+      entryComponents: [MockComponent]
+    })
+    class MockModule {
+      public static ngDoBootstrap(app: ApplicationRef): void {
+        createRootNode();
+        app.bootstrap(MockComponent);
+      }
+    }
+
+    beforeEach(() => (hooks = []));
+
+    it('should invoke "ngxsAfterBootstrap" after "ngxsOnInit" and after root component\'s "ngAfterViewInit"', () => {
+      @State({ name: 'foo' })
+      class FooState implements NgxsOnInit, NgxsAfterBootstrap {
+        public ngxsOnInit(): void {
+          hooks.push(LifecycleHooks.NgxsOnInit);
+        }
+
+        public ngxsAfterBootstrap(): void {
+          hooks.push(LifecycleHooks.NgxsAfterBootstrap);
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [MockModule, NgxsModule.forRoot([FooState])]
+      });
+
+      MockModule.ngDoBootstrap(TestBed.get(ApplicationRef));
+
+      expect(hooks).toEqual([
+        LifecycleHooks.NgxsOnInit,
+        LifecycleHooks.NgOnInit,
+        LifecycleHooks.NgAfterViewInit,
+        LifecycleHooks.NgxsAfterBootstrap
+      ]);
+    });
+
+    it('should invoke "ngxsAfterBootstrap" for feature states', () => {
+      @State({ name: 'fooFeature' })
+      class FooFeatureState implements NgxsOnInit, NgxsAfterBootstrap {
+        public ngxsOnInit(): void {
+          hooks.push(LifecycleHooks.NgxsOnInit);
+        }
+
+        public ngxsAfterBootstrap(): void {
+          hooks.push(LifecycleHooks.NgxsAfterBootstrap);
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [MockModule, NgxsModule.forRoot(), NgxsModule.forFeature([FooFeatureState])]
+      });
+
+      MockModule.ngDoBootstrap(TestBed.get(ApplicationRef));
+
+      expect(hooks).toEqual([
+        LifecycleHooks.NgxsOnInit,
+        LifecycleHooks.NgOnInit,
+        LifecycleHooks.NgAfterViewInit,
+        LifecycleHooks.NgxsAfterBootstrap
+      ]);
     });
   });
 });

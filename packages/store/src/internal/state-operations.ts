@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
 
-import { StateOperations } from '../internal/internals';
+import { StateOperations, StatesAndDefaults } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
@@ -72,5 +72,18 @@ export class InternalStateOperations {
         return root.dispatch(actions);
       }
     };
+  }
+
+  setStateToTheCurrentWithNew(results: StatesAndDefaults | undefined): void {
+    if (!results) {
+      return;
+    }
+
+    const stateOperations: StateOperations<any> = this.getRootStateOperations();
+
+    // Get our current stream
+    const currentState = stateOperations.getState();
+    // Set the state to the current + new
+    stateOperations.setState({ ...currentState, ...results.defaults });
   }
 }
