@@ -35,7 +35,7 @@ export class NgxsConfig {
    * server side rendering, as dispatching on the server is still wrapped into `zone.run`.
    * (default: fase)
    */
-  outsideZone = false;
+  outsideZone: boolean;
 
   constructor() {
     this.compatibility = {
