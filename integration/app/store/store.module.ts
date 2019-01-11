@@ -15,10 +15,7 @@ import { TodoState } from '@integration/store/todos/todo/todo.state';
     NgxsFormPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: false }),
     NgxsReduxDevtoolsPluginModule.forRoot({ disabled: env.production }),
-    NgxsModule.forRoot([TodosState, TodoState], {
-      developmentMode: !env.production,
-      outsideZone: true
-    })
+    NgxsModule.forRoot([TodosState, TodoState], { developmentMode: !env.production })
   ],
   exports: [
     NgxsFormPluginModule,
