@@ -7,7 +7,7 @@ import {
   DoBootstrap,
   NgModuleRef
 } from '@angular/core';
-import { TestBed, inject, async } from '@angular/core/testing';
+import { TestBed, async } from '@angular/core/testing';
 import {
   ɵDomAdapter as DomAdapter,
   ɵBrowserDomAdapter as BrowserDomAdapter,
@@ -19,8 +19,7 @@ import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { State, Action, StateContext, NgxsModule, Store, Select } from '../src/public_api';
-import { wrap } from '../src/operators/wrap';
-import { ConfigValidator } from '../src/internal/config-validator';
+import { enterZone } from '../src/operators/zone';
 
 describe('zone', () => {
   class Increment {
@@ -121,7 +120,7 @@ describe('zone', () => {
     expect(ticks).toBe(0);
   });
 
-  it('stream should be completed using "wrap" operator w/o memory leaks inside zone', (done: DoneFn) => {
+  it('stream should be completed using "enterZone" operator w/o memory leaks inside zone', (done: DoneFn) => {
     // Subscribe to the `counter$` stream
     @Component({ template: '{{ counter$ | async }}' })
     class MockComponent {
@@ -144,7 +143,7 @@ describe('zone', () => {
       subscription = store
         .select<number>(({ counter }) => counter)
         // inside zone
-        .pipe(wrap(false, zone))
+        .pipe(enterZone(false, zone))
         .subscribe();
       return subscription;
     });
@@ -160,7 +159,7 @@ describe('zone', () => {
     });
   });
 
-  it('stream should be completed using "wrap" operator w/o memory leaks outside zone', (done: DoneFn) => {
+  it('stream should be completed using "enterZone" operator w/o memory leaks outside zone', (done: DoneFn) => {
     // Subscribe to the `counter$` stream
     @Component({ template: '{{ counter$ | async }}' })
     class MockComponent {
@@ -183,7 +182,7 @@ describe('zone', () => {
       subscription = store
         .select<number>(({ counter }) => counter)
         // outside zone
-        .pipe(wrap(true, zone))
+        .pipe(enterZone(true, zone))
         .subscribe();
       return subscription;
     });
@@ -199,7 +198,7 @@ describe('zone', () => {
     });
   });
 
-  it('action should be handled inside zone if `outsideZone` equals false', () => {
+  it('action should be handled inside zone if "outsideZone" equals false', () => {
     class FooAction {
       public static readonly type = 'Foo';
     }
@@ -220,7 +219,7 @@ describe('zone', () => {
     store.dispatch(new FooAction());
   });
 
-  it('action should be handled outside zone if `outsideZone` equals false', () => {
+  it('action should be handled outside zone if "outsideZone" equals true', () => {
     class FooAction {
       public static readonly type = 'Foo';
     }

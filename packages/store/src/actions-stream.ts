@@ -2,7 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 import { NgxsConfig } from './symbols';
-import { wrap } from './operators/wrap';
+import { enterZone } from './operators/zone';
 
 /**
  * Status of a dispatched action
@@ -70,7 +70,7 @@ export class Actions extends Observable<any> {
   constructor(actions$: InternalActions, ngZone: NgZone, config: NgxsConfig) {
     super(observer => {
       actions$
-        .pipe(wrap(config.outsideZone, ngZone))
+        .pipe(enterZone(config.outsideZone, ngZone))
         .subscribe(
           res => observer.next(res),
           err => observer.error(err),
