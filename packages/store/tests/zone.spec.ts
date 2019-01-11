@@ -291,8 +291,6 @@ describe('zone', () => {
       }
     }
 
-    createRootNode();
-
     const platformRef: PlatformRef = TestBed.get(PlatformRef);
 
     platformRef
@@ -331,8 +329,6 @@ describe('zone', () => {
         app.bootstrap(MockComponent);
       }
     }
-
-    createRootNode();
 
     const platformRef: PlatformRef = TestBed.get(PlatformRef);
     const warnings: string[] = [];
