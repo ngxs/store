@@ -106,14 +106,14 @@ describe('zone', () => {
     expect(ticks).toBe(0);
   });
 
-  it('stream should be completed using "wrap" operator w/o memory leaks', (done: DoneFn) => {
-    // Subscribe to the `counter$` stream
-    @Component({ template: '{{ counter$ | async }}' })
-    class MockComponent {
-      @Select(CounterState)
-      public counter$: Observable<number>;
-    }
+  // Subscribe to the `counter$` stream
+  @Component({ template: '{{ counter$ | async }}' })
+  class MockComponent {
+    @Select(CounterState)
+    public counter$: Observable<number>;
+  }
 
+  it('stream should be completed using "wrap" operator w/o memory leaks inside zone', (done: DoneFn) => {
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([CounterState])],
       declarations: [MockComponent]
@@ -128,6 +128,7 @@ describe('zone', () => {
     const spy = spyOn(fixture.componentInstance.counter$, 'subscribe').and.callFake(() => {
       subscription = store
         .select<number>(({ counter }) => counter)
+        // inside zone
         .pipe(wrap(false, zone))
         .subscribe();
       return subscription;
@@ -142,5 +143,57 @@ describe('zone', () => {
       expect(subscription.closed).toBeTruthy();
       done();
     });
+  });
+
+  it('stream should be completed using "wrap" operator w/o memory leaks outside zone', (done: DoneFn) => {
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([CounterState])],
+      declarations: [MockComponent]
+    });
+
+    let subscription: Subscription = null!;
+
+    const zone: NgZone = TestBed.get(NgZone);
+    const store: Store = TestBed.get(Store);
+    const fixture = TestBed.createComponent(MockComponent);
+
+    const spy = spyOn(fixture.componentInstance.counter$, 'subscribe').and.callFake(() => {
+      subscription = store
+        .select<number>(({ counter }) => counter)
+        // outside zone
+        .pipe(wrap(true, zone))
+        .subscribe();
+      return subscription;
+    });
+
+    fixture.detectChanges();
+    fixture.destroy();
+
+    // Use `setTimeout` to do expectations after all tasks
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalled();
+      expect(subscription.closed).toBeTruthy();
+      done();
+    });
+  });
+
+  it('action should be handled inside zone if `outsideZone` equals false', () => {
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    class CounterState {
+      @Action(Increment)
+      public increment(): void {
+        expect(NgZone.isInAngularZone()).toBeTruthy();
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([CounterState], { outsideZone: false })]
+    });
+
+    const store: Store = TestBed.get(Store);
+    store.dispatch(new Increment());
   });
 });

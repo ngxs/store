@@ -38,13 +38,9 @@ export class InternalDispatcher {
   dispatch(actionOrActions: any | any[]): Observable<any> {
     let result: Observable<any>;
     if (isPlatformServer(this._platformId)) {
-      result = this._ngZone.run(() => {
-        return this.dispatchByEvents(actionOrActions);
-      });
+      result = this._ngZone.run(() => this.dispatchByEvents(actionOrActions));
     } else {
-      result = this._ngZone.runOutsideAngular(() => {
-        return this.dispatchByEvents(actionOrActions);
-      });
+      result = this.dispatchEventsOnTheClient(() => this.dispatchByEvents(actionOrActions));
     }
 
     result.subscribe({
@@ -56,6 +52,18 @@ export class InternalDispatcher {
     } else {
       return result.pipe(wrap(this.config.outsideZone, this._ngZone));
     }
+  }
+
+  private dispatchEventsOnTheClient(
+    callback: (...args: any[]) => Observable<any>
+  ): Observable<any> {
+    // This property should imperatively equal `false`
+    const shouldBeRunInsideZone = this.config.outsideZone !== null && !this.config.outsideZone;
+    if (shouldBeRunInsideZone) {
+      return this._ngZone.run(callback);
+    }
+
+    return this._ngZone.runOutsideAngular(callback);
   }
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
@@ -98,14 +106,13 @@ export class InternalDispatcher {
     return actionResult$
       .pipe(
         exhaustMap((ctx: ActionContext) => {
-          switch (ctx.status) {
-            case ActionStatus.Successful:
-              return of(this._stateStream.getValue());
-            case ActionStatus.Errored:
-              return throwError(ctx.error);
-            default:
-              return empty();
+          if (ctx.status === ActionStatus.Successful) {
+            return of(this._stateStream.getValue());
+          } else if (ctx.status === ActionStatus.Errored) {
+            return throwError(ctx.error);
           }
+
+          return empty();
         })
       )
       .pipe(shareReplay());

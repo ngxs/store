@@ -12,12 +12,15 @@ import {
  * Returns operator based on the provided condition `outsideZone`, that will run
  * `subscribe` inside or outside Angular's zone
  */
-export function wrap<T>(outsideZone: boolean, zone: NgZone): MonoTypeOperatorFunction<T> {
+export function wrap<T>(
+  outsideZone: boolean | null,
+  zone: NgZone
+): MonoTypeOperatorFunction<T> {
   return (source: Observable<T>) => source.lift(new WrapOperator(outsideZone, zone));
 }
 
 class WrapOperator<T> implements Operator<T, T> {
-  constructor(private outsideZone: boolean, private zone: NgZone) {}
+  constructor(private outsideZone: boolean | null, private zone: NgZone) {}
 
   public call(subscriber: Subscriber<T>, source: Observable<T>): Subscription {
     return source.subscribe(new WrapSubscriber(subscriber, this.outsideZone, this.zone));
@@ -25,7 +28,11 @@ class WrapOperator<T> implements Operator<T, T> {
 }
 
 class WrapSubscriber<T> extends Subscriber<T> {
-  constructor(destination: Subscriber<T>, private outsideZone: boolean, private zone: NgZone) {
+  constructor(
+    destination: Subscriber<T>,
+    private outsideZone: boolean | null,
+    private zone: NgZone
+  ) {
     super(destination);
   }
 
