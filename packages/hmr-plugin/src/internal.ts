@@ -1,8 +1,7 @@
 import { NgModuleRef } from '@angular/core';
-import { Store, StateContext, StateOperator } from '@ngxs/store';
+import { StateContext, StateOperator, StateStream, Store } from '@ngxs/store';
 
-import { NGXS_HMR_SNAPSHOT_KEY, NgxsStoreSnapshot, NgxsHmrLifeCycle } from './symbols';
-import { StateStream } from '@ngxs/store';
+import { NGXS_HMR_SNAPSHOT_KEY, NgxsHmrLifeCycle, NgxsStoreSnapshot } from './symbols';
 import { Subscription } from 'rxjs';
 
 export function hmrDoBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
@@ -12,21 +11,28 @@ export function hmrDoBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnaps
   const hmrNgxsStoreOnInitFn = ngxsHmrLifeCycle.hmrNgxsStoreOnInit;
 
   if (typeof hmrNgxsStoreOnInitFn === 'function') {
-    const stateContext = getStateContext<T, S>(ref);
+    const stateContext: StateContext<S> | undefined = getStateContext<T, S>(ref);
     if (stateContext) {
-      const previousState: NgxsStoreSnapshot = getStateFromHmrStorage();
+      const previousState: Partial<S> = getStateFromHmrStorage<S>();
+      const existSavedState: boolean = Object.keys(previousState).length > 0;
+      const stateStream: StateStream | null = getStateStream<T>(ref);
 
-      if (Object.keys(previousState).length) {
-        const _stateStream: StateStream = ref.injector.get(Store, null)['_stateStream'];
+      if (existSavedState && stateStream) {
         let idEvent: number;
-        const stateStreamId: Subscription = _stateStream.subscribe(d => {
+        const stateStreamId: Subscription = stateStream.subscribe(() => {
           clearInterval(idEvent);
+
+          // Waiting until all events of the state manager are completed.
           idEvent = window.setTimeout(() => {
+            // This is necessary to destroy all the logs
+            // that go to the method call ngxsAfterBootstrap
             console.clear();
+
             hmrNgxsStoreOnInitFn(stateContext, previousState);
             setStateInHmrStorage({});
+
             stateStreamId.unsubscribe();
-          });
+          }, 10);
         });
       }
     }
@@ -59,6 +65,7 @@ function hmrBeforeOnDestroy<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot
   return resultSnapshot;
 }
 
+// TODO: Add public api state context
 function getStateContext<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
   ref: NgModuleRef<T>
 ): StateContext<S> | undefined {
@@ -70,7 +77,7 @@ function getStateContext<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
     return typeof value === 'function';
   }
 
-  const stateContext: StateContext<S> = {
+  return {
     dispatch(actions) {
       return store.dispatch(actions);
     },
@@ -92,7 +99,6 @@ function getStateContext<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
       return newState;
     }
   };
-  return stateContext;
 }
 
 /**
@@ -116,4 +122,8 @@ function getStateFromHmrStorage<S = NgxsStoreSnapshot>(): Partial<S> {
 
 function setStateInHmrStorage<S = NgxsStoreSnapshot>(state: S): void {
   return sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, JSON.stringify(state));
+}
+
+function getStateStream<T>(ref: NgModuleRef<T>): StateStream | null {
+  return ref.injector.get(Store, null)['_stateStream'] || null;
 }

@@ -1,7 +1,7 @@
 import { ApplicationRef, NgModuleRef } from '@angular/core';
-import { createNewHosts } from '@angularclass/hmr';
+import { createNewHosts, hmrModule } from '@angularclass/hmr';
 
-import { hmrInit, hmrDoBootstrap, hmrDoDispose } from './internal';
+import { hmrDoBootstrap, hmrDoDispose, hmrInit } from './internal';
 import { NgxsHmrLifeCycle, NgxsStoreSnapshot } from './symbols';
 
 export function hmrNgxsBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
@@ -13,9 +13,10 @@ export function hmrNgxsBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSna
   hmrInit();
   module.hot.accept();
 
-  const promise = bootstrap().then(
-    (ref: NgModuleRef<T>) => (ngModule = hmrDoBootstrap<T, S>(ref))
-  );
+  const promise = bootstrap().then((ref: NgModuleRef<T>) => {
+    ngModule = hmrDoBootstrap<T, S>(ref);
+    return hmrModule(ref, module);
+  });
 
   module.hot.dispose(() => {
     if (!ngModule) {
