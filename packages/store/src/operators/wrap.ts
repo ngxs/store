@@ -1,12 +1,6 @@
 import { NgZone } from '@angular/core';
 
-import {
-  MonoTypeOperatorFunction,
-  Observable,
-  Operator,
-  Subscriber,
-  Subscription
-} from 'rxjs';
+import { MonoTypeOperatorFunction, Observable, Observer } from 'rxjs';
 
 /**
  * Returns operator based on the provided condition `outsideZone`, that will run
@@ -16,43 +10,31 @@ export function wrap<T>(
   outsideZone: boolean | null,
   zone: NgZone
 ): MonoTypeOperatorFunction<T> {
-  return (source: Observable<T>) => source.lift(new WrapOperator(outsideZone, zone));
+  return (source: Observable<T>) => {
+    return new Observable((sink: Observer<T>) => {
+      return source.subscribe(
+        value => {
+          invoke(outsideZone, zone, () => sink.next(value));
+        },
+        error => {
+          invoke(outsideZone, zone, () => sink.error(error));
+        },
+        () => {
+          invoke(outsideZone, zone, () => sink.complete());
+        }
+      );
+    });
+  };
 }
 
-class WrapOperator<T> implements Operator<T, T> {
-  constructor(private outsideZone: boolean | null, private zone: NgZone) {}
-
-  public call(subscriber: Subscriber<T>, source: Observable<T>): Subscription {
-    return source.subscribe(new WrapSubscriber(subscriber, this.outsideZone, this.zone));
-  }
-}
-
-class WrapSubscriber<T> extends Subscriber<T> {
-  constructor(
-    destination: Subscriber<T>,
-    private outsideZone: boolean | null,
-    private zone: NgZone
-  ) {
-    super(destination);
+function invoke(
+  outsideZone: boolean | null,
+  zone: NgZone,
+  callback: (...args: any) => void
+): void {
+  if (outsideZone) {
+    return zone.runOutsideAngular(callback);
   }
 
-  public next(value: T): void {
-    this.invoke(() => this.destination.next!(value));
-  }
-
-  public error(error: any): void {
-    this.invoke(() => this.destination.error!(error));
-  }
-
-  public complete(): void {
-    this.invoke(() => this.destination.complete!());
-  }
-
-  private invoke(callback: (...args: any[]) => void): void {
-    if (this.outsideZone) {
-      this.zone.runOutsideAngular(callback);
-    } else {
-      this.zone.run(callback);
-    }
-  }
+  zone.run(callback);
 }

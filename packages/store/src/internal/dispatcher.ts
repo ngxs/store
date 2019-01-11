@@ -106,13 +106,14 @@ export class InternalDispatcher {
     return actionResult$
       .pipe(
         exhaustMap((ctx: ActionContext) => {
-          if (ctx.status === ActionStatus.Successful) {
-            return of(this._stateStream.getValue());
-          } else if (ctx.status === ActionStatus.Errored) {
-            return throwError(ctx.error);
+          switch (ctx.status) {
+            case ActionStatus.Successful:
+              return of(this._stateStream.getValue());
+            case ActionStatus.Errored:
+              return throwError(ctx.error);
+            default:
+              return empty();
           }
-
-          return empty();
         })
       )
       .pipe(shareReplay());
