@@ -178,22 +178,23 @@ describe('zone', () => {
   });
 
   it('action should be handled inside zone if `outsideZone` equals false', () => {
-    @State<number>({
-      name: 'counter',
-      defaults: 0
-    })
-    class CounterState {
-      @Action(Increment)
-      public increment(): void {
+    class FooAction {
+      public static readonly type = 'Foo';
+    }
+
+    @State({ name: 'foo' })
+    class FooState {
+      @Action(FooAction)
+      public fooAction(): void {
         expect(NgZone.isInAngularZone()).toBeTruthy();
       }
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([CounterState], { outsideZone: false })]
+      imports: [NgxsModule.forRoot([FooState], { outsideZone: false })]
     });
 
     const store: Store = TestBed.get(Store);
-    store.dispatch(new Increment());
+    store.dispatch(new FooAction());
   });
 });
