@@ -1,7 +1,11 @@
-import { ApplicationRef, NgZone } from '@angular/core';
+import { ApplicationRef, NgZone, Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { State, Action, StateContext, NgxsModule, Store } from '../src/public_api';
+import { Observable, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
+
+import { State, Action, StateContext, NgxsModule, Store, Select } from '../src/public_api';
+import { wrap } from '../src/operators/wrap';
 
 describe('zone', () => {
   class Increment {
@@ -41,20 +45,24 @@ describe('zone', () => {
     const store: Store = TestBed.get(Store);
     const zone: NgZone = TestBed.get(NgZone);
 
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-
     // NGXS performes initializions inside Angular zone
     // thus it causes app to tick
     expect(ticks).toBeGreaterThan(0);
 
     zone.runOutsideAngular(() => {
       store
-        .selectOnce<number>(({ counter }) => counter)
+        .select<number>(({ counter }) => counter)
+        .pipe(take(3))
         .subscribe(() => {
           expect(NgZone.isInAngularZone()).toBeTruthy();
         });
     });
+
+    store.dispatch(new Increment());
+    store.dispatch(new Increment());
+
+    // Angular has run change detection 5 times
+    expect(ticks).toBe(5);
   });
 
   it('"select" should be performed outside Angular zone', () => {
@@ -84,10 +92,55 @@ describe('zone', () => {
 
     zone.runOutsideAngular(() => {
       store
-        .selectOnce<number>(({ counter }) => counter)
+        .select<number>(({ counter }) => counter)
+        .pipe(take(3))
         .subscribe(() => {
           expect(NgZone.isInAngularZone()).toBeFalsy();
         });
+    });
+
+    store.dispatch(new Increment());
+    store.dispatch(new Increment());
+
+    // Angular hasn't run any change detection
+    expect(ticks).toBe(0);
+  });
+
+  it('stream should be completed using "wrap" operator w/o memory leaks', (done: DoneFn) => {
+    // Subscribe to the `counter$` stream
+    @Component({ template: '{{ counter$ | async }}' })
+    class MockComponent {
+      @Select(CounterState)
+      public counter$: Observable<number>;
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([CounterState])],
+      declarations: [MockComponent]
+    });
+
+    let subscription: Subscription = null!;
+
+    const zone: NgZone = TestBed.get(NgZone);
+    const store: Store = TestBed.get(Store);
+    const fixture = TestBed.createComponent(MockComponent);
+
+    const spy = spyOn(fixture.componentInstance.counter$, 'subscribe').and.callFake(() => {
+      subscription = store
+        .select<number>(({ counter }) => counter)
+        .pipe(wrap(false, zone))
+        .subscribe();
+      return subscription;
+    });
+
+    fixture.detectChanges();
+    fixture.destroy();
+
+    // Use `setTimeout` to do expectations after all tasks
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalled();
+      expect(subscription.closed).toBeTruthy();
+      done();
     });
   });
 });
