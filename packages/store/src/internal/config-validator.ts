@@ -1,4 +1,4 @@
-import { Injectable, NgZone, isDevMode } from '@angular/core';
+import { Injectable, NgZone, isDevMode, ɵNoopNgZone as NoopNgZone } from '@angular/core';
 
 import { isAngularInTestMode } from '../utils/angular';
 import { NgxsConfig } from '../symbols';
@@ -33,9 +33,8 @@ export class ConfigValidator {
   }
 
   public verifyZoneIsNotNooped(): void {
-    const outsideZone = this.config.outsideZone !== null && this.config.outsideZone;
-    // `NoopNgZone` class is private
-    if (outsideZone && this.zone.constructor.name === 'NoopNgZone') {
+    const outsideZone = !!this.config.outsideZone;
+    if (outsideZone && this.zone instanceof NoopNgZone) {
       console.warn(
         '`outsideZone: true` cannot not be applied as your application was bootstrapped with nooped zone'
       );
