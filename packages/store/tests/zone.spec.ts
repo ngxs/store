@@ -20,6 +20,7 @@ import { take } from 'rxjs/operators';
 
 import { State, Action, StateContext, NgxsModule, Store, Select } from '../src/public_api';
 import { wrap } from '../src/operators/wrap';
+import { ConfigValidator } from '../src/internal/config-validator';
 
 describe('zone', () => {
   class Increment {
@@ -240,21 +241,21 @@ describe('zone', () => {
     store.dispatch(new FooAction());
   });
 
-  function createRootNode(selector = 'app-root'): void {
-    const document = TestBed.get(DOCUMENT);
-    const adapter: DomAdapter = new BrowserDomAdapter();
+  describe('nooped zone', () => {
+    function createRootNode(selector = 'app-root'): void {
+      const document = TestBed.get(DOCUMENT);
+      const adapter: DomAdapter = new BrowserDomAdapter();
 
-    const root = adapter.firstChild(
-      adapter.content(adapter.createTemplate(`<${selector}></${selector}>`))
-    );
+      const root = adapter.firstChild(
+        adapter.content(adapter.createTemplate(`<${selector}></${selector}>`))
+      );
 
-    const oldRoots = adapter.querySelectorAll(document, selector);
-    oldRoots.forEach(oldRoot => adapter.remove(oldRoot));
+      const oldRoots = adapter.querySelectorAll(document, selector);
+      oldRoots.forEach(oldRoot => adapter.remove(oldRoot));
 
-    adapter.appendChild(document.body, root);
-  }
+      adapter.appendChild(document.body, root);
+    }
 
-  it('actions should be handled outside zone if zone is "nooped"', async(() => {
     class FooAction {
       public static readonly type = 'Foo';
     }
@@ -274,7 +275,12 @@ describe('zone', () => {
     class MockComponent {}
 
     @NgModule({
-      imports: [BrowserModule, NgxsModule.forRoot([FooState])],
+      imports: [
+        BrowserModule,
+        NgxsModule.forRoot([FooState], {
+          outsideZone: true
+        })
+      ],
       declarations: [MockComponent],
       entryComponents: [MockComponent]
     })
@@ -285,17 +291,40 @@ describe('zone', () => {
       }
     }
 
-    createRootNode();
+    let platformRef: PlatformRef = null!;
 
-    const platformRef: PlatformRef = TestBed.get(PlatformRef);
+    beforeEach(() => {
+      createRootNode();
+      platformRef = TestBed.get(PlatformRef);
+    });
 
-    platformRef
-      .bootstrapModule(MockModule, {
-        ngZone: 'noop'
-      })
-      .then((module: NgModuleRef<MockModule>) => {
-        const store = module.injector.get<Store>(Store);
-        store.dispatch(new FooAction());
-      });
-  }));
+    it('actions should be handled outside zone if zone is "nooped"', async(() => {
+      platformRef
+        .bootstrapModule(MockModule, {
+          ngZone: 'noop'
+        })
+        .then((module: NgModuleRef<MockModule>) => {
+          const store = module.injector.get<Store>(Store);
+          store.dispatch(new FooAction());
+        });
+    }));
+
+    it('should warn if zone is "nooped" and "outsideZone" option is provided', async(() => {
+      const warnings: string[] = [];
+
+      console.warn = (...args: string[]) => {
+        warnings.push(args[0]);
+      };
+
+      platformRef
+        .bootstrapModule(MockModule, {
+          ngZone: 'noop'
+        })
+        .then(() => {
+          expect(warnings).toEqual([
+            '`outsideZone: true` cannot not be applied as your application was bootstrapped with nooped zone'
+          ]);
+        });
+    }));
+  });
 });

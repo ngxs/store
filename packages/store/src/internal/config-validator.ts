@@ -33,11 +33,7 @@ export class ConfigValidator {
   }
 
   public verifyZoneIsNotNooped(): void {
-    if (isAngularInTestMode()) {
-      return;
-    }
-
-    const outsideZone = this.config.outsideZone !== null && this.config.outsideZone === false;
+    const outsideZone = this.config.outsideZone !== null && this.config.outsideZone;
     // `NoopNgZone` class is private
     if (outsideZone && this.zone.constructor.name === 'NoopNgZone') {
       console.warn(
