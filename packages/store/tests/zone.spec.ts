@@ -1,5 +1,19 @@
-import { ApplicationRef, NgZone, Component } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import {
+  ApplicationRef,
+  NgZone,
+  Component,
+  PlatformRef,
+  NgModule,
+  DoBootstrap,
+  NgModuleRef
+} from '@angular/core';
+import { TestBed, inject, async } from '@angular/core/testing';
+import {
+  ɵDomAdapter as DomAdapter,
+  ɵBrowserDomAdapter as BrowserDomAdapter,
+  BrowserModule,
+  DOCUMENT
+} from '@angular/platform-browser';
 
 import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -106,14 +120,14 @@ describe('zone', () => {
     expect(ticks).toBe(0);
   });
 
-  // Subscribe to the `counter$` stream
-  @Component({ template: '{{ counter$ | async }}' })
-  class MockComponent {
-    @Select(CounterState)
-    public counter$: Observable<number>;
-  }
-
   it('stream should be completed using "wrap" operator w/o memory leaks inside zone', (done: DoneFn) => {
+    // Subscribe to the `counter$` stream
+    @Component({ template: '{{ counter$ | async }}' })
+    class MockComponent {
+      @Select(CounterState)
+      public counter$: Observable<number>;
+    }
+
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([CounterState])],
       declarations: [MockComponent]
@@ -146,6 +160,13 @@ describe('zone', () => {
   });
 
   it('stream should be completed using "wrap" operator w/o memory leaks outside zone', (done: DoneFn) => {
+    // Subscribe to the `counter$` stream
+    @Component({ template: '{{ counter$ | async }}' })
+    class MockComponent {
+      @Select(CounterState)
+      public counter$: Observable<number>;
+    }
+
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([CounterState])],
       declarations: [MockComponent]
@@ -218,4 +239,63 @@ describe('zone', () => {
     const store: Store = TestBed.get(Store);
     store.dispatch(new FooAction());
   });
+
+  function createRootNode(selector = 'app-root'): void {
+    const document = TestBed.get(DOCUMENT);
+    const adapter: DomAdapter = new BrowserDomAdapter();
+
+    const root = adapter.firstChild(
+      adapter.content(adapter.createTemplate(`<${selector}></${selector}>`))
+    );
+
+    const oldRoots = adapter.querySelectorAll(document, selector);
+    oldRoots.forEach(oldRoot => adapter.remove(oldRoot));
+
+    adapter.appendChild(document.body, root);
+  }
+
+  it('actions should be handled outside zone if zone is "nooped"', async(() => {
+    class FooAction {
+      public static readonly type = 'Foo';
+    }
+
+    @State({ name: 'foo' })
+    class FooState {
+      @Action(FooAction)
+      public fooAction(): void {
+        expect(NgZone.isInAngularZone()).toBeFalsy();
+      }
+    }
+
+    @Component({
+      selector: 'app-root',
+      template: ''
+    })
+    class MockComponent {}
+
+    @NgModule({
+      imports: [BrowserModule, NgxsModule.forRoot([FooState])],
+      declarations: [MockComponent],
+      entryComponents: [MockComponent]
+    })
+    class MockModule implements DoBootstrap {
+      public ngDoBootstrap(app: ApplicationRef): void {
+        createRootNode();
+        app.bootstrap(MockComponent);
+      }
+    }
+
+    createRootNode();
+
+    const platformRef: PlatformRef = TestBed.get(PlatformRef);
+
+    platformRef
+      .bootstrapModule(MockModule, {
+        ngZone: 'noop'
+      })
+      .then((module: NgModuleRef<MockModule>) => {
+        const store = module.injector.get<Store>(Store);
+        store.dispatch(new FooAction());
+      });
+  }));
 });
