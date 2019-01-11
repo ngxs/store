@@ -7,7 +7,7 @@ import { getSelectorFn } from './utils/selector-utils';
 import { InternalStateOperations } from './internal/state-operations';
 import { StateStream } from './internal/state-stream';
 import { NgxsConfig } from './symbols';
-import { wrap } from './operators/wrap';
+import { enterZone } from './operators/zone';
 
 @Injectable()
 export class Store {
@@ -44,7 +44,7 @@ export class Store {
         throw err;
       }),
       distinctUntilChanged(),
-      wrap(this.config.outsideZone, this._ngZone)
+      enterZone(this.config.outsideZone, this._ngZone)
     );
   }
 
@@ -72,7 +72,9 @@ export class Store {
    * Allow the user to subscribe to the root of the state
    */
   subscribe(fn?: (value: any) => void): Subscription {
-    return this._stateStream.pipe(wrap(this.config.outsideZone, this._ngZone)).subscribe(fn);
+    return this._stateStream
+      .pipe(enterZone(this.config.outsideZone, this._ngZone))
+      .subscribe(fn);
   }
 
   /**

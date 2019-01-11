@@ -8,7 +8,7 @@ import { InternalActions, ActionStatus, ActionContext } from '../actions-stream'
 import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { NgxsConfig } from '../symbols';
-import { wrap } from '../operators/wrap';
+import { enterZone } from '../operators/zone';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -50,7 +50,7 @@ export class InternalDispatcher {
     if (isPlatformServer(this._platformId)) {
       return result.pipe();
     } else {
-      return result.pipe(wrap(this.config.outsideZone, this._ngZone));
+      return result.pipe(enterZone(this.config.outsideZone, this._ngZone));
     }
   }
 
@@ -106,13 +106,14 @@ export class InternalDispatcher {
     return actionResult$
       .pipe(
         exhaustMap((ctx: ActionContext) => {
-          if (ctx.status === ActionStatus.Successful) {
-            return of(this._stateStream.getValue());
-          } else if (ctx.status === ActionStatus.Errored) {
-            return throwError(ctx.error);
+          switch (ctx.status) {
+            case ActionStatus.Successful:
+              return of(this._stateStream.getValue());
+            case ActionStatus.Errored:
+              return throwError(ctx.error);
+            default:
+              return empty();
           }
-
-          return empty();
         })
       )
       .pipe(shareReplay());
