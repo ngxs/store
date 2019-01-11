@@ -7,7 +7,8 @@ import { compose } from '../utils/compose';
 import { InternalActions, ActionStatus, ActionContext } from '../actions-stream';
 import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
-import { enterZone } from '../operators/zone';
+import { NgxsConfig } from '../symbols';
+import { wrap } from '../operators/wrap';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -27,7 +28,8 @@ export class InternalDispatcher {
     private _pluginManager: PluginManager,
     private _stateStream: StateStream,
     private _ngZone: NgZone,
-    @Inject(PLATFORM_ID) private _platformId: Object
+    @Inject(PLATFORM_ID) private _platformId: Object,
+    private config: NgxsConfig
   ) {}
 
   /**
@@ -36,13 +38,9 @@ export class InternalDispatcher {
   dispatch(actionOrActions: any | any[]): Observable<any> {
     let result: Observable<any>;
     if (isPlatformServer(this._platformId)) {
-      result = this._ngZone.run(() => {
-        return this.dispatchByEvents(actionOrActions);
-      });
+      result = this._ngZone.run(() => this.dispatchByEvents(actionOrActions));
     } else {
-      result = this._ngZone.runOutsideAngular(() => {
-        return this.dispatchByEvents(actionOrActions);
-      });
+      result = this.dispatchEventsOnTheClient(() => this.dispatchByEvents(actionOrActions));
     }
 
     result.subscribe({
@@ -52,8 +50,20 @@ export class InternalDispatcher {
     if (isPlatformServer(this._platformId)) {
       return result.pipe();
     } else {
-      return result.pipe(enterZone(this._ngZone));
+      return result.pipe(wrap(this.config.outsideZone, this._ngZone));
     }
+  }
+
+  private dispatchEventsOnTheClient(
+    callback: (...args: any[]) => Observable<any>
+  ): Observable<any> {
+    // This property should imperatively equal `false`
+    const shouldBeRunInsideZone = this.config.outsideZone !== null && !this.config.outsideZone;
+    if (shouldBeRunInsideZone) {
+      return this._ngZone.run(callback);
+    }
+
+    return this._ngZone.runOutsideAngular(callback);
   }
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
@@ -96,14 +106,13 @@ export class InternalDispatcher {
     return actionResult$
       .pipe(
         exhaustMap((ctx: ActionContext) => {
-          switch (ctx.status) {
-            case ActionStatus.Successful:
-              return of(this._stateStream.getValue());
-            case ActionStatus.Errored:
-              return throwError(ctx.error);
-            default:
-              return empty();
+          if (ctx.status === ActionStatus.Successful) {
+            return of(this._stateStream.getValue());
+          } else if (ctx.status === ActionStatus.Errored) {
+            return throwError(ctx.error);
           }
+
+          return empty();
         })
       )
       .pipe(shareReplay());
