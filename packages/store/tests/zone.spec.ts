@@ -197,4 +197,25 @@ describe('zone', () => {
     const store: Store = TestBed.get(Store);
     store.dispatch(new FooAction());
   });
+
+  it('action should be handled outside zone if `outsideZone` equals false', () => {
+    class FooAction {
+      public static readonly type = 'Foo';
+    }
+
+    @State({ name: 'foo' })
+    class FooState {
+      @Action(FooAction)
+      public fooAction(): void {
+        expect(NgZone.isInAngularZone()).toBeFalsy();
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([FooState], { outsideZone: true })]
+    });
+
+    const store: Store = TestBed.get(Store);
+    store.dispatch(new FooAction());
+  });
 });
