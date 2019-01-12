@@ -1,7 +1,7 @@
-import { StateContext, Store } from '@ngxs/store';
 import { NgModuleRef } from '@angular/core';
+import { StateContext, Store } from '@ngxs/store';
+import { isStateOperator } from '@ngxs/store/operators';
 
-import { isStateOperator } from './common';
 import { NgxsHmrLifeCycle, NgxsStoreSnapshot } from '../symbols';
 
 export function getStateContext<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
