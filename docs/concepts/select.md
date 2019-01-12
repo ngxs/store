@@ -227,7 +227,7 @@ export class ZooState {
 }
 ```
 
-**Pay attention!** If you specify `strictMetadataEmit` in the Angular compiler options - you have to include `@dynamic` comment before class expression. The Angular's `MetadataCollector` from the `@angular/compiler-cli` package reports about using lambdas in any static function:
+**Pay attention!** If you specify `strictMetadataEmit` in the Angular compiler options - you have to include `@dynamic` comment before class expression. The Angular's `MetadataCollector` from the `@angular/compiler-cli` package reports about using lambdas in static methods:
 
 ```TS
 // @dynamic
@@ -246,7 +246,7 @@ export class ZooState {
 }
 ```
 
-Either use plain function expression except of lambda:
+Either use a plain function expression except of lambda:
 
 ```TS
 @State<string[]>({
