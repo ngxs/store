@@ -190,6 +190,43 @@ export class ZooState {
 }
 ```
 
+**Pay attention!** If you specify `strictMetadataEmit` in the Angular compiler options - you have to include `@dynamic` comment before class expression. The Angular's `MetadataCollector` from the `@angular/compiler-cli` package reports about using lambdas in static methods:
+
+```TS
+// @dynamic
+@State<string[]>({
+  name: 'animals',
+  defaults: []
+})
+export class ZooState {
+
+  static pandas(type: string) {
+    return createSelector([ZooState], (state: string[]) => {
+      ....
+    });
+  }
+
+}
+```
+
+Either use a plain function expression except of lambda:
+
+```TS
+@State<string[]>({
+  name: 'animals',
+  defaults: []
+})
+export class ZooState {
+
+  static pandas(type: string) {
+    return createSelector([ZooState], function(state: string[]) {
+      ....
+    });
+  }
+
+}
+```
+
 then you can use `@Select` to call this function with the parameter provided.
 
 ```TS
