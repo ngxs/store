@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 
 @Injectable()
 export class NgxsBootstrapper {
@@ -8,7 +8,7 @@ export class NgxsBootstrapper {
    */
   private bootstrap$ = new ReplaySubject<boolean>(1);
 
-  public get appBootstrapped$(): Observable<boolean> {
+  get appBootstrapped$(): Observable<boolean> {
     return this.bootstrap$.asObservable();
   }
 
@@ -16,7 +16,7 @@ export class NgxsBootstrapper {
    * This event will be emitted after attaching `ComponentRef` of the root component
    * to the tree of views, that's a signal that application has been fully rendered
    */
-  public bootstrap(): void {
+  bootstrap(): void {
     this.bootstrap$.next(true);
     this.bootstrap$.complete();
   }
