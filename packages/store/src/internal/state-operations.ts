@@ -1,11 +1,11 @@
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable } from '@angular/core';
 
+import { ConfigValidator } from './config-validator';
 import { StateOperations, StatesAndDefaults } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
 import { deepFreeze } from '../utils/freeze';
-import { isAngularInTestMode } from '../utils/angular';
 
 /**
  * State Context factory class
@@ -16,9 +16,11 @@ export class InternalStateOperations {
   constructor(
     private _stateStream: StateStream,
     private _dispatcher: InternalDispatcher,
-    private _config: NgxsConfig
+    private _config: NgxsConfig,
+    configValidator: ConfigValidator
   ) {
-    this.verifyDevMode();
+    configValidator.verifyDevMode();
+    configValidator.verifyZoneIsNotNooped();
   }
 
   /**
@@ -36,29 +38,6 @@ export class InternalStateOperations {
     }
 
     return rootStateOperations;
-  }
-
-  private verifyDevMode() {
-    if (isAngularInTestMode()) return;
-
-    const isNgxsDevMode = this._config.developmentMode;
-    const isNgDevMode = isDevMode();
-    const incorrectProduction = !isNgDevMode && isNgxsDevMode;
-    const incorrectDevelopment = isNgDevMode && !isNgxsDevMode;
-    const example = 'NgxsModule.forRoot(states, { developmentMode: !environment.production })';
-
-    if (incorrectProduction) {
-      console.warn(
-        'Angular is running in production mode but NGXS is still running in the development mode!\n',
-        'Please set developmentMode to false on the NgxsModule options when in production mode.\n',
-        example
-      );
-    } else if (incorrectDevelopment) {
-      console.warn(
-        'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n',
-        example
-      );
-    }
   }
 
   private ensureStateAndActionsAreImmutable(root: StateOperations<any>): StateOperations<any> {

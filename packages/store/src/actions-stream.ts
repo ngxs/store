@@ -1,6 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
+import { NgxsConfig } from './symbols';
 import { enterZone } from './operators/zone';
 
 /**
@@ -66,10 +67,10 @@ export class InternalActions extends OrderedSubject<ActionContext> {}
  */
 @Injectable()
 export class Actions extends Observable<any> {
-  constructor(actions$: InternalActions, ngZone: NgZone) {
+  constructor(actions$: InternalActions, ngZone: NgZone, config: NgxsConfig) {
     super(observer => {
       actions$
-        .pipe(enterZone(ngZone))
+        .pipe(enterZone(config.outsideZone, ngZone))
         .subscribe(
           res => observer.next(res),
           err => observer.error(err),

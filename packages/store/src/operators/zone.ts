@@ -1,23 +1,40 @@
-import { Observable, Observer } from 'rxjs';
 import { NgZone } from '@angular/core';
 
+import { MonoTypeOperatorFunction, Observable, Observer } from 'rxjs';
+
 /**
- * Operator to run the `subscribe` in a Angular zone.
+ * Returns operator based on the provided condition `outsideZone`, that will run
+ * `subscribe` inside or outside Angular's zone
  */
-export function enterZone<T>(zone: NgZone) {
+export function enterZone<T>(
+  outsideZone: boolean | null,
+  zone: NgZone
+): MonoTypeOperatorFunction<T> {
   return (source: Observable<T>) => {
     return new Observable((sink: Observer<T>) => {
       return source.subscribe({
-        next(x) {
-          zone.run(() => sink.next(x));
+        next(value) {
+          wrap(outsideZone, zone, () => sink.next(value));
         },
-        error(e) {
-          zone.run(() => sink.error(e));
+        error(error) {
+          wrap(outsideZone, zone, () => sink.error(error));
         },
         complete() {
-          zone.run(() => sink.complete());
+          wrap(outsideZone, zone, () => sink.complete());
         }
       });
     });
   };
+}
+
+function wrap(
+  outsideZone: boolean | null,
+  zone: NgZone,
+  callback: (...args: any) => void
+): void {
+  if (outsideZone) {
+    return zone.runOutsideAngular(callback);
+  }
+
+  zone.run(callback);
 }
