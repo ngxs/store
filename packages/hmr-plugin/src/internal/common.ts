@@ -1,5 +1,5 @@
 import { NgModuleRef } from '@angular/core';
-import { Bootstrapper, StateStream, Store } from '@ngxs/store';
+import { NgxsBootstrapper, StateStream, Store } from '@ngxs/store';
 
 import { NGXS_HMR_SNAPSHOT_KEY, NgxsStoreSnapshot } from '../symbols';
 
@@ -22,6 +22,6 @@ export function getStateStream<T>(ref: NgModuleRef<T>): StateStream | null {
   return ref.injector.get(Store, null)['_stateStream'] || null;
 }
 
-export function getBootstrap<T>(ref: NgModuleRef<T>): Bootstrapper | null {
-  return ref.injector.get(Bootstrapper, null) || null;
+export function getBootstrap<T>(ref: NgModuleRef<T>): NgxsBootstrapper | null {
+  return ref.injector.get(NgxsBootstrapper, null) || null;
 }

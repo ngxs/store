@@ -1,4 +1,4 @@
-import { Bootstrapper, StateContext, StateStream } from '@ngxs/store';
+import { NgxsBootstrapper, StateContext, StateStream } from '@ngxs/store';
 import { NgModuleRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -17,7 +17,7 @@ export function stateEventLoop<T extends NgxsHmrLifeCycle<S>, S>(
 
     // get event subscriptions
     const stateStream: StateStream | null = getStateStream<T>(ref);
-    const bootstrap: Bootstrapper | null = getBootstrap(ref);
+    const bootstrap: NgxsBootstrapper | null = getBootstrap(ref);
     const canBeUpdateState: boolean = Boolean(existSavedState && stateStream && bootstrap);
 
     if (canBeUpdateState) {
