@@ -6,7 +6,7 @@ import { NGXS_HMR_SNAPSHOT_KEY, NgxsStoreSnapshot } from '../symbols';
 export function validateExistHmrStorage() {
   const hmrStorageDoesNotExist = !(sessionStorage.getItem(NGXS_HMR_SNAPSHOT_KEY) || null);
   if (hmrStorageDoesNotExist) {
-    sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, JSON.stringify({}));
+    sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, '{}');
   }
 }
 
