@@ -11,7 +11,7 @@ import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
-import { Bootstrapper } from './internal/bootstrapper';
+import { NgxsBootstrapper } from './internal/ngxs-bootstrapper.service';
 import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatcher, InternalDispatchedActionResults } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
@@ -86,7 +86,7 @@ export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
   return config;
 }
 
-export function appBootstrapListenerFactory(bootstrapper: Bootstrapper) {
+export function appBootstrapListenerFactory(bootstrapper: NgxsBootstrapper) {
   return () => bootstrapper.bootstrap();
 }
 
@@ -108,7 +108,7 @@ export class NgxsModule {
         StateContextFactory,
         Actions,
         InternalActions,
-        Bootstrapper,
+        NgxsBootstrapper,
         LifecycleStateManager,
         InternalDispatcher,
         InternalDispatchedActionResults,
@@ -135,7 +135,7 @@ export class NgxsModule {
           provide: APP_BOOTSTRAP_LISTENER,
           useFactory: appBootstrapListenerFactory,
           multi: true,
-          deps: [Bootstrapper]
+          deps: [NgxsBootstrapper]
         }
       ]
     };
