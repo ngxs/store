@@ -10,7 +10,7 @@ import {
 import { InitState, UpdateState } from '../src/actions/actions';
 import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../src/public_api';
 
-import { META_KEY, NgxsAfterBootstrap, NgxsLifeCycle } from '../src/symbols';
+import { META_KEY, NgxsAfterBootstrap } from '../src/symbols';
 import { StoreValidators } from '../src/utils/store-validators';
 
 describe('State', () => {
