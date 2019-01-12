@@ -11,7 +11,7 @@ import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
-import { NgxsBootstrapper } from './internal/ngxs-bootstrapper.service';
+import { NgxsBootstrapper } from './internal/ngxs-bootstrapper';
 import { ConfigValidator } from './internal/config-validator';
 import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatcher, InternalDispatchedActionResults } from './internal/dispatcher';
