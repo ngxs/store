@@ -1,7 +1,9 @@
 import { ApplicationRef, NgModuleRef } from '@angular/core';
 import { createNewHosts, hmrModule } from '@angularclass/hmr';
 
-import { hmrDoBootstrap, hmrDoDispose, hmrInit } from './internal';
+import { hmrInit } from './internal/init';
+import { hmrDoDispose } from './internal/do-dispose';
+import { hmrDoBootstrap } from './internal/do-bootstrap';
 import { NgxsHmrLifeCycle, NgxsStoreSnapshot } from './symbols';
 
 export function hmrNgxsBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(

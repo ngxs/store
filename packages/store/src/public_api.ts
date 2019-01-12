@@ -30,3 +30,4 @@ export {
 export { Selector } from './decorators/selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
 export { createSelector } from './utils/selector-utils';
+export { Bootstrapper } from './internal/bootstrapper';

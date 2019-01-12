@@ -20,3 +20,6 @@ export interface NgxsHmrLifeCycle<T = NgxsStoreSnapshot> {
    */
   hmrNgxsStoreBeforeOnDestroy(context: StateContext<T>): T;
 }
+
+export type HmrNgxsStoreOnInit<T> = (context: StateContext<T>, snapshot: Partial<T>) => void;
+export type CallStackFrame<T> = (prevState: Partial<T>, ctx: StateContext<T>) => void;
