@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-
-import { ReplaySubject, Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 
 @Injectable()
-export class Bootstrapper {
+export class NgxsBootstrapper {
   /**
    * Use `ReplaySubject`, thus we can get cached value even if the stream is completed
    */
