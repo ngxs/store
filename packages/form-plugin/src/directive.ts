@@ -153,9 +153,9 @@ export class FormDirective implements OnInit, OnDestroy {
     elseMethod: AvailableMethods
   ) {
     if (status) {
-      this._formGroupDirective.form[trueMethod]();
+      (this._formGroupDirective.form[trueMethod] as Function)();
     } else {
-      this._formGroupDirective.form[elseMethod]();
+      (this._formGroupDirective.form[elseMethod] as Function)();
     }
 
     this._cd.markForCheck();
