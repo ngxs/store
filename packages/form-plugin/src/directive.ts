@@ -60,21 +60,27 @@ export class FormDirective implements OnInit, OnDestroy {
         ]);
       });
 
-    this.setupStatusListener(`${this.path}.dirty`, 'dirty', (dirty: boolean) => {
-      this.updateForm(
-        dirty,
-        () => this._formGroupDirective.form.markAsDirty(),
-        () => this._formGroupDirective.form.markAsPristine()
-      );
-    });
+    this._store
+      .select(state => getValue(state, `${this.path}.dirty`))
+      .pipe<boolean>(this.filterStatus('dirty'))
+      .subscribe((dirty: boolean) => {
+        this.updateForm(
+          dirty,
+          () => this._formGroupDirective.form.markAsDirty(),
+          () => this._formGroupDirective.form.markAsPristine()
+        );
+      });
 
-    this.setupStatusListener(`${this.path}.disabled`, 'disabled', (disabled: boolean) => {
-      this.updateForm(
-        disabled,
-        () => this._formGroupDirective.form.disable(),
-        () => this._formGroupDirective.form.enable()
-      );
-    });
+    this._store
+      .select(state => getValue(state, `${this.path}.disabled`))
+      .pipe<boolean>(this.filterStatus('disabled'))
+      .subscribe((disabled: boolean) => {
+        this.updateForm(
+          disabled,
+          () => this._formGroupDirective.form.disable(),
+          () => this._formGroupDirective.form.enable()
+        );
+      });
 
     this._formGroupDirective
       .valueChanges!.pipe(
@@ -127,17 +133,6 @@ export class FormDirective implements OnInit, OnDestroy {
         errors: null
       })
     );
-  }
-
-  private setupStatusListener(
-    path: string,
-    key: Extract<keyof FormGroup, 'disabled' | 'dirty'>,
-    callback: (status: boolean) => void
-  ) {
-    this._store
-      .select(state => getValue(state, path))
-      .pipe<boolean>(this.filterStatus(key))
-      .subscribe(callback);
   }
 
   private filterStatus = (
