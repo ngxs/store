@@ -49,21 +49,19 @@ export class FormDirective implements OnInit, OnDestroy {
     // On first state change, sync form model, status and dirty with state
     this._store
       .selectOnce(state => getValue(state, `${this.path}`))
-      .subscribe(() => {
-        const { path } = this;
+      .pipe(
+        map(() => ({
+          path: this.path,
+          value: this._formGroupDirective.form.getRawValue(),
+          status: this._formGroupDirective.form.status,
+          dirty: this._formGroupDirective.form.dirty
+        }))
+      )
+      .subscribe(({ path, value, status, dirty }) => {
         this._store.dispatch([
-          new UpdateFormValue({
-            path,
-            value: this._formGroupDirective.form.getRawValue()
-          }),
-          new UpdateFormStatus({
-            path,
-            status: this._formGroupDirective.form.status
-          }),
-          new UpdateFormDirty({
-            path,
-            dirty: this._formGroupDirective.form.dirty
-          })
+          new UpdateFormValue({ path, value }),
+          new UpdateFormStatus({ path, status }),
+          new UpdateFormDirty({ path, dirty })
         ]);
       });
 
