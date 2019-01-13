@@ -1,7 +1,7 @@
 import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroupDirective, FormGroup } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
-import { Subject } from 'rxjs';
+import { Subject, pipe } from 'rxjs';
 import { takeUntil, debounceTime, filter, tap, mergeMap, finalize, map } from 'rxjs/operators';
 import {
   UpdateFormStatus,
@@ -17,7 +17,7 @@ export class FormDirective implements OnInit, OnDestroy {
   @Input('ngxsFormDebounce') debounce = 100;
   @Input('ngxsFormClearOnDestroy') clearDestroy: boolean;
 
-  private _destroy$ = new Subject<null>();
+  private _destroy$ = new Subject<void>();
   private _updating = false;
 
   constructor(
@@ -61,10 +61,7 @@ export class FormDirective implements OnInit, OnDestroy {
 
     this._store
       .select(state => getValue(state, `${this.path}.dirty`))
-      .pipe(
-        filter(this.filterStatus('dirty')),
-        takeUntil(this._destroy$)
-      )
+      .pipe(this.filterStatus('dirty', this._destroy$))
       .subscribe(dirty => {
         if (dirty) {
           this._formGroupDirective.form.markAsDirty();
@@ -77,10 +74,7 @@ export class FormDirective implements OnInit, OnDestroy {
 
     this._store
       .select(state => getValue(state, `${this.path}.disabled`))
-      .pipe(
-        filter(this.filterStatus('disabled')),
-        takeUntil(this._destroy$)
-      )
+      .pipe(this.filterStatus('disabled', this._destroy$))
       .subscribe(disabled => {
         if (disabled) {
           this._formGroupDirective.form.disable();
@@ -144,8 +138,12 @@ export class FormDirective implements OnInit, OnDestroy {
     );
   }
 
-  private filterStatus(key: keyof FormGroup) {
-    return (status: boolean) =>
-      typeof status === 'boolean' && this._formGroupDirective.form[key] !== status;
+  private filterStatus(key: keyof FormGroup, destroy$: Subject<void>) {
+    return pipe(
+      filter(
+        status => typeof status === 'boolean' && this._formGroupDirective.form[key] !== status
+      ),
+      takeUntil(destroy$)
+    );
   }
 }
