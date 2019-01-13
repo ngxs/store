@@ -12,6 +12,11 @@ import {
   UpdateForm
 } from './actions';
 
+type AvailableMethods = Extract<
+  keyof FormGroup,
+  'markAsDirty' | 'markAsPristine' | 'disable' | 'enable'
+>;
+
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
   @Input('ngxsForm') path: string;
@@ -60,27 +65,8 @@ export class FormDirective implements OnInit, OnDestroy {
         ]);
       });
 
-    this._store
-      .select(state => getValue(state, `${this.path}.dirty`))
-      .pipe<boolean>(this.filterStatus('dirty'))
-      .subscribe((dirty: boolean) => {
-        this.updateForm(
-          dirty,
-          () => this._formGroupDirective.form.markAsDirty(),
-          () => this._formGroupDirective.form.markAsPristine()
-        );
-      });
-
-    this._store
-      .select(state => getValue(state, `${this.path}.disabled`))
-      .pipe<boolean>(this.filterStatus('disabled'))
-      .subscribe((disabled: boolean) => {
-        this.updateForm(
-          disabled,
-          () => this._formGroupDirective.form.disable(),
-          () => this._formGroupDirective.form.enable()
-        );
-      });
+    this.setupStatusListener(`${this.path}.dirty`, 'dirty', 'markAsDirty', 'markAsPristine');
+    this.setupStatusListener(`${this.path}.disabled`, 'disabled', 'disable', 'enable');
 
     this._formGroupDirective
       .valueChanges!.pipe(
@@ -135,6 +121,20 @@ export class FormDirective implements OnInit, OnDestroy {
     );
   }
 
+  private setupStatusListener(
+    path: string,
+    key: Extract<keyof FormGroup, 'disabled' | 'dirty'>,
+    trueMethod: AvailableMethods,
+    elseMethod: AvailableMethods
+  ) {
+    this._store
+      .select(state => getValue(state, path))
+      .pipe<boolean>(this.filterStatus(key))
+      .subscribe((disabled: boolean) => {
+        this.updateForm(disabled, trueMethod, elseMethod);
+      });
+  }
+
   private filterStatus(
     key: Extract<keyof FormGroup, 'disabled' | 'dirty'>
   ): UnaryFunction<any, any> {
@@ -147,11 +147,15 @@ export class FormDirective implements OnInit, OnDestroy {
     );
   }
 
-  private updateForm(status: boolean, trueCallback: Function, elseCallback: Function) {
+  private updateForm(
+    status: boolean,
+    trueMethod: AvailableMethods,
+    elseMethod: AvailableMethods
+  ) {
     if (status) {
-      trueCallback();
+      this._formGroupDirective.form[trueMethod]();
     } else {
-      elseCallback();
+      this._formGroupDirective.form[elseMethod]();
     }
 
     this._cd.markForCheck();
