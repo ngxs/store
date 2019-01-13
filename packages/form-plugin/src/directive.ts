@@ -46,24 +46,7 @@ export class FormDirective implements OnInit, OnDestroy {
         this._cd.markForCheck();
       });
 
-    // On first state change, sync form model, status and dirty with state
-    this._store
-      .selectOnce(state => getValue(state, `${this.path}`))
-      .pipe(
-        map(() => ({
-          path: this.path,
-          value: this._formGroupDirective.form.getRawValue(),
-          status: this._formGroupDirective.form.status,
-          dirty: this._formGroupDirective.form.dirty
-        }))
-      )
-      .subscribe(({ path, value, status, dirty }) => {
-        this._store.dispatch([
-          new UpdateFormValue({ path, value }),
-          new UpdateFormStatus({ path, status }),
-          new UpdateFormDirty({ path, dirty })
-        ]);
-      });
+    this.synchronizeStateWithForm();
 
     merge(
       this.getStatusStream(`${this.path}.dirty`, 'dirty', 'markAsDirty', 'markAsPristine'),
@@ -137,6 +120,26 @@ export class FormDirective implements OnInit, OnDestroy {
         errors: null
       })
     );
+  }
+
+  private synchronizeStateWithForm() {
+    this._store
+      .selectOnce(state => getValue(state, `${this.path}`))
+      .pipe(
+        map(() => ({
+          path: this.path,
+          value: this._formGroupDirective.form.getRawValue(),
+          status: this._formGroupDirective.form.status,
+          dirty: this._formGroupDirective.form.dirty
+        }))
+      )
+      .subscribe(({ path, value, status, dirty }) => {
+        this._store.dispatch([
+          new UpdateFormValue({ path, value }),
+          new UpdateFormStatus({ path, status }),
+          new UpdateFormDirty({ path, dirty })
+        ]);
+      });
   }
 
   private getStatusStream(
