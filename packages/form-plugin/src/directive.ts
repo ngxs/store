@@ -60,27 +60,21 @@ export class FormDirective implements OnInit, OnDestroy {
         ]);
       });
 
-    this._store
-      .select(state => getValue(state, `${this.path}.dirty`))
-      .pipe<boolean>(this.filterStatus('dirty', this._destroy$))
-      .subscribe((dirty: boolean) => {
-        this.updateForm(
-          dirty,
-          () => this._formGroupDirective.form.markAsDirty(),
-          () => this._formGroupDirective.form.markAsPristine()
-        );
-      });
+    this.setupStatusListener(`${this.path}.dirty`, 'dirty', (dirty: boolean) => {
+      this.updateForm(
+        dirty,
+        () => this._formGroupDirective.form.markAsDirty(),
+        () => this._formGroupDirective.form.markAsPristine()
+      );
+    });
 
-    this._store
-      .select(state => getValue(state, `${this.path}.disabled`))
-      .pipe<boolean>(this.filterStatus('disabled', this._destroy$))
-      .subscribe((disabled: boolean) => {
-        this.updateForm(
-          disabled,
-          () => this._formGroupDirective.form.disable(),
-          () => this._formGroupDirective.form.enable()
-        );
-      });
+    this.setupStatusListener(`${this.path}.disabled`, 'disabled', (disabled: boolean) => {
+      this.updateForm(
+        disabled,
+        () => this._formGroupDirective.form.disable(),
+        () => this._formGroupDirective.form.enable()
+      );
+    });
 
     this._formGroupDirective
       .valueChanges!.pipe(
@@ -135,18 +129,28 @@ export class FormDirective implements OnInit, OnDestroy {
     );
   }
 
-  private filterStatus(
+  private setupStatusListener(
+    path: string,
     key: Extract<keyof FormGroup, 'disabled' | 'dirty'>,
-    destroy$: Subject<void>
-  ): UnaryFunction<any, any> {
+    callback: (status: boolean) => void
+  ) {
+    this._store
+      .select(state => getValue(state, path))
+      .pipe<boolean>(this.filterStatus(key))
+      .subscribe(callback);
+  }
+
+  private filterStatus = (
+    key: Extract<keyof FormGroup, 'disabled' | 'dirty'>
+  ): UnaryFunction<any, any> => {
     return pipe(
       filter(
         (status: boolean | null) =>
           typeof status === 'boolean' && this._formGroupDirective.form[key] !== status
       ),
-      takeUntil(destroy$)
+      takeUntil(this._destroy$)
     );
-  }
+  };
 
   private updateForm(status: boolean, trueCallback: Function, elseCallback: Function) {
     if (status) {
