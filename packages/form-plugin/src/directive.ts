@@ -1,7 +1,7 @@
 import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroupDirective, FormGroup } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
-import { Subject, pipe, UnaryFunction } from 'rxjs';
+import { Subject, merge } from 'rxjs';
 import { takeUntil, debounceTime, filter, tap, mergeMap, finalize, map } from 'rxjs/operators';
 
 import {
@@ -12,7 +12,9 @@ import {
   UpdateForm
 } from './actions';
 
-type AvailableMethods = Extract<
+type AvailableControlStatus = Extract<keyof FormGroup, 'disabled' | 'dirty'>;
+
+type AvailableControlMethod = Extract<
   keyof FormGroup,
   'markAsDirty' | 'markAsPristine' | 'disable' | 'enable'
 >;
@@ -65,8 +67,26 @@ export class FormDirective implements OnInit, OnDestroy {
         ]);
       });
 
-    this.setupStatusListener(`${this.path}.dirty`, 'dirty', 'markAsDirty', 'markAsPristine');
-    this.setupStatusListener(`${this.path}.disabled`, 'disabled', 'disable', 'enable');
+    merge(
+      this.getStatusStream(`${this.path}.dirty`, 'dirty', 'markAsDirty', 'markAsPristine'),
+      this.getStatusStream(`${this.path}.disabled`, 'disabled', 'disable', 'enable')
+    )
+      .pipe(
+        filter(
+          ({ status, key }) =>
+            typeof status === 'boolean' && this._formGroupDirective.form[key] !== status
+        ),
+        takeUntil(this._destroy$)
+      )
+      .subscribe(({ status, trueMethod, elseMethod }) => {
+        if (status) {
+          (this._formGroupDirective.form[trueMethod] as Function)();
+        } else {
+          (this._formGroupDirective.form[elseMethod] as Function)();
+        }
+
+        this._cd.markForCheck();
+      });
 
     this._formGroupDirective
       .valueChanges!.pipe(
@@ -121,43 +141,14 @@ export class FormDirective implements OnInit, OnDestroy {
     );
   }
 
-  private setupStatusListener(
+  private getStatusStream(
     path: string,
-    key: Extract<keyof FormGroup, 'disabled' | 'dirty'>,
-    trueMethod: AvailableMethods,
-    elseMethod: AvailableMethods
+    key: AvailableControlStatus,
+    trueMethod: AvailableControlMethod,
+    elseMethod: AvailableControlMethod
   ) {
-    this._store
+    return this._store
       .select(state => getValue(state, path))
-      .pipe<boolean>(this.filterStatus(key))
-      .subscribe((disabled: boolean) => {
-        this.updateForm(disabled, trueMethod, elseMethod);
-      });
-  }
-
-  private filterStatus(
-    key: Extract<keyof FormGroup, 'disabled' | 'dirty'>
-  ): UnaryFunction<any, any> {
-    return pipe(
-      filter(
-        (status: boolean | null) =>
-          typeof status === 'boolean' && this._formGroupDirective.form[key] !== status
-      ),
-      takeUntil(this._destroy$)
-    );
-  }
-
-  private updateForm(
-    status: boolean,
-    trueMethod: AvailableMethods,
-    elseMethod: AvailableMethods
-  ) {
-    if (status) {
-      (this._formGroupDirective.form[trueMethod] as Function)();
-    } else {
-      (this._formGroupDirective.form[elseMethod] as Function)();
-    }
-
-    this._cd.markForCheck();
+      .pipe(map((status: boolean | null) => ({ status, key, trueMethod, elseMethod })));
   }
 }
