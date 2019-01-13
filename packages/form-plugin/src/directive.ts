@@ -135,9 +135,9 @@ export class FormDirective implements OnInit, OnDestroy {
     );
   }
 
-  private filterStatus = (
+  private filterStatus(
     key: Extract<keyof FormGroup, 'disabled' | 'dirty'>
-  ): UnaryFunction<any, any> => {
+  ): UnaryFunction<any, any> {
     return pipe(
       filter(
         (status: boolean | null) =>
@@ -145,7 +145,7 @@ export class FormDirective implements OnInit, OnDestroy {
       ),
       takeUntil(this._destroy$)
     );
-  };
+  }
 
   private updateForm(status: boolean, trueCallback: Function, elseCallback: Function) {
     if (status) {
