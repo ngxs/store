@@ -10,7 +10,6 @@
     },
     "strict": true,
     "strictPropertyInitialization": false,
-    "suppressImplicitAnyIndexErrors": true,
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
