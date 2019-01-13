@@ -1,6 +1,7 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { NgxsModule, State, Store, Actions, ofActionDispatched } from '@ngxs/store';
 
 import { take } from 'rxjs/operators';
@@ -190,121 +191,207 @@ describe('NgxsFormPlugin', () => {
       });
   });
 
-  it('should dispatch three actions when the value updates', fakeAsync(() => {
-    @State({
-      name: 'todos',
-      defaults: {
-        todosForm: {
-          model: undefined,
-          dirty: false,
-          status: '',
-          errors: {}
+  describe('NgxsFormPlugin runtime behavior', () => {
+    it('should sync model with form', () => {
+      @State({
+        name: 'todos',
+        defaults: {
+          todosForm: {
+            model: {
+              text: 'Buy some coffee'
+            }
+          }
         }
+      })
+      class TodosState {}
+
+      @Component({
+        template: `
+          <form [formGroup]="form" ngxsForm="todos.todosForm" [ngxsFormDebounce]="0">
+            <input formControlName="text" /> <button type="submit">Add todo</button>
+          </form>
+        `
+      })
+      class MockComponent {
+        public form = new FormGroup({
+          text: new FormControl()
+        });
       }
-    })
-    class TodosState {}
 
-    @Component({
-      template: `
-        <form [formGroup]="form" ngxsForm="todos.todosForm" [ngxsFormDebounce]="0">
-          <input formControlName="text" /> <button type="submit">Add todo</button>
-        </form>
-      `
-    })
-    class MockComponent {
-      public form = new FormGroup({
-        text: new FormControl()
-      });
-    }
-
-    TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-        NgxsModule.forRoot([TodosState]),
-        NgxsFormPluginModule.forRoot()
-      ],
-      declarations: [MockComponent]
-    });
-
-    const action$: Actions = TestBed.get(Actions);
-    const fixture = TestBed.createComponent(MockComponent);
-
-    fixture.detectChanges();
-
-    let dispatched = 0;
-
-    action$
-      .pipe(
-        ofActionDispatched(UpdateFormValue, UpdateFormDirty, UpdateFormErrors),
-        take(3)
-      )
-      .subscribe(() => {
-        dispatched++;
+      TestBed.configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          NgxsModule.forRoot([TodosState]),
+          NgxsFormPluginModule.forRoot()
+        ],
+        declarations: [MockComponent]
       });
 
-    fixture.componentInstance.form.setValue({
-      text: 'Buy some coffee'
+      const fixture = TestBed.createComponent(MockComponent);
+
+      fixture.detectChanges();
+
+      const input = fixture.debugElement.query(By.css('form input'));
+      expect(input.nativeElement.value).toBe('Buy some coffee');
     });
 
-    tick(100);
-
-    expect(dispatched).toBe(3);
-  }));
-
-  it('should update the state if "ngxsFormClearOnDestroy" option is provided', () => {
-    @State({
-      name: 'todos',
-      defaults: {
-        todosForm: {
-          model: undefined,
-          dirty: false,
-          status: '',
-          errors: {}
+    it('should dispatch three actions when the value updates', fakeAsync(() => {
+      @State({
+        name: 'todos',
+        defaults: {
+          todosForm: {
+            model: undefined
+          }
         }
+      })
+      class TodosState {}
+
+      @Component({
+        template: `
+          <form [formGroup]="form" ngxsForm="todos.todosForm" [ngxsFormDebounce]="0">
+            <input formControlName="text" /> <button type="submit">Add todo</button>
+          </form>
+        `
+      })
+      class MockComponent {
+        public form = new FormGroup({
+          text: new FormControl()
+        });
       }
-    })
-    class TodosState {}
 
-    @Component({
-      template: `
-        <form [formGroup]="form" ngxsForm="todos.todosForm" [ngxsFormClearOnDestroy]="true">
-          <input formControlName="text" /> <button type="submit">Add todo</button>
-        </form>
-      `
-    })
-    class MockComponent {
-      public form = new FormGroup({
-        text: new FormControl()
+      TestBed.configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          NgxsModule.forRoot([TodosState]),
+          NgxsFormPluginModule.forRoot()
+        ],
+        declarations: [MockComponent]
       });
-    }
 
-    TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-        NgxsModule.forRoot([TodosState]),
-        NgxsFormPluginModule.forRoot()
-      ],
-      declarations: [MockComponent]
+      const action$: Actions = TestBed.get(Actions);
+      const fixture = TestBed.createComponent(MockComponent);
+
+      fixture.detectChanges();
+
+      let dispatched = 0;
+
+      action$
+        .pipe(
+          ofActionDispatched(UpdateFormValue, UpdateFormDirty, UpdateFormErrors),
+          take(3)
+        )
+        .subscribe(() => {
+          dispatched++;
+        });
+
+      fixture.componentInstance.form.setValue({
+        text: 'Buy some coffee'
+      });
+
+      tick(100);
+
+      expect(dispatched).toBe(3);
+    }));
+
+    it('should update the state if "ngxsFormClearOnDestroy" binding is passed', () => {
+      @State({
+        name: 'todos',
+        defaults: {
+          todosForm: {
+            model: undefined,
+            dirty: false,
+            status: '',
+            errors: {}
+          }
+        }
+      })
+      class TodosState {}
+
+      @Component({
+        template: `
+          <form [formGroup]="form" ngxsForm="todos.todosForm" [ngxsFormClearOnDestroy]="true">
+            <input formControlName="text" /> <button type="submit">Add todo</button>
+          </form>
+        `
+      })
+      class MockComponent {
+        public form = new FormGroup({
+          text: new FormControl()
+        });
+      }
+
+      TestBed.configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          NgxsModule.forRoot([TodosState]),
+          NgxsFormPluginModule.forRoot()
+        ],
+        declarations: [MockComponent]
+      });
+
+      const store: Store = TestBed.get(Store);
+      const fixture = TestBed.createComponent(MockComponent);
+
+      expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
+        model: undefined,
+        dirty: false,
+        status: '',
+        errors: {}
+      });
+
+      fixture.detectChanges();
+      fixture.destroy();
+
+      expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
+        model: {},
+        dirty: null,
+        status: null,
+        errors: {}
+      });
     });
 
-    const store: Store = TestBed.get(Store);
-    const fixture = TestBed.createComponent(MockComponent);
+    it('input should be disabled and pristine if such options are provided', () => {
+      @State({
+        name: 'todos',
+        defaults: {
+          todosForm: {
+            model: undefined,
+            disabled: true,
+            dirty: false
+          }
+        }
+      })
+      class TodosState {}
 
-    expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
-      model: undefined,
-      dirty: false,
-      status: '',
-      errors: {}
-    });
+      @Component({
+        template: `
+          <form [formGroup]="form" ngxsForm="todos.todosForm">
+            <input formControlName="text" /> <button type="submit">Add todo</button>
+          </form>
+        `
+      })
+      class MockComponent {
+        public form = new FormGroup({
+          text: new FormControl()
+        });
+      }
 
-    fixture.detectChanges();
-    fixture.destroy();
+      TestBed.configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          NgxsModule.forRoot([TodosState]),
+          NgxsFormPluginModule.forRoot()
+        ],
+        declarations: [MockComponent]
+      });
 
-    expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
-      model: {},
-      dirty: null,
-      status: null,
-      errors: {}
+      const fixture = TestBed.createComponent(MockComponent);
+
+      fixture.detectChanges();
+
+      const input = fixture.debugElement.query(By.css('form input'));
+      expect(input.nativeElement.disabled).toBeTruthy();
+      expect(input.nativeElement.classList.contains('ng-pristine')).toBeTruthy();
     });
   });
 });

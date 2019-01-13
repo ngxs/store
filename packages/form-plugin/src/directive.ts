@@ -1,17 +1,9 @@
 import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormGroupDirective } from '@angular/forms';
+import { FormGroupDirective, FormGroup } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
-import { Subject } from 'rxjs';
-import {
-  takeUntil,
-  debounceTime,
-  filter,
-  tap,
-  mergeMap,
-  finalize,
-  map,
-  take
-} from 'rxjs/operators';
+import { Subject, pipe, UnaryFunction } from 'rxjs';
+import { takeUntil, debounceTime, filter, tap, mergeMap, finalize, map } from 'rxjs/operators';
+
 import {
   UpdateFormStatus,
   UpdateFormValue,
@@ -24,7 +16,7 @@ import {
 export class FormDirective implements OnInit, OnDestroy {
   @Input('ngxsForm') path: string;
   @Input('ngxsFormDebounce') debounce = 100;
-  @Input('ngxsFormClearOnDestroy') clearDestroy: boolean;
+  @Input('ngxsFormClearOnDestroy') clearDestroy = false;
 
   private _destroy$ = new Subject<void>();
   private _updating = false;
@@ -70,12 +62,7 @@ export class FormDirective implements OnInit, OnDestroy {
 
     this._store
       .select(state => getValue(state, `${this.path}.dirty`))
-      .pipe(
-        filter(
-          dirty => typeof dirty === 'boolean' && this._formGroupDirective.form.dirty !== dirty
-        ),
-        takeUntil(this._destroy$)
-      )
+      .pipe<boolean>(this.filterStatus('dirty', this._destroy$))
       .subscribe((dirty: boolean) => {
         this.updateForm(
           dirty,
@@ -86,14 +73,7 @@ export class FormDirective implements OnInit, OnDestroy {
 
     this._store
       .select(state => getValue(state, `${this.path}.disabled`))
-      .pipe(
-        filter(
-          disabled =>
-            typeof disabled === 'boolean' &&
-            this._formGroupDirective.form.disabled !== disabled
-        ),
-        takeUntil(this._destroy$)
-      )
+      .pipe<boolean>(this.filterStatus('disabled', this._destroy$))
       .subscribe((disabled: boolean) => {
         this.updateForm(
           disabled,
@@ -152,6 +132,19 @@ export class FormDirective implements OnInit, OnDestroy {
         status: null,
         errors: null
       })
+    );
+  }
+
+  private filterStatus(
+    key: Extract<keyof FormGroup, 'disabled' | 'dirty'>,
+    destroy$: Subject<void>
+  ): UnaryFunction<any, any> {
+    return pipe(
+      filter(
+        (status: boolean | null) =>
+          typeof status === 'boolean' && this._formGroupDirective.form[key] !== status
+      ),
+      takeUntil(destroy$)
     );
   }
 
