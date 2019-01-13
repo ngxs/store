@@ -1,8 +1,8 @@
 import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormGroupDirective } from '@angular/forms';
+import { FormGroupDirective, FormGroup } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
 import { Subject } from 'rxjs';
-import { takeUntil, debounceTime, first } from 'rxjs/operators';
+import { takeUntil, debounceTime, filter, tap, mergeMap, finalize, map } from 'rxjs/operators';
 import {
   UpdateFormStatus,
   UpdateFormValue,
@@ -29,33 +29,31 @@ export class FormDirective implements OnInit, OnDestroy {
   ngOnInit() {
     this._store
       .select(state => getValue(state, `${this.path}.model`))
-      .pipe(takeUntil(this._destroy$))
+      .pipe(
+        filter(model => !this._updating && model),
+        takeUntil(this._destroy$)
+      )
       .subscribe(model => {
-        if (!this._updating && model) {
-          this._formGroupDirective.form.patchValue(model);
-          this._cd.markForCheck();
-        }
+        this._formGroupDirective.form.patchValue(model);
+        this._cd.markForCheck();
       });
 
     // On first state change, sync form model, status and dirty with state
     this._store
-      .select(state => getValue(state, `${this.path}`))
-      .pipe(
-        takeUntil(this._destroy$),
-        first()
-      )
-      .subscribe(state => {
+      .selectOnce(state => getValue(state, `${this.path}`))
+      .subscribe(() => {
+        const { path } = this;
         this._store.dispatch([
           new UpdateFormValue({
-            path: this.path,
+            path,
             value: this._formGroupDirective.form.getRawValue()
           }),
           new UpdateFormStatus({
-            path: this.path,
+            path,
             status: this._formGroupDirective.form.status
           }),
           new UpdateFormDirty({
-            path: this.path,
+            path,
             dirty: this._formGroupDirective.form.dirty
           })
         ]);
@@ -63,62 +61,54 @@ export class FormDirective implements OnInit, OnDestroy {
 
     this._store
       .select(state => getValue(state, `${this.path}.dirty`))
-      .pipe(takeUntil(this._destroy$))
+      .pipe(
+        filter(this.filterStatus('dirty')),
+        takeUntil(this._destroy$)
+      )
       .subscribe(dirty => {
-        if (this._formGroupDirective.form.dirty !== dirty) {
-          if (dirty === true) {
-            this._formGroupDirective.form.markAsDirty();
-            this._cd.markForCheck();
-          } else if (dirty === false) {
-            this._formGroupDirective.form.markAsPristine();
-            this._cd.markForCheck();
-          }
+        if (dirty) {
+          this._formGroupDirective.form.markAsDirty();
+        } else {
+          this._formGroupDirective.form.markAsPristine();
         }
+
+        this._cd.markForCheck();
       });
 
     this._store
       .select(state => getValue(state, `${this.path}.disabled`))
-      .pipe(takeUntil(this._destroy$))
+      .pipe(
+        filter(this.filterStatus('disabled')),
+        takeUntil(this._destroy$)
+      )
       .subscribe(disabled => {
-        if (this._formGroupDirective.form.disabled !== disabled) {
-          if (disabled === true) {
-            this._formGroupDirective.form.disable();
-            this._cd.markForCheck();
-          } else if (disabled === false) {
-            this._formGroupDirective.form.enable();
-            this._cd.markForCheck();
-          }
+        if (disabled) {
+          this._formGroupDirective.form.disable();
+        } else {
+          this._formGroupDirective.form.enable();
         }
+
+        this._cd.markForCheck();
       });
 
     this._formGroupDirective
       .valueChanges!.pipe(
         debounceTime(this.debounce),
+        tap(() => (this._updating = true)),
+        map(() => this._formGroupDirective.control.getRawValue()),
+        mergeMap(value => {
+          const { path } = this;
+          return this._store
+            .dispatch([
+              new UpdateFormValue({ path, value }),
+              new UpdateFormDirty({ path, dirty: this._formGroupDirective.dirty }),
+              new UpdateFormErrors({ path, errors: this._formGroupDirective.errors })
+            ])
+            .pipe(finalize(() => (this._updating = false)));
+        }),
         takeUntil(this._destroy$)
       )
-      .subscribe(() => {
-        const value = this._formGroupDirective.control.getRawValue();
-        this._updating = true;
-        this._store
-          .dispatch([
-            new UpdateFormValue({
-              path: this.path,
-              value
-            }),
-            new UpdateFormDirty({
-              path: this.path,
-              dirty: this._formGroupDirective.dirty
-            }),
-            new UpdateFormErrors({
-              path: this.path,
-              errors: this._formGroupDirective.errors
-            })
-          ])
-          .subscribe({
-            error: () => (this._updating = false),
-            complete: () => (this._updating = false)
-          });
-      });
+      .subscribe();
 
     this._formGroupDirective
       .statusChanges!.pipe(
@@ -139,16 +129,23 @@ export class FormDirective implements OnInit, OnDestroy {
     this._destroy$.next();
     this._destroy$.complete();
 
-    if (this.clearDestroy) {
-      this._store.dispatch(
-        new UpdateForm({
-          path: this.path,
-          value: null,
-          dirty: null,
-          status: null,
-          errors: null
-        })
-      );
+    if (!this.clearDestroy) {
+      return;
     }
+
+    this._store.dispatch(
+      new UpdateForm({
+        path: this.path,
+        value: null,
+        dirty: null,
+        status: null,
+        errors: null
+      })
+    );
+  }
+
+  private filterStatus(key: keyof FormGroup) {
+    return (status: boolean) =>
+      typeof status === 'boolean' && this._formGroupDirective.form[key] !== status;
   }
 }
