@@ -125,25 +125,9 @@ export class FormDirective implements OnInit, OnDestroy {
 
   private markFormByStatus(status: boolean, key: string): void {
     if (key === AvailableControlStatus.Dirty) {
-      this.toggleDirtyProperty(status);
+      status ? this.form.markAsDirty() : this.form.markAsPristine();
     } else {
-      this.toggleDisabledProperty(status);
-    }
-  }
-
-  private toggleDirtyProperty(dirty: boolean): void {
-    if (dirty) {
-      this.form.markAsDirty();
-    } else {
-      this.form.markAsPristine();
-    }
-  }
-
-  private toggleDisabledProperty(disabled: boolean): void {
-    if (disabled) {
-      this.form.disable();
-    } else {
-      this.form.enable();
+      status ? this.form.disable() : this.form.enable();
     }
   }
 
