@@ -11,7 +11,7 @@ import {
   UpdateFormErrors,
   UpdateForm
 } from './actions';
-import { AvailableControlStatus, AvailableControlMethod, AvailableStream } from './internals';
+import { AvailableControlStatus, AvailableStream } from './internals';
 
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
@@ -43,15 +43,7 @@ export class FormDirective implements OnInit, OnDestroy {
       return;
     }
 
-    this._store.dispatch(
-      new UpdateForm({
-        path: this.path,
-        value: null,
-        dirty: null,
-        status: null,
-        errors: null
-      })
-    );
+    this.resetForm();
   }
 
   private get control(): FormGroup {
@@ -62,9 +54,21 @@ export class FormDirective implements OnInit, OnDestroy {
     return this._formGroupDirective.form;
   }
 
+  private get modelPath(): string {
+    return `${this.path}.model`;
+  }
+
+  private get dirtyPath(): string {
+    return `${this.path}.dirty`;
+  }
+
+  private get disabledPath(): string {
+    return `${this.path}.disabled`;
+  }
+
   private setupModelChangeListener(): void {
     this._store
-      .select(state => getValue(state, `${this.path}.model`))
+      .select(state => getValue(state, this.modelPath))
       .pipe(
         filter(model => !this._updating && model),
         takeUntil(this._destroy$)
@@ -96,31 +100,16 @@ export class FormDirective implements OnInit, OnDestroy {
   }
 
   private setupStatusStreamsListeners(): void {
-    const getStatusStream = (
-      path: string,
-      key: AvailableControlStatus,
-      trueMethod: AvailableControlMethod,
-      elseMethod: AvailableControlMethod
-    ) =>
+    const getStatusStream = (path: string, key: AvailableControlStatus) =>
       this._store
         .select(state => getValue(state, path))
-        .pipe(map((status: boolean | null) => ({ status, key, trueMethod, elseMethod })));
+        .pipe(map((status: boolean) => ({ status, key })));
 
     // Behavior of handling these 2 streams is the same
     // thus we should not listen these streams separately
     merge(
-      getStatusStream(
-        `${this.path}.dirty`,
-        AvailableControlStatus.Dirty,
-        AvailableControlMethod.MarkAsDirty,
-        AvailableControlMethod.MarkAsPristine
-      ),
-      getStatusStream(
-        `${this.path}.disabled`,
-        AvailableControlStatus.Disabled,
-        AvailableControlMethod.Disable,
-        AvailableControlMethod.Enable
-      )
+      getStatusStream(this.dirtyPath, AvailableControlStatus.Dirty),
+      getStatusStream(this.disabledPath, AvailableControlStatus.Disabled)
     )
       .pipe(
         // Status can be any type, e.g. `null`
@@ -128,16 +117,34 @@ export class FormDirective implements OnInit, OnDestroy {
         filter(({ status, key }) => typeof status === 'boolean' && this.form[key] !== status),
         takeUntil(this._destroy$)
       )
-      .subscribe(({ status, trueMethod, elseMethod }) => {
-        // Have to cast for Angular's metadata collector
-        if (status) {
-          (this.form[trueMethod] as Function)();
-        } else {
-          (this.form[elseMethod] as Function)();
-        }
-
+      .subscribe(({ status, key }) => {
+        this.markFormByStatus(status, key);
         this._cd.markForCheck();
       });
+  }
+
+  private markFormByStatus(status: boolean, key: string): void {
+    if (key === AvailableControlStatus.Dirty) {
+      this.toggleDirtyProperty(status);
+    } else {
+      this.toggleDisabledProperty(status);
+    }
+  }
+
+  private toggleDirtyProperty(dirty: boolean): void {
+    if (dirty) {
+      this.form.markAsDirty();
+    } else {
+      this.form.markAsPristine();
+    }
+  }
+
+  private toggleDisabledProperty(disabled: boolean): void {
+    if (disabled) {
+      this.form.disable();
+    } else {
+      this.form.enable();
+    }
   }
 
   private setupValueAndStatusChangesListener(): void {
@@ -187,6 +194,18 @@ export class FormDirective implements OnInit, OnDestroy {
             new UpdateFormErrors({ path, errors: this._formGroupDirective.errors })
           ])
           .pipe(finalize(() => (this._updating = false)));
+      })
+    );
+  }
+
+  private resetForm(): void {
+    this._store.dispatch(
+      new UpdateForm({
+        path: this.path,
+        value: null,
+        dirty: null,
+        status: null,
+        errors: null
       })
     );
   }
