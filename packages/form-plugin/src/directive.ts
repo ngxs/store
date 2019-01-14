@@ -73,18 +73,14 @@ export class FormDirective implements OnInit, OnDestroy {
       .valueChanges!.pipe(
         debounceTime(this.debounce),
         tap(() => (this._updating = true)),
-        map(() => ({
-          path: this.path,
-          value: this._formGroupDirective.control.getRawValue(),
-          dirty: this._formGroupDirective.dirty,
-          errors: this._formGroupDirective.errors
-        })),
-        mergeMap(({ path, value, dirty, errors }) => {
+        map(() => this._formGroupDirective.control.getRawValue()),
+        mergeMap(value => {
+          const { path } = this;
           return this._store
             .dispatch([
               new UpdateFormValue({ path, value }),
-              new UpdateFormDirty({ path, dirty }),
-              new UpdateFormErrors({ path, errors })
+              new UpdateFormDirty({ path, dirty: this._formGroupDirective.dirty }),
+              new UpdateFormErrors({ path, errors: this._formGroupDirective.errors })
             ])
             .pipe(finalize(() => (this._updating = false)));
         }),
