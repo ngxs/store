@@ -190,43 +190,6 @@ export class ZooState {
 }
 ```
 
-**Pay attention!** If you specify `strictMetadataEmit` in the Angular compiler options - you have to include `@dynamic` comment before class expression. The Angular's `MetadataCollector` from the `@angular/compiler-cli` package reports about using lambdas in static methods:
-
-```TS
-// @dynamic
-@State<string[]>({
-  name: 'animals',
-  defaults: []
-})
-export class ZooState {
-
-  static pandas(type: string) {
-    return createSelector([ZooState], (state: string[]) => {
-      ....
-    });
-  }
-
-}
-```
-
-Either use a plain function expression except of lambda:
-
-```TS
-@State<string[]>({
-  name: 'animals',
-  defaults: []
-})
-export class ZooState {
-
-  static pandas(type: string) {
-    return createSelector([ZooState], function(state: string[]) {
-      ....
-    });
-  }
-
-}
-```
-
 then you can use `@Select` to call this function with the parameter provided.
 
 ```TS
@@ -331,3 +294,85 @@ export class CityService {
 ```
 
 now we can use this `zooThemeParks` selector anywhere in our application.
+
+## Special Considerations
+
+### Angular Libraries: Use of lambdas in static functions
+
+_If you are building an Angular lib directly so that it can be deployed to npm. `strictMetadataEmit` will most likely be set to true in the Angular compiler options and, as a result, Angular's `MetadataCollector` from the `@angular/compiler-cli` package will report the following issue with using lambdas in static methods:_
+
+>  Metadata collected contains an error that will be reported at runtime: Lambda not supported.`
+
+This error would be reported for each of the selectors defined below but, as demonstrated in the sample, you can prevent this by including the `// @dynamic` comment before the class expression and decorators:
+
+```TS
+// @dynamic
+@State<string[]>({
+  name: 'animals',
+  defaults: [
+    'panda',
+    'horse',
+    'bee'
+  ]
+})
+export class ZooState {
+
+  @Selector()
+  static pandas(state: string[]) {
+    return state.filter((s) => s.indexOf('panda') > -1);    
+  }
+
+  @Selector()
+  static horses(state: string[]) {
+    return (type: string) => {
+      return state.filter(s => s.indexOf('horse') > -1)
+        .filter(s => s.indexOf(type) > -1);
+    };
+  }
+
+  static bees(type: string) {
+    return createSelector([ZooState], (state: string[]) => {
+      return state.filter(s => s.indexOf('bee') > -1)
+        .filter(s => s.indexOf(type) > -1);
+    });
+  }
+}
+```
+
+As an alternative you can assign your result to a variable before you return it:  
+See https://github.com/ng-packagr/ng-packagr/issues/696#issuecomment-387114613
+```TS
+@State<string[]>({
+  name: 'animals',
+  defaults: [
+    'panda',
+    'horse',
+    'bee'
+  ]
+})
+export class ZooState {
+
+  @Selector()
+  static pandas(state: string[]) {
+    const result = state.filter((s) => s.indexOf('panda') > -1);
+    return result;
+  }
+
+  @Selector()
+  static horses(state: string[]) {
+    const fn = (type: string) => {
+      return state.filter(s => s.indexOf('horse') > -1)
+        .filter(s => s.indexOf(type) > -1);
+    };
+    return fn;
+  }
+
+  static bees(type: string) {
+    const selector = createSelector([ZooState], (state: string[]) => {
+      return state.filter(s => s.indexOf('bee') > -1)
+        .filter(s => s.indexOf(type) > -1);
+    });
+    return selector;
+  }
+}
+```
