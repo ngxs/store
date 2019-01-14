@@ -19,6 +19,8 @@ import {
 
 @Injectable()
 export class NgxsFormPlugin implements NgxsPlugin {
+  constructor() {}
+
   handle(state: any, event: any, next: NgxsNextPluginFn) {
     const type = getActionTypeFromInstance(event);
 

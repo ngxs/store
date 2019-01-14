@@ -1,9 +1,8 @@
 import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormGroupDirective, FormGroup } from '@angular/forms';
+import { FormGroupDirective } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
-import { Subject, merge, pipe, iif, of } from 'rxjs';
-import { takeUntil, debounceTime, filter, tap, mergeMap, finalize, map } from 'rxjs/operators';
-
+import { Subject } from 'rxjs';
+import { takeUntil, debounceTime, first } from 'rxjs/operators';
 import {
   UpdateFormStatus,
   UpdateFormValue,
@@ -11,15 +10,14 @@ import {
   UpdateFormErrors,
   UpdateForm
 } from './actions';
-import { AvailableControlStatus, AvailableStream } from './internals';
 
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
   @Input('ngxsForm') path: string;
   @Input('ngxsFormDebounce') debounce = 100;
-  @Input('ngxsFormClearOnDestroy') clearDestroy = false;
+  @Input('ngxsFormClearOnDestroy') clearDestroy: boolean;
 
-  private _destroy$ = new Subject<void>();
+  private _destroy$ = new Subject<null>();
   private _updating = false;
 
   constructor(
@@ -29,168 +27,128 @@ export class FormDirective implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.setupModelChangeListener();
-    this.synchronizeStateWithForm();
-    this.setupStatusStreamsListeners();
-    this.setupValueAndStatusChangesListener();
+    this._store
+      .select(state => getValue(state, `${this.path}.model`))
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(model => {
+        if (!this._updating && model) {
+          this._formGroupDirective.form.patchValue(model);
+          this._cd.markForCheck();
+        }
+      });
+
+    // On first state change, sync form model, status and dirty with state
+    this._store
+      .select(state => getValue(state, `${this.path}`))
+      .pipe(
+        takeUntil(this._destroy$),
+        first()
+      )
+      .subscribe(state => {
+        this._store.dispatch([
+          new UpdateFormValue({
+            path: this.path,
+            value: this._formGroupDirective.form.getRawValue()
+          }),
+          new UpdateFormStatus({
+            path: this.path,
+            status: this._formGroupDirective.form.status
+          }),
+          new UpdateFormDirty({
+            path: this.path,
+            dirty: this._formGroupDirective.form.dirty
+          })
+        ]);
+      });
+
+    this._store
+      .select(state => getValue(state, `${this.path}.dirty`))
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(dirty => {
+        if (this._formGroupDirective.form.dirty !== dirty) {
+          if (dirty === true) {
+            this._formGroupDirective.form.markAsDirty();
+            this._cd.markForCheck();
+          } else if (dirty === false) {
+            this._formGroupDirective.form.markAsPristine();
+            this._cd.markForCheck();
+          }
+        }
+      });
+
+    this._store
+      .select(state => getValue(state, `${this.path}.disabled`))
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(disabled => {
+        if (this._formGroupDirective.form.disabled !== disabled) {
+          if (disabled === true) {
+            this._formGroupDirective.form.disable();
+            this._cd.markForCheck();
+          } else if (disabled === false) {
+            this._formGroupDirective.form.enable();
+            this._cd.markForCheck();
+          }
+        }
+      });
+
+    this._formGroupDirective
+      .valueChanges!.pipe(
+        debounceTime(this.debounce),
+        takeUntil(this._destroy$)
+      )
+      .subscribe(() => {
+        const value = this._formGroupDirective.control.getRawValue();
+        this._updating = true;
+        this._store
+          .dispatch([
+            new UpdateFormValue({
+              path: this.path,
+              value
+            }),
+            new UpdateFormDirty({
+              path: this.path,
+              dirty: this._formGroupDirective.dirty
+            }),
+            new UpdateFormErrors({
+              path: this.path,
+              errors: this._formGroupDirective.errors
+            })
+          ])
+          .subscribe({
+            error: () => (this._updating = false),
+            complete: () => (this._updating = false)
+          });
+      });
+
+    this._formGroupDirective
+      .statusChanges!.pipe(
+        debounceTime(this.debounce),
+        takeUntil(this._destroy$)
+      )
+      .subscribe((status: string) => {
+        this._store.dispatch(
+          new UpdateFormStatus({
+            status,
+            path: this.path
+          })
+        );
+      });
   }
 
   ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
 
-    if (!this.clearDestroy) {
-      return;
-    }
-
-    this.resetForm();
-  }
-
-  private get control(): FormGroup {
-    return this._formGroupDirective.control;
-  }
-
-  private get form(): FormGroup {
-    return this._formGroupDirective.form;
-  }
-
-  private get modelPath(): string {
-    return `${this.path}.model`;
-  }
-
-  private get dirtyPath(): string {
-    return `${this.path}.dirty`;
-  }
-
-  private get disabledPath(): string {
-    return `${this.path}.disabled`;
-  }
-
-  private setupModelChangeListener(): void {
-    this._store
-      .select(state => getValue(state, this.modelPath))
-      .pipe(
-        filter(model => !this._updating && model),
-        takeUntil(this._destroy$)
-      )
-      .subscribe(model => {
-        this.form.patchValue(model);
-        this._cd.markForCheck();
-      });
-  }
-
-  private synchronizeStateWithForm(): void {
-    this._store
-      .selectOnce(state => getValue(state, `${this.path}`))
-      .pipe(
-        map(() => ({
+    if (this.clearDestroy) {
+      this._store.dispatch(
+        new UpdateForm({
           path: this.path,
-          value: this.form.getRawValue(),
-          status: this.form.status,
-          dirty: this.form.dirty
-        }))
-      )
-      .subscribe(({ path, value, status, dirty }) => {
-        this._store.dispatch([
-          new UpdateFormValue({ path, value }),
-          new UpdateFormStatus({ path, status }),
-          new UpdateFormDirty({ path, dirty })
-        ]);
-      });
-  }
-
-  private setupStatusStreamsListeners(): void {
-    const getStatusStream = (path: string, key: AvailableControlStatus) =>
-      this._store
-        .select(state => getValue(state, path))
-        .pipe(map((status: boolean) => ({ status, key })));
-
-    // Behavior of handling these 2 streams is the same
-    // thus we should not listen these streams separately
-    merge(
-      getStatusStream(this.dirtyPath, AvailableControlStatus.Dirty),
-      getStatusStream(this.disabledPath, AvailableControlStatus.Disabled)
-    )
-      .pipe(
-        // Status can be any type, e.g. `null`
-        // we have to be sure that it's type of boolean
-        filter(({ status, key }) => typeof status === 'boolean' && this.form[key] !== status),
-        takeUntil(this._destroy$)
-      )
-      .subscribe(({ status, key }) => {
-        this.markFormByStatus(status, key);
-        this._cd.markForCheck();
-      });
-  }
-
-  private markFormByStatus(status: boolean, key: string): void {
-    if (key === AvailableControlStatus.Dirty) {
-      status ? this.form.markAsDirty() : this.form.markAsPristine();
-    } else {
-      status ? this.form.disable() : this.form.enable();
-    }
-  }
-
-  private setupValueAndStatusChangesListener(): void {
-    const { valueChanges, statusChanges } = this._formGroupDirective;
-
-    const mapChangesStream = (type: AvailableStream) =>
-      pipe(
-        debounceTime(this.debounce),
-        map((statusOrValue: any) => ({ statusOrValue, type }))
+          value: null,
+          dirty: null,
+          status: null,
+          errors: null
+        })
       );
-
-    // No need to listen these streams separately
-    // it's easier to map to the `iif` stream, this will cost
-    // less memory
-    merge(
-      valueChanges!.pipe(mapChangesStream(AvailableStream.ValueChanges)),
-      statusChanges!.pipe(mapChangesStream(AvailableStream.StatusChanges))
-    )
-      .pipe(
-        mergeMap(({ type, statusOrValue }) =>
-          iif(
-            () => type === AvailableStream.StatusChanges,
-            // If event has been emitted by the `statusChanges` stream
-            this.handleStatusChanges(statusOrValue),
-            // If event has been emitted by the `valueChanges` stream
-            this.handleValueChanges()
-          )
-        ),
-        takeUntil(this._destroy$)
-      )
-      .subscribe();
-  }
-
-  private handleStatusChanges(status: string) {
-    return this._store.dispatch(new UpdateFormStatus({ status, path: this.path }));
-  }
-
-  private handleValueChanges() {
-    return of(this.control.getRawValue()).pipe(
-      tap(() => (this._updating = true)),
-      mergeMap(value => {
-        const { path } = this;
-        return this._store
-          .dispatch([
-            new UpdateFormValue({ path, value }),
-            new UpdateFormDirty({ path, dirty: this._formGroupDirective.dirty }),
-            new UpdateFormErrors({ path, errors: this._formGroupDirective.errors })
-          ])
-          .pipe(finalize(() => (this._updating = false)));
-      })
-    );
-  }
-
-  private resetForm(): void {
-    this._store.dispatch(
-      new UpdateForm({
-        path: this.path,
-        value: null,
-        dirty: null,
-        status: null,
-        errors: null
-      })
-    );
+    }
   }
 }
