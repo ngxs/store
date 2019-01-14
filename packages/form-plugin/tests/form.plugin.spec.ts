@@ -391,7 +391,7 @@ describe('NgxsFormPlugin', () => {
 
       const input = fixture.debugElement.query(By.css('form input'));
       expect(input.nativeElement.disabled).toBeTruthy();
-      expect(input.nativeElement.classList.contains('ng-pristine')).toBeTruthy();
+      expect(input.nativeElement.classList.toString().indexOf('pristine')).toBeGreaterThan(-1);
     });
   });
 });
