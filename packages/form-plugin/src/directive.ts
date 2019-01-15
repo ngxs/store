@@ -75,11 +75,11 @@ export class FormDirective implements OnInit, OnDestroy {
 
         if (dirty) {
           this._formGroupDirective.form.markAsDirty();
-          this._cd.markForCheck();
         } else {
           this._formGroupDirective.form.markAsPristine();
-          this._cd.markForCheck();
         }
+
+        this._cd.markForCheck();
       });
 
     this._store
@@ -95,11 +95,11 @@ export class FormDirective implements OnInit, OnDestroy {
 
         if (disabled) {
           this._formGroupDirective.form.disable();
-          this._cd.markForCheck();
-        } else if (disabled) {
+        } else {
           this._formGroupDirective.form.enable();
-          this._cd.markForCheck();
         }
+
+        this._cd.markForCheck();
       });
 
     this._formGroupDirective
