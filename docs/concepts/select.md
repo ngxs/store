@@ -299,7 +299,7 @@ now we can use this `zooThemeParks` selector anywhere in our application.
 
 ### Angular Libraries: Use of lambdas in static functions
 
-_If you are building an Angular lib directly so that it can be deployed to npm. The Angular compiler option `strictMetadataEmit` (see [docs](https://angular.io/guide/aot-compiler#strictmetadataemit)) will most likely be set to true and, as a result, Angular's `MetadataCollector` from the `@angular/compiler-cli` package will report the following issue with using lambdas in static methods:_
+_If you are building an Angular lib directly so that it can be deployed to npm the Angular compiler option `strictMetadataEmit` (see [docs](https://angular.io/guide/aot-compiler#strictmetadataemit)) will most likely be set to true and, as a result, Angular's `MetadataCollector` from the `@angular/compiler-cli` package will report the following issue with using lambdas in static methods:_
 
 >  Metadata collected contains an error that will be reported at runtime: Lambda not supported.`
 
