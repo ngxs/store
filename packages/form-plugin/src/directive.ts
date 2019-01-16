@@ -19,11 +19,16 @@ import {
 
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
-  @Input('ngxsForm') path: string;
-  @Input('ngxsFormDebounce') debounce = 100;
-  @Input('ngxsFormClearOnDestroy') clearDestroy = false;
+  @Input('ngxsForm')
+  path: string = null!;
 
-  private _destroy$ = new Subject<void>();
+  @Input('ngxsFormDebounce')
+  debounce = 100;
+
+  @Input('ngxsFormClearOnDestroy')
+  clearDestroy = false;
+
+  private readonly _destroy$ = new Subject<void>();
   private _updating = false;
 
   constructor(
@@ -33,7 +38,7 @@ export class FormDirective implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getStateStream(this.modelPath).subscribe(model => {
+    this.getStateStream(`${this.path}.model`).subscribe(model => {
       if (this._updating || !model) {
         return;
       }
@@ -62,8 +67,8 @@ export class FormDirective implements OnInit, OnDestroy {
         ]);
       });
 
-    this.getStateStream(this.dirtyPath).subscribe(dirty => {
-      if (!this.shouldChangeFormStatus(this.form.dirty, dirty)) {
+    this.getStateStream(`${this.path}.dirty`).subscribe(dirty => {
+      if (this.form.dirty === dirty || typeof dirty !== 'boolean') {
         return;
       }
 
@@ -76,8 +81,8 @@ export class FormDirective implements OnInit, OnDestroy {
       this._cd.markForCheck();
     });
 
-    this.getStateStream(this.disabledPath).subscribe(disabled => {
-      if (!this.shouldChangeFormStatus(this.form.disabled, disabled)) {
+    this.getStateStream(`${this.path}.disabled`).subscribe(disabled => {
+      if (this.form.disabled === disabled || typeof disabled !== 'boolean') {
         return;
       }
 
@@ -153,22 +158,6 @@ export class FormDirective implements OnInit, OnDestroy {
 
   private get form(): FormGroup {
     return this._formGroupDirective.form;
-  }
-
-  private get modelPath(): string {
-    return `${this.path}.model`;
-  }
-
-  private get dirtyPath(): string {
-    return `${this.path}.dirty`;
-  }
-
-  private get disabledPath(): string {
-    return `${this.path}.disabled`;
-  }
-
-  private shouldChangeFormStatus(formStatus: boolean, status: boolean): boolean {
-    return formStatus !== status && typeof status === 'boolean';
   }
 
   private getStateStream(path: string) {
