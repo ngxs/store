@@ -1,5 +1,5 @@
 import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormGroupDirective } from '@angular/forms';
+import { FormGroupDirective, FormGroup } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
 import { Subject } from 'rxjs';
 import {
@@ -38,7 +38,7 @@ export class FormDirective implements OnInit, OnDestroy {
         return;
       }
 
-      this._formGroupDirective.form.patchValue(model);
+      this.form.patchValue(model);
       this._cd.markForCheck();
     });
 
@@ -49,45 +49,42 @@ export class FormDirective implements OnInit, OnDestroy {
         this._store.dispatch([
           new UpdateFormValue({
             path: this.path,
-            value: this._formGroupDirective.form.getRawValue()
+            value: this.form.getRawValue()
           }),
           new UpdateFormStatus({
             path: this.path,
-            status: this._formGroupDirective.form.status
+            status: this.form.status
           }),
           new UpdateFormDirty({
             path: this.path,
-            dirty: this._formGroupDirective.form.dirty
+            dirty: this.form.dirty
           })
         ]);
       });
 
     this.getStateStream(this.dirtyPath).subscribe(dirty => {
-      if (this._formGroupDirective.form.dirty === dirty || typeof dirty !== 'boolean') {
+      if (!this.shouldChangeFormStatus(this.form.dirty, dirty)) {
         return;
       }
 
       if (dirty) {
-        this._formGroupDirective.form.markAsDirty();
+        this.form.markAsDirty();
       } else {
-        this._formGroupDirective.form.markAsPristine();
+        this.form.markAsPristine();
       }
 
       this._cd.markForCheck();
     });
 
     this.getStateStream(this.disabledPath).subscribe(disabled => {
-      if (
-        this._formGroupDirective.form.disabled === disabled ||
-        typeof disabled !== 'boolean'
-      ) {
+      if (!this.shouldChangeFormStatus(this.form.disabled, disabled)) {
         return;
       }
 
       if (disabled) {
-        this._formGroupDirective.form.disable();
+        this.form.disable();
       } else {
-        this._formGroupDirective.form.enable();
+        this.form.enable();
       }
 
       this._cd.markForCheck();
@@ -154,6 +151,10 @@ export class FormDirective implements OnInit, OnDestroy {
     }
   }
 
+  private get form(): FormGroup {
+    return this._formGroupDirective.form;
+  }
+
   private get modelPath(): string {
     return `${this.path}.model`;
   }
@@ -164,6 +165,10 @@ export class FormDirective implements OnInit, OnDestroy {
 
   private get disabledPath(): string {
     return `${this.path}.disabled`;
+  }
+
+  private shouldChangeFormStatus(formStatus: boolean, status: boolean): boolean {
+    return formStatus !== status && typeof status === 'boolean';
   }
 
   private getStateStream(path: string) {
