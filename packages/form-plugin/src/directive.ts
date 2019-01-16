@@ -106,7 +106,6 @@ export class FormDirective implements OnInit, OnDestroy {
       .valueChanges!.pipe(
         debounceTime(this.debounce),
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        takeUntil(this._destroy$),
         mergeMap(() => {
           const value = this._formGroupDirective.control.getRawValue();
           this._updating = true;
@@ -126,7 +125,8 @@ export class FormDirective implements OnInit, OnDestroy {
               })
             ])
             .pipe(finalize(() => (this._updating = false)));
-        })
+        }),
+        takeUntil(this._destroy$)
       )
       .subscribe();
 
