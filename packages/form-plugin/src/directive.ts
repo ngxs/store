@@ -33,21 +33,18 @@ export class FormDirective implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this._store
-      .select(state => getValue(state, `${this.path}.model`))
-      .pipe(takeUntil(this._destroy$))
-      .subscribe(model => {
-        if (this._updating || !model) {
-          return;
-        }
+    this.getStateStream(this.modelPath).subscribe(model => {
+      if (this._updating || !model) {
+        return;
+      }
 
-        this._formGroupDirective.form.patchValue(model);
-        this._cd.markForCheck();
-      });
+      this._formGroupDirective.form.patchValue(model);
+      this._cd.markForCheck();
+    });
 
     // On first state change, sync form model, status and dirty with state
     this._store
-      .selectOnce(state => getValue(state, `${this.path}`))
+      .selectOnce(state => getValue(state, this.path))
       .subscribe(() => {
         this._store.dispatch([
           new UpdateFormValue({
@@ -65,42 +62,36 @@ export class FormDirective implements OnInit, OnDestroy {
         ]);
       });
 
-    this._store
-      .select(state => getValue(state, `${this.path}.dirty`))
-      .pipe(takeUntil(this._destroy$))
-      .subscribe(dirty => {
-        if (this._formGroupDirective.form.dirty === dirty || typeof dirty !== 'boolean') {
-          return;
-        }
+    this.getStateStream(this.dirtyPath).subscribe(dirty => {
+      if (this._formGroupDirective.form.dirty === dirty || typeof dirty !== 'boolean') {
+        return;
+      }
 
-        if (dirty) {
-          this._formGroupDirective.form.markAsDirty();
-        } else {
-          this._formGroupDirective.form.markAsPristine();
-        }
+      if (dirty) {
+        this._formGroupDirective.form.markAsDirty();
+      } else {
+        this._formGroupDirective.form.markAsPristine();
+      }
 
-        this._cd.markForCheck();
-      });
+      this._cd.markForCheck();
+    });
 
-    this._store
-      .select(state => getValue(state, `${this.path}.disabled`))
-      .pipe(takeUntil(this._destroy$))
-      .subscribe(disabled => {
-        if (
-          this._formGroupDirective.form.disabled === disabled ||
-          typeof disabled !== 'boolean'
-        ) {
-          return;
-        }
+    this.getStateStream(this.disabledPath).subscribe(disabled => {
+      if (
+        this._formGroupDirective.form.disabled === disabled ||
+        typeof disabled !== 'boolean'
+      ) {
+        return;
+      }
 
-        if (disabled) {
-          this._formGroupDirective.form.disable();
-        } else {
-          this._formGroupDirective.form.enable();
-        }
+      if (disabled) {
+        this._formGroupDirective.form.disable();
+      } else {
+        this._formGroupDirective.form.enable();
+      }
 
-        this._cd.markForCheck();
-      });
+      this._cd.markForCheck();
+    });
 
     this._formGroupDirective
       .valueChanges!.pipe(
@@ -161,5 +152,21 @@ export class FormDirective implements OnInit, OnDestroy {
         })
       );
     }
+  }
+
+  private get modelPath(): string {
+    return `${this.path}.model`;
+  }
+
+  private get dirtyPath(): string {
+    return `${this.path}.dirty`;
+  }
+
+  private get disabledPath(): string {
+    return `${this.path}.disabled`;
+  }
+
+  private getStateStream(path: string) {
+    return this._store.select(state => getValue(state, path)).pipe(takeUntil(this._destroy$));
   }
 }
