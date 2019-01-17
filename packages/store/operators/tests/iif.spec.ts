@@ -3,17 +3,48 @@ import { patch } from '../src/patch';
 
 describe('iif', () => {
   describe('when null provided', () => {
-    it('returns the same root', () => {
+    it('returns the same root if "else" condition not provided', () => {
       // Arrange
       const original = { a: 1, b: 2, c: 3 };
 
       // Act
       const newValue = patch({
-        a: iif(null as any, 1)
+        a: iif(null!, 1)
       })(original);
 
       // Assert
       expect(newValue).toBe(original);
+    });
+
+    it('returns the same root if "else" condition is provided', () => {
+      // Arrange
+      const original = { a: 1, b: 2, c: 3 };
+
+      // Act
+      const newValue = patch({
+        a: iif(null!, 10, 1)
+      })(original);
+
+      // Assert
+      expect(newValue).toBe(original);
+    });
+
+    it('returns patched object if "else" condition is provided', () => {
+      // Arrange
+      const original = { a: 1, b: 2, c: 3 };
+
+      // Act
+      const newValue = patch({
+        a: iif(null!, 10, 20)
+      })(original);
+
+      // Assert
+      expect(newValue).not.toBe(original);
+      expect(newValue).toEqual({
+        a: 20,
+        b: 2,
+        c: 3
+      });
     });
   });
 
@@ -24,11 +55,42 @@ describe('iif', () => {
 
       // Act
       const newValue = patch({
-        a: iif(undefined as any, 1)
+        a: iif(undefined!, 1)
       })(original);
 
       // Assert
       expect(newValue).toBe(original);
+    });
+
+    it('returns the same root if "else" condition is provided', () => {
+      // Arrange
+      const original = { a: 1, b: 2, c: 3 };
+
+      // Act
+      const newValue = patch({
+        a: iif(undefined!, 10, 1)
+      })(original);
+
+      // Assert
+      expect(newValue).toBe(original);
+    });
+
+    it('returns patched object if "else" condition is provided', () => {
+      // Arrange
+      const original = { a: 1, b: 2, c: 3 };
+
+      // Act
+      const newValue = patch({
+        a: iif(undefined!, 10, 20)
+      })(original);
+
+      // Assert
+      expect(newValue).not.toBe(original);
+      expect(newValue).toEqual({
+        a: 20,
+        b: 2,
+        c: 3
+      });
     });
   });
 
