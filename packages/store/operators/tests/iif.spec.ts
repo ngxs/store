@@ -155,6 +155,7 @@ describe('iif', () => {
         c: iif(c => c! === 3, 10, 5)
       })(original);
 
+      // Assert
       expect(newValue).not.toBe(original);
       expect(newValue).toEqual({
         a: 10,
@@ -350,6 +351,7 @@ describe('iif', () => {
           c: iif(c => !c, 100, 10)
         })(original);
 
+        // Assert
         expect(newValue).toEqual(newValue2);
         expect(newValue).toEqual({
           a: 1,
