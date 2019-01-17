@@ -1,8 +1,6 @@
 import { iif } from '../src/iif';
 import { patch } from '../src/patch';
 
-const { log } = console;
-
 describe('iif', () => {
   describe('when null provided', () => {
     it('returns the same root', () => {
