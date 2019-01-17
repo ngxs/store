@@ -19,15 +19,7 @@ export {
   ofActionCompleted,
   ActionCompletion
 } from './operators/of-action';
-export {
-  NgxsPlugin,
-  NgxsPluginFn,
-  StateContext,
-  StateOperator,
-  NgxsOnInit,
-  NgxsAfterBootstrap
-} from './symbols';
+export { StateContext, StateOperator, NgxsOnInit, NgxsAfterBootstrap } from './symbols';
 export { Selector } from './decorators/selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
 export { createSelector } from './utils/selector-utils';
-export { NgxsBootstrapper } from './internal/ngxs-bootstrapper';
