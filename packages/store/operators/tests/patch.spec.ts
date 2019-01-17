@@ -63,6 +63,7 @@ describe('patch', () => {
         expect(newValue).toBe(original);
       });
     });
+
     describe('with different values', () => {
       it('returns a new root', () => {
         // Arrange
