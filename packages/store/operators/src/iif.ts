@@ -4,8 +4,9 @@ import { isStateOperator, isPredicate, isUndefined } from './utils';
 import { Predicate } from './internals';
 
 function retrieveValue<T>(operatorOrValue: StateOperator<T> | T, existing?: Readonly<T>): T {
-  if (!isStateOperator(operatorOrValue) && !existing) {
-    return operatorOrValue;
+  const operatorAndExistingNotProvided = !isStateOperator(operatorOrValue) && !existing;
+  if (operatorAndExistingNotProvided) {
+    return operatorOrValue as T;
   }
 
   // If state operator is a function

@@ -67,19 +67,38 @@ describe('iif', () => {
     });
   });
 
-  describe('when argument provided into predicate factory', () => {
+  describe('when argument provided into predicate function', () => {
     it('returns the same root', () => {
       // Arrange
       const original = { a: 1, b: 2, c: 3 };
 
       // Act
       const newValue = patch({
-        a: iif(a => a! === 1, 1),
-        b: iif(b => b! === 2, 2)
+        a: iif(a => a === 1, 1),
+        b: iif(b => b === 2, 2)
       })(original);
 
       // Assert
       expect(newValue).toBe(original);
+    });
+
+    it('returns new patched object', () => {
+      // Arrange
+      const original = { a: 1, b: 2, c: 3 };
+
+      // Act
+      const newValue = patch({
+        a: iif(a => a! < 10, 10, 5),
+        b: iif(b => b! > 0, 10, 5),
+        c: iif(c => c! === 3, 10, 5)
+      })(original);
+
+      expect(newValue).not.toBe(original);
+      expect(newValue).toEqual({
+        a: 10,
+        b: 10,
+        c: 10
+      });
     });
   });
 
