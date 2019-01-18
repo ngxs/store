@@ -2,7 +2,7 @@ import { patch } from '../src/patch';
 import { append } from '../src/append';
 
 describe('append', () => {
-  describe('when no properties provided', () => {
+  describe('when an empty array provided', () => {
     it('returns the same root', () => {
       // Arrange
       const original = { a: [1, 2, 3], b: [4, 5, 6] };
@@ -49,7 +49,7 @@ describe('append', () => {
 
   describe('when object with primitive property values provided', () => {
     describe('with different values', () => {
-      it('returns new root', () => {
+      it('returns new root if non-empty array array provided', () => {
         // Arrange
         const original = { a: [] };
 
@@ -62,7 +62,7 @@ describe('append', () => {
         expect(newValue).not.toBe(original);
       });
 
-      it('returns a new root with changed property set', () => {
+      it('returns a new root with changed property set if non-empty array provided', () => {
         // Arrange
         const original = { a: [1, 2, 3] };
 
@@ -74,23 +74,6 @@ describe('append', () => {
         // Assert
         expect(newValue).toEqual({
           a: [1, 2, 3, 4, 5]
-        });
-      });
-
-      it('returns a new root with changed properties set', () => {
-        // Arrange
-        const original = { a: [1, 2, 3], b: [1, 2, 3] };
-
-        // Act
-        const newValue = patch({
-          a: append([4, 5]),
-          b: append([4, 5])
-        })(original);
-
-        // Assert
-        expect(newValue).toEqual({
-          a: [1, 2, 3, 4, 5],
-          b: [1, 2, 3, 4, 5]
         });
       });
 
