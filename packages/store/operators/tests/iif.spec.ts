@@ -2,8 +2,8 @@ import { iif } from '../src/iif';
 import { patch } from '../src/patch';
 
 describe('iif', () => {
-  describe('when null provided', () => {
-    it('returns the same root if "else" condition not provided', () => {
+  describe('when null condition provided', () => {
+    it('returns the same root if "else" not provided', () => {
       // Arrange
       const original = { a: 1, b: 2, c: 3 };
 
@@ -16,7 +16,7 @@ describe('iif', () => {
       expect(newValue).toBe(original);
     });
 
-    it('returns the same root if "else" condition is provided', () => {
+    it('returns the same root if "else" provides same value as existing', () => {
       // Arrange
       const original = { a: 1, b: 2, c: 3 };
 
@@ -29,7 +29,7 @@ describe('iif', () => {
       expect(newValue).toBe(original);
     });
 
-    it('returns patched object if "else" condition is provided', () => {
+    it('returns patched object if "else" is provided with new value', () => {
       // Arrange
       const original = { a: 1, b: 2, c: 3 };
 
@@ -48,8 +48,8 @@ describe('iif', () => {
     });
   });
 
-  describe('when undefined provided', () => {
-    it('returns the same root', () => {
+  describe('when undefined condition provided', () => {
+    it('returns the same root if "else" not provided', () => {
       // Arrange
       const original = { a: 1, b: 2, c: 3 };
 
@@ -62,7 +62,7 @@ describe('iif', () => {
       expect(newValue).toBe(original);
     });
 
-    it('returns the same root if "else" condition is provided', () => {
+    it('returns the same root if "else" provides same value as existing', () => {
       // Arrange
       const original = { a: 1, b: 2, c: 3 };
 
@@ -75,7 +75,7 @@ describe('iif', () => {
       expect(newValue).toBe(original);
     });
 
-    it('returns patched object if "else" condition is provided', () => {
+    it('returns patched object if "else" is provided with new value', () => {
       // Arrange
       const original = { a: 1, b: 2, c: 3 };
 
@@ -115,7 +115,7 @@ describe('iif', () => {
       expect(newValue).toBe(original);
     });
 
-    it('returns the same root if "else" value provided', () => {
+    it('returns the same root if "else" provides same value as existing', () => {
       // Arrange
       const original = { a: 10, b: 10 };
 
