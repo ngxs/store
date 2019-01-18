@@ -28,7 +28,7 @@ export function updateItem<T>(
 
     let value: T = null!;
     // Need to check if the new item value will change the existing item value
-    // Then, only if it will change it then clone the array and set the item
+    // then, only if it will change it then clone the array and set the item
     if (isStateOperator(operatorOrValue)) {
       value = operatorOrValue(existing[index]);
     } else {
@@ -36,7 +36,7 @@ export function updateItem<T>(
     }
 
     // If the value hasn't been mutated
-    // Then we just return `existing` array
+    // then we just return `existing` array
     if (value === existing[index]) {
       return existing;
     }
