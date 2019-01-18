@@ -2,13 +2,7 @@ import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular
 import { FormGroupDirective, FormGroup } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
 import { Subject } from 'rxjs';
-import {
-  takeUntil,
-  debounceTime,
-  distinctUntilChanged,
-  mergeMap,
-  finalize
-} from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 import {
   UpdateFormStatus,
   UpdateFormValue,
@@ -98,35 +92,36 @@ export class FormDirective implements OnInit, OnDestroy {
     this._formGroupDirective
       .valueChanges!.pipe(
         debounceTime(this.debounce),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        mergeMap(() => {
-          const value = this._formGroupDirective.control.getRawValue();
-          this._updating = true;
-          return this._store
-            .dispatch([
-              new UpdateFormValue({
-                path: this.path,
-                value
-              }),
-              new UpdateFormDirty({
-                path: this.path,
-                dirty: this._formGroupDirective.dirty
-              }),
-              new UpdateFormErrors({
-                path: this.path,
-                errors: this._formGroupDirective.errors
-              })
-            ])
-            .pipe(finalize(() => (this._updating = false)));
-        }),
         takeUntil(this._destroy$)
       )
-      .subscribe();
+      .subscribe(() => {
+        const value = this._formGroupDirective.control.getRawValue();
+        this._updating = true;
+        this._store
+          .dispatch([
+            new UpdateFormValue({
+              path: this.path,
+              value
+            }),
+            new UpdateFormDirty({
+              path: this.path,
+              dirty: this._formGroupDirective.dirty
+            }),
+            new UpdateFormErrors({
+              path: this.path,
+              errors: this._formGroupDirective.errors
+            })
+          ])
+          .subscribe(
+            undefined,
+            () => (this._updating = false),
+            () => (this._updating = false)
+          );
+      });
 
     this._formGroupDirective
       .statusChanges!.pipe(
         debounceTime(this.debounce),
-        distinctUntilChanged(),
         takeUntil(this._destroy$)
       )
       .subscribe((status: string) => {
