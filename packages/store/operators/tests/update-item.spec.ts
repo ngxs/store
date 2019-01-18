@@ -32,6 +32,38 @@ describe('update item', () => {
     });
   });
 
+  describe('when non-existing index or predicate provided', () => {
+    it('returns the same root', () => {
+      // Arrange
+      const original = {
+        a: [1, 2, 3]
+      };
+
+      // Act
+      const newValue = patch({
+        a: updateItem(original.a.length, original.a.length)
+      })(original);
+
+      // Assert
+      expect(newValue).toBe(original);
+    });
+
+    it('returns the same root', () => {
+      // Arrange
+      const original = {
+        a: [1, 2, 3]
+      };
+
+      // Act
+      const newValue = patch({
+        a: updateItem(number => number === 4, 4)
+      })(original);
+
+      // Assert
+      expect(newValue).toBe(original);
+    });
+  });
+
   describe('when same values provided', () => {
     it('returns the same root', () => {
       // Arrange
