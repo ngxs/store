@@ -112,11 +112,10 @@ export class FormDirective implements OnInit, OnDestroy {
               errors: this._formGroupDirective.errors
             })
           ])
-          .subscribe(
-            undefined,
-            () => (this._updating = false),
-            () => (this._updating = false)
-          );
+          .subscribe({
+            error: () => (this._updating = false),
+            complete: () => (this._updating = false)
+          });
       });
 
     this._formGroupDirective
