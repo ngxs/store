@@ -33,7 +33,7 @@ describe('update item', () => {
   });
 
   describe('when non-existing index or predicate provided', () => {
-    it('returns the same root', () => {
+    it('returns the same root if non-existing index provided', () => {
       // Arrange
       const original = {
         a: [1, 2, 3]
@@ -48,7 +48,7 @@ describe('update item', () => {
       expect(newValue).toBe(original);
     });
 
-    it('returns the same root', () => {
+    it('returns the same root if predicate that returns non-existing index provided', () => {
       // Arrange
       const original = {
         a: [1, 2, 3]
