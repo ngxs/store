@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/ngxs-labs/emitter/master/docs/assets/logo.png">
+    <img src="https://raw.githubusercontent.com/ngxs-labs/emitter/master/docs/assets/emitter.png">
 </p>
 
 ---
@@ -111,6 +111,44 @@ export class CounterComponent {
 }
 ```
 
+Alternatively you can use `EmitterService` instead of decorating properties:
+
+```typescript
+import { Component } from '@angular/core';
+import { Select } from '@ngxs/store';
+import { EmitterService, Emittable } from '@ngxs-labs/emitter';
+
+import { Observable } from 'rxjs';
+
+import { CounterState } from './counter.state';
+
+@Component({
+    selector: 'app-counter',
+    template: `
+        <ng-container *ngIf="counter$ | async as counter">
+            <h3>Counter is {{ counter }}</h3>
+        </ng-container>
+
+        <button (click)="increment()">Increment</button>
+        <button (click)="decrement()">Decrement</button>
+    `
+})
+export class CounterComponent {
+    @Select(CounterState)
+    public counter$: Observable<number>;
+
+    constructor(private emitter: EmitterService) {}
+
+    public increment(): void {
+        this.emitter.action(CounterState.increment).emit();
+    }
+
+    public decrement(): void {
+        this.emitter.action(CounterState.decrement).emit();
+    }
+}
+```
+
 ## Custom types
 
 You can define custom types for debbuging purposes (works with `@ngxs/logger-plugin`):
@@ -132,6 +170,59 @@ export class CounterState {
     @Receiver({ type: '[Counter] Decrement value' })
     public static decrement({ setState, getState }: StateContext<number>) {
         setState(getState() - 1);
+    }
+}
+```
+
+## Payload type safety 
+
+```typescript
+import { Component } from '@angular/core';
+import { Select } from '@ngxs/store';
+import { Emitter, Emittable } from '@ngxs-labs/emitter';
+
+import { Observable } from 'rxjs';
+
+import { CustomCounter, CounterState } from './counter.state';
+
+@Component({
+    selector: 'app-root',
+    template: `
+        {{ counter$ | async | json }}
+        <button (click)="update()">update</button>
+    `
+})
+export class AppComponent {
+    @Select(CounterState)
+    public counter$: Observable<CustomCounter>;
+
+    @Emitter(CounterState.update)
+    private update: Emittable<CustomCounter>;
+
+    public update(): void {
+        this.update.emit(undefined as any);
+    }
+}
+```
+
+```typescript
+import { State, StateContext } from '@ngxs/store';
+import { Receiver, EmitterAction } from '@ngxs-labs/emitter';
+
+export interface CustomCounter {
+  value: number;
+}
+
+@State<CustomCounter>({
+    name: 'counter',
+    defaults: {
+      value: 0
+    }
+})
+export class CounterState {
+    @Receiver({ payload: { value: -1 } }) // default value if payload emitted as undefined
+    public static update({ setState }: StateContext<CustomCounter>, { payload }: EmitterAction<CustomCounter>) {
+        setState({ value: payload.value });
     }
 }
 ```
@@ -424,11 +515,14 @@ export class AppComponent {
 }
 ```
 
-## Testing
+## 💡 TDD
 
-It's very easy to write unit tests using ER concept:
+It's very easy to write unit tests using ER concept, because we provide our module out of the box that makes all providers and stores available for dependency injection. So you can avoid creating mocked components with properties decorated with `@Emitter()` decorator, just use the `StoreTestBed` service to get any emittable object:
 
 ```typescript
+import { EmitterService } from '@ngxs-labs/emitter';
+import { StoreTestBedModule } from '@ngxs-labs/emitter/testing';
+
 it('should increment state', () => {
     @State<number>({
         name: 'counter',
@@ -441,28 +535,18 @@ it('should increment state', () => {
         }
     }
 
-    @Component({ template: '' })
-    class MockComponent {
-        @Emitter(CounterState.increment)
-        public incremnet: Emittable<void>;
-    }
-
     TestBed.configureTestingModule({
         imports: [
-            NgxsModule.forRoot([CounterState]),
-            NgxsEmitPluginModule.forRoot()
-        ],
-        declarations: [
-            MockComponent
+            StoreTestBedModule.configureTestingModule([CounterState])
         ]
     });
 
-    const fixture = TestBed.createComponent(MockComponent);
     const store: Store = TestBed.get(Store);
+    const emitter: EmitterService = TestBed.get(EmitterService);
 
-    fixture.componentInstance.increment.emit();
+    emitter.action(CounterState.increment).emit();
 
-    const counter = store.selectSnapshot<number>((state) => state.counter);
+    const counter = store.selectSnapshot<number>(({ counter }) => counter);
     expect(counter).toBe(1);
 });
 ```
