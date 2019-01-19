@@ -1,3 +1,5 @@
+import { isNil, isNumber } from './utils';
+
 /**
  * @param value - Value to insert
  * @param [beforePosition] -  Specified index to insert value before, optional
@@ -19,19 +21,11 @@ export function insertItem<T>(value: T, beforePosition?: number) {
 
     let index = 0;
 
-    if (isNumber(beforePosition) && beforePosition >= 0) {
+    if (isNumber(beforePosition) && beforePosition > 0) {
       index = beforePosition;
     }
 
     clone.splice(index, 0, value);
     return clone;
   };
-}
-
-function isNumber(value: unknown): value is number {
-  return typeof value === 'number';
-}
-
-function isNil<T>(value: T | null | undefined): value is null | undefined {
-  return value === null || value === undefined;
 }
