@@ -21,3 +21,7 @@ export function isNumber(value: unknown): value is number {
 export function invalidIndex(index: number): boolean {
   return Number.isNaN(index) || index === -1;
 }
+
+export function isNil<T>(value: T | null | undefined): value is null | undefined {
+  return value === null || isUndefined(value);
+}
