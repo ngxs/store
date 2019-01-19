@@ -17,3 +17,7 @@ export function isPredicate<T>(value: Predicate<T> | boolean | number): value is
 export function isNumber(value: unknown): value is number {
   return typeof value === 'number';
 }
+
+export function invalidIndex(index: number): boolean {
+  return Number.isNaN(index) || index === -1;
+}

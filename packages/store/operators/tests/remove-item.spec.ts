@@ -36,38 +36,6 @@ describe('remove item', () => {
     });
   });
 
-  describe('when non-existing index or predicate provided', () => {
-    it('returns the same root', () => {
-      // Arrange
-      const original = {
-        a: [1, 2, 3]
-      };
-
-      // Act
-      const newValue = patch({
-        a: removeItem(original.a.length)
-      })(original);
-
-      // Assert
-      expect(newValue).toBe(original);
-    });
-
-    it('returns the same root', () => {
-      // Arrange
-      const original = {
-        a: [1, 2, 3]
-      };
-
-      // Act
-      const newValue = patch({
-        a: removeItem(item => item! > 10)
-      })(original);
-
-      // Assert
-      expect(newValue).toBe(original);
-    });
-  });
-
   describe('when different values provided', () => {
     it('returns a new root', () => {
       // Arrange

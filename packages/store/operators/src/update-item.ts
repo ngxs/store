@@ -1,6 +1,6 @@
 import { StateOperator } from '@ngxs/store';
 
-import { isStateOperator, isPredicate, isNumber } from './utils';
+import { isStateOperator, isPredicate, isNumber, invalidIndex } from './utils';
 import { Predicate } from './internals';
 
 /**
@@ -22,7 +22,7 @@ export function updateItem<T>(
       index = selector;
     }
 
-    if (isNaN(index) || index === -1) {
+    if (invalidIndex(index)) {
       return existing;
     }
 
