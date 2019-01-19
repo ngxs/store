@@ -1,4 +1,4 @@
-import { isNil, isNumber } from './utils';
+import { isUndefined, isNumber } from './utils';
 
 /**
  * @param value - Value to insert
@@ -8,7 +8,8 @@ export function insertItem<T>(value: T, beforePosition?: number) {
   return function insertItemOperator(existing: Readonly<T[]>): T[] {
     // Have to check explicitly for `null` and `undefined`
     // because `value` can be `0`, thus `!value` will return `true`
-    if (isNil(value) && existing) {
+    const isNil = isUndefined(value) || value === null;
+    if (isNil && existing) {
       return existing;
     }
 
