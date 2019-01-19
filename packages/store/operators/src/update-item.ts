@@ -22,8 +22,7 @@ export function updateItem<T>(
       index = selector;
     }
 
-    // If non-existing index was provided
-    if (isNaN(index) || index === -1 || !existing.hasOwnProperty(index)) {
+    if (isNaN(index) || index === -1) {
       return existing;
     }
 
