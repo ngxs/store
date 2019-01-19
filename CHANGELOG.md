@@ -13,6 +13,13 @@ $ npm install @ngxs/store@dev
 * Feature: Add `outsideZone` option to the config [#761](https://github.com/ngxs/store/pull/761)
 * Fix: Expose `ActionCompletion` [#752](https://github.com/ngxs/store/pull/752)
 
+## NGXS-Labs
+
+### Emitter-plugin
+
+* Feature: Add `EmitterService` [#121](https://github.com/ngxs-labs/emitter/pull/121)
+* Feature: Add `StoreTestBedModule` for easy unit testing [#109](https://github.com/ngxs-labs/emitter/pull/109)
+
 # 3.3.4 2018-12-20
 * Fix: Remove ref to TestBed to reduce bundle size [#725](https://github.com/ngxs/store/pull/725)
 
