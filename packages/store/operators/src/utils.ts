@@ -13,3 +13,7 @@ export function isUndefined(value: unknown): value is undefined {
 export function isPredicate<T>(value: Predicate<T> | boolean | number): value is Predicate<T> {
   return typeof value === 'function';
 }
+
+export function isNumber(value: unknown): value is number {
+  return typeof value === 'number';
+}

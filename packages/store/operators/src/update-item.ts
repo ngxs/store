@@ -1,6 +1,6 @@
 import { StateOperator } from '@ngxs/store';
 
-import { isStateOperator, isPredicate } from './utils';
+import { isStateOperator, isPredicate, isNumber } from './utils';
 import { Predicate } from './internals';
 
 /**
@@ -46,8 +46,4 @@ export function updateItem<T>(
     clone[index] = value;
     return clone;
   };
-}
-
-function isNumber(value: unknown): value is number {
-  return typeof value === 'number';
 }
