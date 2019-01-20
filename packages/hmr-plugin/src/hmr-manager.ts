@@ -1,6 +1,5 @@
 import { ApplicationRef, ComponentRef, NgModuleRef } from '@angular/core';
 import { createNewHosts, hmrModule } from '@angularclass/hmr';
-import { StateContext } from '@ngxs/store';
 
 import {
   BootstrapModuleType,
@@ -58,8 +57,7 @@ export class HmrManager<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot> {
 
   public beforeModuleOnDestroy(): void {
     this.optionsBuilder.clearLogs();
-    const ctx: StateContext<S> = this.context.stateContext;
-    this.storage.snapshot = this.lifecycle.hmrNgxsStoreBeforeOnDestroy(ctx);
+    this.storage.snapshot = this.lifecycle.hmrNgxsStoreBeforeOnDestroy();
   }
 
   public createNewHosts(): void {

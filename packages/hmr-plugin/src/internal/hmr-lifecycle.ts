@@ -1,5 +1,4 @@
 import { Observable, Subscription } from 'rxjs';
-import { StateContext } from '@ngxs/store';
 
 import { CallStackFrame, HmrStatus, NgxsHmrLifeCycle } from '../symbols';
 import { HmrStorage } from './hmr-storage';
@@ -39,10 +38,10 @@ export class HmrLifecycle<T extends NgxsHmrLifeCycle<S>, S> {
     }
   }
 
-  public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<S>): Partial<S> {
+  public hmrNgxsStoreBeforeOnDestroy(): Partial<S> {
     let resultSnapshot: Partial<S> = {};
     if (typeof this.ngAppModule.hmrNgxsStoreBeforeOnDestroy === 'function') {
-      resultSnapshot = this.ngAppModule.hmrNgxsStoreBeforeOnDestroy(ctx);
+      resultSnapshot = this.ngAppModule.hmrNgxsStoreBeforeOnDestroy(this.context.stateContext);
     }
 
     this.status.beforeOnDestroyIsCalled = true;
