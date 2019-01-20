@@ -1,4 +1,5 @@
 export { append } from './append';
+export { compose } from './compose';
 export { iif } from './iif';
 export { insertItem } from './insert-item';
 export { patch } from './patch';
