@@ -1,3 +1,3 @@
 export class CounterStateChangeAction {
-  public static readonly type = 'CounterStateChangeAction';
+  public static readonly type = '[Counter] Change';
 }
