@@ -6,7 +6,7 @@ import {
 
 import { hmr } from '../hmr-bootstrap';
 import { BootstrapModuleType, NGXS_HMR_SNAPSHOT_KEY } from '../symbols';
-import { AppMockModule, MockWepbackModule } from './hmr-mock';
+import { AppMockModule } from './hmr-mock';
 import { HmrManager } from '../hmr-manager';
 
 describe('HMR Plugin', () => {
@@ -29,9 +29,7 @@ describe('HMR Plugin', () => {
   it('should be correct bootstrap hmr module when empty snapshot', fakeAsync(async () => {
     let hmrRef: HmrManager<AppMockModule, any> | null = null;
 
-    await hmr({
-      bootstrap,
-      module: MockWepbackModule,
+    await hmr(module, bootstrap, {
       hmrAfterOnInit: (manager: HmrManager<AppMockModule, any>) => {
         hmrRef = manager;
       }
@@ -50,9 +48,7 @@ describe('HMR Plugin', () => {
     let hmrRef: HmrManager<AppMockModule, any> | null = null;
     sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, JSON.stringify({ works: true }));
 
-    await hmr({
-      bootstrap,
-      module: MockWepbackModule,
+    await hmr(module, bootstrap, {
       hmrAfterOnInit: (manager: HmrManager<AppMockModule, any>) => {
         hmrRef = manager;
         expect(hmrRef!.snapshot).toEqual({ works: true });
@@ -71,9 +67,7 @@ describe('HMR Plugin', () => {
     let hmrRef: HmrManager<AppMockModule, any> | null = null;
     sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, JSON.stringify({ status: 'working' }));
 
-    await hmr({
-      bootstrap,
-      module: MockWepbackModule,
+    await hmr(module, bootstrap, {
       hmrAfterOnInit: (manager: HmrManager<AppMockModule, any>) => {
         hmrRef = manager;
         expect(hmrRef!.snapshot).toEqual({ status: 'working' });

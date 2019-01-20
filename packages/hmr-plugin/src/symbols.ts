@@ -31,9 +31,6 @@ export type HmrAfterOnInit<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot> =
 ) => void;
 
 export interface NgxsHmrOptions<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot> {
-  module: WebpackModule;
-  bootstrap: BootstrapModuleType<T>;
-
   /**
    * @description
    * clear log after each hmr update

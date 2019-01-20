@@ -1,11 +1,18 @@
-import { NgxsHmrLifeCycle, NgxsHmrOptions, NgxsHmrSnapshot } from './symbols';
+import {
+  NgxsHmrLifeCycle,
+  NgxsHmrOptions,
+  NgxsHmrSnapshot,
+  BootstrapModuleType,
+  WebpackModule
+} from './symbols';
 import { HmrManager } from './hmr-manager';
 
 export async function hmr<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot>(
-  options: NgxsHmrOptions<T, S>
+  module: WebpackModule,
+  bootstrap: BootstrapModuleType<T>,
+  options: NgxsHmrOptions<T, S> = {}
 ) {
-  const { module, bootstrap } = options;
-  const manager = new HmrManager<T, S>(options);
+  const manager = new HmrManager<T, S>(module, options);
 
   module.hot.accept();
 

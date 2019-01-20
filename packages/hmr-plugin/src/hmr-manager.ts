@@ -32,7 +32,8 @@ export class HmrManager<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot> {
   private readonly autoClearLogs: boolean;
   private readonly hmrAfterOnInit: HmrAfterOnInit<T, S>;
 
-  constructor({ module, deferTime, autoClearLogs, hmrAfterOnInit }: NgxsHmrOptions<T, S>) {
+  constructor(module: WebpackModule, options: NgxsHmrOptions<T, S>) {
+    const { deferTime, autoClearLogs, hmrAfterOnInit } = options;
     this.module = module;
     this.deferTime = deferTime || 100;
     this.hmrAfterOnInit = hmrAfterOnInit || ((_: HmrManager<T, S>) => {});
