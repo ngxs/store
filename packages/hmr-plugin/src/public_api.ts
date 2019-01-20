@@ -1,2 +1,2 @@
-export { hmrNgxsBootstrap } from './hmr-bootstrap';
-export { NgxsHmrLifeCycle, NgxsStoreSnapshot } from './symbols';
+export { NgxsHmrLifeCycle, NgxsHmrOptions, NgxsHmrSnapshot } from './symbols';
+export { hmr } from './hmr-bootstrap';

@@ -101,7 +101,7 @@ Update src/main.ts to use the file we just created:
 ```ts
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { hmrNgxsBootstrap } from '@ngxs/hmr-plugin';
+import { hmr } from '@ngxs/hmr-plugin';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
@@ -114,7 +114,7 @@ const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
 if (environment.hmr) {
   if (module[ 'hot' ]) {
-    hmrNgxsBootstrap(module, bootstrap).catch(err => console.log(err));
+    hmr({ module, bootstrap }).catch(err => console.error(err));
   } else {
     console.error('HMR is not enabled for webpack-dev-server!');
     console.log('Are you using the --hmr flag for ng serve?');
@@ -128,19 +128,19 @@ if (environment.hmr) {
 
 ```ts
 import { StateContext } from '@ngxs/store';
-import { NgxsHmrLifeCycle, NgxsStoreSnapshot } from '@ngxs/hmr-plugin';
+import { NgxsHmrLifeCycle, NgxsHmrSnapshot } from '@ngxs/hmr-plugin';
 
 @NgModule({ .. })
-export class AppBrowserModule implements NgxsHmrLifeCycle<NgxsStoreSnapshot> {
+export class AppBrowserModule implements NgxsHmrLifeCycle<NgxsHmrSnapshot> {
 
-  public hmrNgxsStoreOnInit(ctx: StateContext<NgxsStoreSnapshot>, snapshot: NgxsStoreSnapshot) {
+  public hmrNgxsStoreOnInit(ctx: StateContext<NgxsHmrSnapshot>, snapshot: Partial<NgxsHmrSnapshot>) {
     console.log('[NGXS HMR] Current state', ctx.getState());
     console.log('[NGXS HMR] Previous state', snapshot);
     ctx.patchState(snapshot);
   }
 
-  public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<NgxsStoreSnapshot>): NgxsStoreSnapshot  {
-    const snapshot: NgxsStoreSnapshot = ctx.getState();
+  public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<NgxsHmrSnapshot>): Partial<NgxsHmrSnapshot> {
+    const snapshot: Partial<NgxsHmrSnapshot> = ctx.getState();
     console.log('[NGXS HMR] Saved state before on destroy', snapshot);
     return snapshot;
   }

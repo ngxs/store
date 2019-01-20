@@ -44,7 +44,7 @@
   * [Forms](plugins/form.md)
   * [Web Socket](plugins/websocket.md)
   * [Router](plugins/router.md)
-  * [Hot Module Replacement](plugins/hmr.md)
+  * [HMR](plugins/hmr.md)
 * NGXS Labs
   * [Introduction](ngxs-labs/intro.md)
   * [Emitter](ngxs-labs/emitter.md)
