@@ -60,7 +60,7 @@ function createRootNode(selector = 'app-root'): void {
   adapter.appendChild(document.body, root);
 }
 
-export const MockWepbackModule: WebpackModule = {
+export const mockWepbackModule: WebpackModule = {
   hot: {
     accept: () => {},
     dispose: () => {}

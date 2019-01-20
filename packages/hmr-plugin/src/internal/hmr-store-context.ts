@@ -1,0 +1,46 @@
+import { StateContext, Store } from '@ngxs/store';
+import { isStateOperator } from '@ngxs/store/operators';
+import { NgModuleRef } from '@angular/core';
+import { NgxsBootstrapper } from '@ngxs/store/internals';
+
+export class HmrStoreContext<T, S> {
+  public store: Store;
+  public bootstrap: NgxsBootstrapper;
+
+  constructor(module: NgModuleRef<T>) {
+    const store = module.injector.get(Store, null);
+
+    if (!store) {
+      throw new Error('Store not found, maybe you forgot to import the NgxsModule');
+    }
+
+    this.store = store;
+    this.bootstrap = module.injector.get(NgxsBootstrapper);
+  }
+
+  /**
+   * @description
+   * must be taken out into  @ngxs/store/internals
+   */
+  public get stateContext(): StateContext<S> {
+    return {
+      dispatch: actions => this.store!.dispatch(actions),
+      getState: () => <S>this.store!.snapshot(),
+      setState: val => {
+        if (isStateOperator(val)) {
+          const currentState = this.store!.snapshot();
+          val = val(currentState);
+        }
+
+        this.store!.reset(val);
+        return <S>val;
+      },
+      patchState: val => {
+        const currentState = this.store!.snapshot();
+        const newState = { ...currentState, ...(<object>val) };
+        this.store!.reset(newState);
+        return newState;
+      }
+    };
+  }
+}

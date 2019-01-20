@@ -6,7 +6,7 @@ import {
 
 import { hmr } from '../hmr-bootstrap';
 import { BootstrapModuleType, NGXS_HMR_SNAPSHOT_KEY } from '../symbols';
-import { AppMockModule } from './hmr-mock';
+import { AppMockModule, mockWepbackModule } from './hmr-mock';
 import { HmrManager } from '../hmr-manager';
 
 describe('HMR Plugin', () => {
@@ -29,7 +29,7 @@ describe('HMR Plugin', () => {
   it('should be correct bootstrap hmr module when empty snapshot', fakeAsync(async () => {
     let hmrRef: HmrManager<AppMockModule, any> | null = null;
 
-    await hmr(module, bootstrap, {
+    await hmr(mockWepbackModule, bootstrap, {
       hmrAfterOnInit: (manager: HmrManager<AppMockModule, any>) => {
         hmrRef = manager;
       }
@@ -48,43 +48,46 @@ describe('HMR Plugin', () => {
     let hmrRef: HmrManager<AppMockModule, any> | null = null;
     sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, JSON.stringify({ works: true }));
 
-    await hmr(module, bootstrap, {
+    await hmr(mockWepbackModule, bootstrap, {
       hmrAfterOnInit: (manager: HmrManager<AppMockModule, any>) => {
         hmrRef = manager;
-        expect(hmrRef!.snapshot).toEqual({ works: true });
+        expect(hmrRef!.storage.snapshot).toEqual({ works: true });
       }
     });
 
     tick(1000);
 
-    expect(hmrRef!.snapshot).toEqual({});
-    expect(hmrRef!.store.snapshot()).toEqual({ mock_state: { value: 'test' }, works: true });
-    expect(hmrRef!.status.onInitIsCalled).toEqual(true);
-    expect(hmrRef!.status.beforeOnDestroyIsCalled).toEqual(false);
+    expect(hmrRef!.storage.snapshot).toEqual({});
+    expect(hmrRef!.context.store.snapshot()).toEqual({
+      mock_state: { value: 'test' },
+      works: true
+    });
+    expect(hmrRef!.lifecycle.status.onInitIsCalled).toEqual(true);
+    expect(hmrRef!.lifecycle.status.beforeOnDestroyIsCalled).toEqual(false);
   }));
 
   it('should be correct invoke hmrNgxsStoreBeforeOnDestroy', fakeAsync(async () => {
     let hmrRef: HmrManager<AppMockModule, any> | null = null;
     sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, JSON.stringify({ status: 'working' }));
 
-    await hmr(module, bootstrap, {
+    await hmr(mockWepbackModule, bootstrap, {
       hmrAfterOnInit: (manager: HmrManager<AppMockModule, any>) => {
         hmrRef = manager;
-        expect(hmrRef!.snapshot).toEqual({ status: 'working' });
+        expect(hmrRef!.storage.snapshot).toEqual({ status: 'working' });
         manager.beforeModuleOnDestroy();
       }
     });
 
     tick(1000);
 
-    expect(hmrRef!.snapshot).toEqual({});
-    expect(hmrRef!.store.snapshot()).toEqual({
+    expect(hmrRef!.storage.snapshot).toEqual({});
+    expect(hmrRef!.context.store.snapshot()).toEqual({
       mock_state: { value: 'test' },
       status: 'working'
     });
 
-    expect(hmrRef!.status.onInitIsCalled).toEqual(true);
-    expect(hmrRef!.status.beforeOnDestroyIsCalled).toEqual(true);
+    expect(hmrRef!.lifecycle.status.onInitIsCalled).toEqual(true);
+    expect(hmrRef!.lifecycle.status.beforeOnDestroyIsCalled).toEqual(true);
 
     expect(AppMockModule.savedState).toEqual({
       mock_state: { value: 'test' },
