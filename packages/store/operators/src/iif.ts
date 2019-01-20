@@ -1,8 +1,7 @@
 import { StateOperator } from '@ngxs/store';
 
-import { isStateOperator, isUndefined } from './utils';
-
-type Predicate<T = unknown> = (value?: T) => boolean;
+import { isStateOperator, isUndefined, isPredicate } from './utils';
+import { Predicate } from './internals';
 
 function retrieveValue<T>(operatorOrValue: StateOperator<T> | T, existing?: Readonly<T>): T {
   // If state operator is a function
@@ -47,8 +46,4 @@ export function iif<T>(
 
     return retrieveValue(elseOperatorOrValue!, existing);
   };
-}
-
-function isPredicate<T>(value: Predicate<T> | boolean): value is Predicate<T> {
-  return typeof value === 'function';
 }
