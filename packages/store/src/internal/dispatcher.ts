@@ -1,5 +1,4 @@
-import { Injectable, ErrorHandler, NgZone, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformServer } from '@angular/common';
+import { Injectable, ErrorHandler } from '@angular/core';
 import { Observable, of, forkJoin, empty, Subject, throwError } from 'rxjs';
 import { shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
 
@@ -8,7 +7,8 @@ import { InternalActions, ActionStatus, ActionContext } from '../actions-stream'
 import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { NgxsConfig } from '../symbols';
-import { enterZone } from '../operators/zone';
+import { InternalNgxsExecutionStrategy } from '../execution/internalNgxsExecutionStrategy';
+import { leaveNgxs } from '../operators/leaveNgxs';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -27,43 +27,23 @@ export class InternalDispatcher {
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
     private _stateStream: StateStream,
-    private _ngZone: NgZone,
-    @Inject(PLATFORM_ID) private _platformId: Object,
-    private config: NgxsConfig
+    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy
   ) {}
 
   /**
    * Dispatches event(s).
    */
   dispatch(actionOrActions: any | any[]): Observable<any> {
-    let result: Observable<any>;
-    if (isPlatformServer(this._platformId)) {
-      result = this._ngZone.run(() => this.dispatchByEvents(actionOrActions));
-    } else {
-      result = this.dispatchEventsOnTheClient(() => this.dispatchByEvents(actionOrActions));
-    }
+    const result = this._ngxsExecutionStrategy.enter(() =>
+      this.dispatchByEvents(actionOrActions)
+    );
 
     result.subscribe({
-      error: error => this._ngZone.run(() => this._errorHandler.handleError(error))
+      error: error =>
+        this._ngxsExecutionStrategy.leave(() => this._errorHandler.handleError(error))
     });
 
-    if (isPlatformServer(this._platformId)) {
-      return result.pipe();
-    } else {
-      return result.pipe(enterZone(this.config.outsideZone, this._ngZone));
-    }
-  }
-
-  private dispatchEventsOnTheClient(
-    callback: (...args: any[]) => Observable<any>
-  ): Observable<any> {
-    // This property should imperatively equal `false`
-    const shouldBeRunInsideZone = this.config.outsideZone !== null && !this.config.outsideZone;
-    if (shouldBeRunInsideZone) {
-      return this._ngZone.run(callback);
-    }
-
-    return this._ngZone.runOutsideAngular(callback);
+    return result.pipe(leaveNgxs(this._ngxsExecutionStrategy));
   }
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {

@@ -147,3 +147,13 @@ export interface NgxsAfterBootstrap {
 }
 
 export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;
+
+export type FunctionCall = <T>(func: (...args: any[]) => T) => T;
+
+/*
+ * Execution strategy interface
+ */
+export interface NgxsExecutionStrategy {
+  enter<T>(func: (...args: any[]) => T): T;
+  leave<T>(func: (...args: any[]) => T): T;
+}

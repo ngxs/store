@@ -9,7 +9,12 @@ import {
 
 import { NgxsBootstrapper } from '@ngxs/store/internals';
 
-import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
+import {
+  ROOT_STATE_TOKEN,
+  FEATURE_STATE_TOKEN,
+  NgxsConfig,
+  NgxsExecutionStrategy
+} from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
@@ -23,6 +28,8 @@ import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitState, UpdateState } from './actions/actions';
 import { StateClass } from './internal/internals';
+import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatchOutsideZoneNgxsExecutionStrategy';
+import { InternalNgxsExecutionStrategy } from './execution/internalNgxsExecutionStrategy';
 
 /**
  * Root module
@@ -117,6 +124,7 @@ export class NgxsModule {
         InternalDispatcher,
         InternalDispatchedActionResults,
         InternalStateOperations,
+        InternalNgxsExecutionStrategy,
         Store,
         StateStream,
         SelectFactory,

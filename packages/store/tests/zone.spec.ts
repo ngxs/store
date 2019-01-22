@@ -7,7 +7,7 @@ import {
   DoBootstrap,
   NgModuleRef
 } from '@angular/core';
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, async, fakeAsync } from '@angular/core/testing';
 import {
   ɵDomAdapter as DomAdapter,
   ɵBrowserDomAdapter as BrowserDomAdapter,
@@ -70,16 +70,16 @@ describe('zone', () => {
         .subscribe(() => {
           expect(NgZone.isInAngularZone()).toBeTruthy();
         });
-    });
 
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
+      store.dispatch(new Increment());
+      store.dispatch(new Increment());
+    });
 
     // Angular has run change detection 5 times
     expect(ticks).toBe(5);
   });
 
-  it('"select" should be performed outside Angular zone', () => {
+  fit('"select" should be performed outside Angular zone', () => {
     let ticks = 0;
 
     class MockApplicationRef extends ApplicationRef {
@@ -111,10 +111,10 @@ describe('zone', () => {
         .subscribe(() => {
           expect(NgZone.isInAngularZone()).toBeFalsy();
         });
-    });
 
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
+      store.dispatch(new Increment());
+      store.dispatch(new Increment());
+    });
 
     // Angular hasn't run any change detection
     expect(ticks).toBe(0);
@@ -216,7 +216,11 @@ describe('zone', () => {
     });
 
     const store: Store = TestBed.get(Store);
-    store.dispatch(new FooAction());
+    const ngZone: NgZone = TestBed.get(NgZone);
+    ngZone.run(() => {
+      console.log({ isInAngularZone: NgZone.isInAngularZone() });
+      store.dispatch(new FooAction());
+    });
   });
 
   it('action should be handled outside zone if "outsideZone" equals true', () => {
