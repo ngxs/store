@@ -305,10 +305,6 @@ describe('NgxsStoragePlugin', () => {
       clear() {
         CustomStorage.Storage = {};
       }
-
-      key(index: number) {
-        return Object.keys(CustomStorage.Storage)[index];
-      }
     }
 
     TestBed.configureTestingModule({
