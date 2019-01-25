@@ -55,14 +55,14 @@ export class StateFactory {
     return this._parentFactory ? this._parentFactory.states : this._states;
   }
 
-  public get stateNames(): Map<StateName, StateClassName> {
-    return this._parentFactory ? this._parentFactory.stateNames : this._statesNames;
+  public get rooStateNames(): Map<StateName, StateClassName> {
+    return this._parentFactory ? this._parentFactory.rooStateNames : this._statesNames;
   }
 
-  public set stateNames(names: Map<StateName, StateClassName>) {
-    const state: Map<StateName, StateClassName> = this.stateNames;
+  public set rooStateNames(names: Map<StateName, StateClassName>) {
+    const stateNames: Map<StateName, StateClassName> = this.rooStateNames;
     for (const [key, value] of names) {
-      state.set(key, value);
+      stateNames.set(key, value);
     }
   }
 
@@ -88,7 +88,7 @@ export class StateFactory {
       // ensure our store hasn't already been added
       // but dont throw since it could be lazy
       // loaded from different paths
-      if (this.stateNames.has(name)) {
+      if (this.rooStateNames.has(name)) {
         // create new instance of defaults
         if (Array.isArray(defaults)) {
           defaults = [...defaults];
@@ -120,7 +120,7 @@ export class StateFactory {
    */
   addAndReturnDefaults(stateClasses: StateClass[]): StatesAndDefaults {
     const classes: StateClass[] = stateClasses || [];
-    this.stateNames = StoreValidators.validateStateNames(classes);
+    this.rooStateNames = StoreValidators.getValidStateNamesMap(classes);
 
     const states = this.add(classes);
     const defaults = states.reduce(

@@ -18,27 +18,26 @@ export abstract class StoreValidators {
     }
   }
 
-  public static validateStateNames(states: StateClass[]): Map<StateName, StateClassName> {
-    const statesNames: Map<StateName, StateClassName> = new Map();
+  public static getValidStateNamesMap(states: StateClass[]): Map<StateName, StateClassName> {
+    const uniqueStateNamesMap: Map<StateName, StateClassName> = new Map();
 
-    // https://jsperf.com/for-vs-foreach/75
     for (let i = 0, size: number = states.length; i < size; i++) {
       const state: StateClass = states[i]!;
-      const meta: MetaDataModel = this.validateStateMeta(state);
+      const meta: MetaDataModel = this.getValidStateMeta(state);
       const stateName: string = meta!.name as string;
 
-      if (statesNames.has(stateName)) {
-        const previousStateName: string = statesNames.get(stateName) as string;
+      if (uniqueStateNamesMap.has(stateName)) {
+        const previousStateName: string = uniqueStateNamesMap.get(stateName) as string;
         throw new Error(`State name ${state.name} in ${previousStateName} already exists`);
       } else {
-        statesNames.set(stateName, state.name);
+        uniqueStateNamesMap.set(stateName, state.name);
       }
     }
 
-    return statesNames;
+    return uniqueStateNamesMap;
   }
 
-  public static validateStateMeta(state: StateClass): MetaDataModel {
+  public static getValidStateMeta(state: StateClass): MetaDataModel {
     const meta: MetaDataModel = state[META_KEY]!;
     if (!meta) {
       throw new Error('States must be decorated with @State() decorator');
