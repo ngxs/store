@@ -25,10 +25,10 @@ export abstract class StoreValidators {
     for (let i = 0, size: number = states.length; i < size; i++) {
       const state: StateClass = states[i]!;
       const meta: MetaDataModel = this.validateStateMeta(state);
-      const stateName: string = <string>meta!.name;
+      const stateName: string = meta!.name as string;
 
       if (statesNames.has(stateName)) {
-        const previousStateName: string = <string>statesNames.get(stateName);
+        const previousStateName: string = statesNames.get(stateName) as string;
         throw new Error(`State name ${state.name} in ${previousStateName} already exists`);
       } else {
         statesNames.set(stateName, state.name);
