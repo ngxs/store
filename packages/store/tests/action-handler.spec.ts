@@ -1,26 +1,27 @@
-import { ErrorHandler, Type } from '@angular/core';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ErrorHandler } from '@angular/core';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { timer } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 import { Action } from '../src/decorators/action';
 import { State } from '../src/decorators/state';
 import { StateContext } from '../src/symbols';
-
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
 import { NoopErrorHandler } from './helpers/utils';
-import { timer } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { StateClass } from '../src/internal/internals';
 
 describe('Action handlers', () => {
   class TestAction {
     static type = 'TestAction';
+
     constructor(public payload?: any) {}
   }
 
   type IFooStateModel = { name: string; age?: number; updated?: boolean };
 
-  function setup(config: { stores: Type<unknown>[] }) {
+  function setup(config: { stores: StateClass[] }) {
     config = config || {
       stores: []
     };
