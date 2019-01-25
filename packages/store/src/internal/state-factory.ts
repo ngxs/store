@@ -1,32 +1,33 @@
-import { Injector, Injectable, SkipSelf, Optional } from '@angular/core';
-import { Observable, of, forkJoin, from, throwError } from 'rxjs';
+import { Injectable, Injector, Optional, SkipSelf } from '@angular/core';
+import { forkJoin, from, Observable, of, throwError } from 'rxjs';
 import {
-  shareReplay,
-  takeUntil,
-  map,
   catchError,
+  defaultIfEmpty,
   filter,
+  map,
   mergeMap,
-  defaultIfEmpty
+  shareReplay,
+  takeUntil
 } from 'rxjs/operators';
 
-import { META_KEY, NgxsConfig } from '../symbols';
+import { META_KEY, NgxsConfig, StateClassName, StateName } from '../symbols';
 import {
-  topologicalSort,
   buildGraph,
   findFullParentPath,
-  nameToState,
-  propGetter,
   isObject,
   MappedStore,
+  nameToState,
+  propGetter,
   StateClass,
-  StatesAndDefaults
+  StatesAndDefaults,
+  topologicalSort
 } from './internals';
 import { getActionTypeFromInstance, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
-import { InternalActions, ActionStatus, ActionContext } from '../actions-stream';
+import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
+import { StoreValidators } from '../utils/store-validators';
 
 /**
  * State factory class
@@ -34,12 +35,8 @@ import { StateContextFactory } from '../internal/state-context-factory';
  */
 @Injectable()
 export class StateFactory {
-  get states(): MappedStore[] {
-    return this._parentFactory ? this._parentFactory.states : this._states;
-  }
-
-  private _states: MappedStore[] = [];
   private _connected = false;
+  private _statesNames: Map<StateName, StateClassName> = new Map();
 
   constructor(
     private _injector: Injector,
@@ -52,17 +49,27 @@ export class StateFactory {
     private _stateContextFactory: StateContextFactory
   ) {}
 
+  private _states: MappedStore[] = [];
+
+  public get states(): MappedStore[] {
+    return this._parentFactory ? this._parentFactory.states : this._states;
+  }
+
+  public get stateNames(): Map<StateName, StateClassName> {
+    return this._parentFactory ? this._parentFactory.stateNames : this._statesNames;
+  }
+
+  public set stateNames(names: Map<StateName, StateClassName>) {
+    const state: Map<StateName, StateClassName> = this.stateNames;
+    for (const [key, value] of names) {
+      state.set(key, value);
+    }
+  }
+
   /**
    * Add a new state to the global defs.
    */
-  add(oneOrManyStateClasses: StateClass | StateClass[]): MappedStore[] {
-    let stateClasses: StateClass[];
-    if (!Array.isArray(oneOrManyStateClasses)) {
-      stateClasses = [oneOrManyStateClasses];
-    } else {
-      stateClasses = oneOrManyStateClasses;
-    }
-
+  add(stateClasses: StateClass[]): MappedStore[] {
     const stateGraph = buildGraph(stateClasses);
     const sortedStates = topologicalSort(stateGraph);
     const depths = findFullParentPath(stateGraph);
@@ -71,11 +78,6 @@ export class StateFactory {
 
     for (const name of sortedStates) {
       const stateClass = nameGraph[name];
-
-      if (!stateClass[META_KEY]) {
-        throw new Error('States must be decorated with @State() decorator');
-      }
-
       const depth = depths[name];
       const { actions } = stateClass[META_KEY]!;
       let { defaults } = stateClass[META_KEY]!;
@@ -86,8 +88,7 @@ export class StateFactory {
       // ensure our store hasn't already been added
       // but dont throw since it could be lazy
       // loaded from different paths
-      const has = this.states.find(s => s.name === name);
-      if (!has) {
+      if (this.stateNames.has(name)) {
         // create new instance of defaults
         if (Array.isArray(defaults)) {
           defaults = [...defaults];
@@ -117,15 +118,16 @@ export class StateFactory {
   /**
    * Add a set of states to the store and return the defaults
    */
-  addAndReturnDefaults(stateClasses: any[]): StatesAndDefaults | undefined {
-    if (stateClasses) {
-      const states = this.add(stateClasses);
-      const defaults = states.reduce(
-        (result: any, meta: MappedStore) => setValue(result, meta.depth, meta.defaults),
-        {}
-      );
-      return { defaults, states };
-    }
+  addAndReturnDefaults(stateClasses: StateClass[]): StatesAndDefaults {
+    const classes: StateClass[] = stateClasses || [];
+    this.stateNames = StoreValidators.validateStateNames(classes);
+
+    const states = this.add(classes);
+    const defaults = states.reduce(
+      (result: any, meta: MappedStore) => setValue(result, meta.depth, meta.defaults),
+      {}
+    );
+    return { defaults, states };
   }
 
   /**

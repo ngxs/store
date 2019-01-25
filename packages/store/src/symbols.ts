@@ -139,3 +139,5 @@ export interface NgxsAfterBootstrap {
 }
 
 export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;
+export type StateName = string;
+export type StateClassName = string;

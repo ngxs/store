@@ -210,19 +210,11 @@ export function buildGraph(stateClasses: StateClass[]): StateKeyGraph {
       );
     }
 
-    if (!meta[META_KEY]) {
-      throw new Error('States must be decorated with @State() decorator');
-    }
-
     return meta[META_KEY]!.name!;
   };
 
   return stateClasses.reduce<StateKeyGraph>(
     (result: StateKeyGraph, stateClass: StateClass) => {
-      if (!stateClass[META_KEY]) {
-        throw new Error('States must be decorated with @State() decorator');
-      }
-
       const { name, children } = stateClass[META_KEY]!;
       result[name!] = (children || []).map(findName);
       return result;
@@ -244,10 +236,6 @@ export function buildGraph(stateClasses: StateClass[]): StateKeyGraph {
 export function nameToState(states: StateClass[]): ObjectKeyMap<StateClass> {
   return states.reduce<ObjectKeyMap<StateClass>>(
     (result: ObjectKeyMap<StateClass>, stateClass: StateClass) => {
-      if (!stateClass[META_KEY]) {
-        throw new Error('States must be decorated with @State() decorator');
-      }
-
       const meta = stateClass[META_KEY]!;
       result[meta.name!] = stateClass;
       return result;
