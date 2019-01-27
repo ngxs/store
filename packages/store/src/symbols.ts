@@ -46,8 +46,6 @@ export class NgxsConfig {
 
 export interface ActionDef {
   type: string;
-
-  new (...args: any[]): any;
 }
 
 export type StateOperator<T> = (existing: Readonly<T>) => T;
