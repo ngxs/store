@@ -23,6 +23,7 @@ export interface StateClass<T = StateClassWithoutStaticMembers, U = any> {
 }
 
 export type StateKeyGraph = ObjectKeyMap<string[]>;
+export type StatesByName = ObjectKeyMap<StateClass>;
 
 export interface ActionHandlerMetaData {
   fn: string | symbol;

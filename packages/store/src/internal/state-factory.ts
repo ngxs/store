@@ -10,7 +10,7 @@ import {
   takeUntil
 } from 'rxjs/operators';
 
-import { META_KEY, NgxsConfig, StateClassName, StateName } from '../symbols';
+import { META_KEY, NgxsConfig } from '../symbols';
 import {
   buildGraph,
   findFullParentPath,
@@ -23,6 +23,7 @@ import {
   StateClass,
   StateKeyGraph,
   StatesAndDefaults,
+  StatesByName,
   topologicalSort
 } from './internals';
 import { getActionTypeFromInstance, getValue, setValue } from '../utils/utils';
@@ -40,7 +41,8 @@ import { InternalStateOperations } from '../internal/state-operations';
 @Injectable()
 export class StateFactory {
   private _connected = false;
-  private _statesNames: Map<StateName, StateClassName> = new Map();
+  private _states: MappedStore[] = [];
+  private _statesByName: StatesByName = {};
 
   constructor(
     private _injector: Injector,
@@ -54,28 +56,19 @@ export class StateFactory {
     private _internalStateOperations: InternalStateOperations
   ) {}
 
-  private _states: MappedStore[] = [];
-
   public get states(): MappedStore[] {
     return this._parentFactory ? this._parentFactory.states : this._states;
   }
 
-  public get rooStateNames(): Map<StateName, StateClassName> {
-    return this._parentFactory ? this._parentFactory.rooStateNames : this._statesNames;
-  }
-
-  public set rooStateNames(names: Map<StateName, StateClassName>) {
-    const stateNames: Map<StateName, StateClassName> = this.rooStateNames;
-    for (const [key, value] of names) {
-      stateNames.set(key, value);
-    }
+  public get statesByName(): StatesByName {
+    return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
   }
 
   private get stateTreeRef(): ObjectKeyMap<any> {
     return this._internalStateOperations.getRootStateOperations().getState();
   }
 
-  private static immutableDefaults(defaults: any): any {
+  private static cloneDefaults(defaults: any): any {
     let value = {};
 
     if (Array.isArray(defaults)) {
@@ -95,6 +88,9 @@ export class StateFactory {
    * Add a new state to the global defs.
    */
   add(stateClasses: StateClass[]): MappedStore[] {
+    this.checkStatesAreValid(stateClasses);
+    this.checkForDuplicateStateNames(stateClasses);
+
     const stateGraph: StateKeyGraph = buildGraph(stateClasses);
     const sortedStates: string[] = topologicalSort(stateGraph);
     const depths: ObjectKeyMap<string> = findFullParentPath(stateGraph);
@@ -106,20 +102,20 @@ export class StateFactory {
       const depth: string = depths[name];
       const meta: MetaDataModel = stateClass[META_KEY]!;
 
-      this.mutationRuntimeMeta(meta, depth);
+      this.addRuntimeInfoToMeta(meta, depth);
 
       const stateMap: MappedStore = {
         name,
         depth,
         actions: meta.actions,
         instance: this._injector.get(stateClass),
-        defaults: StateFactory.immutableDefaults(meta.defaults)
+        defaults: StateFactory.cloneDefaults(meta.defaults)
       };
 
       // ensure our store hasn't already been added
       // but don't throw since it could be lazy
       // loaded from different paths
-      if (this.hasWillMounted(name, depth)) {
+      if (this.hasBeenMounted(name, depth)) {
         bootstrappedStores.push(stateMap);
       }
 
@@ -129,12 +125,22 @@ export class StateFactory {
     return bootstrappedStores;
   }
 
+  private checkForDuplicateStateNames(stateClasses: StateClass[]) {
+    for (const stateClass of stateClasses) {
+      const stateName = StoreValidators.checkStateNameIsUnique(stateClass, this.statesByName);
+      this.statesByName[stateName] = stateClass;
+    }
+  }
+
+  private checkStatesAreValid(stateClasses: StateClass[]) {
+    stateClasses.forEach(StoreValidators.getValidStateMeta);
+  }
+
   /**
    * Add a set of states to the store and return the defaults
    */
   addAndReturnDefaults(stateClasses: StateClass[]): StatesAndDefaults {
     const classes: StateClass[] = stateClasses || [];
-    this.rooStateNames = StoreValidators.getValidStateNamesMap(classes);
 
     const states = this.add(classes);
     const defaults = states.reduce(
@@ -212,7 +218,7 @@ export class StateFactory {
     return forkJoin(results);
   }
 
-  private mutationRuntimeMeta(meta: MetaDataModel, depth: string): void {
+  private addRuntimeInfoToMeta(meta: MetaDataModel, depth: string): void {
     meta.path = depth;
     meta.selectFromAppState = propGetter(depth.split('.'), this._config);
   }
@@ -224,8 +230,8 @@ export class StateFactory {
    * @param name
    * @param depth
    */
-  private hasWillMounted(name: string, depth: string): boolean {
+  private hasBeenMounted(name: string, depth: string): boolean {
     const valueIsBootstrapped: boolean = getValue(this.stateTreeRef, depth) !== undefined;
-    return !(this.rooStateNames.has(name) && valueIsBootstrapped);
+    return !(this.statesByName[name] && valueIsBootstrapped);
   }
 }

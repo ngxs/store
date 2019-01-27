@@ -1,5 +1,9 @@
-import { MetaDataModel, StateClass } from '../internal/internals';
-import { META_KEY, StateClassName, StateName } from '../symbols';
+import {
+  getStoreMetadata,
+  MetaDataModel,
+  StateClass,
+  StatesByName
+} from '../internal/internals';
 
 export abstract class StoreValidators {
   public static stateNameRegex: RegExp = new RegExp('^[a-zA-Z0-9_]+$');
@@ -18,27 +22,20 @@ export abstract class StoreValidators {
     }
   }
 
-  public static getValidStateNamesMap(states: StateClass[]): Map<StateName, StateClassName> {
-    const uniqueStateNamesMap: Map<StateName, StateClassName> = new Map();
-
-    for (let i = 0, size: number = states.length; i < size; i++) {
-      const state: StateClass = states[i]!;
-      const meta: MetaDataModel = this.getValidStateMeta(state);
-      const stateName: string = meta!.name as string;
-
-      if (uniqueStateNamesMap.has(stateName)) {
-        const previousStateName: string = uniqueStateNamesMap.get(stateName) as string;
-        throw new Error(`State name ${state.name} in ${previousStateName} already exists`);
-      } else {
-        uniqueStateNamesMap.set(stateName, state.name);
-      }
+  public static checkStateNameIsUnique(state: StateClass, statesByName: StatesByName): string {
+    const meta: MetaDataModel = this.getValidStateMeta(state);
+    const stateName: string = meta!.name as string;
+    const existingState = statesByName[stateName];
+    if (existingState && existingState !== state) {
+      throw new Error(
+        `State name '${stateName}' from ${state.name} already exists in ${existingState.name}`
+      );
     }
-
-    return uniqueStateNamesMap;
+    return stateName;
   }
 
   public static getValidStateMeta(state: StateClass): MetaDataModel {
-    const meta: MetaDataModel = state[META_KEY]!;
+    const meta: MetaDataModel = getStoreMetadata(state);
     if (!meta) {
       throw new Error('States must be decorated with @State() decorator');
     }
