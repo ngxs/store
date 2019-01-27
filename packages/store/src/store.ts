@@ -1,3 +1,4 @@
+// tslint:disable:unified-signatures
 import { Injectable, NgZone, Type } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
