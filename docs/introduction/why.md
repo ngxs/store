@@ -7,7 +7,7 @@ NGXS tries to make things as simple and accessible as possible. There can be a l
 
 RxJs is great and is made use of heavily internally within the project, but the library tries to do as much for you as it can. NGXS drives to let users take advantage of the benefits of Observables but in many cases treat them as an implementation detail of the library rather than a prerequisite.
 
-The other thing that NGXS gets rid of is switch statements. The library is reponsible for knowing when functions need to be called.
+The other thing that NGXS gets rid of is switch statements. The library is responsible for knowing when functions need to be called.
 
 ### Dependency Injection (DI)
 A core feature of Angular is dependency injection. It can be a very useful tool and NGXS makes sure that users can use
