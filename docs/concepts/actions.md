@@ -76,4 +76,4 @@ Examples:
 * [Project Stars Component] StarsUpdated
 
 A great video on the topic is [Good Action Hygiene by Mike Ryan](https://www.youtube.com/watch?v=JmnsEvoy-gY)
-It's for NGRX, but the same naming conventions apply to NGXS.
+It's for NgRx, but the same naming conventions apply to NGXS.

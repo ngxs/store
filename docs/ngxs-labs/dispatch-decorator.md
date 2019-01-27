@@ -108,7 +108,7 @@ export class AppComponent {
 }
 ```
 
-Also, your dispatchers can be asyncrhonous, they can return `Promise` or `Observable`, asynchronous operations are handled outside Angular's zone, thus it doesn't affect performance:
+Also, your dispatchers can be asynchronous, they can return `Promise` or `Observable`, asynchronous operations are handled outside Angular's zone, thus it doesn't affect performance:
 
 ```typescript
 export class AppComponent {
