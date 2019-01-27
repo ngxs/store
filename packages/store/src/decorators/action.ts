@@ -16,7 +16,11 @@ export function Action(actions: ActionDef | ActionDef[], options?: ActionOptions
       const type = action.type;
 
       if (!action.type) {
-        throw new Error(`Action ${action.name} is missing a static "type" property`);
+        throw new Error(
+          `Action ${
+            'name' in action ? action['name'] : JSON.stringify(action)
+          } is missing a static "type" property`
+        );
       }
 
       if (!meta.actions[type]) {
