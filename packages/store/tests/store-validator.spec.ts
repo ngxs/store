@@ -31,6 +31,38 @@ describe('Duplicate states', () => {
     }
   });
 
+  it('should be checked duplicate state with child', () => {
+    try {
+      @State<string>({
+        name: 'duplicate',
+        defaults: 'first'
+      })
+      class MyOtherState {}
+
+      @State<string>({
+        name: 'duplicate',
+        defaults: 'third'
+      })
+      class MyDuplicateState {}
+
+      @State<string>({
+        name: 'another',
+        defaults: 'second',
+        children: [MyDuplicateState]
+      })
+      class MyAnotherState {}
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyOtherState, MyAnotherState, MyDuplicateState])]
+      });
+
+      store = TestBed.get(Store);
+    } catch (e) {
+      expect(e.message).toEqual('State name MyDuplicateState in MyOtherState already exists');
+      expect(store).toBeUndefined();
+    }
+  });
+
   it('should be checked add @State() decorator', () => {
     try {
       class TestState {}

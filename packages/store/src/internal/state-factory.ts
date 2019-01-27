@@ -16,18 +16,22 @@ import {
   findFullParentPath,
   isObject,
   MappedStore,
+  MetaDataModel,
   nameToState,
+  ObjectKeyMap,
   propGetter,
   StateClass,
+  StateKeyGraph,
   StatesAndDefaults,
   topologicalSort
 } from './internals';
-import { getActionTypeFromInstance, setValue } from '../utils/utils';
+import { getActionTypeFromInstance, getValue, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
+import { InternalStateOperations } from '../internal/state-operations';
 
 /**
  * State factory class
@@ -46,7 +50,8 @@ export class StateFactory {
     private _parentFactory: StateFactory,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
-    private _stateContextFactory: StateContextFactory
+    private _stateContextFactory: StateContextFactory,
+    private _internalStateOperations: InternalStateOperations
   ) {}
 
   private _states: MappedStore[] = [];
@@ -66,53 +71,62 @@ export class StateFactory {
     }
   }
 
+  private get stateTreeRef(): ObjectKeyMap<any> {
+    return this._internalStateOperations.getRootStateOperations().getState();
+  }
+
+  private static immutableDefaults(defaults: any): any {
+    let value = {};
+
+    if (Array.isArray(defaults)) {
+      value = [...defaults];
+    } else if (isObject(defaults)) {
+      value = { ...defaults };
+    } else if (defaults === undefined) {
+      value = {};
+    } else {
+      value = defaults;
+    }
+
+    return value;
+  }
+
   /**
    * Add a new state to the global defs.
    */
   add(stateClasses: StateClass[]): MappedStore[] {
-    const stateGraph = buildGraph(stateClasses);
-    const sortedStates = topologicalSort(stateGraph);
-    const depths = findFullParentPath(stateGraph);
-    const nameGraph = nameToState(stateClasses);
-    const mappedStores: MappedStore[] = [];
+    const stateGraph: StateKeyGraph = buildGraph(stateClasses);
+    const sortedStates: string[] = topologicalSort(stateGraph);
+    const depths: ObjectKeyMap<string> = findFullParentPath(stateGraph);
+    const nameGraph: ObjectKeyMap<StateClass> = nameToState(stateClasses);
+    const bootstrappedStores: MappedStore[] = [];
 
     for (const name of sortedStates) {
-      const stateClass = nameGraph[name];
-      const depth = depths[name];
-      const { actions } = stateClass[META_KEY]!;
-      let { defaults } = stateClass[META_KEY]!;
+      const stateClass: StateClass = nameGraph[name];
+      const depth: string = depths[name];
+      const meta: MetaDataModel = stateClass[META_KEY]!;
 
-      stateClass[META_KEY]!.path = depth;
-      stateClass[META_KEY]!.selectFromAppState = propGetter(depth.split('.'), this._config);
+      this.mutationRuntimeMeta(meta, depth);
+
+      const stateMap: MappedStore = {
+        name,
+        depth,
+        actions: meta.actions,
+        instance: this._injector.get(stateClass),
+        defaults: StateFactory.immutableDefaults(meta.defaults)
+      };
 
       // ensure our store hasn't already been added
-      // but dont throw since it could be lazy
+      // but don't throw since it could be lazy
       // loaded from different paths
-      if (this.rooStateNames.has(name)) {
-        // create new instance of defaults
-        if (Array.isArray(defaults)) {
-          defaults = [...defaults];
-        } else if (isObject(defaults)) {
-          defaults = { ...defaults };
-        } else if (defaults === undefined) {
-          defaults = {};
-        }
-
-        const instance = this._injector.get(stateClass);
-
-        mappedStores.push({
-          actions,
-          instance,
-          defaults,
-          name,
-          depth
-        });
+      if (this.hasWillMounted(name, depth)) {
+        bootstrappedStores.push(stateMap);
       }
+
+      this.states.push(stateMap);
     }
 
-    this.states.push(...mappedStores);
-
-    return mappedStores;
+    return bootstrappedStores;
   }
 
   /**
@@ -196,5 +210,22 @@ export class StateFactory {
     }
 
     return forkJoin(results);
+  }
+
+  private mutationRuntimeMeta(meta: MetaDataModel, depth: string): void {
+    meta.path = depth;
+    meta.selectFromAppState = propGetter(depth.split('.'), this._config);
+  }
+
+  /**
+   * @description
+   * the method checks if the state has already been added to the tree
+   * and completed the life cycle
+   * @param name
+   * @param depth
+   */
+  private hasWillMounted(name: string, depth: string): boolean {
+    const valueIsBootstrapped: boolean = getValue(this.stateTreeRef, depth) !== undefined;
+    return !(this.rooStateNames.has(name) && valueIsBootstrapped);
   }
 }

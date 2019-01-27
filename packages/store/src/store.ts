@@ -1,4 +1,3 @@
-// tslint:disable:unified-signatures
 import { Injectable, NgZone, Type } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
@@ -16,7 +15,9 @@ export class Store {
     private _stateStream: StateStream,
     private _internalStateOperations: InternalStateOperations,
     private config: NgxsConfig
-  ) {}
+  ) {
+    this._stateStream.next(this.config.defaultsState);
+  }
 
   /**
    * Dispatches event(s).
