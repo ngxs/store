@@ -22,6 +22,7 @@ import { SelectFactory } from './decorators/select';
 import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitState, UpdateState } from './actions/actions';
+import { StateClass } from './internal/internals';
 
 /**
  * Root module
@@ -36,7 +37,7 @@ export class NgxsRootModule {
     select: SelectFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
-    states: any[],
+    states: StateClass[] = [],
     lifecycleStateManager: LifecycleStateManager
   ) {
     // add stores to the state graph and return their defaults
@@ -102,7 +103,7 @@ export class NgxsModule {
   /**
    * Root module factory
    */
-  static forRoot(states: any[] = [], options: ModuleOptions = {}): ModuleWithProviders {
+  static forRoot(states: StateClass[] = [], options: ModuleOptions = {}): ModuleWithProviders {
     return {
       ngModule: NgxsRootModule,
       providers: [
@@ -147,7 +148,7 @@ export class NgxsModule {
   /**
    * Feature module factory
    */
-  static forFeature(states: any[]): ModuleWithProviders {
+  static forFeature(states: StateClass[] = []): ModuleWithProviders {
     return {
       ngModule: NgxsFeatureModule,
       providers: [

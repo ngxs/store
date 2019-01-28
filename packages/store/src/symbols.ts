@@ -1,5 +1,7 @@
-import { InjectionToken } from '@angular/core';
+import { Injectable, InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
+
+import { ObjectKeyMap } from './internal/internals';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
@@ -8,12 +10,12 @@ export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
-export type NgxsPluginConstructor = new (...args: any[]) => NgxsPlugin;
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
 /**
  * The NGXS config settings.
  */
+@Injectable()
 export class NgxsConfig {
   /**
    * Run in development mode. This will add additional debugging features:
@@ -36,6 +38,12 @@ export class NgxsConfig {
    * (default: null)
    */
   outsideZone: boolean | null = null;
+  /**
+   * Defining the default state before module initialization
+   * This is convenient if we need to create a define our own set of states.
+   * (default: {})
+   */
+  defaultsState: ObjectKeyMap<any> = {};
 
   constructor() {
     this.compatibility = {
