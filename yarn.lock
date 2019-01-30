@@ -1893,7 +1893,7 @@ chalk@^2.0.0, chalk@^2.0.1, chalk@^2.3.0, chalk@^2.3.1, chalk@^2.4.1:
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
 
-chalk@^2.4.2:
+chalk@^2.1.0, chalk@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.2.tgz#cd42541677a54333cf541a49108c1432b44c9424"
   integrity sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==
@@ -2769,7 +2769,7 @@ di@^0.0.1:
   resolved "https://registry.npmjs.org/di/-/di-0.0.1.tgz#806649326ceaa7caa3306d75d985ea2748ba913c"
   integrity sha1-gGZJMmzqp8qjMG112YXqJ0i6kTw=
 
-diff@3.5.0, diff@^3.1.0, diff@^3.2.0:
+diff@3.5.0, diff@^3.1.0, diff@^3.2.0, diff@^3.5.0:
   version "3.5.0"
   resolved "https://registry.npmjs.org/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
   integrity sha512-A46qtFgd+g7pDZinpnwiRJtxbC1hpgf0uzP3iG89scHk0AUC7A1TGxf5OiiOUv/JMZR8GOt8hL900hV0bOy5xA==
@@ -5082,6 +5082,15 @@ karma-coverage-istanbul-reporter@^2.0.0:
     istanbul-api "^2.0.5"
     minimatch "^3.0.4"
 
+karma-jasmine-diff-reporter@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/karma-jasmine-diff-reporter/-/karma-jasmine-diff-reporter-2.0.0.tgz#43bbba19b7a8cb25f5f8b0308fb2357077fc5ddd"
+  integrity sha512-J4iyQunPWwMOzR/YKDQzAzwyPPTQ0QBT+NDdCArleIGw+g/IEk1/6hw8GqDzm3oL+hSkbW09YGFiN3nigP5Cgw==
+  dependencies:
+    chalk "^2.4.1"
+    diff "^3.5.0"
+    karma ">=0.9"
+
 karma-jasmine-html-reporter@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npmjs.org/karma-jasmine-html-reporter/-/karma-jasmine-html-reporter-1.4.0.tgz#1abbd30d4509a8c82b96707ae7d2fa4da459ca19"
@@ -5094,12 +5103,55 @@ karma-jasmine@~2.0.1:
   dependencies:
     jasmine-core "^3.3"
 
+karma-mocha-reporter@^2.2.5:
+  version "2.2.5"
+  resolved "https://registry.npmjs.org/karma-mocha-reporter/-/karma-mocha-reporter-2.2.5.tgz#15120095e8ed819186e47a0b012f3cd741895560"
+  integrity sha1-FRIAlejtgZGG5HoLAS8810GJVWA=
+  dependencies:
+    chalk "^2.1.0"
+    log-symbols "^2.1.0"
+    strip-ansi "^4.0.0"
+
 karma-source-map-support@1.3.0:
   version "1.3.0"
   resolved "https://registry.npmjs.org/karma-source-map-support/-/karma-source-map-support-1.3.0.tgz#36dd4d8ca154b62ace95696236fae37caf0a7dde"
   integrity sha512-HcPqdAusNez/ywa+biN4EphGz62MmQyPggUsDfsHqa7tSe4jdsxgvTKuDfIazjL+IOxpVWyT7Pr4dhAV+sxX5Q==
   dependencies:
     source-map-support "^0.5.5"
+
+karma@>=0.9:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/karma/-/karma-4.0.0.tgz#f28e38a2b66243fde3f98e12a8dcaa2c6ff8ca9c"
+  integrity sha512-EFoFs3F6G0BcUGPNOn/YloGOb3h09hzTguyXlg6loHlKY76qbJikkcyPk43m2kfRF65TUGda/mig29QQtyhm1g==
+  dependencies:
+    bluebird "^3.3.0"
+    body-parser "^1.16.1"
+    chokidar "^2.0.3"
+    colors "^1.1.0"
+    combine-lists "^1.0.0"
+    connect "^3.6.0"
+    core-js "^2.2.0"
+    di "^0.0.1"
+    dom-serialize "^2.2.0"
+    expand-braces "^0.1.1"
+    flatted "^2.0.0"
+    glob "^7.1.1"
+    graceful-fs "^4.1.2"
+    http-proxy "^1.13.0"
+    isbinaryfile "^3.0.0"
+    lodash "^4.17.5"
+    log4js "^3.0.0"
+    mime "^2.3.1"
+    minimatch "^3.0.2"
+    optimist "^0.6.1"
+    qjobs "^1.1.4"
+    range-parser "^1.2.0"
+    rimraf "^2.6.0"
+    safe-buffer "^5.0.1"
+    socket.io "2.1.1"
+    source-map "^0.6.1"
+    tmp "0.0.33"
+    useragent "2.3.0"
 
 karma@^3.1.2:
   version "3.1.4"
@@ -5496,7 +5548,7 @@ log-symbols@^1.0.2:
   dependencies:
     chalk "^1.0.0"
 
-log-symbols@^2.2.0:
+log-symbols@^2.1.0, log-symbols@^2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/log-symbols/-/log-symbols-2.2.0.tgz#5740e1c5d6f0dfda4ad9323b5332107ef6b4c40a"
   integrity sha512-VeIAFslyIerEJLXHziedo2basKbMKtTw3vfn5IzG0XTjhAVEJyNHnL2p7vc+wBDSdQuUpNw3M2u6xb9QsAY5Eg==

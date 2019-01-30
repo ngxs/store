@@ -11,6 +11,8 @@ module.exports = function(config) {
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
+      require('karma-mocha-reporter'),
+      require('karma-jasmine-diff-reporter'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
       require('@angular-devkit/build-angular/plugins/karma')
@@ -26,7 +28,10 @@ module.exports = function(config) {
     angularCli: {
       environment: 'production'
     },
-    reporters: ['progress', 'kjhtml'],
+    reporters: ['jasmine-diff', 'mocha', 'kjhtml'],
+    mochaReporter: {
+      output: 'minimal'
+    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
