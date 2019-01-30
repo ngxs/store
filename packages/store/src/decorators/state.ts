@@ -15,7 +15,7 @@ export function State<T>(options: StoreOptions<T>) {
   function getStateOptions(inheritedStateClass: StateClass): StoreOptions<T> {
     const inheritanceOptions: Partial<StoreOptions<T>> =
       inheritedStateClass[META_OPTIONS_KEY] || {};
-    return { ...inheritanceOptions, ...options };
+    return { ...inheritanceOptions, ...options } as StoreOptions<T>;
   }
 
   function mutateMetaData(params: MutateMetaOptions<T>): void {

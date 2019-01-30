@@ -1,3 +1,10 @@
+import {
+  getStoreMetadata,
+  MetaDataModel,
+  StateClass,
+  StatesByName
+} from '../internal/internals';
+
 export abstract class StoreValidators {
   public static stateNameRegex: RegExp = new RegExp('^[a-zA-Z0-9_]+$');
 
@@ -13,5 +20,26 @@ export abstract class StoreValidators {
     if (!this.stateNameRegex.test(name)) {
       throw new Error(this.stateNameErrorMessage(name));
     }
+  }
+
+  public static checkStateNameIsUnique(state: StateClass, statesByName: StatesByName): string {
+    const meta: MetaDataModel = this.getValidStateMeta(state);
+    const stateName: string = meta!.name as string;
+    const existingState = statesByName[stateName];
+    if (existingState && existingState !== state) {
+      throw new Error(
+        `State name '${stateName}' from ${state.name} already exists in ${existingState.name}`
+      );
+    }
+    return stateName;
+  }
+
+  public static getValidStateMeta(state: StateClass): MetaDataModel {
+    const meta: MetaDataModel = getStoreMetadata(state);
+    if (!meta) {
+      throw new Error('States must be decorated with @State() decorator');
+    }
+
+    return meta;
   }
 }

@@ -64,5 +64,4 @@ export interface StorageEngine {
   setItem(key: string, val: any): void;
   removeItem(key: string): void;
   clear(): void;
-  key(val: number): string;
 }

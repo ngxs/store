@@ -53,11 +53,7 @@ export class InternalStateOperations {
     };
   }
 
-  setStateToTheCurrentWithNew(results: StatesAndDefaults | undefined): void {
-    if (!results) {
-      return;
-    }
-
+  setStateToTheCurrentWithNew(results: StatesAndDefaults): void {
     const stateOperations: StateOperations<any> = this.getRootStateOperations();
 
     // Get our current stream

@@ -38,18 +38,29 @@ The plugin has the following optional values:
 - `migrations`: Migration strategies
 
 ### Custom Storage Engine
-You can implement your own storage engine by providing a engine that
-implements `setItem` and `getItem`.
+You can add your own storage engine by implementing the `StorageEngine` interface.
 
 ```TS
 import { NgxsStoragePluginModule, StorageEngine, STORAGE_ENGINE } from '@ngxs/storage-plugin';
 
 export class MyStorageEngine implements StorageEngine {
-  getItem(name) {
+  get length(): number {
+    // Your logic here
+  }
+  
+  getItem(key: string): any {
     // Your logic here
   }
 
-  setItem(key, value) {
+  setItem(key: string, val: any): void {
+    // Your logic here
+  }
+  
+  removeItem(key: string): void {
+    // Your logic here
+  }
+  
+  clear(): void {
     // Your logic here
   }
 }

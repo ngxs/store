@@ -11,7 +11,7 @@
 NGXS is a state management pattern + library for Angular. It acts as a single source of
 truth for your application's state, providing simple rules for predictable state mutations.
 
-NGXS is modeled after the CQRS pattern popularly implemented in libraries like Redux and NGRX
+NGXS is modeled after the CQRS pattern popularly implemented in libraries like Redux and NgRx
 but reduces boilerplate by using modern TypeScript features such as classes and decorators.
 
 ## 👋 New to NGXS?
@@ -22,7 +22,7 @@ and then explore the rich ecosystem of examples in the [community resources](com
 For questions, please ask them on Stack Overflow with the `ngxs` tag:
 https://stackoverflow.com/questions/ask?tags=ngxs
 
-To chat with other users and contributers join us on Slack: https://now-examples-slackin-eqzjxuxoem.now.sh/
+To chat with other users and contributors join us on Slack: https://now-examples-slackin-eqzjxuxoem.now.sh/
 
 If you think there is a bug in this library, you can open an issue on GitHub (https://github.com/ngxs/store/issues/new). If possible a link to a http://stackblitz.com (or github) repo with a repro or a failing test would be great.
 
