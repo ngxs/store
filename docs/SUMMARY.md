@@ -20,8 +20,8 @@
   * [@State](api/modules/_decorators_state_.md)
   * [Store](api/modules/_store_.md)
 * Advanced
-  * [Options](advanced/options.md)
   * [State Operators](advanced/operators.md)
+  * [Options](advanced/options.md)
   * [Lazy Loading](advanced/lazy.md)
   * [Sub States](advanced/sub-states.md)
   * [Cancellation](advanced/cancellation.md)
