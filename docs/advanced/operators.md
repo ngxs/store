@@ -1,14 +1,14 @@
 # State Operators
 
 ## Why?
-The NGXS `patchState` method is used to do immutable object updates to the container state slice without the typical long-handed syntax. This is very neat and convenient because you do not have to use the `getState` and `setState` as well as the `Object.assign(...)`or the spread operator to update the state. The `patchState` method only offers a shallow patch and as a result is left wanting in more advanced scenarios. This is where state operators come in. The `setState` method can be passed a state operator which will be used to determine the new state.
+The NGXS `patchState` method is used to do [immutable object](https://en.wikipedia.org/wiki/Immutable_object) updates to the container state slice without the typical long-handed syntax. This is very neat and convenient because you do not have to use the `getState` and `setState` as well as the `Object.assign(...)`or the spread operator to update the state. The `patchState` method only offers a shallow patch and as a result is left wanting in more advanced scenarios. This is where state operators come in. The `setState` method can be passed a state operator which will be used to determine the new state.
 
 ## Basic
 
 The basic idea of operators is that we could describe the modifications to the state using curried functions that are given any inputs that they need to describe the change and are finalised using the state slice that they are assigned to.
 
 # Example
-From theory to practice 😉 Let's take the following example:
+From theory to practice - let's take the following example:
 
 ```TS
 import { State, Action, StateContext } from '@ngxs/store';
@@ -42,24 +42,10 @@ export class AnimalsState {
 ```
 
 The `patch` operator expresses the intended modification quite nicely and returns a function that will apply these modifications as a new object based on the provided state.
-In order to understand what this is doing let's express this in a long handed form:
-
-```TS
-  // For demonstration purposes! This long handed form is not needed from NGXS v3.4 onwards.
-  @Action(CreateMonkeys)
-  createMonkeys(ctx: StateContext<AnimalsStateModel>) {
-    const state = ctx.getState();
-    const newState = patch({
-      monkeys: []
-    })(state);
-
-    ctx.setState(newState);
-  }
-```
 
 ## Supplied State Operators
 
-This is not the only operator, we introduce much more that can be used along with `patch`.
+This is not the only operator, we introduce much more that can be used along with or in place of `patch`.
 
 If you want to update an item in the array using an operator or value - you can use `updateItem`, it's signature is:
 
@@ -186,7 +172,7 @@ interface CitiesStateModel {
     ids: []
   }
 })
-export class AnimalsState {
+export class CitiesState {
   @Action(AddCity)
   addCity(ctx: StateContext<CitiesStateModel>, { payload }: AddCity) {
     ctx.setState(addEntity(payload.city));
