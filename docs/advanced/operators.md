@@ -42,6 +42,19 @@ export class AnimalsState {
 ```
 
 The `patch` operator expresses the intended modification quite nicely and returns a function that will apply these modifications as a new object based on the provided state.
+In order to understand what this is doing let's express this in a long handed form:
+
+```TS
+  // For demonstration purposes! This long handed form is not needed from NGXS v3.4 onwards.
+  @Action(CreateMonkeys)
+  createMonkeys(ctx: StateContext<AnimalsStateModel>) {
+    const state = ctx.getState();
+    ctx.setState({
+      ...state,
+      monkeys: []
+    });
+  }
+```
 
 ## Supplied State Operators
 
