@@ -4,11 +4,13 @@ import {
   ɵBrowserDomAdapter as BrowserDomAdapter,
   ɵDomAdapter as DomAdapter
 } from '@angular/platform-browser';
-import { NgxsModule, State, StateContext } from '@ngxs/store';
+import { Action, NgxsModule, State, StateContext } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 import { DOCUMENT } from '@angular/common';
 
 import { NgxsHmrLifeCycle, NgxsHmrSnapshot as Snapshot, WebpackModule } from '../symbols';
+import { HmrInitAction } from '../actions/hmr-init.action';
+import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 
 @State({
   name: 'mock_state',
@@ -16,7 +18,25 @@ import { NgxsHmrLifeCycle, NgxsHmrSnapshot as Snapshot, WebpackModule } from '..
     value: 'test'
   }
 })
-export class MockState {}
+export class MockState {
+  public static init: boolean;
+  public static destroy: boolean;
+
+  public static clear(): void {
+    this.init = false;
+    this.destroy = false;
+  }
+
+  @Action(HmrInitAction)
+  public hmrInit() {
+    MockState.init = true;
+  }
+
+  @Action(HmrBeforeDestroyAction)
+  public hrmBeforeDestroy() {
+    MockState.destroy = true;
+  }
+}
 
 @Component({
   selector: 'app-root',

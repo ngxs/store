@@ -128,21 +128,17 @@ if (environment.hmr) {
 
 ```ts
 import { StateContext } from '@ngxs/store';
-import { NgxsHmrLifeCycle, NgxsHmrSnapshot } from '@ngxs/hmr-plugin';
+import { NgxsHmrLifeCycle, NgxsHmrSnapshot as Snapshot } from '@ngxs/hmr-plugin';
 
 @NgModule({ .. })
-export class AppBrowserModule implements NgxsHmrLifeCycle<NgxsHmrSnapshot> {
+export class AppBrowserModule implements NgxsHmrLifeCycle<Snapshot> {
 
-  public hmrNgxsStoreOnInit(ctx: StateContext<NgxsHmrSnapshot>, snapshot: Partial<NgxsHmrSnapshot>) {
-    console.log('[NGXS HMR] Current state', ctx.getState());
-    console.log('[NGXS HMR] Previous state', snapshot);
+  public hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {
     ctx.patchState(snapshot);
   }
 
-  public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<NgxsHmrSnapshot>): Partial<NgxsHmrSnapshot> {
-    const snapshot: Partial<NgxsHmrSnapshot> = ctx.getState();
-    console.log('[NGXS HMR] Saved state before on destroy', snapshot);
-    return snapshot;
+  public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<Snapshot>): Partial<Snapshot> {
+    return ctx.getState();
   }
 
 }
@@ -167,3 +163,27 @@ NOTICE Hot Module Replacement (HMR) is enabled for the dev server.
 ```
 
 Now if you make changes to one of your components, those changes should be visible automatically without a complete browser refresh.
+
+### HMR lifecycle
+
+If you want to do some additional manipulations with the states during the hmr lifecycle, you can use the built-in actions. However, this does not work for production.
+
+```ts
+import { HmrInitAction, HmrBeforeDestroyAction } from '@ngxs/hmr-plugin';
+
+@State({ ... })
+export class MyState {
+  
+  @Action(HmrInitAction)
+  public hmrInit(ctx: StateContext, { payload }) {
+    ctx.setState({ ... })
+  }
+  
+  
+  @Action(HmrBeforeDestroyAction)
+  public hrmBeforeDestroy(ctx: StateContext, { payload }) {
+    ctx.setState({ ... })
+  }
+  
+}
+```

@@ -8,7 +8,7 @@ import { NgModuleRef } from '@angular/core';
 
 import { hmr } from '../hmr-bootstrap';
 import { BootstrapModuleType, NGXS_HMR_SNAPSHOT_KEY, NgxsHmrSnapshot } from '../symbols';
-import { AppMockModule, mockWebpackModule } from './hmr-mock';
+import { AppMockModule, MockState, mockWebpackModule } from './hmr-mock';
 import { HmrInitAction } from '../actions/hmr-init.action';
 import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 
@@ -25,6 +25,7 @@ describe('HMR Plugin', () => {
   beforeEach(() => {
     bootstrap = () => getTestBed().platform.bootstrapModule(AppMockModule);
     sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, '');
+    MockState.clear();
     hmrSnapshot = null;
   });
 
@@ -86,12 +87,24 @@ describe('HMR Plugin', () => {
       .subscribe(({ payload }) => (hmrSnapshot = payload));
 
     await mockWebpackModule.destroyModule();
-
     tick(1000);
 
     expect(hmrSnapshot).toEqual({
       mock_state: { value: 'test' },
       status: 'working'
     });
+  }));
+
+  it('should be correct custom lifecycle', fakeAsync(async () => {
+    sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, JSON.stringify({ test: 'test' }));
+    await hmr(mockWebpackModule, bootstrap);
+
+    tick(1000);
+    expect(MockState.init).toEqual(true);
+
+    await mockWebpackModule.destroyModule();
+    tick(1000);
+
+    expect(MockState.destroy).toEqual(true);
   }));
 });
