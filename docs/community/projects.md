@@ -26,4 +26,23 @@
 - [NGXS: Redux implemented in 2018 by Gerard Sans](https://youtu.be/nh-mp85folo?t=3240)
 - [Angular NGXS Tutorial - An Alternative to NgRx for State Management](https://youtu.be/SfiO3bDUK7Q)
 
+### Articles
+- [@amcdnl - Authentication in NGXS](https://medium.com/@amcdnl/authentication-in-ngxs-6f25c52fd385)
+- [@amcdnl - Why another state management framework for Angular?](https://medium.com/@amcdnl/why-another-state-management-framework-for-angular-b4b4c19ef664)
+- [Alligator - Manage State in Angular with NGXS](https://alligator.io/angular/ngxs/)
+- [< BE OUTSTANDING /> - Why I Prefer NGXS over NGRX](https://blog.singular.uk/why-i-prefer-ngxs-over-ngrx-df727cd868b5)
+- [JWORKS TECH BLOG - NGRX VS. NGXS VS. AKITA VS. RXJS: FIGHT!](https://ordina-jworks.github.io/angular/2018/10/08/angular-state-management-comparison.html)
+- [The InfoGrid - Angular – Managing Authentication State Using NGXS](https://theinfogrid.com/tech/developers/angular/ngxs-authentication-angular/)
+- [C# Corner - Angular With NGXS - State Management](https://www.c-sharpcorner.com/blogs/angular-with-ngxs-statemanagement)
+- [@timdeschryver - Simple state mutations in NGXS with Immer](https://blog.angularindepth.com/simple-state-mutations-in-ngxs-with-immer-48b908874a5e)
+- [@mehmetakifalp - Keeping Multiple Tab In Sync using NGXS state management library, Rxjs and localStorage](https://medium.com/@mehmetakifalp/keeping-multiple-tab-in-sync-using-ngxs-state-management-library-rxjs-and-localstorage-840c0bf615fa)
+- [Q Software - NGXS — Initial impressions of an Angular state management solution](https://medium.com/q-software/ngxs-initial-impressions-of-an-angular-state-management-solution-a44b59f52508)
+- [Bratislava Angular - Ngxs and Firebase Authentication](https://medium.com/bratislava-angular/ngxs-and-firebase-authentication-2c2a1c1196d6)
+- [@hi_46634 - Angular NGXS and WebSockets with Laravel backend](https://medium.com/@hi_46634/angular-ngxs-and-websockets-with-laravel-backend-2e66e0183cc2)
+- [@dazcyril - State Management in Angular](https://medium.com/@dazcyril/state-management-in-angular-9ebae914ca9a)
+- HSD - State Management In Angular using NGXS - [Part1](https://www.hsd.com.au/blog/state-management-in-angular-using-ngxs-part-1/), [Part2](https://www.hsd.com.au/blog/state-management-in-angular-using-ngxs-part-2/)
+- [App Dividend - Angular NGXS Tutorial With Example From Scratch](https://appdividend.com/2018/07/03/angular-ngxs-tutorial-with-example-from-scratch/)
+- [Angular Firebase - NGXS Quick Start Tutorial](https://angularfirebase.com/lessons/ngxs-quick-start-angular-state-management)
+- [coursetro - Angular NGXS Tutorial - An Alternative to Ngrx for State Management](https://coursetro.com/posts/code/152/Angular-NGXS-Tutorial---An-Alternative-to-Ngrx-for-State-Management)
+
 If you have content you'd like to share with the community, make a PR to add it here.
