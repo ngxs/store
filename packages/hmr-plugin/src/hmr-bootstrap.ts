@@ -19,9 +19,9 @@ export async function hmr<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot>(
   return await manager.hmrModule(bootstrap, () => {
     manager.beforeModuleBootstrap();
 
-    module.hot.dispose(() => {
-      manager.beforeModuleOnDestroy();
-      manager.createNewHosts();
+    module.hot.dispose(async () => {
+      await manager.beforeModuleOnDestroy();
+      await manager.createNewModule();
     });
   });
 }

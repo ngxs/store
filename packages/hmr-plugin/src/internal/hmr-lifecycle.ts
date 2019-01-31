@@ -1,57 +1,45 @@
+import { NgxsBootstrapper } from '@ngxs/store/internals';
 import { Observable, Subscription } from 'rxjs';
+import { StateContext } from '@ngxs/store';
 
-import { CallStackFrame, HmrStatus, NgxsHmrLifeCycle } from '../symbols';
-import { HmrStorage } from './hmr-storage';
-import { HmrStoreContext } from './hmr-store-context';
 import { HmrOptionBuilder } from './hmr-options-builder';
+import { HmrCallback, NgxsHmrLifeCycle } from '../symbols';
+import { HmrStateContextFactory } from './hmr-state-context-factory';
+import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
+import { HmrStorage } from './hmr-storage';
 
 export class HmrLifecycle<T extends NgxsHmrLifeCycle<S>, S> {
-  public readonly status: HmrStatus = {
-    onInitIsCalled: false,
-    beforeOnDestroyIsCalled: false
-  };
-
-  private storage: HmrStorage<S>;
-  private context: HmrStoreContext<T, S>;
-  private optionsBuilder: HmrOptionBuilder<T, S>;
-  private ngAppModule: T;
-
   constructor(
-    type: T,
-    storage: HmrStorage<S>,
-    context: HmrStoreContext<T, S>,
-    builder: HmrOptionBuilder<T, S>
-  ) {
-    this.ngAppModule = type;
-    this.storage = storage;
-    this.context = context;
-    this.optionsBuilder = builder;
-  }
+    private ngAppModule: T,
+    private bootstrap: NgxsBootstrapper,
+    private storage: HmrStorage<S>,
+    private context: HmrStateContextFactory<T, S>,
+    private options: HmrOptionBuilder<T, S>
+  ) {}
 
-  public hmrNgxsStoreOnInit(hmrAfterOnInit: () => void) {
+  public hmrNgxsStoreOnInit(hmrAfterOnInit: HmrCallback<S>) {
     if (typeof this.ngAppModule.hmrNgxsStoreOnInit === 'function') {
       this.stateEventLoop((ctx, state) => {
         this.ngAppModule.hmrNgxsStoreOnInit(ctx, state);
-        this.status.onInitIsCalled = true;
-        hmrAfterOnInit();
+        hmrAfterOnInit(ctx, state);
       });
     }
   }
 
   public hmrNgxsStoreBeforeOnDestroy(): Partial<S> {
-    let resultSnapshot: Partial<S> = {};
+    let state: Partial<S> = {};
+    const ctx: StateContext<S> = this.context.createStateContext();
     if (typeof this.ngAppModule.hmrNgxsStoreBeforeOnDestroy === 'function') {
-      resultSnapshot = this.ngAppModule.hmrNgxsStoreBeforeOnDestroy(this.context.stateContext);
+      state = this.ngAppModule.hmrNgxsStoreBeforeOnDestroy(ctx);
     }
 
-    this.status.beforeOnDestroyIsCalled = true;
-
-    return resultSnapshot;
+    ctx.dispatch(new HmrBeforeDestroyAction(state));
+    return state;
   }
 
-  private stateEventLoop(frame: CallStackFrame<S>) {
+  private stateEventLoop(frame: HmrCallback<S>) {
     if (this.storage.existHmrStorage) {
-      const appBootstrapped$: Observable<unknown> = this.context.bootstrap.appBootstrapped$;
+      const appBootstrapped$: Observable<unknown> = this.bootstrap.appBootstrapped$;
       const state$: Observable<unknown> = this.context.store.select(state => state);
 
       appBootstrapped$.subscribe(() => {
@@ -64,8 +52,8 @@ export class HmrLifecycle<T extends NgxsHmrLifeCycle<S>, S> {
             storeEventId.unsubscribe();
             // if events are no longer running on the call stack,
             // then we can update the state
-            frame(this.context.stateContext, this.storage.snapshot);
-          }, this.optionsBuilder.deferTime);
+            frame(this.context.createStateContext(), this.storage.snapshot);
+          }, this.options.deferTime);
         });
       });
     }

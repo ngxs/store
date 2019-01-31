@@ -1,8 +1,6 @@
 import { StateContext } from '@ngxs/store';
 import { NgModuleRef } from '@angular/core';
 
-import { HmrManager } from './hmr-manager';
-
 export interface NgxsHmrSnapshot {
   [key: string]: any;
 }
@@ -24,11 +22,8 @@ export interface NgxsHmrLifeCycle<T = NgxsHmrSnapshot> {
   hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<T>): Partial<T>;
 }
 
-export type CallStackFrame<T> = (ctx: StateContext<T>, prevState: Partial<T>) => void;
+export type HmrCallback<T> = (ctx: StateContext<T>, state: Partial<T>) => void;
 export type BootstrapModuleType<T> = () => Promise<NgModuleRef<T>>;
-export type HmrAfterOnInit<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot> = (
-  manager: HmrManager<T, S>
-) => void;
 
 export interface NgxsHmrOptions<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot> {
   /**
@@ -44,12 +39,6 @@ export interface NgxsHmrOptions<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapsh
    * (default: 100ms)
    */
   deferTime?: number;
-
-  /**
-   * @description - method to call intermediate result
-   * @param manager
-   */
-  hmrAfterOnInit?: HmrAfterOnInit<T, S>;
 }
 
 interface HotModule {
@@ -65,8 +54,3 @@ interface HotModule {
  * npm i @types/webpack-env
  */
 export type WebpackModule = (NodeModule & HotModule) | any;
-
-export interface HmrStatus {
-  onInitIsCalled: boolean;
-  beforeOnDestroyIsCalled: boolean;
-}

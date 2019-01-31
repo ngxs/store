@@ -3,14 +3,19 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
+import { Actions, ofActionDispatched, Store } from '@ngxs/store';
+import { NgModuleRef } from '@angular/core';
 
 import { hmr } from '../hmr-bootstrap';
-import { BootstrapModuleType, NGXS_HMR_SNAPSHOT_KEY } from '../symbols';
-import { AppMockModule, mockWepbackModule } from './hmr-mock';
-import { HmrManager } from '../hmr-manager';
+import { BootstrapModuleType, NGXS_HMR_SNAPSHOT_KEY, NgxsHmrSnapshot } from '../symbols';
+import { AppMockModule, mockWebpackModule } from './hmr-mock';
+import { HmrInitAction } from '../actions/hmr-init.action';
+import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 
 describe('HMR Plugin', () => {
   let bootstrap: BootstrapModuleType<AppMockModule>;
+  let hmrSnapshot: Partial<NgxsHmrSnapshot> | any = null;
+  let actions$: Actions;
 
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -19,6 +24,8 @@ describe('HMR Plugin', () => {
 
   beforeEach(() => {
     bootstrap = () => getTestBed().platform.bootstrapModule(AppMockModule);
+    sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, '');
+    hmrSnapshot = null;
   });
 
   it('should be correct initialize AppMockModule', async () => {
@@ -27,69 +34,62 @@ describe('HMR Plugin', () => {
   });
 
   it('should be correct bootstrap hmr module when empty snapshot', fakeAsync(async () => {
-    let hmrRef: HmrManager<AppMockModule, any> | null = null;
+    const appModule: NgModuleRef<AppMockModule> = await hmr(mockWebpackModule, bootstrap);
+    actions$ = appModule.injector.get(Actions);
 
-    await hmr(mockWepbackModule, bootstrap, {
-      hmrAfterOnInit: (manager: HmrManager<AppMockModule, any>) => {
-        hmrRef = manager;
-      }
-    });
+    actions$
+      .pipe(ofActionDispatched(HmrInitAction))
+      .subscribe(({ payload }) => (hmrSnapshot = payload));
 
     tick(1000);
-
-    /**
-     * When snapshot is empty,
-     * hmrAfterOnInit not called
-     */
-    expect(hmrRef).toEqual(null);
+    expect(hmrSnapshot).toBeNull();
   }));
 
   it('should be correct invoke hmrNgxsStoreOnInit', fakeAsync(async () => {
-    let hmrRef: HmrManager<AppMockModule, any> | null = null;
     sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, JSON.stringify({ works: true }));
+    const appModule: NgModuleRef<AppMockModule> = await hmr(mockWebpackModule, bootstrap);
+    actions$ = appModule.injector.get(Actions);
 
-    await hmr(mockWepbackModule, bootstrap, {
-      hmrAfterOnInit: (manager: HmrManager<AppMockModule, any>) => {
-        hmrRef = manager;
-        expect(hmrRef!.storage.snapshot).toEqual({ works: true });
-      }
-    });
+    actions$
+      .pipe(ofActionDispatched(HmrInitAction))
+      .subscribe(({ payload }) => (hmrSnapshot = payload));
 
     tick(1000);
 
-    expect(hmrRef!.storage.snapshot).toEqual({});
-    expect(hmrRef!.context.store.snapshot()).toEqual({
-      mock_state: { value: 'test' },
-      works: true
-    });
-    expect(hmrRef!.lifecycle.status.onInitIsCalled).toEqual(true);
-    expect(hmrRef!.lifecycle.status.beforeOnDestroyIsCalled).toEqual(false);
+    expect(hmrSnapshot).toEqual({ works: true });
   }));
 
   it('should be correct invoke hmrNgxsStoreBeforeOnDestroy', fakeAsync(async () => {
-    let hmrRef: HmrManager<AppMockModule, any> | null = null;
     sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, JSON.stringify({ status: 'working' }));
+    const appModule: NgModuleRef<AppMockModule> = await hmr(mockWebpackModule, bootstrap);
 
-    await hmr(mockWepbackModule, bootstrap, {
-      hmrAfterOnInit: (manager: HmrManager<AppMockModule, any>) => {
-        hmrRef = manager;
-        expect(hmrRef!.storage.snapshot).toEqual({ status: 'working' });
-        manager.beforeModuleOnDestroy();
-      }
-    });
+    const store = appModule.injector.get(Store);
+    actions$ = appModule.injector.get(Actions);
+
+    actions$
+      .pipe(ofActionDispatched(HmrInitAction))
+      .subscribe(({ payload }) => (hmrSnapshot = payload));
 
     tick(1000);
 
-    expect(hmrRef!.storage.snapshot).toEqual({});
-    expect(hmrRef!.context.store.snapshot()).toEqual({
+    expect(hmrSnapshot).toEqual({ status: 'working' });
+    expect(store.snapshot()).toEqual({
       mock_state: { value: 'test' },
       status: 'working'
     });
 
-    expect(hmrRef!.lifecycle.status.onInitIsCalled).toEqual(true);
-    expect(hmrRef!.lifecycle.status.beforeOnDestroyIsCalled).toEqual(true);
+    tick(1000);
+    hmrSnapshot = null;
 
-    expect(AppMockModule.savedState).toEqual({
+    actions$
+      .pipe(ofActionDispatched(HmrBeforeDestroyAction))
+      .subscribe(({ payload }) => (hmrSnapshot = payload));
+
+    await mockWebpackModule.destroyModule();
+
+    tick(1000);
+
+    expect(hmrSnapshot).toEqual({
       mock_state: { value: 'test' },
       status: 'working'
     });

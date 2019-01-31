@@ -30,8 +30,6 @@ export class AppMockComponent {}
   bootstrap: [AppMockComponent]
 })
 export class AppMockModule implements NgxsHmrLifeCycle {
-  public static savedState: Partial<Snapshot>;
-
   constructor() {
     createRootNode();
   }
@@ -41,7 +39,6 @@ export class AppMockModule implements NgxsHmrLifeCycle {
   }
 
   public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<Snapshot>): Partial<Snapshot> {
-    AppMockModule.savedState = JSON.parse(JSON.stringify(ctx.getState()));
     return ctx.getState();
   }
 }
@@ -60,9 +57,18 @@ function createRootNode(selector = 'app-root'): void {
   adapter.appendChild(document.body, root);
 }
 
-export const mockWepbackModule: WebpackModule = {
+export interface ModuleDispose {
+  destroyModule: () => void;
+}
+
+export const mockWebpackModule: WebpackModule & ModuleDispose = {
+  destroyModule: null,
   hot: {
     accept: () => {},
-    dispose: () => {}
+    dispose: (callback: () => void) => {
+      if (!callback.name) {
+        mockWebpackModule.destroyModule = callback;
+      }
+    }
   }
 };

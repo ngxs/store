@@ -21,14 +21,10 @@ import { TODOS_STORAGE_KEY } from '@integration/store/todos/todos.model';
 })
 export class AppBrowserModule implements NgxsHmrLifeCycle<Snapshot> {
   public hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {
-    console.log('[NGXS HMR] Current state', ctx.getState());
-    console.log('[NGXS HMR] Previous state', snapshot);
     ctx.patchState(snapshot);
   }
 
   public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<Snapshot>): Partial<Snapshot> {
-    const snapshot: Partial<Snapshot> = ctx.getState();
-    console.log('[NGXS HMR] Saved state before on destroy', snapshot);
-    return snapshot;
+    return ctx.getState();
   }
 }

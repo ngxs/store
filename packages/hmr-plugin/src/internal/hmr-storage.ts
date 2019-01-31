@@ -3,7 +3,7 @@ import { NGXS_HMR_SNAPSHOT_KEY } from '../symbols';
 export class HmrStorage<S> {
   private readonly keyStore: string = NGXS_HMR_SNAPSHOT_KEY;
 
-  public validateExistHmrStorage(): void {
+  public resetHmrStorageWhenEmpty(): void {
     if (!this.existHmrStorage) {
       this.snapshot = {};
     }

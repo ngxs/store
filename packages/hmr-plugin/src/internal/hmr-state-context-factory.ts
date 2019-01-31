@@ -1,11 +1,9 @@
 import { StateContext, Store } from '@ngxs/store';
 import { isStateOperator } from '@ngxs/store/operators';
 import { NgModuleRef } from '@angular/core';
-import { NgxsBootstrapper } from '@ngxs/store/internals';
 
-export class HmrStoreContext<T, S> {
+export class HmrStateContextFactory<T, S> {
   public store: Store;
-  public bootstrap: NgxsBootstrapper;
 
   constructor(module: NgModuleRef<T>) {
     const store = module.injector.get(Store, null);
@@ -15,14 +13,13 @@ export class HmrStoreContext<T, S> {
     }
 
     this.store = store;
-    this.bootstrap = module.injector.get(NgxsBootstrapper);
   }
 
   /**
    * @description
    * must be taken out into  @ngxs/store/internals
    */
-  public get stateContext(): StateContext<S> {
+  public createStateContext(): StateContext<S> {
     return {
       dispatch: actions => this.store!.dispatch(actions),
       getState: () => <S>this.store!.snapshot(),
