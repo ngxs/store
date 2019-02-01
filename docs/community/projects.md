@@ -21,6 +21,7 @@
 - [Port of NgRx Example App](https://github.com/eranshmil/ngxs-example-app)
 
 ### Media
+- [ngAtlanta - NGXS, State Management Made Simple - Jecelyn Yeen](https://youtu.be/0bhfUGjn0KA)
 - [ngAir 153 - NGXS: A New State Management for Angular Apps with Austin McDaniel and Danny Blue](https://www.youtube.com/watch?v=rkn73khwfWU&feature=youtu.be)
 - [Quick Start to NGXS](https://youtu.be/SGj11j4hxmg)
 - [NGXS: Redux implemented in 2018 by Gerard Sans](https://youtu.be/nh-mp85folo?t=3240)
