@@ -1,9 +1,28 @@
-# DEV version (to become [3.4.0](https://github.com/ngxs/store/milestone/7))
+# [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) (to become [3.4.0](https://github.com/ngxs/store/milestone/6))
 
-* ...
+```bash
+$ npm install @ngxs/store@dev
+```
+
+* Feature: Support server-side rendering [#698](https://github.com/ngxs/store/pull/698)
+* Feature: Enable state operator extensibility [#635](https://github.com/ngxs/store/pull/635)
+* Feature: Add `ofActionCompleted` action handler [#712](https://github.com/ngxs/store/pull/712)
+* Feature: Add `Hot Module Replacement` plugin for manage states [#707](https://github.com/ngxs/store/pull/707)
+* Feature: Add possible inheritance of state options [#750](https://github.com/ngxs/store/pull/750)
+* Feature: Add new lifecycle hook `ngxsAfterBootstrap` [#753](https://github.com/ngxs/store/pull/753)
+* Feature: Add `outsideZone` option to the config [#761](https://github.com/ngxs/store/pull/761)
+* Fix: Expose `ActionCompletion` [#752](https://github.com/ngxs/store/pull/752)
+* Fix: Throw error when found duplicate state names [#791](https://github.com/ngxs/store/pull/791)
+
+## NGXS-Labs
+
+### Emitter-plugin
+
+* Feature: Add `EmitterService` [#121](https://github.com/ngxs-labs/emitter/pull/121)
+* Feature: Add `StoreTestBedModule` for easy unit testing [#109](https://github.com/ngxs-labs/emitter/pull/109)
 
 # 3.3.4 2018-12-20
-* Fix: Remove ref to TestBed to rebuce bundle size [#725](https://github.com/ngxs/store/pull/725)
+* Fix: Remove ref to TestBed to reduce bundle size [#725](https://github.com/ngxs/store/pull/725)
 
 # 3.3.3 2018-12-16
 * Fix: Silence console hints in tests [#706](https://github.com/ngxs/store/pull/706)
@@ -12,7 +31,6 @@
 * Fix: Remove compromised dependencies [#684](https://github.com/ngxs/store/pull/684)
 * Fix: Add helper for enable development mode [#674](https://github.com/ngxs/store/pull/674)
 * Fix: Support underscore in state name [#663](https://github.com/ngxs/store/pull/663)
-
 
 # 3.3.1 2018-11-24
 * Fix: Storage Plugin should handle 'undefined' string [#671](https://github.com/ngxs/store/pull/671)
