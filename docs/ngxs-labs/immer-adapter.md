@@ -16,6 +16,17 @@
     <img src="https://raw.githubusercontent.com/ngxs-labs/immer-adapter/master/docs/assets/immer.png">
 </p>
 
+#### 📦 Install
+
+To install `@ngxs-labs/immer-adapter` and `immer` that is a peer-dependency run the following command:
+
+```console
+npm install @ngxs-labs/immer-adapter immer
+# or if you use yarn
+yarn add @ngxs-labs/immer-adapter immer
+```
+
+
 #### Before
 
 When your state is growing - it becomes harder to manage such mutations:
