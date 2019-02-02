@@ -41,7 +41,7 @@ export class RouteHandler {
 }
 ```
 
-Remember you need to make sure and inject the `RouteHandler` somewhere in your application for DI to hook things up. If
+Remember you need to make sure to inject the `RouteHandler` somewhere in your application for DI to hook things up. If
 you want it to happen on application startup, Angular provides a method for doing this:
 
 ```TS

@@ -5,14 +5,14 @@ In order to get HMR working with Angular CLI we first need to add a new environm
 
 ### Add environment for HMR
 
-In this step will configure the Angular CLI environments and define in which environment we enable HMR. 
-We will start out by adding and changing files in the `src/environments/` directory. 
+In this step will configure the Angular CLI environments and define in which environment we enable HMR.
+We will start out by adding and changing files in the `src/environments/` directory.
 First we create a file called `src/environments/environment.hmr.ts` with the following contents:
 
 ```ts
 export const environment = {
- production: false,
- hmr: true
+  production: false,
+  hmr: true
 };
 ```
 
@@ -20,8 +20,8 @@ Update `src/environments/environment.prod.ts` and add the hmr: false flag to the
 
 ```ts
 export const environment = {
- production: true,
- hmr: false
+  production: true,
+  hmr: false
 };
 ```
 
@@ -29,12 +29,12 @@ Lastly we edit `src/environments/environment.ts` and change the environment to:
 
 ```ts
 export const environment = {
- production: false,
- hmr: false
+  production: false,
+  hmr: false
 };
 ```
 
-Update angular.json to include an hmr environment as explained here and add configurations within build and serve to enable hmr. 
+Update angular.json to include an hmr environment as explained here and add configurations within build and serve to enable hmr.
 Note that <project-name> here represents the name of the project you are adding this configuration to in angular.json.
 
 ```text
@@ -159,4 +159,4 @@ When starting the server Webpack will tell you that it’s enabled:
 NOTICE Hot Module Replacement (HMR) is enabled for the dev server.
 ```
 
-Now if you make changes to one of your components they changes should be visible automatically without a complete browser refresh.
+Now if you make changes to one of your components, those changes should be visible automatically without a complete browser refresh.

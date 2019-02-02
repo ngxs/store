@@ -1,6 +1,6 @@
 # Caching
 Caching requests executed by Actions is a common practice. NGXS does not
-provide this ability out of the box, but it is easy to implement. 
+provide this ability out of the box, but it is easy to implement.
 
 There are many different ways to approach this. Below is a simple example of
 using the store's current values and returning them instead of calling the HTTP
@@ -13,7 +13,7 @@ import { tap } from 'rxjs/operators';
 
 export class GetZebra {
   static readonly type = '[Zoo] GetZebra';
-  contstructor(public id: string) {}
+  constructor(public id: string) {}
 }
 
 @State<ZooStateModel>({
