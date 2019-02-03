@@ -4,7 +4,10 @@ import { ActionOptions, ActionDef } from '../symbols';
 /**
  * Decorates a method with a action information.
  */
-export function Action(actions: ActionDef | ActionDef[], options?: ActionOptions) {
+export function Action(
+  actions: ActionDef | ActionDef[] | { type: string } | { type: string }[],
+  options?: ActionOptions
+) {
   return function(target: any, name: string, _descriptor: TypedPropertyDescriptor<any>) {
     const meta = ensureStoreMetadata(target.constructor);
 
@@ -14,14 +17,6 @@ export function Action(actions: ActionDef | ActionDef[], options?: ActionOptions
 
     for (const action of actions) {
       const type = action.type;
-
-      if (!action.type) {
-        throw new Error(
-          `Action ${
-            'name' in action ? action['name'] : JSON.stringify(action)
-          } is missing a static "type" property`
-        );
-      }
 
       if (!meta.actions[type]) {
         meta.actions[type] = [];

@@ -52,6 +52,11 @@ describe('Action', () => {
       return throwError(new Error('this is a test error'));
     }
 
+    @Action({ type: 'OBJECT_LITERAL' })
+    onObjectLiteral() {
+      return of({});
+    }
+
     @Action(CancelingAction, { cancelUncompleted: true })
     barGetsCanceled() {
       return of({}).pipe(delay(0));
@@ -245,4 +250,16 @@ describe('Action', () => {
       'ofActionSuccessful'
     ]);
   }));
+
+  it('should allow the user to dispatch an object literal', () => {
+    const callbacksCalled: string[] = [];
+
+    actions.pipe(ofActionCompleted({ type: 'OBJECT_LITERAL' })).subscribe(() => {
+      callbacksCalled.push('onObjectLiteral');
+    });
+
+    store.dispatch({ type: 'OBJECT_LITERAL' });
+
+    expect(callbacksCalled).toEqual(['onObjectLiteral']);
+  });
 });
