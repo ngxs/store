@@ -53,7 +53,7 @@ Examples:
 * `[Dashboard Page] ArchiveProject`
 
 ### Event examples
-Events are actions that have already happended and we now need to react to them.
+Events are actions that have already happened and we now need to react to them.
 
 The same naming conventions apply as to command, but they should always be in past tense.
 
