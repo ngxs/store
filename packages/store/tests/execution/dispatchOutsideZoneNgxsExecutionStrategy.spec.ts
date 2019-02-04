@@ -70,13 +70,13 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
     public counter$: Observable<number>;
   }
 
-  function repeat<T>(value: T, times: number): T[] {
-    return <T[]>new Array(times).fill(value);
-  }
-
   function setup(moduleDef?: TestModuleMetadata) {
     moduleDef = moduleDef || {
-      imports: [NgxsModule.forRoot([CounterState])]
+      imports: [
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     };
     const ticks = { count: 0 };
     class MockApplicationRef extends ApplicationRef {
@@ -156,7 +156,11 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
   describe('[@Select]', () => {
     function setupWithComponentSubscription() {
       const { zone, store, ticks, get } = setup({
-        imports: [NgxsModule.forRoot([CounterState])],
+        imports: [
+          NgxsModule.forRoot([CounterState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         declarations: [CounterComponent]
       });
       const fixture = TestBed.createComponent(CounterComponent);

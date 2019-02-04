@@ -2,8 +2,8 @@ import {
   NgZone,
   PLATFORM_ID,
   Injectable,
-  Injector,
-  ɵNoopNgZone as NoopNgZone
+  ɵNoopNgZone as NoopNgZone,
+  Inject
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 
@@ -12,12 +12,7 @@ import { ConfigValidator } from '../internal/config-validator';
 
 @Injectable()
 export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionStrategy {
-  private _ngZone: NgZone;
-  private _platformId: Object;
-
-  constructor(_injector: Injector) {
-    this._ngZone = _injector.get(NgZone);
-    this._platformId = _injector.get(PLATFORM_ID);
+  constructor(private _ngZone: NgZone, @Inject(PLATFORM_ID) private _platformId: Object) {
     this.verifyZoneIsNotNooped(this._ngZone);
   }
 

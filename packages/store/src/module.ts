@@ -13,7 +13,8 @@ import {
   ROOT_STATE_TOKEN,
   FEATURE_STATE_TOKEN,
   NgxsConfig,
-  NgxsExecutionStrategy
+  NgxsExecutionStrategy,
+  NGXS_EXECUTION_STRATEGY
 } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
@@ -130,6 +131,10 @@ export class NgxsModule {
         SelectFactory,
         PluginManager,
         ...states,
+        {
+          provide: NGXS_EXECUTION_STRATEGY,
+          useClass: options.executionStrategy || DispatchOutsideZoneNgxsExecutionStrategy
+        },
         {
           provide: ROOT_STATE_TOKEN,
           useValue: states

@@ -10,6 +10,10 @@ export const META_KEY = 'NGXS_META';
 export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 
+export const NGXS_EXECUTION_STRATEGY = new InjectionToken<NgxsExecutionStrategy>(
+  'NGXS_EXECUTION_STRATEGY'
+);
+
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
