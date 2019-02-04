@@ -1,5 +1,3 @@
-import { NgZone } from '@angular/core';
-
 import { MonoTypeOperatorFunction, Observable, Observer } from 'rxjs';
 import { NgxsExecutionStrategy } from '../symbols';
 

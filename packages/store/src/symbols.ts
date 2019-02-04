@@ -1,7 +1,8 @@
-import { Injectable, InjectionToken } from '@angular/core';
+import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ObjectKeyMap } from './internal/internals';
+import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatchOutsideZoneNgxsExecutionStrategy';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
@@ -37,7 +38,7 @@ export class NgxsConfig {
    * server side rendering, as dispatching on the server is still wrapped into `zone.run`.
    * (default: null)
    */
-  outsideZone: boolean | null = null;
+  executionStrategy: Type<NgxsExecutionStrategy>;
   /**
    * Defining the default state before module initialization
    * This is convenient if we need to create a define our own set of states.
@@ -49,6 +50,7 @@ export class NgxsConfig {
     this.compatibility = {
       strictContentSecurityPolicy: false
     };
+    this.executionStrategy = DispatchOutsideZoneNgxsExecutionStrategy;
   }
 }
 
