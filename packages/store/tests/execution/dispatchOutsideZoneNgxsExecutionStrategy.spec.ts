@@ -8,6 +8,12 @@ import {
   PlatformRef
 } from '@angular/core';
 import { TestBed, TestModuleMetadata, async } from '@angular/core/testing';
+import {
+  ɵDomAdapter as DomAdapter,
+  ɵBrowserDomAdapter as BrowserDomAdapter,
+  BrowserModule,
+  DOCUMENT
+} from '@angular/platform-browser';
 
 import { Observable } from 'rxjs';
 
@@ -20,13 +26,7 @@ import {
   Select,
   Actions
 } from '../../src/public_api';
-import {
-  ɵDomAdapter as DomAdapter,
-  ɵBrowserDomAdapter as BrowserDomAdapter,
-  BrowserModule,
-  DOCUMENT
-} from '@angular/platform-browser';
-import { DispatchOutsideZoneNgxsExecutionStrategy } from '@ngxs/store/src/execution/dispatchOutsideZoneNgxsExecutionStrategy';
+import { DispatchOutsideZoneNgxsExecutionStrategy } from '../../src/execution/dispatchOutsideZoneNgxsExecutionStrategy';
 
 describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
   class ZoneCounter {
