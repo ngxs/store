@@ -11,6 +11,7 @@ $ npm install @ngxs/store@dev
 * Feature: Add possible inheritance of state options [#750](https://github.com/ngxs/store/pull/750)
 * Feature: Add new lifecycle hook `ngxsAfterBootstrap` [#753](https://github.com/ngxs/store/pull/753)
 * Feature: Add `outsideZone` option to the config [#761](https://github.com/ngxs/store/pull/761)
+* Feature: Add state operators: `patch, updateItem, removeItem, insertItem, append, compose` [#799](https://github.com/ngxs/store/pull/799/)
 * Fix: Expose `ActionCompletion` [#752](https://github.com/ngxs/store/pull/752)
 * Fix: Throw error when found duplicate state names [#791](https://github.com/ngxs/store/pull/791)
 
