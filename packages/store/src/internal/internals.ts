@@ -1,12 +1,15 @@
+import { Observable } from 'rxjs';
+
 import {
   ActionOptions,
   META_KEY,
   META_OPTIONS_KEY,
+  ModuleOptions,
   NgxsConfig,
   SELECTOR_META_KEY,
   StoreOptions
 } from '../symbols';
-import { Observable } from 'rxjs';
+import { NgxsBootstrapper } from '../../internals/src/ngxs-bootstrapper';
 
 export interface ObjectKeyMap<T> {
   [key: string]: T;
@@ -351,4 +354,12 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
  */
 export function isObject(obj: any) {
   return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';
+}
+
+export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
+  return Object.assign(new NgxsConfig(), options);
+}
+
+export function appBootstrapListenerFactory(bootstrapper: NgxsBootstrapper) {
+  return () => bootstrapper.bootstrap();
 }
