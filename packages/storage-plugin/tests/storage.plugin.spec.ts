@@ -50,7 +50,9 @@ describe('NgxsStoragePlugin', () => {
   });
 
   it('should get initial data from localstorage', () => {
-    localStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
+    const test = JSON.stringify({ counter: { count: 100 } });
+    localStorage.setItem('@@STATE', test);
+    expect(localStorage.getItem('@@STATE')).toBe(test);
 
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([MyStore]), NgxsStoragePluginModule.forRoot()]
@@ -66,8 +68,6 @@ describe('NgxsStoragePlugin', () => {
   });
 
   it('should save data to localstorage', () => {
-    localStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
-
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([MyStore]), NgxsStoragePluginModule.forRoot()]
     });
@@ -83,10 +83,10 @@ describe('NgxsStoragePlugin', () => {
     store
       .select((state: any) => state.counter)
       .subscribe((state: StateModel) => {
-        expect(state.count).toBe(105);
+        expect(state.count).toBe(5);
 
         expect(localStorage.getItem('@@STATE')).toBe(
-          JSON.stringify({ counter: { count: 105 } })
+          JSON.stringify({ counter: { count: 5 } })
         );
       });
   });
@@ -133,7 +133,7 @@ describe('NgxsStoragePlugin', () => {
     it(`should use default data if the string 'undefined' retrieved from localstorage`, () => {
       localStorage.setItem('@@STATE', 'undefined');
 
-      @State<StateModel>({ name: 'testStore', defaults: { count: 123 } })
+      @State<StateModel>({ name: 'counter', defaults: { count: 123 } })
       class TestStore {}
 
       TestBed.configureTestingModule({
@@ -224,7 +224,7 @@ describe('NgxsStoragePlugin', () => {
       });
   });
 
-  it('should correct get data from session storage', () => {
+  it('should correctly get data from session storage', () => {
     sessionStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
 
     TestBed.configureTestingModule({
@@ -246,8 +246,6 @@ describe('NgxsStoragePlugin', () => {
   });
 
   it('should save data to sessionStorage', () => {
-    sessionStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
-
     TestBed.configureTestingModule({
       imports: [
         NgxsModule.forRoot([MyStore]),
@@ -268,10 +266,10 @@ describe('NgxsStoragePlugin', () => {
     store
       .select((state: any) => state.counter)
       .subscribe((state: StateModel) => {
-        expect(state.count).toBe(105);
+        expect(state.count).toBe(5);
 
         expect(sessionStorage.getItem('@@STATE')).toBe(
-          JSON.stringify({ counter: { count: 105 } })
+          JSON.stringify({ counter: { count: 5 } })
         );
       });
   });
@@ -286,24 +284,27 @@ describe('NgxsStoragePlugin', () => {
         }
       };
 
-      get length() {
+      async length() {
         return Object.keys(CustomStorage.Storage).length;
       }
 
-      getItem(key: string) {
+      async getItem(key: string) {
         return CustomStorage.Storage[key];
       }
 
-      setItem(key: string, val: any) {
+      async setItem(key: string, val: any) {
         CustomStorage.Storage[key] = val;
+        return;
       }
 
-      removeItem(key: string) {
+      async removeItem(key: string) {
         delete CustomStorage.Storage[key];
+        return;
       }
 
-      clear() {
+      async clear() {
         CustomStorage.Storage = {};
+        return;
       }
     }
 
@@ -360,6 +361,7 @@ describe('NgxsStoragePlugin', () => {
     store
       .select((state: any) => state)
       .subscribe((state: { counter: StateModel; lazyLoaded: StateModel }) => {
+        console.error('should merge state', state);
         expect(state.lazyLoaded).toBeDefined();
       });
   });

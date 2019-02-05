@@ -59,9 +59,9 @@ export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_STORAGE_PLUG
 export const STORAGE_ENGINE = new InjectionToken('STORAGE_ENGINE');
 
 export interface StorageEngine {
-  readonly length: number;
-  getItem(key: string): any;
-  setItem(key: string, val: any): void;
-  removeItem(key: string): void;
-  clear(): void;
+  readonly length: () => Promise<number>;
+  getItem(key: string): Promise<any>;
+  setItem(key: string, val: any): Promise<void>;
+  removeItem(key: string): Promise<void>;
+  clear(): Promise<void>;
 }

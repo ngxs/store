@@ -34,36 +34,41 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     if (isInitAction) {
       for (const key of keys) {
         const isMaster = key === '@@STATE';
-        let val: any = this._engine.getItem(key!);
 
-        if (val !== 'undefined' && typeof val !== 'undefined' && val !== null) {
-          try {
-            val = options.deserialize!(val);
-          } catch (e) {
-            console.error(
-              'Error ocurred while deserializing the store value, falling back to empty object.'
-            );
-            val = {};
-          }
+        // pretty sure this is failing
+        this._engine.getItem(key!).then(val => {
+          if (val !== 'undefined' && typeof val !== 'undefined' && val !== null) {
+            try {
+              val = options.deserialize!(val);
+              console.warn('storage: initAction val', val);
+            } catch (e) {
+              console.error(
+                'Error ocurred while deserializing the store value, falling back to empty object.'
+              );
+              val = {};
+            }
 
-          if (options.migrations) {
-            options.migrations.forEach(strategy => {
-              const versionMatch =
-                strategy.version === getValue(val, strategy.versionKey || 'version');
-              const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
-              if (versionMatch && keyMatch) {
-                val = strategy.migrate(val);
-                hasMigration = true;
-              }
-            });
-          }
+            if (options.migrations) {
+              options.migrations.forEach(strategy => {
+                const versionMatch =
+                  strategy.version === getValue(val, strategy.versionKey || 'version');
+                const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
+                if (versionMatch && keyMatch) {
+                  val = strategy.migrate(val);
+                  hasMigration = true;
+                }
+              });
+            }
 
-          if (!isMaster) {
-            state = setValue(state, key!, val);
-          } else {
-            state = { ...state, ...val };
+            if (!isMaster) {
+              console.warn(key, val);
+              state = setValue(state, key!, val);
+            } else {
+              console.warn(val);
+              state = { ...state, ...val };
+            }
           }
-        }
+        });
       }
     }
 
@@ -77,13 +82,11 @@ export class NgxsStoragePlugin implements NgxsPlugin {
               val = getValue(nextState, key!);
             }
 
-            try {
-              this._engine.setItem(key!, options.serialize!(val));
-            } catch (e) {
+            this._engine.setItem(key!, options.serialize!(val)).catch(e => {
               console.error(
                 'Error ocurred while serializing the store value, value not updated.'
               );
-            }
+            });
           }
         }
       })

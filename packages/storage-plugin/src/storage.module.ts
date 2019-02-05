@@ -10,6 +10,8 @@ import {
   StorageEngine
 } from './symbols';
 
+import { SimpleSynchronizedStorage } from './storage-engine';
+
 export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
   return {
     key: '@@STATE',
@@ -23,11 +25,11 @@ export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
 export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine | null {
   if (options.storage === StorageOption.LocalStorage) {
     // todo: remove any here
-    return <any>localStorage;
+    return new SimpleSynchronizedStorage(localStorage);
   } else if (options.storage === StorageOption.SessionStorage) {
-    return <any>sessionStorage;
+    return new SimpleSynchronizedStorage(sessionStorage);
   }
-
+  console.warn('engineFactory returns null');
   return null;
 }
 
