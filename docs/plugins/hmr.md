@@ -113,7 +113,7 @@ if (environment.production) {
 const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
 if (environment.hmr) {
-  if (module[ 'hot' ]) {
+  if (module['hot']) {
     hmr(module, bootstrap).catch(err => console.error(err));
   } else {
     console.error('HMR is not enabled for webpack-dev-server!');
@@ -132,7 +132,6 @@ import { NgxsHmrLifeCycle, NgxsHmrSnapshot as Snapshot } from '@ngxs/hmr-plugin'
 
 @NgModule({ .. })
 export class AppBrowserModule implements NgxsHmrLifeCycle<Snapshot> {
-
   public hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {
     ctx.patchState(snapshot);
   }
@@ -140,7 +139,6 @@ export class AppBrowserModule implements NgxsHmrLifeCycle<Snapshot> {
   public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<Snapshot>): Partial<Snapshot> {
     return ctx.getState();
   }
-
 }
 ```
 
@@ -166,24 +164,21 @@ Now if you make changes to one of your components, those changes should be visib
 
 ### HMR lifecycle
 
-If you want to do some additional manipulations with the states during the hmr lifecycle, you can use the built-in actions. However, this does not work for production.
+If you want to do some modifications to the state during the hmr lifecycle you can use these built-in actions. They will not be executed in production.
 
 ```ts
 import { HmrInitAction, HmrBeforeDestroyAction } from '@ngxs/hmr-plugin';
 
 @State({ ... })
 export class MyState {
-  
   @Action(HmrInitAction)
   public hmrInit(ctx: StateContext, { payload }) {
     ctx.setState({ ... })
   }
-  
-  
+
   @Action(HmrBeforeDestroyAction)
   public hrmBeforeDestroy(ctx: StateContext, { payload }) {
     ctx.setState({ ... })
   }
-  
 }
 ```

@@ -37,25 +37,25 @@ export class HmrLifecycle<T extends NgxsHmrLifeCycle<S>, S> {
     return state;
   }
 
-  private stateEventLoop(frame: HmrCallback<S>) {
-    if (this.storage.existHmrStorage) {
-      const appBootstrapped$: Observable<unknown> = this.bootstrap.appBootstrapped$;
-      const state$: Observable<unknown> = this.context.store.select(state => state);
+  private stateEventLoop(callback: HmrCallback<S>): void {
+    if (!this.storage.existHmrStorage) return;
 
-      appBootstrapped$.subscribe(() => {
-        let eventId: number;
-        const storeEventId: Subscription = state$.subscribe(() => {
-          // setTimeout used for zone detection after set hmr state
-          clearInterval(eventId);
-          eventId = window.setTimeout(() => {
-            // close check on the message queue
-            storeEventId.unsubscribe();
-            // if events are no longer running on the call stack,
-            // then we can update the state
-            frame(this.context.createStateContext(), this.storage.snapshot);
-          }, this.options.deferTime);
-        });
+    const appBootstrapped$: Observable<unknown> = this.bootstrap.appBootstrapped$;
+    const state$: Observable<unknown> = this.context.store.select(state => state);
+
+    appBootstrapped$.subscribe(() => {
+      let eventId: number;
+      const storeEventId: Subscription = state$.subscribe(() => {
+        // setTimeout used for zone detection after set hmr state
+        clearInterval(eventId);
+        eventId = window.setTimeout(() => {
+          // close check on the message queue
+          storeEventId.unsubscribe();
+          // if events are no longer running on the call stack,
+          // then we can update the state
+          callback(this.context.createStateContext(), this.storage.snapshot);
+        }, this.options.deferTime);
       });
-    }
+    });
   }
 }
