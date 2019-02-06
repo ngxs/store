@@ -101,7 +101,7 @@ Update src/main.ts to use the file we just created:
 ```ts
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { hmrNgxsBootstrap } from '@ngxs/hmr-plugin';
+import { hmr } from '@ngxs/hmr-plugin';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
@@ -113,8 +113,8 @@ if (environment.production) {
 const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
 if (environment.hmr) {
-  if (module[ 'hot' ]) {
-    hmrNgxsBootstrap(module, bootstrap);
+  if (module['hot']) {
+    hmr(module, bootstrap).catch(err => console.error(err));
   } else {
     console.error('HMR is not enabled for webpack-dev-server!');
     console.log('Are you using the --hmr flag for ng serve?');
@@ -128,23 +128,17 @@ if (environment.hmr) {
 
 ```ts
 import { StateContext } from '@ngxs/store';
-import { NgxsHmrLifeCycle, NgxsStoreSnapshot } from '@ngxs/hmr-plugin';
+import { NgxsHmrLifeCycle, NgxsHmrSnapshot as Snapshot } from '@ngxs/hmr-plugin';
 
 @NgModule({ .. })
-export class AppBrowserModule implements NgxsHmrLifeCycle<NgxsStoreSnapshot> {
-
-  public hmrNgxsStoreOnInit(ctx: StateContext<NgxsStoreSnapshot>, snapshot: NgxsStoreSnapshot) {
-    console.log('[NGXS HMR] Current state', ctx.getState());
-    console.log('[NGXS HMR] Previous state', snapshot);
+export class AppBrowserModule implements NgxsHmrLifeCycle<Snapshot> {
+  public hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {
     ctx.patchState(snapshot);
   }
 
-  public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<NgxsStoreSnapshot>): NgxsStoreSnapshot  {
-    const snapshot: NgxsStoreSnapshot = ctx.getState();
-    console.log('[NGXS HMR] Saved state before on destroy', snapshot);
-    return snapshot;
+  public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<Snapshot>): Partial<Snapshot> {
+    return ctx.getState();
   }
-
 }
 ```
 
@@ -167,3 +161,24 @@ NOTICE Hot Module Replacement (HMR) is enabled for the dev server.
 ```
 
 Now if you make changes to one of your components, those changes should be visible automatically without a complete browser refresh.
+
+### HMR lifecycle
+
+If you want to do some modifications to the state during the hmr lifecycle you can use these built-in actions. They will not be executed in production.
+
+```ts
+import { HmrInitAction, HmrBeforeDestroyAction } from '@ngxs/hmr-plugin';
+
+@State({ ... })
+export class MyState {
+  @Action(HmrInitAction)
+  public hmrInit(ctx: StateContext, { payload }) {
+    ctx.setState({ ... })
+  }
+
+  @Action(HmrBeforeDestroyAction)
+  public hrmBeforeDestroy(ctx: StateContext, { payload }) {
+    ctx.setState({ ... })
+  }
+}
+```
