@@ -1,5 +1,5 @@
 import { MonoTypeOperatorFunction, Observable, Observer } from 'rxjs';
-import { NgxsExecutionStrategy } from '../symbols';
+import { NgxsExecutionStrategy } from '../execution/symbols';
 
 /**
  * Returns operator that will run

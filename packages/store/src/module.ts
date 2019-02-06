@@ -9,13 +9,8 @@ import {
 
 import { NgxsBootstrapper } from '@ngxs/store/internals';
 
-import {
-  ROOT_STATE_TOKEN,
-  FEATURE_STATE_TOKEN,
-  NgxsConfig,
-  NgxsExecutionStrategy,
-  NGXS_EXECUTION_STRATEGY
-} from './symbols';
+import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
+import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';

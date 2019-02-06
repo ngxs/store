@@ -2,6 +2,7 @@ import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ObjectKeyMap } from './internal/internals';
+import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatchOutsideZoneNgxsExecutionStrategy';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
@@ -9,10 +10,6 @@ export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN'
 export const META_KEY = 'NGXS_META';
 export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
-
-export const NGXS_EXECUTION_STRATEGY = new InjectionToken<NgxsExecutionStrategy>(
-  'NGXS_EXECUTION_STRATEGY'
-);
 
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
@@ -153,13 +150,3 @@ export interface NgxsAfterBootstrap {
 }
 
 export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;
-
-export type FunctionCall = <T>(func: (...args: any[]) => T) => T;
-
-/*
- * Execution strategy interface
- */
-export interface NgxsExecutionStrategy {
-  enter<T>(func: (...args: any[]) => T): T;
-  leave<T>(func: (...args: any[]) => T): T;
-}

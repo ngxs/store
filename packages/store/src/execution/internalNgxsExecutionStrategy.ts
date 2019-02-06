@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 
-import { NgxsExecutionStrategy, NGXS_EXECUTION_STRATEGY } from '../symbols';
+import { NgxsExecutionStrategy, NGXS_EXECUTION_STRATEGY } from './symbols';
 
 @Injectable()
 export class InternalNgxsExecutionStrategy implements NgxsExecutionStrategy {

@@ -7,8 +7,7 @@ import {
 } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 
-import { NgxsExecutionStrategy } from '../symbols';
-import { ConfigValidator } from '../internal/config-validator';
+import { NgxsExecutionStrategy } from './symbols';
 
 @Injectable()
 export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionStrategy {
@@ -19,9 +18,8 @@ export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionSt
   enter<T>(func: (...args: any[]) => T): T {
     if (isPlatformServer(this._platformId)) {
       return this.runInsideAngular(func);
-    } else {
-      return this.runOutsideAngular(func);
     }
+    return this.runOutsideAngular(func);
   }
 
   leave<T>(func: (...args: any[]) => T): T {
