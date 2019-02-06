@@ -8,11 +8,11 @@ export class InternalNgxsExecutionStrategy implements NgxsExecutionStrategy {
     @Inject(NGXS_EXECUTION_STRATEGY) private _executionStrategy: NgxsExecutionStrategy
   ) {}
 
-  enter<T>(func: (...args: any[]) => T): T {
+  enter<T>(func: () => T): T {
     return this._executionStrategy.enter(func);
   }
 
-  leave<T>(func: (...args: any[]) => T): T {
+  leave<T>(func: () => T): T {
     return this._executionStrategy.leave(func);
   }
 }

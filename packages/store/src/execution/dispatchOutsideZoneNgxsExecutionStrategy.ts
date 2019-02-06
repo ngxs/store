@@ -8,6 +8,7 @@ import {
 import { isPlatformServer } from '@angular/common';
 
 import { NgxsExecutionStrategy } from './symbols';
+import { FunctionExpression } from 'typescript';
 
 @Injectable()
 export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionStrategy {
@@ -15,25 +16,25 @@ export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionSt
     this.verifyZoneIsNotNooped(this._ngZone);
   }
 
-  enter<T>(func: (...args: any[]) => T): T {
+  enter<T>(func: () => T): T {
     if (isPlatformServer(this._platformId)) {
       return this.runInsideAngular(func);
     }
     return this.runOutsideAngular(func);
   }
 
-  leave<T>(func: (...args: any[]) => T): T {
+  leave<T>(func: () => T): T {
     return this.runInsideAngular(func);
   }
 
-  private runInsideAngular<T>(func: (...args: any[]) => T): T {
+  private runInsideAngular<T>(func: () => T): T {
     if (NgZone.isInAngularZone()) {
       return func();
     }
     return this._ngZone.run(func);
   }
 
-  private runOutsideAngular<T>(func: (...args: any[]) => T): T {
+  private runOutsideAngular<T>(func: () => T): T {
     if (NgZone.isInAngularZone()) {
       return this._ngZone.runOutsideAngular(func);
     }

@@ -1,5 +1,8 @@
 import { InjectionToken } from '@angular/core';
 
+/*
+ * Internal execution strategy injection token
+ */
 export const NGXS_EXECUTION_STRATEGY = new InjectionToken<NgxsExecutionStrategy>(
   'NGXS_EXECUTION_STRATEGY'
 );
@@ -8,6 +11,6 @@ export const NGXS_EXECUTION_STRATEGY = new InjectionToken<NgxsExecutionStrategy>
  * Execution strategy interface
  */
 export interface NgxsExecutionStrategy {
-  enter<T>(func: (...args: any[]) => T): T;
-  leave<T>(func: (...args: any[]) => T): T;
+  enter<T>(func: () => T): T;
+  leave<T>(func: () => T): T;
 }
