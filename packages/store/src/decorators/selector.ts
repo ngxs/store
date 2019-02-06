@@ -10,7 +10,7 @@ export function Selector(selectors?: any[]) {
 
       const memoizedFn = createSelector(
         selectors,
-        originalFn,
+        originalFn.bind(target),
         { containerClass: target, selectorName: methodName }
       );
 
