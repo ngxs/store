@@ -1,6 +1,12 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { NgxsModule, Actions, ofAction, Store } from '@ngxs/store';
-import { NgxsWebsocketPluginModule, ConnectWebSocket, SendWebSocketMessage } from '../';
+import {
+  NgxsWebsocketPluginModule,
+  ConnectWebSocket,
+  SendWebSocketMessage,
+  DisconnectWebSocket,
+  WebSocketDisconnected
+} from '../';
 import { Server, WebSocket } from 'mock-socket';
 import { take } from 'rxjs/operators';
 
@@ -34,9 +40,9 @@ describe('NgxsWebsocketPlugin', () => {
     actions$ = TestBed.get(Actions);
   });
 
-  it('should forward socket message to store', fakeAsync((done: () => void) => {
-    const mockServer = new Server(SOCKET_URL);
+  const mockServer = new Server(SOCKET_URL);
 
+  it('should forward socket message to store', fakeAsync((done: () => void) => {
     mockServer.on('connection', (socket: any) => {
       mockServer.on('message', (data: any) => socket.send(data));
       tick(1000);
@@ -51,8 +57,23 @@ describe('NgxsWebsocketPlugin', () => {
         )
         .subscribe(({ payload }: any) => {
           expect(payload).toBe('from websocket');
-          mockServer.stop(done);
+          done();
         });
     });
+  }));
+
+  it('should dispatch WebSocketDisconnected on disconnect', fakeAsync((done: () => void) => {
+    actions$
+      .pipe(
+        ofAction(WebSocketDisconnected),
+        take(1)
+      )
+      .subscribe(() => {
+        expect('called').toBe('called');
+        mockServer.stop(done);
+        done();
+      });
+
+    store.dispatch(new DisconnectWebSocket());
   }));
 });
