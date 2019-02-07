@@ -109,8 +109,9 @@ export class AppComponent {
 
 Here is a list of all the available actions you have:
 
-- `ConnectWebSocket`: Action dispatched when you want to init the websocket. Optionally pass URL here.
-- `DisconnectWebSocket`: Action dispatched when the websockets disconnect.
+- `ConnectWebSocket`: Dispatch this action when you want to init the websocket. Optionally pass URL here.
+- `DisconnectWebSocket`: Dispatch this Action to disconnect a websockets.
+- `WebSocketDisconnected`: Action dispatched when websocket is disconnected. Use its reducer for reconnecting.
 - `SendWebSocketMessage`: Send a message to the server.
-- `WebsocketMessageError`: Error ocurred when receiving a message.
+- `WebsocketMessageError`: Action dispatched by this plugin when an error ocurrs upon receiving a message.
 
