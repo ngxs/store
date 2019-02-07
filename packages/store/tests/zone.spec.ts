@@ -194,7 +194,7 @@ describe('zone', () => {
     });
   });
 
-  it('action should be handled outside zone if "outsideZone" equals true', () => {
+  it('action should be handled outside zone if NoopNgxsExecutionStrategy is used', () => {
     class FooAction {
       public static readonly type = 'Foo';
     }

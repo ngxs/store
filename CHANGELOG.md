@@ -10,7 +10,7 @@ $ npm install @ngxs/store@dev
 * Feature: Add `Hot Module Replacement` plugin for manage states [#707](https://github.com/ngxs/store/pull/707)
 * Feature: Add possible inheritance of state options [#750](https://github.com/ngxs/store/pull/750)
 * Feature: Add new lifecycle hook `ngxsAfterBootstrap` [#753](https://github.com/ngxs/store/pull/753)
-* Feature: Add `outsideZone` option to the config [#761](https://github.com/ngxs/store/pull/761)
+* Feature: Add ability to change the Execution strategy (decouple from zone.js) [#811](https://github.com/ngxs/store/pull/811)
 * Fix: Expose `ActionCompletion` [#752](https://github.com/ngxs/store/pull/752)
 * Fix: Throw error when found duplicate state names [#791](https://github.com/ngxs/store/pull/791)
 

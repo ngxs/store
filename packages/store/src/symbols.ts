@@ -34,9 +34,14 @@ export class NgxsConfig {
     strictContentSecurityPolicy: boolean;
   };
   /**
-   * Determines whether to perform async operations inside or outside Angular's zone, every `zone.run`
-   * causes Angular to run change detection on the whole tree (`app.tick()`). P.S. this will not break
-   * server side rendering, as dispatching on the server is still wrapped into `zone.run`.
+   * Determines the execution context to perform async operations inside. An implementation can be
+   * provided to override the default behaviour where the async operations are run
+   * outside Angular's zone but all observable behaviours of NGXS are run back inside Angular's zone.
+   * These observable behaviours are from:
+   *   `@Select(...)`, `store.select(...)`, `actions.subscribe(...)` or `store.dispatch(...).subscribe(...)`
+   * Every `zone.run` causes Angular to run change detection on the whole tree (`app.tick()`) so of your
+   * application doesn't rely on zone.js running change detection then you can switch to the
+   * `NoopNgxsExecutionStrategy` that doesn't interact with zones.
    * (default: null)
    */
   executionStrategy: Type<NgxsExecutionStrategy>;
