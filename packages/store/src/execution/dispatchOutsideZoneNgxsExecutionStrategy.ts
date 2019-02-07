@@ -8,7 +8,6 @@ import {
 import { isPlatformServer } from '@angular/common';
 
 import { NgxsExecutionStrategy } from './symbols';
-import { FunctionExpression } from 'typescript';
 
 @Injectable()
 export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionStrategy {

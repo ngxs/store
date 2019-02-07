@@ -5,14 +5,14 @@ import { NgxsConfig } from '../symbols';
 
 @Injectable()
 export class ConfigValidator {
-  constructor(private config: NgxsConfig) {}
+  constructor(private _config: NgxsConfig) {}
 
   public verifyDevMode(): void {
     if (isAngularInTestMode()) {
       return;
     }
 
-    const isNgxsDevMode = this.config.developmentMode;
+    const isNgxsDevMode = this._config.developmentMode;
     const isNgDevMode = isDevMode();
     const incorrectProduction = !isNgDevMode && isNgxsDevMode;
     const incorrectDevelopment = isNgDevMode && !isNgxsDevMode;
