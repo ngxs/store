@@ -63,7 +63,11 @@ This is not the only operator, we introduce much more that can be used along wit
 If you want to update the value of a property based on some condition - you can use `iif`, it's signature is:
 
 ```TS
-iif<T>(condition: Predicate<T> | boolean, trueOperatorOrValue: StateOperator<T> | T, elseOperatorOrValue?: StateOperator<T> | T): StateOperator<T>
+iif<T>(
+  condition: Predicate<T> | boolean,
+  trueOperatorOrValue: StateOperator<T> | T,
+  elseOperatorOrValue?: StateOperator<T> | T
+): StateOperator<T>
 ```
 
 If you want to update an item in the array using an operator or value - you can use `updateItem`, it's signature is:
