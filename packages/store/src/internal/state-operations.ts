@@ -20,7 +20,6 @@ export class InternalStateOperations {
     configValidator: ConfigValidator
   ) {
     configValidator.verifyDevMode();
-    configValidator.verifyZoneIsNotNooped();
   }
 
   /**

@@ -1,18 +1,18 @@
-import { Injectable, NgZone, isDevMode, ɵNoopNgZone as NoopNgZone } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 
 import { isAngularInTestMode } from '../utils/angular';
 import { NgxsConfig } from '../symbols';
 
 @Injectable()
 export class ConfigValidator {
-  constructor(private config: NgxsConfig, private zone: NgZone) {}
+  constructor(private _config: NgxsConfig) {}
 
   public verifyDevMode(): void {
     if (isAngularInTestMode()) {
       return;
     }
 
-    const isNgxsDevMode = this.config.developmentMode;
+    const isNgxsDevMode = this._config.developmentMode;
     const isNgDevMode = isDevMode();
     const incorrectProduction = !isNgDevMode && isNgxsDevMode;
     const incorrectDevelopment = isNgDevMode && !isNgxsDevMode;
@@ -28,15 +28,6 @@ export class ConfigValidator {
       console.warn(
         'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n',
         example
-      );
-    }
-  }
-
-  public verifyZoneIsNotNooped(): void {
-    const outsideZone = !!this.config.outsideZone;
-    if (outsideZone && this.zone instanceof NoopNgZone) {
-      console.warn(
-        '`outsideZone: true` cannot not be applied as your application was bootstrapped with nooped zone'
       );
     }
   }
