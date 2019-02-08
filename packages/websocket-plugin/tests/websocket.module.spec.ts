@@ -6,7 +6,7 @@ import {
   SendWebSocketMessage,
   DisconnectWebSocket,
   WebSocketDisconnected,
-  WebSocketMessageError
+  WebsocketMessageError
 } from '../';
 import { Server, WebSocket } from 'mock-socket';
 import { take } from 'rxjs/operators';
@@ -63,11 +63,11 @@ describe('NgxsWebsocketPlugin', () => {
     });
   }));
 
-  it('should dispatch WebSocketMessageError on error', fakeAsync((done: DoneFn) => {
+  it('should dispatch WebsocketMessageError on error', fakeAsync((done: DoneFn) => {
     tick();
     actions$
       .pipe(
-        ofAction(WebSocketMessageError),
+        ofAction(WebsocketMessageError),
         take(1)
       )
       .subscribe(err => {
