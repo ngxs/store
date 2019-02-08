@@ -11,7 +11,7 @@ import {
 import { Server, WebSocket } from 'mock-socket';
 import { take } from 'rxjs/operators';
 
-fdescribe('NgxsWebsocketPlugin', () => {
+describe('NgxsWebsocketPlugin', () => {
   class SetMessage {
     static readonly type = 'SET_MESSAGE';
     constructor(public payload: string) {}
