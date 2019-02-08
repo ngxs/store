@@ -113,5 +113,5 @@ Here is a list of all the available actions you have:
 - `DisconnectWebSocket`: Dispatch this Action to disconnect a websockets.
 - `WebSocketDisconnected`: Action dispatched when websocket is disconnected. Use its handler for reconnecting.
 - `SendWebSocketMessage`: Send a message to the server.
-- `WebsocketMessageError`: Action dispatched by this plugin when an error ocurrs upon receiving a message.
+- `WebSocketMessageError`: Action dispatched by this plugin when an error ocurrs upon receiving a message.
 

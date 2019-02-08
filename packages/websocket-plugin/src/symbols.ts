@@ -56,7 +56,7 @@ export class ConnectWebSocket {
 /**
  * Action triggered when a error ocurrs
  */
-export class WebsocketMessageError {
+export class WebSocketMessageError {
   static get type() {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Websocket] Message Error';

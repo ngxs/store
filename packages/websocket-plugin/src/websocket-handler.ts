@@ -7,7 +7,7 @@ import {
   SendWebSocketMessage,
   NGXS_WEBSOCKET_OPTIONS,
   NgxsWebsocketPluginOptions,
-  WebsocketMessageError,
+  WebSocketMessageError,
   WebSocketDisconnected
 } from './symbols';
 
@@ -37,7 +37,7 @@ export class WebSocketHandler {
         }
         store.dispatch({ ...msg, type });
       },
-      err => store.dispatch(new WebsocketMessageError(err)),
+      err => store.dispatch(new WebSocketMessageError(err)),
       () => store.dispatch(new WebSocketDisconnected())
     );
   }
