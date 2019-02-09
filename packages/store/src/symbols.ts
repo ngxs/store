@@ -1,9 +1,5 @@
-import { Injectable, InjectionToken, Type } from '@angular/core';
+import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
-
-import { ObjectKeyMap } from './internal/internals';
-import { NgxsExecutionStrategy } from './execution/symbols';
-import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatchOutsideZoneNgxsExecutionStrategy';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
@@ -14,50 +10,8 @@ export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
-/**
- * The NGXS config settings.
- */
-@Injectable()
-export class NgxsConfig {
-  /**
-   * Run in development mode. This will add additional debugging features:
-   * - Object.freeze on the state and actions to guarantee immutability
-   * (default: false)
-   */
-  developmentMode: boolean;
-  compatibility: {
-    /**
-     * Support a strict Content Security Policy.
-     * This will cirumvent some optimisations that violate a strict CSP through the use of `new Function(...)`.
-     * (default: false)
-     */
-    strictContentSecurityPolicy: boolean;
-  };
-  /**
-   * Determines the execution context to perform async operations inside. An implementation can be
-   * provided to override the default behaviour where the async operations are run
-   * outside Angular's zone but all observable behaviours of NGXS are run back inside Angular's zone.
-   * These observable behaviours are from:
-   *   `@Select(...)`, `store.select(...)`, `actions.subscribe(...)` or `store.dispatch(...).subscribe(...)`
-   * Every `zone.run` causes Angular to run change detection on the whole tree (`app.tick()`) so of your
-   * application doesn't rely on zone.js running change detection then you can switch to the
-   * `NoopNgxsExecutionStrategy` that doesn't interact with zones.
-   * (default: null)
-   */
-  executionStrategy: Type<NgxsExecutionStrategy>;
-  /**
-   * Defining the default state before module initialization
-   * This is convenient if we need to create a define our own set of states.
-   * (default: {})
-   */
-  defaultsState: ObjectKeyMap<any> = {};
-
-  constructor() {
-    this.compatibility = {
-      strictContentSecurityPolicy: false
-    };
-    this.executionStrategy = DispatchOutsideZoneNgxsExecutionStrategy;
-  }
+export interface NgxsCompatibility {
+  strictContentSecurityPolicy: boolean;
 }
 
 export interface ActionDef {

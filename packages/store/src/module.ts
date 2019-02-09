@@ -9,12 +9,12 @@ import {
 
 import { NgxsBootstrapper } from '@ngxs/store/internals';
 
-import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
+import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN } from './symbols';
 import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
-import { ConfigValidator } from './internal/config-validator';
+import { ConfigValidator } from './internal/config/config-validator';
 import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatcher, InternalDispatchedActionResults } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
@@ -26,6 +26,7 @@ import { InitState, UpdateState } from './actions/actions';
 import { StateClass } from './internal/internals';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatchOutsideZoneNgxsExecutionStrategy';
 import { InternalNgxsExecutionStrategy } from './execution/internalNgxsExecutionStrategy';
+import { NgxsConfig } from './internal/config/ngxs-config';
 
 /**
  * Root module

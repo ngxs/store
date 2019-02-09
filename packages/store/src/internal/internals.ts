@@ -2,11 +2,12 @@ import {
   ActionOptions,
   META_KEY,
   META_OPTIONS_KEY,
-  NgxsConfig,
   SELECTOR_META_KEY,
   StoreOptions
 } from '../symbols';
 import { Observable } from 'rxjs';
+
+import { NgxsConfig } from './config/ngxs-config';
 
 export interface ObjectKeyMap<T> {
   [key: string]: T;

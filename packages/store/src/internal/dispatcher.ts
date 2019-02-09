@@ -6,7 +6,6 @@ import { compose } from '../utils/compose';
 import { InternalActions, ActionStatus, ActionContext } from '../actions-stream';
 import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
-import { NgxsConfig } from '../symbols';
 import { InternalNgxsExecutionStrategy } from '../execution/internalNgxsExecutionStrategy';
 import { leaveNgxs } from '../operators/leaveNgxs';
 

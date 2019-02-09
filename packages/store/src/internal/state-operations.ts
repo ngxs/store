@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { ConfigValidator } from './config-validator';
+import { ConfigValidator } from './config/config-validator';
 import { StateOperations, StatesAndDefaults } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
-import { NgxsConfig } from '../symbols';
+import { NgxsConfig } from './config/ngxs-config';
 import { deepFreeze } from '../utils/freeze';
 
 /**

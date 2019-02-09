@@ -10,7 +10,7 @@ import {
   takeUntil
 } from 'rxjs/operators';
 
-import { META_KEY, NgxsConfig } from '../symbols';
+import { META_KEY } from '../symbols';
 import {
   buildGraph,
   findFullParentPath,
@@ -33,6 +33,7 @@ import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
 import { InternalStateOperations } from '../internal/state-operations';
+import { NgxsConfig } from './config/ngxs-config';
 
 /**
  * State factory class

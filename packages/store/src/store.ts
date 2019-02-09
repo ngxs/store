@@ -6,7 +6,7 @@ import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
 import { getSelectorFn } from './utils/selector-utils';
 import { InternalStateOperations } from './internal/state-operations';
 import { StateStream } from './internal/state-stream';
-import { NgxsConfig } from './symbols';
+import { NgxsConfig } from './internal/config/ngxs-config';
 import { InternalNgxsExecutionStrategy } from './execution/internalNgxsExecutionStrategy';
 import { leaveNgxs } from './operators/leaveNgxs';
 
