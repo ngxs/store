@@ -25,8 +25,9 @@ Compare these diagrams, we've simplified Redux flow and threw out unnecessary mi
 
 To install `@ngxs-labs/emitter` run the following command:
 
-```console
-npm install @ngxs-labs/emitter
+```bash
+npm install @ngxs-labs/emitter --save
+
 # or if you use yarn
 yarn add @ngxs-labs/emitter
 ```

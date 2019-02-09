@@ -18,8 +18,9 @@ This package simplifies dispatching process, you shouldn't care about `Store` se
 
 To install `@ngxs-labs/dispatch-decorator` run the following command:
 
-```console
-npm install @ngxs-labs/dispatch-decorator
+```bash
+npm install @ngxs-labs/dispatch-decorator --save
+
 # or if you use yarn
 yarn add @ngxs-labs/dispatch-decorator
 ```

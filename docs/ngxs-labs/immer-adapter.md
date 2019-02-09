@@ -20,8 +20,9 @@
 
 To install `@ngxs-labs/immer-adapter` and `immer` that is a peer-dependency run the following command:
 
-```console
-npm install @ngxs-labs/immer-adapter immer
+```bash
+npm install @ngxs-labs/immer-adapter immer --save
+
 # or if you use yarn
 yarn add @ngxs-labs/immer-adapter immer
 ```
