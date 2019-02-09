@@ -1,6 +1,7 @@
 import { async, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
+import { last, first } from 'rxjs/operators';
 
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
@@ -8,8 +9,8 @@ import { Select } from '../src/decorators/select';
 import { Selector } from '../src/decorators/selector';
 import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
-import { last, first } from 'rxjs/operators';
 import { StateContext } from '../src/symbols';
+import { removeDollarAtTheEnd } from '../src/internal/internals';
 
 describe('Select', () => {
   interface SubSubStateModel {
@@ -66,6 +67,33 @@ describe('Select', () => {
   }
 
   const states = [MySubState, MySubSubState, MyState];
+
+  it('should remove dollar sign at the end of property name', () => {
+    expect(removeDollarAtTheEnd('foo$')).toBe('foo');
+    expect(removeDollarAtTheEnd('foo')).toBe('foo');
+
+    @Component({ template: '' })
+    class SelectComponent {
+      @Select()
+      counter$: Observable<any>;
+
+      @Select()
+      counter: Observable<any>;
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [SelectComponent]
+    });
+
+    const { counter$, counter } = TestBed.createComponent(SelectComponent).componentInstance;
+
+    combineLatest(counter$, counter)
+      .pipe(first())
+      .subscribe(([counter1, counter2]) => {
+        expect(counter1).toEqual(counter2);
+      });
+  });
 
   it('should select the correct state using string', async(() => {
     @Component({

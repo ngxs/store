@@ -1,39 +1,27 @@
-import { ApplicationRef, NgModuleRef } from '@angular/core';
-import { createNewHosts } from '@angularclass/hmr';
+import {
+  NgxsHmrLifeCycle,
+  NgxsHmrOptions,
+  NgxsHmrSnapshot,
+  BootstrapModuleType,
+  WebpackModule
+} from './symbols';
+import { HmrManager } from './hmr-manager';
 
-import { hmrInit, hmrDoBootstrap, hmrDoDispose } from './internal';
-import { NgxsHmrLifeCycle, NgxsStoreSnapshot } from './symbols';
-
-export function hmrNgxsBootstrap<T extends NgxsHmrLifeCycle<S>, S = NgxsStoreSnapshot>(
-  module: any,
-  bootstrap: () => Promise<NgModuleRef<T>>,
-  autoClearLogs: boolean = true
+export async function hmr<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot>(
+  module: WebpackModule,
+  bootstrap: BootstrapModuleType<T>,
+  options: NgxsHmrOptions<T, S> = {}
 ) {
-  let ngModule: NgModuleRef<T>;
-  hmrInit();
+  const manager = new HmrManager<T, S>(module, options);
+
   module.hot.accept();
 
-  const promise = bootstrap().then(
-    (ref: NgModuleRef<T>) => (ngModule = hmrDoBootstrap<T, S>(ref))
-  );
+  return await manager.hmrModule(bootstrap, () => {
+    manager.beforeModuleBootstrap();
 
-  module.hot.dispose(() => {
-    if (!ngModule) {
-      console.log('Angular application not bootstrapped! NGXS Hot Reloading skipped...');
-      return;
-    }
-    if (autoClearLogs) {
-      console.clear();
-      console.log('[NGXS HMR] clear old logs...');
-    }
-
-    hmrDoDispose<T, S>(ngModule);
-
-    const appRef: ApplicationRef = ngModule.injector.get(ApplicationRef);
-    const elements = appRef.components.map(c => c.location.nativeElement);
-    const removeOldHosts = createNewHosts(elements);
-    removeOldHosts();
+    module.hot.dispose(async () => {
+      await manager.beforeModuleOnDestroy();
+      await manager.createNewModule();
+    });
   });
-
-  return promise;
 }

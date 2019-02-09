@@ -13,6 +13,9 @@
       "flatModuleFile": "ngxs-hmr-plugin",
       "entryFile": "index.ts",
       "umdModuleIds": {
+        "@angularclass/hmr": "angularclass-hmr",
+        "@ngxs/store/operators": "ngxs-store-operators",
+        "@ngxs/store/internals": "ngxs-store-internals",
         "@ngxs/store": "ngxs-store"
       }
     },

@@ -6,7 +6,8 @@ import { NgModule } from '@angular/core';
     RouterModule.forRoot([
       { path: '', pathMatch: 'full', redirectTo: '/list' },
       { path: 'list', loadChildren: '@integration/list/list.module#ListModule' },
-      { path: 'detail', loadChildren: '@integration/detail/detail.module#DetailModule' }
+      { path: 'detail', loadChildren: '@integration/detail/detail.module#DetailModule' },
+      { path: 'counter', loadChildren: '@integration/counter/counter.module#CounterModule' }
     ])
   ],
   exports: [RouterModule]

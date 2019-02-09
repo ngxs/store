@@ -1,5 +1,5 @@
 // tslint:disable:unified-signatures
-import { Injectable, NgZone, Type } from '@angular/core';
+import { Injectable, Type } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
 
@@ -7,17 +7,18 @@ import { getSelectorFn } from './utils/selector-utils';
 import { InternalStateOperations } from './internal/state-operations';
 import { StateStream } from './internal/state-stream';
 import { NgxsConfig } from './symbols';
-import { enterZone } from './operators/zone';
+import { InternalNgxsExecutionStrategy } from './execution/internalNgxsExecutionStrategy';
+import { leaveNgxs } from './operators/leaveNgxs';
 
 @Injectable()
 export class Store {
   constructor(
-    private _ngZone: NgZone,
     private _stateStream: StateStream,
     private _internalStateOperations: InternalStateOperations,
-    private config: NgxsConfig
+    private _config: NgxsConfig,
+    private _internalExecutionStrategy: InternalNgxsExecutionStrategy
   ) {
-    this._stateStream.next(this.config.defaultsState);
+    this._stateStream.next(this._config.defaultsState);
   }
 
   /**
@@ -46,7 +47,7 @@ export class Store {
         throw err;
       }),
       distinctUntilChanged(),
-      enterZone(this.config.outsideZone, this._ngZone)
+      leaveNgxs(this._internalExecutionStrategy)
     );
   }
 
@@ -74,9 +75,7 @@ export class Store {
    * Allow the user to subscribe to the root of the state
    */
   subscribe(fn?: (value: any) => void): Subscription {
-    return this._stateStream
-      .pipe(enterZone(this.config.outsideZone, this._ngZone))
-      .subscribe(fn);
+    return this._stateStream.pipe(leaveNgxs(this._internalExecutionStrategy)).subscribe(fn);
   }
 
   /**

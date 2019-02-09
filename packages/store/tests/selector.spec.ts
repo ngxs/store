@@ -98,6 +98,35 @@ describe('Selector', () => {
       expect(slice).toBe('HelloHelloWorld');
     }));
 
+    it('context should be defined inside selector', () => {
+      @State<any>({
+        name: 'counter',
+        defaults: {
+          value: 0
+        }
+      })
+      class TestState {
+        @Selector()
+        static foo(state: any) {
+          expect(this).toBe(TestState);
+          const bar = this.bar();
+          expect(bar).toEqual(10);
+          return state.value;
+        }
+
+        static bar() {
+          return 10;
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TestState])]
+      });
+
+      const store: Store = TestBed.get(Store);
+      store.selectSnapshot(TestState.foo);
+    });
+
     describe('(memoization)', () => {
       it('should memoize the last result', async(() => {
         const selectorCalls: string[] = [];

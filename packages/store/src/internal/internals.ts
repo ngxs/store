@@ -363,3 +363,16 @@ export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
 export function appBootstrapListenerFactory(bootstrapper: NgxsBootstrapper) {
   return () => bootstrapper.bootstrap();
 }
+
+const DOLLAR_CHAR_CODE = 36;
+
+/**
+ * If `foo$` => make it just `foo`
+ *
+ * @ignore
+ */
+export function removeDollarAtTheEnd(name: string): string {
+  const lastCharIndex = name.length - 1;
+  const dollarAtTheEnd = name.charCodeAt(lastCharIndex) === DOLLAR_CHAR_CODE;
+  return dollarAtTheEnd ? name.slice(0, lastCharIndex) : name;
+}

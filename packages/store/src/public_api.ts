@@ -23,3 +23,5 @@ export { StateContext, StateOperator, NgxsOnInit, NgxsAfterBootstrap } from './s
 export { Selector } from './decorators/selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
 export { createSelector } from './utils/selector-utils';
+export { NgxsExecutionStrategy } from './execution/symbols';
+export { NoopNgxsExecutionStrategy } from './execution/noopNgxsExecutionStrategy';
