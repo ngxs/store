@@ -25,7 +25,7 @@ export class NgxsFeatureModule {
   ) {
     // Since FEATURE_STATE_TOKEN is a multi token, we need to
     // flatten it [[Feature1State, Feature2State], [Feature3State]]
-    const flattenedStates: StateClass[] = NgxsFeatureModule.statesFlat(states);
+    const flattenedStates: StateClass[] = NgxsFeatureModule.flattenStates(states);
 
     // add stores to the state graph and return their defaults
     const results: StatesAndDefaults = factory.addAndReturnDefaults(flattenedStates);
@@ -36,7 +36,7 @@ export class NgxsFeatureModule {
     lifecycleStateManager.ngxsBootstrap(new UpdateState(), results);
   }
 
-  private static statesFlat(states: StateClass[][] = []): StateClass[] {
+  private static flattenStates(states: StateClass[][] = []): StateClass[] {
     return states.reduce((acc, val) => acc.concat(val), []);
   }
 }

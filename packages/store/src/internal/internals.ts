@@ -9,7 +9,7 @@ import {
   SELECTOR_META_KEY,
   StoreOptions
 } from '../symbols';
-import { NgxsBootstrapper } from '../../internals/src/ngxs-bootstrapper';
+import { NgxsBootstrapper } from '@ngxs/store/internals';
 
 export interface ObjectKeyMap<T> {
   [key: string]: T;
