@@ -13,6 +13,7 @@ $ npm install @ngxs/store@dev
 * Feature: Add ability to change the Execution strategy (decouple from zone.js) [#811](https://github.com/ngxs/store/pull/811)
 * Feature: Add state operators: `patch, updateItem, removeItem, insertItem, append, compose, iif` [#799](https://github.com/ngxs/store/pull/799/)
 * Feature: WebSocket Plugin - Add `WebSocketDisconnected` action to notify of disconnection [#825](https://github.com/ngxs/store/pull/825)
+* Feature: Defining the default state before module initialization [#791](https://github.com/ngxs/store/pull/791/files#diff-fc35f12bac15f5f65bad0f323be7ae12R46)
 * Fix: Expose `ActionCompletion` [#752](https://github.com/ngxs/store/pull/752)
 * Fix: Throw error when found duplicate state names [#791](https://github.com/ngxs/store/pull/791)
 * Fix: Bind static context to the selector function [#818](https://github.com/ngxs/store/pull/818)
