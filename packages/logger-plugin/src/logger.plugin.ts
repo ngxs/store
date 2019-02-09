@@ -1,9 +1,11 @@
 import { Injectable, Inject } from '@angular/core';
+import { tap, finalize, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 import { NgxsPlugin, getActionTypeFromInstance, NgxsNextPluginFn } from '@ngxs/store';
 
 import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
 import { pad } from './internals';
-import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class NgxsLoggerPlugin implements NgxsPlugin {
@@ -43,6 +45,13 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
     return next(state, event).pipe(
       tap(nextState => {
         this.log('next state', 'color: #4CAF50; font-weight: bold', nextState);
+      }),
+      catchError(error => {
+        this.log('error', 'color: #FD8182; font-weight: bold', error);
+
+        throw error;
+      }),
+      finalize(() => {
         try {
           logger.groupEnd();
         } catch (e) {
