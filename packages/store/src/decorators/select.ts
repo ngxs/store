@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import { Store } from '../store';
-import { propGetter, removeDollarAtTheEnd } from '../internal/internals';
 import { META_KEY } from '../symbols';
 import { NgxsConfig } from '../internal/config/ngxs-config';
+import { propGetter, removeDollarAtTheEnd } from '../internal/internals';
 
 /**
  * Allows the select decorator to get access to the DI store.
