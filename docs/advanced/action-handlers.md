@@ -17,7 +17,7 @@ The action handler is an Observable that receives all the actions dispatched bef
 
 Actions in NGXS also have a lifecycle. Since any potential action can be async we tag actions showing when they are "DISPATCHED", "SUCCESSFUL", "CANCELED" or "ERRORED". This gives you the ability to react to actions at different points in their existence.
 
-Since it's an Observable, we can use the following five pipes:
+Since it's an Observable, we can use the following pipes:
 
 * `ofAction`: triggers when any of the below lifecycle events happen
 * `ofActionDispatched`: triggers when an action has been dispatched
