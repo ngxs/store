@@ -17,6 +17,7 @@ $ npm install @ngxs/store@dev
 * Fix: Throw error when found duplicate state names [#791](https://github.com/ngxs/store/pull/791)
 * Fix: Bind static context to the selector function [#818](https://github.com/ngxs/store/pull/818)
 * Fix: WebSocket Plugin - `WebsocketMessageError` notifies of errors [#825](https://github.com/ngxs/store/pull/825)
+* Fix: Performance improved reading the name of the state from the parameter [#826](https://github.com/ngxs/store/pull/826)
 
 ## NGXS-Labs
 
