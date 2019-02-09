@@ -12,9 +12,11 @@ $ npm install @ngxs/store@dev
 * Feature: Add new lifecycle hook `ngxsAfterBootstrap` [#753](https://github.com/ngxs/store/pull/753)
 * Feature: Add ability to change the Execution strategy (decouple from zone.js) [#811](https://github.com/ngxs/store/pull/811)
 * Feature: Add state operators: `patch, updateItem, removeItem, insertItem, append, compose, iif` [#799](https://github.com/ngxs/store/pull/799/)
+* Feature: WebSocket Plugin - Add `WebSocketDisconnected` action to notify of disconnection [#825](https://github.com/ngxs/store/pull/825)
 * Fix: Expose `ActionCompletion` [#752](https://github.com/ngxs/store/pull/752)
 * Fix: Throw error when found duplicate state names [#791](https://github.com/ngxs/store/pull/791)
-* Fix: Bind context to the selector function [#818](https://github.com/ngxs/store/pull/818)
+* Fix: Bind static context to the selector function [#818](https://github.com/ngxs/store/pull/818)
+* Fix: WebSocket Plugin - `WebsocketMessageError` notifies of errors [#825](https://github.com/ngxs/store/pull/825)
 
 ## NGXS-Labs
 
