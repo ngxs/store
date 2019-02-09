@@ -75,6 +75,16 @@ export class DisconnectWebSocket {
 }
 
 /**
+ * Action triggered when websocket is disconnected
+ */
+export class WebSocketDisconnected {
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Websocket] Disconnected';
+  }
+}
+
+/**
  * Action to send to the server.
  */
 export class SendWebSocketMessage {

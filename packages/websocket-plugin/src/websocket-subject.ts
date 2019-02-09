@@ -61,7 +61,11 @@ export class WebSocketSubject extends Subject<any> {
     }
 
     this._socket = new RxWebSocketSubject(this._internalConfig);
-    this._socket.subscribe((message: any) => this.next(message));
+    this._socket.subscribe(
+      (message: any) => this.next(message),
+      (error: any) => this.error(error),
+      () => this.complete()
+    );
   }
 
   /**
