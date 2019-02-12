@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
 import { tap, finalize, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
 
 import { NgxsPlugin, getActionTypeFromInstance, NgxsNextPluginFn } from '@ngxs/store';
 
