@@ -1,10 +1,10 @@
 import { NgxsHmrLifeCycle, NgxsHmrOptions } from '../symbols';
 
-export class HmrOptionBuilder<T extends NgxsHmrLifeCycle<S>, S> {
+export class HmrOptionBuilder {
   public readonly deferTime: number;
   public readonly autoClearLogs: boolean;
 
-  constructor({ deferTime, autoClearLogs }: NgxsHmrOptions<T, S>) {
+  constructor({ deferTime, autoClearLogs }: NgxsHmrOptions) {
     this.deferTime = deferTime || 100;
     this.autoClearLogs = autoClearLogs === undefined ? true : autoClearLogs;
   }

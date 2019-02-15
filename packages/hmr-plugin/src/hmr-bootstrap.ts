@@ -6,12 +6,13 @@ import {
   WebpackModule
 } from './symbols';
 import { HmrManager } from './hmr-manager';
+import { NgModuleRef } from '@angular/core';
 
-export async function hmr<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot>(
+export async function hmr<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnapshot>(
   module: WebpackModule,
   bootstrap: BootstrapModuleType<T>,
-  options: NgxsHmrOptions<T, S> = {}
-) {
+  options: NgxsHmrOptions = {}
+): Promise<NgModuleRef<T>> {
   const manager = new HmrManager<T, S>(module, options);
 
   module.hot.accept();

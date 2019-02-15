@@ -16,28 +16,32 @@ import { HmrLifecycle } from './internal/hmr-lifecycle';
 import { HmrOptionBuilder } from './internal/hmr-options-builder';
 import { HmrInitAction } from './actions/hmr-init.action';
 
-export class HmrManager<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot> {
+export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnapshot> {
   public storage: HmrStorage<S>;
   public context: HmrStateContextFactory<T, S>;
   public lifecycle: HmrLifecycle<T, S>;
-  public optionsBuilder: HmrOptionBuilder<T, S>;
+  public optionsBuilder: HmrOptionBuilder;
 
   private ngModule: NgModuleRef<T>;
 
-  constructor(private readonly module: WebpackModule, options: NgxsHmrOptions<T, S>) {
+  constructor(private readonly module: WebpackModule, options: NgxsHmrOptions) {
     this.storage = new HmrStorage<S>();
     this.optionsBuilder = new HmrOptionBuilder(options);
     this.storage.resetHmrStorageWhenEmpty();
   }
 
-  public async hmrModule(bootstrap: BootstrapModuleType<T>, tick: () => void): Promise<any> {
+  public async hmrModule(
+    bootstrap: BootstrapModuleType<T>,
+    tick: () => void
+  ): Promise<NgModuleRef<T>> {
     this.ngModule = await bootstrap();
     this.context = new HmrStateContextFactory(this.ngModule);
     this.lifecycle = this.createLifecycle();
 
     tick();
 
-    return await hmrModule(this.ngModule, this.module);
+    await hmrModule(this.ngModule, this.module);
+    return this.ngModule;
   }
 
   private createLifecycle(): HmrLifecycle<T, S> {
