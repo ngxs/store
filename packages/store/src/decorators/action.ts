@@ -1,13 +1,10 @@
 import { ensureStoreMetadata } from '../internal/internals';
-import { ActionOptions, ActionDef } from '../symbols';
+import { ActionType, ActionOptions } from '../actions/symbols';
 
 /**
  * Decorates a method with a action information.
  */
-export function Action(
-  actions: ActionDef | ActionDef[] | { type: string } | { type: string }[],
-  options?: ActionOptions
-) {
+export function Action(actions: ActionType | ActionType[], options?: ActionOptions) {
   return function(target: any, name: string, _descriptor: TypedPropertyDescriptor<any>) {
     const meta = ensureStoreMetadata(target.constructor);
 

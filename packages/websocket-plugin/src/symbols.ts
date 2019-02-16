@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { StaticAction } from '@ngxs/store';
 
 export const NGXS_WEBSOCKET_OPTIONS = new InjectionToken('NGXS_WEBSOCKET_OPTIONS');
 
@@ -45,9 +46,9 @@ export function noop(...args: any[]) {
 /**
  * Action to connect to the websocket. Optionally pass a URL.
  */
+@StaticAction()
 export class ConnectWebSocket {
   static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Websocket] Connect';
   }
   constructor(public payload?: NgxsWebsocketPluginOptions) {}
@@ -56,9 +57,9 @@ export class ConnectWebSocket {
 /**
  * Action triggered when a error ocurrs
  */
+@StaticAction()
 export class WebsocketMessageError {
   static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Websocket] Message Error';
   }
   constructor(public payload: any) {}
@@ -67,9 +68,9 @@ export class WebsocketMessageError {
 /**
  * Action to disconnect the websocket.
  */
+@StaticAction()
 export class DisconnectWebSocket {
   static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Websocket] Disconnect';
   }
 }
@@ -77,9 +78,9 @@ export class DisconnectWebSocket {
 /**
  * Action triggered when websocket is disconnected
  */
+@StaticAction()
 export class WebSocketDisconnected {
   static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Websocket] Disconnected';
   }
 }
@@ -87,9 +88,9 @@ export class WebSocketDisconnected {
 /**
  * Action to send to the server.
  */
+@StaticAction()
 export class SendWebSocketMessage {
   static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Websocket] Send Message';
   }
   constructor(public payload: any) {}
