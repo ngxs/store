@@ -20,6 +20,7 @@ $ npm install @ngxs/store@dev
 * Fix: WebSocket Plugin - `WebsocketMessageError` notifies of errors [#825](https://github.com/ngxs/store/pull/825)
 * Fix: Performance improved reading the name of the state from the parameter [#826](https://github.com/ngxs/store/pull/826)
 * Fix: Log group not closed on error [#831](https://github.com/ngxs/store/pull/831)
+* Fix: Websocket Plugin - server/network error triggered close should dispatch WebSocketDisconnected [#832](https://github.com/ngxs/store/pull/832)
 
 ## NGXS-Labs
 
