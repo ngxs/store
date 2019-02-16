@@ -77,7 +77,9 @@ describe('NgxsWebsocketPlugin', () => {
       });
   }));
 
-  it('should dispatch WebSocketDisconnected on disconnect', fakeAsync((done: DoneFn) => {
+  it('should dispatch WebSocketDisconnected on client initialted disconnect', fakeAsync((
+    done: DoneFn
+  ) => {
     tick();
     actions$
       .pipe(
@@ -86,10 +88,33 @@ describe('NgxsWebsocketPlugin', () => {
       )
       .subscribe(() => {
         expect('called').toBe('called');
-        mockServer.stop(done);
         done();
       });
 
     store.dispatch(new DisconnectWebSocket());
+  }));
+
+  it('should dispatch WebSocketDisconnected on server initiated disconnect', fakeAsync((
+    done: DoneFn
+  ) => {
+    mockServer.on('connection', (socket: any) => {
+      mockServer.on('message', (data: any) => socket.send(data));
+      tick(1000);
+
+      store.dispatch(new ConnectWebSocket());
+
+      actions$
+        .pipe(
+          ofAction(WebSocketDisconnected),
+          take(1)
+        )
+        .subscribe(() => {
+          expect('called').toBe('called');
+
+          done();
+        });
+
+      mockServer.stop(done);
+    });
   }));
 });

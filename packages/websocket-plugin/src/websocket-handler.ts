@@ -37,7 +37,10 @@ export class WebSocketHandler {
         }
         store.dispatch({ ...msg, type });
       },
-      err => store.dispatch(new WebsocketMessageError(err)),
+      err =>
+        err instanceof CloseEvent
+          ? store.dispatch(new WebSocketDisconnected())
+          : store.dispatch(new WebsocketMessageError(err)),
       () => store.dispatch(new WebSocketDisconnected())
     );
   }
