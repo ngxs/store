@@ -1,5 +1,5 @@
 {
-  "$schema": "./node_modules/ng-packagr/package.schema.json",
+  "$schema": "../../node_modules/ng-packagr/package.schema.json",
   "name": "@ngxs/store",
   "version": "0.0.0",
   "license": "MIT",
@@ -12,7 +12,10 @@
     "lib": {
       "flatModuleFile": "ngxs-store",
       "entryFile": "index.ts",
-      "umdModuleIds": {}
+      "umdModuleIds": {
+        "@ngxs/store/internals": "ngxs-store-internals",
+        "@ngxs/store/operators": "ngxs-store-operators"
+      }
     },
     "dest": "../../@ngxs/store"
   }
