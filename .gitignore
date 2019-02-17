@@ -1,12 +1,13 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
+# **/ - recursive
 
 # compiled output
-/dist
-/tmp
-/out-tsc
-/src/environments/version.ts
-/builds
-/@ngxs
+**/dist
+**/tmp
+**/out-tsc
+**/src/environments/version.ts
+**/builds
+**/@ngxs
 
 # dependencies
 **/node_modules
