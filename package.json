@@ -79,7 +79,10 @@
     "// - UTILS": "Utility Scripts",
     "lint": "ng lint",
     "docs": "typedoc packages/store/src --options typedoc.json",
-    "format": "prettier --write \"{packages,integration}/**/*.ts\""
+    "format": "prettier --write \"{packages,integration}/**/*.ts\"",
+    "// - INTEGRATION": "Integration builds",
+    "integration:link": "cd @ngxs && npm link && cd ..",
+    "integration:ng5": "npm run integration:link && cd integrations/hello-world-ng5 && npm install && npm test"
   },
   "private": true,
   "devDependencies": {
