@@ -23,6 +23,6 @@
   },
   "exclude": [
     "@ngxs/**",
-    "integrations/hello-world-ng5"
+    "integrations/**"
   ]
 }
