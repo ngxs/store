@@ -6,12 +6,15 @@
   "apps": [
     {
       "root": "src",
-      "prefix": "app",
       "outDir": "dist",
-      "main": "main.ts",
       "index": "index.html",
+      "main": "main.ts",
       "tsconfig": "tsconfig.app.json",
+      "prefix": "app",
       "environmentSource": "environments/environment.ts"
     }
-  ]
+  ],
+  "warnings": {
+    "typescriptMismatch": false
+  }
 }

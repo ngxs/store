@@ -5,7 +5,8 @@
   "scripts": {
     "ng": "ng",
     "npx": "npx",
-    "test": "npm install @ngxs/store && npx -- ng build"
+    "store:link": "npm install @ngxs/store",
+    "test": "npm run store:link && npx -- ng build"
   },
   "private": true,
   "dependencies": {
@@ -20,7 +21,8 @@
     "@angular/router": "5.2.0",
     "@ngxs/store": "^3.3.4",
     "core-js": "2.4.1",
-    "rxjs": "5.5.6",
+    "rxjs": "5.6.0-forward-compat.4",
+    "rxjs-compat": "6.4.0",
     "zone.js": "0.8.19"
   },
   "devDependencies": {
@@ -42,6 +44,6 @@
     "protractor": "5.1.2",
     "ts-node": "4.1.0",
     "tslint": "5.9.1",
-    "typescript": "2.5.3"
+    "typescript": "2.7.1"
   }
 }

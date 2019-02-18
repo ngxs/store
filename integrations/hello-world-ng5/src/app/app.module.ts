@@ -1,14 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { NgxsModule } from '@ngxs/store';
 
 import { AppComponent } from './app.component';
-// import { NgxsModule } from '@ngxs/store';
+import { AppState } from './app.state';
 
 @NgModule({
   declarations: [AppComponent],
-  // fix me after they add support
-  // imports: [BrowserModule, NgxsModule.forRoot([])],
-  imports: [BrowserModule],
+  imports: [BrowserModule, NgxsModule.forRoot([AppState])],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
