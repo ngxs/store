@@ -21,7 +21,8 @@ $ npm install @ngxs/store@dev
 * Fix: Performance improved reading the name of the state from the parameter [#826](https://github.com/ngxs/store/pull/826)
 * Fix: Log group not closed on error [#831](https://github.com/ngxs/store/pull/831)
 * Fix: Websocket Plugin - server/network error triggered close should dispatch WebSocketDisconnected [#832](https://github.com/ngxs/store/pull/832)
-* Fix: Remove typings introduced since 3.3.4 that were incompatible with TS 2.7 [#853](https://github.com/ngxs/store/pull/853)
+* Fix: Remove typings introduced since 3.3.4 that are incompatible with TS 2.7 [#853](https://github.com/ngxs/store/pull/853)
+* Fix: Remove type usages introduced since 3.3.4 that are incompatible with NG 5 & TS 2.7 [#854](https://github.com/ngxs/store/pull/854)
 
 ## NGXS-Labs
 
