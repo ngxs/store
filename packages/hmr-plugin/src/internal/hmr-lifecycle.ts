@@ -40,8 +40,8 @@ export class HmrLifecycle<T extends NgxsHmrLifeCycle<S>, S> {
   private stateEventLoop(callback: HmrCallback<S>): void {
     if (!this.storage.existHmrStorage) return;
 
-    const appBootstrapped$: Observable<unknown> = this.bootstrap.appBootstrapped$;
-    const state$: Observable<unknown> = this.context.store.select(state => state);
+    const appBootstrapped$: Observable<boolean> = this.bootstrap.appBootstrapped$;
+    const state$: Observable<any> = this.context.store.select(state => state);
 
     appBootstrapped$.subscribe(() => {
       let eventId: number;
