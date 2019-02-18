@@ -295,7 +295,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
     });
   });
 
-  it('should warn if zone is "nooped"', async(() => {
+  xit('should warn if zone is "nooped"', async(() => {
     @State({ name: 'foo' })
     class FooState {}
 
