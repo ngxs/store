@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "project": {
+    "name": "hello-world-ng5"
+  },
+  "apps": [
+    {
+      "root": "src",
+      "prefix": "app",
+      "outDir": "dist",
+      "main": "main.ts",
+      "index": "index.html",
+      "tsconfig": "tsconfig.app.json",
+      "environmentSource": "environments/environment.ts"
+    }
+  ]
+}
