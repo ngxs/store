@@ -12,10 +12,8 @@ export interface ObjectKeyMap<T> {
   [key: string]: T;
 }
 
-export interface StateClassWithoutStaticMembers {}
-
 // inspired from https://stackoverflow.com/a/43674389
-export interface StateClass<T = StateClassWithoutStaticMembers, U = any> {
+export interface StateClass<T = any, U = any> {
   [META_KEY]?: MetaDataModel;
   [META_OPTIONS_KEY]?: StoreOptions<U>;
 
