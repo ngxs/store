@@ -131,7 +131,7 @@
     "karma-jasmine-html-reporter": "^1.4.0",
     "karma-mocha-reporter": "^2.2.5",
     "lint-staged": "^8.0.0",
-    "mocha": "^5.2.0",
+    "mocha": "^6.0.0",
     "mock-socket": "^8.0.5",
     "ng-packagr": "^4.4.5",
     "npm-delay": "^1.0.4",
