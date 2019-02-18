@@ -5,8 +5,7 @@
   "scripts": {
     "ng": "ng",
     "npx": "npx",
-    "store:link": "npm install @ngxs/store",
-    "test": "npm run store:link && npx -- ng build"
+    "test": "npm install && npx -- ng build"
   },
   "private": true,
   "dependencies": {
@@ -19,7 +18,14 @@
     "@angular/platform-browser": "5.2.0",
     "@angular/platform-browser-dynamic": "5.2.0",
     "@angular/router": "5.2.0",
-    "@ngxs/store": "^3.3.4",
+    "@ngxs/store": "file:../../@ngxs/store",
+    "@ngxs/logger-plugin": "file:../../@ngxs/logger-plugin",
+    "@ngxs/devtools-plugin": "file:../../@ngxs/devtools-plugin",
+    "@ngxs/storage-plugin": "file:../../@ngxs/storage-plugin",
+    "@ngxs/websocket-plugin": "file:../../@ngxs/websocket-plugin",
+    "@ngxs/form-plugin": "file:../../@ngxs/form-plugin",
+    "@ngxs/router-plugin": "file:../../@ngxs/router-plugin",
+    "@ngxs/hmr-plugin": "file:../../@ngxs/hmr-plugin",
     "core-js": "2.4.1",
     "rxjs": "5.6.0-forward-compat.4",
     "rxjs-compat": "6.4.0",
