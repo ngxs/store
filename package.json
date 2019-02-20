@@ -139,7 +139,7 @@
     "prettier": "1.15.3",
     "puppeteer": "^1.11.0",
     "rxjs": "^6.0.0",
-    "ts-mocha": "^2.0.0",
+    "ts-mocha": "^6.0.0",
     "ts-node": "^7.0.1",
     "tsickle": "^0.34.0",
     "tslib": "^1.9.0",
