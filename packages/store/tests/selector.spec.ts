@@ -37,6 +37,11 @@ describe('Selector', () => {
     static fooBar(myState2: any, foo: any) {
       return foo + myState2.bar;
     }
+
+    @Selector([MyState2.foo], true)
+    static fooOnly(foo: any) {
+      return foo;
+    }
   }
 
   class MetaSelector {
@@ -96,6 +101,16 @@ describe('Selector', () => {
       const store: Store = TestBed.get(Store);
       const slice = store.selectSnapshot(MyState2.fooBar);
       expect(slice).toBe('HelloHelloWorld');
+    }));
+
+    it('should select only specified', async(() => {
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyState, MyState2])]
+      });
+
+      const store: Store = TestBed.get(Store);
+      const slice = store.selectSnapshot(MyState2.fooOnly);
+      expect(slice).toBe('HelloHello');
     }));
 
     it('context should be defined inside selector', () => {

@@ -268,6 +268,25 @@ When using the `Selector` decorator along with a state class, it will still
 inject the state class's state first followed by the other selectors in the order
 they were passed in the signature.
 
+#### Optimizing Selectors
+By default the state class's state is always injected first, causing your selector
+value to be updated on each state's change.
+
+You can change this behavior passing `true` as the second selector parameter, to
+only inject the selectors you need and therefore limit updates.
+
+```TS
+@State<string[]>({ ... })
+export class ZooState {
+
+  @Selector([ZooState.pandas('baby')], true)
+  static babyPandasCounter(babyPandas: string[]) {
+    return babyPandas.length;
+  }
+
+}
+```
+
 ### Meta Selectors
 By default selectors in NGXS are bound to a state. Sometimes you need the ability
 to join to un-related states in a high-performance re-usable fashion. A meta selector
