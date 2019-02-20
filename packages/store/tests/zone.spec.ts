@@ -19,7 +19,7 @@ import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { State, Action, StateContext, NgxsModule, Store, Select } from '../src/public_api';
-import { NoopNgxsExecutionStrategy } from '../src/execution/noopNgxsExecutionStrategy';
+import { NoopNgxsExecutionStrategy } from '../src/execution/noop-ngxs-execution-strategy';
 
 describe('zone', () => {
   class Increment {
