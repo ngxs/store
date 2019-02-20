@@ -7,7 +7,7 @@ import { Actions, ofActionDispatched, Store } from '@ngxs/store';
 import { Type } from '@angular/core';
 
 import { hmr } from '../hmr-bootstrap';
-import { BootstrapModuleFn, NGXS_HMR_SNAPSHOT_KEY, NgxsHmrSnapshot } from '../symbols';
+import { BootstrapModuleFn, NGXS_HMR_SNAPSHOT_KEY } from '../symbols';
 import {
   AppMockModule,
   MockState,
