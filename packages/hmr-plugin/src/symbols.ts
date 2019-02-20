@@ -23,7 +23,7 @@ export interface NgxsHmrLifeCycle<T = NgxsHmrSnapshot> {
 }
 
 export type HmrCallback<T> = (ctx: StateContext<T>, state: Partial<T>) => void;
-export type BootstrapModuleType<T> = () => Promise<NgModuleRef<T>>;
+export type BootstrapModuleFn<T> = () => Promise<NgModuleRef<T>>;
 
 export interface NgxsHmrOptions {
   /**

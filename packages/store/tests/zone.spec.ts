@@ -189,7 +189,6 @@ describe('zone', () => {
     const store: Store = TestBed.get(Store);
     const ngZone: NgZone = TestBed.get(NgZone);
     ngZone.run(() => {
-      console.log({ isInAngularZone: NgZone.isInAngularZone() });
       store.dispatch(new FooAction());
     });
   });

@@ -3,7 +3,7 @@ import { createNewHosts, hmrModule } from '@angularclass/hmr';
 import { NgxsBootstrapper } from '@ngxs/store/internals';
 
 import {
-  BootstrapModuleType,
+  BootstrapModuleFn,
   NgxsHmrLifeCycle,
   NgxsHmrOptions,
   NgxsHmrSnapshot,
@@ -31,10 +31,10 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
   }
 
   public async hmrModule(
-    bootstrap: BootstrapModuleType<T>,
+    bootstrapFn: BootstrapModuleFn<T>,
     tick: () => void
   ): Promise<NgModuleRef<T>> {
-    this.ngModule = await bootstrap();
+    this.ngModule = await bootstrapFn();
     this.context = new HmrStateContextFactory(this.ngModule);
     this.lifecycle = this.createLifecycle();
 
