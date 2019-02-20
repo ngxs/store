@@ -124,7 +124,7 @@ if (environment.hmr) {
 }
 ```
 
-### Update src/app/app.module.ts to manage the state in HMR lifecycle:
+### (OPTIONAL) Update src/app/app.module.ts to manage the state in HMR lifecycle:
 
 ```ts
 import { StateContext } from '@ngxs/store';
