@@ -8,22 +8,31 @@ import { HmrStateContextFactory } from './hmr-state-context-factory';
 import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 import { HmrStorage } from './hmr-storage';
 
-export class HmrLifecycle<T extends NgxsHmrLifeCycle<S>, S> {
+export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   constructor(
     private ngAppModule: T,
     private bootstrap: NgxsBootstrapper,
     private storage: HmrStorage<S>,
     private context: HmrStateContextFactory<T, S>,
-    private options: HmrOptionBuilder<T, S>
+    private options: HmrOptionBuilder
   ) {}
 
   public hmrNgxsStoreOnInit(hmrAfterOnInit: HmrCallback<S>) {
+    let moduleHmrInit: HmrCallback<S> = this.getModuleHmrInitCallback();
+    moduleHmrInit = moduleHmrInit.bind(this.ngAppModule);
+    this.stateEventLoop((ctx, state) => {
+      moduleHmrInit(ctx, state);
+      hmrAfterOnInit(ctx, state);
+    });
+  }
+
+  private getModuleHmrInitCallback(): HmrCallback<S> {
     if (typeof this.ngAppModule.hmrNgxsStoreOnInit === 'function') {
-      this.stateEventLoop((ctx, state) => {
-        this.ngAppModule.hmrNgxsStoreOnInit(ctx, state);
-        hmrAfterOnInit(ctx, state);
-      });
+      return this.ngAppModule.hmrNgxsStoreOnInit;
     }
+    return function defaultModuleHmrInit(ctx, state) {
+      ctx.patchState(state);
+    };
   }
 
   public hmrNgxsStoreBeforeOnDestroy(): Partial<S> {
@@ -31,6 +40,8 @@ export class HmrLifecycle<T extends NgxsHmrLifeCycle<S>, S> {
     const ctx: StateContext<S> = this.context.createStateContext();
     if (typeof this.ngAppModule.hmrNgxsStoreBeforeOnDestroy === 'function') {
       state = this.ngAppModule.hmrNgxsStoreBeforeOnDestroy(ctx);
+    } else {
+      state = ctx.getState();
     }
 
     ctx.dispatch(new HmrBeforeDestroyAction(state));

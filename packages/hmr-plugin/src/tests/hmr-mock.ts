@@ -55,11 +55,28 @@ export class AppMockModule implements NgxsHmrLifeCycle {
   }
 
   public hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {
-    ctx.patchState(snapshot);
+    ctx.patchState({ ...snapshot, custom: 123 });
   }
 
   public hmrNgxsStoreBeforeOnDestroy(ctx: StateContext<Snapshot>): Partial<Snapshot> {
-    return ctx.getState();
+    return { ...ctx.getState(), customOut: 'abc' };
+  }
+}
+
+@Component({
+  selector: 'app-root',
+  template: ''
+})
+export class AppMockComponent2 {}
+
+@NgModule({
+  imports: [BrowserModule, NgxsModule.forRoot([MockState])],
+  declarations: [AppMockComponent2],
+  bootstrap: [AppMockComponent2]
+})
+export class AppMockModuleNoHmrLifeCycle {
+  constructor() {
+    createRootNode();
   }
 }
 
