@@ -198,7 +198,8 @@ describe('NgxsFormPlugin', () => {
           todosForm: {
             model: {
               text: 'Buy some coffee'
-            }
+            },
+            dirty: true
           }
         }
       })
@@ -231,6 +232,7 @@ describe('NgxsFormPlugin', () => {
       fixture.detectChanges();
 
       const input = fixture.debugElement.query(By.css('form input')).nativeElement;
+      expect(fixture.componentInstance.form.dirty).toBe(true);
       expect(input.value).toBe('Buy some coffee');
     });
 
