@@ -4,7 +4,7 @@ export {
   NgxsHmrOptions,
   NgxsHmrSnapshot,
   WebpackModule,
-  BootstrapModuleType
+  BootstrapModuleFn
 } from './symbols';
 export { HmrBeforeDestroyAction } from './actions/hmr-before-destroy.action';
 export { hmr } from './hmr-bootstrap';
