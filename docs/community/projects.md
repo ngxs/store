@@ -45,5 +45,6 @@
 - [App Dividend - Angular NGXS Tutorial With Example From Scratch](https://appdividend.com/2018/07/03/angular-ngxs-tutorial-with-example-from-scratch/)
 - [Angular Firebase - NGXS Quick Start Tutorial](https://angularfirebase.com/lessons/ngxs-quick-start-angular-state-management)
 - [coursetro - Angular NGXS Tutorial - An Alternative to Ngrx for State Management](https://coursetro.com/posts/code/152/Angular-NGXS-Tutorial---An-Alternative-to-Ngrx-for-State-Management)
+- [@splincode - NGXS Facade](https://medium.com/ngxs/ngxs-facade-3aa90c41497b)
 
 If you have content you'd like to share with the community, make a PR to add it here.
