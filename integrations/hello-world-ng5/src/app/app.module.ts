@@ -1,13 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgxsModule } from '@ngxs/store';
 
+import { StoreModule } from './store.module';
 import { AppComponent } from './app.component';
-import { AppState } from './app.state';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, NgxsModule.forRoot([AppState])],
+  imports: [BrowserModule, StoreModule],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

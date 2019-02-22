@@ -11,7 +11,11 @@
       "main": "main.ts",
       "tsconfig": "tsconfig.app.json",
       "prefix": "app",
-      "environmentSource": "environments/environment.ts"
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
     }
   ],
   "warnings": {
