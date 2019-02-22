@@ -215,3 +215,6 @@ function addEntity(entity: Entity): StateOperator<EntitiesStateModel> {
 ```
 
 As you can see, state operators are very powerful to start moving your immutable state updates to be more declarative and expressive. Enhancing the overall maintainability and readability of your state class code.
+
+## Relevant Articles
+[NGXS State Operators](https://medium.com/ngxs/ngxs-state-operators-8b339641b220)
