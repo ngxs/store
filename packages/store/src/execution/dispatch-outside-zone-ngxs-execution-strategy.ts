@@ -41,10 +41,12 @@ export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionSt
   }
 
   private verifyZoneIsNotNooped(ngZone: NgZone): void {
+    /* - Removed because unsafe for Angular 5 - investigate
     if (ngZone instanceof NoopNgZone) {
       console.warn(
         'Your application was bootstrapped with nooped zone and your execution strategy requires an ngZone'
       );
     }
+    */
   }
 }

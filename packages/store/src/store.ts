@@ -7,8 +7,8 @@ import { getSelectorFn } from './utils/selector-utils';
 import { InternalStateOperations } from './internal/state-operations';
 import { StateStream } from './internal/state-stream';
 import { NgxsConfig } from './symbols';
-import { InternalNgxsExecutionStrategy } from './execution/internalNgxsExecutionStrategy';
-import { leaveNgxs } from './operators/leaveNgxs';
+import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
+import { leaveNgxs } from './operators/leave-ngxs';
 
 @Injectable()
 export class Store {

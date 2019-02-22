@@ -24,8 +24,8 @@ import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitState, UpdateState } from './actions/actions';
 import { StateClass } from './internal/internals';
-import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatchOutsideZoneNgxsExecutionStrategy';
-import { InternalNgxsExecutionStrategy } from './execution/internalNgxsExecutionStrategy';
+import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
+import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 
 /**
  * Root module

@@ -5,12 +5,6 @@ export interface NgxsHmrSnapshot {
   [key: string]: any;
 }
 
-// TODO: Angular5 not work with NodeModule
-// error TS2304: Cannot find name 'NodeModule'.
-export interface ResolveNodeModule {
-  [key: string]: any;
-}
-
 export const NGXS_HMR_SNAPSHOT_KEY = '__NGXS_HMR_SNAPSHOT__';
 
 export interface NgxsHmrLifeCycle<T = NgxsHmrSnapshot> {
@@ -29,12 +23,9 @@ export interface NgxsHmrLifeCycle<T = NgxsHmrSnapshot> {
 }
 
 export type HmrCallback<T> = (ctx: StateContext<T>, state: Partial<T>) => void;
+export type BootstrapModuleFn<T> = () => Promise<NgModuleRef<T>>;
 
-// TODO: BootstrapModuleType<AppModule | etc>
-// Error type cannot be inferred from usage
-export type BootstrapModuleType<T = any> = () => Promise<NgModuleRef<T>>;
-
-export interface NgxsHmrOptions<T extends NgxsHmrLifeCycle<S>, S = NgxsHmrSnapshot> {
+export interface NgxsHmrOptions {
   /**
    * @description
    * clear log after each hmr update
@@ -62,4 +53,4 @@ interface HotModule {
  * any - because need setup
  * npm i @types/webpack-env
  */
-export type WebpackModule = (ResolveNodeModule & HotModule) | any;
+export type WebpackModule = HotModule | any;
