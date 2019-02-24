@@ -1,6 +1,6 @@
 # Hot Module Replacement
 
-Hot Module Replacement (HMR) is a WebPack feature to update code in a running app without rebuilding it. This results in faster updates and less full page-reloads.
+Hot Module Replacement (HMR) is a Webpack feature to update code in a running app without rebuilding it. This results in faster updates and less full page-reloads.
 In order to get HMR working with Angular CLI we first need to add a new environment and enable it.
 
 ### Add environment for HMR
