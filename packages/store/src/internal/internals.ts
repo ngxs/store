@@ -1,12 +1,13 @@
+import { Observable } from 'rxjs';
+
 import {
-  ActionOptions,
   META_KEY,
   META_OPTIONS_KEY,
   NgxsConfig,
   SELECTOR_META_KEY,
   StoreOptions
 } from '../symbols';
-import { Observable } from 'rxjs';
+import { ActionHandlerMetaData } from '../actions/symbols';
 
 export interface ObjectKeyMap<T> {
   [key: string]: T;
@@ -22,12 +23,6 @@ export interface StateClass<T = any, U = any> {
 
 export type StateKeyGraph = ObjectKeyMap<string[]>;
 export type StatesByName = ObjectKeyMap<StateClass>;
-
-export interface ActionHandlerMetaData {
-  fn: string | symbol;
-  options: ActionOptions;
-  type: string;
-}
 
 export interface StateOperations<T> {
   getState(): T;
