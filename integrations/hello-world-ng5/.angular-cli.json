@@ -6,12 +6,20 @@
   "apps": [
     {
       "root": "src",
-      "prefix": "app",
       "outDir": "dist",
-      "main": "main.ts",
       "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
       "tsconfig": "tsconfig.app.json",
-      "environmentSource": "environments/environment.ts"
+      "prefix": "app",
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
     }
-  ]
+  ],
+  "warnings": {
+    "typescriptMismatch": false
+  }
 }

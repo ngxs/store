@@ -81,8 +81,7 @@
     "docs": "typedoc packages/store/src --options typedoc.json",
     "format": "prettier --write \"{packages,integration}/**/*.ts\"",
     "// - INTEGRATION": "Integration builds",
-    "integration:link": "cd @ngxs && npm link && cd ..",
-    "integration:ng5": "npm run integration:link && cd integrations/hello-world-ng5 && npm install && npm test"
+    "integration:ng5": "cd integrations/hello-world-ng5 && npm test"
   },
   "private": true,
   "devDependencies": {
@@ -133,7 +132,7 @@
     "lint-staged": "^8.0.0",
     "mocha": "^6.0.0",
     "mock-socket": "^8.0.5",
-    "ng-packagr": "^4.4.5",
+    "ng-packagr": "^4.7.1",
     "npm-delay": "^1.0.4",
     "npm-run-all": "^4.1.2",
     "prettier": "1.15.3",
