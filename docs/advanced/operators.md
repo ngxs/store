@@ -151,7 +151,7 @@ export class AnimalsState {
   removePanda(ctx: StateContext<AnimalsStateModel>, { payload }: RemovePanda) {
     ctx.setState(
       patch({
-        panda: removeItem(name => name === payload)
+        pandas: removeItem(name => name === payload)
       })
     );
   }
@@ -160,7 +160,7 @@ export class AnimalsState {
   changePandaName(ctx: StateContext<AnimalsStateModel>, { payload }: ChangePandaName) {
     ctx.setState(
       patch({
-        panda: updateItem(name => name === payload.name, payload.newName)
+        pandas: updateItem(name => name === payload.name, payload.newName)
       })
     );
   }
