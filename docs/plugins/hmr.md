@@ -5,7 +5,7 @@ In order to get HMR working with Angular CLI we first need to add a new environm
 
 ### Add environment for HMR
 
-In this step will configure the Angular CLI environments and define in which environment we enable HMR.
+In this step we will configure the Angular CLI environments and define in which environment we enable HMR.
 We will start out by adding and changing files in the `src/environments/` directory.
 First we create a file called `src/environments/environment.hmr.ts` with the following contents:
 
