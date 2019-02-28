@@ -31,6 +31,7 @@
 - [@amcdnl - Authentication in NGXS](https://medium.com/@amcdnl/authentication-in-ngxs-6f25c52fd385)
 - [@amcdnl - Why another state management framework for Angular?](https://medium.com/@amcdnl/why-another-state-management-framework-for-angular-b4b4c19ef664)
 - [Alligator - Manage State in Angular with NGXS](https://alligator.io/angular/ngxs/)
+- [@joshblf - Migrating from NGRX to NGXS in Angular 6](https://medium.com/@joshblf/migrating-from-ngrx-to-ngxs-in-angular-6-ddddcdce543e)
 - [< BE OUTSTANDING /> - Why I Prefer NGXS over NGRX](https://blog.singular.uk/why-i-prefer-ngxs-over-ngrx-df727cd868b5)
 - [JWORKS TECH BLOG - NGRX VS. NGXS VS. AKITA VS. RXJS: FIGHT!](https://ordina-jworks.github.io/angular/2018/10/08/angular-state-management-comparison.html)
 - [The InfoGrid - Angular – Managing Authentication State Using NGXS](https://theinfogrid.com/tech/developers/angular/ngxs-authentication-angular/)
