@@ -10,3 +10,4 @@ export { insertItem } from './insert-item';
 export { patch } from './patch';
 export { isStateOperator } from './utils';
 export { updateItem } from './update-item';
+export { removeItem } from './remove-item';
