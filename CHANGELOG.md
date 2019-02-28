@@ -1,9 +1,12 @@
-# [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) (to become [3.4.0](https://github.com/ngxs/store/milestone/6))
+# [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) (to become [3.5.0](https://github.com/ngxs/store/milestone/7))
 
 ```bash
 $ npm install @ngxs/store@dev
 ```
 
+* Nothing yet ;-)
+
+# 3.4.0 2019-02-28
 * Feature: Support server-side rendering [#698](https://github.com/ngxs/store/pull/698)
 * Feature: Enable state operator extensibility [#635](https://github.com/ngxs/store/pull/635)
 * Feature: Add `ofActionCompleted` action handler [#712](https://github.com/ngxs/store/pull/712)
