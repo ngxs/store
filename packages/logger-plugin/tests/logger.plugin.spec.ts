@@ -15,7 +15,7 @@ describe('NgxsLoggerPlugin', () => {
   class UpdateBarAction {
     static type = 'UPDATE_BAR';
 
-    constructor(public payload?: string) {}
+    constructor(public bar?: string) {}
   }
 
   class ErrorAction {
@@ -36,8 +36,8 @@ describe('NgxsLoggerPlugin', () => {
   })
   class TestState {
     @Action(UpdateBarAction)
-    updateBar({ patchState }: StateContext<StateModel>, { payload }: UpdateBarAction) {
-      patchState({ bar: payload || defaultBarValue });
+    updateBar({ patchState }: StateContext<StateModel>, { bar }: UpdateBarAction) {
+      patchState({ bar: bar || defaultBarValue });
     }
 
     @Action(ErrorAction)
@@ -97,7 +97,7 @@ describe('NgxsLoggerPlugin', () => {
         action: UpdateBarAction.type,
         prevState: stateModelDefaults,
         nextState: { bar: payload },
-        payload
+        payload: { bar: payload }
       })
     ]);
 

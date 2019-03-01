@@ -35,8 +35,9 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
       console.log(message);
     }
 
-    if (typeof event.payload !== 'undefined') {
-      this.log('payload', 'color: #9E9E9E; font-weight: bold', event.payload);
+    // print payload only if at least one property is supplied
+    if (this._hasPayload(event)) {
+      this.log('payload', 'color: #9E9E9E; font-weight: bold', { ...event });
     }
 
     this.log('prev state', 'color: #9E9E9E; font-weight: bold', state);
@@ -86,5 +87,11 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
     }
 
     return ms_ie;
+  }
+
+  private _hasPayload(event: any) {
+    const nonEmptyProperties = Object.entries(event).filter(([, value]) => !!value);
+
+    return nonEmptyProperties.length > 0;
   }
 }
