@@ -41,8 +41,6 @@ import { InternalStateOperations } from '../internal/state-operations';
 @Injectable()
 export class StateFactory {
   private _connected = false;
-  private _states: MappedStore[] = [];
-  private _statesByName: StatesByName = {};
 
   constructor(
     private _injector: Injector,
@@ -56,9 +54,13 @@ export class StateFactory {
     private _internalStateOperations: InternalStateOperations
   ) {}
 
+  private _states: MappedStore[] = [];
+
   public get states(): MappedStore[] {
     return this._parentFactory ? this._parentFactory.states : this._states;
   }
+
+  private _statesByName: StatesByName = {};
 
   public get statesByName(): StatesByName {
     return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
@@ -84,56 +86,51 @@ export class StateFactory {
     return value;
   }
 
+  private static checkStatesAreValid(stateClasses: StateClass[]): void {
+    stateClasses.forEach(StoreValidators.getValidStateMeta);
+  }
+
   /**
    * Add a new state to the global defs.
    */
   add(stateClasses: StateClass[]): MappedStore[] {
-    this.checkStatesAreValid(stateClasses);
-    this.checkForDuplicateStateNames(stateClasses);
-
-    const stateGraph: StateKeyGraph = buildGraph(stateClasses);
-    const sortedStates: string[] = topologicalSort(stateGraph);
-    const depths: ObjectKeyMap<string> = findFullParentPath(stateGraph);
-    const nameGraph: ObjectKeyMap<StateClass> = nameToState(stateClasses);
+    StateFactory.checkStatesAreValid(stateClasses);
+    const uniqueStates: StateClass[] = this.checkForDuplicateStateNames(stateClasses);
     const bootstrappedStores: MappedStore[] = [];
 
-    for (const name of sortedStates) {
-      const stateClass: StateClass = nameGraph[name];
-      const depth: string = depths[name];
-      const meta: MetaDataModel = stateClass[META_KEY]!;
+    if (uniqueStates.length) {
+      const stateGraph: StateKeyGraph = buildGraph(uniqueStates);
+      const sortedStates: string[] = topologicalSort(stateGraph);
+      const depths: ObjectKeyMap<string> = findFullParentPath(stateGraph);
+      const nameGraph: ObjectKeyMap<StateClass> = nameToState(uniqueStates);
 
-      this.addRuntimeInfoToMeta(meta, depth);
+      for (const name of sortedStates) {
+        const stateClass: StateClass = nameGraph[name];
+        const depth: string = depths[name];
+        const meta: MetaDataModel = stateClass[META_KEY]!;
 
-      const stateMap: MappedStore = {
-        name,
-        depth,
-        actions: meta.actions,
-        instance: this._injector.get(stateClass),
-        defaults: StateFactory.cloneDefaults(meta.defaults)
-      };
+        this.addRuntimeInfoToMeta(meta, depth);
 
-      // ensure our store hasn't already been added
-      // but don't throw since it could be lazy
-      // loaded from different paths
-      if (this.hasBeenMounted(name, depth)) {
-        bootstrappedStores.push(stateMap);
+        const stateMap: MappedStore = {
+          name,
+          depth,
+          actions: meta.actions,
+          instance: this._injector.get(stateClass),
+          defaults: StateFactory.cloneDefaults(meta.defaults)
+        };
+
+        // ensure our store hasn't already been added
+        // but don't throw since it could be lazy
+        // loaded from different paths
+        if (this.hasBeenMounted(name, depth)) {
+          bootstrappedStores.push(stateMap);
+        }
+
+        this.states.push(stateMap);
       }
-
-      this.states.push(stateMap);
     }
 
     return bootstrappedStores;
-  }
-
-  private checkForDuplicateStateNames(stateClasses: StateClass[]) {
-    for (const stateClass of stateClasses) {
-      const stateName = StoreValidators.checkStateNameIsUnique(stateClass, this.statesByName);
-      this.statesByName[stateName] = stateClass;
-    }
-  }
-
-  private checkStatesAreValid(stateClasses: StateClass[]) {
-    stateClasses.forEach(StoreValidators.getValidStateMeta);
   }
 
   /**
@@ -142,7 +139,7 @@ export class StateFactory {
   addAndReturnDefaults(stateClasses: StateClass[]): StatesAndDefaults {
     const classes: StateClass[] = stateClasses || [];
 
-    const states = this.add(classes);
+    const states: MappedStore[] = this.add(classes);
     const defaults = states.reduce(
       (result: any, meta: MappedStore) => setValue(result, meta.depth, meta.defaults),
       {}
@@ -216,6 +213,20 @@ export class StateFactory {
     }
 
     return forkJoin(results);
+  }
+
+  private checkForDuplicateStateNames(stateClasses: StateClass[]): StateClass[] {
+    const filteredStates: StateClass[] = [];
+    for (const stateClass of stateClasses) {
+      const stateName = StoreValidators.checkStateNameIsUnique(stateClass, this.statesByName);
+      const notExistInTree: boolean = !this.statesByName[stateName];
+      if (notExistInTree) {
+        filteredStates.push(stateClass);
+        this.statesByName[stateName] = stateClass;
+      }
+    }
+
+    return filteredStates;
   }
 
   private addRuntimeInfoToMeta(meta: MetaDataModel, depth: string): void {
