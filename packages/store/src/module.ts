@@ -4,7 +4,8 @@ import {
   Optional,
   Inject,
   InjectionToken,
-  APP_BOOTSTRAP_LISTENER
+  APP_BOOTSTRAP_LISTENER,
+  Type
 } from '@angular/core';
 
 import { NgxsBootstrapper } from '@ngxs/store/internals';
@@ -156,7 +157,7 @@ export class NgxsModule {
   /**
    * Feature module factory
    */
-  static forFeature(states: StateClass[] = []): ModuleWithProviders {
+  static forFeature(states: Type<unknown>[] = []): ModuleWithProviders {
     return {
       ngModule: NgxsFeatureModule,
       providers: [
