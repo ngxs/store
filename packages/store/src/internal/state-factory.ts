@@ -95,14 +95,14 @@ export class StateFactory {
    */
   add(stateClasses: StateClass[]): MappedStore[] {
     StateFactory.checkStatesAreValid(stateClasses);
-    const uniqueStates: StateClass[] = this.checkForDuplicateStateNames(stateClasses);
+    const unmountedStateList: StateClass[] = this.getUnmountedStateList(stateClasses);
     const bootstrappedStores: MappedStore[] = [];
 
-    if (uniqueStates.length) {
-      const stateGraph: StateKeyGraph = buildGraph(uniqueStates);
+    if (unmountedStateList.length) {
+      const stateGraph: StateKeyGraph = buildGraph(unmountedStateList);
       const sortedStates: string[] = topologicalSort(stateGraph);
       const depths: ObjectKeyMap<string> = findFullParentPath(stateGraph);
-      const nameGraph: ObjectKeyMap<StateClass> = nameToState(uniqueStates);
+      const nameGraph: ObjectKeyMap<StateClass> = nameToState(unmountedStateList);
 
       for (const name of sortedStates) {
         const stateClass: StateClass = nameGraph[name];
@@ -215,18 +215,20 @@ export class StateFactory {
     return forkJoin(results);
   }
 
-  private checkForDuplicateStateNames(stateClasses: StateClass[]): StateClass[] {
-    const filteredStates: StateClass[] = [];
+  private getUnmountedStateList(stateClasses: StateClass[]): StateClass[] {
+    const unmountedStateList: StateClass[] = [];
+    const statesMap: StatesByName = this.statesByName;
+
     for (const stateClass of stateClasses) {
-      const stateName = StoreValidators.checkStateNameIsUnique(stateClass, this.statesByName);
-      const notExistInTree: boolean = !this.statesByName[stateName];
-      if (notExistInTree) {
-        filteredStates.push(stateClass);
-        this.statesByName[stateName] = stateClass;
+      const stateName: string = StoreValidators.checkStateNameIsUnique(stateClass, statesMap);
+      const unmountedState: boolean = !statesMap[stateName];
+      if (unmountedState) {
+        unmountedStateList.push(stateClass);
+        statesMap[stateName] = stateClass;
       }
     }
 
-    return filteredStates;
+    return unmountedStateList;
   }
 
   private addRuntimeInfoToMeta(meta: MetaDataModel, depth: string): void {
