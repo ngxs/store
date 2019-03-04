@@ -75,37 +75,38 @@ describe('NgxsRouterPlugin', () => {
     });
   }));
 
-  describe('with custom serializer', () => {
-    it('should select custom router state ', fakeAsync(async () => {
-      interface RouterStateParams {
-        queryParams: Params;
-      }
+  it('should select custom router state ', fakeAsync(async () => {
+    interface RouterStateParams {
+      url: string;
+      queryParams: Params;
+    }
 
-      class CustomRouterStateSerializer implements RouterStateSerializer<RouterStateParams> {
-        serialize(state: RouterStateSnapshot): RouterStateParams {
-          const {
-            root: { queryParams }
-          } = state;
-          return { queryParams };
-        }
+    class CustomRouterStateSerializer implements RouterStateSerializer<RouterStateParams> {
+      serialize(state: RouterStateSnapshot): RouterStateParams {
+        const {
+          url,
+          root: { queryParams }
+        } = state;
+        return { url, queryParams };
       }
+    }
 
-      createTestModule({
-        providers: [{ provide: RouterStateSerializer, useClass: CustomRouterStateSerializer }]
+    createTestModule({
+      providers: [{ provide: RouterStateSerializer, useClass: CustomRouterStateSerializer }]
+    });
+
+    const store: Store = TestBed.get(Store);
+
+    store.dispatch(new Navigate(['a-path'], { foo: 'bar' }));
+    tick();
+
+    store
+      .select(state => RouterState.state<RouterStateParams>(state.router))
+      .subscribe(routerState => {
+        expect(routerState!.url).toEqual('/a-path?foo=bar');
+        expect(routerState!.queryParams.foo).toEqual('bar');
       });
-
-      const router: Router = TestBed.get(Router);
-      const store: Store = TestBed.get(Store);
-
-      await router.navigateByUrl('/testpath?foo=bar');
-      tick();
-
-      const routerState = store.selectSnapshot(state =>
-        RouterState.state<RouterStateParams>(state)
-      )!;
-      expect(routerState.queryParams.foo).toEqual('bar');
-    }));
-  });
+  }));
 });
 
 function createTestModule(
