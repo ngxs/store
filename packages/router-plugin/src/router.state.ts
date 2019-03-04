@@ -43,7 +43,7 @@ export class RouterState {
    */
 
   @Selector()
-  static state(state: RouterStateModel) {
+  static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
     return state && state.state;
   }
 
