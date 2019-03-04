@@ -4,7 +4,7 @@
 $ npm install @ngxs/store@dev
 ```
 
-* Nothing yet ;-)
+* Fix: Expose `ActionType, ActionOptions` interfaces [#873](https://github.com/ngxs/store/pull/873)
 
 # 3.4.1 2019-03-04
 * Fix: createSelector does not allow for function returning a type unioned with `null` or `undefined` [#891](https://github.com/ngxs/store/pull/891)
