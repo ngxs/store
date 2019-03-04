@@ -75,7 +75,7 @@ describe('NgxsRouterPlugin', () => {
     });
   }));
 
-  it('should select custom router state ', fakeAsync(async () => {
+  it('should select custom router state ', fakeAsync(() => {
     interface RouterStateParams {
       url: string;
       queryParams: Params;
