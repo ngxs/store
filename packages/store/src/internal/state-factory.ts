@@ -120,7 +120,7 @@ export class StateFactory {
       // ensure our store hasn't already been added
       // but don't throw since it could be lazy
       // loaded from different paths
-      if (this.hasBeenMounted(name, depth)) {
+      if (!this.hasBeenMountedAndBootstrapped(name, depth)) {
         bootstrappedStores.push(stateMap);
       }
 
@@ -238,10 +238,10 @@ export class StateFactory {
    * the method checks if the state has already been added to the tree
    * and completed the life cycle
    * @param name
-   * @param depth
+   * @param path
    */
-  private hasBeenMounted(name: string, depth: string): boolean {
-    const valueIsBootstrapped: boolean = getValue(this.stateTreeRef, depth) !== undefined;
-    return !(this.statesByName[name] && valueIsBootstrapped);
+  private hasBeenMountedAndBootstrapped(name: string, path: string): boolean {
+    const valueIsBootstrapped: boolean = getValue(this.stateTreeRef, path) !== undefined;
+    return this.statesByName[name] && valueIsBootstrapped;
   }
 }
