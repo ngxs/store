@@ -93,39 +93,38 @@ export class StateFactory {
    */
   add(stateClasses: StateClass[]): MappedStore[] {
     StateFactory.checkStatesAreValid(stateClasses);
-    const unmountedStateList: StateClass[] = this.getUnmountedStateList(stateClasses);
+    const { newStates } = this.addToStatesMap(stateClasses);
+    if (!newStates.length) return [];
+
+    const stateGraph: StateKeyGraph = buildGraph(newStates);
+    const sortedStates: string[] = topologicalSort(stateGraph);
+    const depths: ObjectKeyMap<string> = findFullParentPath(stateGraph);
+    const nameGraph: ObjectKeyMap<StateClass> = nameToState(newStates);
     const bootstrappedStores: MappedStore[] = [];
 
-    if (unmountedStateList.length) {
-      const stateGraph: StateKeyGraph = buildGraph(unmountedStateList);
-      const sortedStates: string[] = topologicalSort(stateGraph);
-      const depths: ObjectKeyMap<string> = findFullParentPath(stateGraph);
-      const nameGraph: ObjectKeyMap<StateClass> = nameToState(unmountedStateList);
+    for (const name of sortedStates) {
+      const stateClass: StateClass = nameGraph[name];
+      const depth: string = depths[name];
+      const meta: MetaDataModel = stateClass[META_KEY]!;
 
-      for (const name of sortedStates) {
-        const stateClass: StateClass = nameGraph[name];
-        const depth: string = depths[name];
-        const meta: MetaDataModel = stateClass[META_KEY]!;
+      this.addRuntimeInfoToMeta(meta, depth);
 
-        this.addRuntimeInfoToMeta(meta, depth);
+      const stateMap: MappedStore = {
+        name,
+        depth,
+        actions: meta.actions,
+        instance: this._injector.get(stateClass),
+        defaults: StateFactory.cloneDefaults(meta.defaults)
+      };
 
-        const stateMap: MappedStore = {
-          name,
-          depth,
-          actions: meta.actions,
-          instance: this._injector.get(stateClass),
-          defaults: StateFactory.cloneDefaults(meta.defaults)
-        };
-
-        // ensure our store hasn't already been added
-        // but don't throw since it could be lazy
-        // loaded from different paths
-        if (this.hasBeenMounted(name, depth)) {
-          bootstrappedStores.push(stateMap);
-        }
-
-        this.states.push(stateMap);
+      // ensure our store hasn't already been added
+      // but don't throw since it could be lazy
+      // loaded from different paths
+      if (this.hasBeenMounted(name, depth)) {
+        bootstrappedStores.push(stateMap);
       }
+
+      this.states.push(stateMap);
     }
 
     return bootstrappedStores;
@@ -213,20 +212,20 @@ export class StateFactory {
     return forkJoin(results);
   }
 
-  private getUnmountedStateList(stateClasses: StateClass[]): StateClass[] {
-    const unmountedStateList: StateClass[] = [];
+  private addToStatesMap(stateClasses: StateClass[]): { newStates: StateClass[] } {
+    const newStates: StateClass[] = [];
     const statesMap: StatesByName = this.statesByName;
 
     for (const stateClass of stateClasses) {
       const stateName: string = StoreValidators.checkStateNameIsUnique(stateClass, statesMap);
       const unmountedState: boolean = !statesMap[stateName];
       if (unmountedState) {
-        unmountedStateList.push(stateClass);
+        newStates.push(stateClass);
         statesMap[stateName] = stateClass;
       }
     }
 
-    return unmountedStateList;
+    return { newStates };
   }
 
   private addRuntimeInfoToMeta(meta: MetaDataModel, depth: string): void {
