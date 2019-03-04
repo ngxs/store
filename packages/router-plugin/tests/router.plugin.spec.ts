@@ -1,10 +1,10 @@
 import { Component, Provider } from '@angular/core';
 import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { Router, Params, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
-import { NgxsRouterPluginModule, RouterState } from '../';
+import { NgxsRouterPluginModule, RouterState, RouterStateSerializer } from '../';
 import { Navigate } from '@ngxs/router-plugin/src/router.actions';
 
 describe('NgxsRouterPlugin', () => {
@@ -74,6 +74,38 @@ describe('NgxsRouterPlugin', () => {
       expect(routerState!.url).toEqual('/a-path');
     });
   }));
+
+  describe('with custom serializer', () => {
+    it('should select custom router state ', fakeAsync(async () => {
+      interface RouterStateParams {
+        queryParams: Params;
+      }
+
+      class CustomRouterStateSerializer implements RouterStateSerializer<RouterStateParams> {
+        serialize(state: RouterStateSnapshot): RouterStateParams {
+          const {
+            root: { queryParams }
+          } = state;
+          return { queryParams };
+        }
+      }
+
+      createTestModule({
+        providers: [{ provide: RouterStateSerializer, useClass: CustomRouterStateSerializer }]
+      });
+
+      const router: Router = TestBed.get(Router);
+      const store: Store = TestBed.get(Store);
+
+      await router.navigateByUrl('/testpath?foo=bar');
+      tick();
+
+      const routerState = store.selectSnapshot(state =>
+        RouterState.state<RouterStateParams>(state)
+      )!;
+      expect(routerState.queryParams.foo).toEqual('bar');
+    }));
+  });
 });
 
 function createTestModule(
