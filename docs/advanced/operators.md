@@ -151,7 +151,7 @@ export class AnimalsState {
   removePanda(ctx: StateContext<AnimalsStateModel>, { payload }: RemovePanda) {
     ctx.setState(
       patch({
-        panda: removeItem(name => name === payload)
+        pandas: removeItem(name => name === payload)
       })
     );
   }
@@ -160,7 +160,7 @@ export class AnimalsState {
   changePandaName(ctx: StateContext<AnimalsStateModel>, { payload }: ChangePandaName) {
     ctx.setState(
       patch({
-        panda: updateItem(name => name === payload.name, payload.newName)
+        pandas: updateItem(name => name === payload.name, payload.newName)
       })
     );
   }
@@ -215,3 +215,6 @@ function addEntity(entity: Entity): StateOperator<EntitiesStateModel> {
 ```
 
 As you can see, state operators are very powerful to start moving your immutable state updates to be more declarative and expressive. Enhancing the overall maintainability and readability of your state class code.
+
+## Relevant Articles
+[NGXS State Operators](https://medium.com/ngxs/ngxs-state-operators-8b339641b220)

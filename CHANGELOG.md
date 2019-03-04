@@ -1,9 +1,18 @@
-# [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) (to become [3.4.0](https://github.com/ngxs/store/milestone/6))
+# [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) (to become [3.5.0](https://github.com/ngxs/store/milestone/7))
 
 ```bash
 $ npm install @ngxs/store@dev
 ```
 
+* Fix: Expose `ActionType, ActionOptions` interfaces [#873](https://github.com/ngxs/store/pull/873)
+* Fix: Router Plugin - add state selector with generic [#894](https://github.com/ngxs/store/pull/894)
+
+# 3.4.1 2019-03-04
+* Fix: createSelector does not allow for function returning a type unioned with `null` or `undefined` [#891](https://github.com/ngxs/store/pull/891)
+* Fix: Action is called multiple times when a module is called by multiple routes [#888](https://github.com/ngxs/store/pull/888)
+* Fix: Expose `removeItem` operator [#880](https://github.com/ngxs/store/pull/880)
+
+# 3.4.0 2019-02-28
 * Feature: Support server-side rendering [#698](https://github.com/ngxs/store/pull/698)
 * Feature: Enable state operator extensibility [#635](https://github.com/ngxs/store/pull/635)
 * Feature: Add `ofActionCompleted` action handler [#712](https://github.com/ngxs/store/pull/712)
@@ -19,6 +28,11 @@ $ npm install @ngxs/store@dev
 * Fix: Bind static context to the selector function [#818](https://github.com/ngxs/store/pull/818)
 * Fix: WebSocket Plugin - `WebsocketMessageError` notifies of errors [#825](https://github.com/ngxs/store/pull/825)
 * Fix: Performance improved reading the name of the state from the parameter [#826](https://github.com/ngxs/store/pull/826)
+* Fix: Log group not closed on error [#831](https://github.com/ngxs/store/pull/831)
+* Fix: Websocket Plugin - server/network error triggered close should dispatch WebSocketDisconnected [#832](https://github.com/ngxs/store/pull/832)
+* Fix: Form Plugin - correct state synchronization with dirty flag [#862](https://github.com/ngxs/store/pull/862)
+* Fix: Remove typings introduced since 3.3.4 that are incompatible with TS 2.7 [#853](https://github.com/ngxs/store/pull/853)
+* Fix: Remove type usages introduced since 3.3.4 that are incompatible with NG 5 & TS 2.7 [#854](https://github.com/ngxs/store/pull/854)
 
 ## NGXS-Labs
 

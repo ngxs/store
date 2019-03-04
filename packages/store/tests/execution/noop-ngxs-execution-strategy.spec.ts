@@ -1,19 +1,5 @@
-import {
-  ApplicationRef,
-  NgZone,
-  Component,
-  Type,
-  NgModule,
-  DoBootstrap,
-  PlatformRef
-} from '@angular/core';
-import { TestBed, TestModuleMetadata, async } from '@angular/core/testing';
-import {
-  ɵDomAdapter as DomAdapter,
-  ɵBrowserDomAdapter as BrowserDomAdapter,
-  BrowserModule,
-  DOCUMENT
-} from '@angular/platform-browser';
+import { ApplicationRef, NgZone, Component, Type } from '@angular/core';
+import { TestBed, TestModuleMetadata } from '@angular/core/testing';
 
 import { Observable } from 'rxjs';
 
@@ -26,9 +12,9 @@ import {
   Select,
   Actions
 } from '../../src/public_api';
-import { DispatchOutsideZoneNgxsExecutionStrategy } from '../../src/execution/dispatchOutsideZoneNgxsExecutionStrategy';
+import { NoopNgxsExecutionStrategy } from '@ngxs/store/src/execution/noop-ngxs-execution-strategy';
 
-describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
+describe('NoopNgxsExecutionStrategy', () => {
   class ZoneCounter {
     inside = 0;
     outside = 0;
@@ -70,14 +56,19 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
     public counter$: Observable<number>;
   }
 
+  function repeat<T>(value: T, times: number): T[] {
+    return <T[]>new Array(times).fill(value);
+  }
+
   function setup(moduleDef?: TestModuleMetadata) {
     moduleDef = moduleDef || {
       imports: [
         NgxsModule.forRoot([CounterState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          executionStrategy: NoopNgxsExecutionStrategy
         })
       ]
     };
+
     const ticks = { count: 0 };
     class MockApplicationRef extends ApplicationRef {
       public tick(): void {
@@ -102,7 +93,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
   }
 
   describe('[store.select]', () => {
-    it('should be performed inside Angular zone, when dispatched from outside zones', () => {
+    it('should be performed outside Angular zone, when dispatched from outside zones', () => {
       // Arrange
       const { zone, store, ticks } = setup();
       ticks.count = 0;
@@ -120,10 +111,10 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       });
 
       // Assert
-      expect(ticks.count).toEqual(3);
+      expect(ticks.count).toEqual(0);
       zoneCounter.assert({
-        inside: 3,
-        outside: 0
+        inside: 0,
+        outside: 3
       });
     });
 
@@ -158,7 +149,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       const { zone, store, ticks, get } = setup({
         imports: [
           NgxsModule.forRoot([CounterState], {
-            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            executionStrategy: NoopNgxsExecutionStrategy
           })
         ],
         declarations: [CounterComponent]
@@ -178,7 +169,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       return { zone, store, ticks, get, zoneCounter, cleanup };
     }
 
-    it('should be performed inside Angular zone, when dispatched from outside zones', () => {
+    it('should be performed outside Angular zone, when dispatched from outside zones', () => {
       // Arrange
       const { zone, store, ticks, zoneCounter, cleanup } = setupWithComponentSubscription();
       // Act
@@ -188,10 +179,10 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       });
       // Assert
       cleanup();
-      expect(ticks.count).toEqual(4);
+      expect(ticks.count).toEqual(1);
       zoneCounter.assert({
-        inside: 3,
-        outside: 0
+        inside: 0,
+        outside: 3
       });
     });
 
@@ -203,18 +194,18 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
         store.dispatch(new Increment());
         store.dispatch(new Increment());
       });
-      // Assert
       cleanup();
-      expect(ticks.count).toEqual(3);
+      // Assert
+      expect(ticks.count).toEqual(2);
       zoneCounter.assert({
-        inside: 3,
-        outside: 0
+        inside: 2,
+        outside: 1
       });
     });
   });
 
   describe('[actions...subscribe]', () => {
-    it('should be performed inside Angular zone, when dispatched from outside zones', () => {
+    it('should be performed outside Angular zone, when dispatched from outside zones', () => {
       // Arrange
       const { zone, store, get } = setup();
       const actionsStream = get(Actions);
@@ -231,8 +222,8 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
 
       // Assert
       zoneCounter.assert({
-        inside: 4,
-        outside: 0
+        inside: 0,
+        outside: 4
       });
     });
 
@@ -277,7 +268,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       });
     });
 
-    it('should be performed outside Angular zone, when dispatched from inside zones', () => {
+    it('should be performed inside Angular zone, when dispatched from inside zones', () => {
       // Arrange
       const { zone, store, get } = setup();
       const counterState = get(CounterState);
@@ -289,68 +280,9 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
 
       // Assert
       counterState.zoneCounter.assert({
-        inside: 0,
-        outside: 2
+        inside: 2,
+        outside: 0
       });
     });
   });
-
-  it('should warn if zone is "nooped"', async(() => {
-    @State({ name: 'foo' })
-    class FooState {}
-
-    @Component({
-      selector: 'app-root',
-      template: ''
-    })
-    class MockComponent {}
-
-    @NgModule({
-      imports: [
-        BrowserModule,
-        NgxsModule.forRoot([FooState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
-      declarations: [MockComponent],
-      entryComponents: [MockComponent]
-    })
-    class MockModule implements DoBootstrap {
-      public ngDoBootstrap(app: ApplicationRef): void {
-        createRootNode();
-        app.bootstrap(MockComponent);
-      }
-    }
-
-    const platformRef: PlatformRef = TestBed.get(PlatformRef);
-    const warnings: string[] = [];
-
-    console.warn = (...args: string[]) => {
-      warnings.push(args[0]);
-    };
-
-    platformRef
-      .bootstrapModule(MockModule, {
-        ngZone: 'noop'
-      })
-      .then(() => {
-        expect(warnings).toEqual([
-          'Your application was bootstrapped with nooped zone and your execution strategy requires an ngZone'
-        ]);
-      });
-  }));
-
-  function createRootNode(selector = 'app-root'): void {
-    const document = TestBed.get(DOCUMENT);
-    const adapter: DomAdapter = new BrowserDomAdapter();
-
-    const root = adapter.firstChild(
-      adapter.content(adapter.createTemplate(`<${selector}></${selector}>`))
-    );
-
-    const oldRoots = adapter.querySelectorAll(document, selector);
-    oldRoots.forEach(oldRoot => adapter.remove(oldRoot));
-
-    adapter.appendChild(document.body, root);
-  }
 });

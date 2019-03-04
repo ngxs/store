@@ -1,5 +1,5 @@
 {
-  "$schema": "./node_modules/ng-packagr/package.schema.json",
+  "$schema": "../../node_modules/ng-packagr/package.schema.json",
   "name": "@ngxs/devtools-plugin",
   "description": "redux devtools plugin for @ngxs/store",
   "version": "0.0.0",

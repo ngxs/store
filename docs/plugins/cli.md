@@ -6,7 +6,10 @@
 The CLI can be installed using NPM:
 
 ```bash
-npm i @ngxs/cli -g
+npm install @ngxs/cli -g
+
+# or if you use yarn
+yarn global add @ngxs/cli
 ```
 
 ## Usage

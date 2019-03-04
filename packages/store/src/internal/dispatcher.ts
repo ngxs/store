@@ -7,8 +7,8 @@ import { InternalActions, ActionStatus, ActionContext } from '../actions-stream'
 import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { NgxsConfig } from '../symbols';
-import { InternalNgxsExecutionStrategy } from '../execution/internalNgxsExecutionStrategy';
-import { leaveNgxs } from '../operators/leaveNgxs';
+import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
+import { leaveNgxs } from '../operators/leave-ngxs';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.

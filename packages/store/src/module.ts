@@ -29,6 +29,10 @@ import { NgxsRootModule } from './modules/ngxs-root.module';
 import { NgxsFeatureModule } from './modules/ngxs-feature.module';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatchOutsideZoneNgxsExecutionStrategy';
 import { InternalNgxsExecutionStrategy } from './execution/internalNgxsExecutionStrategy';
+import { InitState, UpdateState } from './actions/actions';
+import { StateClass } from './internal/internals';
+import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
+import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 
 /**
  * Ngxs Module

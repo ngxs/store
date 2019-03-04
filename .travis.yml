@@ -21,3 +21,6 @@ script:
   - yarn run test:ci
   - yarn run test:ci:integration
   - yarn run test:ci:integration:ssr
+
+  # INTEGRATION TEST
+  - yarn run integration:ng5

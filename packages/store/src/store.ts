@@ -7,8 +7,8 @@ import { getSelectorFn } from './utils/selector-utils';
 import { InternalStateOperations } from './internal/state-operations';
 import { StateStream } from './internal/state-stream';
 import { NgxsConfig } from './symbols';
-import { InternalNgxsExecutionStrategy } from './execution/internalNgxsExecutionStrategy';
-import { leaveNgxs } from './operators/leaveNgxs';
+import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
+import { leaveNgxs } from './operators/leave-ngxs';
 
 @Injectable()
 export class Store {
@@ -32,7 +32,7 @@ export class Store {
    * Selects a slice of data from the store.
    */
   select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
-  select<T = any>(selector: string | Type<unknown>): Observable<T>;
+  select<T = any>(selector: string | Type<any>): Observable<T>;
   select(selector: any): Observable<any> {
     const selectorFn = getSelectorFn(selector);
     return this._stateStream.pipe(
@@ -56,7 +56,7 @@ export class Store {
    */
 
   selectOnce<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
-  selectOnce<T = any>(selector: string | Type<unknown>): Observable<T>;
+  selectOnce<T = any>(selector: string | Type<any>): Observable<T>;
   selectOnce(selector: any): Observable<any> {
     return this.select(selector).pipe(take(1));
   }
@@ -65,7 +65,7 @@ export class Store {
    * Select a snapshot from the state.
    */
   selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T;
-  selectSnapshot<T = any>(selector: string | Type<unknown>): T;
+  selectSnapshot<T = any>(selector: string | Type<any>): T;
   selectSnapshot(selector: any): any {
     const selectorFn = getSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());

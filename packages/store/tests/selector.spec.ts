@@ -6,7 +6,12 @@ import { NgxsModule } from '../src/module';
 import { Selector } from '../src/decorators/selector';
 
 describe('Selector', () => {
-  @State<any>({
+  interface MyStateModel {
+    foo: string;
+    bar: string;
+  }
+
+  @State<MyStateModel>({
     name: 'counter',
     defaults: {
       foo: 'Hello',
@@ -15,12 +20,12 @@ describe('Selector', () => {
   })
   class MyState {
     @Selector()
-    static foo(state: any) {
+    static foo(state: MyStateModel) {
       return state.foo;
     }
   }
 
-  @State<any>({
+  @State<MyStateModel>({
     name: 'zoo',
     defaults: {
       foo: 'Hello',
@@ -29,19 +34,19 @@ describe('Selector', () => {
   })
   class MyState2 {
     @Selector([MyState.foo])
-    static foo(myState2: any, myStateFoo: any) {
+    static foo(myState2: MyStateModel, myStateFoo: string) {
       return myState2.foo + myStateFoo;
     }
 
     @Selector([MyState2.foo])
-    static fooBar(myState2: any, foo: any) {
+    static fooBar(myState2: MyStateModel, foo: string) {
       return foo + myState2.bar;
     }
   }
 
   class MetaSelector {
     @Selector([MyState.foo])
-    static foo(myState: any) {
+    static foo(myState: string) {
       return myState;
     }
   }
@@ -73,7 +78,7 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const myState = store.selectSnapshot(<any>MyState);
+      const myState = store.selectSnapshot<MyStateModel>(MyState);
       const slice = MyState.foo(myState);
       expect(slice).toBe('Hello');
     }));
@@ -131,7 +136,7 @@ describe('Selector', () => {
       it('should memoize the last result', async(() => {
         const selectorCalls: string[] = [];
 
-        @State<any>({
+        @State<MyStateModel>({
           name: 'counter',
           defaults: {
             foo: 'Hello',
@@ -140,13 +145,13 @@ describe('Selector', () => {
         })
         class TestState {
           @Selector()
-          static foo(state: any) {
+          static foo(state: MyStateModel) {
             selectorCalls.push('foo');
             return state.foo;
           }
 
           @Selector()
-          static bar(state: any) {
+          static bar(state: MyStateModel) {
             selectorCalls.push('bar');
             return state.bar;
           }
@@ -168,7 +173,7 @@ describe('Selector', () => {
       it('should memoize the last result of an inner function', async(() => {
         const selectorCalls: string[] = [];
 
-        @State<any>({
+        @State<MyStateModel>({
           name: 'counter',
           defaults: {
             foo: 'Hello',
@@ -177,7 +182,7 @@ describe('Selector', () => {
         })
         class TestState {
           @Selector()
-          static foo(state: any) {
+          static foo(state: MyStateModel) {
             selectorCalls.push('foo[outer]');
             return () => {
               selectorCalls.push('foo[inner]');
@@ -211,10 +216,44 @@ describe('Selector', () => {
       const store: Store = TestBed.get(Store);
       const selector = createSelector(
         [MyState],
-        (state: any) => state.foo
+        (state: MyStateModel) => state.foo
+      );
+      const slice: string = store.selectSnapshot(selector);
+      expect(slice).toBe('Hello');
+    }));
+
+    it('should allow for null in the returned value [regression fix]', async(() => {
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyState])]
+      });
+
+      const store: Store = TestBed.get(Store);
+      const selector = createSelector(
+        [MyState],
+        (state: MyStateModel) => {
+          const foo = state.foo;
+          return foo === 'Hello' ? null : foo;
+        }
       );
       const slice = store.selectSnapshot(selector);
-      expect(slice).toBe('Hello');
+      expect(slice).toBe(null);
+    }));
+
+    it('should allow for undefined in the returned value [regression fix]', async(() => {
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyState])]
+      });
+
+      const store: Store = TestBed.get(Store);
+      const selector = createSelector(
+        [MyState],
+        (state: MyStateModel) => {
+          const foo = state.foo;
+          return foo === 'Hello' ? undefined : foo;
+        }
+      );
+      const slice = store.selectSnapshot(selector);
+      expect(slice).toBe(undefined);
     }));
 
     it('should select using the meta selector', async(() => {
@@ -225,9 +264,9 @@ describe('Selector', () => {
       const store: Store = TestBed.get(Store);
       const selector = createSelector(
         [MyState.foo],
-        (state: any) => state
+        (state: string) => state
       );
-      const slice = store.selectSnapshot(selector);
+      const slice: string = store.selectSnapshot(selector);
       expect(slice).toBe('Hello');
     }));
 
@@ -237,12 +276,12 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const myState = store.selectSnapshot(<any>MyState);
+      const myState = store.selectSnapshot<MyStateModel>(MyState);
       const selector = createSelector(
         [MyState],
-        (state: any) => state.foo
+        (state: MyStateModel) => state.foo
       );
-      const slice = selector(myState);
+      const slice: string = selector(myState);
       expect(slice).toBe('Hello');
     }));
 
@@ -252,11 +291,11 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const selector: any = createSelector(
+      const selector = createSelector(
         [MyState, MyState.foo],
-        (state: any, foo: any) => state.foo + foo
+        (state: MyStateModel, foo: string) => state.foo + foo
       );
-      const slice = store.selectSnapshot(selector);
+      const slice: string = store.selectSnapshot(selector);
       expect(slice).toBe('HelloHello');
     }));
 
@@ -264,7 +303,7 @@ describe('Selector', () => {
       it('should memoize the last result', async(() => {
         const selectorCalls: string[] = [];
 
-        @State<any>({
+        @State<MyStateModel>({
           name: 'counter',
           defaults: {
             foo: 'Hello',
@@ -281,14 +320,14 @@ describe('Selector', () => {
 
         const fooSelector = createSelector(
           [TestState],
-          (state: any) => {
+          (state: MyStateModel) => {
             selectorCalls.push('foo');
             return state.foo;
           }
         );
         const barSelector = createSelector(
           [TestState],
-          (state: any) => {
+          (state: MyStateModel) => {
             selectorCalls.push('bar');
             return state.bar;
           }
@@ -304,7 +343,7 @@ describe('Selector', () => {
       it('should memoize the last result of an inner function', async(() => {
         const selectorCalls: string[] = [];
 
-        @State<any>({
+        @State<MyStateModel>({
           name: 'counter',
           defaults: {
             foo: 'Hello',
@@ -320,7 +359,7 @@ describe('Selector', () => {
         const store: Store = TestBed.get(Store);
         const fooSelector = createSelector(
           [TestState],
-          (state: any) => {
+          (state: MyStateModel) => {
             selectorCalls.push('foo[outer]');
             return () => {
               selectorCalls.push('foo[inner]');

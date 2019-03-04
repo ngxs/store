@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { ObjectKeyMap } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
-import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatchOutsideZoneNgxsExecutionStrategy';
+import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
@@ -64,12 +64,6 @@ export class NgxsConfig {
   }
 }
 
-export interface ActionDef {
-  type: string;
-
-  new (...args: any[]): any;
-}
-
 export type StateOperator<T> = (existing: Readonly<T>) => T;
 
 /**
@@ -127,16 +121,6 @@ export interface StoreOptions<T> {
    * Sub states for the given state.
    */
   children?: any[];
-}
-
-/**
- * Actions that can be provided in a action decorator.
- */
-export interface ActionOptions {
-  /**
-   * Cancel the previous uncompleted observable(s).
-   */
-  cancelUncompleted?: boolean;
 }
 
 export const enum LifecycleHooks {

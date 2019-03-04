@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
-import { InternalNgxsExecutionStrategy } from './execution/internalNgxsExecutionStrategy';
-import { leaveNgxs } from './operators/leaveNgxs';
+import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
+import { leaveNgxs } from './operators/leave-ngxs';
 
 /**
  * Status of a dispatched action

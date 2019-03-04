@@ -12,7 +12,7 @@ import { memoize } from '../utils/memoize';
  * @param originalFn The original function being made into a selector
  * @param creationMetadata
  */
-export function createSelector<T extends (...args: any[]) => R, R>(
+export function createSelector<T extends (...args: any[]) => any>(
   selectors: any[] | undefined,
   originalFn: T,
   creationMetadata?: { containerClass: any; selectorName: string }

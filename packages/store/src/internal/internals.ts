@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
 
 import {
-  ActionOptions,
   META_KEY,
   META_OPTIONS_KEY,
   ModuleOptions,
@@ -10,15 +9,14 @@ import {
   StoreOptions
 } from '../symbols';
 import { NgxsBootstrapper } from '@ngxs/store/internals';
+import { ActionHandlerMetaData } from '../actions/symbols';
 
 export interface ObjectKeyMap<T> {
   [key: string]: T;
 }
 
-export interface StateClassWithoutStaticMembers {}
-
 // inspired from https://stackoverflow.com/a/43674389
-export interface StateClass<T = StateClassWithoutStaticMembers, U = any> {
+export interface StateClass<T = any, U = any> {
   [META_KEY]?: MetaDataModel;
   [META_OPTIONS_KEY]?: StoreOptions<U>;
 
@@ -27,12 +25,6 @@ export interface StateClass<T = StateClassWithoutStaticMembers, U = any> {
 
 export type StateKeyGraph = ObjectKeyMap<string[]>;
 export type StatesByName = ObjectKeyMap<StateClass>;
-
-export interface ActionHandlerMetaData {
-  fn: string | symbol;
-  options: ActionOptions;
-  type: string;
-}
 
 export interface StateOperations<T> {
   getState(): T;

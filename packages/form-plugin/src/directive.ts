@@ -41,6 +41,20 @@ export class FormDirective implements OnInit, OnDestroy {
       this._cd.markForCheck();
     });
 
+    this.getStateStream(`${this.path}.dirty`).subscribe(dirty => {
+      if (this.form.dirty === dirty || typeof dirty !== 'boolean') {
+        return;
+      }
+
+      if (dirty) {
+        this.form.markAsDirty();
+      } else {
+        this.form.markAsPristine();
+      }
+
+      this._cd.markForCheck();
+    });
+
     // On first state change, sync form model, status and dirty with state
     this._store
       .selectOnce(state => getValue(state, this.path))
@@ -60,20 +74,6 @@ export class FormDirective implements OnInit, OnDestroy {
           })
         ]);
       });
-
-    this.getStateStream(`${this.path}.dirty`).subscribe(dirty => {
-      if (this.form.dirty === dirty || typeof dirty !== 'boolean') {
-        return;
-      }
-
-      if (dirty) {
-        this.form.markAsDirty();
-      } else {
-        this.form.markAsPristine();
-      }
-
-      this._cd.markForCheck();
-    });
 
     this.getStateStream(`${this.path}.disabled`).subscribe(disabled => {
       if (this.form.disabled === disabled || typeof disabled !== 'boolean') {

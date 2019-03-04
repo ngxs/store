@@ -4,9 +4,11 @@
     "baseUrl": "./",
     "outDir": "out-tsc/lib",
     "paths": {
-      "@ngxs/*": ["packages/*"],
       "@integration/*": ["integration/app/*"],
-      "@integration/env/*": ["integration/environments/*"]
+      "@integration/env/*": ["integration/environments/*"],
+      "@ngxs/store/operators": ["packages/store/operators/src"],
+      "@ngxs/store/internals": ["packages/store/internals/src"],
+      "@ngxs/*": ["packages/*"]
     },
     "strict": true,
     "strictPropertyInitialization": false,
@@ -20,6 +22,7 @@
     "typeRoots": ["node_modules/@types"]
   },
   "exclude": [
-    "@ngxs/**"
+    "@ngxs/**",
+    "integrations/**"
   ]
 }

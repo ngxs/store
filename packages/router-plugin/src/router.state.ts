@@ -16,7 +16,7 @@ import {
   RouterNavigation
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
-import { NgZone } from '@angular/core';
+import { NgZone, Injectable } from '@angular/core';
 
 export type RouterStateModel<T = RouterStateSnapshot> = {
   state?: T;
@@ -30,6 +30,7 @@ export type RouterStateModel<T = RouterStateSnapshot> = {
     navigationId: undefined
   }
 })
+@Injectable()
 export class RouterState {
   private routerStateSnapshot: RouterStateSnapshot;
   private routerState: RouterStateModel;
@@ -42,7 +43,7 @@ export class RouterState {
    */
 
   @Selector()
-  static state(state: RouterStateModel) {
+  static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
     return state && state.state;
   }
 

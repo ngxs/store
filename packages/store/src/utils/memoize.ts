@@ -28,7 +28,7 @@ function areArgumentsShallowlyEqual(
  *
  * @ignore
  */
-export function memoize<R, T extends (...args: any[]) => R>(
+export function memoize<T extends (...args: any[]) => any>(
   func: T,
   equalityCheck = defaultEqualityCheck
 ): T {
@@ -38,7 +38,7 @@ export function memoize<R, T extends (...args: any[]) => R>(
   function memoized() {
     if (!areArgumentsShallowlyEqual(equalityCheck, lastArgs, arguments)) {
       // apply arguments instead of spreading for performance.
-      lastResult = func.apply(null, arguments);
+      lastResult = (<Function>func).apply(null, arguments);
     }
 
     lastArgs = arguments;

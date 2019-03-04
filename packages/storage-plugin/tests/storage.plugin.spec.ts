@@ -133,7 +133,7 @@ describe('NgxsStoragePlugin', () => {
     it(`should use default data if the string 'undefined' retrieved from localstorage`, () => {
       localStorage.setItem('@@STATE', 'undefined');
 
-      @State<StateModel>({ name: 'testStore', defaults: { count: 123 } })
+      @State<StateModel>({ name: 'counter', defaults: { count: 123 } })
       class TestStore {}
 
       TestBed.configureTestingModule({
