@@ -6,6 +6,11 @@ $ npm install @ngxs/store@dev
 
 * Nothing yet ;-)
 
+# 3.4.1 2019-03-04
+* Fix: createSelector does not allow for function returning a type unioned with `null` or `undefined` [Issue #890](https://github.com/ngxs/store/issues/890), [PR #891](https://github.com/ngxs/store/pull/891)
+* Fix: Action is called multiple times when a module is called by multiple routes [Issue #883](https://github.com/ngxs/store/issues/883), [PR #888](https://github.com/ngxs/store/pull/888)
+* Fix: Expose `removeItem` operator [Issue #877](https://github.com/ngxs/store/issues/877), [PR #880](https://github.com/ngxs/store/pull/880)
+
 # 3.4.0 2019-02-28
 * Feature: Support server-side rendering [#698](https://github.com/ngxs/store/pull/698)
 * Feature: Enable state operator extensibility [#635](https://github.com/ngxs/store/pull/635)
