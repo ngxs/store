@@ -235,8 +235,8 @@ describe('Selector', () => {
           return foo === 'Hello' ? null : foo;
         }
       );
-      const slice: string = store.selectSnapshot(selector);
-      expect(slice).toBe('Hello');
+      const slice = store.selectSnapshot(selector);
+      expect(slice).toBe(null);
     }));
 
     it('should allow for undefined in the returned value [regression fix]', async(() => {
@@ -252,8 +252,8 @@ describe('Selector', () => {
           return foo === 'Hello' ? undefined : foo;
         }
       );
-      const slice: string = store.selectSnapshot(selector);
-      expect(slice).toBe('Hello');
+      const slice = store.selectSnapshot(selector);
+      expect(slice).toBe(undefined);
     }));
 
     it('should select using the meta selector', async(() => {
@@ -264,9 +264,9 @@ describe('Selector', () => {
       const store: Store = TestBed.get(Store);
       const selector = createSelector(
         [MyState.foo],
-        (state: MyStateModel) => state
+        (state: string) => state
       );
-      const slice: MyStateModel = store.selectSnapshot(selector);
+      const slice: string = store.selectSnapshot(selector);
       expect(slice).toBe('Hello');
     }));
 
