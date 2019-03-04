@@ -30,10 +30,11 @@ export class NgxsFeatureModule {
     // add stores to the state graph and return their defaults
     const results: StatesAndDefaults = factory.addAndReturnDefaults(flattenedStates);
 
-    internalStateOperations.setStateToTheCurrentWithNew(results);
-
-    // dispatch the update action and invoke init and bootstrap functions after
-    lifecycleStateManager.ngxsBootstrap(new UpdateState(), results);
+    if (results.states.length) {
+      internalStateOperations.setStateToTheCurrentWithNew(results);
+      // dispatch the update action and invoke init and bootstrap functions after
+      lifecycleStateManager.ngxsBootstrap(new UpdateState(), results);
+    }
   }
 
   private static flattenStates(states: StateClass[][] = []): StateClass[] {
