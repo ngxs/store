@@ -84,17 +84,22 @@ export class StateFactory {
     return value;
   }
 
+  private static checkStatesAreValid(stateClasses: StateClass[]): void {
+    stateClasses.forEach(StoreValidators.getValidStateMeta);
+  }
+
   /**
    * Add a new state to the global defs.
    */
   add(stateClasses: StateClass[]): MappedStore[] {
-    this.checkStatesAreValid(stateClasses);
-    this.checkForDuplicateStateNames(stateClasses);
+    StateFactory.checkStatesAreValid(stateClasses);
+    const { newStates } = this.addToStatesMap(stateClasses);
+    if (!newStates.length) return [];
 
-    const stateGraph: StateKeyGraph = buildGraph(stateClasses);
+    const stateGraph: StateKeyGraph = buildGraph(newStates);
     const sortedStates: string[] = topologicalSort(stateGraph);
     const depths: ObjectKeyMap<string> = findFullParentPath(stateGraph);
-    const nameGraph: ObjectKeyMap<StateClass> = nameToState(stateClasses);
+    const nameGraph: ObjectKeyMap<StateClass> = nameToState(newStates);
     const bootstrappedStores: MappedStore[] = [];
 
     for (const name of sortedStates) {
@@ -115,7 +120,7 @@ export class StateFactory {
       // ensure our store hasn't already been added
       // but don't throw since it could be lazy
       // loaded from different paths
-      if (this.hasBeenMounted(name, depth)) {
+      if (!this.hasBeenMountedAndBootstrapped(name, depth)) {
         bootstrappedStores.push(stateMap);
       }
 
@@ -125,24 +130,13 @@ export class StateFactory {
     return bootstrappedStores;
   }
 
-  private checkForDuplicateStateNames(stateClasses: StateClass[]) {
-    for (const stateClass of stateClasses) {
-      const stateName = StoreValidators.checkStateNameIsUnique(stateClass, this.statesByName);
-      this.statesByName[stateName] = stateClass;
-    }
-  }
-
-  private checkStatesAreValid(stateClasses: StateClass[]) {
-    stateClasses.forEach(StoreValidators.getValidStateMeta);
-  }
-
   /**
    * Add a set of states to the store and return the defaults
    */
   addAndReturnDefaults(stateClasses: StateClass[]): StatesAndDefaults {
     const classes: StateClass[] = stateClasses || [];
 
-    const states = this.add(classes);
+    const states: MappedStore[] = this.add(classes);
     const defaults = states.reduce(
       (result: any, meta: MappedStore) => setValue(result, meta.depth, meta.defaults),
       {}
@@ -218,6 +212,22 @@ export class StateFactory {
     return forkJoin(results);
   }
 
+  private addToStatesMap(stateClasses: StateClass[]): { newStates: StateClass[] } {
+    const newStates: StateClass[] = [];
+    const statesMap: StatesByName = this.statesByName;
+
+    for (const stateClass of stateClasses) {
+      const stateName: string = StoreValidators.checkStateNameIsUnique(stateClass, statesMap);
+      const unmountedState: boolean = !statesMap[stateName];
+      if (unmountedState) {
+        newStates.push(stateClass);
+        statesMap[stateName] = stateClass;
+      }
+    }
+
+    return { newStates };
+  }
+
   private addRuntimeInfoToMeta(meta: MetaDataModel, depth: string): void {
     meta.path = depth;
     meta.selectFromAppState = propGetter(depth.split('.'), this._config);
@@ -228,10 +238,10 @@ export class StateFactory {
    * the method checks if the state has already been added to the tree
    * and completed the life cycle
    * @param name
-   * @param depth
+   * @param path
    */
-  private hasBeenMounted(name: string, depth: string): boolean {
-    const valueIsBootstrapped: boolean = getValue(this.stateTreeRef, depth) !== undefined;
-    return !(this.statesByName[name] && valueIsBootstrapped);
+  private hasBeenMountedAndBootstrapped(name: string, path: string): boolean {
+    const valueIsBootstrapped: boolean = getValue(this.stateTreeRef, path) !== undefined;
+    return this.statesByName[name] && valueIsBootstrapped;
   }
 }
