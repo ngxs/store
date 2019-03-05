@@ -1,12 +1,14 @@
+import { NgZone, Injectable } from '@angular/core';
 import {
   NavigationCancel,
   NavigationError,
   Router,
   RouterStateSnapshot,
-  RoutesRecognized
+  RoutesRecognized,
+  ActivationEnd,
+  ActivatedRouteSnapshot
 } from '@angular/router';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
-import { of } from 'rxjs';
 
 import {
   Navigate,
@@ -16,7 +18,6 @@ import {
   RouterNavigation
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
-import { NgZone, Injectable } from '@angular/core';
 
 export type RouterStateModel<T = RouterStateSnapshot> = {
   state?: T;
@@ -58,7 +59,6 @@ export class RouterState {
     private _serializer: RouterStateSerializer<RouterStateSnapshot>,
     private _ngZone: NgZone
   ) {
-    this.setUpRouterHook();
     this.setUpStoreListener();
     this.setUpStateRollbackEvents();
   }
@@ -85,20 +85,6 @@ export class RouterState {
     });
   }
 
-  /**
-   * Hook into the angular router before each navigation action is performed
-   * since the route tree can be large, we serialize it into something more manageable
-   */
-  private setUpRouterHook(): void {
-    (<any>this._router).hooks.beforePreactivation = (
-      routerStateSnapshot: RouterStateSnapshot
-    ) => {
-      this.routerStateSnapshot = this._serializer.serialize(routerStateSnapshot);
-      if (this.shouldDispatchRouterNavigation()) this.dispatchRouterNavigation();
-      return of(true);
-    };
-  }
-
   private setUpStoreListener(): void {
     this._store.select(RouterState).subscribe(s => {
       this.routerState = s;
@@ -112,12 +98,25 @@ export class RouterState {
     this._router.events.subscribe(e => {
       if (e instanceof RoutesRecognized) {
         this.lastRoutesRecognized = e;
+      } else if (e instanceof ActivationEnd) {
+        this.activationEnd(e.snapshot);
       } else if (e instanceof NavigationCancel) {
         this.dispatchRouterCancel(e);
       } else if (e instanceof NavigationError) {
         this.dispatchRouterError(e);
       }
     });
+  }
+
+  private activationEnd(snapshot: ActivatedRouteSnapshot): void {
+    // `component` property equals `null` if this snapshot is empty
+    // and was created for the root component
+    if (!snapshot.component) {
+      return;
+    }
+
+    this.routerStateSnapshot = this._serializer.serialize(snapshot);
+    if (this.shouldDispatchRouterNavigation()) this.dispatchRouterNavigation();
   }
 
   private shouldDispatchRouterNavigation(): boolean {

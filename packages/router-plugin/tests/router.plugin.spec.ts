@@ -1,11 +1,10 @@
 import { Component, Provider } from '@angular/core';
 import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
-import { NgxsRouterPluginModule, RouterState } from '../';
-import { Navigate } from '@ngxs/router-plugin/src/router.actions';
+import { NgxsRouterPluginModule, RouterState, Navigate } from '../';
 
 describe('NgxsRouterPlugin', () => {
   it('should dispatch router state events', async(async () => {
@@ -21,27 +20,25 @@ describe('NgxsRouterPlugin', () => {
       { type: 'url', state: undefined }, // init event. has nothing to do with the router
       { type: 'router', event: 'NavigationStart', url: '/' },
       { type: 'router', event: 'RoutesRecognized', url: '/' },
-      { type: 'url', state: '/' }, // RouterNavigation event in the store
       { type: 'router', event: 'GuardsCheckStart', url: '/' },
       { type: 'router', event: 'GuardsCheckEnd', url: '/' },
       { type: 'router', event: 'ResolveStart', url: '/' },
       { type: 'router', event: 'ResolveEnd', url: '/' },
-
+      { type: 'url', state: '/' }, // RouterNavigation event in the store
       { type: 'router', event: 'NavigationEnd', url: '/' }
     ]);
 
     log.splice(0);
-    await router.navigateByUrl('next');
+    await router.navigateByUrl('/next');
 
     expect(log).toEqual([
       { type: 'router', event: 'NavigationStart', url: '/next' },
       { type: 'router', event: 'RoutesRecognized', url: '/next' },
-      { type: 'url', state: '/next' },
       { type: 'router', event: 'GuardsCheckStart', url: '/next' },
       { type: 'router', event: 'GuardsCheckEnd', url: '/next' },
       { type: 'router', event: 'ResolveStart', url: '/next' },
       { type: 'router', event: 'ResolveEnd', url: '/next' },
-
+      { type: 'url', state: '/next' },
       { type: 'router', event: 'NavigationEnd', url: '/next' }
     ]);
   }));
@@ -93,7 +90,9 @@ function createTestModule(
     selector: 'pagea-cmp',
     template: 'pagea-cmp'
   })
-  class SimpleCmp {}
+  class SimpleCmp {
+    constructor(public route: ActivatedRoute) {}
+  }
 
   TestBed.configureTestingModule({
     declarations: [AppCmp, SimpleCmp],

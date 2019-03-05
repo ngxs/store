@@ -15,8 +15,7 @@ import { RouterState } from './router.state';
 export class NgxsRouterPluginModule {
   static forRoot(): ModuleWithProviders {
     return {
-      ngModule: NgxsRouterPluginModule,
-      providers: []
+      ngModule: NgxsRouterPluginModule
     };
   }
 }

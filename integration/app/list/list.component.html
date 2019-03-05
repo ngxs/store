@@ -2,3 +2,7 @@
   {{ list$ | async }},
   {{ foo | async }}
 </div>
+
+<div *ngIf="router$ | async as router">
+  animals were resolved {{ router.state.root.data.list }}
+</div>
