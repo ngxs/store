@@ -12,5 +12,5 @@ import { ListState } from '@integration/list/list.state';
 export class ListComponent {
   @Select(ListState) public list$: Observable<string[]>;
   @Select(ListState.hello) public foo: Observable<string>;
-  @Select(RouterState) public router$: Observable<RouterState>;
+  @Select(RouterState.state) public router$: Observable<RouterState>;
 }

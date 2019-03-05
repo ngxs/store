@@ -111,7 +111,7 @@ export class RouterState {
   private activationEnd(snapshot: ActivatedRouteSnapshot): void {
     // `component` property equals `null` if this snapshot is empty
     // and was created for the root component
-    if (!snapshot.component) {
+    if (snapshot.component === null) {
       return;
     }
 
