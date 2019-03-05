@@ -33,7 +33,7 @@ describe('NGXS + SSR', () => {
     });
   });
 
-  it('should resolve list of numbers', async () => {
+  it('should successfully resolve list of animals', async () => {
     body = await request('http://localhost:4000/list');
     console.log('body here bro: ', body);
     const animalsWereResolvedIndex = body.indexOf('animals were resolved');
