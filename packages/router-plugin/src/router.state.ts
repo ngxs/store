@@ -116,7 +116,9 @@ export class RouterState {
     }
 
     this.routerStateSnapshot = this._serializer.serialize(snapshot);
-    if (this.shouldDispatchRouterNavigation()) this.dispatchRouterNavigation();
+    if (this.shouldDispatchRouterNavigation()) {
+      this.dispatchRouterNavigation();
+    }
   }
 
   private shouldDispatchRouterNavigation(): boolean {
