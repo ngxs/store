@@ -1,6 +1,6 @@
 import { Component, Provider } from '@angular/core';
 import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
