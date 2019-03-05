@@ -23,8 +23,8 @@ describe('NgxsRouterPlugin', () => {
       { type: 'router', event: 'GuardsCheckStart', url: '/' },
       { type: 'router', event: 'GuardsCheckEnd', url: '/' },
       { type: 'router', event: 'ResolveStart', url: '/' },
-      { type: 'router', event: 'ResolveEnd', url: '/' },
       { type: 'url', state: '/' }, // RouterNavigation event in the store
+      { type: 'router', event: 'ResolveEnd', url: '/' },
       { type: 'router', event: 'NavigationEnd', url: '/' }
     ]);
 
@@ -37,8 +37,8 @@ describe('NgxsRouterPlugin', () => {
       { type: 'router', event: 'GuardsCheckStart', url: '/next' },
       { type: 'router', event: 'GuardsCheckEnd', url: '/next' },
       { type: 'router', event: 'ResolveStart', url: '/next' },
-      { type: 'router', event: 'ResolveEnd', url: '/next' },
       { type: 'url', state: '/next' },
+      { type: 'router', event: 'ResolveEnd', url: '/next' },
       { type: 'router', event: 'NavigationEnd', url: '/next' }
     ]);
   }));

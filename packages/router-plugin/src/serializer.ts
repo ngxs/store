@@ -1,7 +1,7 @@
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 export abstract class RouterStateSerializer<T> {
-  abstract serialize(snapshot: ActivatedRouteSnapshot): T;
+  abstract serialize(routerState: RouterStateSnapshot): T;
 }
 
 export interface SerializedRouterStateSnapshot {
@@ -11,10 +11,10 @@ export interface SerializedRouterStateSnapshot {
 
 export class DefaultRouterStateSerializer
   implements RouterStateSerializer<SerializedRouterStateSnapshot> {
-  serialize(snapshot: ActivatedRouteSnapshot): SerializedRouterStateSnapshot {
+  serialize(routerState: RouterStateSnapshot): SerializedRouterStateSnapshot {
     return {
-      root: this.serializeRoute(snapshot),
-      url: this.getRouterStateSnapshot(snapshot).url
+      root: this.serializeRoute(routerState.root),
+      url: routerState.url
     };
   }
 
@@ -38,12 +38,5 @@ export class DefaultRouterStateSerializer
       queryParamMap: route.queryParamMap,
       toString: route.toString
     };
-  }
-
-  /**
-   * `_routerState` is a private property but always exists
-   */
-  private getRouterStateSnapshot(snapshot: any): RouterStateSnapshot {
-    return snapshot._routerState;
   }
 }

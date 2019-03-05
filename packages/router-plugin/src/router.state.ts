@@ -5,8 +5,7 @@ import {
   Router,
   RouterStateSnapshot,
   RoutesRecognized,
-  ActivationEnd,
-  ActivatedRouteSnapshot
+  ResolveEnd
 } from '@angular/router';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 
@@ -98,8 +97,8 @@ export class RouterState {
     this._router.events.subscribe(e => {
       if (e instanceof RoutesRecognized) {
         this.lastRoutesRecognized = e;
-      } else if (e instanceof ActivationEnd) {
-        this.activationEnd(e.snapshot);
+      } else if (e instanceof ResolveEnd) {
+        this.resolveEnd(e.state);
       } else if (e instanceof NavigationCancel) {
         this.dispatchRouterCancel(e);
       } else if (e instanceof NavigationError) {
@@ -108,14 +107,12 @@ export class RouterState {
     });
   }
 
-  private activationEnd(snapshot: ActivatedRouteSnapshot): void {
-    // `component` property equals `null` if this snapshot is empty
-    // and was created for the root component
-    if (snapshot.component === null) {
-      return;
-    }
-
-    this.routerStateSnapshot = this._serializer.serialize(snapshot);
+  /**
+   * The `ResolveEnd` event is always triggered after running all resolvers
+   * that are linked to some route and child routes
+   */
+  private resolveEnd(routerStateSnapshot: RouterStateSnapshot): void {
+    this.routerStateSnapshot = this._serializer.serialize(routerStateSnapshot);
     if (this.shouldDispatchRouterNavigation()) {
       this.dispatchRouterNavigation();
     }
