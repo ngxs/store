@@ -60,12 +60,6 @@ export class NgxsConfig {
   }
 }
 
-export interface ActionDef {
-  type: string;
-
-  new (...args: any[]): any;
-}
-
 export type StateOperator<T> = (existing: Readonly<T>) => T;
 
 /**
@@ -123,16 +117,6 @@ export interface StoreOptions<T> {
    * Sub states for the given state.
    */
   children?: any[];
-}
-
-/**
- * Actions that can be provided in a action decorator.
- */
-export interface ActionOptions {
-  /**
-   * Cancel the previous uncompleted observable(s).
-   */
-  cancelUncompleted?: boolean;
 }
 
 export const enum LifecycleHooks {
