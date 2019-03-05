@@ -90,9 +90,7 @@ function createTestModule(
     selector: 'pagea-cmp',
     template: 'pagea-cmp'
   })
-  class SimpleCmp {
-    constructor(public route: ActivatedRoute) {}
-  }
+  class SimpleCmp {}
 
   TestBed.configureTestingModule({
     declarations: [AppCmp, SimpleCmp],
