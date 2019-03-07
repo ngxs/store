@@ -488,10 +488,10 @@
   resolved "https://registry.npmjs.org/@nguniversal/express-engine/-/express-engine-7.0.2.tgz#f7722828d7ec14951d0c24ad438772daf79583c8"
   integrity sha512-mmNgDpUrcuFcjBOfUlmAliS3St4tSekLdQZWu6PK/d+kw5zicDDlSO/UoUw5g+wz7YHkGQK+VDy3wHc0Bo36rA==
 
-"@nguniversal/module-map-ngfactory-loader@7.0.2":
-  version "7.0.2"
-  resolved "https://registry.npmjs.org/@nguniversal/module-map-ngfactory-loader/-/module-map-ngfactory-loader-7.0.2.tgz#2df0532f84d4f4e042adb294e3685fad28ed0622"
-  integrity sha512-zZst1DfmWZdozNmYRu6vUacFLKreLVhGfpp/LmBrW/jDESHWU4AtRBQYtH8KfhKFSE+B6ehyGYHPfDdSa5sk7g==
+"@nguniversal/module-map-ngfactory-loader@7.1.1":
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/@nguniversal/module-map-ngfactory-loader/-/module-map-ngfactory-loader-7.1.1.tgz#488a6f8c5890d44b7ad8468180919644a4d1a1ae"
+  integrity sha512-cZaxdY64C5xPwbE3qqEQGmnKIEgIA57JTozAsT1gvlxNYwssxTlhCYT0HQcqNfNBBjf3xdqXTfRPC7lfpE4qWA==
 
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
