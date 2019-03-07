@@ -9,6 +9,7 @@ import { StateStream } from './internal/state-stream';
 import { NgxsConfig } from './symbols';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from './operators/leave-ngxs';
+import { ObjectKeyMap } from './internal/internals';
 
 @Injectable()
 export class Store {
@@ -18,7 +19,11 @@ export class Store {
     private _config: NgxsConfig,
     private _internalExecutionStrategy: InternalNgxsExecutionStrategy
   ) {
-    this._stateStream.next(this._config.defaultsState);
+    const value: ObjectKeyMap<any> = this._stateStream.value;
+    const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
+    if (storeIsEmpty) {
+      this._stateStream.next(this._config.defaultsState);
+    }
   }
 
   /**
