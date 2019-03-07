@@ -1,9 +1,10 @@
-# [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) (to become [3.5.0](https://github.com/ngxs/store/milestone/7))
+# [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) (to become 3.4.3 or [3.5.0](https://github.com/ngxs/store/milestone/7))
 
 ```bash
 $ npm install @ngxs/store@dev
 ```
 
+# 3.4.2 2019-03-07
 * Fix: Expose `ActionType, ActionOptions` interfaces [#873](https://github.com/ngxs/store/pull/873)
 * Fix: Router Plugin - add state selector with generic [#894](https://github.com/ngxs/store/pull/894)
 * Fix: Initial state should not be overwritten by defaults [#904](https://github.com/ngxs/store/pull/904)
