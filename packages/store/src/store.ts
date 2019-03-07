@@ -18,7 +18,11 @@ export class Store {
     private _config: NgxsConfig,
     private _internalExecutionStrategy: InternalNgxsExecutionStrategy
   ) {
-    this._stateStream.next(this._config.defaultsState);
+    const value = this._stateStream.value;
+    if (!value || Object.keys(value).length === 0) {
+      // Only set the defaults if the state stream is empty.
+      this._stateStream.next(this._config.defaultsState);
+    }
   }
 
   /**
