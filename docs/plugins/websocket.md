@@ -32,6 +32,7 @@ The plugin has a variety of options that can be passed:
 - `url`: Url of the websocket connection. Can be passed here or by the `ConnectWebsocket` action.
 - `typeKey`: Object property that maps the websocket message to a action type. Default: `type`
 - `serializer`: Serializer used before sending objects to the websocket. Default: `JSON.stringify`
+- `deserializer`: Deserializer used for messages arriving from the websocket. Default: `JSON.parse`
 
 ## Usage
 Once connected, any message that comes across the websocket will be bound to the state event stream.
