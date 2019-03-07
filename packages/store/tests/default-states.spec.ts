@@ -5,8 +5,6 @@ import { Action, NgxsModule, State, StateContext, Store } from '../src/public_ap
 import { StateStream } from '../src/internal/state-stream';
 
 describe('Reusable States', () => {
-  let store: Store;
-
   class UpdateFoo {
     static readonly type = '[update] foo';
     constructor(public payload: number) {}
@@ -34,7 +32,7 @@ describe('Reusable States', () => {
       ]
     });
 
-    store = TestBed.get(Store);
+    const store = TestBed.get(Store);
 
     let stateValue = store.selectSnapshot(FooState);
     expect(stateValue).toEqual([4, 5, 6]);
@@ -71,10 +69,7 @@ describe('Reusable States', () => {
       ]
     });
 
-    // const stateStream: StateStream = TestBed.get(StateStream);
-    // stateStream.next({ foo: [1, 2, 3] });
-
-    store = TestBed.get(Store);
+    const store = TestBed.get(Store);
 
     let stateValue = store.selectSnapshot(FooState);
     expect(stateValue).toEqual([1, 2, 3]);
@@ -99,7 +94,7 @@ describe('Reusable States', () => {
       ]
     });
 
-    store = TestBed.get(Store);
+    const store = TestBed.get(Store);
 
     expect(store.snapshot()).toEqual({
       configState: { a: 1, b: 2 },
