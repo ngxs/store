@@ -1,45 +1,17 @@
-import { fakeAsync, getTestBed, TestBed, tick, flushMicrotasks } from '@angular/core/testing';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
-} from '@angular/platform-browser-dynamic/testing';
-import { Actions, ofActionDispatched, Store } from '@ngxs/store';
-import { Type } from '@angular/core';
+import { fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
+import { ofActionDispatched } from '@ngxs/store';
 
-import { hmr } from '../hmr-bootstrap';
-import { BootstrapModuleFn, NGXS_HMR_SNAPSHOT_KEY } from '../symbols';
+import { NgxsHmrSnapshot } from '../symbols';
 import {
   AppMockModule,
-  MockState,
-  mockWebpackModule,
-  AppMockModuleNoHmrLifeCycle
+  AppMockModuleNoHmrLifeCycle as AppMockNoHmrModule,
+  MockState
 } from './hmr-mock';
 import { HmrInitAction } from '../actions/hmr-init.action';
 import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
+import { hmrTestBed, setup } from './hmr-helpers';
 
 describe('HMR Plugin', () => {
-  function setup<T>(moduleType: Type<T>, options: { storedValue?: any } = {}) {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-    const bootstrap: BootstrapModuleFn<T> = () =>
-      getTestBed().platform.bootstrapModule(moduleType);
-    const storedValue = options.storedValue;
-    const storageValue = options.storedValue ? JSON.stringify(storedValue) : '';
-    sessionStorage.setItem(NGXS_HMR_SNAPSHOT_KEY, storageValue);
-    MockState.clear();
-    return { bootstrap };
-  }
-
-  async function setupAndRun<T>(moduleType: Type<T>, options: { storedValue?: any } = {}) {
-    const { bootstrap } = setup(moduleType, options);
-    const appModule = await hmr(mockWebpackModule, bootstrap);
-    const actions$ = appModule.injector.get<Actions>(Actions);
-    const store = appModule.injector.get<Store>(Store);
-    const getStoredValue = () =>
-      JSON.parse(sessionStorage.getItem(NGXS_HMR_SNAPSHOT_KEY) || '{}');
-    return { appModule, actions$, store, getStoredValue };
-  }
-
   it('should initialize AppMockModule', async () => {
     // Arrange
     const { bootstrap } = setup(AppMockModule);
@@ -51,8 +23,10 @@ describe('HMR Plugin', () => {
 
   it('should skip HmrInitAction when empty snapshot', fakeAsync(async () => {
     // Arrange
-    const { actions$ } = await setupAndRun(AppMockModule);
-    let hmrSnapshot: any = 'No value init';
+    let hmrSnapshot: NgxsHmrSnapshot = { init: 'No value init' };
+    const { actions$, webpackModule } = await hmrTestBed(AppMockModule);
+    const { acceptInvoked, disposeInvoked } = webpackModule;
+
     // Act
     actions$
       .pipe(ofActionDispatched(HmrInitAction))
@@ -60,15 +34,18 @@ describe('HMR Plugin', () => {
 
     tick(1000);
     // Assert
-    expect(hmrSnapshot).toEqual('No value init');
+    expect(hmrSnapshot).toEqual({ init: 'No value init' });
+    expect(acceptInvoked).toBe(true);
+    expect(disposeInvoked).toBe(true);
   }));
 
   it('should dispatch HmrInitAction', fakeAsync(async () => {
+    let hmrSnapshot: NgxsHmrSnapshot = {};
+
     // Arrange
-    const { actions$ } = await setupAndRun(AppMockModule, {
+    const { actions$ } = await hmrTestBed(AppMockModule, {
       storedValue: { works: true }
     });
-    let hmrSnapshot: any;
 
     // Act
     actions$
@@ -83,11 +60,12 @@ describe('HMR Plugin', () => {
   }));
 
   it('should still dispatch HmrInitAction if hmrNgxsStoreOnInit not implemented', fakeAsync(async () => {
+    let hmrSnapshot: NgxsHmrSnapshot = {};
+
     // Arrange
-    const { actions$ } = await setupAndRun(AppMockModuleNoHmrLifeCycle, {
+    const { actions$ } = await hmrTestBed(AppMockNoHmrModule, {
       storedValue: { works: true }
     });
-    let hmrSnapshot: any;
 
     // Act
     actions$
@@ -101,17 +79,19 @@ describe('HMR Plugin', () => {
 
   it('should dispatch HmrBeforeDestroyAction with store state by default', fakeAsync(async () => {
     // Arrange
-    const { actions$ } = await setupAndRun(AppMockModuleNoHmrLifeCycle, {
+    let hmrSnapshot: NgxsHmrSnapshot = {};
+    const { actions$, webpackModule } = await hmrTestBed(AppMockNoHmrModule, {
       storedValue: { status: 'working' }
     });
+
     tick(2000);
-    let hmrSnapshot: any;
+
     actions$
       .pipe(ofActionDispatched(HmrBeforeDestroyAction))
       .subscribe(({ payload }) => (hmrSnapshot = payload));
 
     // Act
-    await mockWebpackModule.destroyModule();
+    await webpackModule.destroyModule();
     tick(1000);
 
     // Assert
@@ -123,17 +103,19 @@ describe('HMR Plugin', () => {
 
   it('should dispatch HmrBeforeDestroyAction with custom state if present', fakeAsync(async () => {
     // Arrange
-    const { actions$ } = await setupAndRun(AppMockModule, {
+    let hmrSnapshot: NgxsHmrSnapshot = {};
+    const { actions$, webpackModule } = await hmrTestBed(AppMockModule, {
       storedValue: { status: 'working' }
     });
+
     tick(2000);
-    let hmrSnapshot: any;
+
     actions$
       .pipe(ofActionDispatched(HmrBeforeDestroyAction))
       .subscribe(({ payload }) => (hmrSnapshot = payload));
 
     // Act
-    await mockWebpackModule.destroyModule();
+    await webpackModule.destroyModule();
     tick(1000);
 
     // Assert
@@ -147,7 +129,7 @@ describe('HMR Plugin', () => {
 
   it('should provide default state patch behaviour if hmrNgxsStoreOnInit not implemented', fakeAsync(async () => {
     // Arrange
-    const { store } = await setupAndRun(AppMockModuleNoHmrLifeCycle, {
+    const { store } = await hmrTestBed(AppMockNoHmrModule, {
       storedValue: { status: 'working' }
     });
 
@@ -163,7 +145,7 @@ describe('HMR Plugin', () => {
 
   it('should use custom hmrNgxsStoreOnInit to setup state', fakeAsync(async () => {
     // Arrange
-    const { store } = await setupAndRun(AppMockModule, {
+    const { store } = await hmrTestBed(AppMockModule, {
       storedValue: { status: 'working' }
     });
 
@@ -180,13 +162,13 @@ describe('HMR Plugin', () => {
 
   it('should store all state by default when no hmrNgxsStoreBeforeOnDestroy implemented', fakeAsync(async () => {
     // Arrange
-    const { getStoredValue } = await setupAndRun(AppMockModuleNoHmrLifeCycle, {
+    const { getStoredValue, webpackModule } = await hmrTestBed(AppMockNoHmrModule, {
       storedValue: { status: 'working' }
     });
     tick(2000);
 
     // Act
-    await mockWebpackModule.destroyModule();
+    await webpackModule.destroyModule();
     tick(1000);
 
     // Assert
@@ -199,13 +181,13 @@ describe('HMR Plugin', () => {
 
   it('should store state provided by hmrNgxsStoreBeforeOnDestroy', fakeAsync(async () => {
     // Arrange
-    const { getStoredValue } = await setupAndRun(AppMockModule, {
+    const { getStoredValue, webpackModule } = await hmrTestBed(AppMockModule, {
       storedValue: { status: 'working' }
     });
     tick(2000);
 
     // Act
-    await mockWebpackModule.destroyModule();
+    await webpackModule.destroyModule();
     tick(1000);
 
     // Assert
@@ -221,7 +203,7 @@ describe('HMR Plugin', () => {
   it('should allow state to capture HmrInitAction lifecycle action', fakeAsync(async () => {
     // Arrange
     MockState.clear();
-    await setupAndRun(AppMockModule, {
+    await hmrTestBed(AppMockModule, {
       storedValue: { test: 'test' }
     });
     // Act
@@ -232,13 +214,13 @@ describe('HMR Plugin', () => {
 
   it('should allow state to capture HmrBeforeDestroyAction lifecycle action', fakeAsync(async () => {
     // Arrange
-    await setupAndRun(AppMockModule, {
+    const { webpackModule } = await hmrTestBed(AppMockModule, {
       storedValue: { test: 'test' }
     });
     MockState.clear();
     tick(1000);
     // Act
-    await mockWebpackModule.destroyModule();
+    await webpackModule.destroyModule();
     tick(1000);
     // Assert
     expect(MockState.destroy).toEqual(true);
