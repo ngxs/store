@@ -4,6 +4,7 @@
 ```bash
 $ npm install @ngxs/store@dev
 ```
+* Fix: HMR Plugin - incorrect destruction of modules in hmr [#908](https://github.com/ngxs/store/pull/908)
 
 # 3.4.2 2019-03-07
 * Fix: Expose `ActionType, ActionOptions` interfaces [#873](https://github.com/ngxs/store/pull/873)
