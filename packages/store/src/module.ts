@@ -20,11 +20,7 @@ import { Store } from './store';
 import { SelectFactory } from './decorators/select';
 import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
-import {
-  appBootstrapListenerFactory,
-  ngxsConfigFactory,
-  StateClass
-} from './internal/internals';
+import { appBootstrapListenerFactory, StateClass } from './internal/internals';
 import { NgxsRootModule } from './modules/ngxs-root.module';
 import { NgxsFeatureModule } from './modules/ngxs-feature.module';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
@@ -38,7 +34,10 @@ export class NgxsModule {
   /**
    * Root module factory
    */
-  static forRoot(states: StateClass[] = [], options: ModuleOptions = {}): ModuleWithProviders {
+  public static forRoot(
+    states: StateClass[] = [],
+    options: ModuleOptions = {}
+  ): ModuleWithProviders {
     return {
       ngModule: NgxsRootModule,
       providers: [
@@ -72,7 +71,7 @@ export class NgxsModule {
         },
         {
           provide: NgxsConfig,
-          useFactory: ngxsConfigFactory,
+          useFactory: NgxsModule.ngxsConfigFactory,
           deps: [ROOT_OPTIONS]
         },
         {
@@ -88,7 +87,7 @@ export class NgxsModule {
   /**
    * Feature module factory
    */
-  static forFeature(states: StateClass[] = []): ModuleWithProviders {
+  public static forFeature(states: StateClass[] = []): ModuleWithProviders {
     return {
       ngModule: NgxsFeatureModule,
       providers: [
@@ -102,5 +101,9 @@ export class NgxsModule {
         }
       ]
     };
+  }
+
+  private static ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
+    return Object.assign(new NgxsConfig(), options);
   }
 }
