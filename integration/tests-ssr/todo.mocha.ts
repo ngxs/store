@@ -32,4 +32,12 @@ describe('NGXS + SSR', () => {
       }
     });
   });
+
+  it('should successfully resolve list of animals', async () => {
+    body = await request('http://localhost:4000/list');
+    const animalsWereResolvedIndex = body.indexOf('animals were resolved');
+    const resolvedAnimalsIndex = body.indexOf('zebras,pandas,lions,giraffes');
+    expect(animalsWereResolvedIndex).to.be.greaterThan(-1);
+    expect(resolvedAnimalsIndex).to.be.greaterThan(-1);
+  });
 });
