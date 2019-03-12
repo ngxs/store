@@ -7,7 +7,6 @@ import {
   SELECTOR_META_KEY,
   StoreOptions
 } from '../symbols';
-import { NgxsBootstrapper } from '@ngxs/store/internals';
 import { ActionHandlerMetaData } from '../actions/symbols';
 
 export interface ObjectKeyMap<T> {
@@ -345,10 +344,6 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
  */
 export function isObject(obj: any) {
   return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';
-}
-
-export function appBootstrapListenerFactory(bootstrapper: NgxsBootstrapper) {
-  return () => bootstrapper.bootstrap();
 }
 
 const DOLLAR_CHAR_CODE = 36;

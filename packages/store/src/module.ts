@@ -8,8 +8,8 @@ import { NgxsBootstrapper } from '@ngxs/store/internals';
 
 import {
   FEATURE_STATE_TOKEN,
-  NgxsModuleOptions,
   NgxsConfig,
+  NgxsModuleOptions,
   ROOT_STATE_TOKEN
 } from './symbols';
 import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
@@ -24,7 +24,7 @@ import { Store } from './store';
 import { SelectFactory } from './decorators/select';
 import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
-import { appBootstrapListenerFactory, StateClass } from './internal/internals';
+import { StateClass } from './internal/internals';
 import { NgxsRootModule } from './modules/ngxs-root.module';
 import { NgxsFeatureModule } from './modules/ngxs-feature.module';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
@@ -82,7 +82,7 @@ export class NgxsModule {
         },
         {
           provide: APP_BOOTSTRAP_LISTENER,
-          useFactory: appBootstrapListenerFactory,
+          useFactory: NgxsModule.appBootstrapListenerFactory,
           multi: true,
           deps: [NgxsBootstrapper]
         }
@@ -111,5 +111,9 @@ export class NgxsModule {
 
   private static ngxsConfigFactory(options: NgxsModuleOptions): NgxsConfig {
     return Object.assign(new NgxsConfig(), options);
+  }
+
+  private static appBootstrapListenerFactory(bootstrapper: NgxsBootstrapper): Function {
+    return () => bootstrapper.bootstrap();
   }
 }
