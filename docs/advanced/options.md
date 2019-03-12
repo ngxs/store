@@ -1,6 +1,6 @@
 # Options
 
-You can provide a config when you create your root `NgxsModule`, as `forRoot` accepts 2 arguments. The second argument is a `ModuleOptions` object that can have such properties as `developmentMode`, `compatibility` and `executionStrategy`.
+You can provide a config when you create your root `NgxsModule`, as `forRoot` accepts 2 arguments. The second argument is a `NgxsModuleOptions` object that can have such properties as `developmentMode`, `compatibility` and `executionStrategy`.
 
 - Turning on `developmentMode` option will add additional debugging features, like freezing your state and actions to guarantee immutability. Default value is `false`.
 - `compatibility` is an object that can have `strictContentSecurityPolicy` property, if you set `strictContentSecurityPolicy` to `true`, then the support for the strict Content Security Policy will be enabled. This will cirumvent some optimisations that violate a strict CSP through the use of `new Function(...)`. Default value is `false`.

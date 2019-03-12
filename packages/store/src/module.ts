@@ -1,11 +1,15 @@
-import { APP_BOOTSTRAP_LISTENER, ModuleWithProviders, NgModule } from '@angular/core';
+import {
+  APP_BOOTSTRAP_LISTENER,
+  InjectionToken,
+  ModuleWithProviders,
+  NgModule
+} from '@angular/core';
 import { NgxsBootstrapper } from '@ngxs/store/internals';
 
 import {
   FEATURE_STATE_TOKEN,
-  ModuleOptions,
+  NgxsModuleOptions,
   NgxsConfig,
-  ROOT_OPTIONS,
   ROOT_STATE_TOKEN
 } from './symbols';
 import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
@@ -31,12 +35,14 @@ import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-executi
  */
 @NgModule()
 export class NgxsModule {
+  private static readonly ROOT_OPTIONS = new InjectionToken<NgxsModuleOptions>('ROOT_OPTIONS');
+
   /**
    * Root module factory
    */
   public static forRoot(
     states: StateClass[] = [],
-    options: ModuleOptions = {}
+    options: NgxsModuleOptions = {}
   ): ModuleWithProviders {
     return {
       ngModule: NgxsRootModule,
@@ -66,13 +72,13 @@ export class NgxsModule {
           useValue: states
         },
         {
-          provide: ROOT_OPTIONS,
+          provide: NgxsModule.ROOT_OPTIONS,
           useValue: options
         },
         {
           provide: NgxsConfig,
           useFactory: NgxsModule.ngxsConfigFactory,
-          deps: [ROOT_OPTIONS]
+          deps: [NgxsModule.ROOT_OPTIONS]
         },
         {
           provide: APP_BOOTSTRAP_LISTENER,
@@ -103,7 +109,7 @@ export class NgxsModule {
     };
   }
 
-  private static ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
+  private static ngxsConfigFactory(options: NgxsModuleOptions): NgxsConfig {
     return Object.assign(new NgxsConfig(), options);
   }
 }
