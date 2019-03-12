@@ -4,7 +4,7 @@ export class FormatActionCallStackOptions {
   action: string;
   prevState: {};
   nextState?: {};
-  payload?: string;
+  payload?: any;
   error?: string;
   collapsed?: boolean;
 }

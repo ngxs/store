@@ -4,8 +4,8 @@ import { Router, Params, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgxsModule, Store } from '@ngxs/store';
-import { NgxsRouterPluginModule, RouterState, RouterStateSerializer } from '../';
-import { Navigate } from '@ngxs/router-plugin/src/router.actions';
+
+import { NgxsRouterPluginModule, RouterState, RouterStateSerializer, Navigate } from '../';
 
 describe('NgxsRouterPlugin', () => {
   it('should dispatch router state events', async(async () => {
@@ -21,27 +21,25 @@ describe('NgxsRouterPlugin', () => {
       { type: 'url', state: undefined }, // init event. has nothing to do with the router
       { type: 'router', event: 'NavigationStart', url: '/' },
       { type: 'router', event: 'RoutesRecognized', url: '/' },
-      { type: 'url', state: '/' }, // RouterNavigation event in the store
       { type: 'router', event: 'GuardsCheckStart', url: '/' },
       { type: 'router', event: 'GuardsCheckEnd', url: '/' },
       { type: 'router', event: 'ResolveStart', url: '/' },
+      { type: 'url', state: '/' }, // RouterNavigation event in the store
       { type: 'router', event: 'ResolveEnd', url: '/' },
-
       { type: 'router', event: 'NavigationEnd', url: '/' }
     ]);
 
     log.splice(0);
-    await router.navigateByUrl('next');
+    await router.navigateByUrl('/next');
 
     expect(log).toEqual([
       { type: 'router', event: 'NavigationStart', url: '/next' },
       { type: 'router', event: 'RoutesRecognized', url: '/next' },
-      { type: 'url', state: '/next' },
       { type: 'router', event: 'GuardsCheckStart', url: '/next' },
       { type: 'router', event: 'GuardsCheckEnd', url: '/next' },
       { type: 'router', event: 'ResolveStart', url: '/next' },
+      { type: 'url', state: '/next' },
       { type: 'router', event: 'ResolveEnd', url: '/next' },
-
       { type: 'router', event: 'NavigationEnd', url: '/next' }
     ]);
   }));

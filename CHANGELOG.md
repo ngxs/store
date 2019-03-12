@@ -1,11 +1,17 @@
-# [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) (to become [3.5.0](https://github.com/ngxs/store/milestone/7))
+# [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) 
+### To become 3.4.3 or [3.5.0](https://github.com/ngxs/store/milestone/7)
 
 ```bash
 $ npm install @ngxs/store@dev
 ```
+* Fix: HMR Plugin - incorrect destruction of modules in hmr [#908](https://github.com/ngxs/store/pull/908)
+* Fix: Logger Plugin - print action properties [#879](https://github.com/ngxs/store/pull/879)
+* Fix: Logger Plugin - print state names when update states [#845](https://github.com/ngxs/store/pull/845)
 
+# 3.4.2 2019-03-07
 * Fix: Expose `ActionType, ActionOptions` interfaces [#873](https://github.com/ngxs/store/pull/873)
 * Fix: Router Plugin - add state selector with generic [#894](https://github.com/ngxs/store/pull/894)
+* Fix: Initial state should not be overwritten by defaults [#904](https://github.com/ngxs/store/pull/904)
 
 # 3.4.1 2019-03-04
 * Fix: createSelector does not allow for function returning a type unioned with `null` or `undefined` [#891](https://github.com/ngxs/store/pull/891)
