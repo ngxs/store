@@ -270,6 +270,28 @@ describe('Selector', () => {
       expect(slice).toBe('Hello');
     }));
 
+    it('it should be correct type safety', () => {
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyState])]
+      });
+
+      const selectTestStateModel = createSelector(
+        [MyState],
+        (state: MyStateModel) => state
+      );
+
+      type MyStateSelector = (state: MyStateModel) => MyStateModel;
+
+      const selectStateModelProp = createSelector<MyStateSelector, MyStateModel>(
+        [selectTestStateModel],
+        model => model
+      );
+
+      const store: Store = TestBed.get(Store);
+      const slice = store.selectSnapshot(selectStateModelProp);
+      expect(slice).toEqual({ foo: 'Hello', bar: 'World' });
+    });
+
     it('should still be usable as a function', async(() => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([MyState])]

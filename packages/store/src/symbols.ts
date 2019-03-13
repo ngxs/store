@@ -1,9 +1,10 @@
 import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ObjectKeyMap } from './internal/internals';
+import { ObjectKeyMap, StateClass, StateOperations } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
+import { ActionType } from '../src/actions/symbols';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
@@ -65,7 +66,7 @@ export type StateOperator<T> = (existing: Readonly<T>) => T;
 /**
  * State context provided to the actions in the state.
  */
-export interface StateContext<T> {
+export interface StateContext<T = any, K = any> extends StateOperations<T, K> {
   /**
    * Get the current state.
    */
@@ -84,7 +85,7 @@ export interface StateContext<T> {
   /**
    * Dispatch a new action and return the dispatched observable.
    */
-  dispatch(actions: any | any[]): Observable<void>;
+  dispatch(actions: ActionType | ActionType[]): Observable<void>;
 }
 
 export type NgxsNextPluginFn = (state: any, mutation: any) => any;
@@ -116,7 +117,7 @@ export interface StoreOptions<T> {
   /**
    * Sub states for the given state.
    */
-  children?: any[];
+  children?: StateClass[];
 }
 
 export const enum LifecycleHooks {

@@ -24,5 +24,11 @@ export { Selector } from './decorators/selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
 export { createSelector } from './utils/selector-utils';
 export { NgxsExecutionStrategy } from './execution/symbols';
-export { ActionType, ActionOptions } from './actions/symbols';
+export {
+  ActionType,
+  ActionOptions,
+  ComplexAction,
+  SimpleAction,
+  StaticAction
+} from './actions/symbols';
 export { NoopNgxsExecutionStrategy } from './execution/noop-ngxs-execution-strategy';

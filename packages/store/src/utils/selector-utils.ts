@@ -1,8 +1,11 @@
 import {
-  SelectFromState,
   ensureSelectorMetadata,
   getSelectorMetadata,
-  getStoreMetadata
+  getStoreMetadata,
+  SelectFromState,
+  SelectorFn,
+  SelectorType,
+  StateClass
 } from '../internal/internals';
 import { memoize } from '../utils/memoize';
 
@@ -12,11 +15,11 @@ import { memoize } from '../utils/memoize';
  * @param originalFn The original function being made into a selector
  * @param creationMetadata
  */
-export function createSelector<T extends (...args: any[]) => any>(
-  selectors: any[] | undefined,
+export function createSelector<T extends (...args: any[]) => K, R = any, K = any>(
+  selectors: SelectorType[] | undefined,
   originalFn: T,
   creationMetadata?: { containerClass: any; selectorName: string }
-) {
+): SelectorFn<R, K> {
   const wrappedFn = function wrappedSelectorFn(...args: any[]) {
     const returnValue = originalFn(...args);
     if (returnValue instanceof Function) {
@@ -75,7 +78,9 @@ export function createSelector<T extends (...args: any[]) => any>(
  * This function gets the selector function to be used to get the selected slice from the app state
  * @ignore
  */
-export function getSelectorFn(selector: any): SelectFromState {
-  const metadata = getSelectorMetadata(selector) || getStoreMetadata(selector);
-  return (metadata && metadata.selectFromAppState) || selector;
+export function getSelectorFn<T = any, K = any>(
+  selector: SelectorType<T, K>
+): SelectFromState<T, K> {
+  const metadata = getSelectorMetadata(selector) || getStoreMetadata(selector as StateClass);
+  return ((metadata && metadata.selectFromAppState) || selector) as SelectFromState<T, K>;
 }

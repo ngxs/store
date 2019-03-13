@@ -6,6 +6,7 @@ import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
 import { deepFreeze } from '../utils/freeze';
+import { ActionType } from '../actions/symbols';
 
 /**
  * State Context factory class
@@ -25,21 +26,23 @@ export class InternalStateOperations {
   /**
    * Returns the root state operators.
    */
-  getRootStateOperations(): StateOperations<any> {
-    const rootStateOperations = {
+  getRootStateOperations<T = any, K = any>(): StateOperations<T, K> {
+    const rootStateOperations: StateOperations<T, K> = {
       getState: () => this._stateStream.getValue(),
-      setState: (newState: any) => this._stateStream.next(newState),
-      dispatch: (actions: any[]) => this._dispatcher.dispatch(actions)
+      setState: (val: T) => this._stateStream.next(val),
+      dispatch: (actions: ActionType | ActionType[]) => this._dispatcher.dispatch<K>(actions)
     };
 
     if (this._config.developmentMode) {
-      return this.ensureStateAndActionsAreImmutable(rootStateOperations);
+      return this.ensureStateAndActionsAreImmutable<T, K>(rootStateOperations);
     }
 
     return rootStateOperations;
   }
 
-  private ensureStateAndActionsAreImmutable(root: StateOperations<any>): StateOperations<any> {
+  private ensureStateAndActionsAreImmutable<T = any, K = any>(
+    root: StateOperations<T, K>
+  ): StateOperations<T, K> {
     return {
       getState: () => root.getState(),
       setState: value => {
@@ -52,12 +55,12 @@ export class InternalStateOperations {
     };
   }
 
-  setStateToTheCurrentWithNew(results: StatesAndDefaults): void {
-    const stateOperations: StateOperations<any> = this.getRootStateOperations();
+  setStateToTheCurrentWithNew<T = any, K = any>(results: StatesAndDefaults<T, K>): void {
+    const stateOperations: StateOperations<T, K> = this.getRootStateOperations();
 
     // Get our current stream
     const currentState = stateOperations.getState();
     // Set the state to the current + new
-    stateOperations.setState({ ...currentState, ...results.defaults });
+    stateOperations.setState({ ...(currentState as any), ...(results.defaults as any) });
   }
 }

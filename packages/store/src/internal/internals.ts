@@ -7,7 +7,7 @@ import {
   SELECTOR_META_KEY,
   StoreOptions
 } from '../symbols';
-import { ActionHandlerMetaData } from '../actions/symbols';
+import { ActionHandlerMetaData, ActionType } from '../actions/symbols';
 
 export interface ObjectKeyMap<T> {
   [key: string]: T;
@@ -24,44 +24,47 @@ export interface StateClass<T = any, U = any> {
 export type StateKeyGraph = ObjectKeyMap<string[]>;
 export type StatesByName = ObjectKeyMap<StateClass>;
 
-export interface StateOperations<T> {
+export type SelectorType<T = any, K = T> = StateClass | Function | string | SelectorFn<T, K>;
+export type SelectorFn<T = any, K = T> = (state: K, ...states: StateClass[]) => K;
+
+export interface StateOperations<T, K = any> {
   getState(): T;
 
-  setState(val: T): T;
+  setState(val: T): T | void;
 
-  dispatch(actions: any | any[]): Observable<void>;
+  dispatch(actions: ActionType | ActionType[]): Observable<K | void>;
 }
 
-export interface MetaDataModel {
+export interface MetaDataModel<T = any, K = any, R = any> {
   name: string | null;
   actions: ObjectKeyMap<ActionHandlerMetaData[]>;
-  defaults: any;
+  defaults: T;
   path: string | null;
-  selectFromAppState: SelectFromState | null;
+  selectFromAppState: SelectFromState<T, K> | null;
   children?: StateClass[];
-  instance: any;
+  instance: R;
 }
 
-export type SelectFromState = (state: any) => any;
+export type SelectFromState<T = any, K = any> = (state: K) => T;
 
-export interface SelectorMetaDataModel {
-  selectFromAppState: SelectFromState | null;
+export interface SelectorMetaDataModel<T = any, K = any, R = any> {
+  selectFromAppState: SelectFromState<T, K> | null;
   originalFn: Function | null;
-  containerClass: any;
+  containerClass: R;
   selectorName: string | null;
 }
 
-export interface MappedStore {
+export interface MappedStore<T = any, K = any> {
   name: string;
   actions: ObjectKeyMap<ActionHandlerMetaData[]>;
-  defaults: any;
-  instance: any;
+  defaults: T;
+  instance: K;
   depth: string;
 }
 
-export interface StatesAndDefaults {
-  defaults: any;
-  states: MappedStore[];
+export interface StatesAndDefaults<T = any, K = any> {
+  defaults: T;
+  states: MappedStore<T, K>[];
 }
 
 /**
