@@ -1,7 +1,6 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
-import { ActionType } from '@ngxs/store';
 
 import { compose } from '../utils/compose';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
@@ -9,6 +8,7 @@ import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
+import { ActionType } from '../actions/symbols';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
