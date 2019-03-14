@@ -4,6 +4,7 @@
 ```bash
 $ npm install @ngxs/store@dev
 ```
+* Fix: Router Plugin - serialize after Resolvers have run [#895](https://github.com/ngxs/store/pull/895)
 * Fix: HMR Plugin - incorrect destruction of modules in hmr [#908](https://github.com/ngxs/store/pull/908)
 * Fix: Logger Plugin - print action properties [#879](https://github.com/ngxs/store/pull/879)
 
