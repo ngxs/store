@@ -33,11 +33,14 @@ export class NgxsFeatureModule {
     if (results.states.length) {
       internalStateOperations.setStateToTheCurrentWithNew(results);
       // dispatch the update action and invoke init and bootstrap functions after
-      lifecycleStateManager.ngxsBootstrap(new UpdateState(results.defaults), results);
+      lifecycleStateManager.ngxsBootstrap(new UpdateState(), results);
     }
   }
 
   private static flattenStates(states: StateClass[][] = []): StateClass[] {
-    return states.reduce((acc, val) => acc.concat(val), []);
+    return states.reduce(
+      (total: StateClass[], values: StateClass[]) => total.concat(values),
+      []
+    );
   }
 }
