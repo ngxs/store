@@ -1,10 +1,18 @@
-export interface ActionDef<T = any, U = any> {
+export class ActionStatic {
+  public static type: string;
+}
+
+export interface ActionClass<T = any, U = any> {
   type: string;
 
   new (...args: T[]): U;
 }
 
-export type ActionType = ActionDef | { type: string };
+export interface ActionLiteral {
+  type: string;
+}
+
+export type ActionType<T = any, U = any> = ActionClass<T, U> | ActionLiteral | ActionStatic;
 
 /**
  * Actions that can be provided in a action decorator.

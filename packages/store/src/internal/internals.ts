@@ -7,7 +7,7 @@ import {
   SELECTOR_META_KEY,
   StoreOptions
 } from '../symbols';
-import { ActionHandlerMetaData } from '../actions/symbols';
+import { ActionHandlerMetaData, ActionType } from '../actions/symbols';
 
 export interface ObjectKeyMap<T> {
   [key: string]: T;
@@ -29,7 +29,7 @@ export interface StateOperations<T> {
 
   setState(val: T): T;
 
-  dispatch(actions: any | any[]): Observable<void>;
+  dispatch(actions: ActionType | ActionType[]): Observable<void>;
 }
 
 export interface MetaDataModel {
