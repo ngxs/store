@@ -80,9 +80,8 @@ export class NgxsFeatureModule {
 
     if (results.states.length) {
       internalStateOperations.setStateToTheCurrentWithNew(results);
-
       // dispatch the update action and invoke init and bootstrap functions after
-      lifecycleStateManager.ngxsBootstrap(new UpdateState(results.defaults), results);
+      lifecycleStateManager.ngxsBootstrap(new UpdateState(), results);
     }
   }
 }
