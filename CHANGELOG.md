@@ -1,9 +1,12 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) 
-### To become 3.4.3 or [3.5.0](https://github.com/ngxs/store/milestone/7)
+### To become 3.4.4 or [3.5.0](https://github.com/ngxs/store/milestone/7)
 
 ```bash
 $ npm install @ngxs/store@dev
 ```
+* ...
+
+# 3.4.3 2019-03-14
 * Fix: Router Plugin - serialize after Resolvers have run [#895](https://github.com/ngxs/store/pull/895)
 * Fix: HMR Plugin - incorrect destruction of modules in hmr [#908](https://github.com/ngxs/store/pull/908)
 * Fix: Logger Plugin - print action properties [#879](https://github.com/ngxs/store/pull/879)
