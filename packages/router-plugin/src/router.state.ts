@@ -8,6 +8,7 @@ import {
   ResolveEnd
 } from '@angular/router';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
+import { filter, take } from 'rxjs/operators';
 
 import {
   Navigate,
@@ -17,7 +18,6 @@ import {
   RouterNavigation
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
-import { filter, take } from 'rxjs/operators';
 
 export type RouterStateModel<T = RouterStateSnapshot> = {
   state?: T;
