@@ -1,4 +1,4 @@
-import { NgZone, Injectable } from '@angular/core';
+import { NgZone, Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import {
   NavigationCancel,
   NavigationError,
@@ -7,6 +7,7 @@ import {
   RoutesRecognized,
   ResolveEnd
 } from '@angular/router';
+import { isPlatformServer } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { filter, take } from 'rxjs/operators';
 
@@ -57,7 +58,8 @@ export class RouterState {
     private _store: Store,
     private _router: Router,
     private _serializer: RouterStateSerializer<RouterStateSnapshot>,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {
     this.setUpStoreListener();
     this.setUpStateRollbackEvents();
@@ -183,6 +185,12 @@ export class RouterState {
    * is triggered
    */
   private checkInitialNavigationOnce(): void {
+    // Need to perform this check as `location` is not available
+    // on the server side
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     this._router.events
       .pipe(
         filter((event): event is RoutesRecognized => event instanceof RoutesRecognized),
