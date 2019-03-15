@@ -17,6 +17,7 @@ import {
   RouterNavigation
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
+import { filter, take } from 'rxjs/operators';
 
 export type RouterStateModel<T = RouterStateSnapshot> = {
   state?: T;
@@ -60,6 +61,7 @@ export class RouterState {
   ) {
     this.setUpStoreListener();
     this.setUpStateRollbackEvents();
+    this.checkInitialNavigationOnce();
   }
 
   @Action(Navigate)
@@ -173,5 +175,23 @@ export class RouterState {
       this.dispatchTriggeredByRouter = false;
       this.navigationTriggeredByDispatch = false;
     }
+  }
+
+  /**
+   * No sense to mess up the `setUpStateRollbackEvents` method as we have
+   * to perform this check only once and unsubscribe after the first event
+   * is triggered
+   */
+  private checkInitialNavigationOnce(): void {
+    this._router.events
+      .pipe(
+        filter((event): event is RoutesRecognized => event instanceof RoutesRecognized),
+        take(1)
+      )
+      .subscribe(({ url }) => {
+        if (url !== location.pathname) {
+          this._router.navigateByUrl(location.pathname);
+        }
+      });
   }
 }
