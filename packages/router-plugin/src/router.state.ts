@@ -19,7 +19,6 @@ import {
   RouterNavigation
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
-import { isAngularInTestMode } from '@ngxs/store/src/utils/angular';
 
 export type RouterStateModel<T = RouterStateSnapshot> = {
   state?: T;
