@@ -1,10 +1,11 @@
+import { memoize } from '@ngxs/store/internals';
+
 import {
   SelectFromState,
   ensureSelectorMetadata,
   getSelectorMetadata,
   getStoreMetadata
 } from '../internal/internals';
-import { memoize } from '../utils/memoize';
 
 /**
  * Function for creating a selector
