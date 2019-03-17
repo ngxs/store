@@ -9,6 +9,7 @@ import {
 } from '@angular/router';
 import { isPlatformServer } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
+import { isAngularInTestMode } from '@ngxs/store/internals';
 import { filter, take } from 'rxjs/operators';
 
 import {
@@ -187,11 +188,9 @@ export class RouterState {
   private checkInitialNavigationOnce(): void {
     // Need to perform this check as `location` is not available
     // on the server side
-    if (isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this.platformId) || isAngularInTestMode()) {
       return;
     }
-
-    const isNotKarma = location.pathname !== '/context.html';
 
     this._router.events
       .pipe(
@@ -199,7 +198,13 @@ export class RouterState {
         take(1)
       )
       .subscribe(({ url }) => {
-        if (isNotKarma && url !== location.pathname) {
+        // `location.pathname` always equals manually entered URL in the address bar
+        // e.g. `location.pathname === '/foo'`, but the `router` state has been initialized
+        // with another URL (e.g. used in combination with `NgxsStoragePlugin`), thus the
+        // `RouterNavigation` action will be dispatched and the user will be redirected to the
+        // previously saved URL. We want to prevent such behavior, so we perform this check
+        // in order to redirect user to the manually entered URL if it differs from the recognized one
+        if (url !== location.pathname) {
           this._router.navigateByUrl(location.pathname);
         }
       });
