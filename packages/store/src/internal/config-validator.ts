@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
+import { isAngularInTestMode } from '@ngxs/store/internals';
 
-import { isAngularInTestMode } from '../utils/angular';
 import { NgxsConfig } from '../symbols';
 
 @Injectable()
