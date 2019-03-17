@@ -1,4 +1,3 @@
-import { isAngularInTestMode } from '../../src/utils/angular';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { getPlatform, platformCore } from '@angular/core';
 import { platformBrowser } from '@angular/platform-browser';
@@ -7,6 +6,7 @@ import {
   BrowserDynamicTestingModule
 } from '@angular/platform-browser-dynamic/testing';
 import { getTestBed } from '@angular/core/testing';
+import { isAngularInTestMode } from '@ngxs/store/internals';
 
 describe('[utils/angular]', () => {
   describe('isAngularInTestMode', () => {
