@@ -7,9 +7,8 @@ import {
   RoutesRecognized,
   ResolveEnd
 } from '@angular/router';
-import { isPlatformServer } from '@angular/common';
+import { Location } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
-import { isAngularInTestMode } from '@ngxs/store/internals';
 import { filter, take } from 'rxjs/operators';
 
 import {
@@ -20,6 +19,7 @@ import {
   RouterNavigation
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
+import { isAngularInTestMode } from '@ngxs/store/internals';
 
 export type RouterStateModel<T = RouterStateSnapshot> = {
   state?: T;
@@ -60,7 +60,7 @@ export class RouterState {
     private _router: Router,
     private _serializer: RouterStateSerializer<RouterStateSnapshot>,
     private _ngZone: NgZone,
-    @Inject(PLATFORM_ID) private platformId: string
+    private location: Location
   ) {
     this.setUpStoreListener();
     this.setUpStateRollbackEvents();
@@ -186,9 +186,7 @@ export class RouterState {
    * is triggered
    */
   private checkInitialNavigationOnce(): void {
-    // Need to perform this check as `location` is not available
-    // on the server side
-    if (isPlatformServer(this.platformId) || isAngularInTestMode()) {
+    if (isAngularInTestMode()) {
       return;
     }
 
@@ -204,7 +202,7 @@ export class RouterState {
         // `RouterNavigation` action will be dispatched and the user will be redirected to the
         // previously saved URL. We want to prevent such behavior, so we perform this check
         // in order to redirect user to the manually entered URL if it differs from the recognized one
-        if (url !== location.pathname) {
+        if (url !== this.location.path()) {
           this._router.navigateByUrl(location.pathname);
         }
       });
