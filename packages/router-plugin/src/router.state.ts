@@ -9,6 +9,7 @@ import {
 } from '@angular/router';
 import { Location } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
+import { isAngularInTestMode } from '@ngxs/store/internals';
 import { filter, take } from 'rxjs/operators';
 
 import {
@@ -19,7 +20,6 @@ import {
   RouterNavigation
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
-import { isAngularInTestMode } from '@ngxs/store/internals';
 
 export type RouterStateModel<T = RouterStateSnapshot> = {
   state?: T;
