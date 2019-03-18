@@ -1,4 +1,4 @@
-import { NgZone, Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { NgZone, Injectable } from '@angular/core';
 import {
   NavigationCancel,
   NavigationError,
