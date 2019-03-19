@@ -115,7 +115,7 @@
     "@types/semver": "^5.5.0",
     "chai": "4.2.0",
     "codelyzer": "^4.5.0",
-    "core-js": "^2.6.0",
+    "core-js": "^3.0.0",
     "cross-env": "^5.2.0",
     "fs-extra": "^7.0.0",
     "husky": "^1.1.0",
