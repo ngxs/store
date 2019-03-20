@@ -7,7 +7,10 @@ import {
   RoutesRecognized,
   ResolveEnd
 } from '@angular/router';
+import { Location } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
+import { isAngularInTestMode } from '@ngxs/store/internals';
+import { filter, take } from 'rxjs/operators';
 
 import {
   Navigate,
@@ -56,10 +59,12 @@ export class RouterState {
     private _store: Store,
     private _router: Router,
     private _serializer: RouterStateSerializer<RouterStateSnapshot>,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
+    private location: Location
   ) {
     this.setUpStoreListener();
     this.setUpStateRollbackEvents();
+    this.checkInitialNavigationOnce();
   }
 
   @Action(Navigate)
@@ -173,5 +178,33 @@ export class RouterState {
       this.dispatchTriggeredByRouter = false;
       this.navigationTriggeredByDispatch = false;
     }
+  }
+
+  /**
+   * No sense to mess up the `setUpStateRollbackEvents` method as we have
+   * to perform this check only once and unsubscribe after the first event
+   * is triggered
+   */
+  private checkInitialNavigationOnce(): void {
+    if (isAngularInTestMode()) {
+      return;
+    }
+
+    this._router.events
+      .pipe(
+        filter((event): event is RoutesRecognized => event instanceof RoutesRecognized),
+        take(1)
+      )
+      .subscribe(({ url }) => {
+        // `location.pathname` always equals manually entered URL in the address bar
+        // e.g. `location.pathname === '/foo'`, but the `router` state has been initialized
+        // with another URL (e.g. used in combination with `NgxsStoragePlugin`), thus the
+        // `RouterNavigation` action will be dispatched and the user will be redirected to the
+        // previously saved URL. We want to prevent such behavior, so we perform this check
+        // in order to redirect user to the manually entered URL if it differs from the recognized one
+        if (url !== this.location.path()) {
+          this._router.navigateByUrl(location.pathname);
+        }
+      });
   }
 }
