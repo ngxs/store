@@ -3,9 +3,17 @@ import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router, Params, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { NgxsModule, Store } from '@ngxs/store';
+import { take, tap, filter } from 'rxjs/operators';
 
-import { NgxsRouterPluginModule, RouterState, RouterStateSerializer, Navigate } from '../';
+import { NgxsModule, Store, Actions, ofActionSuccessful } from '@ngxs/store';
+
+import {
+  NgxsRouterPluginModule,
+  RouterState,
+  RouterStateSerializer,
+  Navigate,
+  RouterNavigation
+} from '../';
 
 describe('NgxsRouterPlugin', () => {
   it('should dispatch router state events', async(async () => {
@@ -24,8 +32,8 @@ describe('NgxsRouterPlugin', () => {
       { type: 'router', event: 'GuardsCheckStart', url: '/' },
       { type: 'router', event: 'GuardsCheckEnd', url: '/' },
       { type: 'router', event: 'ResolveStart', url: '/' },
-      { type: 'url', state: '/' }, // RouterNavigation event in the store
       { type: 'router', event: 'ResolveEnd', url: '/' },
+      { type: 'url', state: '/' }, // RouterNavigation event in the store
       { type: 'router', event: 'NavigationEnd', url: '/' }
     ]);
 
@@ -38,8 +46,8 @@ describe('NgxsRouterPlugin', () => {
       { type: 'router', event: 'GuardsCheckStart', url: '/next' },
       { type: 'router', event: 'GuardsCheckEnd', url: '/next' },
       { type: 'router', event: 'ResolveStart', url: '/next' },
-      { type: 'url', state: '/next' },
       { type: 'router', event: 'ResolveEnd', url: '/next' },
+      { type: 'url', state: '/next' },
       { type: 'router', event: 'NavigationEnd', url: '/next' }
     ]);
   }));
@@ -73,7 +81,7 @@ describe('NgxsRouterPlugin', () => {
     });
   }));
 
-  it('should select custom router state ', fakeAsync(() => {
+  it('should select custom router state', fakeAsync(() => {
     interface RouterStateParams {
       url: string;
       queryParams: Params;
@@ -104,6 +112,58 @@ describe('NgxsRouterPlugin', () => {
         expect(routerState!.url).toEqual('/a-path?foo=bar');
         expect(routerState!.queryParams.foo).toEqual('bar');
       });
+  }));
+
+  it('should dispatch `RouterNavigation` event if it was navigated to the same route with query params', fakeAsync(() => {
+    createTestModule();
+
+    const actions$: Actions = TestBed.get(Actions);
+    const store: Store = TestBed.get(Store);
+
+    let count = 0;
+
+    actions$
+      .pipe(
+        ofActionSuccessful(RouterNavigation),
+        tap(() => count++),
+        take(2),
+        filter(() => count === 2)
+      )
+      .subscribe(() => {
+        expect(count).toEqual(2);
+      });
+
+    store.dispatch(
+      new Navigate(
+        ['/'],
+        {
+          a: 10
+        },
+        {
+          queryParamsHandling: 'merge'
+        }
+      )
+    );
+
+    tick();
+
+    store.dispatch(
+      new Navigate(
+        ['/'],
+        {
+          b: 20
+        },
+        {
+          queryParamsHandling: 'merge'
+        }
+      )
+    );
+
+    tick();
+
+    store.selectOnce(RouterState.state).subscribe(routerState => {
+      expect(routerState!.url).toEqual('/?a=10&b=20');
+    });
   }));
 });
 

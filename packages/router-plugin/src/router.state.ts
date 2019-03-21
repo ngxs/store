@@ -5,7 +5,9 @@ import {
   Router,
   RouterStateSnapshot,
   RoutesRecognized,
-  ResolveEnd
+  ResolveEnd,
+  NavigationEnd,
+  GuardsCheckEnd
 } from '@angular/router';
 import { Location } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
@@ -40,6 +42,7 @@ export class RouterState {
   private lastRoutesRecognized: RoutesRecognized;
   private dispatchTriggeredByRouter = false; // used only in dev mode in combination with routerReducer
   private navigationTriggeredByDispatch = false; // used only in dev mode in combination with routerReducer
+  private lastResolvedStateSnapshot: RouterStateSnapshot = null!;
 
   /**
    * Selectors
@@ -102,8 +105,11 @@ export class RouterState {
     this._router.events.subscribe(e => {
       if (e instanceof RoutesRecognized) {
         this.lastRoutesRecognized = e;
-      } else if (e instanceof ResolveEnd) {
-        this.resolveEnd(e.state);
+      } else if (e instanceof GuardsCheckEnd || e instanceof ResolveEnd) {
+        // The `GuardsCheckEnd` event is always triggered unlike the `ResolveEnd`
+        this.lastResolvedStateSnapshot = e.state;
+      } else if (e instanceof NavigationEnd) {
+        this.navigationEnd();
       } else if (e instanceof NavigationCancel) {
         this.dispatchRouterCancel(e);
       } else if (e instanceof NavigationError) {
@@ -112,12 +118,8 @@ export class RouterState {
     });
   }
 
-  /**
-   * The `ResolveEnd` event is always triggered after running all resolvers
-   * that are linked to some route and child routes
-   */
-  private resolveEnd(routerStateSnapshot: RouterStateSnapshot): void {
-    this.routerStateSnapshot = this._serializer.serialize(routerStateSnapshot);
+  private navigationEnd(): void {
+    this.routerStateSnapshot = this._serializer.serialize(this.lastResolvedStateSnapshot);
     if (this.shouldDispatchRouterNavigation()) {
       this.dispatchRouterNavigation();
     }
@@ -129,10 +131,9 @@ export class RouterState {
   }
 
   private navigateIfNeeded(): void {
-    if (!this.routerState || !this.routerState.state) {
+    if (!this.routerState || !this.routerState.state || this.dispatchTriggeredByRouter) {
       return;
     }
-    if (this.dispatchTriggeredByRouter) return;
 
     if (this._router.url !== this.routerState.state.url) {
       this.navigationTriggeredByDispatch = true;
