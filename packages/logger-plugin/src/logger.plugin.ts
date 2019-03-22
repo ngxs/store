@@ -97,6 +97,6 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
   private _getNonEmptyProperties(event: any) {
     const keys = Object.keys(event);
     const values = keys.map(key => event[key]);
-    return values.filter(value => value !== undefined);
+    return values.filter(value => !!value);
   }
 }
