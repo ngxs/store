@@ -90,8 +90,13 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
   }
 
   private _hasPayload(event: any) {
-    const nonEmptyProperties = Object.entries(event).filter(([, value]) => !!value);
-
+    const nonEmptyProperties = this._getNonEmptyProperties(event);
     return nonEmptyProperties.length > 0;
+  }
+
+  private _getNonEmptyProperties(event: any) {
+    const keys = Object.keys(event);
+    const values = keys.map(key => event[key]);
+    return values.filter(value => value !== undefined);
   }
 }
