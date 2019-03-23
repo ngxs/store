@@ -73,7 +73,7 @@ A great video on the topic is [Good Action Hygiene by Mike Ryan](https://www.you
 It's for NGRX, but the same naming conventions apply to NGXS.
 
 ## Group your actions
-Group similar action by using namespace
+Group similar action by using namespace.
 
 ```TS
 export namespace TodoAction {
