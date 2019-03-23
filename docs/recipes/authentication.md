@@ -41,7 +41,7 @@ export class AuthState {
   login({ patchState }: StateContext<AuthStateModel>, { payload }: Login) {
     return this.authService.login(payload).pipe(tap((result: { token: string }) => {
       patchState({ token, username: payload.username });
-    }))
+    }));
   }
 
   @Action(Logout)
@@ -49,7 +49,7 @@ export class AuthState {
     const { token } = getState();
     return this.authService.logout(token).pipe(tap(() => {
       setState({});
-    });
+    }));
   }
 
 }
