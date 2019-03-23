@@ -4,71 +4,42 @@
   "newProjectRoot": "projects",
   "projects": {
     "ngxs": {
-      "root": "./",
-      "sourceRoot": "./",
-      "projectType": "application",
+      "root": "./packages",
+      "sourceRoot": "./packages",
+      "projectType": "library",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "outputPath": "dist/",
-            "index": ".//integration/index.html",
-            "main": ".//integration/main.ts",
-            "tsConfig": ".//tsconfig.app.json",
-            "polyfills": ".//integration/polyfills.ts",
-            "assets": [],
-            "styles": [],
-            "scripts": []
-          },
-          "configurations": {}
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "ngxs:build"
-          },
-          "configurations": {}
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "ngxs:build"
+            "tsConfig": "tsconfig.lib.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": ".//test.ts",
+            "main": "packages/test.ts",
             "karmaConfig": "./karma.conf.js",
-            "polyfills": ".//integration/polyfills.ts",
-            "tsConfig": ".//tsconfig.spec.json",
-            "scripts": [],
-            "styles": [],
-            "assets": []
+            "tsConfig": "./tsconfig.spec.json"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "tsconfig.app.json",
+              "tsconfig.lib.json",
               "tsconfig.spec.json"
             ],
             "exclude": [
-              "**/node_modules/**"
+              "**/node_modules/**",
+              "./integrations/**"
             ]
           }
         }
       }
     },
-    "ngxs-e2e": {
-      "root": "..",
-      "sourceRoot": "../e2e",
-      "projectType": "application"
-    },
     "integration": {
-      "root": "",
-      "sourceRoot": "src",
+      "root": "integration",
+      "sourceRoot": ".",
       "projectType": "application",
       "architect": {
         "build": {
@@ -76,12 +47,15 @@
           "options": {
             "outputPath": "dist-integration/",
             "index": "./integration/index.html",
-            "main": "./integration/main.ts",
-            "tsConfig": "./integration/tsconfig.app.integration.json",
+            "main": "./integration/main.browser.ts",
+            "tsConfig": "./integration/tsconfig.app.json",
             "polyfills": "./integration/polyfills.ts",
-            "assets": [],
-            "styles": [],
-            "scripts": []
+            "assets": [
+              "./integration/favicon.ico"
+            ],
+            "styles": [
+              "./integration/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
@@ -100,6 +74,46 @@
                   "with": "/integration/environments/environment.prod.ts"
                 }
               ]
+            },
+            "hmr": {
+              "fileReplacements": [
+                {
+                  "replace": "/integration/environments/environment.ts",
+                  "with": "/integration/environments/environment.hmr.ts"
+                }
+              ]
+            }
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist-integration-server",
+            "main": "./integration/main.server.ts",
+            "tsConfig": "./integration/tsconfig.server.json"
+          },
+          "configurations": {
+            "dev": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": true
+            },
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "fileReplacements": [
+                {
+                  "replace": "/integration/environments/environment.ts",
+                  "with": "/integration/environments/environment.prod.ts"
+                }
+              ]
             }
           }
         },
@@ -111,6 +125,10 @@
           "configurations": {
             "production": {
               "browserTarget": "integration:build:production"
+            },
+            "hmr": {
+              "hmr": true,
+              "browserTarget": "integration:build:hmr"
             }
           }
         },
@@ -123,21 +141,18 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "./integration/test.integration.ts",
+            "main": "./integration/test.ts",
             "karmaConfig": "./karma.conf.js",
             "polyfills": "./integration/polyfills.ts",
-            "tsConfig": "./integration/tsconfig.spec.integration.json",
-            "scripts": [],
-            "styles": [],
-            "assets": []
+            "tsConfig": "./integration/tsconfig.spec.json"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json"
+              "integration/tsconfig.app.json",
+              "integration/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -145,11 +160,6 @@
           }
         }
       }
-    },
-    "integration-e2e": {
-      "root": "",
-      "sourceRoot": "e2e",
-      "projectType": "application"
     }
   },
   "defaultProject": "ngxs",

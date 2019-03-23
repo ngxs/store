@@ -18,7 +18,7 @@ async function main() {
     // set all the packages peerDependencies to be the same as root package.json version
     for (const p of packages) {
       if (packPackage.peerDependencies[p.packageName]) {
-        packPackage.peerDependencies[p.packageName] = ngxsJson.version;
+        packPackage.peerDependencies[p.packageName] = `^${ngxsJson.version} || ^${ngxsJson.version}-dev`;
       }
     }
 

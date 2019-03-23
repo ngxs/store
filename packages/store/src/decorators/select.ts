@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
 import { Store } from '../store';
-import { fastPropGetter } from '../internal/internals';
-import { META_KEY } from '../symbols';
+import { propGetter, removeDollarAtTheEnd } from '../internal/internals';
+import { META_KEY, NgxsConfig } from '../symbols';
 
 /**
  * Allows the select decorator to get access to the DI store.
@@ -11,24 +11,25 @@ import { META_KEY } from '../symbols';
 @Injectable()
 export class SelectFactory {
   static store: Store | undefined = undefined;
-  constructor(store: Store) {
+  static config: NgxsConfig | undefined = undefined;
+  constructor(store: Store, config: NgxsConfig) {
     SelectFactory.store = store;
+    SelectFactory.config = config;
   }
 }
 
 /**
  * Decorator for selecting a slice of state from the store.
  */
-export function Select(selectorOrFeature?, ...paths: string[]) {
+export function Select(selectorOrFeature?: any, ...paths: string[]) {
   return function(target: any, name: string) {
     const selectorFnName = '__' + name + '__selector';
 
     if (!selectorOrFeature) {
-      // if foo$ => make it just foo
-      selectorOrFeature = name.lastIndexOf('$') === name.length - 1 ? name.substring(0, name.length - 1) : name;
+      selectorOrFeature = removeDollarAtTheEnd(name);
     }
 
-    const createSelect = fn => {
+    const createSelect = (fn: any) => {
       const store = SelectFactory.store;
 
       if (!store) {
@@ -39,19 +40,24 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
     };
 
     const createSelector = () => {
+      const config = SelectFactory.config;
       if (typeof selectorOrFeature === 'string') {
-        const propsArray = paths.length ? [selectorOrFeature, ...paths] : selectorOrFeature.split('.');
+        const propsArray = paths.length
+          ? [selectorOrFeature, ...paths]
+          : selectorOrFeature.split('.');
 
-        return fastPropGetter(propsArray);
+        return propGetter(propsArray, config!);
       } else if (selectorOrFeature[META_KEY] && selectorOrFeature[META_KEY].path) {
-        return fastPropGetter(selectorOrFeature[META_KEY].path.split('.'));
+        return propGetter(selectorOrFeature[META_KEY].path.split('.'), config!);
       } else {
         return selectorOrFeature;
       }
     };
 
     if (target[selectorFnName]) {
-      throw new Error('You cannot use @Select decorator and a ' + selectorFnName + ' property.');
+      throw new Error(
+        'You cannot use @Select decorator and a ' + selectorFnName + ' property.'
+      );
     }
 
     if (delete target[name]) {
@@ -63,7 +69,10 @@ export function Select(selectorOrFeature?, ...paths: string[]) {
 
       Object.defineProperty(target, name, {
         get: function() {
-          return this[selectorFnName] || (this[selectorFnName] = createSelect.apply(this, [createSelector()]));
+          return (
+            this[selectorFnName] ||
+            (this[selectorFnName] = createSelect.apply(this, [createSelector()]))
+          );
         },
         enumerable: true,
         configurable: true

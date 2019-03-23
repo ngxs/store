@@ -1,9 +1,21 @@
-import { NgModule, ModuleWithProviders, Optional, Inject, InjectionToken } from '@angular/core';
+import {
+  NgModule,
+  ModuleWithProviders,
+  Optional,
+  Inject,
+  InjectionToken,
+  APP_BOOTSTRAP_LISTENER
+} from '@angular/core';
+
+import { NgxsBootstrapper } from '@ngxs/store/internals';
 
 import { ROOT_STATE_TOKEN, FEATURE_STATE_TOKEN, NgxsConfig } from './symbols';
+import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
+import { ConfigValidator } from './internal/config-validator';
+import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatcher, InternalDispatchedActionResults } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
 import { Store } from './store';
@@ -11,6 +23,9 @@ import { SelectFactory } from './decorators/select';
 import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
 import { InitState, UpdateState } from './actions/actions';
+import { StateClass } from './internal/internals';
+import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
+import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 
 /**
  * Root module
@@ -25,29 +40,19 @@ export class NgxsRootModule {
     select: SelectFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
-    states: any[]
+    states: StateClass[] = [],
+    lifecycleStateManager: LifecycleStateManager
   ) {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(states);
 
-    const stateOperations = internalStateOperations.getRootStateOperations();
-    if (results) {
-      // get our current stream
-      const cur = stateOperations.getState();
-
-      // set the state to the current + new
-      stateOperations.setState({ ...cur, ...results.defaults });
-    }
+    internalStateOperations.setStateToTheCurrentWithNew(results);
 
     // connect our actions stream
     factory.connectActionHandlers();
 
-    // dispatch the init action and invoke init function after
-    stateOperations.dispatch(new InitState()).subscribe(() => {
-      if (results) {
-        factory.invokeInit(results.states);
-      }
-    });
+    // dispatch the init action and invoke init and bootstrap functions after
+    lifecycleStateManager.ngxsBootstrap(new InitState(), results);
   }
 }
 
@@ -63,7 +68,8 @@ export class NgxsFeatureModule {
     factory: StateFactory,
     @Optional()
     @Inject(FEATURE_STATE_TOKEN)
-    states: any[][]
+    states: any[][],
+    lifecycleStateManager: LifecycleStateManager
   ) {
     // Since FEATURE_STATE_TOKEN is a multi token, we need to
     // flatten it [[Feature1State, Feature2State], [Feature3State]]
@@ -72,20 +78,11 @@ export class NgxsFeatureModule {
     // add stores to the state graph and return their defaults
     const results = factory.addAndReturnDefaults(flattenedStates);
 
-    const stateOperations = internalStateOperations.getRootStateOperations();
-    if (results) {
-      // get our current stream
-      const cur = stateOperations.getState();
-
-      // set the state to the current + new
-      stateOperations.setState({ ...cur, ...results.defaults });
+    if (results.states.length) {
+      internalStateOperations.setStateToTheCurrentWithNew(results);
+      // dispatch the update action and invoke init and bootstrap functions after
+      lifecycleStateManager.ngxsBootstrap(new UpdateState(), results);
     }
-
-    stateOperations.dispatch(new UpdateState()).subscribe(() => {
-      if (results) {
-        factory.invokeInit(results.states);
-      }
-    });
   }
 }
 
@@ -96,7 +93,11 @@ export function ngxsConfigFactory(options: ModuleOptions): NgxsConfig {
   return config;
 }
 
-export const ROOT_OPTIONS = new InjectionToken('ROOT_OPTIONS');
+export function appBootstrapListenerFactory(bootstrapper: NgxsBootstrapper) {
+  return () => bootstrapper.bootstrap();
+}
+
+export const ROOT_OPTIONS = new InjectionToken<ModuleOptions>('ROOT_OPTIONS');
 
 /**
  * Ngxs Module
@@ -106,7 +107,7 @@ export class NgxsModule {
   /**
    * Root module factory
    */
-  static forRoot(states: any[] = [], options: ModuleOptions = {}): ModuleWithProviders {
+  static forRoot(states: StateClass[] = [], options: ModuleOptions = {}): ModuleWithProviders {
     return {
       ngModule: NgxsRootModule,
       providers: [
@@ -114,14 +115,22 @@ export class NgxsModule {
         StateContextFactory,
         Actions,
         InternalActions,
+        NgxsBootstrapper,
+        ConfigValidator,
+        LifecycleStateManager,
         InternalDispatcher,
         InternalDispatchedActionResults,
         InternalStateOperations,
+        InternalNgxsExecutionStrategy,
         Store,
         StateStream,
         SelectFactory,
         PluginManager,
         ...states,
+        {
+          provide: NGXS_EXECUTION_STRATEGY,
+          useClass: options.executionStrategy || DispatchOutsideZoneNgxsExecutionStrategy
+        },
         {
           provide: ROOT_STATE_TOKEN,
           useValue: states
@@ -134,6 +143,12 @@ export class NgxsModule {
           provide: NgxsConfig,
           useFactory: ngxsConfigFactory,
           deps: [ROOT_OPTIONS]
+        },
+        {
+          provide: APP_BOOTSTRAP_LISTENER,
+          useFactory: appBootstrapListenerFactory,
+          multi: true,
+          deps: [NgxsBootstrapper]
         }
       ]
     };
@@ -142,7 +157,7 @@ export class NgxsModule {
   /**
    * Feature module factory
    */
-  static forFeature(states: any[]): ModuleWithProviders {
+  static forFeature(states: StateClass[] = []): ModuleWithProviders {
     return {
       ngModule: NgxsFeatureModule,
       providers: [

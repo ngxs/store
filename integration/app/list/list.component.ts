@@ -1,21 +1,16 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Select } from '@ngxs/store';
-import { ListState } from './list.state';
+import { RouterState } from '@ngxs/router-plugin';
+import { Observable } from 'rxjs';
+
+import { ListState } from '@integration/list/list.state';
 
 @Component({
   selector: 'app-list',
-  template: `
-    <div>
-      <a [routerLink]="['/detail']">Detail</a>
-      {{list$ | async}}
-
-      {{foo | async}}
-    </div>
-  `
+  templateUrl: './list.component.html'
 })
 export class ListComponent {
-  @Select(ListState) list$: Observable<string[]>;
-
-  @Select(ListState.hello) foo;
+  @Select(ListState) public list$: Observable<string[]>;
+  @Select(ListState.hello) public foo: Observable<string>;
+  @Select(RouterState.state) public router$: Observable<RouterState>;
 }

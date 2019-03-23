@@ -1,4 +1,4 @@
-import { Injectable, ErrorHandler, NgZone } from '@angular/core';
+import { Injectable, ErrorHandler } from '@angular/core';
 import { Observable, of, forkJoin, empty, Subject, throwError } from 'rxjs';
 import { shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
 
@@ -6,7 +6,9 @@ import { compose } from '../utils/compose';
 import { InternalActions, ActionStatus, ActionContext } from '../actions-stream';
 import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
-import { enterZone } from '../operators/zone';
+import { NgxsConfig } from '../symbols';
+import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
+import { leaveNgxs } from '../operators/leave-ngxs';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -25,26 +27,31 @@ export class InternalDispatcher {
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
     private _stateStream: StateStream,
-    private _ngZone: NgZone
+    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy
   ) {}
 
   /**
    * Dispatches event(s).
    */
-  dispatch(event: any | any[]): Observable<any> {
-    const result: Observable<any> = this._ngZone.runOutsideAngular(() => {
-      if (Array.isArray(event)) {
-        return forkJoin(event.map(a => this.dispatchSingle(a)));
-      } else {
-        return this.dispatchSingle(event);
-      }
-    });
+  dispatch(actionOrActions: any | any[]): Observable<any> {
+    const result = this._ngxsExecutionStrategy.enter(() =>
+      this.dispatchByEvents(actionOrActions)
+    );
 
     result.subscribe({
-      error: error => this._ngZone.run(() => this._errorHandler.handleError(error))
+      error: error =>
+        this._ngxsExecutionStrategy.leave(() => this._errorHandler.handleError(error))
     });
 
-    return result.pipe(enterZone(this._ngZone));
+    return result.pipe(leaveNgxs(this._ngxsExecutionStrategy));
+  }
+
+  private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
+    if (Array.isArray(actionOrActions)) {
+      return forkJoin(actionOrActions.map(a => this.dispatchSingle(a)));
+    } else {
+      return this.dispatchSingle(actionOrActions);
+    }
   }
 
   private dispatchSingle(action: any): Observable<any> {
@@ -53,7 +60,7 @@ export class InternalDispatcher {
 
     return (compose([
       ...plugins,
-      (nextState, nextAction) => {
+      (nextState: any, nextAction: any) => {
         if (nextState !== prevState) {
           this._stateStream.next(nextState);
         }
@@ -67,7 +74,9 @@ export class InternalDispatcher {
 
   private getActionResultStream(action: any): Observable<ActionContext> {
     return this._actionResults.pipe(
-      filter((ctx: ActionContext) => ctx.action === action && ctx.status !== ActionStatus.Dispatched),
+      filter(
+        (ctx: ActionContext) => ctx.action === action && ctx.status !== ActionStatus.Dispatched
+      ),
       take(1),
       shareReplay()
     );

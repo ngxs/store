@@ -1,15 +1,24 @@
 export class UpdateFormStatus {
-  static readonly type = '[Forms] Update Form Status';
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Forms] Update Form Status';
+  }
   constructor(public payload: { status: string | null; path: string }) {}
 }
 
 export class UpdateFormValue {
-  static readonly type = '[Forms] Update Form Value';
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Forms] Update Form Value';
+  }
   constructor(public payload: { value: any; path: string }) {}
 }
 
 export class UpdateForm {
-  static readonly type = '[Forms] Update Form';
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Forms] Update Form';
+  }
   constructor(
     public payload: {
       value: any;
@@ -22,31 +31,49 @@ export class UpdateForm {
 }
 
 export class UpdateFormDirty {
-  static readonly type = '[Forms] Update Form Dirty';
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Forms] Update Form Dirty';
+  }
   constructor(public payload: { dirty: boolean | null; path: string }) {}
 }
 
 export class SetFormDirty {
-  static readonly type = '[Forms] Set Form Dirty';
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Forms] Set Form Dirty';
+  }
   constructor(public payload: string) {}
 }
 
 export class SetFormPristine {
-  static readonly type = '[Forms] Set Form Pristine';
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Forms] Set Form Pristine';
+  }
   constructor(public payload: string) {}
 }
 
 export class UpdateFormErrors {
-  static readonly type = '[Forms] Update Form Errors';
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Forms] Update Form Errors';
+  }
   constructor(public payload: { errors: { [k: string]: string } | null; path: string }) {}
 }
 
 export class SetFormDisabled {
-  static readonly type = '[Forms] Set Form Disabled';
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Forms] Set Form Disabled';
+  }
   constructor(public payload: string) {}
 }
 
 export class SetFormEnabled {
-  static readonly type = '[Forms] Set Form Enabled';
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Forms] Set Form Enabled';
+  }
   constructor(public payload: string) {}
 }

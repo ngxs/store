@@ -3,8 +3,17 @@ import { map, filter } from 'rxjs/operators';
 import { getActionTypeFromInstance } from '../utils/utils';
 import { ActionContext, ActionStatus } from '../actions-stream';
 
-export function ofAction<T>(allowedType): OperatorFunction<any, T>;
-export function ofAction<T>(...allowedTypes): OperatorFunction<any, T>;
+export interface ActionCompletion<T = any, E = Error> {
+  action: T;
+  result: {
+    successful: boolean;
+    canceled: boolean;
+    error?: E;
+  };
+}
+
+export function ofAction<T>(allowedType: any): OperatorFunction<ActionContext, T>;
+export function ofAction<T>(...allowedTypes: any[]): OperatorFunction<ActionContext, T>;
 
 /**
  * RxJS operator for selecting out specific actions.
@@ -21,7 +30,7 @@ export function ofAction(...allowedTypes: any[]) {
  * This will ONLY grab actions that have just been dispatched
  */
 export function ofActionDispatched(...allowedTypes: any[]) {
-  return ofActionOperator(allowedTypes, ActionStatus.Dispatched);
+  return ofActionOperator(allowedTypes, [ActionStatus.Dispatched]);
 }
 
 /**
@@ -30,7 +39,7 @@ export function ofActionDispatched(...allowedTypes: any[]) {
  * This will ONLY grab actions that have just been successfully completed
  */
 export function ofActionSuccessful(...allowedTypes: any[]) {
-  return ofActionOperator(allowedTypes, ActionStatus.Successful);
+  return ofActionOperator(allowedTypes, [ActionStatus.Successful]);
 }
 
 /**
@@ -39,7 +48,21 @@ export function ofActionSuccessful(...allowedTypes: any[]) {
  * This will ONLY grab actions that have just been canceled
  */
 export function ofActionCanceled(...allowedTypes: any[]) {
-  return ofActionOperator(allowedTypes, ActionStatus.Canceled);
+  return ofActionOperator(allowedTypes, [ActionStatus.Canceled]);
+}
+
+/**
+ * RxJS operator for selecting out specific actions.
+ *
+ * This will ONLY grab actions that have just been completed
+ */
+export function ofActionCompleted(...allowedTypes: any[]) {
+  const allowedStatuses = [
+    ActionStatus.Successful,
+    ActionStatus.Canceled,
+    ActionStatus.Errored
+  ];
+  return ofActionOperator(allowedTypes, allowedStatuses, mapActionResult);
 }
 
 /**
@@ -48,31 +71,68 @@ export function ofActionCanceled(...allowedTypes: any[]) {
  * This will ONLY grab actions that have just thrown an error
  */
 export function ofActionErrored(...allowedTypes: any[]) {
-  return ofActionOperator(allowedTypes, ActionStatus.Errored);
+  return ofActionOperator(allowedTypes, [ActionStatus.Errored]);
 }
 
-function ofActionOperator(allowedTypes: any[], status?: ActionStatus) {
-  const allowedMap = createAllowedMap(allowedTypes);
-  return function(o: Observable<any>) {
-    return o.pipe(filterStatus(allowedMap, status), mapAction());
+function ofActionOperator<T = any>(
+  allowedTypes: any[],
+  statuses?: ActionStatus[],
+  mapOperator: () => OperatorFunction<ActionContext, T> = mapAction
+) {
+  const allowedMap = createAllowedActionTypesMap(allowedTypes);
+  const allowedStatusMap = statuses && createAllowedStatusesMap(statuses);
+  return function(o: Observable<ActionContext>) {
+    return o.pipe(
+      filterStatus(allowedMap, allowedStatusMap),
+      mapOperator()
+    );
   };
 }
 
-function filterStatus(allowedTypes: { [key: string]: boolean }, status?: ActionStatus) {
+function filterStatus(allowedTypes: FilterMap, allowedStatuses?: FilterMap) {
   return filter((ctx: ActionContext) => {
-    const actionType = getActionTypeFromInstance(ctx.action);
-    const type = allowedTypes[actionType];
-    return status ? type && ctx.status === status : type;
+    const actionType = getActionTypeFromInstance(ctx.action)!;
+    const typeMatch = allowedTypes[actionType];
+    const statusMatch = allowedStatuses ? allowedStatuses[ctx.status] : true;
+    return typeMatch && statusMatch;
   });
 }
 
-function mapAction() {
-  return map((ctx: ActionContext) => ctx.action);
+function mapActionResult(): OperatorFunction<ActionContext, ActionCompletion> {
+  return map(({ action, status, error }: ActionContext) => {
+    return <ActionCompletion>{
+      action,
+      result: {
+        successful: ActionStatus.Successful === status,
+        canceled: ActionStatus.Canceled === status,
+        error
+      }
+    };
+  });
 }
 
-function createAllowedMap(types: any[]): { [key: string]: boolean } {
-  return types.reduce((acc: any, klass: any) => {
-    acc[getActionTypeFromInstance(klass)] = true;
-    return acc;
-  }, {});
+function mapAction<T = any>(): OperatorFunction<ActionContext, T> {
+  return map((ctx: ActionContext) => <T>ctx.action);
+}
+
+type FilterMap = { [key: string]: boolean };
+
+function createAllowedActionTypesMap(types: any[]): FilterMap {
+  return types.reduce(
+    (filterMap: FilterMap, klass: any) => {
+      filterMap[getActionTypeFromInstance(klass)!] = true;
+      return filterMap;
+    },
+    <FilterMap>{}
+  );
+}
+
+function createAllowedStatusesMap(statuses: ActionStatus[]): FilterMap {
+  return statuses.reduce(
+    (filterMap: FilterMap, status: ActionStatus) => {
+      filterMap[status] = true;
+      return filterMap;
+    },
+    <FilterMap>{}
+  );
 }

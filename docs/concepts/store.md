@@ -105,4 +105,4 @@ the state to be a specific value for isolated testing.
 `store.reset(myNewStateObject)` will reset the entire state to the passed argument without firing
 any actions or life-cycle events.
 
-Warning: Using this can cause unintended side effects if inproperly used and should be used with caution!
+Warning: Using this can cause unintended side effects if improperly used and should be used with caution!

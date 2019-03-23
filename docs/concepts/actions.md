@@ -4,6 +4,12 @@ or as the resulting event of something that has already happened.
 
 Each action contains a `type` field which is their unique identifier.
 
+## Internal Actions
+There are two actions that gets triggered in the internals of the library:
+
+1. @@INIT - store being initialized, before all the [ngxsOnInit Life-cycle](../advanced/life-cycle.md) events.
+1. @@UPDATE_STATE - a new [lazy-loaded state](../advanced/lazy.md) being added to the store.
+
 ## Simple Action
 Let's say we want to update the status of whether the animals have been fed
 in our Zoo. We would describe a class like:
@@ -38,7 +44,7 @@ See [Store](store.md) documentation for how to dispatch actions.
 
 ### Commands
 Commands are actions that tell your app to do something.
-They are usually trigged by user events such as clicking on a button, or selecting something.
+They are usually triggered by user events such as clicking on a button, or selecting something.
 
 Names should contain three parts:
 
@@ -53,11 +59,11 @@ Examples:
 * `[Dashboard Page] ArchiveProject`
 
 ### Event examples
-Events are actions that have already happended and we now need to react to them.
+Events are actions that have already happened and we now need to react to them.
 
-The same naming conventions apply as to command, but they should always be in past tense.
+The same naming conventions apply as commands, but they should always be in the past tense.
 
-By using `API` in the context part we know that this event was fired because of a async action to an API.
+By using `API` in the context part of the action name we know that this event was fired because of an async action to an API.
 
 Actions are normally dispatched from container components such as router pages.
 By having explicit actions for each page, it's also easier to track where an event came from.
@@ -70,7 +76,7 @@ Examples:
 * [Project Stars Component] StarsUpdated
 
 A great video on the topic is [Good Action Hygiene by Mike Ryan](https://www.youtube.com/watch?v=JmnsEvoy-gY)
-It's for NGRX, but the same naming conventions apply to NGXS.
+It's for NgRx, but the same naming conventions apply to NGXS.
 
 ## Group your actions
 Group similar action by using namespace.

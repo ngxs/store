@@ -1,0 +1,26 @@
+language: node_js
+sudo: false
+node_js:
+  - "11.4.0"
+
+cache: yarn
+
+install:
+  - yarn install
+
+script:
+  # CHECK STYLE
+  - yarn run lint
+
+  # BUILD STAGE
+  - yarn run build
+  - yarn run build:integration
+  - yarn run build:integration:ssr
+
+  # TEST STAGE
+  - yarn run test:ci
+  - yarn run test:ci:integration
+  - yarn run test:ci:integration:ssr
+
+  # INTEGRATION TEST
+  - yarn run integration:ng5

@@ -28,7 +28,7 @@ Options that can be provided to the store.
 
 **● children**: *`any`[]*
 
-*Defined in [symbols.ts:78](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L78)*
+*Defined in [symbols.ts:93](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L93)*
 
 Sub states for the given state.
 
@@ -39,7 +39,7 @@ ___
 
 **● defaults**: *`T`*
 
-*Defined in [symbols.ts:73](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L73)*
+*Defined in [symbols.ts:88](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L88)*
 
 Default values for the state. If not provided, uses empty object.
 
@@ -50,7 +50,7 @@ ___
 
 **● name**: *`string`*
 
-*Defined in [symbols.ts:68](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L68)*
+*Defined in [symbols.ts:83](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L83)*
 
 Name of the state. Required.
 

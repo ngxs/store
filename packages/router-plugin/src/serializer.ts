@@ -9,7 +9,8 @@ export interface SerializedRouterStateSnapshot {
   url: string;
 }
 
-export class DefaultRouterStateSerializer implements RouterStateSerializer<SerializedRouterStateSnapshot> {
+export class DefaultRouterStateSerializer
+  implements RouterStateSerializer<SerializedRouterStateSnapshot> {
   serialize(routerState: RouterStateSnapshot): SerializedRouterStateSnapshot {
     return {
       root: this.serializeRoute(routerState.root),
@@ -26,13 +27,13 @@ export class DefaultRouterStateSerializer implements RouterStateSerializer<Seria
       fragment: route.fragment,
       data: route.data,
       outlet: route.outlet,
-      component: undefined,
+      component: null,
       routeConfig: null,
-      root: undefined,
-      parent: undefined,
+      root: null as any,
+      parent: null,
       firstChild: children[0],
       children: children,
-      pathFromRoot: undefined,
+      pathFromRoot: null as any,
       paramMap: route.paramMap,
       queryParamMap: route.queryParamMap,
       toString: route.toString

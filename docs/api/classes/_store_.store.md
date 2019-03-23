@@ -30,16 +30,17 @@
 
 ###  constructor
 
-⊕ **new Store**(_stateStream: *[StateStream](_state_stream_.statestream.md)*, _internalStateOperations: *[InternalStateOperations](_state_operations_.internalstateoperations.md)*): [Store](_store_.store.md)
+⊕ **new Store**(_ngZone: *`NgZone`*, _stateStream: *`StateStream`*, _internalStateOperations: *`InternalStateOperations`*): [Store](_store_.store.md)
 
-*Defined in [store.ts:10](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/store.ts#L10)*
+*Defined in [store.ts:11](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/store.ts#L11)*
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| _stateStream | [StateStream](_state_stream_.statestream.md) | 
-| _internalStateOperations | [InternalStateOperations](_state_operations_.internalstateoperations.md) | 
+| _ngZone | `NgZone` |
+| _stateStream | `StateStream` |
+| _internalStateOperations | `InternalStateOperations` |
 
 **Returns:** [Store](_store_.store.md)
 
@@ -51,19 +52,17 @@ ___
 
 ###  dispatch
 
-▸ **dispatch**(event: *`any` |`any`[]*): `Observable`<`any`>
+▸ **dispatch**(event: * `any` &#124; `any`[]*): `Observable`<`any`>
 
-*Defined in [store.ts:16](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/store.ts#L16)*
+*Defined in [store.ts:21](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/store.ts#L21)*
 
 Dispatches event(s).
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| event | `any` |
-`any`[]
- | 
+| event |  `any` &#124; `any`[]|
 
 **Returns:** `Observable`<`any`>
 
@@ -74,15 +73,15 @@ ___
 
 ▸ **reset**(state: *`any`*): `any`
 
-*Defined in [store.ts:79](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/store.ts#L79)*
+*Defined in [store.ts:85](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/store.ts#L85)*
 
 Reset the state to a specific point in time. This method is useful for plugin's who need to modify the state directly or unit testing.
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| state | `any` | 
+| state | `any` |
 
 **Returns:** `any`
 
@@ -91,11 +90,11 @@ ___
 
 ###  select
 
-▸ **select**T(selector: *`function`*): `Observable`<`T`>
+▸ **select**<`T`>(selector: *`function`*): `Observable`<`T`>
 
-▸ **select**(selector: *`string` |`any`*): `Observable`<`any`>
+▸ **select**(selector: * `string` &#124; `any`*): `Observable`<`any`>
 
-*Defined in [store.ts:23](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/store.ts#L23)*
+*Defined in [store.ts:28](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/store.ts#L28)*
 
 Selects a slice of data from the store.
 
@@ -104,21 +103,19 @@ Selects a slice of data from the store.
 #### T 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| selector | `function` | 
+| selector | `function` |
 
 **Returns:** `Observable`<`T`>
 
-*Defined in [store.ts:24](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/store.ts#L24)*
+*Defined in [store.ts:29](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/store.ts#L29)*
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| selector | `string` |
-`any`
- | 
+| selector |  `string` &#124; `any`|
 
 **Returns:** `Observable`<`any`>
 
@@ -127,11 +124,11 @@ ___
 
 ###  selectOnce
 
-▸ **selectOnce**T(selector: *`function`*): `Observable`<`T`>
+▸ **selectOnce**<`T`>(selector: *`function`*): `Observable`<`T`>
 
-▸ **selectOnce**(selector: *`string` |`any`*): `Observable`<`any`>
+▸ **selectOnce**(selector: * `string` &#124; `any`*): `Observable`<`any`>
 
-*Defined in [store.ts:45](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/store.ts#L45)*
+*Defined in [store.ts:51](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/store.ts#L51)*
 
 Select one slice of data from the store.
 
@@ -140,21 +137,19 @@ Select one slice of data from the store.
 #### T 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| selector | `function` | 
+| selector | `function` |
 
 **Returns:** `Observable`<`T`>
 
-*Defined in [store.ts:46](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/store.ts#L46)*
+*Defined in [store.ts:52](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/store.ts#L52)*
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| selector | `string` |
-`any`
- | 
+| selector |  `string` &#124; `any`|
 
 **Returns:** `Observable`<`any`>
 
@@ -163,11 +158,11 @@ ___
 
 ###  selectSnapshot
 
-▸ **selectSnapshot**T(selector: *`function`*): `T`
+▸ **selectSnapshot**<`T`>(selector: *`function`*): `T`
 
-▸ **selectSnapshot**(selector: *`string` |`any`*): `any`
+▸ **selectSnapshot**(selector: * `string` &#124; `any`*): `any`
 
-*Defined in [store.ts:54](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/store.ts#L54)*
+*Defined in [store.ts:60](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/store.ts#L60)*
 
 Select a snapshot from the state.
 
@@ -176,21 +171,19 @@ Select a snapshot from the state.
 #### T 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| selector | `function` | 
+| selector | `function` |
 
 **Returns:** `T`
 
-*Defined in [store.ts:55](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/store.ts#L55)*
+*Defined in [store.ts:61](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/store.ts#L61)*
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| selector | `string` |
-`any`
- | 
+| selector |  `string` &#124; `any`|
 
 **Returns:** `any`
 
@@ -201,7 +194,7 @@ ___
 
 ▸ **snapshot**(): `any`
 
-*Defined in [store.ts:71](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/store.ts#L71)*
+*Defined in [store.ts:77](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/store.ts#L77)*
 
 Return the raw value of the state.
 
@@ -214,15 +207,15 @@ ___
 
 ▸ **subscribe**(fn?: *`any`*): `Subscription`
 
-*Defined in [store.ts:64](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/store.ts#L64)*
+*Defined in [store.ts:70](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/store.ts#L70)*
 
 Allow the user to subscribe to the root of the state
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| `Optional` fn | `any` | 
+| `Optional` fn | `any` |
 
 **Returns:** `Subscription`
 

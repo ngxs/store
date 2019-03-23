@@ -1,0 +1,25 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "baseUrl": "./",
+    "paths": {
+      "@ngxs/*": ["../@ngxs/*"],
+      "@integration/*": ["./app/*"],
+      "@integration/env/*": ["./environments/*"]
+    },
+    "module": "commonjs",
+    "types": ["node"],
+    "typeRoots": ["../node_modules/@types"]
+  },
+  "exclude": [
+    "test.ts",
+    "test.ssr.ts",
+    "**/*.spec.ts",
+    "**/*.mocha.ts",
+    "node_modules"
+  ],
+  "angularCompilerOptions": {
+    "entryModule": "app/app.server.module#AppServerModule"
+  }
+}

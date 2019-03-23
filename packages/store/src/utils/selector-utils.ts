@@ -1,34 +1,35 @@
+import { memoize } from '@ngxs/store/internals';
+
 import {
   SelectFromState,
-  fastPropGetter,
   ensureSelectorMetadata,
   getSelectorMetadata,
   getStoreMetadata
 } from '../internal/internals';
-import { memoize } from '../utils/memoize';
 
 /**
  * Function for creating a selector
  * @param selectors The selectors to use to create the arguments of this function
  * @param originalFn The original function being made into a selector
+ * @param creationMetadata
  */
-export function createSelector(
-  selectors: any[],
-  originalFn: any,
+export function createSelector<T extends (...args: any[]) => any>(
+  selectors: any[] | undefined,
+  originalFn: T,
   creationMetadata?: { containerClass: any; selectorName: string }
 ) {
-  const wrappedFn = function wrappedSelectorFn(...args) {
+  const wrappedFn = function wrappedSelectorFn(...args: any[]) {
     const returnValue = originalFn(...args);
     if (returnValue instanceof Function) {
       const innerMemoizedFn = memoize.apply(null, [returnValue]);
       return innerMemoizedFn;
     }
     return returnValue;
-  };
+  } as T;
   const memoizedFn = memoize(wrappedFn);
   const containerClass = creationMetadata && creationMetadata.containerClass;
 
-  const fn = state => {
+  const fn = (state: any) => {
     const results = [];
 
     const selectorsToApply = [];
@@ -40,13 +41,13 @@ export function createSelector(
         selectorsToApply.push(containerClass);
       }
     }
+
     if (selectors) {
       selectorsToApply.push(...selectors);
     }
+
     // Determine arguments from the app state using the selectors
-    if (selectorsToApply) {
-      results.push(...selectorsToApply.map(a => getSelectorFn(a)(state)));
-    }
+    results.push(...selectorsToApply.map(a => getSelectorFn(a)(state)));
 
     // if the lambda tries to access a something on the
     // state that doesn't exist, it will throw a TypeError.
@@ -76,16 +77,6 @@ export function createSelector(
  * @ignore
  */
 export function getSelectorFn(selector: any): SelectFromState {
-  const selectorMetadata = getSelectorMetadata(selector);
-  if (selectorMetadata) {
-    const selectFromAppState = selectorMetadata.selectFromAppState;
-    if (selectFromAppState) {
-      return selectFromAppState;
-    }
-  }
-  const stateMetadata = getStoreMetadata(selector);
-  if (stateMetadata && stateMetadata.path) {
-    return fastPropGetter(stateMetadata.path.split('.'));
-  }
-  return selector;
+  const metadata = getSelectorMetadata(selector) || getStoreMetadata(selector);
+  return (metadata && metadata.selectFromAppState) || selector;
 }

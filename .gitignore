@@ -1,11 +1,13 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
+# **/ - recursive
 
 # compiled output
-/dist
-/tmp
-/out-tsc
-/src/environments/version.ts
-/builds
+**/dist
+**/tmp
+**/out-tsc
+**/src/environments/version.ts
+**/builds
+**/@ngxs
 
 # dependencies
 **/node_modules
@@ -56,3 +58,5 @@ Thumbs.db
 /storybook-static
 /yarn-error.log
 .ng_pkg_build/
+package-lock.json
+dist-integration-server/

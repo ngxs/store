@@ -60,7 +60,8 @@ describe('The Actions stream', () => {
     internalActions.subscribe(({ status }) => callsRecorded.push('1st Subscriber:' + status));
     internalActions.subscribe(({ status }) => {
       callsRecorded.push('2nd Subscriber:' + status);
-      if (status === ActionStatus.Dispatched) internalActions.next({ status: ActionStatus.Successful, action: null });
+      if (status === ActionStatus.Dispatched)
+        internalActions.next({ status: ActionStatus.Successful, action: null });
     });
     internalActions.subscribe(({ status }) => callsRecorded.push('3rd Subscriber:' + status));
 

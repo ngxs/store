@@ -1,6 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
 import { Subject } from 'rxjs';
-import { WebSocketSubject as RxWebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
+import {
+  WebSocketSubject as RxWebSocketSubject,
+  WebSocketSubjectConfig
+} from 'rxjs/webSocket';
 import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
 
 /**
@@ -14,14 +17,14 @@ export class WebSocketSubject extends Subject<any> {
    */
   connectionStatus = new Subject<boolean>();
 
-  private _socket: RxWebSocketSubject<any>;
+  private _socket: RxWebSocketSubject<any> | null;
   private _internalConfig: WebSocketSubjectConfig<any>;
 
   constructor(@Inject(NGXS_WEBSOCKET_OPTIONS) private _config: NgxsWebsocketPluginOptions) {
     super();
 
     this._internalConfig = {
-      url: this._config.url,
+      url: this._config.url!,
       serializer: this._config.serializer,
       deserializer: this._config.deserializer,
       closeObserver: {
@@ -58,7 +61,11 @@ export class WebSocketSubject extends Subject<any> {
     }
 
     this._socket = new RxWebSocketSubject(this._internalConfig);
-    this._socket.subscribe((message: any) => this.next(message));
+    this._socket.subscribe(
+      (message: any) => this.next(message),
+      (error: any) => this.error(error),
+      () => this.complete()
+    );
   }
 
   /**
@@ -67,7 +74,7 @@ export class WebSocketSubject extends Subject<any> {
   disconnect() {
     if (this._socket) {
       this._socket.complete();
-      this._socket = undefined;
+      this._socket = null;
     }
   }
 

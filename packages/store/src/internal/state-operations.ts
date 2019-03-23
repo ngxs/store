@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { StateOperations } from '../internal/internals';
+import { ConfigValidator } from './config-validator';
+import { StateOperations, StatesAndDefaults } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
@@ -15,8 +16,11 @@ export class InternalStateOperations {
   constructor(
     private _stateStream: StateStream,
     private _dispatcher: InternalDispatcher,
-    private _config: NgxsConfig
-  ) {}
+    private _config: NgxsConfig,
+    configValidator: ConfigValidator
+  ) {
+    configValidator.verifyDevMode();
+  }
 
   /**
    * Returns the root state operators.
@@ -24,8 +28,8 @@ export class InternalStateOperations {
   getRootStateOperations(): StateOperations<any> {
     const rootStateOperations = {
       getState: () => this._stateStream.getValue(),
-      setState: newState => this._stateStream.next(newState),
-      dispatch: actions => this._dispatcher.dispatch(actions)
+      setState: (newState: any) => this._stateStream.next(newState),
+      dispatch: (actions: any[]) => this._dispatcher.dispatch(actions)
     };
 
     if (this._config.developmentMode) {
@@ -46,5 +50,14 @@ export class InternalStateOperations {
         return root.dispatch(actions);
       }
     };
+  }
+
+  setStateToTheCurrentWithNew(results: StatesAndDefaults): void {
+    const stateOperations: StateOperations<any> = this.getRootStateOperations();
+
+    // Get our current stream
+    const currentState = stateOperations.getState();
+    // Set the state to the current + new
+    stateOperations.setState({ ...currentState, ...results.defaults });
   }
 }

@@ -4,9 +4,5 @@
 
 ## Index
 
-### Classes
-
-* [PluginManager](../classes/_plugin_manager_.pluginmanager.md)
-
 ---
 

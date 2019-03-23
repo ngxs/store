@@ -1,15 +1,16 @@
 import { Injectable, Inject } from '@angular/core';
-import { NgxsPlugin, getActionTypeFromInstance } from '@ngxs/store';
+import { tap, finalize, catchError } from 'rxjs/operators';
+
+import { NgxsPlugin, getActionTypeFromInstance, NgxsNextPluginFn } from '@ngxs/store';
 
 import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
 import { pad } from './internals';
-import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class NgxsLoggerPlugin implements NgxsPlugin {
   constructor(@Inject(NGXS_LOGGER_PLUGIN_OPTIONS) private _options: NgxsLoggerPluginOptions) {}
 
-  handle(state, event, next) {
+  handle(state: any, event: any, next: NgxsNextPluginFn) {
     if (this._options.disabled) {
       return next(state, event);
     }
@@ -34,8 +35,9 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
       console.log(message);
     }
 
-    if (typeof event.payload !== 'undefined') {
-      this.log('payload', 'color: #9E9E9E; font-weight: bold', event.payload);
+    // print payload only if at least one property is supplied
+    if (this._hasPayload(event)) {
+      this.log('payload', 'color: #9E9E9E; font-weight: bold', { ...event });
     }
 
     this.log('prev state', 'color: #9E9E9E; font-weight: bold', state);
@@ -43,6 +45,13 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
     return next(state, event).pipe(
       tap(nextState => {
         this.log('next state', 'color: #4CAF50; font-weight: bold', nextState);
+      }),
+      catchError(error => {
+        this.log('error', 'color: #FD8182; font-weight: bold', error);
+
+        throw error;
+      }),
+      finalize(() => {
         try {
           logger.groupEnd();
         } catch (e) {
@@ -64,7 +73,10 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
   }
 
   isIE(): boolean {
-    const ua = typeof window !== 'undefined' && window.navigator.userAgent ? window.navigator.userAgent : '';
+    const ua =
+      typeof window !== 'undefined' && window.navigator.userAgent
+        ? window.navigator.userAgent
+        : '';
     let ms_ie = false;
 
     const old_ie = ua.indexOf('MSIE ');
@@ -75,5 +87,11 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
     }
 
     return ms_ie;
+  }
+
+  private _hasPayload(event: any) {
+    const nonEmptyProperties = Object.entries(event).filter(([, value]) => !!value);
+
+    return nonEmptyProperties.length > 0;
   }
 }

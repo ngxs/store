@@ -1,0 +1,81 @@
+{
+  "rangeStrategy": "bump",
+  "separateMajorMinor": false,
+  "timezone": "UTC",
+  "schedule": [
+    "after 10pm every weekday",
+    "before 4am every weekday",
+    "every weekend"
+  ],
+  "baseBranches": [
+    "master"
+  ],
+  "ignoreDeps": [
+    "@types/node"
+  ],
+  "packageFiles": [
+    "package.json",
+    "packages/**/package.json"
+  ],
+  "major": {
+    "devDependencies": {
+      "enabled": false
+    }
+  },
+  "packageRules": [
+    {
+      "packagePatterns": [
+        "^@angular\/.*"
+      ],
+      "groupName": "@angular"
+    },
+    {
+      "packagePatterns": [
+        "^@angular-.*"
+      ],
+      "groupName": "@angular-dev"
+    },
+    {
+      "packageNames": [
+        "typescript"
+      ],
+      "updateTypes": "patch"
+    },
+    {
+      "packageNames": [
+        "^@ngxs\/.*"
+      ],
+      "groupName": "@ngxs"
+    },
+    {
+      "packageNames": [
+        "^karma.*"
+      ],
+      "groupName": "karma"
+    },
+    {
+      "packageNames": [
+        "^jasmine.*"
+      ],
+      "groupName": "jasmine"
+    },
+    {
+      "packageNames": [
+        "^@commitlint\/.*"
+      ],
+      "groupName": "@commitlint"
+    },
+    {
+      "packageNames": [
+        "^@nguniversal\/.*"
+      ],
+      "groupName": "@nguniversal"
+    },
+    {
+      "packageNames": [
+        "^@types\/.*"
+      ],
+      "groupName": "@types"
+    }
+  ]
+}

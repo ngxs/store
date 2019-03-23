@@ -1,6 +1,13 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { NgxsModule, Actions, ofAction, Store } from '@ngxs/store';
-import { NgxsWebsocketPluginModule, ConnectWebSocket, SendWebSocketMessage } from '../';
+import {
+  NgxsWebsocketPluginModule,
+  ConnectWebSocket,
+  SendWebSocketMessage,
+  DisconnectWebSocket,
+  WebSocketDisconnected,
+  WebsocketMessageError
+} from '../';
 import { Server, WebSocket } from 'mock-socket';
 import { take } from 'rxjs/operators';
 
@@ -34,16 +41,80 @@ describe('NgxsWebsocketPlugin', () => {
     actions$ = TestBed.get(Actions);
   });
 
-  it('should forward socket message to store', done => {
-    const mockServer = new Server(SOCKET_URL);
-    mockServer.on('message', data => mockServer.send(data));
+  const mockServer = new Server(SOCKET_URL);
 
-    store.dispatch(new ConnectWebSocket());
-    store.dispatch(createMessage());
+  it('should forward socket message to store', fakeAsync((done: DoneFn) => {
+    mockServer.on('connection', (socket: any) => {
+      mockServer.on('message', (data: any) => socket.send(data));
+      tick(1000);
 
-    actions$.pipe(ofAction(SetMessage), take(1)).subscribe(({ payload }) => {
-      expect(payload).toBe('from websocket');
+      store.dispatch(new ConnectWebSocket());
+      store.dispatch(createMessage());
+
+      actions$
+        .pipe(
+          ofAction(SetMessage),
+          take(1)
+        )
+        .subscribe(({ payload }: any) => {
+          expect(payload).toBe('from websocket');
+          done();
+        });
+    });
+  }));
+
+  it('should dispatch WebsocketMessageError on error', fakeAsync((done: DoneFn) => {
+    tick();
+    actions$
+      .pipe(
+        ofAction(WebsocketMessageError),
+        take(1)
+      )
+      .subscribe(err => {
+        expect(err instanceof CloseEvent).toBe(true);
+        mockServer.stop(done);
+        done();
+      });
+  }));
+
+  it('should dispatch WebSocketDisconnected on client initialted disconnect', fakeAsync((
+    done: DoneFn
+  ) => {
+    tick();
+    actions$
+      .pipe(
+        ofAction(WebSocketDisconnected),
+        take(1)
+      )
+      .subscribe(() => {
+        expect('called').toBe('called');
+        done();
+      });
+
+    store.dispatch(new DisconnectWebSocket());
+  }));
+
+  it('should dispatch WebSocketDisconnected on server initiated disconnect', fakeAsync((
+    done: DoneFn
+  ) => {
+    mockServer.on('connection', (socket: any) => {
+      mockServer.on('message', (data: any) => socket.send(data));
+      tick(1000);
+
+      store.dispatch(new ConnectWebSocket());
+
+      actions$
+        .pipe(
+          ofAction(WebSocketDisconnected),
+          take(1)
+        )
+        .subscribe(() => {
+          expect('called').toBe('called');
+
+          done();
+        });
+
       mockServer.stop(done);
     });
-  });
+  }));
 });

@@ -3,6 +3,7 @@ import { NgxsModule } from '../src/module';
 import { NGXS_PLUGINS } from '../src/plugin_api';
 import { Store } from '../src/store';
 import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 describe('Plugins', () => {
   it('should run a function plugin', () => {
@@ -12,8 +13,12 @@ describe('Plugins', () => {
       static readonly type = 'Foo';
     }
 
-    function logPlugin(state, action, next) {
-      if (action.constructor.type === 'Foo') {
+    function logPlugin(
+      state: any,
+      action: any,
+      next: (state: any, action: any) => Observable<any>
+    ) {
+      if (action.constructor && action.constructor.type === 'Foo') {
         spy();
       }
 

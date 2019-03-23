@@ -25,15 +25,15 @@ Ngxs Module
 
 ▸ **forFeature**(states: *`any`[]*): `ModuleWithProviders`
 
-*Defined in [module.ts:145](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/module.ts#L145)*
+*Defined in [module.ts:145](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/module.ts#L145)*
 
 Feature module factory
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| states | `any`[] | 
+| states | `any`[] |
 
 **Returns:** `ModuleWithProviders`
 
@@ -44,16 +44,16 @@ ___
 
 ▸ **forRoot**(states?: *`any`[]*, options?: *[ModuleOptions](../modules/_module_.md#moduleoptions)*): `ModuleWithProviders`
 
-*Defined in [module.ts:109](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/module.ts#L109)*
+*Defined in [module.ts:109](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/module.ts#L109)*
 
 Root module factory
 
 **Parameters:**
 
-| Param | Type | Default value |
+| Name | Type | Default value |
 | ------ | ------ | ------ |
-| `Default value` states | `any`[] |  [] | 
-| `Default value` options | [ModuleOptions](../modules/_module_.md#moduleoptions) |  {} | 
+| `Default value` states | `any`[] |  [] |
+| `Default value` options | [ModuleOptions](../modules/_module_.md#moduleoptions) |  {} |
 
 **Returns:** `ModuleWithProviders`
 

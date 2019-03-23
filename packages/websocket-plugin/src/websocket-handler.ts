@@ -7,7 +7,8 @@ import {
   SendWebSocketMessage,
   NGXS_WEBSOCKET_OPTIONS,
   NgxsWebsocketPluginOptions,
-  WebsocketMessageError
+  WebsocketMessageError,
+  WebSocketDisconnected
 } from './symbols';
 
 @Injectable()
@@ -18,18 +19,29 @@ export class WebSocketHandler {
     socket: WebSocketSubject,
     @Inject(NGXS_WEBSOCKET_OPTIONS) config: NgxsWebsocketPluginOptions
   ) {
-    actions.pipe(ofActionDispatched(ConnectWebSocket)).subscribe(event => socket.connect(event.payload));
-    actions.pipe(ofActionDispatched(DisconnectWebSocket)).subscribe(event => socket.disconnect());
-    actions.pipe(ofActionDispatched(SendWebSocketMessage)).subscribe(({ payload }) => socket.send(payload));
+    actions
+      .pipe(ofActionDispatched(ConnectWebSocket))
+      .subscribe(event => socket.connect(event.payload));
+    actions
+      .pipe(ofActionDispatched(DisconnectWebSocket))
+      .subscribe(event => socket.disconnect());
+    actions
+      .pipe(ofActionDispatched(SendWebSocketMessage))
+      .subscribe(({ payload }) => socket.send(payload));
+
     socket.subscribe(
       msg => {
-        const type = getValue(msg, config.typeKey);
+        const type = getValue(msg, config.typeKey!);
         if (!type) {
           throw new Error(`Type ${type} not found on message`);
         }
         store.dispatch({ ...msg, type });
       },
-      err => store.dispatch(new WebsocketMessageError(err))
+      err =>
+        err instanceof CloseEvent
+          ? store.dispatch(new WebSocketDisconnected())
+          : store.dispatch(new WebsocketMessageError(err)),
+      () => store.dispatch(new WebSocketDisconnected())
     );
   }
 }

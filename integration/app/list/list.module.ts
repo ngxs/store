@@ -1,13 +1,16 @@
 import { NgModule } from '@angular/core';
-import { ListComponent } from './list.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgxsModule } from '@ngxs/store';
-import { ListState } from './list.state';
-import { routes } from './list.routes';
+
+import { ListState } from '@integration/list/list.state';
+import { ListComponent } from '@integration/list/list.component';
+import { routes } from '@integration/list/list.routes';
+import { ListResolver } from '@integration/list/list.resolver';
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes), NgxsModule.forFeature([ListState])],
-  declarations: [ListComponent]
+  declarations: [ListComponent],
+  providers: [ListResolver]
 })
 export class ListModule {}

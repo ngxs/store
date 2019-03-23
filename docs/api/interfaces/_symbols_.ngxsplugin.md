@@ -24,17 +24,17 @@ Plugin interface
 
 ▸ **handle**(state: *`any`*, action: *`any`*, next: *[NgxsNextPluginFn](../modules/_symbols_.md#ngxsnextpluginfn)*): `any`
 
-*Defined in [symbols.ts:58](https://github.com/amcdnl/ngxs/blob/4ba1032/packages/store/src/symbols.ts#L58)*
+*Defined in [symbols.ts:73](https://github.com/ngxs/store/blob/7d8137d/packages/store/src/symbols.ts#L73)*
 
 Handle the state/action before its submitted to the state handlers.
 
 **Parameters:**
 
-| Param | Type |
+| Name | Type |
 | ------ | ------ |
-| state | `any` | 
-| action | `any` | 
-| next | [NgxsNextPluginFn](../modules/_symbols_.md#ngxsnextpluginfn) | 
+| state | `any` |
+| action | `any` |
+| next | [NgxsNextPluginFn](../modules/_symbols_.md#ngxsnextpluginfn) |
 
 **Returns:** `any`
 

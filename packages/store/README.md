@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../../docs/assets/logo.png">
+  <img src="https://github.com/ngxs/store/raw/master/docs/assets/logo.png">
   <br />
   NGXS is a state management pattern + library for Angular
   <br />
@@ -9,8 +9,8 @@
 
 ---
 
-- Learn about it on the [docs site](https://ngxs.gitbooks.io/ngxs/)
-- See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
-- Checkout the [sample application](https://github.com/ngxs/store/tree/master/integration)
-- Learn about updates from the [changelog](https://github.com/ngxs/store/blob/master/CHANGELOG.md)
+- ✨ Learn about it on the [docs site](https://ngxs.gitbooks.io/ngxs/)
+- 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
+- 😎 Checkout the [sample application](https://github.com/ngxs/store/tree/master/integration)
+- 🗄 Learn about updates from the [changelog](https://github.com/ngxs/store/blob/master/CHANGELOG.md)
 - ❤️ Give back by becoming a [Contributor](https://github.com/ngxs/store/blob/master/docs/community/contributing.md) or a [Sponsor](https://github.com/ngxs/store/blob/master/docs/community/sponsors.md)
