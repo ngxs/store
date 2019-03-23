@@ -71,3 +71,25 @@ Examples:
 
 A great video on the topic is [Good Action Hygiene by Mike Ryan](https://www.youtube.com/watch?v=JmnsEvoy-gY)
 It's for NGRX, but the same naming conventions apply to NGXS.
+
+## Group your actions
+Group similar action by using namespace
+
+```TS
+export namespace TodoAction {
+  export class Add {
+    static readonly type = '[Todo] add';
+  }
+  export class Edit {
+    static readonly type = '[Todo] Edit';
+    constructor(public payload: any) { }
+  }
+  export class FetchAll {
+    static readonly type = '[Todo] Fetch all'
+  }
+  export class Delete {
+    static readonly type = '[Todo] Delete';
+    constructor(public id: number) { }
+  }
+}
+```
