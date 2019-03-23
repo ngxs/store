@@ -79,6 +79,7 @@ Group similar action by using namespace.
 export namespace TodoAction {
   export class Add {
     static readonly type = '[Todo] add';
+    constructor(public payload: any) { }
   }
   export class Edit {
     static readonly type = '[Todo] Edit';
