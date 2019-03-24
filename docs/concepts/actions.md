@@ -83,17 +83,21 @@ Group similar action by using namespace.
 
 ```TS
 export namespace TodoAction {
+
   export class Add {
-    static readonly type = '[Todo] add';
+    static readonly type = '[Todo] Add';
     constructor(public payload: any) { }
   }
+  
   export class Edit {
     static readonly type = '[Todo] Edit';
     constructor(public payload: any) { }
   }
+  
   export class FetchAll {
-    static readonly type = '[Todo] Fetch all'
+    static readonly type = '[Todo] Fetch All'
   }
+  
   export class Delete {
     static readonly type = '[Todo] Delete';
     constructor(public id: number) { }
