@@ -6,12 +6,7 @@ import {
 } from '@angular/core';
 import { NgxsBootstrapper } from '@ngxs/store/internals';
 
-import {
-  FEATURE_STATE_TOKEN,
-  NgxsConfig,
-  NgxsModuleOptions,
-  ROOT_STATE_TOKEN
-} from './symbols';
+import { FEATURE_STATE_TOKEN, NgxsConfig, ROOT_STATE_TOKEN } from './symbols';
 import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
@@ -29,6 +24,8 @@ import { NgxsRootModule } from './modules/ngxs-root.module';
 import { NgxsFeatureModule } from './modules/ngxs-feature.module';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
+
+type NgxsModuleOptions = Partial<NgxsConfig>;
 
 /**
  * Ngxs Module
