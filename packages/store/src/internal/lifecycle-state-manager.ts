@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { NgxsBootstrapper } from '@ngxs/store/internals';
-
 import { filter, tap, mergeMap } from 'rxjs/operators';
 
 import { StateContextFactory } from './state-context-factory';

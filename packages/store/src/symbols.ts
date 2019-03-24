@@ -7,11 +7,13 @@ import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-o
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
+export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
+
 export const META_KEY = 'NGXS_META';
 export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 
-export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
+export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
 /**
@@ -137,5 +139,3 @@ export interface NgxsOnInit {
 export interface NgxsAfterBootstrap {
   ngxsAfterBootstrap(ctx?: StateContext<any>): void;
 }
-
-export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;
