@@ -79,7 +79,32 @@ A great video on the topic is [Good Action Hygiene by Mike Ryan](https://www.you
 It's for NgRx, but the same naming conventions apply to NGXS.
 
 ## Group your actions
-Group similar action by using namespace.
+Currently we suffix 'Action' with each action class name like:
+
+```TS
+export class AddAction {
+  static readonly type = '[Todo] Add';
+  constructor(public payload: any) { }
+}
+
+export class EditAction {
+  static readonly type = '[Todo] Edit';
+  constructor(public payload: any) { }
+}
+
+export class FetchAllAction {
+  static readonly type = '[Todo] Fetch All'
+}
+
+export class DeleteAction {
+  static readonly type = '[Todo] Delete';
+  constructor(public id: number) { }
+}
+
+```
+
+here we just add 'Action' with namespace, so we can group similar action.
+In this case just import namespace instead of multiple action class in same file.
 
 ```TS
 export namespace TodoAction {
