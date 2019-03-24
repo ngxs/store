@@ -6,7 +6,6 @@ import {
   RouterStateSnapshot,
   RoutesRecognized,
   ResolveEnd,
-  NavigationEnd,
   GuardsCheckEnd
 } from '@angular/router';
 import { Location } from '@angular/common';
@@ -42,7 +41,6 @@ export class RouterState {
   private lastRoutesRecognized: RoutesRecognized;
   private dispatchTriggeredByRouter = false; // used only in dev mode in combination with routerReducer
   private navigationTriggeredByDispatch = false; // used only in dev mode in combination with routerReducer
-  private lastResolvedStateSnapshot: RouterStateSnapshot = null!;
 
   /**
    * Selectors
@@ -106,10 +104,7 @@ export class RouterState {
       if (e instanceof RoutesRecognized) {
         this.lastRoutesRecognized = e;
       } else if (e instanceof GuardsCheckEnd || e instanceof ResolveEnd) {
-        // The `GuardsCheckEnd` event is always triggered unlike the `ResolveEnd`
-        this.lastResolvedStateSnapshot = e.state;
-      } else if (e instanceof NavigationEnd) {
-        this.navigationEnd();
+        this.guardsCheckOrResolveEnd(e.state);
       } else if (e instanceof NavigationCancel) {
         this.dispatchRouterCancel(e);
       } else if (e instanceof NavigationError) {
@@ -118,8 +113,12 @@ export class RouterState {
     });
   }
 
-  private navigationEnd(): void {
-    this.routerStateSnapshot = this._serializer.serialize(this.lastResolvedStateSnapshot);
+  /**
+   * The `GuardsCheckEnd` event is always triggered unlike the `ResolveEnd` that is
+   * triggered only in cases when `resolve` property is defined
+   */
+  private guardsCheckOrResolveEnd(state: RouterStateSnapshot): void {
+    this.routerStateSnapshot = this._serializer.serialize(state);
     if (this.shouldDispatchRouterNavigation()) {
       this.dispatchRouterNavigation();
     }

@@ -1,11 +1,19 @@
-import { Component, Provider } from '@angular/core';
+import { Component, Provider, Type } from '@angular/core';
 import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router, Params, RouterStateSnapshot } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { take, tap, filter } from 'rxjs/operators';
 
-import { NgxsModule, Store, Actions, ofActionSuccessful } from '@ngxs/store';
+import {
+  NgxsModule,
+  Store,
+  Actions,
+  ofActionSuccessful,
+  State,
+  Action,
+  StateContext
+} from '@ngxs/store';
 
 import {
   NgxsRouterPluginModule,
@@ -30,10 +38,10 @@ describe('NgxsRouterPlugin', () => {
       { type: 'router', event: 'NavigationStart', url: '/' },
       { type: 'router', event: 'RoutesRecognized', url: '/' },
       { type: 'router', event: 'GuardsCheckStart', url: '/' },
+      { type: 'url', state: '/' }, // RouterNavigation event in the store
       { type: 'router', event: 'GuardsCheckEnd', url: '/' },
       { type: 'router', event: 'ResolveStart', url: '/' },
       { type: 'router', event: 'ResolveEnd', url: '/' },
-      { type: 'url', state: '/' }, // RouterNavigation event in the store
       { type: 'router', event: 'NavigationEnd', url: '/' }
     ]);
 
@@ -44,10 +52,10 @@ describe('NgxsRouterPlugin', () => {
       { type: 'router', event: 'NavigationStart', url: '/next' },
       { type: 'router', event: 'RoutesRecognized', url: '/next' },
       { type: 'router', event: 'GuardsCheckStart', url: '/next' },
+      { type: 'url', state: '/next' },
       { type: 'router', event: 'GuardsCheckEnd', url: '/next' },
       { type: 'router', event: 'ResolveStart', url: '/next' },
       { type: 'router', event: 'ResolveEnd', url: '/next' },
-      { type: 'url', state: '/next' },
       { type: 'router', event: 'NavigationEnd', url: '/next' }
     ]);
   }));
@@ -165,13 +173,48 @@ describe('NgxsRouterPlugin', () => {
       expect(routerState!.url).toEqual('/?a=10&b=20');
     });
   }));
+
+  it('should be possible to access the state snapshot if action is dispatched from the component constructor', fakeAsync(async () => {
+    @State({
+      name: 'test',
+      defaults: null
+    })
+    class TestState {
+      constructor(private store: Store) {}
+
+      @Action(TestAction)
+      testAction({ setState }: StateContext<any>) {
+        setState(this.store.selectSnapshot(RouterState.state));
+      }
+    }
+
+    createTestModule({
+      states: [TestState]
+    });
+
+    const router: Router = TestBed.get(Router);
+    const store: Store = TestBed.get(Store);
+
+    await router.navigateByUrl('/testpath');
+    tick();
+
+    const state = store.selectSnapshot(TestState);
+
+    expect(state).toBeTruthy();
+    expect(state.url).toEqual('/testpath');
+  }));
 });
+
+class TestAction {
+  static type = '[Test] Test action';
+}
 
 function createTestModule(
   opts: {
     canActivate?: Function;
     canLoad?: Function;
     providers?: Provider[];
+    states?: Type<any>[];
   } = {}
 ) {
   @Component({
@@ -184,12 +227,16 @@ function createTestModule(
     selector: 'pagea-cmp',
     template: 'pagea-cmp'
   })
-  class SimpleCmp {}
+  class SimpleCmp {
+    constructor(store: Store) {
+      store.dispatch(new TestAction());
+    }
+  }
 
   TestBed.configureTestingModule({
     declarations: [AppCmp, SimpleCmp],
     imports: [
-      NgxsModule.forRoot(),
+      NgxsModule.forRoot(opts.states || []),
       RouterTestingModule.withRoutes(
         [
           { path: '', component: SimpleCmp },
