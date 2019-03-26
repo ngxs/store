@@ -15,7 +15,7 @@ describe('ConfigValidator', () => {
     validator = TestBed.get(ConfigValidator);
 
     expect(validator.isNgDevMode).toBe(true);
-    expect(validator.isTestMode).toBe(true);
+    expect(validator.isTestMode()).toBe(true);
     expect(validator.verifyDevMode()).toBe(undefined);
   });
 
@@ -23,7 +23,7 @@ describe('ConfigValidator', () => {
     try {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([], { developmentMode: false })],
-        providers: [{ provide: NGXS_DEV_MODE, useValue: false }]
+        providers: [{ provide: NGXS_DEV_MODE, useValue: () => false }]
       });
       validator = TestBed.get(ConfigValidator);
     } catch (e) {

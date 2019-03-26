@@ -11,7 +11,7 @@ interface ConfigValidatorDef {
 @Injectable()
 export class ConfigValidator implements ConfigValidatorDef {
   constructor(
-    @Inject(NGXS_DEV_MODE) public isTestMode: boolean,
+    @Inject(NGXS_DEV_MODE) public isTestMode: Function,
     private _config: NgxsConfig
   ) {}
 
@@ -24,11 +24,11 @@ export class ConfigValidator implements ConfigValidatorDef {
   }
 
   private get isIncorrectProduction(): boolean {
-    return !this.isTestMode && !this.isNgDevMode && this.isNgxsDevMode;
+    return !this.isTestMode() && !this.isNgDevMode && this.isNgxsDevMode;
   }
 
   private get isIncorrectDevelopment(): boolean {
-    return !this.isTestMode && this.isNgDevMode && !this.isNgxsDevMode;
+    return !this.isTestMode() && this.isNgDevMode && !this.isNgxsDevMode;
   }
 
   public verifyDevMode(): void {

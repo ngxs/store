@@ -62,7 +62,7 @@ export class NgxsModule {
         ...states,
         {
           provide: NGXS_DEV_MODE,
-          useValue: isAngularInTestMode()
+          useFactory: NgxsModule.isAngularInTestMode
         },
         {
           provide: NGXS_EXECUTION_STRATEGY,
@@ -116,5 +116,9 @@ export class NgxsModule {
 
   private static appBootstrapListenerFactory(bootstrapper: NgxsBootstrapper): Function {
     return () => bootstrapper.bootstrap();
+  }
+
+  private static isAngularInTestMode(): Function {
+    return () => isAngularInTestMode();
   }
 }
