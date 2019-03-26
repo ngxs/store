@@ -1,34 +1,41 @@
-import { Injectable, isDevMode } from '@angular/core';
-import { isAngularInTestMode } from '@ngxs/store/internals';
+import { Inject, Injectable, isDevMode } from '@angular/core';
 
-import { NgxsConfig } from '../symbols';
+import { NGXS_DEV_MODE, NgxsConfig } from '../symbols';
+import { StoreValidators } from '../utils/store-validators';
+
+interface ConfigValidatorDef {
+  readonly isNgDevMode: boolean;
+  readonly isNgxsDevMode: boolean;
+}
 
 @Injectable()
-export class ConfigValidator {
-  constructor(private _config: NgxsConfig) {}
+export class ConfigValidator implements ConfigValidatorDef {
+  constructor(
+    @Inject(NGXS_DEV_MODE) public isTestMode: boolean,
+    private _config: NgxsConfig
+  ) {}
+
+  public get isNgDevMode(): boolean {
+    return isDevMode();
+  }
+
+  public get isNgxsDevMode(): boolean {
+    return this._config.developmentMode;
+  }
+
+  private get isIncorrectProduction(): boolean {
+    return !this.isTestMode && !this.isNgDevMode && this.isNgxsDevMode;
+  }
+
+  private get isIncorrectDevelopment(): boolean {
+    return !this.isTestMode && this.isNgDevMode && !this.isNgxsDevMode;
+  }
 
   public verifyDevMode(): void {
-    if (isAngularInTestMode()) {
-      return;
-    }
-
-    const isNgxsDevMode = this._config.developmentMode;
-    const isNgDevMode = isDevMode();
-    const incorrectProduction = !isNgDevMode && isNgxsDevMode;
-    const incorrectDevelopment = isNgDevMode && !isNgxsDevMode;
-    const example = 'NgxsModule.forRoot(states, { developmentMode: !environment.production })';
-
-    if (incorrectProduction) {
-      console.warn(
-        'Angular is running in production mode but NGXS is still running in the development mode!\n',
-        'Please set developmentMode to false on the NgxsModule options when in production mode.\n',
-        example
-      );
-    } else if (incorrectDevelopment) {
-      console.warn(
-        'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n',
-        example
-      );
+    if (this.isIncorrectProduction) {
+      StoreValidators.throwWhenIncorrectProduction();
+    } else if (this.isIncorrectDevelopment) {
+      StoreValidators.throwWhenIncorrectDevelopment();
     }
   }
 }

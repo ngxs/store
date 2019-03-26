@@ -42,4 +42,19 @@ export abstract class StoreValidators {
 
     return meta;
   }
+
+  public static throwWhenIncorrectProduction(): void {
+    throw new Error(
+      'Angular is running in production mode but NGXS is still running in the development mode!\n' +
+        'Please set developmentMode to false on the NgxsModule options when in production mode.\n' +
+        'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
+    );
+  }
+
+  public static throwWhenIncorrectDevelopment(): void {
+    throw new Error(
+      'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n' +
+        'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
+    );
+  }
 }

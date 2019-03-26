@@ -4,9 +4,9 @@ import {
   ModuleWithProviders,
   NgModule
 } from '@angular/core';
-import { NgxsBootstrapper } from '@ngxs/store/internals';
+import { isAngularInTestMode, NgxsBootstrapper } from '@ngxs/store/internals';
 
-import { FEATURE_STATE_TOKEN, NgxsConfig, ROOT_STATE_TOKEN } from './symbols';
+import { FEATURE_STATE_TOKEN, NGXS_DEV_MODE, NgxsConfig, ROOT_STATE_TOKEN } from './symbols';
 import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
@@ -60,6 +60,10 @@ export class NgxsModule {
         SelectFactory,
         PluginManager,
         ...states,
+        {
+          provide: NGXS_DEV_MODE,
+          useValue: isAngularInTestMode()
+        },
         {
           provide: NGXS_EXECUTION_STRATEGY,
           useClass: options.executionStrategy || DispatchOutsideZoneNgxsExecutionStrategy
