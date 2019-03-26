@@ -14,10 +14,35 @@ From time to time we will be posting about projects that have been started under
 
 ### Labs Packages
 
-| Project | Package | Version | Links |
-|---|---|---|---|
-**NGXS-labs Emitter** | [`@ngxs-labs/emitter`](https://npmjs.com/package/@ngxs-labs/emitter) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Femitter/latest.svg)](https://npmjs.com/package/@ngxs-labs/emitter) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/emitter)
-**NGXS-labs Immer-adapter** | [`@ngxs-labs/immer-adapter`](https://npmjs.com/package/@ngxs-labs/immer-adapter) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fimmer-adapter/latest.svg)](https://npmjs.com/package/@ngxs-labs/immer-adapter) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/immer-adapter)
-**NGXS-labs Dispatch** | [`@ngxs-labs/dispatch-decorator`](https://npmjs.com/package/@ngxs-labs/dispatch-decorator) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fdispatch-decorator/latest.svg)](https://npmjs.com/package/@ngxs-labs/dispatch-decorator) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/dispatch-decorator)
-**NGXS-labs Async-storage-plugin** | [`@ngxs-labs/async-storage-plugin`](https://npmjs.com/package/@ngxs-labs/async-storage-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fasync-storage-plugin/latest.svg)](https://npmjs.com/package/@ngxs-labs/async-storage-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/async-storage-plugin)
-**NGXS-labs Entity-state** | [`@ngxs-labs/entity-state`](https://npmjs.com/package/@ngxs-labs/entity-state) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fentity-state/latest.svg)](https://npmjs.com/package/@ngxs-labs/entity-state) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/entity-state)
+<table>
+  <tr>
+    <th>Package</th>
+    <th>Version</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td><a href="https://npmjs.com/package/@ngxs-labs/emitter">@ngxs-labs/emitter</a></td>
+    <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Femitter/latest.svg"></td>
+    <td>Stable</td>
+  </tr>
+  <tr>
+    <td><a href="https://npmjs.com/package/@ngxs-labs/immer-adapter">@ngxs-labs/immer-adapter</a></td>
+    <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Fimmer-adapter/latest.svg"></td>
+    <td>Stable</td>
+  </tr>
+  <tr>
+    <td><a href="https://npmjs.com/package/@ngxs-labs/dispatch-decorator">@ngxs-labs/dispatch-decorator</a></td>
+    <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Fdispatch-decorator/latest.svg"></td>
+    <td>Stable</td>
+  </tr>
+  <tr>
+    <td><a href="https://npmjs.com/package/@ngxs-labs/async-storage-plugin">@ngxs-labs/async-storage-plugin</a></td>
+    <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Fasync-storage-plugin/latest.svg"></td>
+    <td>Alpha</td>
+  </tr>
+  <tr>
+    <td><a href="https://npmjs.com/package/@ngxs-labs/entity-state">@ngxs-labs/entity-state</a></td>
+    <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Fentity-state/latest.svg"></td>
+    <td>Development</td>
+  </tr>
+</table>
