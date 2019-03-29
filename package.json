@@ -87,7 +87,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.1",
     "@angular/animations": "7.1.4",
-    "@angular/cli": "7.3.6",
+    "@angular/cli": "7.3.7",
     "@angular/common": "7.1.4",
     "@angular/compiler": "7.1.4",
     "@angular/compiler-cli": "7.1.4",
