@@ -4,7 +4,8 @@ import {
   NavigationExtras,
   Params,
   RouterStateSnapshot,
-  RoutesRecognized
+  RoutesRecognized,
+  ResolveEnd
 } from '@angular/router';
 
 /**
@@ -59,6 +60,17 @@ export class RouterError<T, V = RouterStateSnapshot> {
     return '[Router] RouterError';
   }
   constructor(public routerState: V, public storeState: T, public event: NavigationError) {}
+}
+
+/**
+ * An action dispatched when the `ResolveEnd` event is triggered.
+ */
+export class RouterDataResolved<T = RouterStateSnapshot> {
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Router] RouterDataResolved';
+  }
+  constructor(public routerState: T, public event: ResolveEnd) {}
 }
 
 /**

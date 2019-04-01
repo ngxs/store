@@ -6,7 +6,6 @@ import {
   RouterStateSnapshot,
   RoutesRecognized,
   ResolveEnd,
-  NavigationEnd,
   GuardsCheckEnd
 } from '@angular/router';
 import { Location } from '@angular/common';
@@ -19,7 +18,8 @@ import {
   RouterAction,
   RouterCancel,
   RouterError,
-  RouterNavigation
+  RouterNavigation,
+  RouterDataResolved
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
 
@@ -42,7 +42,6 @@ export class RouterState {
   private lastRoutesRecognized: RoutesRecognized;
   private dispatchTriggeredByRouter = false; // used only in dev mode in combination with routerReducer
   private navigationTriggeredByDispatch = false; // used only in dev mode in combination with routerReducer
-  private lastResolvedStateSnapshot: RouterStateSnapshot = null!;
 
   /**
    * Selectors
@@ -80,7 +79,7 @@ export class RouterState {
     );
   }
 
-  @Action([RouterNavigation, RouterError, RouterCancel])
+  @Action([RouterNavigation, RouterError, RouterCancel, RouterDataResolved])
   angularRouterAction(
     ctx: StateContext<RouterStateModel>,
     action: RouterAction<any, RouterStateSnapshot>
@@ -105,11 +104,10 @@ export class RouterState {
     this._router.events.subscribe(e => {
       if (e instanceof RoutesRecognized) {
         this.lastRoutesRecognized = e;
-      } else if (e instanceof GuardsCheckEnd || e instanceof ResolveEnd) {
-        // The `GuardsCheckEnd` event is always triggered unlike the `ResolveEnd`
-        this.lastResolvedStateSnapshot = e.state;
-      } else if (e instanceof NavigationEnd) {
-        this.navigationEnd();
+      } else if (e instanceof GuardsCheckEnd) {
+        this.guardsCheckEnd(e.state);
+      } else if (e instanceof ResolveEnd) {
+        this.dispatchRouterDataResolved(e);
       } else if (e instanceof NavigationCancel) {
         this.dispatchRouterCancel(e);
       } else if (e instanceof NavigationError) {
@@ -118,8 +116,8 @@ export class RouterState {
     });
   }
 
-  private navigationEnd(): void {
-    this.routerStateSnapshot = this._serializer.serialize(this.lastResolvedStateSnapshot);
+  private guardsCheckEnd(routerState: RouterStateSnapshot): void {
+    this.routerStateSnapshot = this._serializer.serialize(routerState);
     if (this.shouldDispatchRouterNavigation()) {
       this.dispatchRouterNavigation();
     }
@@ -179,6 +177,10 @@ export class RouterState {
       this.dispatchTriggeredByRouter = false;
       this.navigationTriggeredByDispatch = false;
     }
+  }
+
+  private dispatchRouterDataResolved(event: ResolveEnd): void {
+    this.dispatchRouterAction(new RouterDataResolved(event.state, event));
   }
 
   /**

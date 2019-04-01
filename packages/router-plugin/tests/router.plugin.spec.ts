@@ -1,18 +1,38 @@
-import { Component, Provider } from '@angular/core';
+import {
+  Component,
+  Provider,
+  Type,
+  NgModule,
+  createPlatform,
+  destroyPlatform
+} from '@angular/core';
 import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Router, Params, RouterStateSnapshot } from '@angular/router';
+import { ɵgetDOM as getDOM, DOCUMENT, BrowserModule } from '@angular/platform-browser';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { Router, Params, RouterStateSnapshot, RouterModule, Resolve } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { Observable } from 'rxjs';
 import { take, tap, filter } from 'rxjs/operators';
 
-import { NgxsModule, Store, Actions, ofActionSuccessful } from '@ngxs/store';
+import {
+  NgxsModule,
+  Store,
+  Actions,
+  ofActionSuccessful,
+  State,
+  Action,
+  StateContext,
+  Select
+} from '@ngxs/store';
 
 import {
   NgxsRouterPluginModule,
   RouterState,
   RouterStateSerializer,
   Navigate,
-  RouterNavigation
+  RouterNavigation,
+  RouterStateModel
 } from '../';
 
 describe('NgxsRouterPlugin', () => {
@@ -30,10 +50,10 @@ describe('NgxsRouterPlugin', () => {
       { type: 'router', event: 'NavigationStart', url: '/' },
       { type: 'router', event: 'RoutesRecognized', url: '/' },
       { type: 'router', event: 'GuardsCheckStart', url: '/' },
+      { type: 'url', state: '/' }, // RouterNavigation event in the store
       { type: 'router', event: 'GuardsCheckEnd', url: '/' },
       { type: 'router', event: 'ResolveStart', url: '/' },
       { type: 'router', event: 'ResolveEnd', url: '/' },
-      { type: 'url', state: '/' }, // RouterNavigation event in the store
       { type: 'router', event: 'NavigationEnd', url: '/' }
     ]);
 
@@ -44,10 +64,10 @@ describe('NgxsRouterPlugin', () => {
       { type: 'router', event: 'NavigationStart', url: '/next' },
       { type: 'router', event: 'RoutesRecognized', url: '/next' },
       { type: 'router', event: 'GuardsCheckStart', url: '/next' },
+      { type: 'url', state: '/next' },
       { type: 'router', event: 'GuardsCheckEnd', url: '/next' },
       { type: 'router', event: 'ResolveStart', url: '/next' },
       { type: 'router', event: 'ResolveEnd', url: '/next' },
-      { type: 'url', state: '/next' },
       { type: 'router', event: 'NavigationEnd', url: '/next' }
     ]);
   }));
@@ -165,13 +185,136 @@ describe('NgxsRouterPlugin', () => {
       expect(routerState!.url).toEqual('/?a=10&b=20');
     });
   }));
+
+  it('should be possible to access the state snapshot if action is dispatched from the component constructor', fakeAsync(async () => {
+    @State({
+      name: 'test',
+      defaults: null
+    })
+    class TestState {
+      constructor(private store: Store) {}
+
+      @Action(TestAction)
+      testAction({ setState }: StateContext<any>) {
+        setState(this.store.selectSnapshot(RouterState.state));
+      }
+    }
+
+    createTestModule({
+      states: [TestState]
+    });
+
+    const router: Router = TestBed.get(Router);
+
+    await router.navigateByUrl('/testpath');
+    tick();
+
+    const state = TestBed.get(Store).selectSnapshot(TestState);
+
+    expect(state).toBeTruthy();
+    expect(state.url).toEqual('/testpath');
+  }));
+
+  it('should wait for resolvers to complete and dispatch the `RouterDataResolved` event', (done: DoneFn) => {
+    // Arrange
+    const document = TestBed.get(DOCUMENT);
+    const root = getDOM().createElement('app-root', document);
+    getDOM().appendChild(document.body, root);
+
+    class TestResolver implements Resolve<string> {
+      // Emulate micro-task
+      async resolve(): Promise<string> {
+        await Promise.resolve();
+        return 'RouterDataResolved';
+      }
+    }
+
+    @Component({
+      selector: 'app-root',
+      template: '<router-outlet></router-outlet>'
+    })
+    class RootComponent {}
+
+    @Component({
+      selector: 'test',
+      template: '{{ router$ | async }}'
+    })
+    class TestComponent {
+      @Select(RouterState.state)
+      public router$: Observable<RouterStateModel>;
+    }
+
+    @NgModule({
+      imports: [
+        BrowserModule,
+        // Resolvers are not respected if we're using `RouterTestingModule`
+        // see https://github.com/angular/angular/issues/15779
+        // to be sure our data is resolved - we have to use native `RouterModule`
+        RouterModule.forRoot(
+          [
+            {
+              path: '**',
+              component: TestComponent,
+              resolve: {
+                test: TestResolver
+              }
+            }
+          ],
+          { initialNavigation: 'enabled' }
+        ),
+        NgxsModule.forRoot(),
+        NgxsRouterPluginModule.forRoot()
+      ],
+      declarations: [RootComponent, TestComponent],
+      bootstrap: [RootComponent],
+      providers: [TestResolver]
+    })
+    class TestModule {}
+
+    // Destroy the previous testing platform to create the new one
+    destroyPlatform();
+
+    // As we create our custom platform via `bootstrapModule`
+    // we have to destroy it after assetions and revert
+    // the previous one
+    const resetPlatformAfterBootstrapping = (): void => {
+      destroyPlatform();
+      createPlatform(TestBed);
+    };
+
+    // Act
+    platformBrowserDynamic()
+      .bootstrapModule(TestModule)
+      .then(({ injector }) => {
+        const router: Router = injector.get(Router);
+        const store: Store = injector.get(Store);
+
+        const dataFromTheOriginalRouter = router.routerState.snapshot.root.firstChild!.data;
+        // Assert
+        expect(dataFromTheOriginalRouter).toEqual({
+          test: 'RouterDataResolved'
+        });
+
+        const dataFromTheRouterState = store.selectSnapshot(RouterState.state)!.root
+          .firstChild!.data;
+        expect(dataFromTheOriginalRouter).toEqual(dataFromTheRouterState);
+
+        resetPlatformAfterBootstrapping();
+        done();
+      });
+  });
 });
+
+class TestAction {
+  static type = '[Test] Test action';
+}
 
 function createTestModule(
   opts: {
     canActivate?: Function;
     canLoad?: Function;
     providers?: Provider[];
+    states?: Type<any>[];
   } = {}
 ) {
   @Component({
@@ -184,12 +327,16 @@ function createTestModule(
     selector: 'pagea-cmp',
     template: 'pagea-cmp'
   })
-  class SimpleCmp {}
+  class SimpleCmp {
+    constructor(store: Store) {
+      store.dispatch(new TestAction());
+    }
+  }
 
   TestBed.configureTestingModule({
     declarations: [AppCmp, SimpleCmp],
     imports: [
-      NgxsModule.forRoot(),
+      NgxsModule.forRoot(opts.states || []),
       RouterTestingModule.withRoutes(
         [
           { path: '', component: SimpleCmp },
