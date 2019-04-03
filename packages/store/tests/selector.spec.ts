@@ -4,6 +4,8 @@ import { createSelector } from '../src/utils/selector-utils';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { Selector } from '../src/decorators/selector';
+import { ensureStoreMetadata, getStoreMetadata } from '../src/public_api';
+import { StateClass, getSelectorMetadata } from '../src/internal/internals';
 
 describe('Selector', () => {
   interface MyStateModel {
@@ -203,6 +205,135 @@ describe('Selector', () => {
         fn();
         store.selectSnapshot(TestState.foo);
         expect(selectorCalls).toEqual(['foo[outer]', 'foo[inner]']);
+      }));
+    });
+  });
+
+  describe('(Decorator - v4 options)', () => {
+    function setupStore(states: StateClass<any, any>[]) {
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot(states)]
+      });
+      const store: Store = TestBed.get(Store);
+      return store;
+    }
+
+    describe('[at class level]', () => {
+      @State<MyStateModel>({
+        name: 'zoo',
+        defaults: {
+          foo: 'Foo',
+          bar: 'Bar'
+        }
+      })
+      class MyStateV4 {
+        @Selector()
+        static foo(state: MyStateModel) {
+          return state.foo;
+        }
+
+        @Selector()
+        static bar(state: MyStateModel) {
+          return state.bar;
+        }
+
+        @Selector([MyStateV4, MyStateV4.foo])
+        static selfAndFoo(state: MyStateModel, myStateFoo: string) {
+          return state.foo + myStateFoo;
+        }
+
+        @Selector([MyStateV4.foo, MyStateV4.bar])
+        static fooAndBar(foo: string, bar: string) {
+          return foo + bar;
+        }
+      }
+      getStoreMetadata(MyStateV4).sharedSelectorOptions = { injectContainerState: false };
+
+      it('should select from a simple selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV4.foo);
+        // Assert
+        expect(slice).toBe('Foo');
+      }));
+
+      it('should select from another simple selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV4.bar);
+        // Assert
+        expect(slice).toBe('Bar');
+      }));
+
+      it('should select from a self joined selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV4.selfAndFoo);
+        // Assert
+        expect(slice).toBe('FooFoo');
+      }));
+
+      it('should select from a joined selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV4.fooAndBar);
+        // Assert
+        expect(slice).toBe('FooBar');
+      }));
+    });
+
+    describe('[at method level]', () => {
+      @State<MyStateModel>({
+        name: 'zoo',
+        defaults: {
+          foo: 'Foo',
+          bar: 'Bar'
+        }
+      })
+      class MyStateV3 {
+        @Selector()
+        static foo(state: MyStateModel) {
+          return state.foo;
+        }
+
+        @Selector()
+        static bar(state: MyStateModel) {
+          return state.bar;
+        }
+
+        @Selector([MyStateV3.bar])
+        static v3StyleSelector_FooAndBar(state: MyStateModel, bar: string) {
+          return state.foo + bar;
+        }
+        @Selector([MyStateV3.foo, MyStateV3.bar])
+        static v4StyleSelector_FooAndBar(foo: string, bar: string) {
+          return foo + bar;
+        }
+      }
+      getSelectorMetadata(MyStateV3.v4StyleSelector_FooAndBar).selectorOptions = {
+        injectContainerState: false
+      };
+
+      it('should select from a v3 selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV3]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV3.v3StyleSelector_FooAndBar);
+        // Assert
+        expect(slice).toBe('FooBar');
+      }));
+
+      it('should select from a v4 selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV3]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV3.v4StyleSelector_FooAndBar);
+        // Assert
+        expect(slice).toBe('FooBar');
       }));
     });
   });
