@@ -5,7 +5,12 @@ import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { Selector } from '../src/decorators/selector';
 import { ensureStoreMetadata, getStoreMetadata } from '../src/public_api';
-import { StateClass, getSelectorMetadata } from '../src/internal/internals';
+import {
+  StateClass,
+  getSelectorMetadata,
+  InternalSelectorOptions
+} from '../src/internal/internals';
+import { NgxsConfig } from '../src/symbols';
 
 describe('Selector', () => {
   interface MyStateModel {
@@ -210,13 +215,77 @@ describe('Selector', () => {
   });
 
   describe('(Decorator - v4 options)', () => {
-    function setupStore(states: StateClass<any, any>[]) {
+    function setupStore(states: StateClass<any, any>[], extendedOptions?: any) {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)]
+        imports: [NgxsModule.forRoot(states, extendedOptions)]
       });
       const store: Store = TestBed.get(Store);
       return store;
     }
+
+    describe('[at global level]', () => {
+      @State<MyStateModel>({
+        name: 'zoo_1',
+        defaults: {
+          foo: 'Foo1',
+          bar: 'Bar1'
+        }
+      })
+      class MyStateV4_1 {
+        @Selector()
+        static foo(state: MyStateModel) {
+          return state.foo;
+        }
+
+        @Selector()
+        static bar(state: MyStateModel) {
+          return state.bar;
+        }
+
+        @Selector([MyStateV4_1.foo, MyStateV4_1.bar])
+        static fooAndBar(foo: string, bar: string) {
+          return foo + bar;
+        }
+      }
+
+      @State<MyStateModel>({
+        name: 'zoo_2',
+        defaults: {
+          foo: 'Foo2',
+          bar: 'Bar2'
+        }
+      })
+      class MyStateV4_2 {
+        @Selector()
+        static foo(state: MyStateModel) {
+          return state.foo;
+        }
+
+        @Selector()
+        static bar(state: MyStateModel) {
+          return state.bar;
+        }
+
+        @Selector([MyStateV4_2.foo, MyStateV4_2.bar])
+        static fooAndBar(foo: string, bar: string) {
+          return foo + bar;
+        }
+      }
+
+      it('should configure v4 selectors globally', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4_1, MyStateV4_2], {
+          internalSelectorOptions: <InternalSelectorOptions>{ injectContainerState: false }
+        });
+        // Act & Assert
+        expect(store.selectSnapshot(MyStateV4_1.foo)).toBe('Foo1');
+        expect(store.selectSnapshot(MyStateV4_1.bar)).toBe('Bar1');
+        expect(store.selectSnapshot(MyStateV4_1.fooAndBar)).toBe('Foo1Bar1');
+        expect(store.selectSnapshot(MyStateV4_2.foo)).toBe('Foo2');
+        expect(store.selectSnapshot(MyStateV4_2.bar)).toBe('Bar2');
+        expect(store.selectSnapshot(MyStateV4_2.fooAndBar)).toBe('Foo2Bar2');
+      }));
+    });
 
     describe('[at class level]', () => {
       @State<MyStateModel>({
