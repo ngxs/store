@@ -231,6 +231,7 @@ describe('Selector', () => {
           bar: 'Bar1'
         }
       })
+      // tslint:disable-next-line: class-name
       class MyStateV4_1 {
         @Selector()
         static foo(state: MyStateModel) {
@@ -255,6 +256,7 @@ describe('Selector', () => {
           bar: 'Bar2'
         }
       })
+      // tslint:disable-next-line: class-name
       class MyStateV4_2 {
         @Selector()
         static foo(state: MyStateModel) {
