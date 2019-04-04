@@ -40,15 +40,21 @@ export interface MetaDataModel {
   selectFromAppState: SelectFromState | null;
   children?: StateClass[];
   instance: any;
+  internalSelectorOptions?: InternalSelectorOptions;
 }
 
 export type SelectFromState = (state: any) => any;
+
+export interface InternalSelectorOptions {
+  injectContainerState?: boolean;
+}
 
 export interface SelectorMetaDataModel {
   selectFromAppState: SelectFromState | null;
   originalFn: Function | null;
   containerClass: any;
   selectorName: string | null;
+  selectorOptions: InternalSelectorOptions;
 }
 
 export interface MappedStore {
@@ -106,7 +112,10 @@ export function ensureSelectorMetadata(target: Function): SelectorMetaDataModel 
       selectFromAppState: null,
       originalFn: null,
       containerClass: null,
-      selectorName: null
+      selectorName: null,
+      selectorOptions: {
+        injectContainerState: true // TODO: default is true in v3, will change in v4
+      }
     };
 
     Object.defineProperty(target, SELECTOR_META_KEY, { value: defaultMetadata });

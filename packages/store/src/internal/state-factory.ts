@@ -24,7 +24,8 @@ import {
   StateKeyGraph,
   StatesAndDefaults,
   StatesByName,
-  topologicalSort
+  topologicalSort,
+  InternalSelectorOptions
 } from './internals';
 import { getActionTypeFromInstance, getValue, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -231,6 +232,12 @@ export class StateFactory {
   private addRuntimeInfoToMeta(meta: MetaDataModel, depth: string): void {
     meta.path = depth;
     meta.selectFromAppState = propGetter(depth.split('.'), this._config);
+    const globalSelectorOptions: InternalSelectorOptions = (<any>this._config)
+      .internalSelectorOptions;
+    if (globalSelectorOptions) {
+      const classSelectorOptions = meta.internalSelectorOptions || {};
+      meta.internalSelectorOptions = { ...globalSelectorOptions, ...classSelectorOptions };
+    }
   }
 
   /**
