@@ -74,7 +74,7 @@ function getCustomSelectorOptions(
   if (containerClass) {
     const storeMetaData = getStoreMetadata(containerClass);
     const classSelectorOptions: InternalSelectorOptions =
-      (storeMetaData && storeMetaData.sharedSelectorOptions) || {};
+      (storeMetaData && storeMetaData.internalSelectorOptions) || {};
     selectorOptions = { ...selectorOptions, ...classSelectorOptions };
   }
   selectorOptions = { ...selectorOptions, ...explicitOptions };

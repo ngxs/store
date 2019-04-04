@@ -40,7 +40,7 @@ export interface MetaDataModel {
   selectFromAppState: SelectFromState | null;
   children?: StateClass[];
   instance: any;
-  sharedSelectorOptions?: InternalSelectorOptions;
+  internalSelectorOptions?: InternalSelectorOptions;
 }
 
 export type SelectFromState = (state: any) => any;
@@ -114,7 +114,7 @@ export function ensureSelectorMetadata(target: Function): SelectorMetaDataModel 
       containerClass: null,
       selectorName: null,
       selectorOptions: {
-        injectContainerState: true // default is true in v3, will change in v4
+        injectContainerState: true // TODO: default is true in v3, will change in v4
       }
     };
 

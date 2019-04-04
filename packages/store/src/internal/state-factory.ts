@@ -235,8 +235,8 @@ export class StateFactory {
     const globalSelectorOptions: InternalSelectorOptions = (<any>this._config)
       .internalSelectorOptions;
     if (globalSelectorOptions) {
-      const sharedSelectorOptions = meta.sharedSelectorOptions || {};
-      meta.sharedSelectorOptions = { ...globalSelectorOptions, ...sharedSelectorOptions };
+      const classSelectorOptions = meta.internalSelectorOptions || {};
+      meta.internalSelectorOptions = { ...globalSelectorOptions, ...classSelectorOptions };
     }
   }
 

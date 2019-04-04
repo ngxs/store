@@ -318,7 +318,7 @@ describe('Selector', () => {
           return foo + bar;
         }
       }
-      getStoreMetadata(MyStateV4).sharedSelectorOptions = { injectContainerState: false };
+      getStoreMetadata(MyStateV4).internalSelectorOptions = { injectContainerState: false };
 
       it('should select from a simple selector', async(() => {
         // Arrange
