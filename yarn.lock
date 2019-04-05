@@ -613,7 +613,7 @@
   resolved "https://registry.npmjs.org/@types/jasmine/-/jasmine-3.3.12.tgz#bf282cb540e9ad7a0a04b742082c073b655eab39"
   integrity sha512-lXvr2xFQEVQLkIhuGaR3GC1L9lMU1IxeWnAF/wNY5ZWpC4p9dgxkKkzMp7pntpAdv9pZSnYqgsBkCg32MXSZMg==
 
-"@types/jasminewd2@~2.0.2":
+"@types/jasminewd2@~2.0.6":
   version "2.0.6"
   resolved "https://registry.npmjs.org/@types/jasminewd2/-/jasminewd2-2.0.6.tgz#2f57a8d9875a6c9ef328a14bd070ba14a055ac39"
   integrity sha512-2ZOKrxb8bKRmP/po5ObYnRDgFE4i+lQiEB27bAMmtMWLgJSqlIDqlLx6S0IRorpOmOPRQ6O80NujTmQAtBkeNw==
