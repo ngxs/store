@@ -144,7 +144,7 @@
     "tslib": "^1.9.0",
     "tslint": "^5.11.0",
     "typedoc": "^0.14.0",
-    "typedoc-plugin-markdown": "^1.1.19",
+    "typedoc-plugin-markdown": "^1.1.27",
     "typescript": "~3.1.6",
     "zone.js": "^0.8.26"
   }
