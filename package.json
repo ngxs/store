@@ -119,7 +119,7 @@
     "cross-env": "^5.2.0",
     "fs-extra": "^7.0.0",
     "husky": "^1.1.0",
-    "jasmine-core": "^3.3.0",
+    "jasmine-core": "^3.4.0",
     "jasmine-spec-reporter": "^4.2.1",
     "karma": "^4.0.1",
     "karma-chrome-launcher": "^2.2.0",
