@@ -101,7 +101,7 @@
     "@angular/router": "7.1.4",
     "@angularclass/hmr": "^2.1.3",
     "@commitlint/cli": "^7.1.3",
-    "@commitlint/config-conventional": "^7.1.0",
+    "@commitlint/config-conventional": "^7.5.0",
     "@nguniversal/express-engine": "7.1.1",
     "@nguniversal/module-map-ngfactory-loader": "7.1.1",
     "@types/chai": "^4.1.7",
