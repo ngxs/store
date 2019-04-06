@@ -8813,7 +8813,7 @@ typedoc-plugin-markdown@^1.1.27:
   dependencies:
     turndown "^5.0.3"
 
-typedoc@^0.14.0:
+typedoc@^0.14.2:
   version "0.14.2"
   resolved "https://registry.npmjs.org/typedoc/-/typedoc-0.14.2.tgz#769f457f4f9e4bdb8b5f3b177c86b6a31d8c3dc3"
   integrity sha512-aEbgJXV8/KqaVhcedT7xG6d2r+mOvB5ep3eIz1KuB5sc4fDYXcepEEMdU7XSqLFO5hVPu0nllHi1QxX2h/QlpQ==
