@@ -3,7 +3,8 @@ import {
   InjectionToken,
   isDevMode,
   ModuleWithProviders,
-  NgModule
+  NgModule,
+  Provider
 } from '@angular/core';
 import { isAngularInTestMode, NgxsBootstrapper } from '@ngxs/store/internals';
 
@@ -67,37 +68,7 @@ export class NgxsModule {
         SelectFactory,
         PluginManager,
         ...states,
-        {
-          provide: NGXS_TEST_MODE,
-          useFactory: NgxsModule.isAngularInTestMode
-        },
-        {
-          provide: NG_TEST_MODE,
-          useFactory: NgxsModule.isAngularDevMode
-        },
-        {
-          provide: NGXS_EXECUTION_STRATEGY,
-          useClass: options.executionStrategy || DispatchOutsideZoneNgxsExecutionStrategy
-        },
-        {
-          provide: ROOT_STATE_TOKEN,
-          useValue: states
-        },
-        {
-          provide: NgxsModule.ROOT_OPTIONS,
-          useValue: options
-        },
-        {
-          provide: NgxsConfig,
-          useFactory: NgxsModule.ngxsConfigFactory,
-          deps: [NgxsModule.ROOT_OPTIONS]
-        },
-        {
-          provide: APP_BOOTSTRAP_LISTENER,
-          useFactory: NgxsModule.appBootstrapListenerFactory,
-          multi: true,
-          deps: [NgxsBootstrapper]
-        }
+        ...NgxsModule.ngxsTokenProviders(states, options)
       ]
     };
   }
@@ -119,6 +90,45 @@ export class NgxsModule {
         }
       ]
     };
+  }
+
+  private static ngxsTokenProviders(
+    states: StateClass[],
+    options: NgxsModuleOptions
+  ): Provider[] {
+    return [
+      {
+        provide: NGXS_TEST_MODE,
+        useFactory: NgxsModule.isAngularInTestMode
+      },
+      {
+        provide: NG_TEST_MODE,
+        useFactory: NgxsModule.isAngularDevMode
+      },
+      {
+        provide: NGXS_EXECUTION_STRATEGY,
+        useClass: options.executionStrategy || DispatchOutsideZoneNgxsExecutionStrategy
+      },
+      {
+        provide: ROOT_STATE_TOKEN,
+        useValue: states
+      },
+      {
+        provide: NgxsModule.ROOT_OPTIONS,
+        useValue: options
+      },
+      {
+        provide: NgxsConfig,
+        useFactory: NgxsModule.ngxsConfigFactory,
+        deps: [NgxsModule.ROOT_OPTIONS]
+      },
+      {
+        provide: APP_BOOTSTRAP_LISTENER,
+        useFactory: NgxsModule.appBootstrapListenerFactory,
+        multi: true,
+        deps: [NgxsBootstrapper]
+      }
+    ];
   }
 
   private static ngxsConfigFactory(options: NgxsModuleOptions): NgxsConfig {
