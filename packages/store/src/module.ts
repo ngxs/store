@@ -1,17 +1,24 @@
 import {
   APP_BOOTSTRAP_LISTENER,
   InjectionToken,
+  isDevMode,
   ModuleWithProviders,
   NgModule
 } from '@angular/core';
 import { isAngularInTestMode, NgxsBootstrapper } from '@ngxs/store/internals';
 
-import { FEATURE_STATE_TOKEN, NGXS_DEV_MODE, NgxsConfig, ROOT_STATE_TOKEN } from './symbols';
+import {
+  FEATURE_STATE_TOKEN,
+  NG_TEST_MODE,
+  NGXS_TEST_MODE,
+  NgxsConfig,
+  ROOT_STATE_TOKEN
+} from './symbols';
 import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
-import { ConfigValidator } from './internal/config-validator';
+import { ConfigValidator } from './internal/validation/config-validator';
 import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatchedActionResults, InternalDispatcher } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
@@ -61,8 +68,12 @@ export class NgxsModule {
         PluginManager,
         ...states,
         {
-          provide: NGXS_DEV_MODE,
+          provide: NGXS_TEST_MODE,
           useFactory: NgxsModule.isAngularInTestMode
+        },
+        {
+          provide: NG_TEST_MODE,
+          useFactory: NgxsModule.isAngularDevMode
         },
         {
           provide: NGXS_EXECUTION_STRATEGY,
@@ -120,5 +131,9 @@ export class NgxsModule {
 
   private static isAngularInTestMode(): Function {
     return () => isAngularInTestMode();
+  }
+
+  private static isAngularDevMode(): Function {
+    return () => isDevMode();
   }
 }

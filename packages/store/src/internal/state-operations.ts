@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ConfigValidator } from './config-validator';
+import { ConfigValidator } from './validation/config-validator';
 import { StateOperations, StatesAndDefaults } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';

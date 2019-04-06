@@ -8,7 +8,8 @@ import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-o
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
-export const NGXS_DEV_MODE = new InjectionToken('NGXS_DEV_MODE');
+export const NG_TEST_MODE = new InjectionToken('NG_TEST_MODE');
+export const NGXS_TEST_MODE = new InjectionToken('NGXS_TEST_MODE');
 
 export const META_KEY = 'NGXS_META';
 export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
