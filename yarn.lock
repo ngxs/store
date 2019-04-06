@@ -8806,7 +8806,7 @@ typedoc-default-themes@^0.5.0:
   resolved "https://registry.npmjs.org/typedoc-default-themes/-/typedoc-default-themes-0.5.0.tgz#6dc2433e78ed8bea8e887a3acde2f31785bd6227"
   integrity sha1-bcJDPnjti+qOiHo6zeLzF4W9Yic=
 
-typedoc-plugin-markdown@^1.1.19:
+typedoc-plugin-markdown@^1.1.27:
   version "1.1.27"
   resolved "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-1.1.27.tgz#a74f01d9ec7d625204b6817278bc22b878093b59"
   integrity sha512-i/ATsUETDxLAN/i4l525tLfEvjBRdPN2UEuZPEZ1CnkLIQFM1xjcIf3dFnAcIvj/qhrhrMQXfgjphqPATfTEtA==
