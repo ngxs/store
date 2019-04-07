@@ -140,6 +140,48 @@ describe('State', () => {
       expect(TestBed.get(Store).snapshot().foo).toEqual(['initState', 'onInit']);
     });
 
+    it('should call an UpdateState action handler with multiple states', () => {
+      const expectedStates = { foo: ['test'], bar: 'baz', qux: { key: 'value' } };
+
+      @State<any>({
+        name: 'eager',
+        defaults: []
+      })
+      class EagerState {
+        @Action(UpdateState)
+        updateState(ctx: StateContext<any[]>, action: UpdateState) {
+          ctx.setState({ ...ctx.getState(), ...action.addedStates });
+        }
+      }
+
+      @State<string[]>({
+        name: 'foo',
+        defaults: expectedStates.foo
+      })
+      class FooState {}
+
+      @State<string>({
+        name: 'bar',
+        defaults: expectedStates.bar
+      })
+      class BarState {}
+
+      @State<any>({
+        name: 'qux',
+        defaults: expectedStates.qux
+      })
+      class QuxState {}
+
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([EagerState]),
+          NgxsModule.forFeature([FooState, BarState, QuxState])
+        ]
+      });
+
+      expect(TestBed.get(Store).snapshot().eager).toEqual(expectedStates);
+    });
+
     it('should call an UpdateState action handler before the ngxsOnInit method on feature module initialisation', () => {
       @State<string[]>({
         name: 'foo',
