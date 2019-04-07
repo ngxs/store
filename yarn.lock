@@ -5746,10 +5746,10 @@ mkdirp@0.5.1, mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdi
   dependencies:
     minimist "0.0.8"
 
-mocha@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.npmjs.org/mocha/-/mocha-6.1.0.tgz#3c3714e951b3c8ee4d2283d41b7407a1eecfed8f"
-  integrity sha512-cyKQPahVzaWsCgH86yWjKKxVgAKeN9MsyooMXmJtJa4nLbWxvXXjnPZU0cr9qRVOutirgfOVDzhVqorm8BBYKQ==
+mocha@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.npmjs.org/mocha/-/mocha-6.1.1.tgz#b4f81a9b673649ef72098cb56bfddbfd39da5127"
+  integrity sha512-ayfr68s4kyDnCU0hjkTk5Z8J8dqr1iPUuVjmd+dLFgaGKOPlgx1XrOGn5k3H1LlXNnLBb8voZMYMKxchiA4Ujg==
   dependencies:
     ansi-colors "3.2.3"
     browser-stdout "1.3.1"
