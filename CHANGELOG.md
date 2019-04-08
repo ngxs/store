@@ -11,12 +11,14 @@ $ npm install @ngxs/store@dev
 
 ## NGXS-Labs
 
-### Immer-adapter v2.0.0
+### Immer-adapter v3.0.0
 
-* Feature: immutable mutation state context
+* Feature: immutable state context decorator
+* Feature: immutable selector decorator
 * Deprecated: produce operator
 
 # 3.4.3 2019-03-14
+* Feature: Add state defaults to UpdateState [#956](https://github.com/ngxs/store/pull/956)
 * Fix: Router Plugin - serialize after Resolvers have run [#895](https://github.com/ngxs/store/pull/895)
 * Fix: HMR Plugin - incorrect destruction of modules in hmr [#908](https://github.com/ngxs/store/pull/908)
 * Fix: Logger Plugin - print action properties [#879](https://github.com/ngxs/store/pull/879)
