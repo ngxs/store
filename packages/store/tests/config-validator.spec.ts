@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { NgxsModule } from '@ngxs/store';
 
 import { ConfigValidator } from '../src/internal/validation/config-validator';
-import { NG_TEST_MODE, NGXS_TEST_MODE } from '../src/symbols';
+import { NG_DEV_MODE, NGXS_TEST_MODE } from '../src/symbols';
 import {
   CONFIG_MESSAGES,
   VALIDATION_CODE
@@ -45,7 +45,7 @@ describe('ConfigValidator', () => {
       imports: [NgxsModule.forRoot([], { developmentMode: true })],
       providers: [
         { provide: NGXS_TEST_MODE, useValue: () => false },
-        { provide: NG_TEST_MODE, useValue: () => false }
+        { provide: NG_DEV_MODE, useValue: () => false }
       ]
     });
 

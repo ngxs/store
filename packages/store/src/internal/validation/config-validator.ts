@@ -4,13 +4,13 @@ import {
   CONFIG_MESSAGES as MESSAGES,
   VALIDATION_CODE as CODE
 } from '../validation/validation-messages.config';
-import { NG_TEST_MODE, NGXS_TEST_MODE, NgxsConfig } from '../../symbols';
+import { NG_DEV_MODE, NGXS_TEST_MODE, NgxsConfig } from '../../symbols';
 
 @Injectable()
 export class ConfigValidator {
   constructor(
     @Inject(NGXS_TEST_MODE) public isTestMode: Function,
-    @Inject(NG_TEST_MODE) public isNgDevMode: Function,
+    @Inject(NG_DEV_MODE) public isNgDevMode: Function,
     private _config: NgxsConfig
   ) {}
 

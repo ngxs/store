@@ -10,7 +10,7 @@ import { isAngularInTestMode, NgxsBootstrapper } from '@ngxs/store/internals';
 
 import {
   FEATURE_STATE_TOKEN,
-  NG_TEST_MODE,
+  NG_DEV_MODE,
   NGXS_TEST_MODE,
   NgxsConfig,
   ROOT_STATE_TOKEN
@@ -102,7 +102,7 @@ export class NgxsModule {
         useFactory: NgxsModule.isAngularInTestMode
       },
       {
-        provide: NG_TEST_MODE,
+        provide: NG_DEV_MODE,
         useFactory: NgxsModule.isAngularDevMode
       },
       {
