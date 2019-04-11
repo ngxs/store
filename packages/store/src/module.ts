@@ -11,7 +11,7 @@ import { isAngularInTestMode, NgxsBootstrapper } from '@ngxs/store/internals';
 import {
   FEATURE_STATE_TOKEN,
   NG_TEST_MODE,
-  NGXS_TEST_MODE,
+  NG_DEV_MODE,
   NgxsConfig,
   ROOT_STATE_TOKEN
 } from './symbols';
@@ -19,7 +19,6 @@ import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
-import { ConfigValidator } from './internal/validation/config-validator';
 import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatchedActionResults, InternalDispatcher } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
@@ -32,6 +31,8 @@ import { NgxsRootModule } from './modules/ngxs-root.module';
 import { NgxsFeatureModule } from './modules/ngxs-feature.module';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
+import { HostEnvironment } from './host-environment/host-environment';
+import { ConfigValidator } from './internal/config-validator';
 
 type NgxsModuleOptions = Partial<NgxsConfig>;
 
@@ -58,6 +59,7 @@ export class NgxsModule {
         InternalActions,
         NgxsBootstrapper,
         ConfigValidator,
+        HostEnvironment,
         LifecycleStateManager,
         InternalDispatcher,
         InternalDispatchedActionResults,
@@ -98,7 +100,7 @@ export class NgxsModule {
   ): Provider[] {
     return [
       {
-        provide: NGXS_TEST_MODE,
+        provide: NG_DEV_MODE,
         useFactory: NgxsModule.isAngularInTestMode
       },
       {

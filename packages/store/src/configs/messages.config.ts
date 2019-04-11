@@ -1,4 +1,4 @@
-import { ObjectKeyMap } from '../../internal/internals';
+import { ObjectKeyMap } from '../internal/internals';
 
 export enum VALIDATION_CODE {
   STATE_NAME = 'STATE_NAME',

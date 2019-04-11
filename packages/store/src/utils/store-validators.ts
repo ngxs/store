@@ -7,7 +7,7 @@ import {
 import {
   CONFIG_MESSAGES as MESSAGES,
   VALIDATION_CODE as CODE
-} from '../internal/validation/validation-messages.config';
+} from '../configs/messages.config';
 
 export abstract class StoreValidators {
   public static stateNameRegex: RegExp = new RegExp('^[a-zA-Z0-9_]+$');
