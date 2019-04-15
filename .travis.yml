@@ -9,9 +9,6 @@ install:
   - yarn install
 
 script:
-  # CHECK STYLE
-  - yarn run lint
-
   # BUILD STAGE
   - yarn run build
   - yarn run build:integration
