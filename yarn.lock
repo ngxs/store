@@ -4803,10 +4803,43 @@ karma-source-map-support@1.3.0:
   dependencies:
     source-map-support "^0.5.5"
 
-karma@>=0.9, karma@^4.0.1:
+karma@>=0.9:
   version "4.0.1"
   resolved "https://registry.npmjs.org/karma/-/karma-4.0.1.tgz#2581d6caa0d4cd28b65131561b47bad6d5478773"
   integrity sha512-ind+4s03BqIXas7ZmraV3/kc5+mnqwCd+VDX1FndS6jxbt03kQKX2vXrWxNLuCjVYmhMwOZosAEKMM0a2q7w7A==
+  dependencies:
+    bluebird "^3.3.0"
+    body-parser "^1.16.1"
+    braces "^2.3.2"
+    chokidar "^2.0.3"
+    colors "^1.1.0"
+    connect "^3.6.0"
+    core-js "^2.2.0"
+    di "^0.0.1"
+    dom-serialize "^2.2.0"
+    flatted "^2.0.0"
+    glob "^7.1.1"
+    graceful-fs "^4.1.2"
+    http-proxy "^1.13.0"
+    isbinaryfile "^3.0.0"
+    lodash "^4.17.11"
+    log4js "^4.0.0"
+    mime "^2.3.1"
+    minimatch "^3.0.2"
+    optimist "^0.6.1"
+    qjobs "^1.1.4"
+    range-parser "^1.2.0"
+    rimraf "^2.6.0"
+    safe-buffer "^5.0.1"
+    socket.io "2.1.1"
+    source-map "^0.6.1"
+    tmp "0.0.33"
+    useragent "2.3.0"
+
+karma@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.npmjs.org/karma/-/karma-4.1.0.tgz#d07387c9743a575b40faf73e8a3eb5421c2193e1"
+  integrity sha512-xckiDqyNi512U4dXGOOSyLKPwek6X/vUizSy2f3geYevbLj+UIdvNwbn7IwfUIL2g1GXEPWt/87qFD1fBbl/Uw==
   dependencies:
     bluebird "^3.3.0"
     body-parser "^1.16.1"
