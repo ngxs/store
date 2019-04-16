@@ -52,7 +52,6 @@
   "scripts": {
     "// - Binaries": "Run against node_modules/.bin",
     "ng": "ng",
-    "types": "types",
     "ts-node": "ts-node",
     "prettier": "prettier",
     "// - APPS": "Run Apps in dev and with packaged modules",
