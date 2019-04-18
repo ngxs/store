@@ -39,8 +39,8 @@ export class AuthState {
 
   @Action(Login)
   login({ patchState }: StateContext<AuthStateModel>, { payload }: Login) {
-    return this.authService.login(payload).pipe(tap((result: { token: string }) => {
-      patchState({ result.token, username: payload.username });
+    return this.authService.login(payload).pipe(tap(({ token }: { token: string }) => {
+      patchState({ token, username: payload.username });
     }));
   }
 
@@ -126,7 +126,7 @@ export class AppComponent {
   ngOnInit() {
     this.actions.pipe(ofActionDispatched(Logout)).subscribe(() => {
       this.router.navigate(['/login']);
-    })
+    });
   }
 
 }
