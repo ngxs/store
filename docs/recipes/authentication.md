@@ -40,8 +40,8 @@ export class AuthState {
   @Action(Login)
   login({ patchState }: StateContext<AuthStateModel>, { payload }: Login) {
     return this.authService.login(payload).pipe(tap((result: { token: string }) => {
-      patchState({ token, username: payload.username });
-    }))
+      patchState({ result.token, username: payload.username });
+    }));
   }
 
   @Action(Logout)
