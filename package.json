@@ -145,7 +145,7 @@
     "ts-node": "^8.1.0",
     "tsickle": "0.34.3",
     "tslib": "^1.9.3",
-    "tslint": "^5.15.0",
+    "tslint": "^5.16.0",
     "typedoc": "^0.14.2",
     "typedoc-plugin-markdown": "^1.2.0",
     "typescript": "~3.1.6",
