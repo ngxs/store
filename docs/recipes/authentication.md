@@ -1,4 +1,5 @@
 # Authentication
+
 Authentication is a common theme across many applications. Let's take a look
 at how we would implement this in NGXS.
 
@@ -39,8 +40,8 @@ export class AuthState {
 
   @Action(Login)
   login({ patchState }: StateContext<AuthStateModel>, { payload }: Login) {
-    return this.authService.login(payload).pipe(tap(({ token }: { token: string }) => {
-      patchState({ token, username: payload.username });
+    return this.authService.login(payload).pipe(tap((result: { token: string }) => {
+      patchState({ result.token, username: payload.username });
     }));
   }
 
