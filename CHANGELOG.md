@@ -15,6 +15,7 @@ $ npm install @ngxs/store@dev
 
 * Feature: immutable state context decorator
 * Feature: immutable selector decorator
+* Feature: support immer v3.x
 * Deprecated: produce operator
 
 # 3.4.3 2019-03-14
