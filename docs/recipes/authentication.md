@@ -1,4 +1,5 @@
 # Authentication
+
 Authentication is a common theme across many applications. Let's take a look
 at how we would implement this in NGXS.
 
@@ -6,13 +7,13 @@ First, let's define our state model and our actions:
 
 ```TS
 export class AuthStateModel {
-  token?: string;
-  username?: string;
+  token: string;
+  username: string;
 }
 
 export class Login {
   static readonly type = '[Auth] Login';
-  constructor(public payload: { username: string, password: string }) {}
+  constructor(public payload: AuthStateModel) {}
 }
 
 export class Logout {
@@ -27,21 +28,24 @@ Let's hook up these actions in our state class and wire that up to our login
 service.
 
 ```TS
-@State<AuthStateModel>({
-  name: 'auth'
+@State<Partial<AuthStateModel>>({
+  name: 'auth',
+  default: {}
 })
 export class AuthState {
 
   @Selector()
-  static token(state: AuthStateModel) { return state.token; }
+  static token(state: AuthStateModel) { 
+    return state.token;
+  }
 
   constructor(private authService: AuthService) {}
 
   @Action(Login)
   login({ patchState }: StateContext<AuthStateModel>, { payload }: Login) {
     return this.authService.login(payload).pipe(tap((result: { token: string }) => {
-      patchState({ token, username: payload.username });
-    }))
+      patchState({ token: result.token, username: payload.username });
+    }));
   }
 
   @Action(Logout)
@@ -117,7 +121,8 @@ the login page.
 
 ```TS
 @Component({
-  selector: 'app'
+  selector: 'app',
+  template: '..'
 })
 export class AppComponent {
 
@@ -126,7 +131,7 @@ export class AppComponent {
   ngOnInit() {
     this.actions.pipe(ofActionDispatched(Logout)).subscribe(() => {
       this.router.navigate(['/login']);
-    })
+    });
   }
 
 }
