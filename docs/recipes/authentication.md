@@ -13,7 +13,7 @@ export class AuthStateModel {
 
 export class Login {
   static readonly type = '[Auth] Login';
-  constructor(public payload: AuthStateModel) {}
+  constructor(public payload: { username: string, password: string }) {}
 }
 
 export class Logout {
