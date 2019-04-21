@@ -7,8 +7,8 @@ First, let's define our state model and our actions:
 
 ```TS
 export class AuthStateModel {
-  token: string;
-  username: string;
+  token?: string;
+  username?: string;
 }
 
 export class Login {
@@ -28,7 +28,7 @@ Let's hook up these actions in our state class and wire that up to our login
 service.
 
 ```TS
-@State<Partial<AuthStateModel>>({
+@State<AuthStateModel>({
   name: 'auth',
   default: {}
 })
