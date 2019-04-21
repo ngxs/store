@@ -666,9 +666,7 @@ describe('Selector', () => {
       try {
         store.selectSnapshot(TasksState.reverse);
       } catch (e) {
-        expect(e.message).toEqual(
-          "Cannot assign to read only property '0' of object '[object Array]'"
-        );
+        expect(e.message.includes('Cannot assign to read only property')).toBe(true);
       }
     });
   });
