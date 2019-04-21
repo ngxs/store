@@ -40,13 +40,14 @@ export interface MetaDataModel {
   selectFromAppState: SelectFromState | null;
   children?: StateClass[];
   instance: any;
-  internalSelectorOptions?: InternalSelectorOptions;
+  selectorOptions?: SharedSelectorOptions;
 }
 
 export type SelectFromState = (state: any) => any;
 
-export interface InternalSelectorOptions {
+export interface SharedSelectorOptions {
   injectContainerState?: boolean;
+  suppressErrors?: boolean;
 }
 
 export interface SelectorMetaDataModel {
@@ -54,7 +55,7 @@ export interface SelectorMetaDataModel {
   originalFn: Function | null;
   containerClass: any;
   selectorName: string | null;
-  selectorOptions: InternalSelectorOptions;
+  selectorOptions: SharedSelectorOptions;
 }
 
 export interface MappedStore {

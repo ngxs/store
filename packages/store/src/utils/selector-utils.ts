@@ -6,7 +6,8 @@ import {
   getSelectorMetadata,
   getStoreMetadata,
   SelectorMetaDataModel,
-  InternalSelectorOptions
+  SharedSelectorOptions,
+  StateClass
 } from '../internal/internals';
 
 /**
@@ -37,7 +38,11 @@ export function createSelector<T extends (...args: any[]) => any>(
     selectorMetaData.selectorName = creationMetadata.selectorName;
   }
 
-  selectorMetaData.selectorOptions = getCustomSelectorOptions(selectorMetaData, {});
+  selectorMetaData.selectorOptions = getCustomSelectorOptions(selectorMetaData, {
+    suppressErrors: true
+  });
+
+  const { suppressErrors } = selectorMetaData.selectorOptions;
 
   const fn = (state: any) => {
     const results = [];
@@ -53,9 +58,10 @@ export function createSelector<T extends (...args: any[]) => any>(
     try {
       return memoizedFn(...results);
     } catch (ex) {
-      if (ex instanceof TypeError) {
+      if (ex instanceof TypeError && suppressErrors) {
         return undefined;
       }
+
       throw ex;
     }
   };
@@ -67,18 +73,19 @@ export function createSelector<T extends (...args: any[]) => any>(
 
 function getCustomSelectorOptions(
   selectorMetaData: SelectorMetaDataModel,
-  explicitOptions: InternalSelectorOptions
-) {
-  let selectorOptions = selectorMetaData.selectorOptions || {};
-  const containerClass = selectorMetaData.containerClass;
+  explicitOptions: SharedSelectorOptions
+): SharedSelectorOptions {
+  let selectorOptions: SharedSelectorOptions = selectorMetaData.selectorOptions || {};
+  const containerClass: StateClass = selectorMetaData.containerClass;
+
   if (containerClass) {
     const storeMetaData = getStoreMetadata(containerClass);
-    const classSelectorOptions: InternalSelectorOptions =
-      (storeMetaData && storeMetaData.internalSelectorOptions) || {};
+    const classSelectorOptions: SharedSelectorOptions =
+      (storeMetaData && storeMetaData.selectorOptions) || {};
     selectorOptions = { ...selectorOptions, ...classSelectorOptions };
   }
-  selectorOptions = { ...selectorOptions, ...explicitOptions };
-  return selectorOptions;
+
+  return { ...explicitOptions, ...selectorOptions };
 }
 
 function getSelectorsToApply(
