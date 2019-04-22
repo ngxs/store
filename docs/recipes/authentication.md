@@ -53,7 +53,7 @@ export class AuthState {
     const { token } = getState();
     return this.authService.logout(token).pipe(tap(() => {
       setState({});
-    });
+    }));
   }
 
 }
@@ -124,7 +124,7 @@ the login page.
   selector: 'app',
   template: '..'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   constructor(private actions: Actions, private router: Router) {}
 
