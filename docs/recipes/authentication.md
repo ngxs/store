@@ -30,7 +30,7 @@ service.
 ```TS
 @State<AuthStateModel>({
   name: 'auth',
-  default: {}
+  defaults: {}
 })
 export class AuthState {
 
