@@ -4,13 +4,13 @@ import { createSelector } from '../src/utils/selector-utils';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { Selector } from '../src/decorators/selector';
-import { ensureStoreMetadata, getStoreMetadata } from '../src/public_api';
+import { getStoreMetadata } from '../src/public_api';
 import {
-  StateClass,
   getSelectorMetadata,
-  InternalSelectorOptions
+  SharedSelectorOptions,
+  StateClass
 } from '../src/internal/internals';
-import { NgxsConfig } from '../src/symbols';
+import { NgxsConfig, SELECTOR_META_KEY } from '../src/symbols';
 
 describe('Selector', () => {
   interface MyStateModel {
@@ -215,7 +215,10 @@ describe('Selector', () => {
   });
 
   describe('(Decorator - v4 options)', () => {
-    function setupStore(states: StateClass<any, any>[], extendedOptions?: any) {
+    function setupStore(
+      states: StateClass<any, any>[],
+      extendedOptions?: Partial<NgxsConfig>
+    ) {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot(states, extendedOptions)]
       });
@@ -277,7 +280,7 @@ describe('Selector', () => {
       it('should configure v4 selectors globally', async(() => {
         // Arrange
         const store = setupStore([MyStateV4_1, MyStateV4_2], {
-          internalSelectorOptions: <InternalSelectorOptions>{ injectContainerState: false }
+          selectorOptions: { injectContainerState: false }
         });
         // Act & Assert
         expect(store.selectSnapshot(MyStateV4_1.foo)).toBe('Foo1');
@@ -318,7 +321,7 @@ describe('Selector', () => {
           return foo + bar;
         }
       }
-      getStoreMetadata(MyStateV4).internalSelectorOptions = { injectContainerState: false };
+      getStoreMetadata(MyStateV4).selectorOptions = { injectContainerState: false };
 
       it('should select from a simple selector', async(() => {
         // Arrange
@@ -380,11 +383,13 @@ describe('Selector', () => {
         static v3StyleSelector_FooAndBar(state: MyStateModel, bar: string) {
           return state.foo + bar;
         }
+
         @Selector([MyStateV3.foo, MyStateV3.bar])
         static v4StyleSelector_FooAndBar(foo: string, bar: string) {
           return foo + bar;
         }
       }
+
       getSelectorMetadata(MyStateV3.v4StyleSelector_FooAndBar).selectorOptions = {
         injectContainerState: false
       };
@@ -577,6 +582,92 @@ describe('Selector', () => {
         store.selectSnapshot(fooSelector);
         expect(selectorCalls).toEqual(['foo[outer]', 'foo[inner]']);
       }));
+    });
+  });
+
+  describe('Errors in selector', () => {
+    it('should be a wrong mutation', () => {
+      @State<number[]>({
+        name: 'tasks',
+        defaults: [1, 2, 3, 4]
+      })
+      class TasksMutableState {
+        @Selector()
+        static reverse(state: number[]): number[] {
+          return state.reverse();
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TasksMutableState])]
+      });
+
+      const store = TestBed.get(Store);
+      store.reset({ tasks: [1, 2, 3, 4] });
+
+      const tasks: number[] = store.selectSnapshot(TasksMutableState);
+      const reverse: number[] = store.selectSnapshot(TasksMutableState.reverse);
+      expect(tasks).toEqual([4, 3, 2, 1]);
+      expect(reverse).toEqual([4, 3, 2, 1]);
+    });
+
+    it('should be incorrect mutation', () => {
+      @State<number[]>({
+        name: 'tasks',
+        defaults: [1, 2, 3, 4]
+      })
+      class TasksSuppressErrorsState {
+        @Selector()
+        static reverse(state: number[]): number[] {
+          return state.reverse();
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TasksSuppressErrorsState], { developmentMode: true })]
+      });
+
+      const store = TestBed.get(Store);
+      store.reset({ tasks: [1, 2, 3, 4] });
+
+      const tasks: number[] = store.selectSnapshot(TasksSuppressErrorsState);
+      const reverse: number[] = store.selectSnapshot(TasksSuppressErrorsState.reverse);
+      expect(tasks).toEqual([1, 2, 3, 4]);
+      expect(reverse).toEqual(undefined as any);
+    });
+
+    it('should be correct catch errors', () => {
+      @State<number[]>({
+        name: 'tasks',
+        defaults: [1, 2, 3, 4]
+      })
+      class TasksState {
+        @Selector()
+        static reverse(state: number[]): number[] {
+          return state.reverse();
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([TasksState], {
+            developmentMode: true,
+            selectorOptions: { suppressErrors: false }
+          })
+        ]
+      });
+
+      const store = TestBed.get(Store);
+      store.reset({ tasks: [1, 2, 3, 4] });
+
+      const tasks: number[] = store.selectSnapshot(TasksState);
+      expect(tasks).toEqual([1, 2, 3, 4]);
+
+      try {
+        store.selectSnapshot(TasksState.reverse);
+      } catch (e) {
+        expect(e.message.includes('Cannot assign to read only property')).toBe(true);
+      }
     });
   });
 });
