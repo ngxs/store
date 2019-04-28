@@ -5,9 +5,11 @@
 $ npm install @ngxs/store@dev
 ```
 
+* Feature: selector option to disable supressing errors [#1015](https://github.com/ngxs/store/pull/1015)
 * Fix: Logger Plugin - replace `Object.entries` as it breaks IE11 [#931](https://github.com/ngxs/store/pull/931)
 * Fix: Router Plugin - trigger navigation on the `QueryParams` change [#924](https://github.com/ngxs/store/pull/924)
 * Fix: Router-plugin - redirect to the manually entered route [#920](https://github.com/ngxs/store/pull/920)
+* Fix: HMR-Plugin - remove old styles after reload [#1001](https://github.com/ngxs/store/pull/1001)
 
 ## NGXS-Labs
 
@@ -15,6 +17,7 @@ $ npm install @ngxs/store@dev
 
 * Feature: immutable state context decorator
 * Feature: immutable selector decorator
+* Feature: support immer v3.x
 * Deprecated: produce operator
 
 # 3.4.3 2019-03-14

@@ -1,5 +1,5 @@
 import { ApplicationRef, ComponentRef, NgModuleRef } from '@angular/core';
-import { createNewHosts } from '@angularclass/hmr';
+import { createNewHosts, removeNgStyles } from '@angularclass/hmr';
 import { NgxsBootstrapper } from '@ngxs/store/internals';
 
 import { HmrStorage } from './internal/hmr-storage';
@@ -58,6 +58,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
     const appRef: ApplicationRef = this.ngModule.injector.get(ApplicationRef);
     const elements: ComponentRef<any>[] = appRef.components.map(c => c.location.nativeElement);
     const createNewModule: () => void = createNewHosts(elements);
+    removeNgStyles();
     createNewModule();
   }
 

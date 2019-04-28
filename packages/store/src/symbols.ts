@@ -1,7 +1,7 @@
 import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ObjectKeyMap } from './internal/internals';
+import { ObjectKeyMap, SharedSelectorOptions } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 
@@ -55,6 +55,10 @@ export class NgxsConfig {
    * (default: {})
    */
   defaultsState: ObjectKeyMap<any> = {};
+  /**
+   * Defining shared selector options
+   */
+  selectorOptions: SharedSelectorOptions = {};
 
   constructor() {
     this.compatibility = {

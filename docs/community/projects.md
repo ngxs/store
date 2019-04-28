@@ -23,6 +23,7 @@
 ### Media
 - [ngAtlanta - NGXS, State Management Made Simple - Jecelyn Yeen](https://youtu.be/0bhfUGjn0KA)
 - [ngAir 153 - NGXS: A New State Management for Angular Apps with Austin McDaniel and Danny Blue](https://www.youtube.com/watch?v=rkn73khwfWU&feature=youtu.be)
+- [ngAir 196 - One year of NGXS with Mark Whitfeld](https://youtu.be/B7m7eWywJB0)
 - [Quick Start to NGXS](https://youtu.be/SGj11j4hxmg)
 - [NGXS: Redux implemented in 2018 by Gerard Sans](https://youtu.be/nh-mp85folo?t=3240)
 - [Angular NGXS Tutorial - An Alternative to NgRx for State Management](https://youtu.be/SfiO3bDUK7Q)
