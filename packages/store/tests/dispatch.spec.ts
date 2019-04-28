@@ -588,6 +588,68 @@ describe('Dispatch', () => {
       }));
     });
 
+    describe('when an empty action array is provided', () => {
+      it('should notify of the completion immediately', async(() => {
+        @State<number>({
+          name: 'counter',
+          defaults: 0
+        })
+        class MyState {}
+
+        TestBed.configureTestingModule({
+          imports: [NgxsModule.forRoot([MyState])]
+        });
+
+        const store: Store = TestBed.get(Store);
+        let completionCalled = false;
+        store.dispatch([]).subscribe({
+          complete: () => (completionCalled = true)
+        });
+
+        expect(completionCalled).toBeTruthy();
+      }));
+
+      it('should not have a next value', async(() => {
+        @State<number>({
+          name: 'counter',
+          defaults: 0
+        })
+        class MyState {}
+
+        TestBed.configureTestingModule({
+          imports: [NgxsModule.forRoot([MyState])]
+        });
+
+        const store: Store = TestBed.get(Store);
+        let nextCalled = false;
+        store.dispatch([]).subscribe({
+          next: () => (nextCalled = true)
+        });
+
+        expect(nextCalled).toBeFalsy();
+      }));
+
+      it('should not have an error value', async(() => {
+        @State<number>({
+          name: 'counter',
+          defaults: 0
+        })
+        class MyState {}
+
+        TestBed.configureTestingModule({
+          imports: [NgxsModule.forRoot([MyState])]
+        });
+
+        const store: Store = TestBed.get(Store);
+        let errorCalled = false;
+        store.dispatch([]).subscribe({
+          error: () => (errorCalled = true)
+        });
+
+        expect(errorCalled).toBeFalsy();
+      }));
+    });
+
     describe('when the action is canceled by a subsequent action', () => {
       it('should not trigger observer, but should complete observable stream', fakeAsync(() => {
         const resolvers: (() => void)[] = [];
