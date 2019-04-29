@@ -19,7 +19,14 @@ export {
   ofActionCompleted,
   ActionCompletion
 } from './operators/of-action';
-export { StateContext, StateOperator, NgxsOnInit, NgxsAfterBootstrap } from './symbols';
+export {
+  ImmutableContext,
+  ImmutableState,
+  StateContext,
+  StateOperator,
+  NgxsOnInit,
+  NgxsAfterBootstrap
+} from './symbols';
 export { Selector } from './decorators/selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
 export { createSelector } from './utils/selector-utils';
