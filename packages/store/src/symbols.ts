@@ -68,16 +68,17 @@ export class NgxsConfig {
   }
 }
 
-export type Primitive = string | number | boolean | undefined | null;
-export type Immutable<T> = T extends Primitive
+export type Immutable<T> = T extends (infer R)[]
+  ? ImmutableArray<R>
+  : T extends Function
   ? T
-  : T extends Array<infer U>
-  ? ImmutableArray<U>
-  : ImmutableObject<T>;
+  : T extends object
+  ? ImmutableObject<T>
+  : T;
 
-export interface ImmutableArray<T> extends ReadonlyArray<Immutable<T>> {}
+interface ImmutableArray<T> extends ReadonlyArray<Immutable<T>> {}
 
-export type ImmutableObject<T> = { readonly [P in keyof T]: Immutable<T[P]> };
+type ImmutableObject<T> = { readonly [P in keyof T]: Immutable<T[P]> };
 
 export type StateOperator<T> = (existing: Readonly<T>) => T;
 
