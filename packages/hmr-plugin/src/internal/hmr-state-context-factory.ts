@@ -1,4 +1,4 @@
-import { StateContext, Store } from '@ngxs/store';
+import { Immutable, StateContext, Store } from '@ngxs/store';
 import { isStateOperator } from '@ngxs/store/operators';
 import { NgModuleRef } from '@angular/core';
 
@@ -22,15 +22,15 @@ export class HmrStateContextFactory<T, S> {
   public createStateContext(): StateContext<S> {
     return {
       dispatch: actions => this.store!.dispatch(actions),
-      getState: () => <S>this.store!.snapshot(),
-      setState: val => {
+      getState: () => this.store!.snapshot() as Immutable<S>,
+      setState: (val: Immutable<S>) => {
         if (isStateOperator(val)) {
           const currentState = this.store!.snapshot();
           val = val(currentState);
         }
 
         this.store!.reset(val);
-        return <S>val;
+        return val as Immutable<S>;
       },
       patchState: val => {
         const currentState = this.store!.snapshot();

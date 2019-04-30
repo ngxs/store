@@ -68,41 +68,18 @@ export class NgxsConfig {
   }
 }
 
-export type ImmutableState<T> = T extends (infer R)[]
-  ? ImmutableArray<R>
-  : T extends Function
+export type Primitive = string | number | boolean | undefined | null;
+export type Immutable<T> = T extends Primitive
   ? T
-  : T extends object
-  ? ImmutableObject<T>
-  : T;
+  : T extends Array<infer U>
+  ? ImmutableArray<U>
+  : ImmutableObject<T>;
 
-interface ImmutableArray<T> extends ReadonlyArray<ImmutableState<T>> {}
+export interface ImmutableArray<T> extends ReadonlyArray<Immutable<T>> {}
 
-type ImmutableObject<T> = { readonly [P in keyof T]: ImmutableState<T[P]> };
+export type ImmutableObject<T> = { readonly [P in keyof T]: Immutable<T[P]> };
 
 export type StateOperator<T> = (existing: Readonly<T>) => T;
-
-export interface ImmutableContext<T> {
-  /**
-   * Get the current state.
-   */
-  getState(): ImmutableState<T>;
-
-  /**
-   * Reset the state to a new value.
-   */
-  setState(val: ImmutableState<T> | StateOperator<ImmutableState<T>>): T;
-
-  /**
-   * Patch the existing state with the provided value.
-   */
-  patchState(val: Partial<ImmutableState<T>>): T;
-
-  /**
-   * Dispatch a new action and return the dispatched observable.
-   */
-  dispatch(actions: any | any[]): Observable<void>;
-}
 
 /**
  * State context provided to the actions in the state.
@@ -111,17 +88,17 @@ export interface StateContext<T> {
   /**
    * Get the current state.
    */
-  getState(): T;
+  getState(): Immutable<T>;
 
   /**
    * Reset the state to a new value.
    */
-  setState(val: T | StateOperator<T>): T;
+  setState(val: Immutable<T> | StateOperator<Immutable<T>>): Immutable<T>;
 
   /**
    * Patch the existing state with the provided value.
    */
-  patchState(val: Partial<T>): T;
+  patchState(val: Partial<Immutable<T>>): Immutable<T>;
 
   /**
    * Dispatch a new action and return the dispatched observable.

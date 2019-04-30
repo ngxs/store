@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { StateContext, StateOperator } from '../symbols';
+import { Immutable, StateContext, StateOperator } from '../symbols';
 import { MappedStore } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
 import { InternalStateOperations } from '../internal/state-operations';
@@ -21,11 +21,11 @@ export class StateContextFactory {
   createStateContext<T>(metadata: MappedStore): StateContext<T> {
     const root = this._internalStateOperations.getRootStateOperations();
 
-    function getState(currentAppState: any): T {
+    function getState(currentAppState: any): Immutable<T> {
       return getValue(currentAppState, metadata.depth);
     }
 
-    function setStateValue(currentAppState: any, newValue: T): any {
+    function setStateValue(currentAppState: any, newValue: Immutable<T>): any {
       const newAppState = setValue(currentAppState, metadata.depth, newValue);
       root.setState(newAppState);
       return newAppState;
@@ -37,27 +37,32 @@ export class StateContextFactory {
       // I will do this fix in a subsequent PR and we can decide how to handle it.
     }
 
-    function setStateFromOperator(currentAppState: any, stateOperator: StateOperator<T>) {
+    function setStateFromOperator(
+      currentAppState: any,
+      stateOperator: StateOperator<Immutable<T>>
+    ) {
       const local = getState(currentAppState);
       const newValue = stateOperator(local);
       return setStateValue(currentAppState, newValue);
     }
 
-    function isStateOperator(value: T | StateOperator<T>): value is StateOperator<T> {
+    function isStateOperator(
+      value: Immutable<T> | StateOperator<Immutable<T>>
+    ): value is StateOperator<Immutable<T>> {
       return typeof value === 'function';
     }
 
     return {
-      getState(): T {
+      getState(): Immutable<T> {
         const currentAppState = root.getState();
-        return getState(currentAppState);
+        return getState(currentAppState) as Immutable<T>;
       },
-      patchState(val: Partial<T>): T {
+      patchState(val: Partial<Immutable<T>>): Immutable<T> {
         const currentAppState = root.getState();
-        const patchOperator = simplePatch<T>(val);
+        const patchOperator = simplePatch<Immutable<T>>(val);
         return setStateFromOperator(currentAppState, patchOperator);
       },
-      setState(val: T | StateOperator<T>): T {
+      setState(val: Immutable<T> | StateOperator<Immutable<T>>): Immutable<T> {
         const currentAppState = root.getState();
         return isStateOperator(val)
           ? setStateFromOperator(currentAppState, val)

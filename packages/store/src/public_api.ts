@@ -20,8 +20,7 @@ export {
   ActionCompletion
 } from './operators/of-action';
 export {
-  ImmutableContext,
-  ImmutableState,
+  Immutable,
   StateContext,
   StateOperator,
   NgxsOnInit,

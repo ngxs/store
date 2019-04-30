@@ -63,7 +63,7 @@ describe('Development Mode', () => {
           { amount }: Increment
         ) {
           const state = getState();
-          state.count = Number(getState().count) + amount;
+          (state as any).count = Number(getState().count) + amount;
           setState(state);
         }
       }
@@ -124,7 +124,7 @@ describe('Development Mode', () => {
         @Action(InitState)
         init({ getState, setState }: StateContext<StateModel>) {
           const state = getState();
-          state.count = Number(getState().count) + 1;
+          (state as any).count = Number(getState().count) + 1;
           setState(state);
         }
       }
@@ -162,7 +162,7 @@ describe('Development Mode', () => {
         @Action(UpdateState)
         updateState({ getState, setState }: StateContext<StateModel>) {
           const state = getState();
-          state.count = Number(getState().count) + 1;
+          (state as any).count = Number(getState().count) + 1;
           console.log('blah');
           setState(state);
         }
@@ -207,7 +207,7 @@ describe('Development Mode', () => {
           { amount }: Increment
         ) {
           const state = getState();
-          state.count = Number(getState().count) + amount;
+          (state as any).count = Number(getState().count) + amount;
           setState(state);
         }
       }
@@ -252,7 +252,7 @@ describe('Development Mode', () => {
           { amount }: Increment
         ) {
           const state = getState();
-          state.count = Number(getState().count) + amount;
+          (state as any).count = Number(getState().count) + amount;
           setState(state);
         }
       }

@@ -30,8 +30,9 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
     if (typeof this.ngAppModule.hmrNgxsStoreOnInit === 'function') {
       return this.ngAppModule.hmrNgxsStoreOnInit;
     }
+
     return function defaultModuleHmrInit(ctx, state) {
-      ctx.patchState(state);
+      ctx.patchState(state as S);
     };
   }
 
@@ -41,7 +42,7 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
     if (typeof this.ngAppModule.hmrNgxsStoreBeforeOnDestroy === 'function') {
       state = this.ngAppModule.hmrNgxsStoreBeforeOnDestroy(ctx);
     } else {
-      state = ctx.getState();
+      state = ctx.getState() as Partial<S>;
     }
 
     ctx.dispatch(new HmrBeforeDestroyAction(state));
