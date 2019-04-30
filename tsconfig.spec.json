@@ -8,5 +8,6 @@
     "importHelpers": true
   },
   "files": ["packages/test.ts"],
+  "exclude": ["./packages/store/types/**"],
   "include": ["packages/**/*.ts", "packages/**/*.spec.ts"]
 }

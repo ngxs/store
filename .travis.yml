@@ -1,12 +1,10 @@
 language: node_js
 sudo: false
 node_js:
-  - "11.4.0"
-
-cache: yarn
+  - '11.4.0'
 
 install:
-  - yarn install
+  - yarn install --frozen-lockfile --non-interactive
 
 script:
   # CHECK STYLE
@@ -24,3 +22,6 @@ script:
 
   # INTEGRATION TEST
   - yarn run integration:ng5
+
+  # INTEGRATION TEST
+  - yarn run test:types
