@@ -26,6 +26,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["tsconfig.lib.json", "tsconfig.spec.json"],
+            "tslintConfig": "tslint.json",
             "exclude": ["**/node_modules/**", "./integrations/**", "./packages/store/types/**"]
           }
         }
@@ -141,6 +142,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["integration/tsconfig.app.json", "integration/tsconfig.spec.json"],
+            "tslintConfig": "tslint.json",
             "exclude": ["**/node_modules/**"]
           }
         }
