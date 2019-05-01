@@ -14,15 +14,15 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "target": "es5",
-    "strict": true,
-    "alwaysStrict": true,
-    "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "typeRoots": ["node_modules/@types"],
     "baseUrl": ".",
     "paths": {
-      "@angular/*": ["../../../../node_modules/@angular/*"]
+      "@angular/*": ["../../../node_modules/@angular/*"],
+      "@ngxs/store/operators": ["../../../packages/store/operators/src"],
+      "@ngxs/store/internals": ["../../../packages/store/internals/src"],
+      "@ngxs/*": ["../../../packages/*"]
     }
   }
 }

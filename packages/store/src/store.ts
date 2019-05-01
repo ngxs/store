@@ -10,7 +10,7 @@ import { NgxsConfig } from './symbols';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { ObjectKeyMap } from './internal/internals';
-import { ActionType } from './actions/symbols';
+import { Actions } from './actions/symbols';
 
 @Injectable()
 export class Store {
@@ -30,7 +30,7 @@ export class Store {
   /**
    * Dispatches event(s).
    */
-  dispatch(event: ActionType | ActionType[]): Observable<any> {
+  dispatch(event: Actions): Observable<any> {
     return this._internalStateOperations.getRootStateOperations().dispatch(event);
   }
 

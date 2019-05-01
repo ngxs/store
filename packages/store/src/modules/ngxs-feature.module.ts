@@ -15,13 +15,13 @@ import { UpdateState } from '../actions/actions';
 @NgModule()
 export class NgxsFeatureModule {
   constructor(
-    store: Store,
-    internalStateOperations: InternalStateOperations,
-    factory: StateFactory,
     @Optional()
     @Inject(FEATURE_STATE_TOKEN)
-    states: StateClass[][] = [],
-    lifecycleStateManager: LifecycleStateManager
+    public states: StateClass[][] = [],
+    public store: Store,
+    public internalStateOperations: InternalStateOperations,
+    public factory: StateFactory,
+    public lifecycleStateManager: LifecycleStateManager
   ) {
     // Since FEATURE_STATE_TOKEN is a multi token, we need to
     // flatten it [[Feature1State, Feature2State], [Feature3State]]

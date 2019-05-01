@@ -3,13 +3,15 @@ import {
   ActionType,
   ActionOptions,
   ActionHandlerMetaData,
-  ActionClass
+  ActionClass,
+  ActionDecorator,
+  Actions
 } from '../actions/symbols';
 
 /**
  * Decorates a method with a action information.
  */
-export function Action(actions: ActionType | ActionType[], options: ActionOptions = {}) {
+export const Action: ActionDecorator = (actions: Actions, options: ActionOptions = {}) => {
   return function(target: any, fn: string): void {
     const meta = ensureStoreMetadata(target.constructor);
     const actionList: ActionType[] = !Array.isArray(actions) ? [actions] : actions;
@@ -21,4 +23,4 @@ export function Action(actions: ActionType | ActionType[], options: ActionOption
       actionsMetaData[type].push({ fn, options, type });
     }
   };
-}
+};

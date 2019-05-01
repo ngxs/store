@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ObjectKeyMap, SharedSelectorOptions } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
-import { ActionType } from '../src/actions/symbols';
+import { Actions, ActionType } from '../src/actions/symbols';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
@@ -93,7 +93,7 @@ export interface StateContext<T> {
   /**
    * Dispatch a new action and return the dispatched observable.
    */
-  dispatch(actions: ActionType | ActionType[]): Observable<void>;
+  dispatch(actions: Actions): Observable<void>;
 }
 
 export type NgxsNextPluginFn = (state: any, mutation: any) => any;

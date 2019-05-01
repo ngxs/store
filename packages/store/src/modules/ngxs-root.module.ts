@@ -16,14 +16,14 @@ import { InitState } from '../actions/actions';
 @NgModule()
 export class NgxsRootModule {
   constructor(
-    factory: StateFactory,
-    internalStateOperations: InternalStateOperations,
-    store: Store,
-    select: SelectFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
-    states: StateClass[] = [],
-    lifecycleStateManager: LifecycleStateManager
+    public states: StateClass[] = [],
+    public factory: StateFactory,
+    public internalStateOperations: InternalStateOperations,
+    public store: Store,
+    public select: SelectFactory,
+    public lifecycleStateManager: LifecycleStateManager
   ) {
     // add stores to the state graph and return their defaults
     const results: StatesAndDefaults = factory.addAndReturnDefaults(states);

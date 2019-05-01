@@ -19,6 +19,13 @@
     ],
     "radix": false,
     "prefer-object-spread": false,
-    "no-empty-interface": false
+    "no-empty-interface": false,
+    "no-unused-variable": false,
+    "no-duplicate-variable": false,
+    "function-constructor": false,
+    "label-position": false,
+    "no-eval": false,
+    "interface-name": false,
+    "prefer-switch": false
   }
 }

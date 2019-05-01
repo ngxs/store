@@ -29,3 +29,11 @@ export interface ActionHandlerMetaData {
   options: ActionOptions;
   type: string;
 }
+
+export type TargetAction = (target: any, fn: string) => void;
+
+export type Actions = ActionType | ActionType[];
+export type ActionDecorator<R = TargetAction> = (
+  actions: Actions,
+  options?: ActionOptions
+) => R;

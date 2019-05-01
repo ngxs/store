@@ -1,19 +1,11 @@
-import {
-  NgZone,
-  PLATFORM_ID,
-  Injectable,
-  ɵNoopNgZone as NoopNgZone,
-  Inject
-} from '@angular/core';
+import { Inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 
 import { NgxsExecutionStrategy } from './symbols';
 
 @Injectable()
 export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionStrategy {
-  constructor(private _ngZone: NgZone, @Inject(PLATFORM_ID) private _platformId: Object) {
-    this.verifyZoneIsNotNooped(this._ngZone);
-  }
+  constructor(private _ngZone: NgZone, @Inject(PLATFORM_ID) private _platformId: Object) {}
 
   enter<T>(func: () => T): T {
     if (isPlatformServer(this._platformId)) {
@@ -38,15 +30,5 @@ export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionSt
       return this._ngZone.runOutsideAngular(func);
     }
     return func();
-  }
-
-  private verifyZoneIsNotNooped(ngZone: NgZone): void {
-    /* - Removed because unsafe for Angular 5 - investigate
-    if (ngZone instanceof NoopNgZone) {
-      console.warn(
-        'Your application was bootstrapped with nooped zone and your execution strategy requires an ngZone'
-      );
-    }
-    */
   }
 }
