@@ -24,7 +24,8 @@ import {
   StateKeyGraph,
   StatesAndDefaults,
   StatesByName,
-  topologicalSort
+  topologicalSort,
+  SharedSelectorOptions
 } from './internals';
 import { getActionTypeFromInstance, getValue, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -231,6 +232,11 @@ export class StateFactory {
   private addRuntimeInfoToMeta(meta: MetaDataModel, depth: string): void {
     meta.path = depth;
     meta.selectFromAppState = propGetter(depth.split('.'), this._config);
+    const sharedSelectorOptions: SharedSelectorOptions = this._config.selectorOptions;
+    if (sharedSelectorOptions) {
+      const classSelectorOptions = meta.selectorOptions || {};
+      meta.selectorOptions = { ...sharedSelectorOptions, ...classSelectorOptions };
+    }
   }
 
   /**

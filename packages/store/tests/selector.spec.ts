@@ -4,6 +4,13 @@ import { createSelector } from '../src/utils/selector-utils';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { Selector } from '../src/decorators/selector';
+import { getStoreMetadata } from '../src/public_api';
+import {
+  getSelectorMetadata,
+  SharedSelectorOptions,
+  StateClass
+} from '../src/internal/internals';
+import { NgxsConfig, SELECTOR_META_KEY } from '../src/symbols';
 
 describe('Selector', () => {
   interface MyStateModel {
@@ -207,6 +214,206 @@ describe('Selector', () => {
     });
   });
 
+  describe('(Decorator - v4 options)', () => {
+    function setupStore(
+      states: StateClass<any, any>[],
+      extendedOptions?: Partial<NgxsConfig>
+    ) {
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot(states, extendedOptions)]
+      });
+      const store: Store = TestBed.get(Store);
+      return store;
+    }
+
+    describe('[at global level]', () => {
+      @State<MyStateModel>({
+        name: 'zoo_1',
+        defaults: {
+          foo: 'Foo1',
+          bar: 'Bar1'
+        }
+      })
+      // tslint:disable-next-line: class-name
+      class MyStateV4_1 {
+        @Selector()
+        static foo(state: MyStateModel) {
+          return state.foo;
+        }
+
+        @Selector()
+        static bar(state: MyStateModel) {
+          return state.bar;
+        }
+
+        @Selector([MyStateV4_1.foo, MyStateV4_1.bar])
+        static fooAndBar(foo: string, bar: string) {
+          return foo + bar;
+        }
+      }
+
+      @State<MyStateModel>({
+        name: 'zoo_2',
+        defaults: {
+          foo: 'Foo2',
+          bar: 'Bar2'
+        }
+      })
+      // tslint:disable-next-line: class-name
+      class MyStateV4_2 {
+        @Selector()
+        static foo(state: MyStateModel) {
+          return state.foo;
+        }
+
+        @Selector()
+        static bar(state: MyStateModel) {
+          return state.bar;
+        }
+
+        @Selector([MyStateV4_2.foo, MyStateV4_2.bar])
+        static fooAndBar(foo: string, bar: string) {
+          return foo + bar;
+        }
+      }
+
+      it('should configure v4 selectors globally', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4_1, MyStateV4_2], {
+          selectorOptions: { injectContainerState: false }
+        });
+        // Act & Assert
+        expect(store.selectSnapshot(MyStateV4_1.foo)).toBe('Foo1');
+        expect(store.selectSnapshot(MyStateV4_1.bar)).toBe('Bar1');
+        expect(store.selectSnapshot(MyStateV4_1.fooAndBar)).toBe('Foo1Bar1');
+        expect(store.selectSnapshot(MyStateV4_2.foo)).toBe('Foo2');
+        expect(store.selectSnapshot(MyStateV4_2.bar)).toBe('Bar2');
+        expect(store.selectSnapshot(MyStateV4_2.fooAndBar)).toBe('Foo2Bar2');
+      }));
+    });
+
+    describe('[at class level]', () => {
+      @State<MyStateModel>({
+        name: 'zoo',
+        defaults: {
+          foo: 'Foo',
+          bar: 'Bar'
+        }
+      })
+      class MyStateV4 {
+        @Selector()
+        static foo(state: MyStateModel) {
+          return state.foo;
+        }
+
+        @Selector()
+        static bar(state: MyStateModel) {
+          return state.bar;
+        }
+
+        @Selector([MyStateV4, MyStateV4.foo])
+        static selfAndFoo(state: MyStateModel, myStateFoo: string) {
+          return state.foo + myStateFoo;
+        }
+
+        @Selector([MyStateV4.foo, MyStateV4.bar])
+        static fooAndBar(foo: string, bar: string) {
+          return foo + bar;
+        }
+      }
+      getStoreMetadata(MyStateV4).selectorOptions = { injectContainerState: false };
+
+      it('should select from a simple selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV4.foo);
+        // Assert
+        expect(slice).toBe('Foo');
+      }));
+
+      it('should select from another simple selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV4.bar);
+        // Assert
+        expect(slice).toBe('Bar');
+      }));
+
+      it('should select from a self joined selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV4.selfAndFoo);
+        // Assert
+        expect(slice).toBe('FooFoo');
+      }));
+
+      it('should select from a joined selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV4.fooAndBar);
+        // Assert
+        expect(slice).toBe('FooBar');
+      }));
+    });
+
+    describe('[at method level]', () => {
+      @State<MyStateModel>({
+        name: 'zoo',
+        defaults: {
+          foo: 'Foo',
+          bar: 'Bar'
+        }
+      })
+      class MyStateV3 {
+        @Selector()
+        static foo(state: MyStateModel) {
+          return state.foo;
+        }
+
+        @Selector()
+        static bar(state: MyStateModel) {
+          return state.bar;
+        }
+
+        @Selector([MyStateV3.bar])
+        static v3StyleSelector_FooAndBar(state: MyStateModel, bar: string) {
+          return state.foo + bar;
+        }
+
+        @Selector([MyStateV3.foo, MyStateV3.bar])
+        static v4StyleSelector_FooAndBar(foo: string, bar: string) {
+          return foo + bar;
+        }
+      }
+
+      getSelectorMetadata(MyStateV3.v4StyleSelector_FooAndBar).selectorOptions = {
+        injectContainerState: false
+      };
+
+      it('should select from a v3 selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV3]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV3.v3StyleSelector_FooAndBar);
+        // Assert
+        expect(slice).toBe('FooBar');
+      }));
+
+      it('should select from a v4 selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV3]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV3.v4StyleSelector_FooAndBar);
+        // Assert
+        expect(slice).toBe('FooBar');
+      }));
+    });
+  });
+
   describe('(from createSelector)', () => {
     it('should select the state', async(() => {
       TestBed.configureTestingModule({
@@ -375,6 +582,92 @@ describe('Selector', () => {
         store.selectSnapshot(fooSelector);
         expect(selectorCalls).toEqual(['foo[outer]', 'foo[inner]']);
       }));
+    });
+  });
+
+  describe('Errors in selector', () => {
+    it('should be a wrong mutation', () => {
+      @State<number[]>({
+        name: 'tasks',
+        defaults: [1, 2, 3, 4]
+      })
+      class TasksMutableState {
+        @Selector()
+        static reverse(state: number[]): number[] {
+          return state.reverse();
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TasksMutableState])]
+      });
+
+      const store = TestBed.get(Store);
+      store.reset({ tasks: [1, 2, 3, 4] });
+
+      const tasks: number[] = store.selectSnapshot(TasksMutableState);
+      const reverse: number[] = store.selectSnapshot(TasksMutableState.reverse);
+      expect(tasks).toEqual([4, 3, 2, 1]);
+      expect(reverse).toEqual([4, 3, 2, 1]);
+    });
+
+    it('should be incorrect mutation', () => {
+      @State<number[]>({
+        name: 'tasks',
+        defaults: [1, 2, 3, 4]
+      })
+      class TasksSuppressErrorsState {
+        @Selector()
+        static reverse(state: number[]): number[] {
+          return state.reverse();
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([TasksSuppressErrorsState], { developmentMode: true })]
+      });
+
+      const store = TestBed.get(Store);
+      store.reset({ tasks: [1, 2, 3, 4] });
+
+      const tasks: number[] = store.selectSnapshot(TasksSuppressErrorsState);
+      const reverse: number[] = store.selectSnapshot(TasksSuppressErrorsState.reverse);
+      expect(tasks).toEqual([1, 2, 3, 4]);
+      expect(reverse).toEqual(undefined as any);
+    });
+
+    it('should be correct catch errors', () => {
+      @State<number[]>({
+        name: 'tasks',
+        defaults: [1, 2, 3, 4]
+      })
+      class TasksState {
+        @Selector()
+        static reverse(state: number[]): number[] {
+          return state.reverse();
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([TasksState], {
+            developmentMode: true,
+            selectorOptions: { suppressErrors: false }
+          })
+        ]
+      });
+
+      const store = TestBed.get(Store);
+      store.reset({ tasks: [1, 2, 3, 4] });
+
+      const tasks: number[] = store.selectSnapshot(TasksState);
+      expect(tasks).toEqual([1, 2, 3, 4]);
+
+      try {
+        store.selectSnapshot(TasksState.reverse);
+      } catch (e) {
+        expect(e.message.includes('Cannot assign to read only property')).toBe(true);
+      }
     });
   });
 });

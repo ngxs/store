@@ -1,10 +1,14 @@
+import { memoize } from '@ngxs/store/internals';
+
 import {
   SelectFromState,
   ensureSelectorMetadata,
   getSelectorMetadata,
-  getStoreMetadata
+  getStoreMetadata,
+  SelectorMetaDataModel,
+  SharedSelectorOptions,
+  StateClass
 } from '../internal/internals';
-import { memoize } from '../utils/memoize';
 
 /**
  * Function for creating a selector
@@ -26,24 +30,24 @@ export function createSelector<T extends (...args: any[]) => any>(
     return returnValue;
   } as T;
   const memoizedFn = memoize(wrappedFn);
-  const containerClass = creationMetadata && creationMetadata.containerClass;
+  const selectorMetaData = ensureSelectorMetadata(memoizedFn);
+  selectorMetaData.originalFn = originalFn;
+
+  if (creationMetadata) {
+    selectorMetaData.containerClass = creationMetadata.containerClass;
+    selectorMetaData.selectorName = creationMetadata.selectorName;
+  }
+
+  selectorMetaData.selectorOptions = getCustomSelectorOptions(selectorMetaData, {
+    suppressErrors: true
+  });
+
+  const { suppressErrors } = selectorMetaData.selectorOptions;
 
   const fn = (state: any) => {
     const results = [];
 
-    const selectorsToApply = [];
-
-    if (containerClass) {
-      // If we are on a state class, add it as the first selector parameter
-      const metadata = getStoreMetadata(containerClass);
-      if (metadata) {
-        selectorsToApply.push(containerClass);
-      }
-    }
-
-    if (selectors) {
-      selectorsToApply.push(...selectors);
-    }
+    const selectorsToApply = getSelectorsToApply(selectorMetaData, selectors);
 
     // Determine arguments from the app state using the selectors
     results.push(...selectorsToApply.map(a => getSelectorFn(a)(state)));
@@ -54,21 +58,55 @@ export function createSelector<T extends (...args: any[]) => any>(
     try {
       return memoizedFn(...results);
     } catch (ex) {
-      if (ex instanceof TypeError) {
+      if (ex instanceof TypeError && suppressErrors) {
         return undefined;
       }
+
       throw ex;
     }
   };
 
-  const selectorMetaData = ensureSelectorMetadata(memoizedFn);
-  selectorMetaData.originalFn = originalFn;
   selectorMetaData.selectFromAppState = fn;
-  if (creationMetadata) {
-    selectorMetaData.containerClass = creationMetadata.containerClass;
-    selectorMetaData.selectorName = creationMetadata.selectorName;
-  }
+
   return memoizedFn;
+}
+
+function getCustomSelectorOptions(
+  selectorMetaData: SelectorMetaDataModel,
+  explicitOptions: SharedSelectorOptions
+): SharedSelectorOptions {
+  let selectorOptions: SharedSelectorOptions = selectorMetaData.selectorOptions || {};
+  const containerClass: StateClass = selectorMetaData.containerClass;
+
+  if (containerClass) {
+    const storeMetaData = getStoreMetadata(containerClass);
+    const classSelectorOptions: SharedSelectorOptions =
+      (storeMetaData && storeMetaData.selectorOptions) || {};
+    selectorOptions = { ...selectorOptions, ...classSelectorOptions };
+  }
+
+  return { ...explicitOptions, ...selectorOptions };
+}
+
+function getSelectorsToApply(
+  selectorMetaData: SelectorMetaDataModel,
+  selectors: any[] | undefined = []
+) {
+  const selectorsToApply = [];
+  const canInjectContainerState =
+    selectors.length === 0 || selectorMetaData.selectorOptions.injectContainerState;
+  const containerClass = selectorMetaData.containerClass;
+  if (containerClass && canInjectContainerState) {
+    // If we are on a state class, add it as the first selector parameter
+    const metadata = getStoreMetadata(containerClass);
+    if (metadata) {
+      selectorsToApply.push(containerClass);
+    }
+  }
+  if (selectors) {
+    selectorsToApply.push(...selectors);
+  }
+  return selectorsToApply;
 }
 
 /**

@@ -40,15 +40,22 @@ export interface MetaDataModel {
   selectFromAppState: SelectFromState | null;
   children?: StateClass[];
   instance: any;
+  selectorOptions?: SharedSelectorOptions;
 }
 
 export type SelectFromState = (state: any) => any;
+
+export interface SharedSelectorOptions {
+  injectContainerState?: boolean;
+  suppressErrors?: boolean;
+}
 
 export interface SelectorMetaDataModel {
   selectFromAppState: SelectFromState | null;
   originalFn: Function | null;
   containerClass: any;
   selectorName: string | null;
+  selectorOptions: SharedSelectorOptions;
 }
 
 export interface MappedStore {
@@ -63,6 +70,8 @@ export interface StatesAndDefaults {
   defaults: any;
   states: MappedStore[];
 }
+
+export type Callback<T = any, V = any> = (...args: V[]) => T;
 
 /**
  * Ensures metadata is attached to the class and returns it.
@@ -106,7 +115,10 @@ export function ensureSelectorMetadata(target: Function): SelectorMetaDataModel 
       selectFromAppState: null,
       originalFn: null,
       containerClass: null,
-      selectorName: null
+      selectorName: null,
+      selectorOptions: {
+        injectContainerState: true // TODO: default is true in v3, will change in v4
+      }
     };
 
     Object.defineProperty(target, SELECTOR_META_KEY, { value: defaultMetadata });

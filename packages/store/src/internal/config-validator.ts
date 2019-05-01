@@ -1,34 +1,33 @@
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import { isAngularInTestMode } from '../utils/angular';
+import {
+  CONFIG_MESSAGES as MESSAGES,
+  VALIDATION_CODE as CODE
+} from '../configs/messages.config';
 import { NgxsConfig } from '../symbols';
+import { HostEnvironment } from '../host-environment/host-environment';
 
 @Injectable()
 export class ConfigValidator {
-  constructor(private _config: NgxsConfig) {}
+  constructor(private _host: HostEnvironment, private _config: NgxsConfig) {}
+
+  private get isIncorrectProduction(): boolean {
+    return !this._host.isDevMode() && this._config.developmentMode;
+  }
+
+  private get isIncorrectDevelopment(): boolean {
+    return this._host.isDevMode() && !this._config.developmentMode;
+  }
 
   public verifyDevMode(): void {
-    if (isAngularInTestMode()) {
+    if (this._host.isTestMode()) {
       return;
     }
 
-    const isNgxsDevMode = this._config.developmentMode;
-    const isNgDevMode = isDevMode();
-    const incorrectProduction = !isNgDevMode && isNgxsDevMode;
-    const incorrectDevelopment = isNgDevMode && !isNgxsDevMode;
-    const example = 'NgxsModule.forRoot(states, { developmentMode: !environment.production })';
-
-    if (incorrectProduction) {
-      console.warn(
-        'Angular is running in production mode but NGXS is still running in the development mode!\n',
-        'Please set developmentMode to false on the NgxsModule options when in production mode.\n',
-        example
-      );
-    } else if (incorrectDevelopment) {
-      console.warn(
-        'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n',
-        example
-      );
+    if (this.isIncorrectProduction) {
+      console.warn(MESSAGES[CODE.INCORRECT_PRODUCTION]());
+    } else if (this.isIncorrectDevelopment) {
+      console.warn(MESSAGES[CODE.INCORRECT_DEVELOPMENT]());
     }
   }
 }

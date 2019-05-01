@@ -151,7 +151,7 @@ export class AnimalsState {
   removePanda(ctx: StateContext<AnimalsStateModel>, { payload }: RemovePanda) {
     ctx.setState(
       patch({
-        pandas: removeItem(name => name === payload)
+        pandas: removeItem<string>(name => name === payload)
       })
     );
   }
@@ -160,11 +160,10 @@ export class AnimalsState {
   changePandaName(ctx: StateContext<AnimalsStateModel>, { payload }: ChangePandaName) {
     ctx.setState(
       patch({
-        pandas: updateItem(name => name === payload.name, payload.newName)
+        pandas: updateItem<string>(name => name === payload.name, payload.newName)
       })
     );
   }
-}
 ```
 
 You will see that in each case above the state operators are wrapped within a call to the `patch` operator. This is only done because of the convenience that the `patch` state operator provides for targeting a nested property of the state.
