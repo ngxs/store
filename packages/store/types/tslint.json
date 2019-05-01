@@ -26,6 +26,8 @@
     "label-position": false,
     "no-eval": false,
     "interface-name": false,
-    "prefer-switch": false
+    "prefer-switch": false,
+    "no-misused-new": false,
+    "prefer-const": false
   }
 }

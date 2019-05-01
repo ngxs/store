@@ -1,48 +1,63 @@
 /// <reference types="@types/jasmine" />
 import { TestBed } from '@angular/core/testing';
-import {
-  ActionDecorator,
-  ActionOptions,
-  Actions,
-  ActionType
-} from '../../src/actions/symbols';
-import { Action as OriginalAction } from '../../src/decorators/action';
+import { ActionType } from '../../src/actions/symbols';
+import { Action } from '../../src/decorators/action';
 import { InitState, UpdateState } from '../../src/actions/actions';
-import { NgxsModule, Store } from '../../src/public_api';
+import { NgxsModule, State, Store } from '../../src/public_api';
+import {
+  ActionTypeExpect,
+  DispatchTypeExpect,
+  FooTestTypeAction
+} from './helpers/store-types.helpers';
 import { assertType } from './utils/assert-type';
 
 describe('[TEST]: Action Types', () => {
-  class FooAction {
-    public type: string;
-
-    constructor(public payload: string) {}
-  }
+  let store: Store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot()]
     });
+
+    store = TestBed.get(Store);
   });
 
   it('should be correct type set in action decorator', () => {
-    type Decorator = ActionDecorator<Actions>;
-    const Action: Decorator = (actions: Actions, _: ActionOptions = {}): Actions => actions;
-
-    assertType(() => OriginalAction(new FooAction('payload'))); // $ExpectType TargetAction
+    assertType(() => Action(new FooTestTypeAction('payload'))); // $ExpectType TargetAction
     assertType((action: ActionType): ActionType => action); // $ExpectType ActionType<any, any>
-    assertType(() => Action(new FooAction('world'))); // $ExpectType Actions
-    assertType(() => Action([{ staticMethod: 1 }, { any: 'world' }])); // $ExpectType Actions
-    assertType(() => Action(UpdateState)); // $ExpectType Actions
-    assertType(() => Action([InitState, UpdateState])); // $ExpectType Actions
-    assertType(() => Action([InitState, UpdateState], { any: 'value' })); // $ExpectError
-    assertType(() => Action()); // $ExpectError
+    assertType(() => ActionTypeExpect(new FooTestTypeAction('world'))); // $ExpectType Actions
+    assertType(() => ActionTypeExpect([{ staticMethod: 1 }, { any: 'world' }])); // $ExpectType Actions
+    assertType(() => ActionTypeExpect(UpdateState)); // $ExpectType Actions
+    assertType(() => ActionTypeExpect([InitState, UpdateState])); // $ExpectType Actions
+    assertType(() => ActionTypeExpect([InitState, UpdateState], { any: 'value' })); // $ExpectError
+    assertType(() => ActionTypeExpect()); // $ExpectError
   });
 
   it('should be correct dispatch', () => {
-    const store: Store = TestBed.get(Store);
-    const Dispatch = (actions: Actions): Actions => actions;
     assertType(() => store.dispatch([])); // $ExpectType Observable<any>
-    assertType(() => Dispatch()); // $ExpectError
-    assertType(() => Dispatch(new FooAction('payload'))); // // $ExpectError
+    assertType(() => DispatchTypeExpect()); // $ExpectError
+    assertType(() => DispatchTypeExpect(new FooTestTypeAction('payload'))); // $ExpectError Actions
+  });
+
+  it('should prevent invalid types passed through', () => {
+    class Increment {
+      static type = 'INCREMENT';
+    }
+
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    class MyState {
+      @Action(Increment) increment1() {}
+      @Action({ type: 'INCREMENT' }) increment2() {}
+      @Action(new Increment()) increment3() {}
+      @Action({ foo: 123 }) increment4() {}
+    }
+
+    assertType(() => store.dispatch(new Increment())); // $ExpectType Observable<any>
+    assertType(() => store.dispatch({ type: 'INCREMENT' })); // $ExpectType Observable<any>
+    assertType(() => store.dispatch(Increment)); // $ExpectType Observable<any>
+    assertType(() => store.dispatch({ foo: 123 })); // $ExpectType Observable<any>
   });
 });
