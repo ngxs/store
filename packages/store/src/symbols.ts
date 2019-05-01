@@ -58,7 +58,10 @@ export class NgxsConfig {
   /**
    * Defining shared selector options
    */
-  selectorOptions: SharedSelectorOptions = {};
+  selectorOptions: SharedSelectorOptions = {
+    injectContainerState: true, // TODO: default is true in v3, will change in v4
+    suppressErrors: true // TODO: default is true in v3, will change in v4
+  };
 
   constructor() {
     this.compatibility = {

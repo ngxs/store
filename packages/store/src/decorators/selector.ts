@@ -16,8 +16,14 @@ export function Selector(selectors?: any[]) {
             memoizedFn ||
             createSelector(
               selectors,
-              originalFn.bind(target),
-              { containerClass: target, selectorName: methodName }
+              originalFn,
+              {
+                containerClass: target,
+                selectorName: methodName,
+                getSelectorOptions() {
+                  return {};
+                }
+              }
             );
           return memoizedFn;
         }

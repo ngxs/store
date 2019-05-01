@@ -40,7 +40,6 @@ export interface MetaDataModel {
   selectFromAppState: SelectFromState | null;
   children?: StateClass[];
   instance: any;
-  selectorOptions?: SharedSelectorOptions;
 }
 
 export type SelectFromState = (state: any) => any;
@@ -55,7 +54,7 @@ export interface SelectorMetaDataModel {
   originalFn: Function | null;
   containerClass: any;
   selectorName: string | null;
-  selectorOptions: SharedSelectorOptions;
+  getSelectorOptions: () => SharedSelectorOptions;
 }
 
 export interface MappedStore {
@@ -104,6 +103,8 @@ export function getStoreMetadata(target: StateClass): MetaDataModel {
   return target[META_KEY]!;
 }
 
+export const globalSelectorOptions: SharedSelectorOptions = {};
+
 /**
  * Ensures metadata is attached to the selector and returns it.
  *
@@ -116,9 +117,7 @@ export function ensureSelectorMetadata(target: Function): SelectorMetaDataModel 
       originalFn: null,
       containerClass: null,
       selectorName: null,
-      selectorOptions: {
-        injectContainerState: true // TODO: default is true in v3, will change in v4
-      }
+      getSelectorOptions: () => ({})
     };
 
     Object.defineProperty(target, SELECTOR_META_KEY, { value: defaultMetadata });
