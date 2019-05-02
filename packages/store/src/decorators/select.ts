@@ -24,7 +24,7 @@ export class SelectFactory {
 export function Select(selectorOrFeature?: any, ...paths: string[]) {
   return function(target: any, name: string) {
     const selectorFnName = '__' + name + '__selector';
-    Select;
+
     if (!selectorOrFeature) {
       selectorOrFeature = removeDollarAtTheEnd(name);
     }
