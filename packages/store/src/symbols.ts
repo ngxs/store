@@ -145,3 +145,5 @@ export interface NgxsOnInit {
 export interface NgxsAfterBootstrap {
   ngxsAfterBootstrap(ctx?: StateContext<any>): void;
 }
+
+export type NgxsModuleOptions = Partial<NgxsConfig>;
