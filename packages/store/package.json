@@ -14,7 +14,8 @@
       "entryFile": "index.ts",
       "umdModuleIds": {
         "@ngxs/store/internals": "ngxs-store-internals",
-        "@ngxs/store/operators": "ngxs-store-operators"
+        "@ngxs/store/operators": "ngxs-store-operators",
+        "@ngxs/store/testing": "ngxs-store-testing"
       }
     },
     "dest": "../../@ngxs/store"

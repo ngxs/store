@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { Component, ApplicationRef, NgModule, OnInit, AfterViewInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import {
   ɵDomAdapter as DomAdapter,
   ɵBrowserDomAdapter as BrowserDomAdapter,
-  BrowserModule,
-  DOCUMENT
+  BrowserModule
 } from '@angular/platform-browser';
 
 import { InitState, UpdateState } from '../src/actions/actions';

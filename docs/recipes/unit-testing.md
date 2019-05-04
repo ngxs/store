@@ -4,24 +4,20 @@ Unit testing is easy with NGXS. To perform a unit test we just dispatch the even
 perform our expectation. A basic test looks like this:
 
 ```TS
-import { async, TestBed } from '@angular/core/testing';
+import { NgxsTestBed } from '@ngxs/store/testing';
 
 describe('Zoo', () => {
-  let store: Store;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([ZooState])],
-    }).compileComponents();
-    store = TestBed.get(Store);
-  }));
+  it('it toggles feed', (done) => {
+    const { store } = NgxsTestBed.configureTestingState([ ZooState ]);
 
-  it('it toggles feed', async(() => {
     store.dispatch(new FeedAnimals());
     store.selectOnce(state => state.zoo.feed).subscribe(feed => {
       expect(feed).toBe(true);
+      done();
     });
-  }));
+  });
+
 });
 ```
 
@@ -34,10 +30,9 @@ for unit testing.
 Often times in your app you want to test what happens when the state is C and you dispatch action X. You
 can use the `store.reset(MyNewState)` to prepare the state for your next operation.
 
-
 ```TS
 // zoo.state.spec.ts
-import { TestBed, async } from '@angular/core/testing';
+import { NgxsTestBed } from '@ngxs/store/testing';
 
 export const SOME_DESIRED_STATE = {
   animals: ['Panda'],
@@ -46,21 +41,18 @@ export const SOME_DESIRED_STATE = {
 describe('Zoo', () => {
   let store: Store;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([ZooState])],
-    }).compileComponents();
-
-    store = TestBed.get(Store);
+  beforeEach(() => {
+    store = NgxsTestBed.configureTestingState([ ZooState ]).store;
     store.reset(SOME_DESIRED_STATE);
-  }));
+  });
 
-  it('it toggles feed', async(() => {
+  it('it toggles feed', () => {
     store.dispatch(new FeedAnimals());
     store.selectOnce(state => state.zoo.feed).subscribe(feed => {
       expect(feed).toBe(true);
     });
-  }));
+  });
+
 });
 ```
 
@@ -75,10 +67,9 @@ import { TestBed } from '@angular/core/testing';
 describe('Zoo', () => {
 
   it('it should select pandas', () => {
-    expect(
-      Zoo.pandas(['pandas', 'zebras'])
-    ).toBe(['pandas']);
+    expect( Zoo.pandas([ 'pandas', 'zebras' ]) ).toBe([ 'pandas' ]);
   });
+
 });
 ```
 
@@ -96,22 +87,22 @@ export class ZooSelectors {
 }
 ```
 
-Testing these selectors is really an easy task. 
+Testing these selectors is really an easy task.
 You just need to mock the state and pass it as parameter to our selector:
 
 ```TS
 it('should select requested animal names from state', () => {
   const zooState = {
-    animals: [ 
+    animals: [
       { type: 'zebra', name: 'Andy'},
       { type: 'panda', name: 'Betty'},
       { type: 'zebra', name: 'Crystal'},
       { type: 'panda', name: 'Donny'},
     ]
   };
-  
+
   const value = ZooSelectors.animalNames('zebra')(zooState);
-    
+
   expect(value).toEqual(['Andy', 'Crystal']);
 });
 ```
