@@ -9,6 +9,10 @@ import {
 } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
 
+function asReadonly<T>(value: T): Readonly<T> {
+  return value;
+}
+
 export interface ObjectKeyMap<T> {
   [key: string]: T;
 }
@@ -103,7 +107,17 @@ export function getStoreMetadata(target: StateClass): MetaDataModel {
   return target[META_KEY]!;
 }
 
-export const globalSelectorOptions: SharedSelectorOptions = {};
+// closure variable used to store the global options
+let _globalSelectorOptions: SharedSelectorOptions = {};
+
+export const globalSelectorOptions = asReadonly({
+  get(): Readonly<SharedSelectorOptions> {
+    return _globalSelectorOptions;
+  },
+  set(value: Readonly<SharedSelectorOptions>) {
+    _globalSelectorOptions = { ...value };
+  }
+});
 
 /**
  * Ensures metadata is attached to the selector and returns it.

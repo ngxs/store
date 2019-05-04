@@ -11,7 +11,7 @@ import {
   StateClass
 } from '../src/internal/internals';
 import { NgxsConfig, SELECTOR_META_KEY } from '../src/symbols';
-import { SelectorOptions } from '../src/decorators/selectorOptions';
+import { SelectorOptions } from '../src/decorators/selector-options';
 
 describe('Selector', () => {
   interface MyStateModel {

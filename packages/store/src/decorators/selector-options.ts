@@ -15,11 +15,11 @@ export function SelectorOptions(options: SharedSelectorOptions) {
         // Method Decorator
         if (descriptor.value) {
           const originalFn = descriptor.value;
-          selectorOptionsMetaAccessor.setFor(originalFn, options);
+          selectorOptionsMetaAccessor.defineOptions(originalFn, options);
         }
       } else {
         // Class Decorator
-        selectorOptionsMetaAccessor.setFor(target, options);
+        selectorOptionsMetaAccessor.defineOptions(target, options);
       }
     }
   );

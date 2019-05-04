@@ -14,10 +14,10 @@ import {
 const SELECTOR_OPTIONS_META_KEY = 'NGXS_SELECTOR_OPTIONS_META';
 
 export const selectorOptionsMetaAccessor = {
-  getFrom: (target: any): SharedSelectorOptions => {
+  getOptions: (target: any): SharedSelectorOptions => {
     return (target && (<any>target)[SELECTOR_OPTIONS_META_KEY]) || {};
   },
-  setFor: (target: any, options: SharedSelectorOptions) => {
+  defineOptions: (target: any, options: SharedSelectorOptions) => {
     if (!target) return;
     (<any>target)[SELECTOR_OPTIONS_META_KEY] = options;
   }
@@ -125,9 +125,9 @@ function getCustomSelectorOptions(
   explicitOptions: SharedSelectorOptions
 ): SharedSelectorOptions {
   const selectorOptions: SharedSelectorOptions = {
-    ...globalSelectorOptions,
-    ...(selectorOptionsMetaAccessor.getFrom(selectorMetaData.containerClass) || {}),
-    ...(selectorOptionsMetaAccessor.getFrom(selectorMetaData.originalFn) || {}),
+    ...globalSelectorOptions.get(),
+    ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.containerClass) || {}),
+    ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.originalFn) || {}),
     ...(selectorMetaData.getSelectorOptions() || {}),
     ...explicitOptions
   };
