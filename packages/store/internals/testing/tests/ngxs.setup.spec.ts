@@ -1,5 +1,5 @@
 import { NgxsAfterBootstrap, NgxsOnInit, State, StateContext } from '@ngxs/store';
-import { NgxsTestBed } from '@ngxs/store/experimental/testing';
+import { NgxsTestBed } from '@ngxs/store/internals/testing';
 
 describe('Full testing NGXS States with NgxsTestBed', () => {
   @State<any>({

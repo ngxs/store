@@ -1,7 +1,7 @@
 import { ApplicationRef, ModuleWithProviders } from '@angular/core';
+import { NgxsModule, NgxsModuleOptions, Store } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 import { DOCUMENT } from '@angular/common';
-import { NgxsModule, Store } from '@ngxs/store';
 import {
   ɵBrowserDomAdapter as BrowserDomAdapter,
   ɵDomAdapter as DomAdapter
@@ -13,7 +13,7 @@ import { NgxsTesting } from './symbol';
 export class NgxsTestBed {
   public static configureTestingState(
     states: any[], // TODO: change to StateClass
-    options: Partial<any> = {}, // TODO: change to NgxsConfig
+    options: NgxsModuleOptions = {},
     modules: ModuleWithProviders[] = []
   ): NgxsTesting {
     TestBed.configureTestingModule({
@@ -30,7 +30,7 @@ export class NgxsTestBed {
     };
   }
 
-  public static createRootNode(selector = 'app-root'): void {
+  private static createRootNode(selector = 'app-root'): void {
     const document = TestBed.get(DOCUMENT);
     const adapter: DomAdapter = new BrowserDomAdapter();
 
