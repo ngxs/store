@@ -13,7 +13,8 @@ import {
   NG_TEST_MODE,
   NG_DEV_MODE,
   NgxsConfig,
-  ROOT_STATE_TOKEN
+  ROOT_STATE_TOKEN,
+  NgxsModuleOptions
 } from './symbols';
 import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
@@ -33,8 +34,6 @@ import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-o
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { HostEnvironment } from './host-environment/host-environment';
 import { ConfigValidator } from './internal/config-validator';
-
-type NgxsModuleOptions = Partial<NgxsConfig>;
 
 /**
  * Ngxs Module

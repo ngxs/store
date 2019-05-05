@@ -11,7 +11,9 @@ You can provide a config when you create your root `NgxsModule`, as `forRoot` ac
 ngxs.config.ts
 
 ```ts
-export const ngxsConfig = {
+import { NgxsModuleOptions } from '@ngxs/store';
+
+export const ngxsConfig: NgxsModuleOptions = {
   executionStrategy: NoopNgxsExecutionStrategy,
   developmentMode: !environment.production,
   compatibility: {
@@ -27,6 +29,10 @@ export const ngxsConfig = {
 app.module.ts
 
 ```ts
+import { NgxsModule } from '@ngxs/store';
+import { ngxsConfig } from './ngxs.config';
+...
+
 @NgModule({
   imports: [
     NgxsModule.forRoot(states, ngxsConfig)

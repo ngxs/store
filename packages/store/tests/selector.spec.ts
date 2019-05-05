@@ -11,6 +11,7 @@ import {
   StateClass
 } from '../src/internal/internals';
 import { NgxsConfig, SELECTOR_META_KEY } from '../src/symbols';
+import { SelectorOptions } from '../src/decorators/selector-options';
 
 describe('Selector', () => {
   interface MyStateModel {
@@ -214,7 +215,7 @@ describe('Selector', () => {
     });
   });
 
-  describe('(Decorator - v4 options)', () => {
+  describe('(Selector Options)', () => {
     function setupStore(
       states: StateClass<any, any>[],
       extendedOptions?: Partial<NgxsConfig>
@@ -300,6 +301,10 @@ describe('Selector', () => {
           bar: 'Bar'
         }
       })
+      @SelectorOptions({
+        injectContainerState: false,
+        suppressErrors: false
+      })
       class MyStateV4 {
         @Selector()
         static foo(state: MyStateModel) {
@@ -320,8 +325,12 @@ describe('Selector', () => {
         static fooAndBar(foo: string, bar: string) {
           return foo + bar;
         }
+
+        @Selector([MyStateV4])
+        static invalid(state: MyStateModel) {
+          throw new Error('This is a forced error');
+        }
       }
-      getStoreMetadata(MyStateV4).selectorOptions = { injectContainerState: false };
 
       it('should select from a simple selector', async(() => {
         // Arrange
@@ -358,6 +367,94 @@ describe('Selector', () => {
         // Assert
         expect(slice).toBe('FooBar');
       }));
+
+      it('should allow for no supression of errors in selectors', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        let exception: Error | null = null;
+        try {
+          store.selectSnapshot(MyStateV4.invalid);
+        } catch (e) {
+          exception = e;
+        }
+        // Assert
+        expect(exception).not.toBeNull();
+      }));
+    });
+
+    describe('[at query class level]', () => {
+      @State<MyStateModel>({
+        name: 'zoo',
+        defaults: {
+          foo: 'Foo',
+          bar: 'Bar'
+        }
+      })
+      class MyStateV4 {
+        @Selector()
+        static foo(state: MyStateModel) {
+          return state.foo;
+        }
+
+        @Selector()
+        static bar(state: MyStateModel) {
+          return state.bar;
+        }
+      }
+
+      @SelectorOptions({
+        injectContainerState: false,
+        suppressErrors: false
+      })
+      class MyStateV4Queries {
+        @Selector([MyStateV4, MyStateV4.foo])
+        static selfAndFoo(state: MyStateModel, myStateFoo: string) {
+          return state.foo + myStateFoo;
+        }
+
+        @Selector([MyStateV4.foo, MyStateV4.bar])
+        static fooAndBar(foo: string, bar: string) {
+          return foo + bar;
+        }
+
+        @Selector([MyStateV4])
+        static invalid(state: MyStateModel) {
+          throw new Error('This is a forced error');
+        }
+      }
+
+      it('should select from a self joined selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV4Queries.selfAndFoo);
+        // Assert
+        expect(slice).toBe('FooFoo');
+      }));
+
+      it('should select from a joined selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV4Queries.fooAndBar);
+        // Assert
+        expect(slice).toBe('FooBar');
+      }));
+
+      it('should allow for no supression of errors in selectors', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4]);
+        // Act
+        let exception: Error | null = null;
+        try {
+          store.selectSnapshot(MyStateV4Queries.invalid);
+        } catch (e) {
+          exception = e;
+        }
+        // Assert
+        expect(exception).not.toBeNull();
+      }));
     });
 
     describe('[at method level]', () => {
@@ -385,14 +482,11 @@ describe('Selector', () => {
         }
 
         @Selector([MyStateV3.foo, MyStateV3.bar])
+        @SelectorOptions({ injectContainerState: false })
         static v4StyleSelector_FooAndBar(foo: string, bar: string) {
           return foo + bar;
         }
       }
-
-      getSelectorMetadata(MyStateV3.v4StyleSelector_FooAndBar).selectorOptions = {
-        injectContainerState: false
-      };
 
       it('should select from a v3 selector', async(() => {
         // Arrange
