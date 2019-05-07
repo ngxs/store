@@ -5,7 +5,14 @@ import { Observable } from 'rxjs';
 
 import { Action } from '../../src/decorators/action';
 import { InitState, UpdateState } from '../../src/actions/actions';
-import { NgxsModule, Select, Selector, State, Store } from '../../src/public_api';
+import {
+  createSelector,
+  NgxsModule,
+  Select,
+  Selector,
+  State,
+  Store
+} from '../../src/public_api';
 import { assertType } from './utils/assert-type';
 
 describe('[TEST]: Action Types', () => {
@@ -13,11 +20,13 @@ describe('[TEST]: Action Types', () => {
 
   class FooAction {
     public type = 'FOO';
+
     constructor(public payload: string) {}
   }
 
   class BarAction {
     public static type = 'BAR';
+
     constructor(public payload: string) {}
   }
 
@@ -136,5 +145,121 @@ describe('[TEST]: Action Types', () => {
     assertType(() => store.selectSnapshot(state => state.foo.bar)); // $ExpectType any
     assertType(() => store.selectSnapshot({ foo: 'bar' })); // $ExpectError
     assertType(() => store.selectSnapshot()); // $ExpectError
+  });
+
+  it('should be correct detect type with store methods in component', () => {
+    @State<string[]>({
+      name: 'todo',
+      defaults: []
+    })
+    class TodoState {
+      @Selector() // $ExpectType (state: string[]) => string[]
+      public static todo(state: string[]): string[] {
+        return state;
+      }
+    }
+
+    class TestComponent {
+      public A1$: Observable<string[]> = this.select(TodoState.todo);
+      public B1$: Observable<number[]> = this.select(TodoState.todo); // $ExpectError
+      public C1$: Observable<number[]> = this.select<number[]>(TodoState.todo); // $ExpectError
+      public D1$: Observable<number[]> = this.select<any>(TodoState.todo);
+      public F1$: Observable<string[]> = this.select<string[]>(TodoState.todo);
+      public A2$: Observable<string[]> = this.selectOnce(TodoState.todo);
+      public B2$: Observable<number[]> = this.selectOnce(TodoState.todo); // $ExpectError
+      public C2$: Observable<number[]> = this.selectOnce<number[]>(TodoState.todo); // $ExpectError
+      public D2$: Observable<number[]> = this._store.selectOnce<any>(TodoState.todo);
+      public F2$: Observable<string[]> = this._store.selectOnce<string[]>(TodoState.todo);
+      public A3$: string[] = this.selectSnapshot(TodoState.todo);
+      public B3$: number[] = this.selectSnapshot(TodoState.todo); // $ExpectError
+      public C3$: number[] = this.selectSnapshot<number[]>(TodoState.todo); // $ExpectError
+      public D3$: number[] = this.selectSnapshot<any>(TodoState.todo);
+      public F3$: string[] = this.selectSnapshot<string[]>(TodoState.todo);
+
+      constructor(private readonly _store: Store) {}
+
+      private get selectSnapshot() {
+        return this._store.selectSnapshot;
+      }
+
+      private get selectOnce() {
+        return this._store.selectOnce;
+      }
+
+      private get select() {
+        return this._store.select;
+      }
+    }
+
+    const component: TestComponent = TestBed.get(TestComponent);
+
+    assertType(() => component.A1$); // $ExpectType Observable<string[]>
+    assertType(() => component.B1$); // $ExpectType Observable<number[]>
+    assertType(() => component.C1$); // $ExpectType Observable<number[]>
+    assertType(() => component.D1$); // $ExpectType Observable<number[]>
+    assertType(() => component.F1$); // $ExpectType Observable<string[]>
+
+    assertType(() => component.A2$); // $ExpectType Observable<string[]>
+    assertType(() => component.B2$); // $ExpectType Observable<number[]>
+    assertType(() => component.C2$); // $ExpectType Observable<number[]>
+    assertType(() => component.D2$); // $ExpectType Observable<number[]>
+    assertType(() => component.F2$); // $ExpectType Observable<string[]>
+
+    assertType(() => component.A3$); // $ExpectType string[]
+    assertType(() => component.B3$); // $ExpectType number[]
+    assertType(() => component.C3$); // $ExpectType number[]
+    assertType(() => component.D3$); // $ExpectType number[]
+    assertType(() => component.F3$); // $ExpectType string[]
+  });
+
+  it('should be correct detect type with createSelector', () => {
+    @State<string[]>({
+      name: 'todo',
+      defaults: []
+    })
+    class TodoState {
+      // $ExpectType () => (state: string[]) => string[]
+      static todoA() {
+        return createSelector(
+          [TodoState],
+          (state: string[]) => state.map(todo => todo).reverse()
+        );
+      }
+
+      // $ExpectType () => (...args: any[]) => any
+      static todoB() {
+        return createSelector([TodoState]); // $ExpectError
+      }
+
+      // $ExpectType () => (args: number) => string
+      static todoC() {
+        return createSelector<(args: number) => string>(
+          [1, null, 'Hello world'],
+          (state: number) => state.toString()
+        );
+      }
+
+      // $ExpectType () => (state: Observable<number>) => Observable<number>
+      static todoD() {
+        return createSelector(
+          [() => {}, [], {}, Infinity, NaN],
+          (state: Observable<number>) => state,
+          {
+            containerClass: Infinity,
+            selectorName: 'Hello world',
+            getSelectorOptions: () => ({})
+          }
+        );
+      }
+    }
+
+    assertType(() => store.selectSnapshot(TodoState.todoA())); // $ExpectType string[]
+    assertType(() => store.selectSnapshot(TodoState.todoA)); // $ExpectType (state: string[]) => string[]
+    assertType(() => store.selectSnapshot(TodoState.todoB())); // $ExpectType any
+    assertType(() => store.selectSnapshot(TodoState.todoB)); // $ExpectType (...args: any[]) => any
+    assertType(() => store.selectSnapshot(TodoState.todoC())); // $ExpectType string
+    assertType(() => store.selectSnapshot(TodoState.todoC)); // $ExpectType (args: number) => string
+    assertType(() => store.selectSnapshot(TodoState.todoD())); // $ExpectType Observable<number>
+    assertType(() => store.selectSnapshot(TodoState.todoD)); // $ExpectType (state: Observable<number>) => Observable<number>
   });
 });
