@@ -2,14 +2,6 @@
 # yarn lockfile v1
 
 
-"@angular-devkit/architect@0.13.8":
-  version "0.13.8"
-  resolved "https://registry.npmjs.org/@angular-devkit/architect/-/architect-0.13.8.tgz#c3b7469e15e2710d48b6fe4e54efea26b557bf14"
-  integrity sha512-gxUs5rhnP576T8ZclKqxlspiChrqRtqaJo54wqNVFvYKEjRZKyMa+1AK6p0oD9zcIToEkcjknj3BbtQa27lLHg==
-  dependencies:
-    "@angular-devkit/core" "7.3.8"
-    rxjs "6.3.3"
-
 "@angular-devkit/architect@0.13.9":
   version "0.13.9"
   resolved "https://registry.npmjs.org/@angular-devkit/architect/-/architect-0.13.9.tgz#8bbca4b968fccbf88fc2f86542cbee09e1256e1f"
@@ -18,16 +10,16 @@
     "@angular-devkit/core" "7.3.9"
     rxjs "6.3.3"
 
-"@angular-devkit/build-angular@~0.13.8":
-  version "0.13.8"
-  resolved "https://registry.npmjs.org/@angular-devkit/build-angular/-/build-angular-0.13.8.tgz#7ff949db46c78115e0bc45b3a2f9cad64459c016"
-  integrity sha512-uRb8CKC0hUdcE+Fv2Ov9LJNelyjsiMuddBpo8pdTKCIHVVC6hvip9S/Z18Tvb207kKI3k7Dn+Ji1J63mCqmQzA==
+"@angular-devkit/build-angular@~0.13.9":
+  version "0.13.9"
+  resolved "https://registry.npmjs.org/@angular-devkit/build-angular/-/build-angular-0.13.9.tgz#92ef7b55a1aa055b2f5c8ffed4bdb04df86db678"
+  integrity sha512-onh07LhdxotDFjja0KKsDWNCwgpM/ymuRr5h0e+vT4AgklP2Uioz1CpzVOgxPIKkdVdGR9QgDinVsWAmY90J8g==
   dependencies:
-    "@angular-devkit/architect" "0.13.8"
-    "@angular-devkit/build-optimizer" "0.13.8"
-    "@angular-devkit/build-webpack" "0.13.8"
-    "@angular-devkit/core" "7.3.8"
-    "@ngtools/webpack" "7.3.8"
+    "@angular-devkit/architect" "0.13.9"
+    "@angular-devkit/build-optimizer" "0.13.9"
+    "@angular-devkit/build-webpack" "0.13.9"
+    "@angular-devkit/core" "7.3.9"
+    "@ngtools/webpack" "7.3.9"
     ajv "6.9.1"
     autoprefixer "9.4.6"
     circular-dependency-plugin "5.0.2"
@@ -68,37 +60,26 @@
     webpack-sources "1.3.0"
     webpack-subresource-integrity "1.1.0-rc.6"
   optionalDependencies:
-    node-sass "4.11.0"
+    node-sass "4.12.0"
 
-"@angular-devkit/build-optimizer@0.13.8":
-  version "0.13.8"
-  resolved "https://registry.npmjs.org/@angular-devkit/build-optimizer/-/build-optimizer-0.13.8.tgz#0bcba1a4ef598c1a01caa60dd3603bac52a57b16"
-  integrity sha512-RvYxtsdYuvpFb1iivVixylSVN/Q8LsQ449uYuqEe3OsDjQBvUVG2fMLPOQjmKWhi0NC9WSsNiUluxLDNdvd0Vw==
+"@angular-devkit/build-optimizer@0.13.9":
+  version "0.13.9"
+  resolved "https://registry.npmjs.org/@angular-devkit/build-optimizer/-/build-optimizer-0.13.9.tgz#05a25ca7743876987158881585c55dfc478b95bd"
+  integrity sha512-GQtCntthQHSBv5l1ZY5p00JOECb/WcE1qUBo5kFjp84z0fszDkhOy52M1kcWCX4PFzJaY4DKk58hbUE/2UN0jw==
   dependencies:
     loader-utils "1.2.3"
     source-map "0.5.6"
     typescript "3.2.4"
     webpack-sources "1.3.0"
 
-"@angular-devkit/build-webpack@0.13.8":
-  version "0.13.8"
-  resolved "https://registry.npmjs.org/@angular-devkit/build-webpack/-/build-webpack-0.13.8.tgz#81e754442285dd4ece7d16a4d14ed80d7eaa9e27"
-  integrity sha512-WMyn1vUHyx+VfJKgYuEHrICwQzPMDTaUNB1zlvzZt9gX/9H+XnetrebeWBZCITPXHBw/377oA6wmiHWJ0yaZRw==
+"@angular-devkit/build-webpack@0.13.9":
+  version "0.13.9"
+  resolved "https://registry.npmjs.org/@angular-devkit/build-webpack/-/build-webpack-0.13.9.tgz#9fa091d778db752c539e1c585e21ba47d7054672"
+  integrity sha512-6ypu6pzNmQxzATF4rTWEhGSl5hyGQ8a/3aCZF/ux+XGc3d4hi2HW+NWlDm1UEna6ZjNtgEPlgfP4q8BKrjRmfA==
   dependencies:
-    "@angular-devkit/architect" "0.13.8"
-    "@angular-devkit/core" "7.3.8"
+    "@angular-devkit/architect" "0.13.9"
+    "@angular-devkit/core" "7.3.9"
     rxjs "6.3.3"
-
-"@angular-devkit/core@7.3.8":
-  version "7.3.8"
-  resolved "https://registry.npmjs.org/@angular-devkit/core/-/core-7.3.8.tgz#702b0944a69c71cce3a1492e0d62de18df22a993"
-  integrity sha512-3X9uzaZXFpm5o2TSzhD6wEOtVU32CgeytKjD1Scxj+uMMVo48SWLlKiFh312T+smI9ko7tOT8VqxglwYkWosgg==
-  dependencies:
-    ajv "6.9.1"
-    chokidar "2.0.4"
-    fast-json-stable-stringify "2.0.0"
-    rxjs "6.3.3"
-    source-map "0.7.3"
 
 "@angular-devkit/core@7.3.9":
   version "7.3.9"
@@ -477,12 +458,12 @@
   resolved "https://registry.npmjs.org/@ngtools/json-schema/-/json-schema-1.1.0.tgz#c3a0c544d62392acc2813a42c8a0dc6f58f86922"
   integrity sha1-w6DFRNYjkqzCgTpCyKDcb1j4aSI=
 
-"@ngtools/webpack@7.3.8":
-  version "7.3.8"
-  resolved "https://registry.npmjs.org/@ngtools/webpack/-/webpack-7.3.8.tgz#c8761d0f6959682e03032f8d3de718d1f811410e"
-  integrity sha512-gfjSKz+F/2T4tZHpnQ1XqelKP/CIfI87XdoHsOI53ceTUrAkVKsOb3ULmEfkcdsdQZ/HhmCiLivcutHcW8xkhQ==
+"@ngtools/webpack@7.3.9":
+  version "7.3.9"
+  resolved "https://registry.npmjs.org/@ngtools/webpack/-/webpack-7.3.9.tgz#db115dba8cc0886d8d822723be4119d3849fb4e3"
+  integrity sha512-+ROpqfCXLdQwfP+UNDLk4p959ZrocpStkdd2Iy9CeOJ8yDkityqpstTwQC3oHzzu/95BiyZ0hrHbM6AsPPIvJg==
   dependencies:
-    "@angular-devkit/core" "7.3.8"
+    "@angular-devkit/core" "7.3.9"
     enhanced-resolve "4.1.0"
     rxjs "6.3.3"
     tree-kill "1.2.1"
@@ -5190,12 +5171,7 @@ lodash._reinterpolate@~3.0.0:
   resolved "https://registry.npmjs.org/lodash._reinterpolate/-/lodash._reinterpolate-3.0.0.tgz#0ccf2d89166af03b3663c796538b75ac6e114d9d"
   integrity sha1-DM8tiRZq8Ds2Y8eWU4t1rG4RTZ0=
 
-lodash.assign@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.npmjs.org/lodash.assign/-/lodash.assign-4.2.0.tgz#0d99f3ccd7a6d261d19bdaeb9245005d285808e7"
-  integrity sha1-DZnzzNem0mHRm9rrkkUAXShYCOc=
-
-lodash.clonedeep@^4.3.2, lodash.clonedeep@^4.5.0:
+lodash.clonedeep@^4.5.0:
   version "4.5.0"
   resolved "https://registry.npmjs.org/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
@@ -5204,11 +5180,6 @@ lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
-
-lodash.mergewith@^4.6.0:
-  version "4.6.1"
-  resolved "https://registry.npmjs.org/lodash.mergewith/-/lodash.mergewith-4.6.1.tgz#639057e726c3afbdb3e7d42741caa8d6e4335927"
-  integrity sha512-eWw5r+PYICtEBgrBE5hhlT6aAa75f411bgDz/ZL2KZqYV03USvucsxcHUIlGTDTECs1eunpI7HOV7U+WLDvNdQ==
 
 lodash.sortby@^4.7.0:
   version "4.7.0"
@@ -5757,7 +5728,7 @@ mute-stream@0.0.7:
   resolved "https://registry.npmjs.org/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
   integrity sha1-MHXOk7whuPq0PhvE2n6BFe0ee6s=
 
-nan@^2.10.0, nan@^2.12.1:
+nan@^2.12.1, nan@^2.13.2:
   version "2.13.2"
   resolved "https://registry.npmjs.org/nan/-/nan-2.13.2.tgz#f51dc7ae66ba7d5d55e1e6d4d8092e802c9aefe7"
   integrity sha512-TghvYc72wlMGMVMluVo9WRJc0mB8KxxF/gZ4YYFy7V2ZQX9l7rgbPg7vjS9mt6U5HXODVFVI2bOduCzwOMv/lw==
@@ -5936,10 +5907,10 @@ node-sass-tilde-importer@^1.0.0:
   dependencies:
     find-parent-dir "^0.3.0"
 
-node-sass@4.11.0:
-  version "4.11.0"
-  resolved "https://registry.npmjs.org/node-sass/-/node-sass-4.11.0.tgz#183faec398e9cbe93ba43362e2768ca988a6369a"
-  integrity sha512-bHUdHTphgQJZaF1LASx0kAviPH7sGlcyNhWade4eVIpFp6tsn7SV8xNMTbsQFpEV9VXpnwTTnNYlfsZXgGgmkA==
+node-sass@4.12.0:
+  version "4.12.0"
+  resolved "https://registry.npmjs.org/node-sass/-/node-sass-4.12.0.tgz#0914f531932380114a30cc5fa4fa63233a25f017"
+  integrity sha512-A1Iv4oN+Iel6EPv77/HddXErL2a+gZ4uBeZUy+a8O35CFYTXhgA8MgLCWBtwpGZdCvTvQ9d+bQxX/QC36GDPpQ==
   dependencies:
     async-foreach "^0.1.3"
     chalk "^1.1.1"
@@ -5948,12 +5919,10 @@ node-sass@4.11.0:
     get-stdin "^4.0.1"
     glob "^7.0.3"
     in-publish "^2.0.0"
-    lodash.assign "^4.2.0"
-    lodash.clonedeep "^4.3.2"
-    lodash.mergewith "^4.6.0"
+    lodash "^4.17.11"
     meow "^3.7.0"
     mkdirp "^0.5.1"
-    nan "^2.10.0"
+    nan "^2.13.2"
     node-gyp "^3.8.0"
     npmlog "^4.0.0"
     request "^2.88.0"
