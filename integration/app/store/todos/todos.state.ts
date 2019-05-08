@@ -2,7 +2,7 @@ import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
 import { tap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { queueScheduler, scheduled } from 'rxjs';
 
 import { TodoState } from '@integration/store/todos/todo/todo.state';
 import { Pizza, TodoStateModel } from '@integration/store/todos/todos.model';
@@ -23,7 +23,7 @@ export class TodosState {
   }
 
   @Action(SetPrefix)
-  public setPrefix({ getState, setState, patchState }: StateContext<TodoStateModel>) {
+  public setPrefix({ setState }: StateContext<TodoStateModel>) {
     setState(
       patch({
         pizza: patch({
@@ -38,6 +38,8 @@ export class TodosState {
   @Action(LoadData)
   public loadData({ patchState }: StateContext<TodoStateModel>) {
     const data = { toppings: 'pineapple', crust: 'medium', extras: [false, false, true] };
-    return of(data).pipe(tap(values => patchState({ pizza: { model: { ...values } } })));
+    return scheduled([data], queueScheduler).pipe(
+      tap(values => patchState({ pizza: { model: { ...values } } }))
+    );
   }
 }

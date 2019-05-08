@@ -1,6 +1,6 @@
 import { ErrorHandler, Injectable, NgZone } from '@angular/core';
 import { async, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { timer, of, throwError } from 'rxjs';
+import { timer, throwError, scheduled, queueScheduler } from 'rxjs';
 import { tap, skip, delay } from 'rxjs/operators';
 
 import { State } from '../src/decorators/state';
@@ -99,7 +99,7 @@ describe('Dispatch', () => {
       increment({ getState, setState }: StateContext<number>) {
         setState(getState() + 1);
         spy();
-        return of({});
+        return scheduled([{}], queueScheduler);
       }
     }
 
@@ -441,9 +441,8 @@ describe('Dispatch', () => {
           defaults: 0
         })
         class MyState {
-          @Action(Increment)
-          increment({ getState, setState, dispatch }: StateContext<number>) {
-            return of({}).pipe(
+          @Action(Increment) increment() {
+            return scheduled([{}], queueScheduler).pipe(
               delay(1),
               tap(() => actionsHandled++)
             );
@@ -469,17 +468,15 @@ describe('Dispatch', () => {
           defaults: 0
         })
         class MyState {
-          @Action(Increment)
-          increment({ getState, setState, dispatch }: StateContext<number>) {
-            return of({}).pipe(
+          @Action(Increment) increment() {
+            return scheduled([{}], queueScheduler).pipe(
               delay(1),
               tap(() => actionsHandled++)
             );
           }
 
-          @Action(Increment)
-          incrementAgain({ getState, setState, dispatch }: StateContext<number>) {
-            return of({}).pipe(
+          @Action(Increment) incrementAgain() {
+            return scheduled([{}], queueScheduler).pipe(
               delay(2),
               tap(() => actionsHandled++)
             );
@@ -507,21 +504,18 @@ describe('Dispatch', () => {
           defaults: 0
         })
         class MyState {
-          @Action(Increment)
-          incrementSync({ getState, setState, dispatch }: StateContext<number>) {
+          @Action(Increment) incrementSync() {
             actionsHandled++;
           }
 
-          @Action(Increment)
-          incrementAsync({ getState, setState, dispatch }: StateContext<number>) {
+          @Action(Increment) incrementAsync() {
             return new Promise<void>(resolve => setTimeout(resolve, 1)).then(
               () => actionsHandled++
             );
           }
 
-          @Action(Increment)
-          incrementObservable({ getState, setState, dispatch }: StateContext<number>) {
-            return of({}).pipe(
+          @Action(Increment) incrementObservable() {
+            return scheduled([{}], queueScheduler).pipe(
               delay(2),
               tap(() => actionsHandled++)
             );
@@ -810,7 +804,7 @@ describe('Dispatch', () => {
         class MyState {
           @Action(Append)
           append({ getState, setState }: StateContext<string>, { payload }: Append) {
-            return of({}).pipe(
+            return scheduled([{}], queueScheduler).pipe(
               delay(payload.length * 10),
               tap(() => setState(getState() + payload))
             );
@@ -848,7 +842,7 @@ describe('Dispatch', () => {
         class MyState {
           @Action(Append)
           append({ getState, setState }: StateContext<string>, { payload }: Append) {
-            return of({}).pipe(
+            return scheduled([{}], queueScheduler).pipe(
               delay(payload.length * 10),
               tap(() => setState(getState() + payload))
             );
