@@ -11,7 +11,7 @@ States should have a `.state.ts` suffix for the filename
 State interfaces should be named the name of the state followed by the `Model` suffix. If my
 state were called `ZooState`, we would call my state interface `ZooStateModel`.
 
-### Select suffix
+### Select Suffix
 Selects should have a `$` suffix. Right: `animals$` Wrong: `animals`
 
 ### Plugin Suffix
@@ -28,9 +28,9 @@ Actions can live within the store file but are recommended to be a separate file
 ### Action Suffixes
 Actions should NOT have a suffix
 
-### Unit tests
+### Unit Tests
 Unit tests for the state should be named `my-store-name.state.spec.ts`
 
 ### Action Operations
 Actions should NOT deal with view related operations (i.e. showing popups/etc). Use the action
-stream to handle these types of operations.
+stream to handle these types of operations
