@@ -72,11 +72,13 @@ describe('Select', () => {
     expect(removeDollarAtTheEnd('foo$')).toBe('foo');
     expect(removeDollarAtTheEnd('foo')).toBe('foo');
 
-    // noinspection AngularMissingOrInvalidDeclarationInModule
     @Component({ template: '' })
     class SelectComponent {
-      @Select() counter$: Observable<any>;
-      @Select() counter: Observable<any>;
+      @Select()
+      counter$: Observable<any>;
+
+      @Select()
+      counter: Observable<any>;
     }
 
     TestBed.configureTestingModule({
@@ -94,7 +96,6 @@ describe('Select', () => {
   });
 
   it('should select the correct state using string', async(() => {
-    // noinspection AngularMissingOrInvalidDeclarationInModule
     @Component({
       selector: 'my-component-0',
       template: ''
@@ -128,7 +129,6 @@ describe('Select', () => {
   }));
 
   it('should select the correct state using a state class', async(() => {
-    // noinspection AngularMissingOrInvalidDeclarationInModule
     @Component({
       selector: 'my-component-1',
       template: ''
@@ -162,7 +162,6 @@ describe('Select', () => {
   }));
 
   it('should select the correct state using a function', async(() => {
-    // noinspection AngularMissingOrInvalidDeclarationInModule
     @Component({
       selector: 'my-component-1',
       template: ''
@@ -185,7 +184,6 @@ describe('Select', () => {
   }));
 
   it('should select the correct state after timeout', async(() => {
-    // noinspection AngularMissingOrInvalidDeclarationInModule
     @Component({
       selector: 'my-component-1',
       template: ''
@@ -218,7 +216,6 @@ describe('Select', () => {
   }));
 
   it('should not fail when TypeError is thrown in select lambda', async(() => {
-    // noinspection AngularMissingOrInvalidDeclarationInModule
     @Component({
       selector: 'my-component-1',
       template: ''
@@ -254,7 +251,6 @@ describe('Select', () => {
   }
 
   it('should not fail when TypeError is thrown in select lambda', async(() => {
-    // noinspection AngularMissingOrInvalidDeclarationInModule
     @Component({
       selector: 'my-component-1',
       template: ''

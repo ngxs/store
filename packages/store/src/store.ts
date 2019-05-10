@@ -1,6 +1,6 @@
 // tslint:disable:unified-signatures
 import { Injectable, Type } from '@angular/core';
-import { Observable, queueScheduler, scheduled, Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
 
 import { getSelectorFn } from './utils/selector-utils';
@@ -45,7 +45,7 @@ export class Store {
       catchError(err => {
         // if error is TypeError we swallow it to prevent usual errors with property access
         if (err instanceof TypeError) {
-          return scheduled([undefined], queueScheduler);
+          return of(undefined);
         }
 
         // rethrow other errors

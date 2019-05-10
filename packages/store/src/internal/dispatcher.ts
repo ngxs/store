@@ -1,14 +1,5 @@
 import { ErrorHandler, Injectable } from '@angular/core';
-import {
-  EMPTY,
-  forkJoin,
-  Observable,
-  of,
-  queueScheduler,
-  scheduled,
-  Subject,
-  throwError
-} from 'rxjs';
+import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
 
 import { compose } from '../utils/compose';
@@ -96,7 +87,7 @@ export class InternalDispatcher {
         exhaustMap((ctx: ActionContext) => {
           switch (ctx.status) {
             case ActionStatus.Successful:
-              return scheduled([this._stateStream.getValue()], queueScheduler);
+              return of(this._stateStream.getValue());
             case ActionStatus.Errored:
               return throwError(ctx.error);
             default:
