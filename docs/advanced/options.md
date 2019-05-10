@@ -1,6 +1,6 @@
 # Options
 
-You can provide an `NgxsModuleOptions` object as the second argument of your `NgxsModule.forRoot`call. The following options are available:
+You can provide an `NgxsModuleOptions` object as the second argument of your `NgxsModule.forRoot` call. The following options are available:
 
 - `developmentMode` - Setting this to `true` will add additional debugging features that are useful for development time. This includes freezing your state and actions to guarantee immutability. (Default value is `false`)
 - `selectorOptions` - A nested options object for providing a global options setting to be used for selectors. This can be overridden at the class or specific selector method level using the `SelectorOptions` decorator. The following options are available:
