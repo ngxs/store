@@ -4,13 +4,8 @@ import { createSelector } from '../src/utils/selector-utils';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { Selector } from '../src/decorators/selector';
-import { getStoreMetadata } from '../src/public_api';
-import {
-  getSelectorMetadata,
-  SharedSelectorOptions,
-  StateClass
-} from '../src/internal/internals';
-import { NgxsConfig, SELECTOR_META_KEY } from '../src/symbols';
+import { StateClass } from '../src/internal/internals';
+import { NgxsConfig } from '../src/symbols';
 import { SelectorOptions } from '../src/decorators/selector-options';
 
 describe('Selector', () => {

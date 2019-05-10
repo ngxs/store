@@ -1,18 +1,6 @@
 /* tslint:disable:max-line-length */
 /// <reference types="@types/jasmine" />
-import { TestBed } from '@angular/core/testing';
-import { Observable } from 'rxjs';
-
-import { Action } from '../../src/decorators/action';
-import { InitState, UpdateState } from '../../src/actions/actions';
-import {
-  NgxsModule,
-  Select,
-  Selector,
-  State,
-  Store,
-  SelectorOptions
-} from '../../src/public_api';
+import { Selector, State, SelectorOptions } from '../../src/public_api';
 import { assertType } from './utils/assert-type';
 
 describe('[TEST]: The SelectorOptions decorator', () => {
