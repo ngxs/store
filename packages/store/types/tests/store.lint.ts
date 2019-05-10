@@ -154,62 +154,21 @@ describe('[TEST]: Action Types', () => {
     })
     class TodoState {
       @Selector() // $ExpectType (state: string[]) => string[]
-      public static todo(state: string[]): string[] {
-        return state;
+      public static reverse(state: string[]): string[] {
+        return state.reverse();
       }
     }
 
-    class TestComponent {
-      public A1$: Observable<string[]> = this.select(TodoState.todo);
-      public B1$: Observable<number[]> = this.select(TodoState.todo); // $ExpectError
-      public C1$: Observable<number[]> = this.select<number[]>(TodoState.todo); // $ExpectError
-      public D1$: Observable<number[]> = this.select<any>(TodoState.todo);
-      public F1$: Observable<string[]> = this.select<string[]>(TodoState.todo);
-      public A2$: Observable<string[]> = this.selectOnce(TodoState.todo);
-      public B2$: Observable<number[]> = this.selectOnce(TodoState.todo); // $ExpectError
-      public C2$: Observable<number[]> = this.selectOnce<number[]>(TodoState.todo); // $ExpectError
-      public D2$: Observable<number[]> = this._store.selectOnce<any>(TodoState.todo);
-      public F2$: Observable<string[]> = this._store.selectOnce<string[]>(TodoState.todo);
-      public A3$: string[] = this.selectSnapshot(TodoState.todo);
-      public B3$: number[] = this.selectSnapshot(TodoState.todo); // $ExpectError
-      public C3$: number[] = this.selectSnapshot<number[]>(TodoState.todo); // $ExpectError
-      public D3$: number[] = this.selectSnapshot<any>(TodoState.todo);
-      public F3$: string[] = this.selectSnapshot<string[]>(TodoState.todo);
+    type Any = number | string | boolean | object;
 
-      constructor(private readonly _store: Store) {}
-
-      private get selectSnapshot() {
-        return this._store.selectSnapshot;
-      }
-
-      private get selectOnce() {
-        return this._store.selectOnce;
-      }
-
-      private get select() {
-        return this._store.select;
-      }
+    class CheckSelectorComponent {
+      @Select() public A$: Observable<any>; // $ExpectType Observable<any>
+      @Select(TodoState) public B$: Observable<Any>; // $ExpectType Observable<Any>
+      @Select(TodoState.reverse) public C$: Observable<Any>; // $ExpectType Observable<Any>
+      @Select(TodoState.reverse) public D$: Number | Object; // $ExpectType Object | Number
     }
 
-    const component: TestComponent = TestBed.get(TestComponent);
-
-    assertType(() => component.A1$); // $ExpectType Observable<string[]>
-    assertType(() => component.B1$); // $ExpectType Observable<number[]>
-    assertType(() => component.C1$); // $ExpectType Observable<number[]>
-    assertType(() => component.D1$); // $ExpectType Observable<number[]>
-    assertType(() => component.F1$); // $ExpectType Observable<string[]>
-
-    assertType(() => component.A2$); // $ExpectType Observable<string[]>
-    assertType(() => component.B2$); // $ExpectType Observable<number[]>
-    assertType(() => component.C2$); // $ExpectType Observable<number[]>
-    assertType(() => component.D2$); // $ExpectType Observable<number[]>
-    assertType(() => component.F2$); // $ExpectType Observable<string[]>
-
-    assertType(() => component.A3$); // $ExpectType string[]
-    assertType(() => component.B3$); // $ExpectType number[]
-    assertType(() => component.C3$); // $ExpectType number[]
-    assertType(() => component.D3$); // $ExpectType number[]
-    assertType(() => component.F3$); // $ExpectType string[]
+    TestBed.get(CheckSelectorComponent); // $ExpectType any
   });
 
   it('should be correct detect type with createSelector', () => {
