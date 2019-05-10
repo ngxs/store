@@ -1,6 +1,5 @@
 {
   "rules": {
-    "deprecation": true,
     "callable-types": true,
     "class-name": true,
     "comment-format": [true, "check-space"],

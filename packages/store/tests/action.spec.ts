@@ -1,7 +1,7 @@
 import { ErrorHandler } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { delay } from 'rxjs/operators';
-import { queueScheduler, scheduled, throwError } from 'rxjs';
+import { throwError, of } from 'rxjs';
 
 import { Action } from '../src/decorators/action';
 import { State } from '../src/decorators/state';
@@ -54,12 +54,12 @@ describe('Action', () => {
 
     @Action({ type: 'OBJECT_LITERAL' })
     onObjectLiteral() {
-      return scheduled([{}], queueScheduler);
+      return of({});
     }
 
     @Action(CancelingAction, { cancelUncompleted: true })
     barGetsCanceled() {
-      return scheduled([{}], queueScheduler).pipe(delay(0));
+      return of({}).pipe(delay(0));
     }
   }
 
