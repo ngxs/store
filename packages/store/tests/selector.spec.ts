@@ -276,12 +276,19 @@ describe('Selector', () => {
         static fooAndBar(foo: string, bar: string) {
           return foo + bar;
         }
+
+        @Selector()
+        static invalid(state: MyStateModel) {
+          throw new Error('This is a forced error');
+        }
       }
 
-      it('should configure v4 selectors globally', async(() => {
+      it('should configure injectContainerState as false globally', async(() => {
         // Arrange
         const store = setupStore([MyStateV4_1, MyStateV4_2], {
-          selectorOptions: { injectContainerState: false }
+          selectorOptions: {
+            injectContainerState: false
+          }
         });
         // Act & Assert
         expect(store.selectSnapshot(MyStateV4_1.foo)).toBe('Foo1');
@@ -290,6 +297,24 @@ describe('Selector', () => {
         expect(store.selectSnapshot(MyStateV4_2.foo)).toBe('Foo2');
         expect(store.selectSnapshot(MyStateV4_2.bar)).toBe('Bar2');
         expect(store.selectSnapshot(MyStateV4_2.fooAndBar)).toBe('Foo2Bar2');
+      }));
+
+      it('should successfully globally configure no supression of selector errors', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV4_1, MyStateV4_2], {
+          selectorOptions: {
+            suppressErrors: false
+          }
+        });
+        // Act
+        let exception: Error | null = null;
+        try {
+          store.selectSnapshot(MyStateV4_2.invalid);
+        } catch (e) {
+          exception = e;
+        }
+        // Assert
+        expect(exception).not.toBeNull();
       }));
     });
 
@@ -368,7 +393,7 @@ describe('Selector', () => {
         expect(slice).toBe('FooBar');
       }));
 
-      it('should allow for no supression of errors in selectors', async(() => {
+      it('should successfully configure no supression of selector errors', async(() => {
         // Arrange
         const store = setupStore([MyStateV4]);
         // Act
@@ -442,7 +467,7 @@ describe('Selector', () => {
         expect(slice).toBe('FooBar');
       }));
 
-      it('should allow for no supression of errors in selectors', async(() => {
+      it('should successfully configure no supression of selector errors', async(() => {
         // Arrange
         const store = setupStore([MyStateV4]);
         // Act
@@ -486,6 +511,18 @@ describe('Selector', () => {
         static v4StyleSelector_FooAndBar(foo: string, bar: string) {
           return foo + bar;
         }
+
+        @SelectorOptions({ injectContainerState: false })
+        @Selector([MyStateV3.foo, MyStateV3.bar])
+        static V4StyleSelector_flipped_FooAndBar(foo: string, bar: string) {
+          return foo + bar;
+        }
+
+        @Selector([MyStateV3])
+        @SelectorOptions({ suppressErrors: false })
+        static invalid(state: MyStateModel) {
+          throw new Error('This is a forced error');
+        }
       }
 
       it('should select from a v3 selector', async(() => {
@@ -504,6 +541,29 @@ describe('Selector', () => {
         const slice = store.selectSnapshot(MyStateV3.v4StyleSelector_FooAndBar);
         // Assert
         expect(slice).toBe('FooBar');
+      }));
+
+      it('should select from a v4 selector when provided before @Selector', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV3]);
+        // Act
+        const slice = store.selectSnapshot(MyStateV3.V4StyleSelector_flipped_FooAndBar);
+        // Assert
+        expect(slice).toBe('FooBar');
+      }));
+
+      it('should successfully configure no supression of selector errors', async(() => {
+        // Arrange
+        const store = setupStore([MyStateV3]);
+        // Act
+        let exception: Error | null = null;
+        try {
+          store.selectSnapshot(MyStateV3.invalid);
+        } catch (e) {
+          exception = e;
+        }
+        // Assert
+        expect(exception).not.toBeNull();
       }));
     });
   });

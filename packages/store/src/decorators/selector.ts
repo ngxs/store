@@ -26,7 +26,8 @@ export function Selector(selectors?: any[]) {
               }
             );
           return memoizedFn;
-        }
+        },
+        originalFn
       };
     } else {
       throw new Error('Selectors only work on methods');
