@@ -13,8 +13,8 @@ export function SelectorOptions(options: SharedSelectorOptions) {
     ) {
       if (methodName) {
         // Method Decorator
-        if (descriptor.value) {
-          const originalFn = descriptor.value;
+        const originalFn = descriptor.value || (<any>descriptor).originalFn;
+        if (originalFn) {
           selectorOptionsMetaAccessor.defineOptions(originalFn, options);
         }
       } else {
