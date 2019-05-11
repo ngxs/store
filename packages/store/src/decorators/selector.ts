@@ -8,7 +8,7 @@ export function Selector(selectors?: any[]) {
     if (descriptor.value !== null) {
       const originalFn = descriptor.value;
       let memoizedFn: any = null;
-      return {
+      const newDescriptor = {
         configurable: true,
         get() {
           // Selector initialisation defered to here so that it is at runtime, not decorator parse time
@@ -26,9 +26,11 @@ export function Selector(selectors?: any[]) {
               }
             );
           return memoizedFn;
-        },
-        originalFn
+        }
       };
+      // Add hidden property to descriptor
+      (<any>newDescriptor)['originalFn'] = originalFn;
+      return newDescriptor;
     } else {
       throw new Error('Selectors only work on methods');
     }
