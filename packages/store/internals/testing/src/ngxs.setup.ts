@@ -1,33 +1,51 @@
-import { ApplicationRef, ModuleWithProviders } from '@angular/core';
-import { NgxsModule, NgxsModuleOptions, Store } from '@ngxs/store';
-import { TestBed } from '@angular/core/testing';
+import { ApplicationRef } from '@angular/core';
+import { TestBed, TestBedStatic } from '@angular/core/testing';
 import { DOCUMENT } from '@angular/common';
 import {
   ɵBrowserDomAdapter as BrowserDomAdapter,
   ɵDomAdapter as DomAdapter
 } from '@angular/platform-browser';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting
+} from '@angular/platform-browser-dynamic/testing';
+import { NgxsModule, Store } from '@ngxs/store';
 
 import { NgxsTestModule } from './helpers/ngxs-test.module';
-import { NgxsTesting } from './symbol';
+import { NgxsOptionsTesting, NgxsTesting } from './symbol';
 
 export class NgxsTestBed {
-  public static configureTestingState(
-    states: any[], // TODO: change to StateClass
-    options: NgxsModuleOptions = {},
-    modules: ModuleWithProviders[] = []
-  ): NgxsTesting {
+  public static configureTestingStates(options: NgxsOptionsTesting): NgxsTesting {
+    this.resetTestBed();
+
     TestBed.configureTestingModule({
-      imports: [NgxsTestModule, NgxsModule.forRoot(states, options), ...modules]
+      imports: [
+        NgxsTestModule,
+        NgxsModule.forRoot(options.states || [], options.ngxsOptions || {}),
+        ...(options.imports || [])
+      ]
     }).compileComponents();
 
-    NgxsTestBed.createRootNode();
-    NgxsTestModule.ngDoBootstrap(TestBed.get(ApplicationRef));
+    NgxsTestBed.ngxsBootstrap();
 
     return {
       get store(): Store {
         return TestBed.get(Store);
+      },
+      get getTestBed(): TestBedStatic {
+        return TestBed;
       }
     };
+  }
+
+  private static ngxsBootstrap(): void {
+    NgxsTestBed.createRootNode();
+    NgxsTestModule.ngDoBootstrap(TestBed.get(ApplicationRef));
+  }
+
+  private static resetTestBed(): void {
+    TestBed.resetTestEnvironment();
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
   }
 
   private static createRootNode(selector = 'app-root'): void {
