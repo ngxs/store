@@ -1,25 +1,23 @@
 import {
   ApplicationRef,
-  NgZone,
   Component,
-  PlatformRef,
-  NgModule,
   DoBootstrap,
-  NgModuleRef
+  NgModule,
+  NgModuleRef,
+  NgZone,
+  PlatformRef
 } from '@angular/core';
-import { TestBed, async, fakeAsync } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import {
-  ɵDomAdapter as DomAdapter,
-  ɵBrowserDomAdapter as BrowserDomAdapter,
   BrowserModule,
-  DOCUMENT
+  ɵBrowserDomAdapter as BrowserDomAdapter,
+  ɵDomAdapter as DomAdapter
 } from '@angular/platform-browser';
-
-import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { State, Action, StateContext, NgxsModule, Store, Select } from '../src/public_api';
+import { Action, NgxsModule, State, StateContext, Store } from '../src/public_api';
 import { NoopNgxsExecutionStrategy } from '../src/execution/noop-ngxs-execution-strategy';
+import { DOCUMENT } from '@angular/common';
 
 describe('zone', () => {
   class Increment {

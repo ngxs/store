@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { Component, ApplicationRef, NgModule, OnInit, AfterViewInit } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { AfterViewInit, ApplicationRef, Component, NgModule, OnInit } from '@angular/core';
 import {
-  ɵDomAdapter as DomAdapter,
+  BrowserModule,
   ɵBrowserDomAdapter as BrowserDomAdapter,
-  BrowserModule
+  ɵDomAdapter as DomAdapter
 } from '@angular/platform-browser';
 
 import { InitState, UpdateState } from '../src/actions/actions';
@@ -12,6 +11,7 @@ import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../s
 
 import { META_KEY, NgxsAfterBootstrap } from '../src/symbols';
 import { StoreValidators } from '../src/utils/store-validators';
+import { DOCUMENT } from '@angular/common';
 
 describe('State', () => {
   it('describes correct name', () => {
@@ -213,7 +213,7 @@ describe('State', () => {
     });
   });
 
-  describe('"ngxsAfterBootstrap" lifecycle hook', () => {
+  describe('ngxsAfterBootstrap" lifecycle hook', () => {
     function createRootNode(selector = 'app-root'): void {
       const document = TestBed.get(DOCUMENT);
       const adapter: DomAdapter = new BrowserDomAdapter();

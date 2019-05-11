@@ -6,7 +6,7 @@ export class HmrStateContextFactory<T, S> {
   public store: Store;
 
   constructor(module: NgModuleRef<T>) {
-    const store = module.injector.get(Store, null);
+    const store = module.injector.get<Store>(Store, undefined);
 
     if (!store) {
       throw new Error('Store not found, maybe you forgot to import the NgxsModule');

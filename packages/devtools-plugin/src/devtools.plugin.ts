@@ -1,12 +1,12 @@
-import { Injectable, Inject, Injector } from '@angular/core';
-import { NgxsPlugin, getActionTypeFromInstance, Store, NgxsNextPluginFn } from '@ngxs/store';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { getActionTypeFromInstance, NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
 import {
-  NgxsDevtoolsExtension,
-  NgxsDevtoolsOptions,
   NGXS_DEVTOOLS_OPTIONS,
-  NgxsDevtoolsAction
+  NgxsDevtoolsAction,
+  NgxsDevtoolsExtension,
+  NgxsDevtoolsOptions
 } from './symbols';
 
 /**
@@ -28,6 +28,13 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
       this.devtoolsExtension = globalDevtools.connect(_options) as NgxsDevtoolsExtension;
       this.devtoolsExtension.subscribe(a => this.dispatched(a));
     }
+  }
+
+  /**
+   * Lazy get the store for circular dependency issues
+   */
+  private get store(): Store {
+    return this._injector.get<Store>(Store);
   }
 
   /**
@@ -58,15 +65,13 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
    * Handle the action from the dev tools subscription
    */
   dispatched(action: NgxsDevtoolsAction) {
-    // Lazy get the store for circular depedency issues
-    const store = this._injector.get(Store);
     if (action.type === 'DISPATCH') {
       if (
         action.payload.type === 'JUMP_TO_ACTION' ||
         action.payload.type === 'JUMP_TO_STATE'
       ) {
         const prevState = JSON.parse(action.state);
-        store.reset(prevState);
+        this.store.reset(prevState);
       } else if (action.payload.type === 'TOGGLE_ACTION') {
         console.warn('Skip is not supported at this time.');
       } else if (action.payload.type === 'IMPORT_STATE') {
@@ -81,11 +86,11 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
           .forEach(actionId =>
             this.devtoolsExtension!.send(actionsById[actionId], computedStates[actionId].state)
           );
-        store.reset(computedStates[currentStateIndex].state);
+        this.store.reset(computedStates[currentStateIndex].state);
       }
     } else if (action.type === 'ACTION') {
       const actionPayload = JSON.parse(action.payload);
-      store.dispatch(actionPayload);
+      this.store.dispatch(actionPayload);
     }
   }
 }
