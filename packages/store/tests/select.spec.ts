@@ -88,7 +88,7 @@ describe('Select', () => {
 
     const { counter$, counter } = TestBed.createComponent(SelectComponent).componentInstance;
 
-    combineLatest(counter$, counter)
+    combineLatest([counter$, counter])
       .pipe(first())
       .subscribe(([counter1, counter2]) => {
         expect(counter1).toEqual(counter2);
