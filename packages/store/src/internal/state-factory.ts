@@ -24,8 +24,7 @@ import {
   StateKeyGraph,
   StatesAndDefaults,
   StatesByName,
-  topologicalSort,
-  SharedSelectorOptions
+  topologicalSort
 } from './internals';
 import { getActionTypeFromInstance, getValue, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -34,6 +33,7 @@ import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
 import { InternalStateOperations } from '../internal/state-operations';
+import { NgxsHmrRuntime } from '@ngxs/store/internals';
 
 /**
  * State factory class
@@ -42,8 +42,6 @@ import { InternalStateOperations } from '../internal/state-operations';
 @Injectable()
 export class StateFactory {
   private _connected = false;
-  private _states: MappedStore[] = [];
-  private _statesByName: StatesByName = {};
 
   constructor(
     private _injector: Injector,
@@ -51,22 +49,22 @@ export class StateFactory {
     @Optional()
     @SkipSelf()
     private _parentFactory: StateFactory,
+    @Optional() private _internalStateOperations: InternalStateOperations,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
-    private _stateContextFactory: StateContextFactory,
-    private _internalStateOperations: InternalStateOperations
+    private _stateContextFactory: StateContextFactory
   ) {}
+
+  private _states: MappedStore[] = [];
 
   public get states(): MappedStore[] {
     return this._parentFactory ? this._parentFactory.states : this._states;
   }
 
+  private _statesByName: StatesByName = {};
+
   public get statesByName(): StatesByName {
     return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
-  }
-
-  private get stateTreeRef(): ObjectKeyMap<any> {
-    return this._internalStateOperations.getRootStateOperations().getState();
   }
 
   private static cloneDefaults(defaults: any): any {
@@ -242,7 +240,8 @@ export class StateFactory {
    * @param path
    */
   private hasBeenMountedAndBootstrapped(name: string, path: string): boolean {
-    const valueIsBootstrapped: boolean = getValue(this.stateTreeRef, path) !== undefined;
-    return this.statesByName[name] && valueIsBootstrapped;
+    const valueIsBootstrappedImHmrRuntime: boolean =
+      getValue(NgxsHmrRuntime.snapshot, path) !== undefined;
+    return this.statesByName[name] && valueIsBootstrappedImHmrRuntime;
   }
 }

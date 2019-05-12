@@ -1,11 +1,8 @@
 import { StateContext } from '@ngxs/store';
 import { NgModuleRef } from '@angular/core';
+import { HmrSnapshot } from '@ngxs/store/internals';
 
-export interface NgxsHmrSnapshot {
-  [key: string]: any;
-}
-
-export const NGXS_HMR_SNAPSHOT_KEY = '__NGXS_HMR_SNAPSHOT__';
+export type NgxsHmrSnapshot = HmrSnapshot;
 
 export interface NgxsHmrLifeCycle<T = NgxsHmrSnapshot> {
   /**

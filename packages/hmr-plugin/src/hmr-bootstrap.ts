@@ -12,14 +12,15 @@ export async function hmr<T>(
     throw new Error('HMR is not enabled for webpack-dev-server!');
   }
 
+  module.hot.accept();
   const manager = new HmrManager<T>(module, options);
 
   return await manager.hmrModule(bootstrapFn, () => {
     manager.beforeModuleBootstrap();
 
     module.hot.dispose(async () => {
-      await manager.beforeModuleOnDestroy();
-      await manager.createNewModule();
+      manager.beforeModuleOnDestroy();
+      manager.createNewModule();
     });
   });
 }

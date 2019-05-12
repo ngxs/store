@@ -1,18 +1,17 @@
 import { NgxsBootstrapper } from '@ngxs/store/internals';
 import { Observable, Subscription } from 'rxjs';
 import { StateContext } from '@ngxs/store';
+import { NgxsHmrRuntime } from '@ngxs/store/internals';
 
 import { HmrOptionBuilder } from './hmr-options-builder';
 import { HmrCallback, NgxsHmrLifeCycle } from '../symbols';
 import { HmrStateContextFactory } from './hmr-state-context-factory';
 import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
-import { HmrStorage } from './hmr-storage';
 
 export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   constructor(
     private ngAppModule: T,
     private bootstrap: NgxsBootstrapper,
-    private storage: HmrStorage<S>,
     private context: HmrStateContextFactory<T, S>,
     private options: HmrOptionBuilder
   ) {}
@@ -49,7 +48,7 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   }
 
   private stateEventLoop(callback: HmrCallback<S>): void {
-    if (!this.storage.existHmrStorage) return;
+    if (NgxsHmrRuntime.sizeSnapshot === 0) return;
 
     const appBootstrapped$: Observable<boolean> = this.bootstrap.appBootstrapped$;
     const state$: Observable<any> = this.context.store.select(state => state);
@@ -64,7 +63,7 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
           storeEventId.unsubscribe();
           // if events are no longer running on the call stack,
           // then we can update the state
-          callback(this.context.createStateContext(), this.storage.snapshot);
+          callback(this.context.createStateContext(), NgxsHmrRuntime.snapshot as Partial<S>);
         }, this.options.deferTime);
       });
     });

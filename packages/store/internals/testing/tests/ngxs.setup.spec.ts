@@ -1,6 +1,7 @@
 import { NgxsAfterBootstrap, NgxsOnInit, State, StateContext } from '@ngxs/store';
 import { NgxsTestBed } from '@ngxs/store/internals/testing';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+import { NgxsHmrRuntime } from '@ngxs/store/internals';
 
 describe('Full testing NGXS States with NgxsTestBed', () => {
   @State<any>({ name: 'app', defaults: { count: 0 } })
@@ -32,7 +33,7 @@ describe('Full testing NGXS States with NgxsTestBed', () => {
   it('should be correct testing lifecycle with NgxsTestBed + defaults', () => {
     const { store } = NgxsTestBed.configureTestingStates({
       states: [AppState],
-      ngxsOptions: { defaultsState: { foo: 'baz' } }
+      ngxsOptions: { defaultsState: { app: { fiz: 'baz' }, foo: 'baz' } }
     });
 
     expect(store.snapshot()).toEqual({
@@ -45,24 +46,45 @@ describe('Full testing NGXS States with NgxsTestBed', () => {
     });
   });
 
-  it('should be correct testing lifecycle with NgxsTestBed + imports', () => {
+  it('should be correct testing persistence mode', () => {
+    const { store } = NgxsTestBed.configureTestingStates({
+      states: [AppState],
+      imports: [NgxsStoragePluginModule.forRoot({ key: '@@STATE' })],
+      ngxsOptions: {
+        defaultsState: { app: { count: 0 }, foo: 'bar' }
+      },
+      before: () => {
+        NgxsHmrRuntime.snapshot = { app: { count: 1 } };
+      }
+    });
+
+    expect(store.snapshot()).toEqual({
+      app: { count: 1 },
+      foo: 'bar'
+    });
+  });
+
+  it('should be correct testing default disable persistence mode', () => {
     const { store } = NgxsTestBed.configureTestingStates({
       states: [AppState],
       imports: [NgxsStoragePluginModule.forRoot({ key: '@@STATE' })],
       ngxsOptions: {
         defaultsState: {
           app: {
-            count: 0
+            anyValue: 0
           }
         }
       }
     });
 
-    // TODO: need fix https://github.com/ngxs/store/issues/917
     expect(store.snapshot()).toEqual({
       app: {
-        count: 0
+        'AppState.ngxsOnInit': true,
+        'AppState.ngxsAfterBootstrap': true,
+        count: 2
       }
     });
   });
+
+  afterEach(() => NgxsHmrRuntime.clear());
 });
