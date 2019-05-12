@@ -23,7 +23,8 @@ import {
   State,
   Action,
   StateContext,
-  Select
+  Select,
+  Selector
 } from '@ngxs/store';
 
 import {
@@ -32,9 +33,9 @@ import {
   RouterStateSerializer,
   Navigate,
   RouterNavigation,
-  RouterStateModel
+  RouterStateModel,
+  RouterDataResolved
 } from '../';
-import { RouterDataResolved } from '../src/public_api';
 
 describe('NgxsRouterPlugin', () => {
   it('should dispatch router state events', async(async () => {
@@ -247,7 +248,6 @@ describe('NgxsRouterPlugin', () => {
     class TestResolver implements Resolve<string> {
       // Emulate micro-task
       async resolve(): Promise<string> {
-        await Promise.resolve();
         return test;
       }
     }
@@ -267,39 +267,43 @@ describe('NgxsRouterPlugin', () => {
       public router$: Observable<RouterStateModel>;
     }
 
-    @NgModule({
-      imports: [
-        BrowserModule,
-        // Resolvers are not respected if we're using `RouterTestingModule`
-        // see https://github.com/angular/angular/issues/15779
-        // to be sure our data is resolved - we have to use native `RouterModule`
-        RouterModule.forRoot(
-          [
-            {
-              path: '**',
-              component: TestComponent,
-              resolve: {
-                test: TestResolver
+    function getTestModule(states: any[] = []) {
+      @NgModule({
+        imports: [
+          BrowserModule,
+          // Resolvers are not respected if we're using `RouterTestingModule`
+          // see https://github.com/angular/angular/issues/15779
+          // to be sure our data is resolved - we have to use native `RouterModule`
+          RouterModule.forRoot(
+            [
+              {
+                path: '**',
+                component: TestComponent,
+                resolve: {
+                  test: TestResolver
+                }
               }
-            }
-          ],
-          { initialNavigation: 'enabled' }
-        ),
-        NgxsModule.forRoot(),
-        NgxsRouterPluginModule.forRoot()
-      ],
-      declarations: [RootComponent, TestComponent],
-      bootstrap: [RootComponent],
-      providers: [TestResolver]
-    })
-    class TestModule {}
+            ],
+            { initialNavigation: 'enabled' }
+          ),
+          NgxsModule.forRoot(states),
+          NgxsRouterPluginModule.forRoot()
+        ],
+        declarations: [RootComponent, TestComponent],
+        bootstrap: [RootComponent],
+        providers: [TestResolver]
+      })
+      class TestModule {}
+
+      return TestModule;
+    }
 
     it('should wait for resolvers to complete and dispatch the `RouterDataResolved` event', async () => {
       // Arrange
       destroyPlatformBeforeBootstrappingTheNewOne();
 
       // Act
-      const { injector } = await platformBrowserDynamic().bootstrapModule(TestModule);
+      const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
       const router: Router = injector.get(Router);
       const store: Store = injector.get(Store);
 
@@ -319,7 +323,7 @@ describe('NgxsRouterPlugin', () => {
       destroyPlatformBeforeBootstrappingTheNewOne();
 
       // Act
-      const { injector } = await platformBrowserDynamic().bootstrapModule(TestModule);
+      const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
       const router: Router = injector.get(Router);
       const store: Store = injector.get(Store);
 
@@ -367,7 +371,7 @@ describe('NgxsRouterPlugin', () => {
       destroyPlatformBeforeBootstrappingTheNewOne();
 
       // Act
-      const { injector } = await platformBrowserDynamic().bootstrapModule(TestModule);
+      const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
       const actions$: Actions = injector.get(Actions);
       const store: Store = injector.get(Store);
 
@@ -378,6 +382,7 @@ describe('NgxsRouterPlugin', () => {
           first()
         )
         .subscribe(({ routerState }: RouterDataResolved) => {
+          // Assert
           const dataFromTheEvent = routerState.root.firstChild!.data;
           expect(dataFromTheEvent).toEqual({ test });
         });
@@ -395,6 +400,86 @@ describe('NgxsRouterPlugin', () => {
           )
         )
         .toPromise();
+
+      resetPlatformAfterBootstrapping();
+    });
+
+    it('should update the state if navigation is performed between the same component', async () => {
+      // Arrange
+      destroyPlatformBeforeBootstrappingTheNewOne();
+
+      @State({
+        name: 'counter',
+        defaults: 0
+      })
+      class CounterState {
+        @Action(RouterNavigation)
+        public routerNavigation({ getState, setState }: StateContext<number>): void {
+          setState(getState() + 1);
+        }
+      }
+
+      // Act
+      const { injector } = await platformBrowserDynamic().bootstrapModule(
+        getTestModule([CounterState])
+      );
+      const store: Store = injector.get(Store);
+      const router: Router = injector.get(Router);
+
+      await router.navigateByUrl('/a/b/c');
+      await router.navigateByUrl('/a/b');
+
+      // Assert
+      const counter = store.selectSnapshot<number>(CounterState);
+      expect(counter).toEqual(3);
+
+      resetPlatformAfterBootstrapping();
+    });
+
+    it('should call selector if navigation is performed between the same component', async () => {
+      // Arrange
+      destroyPlatformBeforeBootstrappingTheNewOne();
+
+      let selectorCalledTimes = 0;
+
+      @State({
+        name: 'counter',
+        defaults: 0
+      })
+      class CounterState {
+        @Selector()
+        public static counter(state: number) {
+          selectorCalledTimes++;
+          return state;
+        }
+
+        @Action(RouterNavigation)
+        public routerNavigation({ getState, setState }: StateContext<number>): void {
+          setState(getState() + 1);
+        }
+      }
+
+      // Act
+      const { injector } = await platformBrowserDynamic().bootstrapModule(
+        getTestModule([CounterState])
+      );
+      const store: Store = injector.get(Store);
+      const router: Router = injector.get(Router);
+
+      store
+        .select(CounterState.counter)
+        .pipe(
+          filter(() => selectorCalledTimes === 3),
+          take(1)
+        )
+        .subscribe(counter => {
+          // Assert
+          expect(selectorCalledTimes).toEqual(3);
+          expect(selectorCalledTimes).toEqual(counter);
+        });
+
+      await router.navigateByUrl('/a/b/c');
+      await router.navigateByUrl('/a/b');
 
       resetPlatformAfterBootstrapping();
     });
