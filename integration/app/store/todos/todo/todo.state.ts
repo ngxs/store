@@ -37,12 +37,12 @@ export class TodoState implements NgxsOnInit, NgxsAfterBootstrap {
   }
 
   @Action(AddTodo)
-  public addTodo({ getState, setState }: StateContext<Todo[]>, { payload }: AddTodo) {
+  public addTodo({ setState }: StateContext<Todo[]>, { payload }: AddTodo) {
     setState(state => [...state, payload]);
   }
 
   @Action(RemoveTodo)
-  public removeTodo({ getState, setState }: StateContext<Todo[]>, { payload }: RemoveTodo) {
+  public removeTodo({ setState }: StateContext<Todo[]>, { payload }: RemoveTodo) {
     setState(state => state.filter((_, i) => i !== payload));
   }
 }
