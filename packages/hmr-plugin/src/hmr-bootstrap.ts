@@ -18,7 +18,7 @@ export async function hmr<T>(
   return await manager.hmrModule(bootstrapFn, () => {
     manager.beforeModuleBootstrap();
 
-    module.hot.dispose(async () => {
+    module.hot.dispose(() => {
       manager.beforeModuleOnDestroy();
       manager.createNewModule();
     });

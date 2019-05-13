@@ -32,7 +32,6 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { InternalStateOperations } from '../internal/state-operations';
 import { NgxsHmrRuntime } from '@ngxs/store/internals';
 
 /**
@@ -49,7 +48,6 @@ export class StateFactory {
     @Optional()
     @SkipSelf()
     private _parentFactory: StateFactory,
-    @Optional() private _internalStateOperations: InternalStateOperations,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
     private _stateContextFactory: StateContextFactory
