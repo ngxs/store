@@ -1,4 +1,4 @@
-import { NgxsHmrLifeCycle, NgxsHmrOptions } from '../symbols';
+import { NgxsHmrOptions } from '../symbols';
 
 export class HmrOptionBuilder {
   public readonly deferTime: number;

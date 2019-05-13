@@ -11,6 +11,8 @@
       "@ngxs/*": ["packages/*"]
     },
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "declaration": false,

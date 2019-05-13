@@ -10,10 +10,6 @@ export function getActionTypeFromInstance(action: any): string | undefined {
   return action.type;
 }
 
-export function getActionTypeFromClass<T = any>(actionClass: any): string {
-  return actionClass.type;
-}
-
 /**
  * Matches a action
  * @ignore

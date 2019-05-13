@@ -24,8 +24,7 @@ import {
   StateKeyGraph,
   StatesAndDefaults,
   StatesByName,
-  topologicalSort,
-  SharedSelectorOptions
+  topologicalSort
 } from './internals';
 import { getActionTypeFromInstance, getValue, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -42,8 +41,6 @@ import { InternalStateOperations } from '../internal/state-operations';
 @Injectable()
 export class StateFactory {
   private _connected = false;
-  private _states: MappedStore[] = [];
-  private _statesByName: StatesByName = {};
 
   constructor(
     private _injector: Injector,
@@ -57,9 +54,13 @@ export class StateFactory {
     private _internalStateOperations: InternalStateOperations
   ) {}
 
+  private _states: MappedStore[] = [];
+
   public get states(): MappedStore[] {
     return this._parentFactory ? this._parentFactory.states : this._states;
   }
+
+  private _statesByName: StatesByName = {};
 
   public get statesByName(): StatesByName {
     return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;

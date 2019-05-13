@@ -4,13 +4,8 @@ import { StateFactory } from '../internal/state-factory';
 import { InternalStateOperations } from '../internal/state-operations';
 import { Store } from '../store';
 import { SelectFactory } from '../decorators/select';
-import { ROOT_STATE_TOKEN, NgxsConfig } from '../symbols';
-import {
-  StateClass,
-  StatesAndDefaults,
-  globalSelectorOptions,
-  SharedSelectorOptions
-} from '../internal/internals';
+import { NgxsConfig, ROOT_STATE_TOKEN } from '../symbols';
+import { globalSelectorOptions, StateClass, StatesAndDefaults } from '../internal/internals';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
 import { InitState } from '../actions/actions';
 
@@ -23,8 +18,8 @@ export class NgxsRootModule {
   constructor(
     factory: StateFactory,
     internalStateOperations: InternalStateOperations,
-    store: Store,
-    select: SelectFactory,
+    _store: Store,
+    _select: SelectFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
     states: StateClass[] = [],
