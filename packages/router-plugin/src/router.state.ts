@@ -118,7 +118,7 @@ export class RouterState {
 
   private guardsCheckEnd(routerState: RouterStateSnapshot): void {
     if (this.routerStateSnapshot) {
-      routerState = { ...routerState, ...this.routerStateSnapshot };
+      routerState = { ...this.routerStateSnapshot, ...routerState };
     }
 
     this.routerStateSnapshot = this._serializer.serialize(routerState);

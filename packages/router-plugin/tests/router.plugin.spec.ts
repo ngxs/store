@@ -6,11 +6,12 @@ import {
   createPlatform,
   destroyPlatform
 } from '@angular/core';
-import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { ɵgetDOM as getDOM, DOCUMENT, BrowserModule } from '@angular/platform-browser';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { Router, Params, RouterStateSnapshot, RouterModule, Resolve } from '@angular/router';
+import { DOCUMENT } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
+import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { ɵgetDOM as getDOM, BrowserModule } from '@angular/platform-browser';
+import { Router, Params, RouterStateSnapshot, RouterModule, Resolve } from '@angular/router';
 
 import { Observable } from 'rxjs';
 import { take, tap, filter, first } from 'rxjs/operators';
@@ -66,9 +67,9 @@ describe('NgxsRouterPlugin', () => {
       { type: 'router', event: 'NavigationStart', url: '/next' },
       { type: 'router', event: 'RoutesRecognized', url: '/next' },
       { type: 'router', event: 'GuardsCheckStart', url: '/next' },
+      { type: 'url', state: '/next' },
       { type: 'router', event: 'GuardsCheckEnd', url: '/next' },
       { type: 'router', event: 'ResolveStart', url: '/next' },
-      { type: 'url', state: '/next' },
       { type: 'router', event: 'ResolveEnd', url: '/next' },
       { type: 'router', event: 'NavigationEnd', url: '/next' }
     ]);
