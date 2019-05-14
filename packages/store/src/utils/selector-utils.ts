@@ -1,14 +1,13 @@
 import { memoize } from '@ngxs/store/internals';
 
 import {
-  SelectFromState,
   ensureSelectorMetadata,
   getSelectorMetadata,
   getStoreMetadata,
+  globalSelectorOptions,
+  SelectFromState,
   SelectorMetaDataModel,
-  SharedSelectorOptions,
-  StateClass,
-  globalSelectorOptions
+  SharedSelectorOptions
 } from '../internal/internals';
 
 const SELECTOR_OPTIONS_META_KEY = 'NGXS_SELECTOR_OPTIONS_META';

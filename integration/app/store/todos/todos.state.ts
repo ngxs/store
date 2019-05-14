@@ -23,7 +23,7 @@ export class TodosState {
   }
 
   @Action(SetPrefix)
-  public setPrefix({ getState, setState, patchState }: StateContext<TodoStateModel>) {
+  public setPrefix({ setState }: StateContext<TodoStateModel>) {
     setState(
       patch({
         pizza: patch({

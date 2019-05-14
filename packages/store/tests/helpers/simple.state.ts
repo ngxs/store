@@ -12,7 +12,7 @@ export class UpdateValue {
 })
 export class SimpleState {
   @Action(UpdateValue)
-  updateValue(state: string, action: UpdateValue) {
+  updateValue(_: string, action: UpdateValue) {
     return action.value;
   }
 }
