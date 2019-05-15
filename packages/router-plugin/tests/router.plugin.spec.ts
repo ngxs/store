@@ -385,15 +385,17 @@ describe('NgxsRouterPlugin', () => {
       const store: Store = injector.get(Store);
 
       // The very first `ResolveEnd` event is triggered during root module bootstrapping
-      let routerState: RouterStateSnapshot;
-
-      actions$
+      // `ofActionSuccessful(RouterDataResolved)` is asynchronous
+      // and expectations are called right after `store.dispatch`
+      // before the callback inside `actions$.subscribe(...)` is invoked
+      const speciallyPromisedData = actions$
         .pipe(
           ofActionSuccessful(RouterDataResolved),
           first()
         )
-        .subscribe((action: RouterDataResolved) => {
-          routerState = action.routerState;
+        .toPromise()
+        .then(({ routerState }: RouterDataResolved) => {
+          return routerState!.root.firstChild!.data;
         });
 
       await store
@@ -410,13 +412,8 @@ describe('NgxsRouterPlugin', () => {
         )
         .toPromise();
 
-      // `ofActionSuccessful(RouterDataResolved)` is asynchronous
-      // and expectations are called right after `store.dispatch`
-      // before the callback inside `actions$.subscribe(...)` is invoked
-      await Promise.resolve();
-
       // Assert
-      const dataFromTheEvent = routerState!.root.firstChild!.data;
+      const dataFromTheEvent = await speciallyPromisedData;
       expect(dataFromTheEvent).toEqual({ test });
 
       resetPlatformAfterBootstrapping();
