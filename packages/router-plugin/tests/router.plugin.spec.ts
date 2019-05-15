@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
-import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed, tick } from '@angular/core/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { ɵgetDOM as getDOM, BrowserModule } from '@angular/platform-browser';
 import { Router, Params, RouterStateSnapshot, RouterModule, Resolve } from '@angular/router';
@@ -39,15 +39,18 @@ import {
 } from '../';
 
 describe('NgxsRouterPlugin', () => {
-  it('should dispatch router state events', async(async () => {
+  it('should dispatch router state events', async () => {
+    // Arrange
     createTestModule();
 
+    // Act
     const router: Router = TestBed.get(Router);
     const store = TestBed.get(Store);
     const log = logOfRouterAndStore(router, store);
 
     await router.navigateByUrl('/');
 
+    // Assert
     expect(log).toEqual([
       { type: 'url', state: undefined }, // init event. has nothing to do with the router
       { type: 'router', event: 'NavigationStart', url: '/' },
@@ -73,36 +76,39 @@ describe('NgxsRouterPlugin', () => {
       { type: 'router', event: 'ResolveEnd', url: '/next' },
       { type: 'router', event: 'NavigationEnd', url: '/next' }
     ]);
-  }));
+  });
 
-  it('should select router state', fakeAsync(async () => {
+  it('should select router state', async () => {
+    // Arrange
     createTestModule();
 
+    // Act
     const router: Router = TestBed.get(Router);
     const store: Store = TestBed.get(Store);
 
     await router.navigateByUrl('/testpath');
-    tick();
 
+    // Assert
     const routerState = store.selectSnapshot(RouterState.state)!;
     expect(routerState.url).toEqual('/testpath');
 
     const routerUrl = store.selectSnapshot(RouterState.url);
     expect(routerUrl).toEqual('/testpath');
-  }));
+  });
 
-  it('should handle Navigate action', fakeAsync(async () => {
+  it('should handle Navigate action', async () => {
+    // Arrange
     createTestModule();
 
+    // Act
     const store: Store = TestBed.get(Store);
 
-    store.dispatch(new Navigate(['a-path']));
-    tick();
+    await store.dispatch(new Navigate(['a-path'])).toPromise();
 
-    store.select(RouterState.state).subscribe(routerState => {
-      expect(routerState!.url).toEqual('/a-path');
-    });
-  }));
+    // Assert
+    const routerState = store.selectSnapshot(RouterState.state);
+    expect(routerState!.url).toEqual('/a-path');
+  });
 
   it('should select custom router state', async () => {
     interface RouterStateParams {
@@ -188,7 +194,8 @@ describe('NgxsRouterPlugin', () => {
     });
   });
 
-  it('should be possible to access the state snapshot if action is dispatched from the component constructor', fakeAsync(async () => {
+  it('should be possible to access the state snapshot if action is dispatched from the component constructor', async () => {
+    // Arrange
     @State({
       name: 'test',
       defaults: null
@@ -206,16 +213,17 @@ describe('NgxsRouterPlugin', () => {
       states: [TestState]
     });
 
+    // Act
     const router: Router = TestBed.get(Router);
 
     await router.navigateByUrl('/testpath');
-    tick();
 
     const state = TestBed.get(Store).selectSnapshot(TestState);
 
+    // Assert
     expect(state).toBeTruthy();
     expect(state.url).toEqual('/testpath');
-  }));
+  });
 
   describe('RouterDataResolved', () => {
     function createRootElement() {
@@ -377,15 +385,15 @@ describe('NgxsRouterPlugin', () => {
       const store: Store = injector.get(Store);
 
       // The very first `ResolveEnd` event is triggered during root module bootstrapping
+      let routerState: RouterStateSnapshot;
+
       actions$
         .pipe(
           ofActionSuccessful(RouterDataResolved),
           first()
         )
-        .subscribe(({ routerState }: RouterDataResolved) => {
-          // Assert
-          const dataFromTheEvent = routerState.root.firstChild!.data;
-          expect(dataFromTheEvent).toEqual({ test });
+        .subscribe((action: RouterDataResolved) => {
+          routerState = action.routerState;
         });
 
       await store
@@ -401,6 +409,15 @@ describe('NgxsRouterPlugin', () => {
           )
         )
         .toPromise();
+
+      // `ofActionSuccessful(RouterDataResolved)` is asynchronous
+      // and expectations are called right after `store.dispatch`
+      // before the callback inside `actions$.subscribe(...)` is invoked
+      await Promise.resolve();
+
+      // Assert
+      const dataFromTheEvent = routerState!.root.firstChild!.data;
+      expect(dataFromTheEvent).toEqual({ test });
 
       resetPlatformAfterBootstrapping();
     });
@@ -467,20 +484,16 @@ describe('NgxsRouterPlugin', () => {
       const store: Store = injector.get(Store);
       const router: Router = injector.get(Router);
 
-      store
-        .select(CounterState.counter)
-        .pipe(
-          filter(() => selectorCalledTimes === 3),
-          take(1)
-        )
-        .subscribe(counter => {
-          // Assert
-          expect(selectorCalledTimes).toEqual(3);
-          expect(selectorCalledTimes).toEqual(counter);
-        });
+      const subscription = store.select(CounterState.counter).subscribe();
 
       await router.navigateByUrl('/a/b/c');
       await router.navigateByUrl('/a/b');
+      subscription.unsubscribe();
+
+      // Assert
+      const counter = store.selectSnapshot(CounterState.counter);
+      expect(selectorCalledTimes).toEqual(3);
+      expect(selectorCalledTimes).toEqual(counter);
 
       resetPlatformAfterBootstrapping();
     });
