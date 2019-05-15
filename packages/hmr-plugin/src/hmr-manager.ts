@@ -49,7 +49,6 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
 
   public beforeModuleBootstrap(): void {
     this.lifecycle.hmrNgxsStoreOnInit((ctx, state) => {
-      this.storage.snapshot = {};
       ctx.dispatch(new HmrInitAction(state));
     });
   }
@@ -57,7 +56,6 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
   public beforeModuleOnDestroy(): Partial<S> {
     this.optionsBuilder.clearLogs();
     const snapshot = this.lifecycle.hmrNgxsStoreBeforeOnDestroy();
-    this.storage.snapshot = snapshot;
     return snapshot;
   }
 

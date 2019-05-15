@@ -16,10 +16,9 @@ export async function hmr<T>(
   module.hot.accept();
 
   type HmrDataTransfer = { snapshot: any };
-
   const dataTransfer: HmrDataTransfer = module.hot.data;
-  const storage = new HmrStorage<any>();
-  storage.snapshot = dataTransfer.snapshot || {};
+
+  const storage = new HmrStorage<any>(dataTransfer.snapshot || {});
   const manager = new HmrManager<T>(module, options, storage);
 
   return await manager.hmrModule(bootstrapFn, () => {
