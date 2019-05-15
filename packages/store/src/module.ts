@@ -70,7 +70,7 @@ export class NgxsModule {
         SelectFactory,
         PluginManager,
         ...states,
-        ...NgxsModule.ngxsTokenProviders(states, options, InitialState.pop())
+        ...NgxsModule.ngxsTokenProviders(states, options)
       ]
     };
   }
@@ -96,8 +96,7 @@ export class NgxsModule {
 
   private static ngxsTokenProviders(
     states: StateClass[],
-    options: NgxsModuleOptions,
-    initialState: any
+    options: NgxsModuleOptions
   ): Provider[] {
     return [
       {
@@ -133,7 +132,7 @@ export class NgxsModule {
       },
       {
         provide: INITIAL_STATE_TOKEN,
-        useValue: initialState
+        useFactory: NgxsModule.getInitialState
       }
     ];
   }
@@ -152,5 +151,9 @@ export class NgxsModule {
 
   private static isAngularDevMode(): Function {
     return () => isDevMode();
+  }
+
+  private static getInitialState() {
+    return InitialState.pop();
   }
 }
