@@ -1,6 +1,7 @@
 import { NgModuleRef } from '@angular/core';
 import { HmrManager } from './hmr-manager';
 import { BootstrapModuleFn, NgxsHmrOptions, WebpackModule } from './symbols';
+import { HmrStorage } from './internal/hmr-storage';
 
 export async function hmr<T>(
   module: WebpackModule,
@@ -13,13 +14,19 @@ export async function hmr<T>(
   }
 
   module.hot.accept();
-  const manager = new HmrManager<T>(module, options);
+
+  type HmrDataTransfer = { snapshot: any };
+
+  const dataTransfer: HmrDataTransfer = module.hot.data;
+  const storage = new HmrStorage<any>();
+  storage.snapshot = dataTransfer.snapshot || {};
+  const manager = new HmrManager<T>(module, options, storage);
 
   return await manager.hmrModule(bootstrapFn, () => {
     manager.beforeModuleBootstrap();
 
-    module.hot.dispose(() => {
-      manager.beforeModuleOnDestroy();
+    module.hot.dispose((data: HmrDataTransfer) => {
+      data.snapshot = manager.beforeModuleOnDestroy();
       manager.createNewModule();
     });
   });

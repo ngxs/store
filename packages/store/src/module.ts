@@ -7,6 +7,7 @@ import {
   Provider
 } from '@angular/core';
 import { isAngularInTestMode, NgxsBootstrapper } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, InitialState } from '@ngxs/store/internals';
 
 import {
   FEATURE_STATE_TOKEN,
@@ -69,7 +70,7 @@ export class NgxsModule {
         SelectFactory,
         PluginManager,
         ...states,
-        ...NgxsModule.ngxsTokenProviders(states, options)
+        ...NgxsModule.ngxsTokenProviders(states, options, InitialState.pop())
       ]
     };
   }
@@ -95,7 +96,8 @@ export class NgxsModule {
 
   private static ngxsTokenProviders(
     states: StateClass[],
-    options: NgxsModuleOptions
+    options: NgxsModuleOptions,
+    initialState: any
   ): Provider[] {
     return [
       {
@@ -128,6 +130,10 @@ export class NgxsModule {
         useFactory: NgxsModule.appBootstrapListenerFactory,
         multi: true,
         deps: [NgxsBootstrapper]
+      },
+      {
+        provide: INITIAL_STATE_TOKEN,
+        useValue: initialState
       }
     ];
   }

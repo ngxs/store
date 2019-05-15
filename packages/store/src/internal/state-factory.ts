@@ -1,4 +1,4 @@
-import { Injectable, Injector, Optional, SkipSelf } from '@angular/core';
+import { Injectable, Injector, Optional, SkipSelf, Inject } from '@angular/core';
 import { forkJoin, from, Observable, of, throwError } from 'rxjs';
 import {
   catchError,
@@ -32,7 +32,7 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { NgxsHmrRuntime } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN } from '@ngxs/store/internals';
 
 /**
  * State factory class
@@ -50,7 +50,10 @@ export class StateFactory {
     private _parentFactory: StateFactory,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
-    private _stateContextFactory: StateContextFactory
+    private _stateContextFactory: StateContextFactory,
+    @Optional()
+    @Inject(INITIAL_STATE_TOKEN)
+    private _initialState: any
   ) {}
 
   private _states: MappedStore[] = [];
@@ -238,8 +241,8 @@ export class StateFactory {
    * @param path
    */
   private hasBeenMountedAndBootstrapped(name: string, path: string): boolean {
-    const valueIsBootstrappedImHmrRuntime: boolean =
-      getValue(NgxsHmrRuntime.snapshot, path) !== undefined;
-    return this.statesByName[name] && valueIsBootstrappedImHmrRuntime;
+    const valueIsBootstrappedInInitialState: boolean =
+      getValue(this._initialState, path) !== undefined;
+    return this.statesByName[name] && valueIsBootstrappedInInitialState;
   }
 }

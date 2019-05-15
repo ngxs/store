@@ -1,8 +1,8 @@
 // tslint:disable:unified-signatures
-import { Injectable, Type } from '@angular/core';
+import { Injectable, Type, Optional, Inject } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
-import { NgxsHmrRuntime, ObjectUtils } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, ObjectUtils } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
@@ -18,9 +18,12 @@ export class Store {
     private _stateStream: StateStream,
     private _internalStateOperations: InternalStateOperations,
     private _config: NgxsConfig,
-    private _internalExecutionStrategy: InternalNgxsExecutionStrategy
+    private _internalExecutionStrategy: InternalNgxsExecutionStrategy,
+    @Optional()
+    @Inject(INITIAL_STATE_TOKEN)
+    private _initialState: any
   ) {
-    this.initStateStream();
+    this.initStateStream(_initialState);
   }
 
   /**
@@ -95,14 +98,14 @@ export class Store {
     return this._internalStateOperations.getRootStateOperations().setState(state);
   }
 
-  private initStateStream(): void {
+  private initStateStream(_initialState: any): void {
     const value: ObjectKeyMap<any> = this._stateStream.value;
     const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
     if (storeIsEmpty) {
       this._stateStream.next(
         ObjectUtils.merge(
           ObjectUtils.clone(this._config.defaultsState),
-          NgxsHmrRuntime.snapshot
+          ObjectUtils.clone(_initialState)
         )
       );
     }

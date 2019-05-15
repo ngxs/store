@@ -1,6 +1,5 @@
 import { fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import { ofActionDispatched } from '@ngxs/store';
-import { NgxsHmrRuntime } from '@ngxs/store/internals';
 
 import { NgxsHmrSnapshot } from '../symbols';
 import {
@@ -13,8 +12,6 @@ import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 import { hmrTestBed, setup } from './hmr-helpers';
 
 describe('HMR Plugin', () => {
-  beforeAll(() => NgxsHmrRuntime.clear());
-
   it('should initialize AppMockModule', async () => {
     // Arrange
     const { bootstrap } = setup(AppMockModule);
@@ -228,6 +225,4 @@ describe('HMR Plugin', () => {
     // Assert
     expect(MockState.destroy).toEqual(true);
   }));
-
-  afterAll(() => NgxsHmrRuntime.clear());
 });

@@ -9,7 +9,6 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
-import { NgxsHmrRuntime } from '@ngxs/store/internals';
 import { NgxsModule, Store } from '@ngxs/store';
 
 import { NgxsTestModule } from './helpers/ngxs-test.module';
@@ -49,7 +48,6 @@ export class NgxsTestBed {
   }
 
   private static resetTestBed(): void {
-    NgxsHmrRuntime.snapshot = {};
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
   }
