@@ -7,8 +7,8 @@ import {
   destroyPlatform
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TestBed, tick } from '@angular/core/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { ɵgetDOM as getDOM, BrowserModule } from '@angular/platform-browser';
 import { Router, Params, RouterStateSnapshot, RouterModule, Resolve } from '@angular/router';
