@@ -14,7 +14,7 @@ import { HmrStateContextFactory } from './internal/hmr-state-context-factory';
 import { HmrOptionBuilder } from './internal/hmr-options-builder';
 import { HmrInitAction } from './actions/hmr-init.action';
 import { HmrLifecycle } from './internal/hmr-lifecycle';
-import { InitialState } from '@ngxs/store/internals/src/initial-state';
+import { InitialState } from '@ngxs/store/internals';
 
 export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnapshot> {
   public storage: HmrStorage<S>;
