@@ -21,9 +21,9 @@ export class Store {
     private _internalExecutionStrategy: InternalNgxsExecutionStrategy,
     @Optional()
     @Inject(INITIAL_STATE_TOKEN)
-    private _initialState: any
+    initialState: any
   ) {
-    this.initStateStream(_initialState);
+    this.initStateStream(initialState);
   }
 
   /**
@@ -98,14 +98,14 @@ export class Store {
     return this._internalStateOperations.getRootStateOperations().setState(state);
   }
 
-  private initStateStream(_initialState: any): void {
+  private initStateStream(initialState: any): void {
     const value: ObjectKeyMap<any> = this._stateStream.value;
     const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
     if (storeIsEmpty) {
       this._stateStream.next(
         ObjectUtils.merge(
           ObjectUtils.clone(this._config.defaultsState),
-          ObjectUtils.clone(_initialState)
+          ObjectUtils.clone(initialState)
         )
       );
     }
