@@ -7,8 +7,7 @@ import {
   BootstrapModuleFn,
   NgxsHmrLifeCycle,
   NgxsHmrOptions,
-  NgxsHmrSnapshot,
-  WebpackModule
+  NgxsHmrSnapshot
 } from './symbols';
 import { HmrStateContextFactory } from './internal/hmr-state-context-factory';
 import { HmrOptionBuilder } from './internal/hmr-options-builder';
@@ -23,11 +22,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
   public optionsBuilder: HmrOptionBuilder;
   private ngModule: NgModuleRef<T>;
 
-  constructor(
-    private readonly module: WebpackModule,
-    options: NgxsHmrOptions,
-    storage: HmrStorage<S>
-  ) {
+  constructor(options: NgxsHmrOptions, storage: HmrStorage<S>) {
     this.storage = storage;
     this.optionsBuilder = new HmrOptionBuilder(options);
   }

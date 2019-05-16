@@ -41,10 +41,14 @@ export interface NgxsHmrOptions {
   deferTime?: number;
 }
 
-interface HotModule {
-  hot: {
-    accept(path?: () => void, callback?: () => void): void;
-    dispose(callback?: () => void): void;
+type ModuleId = string | number;
+interface WebpackHotModule {
+  hot?: {
+    data: any;
+    accept(dependencies: string[], callback?: (updatedDependencies: ModuleId[]) => void): void;
+    accept(dependency: string, callback?: () => void): void;
+    accept(errHandler?: (err: Error) => void): void;
+    dispose(callback: (data: any) => void): void;
   };
 }
 
@@ -53,4 +57,4 @@ interface HotModule {
  * any - because need setup
  * npm i @types/webpack-env
  */
-export type WebpackModule = HotModule | any;
+export type WebpackModule = WebpackHotModule;
