@@ -8,7 +8,7 @@ import { Action, NgxsModule, State, StateContext } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 import { DOCUMENT } from '@angular/common';
 
-import { NgxsHmrLifeCycle, NgxsHmrSnapshot as Snapshot } from '../symbols';
+import { NgxsHmrLifeCycle, NgxsHmrSnapshot as Snapshot, WebpackModule } from '../symbols';
 import { HmrInitAction } from '../actions/hmr-init.action';
 import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 
@@ -94,11 +94,21 @@ function createRootNode(selector = 'app-root'): void {
   adapter.appendChild(document.body, root);
 }
 
-export class WebpackMockModule {
+export class WebpackMockModule implements WebpackModule {
   private _destroyModuleCallback: (data: any) => void;
-  public acceptInvoked: boolean;
-  public disposeInvoked: boolean;
-  public hot = {
+  acceptInvoked: boolean;
+  disposeInvoked: boolean;
+
+  [key: string]: any;
+  exports: any;
+  require: NodeRequireFunction;
+  id: string;
+  filename: string;
+  loaded: boolean;
+  parent: NodeModule | null;
+  children: NodeModule[];
+  paths: string[];
+  hot = {
     data: {},
     accept: () => {
       this.acceptInvoked = true;

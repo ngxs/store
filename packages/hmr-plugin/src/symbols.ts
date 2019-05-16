@@ -55,4 +55,4 @@ interface WebpackHotModule {
  * any - because need setup
  * npm i @types/webpack-env
  */
-export type WebpackModule = WebpackHotModule;
+export type WebpackModule = WebpackHotModule & NodeModule;
