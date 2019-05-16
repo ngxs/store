@@ -2,14 +2,13 @@
 import { Injectable, Type, Optional, Inject } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
-import { INITIAL_STATE_TOKEN, ObjectUtils } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, ObjectKeyMap, ObjectUtils } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
 import { getSelectorFn } from './utils/selector-utils';
 import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
-import { ObjectKeyMap } from './internal/internals';
 import { NgxsConfig } from './symbols';
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { ObjectKeyMap } from '../internal/internals';
+import { ObjectKeyMap } from '@ngxs/store/internals';
 
 /**
  * Init action

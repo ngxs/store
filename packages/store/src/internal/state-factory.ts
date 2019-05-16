@@ -18,7 +18,6 @@ import {
   MappedStore,
   MetaDataModel,
   nameToState,
-  ObjectKeyMap,
   propGetter,
   StateClass,
   StateKeyGraph,
@@ -32,7 +31,7 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { INITIAL_STATE_TOKEN } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, ObjectKeyMap } from '@ngxs/store/internals';
 
 /**
  * State factory class
