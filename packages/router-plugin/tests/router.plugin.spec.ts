@@ -42,12 +42,11 @@ describe('NgxsRouterPlugin', () => {
   it('should dispatch router state events', async () => {
     // Arrange
     createTestModule();
-
-    // Act
     const router: Router = TestBed.get(Router);
     const store = TestBed.get(Store);
     const log = logOfRouterAndStore(router, store);
 
+    // Act
     await router.navigateByUrl('/');
 
     // Assert
@@ -62,11 +61,20 @@ describe('NgxsRouterPlugin', () => {
       { type: 'router', event: 'ResolveEnd', url: '/' },
       { type: 'router', event: 'NavigationEnd', url: '/' }
     ]);
+  });
 
-    log.splice(0);
+  it('should dispatch router state events for another route', async () => {
+    // Arrange
+    createTestModule();
+    const router: Router = TestBed.get(Router);
+    const store = TestBed.get(Store);
+    const log = logOfRouterAndStore(router, store);
+
+    // Act
     await router.navigateByUrl('/next');
 
     expect(log).toEqual([
+      { type: 'url', state: undefined }, // init event. has nothing to do with the router
       { type: 'router', event: 'NavigationStart', url: '/next' },
       { type: 'router', event: 'RoutesRecognized', url: '/next' },
       { type: 'router', event: 'GuardsCheckStart', url: '/next' },
@@ -81,11 +89,10 @@ describe('NgxsRouterPlugin', () => {
   it('should select router state', async () => {
     // Arrange
     createTestModule();
-
-    // Act
     const router: Router = TestBed.get(Router);
     const store: Store = TestBed.get(Store);
 
+    // Act
     await router.navigateByUrl('/testpath');
 
     // Assert
@@ -99,10 +106,9 @@ describe('NgxsRouterPlugin', () => {
   it('should handle Navigate action', async () => {
     // Arrange
     createTestModule();
-
-    // Act
     const store: Store = TestBed.get(Store);
 
+    // Act
     await store.dispatch(new Navigate(['a-path'])).toPromise();
 
     // Assert
@@ -111,6 +117,7 @@ describe('NgxsRouterPlugin', () => {
   });
 
   it('should select custom router state', async () => {
+    // Arrange
     interface RouterStateParams {
       url: string;
       queryParams: Params;
@@ -132,14 +139,17 @@ describe('NgxsRouterPlugin', () => {
 
     const store: Store = TestBed.get(Store);
 
+    // Act
     await store.dispatch(new Navigate(['a-path'], { foo: 'bar' })).toPromise();
 
-    store
-      .select(state => RouterState.state<RouterStateParams>(state.router))
-      .subscribe(routerState => {
-        expect(routerState!.url).toEqual('/a-path?foo=bar');
-        expect(routerState!.queryParams.foo).toEqual('bar');
-      });
+    // Assert
+    const routerState = store.selectSnapshot(state =>
+      RouterState.state<RouterStateParams>(state.router)
+    );
+
+    expect(routerState!.url).toEqual('/a-path?foo=bar');
+    expect(routerState!.queryParams).toBeDefined();
+    expect(routerState!.queryParams.foo).toEqual('bar');
   });
 
   it('should dispatch `RouterNavigation` event if it was navigated to the same route with query params', async () => {
@@ -213,14 +223,13 @@ describe('NgxsRouterPlugin', () => {
       states: [TestState]
     });
 
-    // Act
     const router: Router = TestBed.get(Router);
 
+    // Act
     await router.navigateByUrl('/testpath');
 
-    const state = TestBed.get(Store).selectSnapshot(TestState);
-
     // Assert
+    const state = TestBed.get(Store).selectSnapshot(TestState);
     expect(state).toBeTruthy();
     expect(state.url).toEqual('/testpath');
   });
