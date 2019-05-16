@@ -132,7 +132,7 @@
     "karma-jasmine-diff-reporter": "^2.0.0",
     "karma-jasmine-html-reporter": "^1.4.2",
     "karma-mocha-reporter": "^2.2.5",
-    "lint-staged": "^8.1.6",
+    "lint-staged": "^8.1.7",
     "mocha": "^6.1.4",
     "mock-socket": "^8.0.5",
     "ng-packagr": "^5.1.0",
