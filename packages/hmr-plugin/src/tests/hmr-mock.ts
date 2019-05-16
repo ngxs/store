@@ -99,15 +99,6 @@ export class WebpackMockModule implements WebpackModule {
   acceptInvoked: boolean;
   disposeInvoked: boolean;
 
-  [key: string]: any;
-  exports: any;
-  require: NodeRequireFunction;
-  id: string;
-  filename: string;
-  loaded: boolean;
-  parent: NodeModule | null;
-  children: NodeModule[];
-  paths: string[];
   hot = {
     data: {},
     accept: () => {
