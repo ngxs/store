@@ -1,7 +1,7 @@
 import { ErrorHandler, Injectable, NgZone } from '@angular/core';
-import { async, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { timer, of, throwError } from 'rxjs';
-import { tap, skip, delay } from 'rxjs/operators';
+import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { of, throwError, timer } from 'rxjs';
+import { delay, skip, tap } from 'rxjs/operators';
 
 import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
@@ -35,7 +35,7 @@ describe('Dispatch', () => {
 
     @Injectable()
     class CustomErrorHandler implements ErrorHandler {
-      handleError(error: any) {
+      handleError() {
         observedCalls.push('handleError(...)');
       }
     }
@@ -54,7 +54,7 @@ describe('Dispatch', () => {
 
     store
       .dispatch(new Increment())
-      .subscribe(() => {}, err => observedCalls.push('observer.error(...)'));
+      .subscribe(() => {}, () => observedCalls.push('observer.error(...)'));
 
     expect(observedCalls).toEqual(['handleError(...)', 'observer.error(...)']);
   }));
@@ -275,7 +275,7 @@ describe('Dispatch', () => {
     })
     class MyState {
       @Action(Increment, { cancelUncompleted: true })
-      increment({ getState, setState, dispatch }: StateContext<number>) {
+      increment({ getState, setState }: StateContext<number>) {
         return timer(0).pipe(
           tap(() => {
             const state = getState();
@@ -322,7 +322,7 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment)
-          increment({ getState, setState, dispatch }: StateContext<number>) {
+          increment() {
             actionsHandled++;
           }
         }
@@ -347,12 +347,12 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment)
-          increment({ getState, setState, dispatch }: StateContext<number>) {
+          increment() {
             actionsHandled++;
           }
 
           @Action(Increment)
-          incrementAgain({ getState, setState, dispatch }: StateContext<number>) {
+          incrementAgain() {
             actionsHandled++;
           }
         }
@@ -379,7 +379,7 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment)
-          increment({ getState, setState, dispatch }: StateContext<number>) {
+          increment() {
             return new Promise<void>(resolve => setTimeout(resolve, 1)).then(
               () => actionsHandled++
             );
@@ -406,14 +406,14 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment)
-          async increment({ getState, setState, dispatch }: StateContext<number>) {
+          async increment() {
             return new Promise<void>(resolve => setTimeout(resolve, 1)).then(
               () => actionsHandled++
             );
           }
 
           @Action(Increment)
-          incrementAgain({ getState, setState, dispatch }: StateContext<number>) {
+          incrementAgain() {
             return new Promise<void>(resolve => setTimeout(resolve, 2)).then(
               () => actionsHandled++
             );
@@ -442,7 +442,7 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment)
-          increment({ getState, setState, dispatch }: StateContext<number>) {
+          increment() {
             return of({}).pipe(
               delay(1),
               tap(() => actionsHandled++)
@@ -470,7 +470,7 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment)
-          increment({ getState, setState, dispatch }: StateContext<number>) {
+          increment() {
             return of({}).pipe(
               delay(1),
               tap(() => actionsHandled++)
@@ -478,7 +478,7 @@ describe('Dispatch', () => {
           }
 
           @Action(Increment)
-          incrementAgain({ getState, setState, dispatch }: StateContext<number>) {
+          incrementAgain() {
             return of({}).pipe(
               delay(2),
               tap(() => actionsHandled++)
@@ -508,19 +508,19 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment)
-          incrementSync({ getState, setState, dispatch }: StateContext<number>) {
+          incrementSync() {
             actionsHandled++;
           }
 
           @Action(Increment)
-          incrementAsync({ getState, setState, dispatch }: StateContext<number>) {
+          incrementAsync() {
             return new Promise<void>(resolve => setTimeout(resolve, 1)).then(
               () => actionsHandled++
             );
           }
 
           @Action(Increment)
-          incrementObservable({ getState, setState, dispatch }: StateContext<number>) {
+          incrementObservable() {
             return of({}).pipe(
               delay(2),
               tap(() => actionsHandled++)
@@ -548,7 +548,7 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment)
-          increment({ getState, setState, dispatch }: StateContext<number>) {
+          increment() {
             return 123;
           }
         }
@@ -660,7 +660,7 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment, { cancelUncompleted: true })
-          increment({ getState, setState, dispatch }: StateContext<number>) {
+          increment() {
             return new Promise<void>(resolve => resolvers.push(resolve));
           }
         }
@@ -695,7 +695,7 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment, { cancelUncompleted: true })
-          increment({ getState, setState, dispatch }: StateContext<number>) {
+          increment() {
             return new Promise<void>(resolve => resolvers.push(resolve));
           }
         }
@@ -740,7 +740,7 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment)
-          increment({ getState, setState, dispatch }: StateContext<number>) {
+          increment() {
             return throwError('This is my error message!');
           }
         }
@@ -772,7 +772,7 @@ describe('Dispatch', () => {
         })
         class MyState {
           @Action(Increment)
-          increment({ getState, setState, dispatch }: StateContext<number>) {
+          increment() {
             throw new Error('This is my error message!');
           }
         }
@@ -800,6 +800,7 @@ describe('Dispatch', () => {
       it('should notify of the completion of the relative observable', async(() => {
         class Append {
           static type = 'Test';
+
           constructor(public payload: string) {}
         }
 
@@ -838,6 +839,7 @@ describe('Dispatch', () => {
       it('should notify once all completed', async(() => {
         class Append {
           static type = 'Test';
+
           constructor(public payload: string) {}
         }
 

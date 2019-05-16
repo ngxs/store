@@ -81,7 +81,7 @@ describe('State', () => {
         defaults: 0
       })
       class FooState implements NgxsOnInit {
-        ngxsOnInit(stateContext: StateContext<number>) {
+        ngxsOnInit() {
           listener.push('onInit');
         }
       }

@@ -28,13 +28,13 @@ export class WebSocketSubject extends Subject<any> {
       serializer: this._config.serializer,
       deserializer: this._config.deserializer,
       closeObserver: {
-        next: (e: CloseEvent) => {
+        next: () => {
           this._socket = null;
           this.connectionStatus.next(false);
         }
       },
       openObserver: {
-        next: (e: Event) => this.connectionStatus.next(true)
+        next: () => this.connectionStatus.next(true)
       }
     };
   }
