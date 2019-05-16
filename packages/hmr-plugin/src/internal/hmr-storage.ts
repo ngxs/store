@@ -1,5 +1,3 @@
-import { NGXS_HMR_SNAPSHOT_KEY } from '../symbols';
-
 export class HmrStorage<S> {
   constructor(private _snapshot: Partial<S> = {}) {}
 

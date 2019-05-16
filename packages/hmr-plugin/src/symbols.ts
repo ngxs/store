@@ -5,8 +5,6 @@ export interface NgxsHmrSnapshot {
   [key: string]: any;
 }
 
-export const NGXS_HMR_SNAPSHOT_KEY = '__NGXS_HMR_SNAPSHOT__';
-
 export interface NgxsHmrLifeCycle<T = NgxsHmrSnapshot> {
   /**
    * hmrNgxsStoreOnInit is called when the AppModule on init
