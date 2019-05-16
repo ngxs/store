@@ -15,8 +15,8 @@ export async function hmr<T>(
 
   webpackModule.hot.accept();
 
-  type HmrDataTransfer = { snapshot: any };
-  const dataTransfer: HmrDataTransfer = webpackModule.hot.data;
+  type HmrDataTransfer = { snapshot?: any };
+  const dataTransfer: HmrDataTransfer = webpackModule.hot.data || {};
 
   const storage = new HmrStorage<any>(dataTransfer.snapshot || {});
   const manager = new HmrManager<T>(options, storage);
