@@ -118,7 +118,7 @@ export class RouterState {
 
   private guardsCheckEnd(routerState: RouterStateSnapshot): void {
     if (this.routerStateSnapshot) {
-      routerState = { ...this.routerStateSnapshot, ...routerState };
+      // routerState = { ...this.routerStateSnapshot, ...routerState };
     }
 
     this.routerStateSnapshot = this._serializer.serialize(routerState);
@@ -186,7 +186,7 @@ export class RouterState {
 
   private dispatchRouterDataResolved(event: ResolveEnd): void {
     this.routerStateSnapshot = this._serializer.serialize(event.state);
-    this.dispatchRouterAction(new RouterDataResolved(event.state, event));
+    this.dispatchRouterAction(new RouterDataResolved(this.routerStateSnapshot, event));
   }
 
   /**
