@@ -1,17 +1,25 @@
 import {
   APP_BOOTSTRAP_LISTENER,
   InjectionToken,
+  isDevMode,
   ModuleWithProviders,
-  NgModule
+  NgModule,
+  Provider
 } from '@angular/core';
-import { NgxsBootstrapper } from '@ngxs/store/internals';
+import { isAngularInTestMode, NgxsBootstrapper } from '@ngxs/store/internals';
 
-import { FEATURE_STATE_TOKEN, NgxsConfig, ROOT_STATE_TOKEN } from './symbols';
+import {
+  FEATURE_STATE_TOKEN,
+  NG_TEST_MODE,
+  NG_DEV_MODE,
+  NgxsConfig,
+  ROOT_STATE_TOKEN,
+  NgxsModuleOptions
+} from './symbols';
 import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
-import { ConfigValidator } from './internal/config-validator';
 import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatchedActionResults, InternalDispatcher } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
@@ -24,8 +32,8 @@ import { NgxsRootModule } from './modules/ngxs-root.module';
 import { NgxsFeatureModule } from './modules/ngxs-feature.module';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
-
-type NgxsModuleOptions = Partial<NgxsConfig>;
+import { HostEnvironment } from './host-environment/host-environment';
+import { ConfigValidator } from './internal/config-validator';
 
 /**
  * Ngxs Module
@@ -50,6 +58,7 @@ export class NgxsModule {
         InternalActions,
         NgxsBootstrapper,
         ConfigValidator,
+        HostEnvironment,
         LifecycleStateManager,
         InternalDispatcher,
         InternalDispatchedActionResults,
@@ -60,29 +69,7 @@ export class NgxsModule {
         SelectFactory,
         PluginManager,
         ...states,
-        {
-          provide: NGXS_EXECUTION_STRATEGY,
-          useClass: options.executionStrategy || DispatchOutsideZoneNgxsExecutionStrategy
-        },
-        {
-          provide: ROOT_STATE_TOKEN,
-          useValue: states
-        },
-        {
-          provide: NgxsModule.ROOT_OPTIONS,
-          useValue: options
-        },
-        {
-          provide: NgxsConfig,
-          useFactory: NgxsModule.ngxsConfigFactory,
-          deps: [NgxsModule.ROOT_OPTIONS]
-        },
-        {
-          provide: APP_BOOTSTRAP_LISTENER,
-          useFactory: NgxsModule.appBootstrapListenerFactory,
-          multi: true,
-          deps: [NgxsBootstrapper]
-        }
+        ...NgxsModule.ngxsTokenProviders(states, options)
       ]
     };
   }
@@ -106,11 +93,58 @@ export class NgxsModule {
     };
   }
 
+  private static ngxsTokenProviders(
+    states: StateClass[],
+    options: NgxsModuleOptions
+  ): Provider[] {
+    return [
+      {
+        provide: NG_DEV_MODE,
+        useFactory: NgxsModule.isAngularInTestMode
+      },
+      {
+        provide: NG_TEST_MODE,
+        useFactory: NgxsModule.isAngularDevMode
+      },
+      {
+        provide: NGXS_EXECUTION_STRATEGY,
+        useClass: options.executionStrategy || DispatchOutsideZoneNgxsExecutionStrategy
+      },
+      {
+        provide: ROOT_STATE_TOKEN,
+        useValue: states
+      },
+      {
+        provide: NgxsModule.ROOT_OPTIONS,
+        useValue: options
+      },
+      {
+        provide: NgxsConfig,
+        useFactory: NgxsModule.ngxsConfigFactory,
+        deps: [NgxsModule.ROOT_OPTIONS]
+      },
+      {
+        provide: APP_BOOTSTRAP_LISTENER,
+        useFactory: NgxsModule.appBootstrapListenerFactory,
+        multi: true,
+        deps: [NgxsBootstrapper]
+      }
+    ];
+  }
+
   private static ngxsConfigFactory(options: NgxsModuleOptions): NgxsConfig {
     return Object.assign(new NgxsConfig(), options);
   }
 
   private static appBootstrapListenerFactory(bootstrapper: NgxsBootstrapper): Function {
     return () => bootstrapper.bootstrap();
+  }
+
+  private static isAngularInTestMode(): Function {
+    return () => isAngularInTestMode();
+  }
+
+  private static isAngularDevMode(): Function {
+    return () => isDevMode();
   }
 }

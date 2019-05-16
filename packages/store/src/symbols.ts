@@ -1,13 +1,15 @@
 import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ObjectKeyMap } from './internal/internals';
+import { ObjectKeyMap, SharedSelectorOptions } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
+export const NG_TEST_MODE = new InjectionToken('NG_TEST_MODE');
+export const NG_DEV_MODE = new InjectionToken('NG_DEV_MODE');
 
 export const META_KEY = 'NGXS_META';
 export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
@@ -53,6 +55,13 @@ export class NgxsConfig {
    * (default: {})
    */
   defaultsState: ObjectKeyMap<any> = {};
+  /**
+   * Defining shared selector options
+   */
+  selectorOptions: SharedSelectorOptions = {
+    injectContainerState: true, // TODO: default is true in v3, will change in v4
+    suppressErrors: true // TODO: default is true in v3, will change in v4
+  };
 
   constructor() {
     this.compatibility = {
@@ -139,3 +148,5 @@ export interface NgxsOnInit {
 export interface NgxsAfterBootstrap {
   ngxsAfterBootstrap(ctx?: StateContext<any>): void;
 }
+
+export type NgxsModuleOptions = Partial<NgxsConfig>;

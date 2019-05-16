@@ -408,7 +408,7 @@ describe('Development Mode', () => {
       })
       class MyStore {
         @Action(Start)
-        start({ dispatch }: StateContext<StateModel>, action: Increment) {
+        start({ dispatch }: StateContext<StateModel>) {
           return dispatch(new Increment());
         }
 

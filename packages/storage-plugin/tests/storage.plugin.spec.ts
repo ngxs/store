@@ -179,7 +179,7 @@ describe('NgxsStoragePlugin', () => {
 
     store
       .select((state: any) => state.counter)
-      .subscribe((state: StateModel) => {
+      .subscribe(() => {
         expect(localStorage.getItem('@@STATE')).toBe(
           JSON.stringify({ counter: { counts: 100, version: 2 } })
         );
@@ -217,7 +217,7 @@ describe('NgxsStoragePlugin', () => {
 
     store
       .select((state: any) => state.counter)
-      .subscribe((state: StateModel) => {
+      .subscribe(() => {
         expect(localStorage.getItem('counter')).toBe(
           JSON.stringify({ counts: 100, version: 2 })
         );

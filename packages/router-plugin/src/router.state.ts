@@ -70,7 +70,7 @@ export class RouterState {
   }
 
   @Action(Navigate)
-  navigate(ctx: StateContext<RouterStateModel>, action: Navigate) {
+  navigate(_: StateContext<RouterStateModel>, action: Navigate) {
     return this._ngZone.run(() =>
       this._router.navigate(action.path, {
         queryParams: action.queryParams,

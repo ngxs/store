@@ -9,6 +9,10 @@ import {
 } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
 
+function asReadonly<T>(value: T): Readonly<T> {
+  return value;
+}
+
 export interface ObjectKeyMap<T> {
   [key: string]: T;
 }
@@ -44,11 +48,17 @@ export interface MetaDataModel {
 
 export type SelectFromState = (state: any) => any;
 
+export interface SharedSelectorOptions {
+  injectContainerState?: boolean;
+  suppressErrors?: boolean;
+}
+
 export interface SelectorMetaDataModel {
   selectFromAppState: SelectFromState | null;
   originalFn: Function | null;
   containerClass: any;
   selectorName: string | null;
+  getSelectorOptions: () => SharedSelectorOptions;
 }
 
 export interface MappedStore {
@@ -63,6 +73,8 @@ export interface StatesAndDefaults {
   defaults: any;
   states: MappedStore[];
 }
+
+export type Callback<T = any, V = any> = (...args: V[]) => T;
 
 /**
  * Ensures metadata is attached to the class and returns it.
@@ -95,6 +107,18 @@ export function getStoreMetadata(target: StateClass): MetaDataModel {
   return target[META_KEY]!;
 }
 
+// closure variable used to store the global options
+let _globalSelectorOptions: SharedSelectorOptions = {};
+
+export const globalSelectorOptions = asReadonly({
+  get(): Readonly<SharedSelectorOptions> {
+    return _globalSelectorOptions;
+  },
+  set(value: Readonly<SharedSelectorOptions>) {
+    _globalSelectorOptions = { ...value };
+  }
+});
+
 /**
  * Ensures metadata is attached to the selector and returns it.
  *
@@ -106,7 +130,8 @@ export function ensureSelectorMetadata(target: Function): SelectorMetaDataModel 
       selectFromAppState: null,
       originalFn: null,
       containerClass: null,
-      selectorName: null
+      selectorName: null,
+      getSelectorOptions: () => ({})
     };
 
     Object.defineProperty(target, SELECTOR_META_KEY, { value: defaultMetadata });

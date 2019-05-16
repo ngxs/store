@@ -121,6 +121,34 @@ export class AppComponent {
 
 and our `pandas$` will only return animals with the name panda in them.
 
+### Selector Options
+
+The behavior of the memoised selectors can be configured at a global level using the `selectorOptions` property in the options passed to the `NgxsModule.forRoot` call (see [Options](../advanced/options.md)).  
+These options can also be provided through the `@SelectorOptions` decorator at a Class or Method level in order to configure the behavior of selectors within that scope. The following options are available:
+#### `suppressErrors`
+- `true` will cause any error within a selector to result in the selector returning `undefined`.
+- `false` results in these errors propogating through the stack that triggered the evaluation of the selector that caused the error. 
+- **NOTE:** *The default for this setting will be changing to `false` in NGXS v4.  
+The default value in NGXS v3.x is `true`.*
+#### `injectContainerState`
+- `true` will cause all selectors defined within a state class to receive the container class' state model as their first parameter. As a result every selector would be re-evaluated after any change to that state.  
+**NOTE:** *This is not ideal, therefore this setting default will be changing to `false` in NGXS v4.* 
+- `false` will prevent the injection of the container state model as the first parameter of a selector method (defined within a state class) that joins to other selectors for its parameters.
+- *The default value in NGXS v3.x is `true`.*
+- See [here](#joining-selectors) for examples of the effect this setting has on your selectors.
+
+We recommend setting these options at the global level, unless you are transitioning your application from one behavior to another where you can use this decorator to introduce this transition in a piecemeal fasion. For example, NGXS v4 will be introducing a change to the selectors that will effect methods which make use of joined selectors (see [below](#joining-selectors)).
+
+We recommend using the following global settings for new projects in order to minimise the impact of the v4 upgrade:
+```TS
+{
+  // These Selector Settings are recommended in preparation for NGXS v4
+  // (See above for their effects)
+  suppressErrors: false, 
+  injectContainerState: false
+}
+```
+
 ### Memoized Selectors with Arguments
 
 Selectors can be configured to accept arguments.  
@@ -248,6 +276,7 @@ export class ZooComponent {
 When defining a selector, you can also pass other selectors into the signature
 of the `Selector` decorator to join other selectors with this state selector.
 
+If you do not change the Selector Options (see [above](#selector-options)) then these selectors will have the following signature in NGXS v3.x:
 ```TS
 @State<PreferencesStateModel>({ ... })
 export class PreferencesState { ... }
@@ -256,17 +285,46 @@ export class PreferencesState { ... }
 export class ZooState {
 
   @Selector([PreferencesState])
-  static pandas(state: string[], preferencesState: PreferencesStateModel) {
-    return state.filter(s =>
-      (s.indexOf('panda') > -1 && s.location === preferencesState.location));
+  static firstLocalPanda(state: string[], preferencesState: PreferencesStateModel) {
+    return state.find(s =>
+      (s.indexOf('panda') > -1 && s.indexOf(preferencesState.location)));
+  }
+
+  @Selector([ZooState.firstLocalPanda])
+  static happyLocalPanda(state: string[], panda: string) {
+    return 'happy ' + panda;
   }
 
 }
 ```
 
-When using the `Selector` decorator along with a state class, it will still
-inject the state class's state first followed by the other selectors in the order
-they were passed in the signature.
+Here you can see that when using the `Selector` decorator with arguments within a state class, it will inject the state class's state model as the first parameter followed by the other selectors in the order they were passed in the signature. This is the behavior provided by the [`injectContainerState`](#injectcontainerstate) option being defaulted to `true` in NGXS v3.x.
+
+The Memoised Selectors will recalculate when any of their input parameter values change (whether they use them or not). In the case of the behavior above where the state class's state model is injected as the first input parameter, the selectors will recalculate on any change to this model. You will notice that the `happyLocalPanda` selector has the `state` dependency even though it is not used. It would recalculate on every change to `state` ignoring the fact that `firstLocalPanda` value may not have changed. This is not ideal, therefore this default behavior is changing in NGXS v4.
+
+In NGXS v4 and above the default value of the [`injectContainerState`](#injectcontainerstate) selector option will change to `false`, resulting in selectors that are more optimised because they do not get the state model injected as the first parameter unless explicitly requested. With this setting the selectors would need to be defined as follows:
+ ```TS
+@State<PreferencesStateModel>({ ... })
+export class PreferencesState { ... }
+
+@State<string[]>({ ... })
+export class ZooState {
+
+  @Selector([ZooState, PreferencesState])
+  static firstLocalPanda(state: string[], preferencesState: PreferencesStateModel) {
+    return state.find(s =>
+      (s.indexOf('panda') > -1 && s.indexOf(preferencesState.location)));
+  }
+
+  @Selector([ZooState.firstLocalPanda])
+  static happyLocalPanda(panda: string) {
+    return 'happy ' + panda;
+  }
+}
+```
+Now the `happyLocalPanda` will only recalculate when the output value of the `firstLocalPanda` selector changes.
+
+We recommend that you move your projects to this behavior in order to optimize your selectors and to prepare for the change to the defaults coming in NGXS v4. See the Selector Options section [above](#selector-options) for the recommended settings.
 
 ### Meta Selectors
 By default selectors in NGXS are bound to a state. Sometimes you need the ability

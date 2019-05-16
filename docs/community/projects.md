@@ -23,6 +23,7 @@
 ### Media
 - [ngAtlanta - NGXS, State Management Made Simple - Jecelyn Yeen](https://youtu.be/0bhfUGjn0KA)
 - [ngAir 153 - NGXS: A New State Management for Angular Apps with Austin McDaniel and Danny Blue](https://www.youtube.com/watch?v=rkn73khwfWU&feature=youtu.be)
+- [ngAir 196 - One year of NGXS with Mark Whitfeld](https://youtu.be/B7m7eWywJB0)
 - [Quick Start to NGXS](https://youtu.be/SGj11j4hxmg)
 - [NGXS: Redux implemented in 2018 by Gerard Sans](https://youtu.be/nh-mp85folo?t=3240)
 - [Angular NGXS Tutorial - An Alternative to NgRx for State Management](https://youtu.be/SfiO3bDUK7Q)
@@ -47,5 +48,6 @@
 - [Angular Firebase - NGXS Quick Start Tutorial](https://angularfirebase.com/lessons/ngxs-quick-start-angular-state-management)
 - [coursetro - Angular NGXS Tutorial - An Alternative to Ngrx for State Management](https://coursetro.com/posts/code/152/Angular-NGXS-Tutorial---An-Alternative-to-Ngrx-for-State-Management)
 - [@splincode - NGXS Facade](https://medium.com/ngxs/ngxs-facade-3aa90c41497b)
+- [@alvino.aj - NGXS — Thoughts, Patterns, Architecture and best practices](https://medium.com/@alvino.aj/ngxs-thoughts-patterns-architecture-and-best-practices-c991c42618d9)
 
 If you have content you'd like to share with the community, make a PR to add it here.

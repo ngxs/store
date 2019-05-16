@@ -1,12 +1,11 @@
-import { Injectable, ErrorHandler } from '@angular/core';
-import { Observable, of, forkJoin, empty, Subject, throwError } from 'rxjs';
-import { shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
+import { ErrorHandler, Injectable } from '@angular/core';
+import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
+import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
 
 import { compose } from '../utils/compose';
-import { InternalActions, ActionStatus, ActionContext } from '../actions-stream';
+import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
-import { NgxsConfig } from '../symbols';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
 
@@ -92,7 +91,7 @@ export class InternalDispatcher {
             case ActionStatus.Errored:
               return throwError(ctx.error);
             default:
-              return empty();
+              return EMPTY;
           }
         })
       )

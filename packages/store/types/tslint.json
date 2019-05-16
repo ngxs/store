@@ -1,0 +1,33 @@
+{
+  "extends": "dtslint/dtslint.json",
+  "rules": {
+    "semicolon": false,
+    "indent": [false, "tabs"],
+    "no-useless-files": false,
+    "eofline": false,
+    "no-unnecessary-class": false,
+    "member-access": false,
+    "no-object-literal-type-assertion": false,
+    "interface-over-type-literal": false,
+    "whitespace": [
+      false,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-separator",
+      "check-type"
+    ],
+    "radix": false,
+    "prefer-object-spread": false,
+    "no-empty-interface": false,
+    "no-unused-variable": false,
+    "no-duplicate-variable": false,
+    "function-constructor": false,
+    "label-position": false,
+    "no-eval": false,
+    "interface-name": false,
+    "prefer-switch": false,
+    "no-misused-new": false,
+    "prefer-const": false
+  }
+}

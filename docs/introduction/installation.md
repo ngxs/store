@@ -24,7 +24,7 @@ import { NgxsModule } from '@ngxs/store';
 export class AppModule {}
 ```
 
-When you include the module in the import, you can pass root stores along with options.
+When you include the module in the import, you can pass root stores along with [options](../advanced/options.md).
 If you are lazy loading, you can use the `forFeature` option with the same arguments.
 
 Options such as `developmentMode` can be passed to the module as the second argument in the `forRoot` method.

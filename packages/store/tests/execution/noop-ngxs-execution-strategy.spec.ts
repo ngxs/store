@@ -56,10 +56,6 @@ describe('NoopNgxsExecutionStrategy', () => {
     public counter$: Observable<number>;
   }
 
-  function repeat<T>(value: T, times: number): T[] {
-    return <T[]>new Array(times).fill(value);
-  }
-
   function setup(moduleDef?: TestModuleMetadata) {
     moduleDef = moduleDef || {
       imports: [

@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { Component, ApplicationRef, NgModule, OnInit, AfterViewInit } from '@angular/core';
+import { AfterViewInit, ApplicationRef, Component, NgModule, OnInit } from '@angular/core';
 import {
-  ɵDomAdapter as DomAdapter,
-  ɵBrowserDomAdapter as BrowserDomAdapter,
   BrowserModule,
-  DOCUMENT
+  ɵBrowserDomAdapter as BrowserDomAdapter,
+  ɵDomAdapter as DomAdapter
 } from '@angular/platform-browser';
 
 import { InitState, UpdateState } from '../src/actions/actions';
@@ -12,6 +11,7 @@ import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../s
 
 import { META_KEY, NgxsAfterBootstrap } from '../src/symbols';
 import { StoreValidators } from '../src/utils/store-validators';
+import { DOCUMENT } from '@angular/common';
 
 describe('State', () => {
   it('describes correct name', () => {
@@ -81,7 +81,7 @@ describe('State', () => {
         defaults: 0
       })
       class FooState implements NgxsOnInit {
-        ngxsOnInit(stateContext: StateContext<number>) {
+        ngxsOnInit() {
           listener.push('onInit');
         }
       }
@@ -140,6 +140,48 @@ describe('State', () => {
       expect(TestBed.get(Store).snapshot().foo).toEqual(['initState', 'onInit']);
     });
 
+    it('should call an UpdateState action handler with multiple states', () => {
+      const expectedStates = { foo: ['test'], bar: 'baz', qux: { key: 'value' } };
+
+      @State<any>({
+        name: 'eager',
+        defaults: []
+      })
+      class EagerState {
+        @Action(UpdateState)
+        updateState(ctx: StateContext<any[]>, action: UpdateState) {
+          ctx.setState({ ...ctx.getState(), ...action.addedStates });
+        }
+      }
+
+      @State<string[]>({
+        name: 'foo',
+        defaults: expectedStates.foo
+      })
+      class FooState {}
+
+      @State<string>({
+        name: 'bar',
+        defaults: expectedStates.bar
+      })
+      class BarState {}
+
+      @State<any>({
+        name: 'qux',
+        defaults: expectedStates.qux
+      })
+      class QuxState {}
+
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([EagerState]),
+          NgxsModule.forFeature([FooState, BarState, QuxState])
+        ]
+      });
+
+      expect(TestBed.get(Store).snapshot().eager).toEqual(expectedStates);
+    });
+
     it('should call an UpdateState action handler before the ngxsOnInit method on feature module initialisation', () => {
       @State<string[]>({
         name: 'foo',
@@ -171,7 +213,7 @@ describe('State', () => {
     });
   });
 
-  describe('"ngxsAfterBootstrap" lifecycle hook', () => {
+  describe('ngxsAfterBootstrap" lifecycle hook', () => {
     function createRootNode(selector = 'app-root'): void {
       const document = TestBed.get(DOCUMENT);
       const adapter: DomAdapter = new BrowserDomAdapter();
