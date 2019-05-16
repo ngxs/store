@@ -199,9 +199,8 @@ describe('NgxsRouterPlugin', () => {
       )
       .toPromise();
 
-    store.selectOnce(RouterState.state).subscribe(routerState => {
-      expect(routerState!.url).toEqual('/?a=10&b=20');
-    });
+    const routerState = store.selectSnapshot(RouterState.state);
+    expect(routerState!.url).toEqual('/?a=10&b=20');
   });
 
   it('should be possible to access the state snapshot if action is dispatched from the component constructor', async () => {
