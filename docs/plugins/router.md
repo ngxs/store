@@ -63,8 +63,65 @@ export class MyApp {
 ```
 
 You can use action handlers to listen to state changes in your components
-and services by subscribing to the `RouterNavigation`, `RouterCancel` or `RouterError`
+and services by subscribing to the `RouterNavigation`, `RouterCancel`, `RouterError` or `RouterDataResolved`
 action classes.
+
+## Listening to the data resolution event
+You can listen to the `RouterDataResolved` action that is dispatch when the navigated route has some linked resolvers. For example:
+
+```TS
+import { Actions, ofActionSuccessful } from '@ngxs/store';
+import { RouterDataResolved } from '@ngxs/router-plugin';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+@Component({ ... })
+export class AppComponent {
+
+  private destroy$ = new Subject<void>();
+
+  constructor(actions$: Actions) {
+    actions$.pipe(
+      ofActionSuccessful(RouterDataResolved),
+      takeUntil(this.destroy$)
+    ).subscribe((action: RouterDataResolved) => {
+      console.log(action.routerState.root.firstChild.data);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+}
+```
+
+The more explicit example would be a situation where you would want to bind an input property providing some resolved data. For example:
+
+```TS
+import { Actions, ofActionSuccessful } from '@ngxs/store';
+import { RouterDataResolved } from '@ngxs/router-plugin';
+
+import { map } from 'rxjs/operators';
+
+@Component({
+  template: `
+    <app-some-component [data]="data$ | async"></app-some-component>
+  `
+})
+export class AppComponent {
+
+  data$ = this.actions$.pipe(
+    ofActionSuccessful(RouterDataResolved),
+    map((action: RouterDataResolved) => actionr.routerState.root.firstChild.data)
+  );
+
+  constructor(private actions$: Actions) {}
+
+}
+```
 
 ## Custom Router State Serializer
 You can implement your own router state serializer to serialize the router snapshot.
