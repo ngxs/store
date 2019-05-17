@@ -17,7 +17,7 @@ export function insertItem<T>(value: T, beforePosition?: number) {
       return [value];
     }
 
-    const clone = [...existing];
+    const clone = existing.slice();
 
     let index = 0;
 
