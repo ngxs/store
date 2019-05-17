@@ -7,6 +7,7 @@ import {
   Provider
 } from '@angular/core';
 import { isAngularInTestMode, NgxsBootstrapper } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, InitialState } from '@ngxs/store/internals';
 
 import {
   FEATURE_STATE_TOKEN,
@@ -128,6 +129,10 @@ export class NgxsModule {
         useFactory: NgxsModule.appBootstrapListenerFactory,
         multi: true,
         deps: [NgxsBootstrapper]
+      },
+      {
+        provide: INITIAL_STATE_TOKEN,
+        useFactory: NgxsModule.getInitialState
       }
     ];
   }
@@ -146,5 +151,9 @@ export class NgxsModule {
 
   private static isAngularDevMode(): Function {
     return () => isDevMode();
+  }
+
+  private static getInitialState() {
+    return InitialState.pop();
   }
 }

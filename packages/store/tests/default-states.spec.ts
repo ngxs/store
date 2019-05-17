@@ -21,7 +21,7 @@ describe('Reusable States', () => {
     }
   }
 
-  it('should not overwrite an already existing state (hmr or any setup)', () => {
+  it('should not override default in FooState', () => {
     TestBed.configureTestingModule({
       imports: [
         NgxsModule.forRoot([FooState], {
@@ -35,11 +35,11 @@ describe('Reusable States', () => {
     const store = TestBed.get(Store);
 
     let stateValue = store.selectSnapshot(FooState);
-    expect(stateValue).toEqual([4, 5, 6]);
+    expect(stateValue).toEqual([1, 2, 3]);
 
     store.dispatch(new UpdateFoo(7));
     stateValue = store.selectSnapshot(FooState);
-    expect(stateValue).toEqual([4, 5, 6, 7]);
+    expect(stateValue).toEqual([1, 2, 3, 7]);
   });
 
   it('should not overwrite a state stream that is already initialised', () => {

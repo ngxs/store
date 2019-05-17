@@ -6,6 +6,7 @@ export interface NgxsOptionsTesting {
   states?: StateClass[];
   ngxsOptions?: NgxsModuleOptions;
   imports?: ModuleWithProviders[];
+  before?: () => void;
 }
 
 export interface NgxsTesting {

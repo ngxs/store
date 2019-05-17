@@ -1,7 +1,8 @@
 import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ObjectKeyMap, SharedSelectorOptions } from './internal/internals';
+import { ObjectKeyMap } from '@ngxs/store/internals';
+import { SharedSelectorOptions } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 

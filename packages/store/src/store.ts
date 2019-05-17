@@ -1,15 +1,15 @@
 // tslint:disable:unified-signatures
-import { Injectable, Type } from '@angular/core';
+import { Injectable, Type, Optional, Inject } from '@angular/core';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
+import { INITIAL_STATE_TOKEN, ObjectKeyMap, ObjectUtils } from '@ngxs/store/internals';
 
-import { getSelectorFn } from './utils/selector-utils';
-import { InternalStateOperations } from './internal/state-operations';
-import { StateStream } from './internal/state-stream';
-import { NgxsConfig } from './symbols';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
+import { InternalStateOperations } from './internal/state-operations';
+import { getSelectorFn } from './utils/selector-utils';
+import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
-import { ObjectKeyMap } from './internal/internals';
+import { NgxsConfig } from './symbols';
 
 @Injectable()
 export class Store {
@@ -17,13 +17,12 @@ export class Store {
     private _stateStream: StateStream,
     private _internalStateOperations: InternalStateOperations,
     private _config: NgxsConfig,
-    private _internalExecutionStrategy: InternalNgxsExecutionStrategy
+    private _internalExecutionStrategy: InternalNgxsExecutionStrategy,
+    @Optional()
+    @Inject(INITIAL_STATE_TOKEN)
+    initialStateValue: any
   ) {
-    const value: ObjectKeyMap<any> = this._stateStream.value;
-    const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
-    if (storeIsEmpty) {
-      this._stateStream.next(this._config.defaultsState);
-    }
+    this.initStateStream(initialStateValue);
   }
 
   /**
@@ -96,5 +95,18 @@ export class Store {
    */
   reset(state: any) {
     return this._internalStateOperations.getRootStateOperations().setState(state);
+  }
+
+  private initStateStream(initialStateValue: any): void {
+    const value: ObjectKeyMap<any> = this._stateStream.value;
+    const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
+    if (storeIsEmpty) {
+      this._stateStream.next(
+        ObjectUtils.merge(
+          ObjectUtils.clone(this._config.defaultsState),
+          ObjectUtils.clone(initialStateValue)
+        )
+      );
+    }
   }
 }

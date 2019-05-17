@@ -9,12 +9,10 @@ import {
 } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
 
+import { ObjectKeyMap } from '@ngxs/store/internals';
+
 function asReadonly<T>(value: T): Readonly<T> {
   return value;
-}
-
-export interface ObjectKeyMap<T> {
-  [key: string]: T;
 }
 
 // inspired from https://stackoverflow.com/a/43674389

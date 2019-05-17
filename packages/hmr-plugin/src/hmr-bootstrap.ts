@@ -1,25 +1,32 @@
 import { NgModuleRef } from '@angular/core';
 import { HmrManager } from './hmr-manager';
 import { BootstrapModuleFn, NgxsHmrOptions, WebpackModule } from './symbols';
+import { HmrStorage } from './internal/hmr-storage';
 
 export async function hmr<T>(
-  module: WebpackModule,
+  webpackModule: WebpackModule,
   bootstrapFn: BootstrapModuleFn<T>,
   options: NgxsHmrOptions = {}
 ): Promise<NgModuleRef<T>> {
-  if (!module.hot) {
+  if (!webpackModule.hot) {
     console.error('Are you using the --hmr flag for ng serve?');
     throw new Error('HMR is not enabled for webpack-dev-server!');
   }
 
-  const manager = new HmrManager<T>(module, options);
+  webpackModule.hot.accept();
+
+  type HmrDataTransfer = { snapshot?: any };
+  const dataTransfer: HmrDataTransfer = webpackModule.hot.data || {};
+
+  const storage = new HmrStorage<any>(dataTransfer.snapshot || {});
+  const manager = new HmrManager<T>(options, storage);
 
   return await manager.hmrModule(bootstrapFn, () => {
     manager.beforeModuleBootstrap();
 
-    module.hot.dispose(async () => {
-      await manager.beforeModuleOnDestroy();
-      await manager.createNewModule();
+    webpackModule.hot!.dispose((data: HmrDataTransfer) => {
+      data.snapshot = manager.beforeModuleOnDestroy();
+      manager.createNewModule();
     });
   });
 }

@@ -1,4 +1,4 @@
-import { Injectable, Injector, Optional, SkipSelf } from '@angular/core';
+import { Injectable, Injector, Optional, SkipSelf, Inject } from '@angular/core';
 import { forkJoin, from, Observable, of, throwError } from 'rxjs';
 import {
   catchError,
@@ -18,7 +18,6 @@ import {
   MappedStore,
   MetaDataModel,
   nameToState,
-  ObjectKeyMap,
   propGetter,
   StateClass,
   StateKeyGraph,
@@ -32,7 +31,7 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { InternalStateOperations } from '../internal/state-operations';
+import { INITIAL_STATE_TOKEN, ObjectKeyMap } from '@ngxs/store/internals';
 
 /**
  * State factory class
@@ -51,7 +50,9 @@ export class StateFactory {
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
     private _stateContextFactory: StateContextFactory,
-    private _internalStateOperations: InternalStateOperations
+    @Optional()
+    @Inject(INITIAL_STATE_TOKEN)
+    private _initialState: any
   ) {}
 
   private _states: MappedStore[] = [];
@@ -64,10 +65,6 @@ export class StateFactory {
 
   public get statesByName(): StatesByName {
     return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
-  }
-
-  private get stateTreeRef(): ObjectKeyMap<any> {
-    return this._internalStateOperations.getRootStateOperations().getState();
   }
 
   private static cloneDefaults(defaults: any): any {
@@ -243,7 +240,8 @@ export class StateFactory {
    * @param path
    */
   private hasBeenMountedAndBootstrapped(name: string, path: string): boolean {
-    const valueIsBootstrapped: boolean = getValue(this.stateTreeRef, path) !== undefined;
-    return this.statesByName[name] && valueIsBootstrapped;
+    const valueIsBootstrappedInInitialState: boolean =
+      getValue(this._initialState, path) !== undefined;
+    return this.statesByName[name] && valueIsBootstrappedInInitialState;
   }
 }

@@ -49,7 +49,7 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   }
 
   private stateEventLoop(callback: HmrCallback<S>): void {
-    if (!this.storage.existHmrStorage) return;
+    if (!this.storage.hasData()) return;
 
     const appBootstrapped$: Observable<boolean> = this.bootstrap.appBootstrapped$;
     const state$: Observable<any> = this.context.store.select(state => state);
@@ -64,7 +64,7 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
           storeEventId.unsubscribe();
           // if events are no longer running on the call stack,
           // then we can update the state
-          callback(this.context.createStateContext(), this.storage.snapshot);
+          callback(this.context.createStateContext(), this.storage.snapshot as Partial<S>);
         }, this.options.deferTime);
       });
     });

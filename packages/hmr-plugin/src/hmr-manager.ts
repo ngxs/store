@@ -3,17 +3,17 @@ import { createNewHosts, removeNgStyles } from '@angularclass/hmr';
 import { NgxsBootstrapper } from '@ngxs/store/internals';
 
 import { HmrStorage } from './internal/hmr-storage';
-import { HmrStateContextFactory } from './internal/hmr-state-context-factory';
-import { HmrLifecycle } from './internal/hmr-lifecycle';
-import { HmrOptionBuilder } from './internal/hmr-options-builder';
-import { HmrInitAction } from './actions/hmr-init.action';
 import {
   BootstrapModuleFn,
   NgxsHmrLifeCycle,
   NgxsHmrOptions,
-  NgxsHmrSnapshot,
-  WebpackModule
+  NgxsHmrSnapshot
 } from './symbols';
+import { HmrStateContextFactory } from './internal/hmr-state-context-factory';
+import { HmrOptionBuilder } from './internal/hmr-options-builder';
+import { HmrInitAction } from './actions/hmr-init.action';
+import { HmrLifecycle } from './internal/hmr-lifecycle';
+import { InitialState } from '@ngxs/store/internals';
 
 export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnapshot> {
   public storage: HmrStorage<S>;
@@ -22,36 +22,36 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
   public optionsBuilder: HmrOptionBuilder;
   private ngModule: NgModuleRef<T>;
 
-  constructor(private readonly module: WebpackModule, options: NgxsHmrOptions) {
-    this.storage = new HmrStorage<S>();
+  constructor(options: NgxsHmrOptions, storage: HmrStorage<S>) {
+    this.storage = storage;
     this.optionsBuilder = new HmrOptionBuilder(options);
-    this.storage.resetHmrStorageWhenEmpty();
   }
 
   public async hmrModule(
     bootstrapFn: BootstrapModuleFn<T>,
     tick: () => void
   ): Promise<NgModuleRef<T>> {
+    InitialState.set(this.storage.snapshot);
     this.ngModule = await bootstrapFn();
     this.context = new HmrStateContextFactory(this.ngModule);
     this.lifecycle = this.createLifecycle();
 
     tick();
 
-    this.module.hot.accept();
+    InitialState.pop();
     return this.ngModule;
   }
 
   public beforeModuleBootstrap(): void {
     this.lifecycle.hmrNgxsStoreOnInit((ctx, state) => {
-      this.storage.snapshot = {};
       ctx.dispatch(new HmrInitAction(state));
     });
   }
 
-  public beforeModuleOnDestroy(): void {
+  public beforeModuleOnDestroy(): Partial<S> {
     this.optionsBuilder.clearLogs();
-    this.storage.snapshot = this.lifecycle.hmrNgxsStoreBeforeOnDestroy();
+    const snapshot = this.lifecycle.hmrNgxsStoreBeforeOnDestroy();
+    return snapshot;
   }
 
   public createNewModule(): void {

@@ -18,6 +18,10 @@ export class NgxsTestBed {
   public static configureTestingStates(options: NgxsOptionsTesting): NgxsTesting {
     this.resetTestBed();
 
+    if (options.before) {
+      options.before();
+    }
+
     TestBed.configureTestingModule({
       imports: [
         NgxsTestModule,
