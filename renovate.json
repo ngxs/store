@@ -3,20 +3,12 @@
   "separateMajorMinor": false,
   "timezone": "UTC",
   "schedule": [
-    "after 10pm every weekday",
-    "before 4am every weekday",
-    "every weekend"
+    "after 4am on the first saturday of the month",
+    "after 4am on the third saturday of the month"
   ],
-  "baseBranches": [
-    "master"
-  ],
-  "ignoreDeps": [
-    "@types/node"
-  ],
-  "packageFiles": [
-    "package.json",
-    "packages/**/package.json"
-  ],
+  "baseBranches": ["master"],
+  "ignoreDeps": ["@types/node"],
+  "packageFiles": ["package.json", "packages/**/package.json"],
   "major": {
     "devDependencies": {
       "enabled": false
@@ -24,58 +16,20 @@
   },
   "packageRules": [
     {
-      "packagePatterns": [
-        "^@angular\/.*"
-      ],
-      "groupName": "@angular"
+      "extends": ["monorepo:angular", "monorepo:angularcli"],
+      "groupName": "@angular",
+      "schedule": [
+        "before 3am on the first saturday of the month",
+        "before 3am on the third saturday of the month"
+      ]
     },
     {
-      "packagePatterns": [
-        "^@angular-.*"
-      ],
-      "groupName": "@angular-dev"
-    },
-    {
-      "packageNames": [
-        "typescript"
-      ],
-      "updateTypes": "patch"
-    },
-    {
-      "packageNames": [
-        "^@ngxs\/.*"
-      ],
-      "groupName": "@ngxs"
-    },
-    {
-      "packageNames": [
-        "^karma.*"
-      ],
-      "groupName": "karma"
-    },
-    {
-      "packageNames": [
-        "^jasmine.*"
-      ],
-      "groupName": "jasmine"
-    },
-    {
-      "packageNames": [
-        "^@commitlint\/.*"
-      ],
-      "groupName": "@commitlint"
-    },
-    {
-      "packageNames": [
-        "^@nguniversal\/.*"
-      ],
-      "groupName": "@nguniversal"
-    },
-    {
-      "packageNames": [
-        "^@types\/.*"
-      ],
-      "groupName": "@types"
+      "packageNames": ["typescript"],
+      "updateTypes": "patch",
+      "schedule": [
+        "before 3am on the first saturday of the month",
+        "before 3am on the third saturday of the month"
+      ]
     }
   ]
 }
