@@ -110,7 +110,7 @@ Now anytime your form updates, your state will also reflect the new state.
 
 The directive also has two inputs you can utilize as well:
 
-- `ngxsFormDebounce: number` - Debounce the value changes to the form. Default value: `100`. Ignored if updateOn is 'blur' or 'submit'
+- `ngxsFormDebounce: number` - Debounce the value changes to the form. Default value: `100`. Ignored if `updateOn` is `blur` or `submit`.
 - `ngxsFormClearOnDestroy: boolean` - Clear the state on destroy of the form.
 
 ### Actions
