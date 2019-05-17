@@ -115,7 +115,7 @@ export class AppComponent {
 
   data$ = this.actions$.pipe(
     ofActionSuccessful(RouterDataResolved),
-    map((action: RouterDataResolved) => actionr.routerState.root.firstChild.data)
+    map((action: RouterDataResolved) => action.routerState.root.firstChild.data)
   );
 
   constructor(private actions$: Actions) {}
