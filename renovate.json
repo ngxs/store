@@ -2,10 +2,7 @@
   "rangeStrategy": "bump",
   "separateMajorMinor": false,
   "timezone": "UTC",
-  "schedule": [
-    "after 4am on the first saturday of the month",
-    "after 4am on the third saturday of the month"
-  ],
+  "schedule": ["after 4:00am every 2nd week of the month"],
   "baseBranches": ["master"],
   "ignoreDeps": ["@types/node"],
   "packageFiles": ["package.json", "packages/**/package.json"],
@@ -18,18 +15,12 @@
     {
       "extends": ["monorepo:angular", "monorepo:angularcli"],
       "groupName": "@angular",
-      "schedule": [
-        "before 3am on the first saturday of the month",
-        "before 3am on the third saturday of the month"
-      ]
+      "schedule": ["before 3:00am every 2nd week of the month"]
     },
     {
       "packageNames": ["typescript"],
       "updateTypes": "patch",
-      "schedule": [
-        "before 3am on the first saturday of the month",
-        "before 3am on the third saturday of the month"
-      ]
+      "schedule": ["before 3:00am every 2nd week of the month"]
     }
   ]
 }
