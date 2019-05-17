@@ -41,7 +41,7 @@ export function updateItem<T>(
       return existing;
     }
 
-    const clone = [...existing];
+    const clone = existing.slice();
     clone[index] = value;
     return clone;
   };

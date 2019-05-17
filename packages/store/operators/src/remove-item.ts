@@ -18,7 +18,7 @@ export function removeItem<T>(selector: number | Predicate<T>) {
       return existing;
     }
 
-    const clone = [...existing];
+    const clone = existing.slice();
     clone.splice(index, 1);
     return clone;
   };
