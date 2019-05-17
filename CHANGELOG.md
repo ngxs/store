@@ -9,10 +9,14 @@ $ npm install @ngxs/store@dev
 * Feature: expose NgxsModuleOptions as a named type [#1031](https://github.com/ngxs/store/pull/1031)
 * Feature: expose SelectorOptions decorator [#1029](https://github.com/ngxs/store/pull/1029), [#1047](https://github.com/ngxs/store/pull/1047)
 * Feature: expose StateClass as a named type [#1042](https://github.com/ngxs/store/pull/1042)
+* Feature: Router Plugin - add `RouterDataResolved` action [1059](https://github.com/ngxs/store/pull/1059)
+* Fix: Life-cycle events not triggering in root state [#1048](https://github.com/ngxs/store/pull/1048)
 * Fix: Logger Plugin - replace `Object.entries` as it breaks IE11 [#931](https://github.com/ngxs/store/pull/931)
 * Fix: Router Plugin - trigger navigation on the `QueryParams` change [#924](https://github.com/ngxs/store/pull/924)
-* Fix: Router-plugin - redirect to the manually entered route [#920](https://github.com/ngxs/store/pull/920)
-* Fix: HMR-Plugin - remove old styles after reload [#1001](https://github.com/ngxs/store/pull/1001)
+* Fix: Router Plugin - redirect to the manually entered route [#920](https://github.com/ngxs/store/pull/920)
+* Fix: HMR Plugin - remove old styles after reload [#1001](https://github.com/ngxs/store/pull/1001)
+* Fix: HMR Plugin - correct persistence state in runtime [#1048](https://github.com/ngxs/store/pull/1048)
+* Fix: Form Plugin - introduce conditional debounce [1061](https://github.com/ngxs/store/pull/1061)
 
 ## NGXS-Labs
 
