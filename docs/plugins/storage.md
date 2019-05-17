@@ -63,6 +63,10 @@ export class MyStorageEngine implements StorageEngine {
   clear(): void {
     // Your logic here
   }
+  
+  key(val: number): string {
+    // Your logic here
+  }
 }
 
 @NgModule({
