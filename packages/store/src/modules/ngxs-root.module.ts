@@ -5,7 +5,11 @@ import { InternalStateOperations } from '../internal/state-operations';
 import { Store } from '../store';
 import { SelectFactory } from '../decorators/select';
 import { NgxsConfig, ROOT_STATE_TOKEN } from '../symbols';
-import { globalSelectorOptions, StateClass, StatesAndDefaults } from '../internal/internals';
+import {
+  globalSelectorOptions,
+  StateClassInternal,
+  StatesAndDefaults
+} from '../internal/internals';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
 import { InitState } from '../actions/actions';
 
@@ -22,7 +26,7 @@ export class NgxsRootModule {
     _select: SelectFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
-    states: StateClass[] = [],
+    states: StateClassInternal[] = [],
     config: NgxsConfig,
     lifecycleStateManager: LifecycleStateManager
   ) {

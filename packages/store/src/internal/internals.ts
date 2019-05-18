@@ -9,22 +9,20 @@ import {
 } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
 
-import { ObjectKeyMap } from '@ngxs/store/internals';
+import { ObjectKeyMap, StateClass } from '@ngxs/store/internals';
 
 function asReadonly<T>(value: T): Readonly<T> {
   return value;
 }
 
 // inspired from https://stackoverflow.com/a/43674389
-export interface StateClass<T = any, U = any> {
+export interface StateClassInternal<T = any, U = any> extends StateClass<T> {
   [META_KEY]?: MetaDataModel;
   [META_OPTIONS_KEY]?: StoreOptions<U>;
-
-  new (...args: any[]): T;
 }
 
 export type StateKeyGraph = ObjectKeyMap<string[]>;
-export type StatesByName = ObjectKeyMap<StateClass>;
+export type StatesByName = ObjectKeyMap<StateClassInternal>;
 
 export interface StateOperations<T> {
   getState(): T;
@@ -40,7 +38,7 @@ export interface MetaDataModel {
   defaults: any;
   path: string | null;
   selectFromAppState: SelectFromState | null;
-  children?: StateClass[];
+  children?: StateClassInternal[];
   instance: any;
 }
 
@@ -79,7 +77,7 @@ export type Callback<T = any, V = any> = (...args: V[]) => T;
  *
  * @ignore
  */
-export function ensureStoreMetadata(target: StateClass): MetaDataModel {
+export function ensureStoreMetadata(target: StateClassInternal): MetaDataModel {
   if (!target.hasOwnProperty(META_KEY)) {
     const defaultMetadata: MetaDataModel = {
       name: null,
@@ -101,7 +99,7 @@ export function ensureStoreMetadata(target: StateClass): MetaDataModel {
  *
  * @ignore
  */
-export function getStoreMetadata(target: StateClass): MetaDataModel {
+export function getStoreMetadata(target: StateClassInternal): MetaDataModel {
   return target[META_KEY]!;
 }
 
@@ -218,8 +216,8 @@ export function propGetter(paths: string[], config: NgxsConfig) {
  *
  * @ignore
  */
-export function buildGraph(stateClasses: StateClass[]): StateKeyGraph {
-  const findName = (stateClass: StateClass) => {
+export function buildGraph(stateClasses: StateClassInternal[]): StateKeyGraph {
+  const findName = (stateClass: StateClassInternal) => {
     const meta = stateClasses.find(g => g === stateClass);
     if (!meta) {
       throw new Error(
@@ -231,7 +229,7 @@ export function buildGraph(stateClasses: StateClass[]): StateKeyGraph {
   };
 
   return stateClasses.reduce<StateKeyGraph>(
-    (result: StateKeyGraph, stateClass: StateClass) => {
+    (result: StateKeyGraph, stateClass: StateClassInternal) => {
       const { name, children } = stateClass[META_KEY]!;
       result[name!] = (children || []).map(findName);
       return result;
@@ -250,9 +248,9 @@ export function buildGraph(stateClasses: StateClass[]): StateKeyGraph {
  *
  * @ignore
  */
-export function nameToState(states: StateClass[]): ObjectKeyMap<StateClass> {
-  return states.reduce<ObjectKeyMap<StateClass>>(
-    (result: ObjectKeyMap<StateClass>, stateClass: StateClass) => {
+export function nameToState(states: StateClassInternal[]): ObjectKeyMap<StateClassInternal> {
+  return states.reduce<ObjectKeyMap<StateClassInternal>>(
+    (result: ObjectKeyMap<StateClassInternal>, stateClass: StateClassInternal) => {
       const meta = stateClass[META_KEY]!;
       result[meta.name!] = stateClass;
       return result;

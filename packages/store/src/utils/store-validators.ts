@@ -1,7 +1,7 @@
 import {
   getStoreMetadata,
   MetaDataModel,
-  StateClass,
+  StateClassInternal,
   StatesByName
 } from '../internal/internals';
 import {
@@ -26,7 +26,10 @@ export abstract class StoreValidators {
     }
   }
 
-  public static checkStateNameIsUnique(state: StateClass, statesByName: StatesByName): string {
+  public static checkStateNameIsUnique(
+    state: StateClassInternal,
+    statesByName: StatesByName
+  ): string {
     const meta: MetaDataModel = this.getValidStateMeta(state);
     const stateName: string = meta!.name as string;
     const existingState = statesByName[stateName];
@@ -36,7 +39,7 @@ export abstract class StoreValidators {
     return stateName;
   }
 
-  public static getValidStateMeta(state: StateClass): MetaDataModel {
+  public static getValidStateMeta(state: StateClassInternal): MetaDataModel {
     const meta: MetaDataModel = getStoreMetadata(state);
     if (!meta) {
       throw new Error(MESSAGES[CODE.STATE_DECORATOR]());

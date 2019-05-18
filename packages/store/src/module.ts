@@ -6,7 +6,7 @@ import {
   NgModule,
   Provider
 } from '@angular/core';
-import { isAngularInTestMode, NgxsBootstrapper } from '@ngxs/store/internals';
+import { isAngularInTestMode, NgxsBootstrapper, StateClass } from '@ngxs/store/internals';
 import { INITIAL_STATE_TOKEN, InitialState } from '@ngxs/store/internals';
 
 import {
@@ -28,7 +28,6 @@ import { Store } from './store';
 import { SelectFactory } from './decorators/select';
 import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
-import { StateClass } from './internal/internals';
 import { NgxsRootModule } from './modules/ngxs-root.module';
 import { NgxsFeatureModule } from './modules/ngxs-feature.module';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
