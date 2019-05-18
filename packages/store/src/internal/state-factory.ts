@@ -19,7 +19,7 @@ import {
   MetaDataModel,
   nameToState,
   propGetter,
-  StateClass,
+  StateClassInternal,
   StateKeyGraph,
   StatesAndDefaults,
   StatesByName,
@@ -83,14 +83,14 @@ export class StateFactory {
     return value;
   }
 
-  private static checkStatesAreValid(stateClasses: StateClass[]): void {
+  private static checkStatesAreValid(stateClasses: StateClassInternal[]): void {
     stateClasses.forEach(StoreValidators.getValidStateMeta);
   }
 
   /**
    * Add a new state to the global defs.
    */
-  add(stateClasses: StateClass[]): MappedStore[] {
+  add(stateClasses: StateClassInternal[]): MappedStore[] {
     StateFactory.checkStatesAreValid(stateClasses);
     const { newStates } = this.addToStatesMap(stateClasses);
     if (!newStates.length) return [];
@@ -98,11 +98,11 @@ export class StateFactory {
     const stateGraph: StateKeyGraph = buildGraph(newStates);
     const sortedStates: string[] = topologicalSort(stateGraph);
     const depths: ObjectKeyMap<string> = findFullParentPath(stateGraph);
-    const nameGraph: ObjectKeyMap<StateClass> = nameToState(newStates);
+    const nameGraph: ObjectKeyMap<StateClassInternal> = nameToState(newStates);
     const bootstrappedStores: MappedStore[] = [];
 
     for (const name of sortedStates) {
-      const stateClass: StateClass = nameGraph[name];
+      const stateClass: StateClassInternal = nameGraph[name];
       const depth: string = depths[name];
       const meta: MetaDataModel = stateClass[META_KEY]!;
 
@@ -132,8 +132,8 @@ export class StateFactory {
   /**
    * Add a set of states to the store and return the defaults
    */
-  addAndReturnDefaults(stateClasses: StateClass[]): StatesAndDefaults {
-    const classes: StateClass[] = stateClasses || [];
+  addAndReturnDefaults(stateClasses: StateClassInternal[]): StatesAndDefaults {
+    const classes: StateClassInternal[] = stateClasses || [];
 
     const states: MappedStore[] = this.add(classes);
     const defaults = states.reduce(
@@ -211,8 +211,10 @@ export class StateFactory {
     return forkJoin(results);
   }
 
-  private addToStatesMap(stateClasses: StateClass[]): { newStates: StateClass[] } {
-    const newStates: StateClass[] = [];
+  private addToStatesMap(
+    stateClasses: StateClassInternal[]
+  ): { newStates: StateClassInternal[] } {
+    const newStates: StateClassInternal[] = [];
     const statesMap: StatesByName = this.statesByName;
 
     for (const stateClass of stateClasses) {

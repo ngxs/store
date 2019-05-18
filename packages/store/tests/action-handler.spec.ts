@@ -10,7 +10,7 @@ import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
 import { NoopErrorHandler } from './helpers/utils';
-import { StateClass } from '../src/internal/internals';
+import { StateClass } from '@ngxs/store/internals';
 
 describe('Action handlers', () => {
   class TestAction {
