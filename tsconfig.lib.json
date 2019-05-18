@@ -8,8 +8,5 @@
     "inlineSources": true,
     "importHelpers": true
   },
-  "exclude": [
-    "**/test.ts",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["**/*.spec.ts"]
 }

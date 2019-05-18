@@ -7,7 +7,7 @@
     "start": "ng serve --hmr",
     "test": "ng build",
     "pretest": "npm install",
-    "postinstall": "cpx -v -C \"../../@ngxs/**/*\" \"node_modules/@ngxs/\"" 
+    "postinstall": "cpx -v -C \"../../@ngxs/**/*\" \"node_modules/@ngxs/\""
   },
   "private": true,
   "dependencies": {

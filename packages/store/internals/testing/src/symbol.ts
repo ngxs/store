@@ -1,6 +1,7 @@
-import { NgxsModuleOptions, StateClass, Store } from '@ngxs/store';
+import { NgxsModuleOptions, Store } from '@ngxs/store';
 import { ModuleWithProviders } from '@angular/core';
 import { TestBedStatic } from '@angular/core/testing';
+import { StateClass } from '@ngxs/store/internals';
 
 export interface NgxsOptionsTesting {
   states?: StateClass[];

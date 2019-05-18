@@ -5,20 +5,13 @@
     "baseUrl": "./",
     "paths": {
       "@ngxs/*": ["../@ngxs/*"],
-      "@integration/*": ["./app/*"],
-      "@integration/env/*": ["./environments/*"]
+      "@integration/*": ["./app/*"]
     },
     "module": "commonjs",
     "types": ["node"],
     "typeRoots": ["../node_modules/@types"]
   },
-  "exclude": [
-    "test.ts",
-    "test.ssr.ts",
-    "**/*.spec.ts",
-    "**/*.mocha.ts",
-    "node_modules"
-  ],
+  "exclude": ["test.ssr.ts", "**/*.spec.ts", "**/*.mocha.ts", "node_modules"],
   "angularCompilerOptions": {
     "entryModule": "app/app.server.module#AppServerModule"
   }

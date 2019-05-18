@@ -6,7 +6,7 @@ import {
   createPlatform,
   destroyPlatform
 } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, APP_BASE_HREF } from '@angular/common';
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -319,7 +319,16 @@ describe('NgxsRouterPlugin', () => {
         ],
         declarations: [RootComponent, TestComponent],
         bootstrap: [RootComponent],
-        providers: [TestResolver]
+        providers: [
+          TestResolver,
+          /**
+           * Most routing applications should add a <base> element to the index.html as the first child
+           * in the <head> tag to tell the router how to compose navigation URLs. If the app folder
+           * is the application root, as it is for the sample application, set the href value
+           * exactly as shown here: <base href="/">
+           */
+          { provide: APP_BASE_HREF, useValue: '/' }
+        ]
       })
       class TestModule {}
 
