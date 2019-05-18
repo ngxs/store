@@ -8,7 +8,7 @@ $ npm install @ngxs/store@dev
 * Feature: selector option to disable supressing errors [#1015](https://github.com/ngxs/store/pull/1015)
 * Feature: expose NgxsModuleOptions as a named type [#1031](https://github.com/ngxs/store/pull/1031)
 * Feature: expose SelectorOptions decorator [#1029](https://github.com/ngxs/store/pull/1029), [#1047](https://github.com/ngxs/store/pull/1047)
-* Feature: expose StateClass as a named type [#1042](https://github.com/ngxs/store/pull/1042)
+* Feature: expose StateClass as a named type [#1042](https://github.com/ngxs/store/pull/1042), [#1070](https://github.com/ngxs/store/pull/1070)
 * Feature: Router Plugin - add `RouterDataResolved` action [#1059](https://github.com/ngxs/store/pull/1059)
 * Performance: replace `spread` with `slice` in the operator functions [#1066](https://github.com/ngxs/store/pull/1066)
 * Fix: Life-cycle events not triggering in root state [#1048](https://github.com/ngxs/store/pull/1048)
