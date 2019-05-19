@@ -118,5 +118,14 @@ module.exports = {
   /**
    * The directory where Jest should store its cached dependency information.
    */
-  cacheDirectory: '<rootDir>/.cache'
+  cacheDirectory: '<rootDir>/.cache',
+
+  /**
+   * By default, each test file gets its own independent module registry.
+   * Enabling resetModules goes a step further and resets the module registry before running
+   * each individual test. This is useful to isolate modules for every test so that local
+   * module state doesn't conflict between tests. This can be done programmatically
+   * using jest.resetModules().
+   */
+  resetModules: true
 };
