@@ -42,7 +42,7 @@ export const setValue = (obj: any, prop: string, val: any) => {
     if (index === lastIndex) {
       acc[part] = val;
     } else {
-      acc[part] = Array.isArray(acc[part]) ? [...acc[part]] : { ...acc[part] };
+      acc[part] = Array.isArray(acc[part]) ? acc[part].slice() : { ...acc[part] };
     }
 
     return acc && acc[part];
