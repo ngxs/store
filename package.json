@@ -116,7 +116,7 @@
     "@types/semver": "^6.0.0",
     "chai": "4.2.0",
     "codelyzer": "^4.5.0",
-    "core-js": "^2.6.0",
+    "core-js": "^2.6.6",
     "cross-env": "^5.2.0",
     "dtslint": "^0.7.4",
     "express": "^4.17.0",
