@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 
 describe('Plugins', () => {
   it('should run a function plugin', () => {
-    const spy = jasmine.createSpy('plugin spy');
+    let pluginInvoked = 0;
 
     class Foo {
       static readonly type = 'Foo';
@@ -19,13 +19,13 @@ describe('Plugins', () => {
       next: (state: any, action: any) => Observable<any>
     ) {
       if (action.constructor && action.constructor.type === 'Foo') {
-        spy();
+        pluginInvoked++;
       }
 
       return next(state, action).pipe(
         tap(() => {
           if (action.constructor.type === 'Foo') {
-            spy();
+            pluginInvoked++;
           }
         })
       );
@@ -45,6 +45,6 @@ describe('Plugins', () => {
     const store: Store = TestBed.get(Store);
     store.dispatch(new Foo());
 
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(pluginInvoked).toEqual(2);
   });
 });

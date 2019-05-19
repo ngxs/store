@@ -1,5 +1,5 @@
 /* tslint:disable:max-line-length */
-/// <reference types="@types/jasmine" />
+/// <reference types="@types/jest" />
 import { Observable } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 

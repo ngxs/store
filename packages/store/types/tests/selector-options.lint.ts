@@ -1,5 +1,5 @@
 /* tslint:disable:max-line-length */
-/// <reference types="@types/jasmine" />
+/// <reference types="@types/jest" />
 import { Selector, State, SelectorOptions } from '../../src/public_api';
 import { assertType } from './utils/assert-type';
 
