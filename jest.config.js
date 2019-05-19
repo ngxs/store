@@ -127,5 +127,12 @@ module.exports = {
    * module state doesn't conflict between tests. This can be done programmatically
    * using jest.resetModules().
    */
-  resetModules: true
+  resetModules: true,
+
+  /**
+   * Automatically clear mock calls and instances between every test.
+   * Equivalent to calling jest.clearAllMocks() between each test.
+   * This does not remove any mock implementation that may have been provided.
+   */
+  clearMocks: true
 };
