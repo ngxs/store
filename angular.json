@@ -15,11 +15,10 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/jest:run",
           "options": {
-            "main": "packages/test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "tsConfig": "./tsconfig.spec.json"
+            "configPath": "../jest.config.js",
+            "no-cache": false
           }
         },
         "lint": {
@@ -130,12 +129,10 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/jest:run",
           "options": {
-            "main": "./integration/test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "polyfills": "./integration/polyfills.ts",
-            "tsConfig": "./integration/tsconfig.spec.json"
+            "configPath": "./jest.integration.config.js",
+            "no-cache": false
           }
         },
         "lint": {

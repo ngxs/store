@@ -43,7 +43,7 @@ describe('NgxsWebsocketPlugin', () => {
 
   const mockServer = new Server(SOCKET_URL);
 
-  it('should forward socket message to store', fakeAsync((done: DoneFn) => {
+  it('should forward socket message to store', fakeAsync((done: any) => {
     mockServer.on('connection', (socket: any) => {
       mockServer.on('message', (data: any) => socket.send(data));
       tick(1000);
@@ -63,7 +63,7 @@ describe('NgxsWebsocketPlugin', () => {
     });
   }));
 
-  it('should dispatch WebsocketMessageError on error', fakeAsync((done: DoneFn) => {
+  it('should dispatch WebsocketMessageError on error', fakeAsync((done: any) => {
     tick();
     actions$
       .pipe(
@@ -77,8 +77,8 @@ describe('NgxsWebsocketPlugin', () => {
       });
   }));
 
-  it('should dispatch WebSocketDisconnected on client initialted disconnect', fakeAsync((
-    done: DoneFn
+  it('should dispatch WebSocketDisconnected on client initialed disconnect', fakeAsync((
+    done: any
   ) => {
     tick();
     actions$
@@ -95,7 +95,7 @@ describe('NgxsWebsocketPlugin', () => {
   }));
 
   it('should dispatch WebSocketDisconnected on server initiated disconnect', fakeAsync((
-    done: DoneFn
+    done: any
   ) => {
     mockServer.on('connection', (socket: any) => {
       mockServer.on('message', (data: any) => socket.send(data));

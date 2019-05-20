@@ -86,9 +86,9 @@ describe('Dispatch', () => {
   }));
 
   it('should only call action once', async(() => {
-    const spy = jasmine.createSpy('action spy');
-    const spy2 = jasmine.createSpy('subscribe spy');
-    const spy3 = jasmine.createSpy('select spy');
+    let actionInvoked = 0;
+    let subscibeInvoked = 0;
+    let selectInvoked = 0;
 
     @State<number>({
       name: 'counter',
@@ -98,7 +98,7 @@ describe('Dispatch', () => {
       @Action(Increment)
       increment({ getState, setState }: StateContext<number>) {
         setState(getState() + 1);
-        spy();
+        actionInvoked++;
         return of({});
       }
     }
@@ -108,16 +108,16 @@ describe('Dispatch', () => {
     });
 
     const store: Store = TestBed.get(Store);
-    store.dispatch(new Increment()).subscribe(spy2);
+    store.dispatch(new Increment()).subscribe(() => subscibeInvoked++);
 
     store.select(MyState).subscribe(res => {
       expect(res).toBe(1);
-      spy3();
+      selectInvoked++;
     });
 
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy2).toHaveBeenCalledTimes(1);
-    expect(spy3).toHaveBeenCalledTimes(1);
+    expect(actionInvoked).toEqual(1);
+    expect(subscibeInvoked).toEqual(1);
+    expect(selectInvoked).toEqual(1);
   }));
 
   it('should correctly dispatch the action', async(() => {
