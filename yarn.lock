@@ -5099,12 +5099,21 @@ jest-pnp-resolver@^1.2.1:
   resolved "https://registry.npmjs.org/jest-pnp-resolver/-/jest-pnp-resolver-1.2.1.tgz#ecdae604c077a7fbc70defb6d517c3c1c898923a"
   integrity sha512-pgFw2tm54fzgYvc/OHrnysABEObZCUNFnhjoRjaVOCN8NYc032/gVjPaHD4Aq6ApkSieWtfKAFQtmDKAmhupnQ==
 
-jest-preset-angular@^7.0.1, jest-preset-angular@^7.1.0:
+jest-preset-angular@^7.0.1:
   version "7.1.0"
   resolved "https://registry.npmjs.org/jest-preset-angular/-/jest-preset-angular-7.1.0.tgz#df023f8bd9bf4f20497701bcd813906fa26e04ce"
   integrity sha512-MSenqcEbmkNYXh77zpsFbIJvMBsVD2kPTy5+2GLm/07e7cQe29GEQLNN4F52VZMGW70RCvGFAiAE4ljsK9hYSg==
   dependencies:
     jest-environment-jsdom-thirteen "^1.0.0"
+    ts-jest "^24.0.0"
+
+jest-preset-angular@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.npmjs.org/jest-preset-angular/-/jest-preset-angular-7.1.1.tgz#b51fc910e5abea91701fcd89532823ae5990450b"
+  integrity sha512-/uJUi9IHoCxtB6aH6I+llpHjyfGfP2q32lcBCUKKk16v1uYKXvj1Nfdlvfvu/eqjZVoKEDLP+Ejup4bbsc0gAA==
+  dependencies:
+    jest-environment-jsdom-thirteen "^1.0.0"
+    pretty-format "^24.0.0"
     ts-jest "^24.0.0"
 
 jest-regex-util@^24.3.0:
@@ -7301,7 +7310,7 @@ prettier@1.17.1:
   resolved "https://registry.npmjs.org/prettier/-/prettier-1.17.1.tgz#ed64b4e93e370cb8a25b9ef7fef3e4fd1c0995db"
   integrity sha512-TzGRNvuUSmPgwivDqkZ9tM/qTGW9hqDKWOE9YHiyQdixlKbv7kvEqsmDPrcHJTKwthU774TQwZXVtaQ/mMsvjg==
 
-pretty-format@^24.8.0:
+pretty-format@^24.0.0, pretty-format@^24.8.0:
   version "24.8.0"
   resolved "https://registry.npmjs.org/pretty-format/-/pretty-format-24.8.0.tgz#8dae7044f58db7cb8be245383b565a963e3c27f2"
   integrity sha512-P952T7dkrDEplsR+TuY7q3VXDae5Sr7zmQb12JU/NDQa/3CH7/QW0yvqLcGN6jL+zQFKaoJcPc+yJxMTGmosqw==
