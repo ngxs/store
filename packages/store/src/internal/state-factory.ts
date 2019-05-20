@@ -71,7 +71,7 @@ export class StateFactory {
     let value = {};
 
     if (Array.isArray(defaults)) {
-      value = [...defaults];
+      value = defaults.slice();
     } else if (isObject(defaults)) {
       value = { ...defaults };
     } else if (defaults === undefined) {

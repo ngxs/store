@@ -28,7 +28,7 @@ export class NgxsFormPlugin implements NgxsPlugin {
 
     if (type === UpdateFormValue.type || type === UpdateForm.type) {
       const { value } = event.payload;
-      const payloadValue = Array.isArray(value) ? [...value] : { ...value };
+      const payloadValue = Array.isArray(value) ? value.slice() : { ...value };
 
       nextState = setValue(nextState, `${event.payload.path}.model`, payloadValue);
     }

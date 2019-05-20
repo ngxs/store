@@ -156,7 +156,7 @@ export function getSelectorMetadata(target: any): SelectorMetaDataModel {
  * @ignore
  */
 function compliantPropGetter(paths: string[]): (x: any) => any {
-  const copyOfPaths = [...paths];
+  const copyOfPaths = paths.slice();
   return obj => copyOfPaths.reduce((acc: any, part: string) => acc && acc[part], obj);
 }
 
