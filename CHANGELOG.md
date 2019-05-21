@@ -24,7 +24,7 @@ $ npm install @ngxs/store@dev
 
 ### Select-snapshot v1.0.0
 
-* Feature: selectSnapshot decorator
+* Feature: announced [select-snapshot](https://github.com/ngxs-labs/select-snapshot)
 
 ### Immer-adapter v3.0.0
 
