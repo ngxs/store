@@ -36,6 +36,11 @@ From time to time we will be posting about projects that have been started under
     <td>Stable</td>
   </tr>
   <tr>
+    <td><a href="https://npmjs.com/package/@ngxs-labs/select-snapshot">@ngxs-labs/select-snapshot</a></td>
+    <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Fselect-snapshot/latest.svg"></td>
+    <td>Stable</td>
+  </tr>
+  <tr>
     <td><a href="https://npmjs.com/package/@ngxs-labs/async-storage-plugin">@ngxs-labs/async-storage-plugin</a></td>
     <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Fasync-storage-plugin/latest.svg"></td>
     <td>Alpha</td>
