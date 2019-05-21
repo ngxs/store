@@ -11,7 +11,7 @@ $ npm install @ngxs/store@dev
 * Feature: expose StateClass as a named type [#1042](https://github.com/ngxs/store/pull/1042), [#1070](https://github.com/ngxs/store/pull/1070)
 * Feature: Router Plugin - add `RouterDataResolved` action [#1059](https://github.com/ngxs/store/pull/1059)
 * Feature: use `jest` internally for testing [#1068](https://github.com/ngxs/store/pull/1068)
-* Performance: replace array `spread` with `slice` [#1066](https://github.com/ngxs/store/pull/1066, [#1071](https://github.com/ngxs/store/pull/1071))
+* Performance: replace array `spread` with `slice` [#1066](https://github.com/ngxs/store/pull/1066), [#1071](https://github.com/ngxs/store/pull/1071)
 * Fix: Life-cycle events not triggering in root state [#1048](https://github.com/ngxs/store/pull/1048)
 * Fix: Logger Plugin - replace `Object.entries` as it breaks IE11 [#931](https://github.com/ngxs/store/pull/931)
 * Fix: Router Plugin - trigger navigation on the `QueryParams` change [#924](https://github.com/ngxs/store/pull/924)
