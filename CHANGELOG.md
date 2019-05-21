@@ -1,5 +1,5 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) 
-### To become 3.4.4 or [3.5.0](https://github.com/ngxs/store/milestone/7)
+### To become [3.5.0](https://github.com/ngxs/store/milestone/7)
 
 ```bash
 $ npm install @ngxs/store@dev
