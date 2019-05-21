@@ -22,6 +22,10 @@ $ npm install @ngxs/store@dev
 
 ## NGXS-Labs
 
+### Select-snapshot v1.0.0
+
+* Feature: selectSnapshot decorator
+
 ### Immer-adapter v3.0.0
 
 * Feature: immutable state context decorator
