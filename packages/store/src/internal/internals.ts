@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { ObjectKeyMap, StateClass } from '@ngxs/store/internals';
 
 import {
   META_KEY,
@@ -8,8 +9,6 @@ import {
   StoreOptions
 } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
-
-import { ObjectKeyMap, StateClass } from '@ngxs/store/internals';
 
 function asReadonly<T>(value: T): Readonly<T> {
   return value;
@@ -43,6 +42,8 @@ export interface MetaDataModel {
 }
 
 export type SelectFromState = (state: any) => any;
+
+export type SelectorType = StateClassInternal | SelectFromState;
 
 export interface SharedSelectorOptions {
   injectContainerState?: boolean;

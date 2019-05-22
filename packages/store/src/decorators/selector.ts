@@ -1,4 +1,4 @@
-import { createSelector } from '../utils/selector-utils';
+import { createSelector } from '../utils/selector/create-selector';
 
 /**
  * Decorator for memoizing a state selector.

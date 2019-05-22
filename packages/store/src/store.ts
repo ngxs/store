@@ -6,7 +6,7 @@ import { INITIAL_STATE_TOKEN, ObjectKeyMap, ObjectUtils } from '@ngxs/store/inte
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
-import { getSelectorFn } from './utils/selector-utils';
+import { SelectorProcessor } from './utils/selector/selector-processor';
 import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
@@ -38,7 +38,7 @@ export class Store {
   select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
   select<T = any>(selector: string | Type<any>): Observable<T>;
   select(selector: any): Observable<any> {
-    const selectorFn = getSelectorFn(selector);
+    const selectorFn = SelectorProcessor.getSelectorFn(selector);
     return this._stateStream.pipe(
       map(selectorFn),
       catchError(err => {
@@ -71,7 +71,7 @@ export class Store {
   selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T;
   selectSnapshot<T = any>(selector: string | Type<any>): T;
   selectSnapshot(selector: any): any {
-    const selectorFn = getSelectorFn(selector);
+    const selectorFn = SelectorProcessor.getSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());
   }
 
