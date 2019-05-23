@@ -141,5 +141,12 @@
     "typedoc-plugin-markdown": "^1.2.1",
     "typescript": "~3.1.6",
     "zone.js": "~0.9.1"
+  },
+  "// - JEST Plugin": "Integration Jest with Intellij IDEA",
+  "jest": {
+    "projects": [
+      "<rootDir>/jest.config.js",
+      "<rootDir>/integration/jest.integration.config.js"
+    ]
   }
 }
