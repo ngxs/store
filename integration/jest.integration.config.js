@@ -2,6 +2,8 @@ const jestRootConfig = require('../jest.config');
 
 module.exports = {
   ...jestRootConfig,
-  testMatch: [ "<rootDir>/integration/**/*.spec.ts"],
+  displayName: 'integration',
+  projects: ['<rootDir>/integration'],
+  testMatch: ['<rootDir>/integration/**/*.spec.ts'],
   collectCoverage: false
 };

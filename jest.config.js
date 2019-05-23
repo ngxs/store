@@ -1,5 +1,6 @@
 // https://jestjs.io/docs/en/configuration
 // Configuring Jest
+const path = require('path');
 const { pathsToModuleNameMapper: resolver } = require('ts-jest/utils');
 const { compilerOptions } = require('./tsconfig');
 
@@ -12,6 +13,10 @@ if (!CI) {
 }
 
 module.exports = {
+  displayName: 'ngxs',
+  projects: ['<rootDir>'],
+  rootDir: path.resolve('.'),
+
   /**
    * A set of global variables that need to be available in all test environments.
    */
