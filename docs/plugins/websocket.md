@@ -3,10 +3,10 @@ Bind server web socket events to Ngxs store actions.
 
 ## Installation
 ```bash
-npm install @ngxs/web socket-plugin --save
+npm install @ngxs/websocket-plugin --save
 
 # or if you are using yarn
-yarn add @ngxs/web socket-plugin
+yarn add @ngxs/websocket-plugin
 ```
 
 ## Configuration
@@ -14,7 +14,7 @@ Add the `NgxsWebsocketPluginModule` plugin to your root app module:
 
 ```TS
 import { NgxsModule } from '@ngxs/store';
-import { NgxsWebsocketPluginModule } from '@ngxs/web socket-plugin';
+import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
 
 @NgModule({
   imports: [
