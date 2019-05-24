@@ -1,12 +1,12 @@
 # WebSocket Plugin - Experimental Status
-Bind server websocket events to Ngxs store actions.
+Bind server web socket events to Ngxs store actions.
 
 ## Installation
 ```bash
-npm install @ngxs/websocket-plugin --save
+npm install @ngxs/web socket-plugin --save
 
 # or if you are using yarn
-yarn add @ngxs/websocket-plugin
+yarn add @ngxs/web socket-plugin
 ```
 
 ## Configuration
@@ -14,7 +14,7 @@ Add the `NgxsWebsocketPluginModule` plugin to your root app module:
 
 ```TS
 import { NgxsModule } from '@ngxs/store';
-import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
+import { NgxsWebsocketPluginModule } from '@ngxs/web socket-plugin';
 
 @NgModule({
   imports: [
@@ -29,15 +29,15 @@ export class AppModule {}
 
 The plugin has a variety of options that can be passed:
 
-- `url`: Url of the websocket connection. Can be passed here or by the `ConnectWebsocket` action.
-- `typeKey`: Object property that maps the websocket message to a action type. Default: `type`
-- `serializer`: Serializer used before sending objects to the websocket. Default: `JSON.stringify`
-- `deserializer`: Deserializer used for messages arriving from the websocket. Default: `JSON.parse`
+- `url`: Url of the web socket connection. Can be passed here or by the `ConnectWebsocket` action.
+- `typeKey`: Object property that maps the web socket message to a action type. Default: `type`
+- `serializer`: Serializer used before sending objects to the web socket. Default: `JSON.stringify`
+- `deserializer`: Deserializer used for messages arriving from the web socket. Default: `JSON.parse`
 
 ## Usage
-Once connected, any message that comes across the websocket will be bound to the state event stream.
+Once connected, any message that comes across the web socket will be bound to the state event stream.
 
-Let's assume that a server side websocket sends message to the client in such format:
+Let's assume that a server side web socket sends message to the client in such format:
 
 ```json
 {
@@ -47,7 +47,7 @@ Let's assume that a server side websocket sends message to the client in such fo
 }
 ```
 
-We will want to make an action that corresponds to this websocket message, that will
+We will want to make an action that corresponds to this web socket message, that will
 look like:
 
 ```TS
@@ -71,9 +71,10 @@ export interface Message {
 })
 export class MessagesState {
   @Action(AddMessage)
-  addMessage(ctx: StateContext<Message[]>, action: AddMessage) {
+  addMessage(ctx: StateContext<Message[]>, { from, message }: AddMessage) {
     const state = ctx.getState();
-    ctx.setState([...state, action]);
+    // omit `type` property that server socket sends
+    ctx.setState([...state, { from, message }]);
   }
 }
 ```
@@ -119,7 +120,7 @@ ws.on('connection', (socket) => {
     const { type, from, message } = JSON.parse(data);
 
     if (type === 'message') {
-      const message = JSON.stringify({
+      const event = JSON.stringify({
         type: '[Chat] Add message',
         from,
         message
@@ -129,7 +130,7 @@ ws.on('connection', (socket) => {
       // we want to send message to all connected
       // to the chat clients
       ws.clients.forEach((client) => {
-        client.send(message);
+        client.send(event);
       });
     }
   });
@@ -168,9 +169,9 @@ If you have difficulties with understanding how the plugin works, you can have a
 
 Here is a list of all the available actions you have:
 
-- `ConnectWebSocket`: Dispatch this action when you want to init the websocket. Optionally pass URL here.
+- `ConnectWebSocket`: Dispatch this action when you want to init the web socket. Optionally pass URL here.
 - `DisconnectWebSocket`: Dispatch this Action to disconnect a websockets.
-- `WebSocketDisconnected`: Action dispatched when websocket is disconnected. Use its handler for reconnecting.
+- `WebSocketDisconnected`: Action dispatched when web socket is disconnected. Use its handler for reconnecting.
 - `SendWebSocketMessage`: Send a message to the server.
 - `WebsocketMessageError`: Action dispatched by this plugin when an error ocurrs upon receiving a message.
 
