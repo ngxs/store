@@ -1,4 +1,4 @@
-# Websocket Plugin - Experimental Status
+# WebSocket Plugin - Experimental Status
 Bind server websocket events to Ngxs store actions.
 
 ## Installation
@@ -20,7 +20,7 @@ import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
   imports: [
     NgxsModule.forRoot([]),
     NgxsWebsocketPluginModule.forRoot({
-      url: 'ws://localhost:4200/websock'
+      url: 'ws://localhost:4200'
     })
   ]
 })
@@ -37,12 +37,13 @@ The plugin has a variety of options that can be passed:
 ## Usage
 Once connected, any message that comes across the websocket will be bound to the state event stream.
 
-Let's say you have a websocket message that comes in like:
+Let's assume that a server side websocket sends message to the client in such format:
 
 ```json
 {
-  "type": "[Zoo] AddAnimals",
-  "animals": []
+  "type": "[Chat] Add message",
+  "from": "Artur",
+  "message": "Hello NGXS"
 }
 ```
 
@@ -50,31 +51,35 @@ We will want to make an action that corresponds to this websocket message, that 
 look like:
 
 ```TS
-export class AddAnimals {
-  static readonly type = '[Zoo] AddAnimals';
-  constructor(public animals: any[]) {}
+export class AddMessage {
+  static type = '[Chat] Add message';
+  constructor(public from: string, public message: string) {}
 }
 ```
 
-Now in our state, we just bind to the `AddAnimals` action like any other 
-action:
+Assume we've got some `messages` state where we store our chat messages:
 
 ```TS
-@State<ZooStateModel>({
-  defaults: {
-    animals: []
-  }
+export interface Message {
+  from: string;
+  message: string;
+}
+
+@State<Message[]>({
+  name: 'messages',
+  defaults: []
 })
-export class ZooState {
-  @Action(AddAnimals)
-  addAnimals(ctx: StateContext<ZooStateModel>, action: AddAnimals) {
-    ctx.setState({ animals: [...action.animals] });
+export class MessagesState {
+  @Action(AddMessage)
+  addMessage(ctx: StateContext<Message[]>, action: AddMessage) {
+    const state = ctx.getState();
+    ctx.setState([...state, action]);
   }
 }
 ```
 
-To send messages to the server, we can dispatch the `SendWebSocketMessage` with
-the payload being what you want to send.
+We are able to send messages to the server by dispatching the `SendWebSocketMessage` with
+the payload that you want to send to the server. Let's try it out:
 
 ```TS
 @Component({ ... })
@@ -82,14 +87,63 @@ export class AppComponent {
 
   constructor(private store: Store) {}
 
-  onClick() {
-    this.store.dispatch(new SendWebSocketMessage({ foo: true }));
+  sendMessage(from: string, message: string) {
+    const event = new SendWebSocketMessage({
+      type: 'message',
+      from,
+      message
+    });
+
+    this.store.dispatch(event);
   }
 
 }
 ```
 
-When sending the message, remember the send is accepting a JSON-able object.
+When sending the message, remember the send is accepting a JSON-able object. The socket on the server side is able to listen to the `message` event. To clarify things out imagine such code:
+
+```TS
+const { Server } = require('ws');
+const { createServer } = require('http');
+
+const app = require('express')();
+
+const server = createServer(app);
+const ws = new Server({ server });
+
+server.listen(4200);
+
+ws.on('connection', (socket) => {
+  socket.on('message', (data) => {
+    // That's the object that we passed into `SendWebSocketMessage` constructor
+    const { type, from, message } = JSON.parse(data);
+
+    if (type === 'message') {
+      const message = JSON.stringify({
+        type: '[Chat] Add message',
+        from,
+        message
+      });
+
+      // That's the same as `broadcast`
+      // we want to send message to all connected
+      // to the chat clients
+      ws.clients.forEach((client) => {
+        client.send(message);
+      });
+    }
+  });
+});
+```
+
+Notice that you have to specify `type` property on server side, otherwise you will get an error - `Type ... not found on message`. If you don't wanna use the `type` key - you can specify your own when calling `forRoot`:
+
+```TS
+NgxsWebsocketPluginModule.forRoot({
+  url: 'ws://localhost:4200',
+  typeKey: 'myAwesomeTypeKey'
+})
+```
 
 In order to kick off our websockets we have to dispatch the `ConnectWebSocket`
 action. This will typically happen at startup or if you need to authenticate
@@ -108,6 +162,10 @@ export class AppComponent {
 }
 ```
 
+If you have difficulties with understanding how the plugin works, you can have a look at the data flow diagram below. From one side it seems a little bit complex, but no worries. Just follow the pink data flow that leads to the server side starting from view:
+
+![NGXS WebSocket data flow](../assets/ngxs-socket-dfd.png)
+
 Here is a list of all the available actions you have:
 
 - `ConnectWebSocket`: Dispatch this action when you want to init the websocket. Optionally pass URL here.
@@ -116,3 +174,4 @@ Here is a list of all the available actions you have:
 - `SendWebSocketMessage`: Send a message to the server.
 - `WebsocketMessageError`: Action dispatched by this plugin when an error ocurrs upon receiving a message.
 
+Summing up everything - your server side sockets should send objects that have `type` property (or another key that you can provide in the `typeKey` property when calling `forRoot`). This plugin will receive a message from the server and then will dispatch an action using value of `type`. If the `type` property doesn't match any client side action `static type` property - no action handler will be invoked.
