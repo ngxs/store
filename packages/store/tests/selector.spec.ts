@@ -1,4 +1,4 @@
-import { async, fakeAsync, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { StateClass } from '@ngxs/store/internals';
 
 import { State } from '../src/decorators/state';
@@ -812,7 +812,9 @@ describe('Selector', () => {
       }
     }
 
-    it('should be correct catch errors from observable with select', fakeAsync(() => {
+    it('should be correct catch errors from observable with select', () => {
+      let errorMessage = '';
+
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([NumberListState], {
@@ -827,24 +829,20 @@ describe('Selector', () => {
 
       let snapshot: number[] = [];
 
-      store.select(NumberListState).subscribe((state: number[]) => {
-        snapshot = state;
-      });
-
+      store.select(NumberListState).subscribe((state: number[]) => (snapshot = state));
       expect(snapshot).toEqual([1, 2, 3, 4]);
-      snapshot = [];
 
       store
         .select(NumberListState.reverse)
         .subscribe(
           (state: number[]) => (snapshot = state),
-          (err: TypeError) =>
-            expect(err.message).toEqual(
-              `Cannot assign to read only property '0' of object '[object Array]'`
-            )
+          (err: TypeError) => (errorMessage = err.message)
         );
 
-      expect(snapshot).toEqual([]);
-    }));
+      expect(snapshot).toEqual([1, 2, 3, 4]);
+      expect(errorMessage).toEqual(
+        `Cannot assign to read only property '0' of object '[object Array]'`
+      );
+    });
   });
 });
