@@ -2903,7 +2903,7 @@ define-property@^2.0.2:
     is-descriptor "^1.0.2"
     isobject "^3.0.1"
 
-definitelytyped-header-parser@^1.0.1:
+definitelytyped-header-parser@1.1.0, definitelytyped-header-parser@^1.0.1:
   version "1.1.0"
   resolved "https://registry.npmjs.org/definitelytyped-header-parser/-/definitelytyped-header-parser-1.1.0.tgz#7047dd9af5589c57f96b4d7b7f97299cfc720bf5"
   integrity sha512-goGRhRUJVQhXc28OjwSCoAoutl/dcFUJXwEv3DYdtxGFCXWK+YFS/MrFfsAnHG0ZYPKBcniXWRUlr3UHGKaTHw==
@@ -2988,6 +2988,11 @@ diff@3.5.0, diff@^3.1.0, diff@^3.2.0:
   resolved "https://registry.npmjs.org/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
   integrity sha512-A46qtFgd+g7pDZinpnwiRJtxbC1hpgf0uzP3iG89scHk0AUC7A1TGxf5OiiOUv/JMZR8GOt8hL900hV0bOy5xA==
 
+diff@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.npmjs.org/diff/-/diff-4.0.1.tgz#0c667cb467ebbb5cea7f14f135cc2dba7780a8ff"
+  integrity sha512-s2+XdvhPCOF01LRQBC8hf4vhbVmI2CGS5aZnxLJlT5FtdhPCDFq80q++zK2KlrVorVDdL5BOGZ/VfLrVtYNF+Q==
+
 diffie-hellman@^5.0.0:
   version "5.0.3"
   resolved "https://registry.npmjs.org/diffie-hellman/-/diffie-hellman-5.0.3.tgz#40e8ee98f55a2149607146921c63e1ae5f3d2875"
@@ -3069,12 +3074,12 @@ dts-critic@^1.0.9:
     download-file-sync "^1.0.4"
     yargs "^12.0.5"
 
-dtslint@^0.7.4:
-  version "0.7.4"
-  resolved "https://registry.npmjs.org/dtslint/-/dtslint-0.7.4.tgz#49c9e66b3e655235dd62d105cc5d05d712227059"
-  integrity sha512-qjLW9j5Rwe2KhTh+NUZq6SdvQ+N+VfNO5HH8ArREtu1qcnKR4H5xfWdSjALxQpB0iIXRdXuEkleEYK0tTjdkfw==
+dtslint@^0.7.6:
+  version "0.7.6"
+  resolved "https://registry.npmjs.org/dtslint/-/dtslint-0.7.6.tgz#191d0283386a7d277aa059bcb44a932b4b154da4"
+  integrity sha512-QmD66NTHMQ1qf/nRp06gl1DBhY19PXGNVi+FTsaFhDtUTNOma1LSqbldKot+MBB+eEfw9YoUelNxZGJt+SU45Q==
   dependencies:
-    definitelytyped-header-parser "^1.0.1"
+    definitelytyped-header-parser "1.1.0"
     dts-critic "^1.0.9"
     fs-extra "^6.0.1"
     request "^2.88.0"
@@ -9224,13 +9229,13 @@ ts-node@7.0.1:
     source-map-support "^0.5.6"
     yn "^2.0.0"
 
-ts-node@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.npmjs.org/ts-node/-/ts-node-8.1.0.tgz#8c4b37036abd448577db22a061fd7a67d47e658e"
-  integrity sha512-34jpuOrxDuf+O6iW1JpgTRDFynUZ1iEqtYruBqh35gICNjN8x+LpVcPAcwzLPi9VU6mdA3ym+x233nZmZp445A==
+ts-node@^8.1.1:
+  version "8.1.1"
+  resolved "https://registry.npmjs.org/ts-node/-/ts-node-8.1.1.tgz#2b9621934a0471f0e13c1b75be54ee0f46c31479"
+  integrity sha512-nd+mdxDP2BjQlyumBCMSU3IQLEjSla1X3uSzDfQ4M5OEZ3iDC01gjhs0FX29jyolATwLKB7YoRJ1Asbxd9EEoA==
   dependencies:
     arg "^4.1.0"
-    diff "^3.1.0"
+    diff "^4.0.1"
     make-error "^1.1.1"
     source-map-support "^0.5.6"
     yn "^3.0.0"
