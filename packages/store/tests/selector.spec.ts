@@ -1,4 +1,4 @@
-import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { async, fakeAsync, TestBed } from '@angular/core/testing';
 import { StateClass } from '@ngxs/store/internals';
 
 import { State } from '../src/decorators/state';
@@ -831,21 +831,18 @@ describe('Selector', () => {
         snapshot = state;
       });
 
-      tick(100);
-
       expect(snapshot).toEqual([1, 2, 3, 4]);
       snapshot = [];
 
-      store.select(NumberListState.reverse).subscribe(
-        (state: number[]) => (snapshot = state),
-        (err: TypeError) =>
-          expect(err.message).toEqual(
-            /* tslint:disable:quotemark */
-            "Cannot assign to read only property '0' of object '[object Array]'"
-          )
-      );
-
-      tick(100);
+      store
+        .select(NumberListState.reverse)
+        .subscribe(
+          (state: number[]) => (snapshot = state),
+          (err: TypeError) =>
+            expect(err.message).toEqual(
+              `Cannot assign to read only property '0' of object '[object Array]'`
+            )
+        );
 
       expect(snapshot).toEqual([]);
     }));

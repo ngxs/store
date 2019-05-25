@@ -43,8 +43,7 @@ export class Store {
       map(selectorFn),
       catchError(err => {
         // if error is TypeError we swallow it to prevent usual errors with property access
-        const suppressErrors: boolean | undefined = this._config.selectorOptions
-          .suppressErrors;
+        const { suppressErrors } = this._config.selectorOptions;
 
         if (err instanceof TypeError && suppressErrors) {
           return of(undefined);
