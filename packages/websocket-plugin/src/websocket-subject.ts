@@ -25,7 +25,7 @@ export class WebSocketSubject extends Subject<any> {
    * This is a helper event emitter for the `WebSocketHandler` class, as we wanna
    * avoid completing this subject
    */
-  rxWebSocketComplete$ = new Subject<void>();
+  completeWebSocket$ = new Subject<void>();
 
   private _socket: RxWebSocketSubject<any> | null;
   private _internalConfig: WebSocketSubjectConfig<any>;
@@ -78,7 +78,7 @@ export class WebSocketSubject extends Subject<any> {
       // and will never emit any message!
       () => {
         // Notice this callback is invoked only when the server side socket closes connection!
-        this.rxWebSocketComplete$.next();
+        this.completeWebSocket$.next();
       }
     );
   }
@@ -90,7 +90,7 @@ export class WebSocketSubject extends Subject<any> {
     if (this._socket) {
       this._socket.complete();
       // `this._socket.complete()` doesn't invoke the callback that we passed in `subscribe`
-      this.rxWebSocketComplete$.next();
+      this.completeWebSocket$.next();
       this._socket = null;
     }
   }

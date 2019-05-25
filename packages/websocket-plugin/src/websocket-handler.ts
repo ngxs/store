@@ -8,14 +8,9 @@ import {
   NGXS_WEBSOCKET_OPTIONS,
   NgxsWebsocketPluginOptions,
   WebsocketMessageError,
-  WebSocketDisconnected
+  WebSocketDisconnected,
+  TypeKeyPropertyMissing
 } from './symbols';
-
-class TypeKeyPropertyMissing extends Error {
-  constructor(typeKey: string) {
-    super(`Property ${typeKey} is missing on the socket message`);
-  }
-}
 
 @Injectable()
 export class WebSocketHandler {
@@ -56,7 +51,7 @@ export class WebSocketHandler {
       }
     );
 
-    socket.rxWebSocketComplete$.subscribe(() => {
+    socket.completeWebSocket$.subscribe(() => {
       store.dispatch(new WebSocketDisconnected());
     });
   }

@@ -23,7 +23,7 @@ import {
   WebsocketMessageError
 } from '../';
 
-fdescribe('NgxsWebsocketPlugin', () => {
+describe('NgxsWebsocketPlugin', () => {
   beforeEach(() => {
     (<any>window).WebSocket = WebSocket;
   });
@@ -41,7 +41,7 @@ fdescribe('NgxsWebsocketPlugin', () => {
     return new Server(url);
   };
 
-  it('should forward socket message to store', async done => {
+  it('should forward socket message to store', done => {
     // Arrange
     const mockServer = createModuleAndServer();
     const store = getStore();
@@ -57,7 +57,9 @@ fdescribe('NgxsWebsocketPlugin', () => {
     };
 
     // Act
-    mockServer.on('connection', async (socket: any) => {
+    store.dispatch(new ConnectWebSocket());
+
+    mockServer.on('connection', (socket: any) => {
       socket.on('message', (data: any) => socket.send(data));
 
       actions$
@@ -72,17 +74,18 @@ fdescribe('NgxsWebsocketPlugin', () => {
         });
     });
 
-    await store.dispatch(new ConnectWebSocket()).toPromise();
     store.dispatch(createMessage());
   });
 
-  it('should dispatch WebSocketDisconnected on client initialed disconnect', async done => {
+  it('should dispatch WebSocketDisconnected on client initialed disconnect', done => {
     // Arrange
     const mockServer = createModuleAndServer();
     const store = getStore();
     const actions$ = getActions$();
 
     // Act
+    store.dispatch(new ConnectWebSocket());
+
     actions$
       .pipe(
         ofAction(WebSocketDisconnected),
@@ -94,17 +97,18 @@ fdescribe('NgxsWebsocketPlugin', () => {
         expect(action instanceof WebSocketDisconnected).toBeTruthy();
       });
 
-    await store.dispatch(new ConnectWebSocket()).toPromise();
     store.dispatch(new DisconnectWebSocket());
   });
 
-  it('should dispatch WebSocketDisconnected if server closed connection', async done => {
+  it('should dispatch WebSocketDisconnected if server closed connection', done => {
     // Arrange
     const mockServer = createModuleAndServer();
     const store = getStore();
     const actions$ = getActions$();
 
     // Act
+    store.dispatch(new ConnectWebSocket());
+
     mockServer.on('connection', socket => socket.close());
 
     actions$
@@ -117,17 +121,17 @@ fdescribe('NgxsWebsocketPlugin', () => {
         // Assert
         expect(action instanceof WebSocketDisconnected).toBeTruthy();
       });
-
-    store.dispatch(new ConnectWebSocket());
   });
 
-  it('should dispatch WebSocketMessageError if socker errors', async done => {
+  it('should dispatch WebSocketMessageError if socker errors', done => {
     // Arrange
     const mockServer = createModuleAndServer();
     const store = getStore();
     const actions$ = getActions$();
 
     // Act
+    store.dispatch(new ConnectWebSocket());
+
     mockServer.on('connection', () => {
       mockServer.emit('error', new Error('just an error'));
     });
@@ -142,8 +146,36 @@ fdescribe('NgxsWebsocketPlugin', () => {
         // Assert
         expect(action instanceof WebsocketMessageError).toBeTruthy();
       });
+  });
+
+  it('should be possible to provide custom options', done => {
+    // Arrange
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot(),
+        NgxsWebsocketPluginModule.forRoot({
+          url,
+          deserializer: () => null,
+          serializer: () => ''
+        })
+      ]
+    });
+
+    const mockServer = new Server(url);
+    const store = getStore();
 
     store.dispatch(new ConnectWebSocket());
+
+    // Act
+    mockServer.on('connection', (socket: any) => {
+      socket.on('message', (data: any) => {
+        // Assert
+        expect(data).toBe('');
+        mockServer.stop(done);
+      });
+    });
+
+    store.dispatch(new SendWebSocketMessage({ foo: true }));
   });
 
   describe('WebSocketSubject', () => {
@@ -169,7 +201,7 @@ fdescribe('NgxsWebsocketPlugin', () => {
       }
     }
 
-    it('should reconnect after disconnect and WebSocketSubject should continue emitting events', async done => {
+    it('should reconnect after disconnect and WebSocketSubject should continue emitting events', done => {
       // Arrange
       const mockServer = createModuleAndServer([MessagesState]);
       const store = getStore();
@@ -198,8 +230,8 @@ fdescribe('NgxsWebsocketPlugin', () => {
         });
       });
 
-      const connect = async () => {
-        await store.dispatch(new ConnectWebSocket()).toPromise();
+      const connect = () => {
+        store.dispatch(new ConnectWebSocket());
 
         const event = new SendWebSocketMessage({
           type: 'message',
@@ -207,7 +239,7 @@ fdescribe('NgxsWebsocketPlugin', () => {
           message: 'Hello bro'
         });
 
-        await store.dispatch(event).toPromise();
+        store.dispatch(event);
       };
 
       let i = 0;
