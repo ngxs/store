@@ -8,38 +8,51 @@ import {
   NGXS_WEBSOCKET_OPTIONS,
   NgxsWebsocketPluginOptions,
   WebsocketMessageError,
-  WebSocketDisconnected
+  WebSocketDisconnected,
+  TypeKeyPropertyMissingError
 } from './symbols';
 
 @Injectable()
 export class WebSocketHandler {
   constructor(
     store: Store,
-    actions: Actions,
+    actions$: Actions,
     socket: WebSocketSubject,
     @Inject(NGXS_WEBSOCKET_OPTIONS) config: NgxsWebsocketPluginOptions
   ) {
-    actions
-      .pipe(ofActionDispatched(ConnectWebSocket))
-      .subscribe(event => socket.connect(event.payload));
-    actions.pipe(ofActionDispatched(DisconnectWebSocket)).subscribe(() => socket.disconnect());
-    actions
-      .pipe(ofActionDispatched(SendWebSocketMessage))
-      .subscribe(({ payload }) => socket.send(payload));
+    const typeKey = config.typeKey!;
+
+    actions$.pipe(ofActionDispatched(ConnectWebSocket)).subscribe(event => {
+      socket.connect(event.payload);
+    });
+
+    actions$.pipe(ofActionDispatched(DisconnectWebSocket)).subscribe(() => {
+      socket.disconnect();
+    });
+
+    actions$.pipe(ofActionDispatched(SendWebSocketMessage)).subscribe(({ payload }) => {
+      socket.send(payload);
+    });
 
     socket.subscribe(
-      msg => {
-        const type = getValue(msg, config.typeKey!);
+      message => {
+        const type = getValue(message, typeKey);
         if (!type) {
-          throw new Error(`Type ${type} not found on message`);
+          throw new TypeKeyPropertyMissingError(typeKey);
         }
-        store.dispatch({ ...msg, type });
+        store.dispatch({ ...message, type });
       },
-      err =>
-        err instanceof CloseEvent
-          ? store.dispatch(new WebSocketDisconnected())
-          : store.dispatch(new WebsocketMessageError(err)),
-      () => store.dispatch(new WebSocketDisconnected())
+      error => {
+        if (error instanceof CloseEvent) {
+          store.dispatch(new WebSocketDisconnected());
+        } else {
+          store.dispatch(new WebsocketMessageError(error));
+        }
+      }
     );
+
+    socket.completeWebSocket$.subscribe(() => {
+      store.dispatch(new WebSocketDisconnected());
+    });
   }
 }

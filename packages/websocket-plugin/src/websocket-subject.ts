@@ -1,9 +1,11 @@
 import { Injectable, Inject } from '@angular/core';
-import { Subject } from 'rxjs';
+
+import { Subject, BehaviorSubject } from 'rxjs';
 import {
   WebSocketSubject as RxWebSocketSubject,
   WebSocketSubjectConfig
 } from 'rxjs/webSocket';
+
 import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
 
 /**
@@ -13,9 +15,17 @@ import { NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
 @Injectable()
 export class WebSocketSubject extends Subject<any> {
   /**
-   * The connection status of the websocket.
+   * The connection status of the web socket.
+   * `BehaviorSubject` is used here except of `Subject` becase it's possible
+   * to retrieve the connection status without subscribing, `getValue()` is quite enough
    */
-  connectionStatus = new Subject<boolean>();
+  connectionStatus = new BehaviorSubject<boolean>(false);
+
+  /**
+   * This is a helper event emitter for the `WebSocketHandler` class, as we wanna
+   * avoid completing this subject
+   */
+  completeWebSocket$ = new Subject<void>();
 
   private _socket: RxWebSocketSubject<any> | null;
   private _internalConfig: WebSocketSubjectConfig<any>;
@@ -64,7 +74,12 @@ export class WebSocketSubject extends Subject<any> {
     this._socket.subscribe(
       (message: any) => this.next(message),
       (error: any) => this.error(error),
-      () => this.complete()
+      // ATTENTION: don't call `this.complete()` here, as the subject will become `isStopped`
+      // and will never emit any message!
+      () => {
+        // Notice this callback is invoked only when the server side socket closes connection!
+        this.completeWebSocket$.next();
+      }
     );
   }
 
@@ -74,6 +89,8 @@ export class WebSocketSubject extends Subject<any> {
   disconnect() {
     if (this._socket) {
       this._socket.complete();
+      // `this._socket.complete()` doesn't invoke the callback that we passed in `subscribe`
+      this.completeWebSocket$.next();
       this._socket = null;
     }
   }
