@@ -9,7 +9,7 @@ import {
   NgxsWebsocketPluginOptions,
   WebsocketMessageError,
   WebSocketDisconnected,
-  TypeKeyPropertyMissing
+  TypeKeyPropertyMissingError
 } from './symbols';
 
 @Injectable()
@@ -38,7 +38,7 @@ export class WebSocketHandler {
       message => {
         const type = getValue(message, typeKey);
         if (!type) {
-          throw new TypeKeyPropertyMissing(typeKey);
+          throw new TypeKeyPropertyMissingError(typeKey);
         }
         store.dispatch({ ...message, type });
       },
