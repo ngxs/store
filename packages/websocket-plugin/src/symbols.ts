@@ -9,6 +9,20 @@ export interface NgxsWebsocketPluginOptions {
   url?: string;
 
   /**
+   * Either a single protocol string or an array of protocol strings.
+   * These strings are used to indicate sub-protocols, so that a single server
+   * can implement multiple WebSocket sub-protocols (for example, you might want one server to be able
+   * to handle different types of interactions depending on the specified protocol).
+   * If you don't specify a protocol string, an empty string is assumed.
+   */
+  protocol?: string | Array<string>;
+
+  /**
+   * Sets the `binaryType` property of the underlying WebSocket.
+   */
+  binaryType?: 'blob' | 'arraybuffer';
+
+  /**
    * The property name to distigunish this type for the store.
    * Default: 'type'
    */
