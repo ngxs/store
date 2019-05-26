@@ -337,7 +337,7 @@ describe('NgxsWebsocketPlugin', () => {
       mockServer.on('connection', (socket: WebSocket) => {
         if (status.firstConnection) {
           // On the first connection emit error
-          mockServer.emit('error', new Error('just an error'));
+          // mockServer.emit('error', new Error('just an error'));
           socket.close();
         }
 

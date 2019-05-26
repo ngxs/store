@@ -35,19 +35,13 @@ export class WebSocketHandler {
     serializer: this.options.serializer,
     deserializer: this.options.deserializer,
     closeObserver: {
-      next: (event?: CloseEvent) => {
-        this.socket = null;
+      next: () => {
         this.connectionStatus$.next(false);
         // ATTENTION!
         // See https://github.com/ReactiveX/rxjs/blob/master/src/internal/observable/dom/WebSocketSubject.ts#L340
         // RxJS socket emits `onComplete` event only if `event.wasClean` is truthy
-        // `event.wasClean` is TRUTHY when the SERVER SIDE SOCKET CLOSES MANUALLY
-        // e.g. `socket.close()`
-        // `event.wasClean` is FALSY when WE CLOSE CONNECTION FROM THE CLIENT SIDE
-        // e.g. by dispatching `DisconnectWebSocket`
-        if (event && event.wasClean) {
-          this.dispatchWebSocketDisconnected();
-        }
+        // and doesn't complete socket subject if it's falsy
+        this.disconnect();
       }
     },
     openObserver: {
@@ -118,8 +112,7 @@ export class WebSocketHandler {
         } else {
           this.store.dispatch(new WebsocketMessageError(error));
         }
-      },
-      complete: () => this.dispatchWebSocketDisconnected()
+      }
     });
   }
 
