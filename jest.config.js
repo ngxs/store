@@ -34,7 +34,7 @@ module.exports = {
    * Because this retrofits all executed files with coverage collection statements,
    * it may significantly slow down your tests.
    */
-  collectCoverage: true,
+  collectCoverage: CI,
 
   /**
    * An array of glob patterns indicating a set of files for which coverage
