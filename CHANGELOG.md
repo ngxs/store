@@ -18,8 +18,8 @@ $ npm install @ngxs/store@dev
 * Fix: Router Plugin - redirect to the manually entered route [#920](https://github.com/ngxs/store/pull/920)
 * Fix: HMR Plugin - remove old styles after reload [#1001](https://github.com/ngxs/store/pull/1001)
 * Fix: HMR Plugin - correct persistence state in runtime [#1048](https://github.com/ngxs/store/pull/1048)
-* Fix: Form Plugin - introduce conditional debounce [1061](https://github.com/ngxs/store/pull/1061)
-* Fix: WebSocket Plugin - don't stop `WebSocketSubject` stream after dispatching `WebSocketDisconnected`
+* Fix: Form Plugin - introduce conditional debounce [#1061](https://github.com/ngxs/store/pull/1061)
+* Fix: WebSocket Plugin - don't stop `WebSocketSubject` stream after dispatching `WebSocketDisconnected` [#1091](https://github.com/ngxs/store/pull/1091)
 
 ## NGXS-Labs
 
