@@ -79,4 +79,5 @@ export class RouterDataResolved<T = RouterStateSnapshot> {
 export type RouterAction<T, V = RouterStateSnapshot> =
   | RouterNavigation<V>
   | RouterCancel<T, V>
-  | RouterError<T, V>;
+  | RouterError<T, V>
+  | RouterDataResolved<V>;
