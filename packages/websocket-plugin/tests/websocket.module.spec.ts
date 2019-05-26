@@ -321,7 +321,7 @@ describe('NgxsWebsocketPlugin', () => {
       connect(store);
     });
 
-    fit('should be possible to retrieve next messages if the server side socket errors', done => {
+    it('should be possible to retrieve next messages if the server side socket errors', done => {
       // Arrange
       const mockServer = createModuleAndServer([MessagesState]);
       const store = getStore();
