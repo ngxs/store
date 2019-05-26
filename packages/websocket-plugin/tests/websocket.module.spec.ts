@@ -321,7 +321,7 @@ describe('NgxsWebsocketPlugin', () => {
       connect(store);
     });
 
-    it('should be possible to retrieve next messages if the server side socket errors', done => {
+    fit('should be possible to retrieve next messages if the server side socket errors', done => {
       // Arrange
       const mockServer = createModuleAndServer([MessagesState]);
       const store = getStore();
@@ -337,7 +337,7 @@ describe('NgxsWebsocketPlugin', () => {
       mockServer.on('connection', (socket: WebSocket) => {
         if (status.firstConnection) {
           // On the first connection emit error
-          // mockServer.emit('error', new Error('just an error'));
+          mockServer.emit('error', new Error('just an error'));
           socket.close();
         }
 
