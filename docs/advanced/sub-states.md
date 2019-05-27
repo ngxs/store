@@ -82,3 +82,51 @@ nested array objects will not work.
 Sub states can only be used once, reuse implies several restrictions that would eliminate
 some high value features. If you want to re-use them, just create a new state and inherit
 from it.
+
+## Preventing sub-state erasure
+
+Let's have a look at the state graph again:
+
+```TS
+{
+  cart: {
+    checkedout: false,
+    items: [],
+    saved: {
+      dateSaved: new Date(),
+      items: []
+    };
+  }
+}
+```
+
+This means that you have to avoid using `setState` function in the parent `CartState` state as your child state will erase. Assume you've got an action called `SetCheckedoutAndItems`:
+
+```TS
+export interface CartStateModel {
+  checkedout: boolean;
+  items: CartItem[];
+}
+
+export class SetCheckedoutAndItems {
+  static type = '[Cart] Set checkedout and items';
+  constructor(public checkedout: boolean, public items: CartItem[]) {}
+}
+
+@State<CartStateModel>({
+  name: 'cart',
+  defaults: {
+    checkedout: false,
+    items: []
+  },
+  children: [CartSavedState]
+})
+export class CartState {
+  @Action(SetCheckedoutAndItems)
+  setCheckedoutAndItems(ctx: StateContext<CartStateModel>, { checkedout, items }: SetCheckedoutAndItems) {
+    ctx.patchState({ checkedout, items });
+  }
+}
+```
+
+If we had used the `setState` function - we would have overwritten the whole state value and our sub-state `CartSavedState` would be erased. The `patchState` function allows us to update only needed properties and preserve our sub-state safe and sound.
