@@ -62,7 +62,7 @@ export function noop(..._args: any[]) {
 export class ConnectWebSocket {
   static get type() {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Websocket] Connect';
+    return '[WebSocket] Connect';
   }
   constructor(public payload?: NgxsWebsocketPluginOptions) {}
 }
@@ -73,7 +73,7 @@ export class ConnectWebSocket {
 export class WebsocketMessageError {
   static get type() {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Websocket] Message Error';
+    return '[WebSocket] Message Error';
   }
   constructor(public payload: any) {}
 }
@@ -84,7 +84,7 @@ export class WebsocketMessageError {
 export class DisconnectWebSocket {
   static get type() {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Websocket] Disconnect';
+    return '[WebSocket] Disconnect';
   }
 }
 
@@ -94,7 +94,7 @@ export class DisconnectWebSocket {
 export class WebSocketDisconnected {
   static get type() {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Websocket] Disconnected';
+    return '[WebSocket] Disconnected';
   }
 }
 
@@ -104,9 +104,19 @@ export class WebSocketDisconnected {
 export class SendWebSocketMessage {
   static get type() {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Websocket] Send Message';
+    return '[WebSocket] Send Message';
   }
   constructor(public payload: any) {}
+}
+
+/**
+ * Action dispatched when the user tries to connect if the connection already exists.
+ */
+export class WebSocketConnectionUpdated {
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[WebSocket] Connection Updated';
+  }
 }
 
 /**

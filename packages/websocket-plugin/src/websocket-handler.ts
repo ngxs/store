@@ -1,7 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { Actions, Store, getValue, ofActionDispatched } from '@ngxs/store';
 
-import { BehaviorSubject } from 'rxjs';
 import { WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
 
 import {
@@ -12,19 +11,12 @@ import {
   NgxsWebsocketPluginOptions,
   WebsocketMessageError,
   WebSocketDisconnected,
-  TypeKeyPropertyMissingError
+  TypeKeyPropertyMissingError,
+  WebSocketConnectionUpdated
 } from './symbols';
 
 @Injectable()
 export class WebSocketHandler {
-  /**
-   * The connection status of the web socket.
-   * `BehaviorSubject` is used here except of `Subject` becase it's possible
-   * to retrieve the connection status without subscribing, `getValue()` is quite enough.
-   * But also possible to `subscribe` if anyone wants to "track" the connection status.
-   */
-  public connectionStatus$ = new BehaviorSubject(false);
-
   private socket: WebSocketSubject<any> | null = null;
 
   private config: WebSocketSubjectConfig<any> = {
@@ -36,16 +28,12 @@ export class WebSocketHandler {
     deserializer: this.options.deserializer,
     closeObserver: {
       next: () => {
-        this.connectionStatus$.next(false);
         // ATTENTION!
         // See https://github.com/ReactiveX/rxjs/blob/master/src/internal/observable/dom/WebSocketSubject.ts#L340
         // RxJS socket emits `onComplete` event only if `event.wasClean` is truthy
         // and doesn't complete socket subject if it's falsy
         this.disconnect();
       }
-    },
-    openObserver: {
-      next: () => this.connectionStatus$.next(true)
     }
   };
 
@@ -57,13 +45,6 @@ export class WebSocketHandler {
     @Inject(NGXS_WEBSOCKET_OPTIONS) private options: NgxsWebsocketPluginOptions
   ) {
     this.setupActionsListeners();
-  }
-
-  /**
-   * Just a helper getter to not call `getValue()` every time from the outside
-   */
-  public get connectionStatus(): boolean {
-    return this.connectionStatus$.getValue();
   }
 
   private setupActionsListeners(): void {
@@ -86,7 +67,7 @@ export class WebSocketHandler {
     // then the previous subscription will still live in the memory
     // to prevent such behavior - we close the previous connection if it exists
     if (this.socket) {
-      this.socket.complete();
+      this.updateConnection();
     }
 
     // Users can pass the options in the connect method so
@@ -150,6 +131,11 @@ export class WebSocketHandler {
     if (options.deserializer) {
       this.config.deserializer = options.deserializer;
     }
+  }
+
+  private updateConnection(): void {
+    this.socket!.complete();
+    this.store.dispatch(new WebSocketConnectionUpdated());
   }
 
   /**

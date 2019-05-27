@@ -1,5 +1,4 @@
 export { NgxsWebsocketPluginModule } from './websocket.module';
-export { WebSocketHandler } from './websocket-handler';
 export {
   NGXS_WEBSOCKET_OPTIONS,
   NgxsWebsocketPluginOptions,
@@ -7,5 +6,6 @@ export {
   WebsocketMessageError,
   DisconnectWebSocket,
   WebSocketDisconnected,
-  SendWebSocketMessage
+  SendWebSocketMessage,
+  WebSocketConnectionUpdated
 } from './symbols';

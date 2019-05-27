@@ -20,9 +20,9 @@ import {
   SendWebSocketMessage,
   DisconnectWebSocket,
   WebSocketDisconnected,
-  WebsocketMessageError,
-  WebSocketHandler
+  WebsocketMessageError
 } from '../';
+import { WebSocketConnectionUpdated } from '../src/symbols';
 
 type WebSocketMessage = string | Blob | ArrayBuffer | ArrayBufferView;
 
@@ -52,7 +52,6 @@ describe('NgxsWebsocketPlugin', () => {
 
   const getStore = (): Store => TestBed.get(Store);
   const getActions$ = (): Actions => TestBed.get(Actions);
-  const getWebSocketHandler = (): WebSocketHandler => TestBed.get(WebSocketHandler);
 
   const createModuleAndServer = (states: any[] = []) => {
     TestBed.configureTestingModule({
@@ -179,44 +178,23 @@ describe('NgxsWebsocketPlugin', () => {
     store.dispatch(new SendWebSocketMessage({ foo: true }));
   });
 
-  it('should be possible to track connection status', done => {
+  it('should dispatch WebSocketConnectionUpdated if `connect` is invoked with already existing connection', done => {
     // Arrange
     const mockServer = createModuleAndServer();
     const store = getStore();
     const actions$ = getActions$();
-    const handler = getWebSocketHandler();
-
-    // At the end it should be `3`
-    // initial value is `false`, then we connect - it becomes `true`
-    // the `socket.close()` emits `CloseEvent` - it becomes `false`
-    // that's why its get emitted 3 times
-    let connectionStatusEmittedTimes = 0;
-    // At the end it should be `1`
-    // as we connect only once
-    let connectionStatusWasTrueTimes = 0;
-
-    const subscription = handler.connectionStatus$
-      .pipe(tap(() => connectionStatusEmittedTimes++))
-      .subscribe(status => {
-        if (status) {
-          connectionStatusWasTrueTimes++;
-        }
-      });
 
     // Act
     store.dispatch(new ConnectWebSocket());
 
-    mockServer.on('connection', (socket: WebSocket) => {
-      // Close immediatelly
-      socket.close();
+    // We can't dispatch an array of actions here
+    setTimeout(() => {
+      store.dispatch(new ConnectWebSocket());
     });
 
-    actions$.pipe(ofActionDispatched(WebSocketDisconnected)).subscribe(() => {
+    actions$.pipe(ofActionDispatched(WebSocketConnectionUpdated)).subscribe(action => {
       // Assert
-      expect(connectionStatusEmittedTimes).toBe(3);
-      expect(connectionStatusWasTrueTimes).toBe(1);
-
-      subscription.unsubscribe();
+      expect(action instanceof WebSocketConnectionUpdated).toBeTruthy();
       mockServer.stop(done);
     });
   });
