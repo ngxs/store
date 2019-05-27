@@ -129,4 +129,4 @@ export class CartState {
 }
 ```
 
-If we'd use the `setState` function - we'd overwrite the whole state value and our sub-state `CartSavedState` would erase. The `patchState` function allows us to update only needed properties and preserve our sub-state safe and sound.
+If we had used the `setState` function - we would have overwritten the whole state value and our sub-state `CartSavedState` would be erased. The `patchState` function allows us to update only needed properties and preserve our sub-state safe and sound.
