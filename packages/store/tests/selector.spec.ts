@@ -732,69 +732,51 @@ describe('Selector', () => {
     });
   });
 
-  describe('Errors in selector', () => {
-    it('should be a wrong mutation', () => {
-      @State<number[]>({
-        name: 'tasks',
-        defaults: [1, 2, 3, 4]
-      })
-      class TasksMutableState {
-        @Selector()
-        static reverse(state: number[]): number[] {
-          return state.reverse();
-        }
+  describe('Errors in selectSnapshot', () => {
+    @State<number[]>({
+      name: 'tasks',
+      defaults: [1, 2, 3, 4]
+    })
+    class TasksState {
+      @Selector()
+      static reverse(state: number[]): number[] {
+        return state.reverse();
       }
+    }
 
+    beforeEach(() => {
+      TestBed.resetTestingModule();
+    });
+
+    it('should be a wrong mutation', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TasksMutableState])]
+        imports: [NgxsModule.forRoot([TasksState])]
       });
 
       const store = TestBed.get(Store);
       store.reset({ tasks: [1, 2, 3, 4] });
 
-      const tasks: number[] = store.selectSnapshot(TasksMutableState);
-      const reverse: number[] = store.selectSnapshot(TasksMutableState.reverse);
+      const tasks: number[] = store.selectSnapshot(TasksState);
+      const reverse: number[] = store.selectSnapshot(TasksState.reverse);
       expect(tasks).toEqual([4, 3, 2, 1]);
       expect(reverse).toEqual([4, 3, 2, 1]);
     });
 
     it('should be incorrect mutation', () => {
-      @State<number[]>({
-        name: 'tasks',
-        defaults: [1, 2, 3, 4]
-      })
-      class TasksSuppressErrorsState {
-        @Selector()
-        static reverse(state: number[]): number[] {
-          return state.reverse();
-        }
-      }
-
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TasksSuppressErrorsState], { developmentMode: true })]
+        imports: [NgxsModule.forRoot([TasksState], { developmentMode: true })]
       });
 
       const store = TestBed.get(Store);
       store.reset({ tasks: [1, 2, 3, 4] });
 
-      const tasks: number[] = store.selectSnapshot(TasksSuppressErrorsState);
-      const reverse: number[] = store.selectSnapshot(TasksSuppressErrorsState.reverse);
+      const tasks: number[] = store.selectSnapshot(TasksState);
+      const reverse: number[] = store.selectSnapshot(TasksState.reverse);
       expect(tasks).toEqual([1, 2, 3, 4]);
       expect(reverse).toEqual(undefined as any);
     });
 
-    it('should be correct catch errors', () => {
-      @State<number[]>({
-        name: 'tasks',
-        defaults: [1, 2, 3, 4]
-      })
-      class TasksState {
-        @Selector()
-        static reverse(state: number[]): number[] {
-          return state.reverse();
-        }
-      }
-
+    it('should be correct catch errors with selectSnapshot', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([TasksState], {
@@ -815,6 +797,52 @@ describe('Selector', () => {
       } catch (e) {
         expect(e.message.includes('Cannot assign to read only property')).toBe(true);
       }
+    });
+  });
+
+  describe('Select errors', () => {
+    @State<number[]>({
+      name: 'tasks',
+      defaults: [1, 2, 3, 4]
+    })
+    class NumberListState {
+      @Selector()
+      static reverse(state: number[]): number[] {
+        return state.reverse();
+      }
+    }
+
+    it('should be correct catch errors from observable with select', () => {
+      let errorMessage = '';
+
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([NumberListState], {
+            developmentMode: true,
+            selectorOptions: { suppressErrors: false }
+          })
+        ]
+      });
+
+      const store = TestBed.get(Store);
+      store.reset({ tasks: [1, 2, 3, 4] });
+
+      let snapshot: number[] = [];
+
+      store.select(NumberListState).subscribe((state: number[]) => (snapshot = state));
+      expect(snapshot).toEqual([1, 2, 3, 4]);
+
+      store
+        .select(NumberListState.reverse)
+        .subscribe(
+          (state: number[]) => (snapshot = state),
+          (err: TypeError) => (errorMessage = err.message)
+        );
+
+      expect(snapshot).toEqual([1, 2, 3, 4]);
+      expect(errorMessage).toEqual(
+        `Cannot assign to read only property '0' of object '[object Array]'`
+      );
     });
   });
 });

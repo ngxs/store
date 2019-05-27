@@ -1,6 +1,6 @@
 // tslint:disable:unified-signatures
-import { Injectable, Type, Optional, Inject } from '@angular/core';
-import { Observable, of, Subscription } from 'rxjs';
+import { Inject, Injectable, Optional, Type } from '@angular/core';
+import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
 import { INITIAL_STATE_TOKEN, ObjectKeyMap, ObjectUtils } from '@ngxs/store/internals';
 
@@ -41,15 +41,19 @@ export class Store {
     const selectorFn = getSelectorFn(selector);
     return this._stateStream.pipe(
       map(selectorFn),
-      catchError(err => {
-        // if error is TypeError we swallow it to prevent usual errors with property access
-        if (err instanceof TypeError) {
-          return of(undefined);
-        }
+      catchError(
+        (err: Error): Observable<never> | Observable<undefined> => {
+          // if error is TypeError we swallow it to prevent usual errors with property access
+          const { suppressErrors } = this._config.selectorOptions;
 
-        // rethrow other errors
-        throw err;
-      }),
+          if (err instanceof TypeError && suppressErrors) {
+            return of(undefined);
+          }
+
+          // rethrow other errors
+          return throwError(err);
+        }
+      ),
       distinctUntilChanged(),
       leaveNgxs(this._internalExecutionStrategy)
     );
