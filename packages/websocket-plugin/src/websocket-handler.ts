@@ -62,13 +62,7 @@ export class WebSocketHandler {
   }
 
   private connect(options?: NgxsWebsocketPluginOptions): void {
-    // To ensure we don't have any memory leaks
-    // e.g. if the user occasionally dispatched `ConnectWebSocket` twice
-    // then the previous subscription will still live in the memory
-    // to prevent such behavior - we close the previous connection if it exists
-    if (this.socket) {
-      this.updateConnection();
-    }
+    this.updateConnection();
 
     // Users can pass the options in the connect method so
     // if options aren't available at DI bootstrap they have access
@@ -133,9 +127,18 @@ export class WebSocketHandler {
     }
   }
 
+  /**
+   * To ensure we don't have any memory leaks
+   * e.g. if the user occasionally dispatched `ConnectWebSocket` twice
+   * then the previous subscription will still live in the memory
+   * to prevent such behavior - we close the previous connection if it exists
+   */
   private updateConnection(): void {
-    this.socket!.complete();
-    this.store.dispatch(new WebSocketConnectionUpdated());
+    if (this.socket) {
+      this.socket.complete();
+      this.socket = null;
+      this.store.dispatch(new WebSocketConnectionUpdated());
+    }
   }
 
   /**
