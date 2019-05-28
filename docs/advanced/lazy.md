@@ -17,7 +17,7 @@ state so this state object will now be persisted globally. Even though
 it's available globally, you should only use it within that feature module so you
 make sure not to create dependencies on things that could not be loaded yet.
 
-How feature states are added to the global state graph? Assume you've got a `ZoosState`:
+How are feature states added to the global state graph? Assume you've got a `ZoosState`:
 
 ```TS
 @State<Zoo[]>({
@@ -46,4 +46,4 @@ You register this state is some lazy-loaded module via `NgxsModule.forFeature([O
 }
 ```
 
-For better persuasion you can try it yourself by invoking `store.snapshot()` and printing the result to the console.
+You can try it yourself by invoking `store.snapshot()` and printing the result to the console before and after the lazy module is loaded. .
