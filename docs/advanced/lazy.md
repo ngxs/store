@@ -9,7 +9,7 @@ and describe them are the same. For example:
     NgxsModule.forFeature([LazyState])
   ]
 })
-export class LazyModule{}
+export class LazyModule {}
 ```
 
 It's important to note when lazy-loading a store, it is registered in the global
@@ -17,18 +17,33 @@ state so this state object will now be persisted globally. Even though
 it's available globally, you should only use it within that feature module so you
 make sure not to create dependencies on things that could not be loaded yet.
 
-You probably defined a `AppState` interface that represents the global state
-graph but since we lazy loaded this we can't really include that in the definition.
-To handle this, let's extend the `AppState` and use that in our a component like:
+How are feature states added to the global state graph? Assume you've got a `ZoosState`:
 
 ```TS
-export interface AppStateModel {
-  zoos: Zoo[];
-}
+@State<Zoo[]>({
+  name: 'zoos',
+  defaults: []
+})
+export class ZoosState {}
+```
 
-export interface OfficesStateModel extends AppStateModel {
-  offices: Office[];
+And it's registered in the root module via `NgxsModule.forRoot([ZoosState])`. Assume you've got a feature `offices` state:
+
+```TS
+@State<Office[]>({
+  name: 'offices',
+  defaults: []
+})
+export class OfficesState {}
+```
+
+You register this state is some lazy-loaded module via `NgxsModule.forFeature([OfficesState])`. After the lazy module is loaded - the global state will have such signature:
+
+```TS
+{
+  zoos: [],
+  offices: []
 }
 ```
 
-Now when we use our `Select` in our lazy loaded feature module, we can use `OfficesState`.
+You can try it yourself by invoking `store.snapshot()` and printing the result to the console before and after the lazy module is loaded. .
