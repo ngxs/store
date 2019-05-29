@@ -2,15 +2,15 @@ import { TestBed } from '@angular/core/testing';
 import {
   NgxsModule,
   Actions,
-  ofAction,
   Store,
   State,
   Action,
   StateContext,
-  ofActionSuccessful
+  ofActionSuccessful,
+  ofActionDispatched
 } from '@ngxs/store';
 
-import { take, finalize, tap, first } from 'rxjs/operators';
+import { tap, first } from 'rxjs/operators';
 
 import { Server, WebSocket } from 'mock-socket';
 
@@ -22,6 +22,26 @@ import {
   WebSocketDisconnected,
   WebsocketMessageError
 } from '../';
+import { WebSocketConnectionUpdated } from '../src/symbols';
+
+type WebSocketMessage = string | Blob | ArrayBuffer | ArrayBufferView;
+
+declare module 'mock-socket' {
+  interface WebSocketCallbackMap {
+    close: () => void;
+    error: (err: Error) => void;
+    message: (message: WebSocketMessage) => void;
+    open: () => void;
+  }
+
+  interface WebSocket {
+    // the `WebSocket` from the `mock-socket` package actually has this method!
+    // but they didn't add this method to the interface!
+    // that's why we do "module augmentation"
+    // so we don't have to use `any` type like `(socket: any)`
+    on<K extends keyof WebSocketCallbackMap>(type: K, callback: WebSocketCallbackMap[K]): void;
+  }
+}
 
 describe('NgxsWebsocketPlugin', () => {
   beforeEach(() => {
@@ -59,25 +79,20 @@ describe('NgxsWebsocketPlugin', () => {
     // Act
     store.dispatch(new ConnectWebSocket());
 
-    mockServer.on('connection', (socket: any) => {
-      socket.on('message', (data: any) => socket.send(data));
+    mockServer.on('connection', (socket: WebSocket) => {
+      socket.on('message', (data: WebSocketMessage) => socket.send(data));
 
-      actions$
-        .pipe(
-          ofAction(SetMessage),
-          take(1),
-          finalize(() => mockServer.stop(done))
-        )
-        .subscribe(action => {
-          // Assert
-          expect(action).toEqual({ type: 'SET_MESSAGE', payload: 'from websocket' });
-        });
+      actions$.pipe(ofActionDispatched(SetMessage)).subscribe(action => {
+        // Assert
+        expect(action).toEqual({ type: 'SET_MESSAGE', payload: 'from websocket' });
+        mockServer.stop(done);
+      });
     });
 
     store.dispatch(createMessage());
   });
 
-  it('should dispatch WebSocketDisconnected on client initialed disconnect', done => {
+  it('should dispatch WebSocketDisconnected if client dispatched disconnect action', done => {
     // Arrange
     const mockServer = createModuleAndServer();
     const store = getStore();
@@ -86,16 +101,11 @@ describe('NgxsWebsocketPlugin', () => {
     // Act
     store.dispatch(new ConnectWebSocket());
 
-    actions$
-      .pipe(
-        ofAction(WebSocketDisconnected),
-        take(1),
-        finalize(() => mockServer.stop(done))
-      )
-      .subscribe(action => {
-        // Assert
-        expect(action instanceof WebSocketDisconnected).toBeTruthy();
-      });
+    actions$.pipe(ofActionDispatched(WebSocketDisconnected)).subscribe(action => {
+      // Assert
+      expect(action instanceof WebSocketDisconnected).toBeTruthy();
+      mockServer.stop(done);
+    });
 
     store.dispatch(new DisconnectWebSocket());
   });
@@ -111,19 +121,14 @@ describe('NgxsWebsocketPlugin', () => {
 
     mockServer.on('connection', socket => socket.close());
 
-    actions$
-      .pipe(
-        ofAction(WebSocketDisconnected),
-        take(1),
-        finalize(() => mockServer.stop(done))
-      )
-      .subscribe(action => {
-        // Assert
-        expect(action instanceof WebSocketDisconnected).toBeTruthy();
-      });
+    actions$.pipe(ofActionDispatched(WebSocketDisconnected)).subscribe(action => {
+      // Assert
+      expect(action instanceof WebSocketDisconnected).toBeTruthy();
+      mockServer.stop(done);
+    });
   });
 
-  it('should dispatch WebSocketMessageError if socker errors', done => {
+  it('should dispatch WebSocketMessageError if socket errors', done => {
     // Arrange
     const mockServer = createModuleAndServer();
     const store = getStore();
@@ -136,16 +141,11 @@ describe('NgxsWebsocketPlugin', () => {
       mockServer.emit('error', new Error('just an error'));
     });
 
-    actions$
-      .pipe(
-        ofAction(WebsocketMessageError),
-        take(1),
-        finalize(() => mockServer.stop(done))
-      )
-      .subscribe(action => {
-        // Assert
-        expect(action instanceof WebsocketMessageError).toBeTruthy();
-      });
+    actions$.pipe(ofActionDispatched(WebsocketMessageError)).subscribe(action => {
+      // Assert
+      expect(action instanceof WebsocketMessageError).toBeTruthy();
+      mockServer.stop(done);
+    });
   });
 
   it('should be possible to provide custom options', done => {
@@ -167,8 +167,8 @@ describe('NgxsWebsocketPlugin', () => {
     store.dispatch(new ConnectWebSocket());
 
     // Act
-    mockServer.on('connection', (socket: any) => {
-      socket.on('message', (data: any) => {
+    mockServer.on('connection', (socket: WebSocket) => {
+      socket.on('message', (data: WebSocketMessage) => {
         // Assert
         expect(data).toBe('');
         mockServer.stop(done);
@@ -178,7 +178,28 @@ describe('NgxsWebsocketPlugin', () => {
     store.dispatch(new SendWebSocketMessage({ foo: true }));
   });
 
-  describe('WebSocketSubject', () => {
+  it('should dispatch WebSocketConnectionUpdated if `connect` is invoked with already existing connection', done => {
+    // Arrange
+    const mockServer = createModuleAndServer();
+    const store = getStore();
+    const actions$ = getActions$();
+
+    // Act
+    store.dispatch(new ConnectWebSocket());
+
+    // We can't dispatch an array of actions here
+    setTimeout(() => {
+      store.dispatch(new ConnectWebSocket());
+    });
+
+    actions$.pipe(ofActionDispatched(WebSocketConnectionUpdated)).subscribe(action => {
+      // Assert
+      expect(action instanceof WebSocketConnectionUpdated).toBeTruthy();
+      mockServer.stop(done);
+    });
+  });
+
+  describe('WebSocketHandler', () => {
     class AddMessage {
       static type = '[Chat] Add message';
       constructor(public from: string, public message: string) {}
@@ -201,6 +222,42 @@ describe('NgxsWebsocketPlugin', () => {
       }
     }
 
+    const connect = (store: Store) => {
+      store.dispatch(new ConnectWebSocket());
+
+      const event = new SendWebSocketMessage({
+        type: 'message',
+        from: 'Artur',
+        message: 'Hello bro'
+      });
+
+      store.dispatch(event);
+    };
+
+    const getMessages = (store: Store) => store.selectSnapshot<Message[]>(MessagesState);
+
+    // First class function that takes socket as an argument
+    // and returns `onMessage` callback
+    const socketOnMessage = (socket: WebSocket) => (data: WebSocketMessage) => {
+      // That's the object that we passed into `SendWebSocketMessage` constructor
+      const { type, from, message } = JSON.parse(data as string);
+
+      if (type !== 'message') {
+        return;
+      }
+
+      const event = JSON.stringify({
+        type: '[Chat] Add message',
+        from,
+        message
+      });
+
+      socket.send(event);
+      // Close connection so the client is able to receive event
+      // and try to reconnect
+      socket.close();
+    };
+
     it('should reconnect after disconnect and WebSocketSubject should continue emitting events', done => {
       // Arrange
       const mockServer = createModuleAndServer([MessagesState]);
@@ -208,51 +265,20 @@ describe('NgxsWebsocketPlugin', () => {
       const actions$ = getActions$();
 
       // Act
-      mockServer.on('connection', (socket: any) => {
-        socket.on('message', (data: any) => {
-          // That's the object that we passed into `SendWebSocketMessage` constructor
-          const { type, from, message } = JSON.parse(data);
-
-          if (type !== 'message') {
-            return;
-          }
-
-          const event = JSON.stringify({
-            type: '[Chat] Add message',
-            from,
-            message
-          });
-
-          socket.send(event);
-          // Close connection so the client is able to receive event
-          // and try to reconnect
-          socket.close();
-        });
+      mockServer.on('connection', (socket: WebSocket) => {
+        socket.on('message', socketOnMessage(socket));
       });
 
-      const connect = () => {
-        store.dispatch(new ConnectWebSocket());
-
-        const event = new SendWebSocketMessage({
-          type: 'message',
-          from: 'Artur',
-          message: 'Hello bro'
-        });
-
-        store.dispatch(event);
-      };
-
-      let i = 0;
+      let addMessageSuccessfullyDispatchedTimes = 0;
 
       actions$
         .pipe(
           ofActionSuccessful(AddMessage),
-          // `take(2)` doesn't seem to work here
-          tap(() => i++),
-          first(() => i === 2)
+          tap(() => addMessageSuccessfullyDispatchedTimes++),
+          first(() => addMessageSuccessfullyDispatchedTimes === 2)
         )
         .subscribe(() => {
-          const messages = store.selectSnapshot<Message[]>(MessagesState);
+          const messages = getMessages(store);
 
           // Assert
           expect(messages.length).toBe(2);
@@ -264,18 +290,72 @@ describe('NgxsWebsocketPlugin', () => {
           mockServer.stop(done);
         });
 
+      actions$.pipe(ofActionDispatched(WebSocketDisconnected)).subscribe(action => {
+        expect(action instanceof WebSocketDisconnected).toBeTruthy();
+        // Reconnect after disconnect
+        connect(store);
+      });
+
+      connect(store);
+    });
+
+    it('should be possible to retrieve next messages if the server side socket errors', done => {
+      // Arrange
+      const mockServer = createModuleAndServer([MessagesState]);
+      const store = getStore();
+      const actions$ = getActions$();
+
+      // Just a helper variable
+      const status = {
+        firstConnection: true,
+        secondConnection: false
+      };
+
+      // Act
+      mockServer.on('connection', (socket: WebSocket) => {
+        if (status.firstConnection) {
+          // On the first connection emit error
+          mockServer.emit('error', new Error('just an error'));
+          socket.close();
+        }
+
+        // Next time error will not be emitted
+        status.firstConnection = false;
+
+        if (status.secondConnection) {
+          // On the second connection send normal message
+          socket.on('message', socketOnMessage(socket));
+        }
+
+        // Next time we will listen to the `message` event
+        status.secondConnection = true;
+      });
+
+      let addMessageSuccessfullyDispatchedTimes = 0;
+
       actions$
         .pipe(
-          ofActionSuccessful(WebSocketDisconnected),
-          take(1)
+          ofActionSuccessful(AddMessage),
+          tap(() => addMessageSuccessfullyDispatchedTimes++),
+          first(() => addMessageSuccessfullyDispatchedTimes === 1)
         )
-        .subscribe(action => {
-          expect(action instanceof WebSocketDisconnected).toBeTruthy();
-          // Reconnect after disconnect
-          connect();
+        .subscribe(() => {
+          const messages = getMessages(store);
+
+          // Assert
+          expect(messages.length).toBe(1);
+          expect(messages).toEqual([{ from: 'Artur', message: 'Hello bro' }]);
+
+          mockServer.stop(done);
         });
 
-      connect();
+      actions$.pipe(ofActionDispatched(WebSocketDisconnected)).subscribe(action => {
+        expect(action instanceof WebSocketDisconnected).toBeTruthy();
+        // Reconnect after disconnect
+        connect(store);
+      });
+
+      connect(store);
     });
   });
 });

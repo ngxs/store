@@ -6,5 +6,6 @@ export {
   WebsocketMessageError,
   DisconnectWebSocket,
   WebSocketDisconnected,
-  SendWebSocketMessage
+  SendWebSocketMessage,
+  WebSocketConnectionUpdated
 } from './symbols';
