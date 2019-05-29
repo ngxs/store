@@ -9450,10 +9450,10 @@ typescript@next:
   resolved "https://registry.npmjs.org/typescript/-/typescript-3.5.0-dev.20190518.tgz#06ed70f95a6eb88c73844701411935f543a1f949"
   integrity sha512-s5JWFkb5VFSsXuwn65qGhXNLNSi6yqIKJSftX6ig4UnO52PoUVTg5h9MEEpnh5dNMLYgx+l5oMmgn7vvQ5cMvA==
 
-typescript@~3.1.6:
-  version "3.1.6"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-3.1.6.tgz#b6543a83cfc8c2befb3f4c8fba6896f5b0c9be68"
-  integrity sha512-tDMYfVtvpb96msS1lDX9MEdHrW4yOuZ4Kdc4Him9oU796XldPYF/t2+uKoX0BBa0hXXwDlqYQbXY5Rzjzc5hBA==
+typescript@~3.5.1:
+  version "3.5.1"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-3.5.1.tgz#ba72a6a600b2158139c5dd8850f700e231464202"
+  integrity sha512-64HkdiRv1yYZsSe4xC1WVgamNigVYjlssIoaH2HcZF0+ijsk5YK2g0G34w9wJkze8+5ow4STd22AynfO6ZYYLw==
 
 uglify-js@^3.1.4:
   version "3.5.13"
