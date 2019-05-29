@@ -25,7 +25,7 @@ export class ZooComponent {
   @Select(ZooState.pandas) pandas$: Observable<string[]>;
 
   // Also accepts a function like our select method
-  @Select(state => state.animals) animals$: Observable<string[]>;
+  @Select(state => state.zoo.animals) animals$: Observable<string[]>;
   
   // Reads the name of the state from the parameter
   @Select() zoo$: Observable<ZooStateModel>;
