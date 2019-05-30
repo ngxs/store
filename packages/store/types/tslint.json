@@ -9,6 +9,10 @@
     "member-access": false,
     "no-object-literal-type-assertion": false,
     "interface-over-type-literal": false,
+    "no-var-keyword": false,
+    "one-variable-per-declaration": false,
+    "object-literal-key-quotes": false,
+    "no-arg": false,
     "whitespace": [
       false,
       "check-branch",

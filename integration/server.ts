@@ -45,7 +45,7 @@ app.engine(
   ngExpressEngine({
     bootstrap: AppServerModuleNgFactory,
     providers: [provideModuleMap(LAZY_MODULE_MAP)]
-  })
+  }) as any
 );
 
 app.set('view engine', 'html');

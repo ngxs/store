@@ -4,16 +4,23 @@ import { isStateOperator, isPredicate, isNumber, invalidIndex } from './utils';
 import { Predicate } from './internals';
 
 /**
+ * After upgrading to Angular 8, TypeScript 3.4 all types were broken and tests did not pass!
+ * In order to avoid breaking change, the types were set to `any`.
+ * In the next pull request, we need to apply a new typing to support state operators.
+ * TODO: Need to fix types
+ */
+
+/**
  * @param selector - Index of item in the array or a predicate function
  * that can be provided in `Array.prototype.findIndex`
  * @param operatorOrValue - New value under the `selector` index or a
  * function that can be applied to an existing value
  */
-export function updateItem<T>(
+export function updateItem<T = any>(
   selector: number | Predicate<T>,
   operatorOrValue: T | StateOperator<T>
-): StateOperator<T[]> {
-  return function updateItemOperator(existing: Readonly<T[]>) {
+): StateOperator<any> {
+  return function updateItemOperator(existing: Readonly<any>): any {
     let index = -1;
 
     if (isPredicate(selector)) {
@@ -23,7 +30,7 @@ export function updateItem<T>(
     }
 
     if (invalidIndex(index)) {
-      return existing;
+      return existing as any;
     }
 
     let value: T = null!;
@@ -38,11 +45,11 @@ export function updateItem<T>(
     // If the value hasn't been mutated
     // then we just return `existing` array
     if (value === existing[index]) {
-      return existing;
+      return existing as any;
     }
 
     const clone = existing.slice();
     clone[index] = value;
-    return clone;
+    return clone as any;
   };
 }

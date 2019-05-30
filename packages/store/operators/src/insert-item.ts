@@ -1,6 +1,13 @@
 import { isNil } from './utils';
 
 /**
+ * After upgrading to Angular 8, TypeScript 3.4 all types were broken and tests did not pass!
+ * In order to avoid breaking change, the types were set to `any`.
+ * In the next pull request, we need to apply a new typing to support state operators.
+ * TODO: Need to fix types
+ */
+
+/**
  * @param value - Value to insert
  * @param [beforePosition] -  Specified index to insert value before, optional
  */
@@ -9,7 +16,7 @@ export function insertItem<T>(value: T, beforePosition?: number) {
     // Have to check explicitly for `null` and `undefined`
     // because `value` can be `0`, thus `!value` will return `true`
     if (isNil(value) && existing) {
-      return existing;
+      return existing as T[];
     }
 
     // Property may be dynamic and might not existed before

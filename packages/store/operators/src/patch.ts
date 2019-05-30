@@ -7,8 +7,15 @@ type PatchValues<T> = {
   readonly [P in keyof T]?: T[P] extends (...args: any[]) => infer R ? R : T[P]
 };
 
-export function patch<T>(patchObject: PatchSpec<T>) {
-  return function patchStateOperator<U extends PatchValues<T>>(existing: Readonly<U>): U {
+/**
+ * After upgrading to Angular 8, TypeScript 3.4 all types were broken and tests did not pass!
+ * In order to avoid breaking change, the types were set to `any`.
+ * In the next pull request, we need to apply a new typing to support state operators.
+ * TODO: Need to fix types
+ */
+
+export function patch<T = any>(patchObject: PatchSpec<any>): StateOperator<any> {
+  return function patchStateOperator<U extends PatchValues<T>>(existing: Readonly<any>): U {
     let clone = null;
     for (const k in patchObject) {
       const newValue = patchObject[k];

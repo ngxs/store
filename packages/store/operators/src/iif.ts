@@ -21,18 +21,25 @@ function retrieveValue<T>(operatorOrValue: StateOperator<T> | T, existing?: Read
 }
 
 /**
+ * After upgrading to Angular 8, TypeScript 3.4 all types were broken and tests did not pass!
+ * In order to avoid breaking change, the types were set to `any`.
+ * In the next pull request, we need to apply a new typing to support state operators.
+ * TODO: Need to fix types
+ */
+
+/**
  * @param condition - Condition can be a plain boolean value or a function,
  * that returns boolean, also this function can take a value as an argument
  * to which this state operator applies
  * @param trueOperatorOrValue - Any value or a state operator
  * @param elseOperatorOrValue - Any value or a state operator
  */
-export function iif<T>(
+export function iif<T = any>(
   condition: Predicate<T> | boolean,
   trueOperatorOrValue: StateOperator<T> | T,
   elseOperatorOrValue?: StateOperator<T> | T
 ) {
-  return function iifOperator(existing: Readonly<T>): T {
+  return function iifOperator(existing: Readonly<any>): any {
     // Convert the value to a boolean
     let result = !!condition;
     // but if it is a function then run it to get the result

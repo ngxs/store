@@ -1,5 +1,5 @@
-import { Injectable, Optional, SkipSelf, Inject } from '@angular/core';
-import { NgxsPluginFn, NGXS_PLUGINS, NgxsPlugin } from './symbols';
+import { Inject, Injectable, Optional, SkipSelf } from '@angular/core';
+import { NGXS_PLUGINS, NgxsPlugin, NgxsPluginFn } from './symbols';
 
 /**
  * Plugin manager class
@@ -33,8 +33,8 @@ export class PluginManager {
 
   private getPlugins(): NgxsPluginFn[] {
     const handlers: NgxsPlugin[] = this._pluginHandlers || [];
-    return handlers.map((plugin: NgxsPlugin) =>
-      plugin.handle ? plugin.handle.bind(plugin) : plugin
-    );
+    return handlers.map((plugin: NgxsPlugin) => {
+      return (plugin.handle ? plugin.handle.bind(plugin) : plugin) as NgxsPluginFn;
+    });
   }
 }
