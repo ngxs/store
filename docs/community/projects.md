@@ -19,6 +19,7 @@
 - [Ngxs Effects](https://github.com/hsdgit/State.Of.Angular/tree/effects)
 - [Reactive Programming with Observables & NGXS](https://github.com/kctang/reactive-with-ngxs)
 - [Port of NgRx Example App](https://github.com/eranshmil/ngxs-example-app)
+- [State Management with NGXS](https://github.com/joaqcid/state-mgmt-with-ngxs)
 
 ### Media
 - [ngAtlanta - NGXS, State Management Made Simple - Jecelyn Yeen](https://youtu.be/0bhfUGjn0KA)
