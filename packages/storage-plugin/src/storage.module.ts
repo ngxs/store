@@ -1,4 +1,5 @@
-import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
+import { NgModule, ModuleWithProviders, PLATFORM_ID, InjectionToken } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 import { NGXS_PLUGINS } from '@ngxs/store';
 
 import { NgxsStoragePlugin } from './storage.plugin';
@@ -20,7 +21,14 @@ export function storageOptionsFactory(options: NgxsStoragePluginOptions) {
   };
 }
 
-export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine | null {
+export function engineFactory(
+  options: NgxsStoragePluginOptions,
+  platformId: any
+): StorageEngine | null {
+  if (isPlatformServer(platformId)) {
+    return null;
+  }
+
   if (options.storage === StorageOption.LocalStorage) {
     // todo: remove any here
     return <any>localStorage;
@@ -56,7 +64,7 @@ export class NgxsStoragePluginModule {
         {
           provide: STORAGE_ENGINE,
           useFactory: engineFactory,
-          deps: [NGXS_STORAGE_PLUGIN_OPTIONS]
+          deps: [NGXS_STORAGE_PLUGIN_OPTIONS, PLATFORM_ID]
         }
       ]
     };

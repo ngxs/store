@@ -1,4 +1,5 @@
-import { Inject, Injectable } from '@angular/core';
+import { PLATFORM_ID, Inject, Injectable } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 import {
   NgxsPlugin,
   setValue,
@@ -21,10 +22,15 @@ import { tap } from 'rxjs/operators';
 export class NgxsStoragePlugin implements NgxsPlugin {
   constructor(
     @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
-    @Inject(STORAGE_ENGINE) private _engine: StorageEngine
+    @Inject(STORAGE_ENGINE) private _engine: StorageEngine,
+    @Inject(PLATFORM_ID) private _platformId: any
   ) {}
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
+    if (isPlatformServer(this._platformId) && this._engine === null) {
+      return next(state, event);
+    }
+
     const options = this._options || <any>{};
     const matches = actionMatcher(event);
     const isInitAction = matches(InitState) || matches(UpdateState);
