@@ -1,15 +1,16 @@
 import { isNil } from './utils';
+import { StateOperator } from '@ngxs/store/src/symbols';
 
 /**
  * @param value - Value to insert
  * @param [beforePosition] -  Specified index to insert value before, optional
  */
-export function insertItem<T>(value: T, beforePosition?: number) {
+export function insertItem<T>(value: T, beforePosition?: number): StateOperator<T[]> {
   return function insertItemOperator(existing: Readonly<T[]>): T[] {
     // Have to check explicitly for `null` and `undefined`
     // because `value` can be `0`, thus `!value` will return `true`
     if (isNil(value) && existing) {
-      return existing;
+      return existing as T[];
     }
 
     // Property may be dynamic and might not existed before

@@ -7,7 +7,7 @@ type PatchValues<T> = {
   readonly [P in keyof T]?: T[P] extends (...args: any[]) => infer R ? R : T[P]
 };
 
-export function patch<T>(patchObject: PatchSpec<T>) {
+export function patch<T>(patchObject: PatchSpec<T>): StateOperator<T> {
   return function patchStateOperator<U extends PatchValues<T>>(existing: Readonly<U>): U {
     let clone = null;
     for (const k in patchObject) {
