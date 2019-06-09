@@ -163,7 +163,7 @@ export class AppComponent {
 }
 ```
 
-If you have difficulties with understanding how the plugin works, you can have a look at the data flow diagram below. From one side it seems a little bit complex, but no worries. Just follow the pink data flow that leads to the server side starting from view:
+If you have difficulties with understanding how the plugin works, you can have a look at the data flow diagram below. From one side it seems a little bit complex, but no worries. Just follow the pink data flow that leads to the server-side starting from view:
 
 ![NGXS WebSocket data flow](../assets/ngxs-socket-dfd.png)
 
