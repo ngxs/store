@@ -124,6 +124,7 @@ If you have ideas for creating unique libraries, you can join us. Email us at `n
 **NGXS-labs Select snapshot decorator** | [`@ngxs-labs/select-snapshot`](https://npmjs.com/package/@ngxs-labs/select-snapshot) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fselect-snapshot/latest.svg)](https://npmjs.com/package/@ngxs-labs/select-snapshot) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/select-snapshot)
 **NGXS-labs Async storage plugin** | [`@ngxs-labs/async-storage-plugin`](https://npmjs.com/package/@ngxs-labs/async-storage-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fasync-storage-plugin/latest.svg)](https://npmjs.com/package/@ngxs-labs/async-storage-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/async-storage-plugin)
 **NGXS-labs Entity state** | [`@ngxs-labs/entity-state`](https://npmjs.com/package/@ngxs-labs/entity-state) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fentity-state/latest.svg)](https://npmjs.com/package/@ngxs-labs/entity-state) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/entity-state)
+**NGXS-labs testing tools** | [`@ngxs-labs/testing`](https://npmjs.com/package/@ngxs-labs/testing) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Ftesting/latest.svg)](https://npmjs.com/package/@ngxs-labs/testing) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/testing)
 
 # Contributors
 Thanks to all our contributors!
