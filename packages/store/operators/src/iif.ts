@@ -1,7 +1,7 @@
 import { StateOperator } from '@ngxs/store';
 
-import { isStateOperator, isUndefined, isPredicate } from './utils';
 import { Predicate } from './internals';
+import { isStateOperator, isUndefined, isPredicate } from './utils';
 
 function retrieveValue<T>(operatorOrValue: StateOperator<T> | T, existing?: Readonly<T>): T {
   // If state operator is a function
@@ -31,7 +31,7 @@ export function iif<T>(
   condition: Predicate<T> | boolean,
   trueOperatorOrValue: StateOperator<T> | T,
   elseOperatorOrValue?: StateOperator<T> | T
-) {
+): StateOperator<T> {
   return function iifOperator(existing: Readonly<T>): T {
     // Convert the value to a boolean
     let result = !!condition;

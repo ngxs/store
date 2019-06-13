@@ -340,7 +340,7 @@ describe('iif', () => {
         const newValue2 = patch<Model>({
           b: patch<Model['b']>({
             hello: patch<Greeting>({
-              motivated: iif(motivated => motivated !== true, true),
+              motivated: iif<boolean>(motivated => motivated !== true, true),
               person: patch({
                 name: iif(name => name !== 'Mark', 'Artur'),
                 lastName: iif(lastName => lastName !== 'Whitfield', 'Androsovych')

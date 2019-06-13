@@ -49,14 +49,21 @@ describe('update item', () => {
     });
 
     it('returns the same root', () => {
+      interface Original {
+        a: { name: string }[];
+      }
+
       // Arrange
-      const original = {
+      const original: Original = {
         a: [{ name: 'Mark' }, { name: 'Artur' }]
       };
 
       // Act
-      const newValue = patch({
-        a: updateItem(item => item!.name === 'Mark', patch({ name: 'Mark' }))
+      const newValue = patch<Original>({
+        a: updateItem<Original['a'][number]>(
+          item => item!.name === 'Mark',
+          patch({ name: 'Mark' })
+        )
       })(original);
 
       // Assert

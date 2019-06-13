@@ -28,17 +28,23 @@ describe('compose', () => {
     });
 
     it('returns the same root', () => {
+      interface Original {
+        a: {
+          hello: string;
+        };
+      }
+
       // Arrange
-      const original = {
+      const original: Original = {
         a: {
           hello: 'world'
         }
       };
 
       // Act
-      const newValue = patch({
+      const newValue = patch<Original>({
         a: compose(
-          iif(
+          iif<Original['a']>(
             a => a!.hello === 'world',
             patch({
               hello: 'world'
@@ -52,18 +58,24 @@ describe('compose', () => {
     });
 
     it('returns a new root', () => {
+      interface Original {
+        a: number;
+        b: number;
+        c: number;
+      }
+
       // Arrange
-      const original = {
+      const original: Original = {
         a: 1,
         b: 2,
         c: 3
       };
 
       // Act
-      const newValue = compose(
+      const newValue = compose<Original>(
         patch({ a: 10 }),
-        iif(object => object!.b === 2, patch({ b: 20 })),
-        iif(object => object!.c === 3, patch({ c: 30 }))
+        iif<Original>(object => object!.b === 2, patch({ b: 20 })),
+        iif<Original>(object => object!.c === 3, patch({ c: 30 }))
       )(original);
 
       // Assert
@@ -329,7 +341,7 @@ describe('compose', () => {
         }
       })(original);
 
-      const newValue2 = patch({
+      const newValue2 = patch<Stock>({
         nestedStock: patch({
           wine: compose(
             iif(wines => wines!.length === 0, append([{ name: 'Geneve', quantity: 10 }])),
