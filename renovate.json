@@ -4,6 +4,7 @@
   "timezone": "UTC",
   "baseBranches": ["master"],
   "ignoreDeps": ["@types/node"],
+  "automerge": true,
   "packageFiles": ["package.json", "packages/**/package.json"],
   "major": {
     "devDependencies": {
