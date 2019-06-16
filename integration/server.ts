@@ -40,13 +40,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.engine(
-  'html',
-  ngExpressEngine({
-    bootstrap: AppServerModuleNgFactory,
-    providers: [provideModuleMap(LAZY_MODULE_MAP)]
-  })
-);
+app.engine('html', ngExpressEngine({
+  bootstrap: AppServerModuleNgFactory,
+  providers: [provideModuleMap(LAZY_MODULE_MAP)]
+}) as any);
 
 app.set('view engine', 'html');
 app.set('views', '.');
