@@ -187,7 +187,9 @@ describe('iif', () => {
       const original = { a: 1, b: 2, c: 3 };
 
       // Act
-      const newValue = iif<Original>(() => false, patch({ b: 20 }), patch({ a: 1 }))(original);
+      const newValue = iif(() => false, patch<Original>({ b: 20 }), patch<Original>({ a: 1 }))(
+        original
+      );
 
       // Assert
       expect(newValue).toBe(original);
@@ -268,7 +270,10 @@ describe('iif', () => {
         const original: Combined = { a: 1, b: { hello: 'world' } };
         // Act
         const newValue = patch({
-          b: iif<Combined['b']>(b => b!.hello === 'world', patch({ goodbye: 'there' }))
+          b: iif<Combined['b']>(
+            b => b!.hello === 'world',
+            patch<{ hello?: string; goodbye?: string }>({ goodbye: 'there' })
+          )
         })(original);
 
         // Assert
@@ -323,8 +328,8 @@ describe('iif', () => {
         const newValue = patch<Model>({
           b: iif<Model['b']>(
             b => typeof b!.hello === 'object',
-            patch({
-              hello: patch({
+            patch<Model['b']>({
+              hello: patch<Greeting>({
                 motivated: iif(motivated => motivated !== true, true),
                 person: patch({
                   name: 'Artur',

@@ -102,13 +102,15 @@ describe('remove item', () => {
           person: Person;
         }
 
+        interface B {
+          hello?: Greeting[];
+          goodbye?: Greeting[];
+          greeting?: string[];
+        }
+
         interface Model {
           a: number[];
-          b: {
-            hello?: Greeting[];
-            goodbye?: Greeting[];
-            greeting?: string[];
-          };
+          b: B;
         }
 
         const original: Model = {
@@ -144,7 +146,7 @@ describe('remove item', () => {
         // Act
         const newValue = patch({
           a: removeItem(number => number === 5),
-          b: patch({
+          b: patch<B>({
             hello: removeItem<Greeting>(greeting => greeting!.person.name === 'YOU'),
             goodbye: removeItem<Greeting>(greeting => greeting!.person.name === 'Artur')
           })

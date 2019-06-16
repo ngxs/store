@@ -57,11 +57,15 @@ describe('insert item', () => {
 
   describe('when property is added dynamically', () => {
     it('returns a new root', () => {
+      interface Original {
+        a?: number[];
+      }
+
       // Arrange
-      const original: { a?: number[] } = {};
+      const original: Original = {};
 
       // Act
-      const newValue = patch({
+      const newValue = patch<Original>({
         a: insertItem(10)
       })(original);
 
@@ -114,14 +118,17 @@ describe('insert item', () => {
   describe('when object with nested patch operators provided', () => {
     describe('with different calculated values', () => {
       it('treats the nested object as a patch', () => {
+        interface B {
+          hello?: string[];
+          goodbye?: string[];
+        }
+
         // Arrange
         interface Original {
           a: number[];
-          b: {
-            hello?: string[];
-            goodbye?: string[];
-          };
+          b: B;
         }
+
         const original: Original = {
           a: [1, 2, 3],
           b: {
@@ -132,7 +139,7 @@ describe('insert item', () => {
         // Act
         const newValue = patch({
           a: insertItem(20),
-          b: patch({
+          b: patch<B>({
             goodbye: insertItem('there')
           })
         })(original);
@@ -151,16 +158,18 @@ describe('insert item', () => {
 
   describe('with nesting multiple levels deep', () => {
     it('returns the deeply patched object', () => {
+      interface NestedStock {
+        wine: Wine[];
+        nestedStock?: {
+          whiskey: Whiskey[];
+        };
+      }
+
       // Arrange
       interface Stock {
         beer: Beer[];
         controller: string[];
-        nestedStock?: {
-          wine: Wine[];
-          nestedStock?: {
-            whiskey: Whiskey[];
-          };
-        };
+        nestedStock?: NestedStock;
       }
 
       interface Beer {
@@ -204,7 +213,7 @@ describe('insert item', () => {
       })(original);
 
       const newValue2 = patch<Stock>({
-        nestedStock: patch({
+        nestedStock: patch<NestedStock>({
           wine: insertItem({ name: 'Chablis', quantity: 20 }),
           nestedStock: patch({
             whiskey: insertItem({ name: 'Chivas' })

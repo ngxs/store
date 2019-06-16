@@ -253,13 +253,15 @@ describe('update item', () => {
           person: Person;
         }
 
+        interface B {
+          hello?: Greeting[];
+          goodbye?: Greeting[];
+          greeting?: string[];
+        }
+
         interface Model {
           a: number;
-          b: {
-            hello?: Greeting[];
-            goodbye?: Greeting[];
-            greeting?: string[];
-          };
+          b: B;
           c?: number;
         }
 
@@ -285,7 +287,7 @@ describe('update item', () => {
 
         // Act
         const newValue = patch({
-          b: patch({
+          b: patch<B>({
             hello: updateItem<Greeting>(item => item!.person.name === 'you', {
               enthusiastic: true,
               person: {
@@ -366,7 +368,7 @@ describe('update item', () => {
         const newValue = patch({
           games: updateItem<Game>(
             item => item!.name === 'CS:GO',
-            patch({
+            patch<Game>({
               categories: updateItem(
                 item => item!.name === 'shooter',
                 patch({ name: 'shooter' })

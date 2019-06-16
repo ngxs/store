@@ -73,9 +73,9 @@ describe('compose', () => {
 
       // Act
       const newValue = compose<Original>(
-        patch({ a: 10 }),
-        iif<Original>(object => object!.b === 2, patch({ b: 20 })),
-        iif<Original>(object => object!.c === 3, patch({ c: 30 }))
+        patch<Original>({ a: 10 }),
+        iif<Original>(object => object!.b === 2, patch<Original>({ b: 20 })),
+        iif<Original>(object => object!.c === 3, patch<Original>({ c: 30 }))
       )(original);
 
       // Assert
@@ -282,16 +282,18 @@ describe('compose', () => {
 
   describe('compose with with nesting multiple levels deep', () => {
     it('returns the deeply patched object', () => {
+      interface NestedStock {
+        wine: Wine[];
+        nestedStock?: {
+          whiskey: Whiskey[];
+        };
+      }
+
       // Arrange
       interface Stock {
         beer: Beer[];
         controller: string[];
-        nestedStock?: {
-          wine: Wine[];
-          nestedStock?: {
-            whiskey: Whiskey[];
-          };
-        };
+        nestedStock?: NestedStock;
       }
 
       interface Beer {
@@ -342,7 +344,7 @@ describe('compose', () => {
       })(original);
 
       const newValue2 = patch<Stock>({
-        nestedStock: patch({
+        nestedStock: patch<NestedStock>({
           wine: compose(
             iif(wines => wines!.length === 0, append([{ name: 'Geneve', quantity: 10 }])),
             insertItem({ name: 'Geneve 2', quantity: 20 })

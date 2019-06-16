@@ -25,7 +25,7 @@ export class TodosState {
   @Action(SetPrefix)
   public setPrefix({ setState }: StateContext<TodoStateModel>) {
     setState(
-      patch({
+      patch<TodoStateModel>({
         pizza: patch({
           model: patch({
             toppings: (topping: any) => 'Mr. ' + topping
