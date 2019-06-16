@@ -29,8 +29,8 @@ function retrieveValue<T>(operatorOrValue: StateOperator<T> | T, existing?: Read
  */
 export function iif<T>(
   condition: Predicate<T> | boolean,
-  trueOperatorOrValue: StateOperator<T> | T,
-  elseOperatorOrValue?: StateOperator<T> | T
+  trueOperatorOrValue: StateOperator<T> | T | null | undefined,
+  elseOperatorOrValue?: StateOperator<T> | T | null | undefined
 ): StateOperator<T> {
   return function iifOperator(existing: Readonly<T>): T {
     // Convert the value to a boolean
@@ -41,7 +41,7 @@ export function iif<T>(
     }
 
     if (result) {
-      return retrieveValue(trueOperatorOrValue, existing);
+      return retrieveValue(trueOperatorOrValue!, existing);
     }
 
     return retrieveValue(elseOperatorOrValue!, existing);
