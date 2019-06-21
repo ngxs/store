@@ -7,7 +7,7 @@ export function append<T>(items: T[]) {
     // just return `existing`
     const itemsNotProvidedButExistingIs = (!items || !items.length) && existing;
     if (itemsNotProvidedButExistingIs) {
-      return existing;
+      return existing as T[];
     }
 
     if (Array.isArray(existing)) {

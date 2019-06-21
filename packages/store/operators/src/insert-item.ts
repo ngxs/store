@@ -9,7 +9,7 @@ export function insertItem<T>(value: T, beforePosition?: number) {
     // Have to check explicitly for `null` and `undefined`
     // because `value` can be `0`, thus `!value` will return `true`
     if (isNil(value) && existing) {
-      return existing;
+      return existing as T[];
     }
 
     // Property may be dynamic and might not existed before

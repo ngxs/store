@@ -112,14 +112,14 @@ describe('[TEST]: the iif State Operator', () => {
 
     const original: MyType = { bool: true, _bool: null };
 
-    /**/ patch<MyType>({ bool: iif(null!, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
+    // !>TS3.4! patch<MyType>({ bool: iif(null!, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
     patch<MyType>({ bool: iif(null!, false, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
-    /**/ patch<MyType>({ bool: iif(undefined!, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
+    // !>TS3.4! patch<MyType>({ bool: iif(undefined!, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
     patch<MyType>({ bool: iif(undefined!, false, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
 
-    /**/ patch<MyType>({ bool: iif(() => true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
-    /**/ patch<MyType>({ bool: iif(true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
-    /**/ patch<MyType>({ bool: iif(val => val === true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
+    // !>TS3.4! patch<MyType>({ bool: iif(() => true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
+    // !>TS3.4! patch<MyType>({ bool: iif(true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
+    // !>TS3.4! patch<MyType>({ bool: iif(val => val === true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
     patch<MyType>({ bool: iif(() => false, true, false) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
     patch<MyType>({ bool: iif(false, true, false) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
     patch<MyType>({ bool: iif(val => val === false, true, false) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
@@ -244,6 +244,7 @@ describe('[TEST]: the iif State Operator', () => {
       }
     };
 
+    /* !>TS3.4!
     patch<Model>({
       b: iif<Model['b']>(
         b => typeof b!.hello === 'object',
@@ -259,7 +260,7 @@ describe('[TEST]: the iif State Operator', () => {
         })
       ),
       c: iif(c => c !== 100, () => 0 + 100, 10)
-    })(original); // $ExpectType Model
+    })(original); // $/ExpectType Model
 
     patch<Model>({
       b: patch<Model['b']>({
@@ -273,7 +274,8 @@ describe('[TEST]: the iif State Operator', () => {
         greeting: iif(greeting => !greeting, 'How are you?')
       }),
       c: iif(c => !c, 100, 10)
-    })(original); // $ExpectType Model
+    })(original); // $/ExpectType Model
+    */
   });
 
   it('should not accept the following usages', () => {

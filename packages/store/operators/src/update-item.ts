@@ -23,7 +23,7 @@ export function updateItem<T>(
     }
 
     if (invalidIndex(index)) {
-      return existing;
+      return existing as T[];
     }
 
     let value: T = null!;
@@ -38,7 +38,7 @@ export function updateItem<T>(
     // If the value hasn't been mutated
     // then we just return `existing` array
     if (value === existing[index]) {
-      return existing;
+      return existing as T[];
     }
 
     const clone = existing.slice();
