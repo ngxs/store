@@ -31,11 +31,10 @@ describe('[TEST]: the insertItem State Operator', () => {
 
     patch<Original>({ bools: insertItem<boolean>(true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
     patch<Original>({ bools: insertItem<boolean>(true, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    // Commented out because they document an existing bug in TS@3.4
-    // patch<Original>({ bools: insertItem(true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    // patch<Original>({ bools: insertItem(true, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    // patch<Original>({ bools: insertItem(false) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    // patch<Original>({ bools: insertItem(false, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ bools: insertItem(true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ bools: insertItem(true, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ bools: insertItem(false) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ bools: insertItem(false, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
   });
 
   it('should have the following valid complex usage', () => {

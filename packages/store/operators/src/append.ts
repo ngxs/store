@@ -1,13 +1,15 @@
+import { RepairType } from './utils';
+
 /**
  * @param items - Specific items to append to the end of an array
  */
 export function append<T>(items: T[]) {
-  return function appendOperator(existing: Readonly<T[]>): T[] {
+  return function appendOperator(existing: Readonly<RepairType<T>[]>): RepairType<T>[] {
     // If `items` is `undefined` or `null` or `[]` but `existing` is provided
     // just return `existing`
     const itemsNotProvidedButExistingIs = (!items || !items.length) && existing;
     if (itemsNotProvidedButExistingIs) {
-      return existing as T[];
+      return existing as RepairType<T>[];
     }
 
     if (Array.isArray(existing)) {
@@ -16,6 +18,6 @@ export function append<T>(items: T[]) {
 
     // For example if some property is added dynamically
     // and didn't exist before thus it's not `ArrayLike`
-    return items;
+    return items as RepairType<T>[];
   };
 }

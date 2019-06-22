@@ -112,14 +112,14 @@ describe('[TEST]: the iif State Operator', () => {
 
     const original: MyType = { bool: true, _bool: null };
 
-    // !>TS3.4! patch<MyType>({ bool: iif(null!, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
+    patch<MyType>({ bool: iif(null!, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
     patch<MyType>({ bool: iif(null!, false, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
-    // !>TS3.4! patch<MyType>({ bool: iif(undefined!, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
+    patch<MyType>({ bool: iif(undefined!, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
     patch<MyType>({ bool: iif(undefined!, false, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
 
-    // !>TS3.4! patch<MyType>({ bool: iif(() => true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
-    // !>TS3.4! patch<MyType>({ bool: iif(true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
-    // !>TS3.4! patch<MyType>({ bool: iif(val => val === true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
+    patch<MyType>({ bool: iif(() => true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
+    patch<MyType>({ bool: iif(true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
+    patch<MyType>({ bool: iif(val => val === true, true) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
     patch<MyType>({ bool: iif(() => false, true, false) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
     patch<MyType>({ bool: iif(false, true, false) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }
     patch<MyType>({ bool: iif(val => val === false, true, false) })(original); // $ExpectType { bool: boolean; _bool: boolean | null; __bool?: boolean | undefined; }

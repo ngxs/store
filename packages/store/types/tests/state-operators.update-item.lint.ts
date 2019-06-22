@@ -35,11 +35,10 @@ describe('[TEST]: the updateItem State Operator', () => {
 
     patch<Original>({ bools: updateItem<boolean>(0, true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
     patch<Original>({ bools: updateItem<boolean>(0, true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    // Commented out because they document an existing bug in TS@3.4
-    // patch<Original>({ bools: updateItem(0, true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    // patch<Original>({ bools: updateItem(0, true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    // patch<Original>({ bools: updateItem(0, false) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    // patch<Original>({ bools: updateItem(0, false) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ bools: updateItem(0, true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ bools: updateItem(0, true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ bools: updateItem(0, false) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ bools: updateItem(0, false) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
   });
 
   it('should have the following valid complex usage', () => {
