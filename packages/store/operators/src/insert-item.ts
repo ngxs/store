@@ -28,7 +28,7 @@ export function insertItem<T>(value: T, beforePosition?: number) {
       index = beforePosition!;
     }
 
-    clone.splice(index, 0, value);
+    clone.splice(index, 0, value as RepairType<T>);
     return clone;
   };
 }

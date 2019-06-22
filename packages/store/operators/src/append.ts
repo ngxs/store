@@ -13,7 +13,7 @@ export function append<T>(items: T[]) {
     }
 
     if (Array.isArray(existing)) {
-      return existing.concat(items);
+      return existing.concat(items as RepairType<T>[]);
     }
 
     // For example if some property is added dynamically

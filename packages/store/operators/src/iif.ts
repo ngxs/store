@@ -18,7 +18,7 @@ function retrieveValue<T>(
   // e.g. `elseOperatorOrValue` is `undefined`
   // then we just return an original value
   if (isUndefined(operatorOrValue)) {
-    return existing! as RepairType<T>;
+    return (<any>existing)! as RepairType<T>;
   }
 
   return operatorOrValue as RepairType<T>;
@@ -45,9 +45,9 @@ export function iif<T>(
     }
 
     if (result) {
-      return retrieveValue<T>(trueOperatorOrValue, existing);
+      return retrieveValue<T>(trueOperatorOrValue, existing as RepairType<T>);
     }
 
-    return retrieveValue<T>(elseOperatorOrValue!, existing);
+    return retrieveValue<T>(elseOperatorOrValue!, existing as RepairType<T>);
   };
 }
