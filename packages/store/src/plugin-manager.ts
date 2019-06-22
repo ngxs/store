@@ -33,8 +33,9 @@ export class PluginManager {
 
   private getPlugins(): NgxsPluginFn[] {
     const handlers: NgxsPlugin[] = this._pluginHandlers || [];
-    return handlers.map((plugin: NgxsPlugin) =>
-      plugin.handle ? plugin.handle.bind(plugin) : plugin
+    return handlers.map(
+      (plugin: NgxsPlugin) =>
+        <NgxsPluginFn>(plugin.handle ? plugin.handle.bind(plugin) : plugin)
     );
   }
 }
