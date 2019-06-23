@@ -1,2 +1,2 @@
 /* file: packages/store/types/index.d.ts */
-// TypeScript Version: 3.1
+// TypeScript Version: 3.4

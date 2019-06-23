@@ -29,9 +29,8 @@ describe('[TEST]: the append State Operator', () => {
     patch<Original>({ bools: append(null!) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
     patch<Original>({ bools: append(undefined!) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
     patch<Original>({ bools: append([true, false]) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    // Commented out because they document an existing bug
-    // patch<Original>({ bools: append([true]) })(original); // $ExpectType Original
-    // patch<Original>({ bools: append([false]) })(original); // $ExpectType Original
+    patch<Original>({ bools: append([true]) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ bools: append([false]) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
   });
 
   it('should have the following valid complex usage', () => {

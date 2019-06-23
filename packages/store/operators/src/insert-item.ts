@@ -1,20 +1,20 @@
-import { isNil } from './utils';
+import { isNil, RepairType } from './utils';
 
 /**
  * @param value - Value to insert
  * @param [beforePosition] -  Specified index to insert value before, optional
  */
 export function insertItem<T>(value: T, beforePosition?: number) {
-  return function insertItemOperator(existing: Readonly<T[]>): T[] {
+  return function insertItemOperator(existing: Readonly<RepairType<T>[]>): RepairType<T>[] {
     // Have to check explicitly for `null` and `undefined`
     // because `value` can be `0`, thus `!value` will return `true`
     if (isNil(value) && existing) {
-      return existing as T[];
+      return existing as RepairType<T>[];
     }
 
     // Property may be dynamic and might not existed before
     if (!Array.isArray(existing)) {
-      return [value];
+      return [value as RepairType<T>];
     }
 
     const clone = existing.slice();
@@ -28,7 +28,7 @@ export function insertItem<T>(value: T, beforePosition?: number) {
       index = beforePosition!;
     }
 
-    clone.splice(index, 0, value);
+    clone.splice(index, 0, value as RepairType<T>);
     return clone;
   };
 }
