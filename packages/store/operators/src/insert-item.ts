@@ -1,20 +1,28 @@
+import { StateOperator } from '@ngxs/store';
+
 import { isNil } from './utils';
+import { RepairTypeList } from './internals';
 
 /**
  * @param value - Value to insert
  * @param [beforePosition] -  Specified index to insert value before, optional
  */
-export function insertItem<T>(value: T, beforePosition?: number) {
-  return function insertItemOperator(existing: Readonly<T[]>): T[] {
+export function insertItem<T>(
+  value: T,
+  beforePosition?: number
+): StateOperator<RepairTypeList<T>> {
+  return function insertItemOperator(
+    existing: Readonly<RepairTypeList<T>>
+  ): RepairTypeList<T> {
     // Have to check explicitly for `null` and `undefined`
     // because `value` can be `0`, thus `!value` will return `true`
     if (isNil(value) && existing) {
-      return existing as T[];
+      return existing as RepairTypeList<T>;
     }
 
     // Property may be dynamic and might not existed before
     if (!Array.isArray(existing)) {
-      return [value];
+      return [value] as RepairTypeList<T>;
     }
 
     const clone = existing.slice();

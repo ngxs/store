@@ -1,14 +1,12 @@
 import { StateOperator } from '@ngxs/store';
+
+import { PatchSpec, PatchValues } from './internals';
 import { isStateOperator } from './utils';
 
-export type PatchSpec<T> = { [P in keyof T]?: T[P] | StateOperator<NonNullable<T[P]>> };
-
-type PatchValues<T> = {
-  readonly [P in keyof T]?: T[P] extends (...args: any[]) => infer R ? R : T[P]
-};
-
-export function patch<T>(patchObject: PatchSpec<T>) {
-  return function patchStateOperator<U extends PatchValues<T>>(existing: Readonly<U>): U {
+export function patch<T, U extends PatchValues<T> = T>(
+  patchObject: PatchSpec<T>
+): StateOperator<NonNullable<U>> {
+  return function patchStateOperator(existing: Readonly<U>): NonNullable<U> {
     let clone = null;
     for (const k in patchObject) {
       const newValue = patchObject[k];

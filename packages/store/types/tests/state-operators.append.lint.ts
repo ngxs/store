@@ -15,23 +15,22 @@ describe('[TEST]: the append State Operator', () => {
       bools: [true, false]
     };
 
-    patch<Original>({ nums: append<number>([]) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    patch<Original>({ nums: append(null!) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    patch<Original>({ nums: append(undefined!) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    patch<Original>({ nums: append([1, 2]) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ nums: append<number>([]) })(original); // $ExpectType Original
+    patch<Original>({ nums: append(null!) })(original); // $ExpectType Original
+    patch<Original>({ nums: append(undefined!) })(original); // $ExpectType Original
+    patch<Original>({ nums: append([1, 2]) })(original); // $ExpectType Original
 
-    patch<Original>({ strs: append<string>([]) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    patch<Original>({ strs: append(null!) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    patch<Original>({ strs: append(undefined!) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    patch<Original>({ strs: append(['1', '2']) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ strs: append<string>([]) })(original); // $ExpectType Original
+    patch<Original>({ strs: append(null!) })(original); // $ExpectType Original
+    patch<Original>({ strs: append(undefined!) })(original); // $ExpectType Original
+    patch<Original>({ strs: append(['1', '2']) })(original); // $ExpectType Original
 
-    patch<Original>({ bools: append<boolean>([]) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    patch<Original>({ bools: append(null!) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    patch<Original>({ bools: append(undefined!) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    patch<Original>({ bools: append([true, false]) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
-    // Commented out because they document an existing bug
-    // patch<Original>({ bools: append([true]) })(original); // $ExpectType Original
-    // patch<Original>({ bools: append([false]) })(original); // $ExpectType Original
+    patch<Original>({ bools: append<boolean>([]) })(original); // $ExpectType Original
+    patch<Original>({ bools: append(null!) })(original); // $ExpectType Original
+    patch<Original>({ bools: append(undefined!) })(original); // $ExpectType Original
+    patch<Original>({ bools: append([true, false]) })(original); // $ExpectType Original
+    patch<Original>({ bools: append([true]) })(original); // $ExpectType Original
+    patch<Original>({ bools: append([false]) })(original); // $ExpectType Original
   });
 
   it('should have the following valid complex usage', () => {
