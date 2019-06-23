@@ -3,7 +3,6 @@
   "compilerOptions": {
     "baseUrl": "./",
     "downlevelIteration": true,
-    "module": "esnext",
     "outDir": "out-tsc/lib",
     "paths": {
       "@integration/*": ["integration/app/*"],
@@ -20,7 +19,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es2015",
+    "target": "es5",
     "lib": ["es2017", "dom"],
     "typeRoots": ["node_modules/@types"]
   },

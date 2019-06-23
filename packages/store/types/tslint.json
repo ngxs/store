@@ -28,6 +28,11 @@
     "interface-name": false,
     "prefer-switch": false,
     "no-misused-new": false,
-    "prefer-const": false
+    "prefer-const": false,
+    "one-variable-per-declaration": false,
+    "no-arg": false,
+    "object-literal-key-quotes": false,
+    "no-var-keyword": false,
+    "no-unnecessary-type-assertion": false
   }
 }
