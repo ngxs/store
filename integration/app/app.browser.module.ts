@@ -8,6 +8,7 @@ import { NgxsHmrLifeCycle, NgxsHmrSnapshot as Snapshot } from '@ngxs/hmr-plugin'
 import { AppComponent } from '@integration/app.component';
 import { AppModule } from '@integration/app.module';
 import { TODOS_STORAGE_KEY } from '@integration/store/todos/todos.model';
+import { NgxsRouterPluginModule } from '../../packages/router-plugin';
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -15,6 +16,7 @@ import { TODOS_STORAGE_KEY } from '@integration/store/todos/todos.model';
     AppModule,
     BrowserAnimationsModule,
     BrowserTransferStateModule,
+    NgxsRouterPluginModule.forRoot(), // only work with browser rendering without SSR
     NgxsStoragePluginModule.forRoot({ key: [TODOS_STORAGE_KEY] })
   ],
   providers: [{ provide: 'ORIGIN_URL', useValue: location.origin }]
