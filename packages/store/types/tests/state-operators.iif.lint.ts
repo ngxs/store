@@ -2,9 +2,159 @@
 
 /// <reference types="@types/jest" />
 import { iif, patch } from '../../operators/src';
-import { assertType } from './utils/assert-type';
 
 describe('[TEST]: the iif State Operator', () => {
+  it('should return the correct implied null or undefined type', () => {
+    iif(true, null); // $ExpectType (existing: null) => null
+    iif(true, undefined); // $ExpectType (existing: undefined) => undefined
+    iif(true, null, undefined); // $ExpectType (existing: null | undefined) => null | undefined
+    iif(() => true, null); // $ExpectType (existing: null) => null
+    iif(() => true, undefined); // $ExpectType (existing: undefined) => undefined
+    iif(() => true, null, undefined); // $ExpectType (existing: null | undefined) => null | undefined
+  });
+
+  it('should return the correct implied number type', () => {
+    iif(null!, 10); // $ExpectType (existing: number) => number
+    iif(null!, 10, 20); // $ExpectType (existing: number) => number
+    iif(undefined!, 10); // $ExpectType (existing: number) => number
+    iif(undefined!, 10, 20); // $ExpectType (existing: number) => number
+
+    iif(true, 10); // $ExpectType (existing: number) => number
+    iif(false, 10, 20); // $ExpectType (existing: number) => number
+    iif(false, 10, null); // $ExpectType (existing: number | null) => number | null
+    iif(false, null, 10); // $ExpectType (existing: number | null) => number | null
+    iif(false, 10, undefined); // $ExpectType (existing: number | undefined) => number | undefined
+    iif(false, undefined, 10); // $ExpectType (existing: number | undefined) => number | undefined
+
+    iif(() => true, 10); // $ExpectType (existing: number) => number
+    iif(() => false, 10, 20); // $ExpectType (existing: number) => number
+    iif(() => false, 10, null); // $ExpectType (existing: number | null) => number | null
+    iif(() => false, 10, undefined); // $ExpectType (existing: number | undefined) => number | undefined
+
+    iif(val => val === 1, 10); // $ExpectType (existing: number) => number
+    iif(val => val === 1, 10, 20); // $ExpectType (existing: number) => number
+    iif(val => val === 1, 10, null); // $ExpectType (existing: number | null) => number | null
+    iif(val => val === 1, null, 10); // $ExpectType (existing: number | null) => number | null
+    iif(val => val === null, 10, null); // $ExpectType (existing: number | null) => number | null
+    iif(val => val === 1, 10, undefined); // $ExpectType (existing: number | undefined) => number | undefined
+    iif(val => val === 1, undefined, 10); // $ExpectType (existing: number | undefined) => number | undefined
+    iif(val => val === undefined, 10, undefined); // $ExpectType (existing: number | undefined) => number | undefined
+  });
+
+  it('should return the correct implied string type', () => {
+    iif(null!, '10'); // $ExpectType (existing: string) => string
+    iif(null!, '10', '20'); // $ExpectType (existing: string) => string
+    iif(undefined!, '10'); // $ExpectType (existing: string) => string
+    iif(undefined!, '10', '20'); // $ExpectType (existing: string) => string
+
+    iif(true, '10'); // $ExpectType (existing: string) => string
+    iif(false, '10', '20'); // $ExpectType (existing: string) => string
+    iif(false, '10', null); // $ExpectType (existing: string | null) => string | null
+    iif(false, null, '10'); // $ExpectType (existing: string | null) => string | null
+    iif(false, '10', undefined); // $ExpectType (existing: string | undefined) => string | undefined
+    iif(false, undefined, '10'); // $ExpectType (existing: string | undefined) => string | undefined
+
+    iif(() => true, '10'); // $ExpectType (existing: string) => string
+    iif(() => false, '10', '20'); // $ExpectType (existing: string) => string
+    iif(() => false, '10', null); // $ExpectType (existing: string | null) => string | null
+    iif(() => false, '10', undefined); // $ExpectType (existing: string | undefined) => string | undefined
+
+    iif(val => val === '1', '10'); // $ExpectType (existing: string) => string
+    iif(val => val === '1', '10', '20'); // $ExpectType (existing: string) => string
+    iif(val => val === '1', '10', null); // $ExpectType (existing: string | null) => string | null
+    iif(val => val === '1', null, '10'); // $ExpectType (existing: string | null) => string | null
+    iif(val => val === null, '10', null); // $ExpectType (existing: string | null) => string | null
+    iif(val => val === '1', '10', undefined); // $ExpectType (existing: string | undefined) => string | undefined
+    iif(val => val === '1', undefined, '10'); // $ExpectType (existing: string | undefined) => string | undefined
+    iif(val => val === undefined, '10', undefined); // $ExpectType (existing: string | undefined) => string | undefined
+  });
+
+  it('should return the correct implied boolean type', () => {
+    iif(null!, true); // $ExpectType (existing: boolean) => boolean
+    iif(null!, true, false); // $ExpectType (existing: boolean) => boolean
+    iif(undefined!, true); // $ExpectType (existing: boolean) => boolean
+    iif(undefined!, true, false); // $ExpectType (existing: boolean) => boolean
+
+    iif(true, true); // $ExpectType (existing: boolean) => boolean
+    iif(false, true, false); // $ExpectType (existing: boolean) => boolean
+    iif(false, true, null); // $ExpectType (existing: boolean | null) => boolean | null
+    iif(false, null, true); // $ExpectType (existing: boolean | null) => boolean | null
+    iif(false, true, undefined); // $ExpectType (existing: boolean | undefined) => boolean | undefined
+    iif(false, undefined, true); // $ExpectType (existing: boolean | undefined) => boolean | undefined
+
+    iif(() => true, true); // $ExpectType (existing: boolean) => boolean
+    iif(() => false, true, false); // $ExpectType (existing: boolean) => boolean
+    iif(() => false, true, null); // $ExpectType (existing: boolean | null) => boolean | null
+    iif(() => false, true, undefined); // $ExpectType (existing: boolean | undefined) => boolean | undefined
+
+    iif(val => val === true, true); // $ExpectType (existing: boolean) => boolean
+    iif(val => val === true, true, false); // $ExpectType (existing: boolean) => boolean
+    iif(val => val === true, true, null); // $ExpectType (existing: boolean | null) => boolean | null
+    iif(val => val === true, null, true); // $ExpectType (existing: boolean | null) => boolean | null
+    iif(val => val === null, true, null); // $ExpectType (existing: boolean | null) => boolean | null
+    iif(val => val === true, true, undefined); // $ExpectType (existing: boolean | undefined) => boolean | undefined
+    iif(val => val === true, undefined, true); // $ExpectType (existing: boolean | undefined) => boolean | undefined
+    iif(val => val === undefined, true, undefined); // $ExpectType (existing: boolean | undefined) => boolean | undefined
+  });
+
+  it('should return the correct implied object type', () => {
+    iif(null!, { val: '10' }); // $ExpectType (existing: Readonly<{ val: string; }>) => { val: string; }
+    iif(null!, { val: '10' }, { val: '20' }); // $ExpectType (existing: Readonly<{ val: string; }>) => { val: string; }
+    iif(undefined!, { val: '10' }); // $ExpectType (existing: Readonly<{ val: string; }>) => { val: string; }
+    iif(undefined!, { val: '10' }, { val: '20' }); // $ExpectType (existing: Readonly<{ val: string; }>) => { val: string; }
+
+    iif(true, { val: '10' }); // $ExpectType (existing: Readonly<{ val: string; }>) => { val: string; }
+    iif(false, { val: '10' }, { val: '20' }); // $ExpectType (existing: Readonly<{ val: string; }>) => { val: string; }
+    iif(false, { val: '10' }, null); // $ExpectType (existing: Readonly<{ val: string; }> | null) => { val: string; } | null
+    iif(false, null, { val: '10' }); // $ExpectType (existing: Readonly<{ val: string; }> | null) => { val: string; } | null
+    iif(false, { val: '10' }, undefined); // $ExpectType (existing: Readonly<{ val: string; }> | undefined) => { val: string; } | undefined
+    iif(false, undefined, { val: '10' }); // $ExpectType (existing: Readonly<{ val: string; }> | undefined) => { val: string; } | undefined
+
+    iif(() => true, { val: '10' }); // $ExpectType (existing: Readonly<{ val: string; }>) => { val: string; }
+    iif(() => false, { val: '10' }, { val: '20' }); // $ExpectType (existing: Readonly<{ val: string; }>) => { val: string; }
+    iif(() => false, { val: '10' }, null); // $ExpectType (existing: Readonly<{ val: string; }> | null) => { val: string; } | null
+    iif(() => false, { val: '10' }, undefined); // $ExpectType (existing: Readonly<{ val: string; }> | undefined) => { val: string; } | undefined
+
+    iif(obj => obj!.val === '1', { val: '10' }); // $ExpectType (existing: Readonly<{ val: string; }>) => { val: string; }
+    iif(obj => obj!.val === '1', { val: '10' }, { val: '20' }); // $ExpectType (existing: Readonly<{ val: string; }>) => { val: string; }
+    iif(obj => obj!.val === '1', { val: '10' }, null); // $ExpectType (existing: Readonly<{ val: string; }> | null) => { val: string; } | null
+    iif(obj => obj!.val === '1', null, { val: '10' }); // $ExpectType (existing: Readonly<{ val: string; }> | null) => { val: string; } | null
+    iif(obj => obj === null, { val: '10' }, null); // $ExpectType (existing: Readonly<{ val: string; }> | null) => { val: string; } | null
+    iif(obj => obj!.val === '1', { val: '10' }, undefined); // $ExpectType (existing: Readonly<{ val: string; }> | undefined) => { val: string; } | undefined
+    iif(obj => obj!.val === '1', undefined, { val: '10' }); // $ExpectType (existing: Readonly<{ val: string; }> | undefined) => { val: string; } | undefined
+    iif(obj => obj === undefined, { val: '10' }, undefined); // $ExpectType (existing: Readonly<{ val: string; }> | undefined) => { val: string; } | undefined
+  });
+
+  it('should return the corrrect implied object type', () => {
+    /* TODO: readonly array improvement with TS3.4
+    iif(null!, ['10']); // $/ExpectType (existing: string[]) => string[]
+    iif(null!, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
+    iif(undefined!, ['10']); // $/ExpectType (existing: string[]) => string[]
+    iif(undefined!, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
+
+    iif(true, ['10']); // $/ExpectType (existing: string[]) => string[]
+    iif(false, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
+    iif(false, ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
+    iif(false, null, ['10']); // $/ExpectType (existing: string[] | null) => string[] | null
+    iif(false, ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+    iif(false, undefined, ['10']); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+
+    iif(() => true, ['10']); // $/ExpectType (existing: string[]) => string[]
+    iif(() => false, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
+    iif(() => false, ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
+    iif(() => false, ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+
+    iif(arr => arr!.includes('1'), ['10']); // $/ExpectType (existing: string[]) => string[]
+    iif(arr => arr!.includes('1'), ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
+    iif(arr => arr!.includes('1'), ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
+    iif(arr => arr!.includes('1'), null, ['10']); // $/ExpectType (existing: string[] | null) => string[] | null
+    iif(arr => arr === null, ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
+    iif(arr => arr!.includes('1'), ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+    iif(arr => arr!.includes('1'), undefined, ['10']); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+    iif(arr => arr === undefined, ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+    */
+  });
+
   it('should have the following valid number usages', () => {
     interface MyType {
       num: number;
