@@ -125,7 +125,7 @@ describe('[TEST]: the iif State Operator', () => {
     iif(obj => obj === undefined, { val: '10' }, undefined); // $ExpectType (existing: Readonly<{ val: string; }> | undefined) => { val: string; } | undefined
   });
 
-  it('should return the corrrect implied object type', () => {
+  it('should return the corrrect implied array type', () => {
     /* TODO: readonly array improvement with TS3.4
     iif(null!, ['10']); // $/ExpectType (existing: string[]) => string[]
     iif(null!, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
