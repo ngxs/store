@@ -1,3 +1,4 @@
+import { ObjectUtils } from '@ngxs/store/internals';
 import { setValue } from '../../src/utils/utils';
 
 describe('utils', () => {
@@ -49,5 +50,14 @@ describe('utils', () => {
         other: 'bar'
       });
     });
+  });
+
+  it('should be correct merged', () => {
+    class A {
+      public value = 'hello world';
+    }
+
+    expect(ObjectUtils.merge(null as any, null as any)).toEqual({});
+    expect(ObjectUtils.merge(new A(), { id: 0 })).toEqual({ value: 'hello world', id: 0 });
   });
 });

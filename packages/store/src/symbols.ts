@@ -53,6 +53,7 @@ export class NgxsConfig {
   /**
    * Defining the default state before module initialization
    * This is convenient if we need to create a define our own set of states.
+   * @deprecated will be removed after v4
    * (default: {})
    */
   defaultsState: ObjectKeyMap<any> = {};
