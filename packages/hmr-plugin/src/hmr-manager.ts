@@ -1,6 +1,6 @@
 import { ApplicationRef, ComponentRef, NgModuleRef } from '@angular/core';
+import { InitialState, NgxsBootstrapper } from '@ngxs/store/internals';
 import { createNewHosts, removeNgStyles } from '@angularclass/hmr';
-import { NgxsBootstrapper } from '@ngxs/store/internals';
 
 import { HmrStorage } from './internal/hmr-storage';
 import {
@@ -13,7 +13,6 @@ import { HmrStateContextFactory } from './internal/hmr-state-context-factory';
 import { HmrOptionBuilder } from './internal/hmr-options-builder';
 import { HmrInitAction } from './actions/hmr-init.action';
 import { HmrLifecycle } from './internal/hmr-lifecycle';
-import { InitialState } from '@ngxs/store/internals';
 
 export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnapshot> {
   public storage: HmrStorage<S>;
@@ -50,8 +49,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
 
   public beforeModuleOnDestroy(): Partial<S> {
     this.optionsBuilder.clearLogs();
-    const snapshot = this.lifecycle.hmrNgxsStoreBeforeOnDestroy();
-    return snapshot;
+    return this.lifecycle.hmrNgxsStoreBeforeOnDestroy();
   }
 
   public createNewModule(): void {

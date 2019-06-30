@@ -1,15 +1,19 @@
+import { InjectionToken, Injector, NgModuleRef, Type } from '@angular/core';
 import { fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
+import { hmr, WebpackModule } from '@ngxs/hmr-plugin';
 import { ofActionDispatched } from '@ngxs/store';
 
-import { NgxsHmrSnapshot } from '../symbols';
 import {
   AppMockModule,
   AppMockModuleNoHmrLifeCycle as AppMockNoHmrModule,
+  AppV2MockModule,
   MockState
 } from './hmr-mock';
 import { HmrInitAction } from '../actions/hmr-init.action';
 import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
+import { HmrStateContextFactory } from '../internal/hmr-state-context-factory';
 import { hmrTestBed, setup } from './hmr-helpers';
+import { NgxsHmrSnapshot } from '../symbols';
 
 describe('HMR Plugin', () => {
   it('should initialize AppMockModule', async () => {
@@ -225,4 +229,47 @@ describe('HMR Plugin', () => {
     // Assert
     expect(MockState.destroy).toEqual(true);
   }));
+
+  it('check if the state is set correctly ', fakeAsync(async () => {
+    const { store } = await hmrTestBed(AppV2MockModule, {
+      storedValue: { value: 'hello world' }
+    });
+
+    expect(store.snapshot()).toEqual({
+      value: 'hello world',
+      mock_state: { value: 'test' }
+    });
+
+    tick(1000);
+
+    expect(store.snapshot()).toEqual({
+      value: 'hello world',
+      mock_state: { value: 'test' },
+      custom: 456
+    });
+  }));
+
+  it('should be correct handling errors', async () => {
+    console.error = () => {}; // silent errors in logs for test
+
+    try {
+      await hmr({} as WebpackModule, null as any);
+    } catch (e) {
+      expect(e.message).toEqual('HMR is not enabled for webpack-dev-server!');
+    }
+
+    try {
+      const mockNgModuleRef: NgModuleRef<any> = {
+        injector: {
+          get<T>(_: Type<T> | InjectionToken<T>): T {
+            return null as any;
+          }
+        } as Injector
+      } as NgModuleRef<any>;
+
+      new HmrStateContextFactory(mockNgModuleRef);
+    } catch (e) {
+      expect(e.message).toEqual('Store not found, maybe you forgot to import the NgxsModule');
+    }
+  });
 });
