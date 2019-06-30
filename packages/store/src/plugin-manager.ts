@@ -7,7 +7,7 @@ import { NGXS_PLUGINS, NgxsPlugin, NgxsPluginFn } from './symbols';
  */
 @Injectable()
 export class PluginManager {
-  public readonly plugins: NgxsPluginFn[] = [];
+  public plugins: NgxsPluginFn[] = [];
 
   constructor(
     @Optional()
