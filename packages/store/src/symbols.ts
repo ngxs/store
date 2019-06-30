@@ -1,10 +1,11 @@
 import { Injectable, InjectionToken, Type } from '@angular/core';
+import { ObjectKeyMap } from '@ngxs/store/internals';
 import { Observable } from 'rxjs';
 
-import { ObjectKeyMap } from '@ngxs/store/internals';
 import { SharedSelectorOptions } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
+import { ActionType } from './actions/symbols';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
@@ -17,7 +18,11 @@ export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 
 export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;
-export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
+export type NgxsPluginFn<T = any, U = any> = (
+  state: T,
+  action: ActionType,
+  next: NgxsNextPluginFn<T, U>
+) => Observable<U>;
 
 /**
  * The NGXS config settings.
@@ -99,7 +104,10 @@ export interface StateContext<T> {
   dispatch(actions: any | any[]): Observable<void>;
 }
 
-export type NgxsNextPluginFn = (state: any, mutation: any) => any;
+export type NgxsNextPluginFn<T = any, U = any> = (
+  state: T,
+  action: ActionType
+) => Observable<U>;
 
 /**
  * Plugin interface
@@ -108,7 +116,11 @@ export interface NgxsPlugin {
   /**
    * Handle the state/action before its submitted to the state handlers.
    */
-  handle(state: any, action: any, next: NgxsNextPluginFn): any;
+  handle<T = any, U = any>(
+    state: T,
+    action: ActionType,
+    next: NgxsNextPluginFn<T, U>
+  ): Observable<U>;
 }
 
 /**

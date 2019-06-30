@@ -33,3 +33,4 @@ export { createSelector } from './utils/selector-utils';
 export { NgxsExecutionStrategy } from './execution/symbols';
 export { ActionType, ActionOptions } from './actions/symbols';
 export { NoopNgxsExecutionStrategy } from './execution/noop-ngxs-execution-strategy';
+export { PluginManager } from './plugin-manager';

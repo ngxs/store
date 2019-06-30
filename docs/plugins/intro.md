@@ -37,7 +37,7 @@ export class NgxsLoggerPluginModule {
         {
           provide: NGXS_PLUGINS,
           useClass: LoggerPlugin,
-          multi: true  
+          multi: true
         },
         {
           provide: NGXS_LOGGER_PLUGIN_OPTIONS,
@@ -73,3 +73,24 @@ export class MyModule {}
 ```
 
 The method also works with `forFeature`.
+
+### Dynamic plugins
+
+You can also add your own plugins (state handlers) in runtime:
+
+```TS
+import { PluginManager } from '@ngxs/store';
+...
+
+@Injectable()
+class MyDynamicPluginManager {
+  constructor(pluginManager: PluginManager) {
+    pluginManager.registerPlugin((state, action, next) => {
+      console.log('Action started!', state);
+      return next(state, action).pipe(
+        tap(result => console.log('Action happened!', result))
+      );
+    });
+  }
+}
+```
