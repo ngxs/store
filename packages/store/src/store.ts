@@ -105,12 +105,12 @@ export class Store {
     const value: ObjectKeyMap<any> = this._stateStream.value;
     const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
     if (storeIsEmpty) {
-      this._stateStream.next(
-        ObjectUtils.merge(
-          ObjectUtils.clone(this._config.defaultsState),
-          ObjectUtils.clone(initialStateValue)
-        )
-      );
+      const defaultStateNotEmpty: boolean = Object.keys(this._config.defaultsState).length > 0;
+      const storeValues: ObjectKeyMap<any> = defaultStateNotEmpty
+        ? ObjectUtils.merge(this._config.defaultsState, initialStateValue)
+        : initialStateValue;
+
+      this._stateStream.next(storeValues);
     }
   }
 }
