@@ -63,12 +63,6 @@ export class AppMockModule implements NgxsHmrLifeCycle {
   }
 }
 
-export class AppV2MockModule extends AppMockModule implements NgxsHmrLifeCycle {
-  public hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {
-    ctx.setState((state: Snapshot) => ({ ...state, ...snapshot, custom: 456 }));
-  }
-}
-
 @Component({
   selector: 'app-root',
   template: ''

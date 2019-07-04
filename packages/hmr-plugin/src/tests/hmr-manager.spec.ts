@@ -1,12 +1,16 @@
 import { InjectionToken, Injector, NgModuleRef, Type } from '@angular/core';
 import { fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
-import { hmr, WebpackModule } from '@ngxs/hmr-plugin';
-import { ofActionDispatched } from '@ngxs/store';
+import {
+  hmr,
+  NgxsHmrLifeCycle,
+  NgxsHmrSnapshot as Snapshot,
+  WebpackModule
+} from '@ngxs/hmr-plugin';
+import { ofActionDispatched, StateContext } from '@ngxs/store';
 
 import {
   AppMockModule,
   AppMockModuleNoHmrLifeCycle as AppMockNoHmrModule,
-  AppV2MockModule,
   MockState
 } from './hmr-mock';
 import { HmrInitAction } from '../actions/hmr-init.action';
@@ -231,6 +235,12 @@ describe('HMR Plugin', () => {
   }));
 
   it('check if the state is set correctly ', fakeAsync(async () => {
+    class AppV2MockModule extends AppMockModule implements NgxsHmrLifeCycle {
+      public hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {
+        ctx.setState((state: Snapshot) => ({ ...state, ...snapshot, custom: 456 }));
+      }
+    }
+
     const { store } = await hmrTestBed(AppV2MockModule, {
       storedValue: { value: 'hello world' }
     });
