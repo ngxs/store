@@ -1,5 +1,6 @@
-import { TestBed } from '@angular/core/testing';
 import { AfterViewInit, ApplicationRef, Component, NgModule, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { TestBed } from '@angular/core/testing';
 import {
   BrowserModule,
   ɵBrowserDomAdapter as BrowserDomAdapter,
@@ -9,10 +10,13 @@ import { DOCUMENT } from '@angular/common';
 
 import { InitState, UpdateState } from '../src/actions/actions';
 import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../src/public_api';
-
 import { META_KEY, NgxsAfterBootstrap } from '../src/symbols';
 import { StoreValidators } from '../src/utils/store-validators';
 import { simplePatch } from '../src/internal/state-operators';
+import {
+  CONFIG_MESSAGES as MESSAGES,
+  VALIDATION_CODE as CODE
+} from '../src/configs/messages.config';
 
 describe('State', () => {
   it('describes correct name', () => {
@@ -71,6 +75,19 @@ describe('State', () => {
     }
 
     expect(message).toBe(StoreValidators.stateNameErrorMessage('bar-foo'));
+  });
+
+  it('should throw when state parameters are not passed', () => {
+    try {
+      @State(null!)
+      class MyOtherState {}
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyOtherState])]
+      });
+    } catch (err) {
+      expect(err.message).toEqual(MESSAGES[CODE.STATE_NAME_PROPERTY]());
+    }
   });
 
   describe('given the ngxsOnInit lifecycle method is present', () => {

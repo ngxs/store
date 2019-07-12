@@ -85,4 +85,51 @@ describe('Full testing NGXS States with NgxsTestBed', () => {
       }
     });
   });
+
+  describe('should correct restore state', () => {
+    class InitialMyState {
+      public a: number = null!;
+      public b: number = null!;
+    }
+
+    @State({
+      name: 'myState',
+      defaults: new InitialMyState()
+    })
+    class MyState {}
+
+    it('without initial/default state', () => {
+      const { store } = NgxsTestBed.configureTestingStates({ states: [MyState] });
+      expect(store.snapshot()).toEqual({
+        myState: { a: null, b: null }
+      });
+    });
+
+    it('with default state', () => {
+      const { store } = NgxsTestBed.configureTestingStates({
+        states: [MyState],
+        ngxsOptions: {
+          defaultsState: { defaultValue: 1 }
+        }
+      });
+
+      expect(store.snapshot()).toEqual({
+        defaultValue: 1,
+        myState: { a: null, b: null }
+      });
+    });
+
+    it('with initial state', () => {
+      InitialState.set({ defaultValue: 2 });
+
+      const { store } = NgxsTestBed.configureTestingStates({
+        states: [MyState]
+      });
+
+      expect(store.snapshot()).toEqual({
+        defaultValue: 2,
+        myState: { a: null, b: null }
+      });
+    });
+  });
 });
