@@ -332,20 +332,24 @@ describe('State', () => {
       expect(simplePatch(null!)(simple)).toEqual({ a: 1, b: 2 });
     });
 
-    it('should be throw if value is primitive or array', () => {
+    it('should throw exception if value is array', () => {
       try {
         const simple: string[] = ['hello'];
         simplePatch(['world'])(simple);
       } catch (e) {
         expect(e.message).toEqual('Patching arrays is not supported.');
       }
+    });
 
+    it('should throw exception if value is primitive', () => {
       try {
         simplePatch('one')('two');
       } catch (e) {
         expect(e.message).toEqual('Patching primitives is not supported.');
       }
+    });
 
+    it('should throw exception if value is lambda', () => {
       try {
         const lambda: any = () => {};
         console.log(simplePatch(lambda)({}));
