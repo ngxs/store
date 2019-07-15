@@ -11,6 +11,7 @@ import { InitState, UpdateState } from '../src/actions/actions';
 import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../src/public_api';
 import { META_KEY, NgxsAfterBootstrap } from '../src/symbols';
 import { StoreValidators } from '../src/utils/store-validators';
+import { simplePatch } from '../src/internal/state-operators';
 import {
   CONFIG_MESSAGES as MESSAGES,
   VALIDATION_CODE as CODE
@@ -331,6 +332,46 @@ describe('State', () => {
         LifecycleHooks.NgAfterViewInit,
         LifecycleHooks.NgxsAfterBootstrap
       ]);
+    });
+  });
+
+  describe('simple patch', () => {
+    it('should be correct patch object', () => {
+      interface Simple {
+        a: number;
+        b: number;
+      }
+
+      const simple: Simple = { a: 1, b: 2 };
+
+      expect(simplePatch({ a: 3 })(simple)).toEqual({ a: 3, b: 2 });
+      expect(simplePatch(null!)(simple)).toEqual({ a: 1, b: 2 });
+    });
+
+    it('should throw exception if value is array', () => {
+      try {
+        const simple: string[] = ['hello'];
+        simplePatch(['world'])(simple);
+      } catch (e) {
+        expect(e.message).toEqual('Patching arrays is not supported.');
+      }
+    });
+
+    it('should throw exception if value is primitive', () => {
+      try {
+        simplePatch('one')('two');
+      } catch (e) {
+        expect(e.message).toEqual('Patching primitives is not supported.');
+      }
+    });
+
+    it('should throw exception if value is lambda', () => {
+      try {
+        const lambda: any = () => {};
+        console.log(simplePatch(lambda)({}));
+      } catch (e) {
+        expect(e.message).toEqual('Patching primitives is not supported.');
+      }
     });
   });
 });
