@@ -68,8 +68,8 @@ describe('Lazy Loading', () => {
     };
 
     router.resetConfig([
-      { path: 'todos', loadChildren: 'lazyModule' },
-      { path: 'simple', loadChildren: 'secondLazyModule' }
+      { path: 'todos', loadChildren: () => import('lazyModule').then(m => m.default) },
+      { path: 'simple', loadChildren: () => import('secondLazyModule').then(m => m.default) }
     ]);
   });
 
