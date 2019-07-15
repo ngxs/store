@@ -6,7 +6,6 @@ import {
   ɵBrowserDomAdapter as BrowserDomAdapter,
   ɵDomAdapter as DomAdapter
 } from '@angular/platform-browser';
-import { DOCUMENT } from '@angular/common';
 
 import { InitState, UpdateState } from '../src/actions/actions';
 import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../src/public_api';
