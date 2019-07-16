@@ -7,7 +7,7 @@ describe('[TEST]: The SelectorOptions decorator', () => {
   it('should be valid on on State classes', () => {
     @State<string>({ name: 'my-state' })
     @SelectorOptions({ injectContainerState: false })
-    class MyState {}
+    class MyState { }
   });
 
   it('should be valid on on State class selectors', () => {
@@ -23,7 +23,7 @@ describe('[TEST]: The SelectorOptions decorator', () => {
 
   it('should be valid on on query classes', () => {
     @State<string>({ name: 'my-state' })
-    class MyState {}
+    class MyState { }
 
     @SelectorOptions({ suppressErrors: false })
     class MyStateQueries {
@@ -36,7 +36,7 @@ describe('[TEST]: The SelectorOptions decorator', () => {
 
   it('should be valid on on query class selectors', () => {
     @State<string>({ name: 'my-state' })
-    class MyState {}
+    class MyState { }
 
     class MyStateQueries {
       @Selector([MyState])
@@ -80,7 +80,7 @@ describe('[TEST]: The SelectorOptions decorator', () => {
   });
 
   it('should not accept the following parameters', () => {
-    assertType(() => SelectorOptions()); // $ExpectError
+    SelectorOptions(); // $ExpectError
     assertType(() => SelectorOptions({ suppressErrors: null })); // $ExpectError
     assertType(() => SelectorOptions({ suppressErrors: 'string' })); // $ExpectError
     assertType(() => SelectorOptions({ suppressErrors: 123 })); // $ExpectError
