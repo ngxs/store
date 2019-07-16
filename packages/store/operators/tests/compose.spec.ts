@@ -38,7 +38,7 @@ describe('compose', () => {
       // Act
       const newValue = patch({
         a: compose<typeof original['a']>(
-          iif(
+          iif<typeof original['a']>(
             a => a!.hello === 'world',
             patch({
               hello: 'world'
@@ -60,7 +60,7 @@ describe('compose', () => {
       };
 
       // Act
-      const newValue = compose(
+      const newValue = compose<typeof original>(
         patch({ a: 10 }),
         iif<typeof original>(object => object!.b === 2, patch({ b: 20 })),
         iif<typeof original>(object => object!.c === 3, patch({ c: 30 }))
