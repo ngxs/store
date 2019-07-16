@@ -56,7 +56,7 @@ describe('update item', () => {
 
       // Act
       const newValue = patch({
-        a: updateItem(item => item!.name === 'Mark', patch({ name: 'Mark' }))
+        a: updateItem<{ name: string }>(item => item!.name === 'Mark', patch({ name: 'Mark' }))
       })(original);
 
       // Assert
