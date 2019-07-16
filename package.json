@@ -138,7 +138,7 @@
     "tslint": "^5.16.0",
     "typedoc": "^0.14.2",
     "typedoc-plugin-markdown": "^2.0.9",
-    "typescript": "~3.5.3",
+    "typescript": "~3.4.5",
     "zone.js": "~0.9.1"
   }
 }
