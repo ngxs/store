@@ -52,9 +52,9 @@ describe('Lazy loading with duplicate bootstrap states', () => {
     };
 
     router.resetConfig([
-      { path: 'pathA', loadChildren: () => import('lazyModuleA').then(m => m.default) },
-      { path: 'pathB', loadChildren: () => import('lazyModuleB').then(m => m.default) },
-      { path: 'pathC', loadChildren: () => import('lazyModuleC').then(m => m.default) }
+      { path: 'pathA', loadChildren: 'lazyModuleA' },
+      { path: 'pathB', loadChildren: 'lazyModuleB' },
+      { path: 'pathC', loadChildren: 'lazyModuleC' }
     ]);
   });
 
