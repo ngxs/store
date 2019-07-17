@@ -5,6 +5,7 @@
 $ npm install @ngxs/store@dev
 ```
 
+* Feature: upgrade to support Angular 8 [#1156](https://github.com/ngxs/store/pull/1156)
 * Feature: selector option to disable supressing errors [#1015](https://github.com/ngxs/store/pull/1015), [#1087](https://github.com/ngxs/store/pull/1087)
 * Feature: expose NgxsModuleOptions as a named type [#1031](https://github.com/ngxs/store/pull/1031)
 * Feature: expose SelectorOptions decorator [#1029](https://github.com/ngxs/store/pull/1029), [#1047](https://github.com/ngxs/store/pull/1047)
@@ -18,6 +19,7 @@ $ npm install @ngxs/store@dev
 * Fix: Router Plugin - trigger navigation on the `QueryParams` change [#924](https://github.com/ngxs/store/pull/924)
 * Fix: Router Plugin - redirect to the manually entered route [#920](https://github.com/ngxs/store/pull/920)
 * Fix: Router Plugin - add `RouterDataResolved` to the union `RouterAction` type [#1093](https://github.com/ngxs/store/pull/1093)
+* Fix: Router Plugin - manual path check should not fail for SSR [#1158](https://github.com/ngxs/store/pull/1158)
 * Fix: HMR Plugin - remove old styles after reload [#1001](https://github.com/ngxs/store/pull/1001)
 * Fix: HMR Plugin - correct persistence state in runtime [#1048](https://github.com/ngxs/store/pull/1048)
 * Fix: HMR Plugin - does not properly restore state [#1139](https://github.com/ngxs/store/pull/1139)
