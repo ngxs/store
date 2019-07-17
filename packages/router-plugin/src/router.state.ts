@@ -8,7 +8,7 @@ import {
   ResolveEnd,
   GuardsCheckEnd
 } from '@angular/router';
-import { Location } from '@angular/common';
+import { Location, PlatformLocation } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { isAngularInTestMode } from '@ngxs/store/internals';
 import { filter, take } from 'rxjs/operators';
@@ -62,7 +62,8 @@ export class RouterState {
     private _router: Router,
     private _serializer: RouterStateSerializer<RouterStateSnapshot>,
     private _ngZone: NgZone,
-    private location: Location
+    private _location: Location,
+    private _platformLocation: PlatformLocation
   ) {
     this.setUpStoreListener();
     this.setUpStateRollbackEvents();
@@ -206,8 +207,8 @@ export class RouterState {
         // `RouterNavigation` action will be dispatched and the user will be redirected to the
         // previously saved URL. We want to prevent such behavior, so we perform this check
         // in order to redirect user to the manually entered URL if it differs from the recognized one
-        if (url !== this.location.path()) {
-          this._router.navigateByUrl(location.pathname);
+        if (url !== this._location.path()) {
+          this._router.navigateByUrl(this._platformLocation.pathname);
         }
       });
   }
