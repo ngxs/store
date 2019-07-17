@@ -206,9 +206,13 @@ export class RouterState {
         // with another URL (e.g. used in combination with `NgxsStoragePlugin`), thus the
         // `RouterNavigation` action will be dispatched and the user will be redirected to the
         // previously saved URL. We want to prevent such behavior, so we perform this check
-        // in order to redirect user to the manually entered URL if it differs from the recognized one
+        // in order to redirect user to the manually entered URL if it differs from the recognized one.
+        // Also `location.search` is used here in case of putting query parameters in the URL,
+        // e.g. `/foo?query=some_cool_query`
         if (url !== this._location.path()) {
-          this._router.navigateByUrl(this._platformLocation.pathname);
+          this._router.navigateByUrl(
+            `${this._platformLocation.pathname}${this._platformLocation.search}`
+          );
         }
       });
   }
