@@ -210,7 +210,8 @@ export class RouterState {
         // Also `location.search` is used here in case of putting query parameters in the URL,
         // e.g. `/foo?query=some_cool_query`
         const currentUrl = `${this._platformLocation.pathname}${this._platformLocation.search}`;
-
+        // `url` is a recognized URL by the Angular's router, while `currentUrl` is an actual URL
+        // entered in the browser's search bar
         if (url !== currentUrl) {
           this._router.navigateByUrl(currentUrl);
         }
