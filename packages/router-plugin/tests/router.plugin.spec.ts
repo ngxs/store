@@ -574,7 +574,7 @@ function createTestModule(
           },
           {
             path: 'load',
-            loadChildren: 'test',
+            loadChildren: () => import('./test-lazy.module').then(m => m.TestLazyModule),
             canLoad: ['CanLoadNext']
           }
         ],

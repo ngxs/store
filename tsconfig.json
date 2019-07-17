@@ -2,6 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "downlevelIteration": true,
     "outDir": "out-tsc/lib",
     "paths": {
       "@integration/*": ["integration/app/*"],

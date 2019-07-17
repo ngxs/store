@@ -18,13 +18,13 @@ describe('[TEST]: Action Types', () => {
   });
 
   it('should be correct type in selector/select decorator', () => {
-    class Any {}
+    class Any { }
 
-    assertType(() => Selector()); // $ExpectType (target: any, methodName: string, descriptor: PropertyDescriptor) => { configurable: boolean; get(): any; }
+    Selector(); // $ExpectType (target: any, methodName: string, descriptor: PropertyDescriptor) => { configurable: boolean; get(): any; }
     assertType(() => Selector([{ foo: 'bar' }])); // $ExpectType (target: any, methodName: string, descriptor: PropertyDescriptor) => { configurable: boolean; get(): any; }
     assertType(() => Selector({})); // $ExpectError
 
-    assertType(() => Select()); // $ExpectType (target: any, name: string) => void
+    Select(); // $ExpectType (target: any, name: string) => void
     assertType(() => Select({})); // $ExpectType (target: any, name: string) => void
     assertType(() => Select([])); // $ExpectType (target: any, name: string) => void
     assertType(() => Select(Any, 'a', 'b', 'c')); // $ExpectType (target: any, name: string) => void
@@ -94,7 +94,7 @@ describe('[TEST]: Action Types', () => {
       @Select() public A$: Observable<any>; // $ExpectType Observable<any>
       @Select(TodoState) public B$: Observable<Any>; // $ExpectType Observable<Any>
       @Select(TodoState.reverse) public C$: Observable<Any>; // $ExpectType Observable<Any>
-      @Select(TodoState.reverse) public D$: Number | Object; // $ExpectType Object | Number
+      @Select(TodoState.reverse) public D$: number | object; // $ExpectType number | object
     }
 
     TestBed.get(CheckSelectorComponent); // $ExpectType any

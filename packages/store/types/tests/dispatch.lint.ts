@@ -13,13 +13,13 @@ describe('[TEST]: Action Types', () => {
   class FooAction {
     public type = 'FOO';
 
-    constructor(public payload: string) {}
+    constructor(public payload: string) { }
   }
 
   class BarAction {
     public static type = 'BAR';
 
-    constructor(public payload: string) {}
+    constructor(public payload: string) { }
   }
 
   beforeAll(() => {
@@ -41,7 +41,7 @@ describe('[TEST]: Action Types', () => {
     assertType(() => Action(new BarAction('foo'))); // $ExpectError
     assertType(() => Action([{ foo: 'bar' }])); // $ExpectError
     assertType(() => Action([InitState, UpdateState], { foo: 'bar' })); // $ExpectError
-    assertType(() => Action()); // $ExpectError
+    assertType(() => { Action(); }); // $ExpectError
   });
 
   it('should be correct type in dispatch', () => {
@@ -61,10 +61,10 @@ describe('[TEST]: Action Types', () => {
       defaults: 0
     })
     class MyState {
-      @Action(Increment) increment1() {} // $ExpectType () => void
-      @Action({ type: 'INCREMENT' }) increment2() {} // $ExpectType () => void
-      @Action(new Increment()) increment3() {} // $ExpectError
-      @Action({ foo: 123 }) increment4() {} // $ExpectError
+      @Action(Increment) increment1() { } // $ExpectType () => void
+      @Action({ type: 'INCREMENT' }) increment2() { } // $ExpectType () => void
+      @Action(new Increment()) increment3() { } // $ExpectError
+      @Action({ foo: 123 }) increment4() { } // $ExpectError
     }
 
     assertType(() => store.dispatch(new Increment())); // $ExpectType Observable<any>
