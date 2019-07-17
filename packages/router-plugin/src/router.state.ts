@@ -8,7 +8,7 @@ import {
   ResolveEnd,
   GuardsCheckEnd
 } from '@angular/router';
-import { Location, PlatformLocation } from '@angular/common';
+import { PlatformLocation } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { isAngularInTestMode } from '@ngxs/store/internals';
 import { filter, take } from 'rxjs/operators';
@@ -62,7 +62,6 @@ export class RouterState {
     private _router: Router,
     private _serializer: RouterStateSerializer<RouterStateSnapshot>,
     private _ngZone: NgZone,
-    private _location: Location,
     private _platformLocation: PlatformLocation
   ) {
     this.setUpStoreListener();
