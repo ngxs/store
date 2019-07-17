@@ -209,10 +209,10 @@ export class RouterState {
         // in order to redirect user to the manually entered URL if it differs from the recognized one.
         // Also `location.search` is used here in case of putting query parameters in the URL,
         // e.g. `/foo?query=some_cool_query`
-        if (url !== this._location.path()) {
-          this._router.navigateByUrl(
-            `${this._platformLocation.pathname}${this._platformLocation.search}`
-          );
+        const currentUrl = `${this._platformLocation.pathname}${this._platformLocation.search}`;
+
+        if (url !== currentUrl) {
+          this._router.navigateByUrl(currentUrl);
         }
       });
   }
