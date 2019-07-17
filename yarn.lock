@@ -111,10 +111,10 @@
     "@angular-devkit/core" "8.1.1"
     rxjs "6.4.0"
 
-"@angular/animations@8.1.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@angular/animations/-/animations-8.1.1.tgz#ee8222d700db5d56e78dfd2b9d26efc70102964d"
-  integrity sha512-9P9Yyf2/IUMs0MR4CfthBaMdizbTh8dDSLJHhMw1PjxPQ3c6mn74uY46NyxcJnCxII9oA2pnnV/O+10JFUFKMw==
+"@angular/animations@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/@angular/animations/-/animations-8.1.2.tgz#2e4fec78a9345d9f1d93e9d464911c71f8c80046"
+  integrity sha512-szR5qzRe6vS1qrPhV2p5fMp5vQxT2SaljXGs3Xgt2Tl23om0XVNcqK0I8NNuK/ehuJ5LXQ1fJHniGcmN2aUw0g==
   dependencies:
     tslib "^1.9.0"
 
@@ -142,17 +142,17 @@
     universal-analytics "^0.4.20"
     uuid "^3.3.2"
 
-"@angular/common@8.1.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@angular/common/-/common-8.1.1.tgz#8094ed2cd4f2cdeb5d074ab7e67fb2411138251b"
-  integrity sha512-kgLtexfPhAyNFlwJHKBkpwKyt/19pfULIJWJpUahFqXdYE3LkRNMJQqgfz7DCNpAQxG7B6u4ocq1j2Hx206kxw==
+"@angular/common@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/@angular/common/-/common-8.1.2.tgz#43a7fd1179d179cae9142a3e6ae60a26a34dd062"
+  integrity sha512-bywFofN5RjcvygYEC/3eo+bfUnYBmARA6DPau8fm6D2ZGpXrWXJ3Thd99ZesuuffvpniaIHlAjbHGI83XSnixQ==
   dependencies:
     tslib "^1.9.0"
 
-"@angular/compiler-cli@8.1.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@angular/compiler-cli/-/compiler-cli-8.1.1.tgz#46fc72a0e62632ba56626ca8e093fb29dc796c4f"
-  integrity sha512-nGN+AqNgi4qsh+4c2Tmtg7/v/mG62sDkjPttra1pUPI6cJS9Y4bA+PBEIW1UsR5OcD85qvNK4vliw2YdLtaeuw==
+"@angular/compiler-cli@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/@angular/compiler-cli/-/compiler-cli-8.1.2.tgz#1b20c3e53520bf8bbece4ba88171dec79eb78e9c"
+  integrity sha512-Dxm99iuv265AlUf3aX3nRl+Iqrj3RvlQgPOYLsV1EEVnA2+4Mjj52zbKgdOOOfhCF48imVbaU45Sh8p2l1xdOw==
   dependencies:
     canonical-path "1.0.0"
     chokidar "^2.1.1"
@@ -161,64 +161,63 @@
     magic-string "^0.25.0"
     minimist "^1.2.0"
     reflect-metadata "^0.1.2"
-    shelljs "^0.8.1"
     source-map "^0.6.1"
     tslib "^1.9.0"
     yargs "13.1.0"
 
-"@angular/compiler@8.1.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@angular/compiler/-/compiler-8.1.1.tgz#0006ff26f69246b811418ed08a71ff6d5b9c6fbc"
-  integrity sha512-wz8Mc45EGax5RKRYYqgXI8lr1d0w+f9BDbHui7b3hQtKM5Mj1QxLXiSOYX0dt3lG4VzrxpO0Xku5tS3D4T1xxQ==
+"@angular/compiler@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/@angular/compiler/-/compiler-8.1.2.tgz#db91a652a5c725b553ef946976446121c024bd0b"
+  integrity sha512-oRkHrstOV6imbb4mGf6q20d4N4iYfBbI6WfxtPL4dz08GipGg4Zvekn4e3R01vzhFBxssGcgmeEtFQJh/UzI8g==
   dependencies:
     tslib "^1.9.0"
 
-"@angular/core@8.1.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@angular/core/-/core-8.1.1.tgz#888fb879906a46429ddac7163fe25915ce5a7f8f"
-  integrity sha512-B6x8IZeu0Qm2H13leEcNzsx0pGKHMvowziurvDnm7W97MaVrYrgbelNsnly4wNX91FzdBtSVXqbe3jijAD9kjA==
+"@angular/core@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/@angular/core/-/core-8.1.2.tgz#d05a4965093a9ce7e7776088dc2b9e7e885e8d9f"
+  integrity sha512-Gm/UIUnIkeah39vxi4enVH/CUcPZOgGDyw4RNagw4pH8dTP8V0RUz8uteOr3DS+Eh49BcHkrT2oU5MBZSZ3lvw==
   dependencies:
     tslib "^1.9.0"
 
-"@angular/forms@8.1.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@angular/forms/-/forms-8.1.1.tgz#e71d8967b4b9bf0e67a21bcf953bf1bf4eecd1e5"
-  integrity sha512-jz05UIiIY2Zz/nEveL4Pm9mVCAd5O6JwVDWTHKQ64nKYIN9Nepzgb0ASeOBEZA4qP82KTGJtUm2AN4L7fXN6Pw==
+"@angular/forms@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/@angular/forms/-/forms-8.1.2.tgz#49e1327b431adb7533a31435fc41bfea5cf502bf"
+  integrity sha512-DHqbWt6AGnLkNajLZUAH4yQrxZdgUkjzEW6oxwvS2PxmLIrppz4TYWizfAVQndZ1Ddl7Eo1zRoRzqqHT90XyGA==
   dependencies:
     tslib "^1.9.0"
 
-"@angular/language-service@8.1.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@angular/language-service/-/language-service-8.1.1.tgz#5940b764fa395b75acd50777721c0aa2914e58c9"
-  integrity sha512-72ILJBDGhmXUsufxjDT1dzt0oOV7EHWUePgk4xv2s9/gg/xeB0XEDv+AH4LNcYKrbUWyZj7/z7wPzJe+K5PfKQ==
+"@angular/language-service@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/@angular/language-service/-/language-service-8.1.2.tgz#bdc7a9664ebef837ebaaeb583f66704e06fbeabe"
+  integrity sha512-9DR5TclsEpMIzCmagLHKYDTAqcZUkZKPjkngqIAUJg5R4IUjsuYn8NZX+agoOrS4ky6Dy9FXGYUC+QB0iEiycg==
 
-"@angular/platform-browser-dynamic@8.1.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@angular/platform-browser-dynamic/-/platform-browser-dynamic-8.1.1.tgz#f3a932e7f0cd0cdce1522ede5651d57ba324c78a"
-  integrity sha512-yUazvP4IBNgXjbzo+NKmu7lVYrrplAN3HSkgYszXwd9uvWLtk1CtXER5hSJE5ZE3Lawoh7PU5hOfMYbqtdAbwg==
+"@angular/platform-browser-dynamic@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/@angular/platform-browser-dynamic/-/platform-browser-dynamic-8.1.2.tgz#10297054900daf8728e9ad8531d7ea40d1270bc7"
+  integrity sha512-NmbGMwKPbYq3ZFt6nOqRslJsQNRS2E94cjkSLseEb5wauUmdUBX9stoHu8BOhvd+EIEcYhD7uxPB+L/qPsH46g==
   dependencies:
     tslib "^1.9.0"
 
-"@angular/platform-browser@8.1.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@angular/platform-browser/-/platform-browser-8.1.1.tgz#36526e524ba3d125c0508beef3a3290d85f7d515"
-  integrity sha512-uP9UIhi9NYTEbfvNj4misBspXkItFopA2pRk083AhHEhOKs79WvMI15w5H5ziIFeH+4UiCvyKrSnPfcjP+Yrvg==
+"@angular/platform-browser@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/@angular/platform-browser/-/platform-browser-8.1.2.tgz#5e136f10656a950d5a8e65da68a7270fadc83875"
+  integrity sha512-n61OtH3B0e+LTHCfHPjB7hiuo0ZxKxZvNWigczGyLZf2abga5jac2bNrdZnU8zXC44AUfasUD2qDS2IPIhNbqA==
   dependencies:
     tslib "^1.9.0"
 
-"@angular/platform-server@8.1.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@angular/platform-server/-/platform-server-8.1.1.tgz#f7b0ca7cf58cb2e9ac97f0a93e12f245fde718f9"
-  integrity sha512-GBadqWCLy1wjl31mWi+H8iR+akZlR3JlSKF1e6CUvL5DQaYLFK0eeXHIQzzAwt7M6o0ZoXxgK8PviFd26xoKWw==
+"@angular/platform-server@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/@angular/platform-server/-/platform-server-8.1.2.tgz#96b127fb9274b1ee4e43af05ae72393015ac43ef"
+  integrity sha512-wZdKqormXipsm1Qd4K6CT3pyA38jE1F7xK+1+VVoLYCQuSGMermZ2SE+M7DpxK8ZpT53r5HfwJZCt5xrEKvyoQ==
   dependencies:
     domino "^2.1.2"
     tslib "^1.9.0"
     xhr2 "^0.1.4"
 
-"@angular/router@8.1.1":
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/@angular/router/-/router-8.1.1.tgz#05edb0f49dab0bbf896a823cc52fd35de9ea8b85"
-  integrity sha512-UTL/TjokRUd3hdePBrj1ITmBGq+EcVNz3D18lFi96461ZLQeXSbbf3vjQfL6SE53E4+hfKKR7/tOqQOgb5br7A==
+"@angular/router@8.1.2":
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/@angular/router/-/router-8.1.2.tgz#83dbab106918225da9a3e03945380483f244085e"
+  integrity sha512-+SWoYZHyDBBUydDTbIu+hyoGzWtSA4VUsriUPWEOCplzQiabFhWxVvcT00mO0cim4XfupL1tmiPjE66sivLYBw==
   dependencies:
     tslib "^1.9.0"
 
@@ -8201,7 +8200,7 @@ shell-quote@^1.6.1:
     array-reduce "~0.0.0"
     jsonify "~0.0.0"
 
-shelljs@^0.8.1, shelljs@^0.8.2:
+shelljs@^0.8.2:
   version "0.8.3"
   resolved "https://registry.npmjs.org/shelljs/-/shelljs-0.8.3.tgz#a7f3319520ebf09ee81275b2368adb286659b097"
   integrity sha512-fc0BKlAWiLpwZljmOvAOTE/gXawtCoNrP5oaY7KIaQbbyHeQVg01pSEuEGvGh3HEdBU4baCD7wQBwADmM/7f7A==
