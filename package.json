@@ -1,5 +1,5 @@
 {
-  "name": "ngxs",
+  "name": "@ngxs/store",
   "version": "3.4.3",
   "repository": {
     "type": "git",
