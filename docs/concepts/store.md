@@ -81,7 +81,7 @@ export class ZooComponent {
     this.store.dispatch(new AddAnimal(name)).pipe(
       withLatestFrom(this.animals$)
     )
-      .subscribe(([zooState, animals]) => {
+      .subscribe(([store, animals]) => {
         // do something with animals
         this.form.reset();
       });
