@@ -209,13 +209,13 @@ export class RouterState {
         // previously saved URL. We want to prevent such behavior, so we perform this check
         // in order to redirect user to the manually entered URL if it differs from the recognized one.
         // Also `location.search` is used here in case of putting query parameters in the URL,
-        // e.g. `/test?redirect=https://google.com`
+        // e.g. `/test?redirect=https://google.com/`
 
         // `url` is a recognized URL by the Angular's router, while `currentUrl` is an actual URL
         // entered in the browser's search bar
         const currentUrl = this._locationStrategy.path();
         const currentUrlTree = this._urlSerializer.parse(currentUrl);
-        // We need to serialize the URL because in that example `/test/?redirect=https://google.com`
+        // We need to serialize the URL because in that example `/test/?redirect=https://google.com/`
         // Angular will recognize it as `/test?redirect=https:%2F%2Fwww.google.com%2F`
         // so we have to run the `currentUrl` via the `UrlSerializer` that will encode characters
         const currentSerializedUrl = this._urlSerializer.serialize(currentUrlTree);
