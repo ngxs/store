@@ -1,9 +1,18 @@
 import { writeFile } from 'fs';
 import { getPackages } from './utils';
 
-async function main() {
+export async function setMetadata() {
   const ngxsJson = require('../package.json');
-  const keysToCopy = ['version', 'repository', 'keywords', 'author', 'contributors', 'license', 'bugs', 'homepage'];
+  const keysToCopy = [
+    'version',
+    'repository',
+    'keywords',
+    'author',
+    'contributors',
+    'license',
+    'bugs',
+    'homepage'
+  ];
 
   const packages = getPackages();
   for (const pack of packages) {
@@ -16,9 +25,11 @@ async function main() {
     }
 
     // set all the packages peerDependencies to be the same as root package.json version
-    for (const p of packages) {
-      if (packPackage.peerDependencies[p.packageName]) {
-        packPackage.peerDependencies[p.packageName] = `^${ngxsJson.version} || ^${ngxsJson.version}-dev`;
+    for (const packageInfo of packages) {
+      if (packPackage.peerDependencies[packageInfo.packageName]) {
+        packPackage.peerDependencies[
+          packageInfo.packageName
+        ] = `^${ngxsJson.version} || ^${ngxsJson.version}-dev`;
       }
     }
 
@@ -32,5 +43,3 @@ async function main() {
 
   console.log(`package version set to ${ngxsJson.version}`);
 }
-
-main();

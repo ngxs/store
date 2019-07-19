@@ -1,0 +1,12 @@
+{
+  "name": "build",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "yarn build:ng7",
+    "build:ng7": "cd angular-7 && yarn build",
+    "build:ng8": "cd angular-8 && yarn build"
+  },
+  "author": "",
+  "license": "ISC"
+}
