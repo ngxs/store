@@ -207,9 +207,6 @@ export class RouterState {
         // with another URL (e.g. used in combination with `NgxsStoragePlugin`), thus the
         // `RouterNavigation` action will be dispatched and the user will be redirected to the
         // previously saved URL. We want to prevent such behavior, so we perform this check
-        // in order to redirect user to the manually entered URL if it differs from the recognized one.
-        // Also `location.search` is used here in case of putting query parameters in the URL,
-        // e.g. `/test?redirect=https://google.com/`
 
         // `url` is a recognized URL by the Angular's router, while `currentUrl` is an actual URL
         // entered in the browser's address bar
