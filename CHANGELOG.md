@@ -26,6 +26,7 @@ $ npm install @ngxs/store@dev
 * Fix: Form Plugin - introduce conditional debounce [#1061](https://github.com/ngxs/store/pull/1061)
 * Fix: WebSocket Plugin - don't stop `WebSocketSubject` stream after dispatching `WebSocketDisconnected` [#1091](https://github.com/ngxs/store/pull/1091)
 * Fix: Storage Plugin - undefined localStorage error during SSR [#1119](https://github.com/ngxs/store/pull/1119)
+* Chore: CI - decouple build infrastructure from root package.json [#1163](https://github.com/ngxs/store/pull/1163)
 
 ## NGXS-Labs
 
