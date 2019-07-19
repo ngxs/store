@@ -25,10 +25,10 @@ export async function setMetadata() {
     }
 
     // set all the packages peerDependencies to be the same as root package.json version
-    for (const p of packages) {
-      if (packPackage.peerDependencies[p.packageName]) {
+    for (const packageInfo of packages) {
+      if (packPackage.peerDependencies[packageInfo.packageName]) {
         packPackage.peerDependencies[
-          p.packageName
+          packageInfo.packageName
         ] = `^${ngxsJson.version} || ^${ngxsJson.version}-dev`;
       }
     }
