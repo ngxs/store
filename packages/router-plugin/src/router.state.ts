@@ -212,7 +212,9 @@ export class RouterState {
         // e.g. `/test?redirect=https://google.com/`
 
         // `url` is a recognized URL by the Angular's router, while `currentUrl` is an actual URL
-        // entered in the browser's search bar
+        // entered in the browser's address bar
+        // `PathLocationStrategy.prototype.path()` returns a concatenation of
+        // `PlatformLocation.pathname` and normalized `PlatformLocation.search`
         const currentUrl = this._locationStrategy.path();
         const currentUrlTree = this._urlSerializer.parse(currentUrl);
         // We need to serialize the URL because in that example `/test/?redirect=https://google.com/`
@@ -220,8 +222,8 @@ export class RouterState {
         // so we have to run the `currentUrl` via the `UrlSerializer` that will encode characters
         const currentSerializedUrl = this._urlSerializer.serialize(currentUrlTree);
 
-        // If URLs differ from each other - that we perform a redirect to the manually entered URL
-        // in the address bar, as it has to have a priority
+        // If URLs differ from each other - we've got to perform a redirect to the manually entered URL
+        // in the address bar, as it must have a priority
         if (currentSerializedUrl !== url) {
           this._router.navigateByUrl(currentUrl);
         }
