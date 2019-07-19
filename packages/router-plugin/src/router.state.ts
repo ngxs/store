@@ -6,9 +6,10 @@ import {
   RouterStateSnapshot,
   RoutesRecognized,
   ResolveEnd,
-  GuardsCheckEnd
+  GuardsCheckEnd,
+  UrlSerializer
 } from '@angular/router';
-import { PlatformLocation } from '@angular/common';
+import { LocationStrategy } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { isAngularInTestMode } from '@ngxs/store/internals';
 import { filter, take } from 'rxjs/operators';
@@ -62,7 +63,8 @@ export class RouterState {
     private _router: Router,
     private _serializer: RouterStateSerializer<RouterStateSnapshot>,
     private _ngZone: NgZone,
-    private _platformLocation: PlatformLocation
+    private _urlSerializer: UrlSerializer,
+    private _locationStrategy: LocationStrategy
   ) {
     this.setUpStoreListener();
     this.setUpStateRollbackEvents();
@@ -207,11 +209,20 @@ export class RouterState {
         // previously saved URL. We want to prevent such behavior, so we perform this check
         // in order to redirect user to the manually entered URL if it differs from the recognized one.
         // Also `location.search` is used here in case of putting query parameters in the URL,
-        // e.g. `/foo?query=some_cool_query`
-        const currentUrl = `${this._platformLocation.pathname}${this._platformLocation.search}`;
+        // e.g. `/test?redirect=https://google.com`
+
         // `url` is a recognized URL by the Angular's router, while `currentUrl` is an actual URL
         // entered in the browser's search bar
-        if (url !== currentUrl) {
+        const currentUrl = this._locationStrategy.path();
+        const currentUrlTree = this._urlSerializer.parse(currentUrl);
+        // We need to serialize the URL because in that example `/test/?redirect=https://google.com`
+        // will recognize it as `/test?redirect=https:%2F%2Fwww.google.com%2F`
+        // so we have to run the `currentUrl` via the `UrlSerializer` that will encode characters
+        const currentSerializedUrl = this._urlSerializer.serialize(currentUrlTree);
+
+        // If URLs differ from each other - that we perform a redirect to the manually entered URL
+        // in the address bar, as it has to have a priority
+        if (currentSerializedUrl !== url) {
           this._router.navigateByUrl(currentUrl);
         }
       });
