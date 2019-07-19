@@ -216,7 +216,7 @@ export class RouterState {
         const currentUrl = this._locationStrategy.path();
         const currentUrlTree = this._urlSerializer.parse(currentUrl);
         // We need to serialize the URL because in that example `/test/?redirect=https://google.com`
-        // will recognize it as `/test?redirect=https:%2F%2Fwww.google.com%2F`
+        // Angular will recognize it as `/test?redirect=https:%2F%2Fwww.google.com%2F`
         // so we have to run the `currentUrl` via the `UrlSerializer` that will encode characters
         const currentSerializedUrl = this._urlSerializer.serialize(currentUrlTree);
 
