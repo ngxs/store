@@ -233,7 +233,7 @@ describe('NgxsRouterPlugin', () => {
     expect(state.url).toEqual('/testpath');
   }));
 
-  describe('RouterDataResolved', () => {
+  describe('Tests that require own platform', () => {
     function createRootElement() {
       const document = TestBed.get(DOCUMENT);
       const root = getDOM().createElement('app-root', document);
@@ -295,6 +295,30 @@ describe('NgxsRouterPlugin', () => {
       public router$: Observable<RouterStateModel>;
     }
 
+    @Component({
+      selector: 'first-child',
+      template: '<router-outlet></router-outlet>'
+    })
+    class FirstChildComponent {}
+
+    @Component({
+      selector: 'second-child',
+      template: '<router-outlet></router-outlet>'
+    })
+    class SecondChildComponent {}
+
+    @Component({
+      selector: 'third-child',
+      template: '<router-outlet></router-outlet>'
+    })
+    class ThirdChildComponent {}
+
+    @Component({
+      selector: 'fourth-child',
+      template: 'fourth child'
+    })
+    class FourthChildComponent {}
+
     function getTestModule(states: any[] = []) {
       @NgModule({
         imports: [
@@ -304,6 +328,28 @@ describe('NgxsRouterPlugin', () => {
           // to be sure our data is resolved - we have to use native `RouterModule`
           RouterModule.forRoot(
             [
+              {
+                path: 'first',
+                component: FirstChildComponent,
+                children: [
+                  {
+                    path: 'second',
+                    component: SecondChildComponent,
+                    children: [
+                      {
+                        path: 'third',
+                        component: ThirdChildComponent,
+                        children: [
+                          {
+                            path: 'fourth',
+                            component: FourthChildComponent
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 path: '**',
                 component: TestComponent,
@@ -317,7 +363,14 @@ describe('NgxsRouterPlugin', () => {
           NgxsModule.forRoot(states),
           NgxsRouterPluginModule.forRoot()
         ],
-        declarations: [RootComponent, TestComponent],
+        declarations: [
+          RootComponent,
+          TestComponent,
+          FirstChildComponent,
+          SecondChildComponent,
+          ThirdChildComponent,
+          FourthChildComponent
+        ],
         bootstrap: [RootComponent],
         providers: [
           TestResolver,
@@ -335,200 +388,289 @@ describe('NgxsRouterPlugin', () => {
       return TestModule;
     }
 
-    it(
-      'should wait for resolvers to complete and dispatch the `RouterDataResolved` event',
-      freshPlatform(
-        fakeAsync(async () => {
-          // Arrange
-          const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
+    describe('RouterDataResolved', () => {
+      it(
+        'should wait for resolvers to complete and dispatch the `RouterDataResolved` event',
+        freshPlatform(
+          fakeAsync(async () => {
+            // Arrange
+            const { injector } = await platformBrowserDynamic().bootstrapModule(
+              getTestModule()
+            );
 
-          // Act
-          const router: Router = injector.get(Router);
-          const store: Store = injector.get(Store);
+            // Act
+            const router: Router = injector.get(Router);
+            const store: Store = injector.get(Store);
 
-          // Assert
-          const dataFromTheOriginalRouter = router.routerState.snapshot.root.firstChild!.data;
-          expect(dataFromTheOriginalRouter).toEqual({ test });
+            // Assert
+            const dataFromTheOriginalRouter = router.routerState.snapshot.root.firstChild!
+              .data;
+            expect(dataFromTheOriginalRouter).toEqual({ test });
 
-          const dataFromTheRouterState = store.selectSnapshot(RouterState.state)!.root
-            .firstChild!.data;
-          expect(dataFromTheOriginalRouter).toEqual(dataFromTheRouterState);
-        })
-      )
-    );
-
-    it(
-      'should keep resolved data if the navigation was performed between the same component but with params',
-      freshPlatform(
-        fakeAsync(async () => {
-          // Arrange
-          const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
-          const router: Router = injector.get(Router);
-          const store: Store = injector.get(Store);
-
-          // Act
-          await store
-            .dispatch(
-              new Navigate(
-                ['/route2'],
-                {
-                  a: 10
-                },
-                {
-                  queryParamsHandling: 'merge'
-                }
-              )
-            )
-            .toPromise();
-
-          await store
-            .dispatch(
-              new Navigate(
-                ['/route2'],
-                {
-                  b: 20
-                },
-                {
-                  queryParamsHandling: 'merge'
-                }
-              )
-            )
-            .toPromise();
-
-          // Assert
-          const dataFromTheOriginalRouter = router.routerState.snapshot.root.firstChild!.data;
-          expect(dataFromTheOriginalRouter).toEqual({ test });
-
-          const dataFromTheRouterState = store.selectSnapshot(RouterState.state)!.root
-            .firstChild!.data;
-          expect(dataFromTheOriginalRouter).toEqual(dataFromTheRouterState);
-        })
-      )
-    );
-
-    it(
-      'should dispatch `RouterDataResolved` action',
-      freshPlatform(
-        fakeAsync(async () => {
-          // Arrange
-          const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
-          const actions$: Actions = injector.get(Actions);
-          const store: Store = injector.get(Store);
-
-          // Act
-
-          // The very first `ResolveEnd` event is triggered during root module bootstrapping
-          // `ofActionSuccessful(RouterDataResolved)` is asynchronous
-          // and expectations are called right after `store.dispatch`
-          // before the callback inside `actions$.subscribe(...)` is invoked
-          const speciallyPromisedData = actions$
-            .pipe(
-              ofActionSuccessful(RouterDataResolved),
-              first()
-            )
-            .toPromise()
-            .then(({ routerState }: RouterDataResolved) => {
-              return routerState!.root.firstChild!.data;
-            });
-
-          await store
-            .dispatch(
-              new Navigate(
-                ['/route3'],
-                {
-                  a: 10
-                },
-                {
-                  queryParamsHandling: 'merge'
-                }
-              )
-            )
-            .toPromise();
-
-          // Assert
-          const dataFromTheEvent = await speciallyPromisedData;
-          expect(dataFromTheEvent).toEqual({ test });
-        })
-      )
-    );
-
-    it(
-      'should update the state if navigation is performed between the same component',
-      freshPlatform(
-        fakeAsync(async () => {
-          // Arrange
-          @State({
-            name: 'counter',
-            defaults: 0
+            const dataFromTheRouterState = store.selectSnapshot(RouterState.state)!.root
+              .firstChild!.data;
+            expect(dataFromTheOriginalRouter).toEqual(dataFromTheRouterState);
           })
-          class CounterState {
-            @Action(RouterNavigation)
-            public routerNavigation({ getState, setState }: StateContext<number>): void {
-              setState(getState() + 1);
-            }
-          }
+        )
+      );
 
-          // Act
-          const { injector } = await platformBrowserDynamic().bootstrapModule(
-            getTestModule([CounterState])
-          );
-          const store: Store = injector.get(Store);
-          const router: Router = injector.get(Router);
+      it(
+        'should keep resolved data if the navigation was performed between the same component but with params',
+        freshPlatform(
+          fakeAsync(async () => {
+            // Arrange
+            const { injector } = await platformBrowserDynamic().bootstrapModule(
+              getTestModule()
+            );
+            const router: Router = injector.get(Router);
+            const store: Store = injector.get(Store);
 
-          await router.navigateByUrl('/a/b/c');
-          await router.navigateByUrl('/a/b');
+            // Act
+            await store
+              .dispatch(
+                new Navigate(
+                  ['/route2'],
+                  {
+                    a: 10
+                  },
+                  {
+                    queryParamsHandling: 'merge'
+                  }
+                )
+              )
+              .toPromise();
 
-          // Assert
-          const counter = store.selectSnapshot<number>(CounterState);
-          expect(counter).toEqual(3);
-        })
-      )
-    );
+            await store
+              .dispatch(
+                new Navigate(
+                  ['/route2'],
+                  {
+                    b: 20
+                  },
+                  {
+                    queryParamsHandling: 'merge'
+                  }
+                )
+              )
+              .toPromise();
 
-    it(
-      'should call selector if navigation is performed between the same component',
-      freshPlatform(
-        fakeAsync(async () => {
-          // Arrange
-          let selectorCalledTimes = 0;
+            // Assert
+            const dataFromTheOriginalRouter = router.routerState.snapshot.root.firstChild!
+              .data;
+            expect(dataFromTheOriginalRouter).toEqual({ test });
 
-          @State({
-            name: 'counter',
-            defaults: 0
+            const dataFromTheRouterState = store.selectSnapshot(RouterState.state)!.root
+              .firstChild!.data;
+            expect(dataFromTheOriginalRouter).toEqual(dataFromTheRouterState);
           })
-          class CounterState {
-            @Selector()
-            public static counter(state: number) {
-              selectorCalledTimes++;
-              return state;
+        )
+      );
+
+      it(
+        'should dispatch `RouterDataResolved` action',
+        freshPlatform(
+          fakeAsync(async () => {
+            // Arrange
+            const { injector } = await platformBrowserDynamic().bootstrapModule(
+              getTestModule()
+            );
+            const actions$: Actions = injector.get(Actions);
+            const store: Store = injector.get(Store);
+
+            // Act
+
+            // The very first `ResolveEnd` event is triggered during root module bootstrapping
+            // `ofActionSuccessful(RouterDataResolved)` is asynchronous
+            // and expectations are called right after `store.dispatch`
+            // before the callback inside `actions$.subscribe(...)` is invoked
+            const speciallyPromisedData = actions$
+              .pipe(
+                ofActionSuccessful(RouterDataResolved),
+                first()
+              )
+              .toPromise()
+              .then(({ routerState }: RouterDataResolved) => {
+                return routerState!.root.firstChild!.data;
+              });
+
+            await store
+              .dispatch(
+                new Navigate(
+                  ['/route3'],
+                  {
+                    a: 10
+                  },
+                  {
+                    queryParamsHandling: 'merge'
+                  }
+                )
+              )
+              .toPromise();
+
+            // Assert
+            const dataFromTheEvent = await speciallyPromisedData;
+            expect(dataFromTheEvent).toEqual({ test });
+          })
+        )
+      );
+
+      it(
+        'should update the state if navigation is performed between the same component',
+        freshPlatform(
+          fakeAsync(async () => {
+            // Arrange
+            @State({
+              name: 'counter',
+              defaults: 0
+            })
+            class CounterState {
+              @Action(RouterNavigation)
+              public routerNavigation({ getState, setState }: StateContext<number>): void {
+                setState(getState() + 1);
+              }
             }
 
-            @Action(RouterNavigation)
-            public routerNavigation({ getState, setState }: StateContext<number>): void {
-              setState(getState() + 1);
+            // Act
+            const { injector } = await platformBrowserDynamic().bootstrapModule(
+              getTestModule([CounterState])
+            );
+            const store: Store = injector.get(Store);
+            const router: Router = injector.get(Router);
+
+            await router.navigateByUrl('/a/b/c');
+            await router.navigateByUrl('/a/b');
+
+            // Assert
+            const counter = store.selectSnapshot<number>(CounterState);
+            expect(counter).toEqual(3);
+          })
+        )
+      );
+
+      it(
+        'should call selector if navigation is performed between the same component',
+        freshPlatform(
+          fakeAsync(async () => {
+            // Arrange
+            let selectorCalledTimes = 0;
+
+            @State({
+              name: 'counter',
+              defaults: 0
+            })
+            class CounterState {
+              @Selector()
+              public static counter(state: number) {
+                selectorCalledTimes++;
+                return state;
+              }
+
+              @Action(RouterNavigation)
+              public routerNavigation({ getState, setState }: StateContext<number>): void {
+                setState(getState() + 1);
+              }
             }
-          }
 
-          // Act
-          const { injector } = await platformBrowserDynamic().bootstrapModule(
-            getTestModule([CounterState])
-          );
-          const store: Store = injector.get(Store);
-          const router: Router = injector.get(Router);
+            // Act
+            const { injector } = await platformBrowserDynamic().bootstrapModule(
+              getTestModule([CounterState])
+            );
+            const store: Store = injector.get(Store);
+            const router: Router = injector.get(Router);
 
-          const subscription = store.select(CounterState.counter).subscribe();
+            const subscription = store.select(CounterState.counter).subscribe();
 
-          await router.navigateByUrl('/a/b/c');
-          await router.navigateByUrl('/a/b');
-          subscription.unsubscribe();
+            await router.navigateByUrl('/a/b/c');
+            await router.navigateByUrl('/a/b');
+            subscription.unsubscribe();
 
-          // Assert
-          const counter = store.selectSnapshot(CounterState.counter);
-          expect(selectorCalledTimes).toEqual(3);
-          expect(selectorCalledTimes).toEqual(counter);
-        })
-      )
-    );
+            // Assert
+            const counter = store.selectSnapshot(CounterState.counter);
+            expect(selectorCalledTimes).toEqual(3);
+            expect(selectorCalledTimes).toEqual(counter);
+          })
+        )
+      );
+    });
+
+    describe('Route selector', () => {
+      it(
+        'should select root snapshot',
+        freshPlatform(
+          fakeAsync(async () => {
+            // Arrange
+            const { injector } = await platformBrowserDynamic().bootstrapModule(
+              getTestModule()
+            );
+            const store: Store = injector.get(Store);
+            const router: Router = injector.get(Router);
+
+            // Act
+            await router.navigateByUrl('/');
+
+            // Assert
+            const rootSnapshot = store.selectSnapshot(RouterState.route(RootComponent))!;
+            expect(rootSnapshot).toBeTruthy();
+            expect(rootSnapshot.component).toBe(RootComponent);
+            expect(rootSnapshot.firstChild!.component).toBe(TestComponent);
+          })
+        )
+      );
+
+      it(
+        'should select "TestComponent"\'s snapshot and its data',
+        freshPlatform(
+          fakeAsync(async () => {
+            // Arrange
+            const { injector } = await platformBrowserDynamic().bootstrapModule(
+              getTestModule()
+            );
+            const store: Store = injector.get(Store);
+            const router: Router = injector.get(Router);
+
+            // Act
+            await router.navigateByUrl('/');
+
+            // Assert
+            const testComponentSnapshot = store.selectSnapshot(
+              RouterState.route(TestComponent)
+            )!;
+            expect(testComponentSnapshot).toBeTruthy();
+            expect(testComponentSnapshot.component).toBe(TestComponent);
+            expect(testComponentSnapshot.data).toEqual({ test: 'test-data' });
+          })
+        )
+      );
+
+      it(
+        'should activate the deepest fourth component and select its snapshot',
+        freshPlatform(
+          fakeAsync(async () => {
+            // Arrange
+            const { injector } = await platformBrowserDynamic().bootstrapModule(
+              getTestModule([])
+            );
+            const store: Store = injector.get(Store);
+            const router: Router = injector.get(Router);
+
+            await router.navigateByUrl('/first/second/third/fourth');
+
+            // Assert
+            const thirdChildComponentSnapshot = store.selectSnapshot(
+              RouterState.route(ThirdChildComponent)
+            )!;
+            expect(thirdChildComponentSnapshot).toBeTruthy();
+            expect(thirdChildComponentSnapshot.component).toBe(ThirdChildComponent);
+
+            const fourthChildComponentSnapshot = store.selectSnapshot(
+              RouterState.route(FourthChildComponent)
+            )!;
+            expect(fourthChildComponentSnapshot).toBeTruthy();
+            expect(fourthChildComponentSnapshot.component).toBe(FourthChildComponent);
+          })
+        )
+      );
+    });
   });
 });
 

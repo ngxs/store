@@ -1,4 +1,4 @@
-import { NgZone, Injectable } from '@angular/core';
+import { NgZone, Injectable, Type } from '@angular/core';
 import {
   NavigationCancel,
   NavigationError,
@@ -7,10 +7,11 @@ import {
   RoutesRecognized,
   ResolveEnd,
   GuardsCheckEnd,
-  UrlSerializer
+  UrlSerializer,
+  ActivatedRouteSnapshot
 } from '@angular/router';
 import { LocationStrategy } from '@angular/common';
-import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
+import { Action, Selector, State, StateContext, Store, createSelector } from '@ngxs/store';
 import { isAngularInTestMode } from '@ngxs/store/internals';
 import { filter, take } from 'rxjs/operators';
 
@@ -56,6 +57,48 @@ export class RouterState {
   @Selector()
   static url(state: RouterStateModel): string | undefined {
     return state && state.state && state.state.url;
+  }
+
+  static route<T>(component: Type<T>) {
+    return createSelector<(state: RouterStateModel) => null | ActivatedRouteSnapshot>(
+      [RouterState],
+      (state: RouterStateModel) => this.routeSelector(state, component)
+    );
+  }
+
+  private static routeSelector<T>(state: RouterStateModel, component: Type<T>) {
+    // If the selector was invoked before initial navigation
+    if (!state || !state.state) {
+      return null;
+    }
+
+    const root = state.state.root;
+
+    // If the root component was requested
+    if (root.component === component) {
+      return root;
+    }
+
+    return this.searchRouteAmongChildren(root, component);
+  }
+
+  private static searchRouteAmongChildren<T>(
+    parent: ActivatedRouteSnapshot,
+    component: Type<T>
+  ): ActivatedRouteSnapshot | null {
+    let i = parent.children.length;
+
+    while (i--) {
+      const child = parent.children[i];
+
+      if (child.component === component) {
+        return child;
+      }
+
+      return this.searchRouteAmongChildren(child, component);
+    }
+
+    return null;
   }
 
   constructor(
