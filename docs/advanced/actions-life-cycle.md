@@ -1,6 +1,6 @@
 # Actions Life Cycle
 
-This document affects the life cycle of actions, after reading it you will understand how the NGXS handles actions and what stages they may be at.
+This document describes the life cycle of actions, after reading it you will understand how the NGXS handles actions and what stages they may be at.
 
 ## Theory
 
@@ -21,7 +21,7 @@ The internal actions stream emits an object called `ActionContext`, that has 2 p
 }
 ```
 
-There is an underneath listener that filters actions by `DISPATCHED` status and invokes the appropriate handlers that listen to this action, and then generates a new `ActionContext` with the following `status` value:
+There is an action stream listener that filters actions by `DISPATCHED` status and invokes the appropriate handlers for this action. After all processing for the action has completed it generates a new `ActionContext` with the following `status` value:
 
 ```ts
 {
@@ -30,7 +30,7 @@ There is an underneath listener that filters actions by `DISPATCHED` status and 
 }
 ```
 
-After action is handled "successfully", NGXS creates an observable that's returned by the `dispatch` method so you're able to do anything after all.
+The observable returned by the `dispatch` method is then triggered after the action is handled "successfully" and, in response to this observable, you are able to do the actions you wanted to do on completion of the action.
 
 If the `GetTickets` handler throws an error, for example:
 
@@ -52,7 +52,7 @@ Then the following `ActionContext` will be created:
 
 Actions can be both synchronous and asynchronous, for example if you send a request to your API and wait for the response. Asynchronous actions are handled in parallel, synchronous actions are handled one after another.
 
-What about `CANCELED` status? Only asynchronous actions can be canceled, this means that the new action was dispatched before the previous action handler finished doing some asynchronous job. Canceling actions can be achieved by providing options to the `@Action` decorator:
+What about the `CANCELED` status? Only asynchronous actions can be canceled, this means that the new action was dispatched before the previous action handler finished doing some asynchronous job. Canceling actions can be achieved by providing options to the `@Action` decorator:
 
 ```ts
 export class TicketsState {
@@ -69,7 +69,7 @@ export class TicketsState {
 }
 ```
 
-Imagine a component where you've got a button, that dispatches the `GetTickets` action on click:
+Imagine a component where you've got a button that dispatches the `GetTickets` action on click:
 
 ```ts
 @Component({
@@ -90,7 +90,7 @@ export class TicketsComponent {
 }
 ```
 
-If you click the button twice - two actions will be dispatched and the previous action will be canceled, because it's asynchronous. This works exactly the same as `switchMap`, if we didn't use NGXS - the code would look as follows:
+If you click the button twice - two actions will be dispatched and the previous action will be canceled because it's asynchronous. This works exactly the same as `switchMap`. If we didn't use NGXS - the code would look as follows:
 
 ```ts
 @Component({
@@ -200,4 +200,4 @@ We don't care what response will be handled first, but we're sure that we will d
 
 ![Life cycle](../assets/actions-life-cycle.png)
 
-In summary - at the very beginning, any dispatched action always has the status `DISPATCHED`. Next, NGXS looks for handlers that listen to this action, if there are any — NGXS invokes them and processes the return value and errors. If the handler has done some work and has not thrown an error, the status of the action changes to `SUCCESSFUL`. If something went wrong while processing the action, for example, the server returned an error, the status of the action changes to `ERRORED`. If an action handler is marked as `cancelUncompleted` and a new action has arrived, before the old one was processed, then NGXS interrupts the processing and changes the action status to `CANCELED`.
+In summary - any dispatched action starts with the status `DISPATCHED`. Next, NGXS looks for handlers that listen to this action, if there are any — NGXS invokes them and processes the return value and errors. If the handler has done some work and has not thrown an error the status of the action changes to `SUCCESSFUL`. If something went wrong while processing the action (for example, if the server returned an error) the status of the action changes to `ERRORED`. If an action handler is marked as `cancelUncompleted` and a new action has arrived before the old one was processed then NGXS interrupts the processing of the first action and changes the action status to `CANCELED`.
