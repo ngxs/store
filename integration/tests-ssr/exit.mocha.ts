@@ -1,7 +1,7 @@
 const request = require('./request-service');
 
 describe('NGXS + SSR', () => {
-  it('Should be exit', async () => {
+  it('should exit', async () => {
     await request('http://localhost:4000/test/exit');
   });
 });

@@ -33,11 +33,19 @@ describe('NGXS + SSR', () => {
     });
   });
 
-  it('should successfully resolve list of animals', async () => {
+  it('should successfully resolve list of animals via the "router$" stream', async () => {
     body = await request('http://localhost:4000/list');
-    const animalsWereResolvedIndex = body.indexOf('animals were resolved');
-    const resolvedAnimalsIndex = body.indexOf('zebras,pandas,lions,giraffes');
+    const animalsWereResolvedIndex = body.indexOf(
+      'Animals were resolved via the "router$" stream zebras,pandas,lions,giraffes'
+    );
     expect(animalsWereResolvedIndex).to.be.greaterThan(-1);
-    expect(resolvedAnimalsIndex).to.be.greaterThan(-1);
+  });
+
+  it('should resolve list of animals via the "route$" stream', async () => {
+    body = await request('http://localhost:4000/list');
+    const animalsWereResolvedIndex = body.indexOf(
+      'Animals were resolved via the "route$" stream zebras,pandas,lions,giraffes'
+    );
+    expect(animalsWereResolvedIndex).to.be.greaterThan(-1);
   });
 });
