@@ -28,7 +28,8 @@ export {
   NgxsModuleOptions
 } from './symbols';
 export { Selector } from './decorators/selector';
-export { SelectorStrategy, SelectionGlobalStrategy } from './selection';
+export { SelectionGlobalStrategy } from './selection/selection-global-strategy';
+export { SelectorStrategy } from './selection/symbols';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
 export { createSelector } from './utils/selector-utils';
 export { NgxsExecutionStrategy } from './execution/symbols';

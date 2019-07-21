@@ -11,7 +11,7 @@ import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
 import { StateContext } from '../src/symbols';
 import { removeDollarAtTheEnd } from '../src/internal/internals';
-import { SelectionGlobalStrategy } from '../src/selection';
+import { SelectionGlobalStrategy } from '../src/selection/selection-global-strategy';
 
 describe('Select', () => {
   interface SubSubStateModel {

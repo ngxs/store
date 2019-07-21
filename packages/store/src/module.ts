@@ -31,7 +31,6 @@ import { InternalDispatchedActionResults, InternalDispatcher } from './internal/
 import { InternalStateOperations } from './internal/state-operations';
 import { Store } from './store';
 import { SelectFactory } from './decorators/select';
-import { SelectionGlobalStrategy } from './selection';
 import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
 import { NgxsRootModule } from './modules/ngxs-root.module';
@@ -40,6 +39,7 @@ import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-o
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { HostEnvironment } from './host-environment/host-environment';
 import { ConfigValidator } from './internal/config-validator';
+import { SelectionGlobalStrategy } from './selection/selection-global-strategy';
 
 /**
  * Ngxs Module
@@ -74,9 +74,9 @@ export class NgxsModule {
         StateStream,
         SelectFactory,
         PluginManager,
-        SelectionGlobalStrategy,
         ...states,
-        ...NgxsModule.ngxsTokenProviders(states, options)
+        ...NgxsModule.ngxsTokenProviders(states, options),
+        SelectionGlobalStrategy
       ]
     };
   }

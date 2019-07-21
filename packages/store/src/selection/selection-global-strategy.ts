@@ -2,8 +2,8 @@ import { Observable, of, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { tap } from 'rxjs/operators';
 
-import { SelectorStrategy } from './symbols';
 import { NgxsConfig } from '../symbols';
+import { SelectorStrategy } from './symbols';
 
 @Injectable()
 export class SelectionGlobalStrategy implements SelectorStrategy {
