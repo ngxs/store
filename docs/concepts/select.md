@@ -272,6 +272,61 @@ export class ZooComponent {
 }
 ```
 
+_Inheriting selectors_
+
+Another way to share selectors across states with similar structure could be to create dynamic selectors in a base class. Using the same previous example we could:
+
+```TS
+export class EntitiesState {
+
+  static entities() {
+    return createSelector([this], (state: { entities: any[] }) => {
+      return state.entities;
+    });
+  }
+
+  //...
+
+}
+```
+
+And extend the `EntitiesState` class on each `@State` like this:
+
+```TS
+
+@State<string[]>({
+  name: 'animals',
+  defaults: []
+})
+export class ZooState extends EntitiesState {  
+  //...
+}
+
+@State<string[]>({
+  name: 'animals',
+  defaults: []
+})
+export class ParkState extends EntitiesState {  
+  //...
+}
+```
+
+Then you, can use them
+
+```TS
+
+@Component({ ... })
+export class ZooComponent {
+  
+  @Select(ZooState.entities())
+  zoos$: Observable<Zoo[]>;
+
+  @Select(ParkState.entities())
+  parks$: Observable<Park[]>;
+
+}
+```
+
 ### Joining Selectors
 When defining a selector, you can also pass other selectors into the signature
 of the `Selector` decorator to join other selectors with this state selector.
