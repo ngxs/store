@@ -87,12 +87,15 @@ In your application you may have selectors created dynamically using the createS
 ```TS
 export class ZooSelectors {
   static animalNames = (type: string) => {
-    return createSelector([ZooState], (state: ZooStateModel) => {
-      return state.animals
-        .filter((animal) => animal.type === type )
-        .map((animal => animal.name ));
-    });
-  }
+    return createSelector(
+      [ZooState],
+      (state: ZooStateModel) => {
+        return state.animals
+          .filter(animal => animal.type === type)
+          .map(animal => animal.name);
+      }
+    );
+  };
 }
 ```
 

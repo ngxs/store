@@ -6,10 +6,10 @@ at how we would implement this in NGXS.
 First, let's define our state model and our actions:
 
 ```TS
-export class AuthStateModel {
-  token?: string;
-  username?: string;
-}
+export type AuthStateModel = null | {
+  token: string;
+  username: string;
+};
 
 export class Login {
   static readonly type = '[Auth] Login';
@@ -22,7 +22,9 @@ export class Logout {
 ```
 
 In our state model, we want to track our token and the username. The token
-represents a JWT token that was issued for the session.
+represents a JWT token that was issued for the session. If the user is not authorized,
+the state value is `null`, which corresponds to the semantics. It is very easy to work
+with the `null` value and make the appropriate checks.
 
 Let's hook up these actions in our state class and wire that up to our login
 service.
@@ -30,30 +32,42 @@ service.
 ```TS
 @State<AuthStateModel>({
   name: 'auth',
-  defaults: {}
+  defaults: null
 })
 export class AuthState {
 
   @Selector()
-  static token(state: AuthStateModel) { 
+  static isAuthenticated(state: AuthStateModel): boolean {
+    return state !== null;
+  }
+
+  @Selector()
+  static token(state: AuthStateModel) {
     return state.token;
   }
 
   constructor(private authService: AuthService) {}
 
   @Action(Login)
-  login({ patchState }: StateContext<AuthStateModel>, { payload }: Login) {
-    return this.authService.login(payload).pipe(tap((result: { token: string }) => {
-      patchState({ token: result.token, username: payload.username });
-    }));
+  login(ctx: StateContext<AuthStateModel>, action: Login) {
+    return this.authService.login(action.payload).pipe(
+      tap((result: { token: string }) => {
+        ctx.patchState({
+          token: result.token,
+          username: action.payload.username
+        });
+      })
+    );
   }
 
   @Action(Logout)
-  logout({ setState, getState }: StateContext<AuthStateModel>) {
-    const { token } = getState();
-    return this.authService.logout(token).pipe(tap(() => {
-      setState({});
-    }));
+  logout(ctx: StateContext<AuthStateModel>) {
+    const state = getState();
+    return this.authService.logout(state.token).pipe(
+      tap(() => {
+        ctx.setState(null);
+      })
+    );
   }
 
 }
@@ -89,11 +103,12 @@ We can easily accomplish this with a router guard provided by Angular.
 ```TS
 @Injectable()
 export class AuthGuard implements CanActivate {
+
   constructor(private store: Store) {}
 
   canActivate() {
-    const token = this.store.selectSnapshot(AuthState.token);
-    return token !== undefined;
+    const isAuthenticated = this.store.selectSnapshot(AuthState.isAuthenticated);
+    return isAuthenticated;
   }
 
 }
