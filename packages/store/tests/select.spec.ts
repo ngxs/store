@@ -1,7 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Component, Injectable } from '@angular/core';
 import { combineLatest, Observable, Subscription } from 'rxjs';
-import { first, last } from 'rxjs/operators';
+import { delay, first, last, scan } from 'rxjs/operators';
 
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
@@ -11,6 +11,7 @@ import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
 import { StateContext } from '../src/symbols';
 import { removeDollarAtTheEnd } from '../src/internal/internals';
+import { SelectionGlobalStrategy } from '../src/selection';
 
 describe('Select', () => {
   interface SubSubStateModel {
@@ -271,28 +272,31 @@ describe('Select', () => {
     });
   }));
 
-  it('should not fail when TypeError is custom thrown in select lambda', async(() => {
-    console.error = () => {}; // silent error
-    let countTriggeredSelection = 0;
+  it('should not fail when TypeError is custom thrown in select lambda', fakeAsync(() => {
+    interface CounterModel {
+      number: { value: number };
+    }
 
-    @State<{ number: { value: number } }>({
+    @State<CounterModel>({
       name: 'count',
       defaults: { number: { value: 0 } }
     })
     class CountState {
       @Action({ type: 'IncorrectClearState' })
-      public incorrectClear({ setState }: StateContext<{ number: { value: number } }>): void {
-        setState({} as any); // TypeError
+      public incorrectClear({ setState }: StateContext<CounterModel>): void {
+        setState({} as CounterModel); // TypeError
       }
 
       @Action({ type: 'CorrectClearState' })
-      public correctClear({ setState }: StateContext<{ number: { value: number } }>): void {
+      public correctClear({ setState }: StateContext<CounterModel>): void {
         setState({ number: { value: 0 } });
       }
 
       @Action({ type: 'Add' })
-      add({ getState, setState }: StateContext<{ number: { value: number } }>) {
-        setState({ number: { value: getState().number.value + 1 } });
+      add({ setState }: StateContext<CounterModel>) {
+        setState((counterState: CounterModel) => ({
+          number: { value: counterState.number.value + 1 }
+        }));
       }
     }
 
@@ -301,9 +305,9 @@ describe('Select', () => {
       template: ``
     })
     class CounterComponent {
-      @Select((state: { count: { number: { value: number } } }) => {
+      @Select((rootState: { count: CounterModel }) => {
         try {
-          return state.count.number.value;
+          return rootState.count.number.value;
         } catch (err) {
           throw err;
         }
@@ -325,24 +329,76 @@ describe('Select', () => {
       }
     }
 
+    @Injectable()
+    class CustomSelectionStrategy extends SelectionGlobalStrategy {
+      public static readonly DELAY_TIME: number = 500;
+      private readonly limit: number = 2;
+
+      public retryWhenHandler(errors: Observable<Error>): Observable<number> {
+        return errors.pipe(
+          scan((count: number, err: Error): number => this.scanErrorHandler(count, err), 0),
+          delay(CustomSelectionStrategy.DELAY_TIME)
+        );
+      }
+
+      private scanErrorHandler(count: number, err: Error): number {
+        if (count > this.limit) {
+          throw err;
+        }
+
+        return count + 1;
+      }
+    }
+
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([CountState])],
+      providers: [{ provide: SelectionGlobalStrategy, useClass: CustomSelectionStrategy }],
       declarations: [CounterComponent]
     });
 
     const comp: ComponentFixture<CounterComponent> = TestBed.createComponent(CounterComponent);
+    const storeRef: Store = TestBed.get(Store);
+
+    let state: number | null = null;
 
     const subscription: Subscription = comp.componentInstance.count$.subscribe(
-      () => countTriggeredSelection++
+      (value: number) => (state = value)
     );
 
+    expect(subscription.closed).toEqual(false);
+    expect(state).toEqual(0);
+
     comp.componentInstance.onClick();
-    comp.componentInstance.incorrectClearState(); // unsubscribe after error
+    expect(state).toEqual(1);
+
+    comp.componentInstance.incorrectClearState(); // TypeError when selection
+
+    expect(storeRef.snapshot()).toEqual({ count: {} });
+    expect(subscription.closed).toEqual(false);
+    expect(state).toEqual(1);
 
     comp.componentInstance.correctClearState();
+    tick(500); // retry subscribe after delay
+
     comp.componentInstance.onClick();
 
-    expect(subscription.closed).toEqual(true);
-    expect(countTriggeredSelection).toEqual(3);
+    expect(storeRef.snapshot()).toEqual({ count: { number: { value: 1 } } });
+
+    expect(subscription.closed).toEqual(false);
+    expect(state).toEqual(1);
+
+    comp.componentInstance.onClick();
+
+    expect(storeRef.snapshot()).toEqual({ count: { number: { value: 2 } } });
+    expect(subscription.closed).toEqual(false);
+    expect(state).toEqual(2);
+
+    comp.componentInstance.onClick();
+    comp.componentInstance.onClick();
+    comp.componentInstance.onClick();
+
+    expect(storeRef.snapshot()).toEqual({ count: { number: { value: 5 } } });
+    expect(subscription.closed).toEqual(false);
+    expect(state).toEqual(5);
   }));
 });

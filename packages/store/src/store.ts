@@ -1,11 +1,12 @@
 // tslint:disable:unified-signatures
 import { Inject, Injectable, Optional, Type } from '@angular/core';
-import { Observable, of, Subscription, throwError } from 'rxjs';
-import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { catchError, distinctUntilChanged, map, retryWhen, take } from 'rxjs/operators';
 import { INITIAL_STATE_TOKEN, ObjectKeyMap, ObjectUtils } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
+import { SelectionGlobalStrategy } from './selection/selection-global-strategy';
 import { getSelectorFn } from './utils/selector-utils';
 import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
@@ -18,6 +19,7 @@ export class Store {
     private _internalStateOperations: InternalStateOperations,
     private _config: NgxsConfig,
     private _internalExecutionStrategy: InternalNgxsExecutionStrategy,
+    private _selectionStrategy: SelectionGlobalStrategy,
     @Optional()
     @Inject(INITIAL_STATE_TOKEN)
     initialStateValue: any
@@ -41,18 +43,12 @@ export class Store {
     const selectorFn = getSelectorFn(selector);
     return this._stateStream.pipe(
       map(selectorFn),
+      retryWhen((errors: Observable<Error>) =>
+        this._selectionStrategy.retryWhenHandler(errors)
+      ),
       catchError(
-        (err: Error): Observable<never> | Observable<undefined> => {
-          // if error is TypeError we swallow it to prevent usual errors with property access
-          const { suppressErrors } = this._config.selectorOptions;
-
-          if (err instanceof TypeError && suppressErrors) {
-            return of(undefined);
-          }
-
-          // rethrow other errors
-          return throwError(err);
-        }
+        (error: Error): Observable<never> | Observable<undefined> =>
+          this._selectionStrategy.catchErrorHandler(error)
       ),
       distinctUntilChanged(),
       leaveNgxs(this._internalExecutionStrategy)

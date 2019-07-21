@@ -6,16 +6,21 @@ import {
   NgModule,
   Provider
 } from '@angular/core';
-import { isAngularInTestMode, NgxsBootstrapper, StateClass } from '@ngxs/store/internals';
-import { INITIAL_STATE_TOKEN, InitialState } from '@ngxs/store/internals';
+import {
+  INITIAL_STATE_TOKEN,
+  InitialState,
+  isAngularInTestMode,
+  NgxsBootstrapper,
+  StateClass
+} from '@ngxs/store/internals';
 
 import {
   FEATURE_STATE_TOKEN,
-  NG_TEST_MODE,
   NG_DEV_MODE,
+  NG_TEST_MODE,
   NgxsConfig,
-  ROOT_STATE_TOKEN,
-  NgxsModuleOptions
+  NgxsModuleOptions,
+  ROOT_STATE_TOKEN
 } from './symbols';
 import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
@@ -26,6 +31,7 @@ import { InternalDispatchedActionResults, InternalDispatcher } from './internal/
 import { InternalStateOperations } from './internal/state-operations';
 import { Store } from './store';
 import { SelectFactory } from './decorators/select';
+import { SelectionGlobalStrategy } from './selection';
 import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
 import { NgxsRootModule } from './modules/ngxs-root.module';
@@ -68,6 +74,7 @@ export class NgxsModule {
         StateStream,
         SelectFactory,
         PluginManager,
+        SelectionGlobalStrategy,
         ...states,
         ...NgxsModule.ngxsTokenProviders(states, options)
       ]
