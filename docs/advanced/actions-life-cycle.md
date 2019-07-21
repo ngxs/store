@@ -1,6 +1,6 @@
-# Actions Lifecycle
+# Actions Life Cycle
 
-This document affects the lifecycle of actions, after reading it you will understand how the NGXS handles actions and what stages they may be at.
+This document affects the life cycle of actions, after reading it you will understand how the NGXS handles actions and what stages they may be at.
 
 ## Theory
 
@@ -198,6 +198,6 @@ store
 
 We don't care what response will be handled first, but we're sure that we will do an extra work after we receive our `novels` and `detectives`. The below diagram demonstrates how asynchronous actions are handled under the hood:
 
-![Lifecycle](../assets/actions-lifecycle.png)
+![Life cycle](../assets/actions-life-cycle.png)
 
 In summary - at the very beginning, any dispatched action always has the status `DISPATCHED`. Next, NGXS looks for handlers that listen to this action, if there are any — NGXS invokes them and processes the return value and errors. If the handler has done some work and has not thrown an error, the status of the action changes to `SUCCESSFUL`. If something went wrong while processing the action, for example, the server returned an error, the status of the action changes to `ERRORED`. If an action handler is marked as `cancelUncompleted` and a new action has arrived, before the old one was processed, then NGXS interrupts the processing and changes the action status to `CANCELED`.
