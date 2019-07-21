@@ -1,5 +1,7 @@
 # Actions Lifecycle
 
+This document affects the lifecycle of actions, after reading it you will understand how the NGXS handles actions and what stages they may be at.
+
 ## Theory
 
 Any action in NGXS can be in one of four states, these states are `DISPATCHED`, `SUCCESSFUL`, `ERRORED`, `CANCELED`.
