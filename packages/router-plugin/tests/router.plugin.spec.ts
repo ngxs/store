@@ -35,7 +35,8 @@ import {
   Navigate,
   RouterNavigation,
   RouterStateModel,
-  RouterDataResolved
+  RouterDataResolved,
+  getRouteSnapshot
 } from '../';
 
 describe('NgxsRouterPlugin', () => {
@@ -609,7 +610,7 @@ describe('NgxsRouterPlugin', () => {
             await router.navigateByUrl('/');
 
             // Assert
-            const rootSnapshot = store.selectSnapshot(RouterState.route(RootComponent))!;
+            const rootSnapshot = store.selectSnapshot(getRouteSnapshot(RootComponent))!;
             expect(rootSnapshot).toBeTruthy();
             expect(rootSnapshot.component).toBe(RootComponent);
             expect(rootSnapshot.firstChild!.component).toBe(TestComponent);
@@ -633,7 +634,7 @@ describe('NgxsRouterPlugin', () => {
 
             // Assert
             const testComponentSnapshot = store.selectSnapshot(
-              RouterState.route(TestComponent)
+              getRouteSnapshot(TestComponent)
             )!;
             expect(testComponentSnapshot).toBeTruthy();
             expect(testComponentSnapshot.component).toBe(TestComponent);
@@ -657,13 +658,13 @@ describe('NgxsRouterPlugin', () => {
 
             // Assert
             const thirdChildComponentSnapshot = store.selectSnapshot(
-              RouterState.route(ThirdChildComponent)
+              getRouteSnapshot(ThirdChildComponent)
             )!;
             expect(thirdChildComponentSnapshot).toBeTruthy();
             expect(thirdChildComponentSnapshot.component).toBe(ThirdChildComponent);
 
             const fourthChildComponentSnapshot = store.selectSnapshot(
-              RouterState.route(FourthChildComponent)
+              getRouteSnapshot(FourthChildComponent)
             )!;
             expect(fourthChildComponentSnapshot).toBeTruthy();
             expect(fourthChildComponentSnapshot.component).toBe(FourthChildComponent);

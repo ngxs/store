@@ -123,6 +123,37 @@ export class AppComponent {
 }
 ```
 
+## Selecting route snapshot using `getRouteSnapshot` selector
+
+To avoid such code where you need to access deeply nested properties - we advise using the `getRouteSnapshot` selector,
+which takes the component's constructor as the parameter and searches in the tree structure for its `ActivatedRouteSnapshot`.
+For example we've got the `NovelsComponent` and we don't know how deep it is
+
+```ts
+import { Store } from '@ngxs/store';
+import { getRouteSnapshot } from '@ngxs/router-plugin';
+
+import { map } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-novels',
+  template: `
+    <app-novel *ngFor="let novel of novels$ | async" [novel]="novel"></app-novel>
+  `
+})
+export class NovelsComponent {
+
+  novels$ = this.store
+    .select(getRouteSnapshot(NovelsComponent))
+    .pipe(map(snapshot => snapshot && snapshot.data));
+
+  constructor(private store: Store) {}
+
+}
+```
+
+Notice that we map our stream to the `ActivatedRouteSnapshot.prototype.data` property but also check if it's not `null`.
+
 ## Custom Router State Serializer
 You can implement your own router state serializer to serialize the router snapshot.
 
