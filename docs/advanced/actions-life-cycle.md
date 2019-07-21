@@ -4,19 +4,21 @@ This document describes the life cycle of actions, after reading it you will und
 
 ## Theory
 
-Any action in NGXS can be in one of four states, these states are `DISPATCHED`, `SUCCESSFUL`, `ERRORED`, `CANCELED`.
+Any action in NGXS can be in one of four states, these states are `DISPATCHED`, `SUCCESSFUL`, `ERRORED`, `CANCELED`, think of it as a finite state machine.
+
+![Actions FSM](../assets/actions-fsm.png)
 
 NGXS has an internal stream of actions. When we dispatch any action using the following code:
 
 ```ts
-store.dispatch(new GetTickets());
+store.dispatch(new GetNovels());
 ```
 
 The internal actions stream emits an object called `ActionContext`, that has 2 properties:
 
 ```ts
 {
-  action: GetTicketsInstance,
+  action: GetNovelsInstance,
   status: 'DISPATCHED'
 }
 ```
@@ -25,18 +27,18 @@ There is an action stream listener that filters actions by `DISPATCHED` status a
 
 ```ts
 {
-  action: GetTicketsInstance,
+  action: GetNovelsInstance,
   status: 'SUCCESSFUL'
 }
 ```
 
 The observable returned by the `dispatch` method is then triggered after the action is handled "successfully" and, in response to this observable, you are able to do the actions you wanted to do on completion of the action.
 
-If the `GetTickets` handler throws an error, for example:
+If the `GetNovels` handler throws an error, for example:
 
 ```ts
-@Action(GetTickets)
-getTickets() {
+@Action(GetNovels)
+getNovels() {
   throw new Error('This is just a simple error!');
 }
 ```
@@ -45,7 +47,7 @@ Then the following `ActionContext` will be created:
 
 ```ts
 {
-  action: GetTicketsInstance,
+  action: GetNovelsInstance,
   status: 'ERRORED'
 }
 ```
@@ -55,37 +57,37 @@ Actions can be both synchronous and asynchronous, for example if you send a requ
 What about the `CANCELED` status? Only asynchronous actions can be canceled, this means that the new action was dispatched before the previous action handler finished doing some asynchronous job. Canceling actions can be achieved by providing options to the `@Action` decorator:
 
 ```ts
-export class TicketsState {
-  constructor(private ticketsService: TicketsService) {}
+export class NovelsState {
+  constructor(private novelsService: NovelsService) {}
 
-  @Action(GetTickets, { cancelUncompleted: true })
-  getTickets(ctx: StateContext<Ticket[]>) {
-    return this.ticketsService.getTickets().pipe(
-      tap(tickets => {
-        ctx.setState(tickets);
+  @Action(GetNovels, { cancelUncompleted: true })
+  getNovels(ctx: StateContext<Novel[]>) {
+    return this.novelsService.getNovels().pipe(
+      tap(novels => {
+        ctx.setState(novels);
       })
     );
   }
 }
 ```
 
-Imagine a component where you've got a button that dispatches the `GetTickets` action on click:
+Imagine a component where you've got a button that dispatches the `GetNovels` action on click:
 
 ```ts
 @Component({
-  selector: 'app-tickets',
+  selector: 'app-novels',
   template: `
-    <app-ticket *ngFor="let ticket of tickets$ | async"></app-ticket>
-    <button (click)="getTickets()">Get tickets</button>
+    <app-novel *ngFor="let novel of novels$ | async" [novel]="novel"></app-novel>
+    <button (click)="getNovels()">Get novels</button>
   `
 })
-export class TicketsComponent {
-  @Select(TicketsState) tickets$: Observable<Ticket[]>;
+export class NovelsComponent {
+  @Select(NovelsState) novels$: Observable<Novel[]>;
 
   constructor(private store: Store) {}
 
-  getTickets() {
-    this.store.dispatch(new GetTickets());
+  getNovels() {
+    this.store.dispatch(new GetNovels());
   }
 }
 ```
@@ -94,24 +96,24 @@ If you click the button twice - two actions will be dispatched and the previous 
 
 ```ts
 @Component({
-  selector: 'app-tickets',
+  selector: 'app-novels',
   template: `
-    <app-ticket *ngFor="let ticket of tickets"></app-ticket>
-    <button #button>Get tickets</button>
+    <app-novel *ngFor="let novel of novels" [novel]="novel"></app-novel>
+    <button #button>Get novels</button>
   `
 })
-export class TicketsComponent implements OnInit {
+export class NovelsComponent implements OnInit {
   @ViewChild('button', { static: true }) button: ElementRef<HTMLButtonElement>;
 
-  tickets: Ticket[] = [];
+  novels: Novel[] = [];
 
-  constructor(private ticketsService: TicketsService) {}
+  constructor(private novelsService: NovelsService) {}
 
   ngOnInit() {
     fromEvent(this.button.nativeElement, 'click')
-      .pipe(switchMap(() => this.ticketsService.getTickets()))
-      .subscribe(tickets => {
-        this.tickets = tickets;
+      .pipe(switchMap(() => this.novelsService.getNovels()))
+      .subscribe(novels => {
+        this.novels = novels;
       });
   }
 }
@@ -199,5 +201,120 @@ store
 We don't care what response will be handled first, but we're sure that we will do an extra work after we receive our `novels` and `detectives`. The below diagram demonstrates how asynchronous actions are handled under the hood:
 
 ![Life cycle](../assets/actions-life-cycle.png)
+
+## Error life cycle
+
+If you dispatch multiple actions at the same time, for example:
+
+```ts
+store
+  .dispatch([
+    new GetNovelById(id),
+    new GetDetectiveById(id)
+  ])
+  .subscribe(() => {
+    ...
+  });
+```
+
+NGXS will abort and return an error to the `onError` callback if at least one action handler throws an exception:
+
+```ts
+store
+  .dispatch([
+    new GetNovelById(id), // action handler throws `new Error(...)`
+    new GetDetectiveById(id)
+  ])
+  .subscribe(
+    () => {
+      // they will never see me
+    },
+    error => {
+      console.log(error); // `Error` that throwed `getNovelById` handler
+    }
+  );
+```
+
+## Fire and forget
+
+It is also possible not to wait for the completion of some asynchronous operation, this is called "fire and forget". When you return an `Observable` or `Promise` - the NGXS will wait for all asynchronous work to complete. You also can do the subscription inside the action handler and the success doesn't wait for the async work to complete.
+
+`Observable` version:
+
+```ts
+@Action(GetNovels)
+getNovels(ctx: StateContext<BooksStateModel>) {
+  this.booksService.getNovels().subscribe(novels => {
+    ctx.patchState({ novels });
+  });
+}
+```
+
+`Promise` version:
+
+```ts
+@Action(GetNovels)
+getNovels(ctx: StateContext<BooksStateModel>) {
+  this.booksService
+    .getNovels()
+    .toPromise()
+    .then(novels => {
+      ctx.patchState({ novels });
+    });
+}
+```
+
+The use case of using the "fire and forget" approach can be dispatching a new action inside a handler, without waiting for it to complete. For example we want to load detective right after novels, but we don't want to wait for it to finish:
+
+```ts
+export class BooksState {
+  constructor(private booksService: BooksService) {}
+
+  @Action(GetNovels)
+  getNovels(ctx: StateContext<BooksStateModel>) {
+    return this.booksService.getNovels().pipe(
+      tap(novels => {
+        ctx.patchState({ novels });
+        ctx.dispatch(new GetDetectives());
+      })
+    );
+  }
+
+  @Action(GetDetectives)
+  getDetectives(ctx: StateContext<BooksStateModel>) {
+    return this.booksService.getDetectives().pipe(
+      tap(detectives => {
+        ctx.patchState({ detectives });
+      })
+    );
+  }
+}
+```
+
+NGXS will wait for a response from the `getNovels`, after this, it will populate a new state and dispatch a new action, but will not wait for completion of the `GetDetectives`:
+
+```ts
+store
+  .dispatch(new GetNovels())
+  .subscribe(() => {
+    // they will see me, but detectives will be still loading in the background
+  });
+```
+
+If you want NGXS to wait for the `GetDetectives` action to complete, you've got to use `mergeMap` (or any operator that maps to the inner `Observable`, like `concatMap`, `switchMap`, `exhaustMap`):
+
+```ts
+@Action(GetNovels)
+getNovels(ctx: StateContext<BooksStateModel>) {
+  return this.booksService.getNovels().pipe(
+    tap(novels => {
+      ctx.patchState({ novels });
+    }),
+    mergeMap(() => ctx.dispatch(new GetDetectives()))
+  );
+}
+```
+
+Notice that `async/await` is not "fire and forget", since the method marked with the keyword `async` returns the `Promise` by default, so the NGXS will wait for its resolution.
 
 In summary - any dispatched action starts with the status `DISPATCHED`. Next, NGXS looks for handlers that listen to this action, if there are any — NGXS invokes them and processes the return value and errors. If the handler has done some work and has not thrown an error the status of the action changes to `SUCCESSFUL`. If something went wrong while processing the action (for example, if the server returned an error) the status of the action changes to `ERRORED`. If an action handler is marked as `cancelUncompleted` and a new action has arrived before the old one was processed then NGXS interrupts the processing of the first action and changes the action status to `CANCELED`.
