@@ -25,6 +25,7 @@
   * [Lazy Loading](advanced/lazy.md)
   * [Sub States](advanced/sub-states.md)
   * [Cancellation](advanced/cancellation.md)
+  * [Actions Life Cycle](advanced/actions-life-cycle.md)
   * [Action Handlers](advanced/action-handlers.md)
   * [Composition](advanced/composition.md)
   * [Error Handling](advanced/errors.md)
