@@ -272,7 +272,7 @@ export class ZooComponent {
 }
 ```
 
-_Inheriting selectors_
+### Inheriting selectors  
 
 Another way to share selectors across states with similar structure could be to create dynamic selectors in a base class. Using the same previous example we could:
 
