@@ -1,9 +1,6 @@
 # Selection strategy
 
-The default state selection behavior in the NGXS is correct slices of data from the store.
-However, there may be situations in which you may get unobvious behavior.
-
-By default, all type errors that occur in NGXS are not displayed in console to the user.
+The default state selection behavior in the NGXS is correct slices of data from the store. However, there may be situations in which you may get unobvious behavior. By default, all type errors that occur in NGXS are not displayed in console to the user.
 
 ```ts
 @State({
@@ -29,9 +26,7 @@ class AppComponent {
 }
 ```
 
-As you can see here is an obvious type error.
-Nothing will be displayed in the component template, but you will not see any errors in the console.
-In more difficult situations, you spend much more time before you understand where you made a mistake.
+As you can see here is an obvious type error. Nothing will be displayed in the component template, but you will not see any errors in the console. In more difficult situations, you spend much more time before you understand where you made a mistake.
 
 Well, to correct this point you can use additional parameters in the NGXS module configuration.
 
@@ -53,8 +48,7 @@ And only then can you see the error in the console.
 
 ### Custom error catch strategy
 
-However, you most likely want to control the error handling process yourself.
-To do this, you can override the default behavior of the strategy.
+However, you most likely want to control the error handling process yourself. To do this, you can override the default behavior of the strategy.
 
 ```ts
 import { SelectorStrategy } from '@ngxs/store';
@@ -75,8 +69,7 @@ class CustomSelectionStrategy implements SelectorStrategy {
 }
 ```
 
-You can implement your own error handling,
-in which you can only write messages in console without closing the state stream.
+You can implement your own error handling, in which you can only write messages in console without closing the state stream.
 
 ```ts
 import { SelectionGlobalStrategy } from '@ngxs/store';
@@ -107,9 +100,7 @@ class AppComponent {
 }
 ```
 
-One of the main problems is that after the first error in selector, the data stream no longer subscribes
-to state changes. And you will never again be able to see changes in the component template, as in this example,
-until you manually resubscribe yourself.
+One of the main problems is that after the first error in selector, the data stream no longer subscribes to state changes. And you will never again be able to see changes in the component template, as in this example, until you manually resubscribe yourself.
 
 However, if you can define your error strategy, then you can always use your auto subscribe stream.
 
@@ -178,5 +169,4 @@ class AppComponent {
 }
 ```
 
-And then if your condition is correctly, then even after errors occur,
-you can always correctly process the data stream.
+And then if your condition is correctly, then even after errors occur, you can always correctly process the data stream.
