@@ -7,94 +7,142 @@ using the store's current values and returning them instead of calling the HTTP
 service.
 
 ```TS
-import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { of } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { State, Action, StateContext } from '@ngxs/store';
+import { tap } from 'rxjs/operators';
 
-export class GetZebra {
-  static readonly type = '[Zoo] Get zebra';
-  constructor(public id: number) {}
+export class GetNovels {
+  static readonly type = '[Novels] Get novels';
 }
 
-export class GetZebraSuccess {
-  static readonly type = '[Zoo] Get zebra success';
-  constructor(public zebra: Zebra) {}
-}
-
-@State<ZooStateModel>({
-  name: 'zoo',
-  defaults: {
-    zebras: []
-  }
+@State<Novel[]>({
+  name: 'novels',
+  defaults: []
 })
-export class ZooState {
+export class NovelsState {
 
-  @Selector()
-  static getZebras(state: ZooStateModel): Zebra[] {
-    return state.zebras;
-  }
+  constructor(private novelsService: NovelsService) {}
 
-  constructor(private animalService: AnimalService) {}
-
-  @Action(GetZebra)
-  getZebra(ctx: StateContext<ZooStateModel>, action: GetZebra) {
-    const state = ctx.getState();
-    const index = state.zebras.findIndex(zebra => zebra.id === action.id);
-
-    if (index > -1) {
-      // If we have the cache, just return it from the store
-      const zebra = state.zebras[index];
-      return ctx.dispatch(new GetZebraSuccess(zebra));
-    }
-
-    return this.animalService.getZebra(action.id).pipe(
-      tap(zebra => {
-        // Cache this non-existing zebra
-        const zebras = [...state];
-        zebras.push(zebra);
-        ctx.patchState({ zebras });
-      }),
-      mergeMap(zebra => ctx.dispatch(new GetZebraSuccess(zebra)))
+  @Action(GetNovels)
+  getNovels(ctx: StateContext<Novel[]>) {
+    return this.novelsService.getNovels().pipe(
+      tap(novels => ctx.setState(novels))
     );
   }
 
 }
 ```
 
-Since the action `GetZebraSuccess` has no handlers that listens to it - we can still access the `zebra` property, thanks to the `ofActionDispatched` operator. The component code will look like this:
+Imagine that this state of novels contains only minimal information about them such as ID and name.
+When the user selects a particular novel - he is redirected to a page with full information about this novel.
+We want to load this information only once. Let's create a state and call it `novelsInfo`, this will be
+the object whose keys are the identifiers of the novels:
 
 ```ts
-import { Component } from '@angular/core';
-import { Select, Actions, Store, ofActionDispatched } from '@ngxs/store';
+import { State, Action, StateContext, createSelector } from '@ngxs/store';
+import { tap } from 'rxjs/operators';
 
-@Component({
-  selector: 'app-zebras',
-  template: `
-    <app-selected-zebra
-      *ngIf="zebra$ | async as zebra"
-      [zebra]="zebra"
-    ></app-selected-zebra>
+export interface NovelsInfoStateModel {
+  [key: string]: Novel;
+}
 
-    <app-zebras-list
-      *ngFor="let zebra of zebras$ | async"
-      (getZebra)="getZebra($event)"
-    ></app-zebras-list>
-  `
+export class GetNovelById {
+  static readonly type = '[Novels info] Get novel by ID';
+  constructor(public id: string) {}
+}
+
+@State<NovelsInfoStateModel>({
+  name: 'novelsInfo',
+  defaults: {}
 })
-export class ZebrasComponent {
+export class NovelsInfoState {
 
-  @Select(ZooState.getZebras) zebras$: Observable<Zebra[]>;
+  static getNovelById(id: string) {
+    return createSelector(
+      [NovelsInfoState],
+      (state: NovelsInfoStateModel) => state[id]
+    );
+  }
 
-  zebra$ = this.actions$.pipe(
-    ofActionDispatched(GetZebraSuccess),
-    map((action: GetZebraSuccess) => action.zebra)
-  );
+  constructor(private novelsService: NovelsService) {}
 
-  constructor(private actions$: Actions, private store: Store) {}
+  @Action(GetNovelById)
+  getNovelById(ctx: StateContext<NovelsInfoStateModel>, action: GetNovelById) {
+    const novels = ctx.getState();
+    const id = action.id;
 
-  getZebra(id: number) {
-    this.store.dispatch(new GetZebra(id));
+    if (novels[id]) {
+      // If the novel with ID has been already loaded
+      // we just break the execution
+      return;
+    }
+
+    return this.novelsService.getNovelById(id).pipe(
+      tap(novel => {
+        ctx.patchState({ [id]: novel });
+      })
+    );
   }
 
 }
+```
+
+In order to display information about the novel, we need a separate page where the router will be able to redirect the user. This page can have a linked resolver, that will preload particular novel:
+
+```ts
+import { Injectable } from '@angular/core';
+import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { Store } from '@ngxs/store';
+import { mapTo } from 'rxjs/operators';
+
+@Injectable()
+export class NovelResolver implements Resolve<Novel> {
+
+  constructor(private store: Store) {}
+
+  resolve(route: ActivatedRouteSnapshot) {
+    const id = route.paramMap.get('id');
+
+    return this.store
+      .dispatch(new GetNovelById(id))
+      .pipe(mapTo(this.store.selectSnapshot(NovelsInfoState.getNovelById(id))));
+  }
+
+}
+```
+
+The component that displays information about the novel, can access the already loaded novel via the `ActivatedRoute`:
+
+```ts
+@Component({
+  selector: 'app-novel',
+  template: `
+    <h1>{{ novel.title }}</h1>
+    <span>{{ novel.author }}</span>
+    <p>
+      {{ novel.content }}
+      <del datetime="{{ novel.publishedAt }}></del>
+    </p>
+  `
+})
+export class NovelComponent {
+
+  novel: Novel = this.route.snapshot.data.novel;
+
+  constructor(private route: ActivatedRoute) {}
+
+}
+```
+
+Don't forget to link the `NovelResolver` with the `NovelComponent`:
+
+```ts
+const routes: Routes = [
+  {
+    path: 'novel/:id',
+    component: NovelComponent,
+    resolve: {
+      novel: NovelResolver
+    }
+  }
+];
 ```
