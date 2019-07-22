@@ -128,8 +128,9 @@ These options can also be provided through the `@SelectorOptions` decorator at a
 #### `suppressErrors`
 - `true` will cause any error within a selector to result in the selector returning `undefined`.
 - `false` results in these errors propogating through the stack that triggered the evaluation of the selector that caused the error. 
-- **NOTE:** *The default for this setting will be changing to `false` in NGXS v4.  
-The default value in NGXS v3.x is `true`.*
+- **NOTE:** _The default for this setting will be changing to `false` in NGXS v4.  
+The default value in NGXS v3.x is `true`._
+
 #### `injectContainerState`
 - `true` will cause all selectors defined within a state class to receive the container class' state model as their first parameter. As a result every selector would be re-evaluated after any change to that state.  
 **NOTE:** *This is not ideal, therefore this setting default will be changing to `false` in NGXS v4.* 
