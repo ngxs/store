@@ -6,10 +6,10 @@ at how we would implement this in NGXS.
 First, let's define our state model and our actions:
 
 ```TS
-export type AuthStateModel = null | {
-  token: string;
-  username: string;
-};
+export interface AuthStateModel {
+  token: string | null;
+  username: string | null;
+}
 
 export class Login {
   static readonly type = '[Auth] Login';
@@ -22,9 +22,7 @@ export class Logout {
 ```
 
 In our state model, we want to track our token and the username. The token
-represents a JWT token that was issued for the session. If the user is not authorized,
-the state value is `null`, which corresponds to the semantics. It is very easy to work
-with the `null` value and make the appropriate checks.
+represents a JWT token that was issued for the session.
 
 Let's hook up these actions in our state class and wire that up to our login
 service.
@@ -32,18 +30,16 @@ service.
 ```TS
 @State<AuthStateModel>({
   name: 'auth',
-  defaults: null
+  defaults: {
+    token: null,
+    username: null
+  }
 })
 export class AuthState {
 
   @Selector()
   static isAuthenticated(state: AuthStateModel): boolean {
-    return state !== null;
-  }
-
-  @Selector()
-  static token(state: AuthStateModel) {
-    return state.token;
+    return state.token !== null;
   }
 
   constructor(private authService: AuthService) {}
@@ -65,7 +61,10 @@ export class AuthState {
     const state = getState();
     return this.authService.logout(state.token).pipe(
       tap(() => {
-        ctx.setState(null);
+        ctx.setState({
+          token: null,
+          username: null
+        });
       })
     );
   }

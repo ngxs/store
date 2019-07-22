@@ -53,7 +53,6 @@ export class ZooState {
   }
 
 }
-
 ```
 
 Since the action `GetZebraSuccess` has no handlers that listens to it - we can still access the `zebra` property, thanks to the `ofActionDispatched` operator. The component code will look like this:
@@ -65,8 +64,15 @@ import { Select, Actions, Store, ofActionDispatched } from '@ngxs/store';
 @Component({
   selector: 'app-zebras',
   template: `
-    <app-selected-zebra *ngIf="zebra$ | async as zebra" [zebra]="zebra"></app-selected-zebra>
-    <app-zebras-list *ngFor="let zebra of zebras$ | async" (getZebra)="getZebra($event)"></app-zebras-list>
+    <app-selected-zebra
+      *ngIf="zebra$ | async as zebra"
+      [zebra]="zebra"
+    ></app-selected-zebra>
+
+    <app-zebras-list
+      *ngFor="let zebra of zebras$ | async"
+      (getZebra)="getZebra($event)"
+    ></app-zebras-list>
   `
 })
 export class ZebrasComponent {
