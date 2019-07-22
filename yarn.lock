@@ -8575,10 +8575,10 @@ typedoc-default-themes@^0.5.0:
   resolved "https://registry.npmjs.org/typedoc-default-themes/-/typedoc-default-themes-0.5.0.tgz#6dc2433e78ed8bea8e887a3acde2f31785bd6227"
   integrity sha1-bcJDPnjti+qOiHo6zeLzF4W9Yic=
 
-typedoc-plugin-markdown@^2.0.10:
-  version "2.0.10"
-  resolved "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-2.0.10.tgz#0d6c2aeb4eb9cda27f025d504669fd4a4320a431"
-  integrity sha512-SOyHVhNO5IRW1lWpZbHE3ujSu/pXJrq7r6rZkwsA7cQLrz5fIjCeG4jQ1vq1y6qyCXg8bedJ6w/m9mA7mU3DTA==
+typedoc-plugin-markdown@^2.0.11:
+  version "2.0.11"
+  resolved "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-2.0.11.tgz#47d8aecd1667f9d083b0a3ebbff0918512808bd3"
+  integrity sha512-8+0JR4RmZPk2oWp13bjFib1Idf9IXBxP4Bp610vWzybYeNR79aZbQu8k5HdJdj/kJrTvBzVFSdjA90C9UKWOxQ==
 
 typedoc@^0.14.2:
   version "0.14.2"
