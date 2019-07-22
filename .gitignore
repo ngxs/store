@@ -7,7 +7,7 @@
 **/out-tsc
 **/src/environments/version.ts
 **/builds
-**/@ngxs
+**/@ngxs*
 
 # dependencies
 **/node_modules

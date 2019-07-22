@@ -1,17 +1,30 @@
-#!/usr/bin/env node
-'use strict';
-
-import { ngPackagr } from 'ng-packagr';
+import { getPackages, ArgvType } from './utils';
 import { join } from 'path';
-import { ArgvType, getPackages } from './utils';
 
-async function main(options: string[]) {
-  // get all packages
-  let packages = getPackages();
+type Options = {
+  specificPackage?: string;
+  watch?: boolean;
+};
 
+type NgPackagr = {
+  forProject(ngPackagrProjectPath: string): NgPackagr;
+  withOptions(options: { watch: boolean }): NgPackagr;
+  withTsConfig(tsConfigPath: string): NgPackagr;
+  build(): Promise<void>;
+};
+
+export function getOptionsFromProcessArgs(): Options {
+  const options: string[] = process.argv.slice(2, process.argv.length) || [];
   const packageFlag: number = options.indexOf(ArgvType.PACKAGE);
   const specificPackage: string = packageFlag > -1 ? options[packageFlag + 1] : '';
   const watch: boolean = options.includes(ArgvType.WATCH);
+  return { specificPackage, watch };
+}
+
+export async function buildPackages(options: Options, ngPackagr: () => NgPackagr) {
+  const { specificPackage = null, watch = false } = options || {};
+  // get all packages
+  let packages = getPackages();
 
   // build a specific package that is passed via the command line
   // `yarn build:packages --package router-plugin`
@@ -35,10 +48,3 @@ async function main(options: string[]) {
     }
   }
 }
-
-const argv: string[] = process.argv.slice(2, process.argv.length) || [];
-
-main(argv).catch(err => {
-  console.error('Error building ngxs', err);
-  process.exit(111);
-});

@@ -1,0 +1,20 @@
+{
+  "name": "ngxs-angular-7-build",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "prebuild": "yarn install --frozen-lockfile --non-interactive",
+    "build": "ts-node index"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@angular/compiler": "7.2.15",
+    "@angular/compiler-cli": "7.2.15",
+    "ng-packagr": "^5.3.0",
+    "tsickle": "0.35.0",
+    "tslib": "^1.10.0",
+    "ts-node": "^8.3.0",
+    "typescript": "~3.1.6"
+  }
+}

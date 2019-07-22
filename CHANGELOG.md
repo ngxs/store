@@ -11,13 +11,12 @@ $ npm install @ngxs/store@dev
 * Feature: expose SelectorOptions decorator [#1029](https://github.com/ngxs/store/pull/1029), [#1047](https://github.com/ngxs/store/pull/1047)
 * Feature: expose StateClass as a named type [#1042](https://github.com/ngxs/store/pull/1042), [#1070](https://github.com/ngxs/store/pull/1070)
 * Feature: Router Plugin - add `RouterDataResolved` action [#1059](https://github.com/ngxs/store/pull/1059)
-* Feature: use `jest` internally for testing [#1068](https://github.com/ngxs/store/pull/1068)
 * Feature: WebSocket Plugin - add `WebSocketConnectionUpdated` action [#1094](https://github.com/ngxs/store/pull/1094)
 * Performance: replace array `spread` with `slice` [#1066](https://github.com/ngxs/store/pull/1066), [#1071](https://github.com/ngxs/store/pull/1071)
 * Fix: Life-cycle events not triggering in root state [#1048](https://github.com/ngxs/store/pull/1048)
 * Fix: Logger Plugin - replace `Object.entries` as it breaks IE11 [#931](https://github.com/ngxs/store/pull/931)
 * Fix: Router Plugin - trigger navigation on the `QueryParams` change [#924](https://github.com/ngxs/store/pull/924)
-* Fix: Router Plugin - redirect to the manually entered route [#920](https://github.com/ngxs/store/pull/920)
+* Fix: Router Plugin - redirect to the manually entered route [#920](https://github.com/ngxs/store/pull/920), [#1159](https://github.com/ngxs/store/pull/1159)
 * Fix: Router Plugin - add `RouterDataResolved` to the union `RouterAction` type [#1093](https://github.com/ngxs/store/pull/1093)
 * Fix: Router Plugin - manual path check should not fail for SSR [#1158](https://github.com/ngxs/store/pull/1158)
 * Fix: HMR Plugin - remove old styles after reload [#1001](https://github.com/ngxs/store/pull/1001)
@@ -26,6 +25,8 @@ $ npm install @ngxs/store@dev
 * Fix: Form Plugin - introduce conditional debounce [#1061](https://github.com/ngxs/store/pull/1061)
 * Fix: WebSocket Plugin - don't stop `WebSocketSubject` stream after dispatching `WebSocketDisconnected` [#1091](https://github.com/ngxs/store/pull/1091)
 * Fix: Storage Plugin - undefined localStorage error during SSR [#1119](https://github.com/ngxs/store/pull/1119)
+* Build: CI - decouple build infrastructure from root package.json [#1163](https://github.com/ngxs/store/pull/1163)
+* Build: use `jest` internally for testing [#1068](https://github.com/ngxs/store/pull/1068)
 
 ## NGXS-Labs
 

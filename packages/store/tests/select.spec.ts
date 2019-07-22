@@ -1,7 +1,7 @@
-import { async, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { Observable, combineLatest } from 'rxjs';
-import { last, first } from 'rxjs/operators';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { first, last } from 'rxjs/operators';
 
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
@@ -250,7 +250,7 @@ describe('Select', () => {
     }
   }
 
-  it('should not fail when TypeError is thrown in select lambda', async(() => {
+  it('should not fail when TypeError is thrown in select static method', async(() => {
     @Component({
       selector: 'my-component-1',
       template: ''
@@ -269,5 +269,80 @@ describe('Select', () => {
     comp.componentInstance.state$.subscribe(state => {
       expect(state).toBeUndefined();
     });
+  }));
+
+  it('should not fail when TypeError is custom thrown in select lambda', async(() => {
+    console.error = () => {}; // silent error
+    let countTriggeredSelection = 0;
+
+    @State<{ number: { value: number } }>({
+      name: 'count',
+      defaults: { number: { value: 0 } }
+    })
+    class CountState {
+      @Action({ type: 'IncorrectClearState' })
+      public incorrectClear({ setState }: StateContext<{ number: { value: number } }>): void {
+        setState({} as any); // TypeError
+      }
+
+      @Action({ type: 'CorrectClearState' })
+      public correctClear({ setState }: StateContext<{ number: { value: number } }>): void {
+        setState({ number: { value: 0 } });
+      }
+
+      @Action({ type: 'Add' })
+      add({ getState, setState }: StateContext<{ number: { value: number } }>) {
+        setState({ number: { value: getState().number.value + 1 } });
+      }
+    }
+
+    @Component({
+      selector: 'my-counter',
+      template: ``
+    })
+    class CounterComponent {
+      @Select((state: { count: { number: { value: number } } }) => {
+        try {
+          return state.count.number.value;
+        } catch (err) {
+          throw err;
+        }
+      })
+      public count$: Observable<number>;
+
+      constructor(private store: Store) {}
+
+      public incorrectClearState(): void {
+        this.store.dispatch({ type: 'IncorrectClearState' });
+      }
+
+      public correctClearState(): void {
+        this.store.dispatch({ type: 'CorrectClearState' });
+      }
+
+      public onClick(): void {
+        this.store.dispatch({ type: 'Add' });
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([CountState])],
+      declarations: [CounterComponent]
+    });
+
+    const comp: ComponentFixture<CounterComponent> = TestBed.createComponent(CounterComponent);
+
+    const subscription: Subscription = comp.componentInstance.count$.subscribe(
+      () => countTriggeredSelection++
+    );
+
+    comp.componentInstance.onClick();
+    comp.componentInstance.incorrectClearState(); // unsubscribe after error
+
+    comp.componentInstance.correctClearState();
+    comp.componentInstance.onClick();
+
+    expect(subscription.closed).toEqual(true);
+    expect(countTriggeredSelection).toEqual(3);
   }));
 });
