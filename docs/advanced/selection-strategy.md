@@ -62,7 +62,7 @@ class CustomSelectionStrategy implements SelectorStrategy {
    ...
   }
 
-  public catchErrorHandler(err: Error): Observable<null> {
+  public catchErrorHandler(err: Error): Observable<undefined> {
     console.error(err); // only output console without throw exception
     return of(undefined);
   }

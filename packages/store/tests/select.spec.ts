@@ -378,7 +378,9 @@ describe('Select', () => {
     expect(state).toEqual(1);
 
     comp.componentInstance.correctClearState();
-    tick(500); // retry subscribe after delay
+
+    // retry subscribe after delay
+    tick(CustomSelectionStrategy.DELAY_TIME);
 
     comp.componentInstance.onClick();
 
