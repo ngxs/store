@@ -38,8 +38,13 @@ service.
 export class AuthState {
 
   @Selector()
+  static token(state: AuthStateModel): string | null {
+    return state.token;
+  }
+
+  @Selector()
   static isAuthenticated(state: AuthStateModel): boolean {
-    return state.token !== null;
+    return !!state.token;
   }
 
   constructor(private authService: AuthService) {}

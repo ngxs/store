@@ -42,14 +42,20 @@ export class ZooState {
     const index = state.zebras.findIndex(zebra => zebra.id === action.id);
 
     if (index > -1) {
-      // if we have the cache, just return it from the store
+      // If we have the cache, just return it from the store
       const zebra = state.zebras[index];
       return ctx.dispatch(new GetZebraSuccess(zebra));
     }
 
-    return this.animalService
-      .getZebra(action.id)
-      .pipe(mergeMap(zebra => ctx.dispatch(new GetZebraSuccess(zebra))));
+    return this.animalService.getZebra(action.id).pipe(
+      tap(zebra => {
+        // Cache this non-existing zebra
+        const zebras = [...state];
+        zebras.push(zebra);
+        ctx.patchState({ zebras });
+      }),
+      mergeMap(zebra => ctx.dispatch(new GetZebraSuccess(zebra)))
+    );
   }
 
 }
