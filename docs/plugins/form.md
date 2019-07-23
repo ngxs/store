@@ -27,11 +27,11 @@ and include it in the imports.
 
 ```TS
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
-import { PizzaState } from './pizza.state';
+import { NovelsState } from './novels.state';
 
 @NgModule({
   imports: [
-    NgxsModule.forRoot([PizzaState]),
+    NgxsModule.forRoot([NovelsState]),
     NgxsFormPluginModule.forRoot(),
   ]
 })
@@ -59,17 +59,17 @@ Define your default form state as part of your application state.
 import { State } from '@ngxs/store';
 
 @State({
-  name: "todos",
+  name: 'novels',
   defaults: {
-    pizzaForm: {
+    newNovelForm: {
       model: undefined,
       dirty: false,
-      status: "",
+      status: '',
       errors: {}
     }
   }
 })
-export class PizzaState {}
+export class NovelsState {}
 ```
 
 ### Form Setup
@@ -81,24 +81,21 @@ The directive uses this path to connect itself to the store and setup bindings.
 
 ```TS
 import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'pizza-form',
+  selector: 'new-novel-form',
   template: `
-    <form [formGroup]="pizzaForm" novalidate ngxsForm="todos.pizzaForm" (ngSubmit)="onSubmit()">
-      <input type="text" formControlName="toppings" />
-      <button type="submit">Order</button>
+    <form [formGroup]="newNovelForm" ngxsForm="newNovelForm" (ngSubmit)="onSubmit()">
+      <input type="text" formControlName="novelName">
+      <button type="submit">Create</button>
     </form>
   `
 })
-export class PizzaComponent {
-  pizzaForm = this.formBuilder.group({
-    toppings: ''
+export class NewNovelComponent {
+  newNovelForm = new FormGroup({
+    novelName: new FormControl()
   });
-
-  constructor(private formBuilder: FormBuilder) {
-  }
 
   onSubmit() {
     //
@@ -122,7 +119,7 @@ manually dispatch actions for things like resetting the form state. For example:
 this.store.dispatch(
   new UpdateFormDirty({
     dirty: false,
-    path: 'todos.pizzaForm'
+    path: 'novels.newNovelForm'
   })
 );
 ```
