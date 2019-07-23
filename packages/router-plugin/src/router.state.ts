@@ -213,10 +213,11 @@ export class RouterState {
         // entered in the browser's address bar
         // `PathLocationStrategy.prototype.path()` returns a concatenation of
         // `PlatformLocation.pathname` and normalized `PlatformLocation.search`.
-        // `Location.prototype.normalize` removes base href from the URL,
-        // if `baseHref` (declare in angular.json) for example is `/en`
+
+        // `Location.prototype.normalize` strips base href from the URL,
+        // if `baseHref` (declared in angular.json) for example is `/en`
         // and the URL is `/test` - then `_locationStrategy.path()` will return `/en/test`,
-        // but `/en/test` is not known to the Angular's router, so we have to remove `/en`
+        // but `/en/test` is not known to the Angular's router, so we have to strip `/en`
         // from the URL
         const currentUrl = this._location.normalize(this._locationStrategy.path());
         const currentUrlTree = this._urlSerializer.parse(currentUrl);
