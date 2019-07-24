@@ -355,7 +355,7 @@ now we can use this `zooThemeParks` selector anywhere in our application.
 
 ### Inheriting selectors  
 
-Another way to share selectors across states with similar structure could be to create dynamic selectors in a base class. Using the same previous example we could:
+When we have states that share similar structure, we can extract the shared selectors into a base class which we can later extend from. If we have an `entities` field on multiple states, we can create a base class containing a dynamic `@Selector()` for that field, and extend from it on the `@State` classes like this.
 
 ```TS
 export class EntitiesState {
