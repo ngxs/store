@@ -407,11 +407,11 @@ Then you, can use them
 @Component({ ... })
 export class ZooComponent {
   
-  @Select(ZooState.entities)
-  zoos$: Observable<Zoo[]>;
+  @Select(UsersState.entities)
+  users$: Observable<User[]>;
 
-  @Select(ParkState.entities)
-  parks$: Observable<Park[]>;
+  @Select(ProductsState.entities)
+  products$: Observable<Product[]>;
 
 }
 ```
