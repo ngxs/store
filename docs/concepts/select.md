@@ -360,7 +360,7 @@ When we have states that share similar structure, we can extract the shared sele
 ```TS
 export class EntitiesState {
 
-  static entities() {
+  static get entities() {
     return createSelector([this], (state: { entities: any[] }) => {
       return state.entities;
     });
@@ -375,19 +375,27 @@ And extend the `EntitiesState` class on each `@State` like this:
 
 ```TS
 
-@State<string[]>({
-  name: 'animals',
+export interface UsersStateModel {
+  entities: User[]
+}
+
+@State<UsersStateModel[]>({
+  name: 'users',
   defaults: []
 })
-export class ZooState extends EntitiesState {  
+export class UsersState extends EntitiesState {  
   //...
 }
 
-@State<string[]>({
-  name: 'animals',
+export interface ProductsStateModel {
+  entities: Product[]
+}
+
+@State<ProductsStateModel[]>({
+  name: 'roles',
   defaults: []
 })
-export class ParkState extends EntitiesState {  
+export class ProductsState extends EntitiesState {  
   //...
 }
 ```
@@ -399,10 +407,10 @@ Then you, can use them
 @Component({ ... })
 export class ZooComponent {
   
-  @Select(ZooState.entities())
+  @Select(ZooState.entities)
   zoos$: Observable<Zoo[]>;
 
-  @Select(ParkState.entities())
+  @Select(ParkState.entities)
   parks$: Observable<Park[]>;
 
 }
