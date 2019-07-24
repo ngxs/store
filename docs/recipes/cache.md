@@ -86,63 +86,47 @@ export class NovelsInfoState {
 }
 ```
 
-In order to display information about the novel, we need a separate page where the router will be able to redirect the user. This page can have a linked resolver, that will preload particular novel:
-
-```ts
-import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-import { Store } from '@ngxs/store';
-import { mapTo } from 'rxjs/operators';
-
-@Injectable()
-export class NovelResolver implements Resolve<Novel> {
-
-  constructor(private store: Store) {}
-
-  resolve(route: ActivatedRouteSnapshot) {
-    const id = route.paramMap.get('id');
-
-    return this.store
-      .dispatch(new GetNovelById(id))
-      .pipe(mapTo(this.store.selectSnapshot(NovelsInfoState.getNovelById(id))));
-  }
-
-}
-```
-
-The component that displays information about the novel, can access the already loaded novel via the `ActivatedRoute`:
+The component, that displays information about the novel, can subscribe to the `params` observable of the `ActivatedRoute` to listen to the params change. The code will look as following:
 
 ```ts
 @Component({
   selector: 'app-novel',
   template: `
-    <h1>{{ novel.title }}</h1>
-    <span>{{ novel.author }}</span>
+    <h1>{{ novel?.title }}</h1>
+    <span>{{ novel?.author }}</span>
     <p>
-      {{ novel.content }}
-      <del datetime="{{ novel.publishedAt }}></del>
+      {{ novel?.content }}
+      <del datetime="{{ novel?.publishedAt }}"></del>
     </p>
   `
 })
-export class NovelComponent {
+export class NovelComponent implements OnDestroy {
 
-  novel: Novel = this.route.snapshot.data.novel;
+  novel: Novel;
 
-  constructor(private route: ActivatedRoute) {}
+  private destroy$ = new Subject<void>();
+
+  constructor(route: ActivatedRoute, store: Store) {
+    route.params
+      .pipe(
+        switchMap(params =>
+          store
+            .dispatch(new GetNovelById(params.id))
+            .pipe(mapTo(store.selectSnapshot(NovelsInfoState.getNovelById(params.id))))
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(novel => {
+        this.novel = novel;
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
 }
 ```
 
-Don't forget to link the `NovelResolver` with the `NovelComponent`:
-
-```ts
-const routes: Routes = [
-  {
-    path: 'novel/:id',
-    component: NovelComponent,
-    resolve: {
-      novel: NovelResolver
-    }
-  }
-];
-```
+We're using the `switchMap` in this example, so if the user navigates to another novel and `params` observable emits new value - we have to complete previously started asynchronous job (in our case it's getting novel by ID).
