@@ -379,7 +379,7 @@ export interface UsersStateModel {
   entities: User[]
 }
 
-@State<UsersStateModel[]>({
+@State<UsersStateModel>({
   name: 'users',
   defaults: []
 })
@@ -391,8 +391,8 @@ export interface ProductsStateModel {
   entities: Product[]
 }
 
-@State<ProductsStateModel[]>({
-  name: 'roles',
+@State<ProductsStateModel>({
+  name: 'products',
   defaults: []
 })
 export class ProductsState extends EntitiesState {  
@@ -405,7 +405,7 @@ Then you, can use them
 ```TS
 
 @Component({ ... })
-export class ZooComponent {
+export class AppComponent {
   
   @Select(UsersState.entities)
   users$: Observable<User[]>;
