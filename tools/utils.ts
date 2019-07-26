@@ -47,14 +47,22 @@ export function execute(script: string, options: ExecOptions = {}): Promise<stri
 export async function publishAllPackagesToNpm(version: any, tag: string) {
   const packages = getPackages();
   for (const pack of packages) {
-    const packageDescription = `${pack.buildPath} ${version} @${tag}`;
     try {
-      const script = `yarn publish --access public --non-interactive --no-git-tag-version --new-version ${version} --tag ${tag}`;
-      const output = await execute(script, { cwd: pack.buildPath });
-      console.log(`Published ${packageDescription} /r/n -> ${output}`);
-    } catch ({ error, stdErr }) {
-      console.log(`Error Publishing ${packageDescription} /r/n -> ${error}`);
-      throw error;
+      await publishPackage(pack, version, tag);
+    } catch (error) {
+      // One retry
+      await publishPackage(pack, version, tag);
     }
+  }
+}
+async function publishPackage(pack: Package, version: any, tag: string) {
+  const packageDescription = `${pack.buildPath} ${version} @${tag}`;
+  try {
+    const script = `yarn publish --access public --non-interactive --no-git-tag-version --new-version ${version} --tag ${tag}`;
+    const output = await execute(script, { cwd: pack.buildPath });
+    console.log(`Published ${packageDescription} /r/n -> ${output}`);
+  } catch ({ error, stdErr }) {
+    console.log(`Error Publishing ${packageDescription} /r/n -> ${error}`);
+    throw error;
   }
 }
