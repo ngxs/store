@@ -5,7 +5,7 @@
 $ npm install @ngxs/store@dev
 ```
 
-* ...
+* Fix: Router Plugin: normalize URL by stripping base href [#1178](https://github.com/ngxs/store/pull/1178)
 
 # 3.5.0 2019-07-22
 
