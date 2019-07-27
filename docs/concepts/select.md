@@ -354,6 +354,81 @@ export class CityService {
 
 now we can use this `zooThemeParks` selector anywhere in our application.
 
+### Inheriting selectors  
+
+When we have states that share similar structure, we can extract the shared selectors into a base class which we can later extend from. If we have an `entities` field on multiple states, we can create a base class containing a dynamic `@Selector()` for that field, and extend from it on the `@State` classes like this.
+
+```TS
+export class EntitiesState {
+
+  static entities<T>() :T[] {
+    return createSelector([this], (state: { entities: T[] }) => {
+      return state.entities;
+    });
+  }
+
+  //...
+
+}
+```
+
+And extend the `EntitiesState` class on each `@State` like this:
+
+```TS
+
+export interface UsersStateModel {
+  entities: User[];
+}
+
+@State<UsersStateModel>({
+  name: 'users',
+  defaults: {
+    entities: []
+  }
+})
+export class UsersState extends EntitiesState {  
+  //...
+}
+
+export interface ProductsStateModel {
+  entities: Product[];
+}
+
+@State<ProductsStateModel>({
+  name: 'products',
+  defaults: {
+    entities: []
+  }
+})
+export class ProductsState extends EntitiesState {  
+  //...
+}
+```
+
+Then you can use them as follows:
+
+```TS
+
+@Component({ ... })
+export class AppComponent {
+  
+  @Select(UsersState.entities<User>())
+  users$: Observable<User[]>;
+
+  @Select(ProductsState.entities<Product>())
+  products$: Observable<Product[]>;
+
+}
+```
+
+Or: 
+
+```TS
+
+this.store.select(UsersState.entities<User>())
+
+```
+
 ## Special Considerations
 
 ### Angular Libraries: Use of lambdas in static functions
