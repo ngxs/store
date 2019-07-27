@@ -376,7 +376,7 @@ And extend the `EntitiesState` class on each `@State` like this:
 ```TS
 
 export interface UsersStateModel {
-  entities: User[]
+  entities: User[];
 }
 
 @State<UsersStateModel>({
@@ -390,7 +390,7 @@ export class UsersState extends EntitiesState {
 }
 
 export interface ProductsStateModel {
-  entities: Product[]
+  entities: Product[];
 }
 
 @State<ProductsStateModel>({
@@ -420,7 +420,7 @@ export class AppComponent {
 }
 ```
 
-or 
+Or: 
 
 ```TS
 
