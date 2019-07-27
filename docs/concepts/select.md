@@ -360,8 +360,8 @@ When we have states that share similar structure, we can extract the shared sele
 ```TS
 export class EntitiesState {
 
-  static get entities() {
-    return createSelector([this], (state: { entities: any[] }) => {
+  static entities<T>() :T[] {
+    return createSelector([this], (state: { entities: T[] }) => {
       return state.entities;
     });
   }
@@ -381,7 +381,9 @@ export interface UsersStateModel {
 
 @State<UsersStateModel>({
   name: 'users',
-  defaults: []
+  defaults: {
+    entities: []
+  }
 })
 export class UsersState extends EntitiesState {  
   //...
@@ -393,27 +395,37 @@ export interface ProductsStateModel {
 
 @State<ProductsStateModel>({
   name: 'products',
-  defaults: []
+  defaults: {
+    entities: []
+  }
 })
 export class ProductsState extends EntitiesState {  
   //...
 }
 ```
 
-Then you, can use them
+Then you can use them as follows:
 
 ```TS
 
 @Component({ ... })
 export class AppComponent {
   
-  @Select(UsersState.entities)
+  @Select(UsersState.entities<User>())
   users$: Observable<User[]>;
 
-  @Select(ProductsState.entities)
+  @Select(ProductsState.entities<Product>())
   products$: Observable<Product[]>;
 
 }
+```
+
+or 
+
+```TS
+
+this.store.select(UsersState.entities<User>())
+
 ```
 
 ## Special Considerations
