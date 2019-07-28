@@ -73,7 +73,7 @@
     "test:integration": "ng run integration:test --colors --runInBand",
     "test:ssr:server": "cd integration && ts-node server.ts",
     "test:ssr:script": "node ./node_modules/npm-delay 2000 && cd integration && ts-node test.ssr.ts",
-    "test:types": "dtslint packages/store/types",
+    "test:types": "dtslint packages/store/types --localTs node_modules/typescript/lib --expectOnly",
     "// - CI": "CI Testing",
     "test:ci": "cross-env CI=true ng test --project ngxs --colors --runInBand",
     "test:ci:integration": "cross-env CI=true ng run integration:test --colors --runInBand && ng run integration:build:production",
