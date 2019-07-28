@@ -6,7 +6,8 @@ export enum VALIDATION_CODE {
   STATE_NAME_PROPERTY = 'STATE_NAME_PROPERTY',
   STATE_DECORATOR = 'STATE_DECORATOR',
   INCORRECT_PRODUCTION = 'INCORRECT_PRODUCTION',
-  INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT'
+  INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT',
+  SELECTOR_PROPERTY = 'SELECTOR_PROPERTY'
 }
 
 export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
@@ -22,5 +23,6 @@ export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
     'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
   [VALIDATION_CODE.INCORRECT_DEVELOPMENT]: () =>
     'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n' +
-    'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
+    'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
+  [VALIDATION_CODE.SELECTOR_PROPERTY]: () => 'Selectors only work on methods'
 };

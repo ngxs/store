@@ -18,10 +18,10 @@ describe('[TEST]: Action Types', () => {
   });
 
   it('should be correct type in selector/select decorator', () => {
-    class Any { }
+    class Any {}
 
-    Selector(); // $ExpectType (target: any, methodName: string, descriptor: PropertyDescriptor) => { configurable: boolean; get(): any; }
-    assertType(() => Selector([{ foo: 'bar' }])); // $ExpectType (target: any, methodName: string, descriptor: PropertyDescriptor) => { configurable: boolean; get(): any; }
+    Selector(); // $ExpectType MethodAccessorType
+    assertType(() => Selector([{ foo: 'bar' }])); // $ExpectType MethodAccessorType
     assertType(() => Selector({})); // $ExpectError
 
     Select(); // $ExpectType (target: any, name: string) => void
@@ -98,5 +98,46 @@ describe('[TEST]: Action Types', () => {
     }
 
     TestBed.get(CheckSelectorComponent); // $ExpectType any
+  });
+
+  it('should be correct passed selectors', () => {
+    @State<object[]>({ name: 'zoo' })
+    class Zoo {}
+
+    @State<object[]>({ name: 'themePark' })
+    class ThemePark {}
+
+    class MyPandaState {
+      @Selector() static pandas0 = (state: string[]): string[] => state; // $ExpectError
+
+      @Selector() // $ExpectType (state: string[]) => string[]
+      static pandas1(state: string[]): string[] {
+        return state;
+      }
+
+      @Selector([]) // $ExpectType (state: string[]) => string[]
+      static pandas2(state: string[]): string[] {
+        return state;
+      }
+
+      @Selector(['Hello', 'World']) // $ExpectType (state: string[]) => string[]
+      static pandas3(state: string[]): string[] {
+        return state;
+      }
+
+      @Selector([Zoo, ThemePark]) // $ExpectType (zoos: object[], themeParks: object[]) => object[]
+      static pandas4(zoos: object[], themeParks: object[]): object[] {
+        return [...zoos, ...themeParks];
+      }
+
+      @Selector([() => {}, function custom() {}, { a: 1, b: 2 }]) // $ExpectType (state: string[]) => string[]
+      static pandas5(state: string[]): string[] {
+        return state;
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([MyPandaState])]
+    });
   });
 });

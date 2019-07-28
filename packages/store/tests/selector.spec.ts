@@ -8,6 +8,7 @@ import { NgxsModule } from '../src/module';
 import { Selector } from '../src/decorators/selector';
 import { NgxsConfig } from '../src/symbols';
 import { SelectorOptions } from '../src/decorators/selector-options';
+import { CONFIG_MESSAGES, VALIDATION_CODE } from '../src/configs/messages.config';
 
 describe('Selector', () => {
   interface MyStateModel {
@@ -843,6 +844,19 @@ describe('Selector', () => {
       expect(errorMessage).toEqual(
         `Cannot assign to read only property '0' of object '[object Array]'`
       );
+    });
+
+    it('@Selector should only work on methods', () => {
+      try {
+        class MyComponent {
+          // @ts-ignore
+          @Selector([]) public field: any;
+        }
+
+        new MyComponent();
+      } catch (e) {
+        expect(e.message).toEqual(CONFIG_MESSAGES[VALIDATION_CODE.SELECTOR_PROPERTY]());
+      }
     });
   });
 });
