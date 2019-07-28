@@ -550,6 +550,9 @@ function createTestModule(
   })
   class AppCmp {}
 
+  @NgModule()
+  class TestLazyModule {}
+
   @Component({
     selector: 'pagea-cmp',
     template: 'pagea-cmp'
@@ -574,7 +577,7 @@ function createTestModule(
           },
           {
             path: 'load',
-            loadChildren: () => import('./test-lazy.module').then(m => m.TestLazyModule),
+            loadChildren: () => TestLazyModule,
             canLoad: ['CanLoadNext']
           }
         ],
