@@ -1,11 +1,8 @@
 {
-  "extends": "raynos-dtslint/dtslint.json",
+  "extends": "dtslint/dtslint.json",
   "rules": {
     "semicolon": false,
-    "indent": [
-      false,
-      "tabs"
-    ],
+    "indent": [false, "tabs"],
     "no-useless-files": false,
     "eofline": false,
     "no-unnecessary-class": false,
@@ -32,6 +29,10 @@
     "interface-name": false,
     "prefer-switch": false,
     "no-misused-new": false,
-    "prefer-const": false
+    "prefer-const": false,
+    "one-variable-per-declaration": false,
+    "no-arg": false,
+    "object-literal-key-quotes": false,
+    "no-var-keyword": false
   }
 }
