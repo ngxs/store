@@ -128,7 +128,7 @@
     "jest-preset-angular": "^7.1.1",
     "lint-staged": "^9.2.1",
     "mocha": "^6.2.0",
-    "mock-socket": "^8.1.0",
+    "mock-socket": "^8.1.1",
     "npm-delay": "^1.0.4",
     "npm-run-all": "^4.1.5",
     "prettier": "1.18.2",

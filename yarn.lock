@@ -5872,10 +5872,10 @@ mocha@^6.2.0:
     yargs-parser "13.0.0"
     yargs-unparser "1.5.0"
 
-mock-socket@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.npmjs.org/mock-socket/-/mock-socket-8.1.0.tgz#d7134eccf34dc6305433495fdcc00feb51015721"
-  integrity sha512-1nY+uRPbnykOcIjl9H3L6Iy6pX4lvremW2l2f+T/pu7j10eNZwWipGuCVOQAD+A9SgWjwKQgUySpKPwQp+vMSQ==
+mock-socket@^8.1.1:
+  version "8.1.1"
+  resolved "https://registry.npmjs.org/mock-socket/-/mock-socket-8.1.1.tgz#31a1e4bca1e6a7983b8b7c55c089b995a36f4d36"
+  integrity sha512-ValJ4+1d9hfoNgR4pFv+g1TaGRLFTSM1EMWi3g+aN6pxPzvag0WIZCwaFKZIGfBhonx3Q0IeUVmXRPw1YoIyhA==
   dependencies:
     url-parse "^1.4.4"
 
