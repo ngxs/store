@@ -186,12 +186,12 @@ export class StateFactory {
             }
 
             if (result instanceof Observable) {
-              result = result.pipe(
-                actionMeta.options.cancelUncompleted
-                  ? // todo: ofActionDispatched should be used with action class
-                    takeUntil(actions$.pipe(ofActionDispatched(action as any)))
-                  : map(r => r)
-              ); // map acts like a noop
+              if (actionMeta.options.cancelUncompleted) {
+                // todo: ofActionDispatched should be used with action class
+                result = result.pipe(
+                  takeUntil(actions$.pipe(ofActionDispatched(action as any)))
+                );
+              }
             } else {
               result = of({}).pipe(shareReplay());
             }
