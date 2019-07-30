@@ -20,8 +20,8 @@ describe('[TEST]: Action Types', () => {
   it('should be correct type in selector/select decorator', () => {
     class Any {}
 
-    Selector(); // $ExpectType MethodAccessorType
-    assertType(() => Selector([{ foo: 'bar' }])); // $ExpectType MethodAccessorType
+    Selector(); // $ExpectType MethodDecorator
+    assertType(() => Selector([{ foo: 'bar' }])); // $ExpectType MethodDecorator
     assertType(() => Selector({})); // $ExpectError
 
     Select(); // $ExpectType (target: any, name: string) => void
