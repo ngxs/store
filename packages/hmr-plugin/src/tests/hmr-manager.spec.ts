@@ -282,4 +282,12 @@ describe('HMR Plugin', () => {
       expect(e.message).toEqual('Store not found, maybe you forgot to import the NgxsModule');
     }
   });
+
+  it('should be correct destroy old module', async () => {
+    const { appModule, webpackModule } = await hmrTestBed(AppMockModule);
+    expect(appModule._destroyed).toEqual(false);
+
+    webpackModule.destroyModule();
+    expect(appModule._destroyed).toEqual(true);
+  });
 });

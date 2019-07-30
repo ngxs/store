@@ -57,6 +57,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
     const elements: ComponentRef<any>[] = appRef.components.map(c => c.location.nativeElement);
     const createNewModule: () => void = createNewHosts(elements);
     removeNgStyles();
+    this.ngModule.destroy();
     createNewModule();
   }
 
