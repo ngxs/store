@@ -380,7 +380,7 @@ export function removeDollarAtTheEnd(name: string): string {
   return dollarAtTheEnd ? name.slice(0, lastCharIndex) : name;
 }
 
-export type MethodAccessorType = (
+export type MethodDecorator = (
   method: any,
   name: string,
   descriptor: PropertyDescriptor

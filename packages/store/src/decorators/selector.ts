@@ -1,11 +1,11 @@
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../configs/messages.config';
-import { MethodAccessorType } from '../internal/internals';
+import { MethodDecorator } from '../internal/internals';
 import { createSelector } from '../utils/selector-utils';
 
 /**
- * Decorator for memoization a state selector.
+ * Decorator for memoizing a state selector.
  */
-export function Selector(selectors?: any[]): MethodAccessorType {
+export function Selector(selectors?: any[]): MethodDecorator {
   return (method: any, name: string, descriptor: PropertyDescriptor): PropertyDescriptor => {
     const isNotMethod: boolean = !(descriptor && descriptor.value !== null);
 
