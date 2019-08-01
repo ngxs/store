@@ -1,12 +1,15 @@
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../configs/messages.config';
-import { MethodDecorator } from '../internal/internals';
 import { createSelector } from '../utils/selector-utils';
 
 /**
  * Decorator for memoizing a state selector.
  */
 export function Selector(selectors?: any[]): MethodDecorator {
-  return (method: any, name: string, descriptor: PropertyDescriptor): PropertyDescriptor => {
+  return <T>(
+    target: Object,
+    propertyKey: string | symbol,
+    descriptor: TypedPropertyDescriptor<T>
+  ): TypedPropertyDescriptor<T> | void => {
     const isNotMethod: boolean = !(descriptor && descriptor.value !== null);
 
     if (isNotMethod) {
@@ -23,10 +26,10 @@ export function Selector(selectors?: any[]): MethodDecorator {
           memoizedFn ||
           createSelector(
             selectors,
-            originalFn,
+            originalFn as any,
             {
-              containerClass: method,
-              selectorName: name,
+              containerClass: target,
+              selectorName: propertyKey as string,
               getSelectorOptions() {
                 return {};
               }

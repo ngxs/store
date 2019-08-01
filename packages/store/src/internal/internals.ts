@@ -379,9 +379,3 @@ export function removeDollarAtTheEnd(name: string): string {
   const dollarAtTheEnd = name.charCodeAt(lastCharIndex) === DOLLAR_CHAR_CODE;
   return dollarAtTheEnd ? name.slice(0, lastCharIndex) : name;
 }
-
-export type MethodDecorator = (
-  method: any,
-  name: string,
-  descriptor: PropertyDescriptor
-) => PropertyDescriptor;
