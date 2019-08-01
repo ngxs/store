@@ -285,9 +285,9 @@ describe('HMR Plugin', () => {
 
   it('should be correct destroy old module', async () => {
     const { appModule, webpackModule } = await hmrTestBed(AppMockModule);
-    expect(appModule._destroyed).toEqual(false);
+    expect((appModule as any)['_destroyed']).toEqual(false);
 
     webpackModule.destroyModule();
-    expect(appModule._destroyed).toEqual(true);
+    expect((appModule as any)['_destroyed']).toEqual(true);
   });
 });

@@ -9,8 +9,6 @@ import { Actions, Store } from '../../../store/src/public_api';
 import { MockState, WebpackMockModule } from './hmr-mock';
 import { BootstrapModuleFn, hmr } from '../public_api';
 
-type NgxHmrModuleRef = NgModuleRef<any> & { _destroyed?: boolean };
-
 export function setup<T>(moduleType: Type<T>) {
   TestBed.resetTestEnvironment();
   TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -26,7 +24,7 @@ export async function hmrTestBed<T>(moduleType: Type<T>, options: { storedValue?
 
   const snapshotContainer: { snapshot?: any } = webpackModule.hot.data;
   snapshotContainer.snapshot = options.storedValue;
-  const appModule: NgxHmrModuleRef = await hmr(webpackModule, bootstrap);
+  const appModule: NgModuleRef<T> = await hmr(webpackModule, bootstrap);
   const actions$ = appModule.injector.get<Actions>(Actions);
   const store = appModule.injector.get<Store>(Store);
   const getStoredValue = () => snapshotContainer.snapshot;
