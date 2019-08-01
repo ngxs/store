@@ -25,3 +25,6 @@ script:
 
   # INTEGRATION TEST
   - yarn run test:types
+
+  # CHECK BUNDLE SIZE
+  - yarn run bundlesize
