@@ -85,7 +85,9 @@ jobs:
       - *attach_workspace
       - run:
           name: Lint
-          command: yarn lint
+          command: |
+            yarn lint
+            yarn eslint
 
   unit_tests:
     <<: *job_defaults
