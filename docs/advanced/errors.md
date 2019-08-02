@@ -11,7 +11,6 @@ export class MyErrorHandler implements ErrorHandler {
     console.log('ERROR! ', error);
 
     // Make sure to rethrow the error so Angular can pick it up
-    //
     throw error;
   }
 }
