@@ -23,7 +23,7 @@ import {
   RouterDataResolved
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
-import { searchRoute } from './get-route-snapshot';
+import { searchRoute } from './search-route';
 
 export type RouterStateModel<T = RouterStateSnapshot> = {
   state?: T;
