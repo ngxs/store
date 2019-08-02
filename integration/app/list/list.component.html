@@ -4,9 +4,9 @@
 </div>
 
 <div *ngIf="router$ | async as router">
-  {{ join('router$', router.root.firstChild.firstChild.data.list) }}
+  {{ getListDisplayText('router$', router.root.firstChild.firstChild.data.list) }}
 </div>
 
-<div *ngIf="route$ | async as route">
-  {{ join('route$', route.data.list) }}
+<div *ngIf="snapshot$ | async as snapshot">
+  {{ getListDisplayText('snapshot$', snapshot.data.list) }}
 </div>

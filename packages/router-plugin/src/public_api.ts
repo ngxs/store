@@ -5,5 +5,4 @@ export {
   DefaultRouterStateSerializer,
   SerializedRouterStateSnapshot
 } from './serializer';
-export { getRouteSnapshot } from './get-route-snapshot';
 export * from './router.actions';

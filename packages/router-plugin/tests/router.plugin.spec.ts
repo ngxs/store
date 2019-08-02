@@ -1,16 +1,9 @@
-import {
-  Component,
-  Provider,
-  Type,
-  NgModule,
-  createPlatform,
-  destroyPlatform
-} from '@angular/core';
-import { DOCUMENT, APP_BASE_HREF } from '@angular/common';
+import { Component, Provider, Type, NgModule } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { ɵgetDOM as getDOM, BrowserModule } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { Router, Params, RouterStateSnapshot, RouterModule, Resolve } from '@angular/router';
 
 import { Observable } from 'rxjs';
@@ -35,9 +28,10 @@ import {
   Navigate,
   RouterNavigation,
   RouterStateModel,
-  RouterDataResolved,
-  getRouteSnapshot
+  RouterDataResolved
 } from '../';
+
+import { freshPlatform } from './helpers';
 
 describe('NgxsRouterPlugin', () => {
   it('should dispatch router state events', fakeAsync(async () => {
@@ -235,43 +229,6 @@ describe('NgxsRouterPlugin', () => {
   }));
 
   describe('Tests that require own platform', () => {
-    function createRootElement() {
-      const document = TestBed.get(DOCUMENT);
-      const root = getDOM().createElement('app-root', document);
-      getDOM().appendChild(document.body, root);
-    }
-
-    function removeRootElement() {
-      const document = TestBed.get(DOCUMENT);
-      const root = getDOM().querySelector(document, 'app-root');
-      document.body.removeChild(root);
-    }
-
-    function destroyPlatformBeforeBootstrappingTheNewOne() {
-      destroyPlatform();
-      createRootElement();
-    }
-
-    // As we create our custom platform via `bootstrapModule`
-    // we have to destroy it after assetions and revert
-    // the previous one
-    function resetPlatformAfterBootstrapping() {
-      removeRootElement();
-      destroyPlatform();
-      createPlatform(TestBed);
-    }
-
-    function freshPlatform(fn: Function): (...args: any[]) => any {
-      return async function testWithAFreshPlatform(this: any, ...args: any[]) {
-        try {
-          destroyPlatformBeforeBootstrappingTheNewOne();
-          return await fn.apply(this, args);
-        } finally {
-          resetPlatformAfterBootstrapping();
-        }
-      };
-    }
-
     const test = 'test-data';
 
     class TestResolver implements Resolve<string> {
@@ -296,30 +253,6 @@ describe('NgxsRouterPlugin', () => {
       public router$: Observable<RouterStateModel>;
     }
 
-    @Component({
-      selector: 'first-child',
-      template: '<router-outlet></router-outlet>'
-    })
-    class FirstChildComponent {}
-
-    @Component({
-      selector: 'second-child',
-      template: '<router-outlet></router-outlet>'
-    })
-    class SecondChildComponent {}
-
-    @Component({
-      selector: 'third-child',
-      template: '<router-outlet></router-outlet>'
-    })
-    class ThirdChildComponent {}
-
-    @Component({
-      selector: 'fourth-child',
-      template: 'fourth child'
-    })
-    class FourthChildComponent {}
-
     function getTestModule(states: any[] = []) {
       @NgModule({
         imports: [
@@ -329,28 +262,6 @@ describe('NgxsRouterPlugin', () => {
           // to be sure our data is resolved - we have to use native `RouterModule`
           RouterModule.forRoot(
             [
-              {
-                path: 'first',
-                component: FirstChildComponent,
-                children: [
-                  {
-                    path: 'second',
-                    component: SecondChildComponent,
-                    children: [
-                      {
-                        path: 'third',
-                        component: ThirdChildComponent,
-                        children: [
-                          {
-                            path: 'fourth',
-                            component: FourthChildComponent
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
               {
                 path: '**',
                 component: TestComponent,
@@ -364,14 +275,7 @@ describe('NgxsRouterPlugin', () => {
           NgxsModule.forRoot(states),
           NgxsRouterPluginModule.forRoot()
         ],
-        declarations: [
-          RootComponent,
-          TestComponent,
-          FirstChildComponent,
-          SecondChildComponent,
-          ThirdChildComponent,
-          FourthChildComponent
-        ],
+        declarations: [RootComponent, TestComponent],
         bootstrap: [RootComponent],
         providers: [
           TestResolver,
@@ -589,85 +493,6 @@ describe('NgxsRouterPlugin', () => {
             const counter = store.selectSnapshot(CounterState.counter);
             expect(selectorCalledTimes).toEqual(3);
             expect(selectorCalledTimes).toEqual(counter);
-          })
-        )
-      );
-    });
-
-    describe('Route selector', () => {
-      it(
-        'should select root snapshot',
-        freshPlatform(
-          fakeAsync(async () => {
-            // Arrange
-            const { injector } = await platformBrowserDynamic().bootstrapModule(
-              getTestModule()
-            );
-            const store: Store = injector.get(Store);
-            const router: Router = injector.get(Router);
-
-            // Act
-            await router.navigateByUrl('/');
-
-            // Assert
-            const rootSnapshot = store.selectSnapshot(getRouteSnapshot(RootComponent))!;
-            expect(rootSnapshot).toBeTruthy();
-            expect(rootSnapshot.component).toBe(RootComponent);
-            expect(rootSnapshot.firstChild!.component).toBe(TestComponent);
-          })
-        )
-      );
-
-      it(
-        'should select "TestComponent"\'s snapshot and its data',
-        freshPlatform(
-          fakeAsync(async () => {
-            // Arrange
-            const { injector } = await platformBrowserDynamic().bootstrapModule(
-              getTestModule()
-            );
-            const store: Store = injector.get(Store);
-            const router: Router = injector.get(Router);
-
-            // Act
-            await router.navigateByUrl('/');
-
-            // Assert
-            const testComponentSnapshot = store.selectSnapshot(
-              getRouteSnapshot(TestComponent)
-            )!;
-            expect(testComponentSnapshot).toBeTruthy();
-            expect(testComponentSnapshot.component).toBe(TestComponent);
-            expect(testComponentSnapshot.data).toEqual({ test: 'test-data' });
-          })
-        )
-      );
-
-      it(
-        'should activate the deepest fourth component and select its snapshot',
-        freshPlatform(
-          fakeAsync(async () => {
-            // Arrange
-            const { injector } = await platformBrowserDynamic().bootstrapModule(
-              getTestModule([])
-            );
-            const store: Store = injector.get(Store);
-            const router: Router = injector.get(Router);
-
-            await router.navigateByUrl('/first/second/third/fourth');
-
-            // Assert
-            const thirdChildComponentSnapshot = store.selectSnapshot(
-              getRouteSnapshot(ThirdChildComponent)
-            )!;
-            expect(thirdChildComponentSnapshot).toBeTruthy();
-            expect(thirdChildComponentSnapshot.component).toBe(ThirdChildComponent);
-
-            const fourthChildComponentSnapshot = store.selectSnapshot(
-              getRouteSnapshot(FourthChildComponent)
-            )!;
-            expect(fourthChildComponentSnapshot).toBeTruthy();
-            expect(fourthChildComponentSnapshot.component).toBe(FourthChildComponent);
           })
         )
       );

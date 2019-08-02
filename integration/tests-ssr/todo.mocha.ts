@@ -1,16 +1,15 @@
 import { expect } from 'chai';
 
 const request = require('./request-service');
-let body: string;
 
 describe('NGXS + SSR', () => {
   it('"ngOnInit todo" should exist', async () => {
-    body = await request('http://localhost:4000/list');
+    const body = await request('http://localhost:4000/list');
     expect(body.includes('ngOnInit todo')).to.equal(true);
   });
 
   it('lifecycle hooks should exist in the correct order (root => lazy)', async () => {
-    body = await request('http://localhost:4000/list');
+    const body = await request('http://localhost:4000/list');
 
     const ngxsOnInitIndex = body.indexOf('NgxsOnInit todo');
     const ngxsAfterBootstrapIndex = body.indexOf('NgxsAfterBootstrap todo');
@@ -34,17 +33,17 @@ describe('NGXS + SSR', () => {
   });
 
   it('should successfully resolve list of animals via the "router$" stream', async () => {
-    body = await request('http://localhost:4000/list');
+    const body = await request('http://localhost:4000/list');
     const animalsWereResolvedIndex = body.indexOf(
       'Animals were resolved via the "router$" stream zebras,pandas,lions,giraffes'
     );
     expect(animalsWereResolvedIndex).to.be.greaterThan(-1);
   });
 
-  it('should resolve list of animals via the "route$" stream', async () => {
-    body = await request('http://localhost:4000/list');
+  it('should resolve list of animals via the "snapshot$" stream', async () => {
+    const body = await request('http://localhost:4000/list');
     const animalsWereResolvedIndex = body.indexOf(
-      'Animals were resolved via the "route$" stream zebras,pandas,lions,giraffes'
+      'Animals were resolved via the "snapshot$" stream zebras,pandas,lions,giraffes'
     );
     expect(animalsWereResolvedIndex).to.be.greaterThan(-1);
   });

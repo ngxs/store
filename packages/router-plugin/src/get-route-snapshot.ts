@@ -1,19 +1,14 @@
 import { Type } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { createSelector } from '@ngxs/store';
 
-import { RouterState, RouterStateModel } from './router.state';
+import { RouterStateModel } from './router.state';
 
-export function getRouteSnapshot<T>(component: Type<T>) {
-  return createSelector<(state: RouterStateModel) => null | ActivatedRouteSnapshot>(
-    [RouterState],
-    (state: RouterStateModel) => searchRoute(state, component)
-  );
-}
-
-function searchRoute<T>(state: RouterStateModel, component: Type<T>) {
-  // If the selector was invoked before initial navigation
-  if (!state || !state.state) {
+export function searchRoute<T>(
+  state: RouterStateModel,
+  component: Type<T>
+): ActivatedRouteSnapshot | null {
+  // If the selector was invoked before the module was initialized
+  if (!state.state || !state.state.root) {
     return null;
   }
 
@@ -31,16 +26,16 @@ function searchRouteAmongChildren<T>(
   parent: ActivatedRouteSnapshot,
   component: Type<T>
 ): ActivatedRouteSnapshot | null {
-  let i = parent.children.length;
+  if (parent.component === component) {
+    return parent;
+  }
 
-  while (i--) {
-    const child = parent.children[i];
+  for (const child of parent.children) {
+    const snapshot = searchRouteAmongChildren(child, component);
 
-    if (child.component === component) {
-      return child;
+    if (snapshot) {
+      return snapshot;
     }
-
-    return searchRouteAmongChildren<T>(child, component);
   }
 
   return null;

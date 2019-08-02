@@ -1,4 +1,4 @@
-import { NgZone, Injectable } from '@angular/core';
+import { NgZone, Injectable, Type } from '@angular/core';
 import {
   NavigationCancel,
   NavigationError,
@@ -10,9 +10,9 @@ import {
   UrlSerializer
 } from '@angular/router';
 import { LocationStrategy } from '@angular/common';
-import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
+import { Action, Selector, State, StateContext, Store, createSelector } from '@ngxs/store';
 import { isAngularInTestMode } from '@ngxs/store/internals';
-import { filter, take } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 import {
   Navigate,
@@ -23,6 +23,7 @@ import {
   RouterDataResolved
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
+import { searchRoute } from './get-route-snapshot';
 
 export type RouterStateModel<T = RouterStateSnapshot> = {
   state?: T;
@@ -44,9 +45,12 @@ export class RouterState {
   private dispatchTriggeredByRouter = false; // used only in dev mode in combination with routerReducer
   private navigationTriggeredByDispatch = false; // used only in dev mode in combination with routerReducer
 
-  /**
-   * Selectors
-   */
+  static getRouteSnapshot<T>(component: Type<T>) {
+    return createSelector(
+      [RouterState],
+      (state: RouterStateModel) => searchRoute(state, component)
+    );
+  }
 
   @Selector()
   static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
@@ -197,10 +201,7 @@ export class RouterState {
     }
 
     this._router.events
-      .pipe(
-        filter((event): event is RoutesRecognized => event instanceof RoutesRecognized),
-        take(1)
-      )
+      .pipe(first((event): event is RoutesRecognized => event instanceof RoutesRecognized))
       .subscribe(({ url }) => {
         // `location.pathname` always equals manually entered URL in the address bar
         // e.g. `location.pathname === '/foo'`, but the `router` state has been initialized
