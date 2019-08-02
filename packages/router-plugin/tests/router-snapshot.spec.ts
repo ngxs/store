@@ -124,7 +124,7 @@ const createPlatformAndGetStoreWithRouter = () =>
 const getRouteSnapshot = <T>(store: Store, component: Type<T>) =>
   store.selectSnapshot(RouterState.getRouteSnapshot(component));
 
-fdescribe('RouterState.getRouteSnapshot', () => {
+describe('RouterState.getRouteSnapshot', () => {
   it(
     'should select "LoginComponent"s snapshot',
     freshPlatform(
