@@ -11,6 +11,7 @@ module.exports = {
     project: join(__dirname, 'tsconfig.json')
   },
   rules: {
+    '@typescript-eslint/indent': 'off',
     '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/indent': ['error', 2],
     '@typescript-eslint/no-unused-vars': 'off',
