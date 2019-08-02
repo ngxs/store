@@ -29,17 +29,17 @@ export class MyErrorHandler implements ErrorHandler {
 export class AppModule { }
 ```
 
-## Handling errors within an @Action
+## Handling errors within an `@Action`
 
 When you define an @Action you can handle error within the action and if you do so, the error will not propagate to Angular's global `ErrorHandler`, nor the `dispatch` Observable. This applies to both sync and async types of Actions.
 
 ```TS
   @Action(HandledError)
-  handledError({ getState, setState }) {
+  handledError(ctx: StateContext<StateModel>) {
     try {
       // error is thrown
     } catch (err) {
-      console.log("error catched inside @Action wont propagate to ErrorHandler or dispatch subscription")
+      console.log('error catched inside @Action wont propagate to ErrorHandler or dispatch subscription')
     }
   }
 ```
@@ -59,7 +59,7 @@ If an unhandled exception is thrown inside an action, the error will be propagat
   unhandled() {
     this.store.dispatch(new UnhandledError()).pipe(
       catchError(err => {
-        console.log("unhandled error on dispatch subscription")
+        console.log('unhandled error on dispatch subscription')
         return of('')
       })
     ).subscribe();
