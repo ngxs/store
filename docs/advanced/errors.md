@@ -62,7 +62,7 @@ If an unhandled exception is thrown inside an action, the error will be propagat
         console.log("unhandled error on dispatch subscription")
         return of('')
       })
-    ).subscribe();;
+    ).subscribe();
   }
 ```
 
