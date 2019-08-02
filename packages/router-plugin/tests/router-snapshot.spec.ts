@@ -1,16 +1,17 @@
 import { fakeAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { APP_BASE_HREF } from '@angular/common';
 import { Component, NgModule, Injectable, Type } from '@angular/core';
 import { Router, Routes, ActivatedRouteSnapshot } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { Store, NgxsModule } from '@ngxs/store';
 
+import { filter } from 'rxjs/operators';
+
 import { RouterState, NgxsRouterPluginModule } from '../';
 
 import { freshPlatform } from './helpers';
-import { APP_BASE_HREF } from '@angular/common';
-import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
