@@ -1,5 +1,6 @@
-const { join } = require('path');
-
+/**
+ * @type {import('eslint').Linter.Config}
+ */
 module.exports = {
   parser: '@typescript-eslint/parser',
   extends:  [
@@ -8,7 +9,9 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: 'module',
-    project: join(__dirname, 'tsconfig.json')
+    project: './tsconfig.lib.json',
+    errorOnUnknownASTType: true,
+    errorOnTypeScriptSyntacticAndSemanticIssues: true
   },
   rules: {
     '@typescript-eslint/indent': 'off',
