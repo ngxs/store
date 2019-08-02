@@ -6,8 +6,8 @@ $ npm install @ngxs/store@dev
 ```
 
 * Fix: Router Plugin - normalize URL by stripping base href [#1178](https://github.com/ngxs/store/pull/1178)
-* Build: dtslint must use current version of TypeScript [#1182](https://github.com/ngxs/store/pull/1182)
 * Fix HMR Plugin - trigger ngOnDestroy for all components in app tree [#1192](https://github.com/ngxs/store/pull/1192)
+* Build: dtslint must use current version of TypeScript [#1182](https://github.com/ngxs/store/pull/1182)
 
 # 3.5.0 2019-07-22
 
