@@ -3,7 +3,7 @@ import {
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
-import { Type } from '@angular/core';
+import { NgModuleRef, Type } from '@angular/core';
 
 import { Actions, Store } from '../../../store/src/public_api';
 import { MockState, WebpackMockModule } from './hmr-mock';
@@ -24,7 +24,7 @@ export async function hmrTestBed<T>(moduleType: Type<T>, options: { storedValue?
 
   const snapshotContainer: { snapshot?: any } = webpackModule.hot.data;
   snapshotContainer.snapshot = options.storedValue;
-  const appModule = await hmr(webpackModule, bootstrap);
+  const appModule: NgModuleRef<T> = await hmr(webpackModule, bootstrap);
   const actions$ = appModule.injector.get<Actions>(Actions);
   const store = appModule.injector.get<Store>(Store);
   const getStoredValue = () => snapshotContainer.snapshot;

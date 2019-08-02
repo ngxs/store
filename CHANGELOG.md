@@ -1,9 +1,15 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) 
-### To become [3.5.0](https://github.com/ngxs/store/milestone/7)
+### To become 3.5.1 or [3.6.0](https://github.com/ngxs/store/milestone/8)
 
 ```bash
 $ npm install @ngxs/store@dev
 ```
+
+* Fix: Router Plugin - normalize URL by stripping base href [#1178](https://github.com/ngxs/store/pull/1178)
+* Fix HMR Plugin - trigger ngOnDestroy for all components in app tree [#1192](https://github.com/ngxs/store/pull/1192)
+* Build: dtslint must use current version of TypeScript [#1182](https://github.com/ngxs/store/pull/1182)
+
+# 3.5.0 2019-07-22
 
 * Feature: upgrade to support Angular 8 [#1156](https://github.com/ngxs/store/pull/1156)
 * Feature: selector option to disable supressing errors [#1015](https://github.com/ngxs/store/pull/1015), [#1087](https://github.com/ngxs/store/pull/1087)

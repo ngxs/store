@@ -128,8 +128,9 @@ These options can also be provided through the `@SelectorOptions` decorator at a
 #### `suppressErrors`
 - `true` will cause any error within a selector to result in the selector returning `undefined`.
 - `false` results in these errors propogating through the stack that triggered the evaluation of the selector that caused the error. 
-- **NOTE:** *The default for this setting will be changing to `false` in NGXS v4.  
-The default value in NGXS v3.x is `true`.*
+- **NOTE:** _The default for this setting will be changing to `false` in NGXS v4.  
+The default value in NGXS v3.x is `true`._
+
 #### `injectContainerState`
 - `true` will cause all selectors defined within a state class to receive the container class' state model as their first parameter. As a result every selector would be re-evaluated after any change to that state.  
 **NOTE:** *This is not ideal, therefore this setting default will be changing to `false` in NGXS v4.* 
@@ -352,6 +353,81 @@ export class CityService {
 ```
 
 now we can use this `zooThemeParks` selector anywhere in our application.
+
+### Inheriting selectors  
+
+When we have states that share similar structure, we can extract the shared selectors into a base class which we can later extend from. If we have an `entities` field on multiple states, we can create a base class containing a dynamic `@Selector()` for that field, and extend from it on the `@State` classes like this.
+
+```TS
+export class EntitiesState {
+
+  static entities<T>() :T[] {
+    return createSelector([this], (state: { entities: T[] }) => {
+      return state.entities;
+    });
+  }
+
+  //...
+
+}
+```
+
+And extend the `EntitiesState` class on each `@State` like this:
+
+```TS
+
+export interface UsersStateModel {
+  entities: User[];
+}
+
+@State<UsersStateModel>({
+  name: 'users',
+  defaults: {
+    entities: []
+  }
+})
+export class UsersState extends EntitiesState {  
+  //...
+}
+
+export interface ProductsStateModel {
+  entities: Product[];
+}
+
+@State<ProductsStateModel>({
+  name: 'products',
+  defaults: {
+    entities: []
+  }
+})
+export class ProductsState extends EntitiesState {  
+  //...
+}
+```
+
+Then you can use them as follows:
+
+```TS
+
+@Component({ ... })
+export class AppComponent {
+  
+  @Select(UsersState.entities<User>())
+  users$: Observable<User[]>;
+
+  @Select(ProductsState.entities<Product>())
+  products$: Observable<Product[]>;
+
+}
+```
+
+Or: 
+
+```TS
+
+this.store.select(UsersState.entities<User>())
+
+```
 
 ## Special Considerations
 

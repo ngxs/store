@@ -12,7 +12,7 @@ export interface ZooStateModel {
   animals: string[];
 }
 
-@State<any[]>({
+@State<ZooStateModel>({
   name: 'zoo',
   defaults: {
     animals: []
@@ -34,7 +34,7 @@ export interface ZooStateModel {
   animals: string[];
 }
 
-@State<any[]>({
+@State<ZooStateModel>({
   name: 'zoo',
   defaults: {
     animals: []

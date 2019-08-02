@@ -9,7 +9,7 @@ import {
   GuardsCheckEnd,
   UrlSerializer
 } from '@angular/router';
-import { LocationStrategy } from '@angular/common';
+import { LocationStrategy, Location } from '@angular/common';
 import { Action, Selector, State, StateContext, Store, createSelector } from '@ngxs/store';
 import { isAngularInTestMode } from '@ngxs/store/internals';
 import { first } from 'rxjs/operators';
@@ -68,7 +68,8 @@ export class RouterState {
     private _serializer: RouterStateSerializer<RouterStateSnapshot>,
     private _ngZone: NgZone,
     private _urlSerializer: UrlSerializer,
-    private _locationStrategy: LocationStrategy
+    private _locationStrategy: LocationStrategy,
+    private _location: Location
   ) {
     this.setUpStoreListener();
     this.setUpStateRollbackEvents();
@@ -212,8 +213,14 @@ export class RouterState {
         // `url` is a recognized URL by the Angular's router, while `currentUrl` is an actual URL
         // entered in the browser's address bar
         // `PathLocationStrategy.prototype.path()` returns a concatenation of
-        // `PlatformLocation.pathname` and normalized `PlatformLocation.search`
-        const currentUrl = this._locationStrategy.path();
+        // `PlatformLocation.pathname` and normalized `PlatformLocation.search`.
+
+        // `Location.prototype.normalize` strips base href from the URL,
+        // if `baseHref` (declared in angular.json) for example is `/en`
+        // and the URL is `/test` - then `_locationStrategy.path()` will return `/en/test`,
+        // but `/en/test` is not known to the Angular's router, so we have to strip `/en`
+        // from the URL
+        const currentUrl = this._location.normalize(this._locationStrategy.path());
         const currentUrlTree = this._urlSerializer.parse(currentUrl);
         // We need to serialize the URL because in that example `/test/?redirect=https://google.com/`
         // Angular will recognize it as `/test?redirect=https:%2F%2Fwww.google.com%2F`
