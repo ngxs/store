@@ -1,5 +1,6 @@
 import { ErrorHandler } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { StateClass } from '@ngxs/store/internals';
 import { timer } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -10,7 +11,7 @@ import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
 import { NoopErrorHandler } from './helpers/utils';
-import { StateClass } from '@ngxs/store/internals';
+import { VALIDATION_CODE, CONFIG_MESSAGES } from '../src/configs/messages.config';
 
 describe('Action handlers', () => {
   class TestAction {
@@ -37,6 +38,20 @@ describe('Action handlers', () => {
   }
 
   describe('for synchronous handlers ', () => {
+    it('should throw an exception if @Action() decorator is used with static method', () => {
+      try {
+        @State({ name: 'counter' })
+        class CounterState {
+          @Action(TestAction)
+          static increment() {}
+        }
+
+        new CounterState();
+      } catch ({ message }) {
+        expect(message).toEqual(CONFIG_MESSAGES[VALIDATION_CODE.ACTION_DECORATOR]());
+      }
+    });
+
     it(`should allow for retrieval of the current state`, () => {
       // Arrange
       let currentState: any = null;
@@ -114,6 +129,23 @@ describe('Action handlers', () => {
       const resultState = store.selectSnapshot(FooState);
       const expectedState = { name: 'my state', age: 21 };
       expect(resultState).toEqual(expectedState);
+    });
+
+    it('should be possible to use symbol as a property for action handlers', () => {
+      const increment = Symbol('increment');
+
+      @State<number>({ name: 'counter', defaults: 0 })
+      class CounterState {
+        @Action(TestAction)
+        [increment]({ setState }: StateContext<number>) {
+          setState(state => (state += 1));
+        }
+      }
+
+      const { store } = setup({ stores: [CounterState] });
+      store.dispatch(new TestAction());
+      const counter = store.selectSnapshot(CounterState);
+      expect(counter).toBe(1);
     });
   });
 
