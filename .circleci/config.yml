@@ -131,7 +131,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Integration Tests
-          command: yarn run integration:ng5
+          command: yarn integration:ng5
       # - *persist_coverage // we don't run code coverage for integration tests
 
   integration_test_types:
@@ -140,7 +140,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Test types
-          command: yarn run test:types
+          command: yarn test:types
       # - *persist_coverage // we don't run code coverage for integration tests
 
   bundlesize:
@@ -148,8 +148,8 @@ jobs:
     steps:
       - *attach_workspace
       - run:
-          name: Test types
-          command: yarn run bundlesize
+          name: Check the size of NGXS bundle
+          command: yarn bundlesize
       # - *persist_coverage // we don't run code coverage for integration tests
 
   upload_coverage:

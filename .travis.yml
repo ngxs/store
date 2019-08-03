@@ -8,23 +8,23 @@ install:
 
 script:
   # CHECK STYLE
-  - yarn run lint
+  - yarn lint
 
   # BUILD STAGE
-  - yarn run build
-  - yarn run build:integration
-  - yarn run build:integration:ssr
+  - yarn build
+  - yarn build:integration
+  - yarn build:integration:ssr
 
   # TEST STAGE
-  - yarn run test:ci
-  - yarn run test:ci:integration
-  - yarn run test:ci:integration:ssr
+  - yarn test:ci
+  - yarn test:ci:integration
+  - yarn test:ci:integration:ssr
 
   # INTEGRATION TEST
-  - yarn run integration:ng5
+  - yarn integration:ng5
 
   # INTEGRATION TEST
-  - yarn run test:types
+  - yarn test:types
 
   # CHECK BUNDLE SIZE
-  - yarn run bundlesize
+  - yarn bundlesize
