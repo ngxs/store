@@ -70,8 +70,6 @@ export interface StatesAndDefaults {
   states: MappedStore[];
 }
 
-export type Callback<T = any, V = any> = (...args: V[]) => T;
-
 /**
  * Ensures metadata is attached to the class and returns it.
  *

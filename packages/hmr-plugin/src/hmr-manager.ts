@@ -1,6 +1,5 @@
 import { ApplicationRef, ComponentRef, NgModuleRef } from '@angular/core';
-import { InitialState, NgxsBootstrapper } from '@ngxs/store/internals';
-import { createNewHosts, removeNgStyles } from '@angularclass/hmr';
+import { Callback, InitialState, NgxsBootstrapper } from '@ngxs/store/internals';
 
 import { HmrStorage } from './internal/hmr-storage';
 import {
@@ -24,6 +23,14 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
   constructor(options: NgxsHmrOptions, storage: HmrStorage<S>) {
     this.storage = storage;
     this.optionsBuilder = new HmrOptionBuilder(options);
+  }
+
+  private get applicationRef(): ApplicationRef {
+    return this.ngModule.injector.get(ApplicationRef);
+  }
+
+  private get bootstrap(): NgxsBootstrapper {
+    return this.ngModule.injector.get(NgxsBootstrapper);
   }
 
   public async hmrModule(
@@ -53,20 +60,54 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
   }
 
   public createNewModule(): void {
-    const appRef: ApplicationRef = this.ngModule.injector.get(ApplicationRef);
-    const elements: ComponentRef<any>[] = appRef.components.map(c => c.location.nativeElement);
-    const createNewModule: () => void = createNewHosts(elements);
-    removeNgStyles();
+    const removeOldHosts: () => void = this.cloneHostsBeforeDestroy();
+    this.removeNgStyles();
     this.ngModule.destroy();
-    createNewModule();
+    removeOldHosts();
   }
 
   private createLifecycle(): HmrLifecycle<T, S> {
-    const ngAppModule = this.ngModule.instance;
-    const storage = this.storage;
-    const context = this.context;
-    const bootstrap = this.ngModule.injector.get(NgxsBootstrapper);
-    const builder = this.optionsBuilder;
-    return new HmrLifecycle(ngAppModule, bootstrap, storage, context, builder);
+    return new HmrLifecycle(
+      this.ngModule.instance,
+      this.bootstrap,
+      this.storage,
+      this.context,
+      this.optionsBuilder
+    );
+  }
+
+  private cloneHostsBeforeDestroy(): () => void {
+    const elements: Element[] = this.applicationRef.components.map(
+      (component: ComponentRef<Element>) => component.location.nativeElement
+    );
+
+    const removableList: Callback[] = elements.map((componentNode: Element) => {
+      const newNode = document.createElement(componentNode.tagName);
+      const parentNode: Node = componentNode.parentNode as Node;
+      const currentDisplay: string | null = newNode.style.display;
+
+      newNode.style.display = 'none';
+      parentNode.insertBefore(newNode, componentNode);
+
+      return (): void => {
+        newNode.style.display = currentDisplay;
+        try {
+          parentNode.removeChild(componentNode);
+        } catch {}
+      };
+    });
+
+    return function removeOldHosts(): void {
+      removableList.forEach((removeOldHost: Callback) => removeOldHost());
+    };
+  }
+
+  private removeNgStyles(): void {
+    const head: HTMLHeadElement | null = document.head;
+    const styles: HTMLStyleElement[] = Array.from(head!.querySelectorAll('style'));
+
+    styles
+      .filter((style: HTMLStyleElement) => style.innerText.includes('_ng'))
+      .map((style: HTMLStyleElement) => head!.removeChild(style));
   }
 }

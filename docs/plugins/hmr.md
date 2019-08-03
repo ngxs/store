@@ -94,7 +94,7 @@ Create a shortcut for this by updating package.json and adding an entry to the s
 
 In order to get HMR working we need to install the dependency and configure our app to use it.
 
-Install the `@angularclass/hmr`, `@ngxs/hmr-plugin` module as a dev-dependency
+Install the `@ngxs/hmr-plugin` package as a dev-dependency
 
 Update src/main.ts to use the file we just created:
 
