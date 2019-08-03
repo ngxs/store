@@ -126,6 +126,12 @@ If you have ideas for creating unique libraries, you can join us. Email us at `n
 **NGXS-labs Entity state** | [`@ngxs-labs/entity-state`](https://npmjs.com/package/@ngxs-labs/entity-state) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fentity-state/latest.svg)](https://npmjs.com/package/@ngxs-labs/entity-state) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/entity-state)
 **NGXS-labs Testing tools** | [`@ngxs-labs/testing`](https://npmjs.com/package/@ngxs-labs/testing) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Ftesting/latest.svg)](https://npmjs.com/package/@ngxs-labs/testing) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/testing)
 
+#### Community
+
+| Project | Package | Version | Links |
+|---|---|---|---|
+**Reset Plugin** | [`ngxs-reset-plugin`](https://npmjs.com/package/ngxs-reset-plugin) | [![latest](https://img.shields.io/npm/v/ngxs-reset-plugin/latest.svg)](https://npmjs.com/package/ngxs-reset-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ng-turkey/ngxs-reset-plugin/blob/master/README.md)
+
 # Contributors
 Thanks to all our contributors!
 
