@@ -24,10 +24,10 @@ describe('[TEST]: Action Types', () => {
     assertType(() => Selector([{ foo: 'bar' }])); // $ExpectType (target: any, methodName: string, descriptor: PropertyDescriptor) => { configurable: boolean; get(): any; }
     assertType(() => Selector({})); // $ExpectError
 
-    Select(); // $ExpectType (target: any, name: string) => void
-    assertType(() => Select({})); // $ExpectType (target: any, name: string) => void
-    assertType(() => Select([])); // $ExpectType (target: any, name: string) => void
-    assertType(() => Select(Any, 'a', 'b', 'c')); // $ExpectType (target: any, name: string) => void
+    Select(); // $ExpectType PropertyDecorator
+    assertType(() => Select({})); // $ExpectType PropertyDecorator
+    assertType(() => Select([])); // $ExpectType PropertyDecorator
+    assertType(() => Select(Any, 'a', 'b', 'c')); // $ExpectType PropertyDecorator
     assertType(() => Select(Any, ['a', 'b', 'c'])); // $ExpectError
 
     class AppComponent {

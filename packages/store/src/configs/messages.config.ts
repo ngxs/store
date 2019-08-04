@@ -6,7 +6,10 @@ export enum VALIDATION_CODE {
   STATE_NAME_PROPERTY = 'STATE_NAME_PROPERTY',
   STATE_DECORATOR = 'STATE_DECORATOR',
   INCORRECT_PRODUCTION = 'INCORRECT_PRODUCTION',
-  INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT'
+  INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT',
+  SELECT_NOT_CONNECTED = 'SELECT_NOT_CONNECTED',
+  SELECT_FACTORY_NOT_CONNECTED = 'SELECT_FACTORY_NOT_CONNECTED',
+  SELECT_CLASS_NOT_EXTENSIBLE = 'CLASS_NOT_EXTENSIBLE'
 }
 
 export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
@@ -22,5 +25,11 @@ export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
     'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
   [VALIDATION_CODE.INCORRECT_DEVELOPMENT]: () =>
     'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n' +
-    'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
+    'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
+  [VALIDATION_CODE.SELECT_FACTORY_NOT_CONNECTED]: () =>
+    'SelectFactory not connected to store!',
+  [VALIDATION_CODE.SELECT_NOT_CONNECTED]: () =>
+    `You can't use @Select your instance is frozen`,
+  [VALIDATION_CODE.SELECT_CLASS_NOT_EXTENSIBLE]: () =>
+    `Your class is not extensible for @Select`
 };

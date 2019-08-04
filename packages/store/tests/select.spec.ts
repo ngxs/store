@@ -5,12 +5,28 @@ import { first, last } from 'rxjs/operators';
 
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
-import { Select } from '../src/decorators/select';
+import { Select } from '../src/decorators/select/select';
 import { Selector } from '../src/decorators/selector';
 import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
-import { StateContext } from '../src/symbols';
+import { SELECT_META_KEY, StateContext } from '../src/symbols';
 import { removeDollarAtTheEnd } from '../src/internal/internals';
+import { CONFIG_MESSAGES, VALIDATION_CODE } from '../src/configs/messages.config';
+
+function FrozenClass(target: Function): void {
+  Object.freeze(target);
+  Object.freeze(target.prototype);
+}
+
+function SealField(target: any, name: string | symbol) {
+  Object.defineProperty(target, name, {
+    enumerable: false,
+    writable: false,
+    configurable: false
+  });
+
+  Object.seal(target);
+}
 
 describe('Select', () => {
   interface SubSubStateModel {
@@ -67,6 +83,70 @@ describe('Select', () => {
   }
 
   const states = [MySubState, MySubSubState, MyState];
+
+  it('should be throw error when forgot to import the ngxs module', () => {
+    try {
+      class SelectComponent {
+        @Select((state: any) => state) public state: Observable<any>;
+      }
+
+      new SelectComponent().state.subscribe();
+    } catch (e) {
+      expect(e.message).toEqual(
+        CONFIG_MESSAGES[VALIDATION_CODE.SELECT_FACTORY_NOT_CONNECTED]()
+      );
+    }
+  });
+
+  it('should be throw error when component is frozen', () => {
+    try {
+      @FrozenClass
+      @Component({
+        selector: 'my-select',
+        template: ''
+      })
+      class MySelectComponent {
+        @Select((state: any) => state)
+        public state: Observable<any>;
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot(states)],
+        declarations: [MySelectComponent]
+      });
+
+      const comp = TestBed.createComponent(MySelectComponent);
+      comp.componentInstance.state.subscribe();
+    } catch (e) {
+      expect(e.message).toEqual(CONFIG_MESSAGES[VALIDATION_CODE.SELECT_NOT_CONNECTED]());
+    }
+  });
+
+  it('should be throw error when field is frozen', () => {
+    try {
+      @Component({
+        selector: 'my-select',
+        template: ''
+      })
+      class MySelectComponent {
+        @Select((state: any) => state)
+        @SealField
+        public state: Observable<any>;
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot(states)],
+        declarations: [MySelectComponent]
+      });
+
+      const comp = TestBed.createComponent(MySelectComponent);
+      console.log(comp.componentInstance.state);
+    } catch (e) {
+      expect(e.message).toEqual(
+        CONFIG_MESSAGES[VALIDATION_CODE.SELECT_CLASS_NOT_EXTENSIBLE]()
+      );
+    }
+  });
 
   it('should remove dollar sign at the end of property name', () => {
     expect(removeDollarAtTheEnd('foo$')).toBe('foo');
@@ -181,6 +261,47 @@ describe('Select', () => {
     comp.componentInstance.counter$.subscribe(state => {
       expect(state).toBe('Hello');
     });
+  }));
+
+  it('should be throw when use reserved select property in class', async(() => {
+    const reservedNameNonConflicted: unique symbol = Symbol(`${SELECT_META_KEY}__mySelect`);
+
+    @Component({
+      selector: 'my-component-1',
+      template: ''
+    })
+    class StoreSelectComponent {
+      @Select((state: any) => state)
+      public mySelect: Observable<string>;
+
+      public [reservedNameNonConflicted](): string {
+        return `this.mySelect is ${this.mySelect.constructor.name}`;
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [StoreSelectComponent]
+    });
+
+    const component: StoreSelectComponent = TestBed.createComponent(StoreSelectComponent)
+      .componentInstance;
+
+    const subscription1: Subscription = component.mySelect.subscribe();
+    expect(subscription1.closed).toEqual(false);
+
+    try {
+      component.mySelect = null!;
+    } catch (e) {
+      expect(e.message).toEqual(
+        'Cannot set property mySelect of [object Object] which has only a getter'
+      );
+    }
+
+    const subscription2: Subscription = component.mySelect.subscribe();
+    expect(subscription2.closed).toEqual(false);
+
+    expect(component[reservedNameNonConflicted]()).toEqual('this.mySelect is Observable');
   }));
 
   it('should select the correct state after timeout', async(() => {
