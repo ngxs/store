@@ -2,6 +2,8 @@
 
 NGXS uses Angular's default `ErrorHandler` class, so if an action throws an error, Angular's `ErrorHandler` is called. You can easily override this flow by providing your own handler like so:
 
+NGXS propagates unhandled errors inside `@Action` to Angular's `ErrorHandler`. You can provide your own implementation of `ErrorHandler` and handle it the way you need like this:
+
 ```TS
 import { NgModule, ErrorHandler } from '@angular/core';
 
@@ -49,7 +51,7 @@ If an unhandled exception is thrown inside an action, the error will be propagat
 
 ```TS
   @Action(UnhandledError)
-  unhandledError({ getState, setState }) {
+  unhandledError(ctx: StateContext<StateModel>) {
     // error is thrown
   }
 ```
