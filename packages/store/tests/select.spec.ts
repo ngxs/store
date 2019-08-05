@@ -10,10 +10,10 @@ import { Selector } from '../src/decorators/selector';
 import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
 import { SELECT_META_KEY, StateContext } from '../src/symbols';
-import { removeDollarAtTheEnd } from '../src/internal/internals';
+import { SelectFactory } from '../src/decorators/select/select-factory';
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../src/configs/messages.config';
 
-function FrozenClass(target: Function): void {
+function FreezeClass(target: Function): void {
   Object.freeze(target);
   Object.freeze(target.prototype);
 }
@@ -84,7 +84,7 @@ describe('Select', () => {
 
   const states = [MySubState, MySubSubState, MyState];
 
-  it('should be throw error when forgot to import the ngxs module', () => {
+  it('should throw an exception when the user has forgotten to import the NGXS module', () => {
     try {
       class SelectComponent {
         @Select((state: any) => state) public state: Observable<any>;
@@ -98,9 +98,9 @@ describe('Select', () => {
     }
   });
 
-  it('should be throw error when component is frozen', () => {
+  it('should throw an exception when the component class is frozen', () => {
     try {
-      @FrozenClass
+      @FreezeClass
       @Component({
         selector: 'my-select',
         template: ''
@@ -122,7 +122,7 @@ describe('Select', () => {
     }
   });
 
-  it('should be throw error when field is frozen', () => {
+  it('should throw an exception when the field is frozen', () => {
     try {
       @Component({
         selector: 'my-select',
@@ -149,8 +149,8 @@ describe('Select', () => {
   });
 
   it('should remove dollar sign at the end of property name', () => {
-    expect(removeDollarAtTheEnd('foo$')).toBe('foo');
-    expect(removeDollarAtTheEnd('foo')).toBe('foo');
+    expect(SelectFactory.removeDollarAtTheEnd('foo$')).toBe('foo');
+    expect(SelectFactory.removeDollarAtTheEnd('foo')).toBe('foo');
 
     @Component({ template: '' })
     class SelectComponent {
@@ -263,7 +263,7 @@ describe('Select', () => {
     });
   }));
 
-  it('should be throw when use reserved select property in class', async(() => {
+  it('should succeed even if reserved symbol used in class', () => {
     const reservedNameNonConflicted: unique symbol = Symbol(`${SELECT_META_KEY}__mySelect`);
 
     @Component({
@@ -302,7 +302,7 @@ describe('Select', () => {
     expect(subscription2.closed).toEqual(false);
 
     expect(component[reservedNameNonConflicted]()).toEqual('this.mySelect is Observable');
-  }));
+  });
 
   it('should select the correct state after timeout', async(() => {
     @Component({

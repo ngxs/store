@@ -366,16 +366,3 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
 export function isObject(obj: any) {
   return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';
 }
-
-const DOLLAR_CHAR_CODE = 36;
-
-/**
- * If `foo$` => make it just `foo`
- *
- * @ignore
- */
-export function removeDollarAtTheEnd(name: string): string {
-  const lastCharIndex = name.length - 1;
-  const dollarAtTheEnd = name.charCodeAt(lastCharIndex) === DOLLAR_CHAR_CODE;
-  return dollarAtTheEnd ? name.slice(0, lastCharIndex) : name;
-}
