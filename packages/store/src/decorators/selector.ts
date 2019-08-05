@@ -6,14 +6,14 @@ import { createSelector } from '../utils/selector-utils';
  */
 export function Selector(selectors?: any[]): MethodDecorator {
   return <T>(
-    target: Object,
-    propertyKey: string | symbol,
+    target: any,
+    key: string | symbol,
     descriptor: TypedPropertyDescriptor<T>
   ): TypedPropertyDescriptor<T> | void => {
     const isNotMethod: boolean = !(descriptor && descriptor.value !== null);
 
     if (isNotMethod) {
-      throw new Error(CONFIG_MESSAGES[VALIDATION_CODE.SELECTOR_PROPERTY]());
+      throw new Error(CONFIG_MESSAGES[VALIDATION_CODE.SELECTOR_DECORATOR]());
     }
 
     const originalFn = descriptor.value;
@@ -29,7 +29,7 @@ export function Selector(selectors?: any[]): MethodDecorator {
             originalFn as any,
             {
               containerClass: target,
-              selectorName: propertyKey as string,
+              selectorName: key.toString(),
               getSelectorOptions() {
                 return {};
               }

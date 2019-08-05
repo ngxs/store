@@ -855,7 +855,7 @@ describe('Selector', () => {
 
         new MyComponent();
       } catch (e) {
-        expect(e.message).toEqual(CONFIG_MESSAGES[VALIDATION_CODE.SELECTOR_PROPERTY]());
+        expect(e.message).toEqual(CONFIG_MESSAGES[VALIDATION_CODE.SELECTOR_DECORATOR]());
       }
     });
   });

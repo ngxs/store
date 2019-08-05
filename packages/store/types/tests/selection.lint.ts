@@ -135,9 +135,5 @@ describe('[TEST]: Action Types', () => {
         return state;
       }
     }
-
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyPandaState])]
-    });
   });
 });
