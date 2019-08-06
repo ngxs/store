@@ -83,6 +83,7 @@
     "// - UTILS": "Utility Scripts",
     "lint": "ng lint",
     "eslint": "eslint 'packages/**/*.ts'",
+    "bundlesize": "bundlesize --config bundlesize.config.json",
     "docs": "typedoc packages/store/src --options typedoc.json",
     "format": "prettier --write \"{packages,integration}/**/*.ts\"",
     "// - INTEGRATION": "Integration builds",
@@ -113,12 +114,13 @@
     "@types/deep-freeze-strict": "^1.1.0",
     "@types/express": "^4.17.0",
     "@types/fs-extra": "^8.0.0",
-    "@types/jest": "^24.0.16",
+    "@types/jest": "^24.0.17",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.6.2",
     "@types/semver": "^6.0.1",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
+    "bundlesize": "^0.18.0",
     "chai": "4.2.0",
     "codelyzer": "^5.1.0",
     "core-js": "^3.1.4",
@@ -144,8 +146,8 @@
     "tslib": "^1.10.0",
     "tslint": "^5.18.0",
     "typedoc": "^0.15.0",
-    "typedoc-plugin-markdown": "^2.1.0",
+    "typedoc-plugin-markdown": "^2.1.1",
     "typescript": "~3.5.3",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.10.1"
   }
 }

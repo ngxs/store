@@ -1,0 +1,16 @@
+{
+  "files": [
+    {
+      "path": "./@ngxs/store/fesm2015/ngxs-store-internals.js",
+      "maxSize": "3 kB"
+    },
+    {
+      "path": "./@ngxs/store/fesm2015/ngxs-store-operators.js",
+      "maxSize": "3 kB"
+    },
+    {
+      "path": "./@ngxs/store/fesm2015/ngxs-store.js",
+      "maxSize": "18 kB"
+    }
+  ]
+}
