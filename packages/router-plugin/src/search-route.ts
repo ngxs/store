@@ -4,18 +4,18 @@ import { ActivatedRouteSnapshot } from '@angular/router';
 import { RouterStateModel } from './router.state';
 
 export function searchRoute<T>(
-  state: RouterStateModel,
-  component: Type<T>
+  { state }: RouterStateModel,
+  component: Type<T> | null
 ): ActivatedRouteSnapshot | null {
   // If the selector was invoked before the module was initialized
-  if (!state.state || !state.state.root) {
+  if (!state || !state.root) {
     return null;
   }
 
-  const root = state.state.root;
+  const root = state.root;
 
-  // If the root component was requested
-  if (root.component === component) {
+  // Root snapshot's `component` property equals `null`
+  if (component === null) {
     return root;
   }
 

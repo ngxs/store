@@ -1,4 +1,3 @@
-import { fakeAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { APP_BASE_HREF } from '@angular/common';
 import { Component, NgModule, Injectable, Type } from '@angular/core';
@@ -122,141 +121,147 @@ const createPlatformAndGetStoreWithRouter = () =>
       return { store, router };
     });
 
-const getRouteSnapshot = <T>(store: Store, component: Type<T>) =>
+const getRouteSnapshot = <T>(store: Store, component?: Type<T>) =>
   store.selectSnapshot(RouterState.getRouteSnapshot(component));
 
 describe('RouterState.getRouteSnapshot', () => {
-  it(
+  fit(
+    'should select root component if no argument is provided',
+    freshPlatform(async () => {
+      // Arrange
+      const { store, router } = await createPlatformAndGetStoreWithRouter();
+
+      // Act
+      await router.navigateByUrl('/');
+
+      const rootComponentSnapshot = getRouteSnapshot(store)!;
+
+      // Assert
+      expect(rootComponentSnapshot).toBeTruthy();
+      expect(rootComponentSnapshot.component).toBeNull();
+    })
+  );
+
+  fit(
     'should select "LoginComponent"s snapshot',
-    freshPlatform(
-      fakeAsync(async () => {
-        // Arrange
-        const { store, router } = await createPlatformAndGetStoreWithRouter();
+    freshPlatform(async () => {
+      // Arrange
+      const { store, router } = await createPlatformAndGetStoreWithRouter();
 
-        // Act
-        await router.navigateByUrl('/');
+      // Act
+      await router.navigateByUrl('/');
 
-        const loginComponentSnapshot = getRouteSnapshot(store, LoginComponent)!;
+      const loginComponentSnapshot = getRouteSnapshot(store, LoginComponent)!;
 
-        // Assert
-        expect(loginComponentSnapshot).toBeTruthy();
-        expect(loginComponentSnapshot).toBeInstanceOf(ActivatedRouteSnapshot);
-        expect(loginComponentSnapshot.component).toBe(LoginComponent);
-      })
-    )
+      // Assert
+      expect(loginComponentSnapshot).toBeTruthy();
+      expect(loginComponentSnapshot.data).toEqual({});
+      expect(loginComponentSnapshot.component).toBe(LoginComponent);
+    })
   );
 
-  it(
+  fit(
     'should select "RegisterComponent"s snapshot',
-    freshPlatform(
-      fakeAsync(async () => {
-        // Arrange
-        const { store, router } = await createPlatformAndGetStoreWithRouter();
+    freshPlatform(async () => {
+      // Arrange
+      const { store, router } = await createPlatformAndGetStoreWithRouter();
 
-        // Act
-        await router.navigateByUrl('/');
-        await router.navigateByUrl('/register');
+      // Act
+      await router.navigateByUrl('/');
+      await router.navigateByUrl('/register');
 
-        const registerComponentSnapshot = getRouteSnapshot(store, RegisterComponent)!;
+      const registerComponentSnapshot = getRouteSnapshot(store, RegisterComponent)!;
 
-        // Assert
-        expect(registerComponentSnapshot).toBeTruthy();
-        expect(registerComponentSnapshot).toBeInstanceOf(ActivatedRouteSnapshot);
-        expect(registerComponentSnapshot.component).toBe(RegisterComponent);
-      })
-    )
+      // Assert
+      expect(registerComponentSnapshot).toBeTruthy();
+      expect(registerComponentSnapshot.data).toEqual({});
+      expect(registerComponentSnapshot.component).toBe(RegisterComponent);
+    })
   );
 
-  it(
+  fit(
     'should return "null" for deactivated component',
-    freshPlatform(
-      fakeAsync(async () => {
-        // Arrange
-        const { store, router } = await createPlatformAndGetStoreWithRouter();
+    freshPlatform(async () => {
+      // Arrange
+      const { store, router } = await createPlatformAndGetStoreWithRouter();
 
-        // Act
-        await router.navigateByUrl('/');
-        await router.navigateByUrl('/register');
-        await router.navigateByUrl('/');
+      // Act
+      await router.navigateByUrl('/');
+      await router.navigateByUrl('/register');
+      await router.navigateByUrl('/');
 
-        const registerComponentSnapshot = getRouteSnapshot(store, RegisterComponent)!;
-        const loginComponentSnapshot = getRouteSnapshot(store, LoginComponent)!;
+      const registerComponentSnapshot = getRouteSnapshot(store, RegisterComponent)!;
+      const loginComponentSnapshot = getRouteSnapshot(store, LoginComponent)!;
 
-        // Assert
-        expect(registerComponentSnapshot).toBeNull();
-        expect(loginComponentSnapshot).toBeTruthy();
-        expect(loginComponentSnapshot.component).toBe(LoginComponent);
-      })
-    )
+      // Assert
+      expect(registerComponentSnapshot).toBeNull();
+      expect(loginComponentSnapshot).toBeTruthy();
+      expect(loginComponentSnapshot.component).toBe(LoginComponent);
+    })
   );
 
-  it(
+  fit(
     'should select "CategoriesComponent"s snapshot',
-    freshPlatform(
-      fakeAsync(async () => {
-        // Arrange
-        const { store, router } = await createPlatformAndGetStoreWithRouter();
+    freshPlatform(async () => {
+      // Arrange
+      const { store, router } = await createPlatformAndGetStoreWithRouter();
 
-        // Act
-        await router.navigateByUrl('/');
-        await router.navigateByUrl('/register');
-        await router.navigateByUrl('/dashboard/categories');
+      // Act
+      await router.navigateByUrl('/');
+      await router.navigateByUrl('/register');
+      await router.navigateByUrl('/dashboard/categories');
 
-        const categoriesComponentSnapshot = getRouteSnapshot(store, CategoriesComponent)!;
+      const categoriesComponentSnapshot = getRouteSnapshot(store, CategoriesComponent)!;
 
-        // Assert
-        expect(categoriesComponentSnapshot).toBeInstanceOf(ActivatedRouteSnapshot);
-      })
-    )
+      // Assert
+      expect(categoriesComponentSnapshot).toBeTruthy();
+      expect(categoriesComponentSnapshot.component).toBe(CategoriesComponent);
+    })
   );
 
-  it(
+  fit(
     'should select "CategoryComponent"s snapshot and get category',
-    freshPlatform(
-      fakeAsync(async () => {
-        // Arrange
-        const { store, router } = await createPlatformAndGetStoreWithRouter();
+    freshPlatform(async () => {
+      // Arrange
+      const { store, router } = await createPlatformAndGetStoreWithRouter();
 
-        // Act
-        await router.navigateByUrl('/');
-        await router.navigateByUrl('/dashboard/categories/1');
+      // Act
+      await router.navigateByUrl('/');
+      await router.navigateByUrl('/dashboard/categories/1');
 
-        let categoryComponentSnapshot = getRouteSnapshot(store, CategoryComponent)!;
+      let categoryComponentSnapshot = getRouteSnapshot(store, CategoryComponent)!;
 
-        // Assert
-        expect(categoryComponentSnapshot.data.category).toEqual({ id: 1 });
+      // Assert
+      expect(categoryComponentSnapshot.data.category).toEqual({ id: 1 });
 
-        await router.navigateByUrl('/dashboard/categories/2');
+      await router.navigateByUrl('/dashboard/categories/2');
 
-        categoryComponentSnapshot = getRouteSnapshot(store, CategoryComponent)!;
+      categoryComponentSnapshot = getRouteSnapshot(store, CategoryComponent)!;
 
-        // Assert
-        expect(categoryComponentSnapshot.data.category).toEqual({ id: 2 });
-      })
-    )
+      // Assert
+      expect(categoryComponentSnapshot.data.category).toEqual({ id: 2 });
+    })
   );
 
   fit(
     'should listen to the state change',
-    freshPlatform(
-      fakeAsync(async () => {
-        // Arrange
-        const { store, router } = await createPlatformAndGetStoreWithRouter();
-        const datas: any[] = [];
+    freshPlatform(async () => {
+      // Arrange
+      const { store, router } = await createPlatformAndGetStoreWithRouter();
+      const datas: any[] = [];
 
-        store
-          .select(RouterState.getRouteSnapshot(CategoryComponent))
-          .pipe(filter((snapshot): snapshot is ActivatedRouteSnapshot => snapshot !== null))
-          .subscribe(snapshot => {
-            datas.push(snapshot.data);
-          });
+      store
+        .select(RouterState.getRouteSnapshot(CategoryComponent))
+        .pipe(filter((snapshot): snapshot is ActivatedRouteSnapshot => snapshot !== null))
+        .subscribe(snapshot => {
+          datas.push(snapshot.data);
+        });
 
-        // Act
-        await router.navigateByUrl('/');
-        await router.navigateByUrl('/dashboard/categories/1');
-        await router.navigateByUrl('/dashboard/categories/3');
-        await router.navigateByUrl('/dashboard/categories/5');
-      })
-    )
+      // Act
+      await router.navigateByUrl('/');
+      await router.navigateByUrl('/dashboard/categories/1');
+      await router.navigateByUrl('/dashboard/categories/3');
+      await router.navigateByUrl('/dashboard/categories/5');
+    })
   );
 });

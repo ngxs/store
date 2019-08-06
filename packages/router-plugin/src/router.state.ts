@@ -7,7 +7,8 @@ import {
   RoutesRecognized,
   ResolveEnd,
   GuardsCheckEnd,
-  UrlSerializer
+  UrlSerializer,
+  ActivatedRouteSnapshot
 } from '@angular/router';
 import { LocationStrategy, Location } from '@angular/common';
 import { Action, Selector, State, StateContext, Store, createSelector } from '@ngxs/store';
@@ -45,8 +46,8 @@ export class RouterState {
   private dispatchTriggeredByRouter = false; // used only in dev mode in combination with routerReducer
   private navigationTriggeredByDispatch = false; // used only in dev mode in combination with routerReducer
 
-  static getRouteSnapshot<T>(component: Type<T>) {
-    return createSelector(
+  static getRouteSnapshot<T>(component: Type<T> | null = null) {
+    return createSelector<(state: RouterStateModel) => ActivatedRouteSnapshot | null>(
       [RouterState],
       (state: RouterStateModel) => searchRoute(state, component)
     );

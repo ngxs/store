@@ -125,9 +125,10 @@ export class AppComponent {
 
 ## Selecting route snapshot using `getRouteSnapshot` selector
 
-To avoid such code where you need to access deeply nested properties - we advise using the `getRouteSnapshot` selector,
-which takes the component's constructor as the parameter and searches in the tree structure for its `ActivatedRouteSnapshot`.
-For example we've got the `NovelsComponent` and we don't know how deep it is
+This packages exposes a selector called `getRouteSnapshot`. It helps to avoid accessing deeply nested properties.
+This selector takes the component's constructor as the first parameter and looks for its
+`ActivatedRouteSnapshot` in the router tree. Image that we've got the `NovelsComponent`.
+We also don't know its depth, but we would like to access the resolved data and "watch" it. Let's look at the code below:
 
 ```ts
 import { Store } from '@ngxs/store';
@@ -152,7 +153,15 @@ export class NovelsComponent {
 }
 ```
 
-Notice that we map our stream to the `ActivatedRouteSnapshot.prototype.data` property but also check if it's not `null`.
+The `getRouteSnapshot` selector can also return `null` if the requested component was deactivated previously or it
+doesn't exist in the tree. Be sure to always check if it's not `null`!
+
+You can also request the root snapshot by providing no argument:
+
+```ts
+const rootSnapshot = this.store.selectSnapshot(getRouteSnapshot());
+console.log(rootSnapshot.component); // Should log `null` as the root snapshot doesn't reference component
+```
 
 ## Custom Router State Serializer
 You can implement your own router state serializer to serialize the router snapshot.
