@@ -10,6 +10,7 @@ $ npm install @ngxs/store@dev
 * Fix: HMR Plugin - trigger ngOnDestroy for all components in app tree [#1192](https://github.com/ngxs/store/pull/1192)
 * Build: dtslint must use current version of TypeScript [#1182](https://github.com/ngxs/store/pull/1182)
 * Build: add bundle size checker for improved infrastructure [#1199](https://github.com/ngxs/store/pull/1199)
+* Build: configure typescript-eslint package [#1201](https://github.com/ngxs/store/pull/1201)
 
 # 3.5.0 2019-07-22
 
