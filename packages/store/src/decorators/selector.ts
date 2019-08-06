@@ -10,7 +10,7 @@ export function Selector(selectors?: any[]): MethodDecorator {
     key: string | symbol,
     descriptor: TypedPropertyDescriptor<T>
   ): TypedPropertyDescriptor<T> | void => {
-    const isNotMethod: boolean = !(descriptor && descriptor.value !== null);
+    const isNotMethod = !(descriptor && descriptor.value !== null);
 
     if (isNotMethod) {
       throw new Error(CONFIG_MESSAGES[VALIDATION_CODE.SELECTOR_DECORATOR]());
