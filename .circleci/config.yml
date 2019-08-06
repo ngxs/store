@@ -79,13 +79,21 @@ jobs:
           path: docs
           destination: docs
 
-  lint:
+  tslint:
     <<: *job_defaults
     steps:
       - *attach_workspace
       - run:
-          name: Lint
+          name: Run TSLint analyzer
           command: yarn lint
+
+  eslint:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run ESLint analyzer
+          command: yarn eslint
 
   unit_tests:
     <<: *job_defaults
@@ -200,7 +208,11 @@ workflows:
             tags:
               only: /.*/
 
-      - lint:
+      - tslint:
+          requires:
+            - build
+
+      - eslint:
           requires:
             - build
 

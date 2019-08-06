@@ -115,7 +115,9 @@ function mapAction<T = any>(): OperatorFunction<ActionContext, T> {
   return map((ctx: ActionContext) => <T>ctx.action);
 }
 
-type FilterMap = { [key: string]: boolean };
+interface FilterMap {
+  [key: string]: boolean;
+}
 
 function createAllowedActionTypesMap(types: any[]): FilterMap {
   return types.reduce(

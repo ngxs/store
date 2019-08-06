@@ -5,7 +5,7 @@ import { NgxsExecutionStrategy } from './symbols';
 
 @Injectable()
 export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionStrategy {
-  constructor(private _ngZone: NgZone, @Inject(PLATFORM_ID) private _platformId: Object) {
+  constructor(private _ngZone: NgZone, @Inject(PLATFORM_ID) private _platformId: string) {
     this.verifyZoneIsNotNooped(this._ngZone);
   }
 

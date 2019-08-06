@@ -77,16 +77,16 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
       typeof window !== 'undefined' && window.navigator.userAgent
         ? window.navigator.userAgent
         : '';
-    let ms_ie = false;
+    let msIE = false;
 
-    const old_ie = ua.indexOf('MSIE ');
-    const new_ie = ua.indexOf('Trident/');
+    const oldIE = ua.indexOf('MSIE ');
+    const newIE = ua.indexOf('Trident/');
 
-    if (old_ie > -1 || new_ie > -1) {
-      ms_ie = true;
+    if (oldIE > -1 || newIE > -1) {
+      msIE = true;
     }
 
-    return ms_ie;
+    return msIE;
   }
 
   private _hasPayload(event: any) {

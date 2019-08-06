@@ -24,10 +24,10 @@ import {
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
 
-export type RouterStateModel<T = RouterStateSnapshot> = {
+export interface RouterStateModel<T = RouterStateSnapshot> {
   state?: T;
   navigationId?: number;
-};
+}
 
 @State<RouterStateModel>({
   name: 'router',
