@@ -86,7 +86,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 @Component({
   selector: 'new-novel-form',
   template: `
-    <form [formGroup]="newNovelForm" ngxsForm="newNovelForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="newNovelForm" ngxsForm="novels.newNovelForm" (ngSubmit)="onSubmit()">
       <input type="text" formControlName="novelName">
       <button type="submit">Create</button>
     </form>
