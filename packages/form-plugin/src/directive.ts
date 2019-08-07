@@ -115,8 +115,8 @@ export class FormDirective implements OnInit, OnDestroy {
 
     this._formGroupDirective
       .statusChanges!.pipe(
-        this.debounceChange(),
-        distinctUntilChanged()
+        distinctUntilChanged(),
+        this.debounceChange()
       )
       .subscribe((status: 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED') => {
         this._store.dispatch(
