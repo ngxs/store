@@ -45,3 +45,5 @@ import { environment } from '../environments/environment';
 })
 export class AppModule {}
 ```
+
+This approach will reduce your production bundle size, as these packages might be needed only meanwhile development.
