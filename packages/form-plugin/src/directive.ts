@@ -3,13 +3,7 @@ import { FormGroupDirective, FormGroup } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
-import {
-  UpdateFormStatus,
-  UpdateFormValue,
-  UpdateFormDirty,
-  UpdateFormErrors,
-  UpdateForm
-} from './actions';
+import { UpdateFormStatus, UpdateForm } from './actions';
 
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
@@ -59,20 +53,15 @@ export class FormDirective implements OnInit, OnDestroy {
     this._store
       .selectOnce(state => getValue(state, this.path))
       .subscribe(() => {
-        this._store.dispatch([
-          new UpdateFormValue({
+        this._store.dispatch(
+          new UpdateForm({
             path: this.path,
+            dirty: this.form.dirty,
+            status: this.form.status,
+            errors: this.form.errors,
             value: this.form.getRawValue()
-          }),
-          new UpdateFormStatus({
-            path: this.path,
-            status: this.form.status
-          }),
-          new UpdateFormDirty({
-            path: this.path,
-            dirty: this.form.dirty
           })
-        ]);
+        );
       });
 
     this.getStateStream(`${this.path}.disabled`).subscribe(disabled => {
@@ -93,20 +82,15 @@ export class FormDirective implements OnInit, OnDestroy {
       const value = this._formGroupDirective.control.getRawValue();
       this._updating = true;
       this._store
-        .dispatch([
-          new UpdateFormValue({
+        .dispatch(
+          new UpdateForm({
+            value,
             path: this.path,
-            value
-          }),
-          new UpdateFormDirty({
-            path: this.path,
-            dirty: this._formGroupDirective.dirty
-          }),
-          new UpdateFormErrors({
-            path: this.path,
+            status: this._formGroupDirective.status,
+            dirty: this._formGroupDirective.dirty,
             errors: this._formGroupDirective.errors
           })
-        ])
+        )
         .subscribe({
           error: () => (this._updating = false),
           complete: () => (this._updating = false)
