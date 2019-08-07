@@ -76,28 +76,16 @@ export class NgxsFormPlugin implements NgxsPlugin {
     return next(nextState, event);
   }
 
-  /**
-   * Value can be also a plain string, number or anything else
-   */
   private retrieveImmutably(value: any) {
-    if (this.isPrimitive(value)) {
-      return value;
+    if (Array.isArray(value)) {
+      return value.slice();
     }
 
-    return Array.isArray(value) ? value.slice() : { ...value };
-  }
+    if (value !== null && typeof value === 'object') {
+      return { ...value };
+    }
 
-  /**
-   * This is 30x faster than `value !== Object(value)`
-   */
-  private isPrimitive(value: any) {
-    return (
-      typeof value === 'string' ||
-      typeof value === 'number' ||
-      typeof value === 'symbol' ||
-      typeof value === 'boolean' ||
-      typeof value === 'bigint' ||
-      value == null
-    );
+    // Means it's a primitive value like single string or number
+    return value;
   }
 }
