@@ -2,7 +2,7 @@ import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular
 import { FormGroupDirective, FormGroup } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
 import { Subject, Observable } from 'rxjs';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
   UpdateFormStatus,
   UpdateFormValue,
@@ -66,7 +66,7 @@ export class FormDirective implements OnInit, OnDestroy {
           }),
           new UpdateFormStatus({
             path: this.path,
-            status: this.form.status
+            status: this.form.status as 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED'
           }),
           new UpdateFormDirty({
             path: this.path,
@@ -114,8 +114,11 @@ export class FormDirective implements OnInit, OnDestroy {
     });
 
     this._formGroupDirective
-      .statusChanges!.pipe(this.debounceChange())
-      .subscribe((status: string) => {
+      .statusChanges!.pipe(
+        this.debounceChange(),
+        distinctUntilChanged()
+      )
+      .subscribe((status: 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED' | null) => {
         this._store.dispatch(
           new UpdateFormStatus({
             status,

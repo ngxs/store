@@ -3,7 +3,12 @@ export class UpdateFormStatus {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Forms] Update Form Status';
   }
-  constructor(public payload: { status: string | null; path: string }) {}
+  constructor(
+    public payload: {
+      status: 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED' | null;
+      path: string;
+    }
+  ) {}
 }
 
 export class UpdateFormValue {
