@@ -33,6 +33,7 @@
   * [Meta Reducers](advanced/meta-reducer.md)
   * [Shared State](advanced/shared-state.md)
 * Recipes
+  * [Dynamic Plugins](recipes/dynamic-plugins.md)
   * [Authentication](recipes/authentication.md)
   * [Caching](recipes/cache.md)
   * [Unit Testing](recipes/unit-testing.md)
