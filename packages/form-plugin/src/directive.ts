@@ -10,6 +10,7 @@ import {
   UpdateFormErrors,
   UpdateForm
 } from './actions';
+import { FormStatus } from './symbols';
 
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
@@ -66,7 +67,7 @@ export class FormDirective implements OnInit, OnDestroy {
           }),
           new UpdateFormStatus({
             path: this.path,
-            status: this.form.status as 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED'
+            status: this.form.status as FormStatus
           }),
           new UpdateFormDirty({
             path: this.path,
@@ -118,7 +119,7 @@ export class FormDirective implements OnInit, OnDestroy {
         distinctUntilChanged(),
         this.debounceChange()
       )
-      .subscribe((status: 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED') => {
+      .subscribe((status: FormStatus) => {
         this._store.dispatch(
           new UpdateFormStatus({
             status,

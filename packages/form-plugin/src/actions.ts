@@ -1,3 +1,5 @@
+import { FormStatus } from './symbols';
+
 export class UpdateFormStatus {
   static get type() {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
@@ -5,7 +7,7 @@ export class UpdateFormStatus {
   }
   constructor(
     public payload: {
-      status: 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED' | null;
+      status: FormStatus | null;
       path: string;
     }
   ) {}
