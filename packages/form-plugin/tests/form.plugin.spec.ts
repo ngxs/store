@@ -538,7 +538,7 @@ describe('NgxsFormPlugin', () => {
       });
     });
 
-    fit('should not dispatch UpdateFormStatus every time as "statusChanges" emits', () => {
+    it('should not dispatch UpdateFormStatus every time as "statusChanges" emits', () => {
       @State({
         name: 'todos',
         defaults: {
