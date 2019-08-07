@@ -14,6 +14,13 @@ export class UpdateFormValue {
   constructor(public payload: { value: any; path: string }) {}
 }
 
+export class UpdateFormArrayValue {
+  static get type() {
+    return '[Forms] Update Form Array Value';
+  }
+  constructor(public payload: { value: any; path: string; arrayPath: string }) {}
+}
+
 export class UpdateForm {
   static get type() {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138

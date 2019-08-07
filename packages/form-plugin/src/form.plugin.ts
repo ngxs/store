@@ -14,23 +14,33 @@ import {
   SetFormDirty,
   SetFormDisabled,
   SetFormEnabled,
-  SetFormPristine
+  SetFormPristine,
+  UpdateFormArrayValue
 } from './actions';
 
 @Injectable()
 export class NgxsFormPlugin implements NgxsPlugin {
-  constructor() {}
-
   handle(state: any, event: any, next: NgxsNextPluginFn) {
     const type = getActionTypeFromInstance(event);
 
     let nextState = state;
 
     if (type === UpdateFormValue.type || type === UpdateForm.type) {
-      const { value } = event.payload;
-      const payloadValue = Array.isArray(value) ? value.slice() : { ...value };
+      // Don't wrap it with `retrieveImmutably` as it can be a breaking change
+      const value = Array.isArray(event.payload.value)
+        ? event.payload.value.slice()
+        : { ...event.payload.value };
+      nextState = setValue(nextState, `${event.payload.path}.model`, value);
+    }
 
-      nextState = setValue(nextState, `${event.payload.path}.model`, payloadValue);
+    if (type === UpdateFormArrayValue.type) {
+      const value = this.retrieveImmutably(event.payload.value);
+
+      nextState = setValue(
+        nextState,
+        `${event.payload.path}.model.${event.payload.arrayPath}`,
+        value
+      );
     }
 
     if (type === UpdateFormStatus.type || type === UpdateForm.type) {
@@ -64,5 +74,30 @@ export class NgxsFormPlugin implements NgxsPlugin {
     }
 
     return next(nextState, event);
+  }
+
+  /**
+   * Value can be also a plain string, number or anything else
+   */
+  private retrieveImmutably(value: any) {
+    if (this.isPrimitive(value)) {
+      return value;
+    }
+
+    return Array.isArray(value) ? value.slice() : { ...value };
+  }
+
+  /**
+   * This is 30x faster than `value !== Object(value)`
+   */
+  private isPrimitive(value: any) {
+    return (
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'symbol' ||
+      typeof value === 'boolean' ||
+      typeof value === 'bigint' ||
+      value == null
+    );
   }
 }

@@ -128,8 +128,104 @@ The form plugin comes with the following `actions` out of the box:
 
 - `UpdateFormStatus({ status, path })` - Update the form status
 - `UpdateFormValue({ value, path })` - Update the form value
+- `UpdateFormArrayValue({ value, path, arrayPath })` - Update the form array value
 - `UpdateFormDirty({ dirty, path })` - Update the form dirty status
 - `SetFormDisabled(path)` - Set the form to disabled
 - `SetFormEnabled(path)` - Set the form to enabled
 - `SetFormDirty(path)` - Set the form to dirty (shortcut for `UpdateFormDirty`)
 - `SetFormPristine(path)` - Set the form to pristine (shortcut for `UpdateFormDirty`)
+
+### FormArray
+
+The form plugin exposes `UpdateFormArrayValue` action that gives the opportunity to update
+form groups inside `FormArray`s. Let's look at the below state:
+
+```ts
+interface NovelsStateModel {
+  newNovelForm: {
+    model?: {
+      novelName: string;
+      authors: {
+        name: string;
+      }[];
+    };
+  };
+}
+
+@State<NovelsStateModel>({
+  name: 'novels',
+  defaults: {
+    newNovelForm: {
+      model: undefined
+    }
+  }
+})
+export class NovelsState {}
+```
+
+The state contains information about the new novel name and its authors. Let's create a component
+that will render the reactive form with bounded `ngxsForm` directive:
+
+```ts
+@Component({
+  selector: 'new-novel-form',
+  template: `
+    <form [formGroup]="newNovelForm" ngxsForm="novels.newNovelForm" (ngSubmit)="onSubmit()">
+      <input type="text" formControlName="novelName">
+
+      <div formArrayName="authors" *ngFor="let author of newNovelForm.get('authors').controls; index as index" >
+        <div [formGroupName]="index">
+          <input formControlName="name">
+        </div>
+      </div>
+
+      <button type="submit">Create</button>
+    </form>
+  `
+})
+export class NewNovelComponent {
+  newNovelForm = new FormGroup({
+    novelName: new FormControl('Zenith'),
+    authors: new FormArray([
+      new FormGroup({
+        name: new FormControl('Sasha Alsberg')
+      })
+    ])
+  });
+
+  onSubmit() {
+    //
+  }
+}
+```
+
+The `UpdateFormArrayValue` can be dispatched only by the developer, if you need to update this form from somewhere else.
+This action takes a `payload` object as the constructor parameter that has to have 3 properties - `value`, `path` and
+`arrayPath`.
+
+Let's look at the component above again. Assume we want to update the first control's `name`. The code would look as follows:
+
+```ts
+store.dispatch(
+  new UpdateFormArrayValue({
+    path: 'novels.newNovelForm',
+    value: {
+      name: 'Lindsay Cummings'
+    },
+    arrayPath: 'authors.0'
+  })
+);
+```
+
+The `path` leads to the state and `arrayPath` leads to the `FormArray` property. `authors.0` is the `FormArray`'s name and index.
+It's also possible to update primitive values:
+
+```ts
+store.dispatch(
+  new UpdateFormArrayValue({
+    path: 'novels.newNovelForm',
+    value: 'Lindsay Cummings',
+    arrayPath: 'authors.0.name'
+  })
+);
+```
