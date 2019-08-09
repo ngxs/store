@@ -127,18 +127,17 @@ this.store.dispatch(
 The form plugin comes with the following `actions` out of the box:
 
 - `UpdateFormStatus({ status, path })` - Update the form status
-- `UpdateFormValue({ value, path })` - Update the form value
-- `UpdateFormArrayValue({ value, path, arrayPath })` - Update the form array value
+- `UpdateFormValue({ value, path, propertyPath })` - Update the form value
 - `UpdateFormDirty({ dirty, path })` - Update the form dirty status
 - `SetFormDisabled(path)` - Set the form to disabled
 - `SetFormEnabled(path)` - Set the form to enabled
 - `SetFormDirty(path)` - Set the form to dirty (shortcut for `UpdateFormDirty`)
 - `SetFormPristine(path)` - Set the form to pristine (shortcut for `UpdateFormDirty`)
 
-### FormArray
+### Updating form properties separately
 
-The form plugin exposes `UpdateFormArrayValue` action that gives the opportunity to update
-form groups inside `FormArray`s. Let's look at the below state:
+The form plugin exposes `UpdateFormValue` action that gives the opportunity to update
+nested form properties by providing `propertyPath` parameter.
 
 ```ts
 interface NovelsStateModel {
@@ -199,25 +198,21 @@ export class NewNovelComponent {
 }
 ```
 
-The `UpdateFormArrayValue` can be dispatched only by the developer, if you need to update this form from somewhere else.
-This action takes a `payload` object as the constructor parameter that has to have 3 properties - `value`, `path` and
-`arrayPath`.
-
 Let's look at the component above again. Assume we want to update the first control's `name`. The code would look as follows:
 
 ```ts
 store.dispatch(
-  new UpdateFormArrayValue({
+  new UpdateFormValue({
     path: 'novels.newNovelForm',
     value: {
       name: 'Lindsay Cummings'
     },
-    arrayPath: 'authors.0'
+    propertyPath: 'authors.0'
   })
 );
 ```
 
-The `path` leads to the state and `arrayPath` leads to the `FormArray` property. `authors.0` is the `FormArray`'s name and index.
+The `path` leads to the state and `propertyPath` leads to the nested form properties. `authors.0` is the `FormArray`'s name and index.
 It's also possible to update primitive values:
 
 ```ts
@@ -225,7 +220,7 @@ store.dispatch(
   new UpdateFormArrayValue({
     path: 'novels.newNovelForm',
     value: 'Lindsay Cummings',
-    arrayPath: 'authors.0.name'
+    propertyPath: 'authors.0.name'
   })
 );
 ```

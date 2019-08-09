@@ -14,8 +14,7 @@ import {
   SetFormDirty,
   SetFormDisabled,
   SetFormEnabled,
-  SetFormPristine,
-  UpdateFormArrayValue
+  SetFormPristine
 } from './actions';
 
 @Injectable()
@@ -26,21 +25,9 @@ export class NgxsFormPlugin implements NgxsPlugin {
     let nextState = state;
 
     if (type === UpdateFormValue.type || type === UpdateForm.type) {
-      // Don't wrap it with `retrieveImmutably` as it can be a breaking change
-      const value = Array.isArray(event.payload.value)
-        ? event.payload.value.slice()
-        : { ...event.payload.value };
-      nextState = setValue(nextState, `${event.payload.path}.model`, value);
-    }
-
-    if (type === UpdateFormArrayValue.type) {
       const value = this.retrieveImmutably(event.payload.value);
-
-      nextState = setValue(
-        nextState,
-        `${event.payload.path}.model.${event.payload.arrayPath}`,
-        value
-      );
+      const path = this.getUpdateFormValuePath(event);
+      nextState = setValue(nextState, path, value);
     }
 
     if (type === UpdateFormStatus.type || type === UpdateForm.type) {
@@ -74,6 +61,16 @@ export class NgxsFormPlugin implements NgxsPlugin {
     }
 
     return next(nextState, event);
+  }
+
+  private getUpdateFormValuePath({ payload }: UpdateFormValue) {
+    let path = `${payload.path}.model`;
+
+    if (payload.propertyPath) {
+      path += `.${payload.propertyPath}`;
+    }
+
+    return path;
   }
 
   private retrieveImmutably(value: any) {

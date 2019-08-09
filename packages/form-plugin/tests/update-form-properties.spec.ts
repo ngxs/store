@@ -4,9 +4,9 @@ import { By } from '@angular/platform-browser';
 import { FormGroup, FormControl, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { State, NgxsModule, Store, Selector } from '@ngxs/store';
 
-import { NgxsFormPluginModule, UpdateFormArrayValue } from '..';
+import { NgxsFormPluginModule, UpdateFormValue } from '..';
 
-describe('NgxsFormPlugin UpdateFormArrayValue', () => {
+describe('Update form properties with "propertyPath"', () => {
   interface NovelsStateModel {
     newNovelForm: {
       model: {
@@ -124,7 +124,7 @@ describe('NgxsFormPlugin UpdateFormArrayValue', () => {
     });
   });
 
-  it('should update model and form if the UpdateFormArrayValue action is dispatched', () => {
+  it('should update model and form if the UpdateFormValue action is dispatched', () => {
     // Arrange
     const store = getStore();
     const fixture = createComponent();
@@ -132,12 +132,12 @@ describe('NgxsFormPlugin UpdateFormArrayValue', () => {
 
     // Act
     store.dispatch(
-      new UpdateFormArrayValue({
+      new UpdateFormValue({
         path,
         value: {
           name: 'Mark Whitfield'
         },
-        arrayPath: 'authors.0'
+        propertyPath: 'authors.0'
       })
     );
 
@@ -169,16 +169,16 @@ describe('NgxsFormPlugin UpdateFormArrayValue', () => {
 
     // Act
     store.dispatch([
-      new UpdateFormArrayValue({
+      new UpdateFormValue({
         path,
         value: 'Artur Androsovych',
-        arrayPath: 'authors.1.name'
+        propertyPath: 'authors.1.name'
       }),
 
-      new UpdateFormArrayValue({
+      new UpdateFormValue({
         path,
         value: 'Max Ivanov',
-        arrayPath: 'authors.2.name'
+        propertyPath: 'authors.2.name'
       })
     ]);
 
