@@ -1,8 +1,8 @@
 # Dynamic Plugins
 
-Angular provides the opportunity to avoid bundling development only packages. There packages
+Angular provides the capability to avoid bundling development only packages. There packages
 are `@ngxs/devtools-plugin` and `@ngxs/logger-plugin`. You would want to use these packages
-only while development, but not in the production.
+only during development and not in production.
 
 Let's look at the code below:
 
@@ -46,4 +46,4 @@ import { environment } from '../environments/environment';
 export class AppModule {}
 ```
 
-This approach will reduce your production bundle size, as these packages might be needed only meanwhile development.
+This approach will reduce your production bundle size, as these packages are only needed during development.
