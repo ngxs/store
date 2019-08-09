@@ -217,7 +217,7 @@ It's also possible to update primitive values:
 
 ```ts
 store.dispatch(
-  new UpdateFormArrayValue({
+  new UpdateFormValue({
     path: 'novels.newNovelForm',
     value: 'Lindsay Cummings',
     propertyPath: 'authors.0.name'
