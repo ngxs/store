@@ -1,8 +1,8 @@
 # Dynamic Plugins
 
-Angular provides the capability to avoid bundling development only packages. There packages
-are `@ngxs/devtools-plugin` and `@ngxs/logger-plugin`. You would want to use these packages
-only during development and not in production.
+Angular provides the ability to have a different environment file loaded for development as compared to production or other build targets. We can use this to improve our application bundling when it comes to development only packages. In NGXS the packages that are mainly useful only for development mode are the
+`@ngxs/devtools-plugin` and `@ngxs/logger-plugin`. Typically you would only want to use these packages
+during development and not in production.
 
 Let's look at the code below:
 
@@ -22,7 +22,7 @@ the production build it will be replaced with `environment.prod.ts` file (or any
 If you already figured out the `environment.prod.ts` file will contain `plugins` property that equals empty array, the code would
 look as follows:
 
-```ts
+```ts{
 // environment.prod.ts
 export const environment = {
   production: true,
