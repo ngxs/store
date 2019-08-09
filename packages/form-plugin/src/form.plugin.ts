@@ -25,9 +25,10 @@ export class NgxsFormPlugin implements NgxsPlugin {
     let nextState = state;
 
     if (type === UpdateFormValue.type || type === UpdateForm.type) {
-      const value = this.retrieveImmutably(event.payload.value);
+      const { value } = event.payload;
+      const payloadValue = Array.isArray(value) ? value.slice() : { ...value };
       const path = this.getUpdateFormValuePath(event);
-      nextState = setValue(nextState, path, value);
+      nextState = setValue(nextState, path, payloadValue);
     }
 
     if (type === UpdateFormStatus.type || type === UpdateForm.type) {
@@ -71,18 +72,5 @@ export class NgxsFormPlugin implements NgxsPlugin {
     }
 
     return path;
-  }
-
-  private retrieveImmutably(value: any) {
-    if (Array.isArray(value)) {
-      return value.slice();
-    }
-
-    if (value !== null && typeof value === 'object') {
-      return { ...value };
-    }
-
-    // Means it's a primitive value like single string or number
-    return value;
   }
 }

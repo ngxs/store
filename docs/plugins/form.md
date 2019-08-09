@@ -214,16 +214,3 @@ store.dispatch(
   })
 );
 ```
-
-The `path` leads to the state and `propertyPath` leads to the nested form properties. `authors.0` is the `FormArray`'s name and index.
-It's also possible to update primitive values:
-
-```ts
-store.dispatch(
-  new UpdateFormValue({
-    path: 'novels.newNovelForm',
-    value: 'Lindsay Cummings',
-    propertyPath: 'authors.0.name'
-  })
-);
-```

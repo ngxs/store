@@ -160,45 +160,4 @@ describe('Update form properties with "propertyPath"', () => {
       }
     ]);
   });
-
-  it('should update particular name', () => {
-    // Arrange
-    const store = getStore();
-    const fixture = createComponent();
-    fixture.detectChanges();
-
-    // Act
-    store.dispatch([
-      new UpdateFormValue({
-        path,
-        value: 'Artur Androsovych',
-        propertyPath: 'authors.1.name'
-      }),
-
-      new UpdateFormValue({
-        path,
-        value: 'Max Ivanov',
-        propertyPath: 'authors.2.name'
-      })
-    ]);
-
-    const model = store.selectSnapshot(NovelsState.model);
-    const authors = fixture.debugElement.queryAll(By.css('.authors'));
-    const inputs = authors.map(author => author.query(By.css('input.author-name')));
-    const values = inputs.map(input => input.nativeElement.value);
-
-    // Assert
-    expect(values).toEqual(['Mark', 'Artur Androsovych', 'Max Ivanov']);
-    expect(model.authors).toEqual([
-      {
-        name: 'Mark'
-      },
-      {
-        name: 'Artur Androsovych'
-      },
-      {
-        name: 'Max Ivanov'
-      }
-    ]);
-  });
 });
