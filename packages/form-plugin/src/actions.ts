@@ -26,6 +26,7 @@ export class UpdateForm {
       dirty: boolean | null;
       status: string | null;
       path: string;
+      propertyPath?: string;
     }
   ) {}
 }
