@@ -170,11 +170,14 @@ that will render the reactive form with bounded `ngxsForm` directive:
   selector: 'new-novel-form',
   template: `
     <form [formGroup]="newNovelForm" ngxsForm="novels.newNovelForm" (ngSubmit)="onSubmit()">
-      <input type="text" formControlName="novelName">
+      <input type="text" formControlName="novelName" />
 
-      <div formArrayName="authors" *ngFor="let author of newNovelForm.get('authors').controls; index as index" >
+      <div
+        formArrayName="authors"
+        *ngFor="let author of newNovelForm.get('authors').controls; index as index"
+      >
         <div [formGroupName]="index">
-          <input formControlName="name">
+          <input formControlName="name" />
         </div>
       </div>
 
