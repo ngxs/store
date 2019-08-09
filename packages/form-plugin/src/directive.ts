@@ -4,7 +4,13 @@ import { Store, getValue } from '@ngxs/store';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-import { UpdateFormStatus, UpdateForm } from './actions';
+import {
+  UpdateFormStatus,
+  UpdateFormValue,
+  UpdateFormDirty,
+  UpdateFormErrors,
+  UpdateForm
+} from './actions';
 
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
@@ -17,6 +23,12 @@ export class FormDirective implements OnInit, OnDestroy {
   @Input('ngxsFormClearOnDestroy')
   clearDestroy = false;
 
+  @Input('ngxsFormUseDefaultCompare')
+  useDefaultCompare = false;
+
+  @Input('ngxsFormCompare')
+  compare: (<T>(a: T, b: T) => boolean) | null = null;
+
   private readonly _destroy$ = new Subject<void>();
   private _updating = false;
 
@@ -27,6 +39,11 @@ export class FormDirective implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    if (this.useDefaultCompare) {
+      // Create it lazily by condition
+      this.compare = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    }
+
     this.getStateStream(`${this.path}.model`).subscribe(model => {
       if (this._updating || !model) {
         return;
@@ -54,15 +71,20 @@ export class FormDirective implements OnInit, OnDestroy {
     this._store
       .selectOnce(state => getValue(state, this.path))
       .subscribe(() => {
-        this._store.dispatch(
-          new UpdateForm({
+        this._store.dispatch([
+          new UpdateFormValue({
             path: this.path,
-            dirty: this.form.dirty,
-            status: this.form.status,
-            errors: this.form.errors,
             value: this.form.getRawValue()
+          }),
+          new UpdateFormStatus({
+            path: this.path,
+            status: this.form.status
+          }),
+          new UpdateFormDirty({
+            path: this.path,
+            dirty: this.form.dirty
           })
-        );
+        ]);
       });
 
     this.getStateStream(`${this.path}.disabled`).subscribe(disabled => {
@@ -79,24 +101,34 @@ export class FormDirective implements OnInit, OnDestroy {
       this._cd.markForCheck();
     });
 
-    this._formGroupDirective.valueChanges!.pipe(this.debounceChange()).subscribe(() => {
-      const value = this._formGroupDirective.control.getRawValue();
-      this._updating = true;
-      this._store
-        .dispatch(
-          new UpdateForm({
-            value,
-            path: this.path,
-            status: this._formGroupDirective.status,
-            dirty: this._formGroupDirective.dirty,
-            errors: this._formGroupDirective.errors
-          })
-        )
-        .subscribe({
-          error: () => (this._updating = false),
-          complete: () => (this._updating = false)
-        });
-    });
+    this._formGroupDirective
+      .valueChanges!.pipe(
+        this.distinctUntilChanged(),
+        this.debounceChange()
+      )
+      .subscribe(() => {
+        const value = this._formGroupDirective.control.getRawValue();
+        this._updating = true;
+        this._store
+          .dispatch([
+            new UpdateFormValue({
+              path: this.path,
+              value
+            }),
+            new UpdateFormDirty({
+              path: this.path,
+              dirty: this._formGroupDirective.dirty
+            }),
+            new UpdateFormErrors({
+              path: this.path,
+              errors: this._formGroupDirective.errors
+            })
+          ])
+          .subscribe({
+            error: () => (this._updating = false),
+            complete: () => (this._updating = false)
+          });
+      });
 
     this._formGroupDirective
       .statusChanges!.pipe(
@@ -130,17 +162,25 @@ export class FormDirective implements OnInit, OnDestroy {
     }
   }
 
-  private debounceChange() {
+  private debounceChange<T>() {
     const skipDebounceTime =
       this._formGroupDirective.control.updateOn !== 'change' || this.debounce < 0;
 
     return skipDebounceTime
-      ? (change: Observable<any>) => change.pipe(takeUntil(this._destroy$))
-      : (change: Observable<any>) =>
+      ? (change: Observable<T>) => change.pipe(takeUntil(this._destroy$))
+      : (change: Observable<T>) =>
           change.pipe(
             debounceTime(this.debounce),
             takeUntil(this._destroy$)
           );
+  }
+
+  private distinctUntilChanged<T>() {
+    if (this.compare) {
+      return (change: Observable<T>) => change.pipe(distinctUntilChanged(this.compare!));
+    }
+
+    return (change: Observable<T>) => change;
   }
 
   private get form(): FormGroup {
