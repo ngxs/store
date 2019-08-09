@@ -2,7 +2,8 @@ import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular
 import { FormGroupDirective, FormGroup } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
 import { Subject, Observable } from 'rxjs';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
 import { UpdateFormStatus, UpdateForm } from './actions';
 
 @Directive({ selector: '[ngxsForm]' })
@@ -98,7 +99,10 @@ export class FormDirective implements OnInit, OnDestroy {
     });
 
     this._formGroupDirective
-      .statusChanges!.pipe(this.debounceChange())
+      .statusChanges!.pipe(
+        distinctUntilChanged(),
+        this.debounceChange()
+      )
       .subscribe((status: string) => {
         this._store.dispatch(
           new UpdateFormStatus({
