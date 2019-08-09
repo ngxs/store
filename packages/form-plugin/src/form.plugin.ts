@@ -64,7 +64,7 @@ export class NgxsFormPlugin implements NgxsPlugin {
     return next(nextState, event);
   }
 
-  private getUpdateFormValuePath({ payload }: UpdateFormValue | UpdateForm): string {
+  private getUpdateFormValuePath({ payload }: UpdateFormValue): string {
     let path = `${payload.path}.model`;
 
     if (payload.propertyPath) {
