@@ -22,7 +22,7 @@ the production build it will be replaced with `environment.prod.ts` file (or any
 If you already figured out the `environment.prod.ts` file will contain `plugins` property that equals empty array, the code would
 look as follows:
 
-```ts{
+```ts
 // environment.prod.ts
 export const environment = {
   production: true,
