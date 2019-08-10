@@ -1,4 +1,4 @@
-import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef, Inject } from '@angular/core';
 import { FormGroupDirective, FormGroup } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
 import { Subject, Observable } from 'rxjs';
@@ -11,6 +11,8 @@ import {
   UpdateFormErrors,
   UpdateForm
 } from './actions';
+import { NGXS_FORM_PLUGIN_VALUE_CHANGES_STRATEGY } from './symbols';
+import { NgxsFormPluginValueChangesStrategy } from './value-changes-strategy';
 
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
@@ -23,27 +25,18 @@ export class FormDirective implements OnInit, OnDestroy {
   @Input('ngxsFormClearOnDestroy')
   clearDestroy = false;
 
-  @Input('ngxsFormUseDefaultCompare')
-  useDefaultCompare = false;
-
-  @Input('ngxsFormCompare')
-  compare: (<T>(a: T, b: T) => boolean) | null = null;
-
   private readonly _destroy$ = new Subject<void>();
   private _updating = false;
 
   constructor(
     private _store: Store,
     private _formGroupDirective: FormGroupDirective,
-    private _cd: ChangeDetectorRef
+    private _cd: ChangeDetectorRef,
+    @Inject(NGXS_FORM_PLUGIN_VALUE_CHANGES_STRATEGY)
+    private _valueChangesStrategy: NgxsFormPluginValueChangesStrategy
   ) {}
 
   ngOnInit() {
-    if (this.useDefaultCompare) {
-      // Create it lazily by condition
-      this.compare = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-    }
-
     this.getStateStream(`${this.path}.model`).subscribe(model => {
       if (this._updating || !model) {
         return;
@@ -103,7 +96,7 @@ export class FormDirective implements OnInit, OnDestroy {
 
     this._formGroupDirective
       .valueChanges!.pipe(
-        this.distinctUntilChanged(),
+        this._valueChangesStrategy.valueChanges(),
         this.debounceChange()
       )
       .subscribe(() => {
@@ -173,14 +166,6 @@ export class FormDirective implements OnInit, OnDestroy {
             debounceTime(this.debounce),
             takeUntil(this._destroy$)
           );
-  }
-
-  private distinctUntilChanged<T>() {
-    if (this.compare) {
-      return (change: Observable<T>) => change.pipe(distinctUntilChanged(this.compare!));
-    }
-
-    return (change: Observable<T>) => change;
   }
 
   private get form(): FormGroup {
