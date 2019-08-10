@@ -9,7 +9,7 @@ import { NGXS_FORM_PLUGIN_VALUE_CHANGES_STRATEGY } from '../src/symbols';
 import { DefaultNgxsFormPluginValueChangesStrategy } from '../src/value-changes-strategy';
 import { NgxsFormPluginModule, UpdateFormValue, NgxsFormPluginValueChangesStrategy } from '..';
 
-describe('NgxsFormPlugin compare', () => {
+describe('NgxsFormPluginValueChangesStrategy', () => {
   @State({
     name: 'novels',
     defaults: {
