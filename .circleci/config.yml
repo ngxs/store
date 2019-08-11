@@ -79,13 +79,21 @@ jobs:
           path: docs
           destination: docs
 
-  lint:
+  tslint:
     <<: *job_defaults
     steps:
       - *attach_workspace
       - run:
-          name: Lint
+          name: Run TSLint analyzer
           command: yarn lint
+
+  eslint:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run ESLint analyzer
+          command: yarn eslint
 
   unit_tests:
     <<: *job_defaults
@@ -131,7 +139,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Integration Tests
-          command: yarn run integration:ng5
+          command: yarn integration:ng5
       # - *persist_coverage // we don't run code coverage for integration tests
 
   integration_test_types:
@@ -140,7 +148,16 @@ jobs:
       - *attach_workspace
       - run:
           name: Test types
-          command: yarn run test:types
+          command: yarn test:types
+      # - *persist_coverage // we don't run code coverage for integration tests
+
+  bundlesize:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Check the size of NGXS bundle
+          command: yarn bundlesize
       # - *persist_coverage // we don't run code coverage for integration tests
 
   upload_coverage:
@@ -191,7 +208,11 @@ workflows:
             tags:
               only: /.*/
 
-      - lint:
+      - tslint:
+          requires:
+            - build
+
+      - eslint:
           requires:
             - build
 
@@ -215,6 +236,10 @@ workflows:
           requires:
             - build
 
+      - bundlesize:
+          requires:
+            - build
+
       - upload_coverage:
           requires:
             - unit_tests
@@ -222,6 +247,7 @@ workflows:
             - integration_ssr_tests
             - integration_ng5_tests
             - integration_test_types
+            - bundlesize
 
       # Publish @dev builds if no tag is specified
       - publish_dev_build_to_npm:
@@ -237,6 +263,7 @@ workflows:
             - integration_ssr_tests
             - integration_ng5_tests
             - integration_test_types
+            - bundlesize
 
       # Publish package.version @latest when a v.* git tag is present
       - publish_tagged_build_to_npm:
@@ -251,3 +278,4 @@ workflows:
             - integration_ssr_tests
             - integration_ng5_tests
             - integration_test_types
+            - bundlesize
