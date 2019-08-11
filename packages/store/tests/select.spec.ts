@@ -1,16 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { first, last } from 'rxjs/operators';
+import { Component } from '@angular/core';
 
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
-import { Select } from '../src/decorators/select/select';
-import { Selector } from '../src/decorators/selector';
 import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
+import { Selector } from '../src/decorators/selector';
+import { Select } from '../src/decorators/select/select';
 import { SELECT_META_KEY, StateContext } from '../src/symbols';
-import { SelectFactory } from '../src/decorators/select/select-factory';
+import { SelectUtils } from '../src/decorators/select/symbols';
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../src/configs/messages.config';
 
 function FreezeClass(target: Function): void {
@@ -149,8 +149,8 @@ describe('Select', () => {
   });
 
   it('should remove dollar sign at the end of property name', () => {
-    expect(SelectFactory.removeDollarAtTheEnd('foo$')).toBe('foo');
-    expect(SelectFactory.removeDollarAtTheEnd('foo')).toBe('foo');
+    expect(SelectUtils.removeDollarAtTheEnd('foo$')).toBe('foo');
+    expect(SelectUtils.removeDollarAtTheEnd('foo')).toBe('foo');
 
     @Component({ template: '' })
     class SelectComponent {

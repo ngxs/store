@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 
-import { SELECT_META_KEY } from '../../symbols';
-import { SelectFactory } from './select-factory';
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../../configs/messages.config';
+import { SELECT_META_KEY } from '../../symbols';
+import { SelectUtils } from './symbols';
 
 /**
  * Decorator for selecting a slice of state from the store.
@@ -15,7 +15,7 @@ export function Select(rawSelector?: any, ...paths: string[]): PropertyDecorator
 
     const name: string = key.toString();
     const selectorId: unique symbol = Symbol(`${SELECT_META_KEY}__${name}`);
-    const selector: any = SelectFactory.unwrapSelector(name, rawSelector, paths);
+    const selector: any = SelectUtils.unwrapSelector(name, rawSelector, paths);
 
     Object.defineProperties(target, {
       [selectorId]: {
@@ -32,7 +32,7 @@ export function Select(rawSelector?: any, ...paths: string[]): PropertyDecorator
           }
 
           return (
-            this[selectorId] || (this[selectorId] = SelectFactory.selectBySelector(selector))
+            this[selectorId] || (this[selectorId] = SelectUtils.selectBySelector(selector))
           );
         }
       }

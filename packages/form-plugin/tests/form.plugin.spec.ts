@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 
-import { NgxsModule, State, Store } from '@ngxs/store';
+import { NgxsModule, State, Store, Actions, ofActionDispatched } from '@ngxs/store';
 
 import {
   NgxsFormPluginModule,
@@ -16,7 +17,6 @@ import {
   SetFormEnabled,
   SetFormPristine
 } from '../';
-import { By } from '@angular/platform-browser';
 
 describe('NgxsFormPlugin', () => {
   interface StateModel {
@@ -536,6 +536,71 @@ describe('NgxsFormPlugin', () => {
         status: 'VALID',
         errors: {}
       });
+    });
+
+    it('should not dispatch UpdateFormStatus every time as "statusChanges" emits', () => {
+      @State({
+        name: 'todos',
+        defaults: {
+          todosForm: {
+            model: undefined
+          }
+        }
+      })
+      class TodosState {}
+
+      @Component({
+        template: `
+          <form [formGroup]="form" ngxsForm="todos.todosForm" [ngxsFormDebounce]="-1">
+            <input formControlName="text" /> <button type="submit">Add todo</button>
+          </form>
+        `
+      })
+      class MockComponent {
+        public form = new FormGroup({
+          text: new FormControl(null, [Validators.minLength(6)])
+        });
+      }
+
+      TestBed.configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          NgxsModule.forRoot([TodosState]),
+          NgxsFormPluginModule.forRoot()
+        ],
+        declarations: [MockComponent]
+      });
+
+      const actions$: Actions = TestBed.get(Actions);
+      const fixture = TestBed.createComponent(MockComponent);
+      fixture.detectChanges();
+
+      const statuses: string[] = [];
+
+      const subscription = actions$
+        .pipe(ofActionDispatched(UpdateFormStatus))
+        .subscribe((action: UpdateFormStatus) => {
+          statuses.push(action.payload.status!);
+        });
+
+      const input = fixture.debugElement.query(By.css('form input'));
+
+      input.nativeElement.value = 'buy';
+      input.nativeElement.dispatchEvent(new KeyboardEvent('input'));
+      fixture.detectChanges();
+
+      input.nativeElement.value = 'coffee';
+      input.nativeElement.dispatchEvent(new KeyboardEvent('input'));
+      fixture.detectChanges();
+
+      input.nativeElement.value = 'buy coffee';
+      input.nativeElement.dispatchEvent(new KeyboardEvent('input'));
+      fixture.detectChanges();
+
+      subscription.unsubscribe();
+
+      // Assert
+      expect(statuses).toEqual(['INVALID', 'VALID']);
     });
   });
 });

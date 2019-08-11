@@ -22,16 +22,16 @@ export const selectorOptionsMetaAccessor = {
   }
 };
 
-type CreationMetadata = {
+interface CreationMetadata {
   containerClass: any;
   selectorName: string;
   getSelectorOptions?: () => SharedSelectorOptions;
-};
+}
 
-type RuntimeSelectorInfo = {
+interface RuntimeSelectorInfo {
   selectorOptions: SharedSelectorOptions;
   argumentSelectorFunctions: ((state: any) => any)[];
-};
+}
 
 /**
  * Function for creating a selector

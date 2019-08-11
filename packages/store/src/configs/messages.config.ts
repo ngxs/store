@@ -9,7 +9,9 @@ export enum VALIDATION_CODE {
   INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT',
   SELECT_NOT_CONNECTED = 'SELECT_NOT_CONNECTED',
   SELECT_FACTORY_NOT_CONNECTED = 'SELECT_FACTORY_NOT_CONNECTED',
-  SELECT_CLASS_NOT_EXTENSIBLE = 'CLASS_NOT_EXTENSIBLE'
+  SELECT_CLASS_NOT_EXTENSIBLE = 'CLASS_NOT_EXTENSIBLE',
+  ACTION_DECORATOR = 'ACTION_DECORATOR',
+  SELECTOR_DECORATOR = 'SELECTOR_DECORATOR'
 }
 
 export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
@@ -31,5 +33,8 @@ export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
   [VALIDATION_CODE.SELECT_NOT_CONNECTED]: () =>
     `You can't use @Select your instance is frozen`,
   [VALIDATION_CODE.SELECT_CLASS_NOT_EXTENSIBLE]: () =>
-    `Your class is not extensible for @Select`
+    `Your class is not extensible for @Select`,
+  [VALIDATION_CODE.ACTION_DECORATOR]: () =>
+    '@Action() decorator cannot be used with static methods',
+  [VALIDATION_CODE.SELECTOR_DECORATOR]: () => 'Selectors only work on methods'
 };

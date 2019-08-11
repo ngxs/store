@@ -219,7 +219,7 @@ export class StateFactory {
 
     for (const stateClass of stateClasses) {
       const stateName: string = StoreValidators.checkStateNameIsUnique(stateClass, statesMap);
-      const unmountedState: boolean = !statesMap[stateName];
+      const unmountedState = !statesMap[stateName];
       if (unmountedState) {
         newStates.push(stateClass);
         statesMap[stateName] = stateClass;
