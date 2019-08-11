@@ -80,6 +80,7 @@ export class AppMockModuleNoHmrLifeCycle {
   }
 }
 
+// noinspection DuplicatedCode
 function createRootNode(selector = 'app-root'): void {
   const document = TestBed.get(DOCUMENT);
   const adapter: DomAdapter = new BrowserDomAdapter();

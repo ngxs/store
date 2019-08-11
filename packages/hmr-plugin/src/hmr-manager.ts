@@ -1,12 +1,13 @@
 import { ApplicationRef, ComponentRef, NgModuleRef } from '@angular/core';
-import { Callback, InitialState, NgxsBootstrapper } from '@ngxs/store/internals';
+import { InitialState, NgxsBootstrapper } from '@ngxs/store/internals';
 
 import { HmrStorage } from './internal/hmr-storage';
 import {
   BootstrapModuleFn,
   NgxsHmrLifeCycle,
   NgxsHmrOptions,
-  NgxsHmrSnapshot
+  NgxsHmrSnapshot,
+  RemovableOldHostFn
 } from './symbols';
 import { HmrStateContextFactory } from './internal/hmr-state-context-factory';
 import { HmrOptionBuilder } from './internal/hmr-options-builder';
@@ -81,7 +82,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
       (component: ComponentRef<Element>) => component.location.nativeElement
     );
 
-    const removableList: Callback[] = elements.map((componentNode: Element) => {
+    const removableList: RemovableOldHostFn[] = elements.map((componentNode: Element) => {
       const newNode = document.createElement(componentNode.tagName);
       const parentNode: Node = componentNode.parentNode as Node;
       const currentDisplay: string | null = newNode.style.display;
@@ -98,7 +99,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
     });
 
     return function removeOldHosts(): void {
-      removableList.forEach((removeOldHost: Callback) => removeOldHost());
+      removableList.forEach((removeOldHost: RemovableOldHostFn) => removeOldHost());
     };
   }
 

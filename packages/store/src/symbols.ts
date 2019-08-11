@@ -152,3 +152,5 @@ export interface NgxsAfterBootstrap {
 }
 
 export type NgxsModuleOptions = Partial<NgxsConfig>;
+
+export type Callback<T = any, V = any> = (...args: V[]) => T;

@@ -56,3 +56,5 @@ interface WebpackHotModule {
  * npm i @types/webpack-env
  */
 export type WebpackModule = WebpackHotModule | any;
+
+export type RemovableOldHostFn = () => void;
