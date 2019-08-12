@@ -31,11 +31,56 @@ initial state can be picked up by those plugins.
 ### Options
 The plugin has the following optional values:
 
-- `key`: Default key to persist. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided, it defaults to all states using the `@@STATE` key.
+- `key`: State name to be persisted. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided, it defaults to all states using the `@@STATE` key.
 - `storage`: Storage strategy to use. This defaults to LocalStorage but you can pass SessionStorage or anything that implements the StorageEngine API.
 - `deserialize`: Custom deserializer. Defaults to `JSON.parse`
 - `serialize`: Custom serializer, defaults to `JSON.stringify`
 - `migrations`: Migration strategies
+
+### Key option
+
+The `key` option is used to determine what states should be persisted in the storage. `key` shouldn't be a random string
+or array of string, it has to coincide with your state names. Let's look at the below example:
+
+```ts
+// novels.state.ts
+@State<Novel[]>({
+  name: 'novels',
+  defaults: []
+})
+export class NovelsState {}
+
+// detectives.state.ts
+@State<Detectives[]>({
+  name: 'detectives',
+  defaults: []
+})
+export class DetectivesState {}
+```
+
+In order to persist all states there is no need to provide the `key` option, so it's enough just to write:
+
+```ts
+NgxsStoragePluginModule.forRoot()
+```
+
+But what if we wanted to persist only `NovelsState`? Then we would have needed to pass its name to the `key` option:
+
+```ts
+NgxsStoragePluginModule.forRoot({
+  key: 'novels'
+})
+```
+
+And if we wanted to persist `NovelsState` and `DetectivesState`:
+
+```ts
+NgxsStoragePluginModule.forRoot({
+  key: ['novels', 'detectives']
+})
+```
+
+This is very neat to avoid persisting runtime-only states, that shouldn't be saved to any storage.
 
 ### Custom Storage Engine
 You can add your own storage engine by implementing the `StorageEngine` interface.
