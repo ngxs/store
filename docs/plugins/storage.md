@@ -51,7 +51,7 @@ or array of string, it has to coincide with your state names. Let's look at the 
 export class NovelsState {}
 
 // detectives.state.ts
-@State<Detectives[]>({
+@State<Detective[]>({
   name: 'detectives',
   defaults: []
 })
