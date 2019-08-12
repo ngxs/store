@@ -3,11 +3,15 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { State, NgxsModule, Actions, ofActionDispatched } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
 
 import { NGXS_FORM_PLUGIN_VALUE_CHANGES_STRATEGY } from '../src/symbols';
 import { DefaultNgxsFormPluginValueChangesStrategy } from '../src/value-changes-strategy';
-import { NgxsFormPluginModule, UpdateFormValue, NgxsFormPluginValueChangesStrategy } from '..';
+import {
+  NgxsFormPluginModule,
+  UpdateFormValue,
+  NgxsFormPluginValueChangesStrategy,
+  DeepEqualNgxsFormPluginValueChangesStrategy
+} from '..';
 
 describe('NgxsFormPluginValueChangesStrategy', () => {
   @State({
@@ -115,24 +119,14 @@ describe('NgxsFormPluginValueChangesStrategy', () => {
     expect(dispatchedTimes).toBe(6);
   });
 
-  it('should pipe via "distinctUntilChanged" if custom strategy provided with such operator', () => {
+  it('should be possible to use deep equal strategy', () => {
     // Arrange
-    class CustomNgxsFormPluginValueChangesStrategy
-      implements NgxsFormPluginValueChangesStrategy {
-      valueChanges() {
-        return (changes: Observable<any>) =>
-          changes.pipe(
-            distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
-          );
-      }
-    }
-
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
         NgxsModule.forRoot([NovelsState]),
         NgxsFormPluginModule.forRoot({
-          valueChangesStrategy: CustomNgxsFormPluginValueChangesStrategy
+          valueChangesStrategy: DeepEqualNgxsFormPluginValueChangesStrategy
         })
       ],
       declarations: [NovelsComponent]

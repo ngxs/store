@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 export interface NgxsFormPluginValueChangesStrategy {
   valueChanges(): (changes: Observable<any>) => Observable<any>;
@@ -13,5 +14,14 @@ export class DefaultNgxsFormPluginValueChangesStrategy
    */
   valueChanges() {
     return (changes: Observable<any>) => changes;
+  }
+}
+
+@Injectable()
+export class DeepEqualNgxsFormPluginValueChangesStrategy
+  implements NgxsFormPluginValueChangesStrategy {
+  valueChanges() {
+    return (changes: Observable<any>) =>
+      changes.pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)));
   }
 }
