@@ -27,7 +27,7 @@ export class DefaultRouterStateSerializer
       fragment: route.fragment,
       data: route.data,
       outlet: route.outlet,
-      component: route.component,
+      component: null,
       routeConfig: null,
       root: null as any,
       parent: null,

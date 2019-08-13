@@ -47,9 +47,9 @@ export class RouterState {
   private navigationTriggeredByDispatch = false; // used only in dev mode in combination with routerReducer
 
   static getRouteSnapshot<T>(component: Type<T> | null = null) {
-    return createSelector<(state: RouterStateModel) => ActivatedRouteSnapshot | null>(
+    return createSelector<() => ActivatedRouteSnapshot | null>(
       [RouterState],
-      (state: RouterStateModel) => searchRoute(state, component)
+      () => searchRoute(component)
     );
   }
 

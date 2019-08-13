@@ -1,7 +1,9 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
-import { DefaultRouterStateSerializer, RouterStateSerializer } from './serializer';
+
 import { RouterState } from './router.state';
+import { RouterFactory } from './router-factory';
+import { DefaultRouterStateSerializer, RouterStateSerializer } from './serializer';
 
 // @dynamic
 @NgModule({
@@ -13,9 +15,12 @@ import { RouterState } from './router.state';
   providers: [{ provide: RouterStateSerializer, useClass: DefaultRouterStateSerializer }]
 })
 export class NgxsRouterPluginModule {
+  constructor(_routerFactory: RouterFactory) {}
+
   static forRoot(): ModuleWithProviders {
     return {
-      ngModule: NgxsRouterPluginModule
+      ngModule: NgxsRouterPluginModule,
+      providers: [RouterFactory]
     };
   }
 }

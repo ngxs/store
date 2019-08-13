@@ -1,12 +1,11 @@
 import { Type } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 
-import { RouterStateModel } from './router.state';
+import { RouterFactory } from './router-factory';
 
-export function searchRoute<T>(
-  { state }: RouterStateModel,
-  component: Type<T> | null
-): ActivatedRouteSnapshot | null {
+export function searchRoute<T>(component: Type<T> | null): ActivatedRouteSnapshot | null {
+  const router = RouterFactory.getRouter();
+  const state = router.routerState;
   // If the selector was invoked before the module was initialized
   if (!state || !state.root) {
     return null;
@@ -16,10 +15,10 @@ export function searchRoute<T>(
 
   // Root snapshot's `component` property equals `null`
   if (component === null) {
-    return root;
+    return root.snapshot;
   }
 
-  return searchRouteAmongChildren<T>(root, component);
+  return searchRouteAmongChildren<T>(root.snapshot, component);
 }
 
 function searchRouteAmongChildren<T>(

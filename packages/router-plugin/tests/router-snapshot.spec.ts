@@ -4,7 +4,7 @@ import { Component, NgModule, Injectable, Type } from '@angular/core';
 import { Router, Routes, ActivatedRouteSnapshot } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { Store, NgxsModule } from '@ngxs/store';
+import { Store, NgxsModule, Actions } from '@ngxs/store';
 
 import { filter } from 'rxjs/operators';
 
@@ -118,14 +118,15 @@ const createPlatformAndGetStoreWithRouter = () =>
     .then(({ injector }) => {
       const store: Store = injector.get(Store);
       const router: Router = injector.get(Router);
-      return { store, router };
+      const actions$: Actions = injector.get(Actions);
+      return { store, router, actions$ };
     });
 
 const getRouteSnapshot = <T>(store: Store, component?: Type<T>) =>
   store.selectSnapshot(RouterState.getRouteSnapshot(component));
 
 describe('RouterState.getRouteSnapshot', () => {
-  fit(
+  it(
     'should select root component if no argument is provided',
     freshPlatform(async () => {
       // Arrange
@@ -142,7 +143,7 @@ describe('RouterState.getRouteSnapshot', () => {
     })
   );
 
-  fit(
+  it(
     'should select "LoginComponent"s snapshot',
     freshPlatform(async () => {
       // Arrange
@@ -160,7 +161,7 @@ describe('RouterState.getRouteSnapshot', () => {
     })
   );
 
-  fit(
+  it(
     'should select "RegisterComponent"s snapshot',
     freshPlatform(async () => {
       // Arrange
@@ -179,7 +180,7 @@ describe('RouterState.getRouteSnapshot', () => {
     })
   );
 
-  fit(
+  it(
     'should return "null" for deactivated component',
     freshPlatform(async () => {
       // Arrange
@@ -200,7 +201,7 @@ describe('RouterState.getRouteSnapshot', () => {
     })
   );
 
-  fit(
+  it(
     'should select "CategoriesComponent"s snapshot',
     freshPlatform(async () => {
       // Arrange
@@ -219,7 +220,7 @@ describe('RouterState.getRouteSnapshot', () => {
     })
   );
 
-  fit(
+  it(
     'should select "CategoryComponent"s snapshot and get category',
     freshPlatform(async () => {
       // Arrange
@@ -243,13 +244,14 @@ describe('RouterState.getRouteSnapshot', () => {
     })
   );
 
-  fit(
+  it(
     'should listen to the state change',
     freshPlatform(async () => {
       // Arrange
       const { store, router } = await createPlatformAndGetStoreWithRouter();
       const datas: any[] = [];
 
+      // Act
       store
         .select(RouterState.getRouteSnapshot(CategoryComponent))
         .pipe(filter((snapshot): snapshot is ActivatedRouteSnapshot => snapshot !== null))
@@ -257,7 +259,6 @@ describe('RouterState.getRouteSnapshot', () => {
           datas.push(snapshot.data);
         });
 
-      // Act
       await router.navigateByUrl('/');
       await router.navigateByUrl('/dashboard/categories/1');
       await router.navigateByUrl('/dashboard/categories/3');
