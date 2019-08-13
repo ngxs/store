@@ -104,7 +104,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
   }
 
   private removeNgStyles(): void {
-    const head: HTMLHeadElement | null = document.head;
+    const head: HTMLHeadElement = document.head!;
     const styles: HTMLStyleElement[] = Array.from(head!.querySelectorAll('style'));
 
     styles

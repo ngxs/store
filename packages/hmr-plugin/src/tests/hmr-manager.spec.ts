@@ -291,7 +291,7 @@ describe('HMR Plugin', () => {
     expect((appModule as any)['_destroyed']).toEqual(true);
   });
 
-  it('should be correct use hot api after dispose', async () => {
+  it('should be correctly dispose called before destroy module', async () => {
     let data = {};
 
     const { webpackModule } = await hmrTestBed(AppMockModule, {

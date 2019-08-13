@@ -57,7 +57,7 @@ export interface NgxsHmrOptions {
    * Add a handler which is executed when the current module code is replaced.
    * (default: null)
    */
-  dispose?: CustomDispose;
+  dispose?: DisposeHook;
 }
 
 type ModuleId = string | number;
@@ -78,4 +78,4 @@ export interface HmrDataTransfer {
   snapshot?: any;
 }
 
-export type CustomDispose = (hotApi: WebpackHotApi) => void;
+export type DisposeHook = (hotApi: WebpackHotApi) => void;

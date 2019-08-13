@@ -8,7 +8,7 @@ import { NgModuleRef, Type } from '@angular/core';
 import { Actions, Store } from '../../../store/src/public_api';
 import { MockState, WebpackMockModule } from './hmr-mock';
 import { BootstrapModuleFn, hmr } from '../public_api';
-import { CustomDispose } from '@ngxs/hmr-plugin/src/symbols';
+import { DisposeHook } from '../../src/symbols';
 
 export function setup<T>(moduleType: Type<T>) {
   TestBed.resetTestEnvironment();
@@ -21,7 +21,7 @@ export function setup<T>(moduleType: Type<T>) {
 
 interface HmrMockTestBedOptions {
   storedValue?: any;
-  dispose?: CustomDispose;
+  dispose?: DisposeHook;
 }
 
 export async function hmrTestBed<T>(moduleType: Type<T>, options: HmrMockTestBedOptions = {}) {
