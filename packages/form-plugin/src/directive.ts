@@ -96,8 +96,10 @@ export class FormDirective implements OnInit, OnDestroy {
 
     this._formGroupDirective
       .valueChanges!.pipe(
+        // Debouncing should be always first
+        this.debounceChange(),
         this._valueChangesStrategy.valueChanges(),
-        this.debounceChange()
+        takeUntil(this._destroy$)
       )
       .subscribe(() => {
         const value = this._formGroupDirective.control.getRawValue();
@@ -125,8 +127,10 @@ export class FormDirective implements OnInit, OnDestroy {
 
     this._formGroupDirective
       .statusChanges!.pipe(
+        // Debouncing should be always first
+        this.debounceChange(),
         distinctUntilChanged(),
-        this.debounceChange()
+        takeUntil(this._destroy$)
       )
       .subscribe((status: string) => {
         this._store.dispatch(
@@ -160,12 +164,8 @@ export class FormDirective implements OnInit, OnDestroy {
       this._formGroupDirective.control.updateOn !== 'change' || this.debounce < 0;
 
     return skipDebounceTime
-      ? (change: Observable<T>) => change.pipe(takeUntil(this._destroy$))
-      : (change: Observable<T>) =>
-          change.pipe(
-            debounceTime(this.debounce),
-            takeUntil(this._destroy$)
-          );
+      ? (changes: Observable<T>) => changes
+      : (changes: Observable<T>) => changes.pipe(debounceTime(this.debounce));
   }
 
   private get form(): FormGroup {
