@@ -135,7 +135,7 @@ describe('Update form properties with "propertyPath"', () => {
       new UpdateFormValue({
         path,
         value: {
-          name: 'Mark Whitfield'
+          name: 'Mark Whitfeld'
         },
         propertyPath: 'authors.0'
       })
@@ -147,10 +147,10 @@ describe('Update form properties with "propertyPath"', () => {
     const values = inputs.map(input => input.nativeElement.value);
 
     // Assert
-    expect(values).toEqual(['Mark Whitfield', 'Artur', 'Max']);
+    expect(values).toEqual(['Mark Whitfeld', 'Artur', 'Max']);
     expect(model.authors).toEqual([
       {
-        name: 'Mark Whitfield'
+        name: 'Mark Whitfeld'
       },
       {
         name: 'Artur'

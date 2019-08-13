@@ -127,17 +127,16 @@ this.store.dispatch(
 The form plugin comes with the following `actions` out of the box:
 
 - `UpdateFormStatus({ status, path })` - Update the form status
-- `UpdateFormValue({ value, path, propertyPath })` - Update the form value
+- `UpdateFormValue({ value, path, propertyPath? })` - Update the form value
 - `UpdateFormDirty({ dirty, path })` - Update the form dirty status
 - `SetFormDisabled(path)` - Set the form to disabled
 - `SetFormEnabled(path)` - Set the form to enabled
 - `SetFormDirty(path)` - Set the form to dirty (shortcut for `UpdateFormDirty`)
 - `SetFormPristine(path)` - Set the form to pristine (shortcut for `UpdateFormDirty`)
 
-### Updating form properties separately
+### Updating Form Properties Separately
 
-The form plugin exposes `UpdateFormValue` action that gives the opportunity to update
-nested form properties by providing `propertyPath` parameter.
+The form plugin exposes `UpdateFormValue` action that gives the opportunity to update nested form properties by providing `propertyPath` parameter.
 
 ```ts
 interface NovelsStateModel {
@@ -162,8 +161,7 @@ interface NovelsStateModel {
 export class NovelsState {}
 ```
 
-The state contains information about the new novel name and its authors. Let's create a component
-that will render the reactive form with bounded `ngxsForm` directive:
+The state contains information about the new novel name and its authors. Let's create a component that will render the reactive form with bounded `ngxsForm` directive:
 
 ```ts
 @Component({
@@ -201,7 +199,7 @@ export class NewNovelComponent {
 }
 ```
 
-Let's look at the component above again. Assume we want to update the first control's `name`. The code would look as follows:
+Let's look at the component above again. Assume we want to update the name of the first author in our form, from anywhere in our application. The code would look as follows:
 
 ```ts
 store.dispatch(
