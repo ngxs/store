@@ -6,13 +6,19 @@ There are situations when there is a need to debounce dispatched actions and red
 @Component({
   selector: 'app-news-portal',
   template: `
-    <app-news-search (search)="search($event)"></app-news-search>
+    <app-news-search
+      (search)="search($event)"
+      [lastSearchedTitle]="lastSearchedTitle$ | async"
+    ></app-news-search>
+
     <app-news [news]="news$ | async"></app-news>
   `
 })
 export class NewsPortalComponent implements OnDestroy {
 
   @Select(NewsState.getNews) news$: Observable<News[]>;
+
+  lastSearchedTitle$ = this.store.selectOnce(NewsState.getLastSearchedTitle);
 
   private destroy$ = new Subject<void>();
 
@@ -34,7 +40,7 @@ export class NewsPortalComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-  search(title: string) {
+  search(title: string): void {
     this.store.dispatch(new SearchNews(title));
   }
 
@@ -74,7 +80,7 @@ export class NewsState {
   }
 
   @Selector()
-  static lastSearchTitle(state: NewsStateModel): string | null {
+  static getLastSearchedTitle(state: NewsStateModel): string | null {
     return state.lastSearchedTitle;
   }
 
