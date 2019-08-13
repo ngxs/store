@@ -1,4 +1,5 @@
 import { ObjectKeyMap } from '@ngxs/store/internals';
+import { NGXS_DECORATOR } from '../decorators/symbols';
 
 export enum VALIDATION_CODE {
   STATE_NAME = 'STATE_NAME',
@@ -7,9 +8,9 @@ export enum VALIDATION_CODE {
   STATE_DECORATOR = 'STATE_DECORATOR',
   INCORRECT_PRODUCTION = 'INCORRECT_PRODUCTION',
   INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT',
-  SELECT_NOT_CONNECTED = 'SELECT_NOT_CONNECTED',
   SELECT_FACTORY_NOT_CONNECTED = 'SELECT_FACTORY_NOT_CONNECTED',
-  SELECT_CLASS_NOT_EXTENSIBLE = 'CLASS_NOT_EXTENSIBLE',
+  CHECK_FROZEN_BEFORE_DECORATE = 'CHECK_FROZEN_BEFORE_DECORATE',
+  CHECK_EXTENSIBLE_BEFORE_DECORATE = 'CHECK_EXTENSIBLE_BEFORE_DECORATE',
   ACTION_DECORATOR = 'ACTION_DECORATOR',
   SELECTOR_DECORATOR = 'SELECTOR_DECORATOR'
 }
@@ -30,10 +31,10 @@ export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
     'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
   [VALIDATION_CODE.SELECT_FACTORY_NOT_CONNECTED]: () =>
     'SelectFactory not connected to store!',
-  [VALIDATION_CODE.SELECT_NOT_CONNECTED]: () =>
-    `You can't use @Select your instance is frozen`,
-  [VALIDATION_CODE.SELECT_CLASS_NOT_EXTENSIBLE]: () =>
-    `Your class is not extensible for @Select`,
+  [VALIDATION_CODE.CHECK_FROZEN_BEFORE_DECORATE]: (name: NGXS_DECORATOR) =>
+    `You can't use ${name} your instance is frozen`,
+  [VALIDATION_CODE.CHECK_EXTENSIBLE_BEFORE_DECORATE]: (name: NGXS_DECORATOR) =>
+    `${name} decorator cannot be used with non-extensible classes`,
   [VALIDATION_CODE.ACTION_DECORATOR]: () =>
     '@Action() decorator cannot be used with static methods',
   [VALIDATION_CODE.SELECTOR_DECORATOR]: () => 'Selectors only work on methods'

@@ -15,7 +15,6 @@ export const NG_DEV_MODE = new InjectionToken('NG_DEV_MODE');
 export const META_KEY = 'NGXS_META';
 export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
-export const SELECT_META_KEY = 'NGXS_SELECT_META';
 
 export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;

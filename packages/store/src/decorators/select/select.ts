@@ -1,21 +1,19 @@
 import { Observable } from 'rxjs';
 
-import { CONFIG_MESSAGES, VALIDATION_CODE } from '../../configs/messages.config';
-import { SELECT_META_KEY } from '../../symbols';
-import { SelectUtils } from './symbols';
+import { createSelectObservable, createSelectorFn } from './symbols';
+import { StoreValidators } from '../../utils/store-validators';
+import { NGXS_DECORATOR } from '../symbols';
 
 /**
  * Decorator for selecting a slice of state from the store.
  */
 export function Select(rawSelector?: any, ...paths: string[]): PropertyDecorator {
-  return function(target: any, key: string | symbol): void {
-    if (!Object.isExtensible(target)) {
-      throw new Error(CONFIG_MESSAGES[VALIDATION_CODE.SELECT_CLASS_NOT_EXTENSIBLE]());
-    }
+  return function(target: any, propertyKey: string | symbol): void {
+    StoreValidators.checkExtensibleBeforeDecorate(target, NGXS_DECORATOR.SELECT);
 
-    const name: string = key.toString();
-    const selectorId: unique symbol = Symbol(`${SELECT_META_KEY}__${name}`);
-    const selector: any = SelectUtils.unwrapSelector(name, rawSelector, paths);
+    const name: string = propertyKey.toString();
+    const selectorId = `__${name}__selector`;
+    const selector: any = createSelectorFn(name, rawSelector, paths);
 
     Object.defineProperties(target, {
       [selectorId]: {
@@ -27,13 +25,8 @@ export function Select(rawSelector?: any, ...paths: string[]): PropertyDecorator
         enumerable: true,
         configurable: true,
         get(): Observable<any> {
-          if (Object.isFrozen(target)) {
-            throw new Error(CONFIG_MESSAGES[VALIDATION_CODE.SELECT_NOT_CONNECTED]());
-          }
-
-          return (
-            this[selectorId] || (this[selectorId] = SelectUtils.selectBySelector(selector))
-          );
+          StoreValidators.checkIsFrozenBeforeDecorate(target, NGXS_DECORATOR.SELECT);
+          return this[selectorId] || (this[selectorId] = createSelectObservable(selector));
         }
       }
     });

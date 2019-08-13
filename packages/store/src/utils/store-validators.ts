@@ -8,6 +8,7 @@ import {
   CONFIG_MESSAGES as MESSAGES,
   VALIDATION_CODE as CODE
 } from '../configs/messages.config';
+import { NGXS_DECORATOR } from '../decorators/symbols';
 
 export abstract class StoreValidators {
   public static stateNameRegex: RegExp = new RegExp('^[a-zA-Z0-9_]+$');
@@ -46,5 +47,17 @@ export abstract class StoreValidators {
     }
 
     return meta;
+  }
+
+  public static checkExtensibleBeforeDecorate(target: object, name: NGXS_DECORATOR): void {
+    if (!Object.isExtensible(target)) {
+      throw new Error(MESSAGES[CODE.CHECK_EXTENSIBLE_BEFORE_DECORATE](name));
+    }
+  }
+
+  public static checkIsFrozenBeforeDecorate(target: object, name: NGXS_DECORATOR): void {
+    if (Object.isFrozen(target)) {
+      throw new Error(MESSAGES[CODE.CHECK_FROZEN_BEFORE_DECORATE](name));
+    }
   }
 }

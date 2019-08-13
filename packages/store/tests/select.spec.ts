@@ -9,23 +9,23 @@ import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
 import { Selector } from '../src/decorators/selector';
 import { Select } from '../src/decorators/select/select';
-import { SELECT_META_KEY, StateContext } from '../src/symbols';
-import { SelectUtils } from '../src/decorators/select/symbols';
+import { StateContext } from '../src/symbols';
+import { removeDollarAtTheEnd } from '../src/decorators/select/symbols';
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../src/configs/messages.config';
+import { NGXS_DECORATOR } from '../src/decorators/symbols';
 
 function FreezeClass(target: Function): void {
+  Object.seal(target);
   Object.freeze(target);
   Object.freeze(target.prototype);
 }
 
 function SealField(target: any, name: string | symbol) {
-  Object.defineProperty(target, name, {
+  Object.defineProperty(target.prototype, name, {
     enumerable: false,
     writable: false,
     configurable: false
   });
-
-  Object.seal(target);
 }
 
 describe('Select', () => {
@@ -118,7 +118,9 @@ describe('Select', () => {
       const comp = TestBed.createComponent(MySelectComponent);
       comp.componentInstance.state.subscribe();
     } catch (e) {
-      expect(e.message).toEqual(CONFIG_MESSAGES[VALIDATION_CODE.SELECT_NOT_CONNECTED]());
+      expect(e.message).toEqual(
+        CONFIG_MESSAGES[VALIDATION_CODE.CHECK_FROZEN_BEFORE_DECORATE](NGXS_DECORATOR.SELECT)
+      );
     }
   });
 
@@ -129,8 +131,8 @@ describe('Select', () => {
         template: ''
       })
       class MySelectComponent {
-        @Select((state: any) => state)
         @SealField
+        @Select((state: any) => state)
         public state: Observable<any>;
       }
 
@@ -139,18 +141,17 @@ describe('Select', () => {
         declarations: [MySelectComponent]
       });
 
-      const comp = TestBed.createComponent(MySelectComponent);
-      console.log(comp.componentInstance.state);
+      TestBed.createComponent(MySelectComponent);
     } catch (e) {
       expect(e.message).toEqual(
-        CONFIG_MESSAGES[VALIDATION_CODE.SELECT_CLASS_NOT_EXTENSIBLE]()
+        CONFIG_MESSAGES[VALIDATION_CODE.CHECK_EXTENSIBLE_BEFORE_DECORATE]()
       );
     }
   });
 
   it('should remove dollar sign at the end of property name', () => {
-    expect(SelectUtils.removeDollarAtTheEnd('foo$')).toBe('foo');
-    expect(SelectUtils.removeDollarAtTheEnd('foo')).toBe('foo');
+    expect(removeDollarAtTheEnd('foo$')).toBe('foo');
+    expect(removeDollarAtTheEnd('foo')).toBe('foo');
 
     @Component({ template: '' })
     class SelectComponent {
@@ -263,8 +264,8 @@ describe('Select', () => {
     });
   }));
 
-  it('should succeed even if reserved symbol used in class', () => {
-    const reservedNameNonConflicted: unique symbol = Symbol(`${SELECT_META_KEY}__mySelect`);
+  it('should throw an exception if reserved key used in class', () => {
+    const reservedNameNonConflicted = `__mySelect__selector`;
 
     @Component({
       selector: 'my-component-1',
@@ -284,24 +285,18 @@ describe('Select', () => {
       declarations: [StoreSelectComponent]
     });
 
+    let error: Error = null!;
     const component: StoreSelectComponent = TestBed.createComponent(StoreSelectComponent)
       .componentInstance;
 
-    const subscription1: Subscription = component.mySelect.subscribe();
-    expect(subscription1.closed).toEqual(false);
-
     try {
-      component.mySelect = null!;
+      component.mySelect.subscribe();
     } catch (e) {
-      expect(e.message).toEqual(
-        'Cannot set property mySelect of [object Object] which has only a getter'
-      );
+      error = e;
     }
 
-    const subscription2: Subscription = component.mySelect.subscribe();
-    expect(subscription2.closed).toEqual(false);
-
-    expect(component[reservedNameNonConflicted]()).toEqual('this.mySelect is Observable');
+    expect(error.message).toEqual('component.mySelect.subscribe is not a function');
+    expect(component[reservedNameNonConflicted]()).toEqual('this.mySelect is Function');
   });
 
   it('should select the correct state after timeout', async(() => {
