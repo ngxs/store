@@ -79,7 +79,7 @@ NgxsStoragePluginModule.forRoot({
 })
 ```
 
-This is very handy to avoid persisting runtime-only states, that shouldn't be saved to any storage.
+This is very handy to avoid persisting runtime-only states that shouldn't be saved to any storage.
 
 ### Custom Storage Engine
 You can add your own storage engine by implementing the `StorageEngine` interface.
