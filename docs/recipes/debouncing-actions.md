@@ -47,7 +47,7 @@ export class NewsPortalComponent implements OnDestroy {
 }
 ```
 
-In the above we've got the `app-news-portal` component that listens to the `search` event, dispatched by the `app-news-search` component. The `search` method, invoked on the `search` event, dispatches the `SearchNews` action. We don't want to overload our server with requests thus we listen to the `Actions` stream that pipes the `SearchNews` action with `debounceTime` operator. Let's look at the below code of how we would implement our `NewsState`:
+In the above example we've got the `app-news-portal` component that listens to the `search` event, dispatched by the `app-news-search` component. The `search` method, invoked on the `search` event, dispatches the `SearchNews` action. We don't want to overload our server with requests thus we listen to the `Actions` stream that pipes the `SearchNews` action with `debounceTime` operator. Let's look at the below code of how we would implement our `NewsState`:
 
 ```ts
 export interface NewsStateModel {
