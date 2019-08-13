@@ -127,16 +127,16 @@ this.store.dispatch(
 The form plugin comes with the following `actions` out of the box:
 
 - `UpdateFormStatus({ status, path })` - Update the form status
-- `UpdateFormValue({ value, path, propertyPath? })` - Update the form value
+- `UpdateFormValue({ value, path, propertyPath? })` - Update the form value (or optionally an inner property value)
 - `UpdateFormDirty({ dirty, path })` - Update the form dirty status
 - `SetFormDisabled(path)` - Set the form to disabled
 - `SetFormEnabled(path)` - Set the form to enabled
 - `SetFormDirty(path)` - Set the form to dirty (shortcut for `UpdateFormDirty`)
 - `SetFormPristine(path)` - Set the form to pristine (shortcut for `UpdateFormDirty`)
 
-### Updating Form Properties Separately
+### Updating Specific Form Properties
 
-The form plugin exposes `UpdateFormValue` action that gives the opportunity to update nested form properties by providing `propertyPath` parameter.
+The form plugin exposes the `UpdateFormValue` action that provides the ability to update nested form properties by supplying a `propertyPath` parameter.
 
 ```ts
 interface NovelsStateModel {
