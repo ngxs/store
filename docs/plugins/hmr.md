@@ -121,6 +121,23 @@ if (environment.hmr) {
 }
 ```
 
+### (OPTIONAL) Hot Module Replacement API
+
+```ts
+if (environment.hmr) {
+  hmr(module, bootstrap, {
+    autoClearLogs: false,
+    dispose(api: WebpackHotApi): void {
+      console.log('[HMR API]', api);
+    }
+  }).catch((err: Error) => console.error(err));
+} else {
+  bootstrap().catch(err => console.log(err));
+}
+```
+
+More details: https://webpack.js.org/api/hot-module-replacement/#module-api
+
 ### (OPTIONAL) Update src/app/app.module.ts to manage the state in HMR lifecycle:
 
 ```ts

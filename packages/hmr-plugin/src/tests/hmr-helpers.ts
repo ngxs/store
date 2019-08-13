@@ -8,6 +8,7 @@ import { NgModuleRef, Type } from '@angular/core';
 import { Actions, Store } from '../../../store/src/public_api';
 import { MockState, WebpackMockModule } from './hmr-mock';
 import { BootstrapModuleFn, hmr } from '../public_api';
+import { CustomDispose } from '@ngxs/hmr-plugin/src/symbols';
 
 export function setup<T>(moduleType: Type<T>) {
   TestBed.resetTestEnvironment();
@@ -18,13 +19,22 @@ export function setup<T>(moduleType: Type<T>) {
   return { bootstrap };
 }
 
-export async function hmrTestBed<T>(moduleType: Type<T>, options: { storedValue?: any } = {}) {
+interface HmrMockTestBedOptions {
+  storedValue?: any;
+  dispose?: CustomDispose;
+}
+
+export async function hmrTestBed<T>(moduleType: Type<T>, options: HmrMockTestBedOptions = {}) {
   const { bootstrap } = setup(moduleType);
   const webpackModule = new WebpackMockModule();
 
   const snapshotContainer: { snapshot?: any } = webpackModule.hot.data;
   snapshotContainer.snapshot = options.storedValue;
-  const appModule: NgModuleRef<T> = await hmr(webpackModule, bootstrap);
+
+  const appModule: NgModuleRef<T> = await hmr(webpackModule, bootstrap, {
+    dispose: options.dispose
+  });
+
   const actions$ = appModule.injector.get<Actions>(Actions);
   const store = appModule.injector.get<Store>(Store);
   const getStoredValue = () => snapshotContainer.snapshot;

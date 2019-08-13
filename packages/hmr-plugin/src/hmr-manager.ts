@@ -7,7 +7,7 @@ import {
   NgxsHmrLifeCycle,
   NgxsHmrOptions,
   NgxsHmrSnapshot,
-  RemovableOldHostFn
+  OldHostRemoverFn
 } from './symbols';
 import { HmrStateContextFactory } from './internal/hmr-state-context-factory';
 import { HmrOptionBuilder } from './internal/hmr-options-builder';
@@ -82,7 +82,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
       (component: ComponentRef<Element>) => component.location.nativeElement
     );
 
-    const removableList: RemovableOldHostFn[] = elements.map((componentNode: Element) => {
+    const removableList: OldHostRemoverFn[] = elements.map((componentNode: Element) => {
       const newNode = document.createElement(componentNode.tagName);
       const parentNode: Node = componentNode.parentNode as Node;
       const currentDisplay: string | null = newNode.style.display;
@@ -99,7 +99,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
     });
 
     return function removeOldHosts(): void {
-      removableList.forEach((removeOldHost: RemovableOldHostFn) => removeOldHost());
+      removableList.forEach((removeOldHost: OldHostRemoverFn) => removeOldHost());
     };
   }
 

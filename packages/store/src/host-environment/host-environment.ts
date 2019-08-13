@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { Callback, NG_DEV_MODE, NG_TEST_MODE } from '../symbols';
+import { NG_DEV_MODE, NG_TEST_MODE } from '../symbols';
+import { Callback } from '../internal/internals';
 
 @Injectable()
 export class HostEnvironment {
