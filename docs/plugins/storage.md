@@ -31,7 +31,7 @@ initial state can be picked up by those plugins.
 ### Options
 The plugin has the following optional values:
 
-- `key`: State name to be persisted. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided, it defaults to all states using the `@@STATE` key.
+- `key`: State name(s) to be persisted. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided, it defaults to all states using the `@@STATE` key.
 - `storage`: Storage strategy to use. This defaults to LocalStorage but you can pass SessionStorage or anything that implements the StorageEngine API.
 - `deserialize`: Custom deserializer. Defaults to `JSON.parse`
 - `serialize`: Custom serializer, defaults to `JSON.stringify`
@@ -39,8 +39,7 @@ The plugin has the following optional values:
 
 ### Key option
 
-The `key` option is used to determine what states should be persisted in the storage. `key` shouldn't be a random string
-or array of string, it has to coincide with your state names. Let's look at the below example:
+The `key` option is used to determine what states should be persisted in the storage. `key` shouldn't be a random string, it has to coincide with your state names. Let's look at the below example:
 
 ```ts
 // novels.state.ts
@@ -80,7 +79,7 @@ NgxsStoragePluginModule.forRoot({
 })
 ```
 
-This is very neat to avoid persisting runtime-only states, that shouldn't be saved to any storage.
+This is very handy to avoid persisting runtime-only states, that shouldn't be saved to any storage.
 
 ### Custom Storage Engine
 You can add your own storage engine by implementing the `StorageEngine` interface.
