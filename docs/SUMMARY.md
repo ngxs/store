@@ -36,6 +36,7 @@
   * [Dynamic Plugins](recipes/dynamic-plugins.md)
   * [Authentication](recipes/authentication.md)
   * [Caching](recipes/cache.md)
+  * [Classes for State](recipes/classes-for-state.md)
   * [Unit Testing](recipes/unit-testing.md)
   * [Style Guide](recipes/style-guide.md)
 * Plugins
