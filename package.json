@@ -148,6 +148,6 @@
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^2.1.1",
     "typescript": "~3.5.3",
-    "zone.js": "~0.10.1"
+    "zone.js": "~0.10.2"
   }
 }
