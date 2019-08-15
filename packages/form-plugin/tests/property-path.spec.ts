@@ -6,7 +6,7 @@ import { State, NgxsModule, Store, Selector } from '@ngxs/store';
 
 import { NgxsFormPluginModule, UpdateFormValue } from '..';
 
-describe('Update form properties with "propertyPath"', () => {
+describe('UpdateFormValue.propertyPath', () => {
   interface NovelsStateModel {
     newNovelForm: {
       model: {
