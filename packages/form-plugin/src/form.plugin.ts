@@ -27,7 +27,7 @@ export class NgxsFormPlugin implements NgxsPlugin {
     if (type === UpdateFormValue.type || type === UpdateForm.type) {
       const { value } = event.payload;
       const payloadValue = Array.isArray(value) ? value.slice() : { ...value };
-      const path = this.getUpdateFormValuePath(event);
+      const path = this.joinPathWithPropertyPath(event);
       nextState = setValue(nextState, path, payloadValue);
     }
 
@@ -64,7 +64,7 @@ export class NgxsFormPlugin implements NgxsPlugin {
     return next(nextState, event);
   }
 
-  private getUpdateFormValuePath({ payload }: UpdateFormValue): string {
+  private joinPathWithPropertyPath({ payload }: UpdateFormValue): string {
     let path = `${payload.path}.model`;
 
     if (payload.propertyPath) {
