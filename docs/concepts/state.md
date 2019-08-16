@@ -1,7 +1,9 @@
 # State
+
 States are classes that define a state container.
 
 ## Defining a State
+
 States are classes along with decorators to describe metadata
 and action mappings. To define a state container, let's create an
 ES2015 class and decorate it with the `State` decorator.
@@ -20,7 +22,7 @@ In the state decorator, we define some metadata about the state. These options
 include:
 
 - `name`: The name of the state slice. Note: The name is a required parameter and must be unique for the entire application.
-Names must be object property safe, (e.g. no dashes, dots, etc).
+  Names must be object property safe, (e.g. no dashes, dots, etc).
 - `defaults`: Default set of object/array for this state slice.
 - `children`: Child sub state associations.
 
@@ -40,10 +42,12 @@ export class ZooState {
 ```
 
 ## Defining Actions
+
 Our states listen to actions via an `@Action` decorator. The action decorator
 accepts an action class or an array of action classes.
 
 ### Simple Actions
+
 Let's define a state that will listen to a `FeedAnimals` action to toggle whether the animals have been fed:
 
 ```TS
@@ -84,6 +88,7 @@ is always fresh. If you want a snapshot, you can always clone the state
 in the method.
 
 ### Actions with a payload
+
 Actions can also pass along metadata that has to do with the action.
 Say we want to pass along how much hay and carrots each zebra needs.
 
@@ -134,7 +139,7 @@ In this example, we have a second argument that represents the action and we des
 to pull out the name, hay, and carrots which we then update the state with.
 
 There is also a shortcut `patchState` function to make updating the state easier. In this case,
-you only pass it the properties you want to update on the state and it handles the rest. 
+you only pass it the properties you want to update on the state and it handles the rest.
 The above function could be reduced to this:
 
 ```TS
@@ -151,18 +156,21 @@ feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
 ```
 
 The `setState` function can also be called with a function which will be given the
-existing state and should return the new state. 
+existing state and should return the new state.
 All immutability concerns need to be honoured by this function.
 
 For comparison, here are the two ways that you can invoke the `setState` function...  
 With a new constructed state value:
+
 ```TS
 @Action(MyAction)
 public addValue(ctx: StateContext, { payload }: MyAction) {
   ctx.setState({ ...ctx.getState(), value: payload  });
 }
 ```
+
 With a function that returns the new state value:
+
 ```TS
 @Action(MyAction)
 public addValue(ctx: StateContext, { payload }: MyAction) {
@@ -172,9 +180,10 @@ public addValue(ctx: StateContext, { payload }: MyAction) {
 
 You may ask _"How is this valuable?"_. Well, it opens the door for refactoring of your immutable updates into `state operators` so that your code can become more declarative as opposed to imperative. We will be adding some standard `state operators` soon that you will be able to use to express your updates to the state. Follow the issue here for updates: https://github.com/ngxs/store/issues/545
 
-As another example you could use a library like [immer](https://github.com/mweststrate/immer) that can 
-handle the immutability updates for you and provide a different way of expressing your immutable update 
+As another example you could use a library like [immer](https://github.com/mweststrate/immer) that can
+handle the immutability updates for you and provide a different way of expressing your immutable update
 through direct mutation of a draft object. We can use this external library because it supports the same signature as out `state operators` through their curried `produce` function. Here is the example from above expressed in this way:
+
 ```TS
 import produce from 'immer';
 
@@ -183,16 +192,18 @@ import produce from 'immer';
 feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
   ctx.setState(produce((draft) => {
     draft.zebraFood.push(action.zebraToFeed);
-  }));  
+  }));
 }
 ```
-Here the `produce` function from the `immer` library is called with just a single parameter 
-so that it returns its' [curried form](https://github.com/mweststrate/immer#currying) 
+
+Here the `produce` function from the `immer` library is called with just a single parameter
+so that it returns its' [curried form](https://github.com/mweststrate/immer#currying)
 that will take a value and return a new value with all the expressed changes applied.
 
-This approach can also allow for the creation of well named helper functions that can be shared 
-between handlers that require the same type of update. 
+This approach can also allow for the creation of well named helper functions that can be shared
+between handlers that require the same type of update.
 The above example could be refactored to this:
+
 ```TS
 // in class ZooState ...
 @Action(FeedZebra)
@@ -211,6 +222,7 @@ function addToZebraFood(itemToAdd) {
 ```
 
 ### Async Actions
+
 Actions can perform async operations and update the state after an operation.
 
 Typically in Redux your actions are pure functions and you have some other system like a saga or an effect to perform
@@ -308,9 +320,9 @@ export class ZooState {
 ```
 
 ### Dispatching Actions From Actions
+
 If you want your action to dispatch another action, you can use the `dispatch` function
 that is contained in the state context object.
-
 
 ```TS
 import { State, Action, StateContext } from '@ngxs/store';
@@ -369,3 +381,36 @@ export class ZooState {
 
 Notice I returned the dispatch function, this goes back to our example above with async operations
 and the dispatcher subscribing to the result. It is not required though.
+
+### Actions in Separate Files
+
+Large codebases often end up in sprawling and hard to test NGXS-state-classes. Breaking the state into smaller chunks is not always an option, especially when the data is very cohesive and the interaction between it is complex.
+
+Thus, it can make sense to move actions into separate files to declutter the state-class itself and to ease the process of testing. For this purpose, the `declareAction()` helper-method exists. It allows handling actions as independent and easy to test (higher-order) functions.
+
+```TS
+@State<ShopStateModel>({ name: 'shop', defaults: DEFAULT_SHOP_STATE })
+export class ShopState {
+  constructor(productService: ProductService) {
+    declareAction(ShopState, AddProductToCartAction, addProductToCart);
+    declareAction(ShopState, FetchProductsAction, fetchProducts(productService));
+  }
+}
+```
+
+The actions itself are just idiomatic (higher-order) functions:
+
+```TS
+export const addProductToCart =
+  (ctx: StateContext<ShopStateModel>, act: AddProductToCartAction) => {
+    ctx.patchState({cart: [act.product]})
+}
+
+export const fetchProducts =
+  (productService: ProductService) =>
+    (ctx: StateContext<ShopStateModel>, act: FetchProductsAction) => {
+      productService.fetchProducts().subscribe(products => {
+        ctx.patchState({products})
+      });
+    }
+```
