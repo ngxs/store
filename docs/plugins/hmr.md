@@ -121,8 +121,6 @@ if (environment.hmr) {
 }
 ```
 
-More details: https://webpack.js.org/api/hot-module-replacement/#module-api
-
 ### (OPTIONAL) Update src/app/app.module.ts to manage the state in HMR lifecycle:
 
 ```ts
