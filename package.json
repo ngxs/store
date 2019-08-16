@@ -92,9 +92,9 @@
   "private": true,
   "devDependencies": {
     "@angular-builders/jest": "^8.0.4",
-    "@angular-devkit/build-angular": "~0.802.1",
+    "@angular-devkit/build-angular": "~0.802.2",
     "@angular/animations": "8.2.2",
-    "@angular/cli": "8.2.1",
+    "@angular/cli": "8.2.2",
     "@angular/common": "8.2.2",
     "@angular/compiler": "8.2.2",
     "@angular/compiler-cli": "8.2.2",
@@ -130,7 +130,7 @@
     "express": "^4.17.1",
     "fs-extra": "^8.1.0",
     "husky": "^3.0.3",
-    "jest": "^24.8.0",
+    "jest": "^24.9.0",
     "jest-preset-angular": "^7.1.1",
     "lint-staged": "^9.2.1",
     "mocha": "^6.2.0",
@@ -148,6 +148,6 @@
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^2.1.1",
     "typescript": "~3.5.3",
-    "zone.js": "~0.10.1"
+    "zone.js": "~0.10.2"
   }
 }
