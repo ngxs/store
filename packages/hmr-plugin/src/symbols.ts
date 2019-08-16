@@ -23,18 +23,12 @@ export interface NgxsHmrLifeCycle<T = NgxsHmrSnapshot> {
 export type HmrCallback<T> = (ctx: StateContext<T>, state: Partial<T>) => void;
 export type BootstrapModuleFn<T = any> = () => Promise<NgModuleRef<T>>;
 
-export interface WebpackHotApi {
-  data: any;
+export interface WebpackHotApi<T = any> {
+  data: T;
   accept(dependencies: string[], callback?: (updatedDependencies: ModuleId[]) => void): void;
   accept(dependency: string, callback?: () => void): void;
   accept(errHandler?: (err: Error) => void): void;
   dispose(callback: (data: any) => void): void;
-  decline(): void;
-  status(): string;
-  check(): Promise<any>;
-  apply(): Promise<any>;
-  addStatusHandler(handler: (status: string) => void): void;
-  removeStatusHandler(callback: any): void;
 }
 
 export interface NgxsHmrOptions {
@@ -51,13 +45,6 @@ export interface NgxsHmrOptions {
    * (default: 100ms)
    */
   deferTime?: number;
-
-  /**
-   * @description
-   * Add a handler which is executed when the current module code is replaced.
-   * (default: null)
-   */
-  dispose?: DisposeHook;
 }
 
 type ModuleId = string | number;
@@ -77,5 +64,3 @@ export type OldHostRemoverFn = () => void;
 export interface HmrDataTransfer {
   snapshot?: any;
 }
-
-export type DisposeHook = (hotApi: WebpackHotApi) => void;

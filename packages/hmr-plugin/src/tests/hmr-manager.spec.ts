@@ -17,7 +17,7 @@ import { HmrInitAction } from '../actions/hmr-init.action';
 import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 import { HmrStateContextFactory } from '../internal/hmr-state-context-factory';
 import { hmrTestBed, setup } from './hmr-helpers';
-import { NgxsHmrSnapshot, WebpackHotApi } from '../symbols';
+import { NgxsHmrSnapshot } from '../symbols';
 
 describe('HMR Plugin', () => {
   it('should initialize AppMockModule', async () => {
@@ -289,23 +289,5 @@ describe('HMR Plugin', () => {
 
     webpackModule.destroyModule();
     expect((appModule as any)['_destroyed']).toEqual(true);
-  });
-
-  it('should be correctly dispose called before destroy module', async () => {
-    let data = {};
-
-    const { webpackModule } = await hmrTestBed(AppMockModule, {
-      storedValue: { hello: 'world' },
-      dispose(api: WebpackHotApi) {
-        data = api.data;
-        expect(api.data).toEqual({ snapshot: { hello: 'world' } });
-      }
-    });
-
-    webpackModule.destroyModule();
-
-    expect(data).toEqual({
-      snapshot: { hello: 'world', mock_state: { value: 'test' }, customOut: 'abc' }
-    });
   });
 });

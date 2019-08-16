@@ -25,7 +25,6 @@ export async function hmr<T>(
     manager.beforeModuleBootstrap();
 
     webpackModule.hot!.dispose((data: HmrDataTransfer) => {
-      options.dispose && options.dispose(webpackModule.hot);
       data.snapshot = manager.beforeModuleOnDestroy();
       manager.createNewModule();
     });
