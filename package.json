@@ -91,7 +91,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@angular-builders/jest": "^8.0.4",
+    "@angular-builders/jest": "^8.2.0",
     "@angular-devkit/build-angular": "~0.802.2",
     "@angular/animations": "8.2.2",
     "@angular/cli": "8.2.2",
