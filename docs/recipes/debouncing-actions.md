@@ -3,6 +3,11 @@
 There are situations when there is a need to debounce dispatched actions and reduce requests send to our API. Let's consider a simple application that renders a list of news and provides the ability to search among all of them:
 
 ```ts
+class SearchNews {
+  static readonly type = '[News] Search news';
+  constructor(public title: string) {}
+}
+
 @Component({
   selector: 'app-news-portal',
   template: `
@@ -47,17 +52,12 @@ export class NewsPortalComponent implements OnDestroy {
 }
 ```
 
-In the above example we've got the `app-news-portal` component that listens to the `search` event, dispatched by the `app-news-search` component. The `search` method, invoked on the `search` event, dispatches the `SearchNews` action. We don't want to overload our server with requests thus we listen to the `Actions` stream that pipes the `SearchNews` action with `debounceTime` operator. Let's look at the below code of how we would implement our `NewsState`:
+In the above example we've got the `app-news-portal` component that listens to the `search` event, dispatched by the `app-news-search` component. The `search` method, invoked on the `search` event, dispatches the `SearchNews` action. Notice that the `SearchNews` action is defined in the component file because it's never used by any other part of the application. We don't want to overload our server with requests thus we listen to the `Actions` stream that pipes the `SearchNews` action with `debounceTime` operator. Let's look at the below code of how we would implement our `NewsState`:
 
 ```ts
 export interface NewsStateModel {
   news: News[];
   lastSearchedTitle: string | null;
-}
-
-export class SearchNews {
-  static readonly type = '[News] Search news';
-  constructor(public title: string) {}
 }
 
 export class GetNews {
