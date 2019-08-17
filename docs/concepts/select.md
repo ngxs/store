@@ -388,6 +388,7 @@ export class CounterQuery {
     return counter ** 3;
   }
 
+  // Note: this selector being declared after its usage will cause an issue!!!
   @Selector([CounterState])
   static getCounter(state: CounterStateModel): number {
     return state.counter;
