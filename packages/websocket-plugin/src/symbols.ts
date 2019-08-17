@@ -15,7 +15,7 @@ export interface NgxsWebsocketPluginOptions {
    * to handle different types of interactions depending on the specified protocol).
    * If you don't specify a protocol string, an empty string is assumed.
    */
-  protocol?: string | Array<string>;
+  protocol?: string | string[];
 
   /**
    * Sets the `binaryType` property of the underlying WebSocket.

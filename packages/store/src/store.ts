@@ -41,19 +41,17 @@ export class Store {
     const selectorFn = getSelectorFn(selector);
     return this._stateStream.pipe(
       map(selectorFn),
-      catchError(
-        (err: Error): Observable<never> | Observable<undefined> => {
-          // if error is TypeError we swallow it to prevent usual errors with property access
-          const { suppressErrors } = this._config.selectorOptions;
+      catchError((err: Error): Observable<never> | Observable<undefined> => {
+        // if error is TypeError we swallow it to prevent usual errors with property access
+        const { suppressErrors } = this._config.selectorOptions;
 
-          if (err instanceof TypeError && suppressErrors) {
-            return of(undefined);
-          }
-
-          // rethrow other errors
-          return throwError(err);
+        if (err instanceof TypeError && suppressErrors) {
+          return of(undefined);
         }
-      ),
+
+        // rethrow other errors
+        return throwError(err);
+      }),
       distinctUntilChanged(),
       leaveNgxs(this._internalExecutionStrategy)
     );

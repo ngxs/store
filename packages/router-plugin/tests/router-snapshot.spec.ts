@@ -1,16 +1,15 @@
 import { RouterTestingModule } from '@angular/router/testing';
 import { APP_BASE_HREF } from '@angular/common';
 import { Component, NgModule, Injectable, Type } from '@angular/core';
-import { Router, Routes, ActivatedRouteSnapshot } from '@angular/router';
+import { Routes, ActivatedRouteSnapshot } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { Store, NgxsModule, Actions } from '@ngxs/store';
+import { Store, NgxsModule } from '@ngxs/store';
 
 import { filter } from 'rxjs/operators';
 
 import { RouterState, NgxsRouterPluginModule } from '../';
 
-import { freshPlatform } from './helpers';
+import { freshPlatform, createNGXSRouterPluginTestingPlatform } from './helpers';
 
 @Component({
   selector: 'app-root',
@@ -112,16 +111,6 @@ function getTestModule() {
   return TestModule;
 }
 
-const createPlatformAndGetStoreWithRouter = () =>
-  platformBrowserDynamic()
-    .bootstrapModule(getTestModule())
-    .then(({ injector }) => {
-      const store: Store = injector.get(Store);
-      const router: Router = injector.get(Router);
-      const actions$: Actions = injector.get(Actions);
-      return { store, router, actions$ };
-    });
-
 const getRouteSnapshot = <T>(store: Store, component?: Type<T>) =>
   store.selectSnapshot(RouterState.getRouteSnapshot(component));
 
@@ -130,7 +119,7 @@ describe('RouterState.getRouteSnapshot', () => {
     'should select root component if no argument is provided',
     freshPlatform(async () => {
       // Arrange
-      const { store, router } = await createPlatformAndGetStoreWithRouter();
+      const { store, router } = await createNGXSRouterPluginTestingPlatform(getTestModule());
 
       // Act
       await router.navigateByUrl('/');
@@ -147,7 +136,7 @@ describe('RouterState.getRouteSnapshot', () => {
     'should select "LoginComponent"s snapshot',
     freshPlatform(async () => {
       // Arrange
-      const { store, router } = await createPlatformAndGetStoreWithRouter();
+      const { store, router } = await createNGXSRouterPluginTestingPlatform(getTestModule());
 
       // Act
       await router.navigateByUrl('/');
@@ -165,7 +154,7 @@ describe('RouterState.getRouteSnapshot', () => {
     'should select "RegisterComponent"s snapshot',
     freshPlatform(async () => {
       // Arrange
-      const { store, router } = await createPlatformAndGetStoreWithRouter();
+      const { store, router } = await createNGXSRouterPluginTestingPlatform(getTestModule());
 
       // Act
       await router.navigateByUrl('/');
@@ -184,7 +173,7 @@ describe('RouterState.getRouteSnapshot', () => {
     'should return "null" for deactivated component',
     freshPlatform(async () => {
       // Arrange
-      const { store, router } = await createPlatformAndGetStoreWithRouter();
+      const { store, router } = await createNGXSRouterPluginTestingPlatform(getTestModule());
 
       // Act
       await router.navigateByUrl('/');
@@ -205,7 +194,7 @@ describe('RouterState.getRouteSnapshot', () => {
     'should select "CategoriesComponent"s snapshot',
     freshPlatform(async () => {
       // Arrange
-      const { store, router } = await createPlatformAndGetStoreWithRouter();
+      const { store, router } = await createNGXSRouterPluginTestingPlatform(getTestModule());
 
       // Act
       await router.navigateByUrl('/');
@@ -224,7 +213,7 @@ describe('RouterState.getRouteSnapshot', () => {
     'should select "CategoryComponent"s snapshot and get category',
     freshPlatform(async () => {
       // Arrange
-      const { store, router } = await createPlatformAndGetStoreWithRouter();
+      const { store, router } = await createNGXSRouterPluginTestingPlatform(getTestModule());
 
       // Act
       await router.navigateByUrl('/');
@@ -248,7 +237,7 @@ describe('RouterState.getRouteSnapshot', () => {
     'should listen to the state change',
     freshPlatform(async () => {
       // Arrange
-      const { store, router } = await createPlatformAndGetStoreWithRouter();
+      const { store, router } = await createNGXSRouterPluginTestingPlatform(getTestModule());
       const datas: any[] = [];
 
       // Act

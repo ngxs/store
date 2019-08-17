@@ -26,10 +26,10 @@ import {
 import { RouterStateSerializer } from './serializer';
 import { searchRoute } from './search-route';
 
-export type RouterStateModel<T = RouterStateSnapshot> = {
+export interface RouterStateModel<T = RouterStateSnapshot> {
   state?: T;
   navigationId?: number;
-};
+}
 
 @State<RouterStateModel>({
   name: 'router',
@@ -162,6 +162,7 @@ export class RouterState {
   }
 
   private dispatchRouterCancel(event: NavigationCancel): void {
+    this.routerStateSnapshot = this._serializer.serialize(this._router.routerState.snapshot);
     this.dispatchRouterAction(
       new RouterCancel(this.routerStateSnapshot, this.routerState, event)
     );

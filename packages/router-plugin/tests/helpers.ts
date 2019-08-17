@@ -1,7 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { destroyPlatform, createPlatform } from '@angular/core';
+import { Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
+import { Store, Actions } from '@ngxs/store';
 import { ɵgetDOM as getDOM } from '@angular/platform-browser';
+import { destroyPlatform, createPlatform, Type } from '@angular/core';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 function createRootElement() {
   const document = TestBed.get(DOCUMENT);
@@ -38,4 +41,12 @@ export function freshPlatform(fn: Function): (...args: any[]) => any {
       resetPlatformAfterBootstrapping();
     }
   };
+}
+
+export async function createNGXSRouterPluginTestingPlatform<T>(module: Type<T>) {
+  const { injector } = await platformBrowserDynamic().bootstrapModule(module);
+  const store: Store = injector.get(Store);
+  const router: Router = injector.get(Router);
+  const actions$: Actions = injector.get(Actions);
+  return { store, router, actions$ };
 }
