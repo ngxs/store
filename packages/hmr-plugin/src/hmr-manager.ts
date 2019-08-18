@@ -6,13 +6,14 @@ import {
   BootstrapModuleFn,
   NgxsHmrLifeCycle,
   NgxsHmrOptions,
-  NgxsHmrSnapshot,
-  OldHostRemoverFn
+  NgxsHmrSnapshot
 } from './symbols';
 import { HmrStateContextFactory } from './internal/hmr-state-context-factory';
 import { HmrOptionBuilder } from './internal/hmr-options-builder';
 import { HmrInitAction } from './actions/hmr-init.action';
 import { HmrLifecycle } from './internal/hmr-lifecycle';
+
+type OldHostRemoverFn = () => void;
 
 export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnapshot> {
   public storage: HmrStorage<S>;

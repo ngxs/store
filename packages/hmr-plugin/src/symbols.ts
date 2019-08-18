@@ -23,14 +23,6 @@ export interface NgxsHmrLifeCycle<T = NgxsHmrSnapshot> {
 export type HmrCallback<T> = (ctx: StateContext<T>, state: Partial<T>) => void;
 export type BootstrapModuleFn<T = any> = () => Promise<NgModuleRef<T>>;
 
-export interface WebpackHotApi<T = any> {
-  data: T;
-  accept(dependencies: string[], callback?: (updatedDependencies: ModuleId[]) => void): void;
-  accept(dependency: string, callback?: () => void): void;
-  accept(errHandler?: (err: Error) => void): void;
-  dispose(callback: (data: any) => void): void;
-}
-
 export interface NgxsHmrOptions {
   /**
    * @description
@@ -49,7 +41,13 @@ export interface NgxsHmrOptions {
 
 type ModuleId = string | number;
 interface WebpackHotModule {
-  hot?: WebpackHotApi;
+  hot?: {
+    data: any;
+    accept(dependencies: string[], callback?: (updatedDependencies: ModuleId[]) => void): void;
+    accept(dependency: string, callback?: () => void): void;
+    accept(errHandler?: (err: Error) => void): void;
+    dispose(callback: (data: any) => void): void;
+  };
 }
 
 /**
@@ -58,9 +56,3 @@ interface WebpackHotModule {
  * npm i @types/webpack-env
  */
 export type WebpackModule = WebpackHotModule | any;
-
-export type OldHostRemoverFn = () => void;
-
-export interface HmrDataTransfer {
-  snapshot?: any;
-}
