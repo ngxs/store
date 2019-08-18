@@ -12,21 +12,6 @@ import { Select } from '../src/decorators/select/select';
 import { StateContext } from '../src/symbols';
 import { removeDollarAtTheEnd } from '../src/decorators/select/symbols';
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../src/configs/messages.config';
-import { NGXS_DECORATOR } from '../src/decorators/symbols';
-
-function FreezeClass(target: Function): void {
-  Object.seal(target);
-  Object.freeze(target);
-  Object.freeze(target.prototype);
-}
-
-function SealField(target: any, name: string | symbol) {
-  Object.defineProperty(target.prototype, name, {
-    enumerable: false,
-    writable: false,
-    configurable: false
-  });
-}
 
 describe('Select', () => {
   interface SubSubStateModel {
@@ -99,6 +84,12 @@ describe('Select', () => {
   });
 
   it('should throw an exception when the component class is frozen', () => {
+    function FreezeClass(target: Function): void {
+      Object.seal(target);
+      Object.freeze(target);
+      Object.freeze(target.prototype);
+    }
+
     try {
       @FreezeClass
       @Component({
@@ -119,32 +110,7 @@ describe('Select', () => {
       comp.componentInstance.state.subscribe();
     } catch (e) {
       expect(e.message).toEqual(
-        CONFIG_MESSAGES[VALIDATION_CODE.CHECK_FROZEN_BEFORE_DECORATE](NGXS_DECORATOR.SELECT)
-      );
-    }
-  });
-
-  it('should throw an exception when the field is frozen', () => {
-    try {
-      @Component({
-        selector: 'my-select',
-        template: ''
-      })
-      class MySelectComponent {
-        @SealField
-        @Select((state: any) => state)
-        public state: Observable<any>;
-      }
-
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)],
-        declarations: [MySelectComponent]
-      });
-
-      TestBed.createComponent(MySelectComponent);
-    } catch (e) {
-      expect(e.message).toEqual(
-        CONFIG_MESSAGES[VALIDATION_CODE.CHECK_EXTENSIBLE_BEFORE_DECORATE]()
+        `Cannot assign to read only property '__state__selector' of object '[object Object]'`
       );
     }
   });
