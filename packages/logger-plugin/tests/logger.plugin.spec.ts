@@ -4,6 +4,7 @@ import { throwError } from 'rxjs';
 
 import { NgxsModule, Store, State, Action, StateContext, InitState } from '@ngxs/store';
 import { NoopErrorHandler } from '@ngxs/store/tests/helpers/utils';
+import { StateClass } from '@ngxs/store/internals';
 
 import { NgxsLoggerPluginModule, NgxsLoggerPluginOptions } from '../';
 import { LoggerSpy, formatActionCallStack } from './helpers';
@@ -46,12 +47,12 @@ describe('NgxsLoggerPlugin', () => {
     }
   }
 
-  function setup(opts?: NgxsLoggerPluginOptions) {
+  function setup(states: StateClass[], opts?: NgxsLoggerPluginOptions) {
     const logger = new LoggerSpy();
 
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([TestState]),
+        NgxsModule.forRoot(states),
         NgxsLoggerPluginModule.forRoot({
           ...opts,
           logger
@@ -60,14 +61,16 @@ describe('NgxsLoggerPlugin', () => {
       providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
     });
 
+    const store: Store = TestBed.get(Store);
+
     return {
-      store: TestBed.get(Store),
+      store,
       logger
     };
   }
 
   it('should log success action', () => {
-    const { store, logger } = setup();
+    const { store, logger } = setup([TestState]);
 
     store.dispatch(new UpdateBarAction());
 
@@ -85,7 +88,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should log success action with payload', () => {
-    const { store, logger } = setup();
+    const { store, logger } = setup([TestState]);
     const payload = 'qux';
 
     store.dispatch(new UpdateBarAction(payload));
@@ -105,7 +108,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should log error action', () => {
-    const { store, logger } = setup();
+    const { store, logger } = setup([TestState]);
 
     store.dispatch(new ErrorAction());
 
@@ -115,7 +118,8 @@ describe('NgxsLoggerPlugin', () => {
       ...formatActionCallStack({
         action: ErrorAction.type,
         prevState: stateModelDefaults,
-        error: thrownErrorMessage
+        error: thrownErrorMessage,
+        snapshot: store.snapshot()
       })
     ]);
 
@@ -123,7 +127,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should log collapsed success action', () => {
-    const { store, logger } = setup({ collapsed: true });
+    const { store, logger } = setup([TestState], { collapsed: true });
 
     store.dispatch(new UpdateBarAction());
 
@@ -146,7 +150,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should not log while disabled', () => {
-    const { store, logger } = setup({ disabled: true });
+    const { store, logger } = setup([TestState], { disabled: true });
 
     store.dispatch(new UpdateBarAction());
 
