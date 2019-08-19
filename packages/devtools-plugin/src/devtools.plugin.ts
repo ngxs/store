@@ -1,6 +1,6 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { getActionTypeFromInstance, NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 
 import {
   NGXS_DEVTOOLS_OPTIONS,
@@ -57,6 +57,11 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
 
           this.devtoolsExtension!.send({ ...action, type }, newState);
         }
+      }),
+      catchError(error => {
+        const type = getActionTypeFromInstance(action);
+        this.devtoolsExtension!.send({ ...action, type }, this.store.snapshot());
+        throw error;
       })
     );
   }
