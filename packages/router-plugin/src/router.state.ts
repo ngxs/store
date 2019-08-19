@@ -157,6 +157,7 @@ export class RouterState {
   }
 
   private dispatchRouterCancel(event: NavigationCancel): void {
+    this.routerStateSnapshot = this._serializer.serialize(this._router.routerState.snapshot);
     this.dispatchRouterAction(
       new RouterCancel(this.routerStateSnapshot, this.routerState, event)
     );
