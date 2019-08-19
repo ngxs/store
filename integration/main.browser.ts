@@ -1,23 +1,20 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { hmr } from '@ngxs/hmr-plugin';
+import { BootstrapModuleFn as Bootstrap, hmr, WebpackModule } from '@ngxs/hmr-plugin';
 
 import { AppBrowserModule } from './app/app.browser.module';
 import { environment } from './environments/environment';
+
+declare const module: WebpackModule;
 
 if (environment.production) {
   enableProdMode();
 }
 
-const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppBrowserModule);
+const bootstrap: Bootstrap = () => platformBrowserDynamic().bootstrapModule(AppBrowserModule);
 
 if (environment.hmr) {
-  if (module['hot']) {
-    hmr(module, bootstrap).catch(err => console.error(err));
-  } else {
-    console.error('HMR is not enabled for webpack-dev-server!');
-    console.log('Are you using the --hmr flag for ng serve?');
-  }
+  hmr(module, bootstrap).catch((err: Error) => console.error(err));
 } else {
   bootstrap().catch(err => console.log(err));
 }

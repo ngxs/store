@@ -18,12 +18,17 @@ export function setup<T>(moduleType: Type<T>) {
   return { bootstrap };
 }
 
-export async function hmrTestBed<T>(moduleType: Type<T>, options: { storedValue?: any } = {}) {
+interface HmrMockTestBedOptions {
+  storedValue?: any;
+}
+
+export async function hmrTestBed<T>(moduleType: Type<T>, options: HmrMockTestBedOptions = {}) {
   const { bootstrap } = setup(moduleType);
   const webpackModule = new WebpackMockModule();
 
   const snapshotContainer: { snapshot?: any } = webpackModule.hot.data;
   snapshotContainer.snapshot = options.storedValue;
+
   const appModule: NgModuleRef<T> = await hmr(webpackModule, bootstrap);
   const actions$ = appModule.injector.get<Actions>(Actions);
   const store = appModule.injector.get<Store>(Store);

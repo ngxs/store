@@ -105,7 +105,6 @@
     "@angular/platform-browser-dynamic": "8.2.2",
     "@angular/platform-server": "8.2.2",
     "@angular/router": "8.2.2",
-    "@angularclass/hmr": "^2.1.3",
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
     "@nguniversal/express-engine": "8.1.1",
