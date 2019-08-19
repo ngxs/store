@@ -3,7 +3,7 @@ import { Inject, NgModule, Optional } from '@angular/core';
 import { StateFactory } from '../internal/state-factory';
 import { InternalStateOperations } from '../internal/state-operations';
 import { Store } from '../store';
-import { SelectFactory } from '../decorators/select';
+import { SelectFactory } from '../decorators/select/select-factory';
 import { NgxsConfig, ROOT_STATE_TOKEN } from '../symbols';
 import {
   globalSelectorOptions,
