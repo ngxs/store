@@ -7,8 +7,9 @@ export enum VALIDATION_CODE {
   STATE_DECORATOR = 'STATE_DECORATOR',
   INCORRECT_PRODUCTION = 'INCORRECT_PRODUCTION',
   INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT',
+  SELECT_FACTORY_NOT_CONNECTED = 'SELECT_FACTORY_NOT_CONNECTED',
   ACTION_DECORATOR = 'ACTION_DECORATOR',
-  SELECTOR_DECORATOR = 'SELECTOR_PROPERTY'
+  SELECTOR_DECORATOR = 'SELECTOR_DECORATOR'
 }
 
 export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
@@ -25,6 +26,8 @@ export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
   [VALIDATION_CODE.INCORRECT_DEVELOPMENT]: () =>
     'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n' +
     'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
+  [VALIDATION_CODE.SELECT_FACTORY_NOT_CONNECTED]: () =>
+    'SelectFactory not connected to store!',
   [VALIDATION_CODE.ACTION_DECORATOR]: () =>
     '@Action() decorator cannot be used with static methods',
   [VALIDATION_CODE.SELECTOR_DECORATOR]: () => 'Selectors only work on methods'
