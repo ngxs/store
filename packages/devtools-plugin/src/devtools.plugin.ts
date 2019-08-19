@@ -47,6 +47,11 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
     }
 
     return next(state, action).pipe(
+      catchError(error => {
+        const type = getActionTypeFromInstance(action);
+        this.devtoolsExtension!.send({ ...action, type }, this.store.snapshot());
+        throw error;
+      }),
       tap(newState => {
         // if init action, send initial state to dev tools
         const isInitAction = getActionTypeFromInstance(action) === '@@INIT';
@@ -57,11 +62,6 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
 
           this.devtoolsExtension!.send({ ...action, type }, newState);
         }
-      }),
-      catchError(error => {
-        const type = getActionTypeFromInstance(action);
-        this.devtoolsExtension!.send({ ...action, type }, this.store.snapshot());
-        throw error;
       })
     );
   }
