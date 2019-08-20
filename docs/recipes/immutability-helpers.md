@@ -10,7 +10,6 @@ The cornerstone of Redux is immutability. Immutabilty is an amazing pattern to m
 
 ```ts
 export interface Task {
-  id: number;
   title: string;
   dates: {
     startDate: string;
