@@ -95,6 +95,14 @@ jobs:
           name: Run ESLint analyzer
           command: yarn eslint
 
+  cypress:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run E2E tests
+          command: yarn test:ci:e2e
+
   unit_tests:
     <<: *job_defaults
     environment:
@@ -223,6 +231,10 @@ workflows:
       - integration_tests:
           requires:
             - build
+
+      - cypress:
+          requires:
+            - integration_tests
 
       - integration_ssr_tests:
           requires:

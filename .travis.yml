@@ -21,6 +21,9 @@ script:
   - yarn test:ci:integration
   - yarn test:ci:integration:ssr
 
+  # RUN E2E TESTS
+  - yarn test:ci:e2e
+
   # INTEGRATION TEST
   - yarn integration:ng5
 
