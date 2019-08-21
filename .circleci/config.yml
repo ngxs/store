@@ -23,6 +23,8 @@ save_cache_var: &save_cache
     key: *cache_key
     paths:
       - ~/.cache/yarn
+      # Cache folder with Cypress binary
+      - ~/.cache/Cypress
       - node_modules
 
 # Restore yarn cache
