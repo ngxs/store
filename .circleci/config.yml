@@ -95,14 +95,6 @@ jobs:
           name: Run ESLint analyzer
           command: yarn eslint
 
-  cypress:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run E2E tests
-          command: yarn test:ci:e2e
-
   unit_tests:
     <<: *job_defaults
     environment:
@@ -130,7 +122,18 @@ jobs:
       - run:
           name: Integration Tests
           command: yarn test:ci:integration
-      # - *persist_coverage // we don't run code coverage for integration tests
+      - *persist_coverage
+      - store_artifacts:
+          path: dist-integration
+          destination: dist-integration
+
+  cypress:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run E2E tests
+          command: yarn test:ci:e2e
 
   integration_ssr_tests:
     <<: *job_defaults
