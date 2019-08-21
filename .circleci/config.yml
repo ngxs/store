@@ -122,7 +122,7 @@ jobs:
       - run:
           name: Integration Tests
           command: yarn test:ci:integration
-      - *persist_coverage
+      - *persist_workspace
       - store_artifacts:
           path: dist-integration
           destination: dist-integration
