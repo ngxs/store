@@ -48,22 +48,25 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
 
     return next(state, action).pipe(
       catchError(error => {
-        const type = getActionTypeFromInstance(action);
-        this.devtoolsExtension!.send({ ...action, type }, this.store.snapshot());
+        const newState = this.store.snapshot();
+        this.sendToDevTools(state, action, newState);
         throw error;
       }),
       tap(newState => {
-        // if init action, send initial state to dev tools
-        const isInitAction = getActionTypeFromInstance(action) === '@@INIT';
-        if (isInitAction) {
-          this.devtoolsExtension!.init(state);
-        } else {
-          const type = getActionTypeFromInstance(action);
-
-          this.devtoolsExtension!.send({ ...action, type }, newState);
-        }
+        this.sendToDevTools(state, action, newState);
       })
     );
+  }
+
+  private sendToDevTools(state: any, action: any, newState: any) {
+    const type = getActionTypeFromInstance(action);
+    // if init action, send initial state to dev tools
+    const isInitAction = type === '@@INIT';
+    if (isInitAction) {
+      this.devtoolsExtension!.init(state);
+    } else {
+      this.devtoolsExtension!.send({ ...action, type }, newState);
+    }
   }
 
   /**
