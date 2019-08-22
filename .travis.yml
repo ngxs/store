@@ -3,6 +3,19 @@ sudo: false
 node_js:
   - '12.0.0'
 
+# since Travis is running on the Ubuntu 16+
+# this library is necessary
+# see https://github.com/cypress-io/cypress/issues/4069#issuecomment-488816887
+addons:
+  apt:
+    packages:
+    - libgconf-2-4
+
+cache:
+  directories:
+    # cache Cypress binary
+    - ~/.cache
+
 install:
   - yarn install --frozen-lockfile --non-interactive
 
@@ -22,7 +35,7 @@ script:
   - yarn test:ci:integration:ssr
 
   # RUN E2E TESTS
-  - yarn cypress install && yarn test:ci:e2e
+  - yarn test:ci:e2e
 
   # INTEGRATION TEST
   - yarn integration:ng5
