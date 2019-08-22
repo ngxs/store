@@ -3,7 +3,7 @@ sudo: false
 node_js:
   - '12.0.0'
 
-# since Travis is running on the Ubuntu 16+
+# Since Travis is running on the Ubuntu 16+
 # this library is necessary
 # see https://github.com/cypress-io/cypress/issues/4069#issuecomment-488816887
 addons:
@@ -13,35 +13,33 @@ addons:
 
 cache:
   directories:
-    # cache Cypress binary
+    # Cache Cypress binary
     - ~/.cache
 
 install:
   - yarn install --frozen-lockfile --non-interactive
 
 script:
-  # RUN STATIC ANALYZERS
+  # Run static analyzers
   - yarn lint
   - yarn eslint
 
-  # BUILD STAGE
+  # Build packages and integration app
   - yarn build
   - yarn build:integration
   - yarn build:integration:ssr
 
-  # TEST STAGE
+  # Run unit, E2E and SSR tests
   - yarn test:ci
   - yarn test:ci:integration
+  - yarn test:ci:e2e
   - yarn test:ci:integration:ssr
 
-  # RUN E2E TESTS
-  - yarn test:ci:e2e
-
-  # INTEGRATION TEST
+  # Run integration test with Angular 5
   - yarn integration:ng5
 
-  # INTEGRATION TEST
+  # Run declaration files linter
   - yarn test:types
 
-  # CHECK BUNDLE SIZE
+  # Check the size of NGXS bundle
   - yarn bundlesize
