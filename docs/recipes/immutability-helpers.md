@@ -65,6 +65,33 @@ export class TrelloState {
 }
 ```
 
+## operators
+
+```ts
+import { patch } from '@ngxs/store/operators';
+
+export class TrelloState {
+
+  @Action(UpdateDueDate)
+  updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
+    ctx.setState(
+      patch({
+        tasks: patch({
+          [action.taskId]: patch({
+            dates: patch({
+              dueDate: action.dueDate
+            })
+          })
+        })
+      })
+    );
+  }
+
+}
+```
+
+## immer
+
 Such code is complicated to maintain and accompany. It's not self-descriptive and will be a problem for upcoming developers. Let's see how we could re-write this code with the help of `immer`:
 
 ```ts
@@ -84,11 +111,60 @@ export class TrelloState {
 }
 ```
 
+Immer's `produce` function can be also used as a state operator:
+
+```ts
+import { produce } from 'immer';
+
+export class TrelloState {
+
+  @Action(UpdateDueDate)
+  updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
+    ctx.setState(
+      produce(draft => {
+        draft.tasks[action.taskId].dates.dueDate = action.dueDate;
+      })
+    );
+  }
+
+}
+```
+
 Oh, have you noticed it's less code and looks much better. From the `immer` repisitory:
 > Using Immer is like having a personal assistant; he takes a letter (the current state) and gives you a copy (draft) to jot changes onto. Once you are done, the assistant will take your draft and produce the real immutable, final letter for you (the next state).
 
 [Immer repository](https://github.com/immerjs/immer)
 
+## immutability-helper
+
+`immutability-helper` is a petty package that lets you mutate a copy of data without changing the original source:
+
+```ts
+import update from 'immutability-helper';
+
+export class TrelloState {
+
+  @Action(UpdateDueDate)
+  updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
+    const state = update(ctx.getState(), {
+      tasks: {
+        [action.taskId]: {
+          dates: {
+            dueDate: {
+              $set: action.dueDate
+            }
+          }
+        }
+      }
+    });
+
+    ctx.setState(state);
+  }
+
+}
+```
+
+[immutability-helper repisitory](https://github.com/kolodny/immutability-helper)
 
 ## object-path-immutable
 
