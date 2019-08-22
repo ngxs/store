@@ -23,8 +23,6 @@ save_cache_var: &save_cache
     key: *cache_key
     paths:
       - ~/.cache/yarn
-      # Cache folder with Cypress binary
-      - ~/.cache/Cypress
       - node_modules
 
 # Restore yarn cache
@@ -135,7 +133,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Run E2E tests
-          command: yarn test:ci:e2e
+          command: yarn cypress install && yarn test:ci:e2e
 
   integration_ssr_tests:
     <<: *job_defaults
