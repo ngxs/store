@@ -1,6 +1,6 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { getActionTypeFromInstance, NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 
 import {
   NGXS_DEVTOOLS_OPTIONS,
@@ -47,18 +47,26 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
     }
 
     return next(state, action).pipe(
+      catchError(error => {
+        const newState = this.store.snapshot();
+        this.sendToDevTools(state, action, newState);
+        throw error;
+      }),
       tap(newState => {
-        // if init action, send initial state to dev tools
-        const isInitAction = getActionTypeFromInstance(action) === '@@INIT';
-        if (isInitAction) {
-          this.devtoolsExtension!.init(state);
-        } else {
-          const type = getActionTypeFromInstance(action);
-
-          this.devtoolsExtension!.send({ ...action, type }, newState);
-        }
+        this.sendToDevTools(state, action, newState);
       })
     );
+  }
+
+  private sendToDevTools(state: any, action: any, newState: any) {
+    const type = getActionTypeFromInstance(action);
+    // if init action, send initial state to dev tools
+    const isInitAction = type === '@@INIT';
+    if (isInitAction) {
+      this.devtoolsExtension!.init(state);
+    } else {
+      this.devtoolsExtension!.send({ ...action, type }, newState);
+    }
   }
 
   /**
