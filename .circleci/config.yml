@@ -45,8 +45,6 @@ persist_workspace_var: &persist_workspace
     # Must be relative path from root
     paths:
       - app
-      # Root is `/home/circleci/workspace`
-      - ../.cache/Cypress
 
 # Attach working space
 attach_workspace_var: &attach_workspace
