@@ -65,7 +65,7 @@ export class TrelloState {
 }
 ```
 
-Although this code will work but unfortunately it's complicated to maintain and accompany. It's not self-descriptive and will be daunting for upcoming developers
+Although this code will work but unfortunately it's complicated to maintain and accompany. It's not self-descriptive and will be daunting for upcoming developers.
 
 ## Solutions
 
