@@ -2,11 +2,11 @@
 
 Redux is a tiny pattern that represents states as immutable objects. Redux was originally designed for React. Most Redux concepts, such as pure functions, are centered around the React ecosystem. Nowadays Redux is not directly related to React.
 
-The cornerstone of Redux is immutability. Immutabilty is an amazing pattern to minimise unpredictable behaviour in our code. We're not going to cover functional programming in this article. However we're going to look at very useful packages that are called "immutability helpers". Most developers have to deal with, so called, "deep objects" and most important follow the immutability concept, when it comes to changing the value of some deeply nested property.
+The cornerstone of Redux is immutability. Immutabilty is an amazing pattern to minimise unpredictable behaviour in our code. We're not going to cover functional programming in this article. However we're going to look at very useful packages that are called "immutability helpers".
 
-## immer
+## The Problem
 
-`immer` is the most popular library that allows you to work with immutable objects in a more convenient way. Given the following code:
+Most developers have to deal with, so called, "deep objects" and most important follow the immutability concept, when it comes to changing the value of some deeply nested property. Given the following code:
 
 ```ts
 export interface Task {
@@ -65,7 +65,15 @@ export class TrelloState {
 }
 ```
 
-## operators
+Although this code will work but unfortunately it's complicated to maintain and accompany. It's not self-descriptive and will be daunting for upcoming developers
+
+## Solutions
+
+There are different ways to stay away from such code. This can be accomplished with the use of different packages that may be suitable for your needs.
+
+### State Operators
+
+[State operators](../advanced/operators.md) are the first immutability helpers that NGXS provides out of the box. The `patch` operator will become your best friend in case of choosing state operators as your immutability helpers. Let's see how we could re-write the above code by dint of the `patch` operator:
 
 ```ts
 import { patch } from '@ngxs/store/operators';
@@ -90,9 +98,9 @@ export class TrelloState {
 }
 ```
 
-## immer
+### immer
 
-Such code is complicated to maintain and accompany. It's not self-descriptive and will be a problem for upcoming developers. Let's see how we could re-write this code with the help of `immer`:
+`immer` is the most popular library that allows you to work with immutable objects in a more convenient way. The below code shows how to write the same code with the help of Immer:
 
 ```ts
 import { produce } from 'immer';
@@ -135,7 +143,7 @@ Oh, have you noticed it's less code and looks much better. From the `immer` repi
 
 [Immer repository](https://github.com/immerjs/immer)
 
-## immutability-helper
+### immutability-helper
 
 `immutability-helper` is a petty package that lets you mutate a copy of data without changing the original source:
 
@@ -166,7 +174,7 @@ export class TrelloState {
 
 [immutability-helper repisitory](https://github.com/kolodny/immutability-helper)
 
-## object-path-immutable
+### object-path-immutable
 
 `object-path-immutable` is a small library that allows you to modify deep object properties without modifying the original object. Let's look at how we could write the same code using this library:
 
@@ -191,7 +199,7 @@ export class TrelloState {
 
 [object-path-immutable repository](https://github.com/mariocasciaro/object-path-immutable)
 
-## immutable-assign
+### immutable-assign
 
 `immutable-assign` is a lightweight library that pursues the same goal. Its syntax is alike to `immer`'s:
 
@@ -215,7 +223,7 @@ export class TrelloState {
 
 [immutable-assign repository](https://github.com/engineforce/ImmutableAssign)
 
-## Ramda
+### Ramda
 
 Ramda is an adorable library for functional programming and it's used in a large number of projects. This example might be useful for people who use both Ramda and NGXS in their projects:
 
@@ -236,7 +244,7 @@ export class TrelloState {
 
 [Ramda repository](https://github.com/ramda/ramda)
 
-## icepick
+### icepick
 
 `icepick` is a zero-dependency library for working with immutable collections. Given the following re-written code:
 
