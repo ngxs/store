@@ -33,13 +33,13 @@
   * [Meta Reducers](advanced/meta-reducer.md)
   * [Shared State](advanced/shared-state.md)
 * Recipes
-  * [Dynamic Plugins](recipes/dynamic-plugins.md)
+  * [Actions as DOM Events](recipes/actions-as-dom-events.md)
   * [Authentication](recipes/authentication.md)
   * [Caching](recipes/cache.md)
   * [Debouncing Actions](recipes/debouncing-actions.md)
-  * [Actions as DOM Events](recipes/actions-as-dom-events.md)
-  * [Unit Testing](recipes/unit-testing.md)
+  * [Dynamic Plugins](recipes/dynamic-plugins.md)
   * [Style Guide](recipes/style-guide.md)
+  * [Unit Testing](recipes/unit-testing.md)
 * Plugins
   * [Introduction](plugins/intro.md)
   * [CLI](plugins/cli.md)
