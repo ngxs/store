@@ -9,7 +9,7 @@ node_js:
 addons:
   apt:
     packages:
-    - libgconf-2-4
+      - libgconf-2-4
 
 cache:
   directories:

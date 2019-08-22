@@ -23,7 +23,8 @@ save_cache_var: &save_cache
     key: *cache_key
     paths:
       # Cache Yarn packages and Cypress binary
-      - ~/.cache
+      - ~/.cache/yarn
+      - ~/.cache/Cypress
       - node_modules
 
 # Restore yarn cache
@@ -44,6 +45,7 @@ persist_workspace_var: &persist_workspace
     # Must be relative path from root
     paths:
       - app
+      - ~/.cache/Cypress
 
 # Attach working space
 attach_workspace_var: &attach_workspace
@@ -76,9 +78,6 @@ jobs:
       - store_artifacts:
           path: ngxs-core.tgz
           destination: dist/ngxs-core.tgz
-      - store_artifacts:
-          path: docs
-          destination: docs
 
   tslint:
     <<: *job_defaults
