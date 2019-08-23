@@ -1,4 +1,4 @@
-# Actions as DOM Events
+# Emitting DOM Events via NGXS
 
 Developers always use the `@Output` decorator in conjunction with the `EventEmitter`. The below code has been seen by any Angular developer:
 

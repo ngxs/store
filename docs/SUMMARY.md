@@ -33,11 +33,11 @@
   * [Meta Reducers](advanced/meta-reducer.md)
   * [Shared State](advanced/shared-state.md)
 * Recipes
-  * [Actions as DOM Events](recipes/actions-as-dom-events.md)
   * [Authentication](recipes/authentication.md)
   * [Caching](recipes/cache.md)
   * [Debouncing Actions](recipes/debouncing-actions.md)
   * [Dynamic Plugins](recipes/dynamic-plugins.md)
+  * [Emitting DOM Events via NGXS](recipes/emitting-dom-events-via-ngxs.md)
   * [Style Guide](recipes/style-guide.md)
   * [Unit Testing](recipes/unit-testing.md)
 * Plugins
