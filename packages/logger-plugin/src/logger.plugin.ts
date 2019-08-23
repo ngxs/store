@@ -5,6 +5,7 @@ import { NgxsPlugin, NgxsNextPluginFn, Store } from '@ngxs/store';
 
 import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
 import { ActionLogger } from './action-logger';
+import { LogWriter } from './log-writer';
 
 @Injectable()
 export class NgxsLoggerPlugin implements NgxsPlugin {
@@ -18,12 +19,11 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
       return next(state, event);
     }
 
-    const options = this._options || <any>{};
-    const logger = options.logger || console;
+    const logWriter = new LogWriter(this._options);
     // Retrieve lazily to avoid cyclic dependency exception
     const store = this._injector.get<Store>(Store);
 
-    const actionLogger = new ActionLogger(event, logger, options, store);
+    const actionLogger = new ActionLogger(event, store, logWriter);
 
     actionLogger.dispatched(state);
 
