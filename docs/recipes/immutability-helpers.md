@@ -65,15 +65,15 @@ export class TrelloState {
 }
 ```
 
-Although this code will work but unfortunately it's complicated to maintain and accompany. It's not self-descriptive and will be daunting for upcoming developers.
+This code will work but unfortunately it is complicated to maintain and understand. It's not self-descriptive and will be daunting for new developers.
 
 ## Solutions
 
-There are different ways to stay away from such code. This can be accomplished with the use of different packages that may be suitable for your needs.
+There are different ways to improve this code. Let us look at a few different packages that can help in this regard.
 
 ### State Operators
 
-[State operators](../advanced/operators.md) are the first immutability helpers that NGXS provides out of the box. The `patch` operator will become your best friend in case of choosing state operators as your immutability helpers. Let's see how we could re-write the above code by dint of the `patch` operator:
+[State operators](../advanced/operators.md) are first-class immutability helpers that NGXS provides out of the box. The `patch` operator will become your best friend in case of choosing state operators as your immutability helpers. Let's see how we could re-write the above code with the help of the `patch` state operator:
 
 ```ts
 import { patch } from '@ngxs/store/operators';
@@ -100,7 +100,7 @@ export class TrelloState {
 
 ### immer
 
-`immer` is the most popular library that allows you to work with immutable objects in a more convenient way. The below code shows how to write the same code with the help of Immer:
+`immer` is a very popular library that allows you to make changes to immutable objects as if they were mutable. The below code shows how to write the same code with the help of Immer:
 
 ```ts
 import { produce } from 'immer';
@@ -138,14 +138,14 @@ export class TrelloState {
 }
 ```
 
-Oh, have you noticed it's less code and looks much better. From the `immer` repisitory:
+You may notice how much less code this is and how much better it looks. From the `immer` repository:
 > Using Immer is like having a personal assistant; he takes a letter (the current state) and gives you a copy (draft) to jot changes onto. Once you are done, the assistant will take your draft and produce the real immutable, final letter for you (the next state).
 
 [Immer repository](https://github.com/immerjs/immer)
 
 ### immutability-helper
 
-`immutability-helper` is a petty package that lets you mutate a copy of data without changing the original source:
+`immutability-helper` is a small package that lets you mutate a copy of data without changing the original source:
 
 ```ts
 import update from 'immutability-helper';
@@ -172,7 +172,7 @@ export class TrelloState {
 }
 ```
 
-[immutability-helper repisitory](https://github.com/kolodny/immutability-helper)
+[immutability-helper repository](https://github.com/kolodny/immutability-helper)
 
 ### object-path-immutable
 
@@ -201,7 +201,7 @@ export class TrelloState {
 
 ### immutable-assign
 
-`immutable-assign` is a lightweight library that pursues the same goal. Its syntax is alike to `immer`'s:
+`immutable-assign` is a lightweight library that pursues the same goal. Its syntax is similar to `immer`'s:
 
 ```ts
 import * as iassign from 'immutable-assign';
@@ -225,7 +225,7 @@ export class TrelloState {
 
 ### Ramda
 
-Ramda is an adorable library for functional programming and it's used in a large number of projects. This example might be useful for people who use both Ramda and NGXS in their projects:
+Ramda is a great library for functional programming and it is used in a large number of projects. This example might be useful for people who use both Ramda and NGXS in their projects:
 
 ```ts
 import * as R from 'ramda';
