@@ -27,15 +27,18 @@ export class LogWriter {
   }
 
   logGrey(title: string, payload: any) {
-    this.log(title, 'color: #9E9E9E; font-weight: bold', payload);
+    const greyStyle = 'color: #9E9E9E; font-weight: bold';
+    this.log(title, greyStyle, payload);
   }
 
   logGreen(title: string, payload: any) {
-    this.log(title, 'color: #4CAF50; font-weight: bold', payload);
+    const greenStyle = 'color: #4CAF50; font-weight: bold';
+    this.log(title, greenStyle, payload);
   }
 
   logRedish(title: string, payload: any) {
-    this.log(title, 'color: #FD8182; font-weight: bold', payload);
+    const redishStyle = 'color: #FD8182; font-weight: bold';
+    this.log(title, redishStyle, payload);
   }
 
   log(title: string, color: string, payload: any) {
