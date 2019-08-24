@@ -8,11 +8,12 @@ export class LogWriter {
   }
 
   startGroup(message: string) {
-    const startGroupFn = this.options.collapsed
-      ? this.logger.groupCollapsed
-      : this.logger.group;
     try {
-      startGroupFn.call(this.logger, message);
+      if (this.options.collapsed) {
+        this.logger.groupCollapsed(message);
+      } else {
+        this.logger.group(message);
+      }
     } catch (e) {
       console.log(message);
     }
