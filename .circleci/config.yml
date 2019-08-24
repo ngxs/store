@@ -23,8 +23,7 @@ save_cache_var: &save_cache
     key: *cache_key
     paths:
       # Cache Yarn packages and Cypress binary
-      - ~/.cache/yarn
-      - ~/.cache/Cypress
+      - ~/.cache
       - node_modules
 
 # Restore yarn cache
@@ -130,6 +129,7 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
+      - *restore_cache
       - run:
           name: Run E2E tests
           command: yarn test:ci:e2e
