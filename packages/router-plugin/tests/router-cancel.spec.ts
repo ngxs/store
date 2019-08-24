@@ -4,12 +4,13 @@ import { Component, NgModule, Injectable } from '@angular/core';
 import { Routes, CanDeactivate, NavigationCancel } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgxsModule } from '@ngxs/store';
+import { freshPlatform } from '@ngxs/store/internals/testing';
 
 import { filter } from 'rxjs/operators';
 
 import { RouterState, NgxsRouterPluginModule } from '../';
 
-import { freshPlatform, createPlatformAndGetStoreWithRouter } from './helpers';
+import { createNGXSRouterPluginTestingPlatform } from './helpers';
 
 @Component({
   selector: 'app-root',
@@ -70,7 +71,7 @@ describe('RouterCancel', () => {
     'should persist the previous state if the "RouterCancel" action is dispatched',
     freshPlatform(async () => {
       // Assert
-      const { router, store } = await createPlatformAndGetStoreWithRouter(getTestModule());
+      const { router, store } = await createNGXSRouterPluginTestingPlatform(getTestModule());
 
       let navigationCancelEmittedTimes = 0;
 
