@@ -19,10 +19,9 @@ yarn_install_var: &yarn_install
 # Save yarn cache
 save_cache_var: &save_cache
   save_cache:
-    name: Save Yarn Package Cache
+    name: Save Yarn Package Cache and Cypress binary
     key: *cache_key
     paths:
-      # Cache Yarn packages and Cypress binary
       - ~/.cache
       - node_modules
 
