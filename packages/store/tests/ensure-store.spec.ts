@@ -101,15 +101,7 @@ describe('Ensure metadata', () => {
       expect(metadata.containerClass).toEqual(CountState);
 
       expect(metadata.originalFn).not.toEqual(CountState.selectFn);
-      expect(extractFunctionBody(metadata.originalFn)).toEqual(
-        'function (state) { return state; }'
-      );
-
       expect(metadata.originalFn!(1)).toEqual(1); // state => state
-
-      expect(extractFunctionBody(metadata.getSelectorOptions)).toEqual(
-        'function () { return getCustomSelectorOptions(selectorMetaDataClone, getExplicitSelectorOptions()); }'
-      );
 
       expect(metadata.getSelectorOptions()).toEqual({});
       expect(metadata.selectFromAppState).toEqual(getSelectorFn(CountState.selectFn));
@@ -136,26 +128,8 @@ describe('Ensure metadata', () => {
 
       expect(countMetadata.originalFn).not.toEqual(CountState.canInheritSelectFn);
       expect(myCounterMetadata.originalFn).not.toEqual(MyCounterState.canInheritSelectFn);
-
-      expect(extractFunctionBody(countMetadata.originalFn)).toEqual(
-        'function (state) { return state * 2; }'
-      );
-
-      expect(extractFunctionBody(myCounterMetadata.originalFn)).toEqual(
-        'function (state) { return state * 2; }'
-      );
-
       expect(countMetadata.originalFn!(1)).toEqual(2); // state => state * 2
       expect(myCounterMetadata.originalFn!(1)).toEqual(2); // state => state * 2
-
-      expect(extractFunctionBody(countMetadata.getSelectorOptions)).toEqual(
-        'function () { return getCustomSelectorOptions(selectorMetaDataClone, getExplicitSelectorOptions()); }'
-      );
-
-      expect(extractFunctionBody(myCounterMetadata.getSelectorOptions)).toEqual(
-        'function () { return getCustomSelectorOptions(selectorMetaDataClone, getExplicitSelectorOptions()); }'
-      );
-
       expect(countMetadata.getSelectorOptions()).toEqual({ suppressErrors: false });
       expect(myCounterMetadata.getSelectorOptions()).toEqual({ suppressErrors: false });
 
@@ -173,6 +147,8 @@ describe('Ensure metadata', () => {
     });
 
     it('should get the selector meta data from the SuperCountState.canInheritSelectFn', () => {
+      let error: Error | null = null;
+
       try {
         @State({
           name: 'superCount',
@@ -191,21 +167,17 @@ describe('Ensure metadata', () => {
 
         expect(metadata.containerClass).toEqual(SuperCountState);
       } catch (e) {
-        // TODO(splincode): is normal for SuperCountState?
-        expect(extractFunctionBody(e.message)).toEqual(
-          'Cannot set property canInheritSelectFn of function MyCounterState() { } which has only a getter'
-        );
+        error = e;
       }
+
+      // TODO(splincode): is normal for SuperCountState?
+      expect(flatString(error!.message)).toEqual(
+        'Cannot set property canInheritSelectFn of function MyCounterState() { } which has only a getter'
+      );
     });
 
-    /**
-     * @internal
-     * One of the problems to expect identical in the jest test <expect.any(Function)>
-     * of the function used in runtime is to take its compiled function body
-     * @param fn - any anonymous function
-     */
-    function extractFunctionBody(fn: Function | null | string): string {
-      return fn!
+    function flatString(str: string): string {
+      return str
         .toString()
         .replace(/\n/g, '')
         .replace(/\s\s+/g, ' ');
