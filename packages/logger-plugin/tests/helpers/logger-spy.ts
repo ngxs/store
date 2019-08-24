@@ -1,4 +1,4 @@
-import { CallStack } from './symbols';
+import { CallStack, Call } from './symbols';
 
 /**
  * Spy that mimics the required methods for custom logger implementation,
@@ -28,17 +28,33 @@ export class LoggerSpy {
   }
 
   get callStack(): string {
-    const callStackWithoutTime = this._callStack.map(call => {
-      const callSecondParam = call[1] as string;
-
-      // remove formatted time string
-      if (typeof callSecondParam === 'string') {
-        call[1] = callSecondParam.replace(/\d{2}:\d{2}:\d{2}.\d{3}/g, '');
-      }
-
-      return call;
-    });
-
+    const callStackWithoutTime = this.getCallStack();
     return LoggerSpy.createCallStack(callStackWithoutTime);
   }
+
+  getCallStack(options: { excludeStyles?: boolean } = {}): any[] {
+    return this._callStack.map(call => {
+      call = removeTime(call);
+      if (options.excludeStyles) {
+        call = removeStyle(call);
+      }
+      return call;
+    });
+  }
+}
+
+function removeTime(item: Call): Call {
+  const [first, second, ...rest] = item;
+  if (typeof second === 'string') {
+    return [first, second.replace(/\d{2}:\d{2}:\d{2}.\d{3}/g, ''), ...rest];
+  }
+  return item;
+}
+
+function removeStyle(item: Call): Call {
+  const [first, second /*third*/, , ...rest] = item;
+  if (typeof second === 'string' && second.startsWith('%c ')) {
+    return [first, second.substring(3), '', ...rest];
+  }
+  return item;
 }
