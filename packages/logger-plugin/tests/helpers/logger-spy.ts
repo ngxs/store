@@ -27,6 +27,10 @@ export class LoggerSpy {
     this._callStack.push(['log', message, ...optionalParams]);
   }
 
+  clear() {
+    this._callStack = [];
+  }
+
   get callStack(): string {
     const callStackWithoutTime = this.getCallStack();
     return LoggerSpy.createCallStack(callStackWithoutTime);
@@ -52,9 +56,9 @@ function removeTime(item: Call): Call {
 }
 
 function removeStyle(item: Call): Call {
-  const [first, second /*third*/, , ...rest] = item;
+  const [first, second, , ...rest] = item;
   if (typeof second === 'string' && second.startsWith('%c ')) {
-    return [first, second.substring(3), '', ...rest];
+    return [first, second.substring(3), ...rest];
   }
   return item;
 }

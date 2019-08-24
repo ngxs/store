@@ -2,12 +2,12 @@ import { ErrorHandler } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { throwError } from 'rxjs';
 
-import { NgxsModule, Store, State, Action, StateContext, InitState } from '@ngxs/store';
+import { NgxsModule, Store, State, Action, StateContext } from '@ngxs/store';
 import { NoopErrorHandler } from '@ngxs/store/tests/helpers/utils';
 import { StateClass } from '@ngxs/store/internals';
 
 import { NgxsLoggerPluginModule, NgxsLoggerPluginOptions } from '../';
-import { LoggerSpy, formatActionCallStack } from './helpers';
+import { LoggerSpy } from './helpers';
 
 describe('NgxsLoggerPlugin', () => {
   const thrownErrorMessage = 'Error';
@@ -69,93 +69,111 @@ describe('NgxsLoggerPlugin', () => {
     };
   }
 
-  it('should log success action', () => {
+  it('should log init action success with colors', () => {
+    // Arrange & Act
     const { store, logger } = setup([TestState]);
+    const initialState = store.selectSnapshot(state => state);
+    // Assert
+    const expectedCallStack = [
+      ['group', 'action @@INIT @ '],
+      ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', initialState],
+      ['log', '%c next state', 'color: #4CAF50; font-weight: bold', initialState],
+      ['groupEnd']
+    ];
+    expect(logger.getCallStack()).toEqual(expectedCallStack);
+  });
 
+  it('should log success action with colors', () => {
+    // Arrange
+    const { store, logger } = setup([TestState]);
+    logger.clear();
+    const initialState = store.selectSnapshot(state => state);
+
+    // Act
     store.dispatch(new UpdateBarAction());
 
-    const expectedCallStack = LoggerSpy.createCallStack([
-      ...formatActionCallStack({ action: InitState.type, prevState: stateModelDefaults }),
-
-      ...formatActionCallStack({
-        action: UpdateBarAction.type,
-        prevState: stateModelDefaults,
-        nextState: { bar: defaultBarValue }
-      })
-    ]);
-
-    expect(logger.callStack).toEqual(expectedCallStack);
+    // Assert
+    const newState = store.selectSnapshot(state => state);
+    const expectedCallStack = [
+      ['group', 'action UPDATE_BAR @ '],
+      ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', initialState],
+      ['log', '%c next state', 'color: #4CAF50; font-weight: bold', newState],
+      ['groupEnd']
+    ];
+    expect(logger.getCallStack()).toEqual(expectedCallStack);
   });
 
   it('should log success action with payload', () => {
+    // Arrange
     const { store, logger } = setup([TestState]);
+    logger.clear();
     const payload = 'qux';
 
+    // Act
     store.dispatch(new UpdateBarAction(payload));
 
-    const expectedCallStack = LoggerSpy.createCallStack([
-      ...formatActionCallStack({ action: InitState.type, prevState: stateModelDefaults }),
-
-      ...formatActionCallStack({
-        action: UpdateBarAction.type,
-        prevState: stateModelDefaults,
-        nextState: { bar: payload },
-        payload: { bar: payload }
-      })
-    ]);
-
-    expect(logger.callStack).toEqual(expectedCallStack);
+    // Assert
+    const expectedCallStack = [
+      ['group', 'action UPDATE_BAR @ '],
+      ['log', '%c payload', 'color: #9E9E9E; font-weight: bold', { bar: 'qux' }],
+      ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', { test: { bar: '' } }],
+      ['log', '%c next state', 'color: #4CAF50; font-weight: bold', { test: { bar: 'qux' } }],
+      ['groupEnd']
+    ];
+    expect(logger.getCallStack()).toEqual(expectedCallStack);
   });
 
-  it('should log error action', () => {
+  it('should log error action with colors', () => {
+    // Arrange
     const { store, logger } = setup([TestState]);
+    logger.clear();
 
+    // Act
     store.dispatch(new ErrorAction());
 
-    const expectedCallStack = LoggerSpy.createCallStack([
-      ...formatActionCallStack({ action: InitState.type, prevState: stateModelDefaults }),
+    // Assert
+    const expectedCallStack = [
+      ['group', 'action ERROR @ '],
+      ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', { test: { bar: '' } }],
+      [
+        'log',
+        '%c next state after error',
+        'color: #FD8182; font-weight: bold',
+        { test: { bar: '' } }
+      ],
+      ['log', '%c error', 'color: #FD8182; font-weight: bold', new Error('Error')],
+      ['groupEnd']
+    ];
 
-      ...formatActionCallStack({
-        action: ErrorAction.type,
-        prevState: stateModelDefaults,
-        error: thrownErrorMessage,
-        snapshot: store.snapshot()
-      })
-    ]);
-
-    expect(logger.callStack).toEqual(expectedCallStack);
+    expect(logger.getCallStack()).toEqual(expectedCallStack);
   });
 
   it('should log collapsed success action', () => {
+    // Arrange
     const { store, logger } = setup([TestState], { collapsed: true });
+    logger.clear();
 
+    // Act
     store.dispatch(new UpdateBarAction());
 
-    const expectedCallStack = LoggerSpy.createCallStack([
-      ...formatActionCallStack({
-        action: InitState.type,
-        prevState: stateModelDefaults,
-        collapsed: true
-      }),
-
-      ...formatActionCallStack({
-        action: UpdateBarAction.type,
-        prevState: stateModelDefaults,
-        nextState: { bar: defaultBarValue },
-        collapsed: true
-      })
-    ]);
-
-    expect(logger.callStack).toEqual(expectedCallStack);
+    // Assert
+    const expectedCallStack = [
+      ['groupCollapsed', 'action UPDATE_BAR @ '],
+      ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', { test: { bar: '' } }],
+      ['log', '%c next state', 'color: #4CAF50; font-weight: bold', { test: { bar: 'baz' } }],
+      ['groupEnd']
+    ];
+    expect(logger.getCallStack()).toEqual(expectedCallStack);
   });
 
   it('should not log while disabled', () => {
+    // Arrange
     const { store, logger } = setup([TestState], { disabled: true });
 
+    // Act
     store.dispatch(new UpdateBarAction());
 
-    const expectedCallStack = LoggerSpy.createCallStack([]);
-
-    expect(logger.callStack).toEqual(expectedCallStack);
+    // Assert
+    expect(logger.getCallStack()).toEqual([]);
   });
 });
