@@ -1,6 +1,6 @@
 import { ErrorHandler } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { throwError } from 'rxjs';
+import { throwError, of } from 'rxjs';
 
 import { NgxsModule, Store, State, Action, StateContext } from '@ngxs/store';
 import { NoopErrorHandler } from '@ngxs/store/tests/helpers/utils';
@@ -8,6 +8,7 @@ import { StateClass } from '@ngxs/store/internals';
 
 import { NgxsLoggerPluginModule, NgxsLoggerPluginOptions } from '../';
 import { LoggerSpy } from './helpers';
+import { tap, delay } from 'rxjs/operators';
 
 describe('NgxsLoggerPlugin', () => {
   const thrownErrorMessage = 'Error';
@@ -19,8 +20,19 @@ describe('NgxsLoggerPlugin', () => {
     constructor(public bar?: string) {}
   }
 
+  class AsyncAction {
+    static type = 'ASYNC_ACTION';
+
+    constructor(public bar?: string) {}
+  }
+
   class ErrorAction {
     static type = 'ERROR';
+  }
+
+  class AsyncError {
+    static type = 'ASYNC_ERROR';
+    constructor(public message: string) {}
   }
 
   interface StateModel {
@@ -44,6 +56,29 @@ describe('NgxsLoggerPlugin', () => {
     @Action(ErrorAction)
     error() {
       return throwError(new Error(thrownErrorMessage));
+    }
+
+    @Action(AsyncAction)
+    asyncAction({ patchState }: StateContext<StateModel>, { bar }: AsyncAction) {
+      patchState({ bar: '...' });
+      return of(null).pipe(
+        delay(1),
+        tap(() => {
+          patchState({ bar });
+        })
+      );
+    }
+
+    @Action(AsyncError)
+    asyncErrorAction({ patchState }: StateContext<StateModel>, { message }: AsyncError) {
+      patchState({ bar: '...' });
+      return of(null).pipe(
+        delay(1),
+        tap(() => {
+          patchState({ bar: 'erroring' });
+          throw new Error(message);
+        })
+      );
     }
   }
 
@@ -75,7 +110,7 @@ describe('NgxsLoggerPlugin', () => {
     const initialState = store.selectSnapshot(state => state);
     // Assert
     const expectedCallStack = [
-      ['group', 'action @@INIT @ '],
+      ['group', 'action @@INIT (started @ )'],
       ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', initialState],
       ['log', '%c next state', 'color: #4CAF50; font-weight: bold', initialState],
       ['groupEnd']
@@ -95,7 +130,7 @@ describe('NgxsLoggerPlugin', () => {
     // Assert
     const newState = store.selectSnapshot(state => state);
     const expectedCallStack = [
-      ['group', 'action UPDATE_BAR @ '],
+      ['group', 'action UPDATE_BAR (started @ )'],
       ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', initialState],
       ['log', '%c next state', 'color: #4CAF50; font-weight: bold', newState],
       ['groupEnd']
@@ -114,9 +149,46 @@ describe('NgxsLoggerPlugin', () => {
 
     // Assert
     const expectedCallStack = [
-      ['group', 'action UPDATE_BAR @ '],
+      ['group', 'action UPDATE_BAR (started @ )'],
       ['log', '%c payload', 'color: #9E9E9E; font-weight: bold', { bar: 'qux' }],
       ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', { test: { bar: '' } }],
+      ['log', '%c next state', 'color: #4CAF50; font-weight: bold', { test: { bar: 'qux' } }],
+      ['groupEnd']
+    ];
+    expect(logger.getCallStack()).toEqual(expectedCallStack);
+  });
+
+  it('should log async success action', async () => {
+    // Arrange
+    const { store, logger } = setup([TestState]);
+    logger.clear();
+    const payload = 'qux';
+
+    // Act
+    const promise = store.dispatch(new AsyncAction(payload)).toPromise();
+    logger.log('Some other work');
+    await promise;
+
+    // Assert
+    const expectedCallStack = [
+      ['group', 'action ASYNC_ACTION (started @ )'],
+      ['log', '%c payload', 'color: #9E9E9E; font-weight: bold', { bar: 'qux' }],
+      ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', { test: { bar: '' } }],
+      [
+        'log',
+        '%c next state (synchronous)',
+        'color: #4CAF50; font-weight: bold',
+        { test: { bar: '...' } }
+      ],
+      [
+        'log',
+        '%c ( action doing async work... )',
+        'color: #4CAF50; font-weight: bold',
+        undefined
+      ],
+      ['groupEnd'],
+      ['log', 'Some other work'],
+      ['group', '(async work completed) action ASYNC_ACTION (started @ )'],
       ['log', '%c next state', 'color: #4CAF50; font-weight: bold', { test: { bar: 'qux' } }],
       ['groupEnd']
     ];
@@ -133,7 +205,7 @@ describe('NgxsLoggerPlugin', () => {
 
     // Assert
     const expectedCallStack = [
-      ['group', 'action ERROR @ '],
+      ['group', 'action ERROR (started @ )'],
       ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', { test: { bar: '' } }],
       [
         'log',
@@ -148,6 +220,51 @@ describe('NgxsLoggerPlugin', () => {
     expect(logger.getCallStack()).toEqual(expectedCallStack);
   });
 
+  it('should log async error action', async () => {
+    // Arrange
+    const { store, logger } = setup([TestState]);
+    logger.clear();
+    const errorMessage = 'qux error';
+
+    // Act
+    const promise = store.dispatch(new AsyncError(errorMessage)).toPromise();
+    logger.log('Some other work');
+    try {
+      await promise;
+    } catch {}
+
+    // Assert
+    const expectedCallStack = [
+      ['group', 'action ASYNC_ERROR (started @ )'],
+      ['log', '%c payload', 'color: #9E9E9E; font-weight: bold', { message: 'qux error' }],
+      ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', { test: { bar: '' } }],
+      [
+        'log',
+        '%c next state (synchronous)',
+        'color: #4CAF50; font-weight: bold',
+        { test: { bar: '...' } }
+      ],
+      [
+        'log',
+        '%c ( action doing async work... )',
+        'color: #4CAF50; font-weight: bold',
+        undefined
+      ],
+      ['groupEnd'],
+      ['log', 'Some other work'],
+      ['group', '(async work error) action ASYNC_ERROR (started @ )'],
+      [
+        'log',
+        '%c next state after error',
+        'color: #FD8182; font-weight: bold',
+        { test: { bar: 'erroring' } }
+      ],
+      ['log', '%c error', 'color: #FD8182; font-weight: bold', new Error('qux error')],
+      ['groupEnd']
+    ];
+    expect(logger.getCallStack()).toEqual(expectedCallStack);
+  });
+
   it('should log collapsed success action', () => {
     // Arrange
     const { store, logger } = setup([TestState], { collapsed: true });
@@ -158,7 +275,7 @@ describe('NgxsLoggerPlugin', () => {
 
     // Assert
     const expectedCallStack = [
-      ['groupCollapsed', 'action UPDATE_BAR @ '],
+      ['groupCollapsed', 'action UPDATE_BAR (started @ )'],
       ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', { test: { bar: '' } }],
       ['log', '%c next state', 'color: #4CAF50; font-weight: bold', { test: { bar: 'baz' } }],
       ['groupEnd']
