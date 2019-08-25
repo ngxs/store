@@ -25,6 +25,9 @@ script:
   - yarn integration:ng5
 
   # INTEGRATION TEST
+  - yarn integration:ivy
+
+  # INTEGRATION TEST
   - yarn test:types
 
   # CHECK BUNDLE SIZE
