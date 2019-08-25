@@ -109,19 +109,18 @@ if (environment.production) {
   enableProdMode();
 }
 
-const bootstrap: () => Promise<NgModuleRef<AppModule>> = (): Promise<NgModuleRef<AppModule>> =>
-  platformBrowserDynamic().bootstrapModule(AppModule);
+const bootstrap: = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
 if (environment.hmr) {
-  import('@ngxs/hmr-plugin').then(({ hmr }) =>
-    hmr(module, bootstrap).catch((err: Error) => console.error(err))
-  );
+  import('@ngxs/hmr-plugin').then(plugin => {
+    plugin.hmr(module, bootstrap).catch((err: Error) => console.error(err))
+  });
 } else {
   bootstrap().catch((err: Error) => console.log(err));
 }
 ```
 
-For improve tree shaking after production build the `@ngxs/hmr-plugin` must be included through dynamic imports.
+The `@ngxs/hmr-plugin` should be loaded on demand using dynamic import thus this can benefit more readily from tree shaking.
 
 ### (OPTIONAL) Update src/app/app.module.ts to manage the state in HMR lifecycle:
 
