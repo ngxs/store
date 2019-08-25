@@ -37,6 +37,7 @@
   * [Authentication](recipes/authentication.md)
   * [Caching](recipes/cache.md)
   * [Debouncing Actions](recipes/debouncing-actions.md)
+  * [Immutability Helpers](recipes/immutability-helpers.md)
   * [Unit Testing](recipes/unit-testing.md)
   * [Style Guide](recipes/style-guide.md)
 * Plugins
