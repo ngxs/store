@@ -7,20 +7,13 @@ import { createSelectObservable, createSelectorFn } from './symbols';
 export function Select(rawSelector?: any, ...paths: string[]): PropertyDecorator {
   return function(target: any, propertyKey: string | symbol): void {
     const name: string = propertyKey.toString();
-    const selectorId = `__${name}__selector`;
+    const selectorId: unique symbol = Symbol(`__${name}__selector`);
     const selector = createSelectorFn(name, rawSelector, paths);
-    Object.defineProperties(target, {
-      [selectorId]: {
-        writable: true,
-        enumerable: false,
-        configurable: true
-      },
-      [name]: {
-        enumerable: true,
-        configurable: true,
-        get(): Observable<any> {
-          return this[selectorId] || (this[selectorId] = createSelectObservable(selector));
-        }
+    Object.defineProperty(target, name, {
+      enumerable: true,
+      configurable: true,
+      get(): Observable<any> {
+        return this[selectorId] || (this[selectorId] = createSelectObservable(selector));
       }
     });
   };

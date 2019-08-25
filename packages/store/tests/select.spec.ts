@@ -83,36 +83,39 @@ describe('Select', () => {
     }
   });
 
-  it('should throw an exception when the component class is frozen', () => {
+  it('should get state even when the component class is frozen', () => {
     function FreezeClass(target: Function): void {
       Object.seal(target);
       Object.freeze(target);
       Object.freeze(target.prototype);
     }
 
-    try {
-      @FreezeClass
-      @Component({
-        selector: 'my-select',
-        template: ''
-      })
-      class MySelectComponent {
-        @Select((state: any) => state)
-        public state: Observable<any>;
-      }
-
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)],
-        declarations: [MySelectComponent]
-      });
-
-      const comp = TestBed.createComponent(MySelectComponent);
-      comp.componentInstance.state.subscribe();
-    } catch (e) {
-      expect(e.message).toEqual(
-        `Cannot assign to read only property '__state__selector' of object '[object Object]'`
-      );
+    @FreezeClass
+    @Component({
+      selector: 'my-select',
+      template: ''
+    })
+    class MySelectComponent {
+      @Select((state: any) => state)
+      public state: Observable<any>;
     }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states)],
+      declarations: [MySelectComponent]
+    });
+
+    let result = null;
+    const comp = TestBed.createComponent(MySelectComponent);
+    comp.componentInstance.state.subscribe(state => (result = state));
+
+    expect(result).toEqual({
+      counter: {
+        foo: 'Hello',
+        bar: 'World',
+        boo: { hello: true, world: true, baz: { name: 'Danny' } }
+      }
+    });
   });
 
   it('should remove dollar sign at the end of property name', () => {
@@ -231,7 +234,7 @@ describe('Select', () => {
   }));
 
   it('should throw an exception if reserved key used in class', () => {
-    const reservedNameNonConflicted = `__mySelect__selector`;
+    const reservedNameNonConflicted: unique symbol = Symbol(`__mySelect__selector`);
 
     @Component({
       selector: 'my-component-1',
@@ -240,6 +243,8 @@ describe('Select', () => {
     class StoreSelectComponent {
       @Select((state: any) => state)
       public mySelect: Observable<string>;
+
+      constructor(public readonly store: Store) {}
 
       public [reservedNameNonConflicted](): string {
         return `this.mySelect is ${this.mySelect.constructor.name}`;
@@ -251,18 +256,19 @@ describe('Select', () => {
       declarations: [StoreSelectComponent]
     });
 
-    let error: Error = null!;
     const component: StoreSelectComponent = TestBed.createComponent(StoreSelectComponent)
       .componentInstance;
+    expect(component[reservedNameNonConflicted]()).toEqual('this.mySelect is Observable');
 
-    try {
-      component.mySelect.subscribe();
-    } catch (e) {
-      error = e;
+    const keysFromComponent: string[] = [];
+
+    for (const key in component) {
+      // we need push all keys from instance without has own property
+      // noinspection JSUnfilteredForInLoop
+      keysFromComponent.push(key);
     }
 
-    expect(error.message).toEqual('component.mySelect.subscribe is not a function');
-    expect(component[reservedNameNonConflicted]()).toEqual('this.mySelect is Function');
+    expect(keysFromComponent).toEqual(['store', 'mySelect']);
   });
 
   it('should select the correct state after timeout', async(() => {
