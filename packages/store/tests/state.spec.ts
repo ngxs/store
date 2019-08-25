@@ -348,6 +348,33 @@ describe('State', () => {
       expect(simplePatch(null!)(simple)).toEqual({ a: 1, b: 2 });
     });
 
+    it('should avoid the whole check if you want own properties only', () => {
+      function Origin() {
+        // @ts-ignore
+        this.x = `I'm an own property`;
+      }
+
+      Origin.prototype.y = `I'm not an own property`;
+
+      // @ts-ignore
+      const origin: any = new Origin();
+
+      const patchedOrigin: any = simplePatch(origin)({
+        z: function() {
+          const that: any = this;
+          return `x = ${that.x}, y = ${that.y}`;
+        }
+      });
+
+      expect(origin.x).toEqual(`I'm an own property`);
+      expect(origin.y).toEqual(`I'm not an own property`);
+
+      // TODO(splincode): we want to avoid the whole check if you want own properties only?
+      expect(patchedOrigin.z()).toEqual(
+        `x = I'm an own property, y = I'm not an own property`
+      );
+    });
+
     it('should throw exception if value is array', () => {
       try {
         const simple: string[] = ['hello'];
