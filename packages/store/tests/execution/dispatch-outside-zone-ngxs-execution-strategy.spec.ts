@@ -311,16 +311,13 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       class MockModule {}
 
       // Act
-      const warnings: string[] = [];
-
-      console.warn = (...args: string[]) => {
-        warnings.push(args[0]);
-      };
+      const spy = jest.spyOn(console, 'warn').mockImplementation();
 
       await platformBrowserDynamic().bootstrapModule(MockModule, { ngZone: 'noop' });
 
       // Assert
-      expect(warnings).toEqual([CONFIG_MESSAGES[VALIDATION_CODE.ZONE_WARNING]()]);
+      expect(spy).toHaveBeenCalledWith(CONFIG_MESSAGES[VALIDATION_CODE.ZONE_WARNING]());
+      spy.mockRestore();
     })
   );
 
@@ -356,18 +353,14 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       }
 
       // Act
-      const warnings: string[] = [];
-
-      console.warn = (...args: string[]) => {
-        warnings.push(args[0]);
-      };
-
+      const spy = jest.spyOn(console, 'warn').mockImplementation();
       const ngZone = new CustomNgZone({ enableLongStackTrace: false });
 
       await platformBrowserDynamic().bootstrapModule(MockModule, { ngZone });
 
       // Assert
-      expect(warnings).toEqual([]);
+      expect(spy).toHaveBeenCalledTimes(0);
+      spy.mockRestore();
     })
   );
 });
