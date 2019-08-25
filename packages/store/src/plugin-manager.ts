@@ -1,11 +1,6 @@
 import { Inject, Injectable, Optional, SkipSelf } from '@angular/core';
 import { NGXS_PLUGINS, NgxsPlugin, NgxsPluginFn } from './symbols';
 
-/**
- * Plugin manager class
- * @publicApi
- * @ignore
- */
 @Injectable()
 export class PluginManager {
   public plugins: NgxsPluginFn[] = [];
