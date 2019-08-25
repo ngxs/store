@@ -1,5 +1,5 @@
 import { Injectable, Inject, Injector } from '@angular/core';
-import { Observable, defer, empty, merge } from 'rxjs';
+import { Observable, defer, EMPTY, merge } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
 import { NgxsPlugin, NgxsNextPluginFn, Store } from '@ngxs/store';
@@ -47,7 +47,7 @@ function afterSubscribe<T>(source: Observable<T>, callback: VoidFunction) {
     source,
     defer(() => {
       callback();
-      return empty();
+      return EMPTY;
     })
   );
 }
