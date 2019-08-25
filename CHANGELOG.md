@@ -16,6 +16,13 @@ $ npm install @ngxs/store@dev
 * Build: add bundle size checker for improved infrastructure [#1199](https://github.com/ngxs/store/pull/1199)
 * Build: configure typescript-eslint package [#1201](https://github.com/ngxs/store/pull/1201)
 
+## NGXS-Labs
+
+### Emitter-plugin v2.0.0
+
+* Feature: Support NGXS 3.5, TypeScript 3.5 [#317](https://github.com/ngxs-labs/emitter/pull/317)
+* Fix: change action type to instance property [#316](https://github.com/ngxs-labs/emitter/pull/316)
+
 # 3.5.0 2019-07-22
 
 * Feature: upgrade to support Angular 8 [#1156](https://github.com/ngxs/store/pull/1156)
