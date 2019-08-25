@@ -3,13 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { StoreModule } from './store.module';
+import { StoreIvyModule } from './store-ivy.module';
 
 const routes: Routes = [{ path: '', component: AppComponent }];
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, RouterModule.forRoot(routes), StoreModule],
+  imports: [BrowserModule, RouterModule.forRoot(routes), StoreIvyModule],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppIvyModule {}

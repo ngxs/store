@@ -24,4 +24,4 @@ import { AppState } from './app.state';
   ],
   exports: [NgxsModule]
 })
-export class StoreModule {}
+export class StoreIvyModule {}
