@@ -35,9 +35,10 @@
 * Recipes
   * [Authentication](recipes/authentication.md)
   * [Caching](recipes/cache.md)
+  * [Component Events from NGXS](recipes/component-events-from-ngxs.md)
   * [Debouncing Actions](recipes/debouncing-actions.md)
   * [Dynamic Plugins](recipes/dynamic-plugins.md)
-  * [Emitting DOM Events via NGXS](recipes/emitting-dom-events-via-ngxs.md)
+  * [Immutability Helpers](recipes/immutability-helpers.md)
   * [Style Guide](recipes/style-guide.md)
   * [Unit Testing](recipes/unit-testing.md)
 * Plugins
