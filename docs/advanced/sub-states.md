@@ -1,9 +1,26 @@
 # Sub Stores
+
 Complex and large state graphs are difficult to manage. Oftentimes we need
 to break these down into sub states that we can manage on a individual
 basis. With NGXS, we can use a concept called sub states to handle this.
 
+## Unidirectional data flow in store
+
+Unidirectional data flow as a pattern is usually mentioned when talking about performance in Angular.
+The reason why data flows from top to bottom, is because change detection is also always performed from top to bottom
+for every single component, every single time, starting from the root component. This is awesome, as unidirectional
+data flow is more predictable than cycles. We always know where the data we use in our views comes from, because
+it can only result from its component.
+
+Another interesting observation can be said about and state management. We want to make sure that during state mutation
+where we are transforming data into a state, need that the current state don't mutation another state. Otherwise, it could lead
+to unpredictable consequences and confusion. Thus, our states are encapsulated from each other, and their child states can
+only be changed from the parent.
+
+![Unidirectional](../assets/unidirectional.png)
+
 ## Example
+
 Let's take the following example state graph:
 
 ```TS
@@ -76,6 +93,7 @@ export class AppModule {}
 The store will then automatically recognize the relationship and bind them together.
 
 ## Caveats
+
 This is only intended to work with nested objects, so trying to create stores on
 nested array objects will not work.
 
