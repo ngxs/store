@@ -1,4 +1,4 @@
-import { ObjectKeyMap } from '@ngxs/store/internals';
+import { PlainObjectOf } from '@ngxs/store/internals';
 
 export enum VALIDATION_CODE {
   STATE_NAME = 'STATE_NAME',
@@ -12,7 +12,7 @@ export enum VALIDATION_CODE {
   SELECTOR_DECORATOR = 'SELECTOR_DECORATOR'
 }
 
-export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
+export const CONFIG_MESSAGES: PlainObjectOf<Function> = {
   [VALIDATION_CODE.STATE_NAME]: (name: string) =>
     `${name} is not a valid state name. It needs to be a valid object property name.`,
   [VALIDATION_CODE.STATE_NAME_PROPERTY]: () => `States must register a 'name' property`,
