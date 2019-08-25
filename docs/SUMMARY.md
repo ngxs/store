@@ -33,13 +33,14 @@
   * [Meta Reducers](advanced/meta-reducer.md)
   * [Shared State](advanced/shared-state.md)
 * Recipes
-  * [Dynamic Plugins](recipes/dynamic-plugins.md)
   * [Authentication](recipes/authentication.md)
   * [Caching](recipes/cache.md)
+  * [Component Events from NGXS](recipes/component-events-from-ngxs.md)
   * [Debouncing Actions](recipes/debouncing-actions.md)
+  * [Dynamic Plugins](recipes/dynamic-plugins.md)
   * [Immutability Helpers](recipes/immutability-helpers.md)
-  * [Unit Testing](recipes/unit-testing.md)
   * [Style Guide](recipes/style-guide.md)
+  * [Unit Testing](recipes/unit-testing.md)
 * Plugins
   * [Introduction](plugins/intro.md)
   * [CLI](plugins/cli.md)
