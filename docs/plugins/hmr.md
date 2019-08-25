@@ -99,27 +99,29 @@ Install the `@ngxs/hmr-plugin` package as a dev-dependency
 Update src/main.ts to use the file we just created:
 
 ```ts
-import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { BootstrapModuleFn as Bootstrap, hmr, WebpackModule } from '@ngxs/hmr-plugin';
+import { enableProdMode, NgModuleRef } from '@angular/core';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-
-declare const module: WebpackModule;
 
 if (environment.production) {
   enableProdMode();
 }
 
-const bootstrap: Bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
+const bootstrap: () => Promise<NgModuleRef<AppModule>> = (): Promise<NgModuleRef<AppModule>> =>
+  platformBrowserDynamic().bootstrapModule(AppModule);
 
 if (environment.hmr) {
-  hmr(module, bootstrap).catch(err => console.error(err));
+  import('@ngxs/hmr-plugin').then(({ hmr }) =>
+    hmr(module, bootstrap).catch((err: Error) => console.error(err))
+  );
 } else {
-  bootstrap().catch(err => console.log(err));
+  bootstrap().catch((err: Error) => console.log(err));
 }
 ```
+
+For improve tree shaking after production build the `@ngxs/hmr-plugin` must be included through dynamic imports.
 
 ### (OPTIONAL) Update src/app/app.module.ts to manage the state in HMR lifecycle:
 
