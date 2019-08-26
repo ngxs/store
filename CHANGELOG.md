@@ -17,6 +17,7 @@ $ npm install @ngxs/store@dev
 * Build: dtslint must use current version of TypeScript [#1182](https://github.com/ngxs/store/pull/1182)
 * Build: add bundle size checker for improved infrastructure [#1199](https://github.com/ngxs/store/pull/1199)
 * Build: configure typescript-eslint package [#1201](https://github.com/ngxs/store/pull/1201)
+* Build: add cypress for E2E testing [#1258](https://github.com/ngxs/store/pull/1258)
 
 ## NGXS-Labs
 
