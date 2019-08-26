@@ -6,10 +6,9 @@
       "@ngxs/*": ["../@ngxs/*"],
       "@integration/*": ["./app/*"]
     },
-    "outDir": "./out-tsc/spec",
     "module": "commonjs",
     "target": "es5",
-    "types": ["jest"]
+    "types": ["jest", "node"]
   },
   "files": ["polyfills.ts"],
   "include": ["**/*.spec.ts"]
