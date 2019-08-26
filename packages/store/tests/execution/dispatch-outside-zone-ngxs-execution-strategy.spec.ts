@@ -1,4 +1,4 @@
-import { ApplicationRef, NgZone, Component, Type, NgModule } from '@angular/core';
+import { ApplicationRef, NgZone, Component, Type, NgModule, Injectable } from '@angular/core';
 import { TestBed, TestModuleMetadata } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -316,51 +316,39 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       await platformBrowserDynamic().bootstrapModule(MockModule, { ngZone: 'noop' });
 
       // Assert
-      expect(spy).toHaveBeenCalledWith(CONFIG_MESSAGES[VALIDATION_CODE.ZONE_WARNING]());
-      spy.mockRestore();
-    })
-  );
-
-  it(
-    'should not warn if custom zone that extends NgZone is provided',
-    freshPlatform(async () => {
-      // Arrange
-      @State({ name: 'foo' })
-      class FooState {}
-
-      @Component({
-        selector: 'app-root',
-        template: ''
-      })
-      class MockComponent {}
-
-      @NgModule({
-        imports: [
-          BrowserModule,
-          NgxsModule.forRoot([FooState], {
-            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-          })
-        ],
-        declarations: [MockComponent],
-        bootstrap: [MockComponent]
-      })
-      class MockModule {}
-
-      class CustomNgZone extends NgZone {
-        run<T>(fn: (...args: any[]) => T): T {
-          return fn();
-        }
+      try {
+        const ZONE_WARNING = CONFIG_MESSAGES[VALIDATION_CODE.ZONE_WARNING]();
+        expect(spy).toHaveBeenCalledWith(ZONE_WARNING);
+      } finally {
+        spy.mockRestore();
       }
-
-      // Act
-      const spy = jest.spyOn(console, 'warn').mockImplementation();
-      const ngZone = new CustomNgZone({ enableLongStackTrace: false });
-
-      await platformBrowserDynamic().bootstrapModule(MockModule, { ngZone });
-
-      // Assert
-      expect(spy).toHaveBeenCalledTimes(0);
-      spy.mockRestore();
     })
   );
+
+  it('should not warn if custom zone that extends NgZone is provided', () => {
+    @Injectable()
+    class CustomNgZone extends NgZone {
+      run<T>(fn: (...args: any[]) => T): T {
+        return fn();
+      }
+    }
+
+    const spy = jest.spyOn(console, 'warn').mockImplementation();
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot()],
+      providers: [
+        {
+          provide: NgZone,
+          useClass: CustomNgZone
+        }
+      ]
+    });
+
+    try {
+      expect(spy).toHaveBeenCalledTimes(0);
+    } finally {
+      spy.mockRestore();
+    }
+  });
 });
