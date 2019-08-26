@@ -89,14 +89,6 @@
             "tsConfig": "./integration/tsconfig.server.json"
           },
           "configurations": {
-            "dev": {
-              "optimization": true,
-              "outputHashing": "none",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": true
-            },
             "production": {
               "optimization": true,
               "outputHashing": "none",
