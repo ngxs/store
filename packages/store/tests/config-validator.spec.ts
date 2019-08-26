@@ -11,6 +11,7 @@ describe('ConfigValidator', () => {
   let host: HostEnvironment;
 
   it('should be correct detect isNgDevMode when isTestMode = true', () => {
+    // Arrange & act
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([])]
     });
@@ -18,12 +19,14 @@ describe('ConfigValidator', () => {
     validator = TestBed.get(ConfigValidator);
     host = TestBed.get(HostEnvironment);
 
+    // Assert
     expect(host.isDevMode()).toBe(true);
     expect(host.isTestMode()).toBe(true);
     expect(validator.verifyDevMode()).toBe(undefined);
   });
 
   it('should be show warn message incorrect development mode', () => {
+    // Arrange & act
     const spy = jest.spyOn(console, 'warn').mockImplementation();
 
     TestBed.configureTestingModule({
@@ -35,6 +38,7 @@ describe('ConfigValidator', () => {
     host = TestBed.get(HostEnvironment);
 
     try {
+      // Assert
       expect(host.isDevMode()).toBe(true);
       expect(host.isTestMode()).toBe(false);
       const INCORRECT_DEVELOPMENT = CONFIG_MESSAGES[VALIDATION_CODE.INCORRECT_DEVELOPMENT]();
@@ -45,6 +49,7 @@ describe('ConfigValidator', () => {
   });
 
   it('should be show warn message when incorrect production mode', () => {
+    // Arrange & act
     const spy = jest.spyOn(console, 'warn').mockImplementation();
 
     TestBed.configureTestingModule({
@@ -59,6 +64,7 @@ describe('ConfigValidator', () => {
     host = TestBed.get(HostEnvironment);
 
     try {
+      // Assert
       expect(host.isDevMode()).toBe(false);
       expect(host.isTestMode()).toBe(false);
       const INCORRECT_PRODUCTION = CONFIG_MESSAGES[VALIDATION_CODE.INCORRECT_PRODUCTION]();

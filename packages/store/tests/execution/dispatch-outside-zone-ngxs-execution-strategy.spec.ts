@@ -315,8 +315,8 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
 
       await platformBrowserDynamic().bootstrapModule(MockModule, { ngZone: 'noop' });
 
-      // Assert
       try {
+        // Assert
         const ZONE_WARNING = CONFIG_MESSAGES[VALIDATION_CODE.ZONE_WARNING]();
         expect(spy).toHaveBeenCalledWith(ZONE_WARNING);
       } finally {
@@ -326,6 +326,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
   );
 
   it('should not warn if custom zone that extends NgZone is provided', () => {
+    // Arrange
     @Injectable()
     class CustomNgZone extends NgZone {
       run<T>(fn: (...args: any[]) => T): T {
@@ -333,6 +334,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       }
     }
 
+    // Act
     const spy = jest.spyOn(console, 'warn').mockImplementation();
 
     TestBed.configureTestingModule({
@@ -346,6 +348,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
     });
 
     try {
+      // Assert
       expect(spy).toHaveBeenCalledTimes(0);
     } finally {
       spy.mockRestore();
