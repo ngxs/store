@@ -8,10 +8,12 @@ $ npm install @ngxs/store@dev
 * Fix: Ensure that `@Action()` is not usable with static methods [#1203](https://github.com/ngxs/store/pull/1203)
 * Fix: Router Plugin - normalize URL by stripping base href [#1178](https://github.com/ngxs/store/pull/1178)
 * Fix: Router Plugin - revert state back after "RouterCancel" is dispatched [#1236](https://github.com/ngxs/store/pull/1236)
+* Fix: Router Plugin - "includeHash" must be truthy requesting path [#1265](https://github.com/ngxs/store/pull/1265)
 * Fix: HMR Plugin - trigger ngOnDestroy for all components in app tree [#1192](https://github.com/ngxs/store/pull/1192)
 * Fix: HMR Plugin - remove `@angularclass/hmr` peer dependency [#1205](https://github.com/ngxs/store/pull/1205)
 * Fix: Logger Plugin - print next state even if error was thrown [#1247](https://github.com/ngxs/store/pull/1247)
 * Fix: Devtoos Plugin - send action to the dev tools even if error was thrown [#1249](https://github.com/ngxs/store/pull/1249)
+
 * Build: dtslint must use current version of TypeScript [#1182](https://github.com/ngxs/store/pull/1182)
 * Build: add bundle size checker for improved infrastructure [#1199](https://github.com/ngxs/store/pull/1199)
 * Build: configure typescript-eslint package [#1201](https://github.com/ngxs/store/pull/1201)
