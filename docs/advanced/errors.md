@@ -15,7 +15,6 @@ export class MyErrorHandler implements ErrorHandler {
   }
 }
 
-
 @NgModule({
   imports: [AppComponent],
   providers: [
@@ -67,4 +66,4 @@ If an unhandled exception is thrown inside an action, the error will be propagat
 
 It is recommended to handle errors within `@Action` and update state to reflect the error, which you can later the select to display where required
 
-You can play around with error handling in this following [stackblitz](https://stackblitz.com/edit/ngxs-error-handling) 
+You can play around with error handling in this following [stackblitz](https://stackblitz.com/edit/ngxs-error-handling)

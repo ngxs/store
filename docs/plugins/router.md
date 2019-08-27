@@ -16,6 +16,7 @@ time-travel debugging, and easy access from any store-connected component.
 This plugin binds that state from the Angular router to our NGXS store.
 
 ## Installation
+
 ```bash
 npm install @ngxs/router-plugin --save
 
@@ -24,6 +25,7 @@ yarn add @ngxs/router-plugin
 ```
 
 ## Usage
+
 Add the `NgxsRouterPluginModule` plugin to your root app module:
 
 ```TS
@@ -67,6 +69,7 @@ and services by subscribing to the `RouterNavigation`, `RouterCancel`, `RouterEr
 action classes.
 
 ## Listening to the data resolution event
+
 You can listen to the `RouterDataResolved` action that is dispatch when the navigated route has some linked resolvers. For example:
 
 ```TS
@@ -124,6 +127,7 @@ export class AppComponent {
 ```
 
 ## Custom Router State Serializer
+
 You can implement your own router state serializer to serialize the router snapshot.
 
 ```TS

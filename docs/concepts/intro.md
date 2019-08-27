@@ -1,4 +1,5 @@
 ## Concepts
+
 There are 4 major concepts to NGXS:
 
 - Store: Global state container, action dispatcher and selector

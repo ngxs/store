@@ -1,13 +1,15 @@
 # State Operators
 
 ## Why?
+
 The NGXS `patchState` method is used to do [immutable object](https://en.wikipedia.org/wiki/Immutable_object) updates to the container state slice without the typical long-handed syntax. This is very neat and convenient because you do not have to use the `getState` and `setState` as well as the `Object.assign(...)`or the spread operator to update the state. The `patchState` method only offers a shallow patch and as a result is left wanting in more advanced scenarios. This is where state operators come in. The `setState` method can be passed a state operator which will be used to determine the new state.
 
 ## Basic
 
-The basic idea of operators is that we could describe the modifications to the state using curried functions that are given any inputs that they need to describe the change and are finalised using the state slice that they are assigned to.
+The basic idea of operators is that we could describe the modifications to the state using curried functions that are given any inputs that they need to describe the change and are finalized using the state slice that they are assigned to.
 
 # Example
+
 From theory to practice - let's take the following example:
 
 ```TS
@@ -216,4 +218,5 @@ function addEntity(entity: Entity): StateOperator<EntitiesStateModel> {
 As you can see, state operators are very powerful to start moving your immutable state updates to be more declarative and expressive. Enhancing the overall maintainability and readability of your state class code.
 
 ## Relevant Articles
+
 [NGXS State Operators](https://medium.com/ngxs/ngxs-state-operators-8b339641b220)

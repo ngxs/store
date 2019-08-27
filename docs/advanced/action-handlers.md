@@ -21,14 +21,15 @@ Actions in NGXS also have a lifecycle. Since any potential action can be async w
 
 Since it's an Observable, we can use the following pipes:
 
-* `ofAction`: triggers when any of the below lifecycle events happen
-* `ofActionDispatched`: triggers when an action has been dispatched
-* `ofActionSuccessful`: triggers when an action has been completed successfully
-* `ofActionCanceled`: triggers when an action has been canceled
-* `ofActionErrored`: triggers when an action has caused an error to be thrown
-* `ofActionCompleted`: triggers when an action has been completed whether it was successful or not (returns completion summary)
+- `ofAction`: triggers when any of the below lifecycle events happen
+- `ofActionDispatched`: triggers when an action has been dispatched
+- `ofActionSuccessful`: triggers when an action has been completed successfully
+- `ofActionCanceled`: triggers when an action has been canceled
+- `ofActionErrored`: triggers when an action has caused an error to be thrown
+- `ofActionCompleted`: triggers when an action has been completed whether it was successful or not (returns completion summary)
 
 All of the above pipes return the original `action` in the observable except for the `ofActionCompleted` pipe which returns some summary information for the completed action. This summary is an object with the following interface:
+
 ```TS
 interface ActionCompletion<T = any> {
   action: T;

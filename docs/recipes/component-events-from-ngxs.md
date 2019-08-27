@@ -2,7 +2,7 @@
 
 Developers always use the `@Output` decorator in conjunction with the `EventEmitter`. The below code has been seen by any Angular developer:
 
-```ts
+```TS
 @Output() search = new EventEmitter<string>();
 ```
 
@@ -12,7 +12,7 @@ Let's imagine that we're a part of the A team. We develop custom element that us
 
 We develop the `app-email-list` custom element that emits `messagesLoaded` DOM event and gives the data to the team B for analytics. Given the following code:
 
-```ts
+```TS
 @Component({
   selector: 'app-email-list',
   template: `
@@ -22,7 +22,6 @@ We develop the `app-email-list` custom element that emits `messagesLoaded` DOM e
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmailListComponent {
-
   @Select(MessagesState.messages) messages$: Observable<Message[]>;
 
   @Output() messagesLoaded = new EventEmitter<Message[]>();
@@ -35,13 +34,12 @@ export class EmailListComponent {
       this.messagesLoaded.emit(messages);
     });
   }
-
 }
 ```
 
 The above code is very simple and is used for demonstrating purposes only! As you can see we dispatch the `LoadMessages` action every time the user clicks "Refresh messages" button. After the `LoadMessages` action handler has completed his asynchronous job we emit the `messagesLoaded` event. Let's be more declarative:
 
-```ts
+```TS
 @Component({
   selector: 'app-email-list',
   template: `
@@ -51,7 +49,6 @@ The above code is very simple and is used for demonstrating purposes only! As yo
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmailListComponent {
-
   @Select(MessagesState.messages) messages$: Observable<Message[]>;
 
   @ViewChild(ButtonComponent, { static: true }) button: ButtonComponent;
@@ -62,7 +59,6 @@ export class EmailListComponent {
   );
 
   constructor(private store: Store) {}
-
 }
 ```
 
@@ -70,7 +66,7 @@ Assume that `ButtonComponent.click` is an `EventEmitter`. Wow, we've done it in 
 
 Now let's take away that idea with A and B teams. As our store is a single source of truth thus we can listen to any action from any part of our application. DOM events can be handy to use with the `Actions` stream. Assume we've got a component that emits `booksLoaded` event every time when different genre of books are loaded:
 
-```ts
+```TS
 // books.state.ts
 const enum Genre {
   Novel,
@@ -84,26 +80,22 @@ export class LoadBooks {
 }
 
 export class BooksState {
-
   static getBooks(genre: Genre) {
     return createSelector(
       [BooksState],
       (books: Book[]) => books.filter(book => book.genre === genre)
     );
   }
-
 }
 
 // books.component.ts
 export class BooksComponent {
-
   @Output() booksLoaded = this.actions$.pipe(
     ofActionSuccessful(LoadBooks),
     map((action: LoadBooks) => this.store.selectSnapshot(BooksState.getBooks(action.genre)))
   );
 
   constructor(private store: Store, private actions$: Actions) {}
-
 }
 ```
 

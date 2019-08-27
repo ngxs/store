@@ -1,7 +1,9 @@
 # WebSocket Plugin - Experimental Status
+
 Bind server web socket events to Ngxs store actions.
 
 ## Installation
+
 ```bash
 npm install @ngxs/websocket-plugin --save
 
@@ -10,6 +12,7 @@ yarn add @ngxs/websocket-plugin
 ```
 
 ## Configuration
+
 Add the `NgxsWebsocketPluginModule` plugin to your root app module:
 
 ```TS
@@ -35,6 +38,7 @@ The plugin has a variety of options that can be passed:
 - `deserializer`: Deserializer used for messages arriving from the web socket. Default: `JSON.parse`
 
 ## Usage
+
 Once connected, any message that comes across the web socket will be bound to the state event stream.
 
 Let's assume that a server side web socket sends a message to the client in the following format:
@@ -173,7 +177,7 @@ Here is a list of all the available actions you have:
 - `DisconnectWebSocket`: Dispatch this Action to disconnect a websockets.
 - `WebSocketDisconnected`: Action dispatched when web socket is disconnected. Use its handler for reconnecting.
 - `SendWebSocketMessage`: Send a message to the server.
-- `WebsocketMessageError`: Action dispatched by this plugin when an error ocurrs upon receiving a message.
+- `WebsocketMessageError`: Action dispatched by this plugin when an error occurs upon receiving a message.
 - `WebSocketConnectionUpdated`: Action dispatched by this plugin when a new connection is created on top of an existing one. Existing connection is closing.
 
 In summary - your server-side sockets should send objects that have a `type` property (or another key that you can provide in the `typeKey` property when calling `forRoot`). This plugin will receive a message from the server and dispatch the message as an action with the corresponding `type` value. If the `type` property doesn't match any client-side `@Action` methods (with an Action with the corresponding `static type` property value) then no State will respond to the message.

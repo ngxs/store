@@ -2,13 +2,13 @@
 
 Redux is a tiny pattern that represents states as immutable objects. Redux was originally designed for React. Most Redux concepts, such as pure functions, are centered around the React ecosystem. Nowadays Redux is not directly related to React.
 
-The cornerstone of Redux is immutability. Immutabilty is an amazing pattern to minimise unpredictable behaviour in our code. We're not going to cover functional programming in this article. However we're going to look at very useful packages that are called "immutability helpers".
+The cornerstone of Redux is immutability. Immutability is an amazing pattern to minimize unpredictable behavior in our code. We're not going to cover functional programming in this article. However we're going to look at very useful packages that are called "immutability helpers".
 
 ## The Problem
 
 Most developers have to deal with, so called, "deep objects" and most important follow the immutability concept, when it comes to changing the value of some deeply nested property. Given the following code:
 
-```ts
+```TS
 export interface Task {
   title: string;
   dates: {
@@ -34,7 +34,7 @@ export class TrelloState {}
 
 Let's imagine that we're faced with the task of changing the `dueDate` property:
 
-```ts
+```TS
 export class UpdateDueDate {
   static readonly type = '[Trello] Update due date';
   constructor(public taskId: string, public dueDate: string) {}
@@ -43,7 +43,7 @@ export class UpdateDueDate {
 
 Let's see how we would implement the `updateDueDate` action handler:
 
-```ts
+```TS
 export class TrelloState {
 
   @Action(UpdateDueDate)
@@ -75,7 +75,7 @@ There are different ways to improve this code. Let us look at a few different pa
 
 [State operators](../advanced/operators.md) are first-class immutability helpers that NGXS provides out of the box. The `patch` operator will become your best friend in case of choosing state operators as your immutability helpers. Let's see how we could re-write the above code with the help of the `patch` state operator:
 
-```ts
+```TS
 import { patch } from '@ngxs/store/operators';
 
 export class TrelloState {
@@ -102,7 +102,7 @@ export class TrelloState {
 
 `immer` is a very popular library that allows you to make changes to immutable objects as if they were mutable. The below code shows how to write the same code with the help of Immer:
 
-```ts
+```TS
 import { produce } from 'immer';
 
 export class TrelloState {
@@ -121,7 +121,7 @@ export class TrelloState {
 
 Immer's `produce` function can be also used as a state operator:
 
-```ts
+```TS
 import { produce } from 'immer';
 
 export class TrelloState {
@@ -139,6 +139,7 @@ export class TrelloState {
 ```
 
 You may notice how much less code this is and how much better it looks. From the `immer` repository:
+
 > Using Immer is like having a personal assistant; he takes a letter (the current state) and gives you a copy (draft) to jot changes onto. Once you are done, the assistant will take your draft and produce the real immutable, final letter for you (the next state).
 
 [Immer repository](https://github.com/immerjs/immer)
@@ -147,7 +148,7 @@ You may notice how much less code this is and how much better it looks. From the
 
 `immutability-helper` is a small package that lets you mutate a copy of data without changing the original source:
 
-```ts
+```TS
 import update from 'immutability-helper';
 
 export class TrelloState {
@@ -178,7 +179,7 @@ export class TrelloState {
 
 `object-path-immutable` is a small library that allows you to modify deep object properties without modifying the original object. Let's look at how we could write the same code using this library:
 
-```ts
+```TS
 import immutable from 'object-path-immutable';
 
 export class TrelloState {
@@ -203,7 +204,7 @@ export class TrelloState {
 
 `immutable-assign` is a lightweight library that pursues the same goal. Its syntax is similar to `immer`'s:
 
-```ts
+```TS
 import * as iassign from 'immutable-assign';
 
 export class TrelloState {
@@ -227,7 +228,7 @@ export class TrelloState {
 
 Ramda is a great library for functional programming and it is used in a large number of projects. This example might be useful for people who use both Ramda and NGXS in their projects:
 
-```ts
+```TS
 import * as R from 'ramda';
 
 export class TrelloState {
@@ -248,7 +249,7 @@ export class TrelloState {
 
 `icepick` is a zero-dependency library for working with immutable collections. Given the following re-written code:
 
-```ts
+```TS
 import * as icepick from 'icepick';
 
 export class TrelloState {

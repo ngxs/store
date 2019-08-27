@@ -20,7 +20,6 @@ class SearchNews {
   `
 })
 export class NewsPortalComponent implements OnDestroy {
-
   @Select(NewsState.getNews) news$: Observable<News[]>;
 
   lastSearchedTitle$ = this.store.selectOnce(NewsState.getLastSearchedTitle);
@@ -48,7 +47,6 @@ export class NewsPortalComponent implements OnDestroy {
   search(title: string): void {
     this.store.dispatch(new SearchNews(title));
   }
-
 }
 ```
 
@@ -73,7 +71,6 @@ export class GetNews {
   }
 })
 export class NewsState {
-
   @Selector()
   static getNews(state: NewsStateModel): News[] {
     return state.news;
@@ -94,7 +91,6 @@ export class NewsState {
       })
     );
   }
-
 }
 ```
 

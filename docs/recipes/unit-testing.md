@@ -34,7 +34,6 @@ for unit testing.
 Often times in your app you want to test what happens when the state is C and you dispatch action X. You
 can use the `store.reset(MyNewState)` to prepare the state for your next operation.
 
-
 ```TS
 // zoo.state.spec.ts
 import { TestBed, async } from '@angular/core/testing';
@@ -99,27 +98,27 @@ export class ZooSelectors {
 }
 ```
 
-Testing these selectors is really an easy task. 
+Testing these selectors is really an easy task.
 You just need to mock the state and pass it as parameter to our selector:
 
 ```TS
 it('should select requested animal names from state', () => {
   const zooState = {
-    animals: [ 
+    animals: [
       { type: 'zebra', name: 'Andy'},
       { type: 'panda', name: 'Betty'},
       { type: 'zebra', name: 'Crystal'},
       { type: 'panda', name: 'Donny'},
     ]
   };
-  
+
   const value = ZooSelectors.animalNames('zebra')(zooState);
-    
+
   expect(value).toEqual(['Andy', 'Crystal']);
 });
 ```
 
-## Testing asynchonous actions
+## Testing asynchronous actions
 
 It's also very easy to test asynchronous actions using Jasmine or Jest. The greatest features of these testing frameworks is a support of `async/await`. No one prevents you of using `async/await` + RxJS `toPromise` method that "converts" `Observable` to `Promise`. As an alternative you could you a `done` callback, Jasmine or Jest will wait until the `done` callback is called before finishing the test.
 
@@ -129,7 +128,7 @@ The below example is not really complex, but it clearly shows how to test asynch
 import { timer } from 'rxjs';
 import { tap, mergeMap } from 'rxjs/operators';
 
-it('should wait for completion of the asyncrhonous action', async () => {
+it('should wait for completion of the asynchronous action', async () => {
   class IncrementAsync {
     static type = '[Counter] Increment async';
   }

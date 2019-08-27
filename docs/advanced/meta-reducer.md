@@ -1,4 +1,5 @@
 # Meta Reducer
+
 A meta reducer is a higher order reducer that allows you to
 take action on the global state rather than a state slice.
 In NGXS, we don't have this concept but you can accomplish
@@ -36,7 +37,7 @@ import { NGXS_PLUGINS } from '@ngxs/store';
     {
       provide: NGXS_PLUGINS,
       useValue: logoutPlugin,
-      multi: true  
+      multi: true
     }
   ]
 })

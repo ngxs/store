@@ -1,4 +1,5 @@
 ## Installation
+
 To get started, install the package from npm. The latest version (3.x) supports Angular/RX 6, if you want support for Angular5, use version 2.x.
 
 ```bash
@@ -35,8 +36,8 @@ module.
 It's important that you add `NgxsModule.forRoot([])` at the root of your module even if
 all of your states are feature states.
 
-
 ## Development Builds
+
 Our continuous integration server runs all tests on every commit to master and if they pass it will publish a new development build to NPM and tag it with the @dev tag.
 
 This means that if you want the bleeding edge of `@ngxs/store` or any of the plugins you can simply do:
@@ -63,4 +64,5 @@ Your package.json file will be locked to that specific version.
   }
 }
 ```
+
 If you later want to again update to the bleeding edge, you will have to run the above command again.

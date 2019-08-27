@@ -1,9 +1,11 @@
 # Store
-The store is a global state manager that dispatches actions your state 
+
+The store is a global state manager that dispatches actions your state
 containers listen to and provides a way to select data slices out from
 the global state.
 
 ### Creating actions
+
 An action example in `animal.actions.ts`.
 
 ```TS
@@ -14,6 +16,7 @@ export class AddAnimal {
 ```
 
 ### Dispatching actions
+
 To dispatch actions, you need to inject the `Store` service into your component/service
 and invoke the `dispatch` function with an action or an array of actions you wish to trigger.
 
@@ -63,7 +66,7 @@ there can be multiple states that listen to the same `@Action`,
 therefore it's not realistically possible to return the state
 from these actions since we don't know the form of them.
 
-If you need to get the state after this, simply use a 
+If you need to get the state after this, simply use a
 `@Select` in the chain like:
 
 ```TS
@@ -90,13 +93,16 @@ export class ZooComponent {
 ```
 
 ### Snapshots
+
 You can get a snapshot of the state by calling `store.snapshot()`. This will return the entire
 value of the store for that point in time.
 
 ### Selecting State
+
 See the [select](select.md) page for details on how to use the store to select data.
 
 ### Reset
+
 In certain situations you need the ability to reset the state in its entirety without
 triggering any actions or life-cycle hooks. One example of this would be redux devtools plugin
 when we are doing time travel. Another example would be when we are unit testing and need

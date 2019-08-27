@@ -4,10 +4,10 @@ about: Report a bug in the NGXS
 title: "\U0001F41E[BUG]: "
 labels: BUG/REGRESSION
 assignees: ''
-
 ---
 
 ### Affected Package
+
 <!-- Can you pin-point one or more @ngxs/* packages as the source of the bug? -->
 <!-- ✍️edit: --> The issue is caused by package @ngxs/....
 
@@ -16,11 +16,9 @@ assignees: ''
 <!-- Did this behavior use to work in the previous version? -->
 <!-- ✍️--> Yes, the previous version in which this bug was not present was: ....
 
-
 ### Description
 
 <!-- ✍️--> A clear and concise description of the problem...
-
 
 ## 🔬 Minimal Reproduction
 
@@ -31,6 +29,7 @@ Please delete this note once you have read it.
 <!-- ✍️--> https://stackblitz.com/...
 
 ## 🔥 Exception or Error
+
 <pre><code>
 <!-- If the issue is accompanied by an exception or an error, please share it below: -->
 <!-- ✍️-->

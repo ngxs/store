@@ -9,7 +9,7 @@ In this step we will configure the Angular CLI environments and define in which 
 We will start out by adding and changing files in the `src/environments/` directory.
 First we create a file called `src/environments/environment.hmr.ts` with the following contents:
 
-```ts
+```TS
 export const environment = {
   production: false,
   hmr: true
@@ -18,7 +18,7 @@ export const environment = {
 
 Update `src/environments/environment.prod.ts` and add the hmr: false flag to the environment:
 
-```ts
+```TS
 export const environment = {
   production: true,
   hmr: false
@@ -27,7 +27,7 @@ export const environment = {
 
 Lastly we edit `src/environments/environment.ts` and change the environment to:
 
-```ts
+```TS
 export const environment = {
   production: false,
   hmr: false
@@ -98,7 +98,7 @@ Install the `@ngxs/hmr-plugin` package as a dev-dependency
 
 Update src/main.ts to use the file we just created:
 
-```ts
+```TS
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BootstrapModuleFn as Bootstrap, hmr, WebpackModule } from '@ngxs/hmr-plugin';
@@ -123,7 +123,7 @@ if (environment.hmr) {
 
 ### (OPTIONAL) Update src/app/app.module.ts to manage the state in HMR lifecycle:
 
-```ts
+```TS
 import { StateContext } from '@ngxs/store';
 import { NgxsHmrLifeCycle, NgxsHmrSnapshot as Snapshot } from '@ngxs/hmr-plugin';
 
@@ -163,7 +163,7 @@ Now if you make changes to one of your components, those changes should be visib
 
 If you want to do some modifications to the state during the hmr lifecycle you can use these built-in actions. They will not be executed in production.
 
-```ts
+```TS
 import { HmrInitAction, HmrBeforeDestroyAction } from '@ngxs/hmr-plugin';
 
 @State({ ... })

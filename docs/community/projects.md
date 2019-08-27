@@ -1,13 +1,14 @@
 # Community Projects
 
 ### Projects
+
 - [Angular 6 with NGXS and NX](https://xmlking.github.io/ngx-starter-kit/home)
 - [Angular 7, Angular Material and NGXS](https://github.com/adoi/Libnr)
 - [Ngxs-Pizza-Order](https://github.com/tommythongnguyen/Ngxs-Pizza-Order)
 - [Ngxs Todo](https://github.com/mailok/todo-ngxs)
 - [EL-3270 Electron IBM Terminal Emulator](https://github.com/mflorence99/el-3270)
 - [_El terminador_ Electron-based Terminal Manager, inspired by iTerm2](https://github.com/mflorence99/el-term)
-- [_Elf_ Electron-based File Manager, with state from selection to file system completely managed by NGXS](https://github.com/mflorence99/el-file) 
+- [_Elf_ Electron-based File Manager, with state from selection to file system completely managed by NGXS](https://github.com/mflorence99/el-file)
 - [Angular NGXS Tutorial - An Alternative to NgRx for State Management](https://coursetro.com/posts/code/152/Angular-NGXS-Tutorial---An-Alternative-to-Ngrx-for-State-Management)
 - [NGXS + Firebase Demo](https://github.com/fisenkodv/itinerary)
 - [Use NGXS in a shared module](https://stackblitz.com/edit/angular-shared-for-root-imports?file=app%2Fshared-components%2Fshared-components.module.ts)
@@ -22,6 +23,7 @@
 - [State Management with NGXS](https://github.com/joaqcid/state-mgmt-with-ngxs)
 
 ### Media
+
 - [ngAtlanta - NGXS, State Management Made Simple - Jecelyn Yeen](https://youtu.be/0bhfUGjn0KA)
 - [ngAir 153 - NGXS: A New State Management for Angular Apps with Austin McDaniel and Danny Blue](https://www.youtube.com/watch?v=rkn73khwfWU&feature=youtu.be)
 - [ngAir 196 - One year of NGXS with Mark Whitfeld](https://youtu.be/B7m7eWywJB0)
@@ -30,6 +32,7 @@
 - [Angular NGXS Tutorial - An Alternative to NgRx for State Management](https://youtu.be/SfiO3bDUK7Q)
 
 ### Articles
+
 - [@amcdnl - Authentication in NGXS](https://medium.com/@amcdnl/authentication-in-ngxs-6f25c52fd385)
 - [@amcdnl - Why another state management framework for Angular?](https://medium.com/@amcdnl/why-another-state-management-framework-for-angular-b4b4c19ef664)
 - [Alligator - Manage State in Angular with NGXS](https://alligator.io/angular/ngxs/)
