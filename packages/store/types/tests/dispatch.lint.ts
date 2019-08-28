@@ -31,13 +31,13 @@ describe('[TEST]: Action Types', () => {
   });
 
   it('should be correct type in action decorator', () => {
-    assertType(() => Action(UpdateState)); // $ExpectType (target: any, name: string) => void
-    assertType(() => Action(new FooAction('payload'))); // $ExpectType (target: any, name: string) => void
-    assertType(() => Action({ type: 'foo' })); // $ExpectType (target: any, name: string) => void
-    assertType(() => Action([])); // $ExpectType (target: any, name: string) => void
-    assertType(() => Action(BarAction)); // $ExpectType (target: any, name: string) => void
-    assertType(() => Action([InitState, UpdateState])); // $ExpectType (target: any, name: string) => void
-    assertType(() => Action([InitState], { cancelUncompleted: true })); // $ExpectType (target: any, name: string) => void
+    assertType(() => Action(UpdateState)); // $ExpectType MethodDecorator
+    assertType(() => Action(new FooAction('payload'))); // $ExpectType MethodDecorator
+    assertType(() => Action({ type: 'foo' })); // $ExpectType MethodDecorator
+    assertType(() => Action([])); // $ExpectType MethodDecorator
+    assertType(() => Action(BarAction)); // $ExpectType MethodDecorator
+    assertType(() => Action([InitState, UpdateState])); // $ExpectType MethodDecorator
+    assertType(() => Action([InitState], { cancelUncompleted: true })); // $ExpectType MethodDecorator
     assertType(() => Action(new BarAction('foo'))); // $ExpectError
     assertType(() => Action([{ foo: 'bar' }])); // $ExpectError
     assertType(() => Action([InitState, UpdateState], { foo: 'bar' })); // $ExpectError

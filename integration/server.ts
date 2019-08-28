@@ -23,23 +23,24 @@ const app = express();
 // Read `index.html` only once and cache it
 const document = readFileSync(join(DIST_FOLDER, 'index.html')).toString();
 
-app.use(express.static(DIST_FOLDER));
-app.use('/favicon.ico', express.static(join(DIST_FOLDER, 'favicon.ico')));
+// `index: false` means to ignore plain `index.html` thus
+// the render responsibility is fully taken by Angular Universal
+app.use(express.static(DIST_FOLDER, { index: false }));
 
-app.get('*', (req, res) => {
+app.get('*', async (req, res) => {
   const url = req.url;
   // tslint:disable-next-line:no-console
   console.time(`GET: ${url}`);
 
-  renderModuleFactory(AppServerModuleNgFactory, {
+  const html = await renderModuleFactory(AppServerModuleNgFactory, {
     url,
     document,
     extraProviders: [provideModuleMap(LAZY_MODULE_MAP)]
-  }).then(html => {
-    // tslint:disable-next-line:no-console
-    console.timeEnd(`GET: ${url}`);
-    res.send(html);
   });
+
+  // tslint:disable-next-line:no-console
+  console.timeEnd(`GET: ${url}`);
+  res.send(html);
 });
 
 app.listen(PORT, () => {
