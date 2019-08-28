@@ -8,8 +8,6 @@ import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
 
 import { AppState } from './app.state';
 
-// @noinspection - disable checking duplicate code in integrations files for IDEA
-// noinspection AngularInvalidImportedOrDeclaredSymbol
 @NgModule({
   imports: [
     NgxsModule.forRoot([AppState]),
