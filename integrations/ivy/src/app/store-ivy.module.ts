@@ -17,7 +17,8 @@ import { AppState } from './app.state';
     NgxsStoragePluginModule.forRoot(),
     NgxsWebsocketPluginModule.forRoot()
     // TODO(splincode): Ivy not working with NgxsRouterPluginModule
-    // Build successful, but runtime error: Can't resolve all parameters for RouterState: (?, ?, ?, ?, ?, ?, ?).
+    // Build successful, but runtime error:
+    // Can't resolve all parameters for RouterState: (?, ?, ?, ?, ?, ?, ?).
     // NgxsRouterPluginModule.forRoot()
   ],
   exports: [NgxsModule]
