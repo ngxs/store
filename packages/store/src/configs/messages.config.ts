@@ -21,8 +21,8 @@ export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
     `State name '${current}' from ${newName} already exists in ${oldName}`,
   [VALIDATION_CODE.STATE_DECORATOR]: () => 'States must be decorated with @State() decorator',
   [VALIDATION_CODE.INCORRECT_PRODUCTION]: () =>
-    'Angular is running in the production mode but NGXS is still running in the development mode!\n' +
-    'Please set developmentMode to false on the NgxsModule options in the production mode.\n' +
+    'Angular is running in production mode but NGXS is still running in the development mode!\n' +
+    'Please set developmentMode to false on the NgxsModule options when in production mode.\n' +
     'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
   [VALIDATION_CODE.INCORRECT_DEVELOPMENT]: () =>
     'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n' +
