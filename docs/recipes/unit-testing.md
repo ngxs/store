@@ -41,9 +41,6 @@ it('should select zoo', () => {
   expect(zoo).toBeTruthy();
 });
 ```
-You might notice the use of `selectOnce` rather than just `select`, this is a shortcut
-method that allows us to only listen for one emit which is typically what we want
-for unit testing.
 
 ## Prepping State
 
