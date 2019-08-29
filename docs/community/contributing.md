@@ -1,6 +1,6 @@
 # Guidelines
 
-We would love for you to contribute to our project and help make it ever better! 
+We would love for you to contribute to our project and help make it ever better!
 As a contributor, here are the guidelines we would like you to follow.
 
 - [Report Issues](#report-issues)

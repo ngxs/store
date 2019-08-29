@@ -26,7 +26,7 @@ export class ZooComponent {
 
   // Also accepts a function like our select method
   @Select(state => state.zoo.animals) animals$: Observable<string[]>;
-  
+
   // Reads the name of the state from the parameter
   @Select() zoo$: Observable<ZooStateModel>;
 }
@@ -101,7 +101,7 @@ import { State, Selector } from '@ngxs/store';
 })
 export class ZooState {
 
-  @Selector() 
+  @Selector()
   static pandas(state: string[]) {
     return state.filter(s => s.indexOf('panda') > -1);
   }
@@ -127,7 +127,7 @@ The behavior of the memoised selectors can be configured at a global level using
 These options can also be provided through the `@SelectorOptions` decorator at a Class or Method level in order to configure the behavior of selectors within that scope. The following options are available:
 #### `suppressErrors`
 - `true` will cause any error within a selector to result in the selector returning `undefined`.
-- `false` results in these errors propogating through the stack that triggered the evaluation of the selector that caused the error. 
+- `false` results in these errors propagating through the stack that triggered the evaluation of the selector that caused the error.
 - **NOTE:** _The default for this setting will be changing to `false` in NGXS v4.  
 The default value in NGXS v3.x is `true`._
 
@@ -145,7 +145,7 @@ We recommend using the following global settings for new projects in order to mi
 {
   // These Selector Settings are recommended in preparation for NGXS v4
   // (See above for their effects)
-  suppressErrors: false, 
+  suppressErrors: false,
   injectContainerState: false
 }
 ```
@@ -234,19 +234,19 @@ import { map } from 'rxjs/operators';
 
 @Component({ ... })
 export class ZooComponent {
-  
+
   @Select(ZooState.pandas('baby'))
   babyPandas$: Observable<string[]>;
-  
+
   @Select(ZooState.pandas('adult'))
-  adultPandas$: Observable<string[]>;  
+  adultPandas$: Observable<string[]>;
 
 }
 ```
 
 Note that each of these selectors have their own separate memoization. Even if two dynamic selectors created in this way are provided the same argument, they will have separate memoization.
 
-These selectors are extremely powerful and are what is used under the hood to create all other selectors. 
+These selectors are extremely powerful and are what is used under the hood to create all other selectors.
 
 _Dynamic Selectors (dynamic state slice)_
 
@@ -351,7 +351,7 @@ to join these two states together like:
 ```TS
 export class CityService {
 
-  @Selector([Zoo, ThemePark]) 
+  @Selector([Zoo, ThemePark])
   static zooThemeParks(zoos, themeParks) {
     return [
       ...zoos,
@@ -460,7 +460,7 @@ export class CounterQuery {
 
 ```
 
-### Inheriting Selectors  
+### Inheriting Selectors
 
 When we have states that share similar structure, we can extract the shared selectors into a base class which we can later extend from. If we have an `entities` field on multiple states, we can create a base class containing a dynamic `@Selector()` for that field, and extend from it on the `@State` classes like this.
 
@@ -491,7 +491,7 @@ export interface UsersStateModel {
     entities: []
   }
 })
-export class UsersState extends EntitiesState {  
+export class UsersState extends EntitiesState {
   //...
 }
 
@@ -505,7 +505,7 @@ export interface ProductsStateModel {
     entities: []
   }
 })
-export class ProductsState extends EntitiesState {  
+export class ProductsState extends EntitiesState {
   //...
 }
 ```
@@ -516,7 +516,7 @@ Then you can use them as follows:
 
 @Component({ ... })
 export class AppComponent {
-  
+
   @Select(UsersState.entities<User>())
   users$: Observable<User[]>;
 
