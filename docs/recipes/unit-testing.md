@@ -19,15 +19,28 @@ describe('Zoo', () => {
 
   it('it toggles feed', () => {
     store.dispatch(new FeedAnimals());
-    store
-      .selectOnce(state => state.zoo.feed)
-      .subscribe(feed => {
-        expect(feed).toBe(true);
-      });
+
+    const feed = store.selectSnapshot(state => state.zoo.feed);
+    expect(feed).toBe(true);
   });
 });
 ```
 
+We recommend using `selectSnapshot` method instead of `selectOnce` or `select`. Jasmine and Jest might not run expectations inside the `subscribe` block. Given the following example:
+
+```TS
+it('should select zoo', () => {
+  store
+    .selectOnce(state => state.zoo)
+    .subscribe(zoo => {
+      // Note: this expectation will not be run!
+      expect(zoo).toBeTruthy();
+    });
+
+  const zoo = store.selectSnapshot(state => state.zoo);
+  expect(zoo).toBeTruthy();
+});
+```
 You might notice the use of `selectOnce` rather than just `select`, this is a shortcut
 method that allows us to only listen for one emit which is typically what we want
 for unit testing.
@@ -59,11 +72,9 @@ describe('Zoo', () => {
 
   it('it toggles feed', () => {
     store.dispatch(new FeedAnimals());
-    store
-      .selectOnce(state => state.zoo.feed)
-      .subscribe(feed => {
-        expect(feed).toBe(true);
-      });
+
+    const feed = store.selectSnapshot(state => state.zoo.feed);
+    expect(feed).toBe(true);
   });
 });
 ```
@@ -77,16 +88,14 @@ so its really easy to test them. A simple test might look like this:
 import { TestBed } from '@angular/core/testing';
 
 describe('Zoo', () => {
-
   it('it should select pandas', () => {
-    expect(
-      Zoo.pandas(['pandas', 'zebras'])
-    ).toBe(['pandas']);
+    const pandas = store.selectSnapshot(Zoo.pandas);
+    expect(pandas).toEqual(['pandas']);
   });
 });
 ```
 
-In your application you may have selectors created dynamically using the createSelector function:
+In your application you may have selectors created dynamically using the `createSelector` function:
 
 ```TS
 export class ZooSelectors {
