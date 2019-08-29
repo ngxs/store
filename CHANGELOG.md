@@ -1,9 +1,13 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) 
-### To become 3.5.1 or [3.6.0](https://github.com/ngxs/store/milestone/8)
+### To become [3.5.2](https://github.com/ngxs/store/milestone/8) or [3.6.0](https://github.com/ngxs/store/milestone/9)
 
 ```bash
 $ npm install @ngxs/store@dev
-```
+``` 
+ 
+* ...
+
+# 3.5.1 2019-08-29
 
 * Fix: Ensure that `@Action()` is not usable with static methods [#1203](https://github.com/ngxs/store/pull/1203)
 * Fix: Router Plugin - normalize URL by stripping base href [#1178](https://github.com/ngxs/store/pull/1178)
