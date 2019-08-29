@@ -355,7 +355,6 @@ export class ZooState {
     );
   }
 }
-
 ```
 
 Notice I returned the dispatch function, this goes back to our example above with async operations
