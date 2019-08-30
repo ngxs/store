@@ -25,7 +25,7 @@ export interface NgxsStoragePluginOptions {
     /**
      * Version to key off.
      */
-    version: number | string;
+    version: number;
 
     /**
      * Method to migrate the previous state.

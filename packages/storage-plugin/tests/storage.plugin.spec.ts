@@ -164,7 +164,7 @@ describe('NgxsStoragePlugin', () => {
 
   it('should migrate global localstorage', () => {
     // Arrange
-    const data = JSON.stringify({ counter: { count: 100, version: 1 } });
+    const data = JSON.stringify({ counter: { count: 100 } });
     localStorage.setItem('@@STATE', data);
 
     // Act
@@ -178,8 +178,7 @@ describe('NgxsStoragePlugin', () => {
               versionKey: 'counter.version',
               migrate: (state: any) => {
                 state.counter = {
-                  counts: state.counter.count,
-                  version: 2
+                  counts: state.counter.count
                 };
                 return state;
               }
@@ -196,13 +195,13 @@ describe('NgxsStoragePlugin', () => {
 
     // Assert
     expect(localStorage.getItem('@@STATE')).toBe(
-      JSON.stringify({ counter: { counts: 100, version: 2 } })
+      JSON.stringify({ counter: { counts: 100, version: 1 } })
     );
   });
 
   it('should migrate single localstorage', () => {
     // Arrange
-    const data = JSON.stringify({ count: 100, version: 1 });
+    const data = JSON.stringify({ count: 100 });
     localStorage.setItem('counter', data);
 
     // Act
@@ -218,8 +217,7 @@ describe('NgxsStoragePlugin', () => {
               versionKey: 'version',
               migrate: (state: any) => {
                 state = {
-                  counts: state.count,
-                  version: 2
+                  counts: state.count
                 };
                 return state;
               }
@@ -235,7 +233,7 @@ describe('NgxsStoragePlugin', () => {
     store.selectSnapshot(CounterState);
 
     // Assert
-    expect(localStorage.getItem('counter')).toBe(JSON.stringify({ counts: 100, version: 2 }));
+    expect(localStorage.getItem('counter')).toBe(JSON.stringify({ counts: 100, version: 1 }));
   });
 
   it('should correct get data from session storage', () => {

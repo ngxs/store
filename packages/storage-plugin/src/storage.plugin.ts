@@ -54,11 +54,12 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
           if (options.migrations) {
             options.migrations.forEach(strategy => {
-              const versionMatch =
-                strategy.version === getValue(val, strategy.versionKey || 'version');
+              const versionKey = strategy.versionKey || 'version';
+              const isNewVersion = strategy.version > (getValue(val, versionKey) || 0);
               const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
-              if (versionMatch && keyMatch) {
+              if (isNewVersion && keyMatch) {
                 val = strategy.migrate(val);
+                val = setValue(val, versionKey, strategy.version);
                 hasMigration = true;
               }
             });
