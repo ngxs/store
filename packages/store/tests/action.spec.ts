@@ -16,7 +16,8 @@ import {
   ofAction,
   ofActionErrored,
   ofActionCanceled,
-  ofActionCompleted
+  ofActionCompleted,
+  ofActionExecuting
 } from '../src/operators/of-action';
 import { NoopErrorHandler } from './helpers/utils';
 
