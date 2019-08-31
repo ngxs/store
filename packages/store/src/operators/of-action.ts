@@ -80,8 +80,8 @@ export function ofActionErrored(...allowedTypes: any[]) {
  * This will grab an action and return true when dispatched and false when completed
  */
 export function ofActionExecuting(allowedType: any) {
-  return (source: Observable<ActionContext>) => {
-    return merge(
+  return (source: Observable<ActionContext>) =>
+    merge(
       source.pipe(
         ofActionDispatched(allowedType),
         mapTo(true)
@@ -91,7 +91,6 @@ export function ofActionExecuting(allowedType: any) {
         mapTo(false)
       )
     );
-  };
 }
 
 function ofActionOperator<T = any>(
