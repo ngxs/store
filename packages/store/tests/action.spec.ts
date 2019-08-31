@@ -262,4 +262,16 @@ describe('Action', () => {
 
     expect(callbacksCalled).toEqual(['onObjectLiteral']);
   });
+
+  it('should be executing between dispatch and complete', () => {
+    const actionStatus: boolean[] = [];
+
+    actions.pipe(ofActionExecuting(new Action1())).subscribe(executing => {
+      actionStatus.push(executing);
+    });
+
+    store.dispatch(new Action1());
+
+    expect(actionStatus).toEqual([true, false]);
+  });
 });

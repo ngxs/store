@@ -18,6 +18,7 @@ export {
   ofActionCanceled,
   ofActionErrored,
   ofActionCompleted,
+  ofActionExecuting,
   ActionCompletion
 } from './operators/of-action';
 export {

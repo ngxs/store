@@ -1,5 +1,5 @@
-import { OperatorFunction, Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { OperatorFunction, Observable, merge } from 'rxjs';
+import { map, filter, mapTo } from 'rxjs/operators';
 import { getActionTypeFromInstance } from '../utils/utils';
 import { ActionContext, ActionStatus } from '../actions-stream';
 
@@ -72,6 +72,26 @@ export function ofActionCompleted(...allowedTypes: any[]) {
  */
 export function ofActionErrored(...allowedTypes: any[]) {
   return ofActionOperator(allowedTypes, [ActionStatus.Errored]);
+}
+
+/**
+ * RxJS operator for selecting out specific actions.
+ *
+ * This will grab an action and return true when dispatched and false when completed
+ */
+export function ofActionExecuting(allowedType: any) {
+  return (source: Observable<ActionContext>) => {
+    return merge(
+      source.pipe(
+        ofActionDispatched(allowedType),
+        mapTo(true)
+      ),
+      source.pipe(
+        ofActionCompleted(allowedType),
+        mapTo(false)
+      )
+    );
+  };
 }
 
 function ofActionOperator<T = any>(
