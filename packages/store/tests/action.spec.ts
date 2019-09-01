@@ -304,29 +304,32 @@ describe('Action', () => {
     expect(actionStatus).toEqual([true, false]);
   });
 
-  it('should be executing between dispatch and complete (async)', async () => {
+  it('should be executing between dispatch and complete (async)', fakeAsync(() => {
     const actionStatus: boolean[] = [];
 
     actions.pipe(ofActionExecuting(AsyncAction1)).subscribe(executing => {
       actionStatus.push(executing);
     });
 
-    await store.dispatch(new AsyncAction1()).toPromise();
+    store.dispatch(new AsyncAction1());
+    tick(1);
     expect(actionStatus).toEqual([true, false]);
-  });
+  }));
 
-  it('should be executing between dispatch and error (async)', async () => {
+  it('should be executing between dispatch and error (async)', fakeAsync(() => {
     const actionStatus: boolean[] = [];
 
     actions.pipe(ofActionExecuting(AsyncErrorAction)).subscribe(executing => {
       actionStatus.push(executing);
     });
 
-    try {
-      await store.dispatch(new AsyncErrorAction()).toPromise();
-    } catch (err) {
-      expect(err).toBeDefined();
-    }
+    store.dispatch(new AsyncErrorAction()).subscribe({
+      error: err => {
+        expect(err).toBeDefined();
+      }
+    });
+
+    tick(1);
     expect(actionStatus).toEqual([true, false]);
-  });
+  }));
 });
