@@ -285,7 +285,7 @@ describe('Action', () => {
   it('should be executing between dispatch and complete', () => {
     const actionStatus: boolean[] = [];
 
-    actions.pipe(ofActionExecuting(new Action1())).subscribe(executing => {
+    actions.pipe(ofActionExecuting(Action1)).subscribe(executing => {
       actionStatus.push(executing);
     });
 
@@ -296,7 +296,7 @@ describe('Action', () => {
   it('should be executing between dispatch and error', () => {
     const actionStatus: boolean[] = [];
 
-    actions.pipe(ofActionExecuting(new ErrorAction())).subscribe(executing => {
+    actions.pipe(ofActionExecuting(ErrorAction)).subscribe(executing => {
       actionStatus.push(executing);
     });
 
@@ -307,7 +307,7 @@ describe('Action', () => {
   it('should be executing between dispatch and complete (async)', async () => {
     const actionStatus: boolean[] = [];
 
-    actions.pipe(ofActionExecuting(new AsyncAction1())).subscribe(executing => {
+    actions.pipe(ofActionExecuting(AsyncAction1)).subscribe(executing => {
       actionStatus.push(executing);
     });
 
@@ -318,7 +318,7 @@ describe('Action', () => {
   it('should be executing between dispatch and error (async)', async () => {
     const actionStatus: boolean[] = [];
 
-    actions.pipe(ofActionExecuting(new AsyncErrorAction())).subscribe(executing => {
+    actions.pipe(ofActionExecuting(AsyncErrorAction)).subscribe(executing => {
       actionStatus.push(executing);
     });
 
