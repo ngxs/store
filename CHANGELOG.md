@@ -25,6 +25,12 @@ $ npm install @ngxs/store@dev
 
 ## NGXS-Labs
 
+### Dispatch Decorator v2.0.0
+
+* Build: prepare package for the Angular 8+ compatibility and support NGXS 3.5 [#247](https://github.com/ngxs-labs/dispatch-decorator/pull/247)
+* Build: configure `cypress` for SSR and E2E testing [#248](https://github.com/ngxs-labs/dispatch-decorator/pull/248)
+* Feat: implement `cancelUncompleted` option [#250](https://github.com/ngxs-labs/dispatch-decorator/pull/250)
+
 ### Emitter-plugin v2.0.0
 
 * Feature: Support NGXS 3.5, TypeScript 3.5 [#317](https://github.com/ngxs-labs/emitter/pull/317)
