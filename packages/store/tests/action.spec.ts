@@ -41,12 +41,30 @@ describe('Action', () => {
     static type = 'CancelingAction';
   }
 
+  class AsyncAction1 {
+    static type = 'ASYNC_ACTION 1';
+  }
+
+  class AsyncErrorAction {
+    static type = 'ASYNC_ERROR_ACTION';
+  }
+
   @State({
     name: 'bar'
   })
   class BarStore {
     @Action([Action1, Action2])
     foo() {}
+
+    @Action(AsyncAction1)
+    asyncAction1() {
+      return of({}).pipe(delay(0));
+    }
+
+    @Action(AsyncErrorAction)
+    asyncError() {
+      return throwError(new Error('this is a test error')).pipe(delay(0));
+    }
 
     @Action(ErrorAction)
     onError() {
@@ -272,7 +290,43 @@ describe('Action', () => {
     });
 
     store.dispatch(new Action1());
+    expect(actionStatus).toEqual([true, false]);
+  });
 
+  it('should be executing between dispatch and error', () => {
+    const actionStatus: boolean[] = [];
+
+    actions.pipe(ofActionExecuting(new ErrorAction())).subscribe(executing => {
+      actionStatus.push(executing);
+    });
+
+    store.dispatch(new ErrorAction());
+    expect(actionStatus).toEqual([true, false]);
+  });
+
+  it('should be executing between dispatch and complete (async)', async () => {
+    const actionStatus: boolean[] = [];
+
+    actions.pipe(ofActionExecuting(new AsyncAction1())).subscribe(executing => {
+      actionStatus.push(executing);
+    });
+
+    await store.dispatch(new AsyncAction1()).toPromise();
+    expect(actionStatus).toEqual([true, false]);
+  });
+
+  it('should be executing between dispatch and error (async)', async () => {
+    const actionStatus: boolean[] = [];
+
+    actions.pipe(ofActionExecuting(new AsyncErrorAction())).subscribe(executing => {
+      actionStatus.push(executing);
+    });
+
+    try {
+      await store.dispatch(new AsyncErrorAction()).toPromise();
+    } catch (err) {
+      expect(err).toBeDefined();
+    }
     expect(actionStatus).toEqual([true, false]);
   });
 });
