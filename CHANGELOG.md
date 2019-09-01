@@ -25,6 +25,9 @@ $ npm install @ngxs/store@dev
 
 ## NGXS-Labs
 
+### Dispatch Decorator v2.1.0
+* Fix: remove `DispatchAction` and unnecessary closures [#252](https://github.com/ngxs-labs/dispatch-decorator/pull/252)
+
 ### Dispatch Decorator v2.0.0
 
 * Build: prepare package for the Angular 8+ compatibility and support NGXS 3.5 [#247](https://github.com/ngxs-labs/dispatch-decorator/pull/247)
