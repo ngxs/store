@@ -10357,10 +10357,10 @@ typedoc-default-themes@^0.6.0:
     lunr "^2.3.6"
     underscore "^1.9.1"
 
-typedoc-plugin-markdown@^2.1.7:
-  version "2.1.7"
-  resolved "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-2.1.7.tgz#bcc2b64843c6a991ce531108cc8fda5fdd0d0175"
-  integrity sha512-FP9aX6oK8f7KVIVAqatUenUpwqp3z69E8Etz7HPIkB1+AdjCRlNRp1f65pB4OU3/NlViWF8YHsjBJ/ye+Z5row==
+typedoc-plugin-markdown@^2.1.9:
+  version "2.1.9"
+  resolved "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-2.1.9.tgz#b5bb162deab00429a54411493592db88dae04b96"
+  integrity sha512-fWpbmAsFdayFnkfSCqAvkDdLrEWsrIfbD7KQtcMeRAyvPI5NBesYEOksN9d9PXQnmyUbJ+rbG9+hubh+OceVAA==
 
 typedoc@^0.15.0:
   version "0.15.0"
