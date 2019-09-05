@@ -126,7 +126,7 @@
     "@types/jest": "^24.0.18",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.6.2",
-    "@types/semver": "^6.0.1",
+    "@types/semver": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
     "angular-http-server": "^1.9.0",
