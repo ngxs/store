@@ -84,9 +84,9 @@ export function ofActionErrored(...allowedTypes: any[]) {
  * and false when ALL are completed
  */
 export function ofActionExecuting(...allowedTypes: ActionType[]) {
-  return (o: Observable<ActionContext>) => {
+  return (source: Observable<ActionContext>) => {
     const executionTypes: Observable<boolean>[] = allowedTypes.map((type: ActionType) =>
-      o.pipe(mapToActionExecuting(type))
+      source.pipe(mapToActionExecuting(type))
     );
 
     return combineLatest(...executionTypes).pipe(
