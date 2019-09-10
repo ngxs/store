@@ -1,7 +1,9 @@
-import { OperatorFunction, Observable, merge, combineLatest } from 'rxjs';
-import { map, filter, mapTo } from 'rxjs/operators';
+import { OperatorFunction, Observable, combineLatest } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
 import { getActionTypeFromInstance } from '../utils/utils';
 import { ActionContext, ActionStatus } from '../actions-stream';
+import { ActionType } from '../actions/symbols';
+import { mapToActionExecuting } from '../utils/map-to-action-executing';
 
 export interface ActionCompletion<T = any, E = Error> {
   action: T;
@@ -74,20 +76,6 @@ export function ofActionErrored(...allowedTypes: any[]) {
   return ofActionOperator(allowedTypes, [ActionStatus.Errored]);
 }
 
-function mapToActionExecuting(allowedType: any) {
-  return (source: Observable<ActionContext>) =>
-    merge(
-      source.pipe(
-        ofActionDispatched(allowedType),
-        mapTo(true)
-      ),
-      source.pipe(
-        ofActionCompleted(allowedType),
-        mapTo(false)
-      )
-    );
-}
-
 /**
  * RxJS operator for selecting out specific actions.
  *
@@ -95,17 +83,23 @@ function mapToActionExecuting(allowedType: any) {
  * When used with multiple actions, will return true when ALL actions has been dispatched or only some of them has completed,
  * and false when ALL are completed
  */
-export function ofActionExecuting(...allowedTypes: any) {
-  return (o: Observable<ActionContext>) =>
-    combineLatest(...allowedTypes.map((type: any) => o.pipe(mapToActionExecuting(type)))).pipe(
-      map((actionsExecuting: boolean[]) => {
-        if (actionsExecuting.every(value => value)) return true;
-        if (actionsExecuting.every(value => !value)) return false;
-        if (actionsExecuting.length > 1 && actionsExecuting.some(value => !value)) return true;
+export function ofActionExecuting(...allowedTypes: ActionType[]) {
+  return (o: Observable<ActionContext>) => {
+    const executionTypes: Array<Observable<boolean>> = allowedTypes.map((type: ActionType) =>
+      o.pipe(mapToActionExecuting(type))
+    );
 
-        return false;
+    return combineLatest(...executionTypes).pipe(
+      map((actionsExecuting: boolean[]) => {
+        const score: number = actionsExecuting.reduce(
+          (acc: number, status: boolean) => acc + Number(status),
+          0
+        );
+
+        return score > 0;
       })
     );
+  };
 }
 
 function ofActionOperator<T = any>(
