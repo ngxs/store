@@ -1,4 +1,4 @@
-import { OperatorFunction, Observable, merge } from 'rxjs';
+import { OperatorFunction, Observable, merge, combineLatest } from 'rxjs';
 import { map, filter, mapTo } from 'rxjs/operators';
 import { getActionTypeFromInstance } from '../utils/utils';
 import { ActionContext, ActionStatus } from '../actions-stream';
@@ -74,12 +74,7 @@ export function ofActionErrored(...allowedTypes: any[]) {
   return ofActionOperator(allowedTypes, [ActionStatus.Errored]);
 }
 
-/**
- * RxJS operator for selecting out specific actions.
- *
- * This will grab an action and return true when dispatched and false when completed
- */
-export function ofActionExecuting(allowedType: any) {
+function mapToActionExecuting(allowedType: any) {
   return (source: Observable<ActionContext>) =>
     merge(
       source.pipe(
@@ -90,6 +85,26 @@ export function ofActionExecuting(allowedType: any) {
         ofActionCompleted(allowedType),
         mapTo(false)
       )
+    );
+}
+
+/**
+ * RxJS operator for selecting out specific actions.
+ *
+ * This will grab an action and return true when dispatched and false when completed
+ * When used with multiple actions, will return true when ALL actions has been dispatched or only some of them has completed,
+ * and false when ALL are completed
+ */
+export function ofActionExecuting(...allowedTypes: any) {
+  return (o: Observable<ActionContext>) =>
+    combineLatest(...allowedTypes.map((type: any) => o.pipe(mapToActionExecuting(type)))).pipe(
+      map((actionsExecuting: boolean[]) => {
+        if (actionsExecuting.every(value => value)) return true;
+        if (actionsExecuting.every(value => !value)) return false;
+        if (actionsExecuting.length > 1 && actionsExecuting.some(value => !value)) return true;
+
+        return false;
+      })
     );
 }
 

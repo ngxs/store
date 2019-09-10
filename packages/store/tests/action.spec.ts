@@ -45,6 +45,10 @@ describe('Action', () => {
     static type = 'ASYNC_ACTION 1';
   }
 
+  class AsyncAction2 {
+    static type = 'ASYNC_ACTION 2';
+  }
+
   class AsyncErrorAction {
     static type = 'ASYNC_ERROR_ACTION';
   }
@@ -58,6 +62,11 @@ describe('Action', () => {
 
     @Action(AsyncAction1)
     asyncAction1() {
+      return of({}).pipe(delay(0));
+    }
+
+    @Action(AsyncAction2)
+    asyncAction2() {
       return of({}).pipe(delay(0));
     }
 
@@ -282,54 +291,124 @@ describe('Action', () => {
     expect(callbacksCalled).toEqual(['onObjectLiteral']);
   });
 
-  it('should be executing between dispatch and complete', () => {
-    const actionStatus: boolean[] = [];
+  describe('ofActionExecuting', () => {
+    describe('Single Action', () => {
+      describe('sync', () => {
+        it('should be executing between dispatch and complete', () => {
+          const actionStatus: boolean[] = [];
 
-    actions.pipe(ofActionExecuting(Action1)).subscribe(executing => {
-      actionStatus.push(executing);
+          actions.pipe(ofActionExecuting(Action1)).subscribe(executing => {
+            actionStatus.push(executing);
+          });
+
+          store.dispatch(new Action1());
+          expect(actionStatus).toEqual([true, false]);
+        });
+
+        it('should be executing between dispatch and error', () => {
+          const actionStatus: boolean[] = [];
+
+          actions.pipe(ofActionExecuting(ErrorAction)).subscribe(executing => {
+            actionStatus.push(executing);
+          });
+
+          store.dispatch(new ErrorAction());
+          expect(actionStatus).toEqual([true, false]);
+        });
+      });
+      describe('async', () => {
+        it('should be executing between dispatch and complete ', fakeAsync(() => {
+          const actionStatus: boolean[] = [];
+
+          actions.pipe(ofActionExecuting(AsyncAction1)).subscribe(executing => {
+            actionStatus.push(executing);
+          });
+
+          store.dispatch(new AsyncAction1());
+          tick(1);
+          expect(actionStatus).toEqual([true, false]);
+        }));
+
+        it('should be executing between dispatch and error', fakeAsync(() => {
+          const actionStatus: boolean[] = [];
+
+          actions.pipe(ofActionExecuting(AsyncErrorAction)).subscribe(executing => {
+            actionStatus.push(executing);
+          });
+
+          store.dispatch(new AsyncErrorAction()).subscribe({
+            error: err => {
+              expect(err).toBeDefined();
+            }
+          });
+
+          tick(1);
+          expect(actionStatus).toEqual([true, false]);
+        }));
+      });
     });
 
-    store.dispatch(new Action1());
-    expect(actionStatus).toEqual([true, false]);
+    describe('Multiple Actions', () => {
+      describe('sync', () => {
+        it('should be executing between dispatch and complete', () => {
+          const actionStatus: boolean[] = [];
+
+          actions.pipe(ofActionExecuting(Action1, Action2)).subscribe(executing => {
+            actionStatus.push(executing);
+          });
+
+          store.dispatch(new Action1());
+          store.dispatch(new Action2());
+          expect(actionStatus).toEqual([true, false]);
+        });
+
+        it('should be executing between dispatch and error', () => {
+          const actionStatus: boolean[] = [];
+
+          actions.pipe(ofActionExecuting(Action1, ErrorAction)).subscribe(executing => {
+            actionStatus.push(executing);
+          });
+
+          store.dispatch(new Action1());
+          store.dispatch(new ErrorAction());
+          expect(actionStatus).toEqual([true, false]);
+        });
+      });
+      describe('async', () => {
+        it('should be executing between dispatch and complete ', fakeAsync(() => {
+          const actionStatus: boolean[] = [];
+
+          actions.pipe(ofActionExecuting(AsyncAction1, AsyncAction2)).subscribe(executing => {
+            actionStatus.push(executing);
+          });
+
+          store.dispatch(new AsyncAction1());
+          tick(1);
+          expect(actionStatus).toEqual([]);
+          tick(1);
+          store.dispatch(new AsyncAction2());
+          tick(1);
+          expect(actionStatus).toEqual([true, false]);
+        }));
+
+        it('should be executing between dispatch and error', fakeAsync(() => {
+          const actionStatus: boolean[] = [];
+
+          actions
+            .pipe(ofActionExecuting(AsyncAction1, AsyncErrorAction))
+            .subscribe(executing => {
+              actionStatus.push(executing);
+            });
+
+          store.dispatch(new AsyncAction1());
+          tick(1);
+          expect(actionStatus).toEqual([]);
+          tick(1);
+          store.dispatch(new AsyncErrorAction());
+          tick(1);
+          expect(actionStatus).toEqual([true, false]);
+        }));
+      });
+    });
   });
-
-  it('should be executing between dispatch and error', () => {
-    const actionStatus: boolean[] = [];
-
-    actions.pipe(ofActionExecuting(ErrorAction)).subscribe(executing => {
-      actionStatus.push(executing);
-    });
-
-    store.dispatch(new ErrorAction());
-    expect(actionStatus).toEqual([true, false]);
-  });
-
-  it('should be executing between dispatch and complete (async)', fakeAsync(() => {
-    const actionStatus: boolean[] = [];
-
-    actions.pipe(ofActionExecuting(AsyncAction1)).subscribe(executing => {
-      actionStatus.push(executing);
-    });
-
-    store.dispatch(new AsyncAction1());
-    tick(1);
-    expect(actionStatus).toEqual([true, false]);
-  }));
-
-  it('should be executing between dispatch and error (async)', fakeAsync(() => {
-    const actionStatus: boolean[] = [];
-
-    actions.pipe(ofActionExecuting(AsyncErrorAction)).subscribe(executing => {
-      actionStatus.push(executing);
-    });
-
-    store.dispatch(new AsyncErrorAction()).subscribe({
-      error: err => {
-        expect(err).toBeDefined();
-      }
-    });
-
-    tick(1);
-    expect(actionStatus).toEqual([true, false]);
-  }));
 });
