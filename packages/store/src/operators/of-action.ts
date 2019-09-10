@@ -85,7 +85,7 @@ export function ofActionErrored(...allowedTypes: any[]) {
  */
 export function ofActionExecuting(...allowedTypes: ActionType[]) {
   return (o: Observable<ActionContext>) => {
-    const executionTypes: Array<Observable<boolean>> = allowedTypes.map((type: ActionType) =>
+    const executionTypes: Observable<boolean>[] = allowedTypes.map((type: ActionType) =>
       o.pipe(mapToActionExecuting(type))
     );
 
