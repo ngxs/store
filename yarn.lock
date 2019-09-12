@@ -10401,7 +10401,7 @@ typedoc@^0.15.0:
     typedoc-default-themes "^0.6.0"
     typescript "3.5.x"
 
-typescript@3.5.3, typescript@3.5.x, typescript@~3.5.3:
+typescript@3.5.3, typescript@3.5.x:
   version "3.5.3"
   resolved "https://registry.npmjs.org/typescript/-/typescript-3.5.3.tgz#c830f657f93f1ea846819e929092f5fe5983e977"
   integrity sha512-ACzBtm/PhXBDId6a6sDJfroT2pOWt/oOnk4/dElG5G33ZL776N3Y6/6bKZJBFpd+b05F3Ct9qDjMeJmRWtE2/g==
@@ -10410,6 +10410,11 @@ typescript@next:
   version "3.7.0-dev.20190828"
   resolved "https://registry.npmjs.org/typescript/-/typescript-3.7.0-dev.20190828.tgz#0f44a01200560860f3449c7a43edd55d09192e59"
   integrity sha512-Lcy+zW7gSNDyz/t9hrPwscIAyHXfeaX4ZibqyGEDBWb0xcrX7zc4UCsknojFr9M+9NmEQ8CIbyRBSlQp00ysfQ==
+
+typescript@~3.6.3:
+  version "3.6.3"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-3.6.3.tgz#fea942fabb20f7e1ca7164ff626f1a9f3f70b4da"
+  integrity sha512-N7bceJL1CtRQ2RiG0AQME13ksR7DiuQh/QehubYcghzv20tnh+MQnQIuJddTmsbqYj+dztchykemz0zFzlvdQw==
 
 uglify-js@^3.1.4:
   version "3.6.0"
