@@ -3834,10 +3834,10 @@ dts-critic@^2.0.0:
     semver "^6.2.0"
     yargs "^12.0.5"
 
-dtslint@^0.9.6:
-  version "0.9.6"
-  resolved "https://registry.npmjs.org/dtslint/-/dtslint-0.9.6.tgz#ccc564f226de14b3021e457127dd07e447c85b60"
-  integrity sha512-BIPTSnpYyGJxVcToYnw9KPkw3Er7hhK21E/QIBYWbkKkAa065221f8MVHwePB13TkyLOFCNdQOPICNnrQ+rfoA==
+dtslint@^0.9.7:
+  version "0.9.7"
+  resolved "https://registry.npmjs.org/dtslint/-/dtslint-0.9.7.tgz#e904b27310eec4da072a5acb7ac05b74990b6337"
+  integrity sha512-dZ6dplgDsXKkN9NNQUYjOVs2kHzesVR+rFQ/PTd9NhQH+tc5a6ipUKF1eGKQqeHSSrSGnDz4mRTIxsiYgVGwJg==
   dependencies:
     definitelytyped-header-parser "^3.7.2"
     dts-critic "^2.0.0"
