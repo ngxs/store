@@ -9,7 +9,7 @@ import {
 } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
 
-import { ObjectKeyMap, StateClass } from '@ngxs/store/internals';
+import { PlainObjectOf, StateClass } from '@ngxs/store/internals';
 
 function asReadonly<T>(value: T): Readonly<T> {
   return value;
@@ -21,8 +21,8 @@ export interface StateClassInternal<T = any, U = any> extends StateClass<T> {
   [META_OPTIONS_KEY]?: StoreOptions<U>;
 }
 
-export type StateKeyGraph = ObjectKeyMap<string[]>;
-export type StatesByName = ObjectKeyMap<StateClassInternal>;
+export type StateKeyGraph = PlainObjectOf<string[]>;
+export type StatesByName = PlainObjectOf<StateClassInternal>;
 
 export interface StateOperations<T> {
   getState(): T;
@@ -34,7 +34,7 @@ export interface StateOperations<T> {
 
 export interface MetaDataModel {
   name: string | null;
-  actions: ObjectKeyMap<ActionHandlerMetaData[]>;
+  actions: PlainObjectOf<ActionHandlerMetaData[]>;
   defaults: any;
   path: string | null;
   selectFromAppState: SelectFromState | null;
@@ -59,7 +59,7 @@ export interface SelectorMetaDataModel {
 
 export interface MappedStore {
   name: string;
-  actions: ObjectKeyMap<ActionHandlerMetaData[]>;
+  actions: PlainObjectOf<ActionHandlerMetaData[]>;
   defaults: any;
   instance: any;
   depth: string;
@@ -248,9 +248,9 @@ export function buildGraph(stateClasses: StateClassInternal[]): StateKeyGraph {
  *
  * @ignore
  */
-export function nameToState(states: StateClassInternal[]): ObjectKeyMap<StateClassInternal> {
-  return states.reduce<ObjectKeyMap<StateClassInternal>>(
-    (result: ObjectKeyMap<StateClassInternal>, stateClass: StateClassInternal) => {
+export function nameToState(states: StateClassInternal[]): PlainObjectOf<StateClassInternal> {
+  return states.reduce<PlainObjectOf<StateClassInternal>>(
+    (result: PlainObjectOf<StateClassInternal>, stateClass: StateClassInternal) => {
       const meta = stateClass[META_KEY]!;
       result[meta.name!] = stateClass;
       return result;
@@ -281,8 +281,8 @@ export function nameToState(states: StateClassInternal[]): ObjectKeyMap<StateCla
  */
 export function findFullParentPath(
   obj: StateKeyGraph,
-  newObj: ObjectKeyMap<string> = {}
-): ObjectKeyMap<string> {
+  newObj: PlainObjectOf<string> = {}
+): PlainObjectOf<string> {
   const visit = (child: StateKeyGraph, keyToFind: string): string | null => {
     for (const key in child) {
       if (child.hasOwnProperty(key) && child[key].indexOf(keyToFind) >= 0) {
@@ -324,7 +324,7 @@ export function findFullParentPath(
  */
 export function topologicalSort(graph: StateKeyGraph): string[] {
   const sorted: string[] = [];
-  const visited: ObjectKeyMap<boolean> = {};
+  const visited: PlainObjectOf<boolean> = {};
 
   const visit = (name: string, ancestors: string[] = []) => {
     if (!Array.isArray(ancestors)) {
