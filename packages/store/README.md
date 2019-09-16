@@ -10,7 +10,7 @@
 ---
 
 - ✨ Learn about it on the [docs site](https://ngxs.gitbooks.io/ngxs/)
-- 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-simple)
+- 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-repro)
 - 😎 Checkout the [sample application](https://github.com/ngxs/store/tree/master/integration)
 - 🗄 Learn about updates from the [changelog](https://github.com/ngxs/store/blob/master/CHANGELOG.md)
 - ❤️ Give back by becoming a [Contributor](https://github.com/ngxs/store/blob/master/docs/community/contributing.md) or a [Sponsor](https://github.com/ngxs/store/blob/master/docs/community/sponsors.md)
