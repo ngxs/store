@@ -10220,10 +10220,10 @@ ts-node@7.0.1:
     source-map-support "^0.5.6"
     yn "^2.0.0"
 
-ts-node@^8.3.0:
-  version "8.3.0"
-  resolved "https://registry.npmjs.org/ts-node/-/ts-node-8.3.0.tgz#e4059618411371924a1fb5f3b125915f324efb57"
-  integrity sha512-dyNS/RqyVTDcmNM4NIBAeDMpsAdaQ+ojdf0GOLqE6nwJOgzEkdRNzJywhDfwnuvB10oa6NLVG1rUJQCpRN7qoQ==
+ts-node@^8.4.1:
+  version "8.4.1"
+  resolved "https://registry.npmjs.org/ts-node/-/ts-node-8.4.1.tgz#270b0dba16e8723c9fa4f9b4775d3810fd994b4f"
+  integrity sha512-5LpRN+mTiCs7lI5EtbXmF/HfMeCjzt7DH9CZwtkr6SywStrNQC723wG+aOWFiLNn7zT3kD/RnFqi3ZUfr4l5Qw==
   dependencies:
     arg "^4.1.0"
     diff "^4.0.1"
@@ -10370,10 +10370,10 @@ typedoc-default-themes@^0.6.0:
     lunr "^2.3.6"
     underscore "^1.9.1"
 
-typedoc-plugin-markdown@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-2.2.1.tgz#f979f151ce20b92bb5051f0cb2c6d46f0bfdce2b"
-  integrity sha512-hcrV6aI0FmtghctjTsPcrLSvdesK+YE+OhzF/l174oxTSS5yPDxpexfSbmXggzBrEuqPIbFojBp/eesKtI5kYg==
+typedoc-plugin-markdown@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-2.2.2.tgz#f3082bfa5ed6f88716b26e4673b82d7f1f7f850a"
+  integrity sha512-bIAzq6h/uoPTQZq2T3YB2SXHFOmOeFkuRxgsuk4iGIIYLk8jTjR8u3WQCJxj6YG1Xqe0uervciG56XevdHAiaw==
   dependencies:
     fs-extra "^8.1.0"
 
