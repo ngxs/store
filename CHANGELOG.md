@@ -5,7 +5,7 @@
 $ npm install @ngxs/store@dev
 ``` 
  
-* ...
+* Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
 
 # 3.5.1 2019-08-29
 
