@@ -53,6 +53,7 @@
     "packages/hmr-plugin"
   ],
   "scripts": {
+    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('You must use Yarn to install, not NPM')\"",
     "// - Binaries": "Run against node_modules/.bin",
     "ng": "ng",
     "ts-node": "ts-node",
