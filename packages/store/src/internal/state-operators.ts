@@ -1,16 +1,17 @@
 import { StateOperator } from '../symbols';
+import { isArray, isKeyPredicate, isPrimitive, shallowClone } from './internals';
 
 export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
   return (existingState: Readonly<T>) => {
-    if (Array.isArray(val)) {
+    if (isArray(val)) {
       throw new Error('Patching arrays is not supported.');
     }
 
-    if (typeof val !== 'object') {
+    if (isPrimitive(val)) {
       throw new Error('Patching primitives is not supported.');
     }
 
-    const newState: T = { ...existingState };
+    const newState: T = shallowClone(existingState);
 
     for (const prop in val) {
       if (val.hasOwnProperty(prop) && isKeyPredicate(prop)) {
@@ -20,14 +21,4 @@ export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
 
     return newState;
   };
-}
-
-/**
- * @description
- * To define a type guard, we simply need
- * to define a function whose return type is a type predicate:
- * https://www.typescriptlang.org/docs/handbook/advanced-types.html#using-type-predicates
- */
-function isKeyPredicate<E>(_: string | number | symbol): _ is keyof E {
-  return true;
 }

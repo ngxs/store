@@ -348,6 +348,10 @@ describe('State', () => {
       expect(simplePatch(null!)(simple)).toEqual({ a: 1, b: 2 });
     });
 
+    it('should be correct when patched null to null', () => {
+      expect(simplePatch(null!)(null!)).toEqual({});
+    });
+
     it('should avoid the whole check if you want own properties only', () => {
       function Origin() {
         // @ts-ignore
