@@ -1,4 +1,8 @@
-export interface ObjectKeyMap<T> {
+export interface PlainObject {
+  [key: string]: any;
+}
+
+export interface PlainObjectOf<T> {
   [key: string]: T;
 }
 

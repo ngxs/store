@@ -1,7 +1,7 @@
 import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ObjectKeyMap } from '@ngxs/store/internals';
+import { PlainObject } from '@ngxs/store/internals';
 import { SharedSelectorOptions } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
@@ -56,7 +56,7 @@ export class NgxsConfig {
    * @deprecated will be removed after v4
    * (default: {})
    */
-  defaultsState: ObjectKeyMap<any> = {};
+  defaultsState: PlainObject = {};
   /**
    * Defining shared selector options
    */

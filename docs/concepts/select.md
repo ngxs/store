@@ -138,7 +138,7 @@ The default value in NGXS v3.x is `true`._
 - *The default value in NGXS v3.x is `true`.*
 - See [here](#joining-selectors) for examples of the effect this setting has on your selectors.
 
-We recommend setting these options at the global level, unless you are transitioning your application from one behavior to another where you can use this decorator to introduce this transition in a piecemeal fasion. For example, NGXS v4 will be introducing a change to the selectors that will effect methods which make use of joined selectors (see [below](#joining-selectors)).
+We recommend setting these options at the global level, unless you are transitioning your application from one behavior to another where you can use this decorator to introduce this transition in a piecemeal fashion. For example, NGXS v4 will be introducing a change to the selectors that will effect methods which make use of joined selectors (see [below](#joining-selectors)).
 
 We recommend using the following global settings for new projects in order to minimise the impact of the v4 upgrade:
 ```TS
