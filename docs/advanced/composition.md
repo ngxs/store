@@ -26,5 +26,5 @@ class StLouisZooState extends ZooState {
 }
 ```
 
-Now when `StLouisZooState` is invoked, it will share the actions of the `ZooState`. 
+Now when `StLouisZooState` is invoked, it will share the actions of the `ZooState`.
 Also all state options are inherited.
