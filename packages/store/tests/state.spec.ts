@@ -357,22 +357,16 @@ describe('State', () => {
       Origin.prototype.y = `I'm not an own property`;
 
       // @ts-ignore
-      const origin: any = new Origin();
+      const patcher: typeof Origin & Origin = new Origin();
 
-      const patchedOrigin: any = simplePatch(origin)({
-        z: function() {
-          const that: any = this;
-          return `x = ${that.x}, y = ${that.y}`;
-        }
-      });
+      expect(patcher.x).toEqual(`I'm an own property`);
+      expect(patcher.y).toEqual(`I'm not an own property`);
 
-      expect(origin.x).toEqual(`I'm an own property`);
-      expect(origin.y).toEqual(`I'm not an own property`);
+      const existingState: any = {};
+      const resultState: any = simplePatch(patcher)(existingState);
 
-      // TODO(splincode): we want to avoid the whole check if you want own properties only?
-      expect(patchedOrigin.z()).toEqual(
-        `x = I'm an own property, y = I'm not an own property`
-      );
+      expect(resultState.x).toEqual(`I'm an own property`);
+      expect(resultState.y).toEqual(undefined);
     });
 
     it('should throw exception if value is array', () => {
