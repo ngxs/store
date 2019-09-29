@@ -1,5 +1,5 @@
 import { StateOperator } from '../symbols';
-import { isArray, isKeyPredicate, isPrimitive, shallowClone } from './internals';
+import { isArray, isKey, isPrimitive, shallowClone } from './internals';
 
 export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
   return (existingState: Readonly<T>) => {
@@ -14,7 +14,7 @@ export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
     const newState: T = shallowClone(existingState);
 
     for (const prop in val) {
-      if (val.hasOwnProperty(prop) && isKeyPredicate(prop)) {
+      if (val.hasOwnProperty(prop) && isKey(prop)) {
         newState[prop] = val[prop];
       }
     }
