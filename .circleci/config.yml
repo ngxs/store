@@ -169,6 +169,15 @@ jobs:
           command: yarn bundlesize
       # - *persist_coverage // we don't run code coverage for integration tests
 
+  benchmark:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Benchmark
+          command: yarn benchmark
+      # - *persist_coverage // we don't run code coverage for integration tests
+
   upload_coverage:
     <<: *job_defaults
     environment:
@@ -261,6 +270,7 @@ workflows:
             - integration_ng5_tests
             - integration_test_types
             - bundlesize
+            - benchmark
 
       # Publish @dev builds if no tag is specified
       - publish_dev_build_to_npm:
@@ -277,6 +287,7 @@ workflows:
             - integration_ng5_tests
             - integration_test_types
             - bundlesize
+            - benchmark
 
       # Publish package.version @latest when a v.* git tag is present
       - publish_tagged_build_to_npm:
@@ -292,3 +303,4 @@ workflows:
             - integration_ng5_tests
             - integration_test_types
             - bundlesize
+            - benchmark

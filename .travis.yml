@@ -43,3 +43,6 @@ script:
 
   # Check the size of NGXS bundle
   - yarn bundlesize
+
+  # Benchmark
+  - yarn benchmark
