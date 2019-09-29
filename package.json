@@ -86,7 +86,7 @@
     "e2e:chrome": "start-test serve:integration 4200 cy:run:chrome",
     "e2e:chromium": "start-test serve:integration 4200 cy:run:chromium",
     "// - Benchmark": "CI benchmark testing",
-    "benchmark": "find . -name '*.bench.ts' -exec ts-node \"{}\" \\;",
+    "benchmark": "find . -name '*.bench.ts' -exec sh -c 'for n; do ts-node \"$n\" || exit 1; done' sh {} +",
     "// - CI": "CI Testing",
     "test:ci": "cross-env CI=true ng test --project ngxs --colors --runInBand",
     "test:ci:e2e": "yarn start-test serve:integration:static 4200 cy:run",
@@ -159,9 +159,7 @@
     "tslib": "^1.10.0",
     "tslint": "^5.20.0",
     "typescript": "~3.5.3",
-    "zone.js": "~0.10.2"
-  },
-  "dependencies": {
+    "zone.js": "~0.10.2",
     "@types/benchmark": "^1.0.31",
     "benchmark": "^2.1.4"
   }

@@ -262,6 +262,10 @@ workflows:
           requires:
             - build
 
+      - benchmark:
+          requires:
+            - build
+
       - upload_coverage:
           requires:
             - unit_tests
