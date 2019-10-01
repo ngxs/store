@@ -1,7 +1,4 @@
-import {
-  NGXS_INTERNAL_CONTEXT_FACTORY_TOKEN,
-  NGXS_INTERNAL_FACTORY_TOKEN
-} from '@ngxs/store/internals';
+import { NGXS_STATE_CONTEXT_FACTORY, NGXS_STATE_FACTORY } from '@ngxs/store/internals';
 import { Inject, ModuleWithProviders, NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule } from '@ngxs/store';
@@ -13,9 +10,9 @@ describe('Internal API', () => {
   it('should be correct inject stateFactory, stateContextFactory when call NgxsModule.forRoot()', () => {
     class MyCustomPluginAccessor {
       constructor(
-        @Inject(NGXS_INTERNAL_FACTORY_TOKEN)
+        @Inject(NGXS_STATE_FACTORY)
         public factory: StateFactory,
-        @Inject(NGXS_INTERNAL_CONTEXT_FACTORY_TOKEN)
+        @Inject(NGXS_STATE_CONTEXT_FACTORY)
         public contextFactory: StateContextFactory
       ) {}
     }

@@ -10,8 +10,8 @@ import {
   INITIAL_STATE_TOKEN,
   InitialState,
   isAngularInTestMode,
-  NGXS_INTERNAL_CONTEXT_FACTORY_TOKEN,
-  NGXS_INTERNAL_FACTORY_TOKEN,
+  NGXS_STATE_CONTEXT_FACTORY,
+  NGXS_STATE_FACTORY,
   NgxsBootstrapper,
   StateClass
 } from '@ngxs/store/internals';
@@ -141,11 +141,11 @@ export class NgxsModule {
         useFactory: NgxsModule.getInitialState
       },
       {
-        provide: NGXS_INTERNAL_CONTEXT_FACTORY_TOKEN,
+        provide: NGXS_STATE_CONTEXT_FACTORY,
         useExisting: StateContextFactory
       },
       {
-        provide: NGXS_INTERNAL_FACTORY_TOKEN,
+        provide: NGXS_STATE_FACTORY,
         useExisting: StateFactory
       }
     ];
