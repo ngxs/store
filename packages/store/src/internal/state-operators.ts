@@ -12,6 +12,6 @@ export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
       throw new Error(MESSAGES[CODE.PATCHING_PRIMITIVE]());
     }
 
-    return { ...existingState, ...val };
+    return { ...(existingState as object), ...(val as object) } as T;
   };
 }
