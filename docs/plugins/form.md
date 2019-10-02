@@ -127,9 +127,88 @@ this.store.dispatch(
 The form plugin comes with the following `actions` out of the box:
 
 - `UpdateFormStatus({ status, path })` - Update the form status
-- `UpdateFormValue({ value, path })` - Update the form value
+- `UpdateFormValue({ value, path, propertyPath? })` - Update the form value (or optionally an inner property value)
 - `UpdateFormDirty({ dirty, path })` - Update the form dirty status
 - `SetFormDisabled(path)` - Set the form to disabled
 - `SetFormEnabled(path)` - Set the form to enabled
 - `SetFormDirty(path)` - Set the form to dirty (shortcut for `UpdateFormDirty`)
 - `SetFormPristine(path)` - Set the form to pristine (shortcut for `UpdateFormDirty`)
+
+### Updating Specific Form Properties
+
+The form plugin exposes the `UpdateFormValue` action that provides the ability to update nested form properties by supplying a `propertyPath` parameter.
+
+```ts
+interface NovelsStateModel {
+  newNovelForm: {
+    model?: {
+      novelName: string;
+      authors: {
+        name: string;
+      }[];
+    };
+  };
+}
+
+@State<NovelsStateModel>({
+  name: 'novels',
+  defaults: {
+    newNovelForm: {
+      model: undefined
+    }
+  }
+})
+export class NovelsState {}
+```
+
+The state contains information about the new novel name and its authors. Let's create a component that will render the reactive form with bounded `ngxsForm` directive:
+
+```ts
+@Component({
+  selector: 'new-novel-form',
+  template: `
+    <form [formGroup]="newNovelForm" ngxsForm="novels.newNovelForm" (ngSubmit)="onSubmit()">
+      <input type="text" formControlName="novelName" />
+
+      <div
+        formArrayName="authors"
+        *ngFor="let author of newNovelForm.get('authors').controls; index as index"
+      >
+        <div [formGroupName]="index">
+          <input formControlName="name" />
+        </div>
+      </div>
+
+      <button type="submit">Create</button>
+    </form>
+  `
+})
+export class NewNovelComponent {
+  newNovelForm = new FormGroup({
+    novelName: new FormControl('Zenith'),
+    authors: new FormArray([
+      new FormGroup({
+        name: new FormControl('Sasha Alsberg')
+      })
+    ])
+  });
+
+  onSubmit() {
+    //
+  }
+}
+```
+
+Let's look at the component above again. Assume we want to update the name of the first author in our form, from anywhere in our application. The code would look as follows:
+
+```ts
+store.dispatch(
+  new UpdateFormValue({
+    path: 'novels.newNovelForm',
+    value: {
+      name: 'Lindsay Cummings'
+    },
+    propertyPath: 'authors.0'
+  })
+);
+```
