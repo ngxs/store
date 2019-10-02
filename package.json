@@ -98,7 +98,8 @@
     "bundlesize": "bundlesize --config bundlesize.config.json",
     "format": "prettier --write \"{packages,integration}/**/*.ts\"",
     "// - INTEGRATION": "Integration builds",
-    "integration:ng5": "cd integrations/hello-world-ng5 && yarn test"
+    "integration:ng5": "cd integrations/hello-world-ng5 && yarn test",
+    "integration:ivy": "cd integrations/ivy && yarn test"
   },
   "private": true,
   "devDependencies": {
