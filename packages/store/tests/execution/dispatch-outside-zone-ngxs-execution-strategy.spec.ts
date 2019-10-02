@@ -1,18 +1,8 @@
-import {
-  ApplicationRef,
-  NgZone,
-  Component,
-  Type,
-  NgModule,
-  DoBootstrap,
-  PlatformRef
-} from '@angular/core';
-import { TestBed, TestModuleMetadata, async } from '@angular/core/testing';
-import {
-  ɵDomAdapter as DomAdapter,
-  ɵBrowserDomAdapter as BrowserDomAdapter,
-  BrowserModule
-} from '@angular/platform-browser';
+import { ApplicationRef, NgZone, Component, Type, NgModule, Injectable } from '@angular/core';
+import { TestBed, TestModuleMetadata } from '@angular/core/testing';
+import { BrowserModule } from '@angular/platform-browser';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { freshPlatform } from '@ngxs/store/internals/testing';
 
 import { Observable } from 'rxjs';
 
@@ -25,8 +15,8 @@ import {
   Select,
   Actions
 } from '../../src/public_api';
+import { CONFIG_MESSAGES, VALIDATION_CODE } from '../..//src/configs/messages.config';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from '../../src/execution/dispatch-outside-zone-ngxs-execution-strategy';
-import { DOCUMENT } from '@angular/common';
 
 describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
   class ZoneCounter {
@@ -295,62 +285,73 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
     });
   });
 
-  xit('should warn if zone is "nooped"', async(() => {
-    @State({ name: 'foo' })
-    class FooState {}
+  it(
+    'should warn if zone is "nooped"',
+    freshPlatform(async () => {
+      // Arrange
+      @State({ name: 'foo' })
+      class FooState {}
 
-    @Component({
-      selector: 'app-root',
-      template: ''
-    })
-    class MockComponent {}
+      @Component({
+        selector: 'app-root',
+        template: ''
+      })
+      class MockComponent {}
 
-    @NgModule({
-      imports: [
-        BrowserModule,
-        NgxsModule.forRoot([FooState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
-      declarations: [MockComponent],
-      entryComponents: [MockComponent]
+      @NgModule({
+        imports: [
+          BrowserModule,
+          NgxsModule.forRoot([FooState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
+        declarations: [MockComponent],
+        bootstrap: [MockComponent]
+      })
+      class MockModule {}
+
+      // Act
+      const spy = jest.spyOn(console, 'warn').mockImplementation();
+
+      await platformBrowserDynamic().bootstrapModule(MockModule, { ngZone: 'noop' });
+
+      try {
+        // Assert
+        const ZONE_WARNING = CONFIG_MESSAGES[VALIDATION_CODE.ZONE_WARNING]();
+        expect(spy).toHaveBeenCalledWith(ZONE_WARNING);
+      } finally {
+        spy.mockRestore();
+      }
     })
-    class MockModule implements DoBootstrap {
-      public ngDoBootstrap(app: ApplicationRef): void {
-        createRootNode();
-        app.bootstrap(MockComponent);
+  );
+
+  it('should not warn if custom zone that extends NgZone is provided', () => {
+    // Arrange
+    @Injectable()
+    class CustomNgZone extends NgZone {
+      run<T>(fn: (...args: any[]) => T): T {
+        return fn();
       }
     }
 
-    const platformRef: PlatformRef = TestBed.get(PlatformRef);
-    const warnings: string[] = [];
+    // Act
+    const spy = jest.spyOn(console, 'warn').mockImplementation();
 
-    console.warn = (...args: string[]) => {
-      warnings.push(args[0]);
-    };
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot()],
+      providers: [
+        {
+          provide: NgZone,
+          useClass: CustomNgZone
+        }
+      ]
+    });
 
-    platformRef
-      .bootstrapModule(MockModule, {
-        ngZone: 'noop'
-      })
-      .then(() => {
-        expect(warnings).toEqual([
-          'Your application was bootstrapped with nooped zone and your execution strategy requires an ngZone'
-        ]);
-      });
-  }));
-
-  function createRootNode(selector = 'app-root'): void {
-    const document = TestBed.get(DOCUMENT);
-    const adapter: DomAdapter = new BrowserDomAdapter();
-
-    const root = adapter.firstChild(
-      adapter.content(adapter.createTemplate(`<${selector}></${selector}>`))
-    );
-
-    const oldRoots = adapter.querySelectorAll(document, selector);
-    oldRoots.forEach(oldRoot => adapter.remove(oldRoot));
-
-    adapter.appendChild(document.body, root);
-  }
+    try {
+      // Assert
+      expect(spy).toHaveBeenCalledTimes(0);
+    } finally {
+      spy.mockRestore();
+    }
+  });
 });

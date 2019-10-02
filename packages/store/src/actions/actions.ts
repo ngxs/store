@@ -1,4 +1,4 @@
-import { ObjectKeyMap } from '@ngxs/store/internals';
+import { PlainObject } from '@ngxs/store/internals';
 
 /**
  * Init action
@@ -19,5 +19,5 @@ export class UpdateState {
     return '@@UPDATE_STATE';
   }
 
-  constructor(public addedStates?: ObjectKeyMap<any>) {}
+  constructor(public addedStates?: PlainObject) {}
 }

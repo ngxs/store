@@ -50,11 +50,13 @@ import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
+
   constructor(private store: Store) {}
 
   addAnimal(name: string) {
     this.store.dispatch(new AddAnimal(name)).subscribe(() => this.form.reset());
   }
+
 }
 ```
 
@@ -74,18 +76,21 @@ import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
+
   @Select(state => state.animals) animals$: Observable<any>;
+
   constructor(private store: Store) {}
 
   addAnimal(name: string) {
-    this.store.dispatch(new AddAnimal(name)).pipe(
-      withLatestFrom(this.animals$)
-    )
+    this.store
+      .dispatch(new AddAnimal(name))
+      .pipe(withLatestFrom(this.animals$))
       .subscribe(([_, animals]) => {
         // do something with animals
         this.form.reset();
       });
   }
+
 }
 ```
 

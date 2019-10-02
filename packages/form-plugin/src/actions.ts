@@ -16,7 +16,7 @@ export class UpdateFormValue {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Forms] Update Form Value';
   }
-  constructor(public payload: { value: any; path: string }) {}
+  constructor(public payload: { value: any; path: string; propertyPath?: string }) {}
 }
 
 export class UpdateForm {

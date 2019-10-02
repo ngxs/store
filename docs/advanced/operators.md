@@ -5,7 +5,7 @@ The NGXS `patchState` method is used to do [immutable object](https://en.wikiped
 
 ## Basic
 
-The basic idea of operators is that we could describe the modifications to the state using curried functions that are given any inputs that they need to describe the change and are finalised using the state slice that they are assigned to.
+The basic idea of operators is that we could describe the modifications to the state using curried functions that are given any inputs that they need to describe the change and are finalized using the state slice that they are assigned to.
 
 # Example
 From theory to practice - let's take the following example:

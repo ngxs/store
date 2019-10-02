@@ -19,8 +19,6 @@ import {
 
 @Injectable()
 export class NgxsFormPlugin implements NgxsPlugin {
-  constructor() {}
-
   handle(state: any, event: any, next: NgxsNextPluginFn) {
     const type = getActionTypeFromInstance(event);
 
@@ -29,8 +27,8 @@ export class NgxsFormPlugin implements NgxsPlugin {
     if (type === UpdateFormValue.type || type === UpdateForm.type) {
       const { value } = event.payload;
       const payloadValue = Array.isArray(value) ? value.slice() : { ...value };
-
-      nextState = setValue(nextState, `${event.payload.path}.model`, payloadValue);
+      const path = this.joinPathWithPropertyPath(event);
+      nextState = setValue(nextState, path, payloadValue);
     }
 
     if (type === UpdateFormStatus.type || type === UpdateForm.type) {
@@ -64,5 +62,15 @@ export class NgxsFormPlugin implements NgxsPlugin {
     }
 
     return next(nextState, event);
+  }
+
+  private joinPathWithPropertyPath({ payload }: UpdateFormValue): string {
+    let path = `${payload.path}.model`;
+
+    if (payload.propertyPath) {
+      path += `.${payload.propertyPath}`;
+    }
+
+    return path;
   }
 }

@@ -31,7 +31,7 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { INITIAL_STATE_TOKEN, ObjectKeyMap } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, PlainObjectOf } from '@ngxs/store/internals';
 
 /**
  * State factory class
@@ -97,8 +97,8 @@ export class StateFactory {
 
     const stateGraph: StateKeyGraph = buildGraph(newStates);
     const sortedStates: string[] = topologicalSort(stateGraph);
-    const depths: ObjectKeyMap<string> = findFullParentPath(stateGraph);
-    const nameGraph: ObjectKeyMap<StateClassInternal> = nameToState(newStates);
+    const depths: PlainObjectOf<string> = findFullParentPath(stateGraph);
+    const nameGraph: PlainObjectOf<StateClassInternal> = nameToState(newStates);
     const bootstrappedStores: MappedStore[] = [];
 
     for (const name of sortedStates) {
