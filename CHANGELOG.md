@@ -6,6 +6,7 @@ $ npm install @ngxs/store@dev
 ``` 
  
 * Feature: expose StateContextFactory, StateFactory [#1325](https://github.com/ngxs/store/pull/1325)
+* Feature: implement `propertyPath` parameter in the `UpdateFormValue` [1215](https://github.com/ngxs/store/pull/1215)
 * Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
 * Build: add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
 
