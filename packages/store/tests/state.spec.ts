@@ -370,7 +370,7 @@ describe('State', () => {
       const resultState: any = simplePatch(patcher)(existingState);
 
       expect(resultState.x).toEqual(`I'm an own property`);
-      expect(resultState.y).toEqual(undefined);
+      expect(resultState.y).toEqual(`I'm not an own property`);
     });
 
     it('should throw exception if value is array', () => {
