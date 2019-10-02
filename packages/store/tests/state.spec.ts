@@ -378,7 +378,7 @@ describe('State', () => {
         const simple: string[] = ['hello'];
         simplePatch(['world'])(simple);
       } catch (e) {
-        expect(e.message).toEqual(MESSAGES[CODE.PATCHING_ARRAY]());
+        expect(e.message).toEqual('Patching arrays is not supported.');
       }
     });
 
@@ -386,7 +386,7 @@ describe('State', () => {
       try {
         simplePatch('one')('two');
       } catch (e) {
-        expect(e.message).toEqual(MESSAGES[CODE.PATCHING_PRIMITIVE]());
+        expect(e.message).toEqual('Patching primitives is not supported.');
       }
     });
 
@@ -395,7 +395,7 @@ describe('State', () => {
         const lambda: any = () => {};
         console.log(simplePatch(lambda)({}));
       } catch (e) {
-        expect(e.message).toEqual(MESSAGES[CODE.PATCHING_PRIMITIVE]());
+        expect(e.message).toEqual('Patching primitives is not supported.');
       }
     });
   });

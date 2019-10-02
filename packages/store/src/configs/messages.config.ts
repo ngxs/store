@@ -38,6 +38,6 @@ export const CONFIG_MESSAGES: PlainObjectOf<Function> = {
     'Your application was bootstrapped with nooped zone and your execution strategy requires an actual NgZone!\n' +
     'Please set the value of the executionStrategy property to NoopNgxsExecutionStrategy.\n' +
     'NgxsModule.forRoot(states, { executionStrategy: NoopNgxsExecutionStrategy })',
-  [VALIDATION_CODE.PATCHING_ARRAY]: () => 'Patching arrays is not supported',
-  [VALIDATION_CODE.PATCHING_PRIMITIVE]: () => 'Patching primitives is not supported'
+  [VALIDATION_CODE.PATCHING_ARRAY]: () => 'Patching arrays is not supported.',
+  [VALIDATION_CODE.PATCHING_PRIMITIVE]: () => 'Patching primitives is not supported.'
 };
