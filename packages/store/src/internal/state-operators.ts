@@ -1,24 +1,17 @@
+import {
+  CONFIG_MESSAGES as MESSAGES,
+  VALIDATION_CODE as CODE
+} from '../configs/messages.config';
 import { StateOperator } from '../symbols';
-import { isArray, isKey, isPrimitive, shallowClone } from './internals';
 
 export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
   return (existingState: Readonly<T>) => {
-    if (isArray(val)) {
-      throw new Error('Patching arrays is not supported.');
+    if (Array.isArray(val)) {
+      throw new Error(MESSAGES[CODE.PATCHING_ARRAY]());
+    } else if (typeof val !== 'object') {
+      throw new Error(MESSAGES[CODE.PATCHING_PRIMITIVE]());
     }
 
-    if (isPrimitive(val)) {
-      throw new Error('Patching primitives is not supported.');
-    }
-
-    const newState: T = shallowClone(existingState);
-
-    for (const prop in val) {
-      if (val.hasOwnProperty(prop) && isKey(prop)) {
-        newState[prop] = val[prop];
-      }
-    }
-
-    return newState;
+    return { ...existingState, ...val };
   };
 }

@@ -366,25 +366,3 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
 export function isObject(obj: any) {
   return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';
 }
-
-export function isArray<T>(val: Partial<T> | any[]): boolean {
-  return Array.isArray(val);
-}
-
-export function shallowClone<T>(state: Readonly<T>): T {
-  return { ...(state as object) } as T;
-}
-
-export function isPrimitive<T>(val: Partial<T> | any): boolean {
-  return typeof val !== 'object';
-}
-
-/**
- * @description
- * To define a type guard, we simply need
- * to define a function whose return type is a type predicate:
- * https://www.typescriptlang.org/docs/handbook/advanced-types.html#using-type-predicates
- */
-export function isKey<E>(_: string | number | symbol): _ is keyof E {
-  return true;
-}
