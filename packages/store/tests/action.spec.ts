@@ -408,6 +408,34 @@ describe('Action', () => {
           tick(1);
           expect(actionStatus).toEqual([true, false]);
         }));
+
+        it('should be executing when action is dispatched multiple times', fakeAsync(() => {
+          const actionStatus: boolean[] = [];
+
+          actions.pipe(ofActionExecuting(AsyncAction1)).subscribe(executing => {
+            actionStatus.push(executing);
+          });
+
+          store.dispatch(new AsyncAction1());
+          expect(actionStatus).toEqual([true]);
+          store.dispatch(new AsyncAction1());
+          tick(1);
+          expect(actionStatus).toEqual([true, true, false, false]);
+        }));
+
+        it('should be executing when action is dispatched multiple times (case 2)', fakeAsync(() => {
+          const actionStatus: boolean[] = [];
+
+          actions.pipe(ofActionExecuting(AsyncAction1)).subscribe(executing => {
+            actionStatus.push(executing);
+          });
+
+          store.dispatch(new AsyncAction1());
+          store.dispatch(new AsyncAction1());
+          expect(actionStatus).toEqual([true, true]);
+          tick(1);
+          expect(actionStatus).toEqual([true, true, false, false]);
+        }));
       });
     });
   });
