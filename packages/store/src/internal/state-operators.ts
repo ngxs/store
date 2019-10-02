@@ -12,6 +12,13 @@ export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
       throw new Error(MESSAGES[CODE.PATCHING_PRIMITIVE]());
     }
 
-    return { ...(existingState as object), ...(val as object) } as T;
+    const newState: any = { ...existingState };
+    for (const key in val) {
+      // deep clone for patch compatibility
+      // noinspection JSUnfilteredForInLoop (IDE)
+      newState[key] = val[key];
+    }
+
+    return newState as T;
   };
 }
