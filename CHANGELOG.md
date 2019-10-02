@@ -9,6 +9,10 @@ $ npm install @ngxs/store@dev
 * Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
 * Build: add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
 
+## NGXS-Labs
+
+* Feature: announced [@ngxs-labs/data](https://github.com/ngxs-labs/data)
+
 # 3.5.1 2019-08-29
 
 * Fix: Ensure that `@Action()` is not usable with static methods [#1203](https://github.com/ngxs/store/pull/1203)
