@@ -6,6 +6,7 @@ $ npm install @ngxs/store@dev
 ``` 
  
 * Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
+* Build: add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
 
 # 3.5.1 2019-08-29
 
@@ -22,7 +23,6 @@ $ npm install @ngxs/store@dev
 * Build: add bundle size checker for improved infrastructure [#1199](https://github.com/ngxs/store/pull/1199)
 * Build: configure typescript-eslint package [#1201](https://github.com/ngxs/store/pull/1201)
 * Build: add cypress for E2E testing [#1258](https://github.com/ngxs/store/pull/1258)
-* Build: add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
 
 ## NGXS-Labs
 
