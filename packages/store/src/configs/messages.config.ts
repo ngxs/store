@@ -1,4 +1,4 @@
-import { ObjectKeyMap } from '@ngxs/store/internals';
+import { PlainObjectOf } from '@ngxs/store/internals';
 
 export enum VALIDATION_CODE {
   STATE_NAME = 'STATE_NAME',
