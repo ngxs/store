@@ -1,17 +1,17 @@
 import { InjectionToken } from '@angular/core';
-import { ObjectKeyMap } from './symbols';
+import { PlainObject } from './symbols';
 
 export const INITIAL_STATE_TOKEN = new InjectionToken<any>('INITIAL_STATE_TOKEN');
 
 export class InitialState {
-  private static value: ObjectKeyMap<any> = {};
+  private static value: PlainObject = {};
 
-  public static set(state: ObjectKeyMap<any>) {
+  public static set(state: PlainObject) {
     this.value = state;
   }
 
-  public static pop() {
-    const state: ObjectKeyMap<any> = this.value;
+  public static pop(): PlainObject {
+    const state: PlainObject = this.value;
     this.value = {};
     return state;
   }

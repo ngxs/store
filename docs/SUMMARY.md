@@ -9,16 +9,6 @@
   * [Actions](concepts/actions.md)
   * [State](concepts/state.md)
   * [Select](concepts/select.md)
-* API
-  * [@Action](api/modules/_decorators_action_.md)
-  * [Actions(Stream)](api/modules/_actions_stream_.md)
-  * [Init Actions](api/modules/_actions_actions_.md)
-  * [Module](api/modules/_module_.md)
-  * [of-action](api/modules/_operators_of_action_.md)
-  * [@Select](api/modules/_decorators_select_.md)
-  * [@Selector](api/modules/_decorators_selector_.md)
-  * [@State](api/modules/_decorators_state_.md)
-  * [Store](api/modules/_store_.md)
 * Advanced
   * [State Operators](advanced/operators.md)
   * [Options](advanced/options.md)

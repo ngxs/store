@@ -36,7 +36,7 @@ import { NGXS_PLUGINS } from '@ngxs/store';
     {
       provide: NGXS_PLUGINS,
       useValue: logoutPlugin,
-      multi: true  
+      multi: true
     }
   ]
 })
