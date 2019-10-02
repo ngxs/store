@@ -137,6 +137,7 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
+      - *restore_cache
       - run:
           name: Integration Tests
           command: yarn test:ci:integration:ssr

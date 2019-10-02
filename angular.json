@@ -44,7 +44,13 @@
             "main": "./integration/main.browser.ts",
             "tsConfig": "./integration/tsconfig.app.json",
             "polyfills": "./integration/polyfills.ts",
-            "assets": ["./integration/favicon.ico"],
+            "assets": [
+              {
+                "glob": "favicon.ico",
+                "input": "./integration",
+                "output": "./"
+              }
+            ],
             "styles": ["./integration/styles.scss"]
           },
           "configurations": {
@@ -83,17 +89,9 @@
             "tsConfig": "./integration/tsconfig.server.json"
           },
           "configurations": {
-            "dev": {
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": true
-            },
             "production": {
               "optimization": true,
-              "outputHashing": "all",
+              "outputHashing": "none",
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
