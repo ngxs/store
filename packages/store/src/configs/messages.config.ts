@@ -10,7 +10,9 @@ export enum VALIDATION_CODE {
   SELECT_FACTORY_NOT_CONNECTED = 'SELECT_FACTORY_NOT_CONNECTED',
   ACTION_DECORATOR = 'ACTION_DECORATOR',
   SELECTOR_DECORATOR = 'SELECTOR_DECORATOR',
-  ZONE_WARNING = 'ZONE_WARNING'
+  ZONE_WARNING = 'ZONE_WARNING',
+  PATCHING_ARRAY = 'PATCHING_ARRAY',
+  PATCHING_PRIMITIVE = 'PATCHING_PRIMITIVE'
 }
 
 export const CONFIG_MESSAGES: PlainObjectOf<Function> = {
@@ -35,5 +37,7 @@ export const CONFIG_MESSAGES: PlainObjectOf<Function> = {
   [VALIDATION_CODE.ZONE_WARNING]: () =>
     'Your application was bootstrapped with nooped zone and your execution strategy requires an actual NgZone!\n' +
     'Please set the value of the executionStrategy property to NoopNgxsExecutionStrategy.\n' +
-    'NgxsModule.forRoot(states, { executionStrategy: NoopNgxsExecutionStrategy })'
+    'NgxsModule.forRoot(states, { executionStrategy: NoopNgxsExecutionStrategy })',
+  [VALIDATION_CODE.PATCHING_ARRAY]: () => 'Patching arrays is not supported.',
+  [VALIDATION_CODE.PATCHING_PRIMITIVE]: () => 'Patching primitives is not supported.'
 };
