@@ -1,5 +1,5 @@
 import { OperatorFunction, Observable, combineLatest } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { map, filter, scan } from 'rxjs/operators';
 import { getActionTypeFromInstance } from '../utils/utils';
 import { ActionContext, ActionStatus } from '../actions-stream';
 import { ActionType } from '../actions/symbols';
@@ -85,20 +85,51 @@ export function ofActionErrored(...allowedTypes: any[]) {
  */
 export function ofActionExecuting(...allowedTypes: ActionType[]) {
   return (source: Observable<ActionContext>) => {
-    const executionTypes: Observable<boolean>[] = allowedTypes.map((type: ActionType) =>
-      source.pipe(mapToActionExecuting(type))
-    );
+    if (allowedTypes.length === 1) {
+      return source.pipe(
+        ofActionOperator(
+          allowedTypes,
+          [
+            ActionStatus.Dispatched,
+            ActionStatus.Successful,
+            ActionStatus.Canceled,
+            ActionStatus.Errored
+          ],
+          () => {
+            return map(ctx => ctx);
+          }
+        ),
+        scan((acc: number, ctx: ActionContext) => {
+          if (ctx.status === ActionStatus.Dispatched) {
+            return acc + 1;
+          }
+          if (
+            ctx.status === ActionStatus.Successful ||
+            ctx.status === ActionStatus.Canceled ||
+            ctx.status === ActionStatus.Errored
+          ) {
+            return acc - 1;
+          }
+          return acc;
+        }, 0),
+        map((numberExecuting: number) => numberExecuting > 0)
+      );
+    } else {
+      const executionTypes: Observable<boolean>[] = allowedTypes.map((type: ActionType) =>
+        source.pipe(mapToActionExecuting(type))
+      );
 
-    return combineLatest(...executionTypes).pipe(
-      map((actionsExecuting: boolean[]) => {
-        const score: number = actionsExecuting.reduce(
-          (acc: number, status: boolean) => acc + Number(status),
-          0
-        );
+      return combineLatest(...executionTypes).pipe(
+        map((actionsExecuting: boolean[]) => {
+          const score: number = actionsExecuting.reduce(
+            (acc: number, status: boolean) => acc + Number(status),
+            0
+          );
 
-        return score > 0;
-      })
-    );
+          return score > 0;
+        })
+      );
+    }
   };
 }
 
