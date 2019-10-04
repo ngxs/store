@@ -37,6 +37,35 @@ export class NgxsConfig {
      * (default: false)
      */
     strictContentSecurityPolicy: boolean;
+
+    /**
+     * Legacy values are deprecated since v4 and should not be used for new applications:
+     * legacy_enabled - Default for compatibility.
+     *
+     ***********************************************************************
+     * @State<SubAppModel>({
+     *  name: 'subApp'
+     * })
+     * class AppState {
+     *   @Action([..])
+     *   action(ctx: StateContext<SubAppModel>) {
+     *     const value: SubAppModel = ctx.setState({ .. })
+     *     // in terms of return type should return SubAppModel
+     *     // however, the return value returns the entire state tree (appState)
+     *   }
+     * }
+     *
+     * Also dispatch should not return anything
+     * this.store.dispatch(new MyAction()).subscribe((appState) => {
+     *   // however returns the entire state tree (appState)
+     * }})
+     ***********************************************************************
+     *
+     * 'legacy_disabled' - uses the correct return type from setState,
+     * also dispatch should not return anything
+     *
+     */
+    implicitReturnState?: 'legacy_enabled' | 'legacy_disabled';
   };
   /**
    * Determines the execution context to perform async operations inside. An implementation can be
@@ -67,7 +96,8 @@ export class NgxsConfig {
 
   constructor() {
     this.compatibility = {
-      strictContentSecurityPolicy: false
+      strictContentSecurityPolicy: false,
+      implicitReturnState: 'legacy_enabled' // TODO: default is legacy_enabled in v3, will change in v4
     };
     this.executionStrategy = DispatchOutsideZoneNgxsExecutionStrategy;
   }

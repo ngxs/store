@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { StateContext, StateOperator } from '../symbols';
 import { MappedStore } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
+import { NgxsConfig, StateContext, StateOperator } from '../symbols';
 import { InternalStateOperations } from '../internal/state-operations';
 import { simplePatch } from './state-operators';
 
@@ -13,13 +13,17 @@ import { simplePatch } from './state-operators';
  */
 @Injectable()
 export class StateContextFactory {
-  constructor(private _internalStateOperations: InternalStateOperations) {}
+  constructor(
+    private _internalStateOperations: InternalStateOperations,
+    private _config: NgxsConfig
+  ) {}
 
   /**
    * Create the state context
    */
   createStateContext<T>(metadata: MappedStore): StateContext<T> {
     const root = this._internalStateOperations.getRootStateOperations();
+    const config: NgxsConfig = this._config;
 
     function getState(currentAppState: any): T {
       return getValue(currentAppState, metadata.depth);
@@ -28,13 +32,9 @@ export class StateContextFactory {
     function setStateValue(currentAppState: any, newValue: T): any {
       const newAppState = setValue(currentAppState, metadata.depth, newValue);
       root.setState(newAppState);
-      return newAppState;
-      // In doing this refactoring I noticed that there is a 'bug' where the
-      // application state is returned instead of this state slice.
-      // This has worked this way since the beginning see:
-      // https://github.com/ngxs/store/blame/324c667b4b7debd8eb979006c67ca0ae347d88cd/src/state-factory.ts
-      // This needs to be fixed, but is a 'breaking' change.
-      // I will do this fix in a subsequent PR and we can decide how to handle it.
+      return config.compatibility.implicitReturnState === 'legacy_disabled'
+        ? getState(newAppState)
+        : newAppState;
     }
 
     function setStateFromOperator(currentAppState: any, stateOperator: StateOperator<T>) {

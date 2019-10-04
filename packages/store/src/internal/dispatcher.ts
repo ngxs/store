@@ -1,6 +1,6 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
-import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
+import { exhaustMap, filter, map, shareReplay, take } from 'rxjs/operators';
 
 import { compose } from '../utils/compose';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
@@ -8,6 +8,7 @@ import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
+import { NgxsConfig } from '../symbols';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -26,7 +27,8 @@ export class InternalDispatcher {
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
     private _stateStream: StateStream,
-    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy
+    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy,
+    private _config: NgxsConfig
   ) {}
 
   /**
@@ -42,7 +44,13 @@ export class InternalDispatcher {
         this._ngxsExecutionStrategy.leave(() => this._errorHandler.handleError(error))
     });
 
-    return result.pipe(leaveNgxs(this._ngxsExecutionStrategy));
+    return result.pipe(leaveNgxs(this._ngxsExecutionStrategy)).pipe(
+      map((state: any) => {
+        return this._config.compatibility.implicitReturnState === 'legacy_disabled'
+          ? undefined
+          : state;
+      })
+    );
   }
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
