@@ -420,7 +420,7 @@ describe('Action', () => {
           expect(actionStatus).toEqual([true]);
           store.dispatch(new AsyncAction1());
           tick(1);
-          expect(actionStatus).toEqual([true, true, false, false]);
+          expect(actionStatus).toEqual([true, true, true, false]);
         }));
 
         it('should be executing when action is dispatched multiple times (case 2)', fakeAsync(() => {
@@ -434,7 +434,7 @@ describe('Action', () => {
           store.dispatch(new AsyncAction1());
           expect(actionStatus).toEqual([true, true]);
           tick(1);
-          expect(actionStatus).toEqual([true, true, false, false]);
+          expect(actionStatus).toEqual([true, true, true, false]);
         }));
       });
     });
