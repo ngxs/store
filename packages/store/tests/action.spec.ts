@@ -5,7 +5,7 @@ import { throwError, of } from 'rxjs';
 
 import { Action } from '../src/decorators/action';
 import { State } from '../src/decorators/state';
-import { META_KEY } from '../src/symbols';
+import { META_KEY, StateContext } from '../src/symbols';
 
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
@@ -49,6 +49,10 @@ describe('Action', () => {
     static type = 'ASYNC_ACTION 2';
   }
 
+  class AsyncAction3 {
+    static type = 'ASYNC_ACTION 3';
+  }
+
   class AsyncErrorAction {
     static type = 'ASYNC_ERROR_ACTION';
   }
@@ -90,10 +94,29 @@ describe('Action', () => {
       return of({}).pipe(delay(0));
     }
   }
+  @State({
+    name: 'foo'
+  })
+  class FooState {
+    @Action(AsyncAction1)
+    asyncAction1({ dispatch }: StateContext<any>) {
+      return dispatch(new AsyncAction2()).pipe(delay(0));
+    }
+
+    @Action(AsyncAction2)
+    asyncAction2({ dispatch }: StateContext<any>) {
+      return dispatch(new AsyncAction3()).pipe(delay(0));
+    }
+
+    @Action(AsyncAction3)
+    asyncAction3() {
+      return of({}).pipe(delay(0));
+    }
+  }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([BarStore])],
+      imports: [NgxsModule.forRoot([BarStore, FooState])],
       providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
     });
 
@@ -435,6 +458,40 @@ describe('Action', () => {
           expect(actionStatus).toEqual([true, true]);
           tick(1);
           expect(actionStatus).toEqual([true, true, true, false]);
+        }));
+
+        fit('should be executing on nested actions', fakeAsync(() => {
+          const action1Status: boolean[] = [];
+          const action2Status: boolean[] = [];
+          const action3Status: boolean[] = [];
+
+          const combinedActionStatus: boolean[] = [];
+
+          actions.pipe(ofActionExecuting(AsyncAction1)).subscribe(executing => {
+            action1Status.push(executing);
+          });
+
+          actions.pipe(ofActionExecuting(AsyncAction2)).subscribe(executing => {
+            action2Status.push(executing);
+          });
+
+          actions.pipe(ofActionExecuting(AsyncAction3)).subscribe(executing => {
+            action3Status.push(executing);
+          });
+
+          actions
+            .pipe(ofActionExecuting(AsyncAction1, AsyncAction2, AsyncAction3))
+            .subscribe(executing => {
+              combinedActionStatus.push(executing);
+            });
+
+          store.dispatch(new AsyncAction1());
+          tick(1);
+          expect(action1Status).toEqual([true, false]);
+          expect(action2Status).toEqual([true, false]);
+          expect(action3Status).toEqual([true, false]);
+
+          expect(combinedActionStatus).toEqual([true, true, true, false]);
         }));
       });
     });
