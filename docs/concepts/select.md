@@ -26,7 +26,7 @@ export class ZooComponent {
 
   // Also accepts a function like our select method
   @Select(state => state.zoo.animals) animals$: Observable<string[]>;
-  
+
   // Reads the name of the state from the parameter
   @Select() zoo$: Observable<ZooStateModel>;
 }
@@ -67,10 +67,10 @@ the token from the auth state.
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
 
-  constructor(private _store: Store) {}
+  constructor(private store: Store) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = this._store.selectSnapshot<string>((state: AppState) => state.auth.token);
+    const token = this.store.selectSnapshot<string>((state: AppState) => state.auth.token);
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
@@ -101,7 +101,7 @@ import { State, Selector } from '@ngxs/store';
 })
 export class ZooState {
 
-  @Selector() 
+  @Selector()
   static pandas(state: string[]) {
     return state.filter(s => s.indexOf('panda') > -1);
   }
@@ -127,7 +127,7 @@ The behavior of the memoised selectors can be configured at a global level using
 These options can also be provided through the `@SelectorOptions` decorator at a Class or Method level in order to configure the behavior of selectors within that scope. The following options are available:
 #### `suppressErrors`
 - `true` will cause any error within a selector to result in the selector returning `undefined`.
-- `false` results in these errors propogating through the stack that triggered the evaluation of the selector that caused the error. 
+- `false` results in these errors propagating through the stack that triggered the evaluation of the selector that caused the error.
 - **NOTE:** _The default for this setting will be changing to `false` in NGXS v4.  
 The default value in NGXS v3.x is `true`._
 
@@ -138,14 +138,14 @@ The default value in NGXS v3.x is `true`._
 - *The default value in NGXS v3.x is `true`.*
 - See [here](#joining-selectors) for examples of the effect this setting has on your selectors.
 
-We recommend setting these options at the global level, unless you are transitioning your application from one behavior to another where you can use this decorator to introduce this transition in a piecemeal fasion. For example, NGXS v4 will be introducing a change to the selectors that will effect methods which make use of joined selectors (see [below](#joining-selectors)).
+We recommend setting these options at the global level, unless you are transitioning your application from one behavior to another where you can use this decorator to introduce this transition in a piecemeal fashion. For example, NGXS v4 will be introducing a change to the selectors that will effect methods which make use of joined selectors (see [below](#joining-selectors)).
 
 We recommend using the following global settings for new projects in order to minimise the impact of the v4 upgrade:
 ```TS
 {
   // These Selector Settings are recommended in preparation for NGXS v4
   // (See above for their effects)
-  suppressErrors: false, 
+  suppressErrors: false,
   injectContainerState: false
 }
 ```
@@ -169,11 +169,12 @@ For instance, I can have a Lazy Selector that will filter my pandas to the provi
 })
 export class ZooState {
 
-  @Selector() 
+  @Selector()
   static pandas(state: string[]) {
     return (type: string) => {
-      return state.filter(s => s.indexOf('panda') > -1)
-                  .filter(s => s.indexOf(type) > -1);
+      return state
+        .filter(s => s.indexOf('panda') > -1)
+        .filter(s => s.indexOf(type) > -1);
     };
   }
 
@@ -189,9 +190,11 @@ import { map } from 'rxjs/operators';
 @Component({ ... })
 export class ZooComponent {
   babyPandas$: Observable<string[]>;
-  
+
   constructor(private store: Store) {
-    this.babyPandas$ = this.store.select(ZooState.pandas).pipe(map(filterFn => filterFn('baby')));
+    this.babyPandas$ = this.store
+      .select(ZooState.pandas)
+      .pipe(map(filterFn => filterFn('baby')));
   }
 }
 ```
@@ -210,10 +213,14 @@ For instance, I can have a Dynamic Selector that will filter my pandas to the pr
 export class ZooState {
 
   static pandas(type: string) {
-    return createSelector([ZooState], (state: string[]) => {
-      return state.filter(s => s.indexOf('panda') > -1)
-                  .filter(s => s.indexOf(type) > -1);
-    });
+    return createSelector(
+      [ZooState],
+      (state: string[]) => {
+        return state
+          .filter(s => s.indexOf('panda') > -1)
+          .filter(s => s.indexOf(type) > -1);
+      }
+    );
   }
 
 }
@@ -227,19 +234,19 @@ import { map } from 'rxjs/operators';
 
 @Component({ ... })
 export class ZooComponent {
-  
+
   @Select(ZooState.pandas('baby'))
   babyPandas$: Observable<string[]>;
-  
+
   @Select(ZooState.pandas('adult'))
-  adultPandas$: Observable<string[]>;  
+  adultPandas$: Observable<string[]>;
 
 }
 ```
 
 Note that each of these selectors have their own separate memoization. Even if two dynamic selectors created in this way are provided the same argument, they will have separate memoization.
 
-These selectors are extremely powerful and are what is used under the hood to create all other selectors. 
+These selectors are extremely powerful and are what is used under the hood to create all other selectors.
 
 _Dynamic Selectors (dynamic state slice)_
 
@@ -287,8 +294,9 @@ export class ZooState {
 
   @Selector([PreferencesState])
   static firstLocalPanda(state: string[], preferencesState: PreferencesStateModel) {
-    return state.find(s =>
-      (s.indexOf('panda') > -1 && s.indexOf(preferencesState.location)));
+    return state.find(
+      s => s.indexOf('panda') > -1 && s.indexOf(preferencesState.location)
+    );
   }
 
   @Selector([ZooState.firstLocalPanda])
@@ -313,14 +321,16 @@ export class ZooState {
 
   @Selector([ZooState, PreferencesState])
   static firstLocalPanda(state: string[], preferencesState: PreferencesStateModel) {
-    return state.find(s =>
-      (s.indexOf('panda') > -1 && s.indexOf(preferencesState.location)));
+    return state.find(
+      s => s.indexOf('panda') > -1 && s.indexOf(preferencesState.location)
+    );
   }
 
   @Selector([ZooState.firstLocalPanda])
   static happyLocalPanda(panda: string) {
     return 'happy ' + panda;
   }
+
 }
 ```
 Now the `happyLocalPanda` will only recalculate when the output value of the `firstLocalPanda` selector changes.
@@ -341,7 +351,7 @@ to join these two states together like:
 ```TS
 export class CityService {
 
-  @Selector([Zoo, ThemePark]) 
+  @Selector([Zoo, ThemePark])
   static zooThemeParks(zoos, themeParks) {
     return [
       ...zoos,
@@ -354,7 +364,103 @@ export class CityService {
 
 now we can use this `zooThemeParks` selector anywhere in our application.
 
-### Inheriting selectors  
+### The Order of Interacting Selectors
+This topic may be helpful for those users who keep their selectors in separate classes. Let's look at the code below:
+```ts
+// counter.state.ts
+export interface CounterStateModel {
+  counter: number;
+}
+
+@State<CounterStateModel>({
+  name: 'counter',
+  defaults: {
+    counter: 0
+  }
+})
+export class CounterState {}
+
+// counter.query.ts
+export class CounterQuery {
+
+  @Selector([CounterQuery.getCounter])
+  static getCounterCube(counter: number): number {
+    return counter ** 3;
+  }
+
+  // Note: this selector being declared after its usage will cause an issue!!!
+  @Selector([CounterState])
+  static getCounter(state: CounterStateModel): number {
+    return state.counter;
+  }
+
+  @Selector([CounterQuery.getCounter])
+  static getCounterSquare(counter: number): number {
+    return counter ** 2;
+  }
+
+}
+```
+
+As you see in the code above there is a reusable selector `getCounter` that returns the `counter` property from the whole state. The `getCounter` selector is used by 2 other selectors `getCounterSquare` and `getCounterCube`. The snag lies in the `getCounterCube` selector because it's declared before the `getCounter` selector. Let's look at the code emitted by the TypeScript compiler:
+```ts
+__decorate([Selector([CounterQuery.getCounter])], CounterQuery, 'getCounterCube', null);
+__decorate([Selector([CounterState])], CounterQuery, 'getCounter', null);
+__decorate([Selector([CounterQuery.getCounter])], CounterQuery, 'getCounterSquare', null);
+```
+
+The `@Selector` decorator tries to access the `getCounter` selector that hasn't been decorated yet. How could we fix it? We have to change the order of selectors:
+```ts
+export class CounterQuery {
+
+  @Selector([CounterState])
+  static getCounter(state: CounterStateModel): number {
+    return state.counter;
+  }
+
+  @Selector([CounterQuery.getCounter])
+  static getCounterCube(counter: number): number {
+    return counter ** 3;
+  }
+
+  @Selector([CounterQuery.getCounter])
+  static getCounterSquare(counter: number): number {
+    return counter ** 2;
+  }
+
+}
+```
+
+Another solution could be the usage of the `createSelector` function rather than changing the order:
+```ts
+export class CounterQuery {
+
+  static getCounterCube() {
+    return createSelector(
+      [CounterQuery.getCounter()],
+      (counter: number) => counter ** 3
+    );
+  }
+
+  static getCounter() {
+    return createSelector(
+      [CounterState],
+      (state: CounterStateModel) => state.counter
+    );
+  }
+
+  static getCounterSquare() {
+    return createSelector(
+      [CounterQuery.getCounter()],
+      (counter: number) => counter ** 2
+    );
+  }
+
+}
+
+```
+
+### Inheriting Selectors
 
 When we have states that share similar structure, we can extract the shared selectors into a base class which we can later extend from. If we have an `entities` field on multiple states, we can create a base class containing a dynamic `@Selector()` for that field, and extend from it on the `@State` classes like this.
 
@@ -375,7 +481,6 @@ export class EntitiesState {
 And extend the `EntitiesState` class on each `@State` like this:
 
 ```TS
-
 export interface UsersStateModel {
   entities: User[];
 }
@@ -386,7 +491,7 @@ export interface UsersStateModel {
     entities: []
   }
 })
-export class UsersState extends EntitiesState {  
+export class UsersState extends EntitiesState {
   //...
 }
 
@@ -400,7 +505,7 @@ export interface ProductsStateModel {
     entities: []
   }
 })
-export class ProductsState extends EntitiesState {  
+export class ProductsState extends EntitiesState {
   //...
 }
 ```
@@ -411,7 +516,7 @@ Then you can use them as follows:
 
 @Component({ ... })
 export class AppComponent {
-  
+
   @Select(UsersState.entities<User>())
   users$: Observable<User[]>;
 
@@ -424,9 +529,7 @@ export class AppComponent {
 Or: 
 
 ```TS
-
 this.store.select(UsersState.entities<User>())
-
 ```
 
 ## Special Considerations
@@ -453,23 +556,29 @@ export class ZooState {
 
   @Selector()
   static pandas(state: string[]) {
-    return state.filter((s) => s.indexOf('panda') > -1);    
+    return state.filter(s => s.indexOf('panda') > -1);
   }
 
   @Selector()
   static horses(state: string[]) {
     return (type: string) => {
-      return state.filter(s => s.indexOf('horse') > -1)
+      return state
+        .filter(s => s.indexOf('horse') > -1)
         .filter(s => s.indexOf(type) > -1);
     };
   }
 
   static bees(type: string) {
-    return createSelector([ZooState], (state: string[]) => {
-      return state.filter(s => s.indexOf('bee') > -1)
-        .filter(s => s.indexOf(type) > -1);
-    });
+    return createSelector(
+      [ZooState],
+      (state: string[]) => {
+        return state
+          .filter(s => s.indexOf('bee') > -1)
+          .filter(s => s.indexOf(type) > -1);
+      }
+    );
   }
+
 }
 ```
 
@@ -488,25 +597,31 @@ export class ZooState {
 
   @Selector()
   static pandas(state: string[]) {
-    const result = state.filter((s) => s.indexOf('panda') > -1);
+    const result = state.filter(s => s.indexOf('panda') > -1);
     return result;
   }
 
   @Selector()
   static horses(state: string[]) {
     const fn = (type: string) => {
-      return state.filter(s => s.indexOf('horse') > -1)
+      return state
+        .filter(s => s.indexOf('horse') > -1)
         .filter(s => s.indexOf(type) > -1);
     };
     return fn;
   }
 
   static bees(type: string) {
-    const selector = createSelector([ZooState], (state: string[]) => {
-      return state.filter(s => s.indexOf('bee') > -1)
-        .filter(s => s.indexOf(type) > -1);
-    });
+    const selector = createSelector(
+      [ZooState],
+      (state: string[]) => {
+        return state
+          .filter(s => s.indexOf('bee') > -1)
+          .filter(s => s.indexOf(type) > -1);
+      }
+    );
     return selector;
   }
+
 }
 ```

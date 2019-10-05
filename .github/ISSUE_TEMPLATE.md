@@ -28,13 +28,16 @@ ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 
 <!--
 For bug reports please provide the *STEPS TO REPRODUCE* and if possible a *MINIMAL DEMO* of the problem via
-https://stackblitz.com/fork/ngxs-simple
+https://stackblitz.com/fork/ngxs-repro
 
 * Step 1
 * Step 2
 * Step 3
 
 -->
+
+**Note:** Our policy is that issues reported without a reproduction will be closed immediately and then reopened once a reproduction has been provided. Please respect the developers of this project by doing this. We give of our personal time to work on this project and would rather be spending our time fixing or enhancing the library than chasing down badly described or unreproducable issues.
+Please delete this note once you have read it.
 
 ## What is the motivation / use case for changing the behavior?
 <!-- Describe the motivation or the concrete use case. -->

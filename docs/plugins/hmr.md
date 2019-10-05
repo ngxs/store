@@ -94,32 +94,33 @@ Create a shortcut for this by updating package.json and adding an entry to the s
 
 In order to get HMR working we need to install the dependency and configure our app to use it.
 
-Install the `@angularclass/hmr`, `@ngxs/hmr-plugin` module as a dev-dependency
+Install the `@ngxs/hmr-plugin` package as a dev-dependency
 
 Update src/main.ts to use the file we just created:
 
 ```ts
-import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { BootstrapModuleFn as Bootstrap, hmr, WebpackModule } from '@ngxs/hmr-plugin';
+import { enableProdMode, NgModuleRef } from '@angular/core';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-
-declare const module: WebpackModule;
 
 if (environment.production) {
   enableProdMode();
 }
 
-const bootstrap: Bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
+const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
 if (environment.hmr) {
-  hmr(module, bootstrap).catch(err => console.error(err));
+  import('@ngxs/hmr-plugin').then(plugin => {
+    plugin.hmr(module, bootstrap).catch((err: Error) => console.error(err))
+  });
 } else {
-  bootstrap().catch(err => console.log(err));
+  bootstrap().catch((err: Error) => console.log(err));
 }
 ```
+
+The `@ngxs/hmr-plugin` should be loaded on demand using dynamic import thus this can benefit more readily from tree shaking.
 
 ### (OPTIONAL) Update src/app/app.module.ts to manage the state in HMR lifecycle:
 

@@ -157,6 +157,7 @@ export class RouterState {
   }
 
   private dispatchRouterCancel(event: NavigationCancel): void {
+    this.routerStateSnapshot = this._serializer.serialize(this._router.routerState.snapshot);
     this.dispatchRouterAction(
       new RouterCancel(this.routerStateSnapshot, this.routerState, event)
     );
@@ -216,10 +217,10 @@ export class RouterState {
 
         // `Location.prototype.normalize` strips base href from the URL,
         // if `baseHref` (declared in angular.json) for example is `/en`
-        // and the URL is `/test` - then `_locationStrategy.path()` will return `/en/test`,
-        // but `/en/test` is not known to the Angular's router, so we have to strip `/en`
+        // and the URL is `/test#anchor` - then `_locationStrategy.path(true)` will return `/en/test#anchor`,
+        // but `/en/test#anchor` is not known to the Angular's router, so we have to strip `/en`
         // from the URL
-        const currentUrl = this._location.normalize(this._locationStrategy.path());
+        const currentUrl = this._location.normalize(this._locationStrategy.path(true));
         const currentUrlTree = this._urlSerializer.parse(currentUrl);
         // We need to serialize the URL because in that example `/test/?redirect=https://google.com/`
         // Angular will recognize it as `/test?redirect=https:%2F%2Fwww.google.com%2F`

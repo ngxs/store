@@ -1,16 +1,51 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) 
-### To become 3.5.1 or [3.6.0](https://github.com/ngxs/store/milestone/8)
+### To become [3.6.0](https://github.com/ngxs/store/milestone/9)
 
 ```bash
 $ npm install @ngxs/store@dev
-```
+``` 
+ 
+* Feature: expose StateContextFactory, StateFactory [#1325](https://github.com/ngxs/store/pull/1325)
+* Feature: implement `propertyPath` parameter in the `UpdateFormValue` [1215](https://github.com/ngxs/store/pull/1215)
+* Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
+* Build: add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
+* Build: run SSR tests with cypress [#1281](https://github.com/ngxs/store/pull/1281)
+
+## NGXS-Labs
+
+* Feature: announced [@ngxs-labs/data](https://github.com/ngxs-labs/data)
+
+# 3.5.1 2019-08-29
 
 * Fix: Ensure that `@Action()` is not usable with static methods [#1203](https://github.com/ngxs/store/pull/1203)
 * Fix: Router Plugin - normalize URL by stripping base href [#1178](https://github.com/ngxs/store/pull/1178)
+* Fix: Router Plugin - revert state back after "RouterCancel" is dispatched [#1236](https://github.com/ngxs/store/pull/1236)
+* Fix: Router Plugin - "includeHash" must be truthy requesting path [#1265](https://github.com/ngxs/store/pull/1265)
 * Fix: HMR Plugin - trigger ngOnDestroy for all components in app tree [#1192](https://github.com/ngxs/store/pull/1192)
+* Fix: HMR Plugin - remove `@angularclass/hmr` peer dependency [#1205](https://github.com/ngxs/store/pull/1205)
+* Fix: Forms Plugin - reduce `UpdateFormStatus` action dispatching [#1217](https://github.com/ngxs/store/pull/1217)
+* Fix: Logger Plugin - print next state even if error was thrown [#1247](https://github.com/ngxs/store/pull/1247)
+* Fix: Devtoos Plugin - send action to the dev tools even if error was thrown [#1249](https://github.com/ngxs/store/pull/1249)
 * Build: dtslint must use current version of TypeScript [#1182](https://github.com/ngxs/store/pull/1182)
 * Build: add bundle size checker for improved infrastructure [#1199](https://github.com/ngxs/store/pull/1199)
 * Build: configure typescript-eslint package [#1201](https://github.com/ngxs/store/pull/1201)
+* Build: add cypress for E2E testing [#1258](https://github.com/ngxs/store/pull/1258)
+
+## NGXS-Labs
+
+### Dispatch Decorator v2.1.0
+* Fix: remove `DispatchAction` and unnecessary closures [#252](https://github.com/ngxs-labs/dispatch-decorator/pull/252)
+
+### Dispatch Decorator v2.0.0
+
+* Build: prepare package for the Angular 8+ compatibility and support NGXS 3.5 [#247](https://github.com/ngxs-labs/dispatch-decorator/pull/247)
+* Build: configure `cypress` for SSR and E2E testing [#248](https://github.com/ngxs-labs/dispatch-decorator/pull/248)
+* Feat: implement `cancelUncompleted` option [#250](https://github.com/ngxs-labs/dispatch-decorator/pull/250)
+
+### Emitter-plugin v2.0.0
+
+* Feature: Support NGXS 3.5, TypeScript 3.5 [#317](https://github.com/ngxs-labs/emitter/pull/317)
+* Fix: change action type to instance property [#316](https://github.com/ngxs-labs/emitter/pull/316)
 
 # 3.5.0 2019-07-22
 

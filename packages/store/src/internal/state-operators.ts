@@ -1,19 +1,24 @@
+import {
+  CONFIG_MESSAGES as MESSAGES,
+  VALIDATION_CODE as CODE
+} from '../configs/messages.config';
 import { StateOperator } from '../symbols';
 
 export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
   return (existingState: Readonly<T>) => {
-    const isArray = Array.isArray(val);
-    const isPrimitive = typeof val !== 'object';
-    if (isArray) {
-      throw new Error('Patching arrays is not supported.');
+    if (Array.isArray(val)) {
+      throw new Error(MESSAGES[CODE.PATCHING_ARRAY]());
+    } else if (typeof val !== 'object') {
+      throw new Error(MESSAGES[CODE.PATCHING_PRIMITIVE]());
     }
-    if (isPrimitive) {
-      throw new Error('Patching primitives is not supported.');
+
+    const newState: any = { ...(existingState as any) };
+    for (const key in val) {
+      // deep clone for patch compatibility
+      // noinspection JSUnfilteredForInLoop (IDE)
+      newState[key] = (val as any)[key];
     }
-    const newState = { ...(<any>existingState) };
-    for (const k in val) {
-      newState[k] = val[k];
-    }
-    return <T>newState;
+
+    return newState as T;
   };
 }

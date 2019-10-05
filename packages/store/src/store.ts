@@ -2,7 +2,7 @@
 import { Inject, Injectable, Optional, Type } from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
-import { INITIAL_STATE_TOKEN, ObjectKeyMap, ObjectUtils } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, ObjectUtils, PlainObject } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
@@ -41,19 +41,17 @@ export class Store {
     const selectorFn = getSelectorFn(selector);
     return this._stateStream.pipe(
       map(selectorFn),
-      catchError(
-        (err: Error): Observable<never> | Observable<undefined> => {
-          // if error is TypeError we swallow it to prevent usual errors with property access
-          const { suppressErrors } = this._config.selectorOptions;
+      catchError((err: Error): Observable<never> | Observable<undefined> => {
+        // if error is TypeError we swallow it to prevent usual errors with property access
+        const { suppressErrors } = this._config.selectorOptions;
 
-          if (err instanceof TypeError && suppressErrors) {
-            return of(undefined);
-          }
-
-          // rethrow other errors
-          return throwError(err);
+        if (err instanceof TypeError && suppressErrors) {
+          return of(undefined);
         }
-      ),
+
+        // rethrow other errors
+        return throwError(err);
+      }),
       distinctUntilChanged(),
       leaveNgxs(this._internalExecutionStrategy)
     );
@@ -102,11 +100,11 @@ export class Store {
   }
 
   private initStateStream(initialStateValue: any): void {
-    const value: ObjectKeyMap<any> = this._stateStream.value;
+    const value: PlainObject = this._stateStream.value;
     const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
     if (storeIsEmpty) {
       const defaultStateNotEmpty: boolean = Object.keys(this._config.defaultsState).length > 0;
-      const storeValues: ObjectKeyMap<any> = defaultStateNotEmpty
+      const storeValues: PlainObject = defaultStateNotEmpty
         ? ObjectUtils.merge(this._config.defaultsState, initialStateValue)
         : initialStateValue;
 

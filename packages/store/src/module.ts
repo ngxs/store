@@ -6,16 +6,23 @@ import {
   NgModule,
   Provider
 } from '@angular/core';
-import { isAngularInTestMode, NgxsBootstrapper, StateClass } from '@ngxs/store/internals';
-import { INITIAL_STATE_TOKEN, InitialState } from '@ngxs/store/internals';
+import {
+  INITIAL_STATE_TOKEN,
+  InitialState,
+  isAngularInTestMode,
+  NGXS_STATE_CONTEXT_FACTORY,
+  NGXS_STATE_FACTORY,
+  NgxsBootstrapper,
+  StateClass
+} from '@ngxs/store/internals';
 
 import {
   FEATURE_STATE_TOKEN,
-  NG_TEST_MODE,
   NG_DEV_MODE,
+  NG_TEST_MODE,
   NgxsConfig,
-  ROOT_STATE_TOKEN,
-  NgxsModuleOptions
+  NgxsModuleOptions,
+  ROOT_STATE_TOKEN
 } from './symbols';
 import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
@@ -25,7 +32,7 @@ import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatchedActionResults, InternalDispatcher } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
 import { Store } from './store';
-import { SelectFactory } from './decorators/select';
+import { SelectFactory } from './decorators/select/select-factory';
 import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
 import { NgxsRootModule } from './modules/ngxs-root.module';
@@ -132,6 +139,14 @@ export class NgxsModule {
       {
         provide: INITIAL_STATE_TOKEN,
         useFactory: NgxsModule.getInitialState
+      },
+      {
+        provide: NGXS_STATE_CONTEXT_FACTORY,
+        useExisting: StateContextFactory
+      },
+      {
+        provide: NGXS_STATE_FACTORY,
+        useExisting: StateFactory
       }
     ];
   }
