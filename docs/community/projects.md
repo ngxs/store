@@ -1,6 +1,7 @@
 # Community Projects
 
 ### Projects
+
 - [Angular 6 with NGXS and NX](https://xmlking.github.io/ngx-starter-kit/home)
 - [Angular 7, Angular Material and NGXS](https://github.com/adoi/Libnr)
 - [Ngxs-Pizza-Order](https://github.com/tommythongnguyen/Ngxs-Pizza-Order)
@@ -22,6 +23,7 @@
 - [State Management with NGXS](https://github.com/joaqcid/state-mgmt-with-ngxs)
 
 ### Media
+
 - [ngAtlanta - NGXS, State Management Made Simple - Jecelyn Yeen](https://youtu.be/0bhfUGjn0KA)
 - [ngAir 153 - NGXS: A New State Management for Angular Apps with Austin McDaniel and Danny Blue](https://www.youtube.com/watch?v=rkn73khwfWU&feature=youtu.be)
 - [ngAir 196 - One year of NGXS with Mark Whitfeld](https://youtu.be/B7m7eWywJB0)
@@ -30,6 +32,7 @@
 - [Angular NGXS Tutorial - An Alternative to NgRx for State Management](https://youtu.be/SfiO3bDUK7Q)
 
 ### Articles
+
 - [@amcdnl - Authentication in NGXS](https://medium.com/@amcdnl/authentication-in-ngxs-6f25c52fd385)
 - [@amcdnl - Why another state management framework for Angular?](https://medium.com/@amcdnl/why-another-state-management-framework-for-angular-b4b4c19ef664)
 - [Alligator - Manage State in Angular with NGXS](https://alligator.io/angular/ngxs/)

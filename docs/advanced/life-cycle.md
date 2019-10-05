@@ -1,7 +1,9 @@
 # Life-cycle
+
 States can implement life-cycle events.
 
 ## `ngxsOnInit`
+
 If a state implements the `NgxsOnInit` interface, its `ngxsOnInit` method will be invoked after
 all the states from the state's module definition have been initialized and pushed into the state stream.
 The states' `ngxsOnInit` methods are invoked in a topological sorted order going from parent to child.
@@ -27,6 +29,7 @@ export class ZooState implements NgxsOnInit {
 ```
 
 ## `ngxsAfterBootstrap`
+
 If a state implements the `NgxsAfterBootstrap` interface, its `ngxsAfterBootstrap` method will be invoked after the root view and all its children have been rendered, because Angular invokes functions, retrieved from the injector by `APP_BOOTSTRAP_LISTENER` token, only after creating and attaching `ComponentRef` of the root component to the tree of views.
 
 ```TS

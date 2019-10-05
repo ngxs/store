@@ -1,4 +1,5 @@
 # Shared States
+
 Shared state is the ability to get state from one state container and use its properties
 in another state container in a read-only manner. While it's not natively supported it can
 be accomplished.

@@ -1,4 +1,5 @@
 # Caching
+
 Caching requests executed by Actions is a common practice. NGXS does not
 provide this ability out of the box, but it is easy to implement.
 
@@ -55,7 +56,6 @@ export class GetNovelById {
   defaults: {}
 })
 export class NovelsInfoState {
-
   static getNovelById(id: string) {
     return createSelector(
       [NovelsInfoState],
@@ -82,7 +82,6 @@ export class NovelsInfoState {
       })
     );
   }
-
 }
 ```
 
@@ -101,7 +100,6 @@ The component, that displays information about the novel, can subscribe to the `
   `
 })
 export class NovelComponent implements OnDestroy {
-
   novel: Novel;
 
   private destroy$ = new Subject<void>();
@@ -125,7 +123,6 @@ export class NovelComponent implements OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
 }
 ```
 

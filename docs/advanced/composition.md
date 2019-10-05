@@ -1,11 +1,12 @@
 # Composition
+
 You can compose multiple stores together using class inheritance. This is quite simple:
 
 ```TS
 @State({
   name: 'zoo',
   defaults: {
-    type: null 
+    type: null
   }
 })
 class ZooState {

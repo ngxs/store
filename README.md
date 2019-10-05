@@ -44,7 +44,7 @@
 - 📝 Learn about updates from the [changelog](CHANGELOG.md)
 - ❤️ Give back by becoming a [Contributor](docs/community/contributors.md) or a [Sponsor](/docs/community/sponsors.md)
 
-----
+---
 
 ### The Goal of NGXS
 
@@ -64,28 +64,28 @@ To get started locally, follow these instructions:
 2. Clone to your local computer using git.
 3. Make sure that you have installed NodeJS.
 4. Make sure that you have yarn installed.
-5. Run ``yarn install``.
-6. Run ``yarn build:packages``.
+5. Run `yarn install`.
+6. Run `yarn build:packages`.
 
 #### Creating new packages or add feature/fix
 
 ##### if you make changes @ngxs/store
 
-1. Run development mode ``yarn build:packages --package store --watch``
-2. Run serve integration examples ``yarn start``
+1. Run development mode `yarn build:packages --package store --watch`
+2. Run serve integration examples `yarn start`
 3. **...development...**
-4. Run tests ``yarn test:ci``
+4. Run tests `yarn test:ci`
 5. Create pull request
 
 ##### if you add a new package @ngxs/my-super-plugin
 
-1. Create a new project folder ``packages/my-super-plugin``
+1. Create a new project folder `packages/my-super-plugin`
 2. Create template library with ngPackagr
 3. Add your project to package.json
-4. Run development mode ``yarn build:packages --package my-super-plugin --watch``
+4. Run development mode `yarn build:packages --package my-super-plugin --watch`
 5. **...development...**
-6. Run build ``yarn build:packages --package my-super-plugin``
-7. Run tests ``yarn test:ci``
+6. Run build `yarn build:packages --package my-super-plugin`
+7. Run tests `yarn test:ci`
 8. Create pull request
 
 #### NGXS Labs
@@ -96,44 +96,45 @@ If you have ideas for creating unique libraries, you can join us. Email us at `n
 
 #### Tools
 
-| Project | Package | Version | Links |
-|---|---|---|---|
-**NGXS CLI** | [`@ngxs/cli`](https://npmjs.com/package/@ngxs/cli) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fcli/latest.svg)](https://npmjs.com/package/@ngxs/cli) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/cli.md)
-**NGXS Schematics** | [`@ngxs/schematics`](https://npmjs.com/package/@ngxs/schematics) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fschematics/latest.svg)](https://npmjs.com/package/@ngxs/schematics) |  [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/schematics/blob/master/README.md)
+| Project             | Package                                                          | Version                                                                                                               | Links                                                                                                                      |
+| ------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **NGXS CLI**        | [`@ngxs/cli`](https://npmjs.com/package/@ngxs/cli)               | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fcli/latest.svg)](https://npmjs.com/package/@ngxs/cli)               | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/cli.md) |
+| **NGXS Schematics** | [`@ngxs/schematics`](https://npmjs.com/package/@ngxs/schematics) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fschematics/latest.svg)](https://npmjs.com/package/@ngxs/schematics) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/schematics/blob/master/README.md)      |
 
 #### Packages
 
-| Project | Package | Version | Links |
-|---|---|---|---|
-**NGXS Store** | [`@ngxs/store`](https://npmjs.com/package/@ngxs/store) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fstore/latest.svg)](https://npmjs.com/package/@ngxs/store) |  [![README](https://img.shields.io/badge/README--green.svg)](http://ngxs.io) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/store/v/dev)
-**NGXS Logger-plugin** | [`@ngxs/logger-plugin`](https://npmjs.com/package/@ngxs/logger-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Flogger-plugin/latest.svg)](https://npmjs.com/package/@ngxs/logger-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/logger.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/logger-plugin/v/dev)
-**NGXS Devtools-plugin** | [`@ngxs/devtools-plugin`](https://npmjs.com/package/@ngxs/devtools-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fdevtools-plugin/latest.svg)](https://npmjs.com/package/@ngxs/devtools-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/devtools.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/devtools-plugin/v/dev)
-**NGXS WebSocket-plugin** | [`@ngxs/websocket-plugin`](https://npmjs.com/package/@ngxs/websocket-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fwebsocket-plugin/latest.svg)](https://npmjs.com/package/@ngxs/websocket-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/websocket.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/websocket-plugin/v/dev)
-**NGXS Form-plugin** | [`@ngxs/form-plugin`](https://npmjs.com/package/@ngxs/form-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fform-plugin/latest.svg)](https://npmjs.com/package/@ngxs/form-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/form.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/form-plugin/v/dev)
-**NGXS Router-plugin** | [`@ngxs/router-plugin`](https://npmjs.com/package/@ngxs/router-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Frouter-plugin/latest.svg)](https://npmjs.com/package/@ngxs/router-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/router.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/router-plugin/v/dev)
-**NGXS Storage-plugin** | [`@ngxs/storage-plugin`](https://npmjs.com/package/@ngxs/storage-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fstorage-plugin/latest.svg)](https://npmjs.com/package/@ngxs/storage-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/storage.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/storage-plugin/v/dev)
-**NGXS HMR** | [`@ngxs/hmr-plugin`](https://npmjs.com/package/@ngxs/hmr-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fhmr-plugin/latest.svg)](https://npmjs.com/package/@ngxs/hmr-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/hmr.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/hmr-plugin/v/dev)
+| Project                   | Package                                                                      | Version                                                                                                                           | Links                                                                                                                                                                                                                                                       |
+| ------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **NGXS Store**            | [`@ngxs/store`](https://npmjs.com/package/@ngxs/store)                       | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fstore/latest.svg)](https://npmjs.com/package/@ngxs/store)                       | [![README](https://img.shields.io/badge/README--green.svg)](http://ngxs.io) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/store/v/dev)                                                                 |
+| **NGXS Logger-plugin**    | [`@ngxs/logger-plugin`](https://npmjs.com/package/@ngxs/logger-plugin)       | [![latest](https://img.shields.io/npm/v/%40ngxs%2Flogger-plugin/latest.svg)](https://npmjs.com/package/@ngxs/logger-plugin)       | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/logger.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/logger-plugin/v/dev)       |
+| **NGXS Devtools-plugin**  | [`@ngxs/devtools-plugin`](https://npmjs.com/package/@ngxs/devtools-plugin)   | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fdevtools-plugin/latest.svg)](https://npmjs.com/package/@ngxs/devtools-plugin)   | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/devtools.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/devtools-plugin/v/dev)   |
+| **NGXS WebSocket-plugin** | [`@ngxs/websocket-plugin`](https://npmjs.com/package/@ngxs/websocket-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fwebsocket-plugin/latest.svg)](https://npmjs.com/package/@ngxs/websocket-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/websocket.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/websocket-plugin/v/dev) |
+| **NGXS Form-plugin**      | [`@ngxs/form-plugin`](https://npmjs.com/package/@ngxs/form-plugin)           | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fform-plugin/latest.svg)](https://npmjs.com/package/@ngxs/form-plugin)           | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/form.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/form-plugin/v/dev)           |
+| **NGXS Router-plugin**    | [`@ngxs/router-plugin`](https://npmjs.com/package/@ngxs/router-plugin)       | [![latest](https://img.shields.io/npm/v/%40ngxs%2Frouter-plugin/latest.svg)](https://npmjs.com/package/@ngxs/router-plugin)       | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/router.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/router-plugin/v/dev)       |
+| **NGXS Storage-plugin**   | [`@ngxs/storage-plugin`](https://npmjs.com/package/@ngxs/storage-plugin)     | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fstorage-plugin/latest.svg)](https://npmjs.com/package/@ngxs/storage-plugin)     | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/storage.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/storage-plugin/v/dev)     |
+| **NGXS HMR**              | [`@ngxs/hmr-plugin`](https://npmjs.com/package/@ngxs/hmr-plugin)             | [![latest](https://img.shields.io/npm/v/%40ngxs%2Fhmr-plugin/latest.svg)](https://npmjs.com/package/@ngxs/hmr-plugin)             | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs/store/blob/master/docs/plugins/hmr.md) [![snapshot](https://img.shields.io/badge/snapshot--blue.svg)](https://www.npmjs.com/package/@ngxs/hmr-plugin/v/dev)             |
 
 #### NGXS Labs
 
-| Project | Package | Version | Links |
-|---|---|---|---|
-**NGXS-labs Data** | [`@ngxs-labs/data`](https://npmjs.com/package/@ngxs-labs/data) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fdata/latest.svg)](https://npmjs.com/package/@ngxs-labs/data) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/data)
-**NGXS-labs Emitter** | [`@ngxs-labs/emitter`](https://npmjs.com/package/@ngxs-labs/emitter) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Femitter/latest.svg)](https://npmjs.com/package/@ngxs-labs/emitter) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/emitter)
-**NGXS-labs Immer adapter** | [`@ngxs-labs/immer-adapter`](https://npmjs.com/package/@ngxs-labs/immer-adapter) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fimmer-adapter/latest.svg)](https://npmjs.com/package/@ngxs-labs/immer-adapter) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/immer-adapter)
-**NGXS-labs Dispatch decorator** | [`@ngxs-labs/dispatch-decorator`](https://npmjs.com/package/@ngxs-labs/dispatch-decorator) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fdispatch-decorator/latest.svg)](https://npmjs.com/package/@ngxs-labs/dispatch-decorator) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/dispatch-decorator)
-**NGXS-labs Select snapshot decorator** | [`@ngxs-labs/select-snapshot`](https://npmjs.com/package/@ngxs-labs/select-snapshot) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fselect-snapshot/latest.svg)](https://npmjs.com/package/@ngxs-labs/select-snapshot) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/select-snapshot)
-**NGXS-labs Async storage plugin** | [`@ngxs-labs/async-storage-plugin`](https://npmjs.com/package/@ngxs-labs/async-storage-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fasync-storage-plugin/latest.svg)](https://npmjs.com/package/@ngxs-labs/async-storage-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/async-storage-plugin)
-**NGXS-labs Entity state** | [`@ngxs-labs/entity-state`](https://npmjs.com/package/@ngxs-labs/entity-state) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fentity-state/latest.svg)](https://npmjs.com/package/@ngxs-labs/entity-state) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/entity-state)
-**NGXS-labs Testing tools** | [`@ngxs-labs/testing`](https://npmjs.com/package/@ngxs-labs/testing) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Ftesting/latest.svg)](https://npmjs.com/package/@ngxs-labs/testing) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/testing)
+| Project                                 | Package                                                                                        | Version                                                                                                                                             | Links                                                                                                          |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **NGXS-labs Data**                      | [`@ngxs-labs/data`](https://npmjs.com/package/@ngxs-labs/data)                                 | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fdata/latest.svg)](https://npmjs.com/package/@ngxs-labs/data)                                 | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/data)                 |
+| **NGXS-labs Emitter**                   | [`@ngxs-labs/emitter`](https://npmjs.com/package/@ngxs-labs/emitter)                           | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Femitter/latest.svg)](https://npmjs.com/package/@ngxs-labs/emitter)                           | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/emitter)              |
+| **NGXS-labs Immer adapter**             | [`@ngxs-labs/immer-adapter`](https://npmjs.com/package/@ngxs-labs/immer-adapter)               | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fimmer-adapter/latest.svg)](https://npmjs.com/package/@ngxs-labs/immer-adapter)               | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/immer-adapter)        |
+| **NGXS-labs Dispatch decorator**        | [`@ngxs-labs/dispatch-decorator`](https://npmjs.com/package/@ngxs-labs/dispatch-decorator)     | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fdispatch-decorator/latest.svg)](https://npmjs.com/package/@ngxs-labs/dispatch-decorator)     | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/dispatch-decorator)   |
+| **NGXS-labs Select snapshot decorator** | [`@ngxs-labs/select-snapshot`](https://npmjs.com/package/@ngxs-labs/select-snapshot)           | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fselect-snapshot/latest.svg)](https://npmjs.com/package/@ngxs-labs/select-snapshot)           | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/select-snapshot)      |
+| **NGXS-labs Async storage plugin**      | [`@ngxs-labs/async-storage-plugin`](https://npmjs.com/package/@ngxs-labs/async-storage-plugin) | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fasync-storage-plugin/latest.svg)](https://npmjs.com/package/@ngxs-labs/async-storage-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/async-storage-plugin) |
+| **NGXS-labs Entity state**              | [`@ngxs-labs/entity-state`](https://npmjs.com/package/@ngxs-labs/entity-state)                 | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fentity-state/latest.svg)](https://npmjs.com/package/@ngxs-labs/entity-state)                 | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/entity-state)         |
+| **NGXS-labs Testing tools**             | [`@ngxs-labs/testing`](https://npmjs.com/package/@ngxs-labs/testing)                           | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Ftesting/latest.svg)](https://npmjs.com/package/@ngxs-labs/testing)                           | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/testing)              |
 
 #### Community
 
-| Project | Package | Version | Links |
-|---|---|---|---|
-**Reset Plugin** | [`ngxs-reset-plugin`](https://npmjs.com/package/ngxs-reset-plugin) | [![latest](https://img.shields.io/npm/v/ngxs-reset-plugin/latest.svg)](https://npmjs.com/package/ngxs-reset-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ng-turkey/ngxs-reset-plugin/blob/master/README.md)
+| Project          | Package                                                            | Version                                                                                                             | Links                                                                                                                             |
+| ---------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Reset Plugin** | [`ngxs-reset-plugin`](https://npmjs.com/package/ngxs-reset-plugin) | [![latest](https://img.shields.io/npm/v/ngxs-reset-plugin/latest.svg)](https://npmjs.com/package/ngxs-reset-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ng-turkey/ngxs-reset-plugin/blob/master/README.md) |
 
 # Contributors
+
 Thanks to all our contributors!
 
 <a href="https://github.com/ngxs/ngxs/graphs/contributors"><img src="https://opencollective.com/ngxs/contributors.svg?width=890" /></a>

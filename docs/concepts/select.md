@@ -1,4 +1,5 @@
 # Selects
+
 Selects are functions that slice a specific portion of state from the global state container.
 
 In CQRS and Redux patterns, we keep READ and WRITE separated. This pattern also exists in NGXS.
@@ -8,6 +9,7 @@ In NGXS, there are two methods to select state, we can either call the `select` 
 `Store` service or use the `@Select` decorator. First let's look at the `@Select` decorator.
 
 ## Select Decorators
+
 You can select slices of data from the store using the `@Select` decorator. It has a few
 different ways to get your data out, whether passing the state class, a function, a different state class
 or a memoized selector.
@@ -33,6 +35,7 @@ export class ZooComponent {
 ```
 
 ## Store Select Function
+
 The `Store` class also has a `select` function:
 
 ```TS
@@ -41,7 +44,7 @@ import { Store } from '@ngxs/store';
 @Component({ ... })
 export class ZooComponent {
   animals$: Observable<string[]>;
-  
+
   constructor(private store: Store) {
     this.animals$ = this.store.select(state => state.zoo.animals);
   }
@@ -58,6 +61,7 @@ This can be useful in route guards where you only want to check the current stat
 watching the stream. It can also be useful for unit testing.
 
 ## Snapshot Selects
+
 On the store, there is a `selectSnapshot` function that allows you to pull out the
 raw value. This is helpful for cases where you need to get a static value but can't
 use Observables. A good use case for this would be an interceptor that needs to get
@@ -84,6 +88,7 @@ export class JWTInterceptor implements HttpInterceptor {
 ```
 
 ## Memoized Selectors
+
 Oftentimes you will use the same selectors in several different places
 or have complex selectors you want to keep separate from your component.
 NGXS has a `@Selector` decorator that will help us with that. This decorator
@@ -125,22 +130,26 @@ and our `pandas$` will only return animals with the name panda in them.
 
 The behavior of the memoised selectors can be configured at a global level using the `selectorOptions` property in the options passed to the `NgxsModule.forRoot` call (see [Options](../advanced/options.md)).  
 These options can also be provided through the `@SelectorOptions` decorator at a Class or Method level in order to configure the behavior of selectors within that scope. The following options are available:
+
 #### `suppressErrors`
+
 - `true` will cause any error within a selector to result in the selector returning `undefined`.
 - `false` results in these errors propagating through the stack that triggered the evaluation of the selector that caused the error.
 - **NOTE:** _The default for this setting will be changing to `false` in NGXS v4.  
-The default value in NGXS v3.x is `true`._
+  The default value in NGXS v3.x is `true`._
 
 #### `injectContainerState`
+
 - `true` will cause all selectors defined within a state class to receive the container class' state model as their first parameter. As a result every selector would be re-evaluated after any change to that state.  
-**NOTE:** *This is not ideal, therefore this setting default will be changing to `false` in NGXS v4.* 
+  **NOTE:** _This is not ideal, therefore this setting default will be changing to `false` in NGXS v4._
 - `false` will prevent the injection of the container state model as the first parameter of a selector method (defined within a state class) that joins to other selectors for its parameters.
-- *The default value in NGXS v3.x is `true`.*
+- _The default value in NGXS v3.x is `true`._
 - See [here](#joining-selectors) for examples of the effect this setting has on your selectors.
 
 We recommend setting these options at the global level, unless you are transitioning your application from one behavior to another where you can use this decorator to introduce this transition in a piecemeal fashion. For example, NGXS v4 will be introducing a change to the selectors that will effect methods which make use of joined selectors (see [below](#joining-selectors)).
 
 We recommend using the following global settings for new projects in order to minimise the impact of the v4 upgrade:
+
 ```TS
 {
   // These Selector Settings are recommended in preparation for NGXS v4
@@ -270,7 +279,7 @@ then this could be used as follows:
 
 @Component({ ... })
 export class ZooComponent {
-  
+
   @Select(SharedSelectors.getEntities(ZooState))
   zoos$: Observable<Zoo[]>;
 
@@ -281,10 +290,12 @@ export class ZooComponent {
 ```
 
 ### Joining Selectors
+
 When defining a selector, you can also pass other selectors into the signature
 of the `Selector` decorator to join other selectors with this state selector.
 
 If you do not change the Selector Options (see [above](#selector-options)) then these selectors will have the following signature in NGXS v3.x:
+
 ```TS
 @State<PreferencesStateModel>({ ... })
 export class PreferencesState { ... }
@@ -312,32 +323,35 @@ Here you can see that when using the `Selector` decorator with arguments within 
 The Memoised Selectors will recalculate when any of their input parameter values change (whether they use them or not). In the case of the behavior above where the state class's state model is injected as the first input parameter, the selectors will recalculate on any change to this model. You will notice that the `happyLocalPanda` selector has the `state` dependency even though it is not used. It would recalculate on every change to `state` ignoring the fact that `firstLocalPanda` value may not have changed. This is not ideal, therefore this default behavior is changing in NGXS v4.
 
 In NGXS v4 and above the default value of the [`injectContainerState`](#injectcontainerstate) selector option will change to `false`, resulting in selectors that are more optimised because they do not get the state model injected as the first parameter unless explicitly requested. With this setting the selectors would need to be defined as follows:
- ```TS
+
+```TS
 @State<PreferencesStateModel>({ ... })
 export class PreferencesState { ... }
 
 @State<string[]>({ ... })
 export class ZooState {
 
-  @Selector([ZooState, PreferencesState])
-  static firstLocalPanda(state: string[], preferencesState: PreferencesStateModel) {
-    return state.find(
-      s => s.indexOf('panda') > -1 && s.indexOf(preferencesState.location)
-    );
-  }
+ @Selector([ZooState, PreferencesState])
+ static firstLocalPanda(state: string[], preferencesState: PreferencesStateModel) {
+   return state.find(
+     s => s.indexOf('panda') > -1 && s.indexOf(preferencesState.location)
+   );
+ }
 
-  @Selector([ZooState.firstLocalPanda])
-  static happyLocalPanda(panda: string) {
-    return 'happy ' + panda;
-  }
+ @Selector([ZooState.firstLocalPanda])
+ static happyLocalPanda(panda: string) {
+   return 'happy ' + panda;
+ }
 
 }
 ```
+
 Now the `happyLocalPanda` will only recalculate when the output value of the `firstLocalPanda` selector changes.
 
 We recommend that you move your projects to this behavior in order to optimize your selectors and to prepare for the change to the defaults coming in NGXS v4. See the Selector Options section [above](#selector-options) for the recommended settings.
 
 ### Meta Selectors
+
 By default selectors in NGXS are bound to a state. Sometimes you need the ability
 to join to un-related states in a high-performance re-usable fashion. A meta selector
 is a selector allows you to bind N number of selectors together to return a state
@@ -365,7 +379,9 @@ export class CityService {
 now we can use this `zooThemeParks` selector anywhere in our application.
 
 ### The Order of Interacting Selectors
+
 This topic may be helpful for those users who keep their selectors in separate classes. Let's look at the code below:
+
 ```ts
 // counter.state.ts
 export interface CounterStateModel {
@@ -382,7 +398,6 @@ export class CounterState {}
 
 // counter.query.ts
 export class CounterQuery {
-
   @Selector([CounterQuery.getCounter])
   static getCounterCube(counter: number): number {
     return counter ** 3;
@@ -398,11 +413,11 @@ export class CounterQuery {
   static getCounterSquare(counter: number): number {
     return counter ** 2;
   }
-
 }
 ```
 
 As you see in the code above there is a reusable selector `getCounter` that returns the `counter` property from the whole state. The `getCounter` selector is used by 2 other selectors `getCounterSquare` and `getCounterCube`. The snag lies in the `getCounterCube` selector because it's declared before the `getCounter` selector. Let's look at the code emitted by the TypeScript compiler:
+
 ```ts
 __decorate([Selector([CounterQuery.getCounter])], CounterQuery, 'getCounterCube', null);
 __decorate([Selector([CounterState])], CounterQuery, 'getCounter', null);
@@ -410,9 +425,9 @@ __decorate([Selector([CounterQuery.getCounter])], CounterQuery, 'getCounterSquar
 ```
 
 The `@Selector` decorator tries to access the `getCounter` selector that hasn't been decorated yet. How could we fix it? We have to change the order of selectors:
+
 ```ts
 export class CounterQuery {
-
   @Selector([CounterState])
   static getCounter(state: CounterStateModel): number {
     return state.counter;
@@ -427,14 +442,13 @@ export class CounterQuery {
   static getCounterSquare(counter: number): number {
     return counter ** 2;
   }
-
 }
 ```
 
 Another solution could be the usage of the `createSelector` function rather than changing the order:
+
 ```ts
 export class CounterQuery {
-
   static getCounterCube() {
     return createSelector(
       [CounterQuery.getCounter()],
@@ -455,9 +469,7 @@ export class CounterQuery {
       (counter: number) => counter ** 2
     );
   }
-
 }
-
 ```
 
 ### Inheriting Selectors
@@ -526,7 +538,7 @@ export class AppComponent {
 }
 ```
 
-Or: 
+Or:
 
 ```TS
 this.store.select(UsersState.entities<User>())
@@ -538,7 +550,7 @@ this.store.select(UsersState.entities<User>())
 
 _If you are building an Angular lib directly so that it can be deployed to npm the Angular compiler option `strictMetadataEmit` (see [docs](https://angular.io/guide/aot-compiler#strictmetadataemit)) will most likely be set to true and, as a result, Angular's `MetadataCollector` from the `@angular/compiler-cli` package will report the following issue with using lambdas in static methods:_
 
->  Metadata collected contains an error that will be reported at runtime: Lambda not supported.`
+> Metadata collected contains an error that will be reported at runtime: Lambda not supported.`
 
 This error would be reported for each of the selectors defined below but, as demonstrated in the sample, you can prevent this by including the `// @dynamic` comment before the class expression and decorators:
 
@@ -584,6 +596,7 @@ export class ZooState {
 
 As an alternative you can assign your result to a variable before you return it:  
 See https://github.com/ng-packagr/ng-packagr/issues/696#issuecomment-387114613
+
 ```TS
 @State<string[]>({
   name: 'animals',

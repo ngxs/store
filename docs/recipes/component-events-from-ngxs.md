@@ -22,7 +22,6 @@ We develop the `app-email-list` custom element that emits `messagesLoaded` DOM e
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmailListComponent {
-
   @Select(MessagesState.messages) messages$: Observable<Message[]>;
 
   @Output() messagesLoaded = new EventEmitter<Message[]>();
@@ -35,7 +34,6 @@ export class EmailListComponent {
       this.messagesLoaded.emit(messages);
     });
   }
-
 }
 ```
 
@@ -51,7 +49,6 @@ The above code is very simple and is used for demonstrating purposes only! As yo
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmailListComponent {
-
   @Select(MessagesState.messages) messages$: Observable<Message[]>;
 
   @ViewChild(ButtonComponent, { static: true }) button: ButtonComponent;
@@ -62,7 +59,6 @@ export class EmailListComponent {
   );
 
   constructor(private store: Store) {}
-
 }
 ```
 
@@ -84,26 +80,22 @@ export class LoadBooks {
 }
 
 export class BooksState {
-
   static getBooks(genre: Genre) {
     return createSelector(
       [BooksState],
       (books: Book[]) => books.filter(book => book.genre === genre)
     );
   }
-
 }
 
 // books.component.ts
 export class BooksComponent {
-
   @Output() booksLoaded = this.actions$.pipe(
     ofActionSuccessful(LoadBooks),
     map((action: LoadBooks) => this.store.selectSnapshot(BooksState.getBooks(action.genre)))
   );
 
   constructor(private store: Store, private actions$: Actions) {}
-
 }
 ```
 

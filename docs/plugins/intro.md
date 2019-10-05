@@ -37,7 +37,7 @@ export class NgxsLoggerPluginModule {
         {
           provide: NGXS_PLUGINS,
           useClass: LoggerPlugin,
-          multi: true  
+          multi: true
         },
         {
           provide: NGXS_LOGGER_PLUGIN_OPTIONS,

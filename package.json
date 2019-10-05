@@ -100,7 +100,7 @@
     "lint": "ng lint",
     "eslint": "eslint 'packages/**/*.ts'",
     "bundlesize": "bundlesize --config bundlesize.config.json",
-    "format": "prettier --write \"{packages,integration,integrations}/**/*.ts\"",
+    "format": "prettier --write \"**/*.{ts,html,css,scss,md,json}\"",
     "// - INTEGRATION": "Integration builds",
     "integration:ng5": "cd integrations/hello-world-ng5 && yarn test",
     "integration:ivy": "cd integrations/ivy && yarn test"
