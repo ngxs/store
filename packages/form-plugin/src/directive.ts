@@ -1,4 +1,13 @@
-import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef, Inject } from '@angular/core';
+import {
+  Directive,
+  Input,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  Type,
+  Injector,
+  InjectFlags
+} from '@angular/core';
 import { FormGroupDirective, FormGroup } from '@angular/forms';
 import { Store, getValue } from '@ngxs/store';
 import { Subject, Observable } from 'rxjs';
@@ -11,8 +20,10 @@ import {
   UpdateFormErrors,
   UpdateForm
 } from './actions';
-import { NGXS_FORM_PLUGIN_VALUE_CHANGES_STRATEGY } from './symbols';
-import { NgxsFormPluginValueChangesStrategy } from './value-changes-strategy';
+import {
+  NgxsFormPluginValueChangesStrategy,
+  NoopNgxsFormPluginValueChangesStrategy
+} from './value-changes-strategy';
 
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
@@ -25,6 +36,14 @@ export class FormDirective implements OnInit, OnDestroy {
   @Input('ngxsFormClearOnDestroy')
   clearDestroy = false;
 
+  /**
+   * `valueChangesStrategy` is noop by default but can be overwritten via binding
+   */
+  @Input('ngxsFormValueChangesStrategy')
+  valueChangesStrategy: Type<
+    NgxsFormPluginValueChangesStrategy
+  > = NoopNgxsFormPluginValueChangesStrategy;
+
   private readonly _destroy$ = new Subject<void>();
   private _updating = false;
 
@@ -32,8 +51,7 @@ export class FormDirective implements OnInit, OnDestroy {
     private _store: Store,
     private _formGroupDirective: FormGroupDirective,
     private _cd: ChangeDetectorRef,
-    @Inject(NGXS_FORM_PLUGIN_VALUE_CHANGES_STRATEGY)
-    private _valueChangesStrategy: NgxsFormPluginValueChangesStrategy
+    private _injector: Injector
   ) {}
 
   ngOnInit() {
@@ -94,11 +112,20 @@ export class FormDirective implements OnInit, OnDestroy {
       this._cd.markForCheck();
     });
 
+    // Retrieve instance eagerly, thus the developer will not need
+    // to instantiate class itself. For example if the `ngxsForm`
+    // directive is inside `ngIf`
+    const valueChangesStrategy = this._injector.get(
+      this.valueChangesStrategy,
+      undefined,
+      InjectFlags.SkipSelf
+    );
+
     this._formGroupDirective
       .valueChanges!.pipe(
-        // Debouncing should be always first
+        // Debouncing has to go first
         this.debounceChange(),
-        this._valueChangesStrategy.valueChanges(),
+        valueChangesStrategy.valueChanges(),
         takeUntil(this._destroy$)
       )
       .subscribe(() => {
@@ -127,7 +154,7 @@ export class FormDirective implements OnInit, OnDestroy {
 
     this._formGroupDirective
       .statusChanges!.pipe(
-        // Debouncing should be always first
+        // Debouncing has to go first
         this.debounceChange(),
         distinctUntilChanged(),
         takeUntil(this._destroy$)

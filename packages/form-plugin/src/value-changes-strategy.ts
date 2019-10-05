@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-export interface NgxsFormPluginValueChangesStrategy {
-  valueChanges(): (changes: Observable<any>) => Observable<any>;
+export interface NgxsFormPluginValueChangesStrategy<T = any> {
+  valueChanges(): (changes: Observable<T>) => Observable<T>;
 }
 
 @Injectable()
-export class DefaultNgxsFormPluginValueChangesStrategy
+export class NoopNgxsFormPluginValueChangesStrategy
   implements NgxsFormPluginValueChangesStrategy {
   /**
    * The default strategy acts like a noop

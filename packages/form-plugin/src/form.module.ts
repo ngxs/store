@@ -4,8 +4,10 @@ import { NGXS_PLUGINS } from '@ngxs/store';
 
 import { FormDirective } from './directive';
 import { NgxsFormPlugin } from './form.plugin';
-import { DefaultNgxsFormPluginValueChangesStrategy } from './value-changes-strategy';
-import { NgxsFormPluginOptions, NGXS_FORM_PLUGIN_VALUE_CHANGES_STRATEGY } from './symbols';
+import {
+  NoopNgxsFormPluginValueChangesStrategy,
+  DeepEqualNgxsFormPluginValueChangesStrategy
+} from './value-changes-strategy';
 
 @NgModule({
   imports: [ReactiveFormsModule],
@@ -13,18 +15,16 @@ import { NgxsFormPluginOptions, NGXS_FORM_PLUGIN_VALUE_CHANGES_STRATEGY } from '
   exports: [FormDirective]
 })
 export class NgxsFormPluginModule {
-  static forRoot(options: NgxsFormPluginOptions = {}): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders {
     return {
       ngModule: NgxsFormPluginModule,
       providers: [
+        NoopNgxsFormPluginValueChangesStrategy,
+        DeepEqualNgxsFormPluginValueChangesStrategy,
         {
           provide: NGXS_PLUGINS,
           useClass: NgxsFormPlugin,
           multi: true
-        },
-        {
-          provide: NGXS_FORM_PLUGIN_VALUE_CHANGES_STRATEGY,
-          useClass: options.valueChangesStrategy || DefaultNgxsFormPluginValueChangesStrategy
         }
       ]
     };
