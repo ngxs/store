@@ -37,6 +37,12 @@ export interface NgxsHmrOptions {
    * (default: 100ms)
    */
   deferTime?: number;
+
+  /**
+   * @description
+   * additionally persist state after destruction AppModule
+   */
+  persistAfterDestroyed?: boolean;
 }
 
 type ModuleId = string | number;
