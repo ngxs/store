@@ -29,7 +29,7 @@ export async function hmr<T>(
     webpackModule.hot!.dispose((data: HmrDataTransfer) => {
       data.snapshot = manager.beforeModuleOnDestroy();
       manager.createNewModule();
-      if (options.persistAfterDestroyed) {
+      if (options.persistAfterDestroy) {
         manager.context.store.reset(data.snapshot);
       }
     });

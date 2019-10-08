@@ -292,85 +292,83 @@ describe('HMR Plugin', () => {
     expect((appModule as any)['_destroyed']).toEqual(true);
   });
 
-  describe('side effect destroy state when called reset in ngOnDestroy', () => {
-    it('state provided before module destroy', fakeAsync(async () => {
-      const { webpackModule, store } = await hmrTestBed(AppMockModuleNoHmrLifeCycle);
+  it('state has to be provided before module is disposed', fakeAsync(async () => {
+    const { webpackModule, store } = await hmrTestBed(AppMockModuleNoHmrLifeCycle);
 
-      expect(store.snapshot()).toEqual({
-        mock_state: { value: 'test' }
-      });
+    expect(store.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
 
-      webpackModule.destroyModule();
+    webpackModule.destroyModule();
 
-      tick(1000);
+    tick(1000);
 
-      expect(store.snapshot()).toEqual({
-        mock_state: { value: 'test' }
-      });
-    }));
+    expect(store.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
+  }));
 
-    it('state provided before module destroy with reset in ngOnDestroy', fakeAsync(async () => {
-      class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
-        public ngOnDestroy(): void {
-          // side effect for hmr
-          store.reset({});
-        }
+  it('state has to be provided before module is disposed with calling reset in ngOnDestroy', fakeAsync(async () => {
+    class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
+      public ngOnDestroy(): void {
+        // side effect for hmr
+        store.reset({});
       }
+    }
 
-      const { webpackModule, store } = await hmrTestBed(AppMockWithDestroyModule);
+    const { webpackModule, store } = await hmrTestBed(AppMockWithDestroyModule);
 
-      expect(store.snapshot()).toEqual({
-        mock_state: { value: 'test' }
-      });
+    expect(store.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
 
-      webpackModule.destroyModule();
+    webpackModule.destroyModule();
 
-      tick(1000);
+    tick(1000);
 
-      expect(store.snapshot()).toEqual({});
-    }));
+    expect(store.snapshot()).toEqual({});
+  }));
 
-    it('state provided after module destroy', fakeAsync(async () => {
-      class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
-        public ngOnDestroy(): void {
-          // side effect for hmr
-          store.reset({});
-        }
+  it('state has to be provided after module is disposed', fakeAsync(async () => {
+    class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
+      public ngOnDestroy(): void {
+        // side effect for hmr
+        store.reset({});
       }
+    }
 
-      const { webpackModule, store } = await hmrTestBed(
-        AppMockWithDestroyModule,
-        {},
-        {
-          persistAfterDestroyed: true
-        }
-      );
+    const { webpackModule, store } = await hmrTestBed(
+      AppMockWithDestroyModule,
+      {},
+      {
+        persistAfterDestroy: true
+      }
+    );
 
-      expect(store.snapshot()).toEqual({ mock_state: { value: 'test' } });
+    expect(store.snapshot()).toEqual({ mock_state: { value: 'test' } });
 
-      webpackModule.destroyModule();
+    webpackModule.destroyModule();
 
-      tick(1000);
+    tick(1000);
 
-      expect(store.snapshot()).toEqual({ mock_state: { value: 'test' } });
+    expect(store.snapshot()).toEqual({ mock_state: { value: 'test' } });
 
-      store.reset({ ...store.snapshot(), hello: 'world' });
+    store.reset({ ...store.snapshot(), hello: 'world' });
 
-      const { webpackModule: moduleTickV2, store: storeV2 } = await hmrTestBed(
-        AppMockWithDestroyModule,
-        {
-          storedValue: store.snapshot()
-        },
-        {
-          persistAfterDestroyed: true
-        }
-      );
+    const { webpackModule: moduleTickV2, store: storeV2 } = await hmrTestBed(
+      AppMockWithDestroyModule,
+      {
+        storedValue: store.snapshot()
+      },
+      {
+        persistAfterDestroy: true
+      }
+    );
 
-      moduleTickV2.destroyModule();
+    moduleTickV2.destroyModule();
 
-      tick(1000);
+    tick(1000);
 
-      expect(storeV2.snapshot()).toEqual({ mock_state: { value: 'test' }, hello: 'world' });
-    }));
-  });
+    expect(storeV2.snapshot()).toEqual({ mock_state: { value: 'test' }, hello: 'world' });
+  }));
 });

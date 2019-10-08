@@ -40,9 +40,9 @@ export interface NgxsHmrOptions {
 
   /**
    * @description
-   * additionally persist state after destruction AppModule
+   * Additionally persist state when the AppModule is disposed
    */
-  persistAfterDestroyed?: boolean;
+  persistAfterDestroy?: boolean;
 }
 
 type ModuleId = string | number;
