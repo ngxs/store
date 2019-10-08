@@ -20,9 +20,10 @@ import {
   SendWebSocketMessage,
   DisconnectWebSocket,
   WebSocketDisconnected,
-  WebsocketMessageError
+  WebsocketMessageError,
+  WebSocketConnectionUpdated,
+  WebSocketConnected
 } from '../';
-import { WebSocketConnectionUpdated } from '../src/symbols';
 
 type WebSocketMessage = string | Blob | ArrayBuffer | ArrayBufferView;
 
@@ -103,11 +104,27 @@ describe('NgxsWebsocketPlugin', () => {
 
     actions$.pipe(ofActionDispatched(WebSocketDisconnected)).subscribe(action => {
       // Assert
-      expect(action instanceof WebSocketDisconnected).toBeTruthy();
+      expect(action).toBeInstanceOf(WebSocketDisconnected);
       mockServer.stop(done);
     });
 
     store.dispatch(new DisconnectWebSocket());
+  });
+
+  it('should dispatch WebSocketConnected if connection is opened successfully', done => {
+    // Arrange
+    const mockServer = createModuleAndServer();
+    const store = getStore();
+    const actions$ = getActions$();
+
+    // Act
+    store.dispatch(new ConnectWebSocket());
+
+    actions$.pipe(ofActionDispatched(WebSocketConnected)).subscribe(action => {
+      // Assert
+      expect(action).toBeInstanceOf(WebSocketConnected);
+      mockServer.stop(done);
+    });
   });
 
   it('should dispatch WebSocketDisconnected if server closed connection', done => {
@@ -123,7 +140,7 @@ describe('NgxsWebsocketPlugin', () => {
 
     actions$.pipe(ofActionDispatched(WebSocketDisconnected)).subscribe(action => {
       // Assert
-      expect(action instanceof WebSocketDisconnected).toBeTruthy();
+      expect(action).toBeInstanceOf(WebSocketDisconnected);
       mockServer.stop(done);
     });
   });
@@ -143,7 +160,7 @@ describe('NgxsWebsocketPlugin', () => {
 
     actions$.pipe(ofActionDispatched(WebsocketMessageError)).subscribe(action => {
       // Assert
-      expect(action instanceof WebsocketMessageError).toBeTruthy();
+      expect(action).toBeInstanceOf(WebsocketMessageError);
       mockServer.stop(done);
     });
   });
@@ -194,7 +211,7 @@ describe('NgxsWebsocketPlugin', () => {
 
     actions$.pipe(ofActionDispatched(WebSocketConnectionUpdated)).subscribe(action => {
       // Assert
-      expect(action instanceof WebSocketConnectionUpdated).toBeTruthy();
+      expect(action).toBeInstanceOf(WebSocketConnectionUpdated);
       mockServer.stop(done);
     });
   });
@@ -291,7 +308,7 @@ describe('NgxsWebsocketPlugin', () => {
         });
 
       actions$.pipe(ofActionDispatched(WebSocketDisconnected)).subscribe(action => {
-        expect(action instanceof WebSocketDisconnected).toBeTruthy();
+        expect(action).toBeInstanceOf(WebSocketDisconnected);
         // Reconnect after disconnect
         connect(store);
       });
@@ -350,7 +367,7 @@ describe('NgxsWebsocketPlugin', () => {
         });
 
       actions$.pipe(ofActionDispatched(WebSocketDisconnected)).subscribe(action => {
-        expect(action instanceof WebSocketDisconnected).toBeTruthy();
+        expect(action).toBeInstanceOf(WebSocketDisconnected);
         // Reconnect after disconnect
         connect(store);
       });

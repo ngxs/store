@@ -7,5 +7,6 @@ export {
   DisconnectWebSocket,
   WebSocketDisconnected,
   SendWebSocketMessage,
-  WebSocketConnectionUpdated
+  WebSocketConnectionUpdated,
+  WebSocketConnected
 } from './symbols';
