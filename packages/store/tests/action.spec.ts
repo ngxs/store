@@ -49,8 +49,16 @@ describe('Action', () => {
     static type = 'ASYNC_ACTION 2';
   }
 
-  class AsyncAction3 {
-    static type = 'ASYNC_ACTION 3';
+  class NestedAsyncAction1 {
+    static type = 'NESTED_ASYNC_ACTION 1';
+  }
+
+  class NestedAsyncAction2 {
+    static type = 'NESTED_ASYNC_ACTION 2';
+  }
+
+  class NestedAsyncAction3 {
+    static type = 'NESTED_ASYNC_ACTION 3';
   }
 
   class AsyncErrorAction {
@@ -95,28 +103,28 @@ describe('Action', () => {
     }
   }
   @State({
-    name: 'foo'
+    name: 'nested_actions_1'
   })
-  class FooState {
-    @Action(AsyncAction1)
-    asyncAction1({ dispatch }: StateContext<any>) {
-      return dispatch(new AsyncAction2()).pipe(delay(0));
+  class NestedActions1State {
+    @Action(NestedAsyncAction1)
+    nestedAsyncAction1({ dispatch }: StateContext<any>) {
+      return dispatch(new NestedAsyncAction2()).pipe(delay(0));
     }
 
-    @Action(AsyncAction2)
-    asyncAction2({ dispatch }: StateContext<any>) {
-      return dispatch(new AsyncAction3()).pipe(delay(0));
+    @Action(NestedAsyncAction2)
+    nestedAsyncAction2({ dispatch }: StateContext<any>) {
+      return dispatch(new NestedAsyncAction3()).pipe(delay(0));
     }
 
-    @Action(AsyncAction3)
-    asyncAction3() {
+    @Action(NestedAsyncAction3)
+    nestedAsyncAction3() {
       return of({}).pipe(delay(0));
     }
   }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([BarStore, FooState])],
+      imports: [NgxsModule.forRoot([BarStore, NestedActions1State])],
       providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
     });
 
@@ -460,39 +468,43 @@ describe('Action', () => {
           expect(actionStatus).toEqual([true, true, true, false]);
         }));
 
-        it('should be executing on nested actions', fakeAsync(() => {
-          const action1Status: boolean[] = [];
-          const action2Status: boolean[] = [];
-          const action3Status: boolean[] = [];
+        describe('nested actions 1', () => {
+          it('should be executing on nested actions', fakeAsync(() => {
+            const nestedAction1Status: boolean[] = [];
+            const nestedAction2Status: boolean[] = [];
+            const nestedAction3Status: boolean[] = [];
 
-          const combinedActionStatus: boolean[] = [];
+            const combinedActionStatus: boolean[] = [];
 
-          actions.pipe(ofActionExecuting(AsyncAction1)).subscribe(executing => {
-            action1Status.push(executing);
-          });
-
-          actions.pipe(ofActionExecuting(AsyncAction2)).subscribe(executing => {
-            action2Status.push(executing);
-          });
-
-          actions.pipe(ofActionExecuting(AsyncAction3)).subscribe(executing => {
-            action3Status.push(executing);
-          });
-
-          actions
-            .pipe(ofActionExecuting(AsyncAction1, AsyncAction2, AsyncAction3))
-            .subscribe(executing => {
-              combinedActionStatus.push(executing);
+            actions.pipe(ofActionExecuting(NestedAsyncAction1)).subscribe(executing => {
+              nestedAction1Status.push(executing);
             });
 
-          store.dispatch(new AsyncAction1());
-          tick(1);
-          expect(action1Status).toEqual([true, false]);
-          expect(action2Status).toEqual([true, false]);
-          expect(action3Status).toEqual([true, false]);
+            actions.pipe(ofActionExecuting(NestedAsyncAction2)).subscribe(executing => {
+              nestedAction2Status.push(executing);
+            });
 
-          expect(combinedActionStatus).toEqual([true, true, true, false]);
-        }));
+            actions.pipe(ofActionExecuting(NestedAsyncAction3)).subscribe(executing => {
+              nestedAction3Status.push(executing);
+            });
+
+            actions
+              .pipe(
+                ofActionExecuting(NestedAsyncAction1, NestedAsyncAction2, NestedAsyncAction3)
+              )
+              .subscribe(executing => {
+                combinedActionStatus.push(executing);
+              });
+
+            store.dispatch(new NestedAsyncAction1());
+            tick(1);
+            expect(nestedAction1Status).toEqual([true, false]);
+            expect(nestedAction2Status).toEqual([true, false]);
+            expect(nestedAction3Status).toEqual([true, false]);
+
+            expect(combinedActionStatus).toEqual([true, true, true, false]);
+          }));
+        });
       });
     });
   });
