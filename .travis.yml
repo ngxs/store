@@ -38,6 +38,9 @@ script:
   # Run integration test with Angular 5
   - yarn integration:ng5
 
+  # Run integration test with Angular 9 Ivy
+  - yarn integration:ivy
+
   # Run declaration files linter
   - yarn test:types
 

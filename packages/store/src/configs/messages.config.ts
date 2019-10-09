@@ -1,4 +1,4 @@
-import { ObjectKeyMap } from '@ngxs/store/internals';
+import { PlainObjectOf } from '@ngxs/store/internals';
 
 export enum VALIDATION_CODE {
   STATE_NAME = 'STATE_NAME',
@@ -9,10 +9,13 @@ export enum VALIDATION_CODE {
   INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT',
   SELECT_FACTORY_NOT_CONNECTED = 'SELECT_FACTORY_NOT_CONNECTED',
   ACTION_DECORATOR = 'ACTION_DECORATOR',
-  SELECTOR_DECORATOR = 'SELECTOR_DECORATOR'
+  SELECTOR_DECORATOR = 'SELECTOR_DECORATOR',
+  ZONE_WARNING = 'ZONE_WARNING',
+  PATCHING_ARRAY = 'PATCHING_ARRAY',
+  PATCHING_PRIMITIVE = 'PATCHING_PRIMITIVE'
 }
 
-export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
+export const CONFIG_MESSAGES: PlainObjectOf<Function> = {
   [VALIDATION_CODE.STATE_NAME]: (name: string) =>
     `${name} is not a valid state name. It needs to be a valid object property name.`,
   [VALIDATION_CODE.STATE_NAME_PROPERTY]: () => `States must register a 'name' property`,
@@ -30,5 +33,11 @@ export const CONFIG_MESSAGES: ObjectKeyMap<Function> = {
     'SelectFactory not connected to store!',
   [VALIDATION_CODE.ACTION_DECORATOR]: () =>
     '@Action() decorator cannot be used with static methods',
-  [VALIDATION_CODE.SELECTOR_DECORATOR]: () => 'Selectors only work on methods'
+  [VALIDATION_CODE.SELECTOR_DECORATOR]: () => 'Selectors only work on methods',
+  [VALIDATION_CODE.ZONE_WARNING]: () =>
+    'Your application was bootstrapped with nooped zone and your execution strategy requires an actual NgZone!\n' +
+    'Please set the value of the executionStrategy property to NoopNgxsExecutionStrategy.\n' +
+    'NgxsModule.forRoot(states, { executionStrategy: NoopNgxsExecutionStrategy })',
+  [VALIDATION_CODE.PATCHING_ARRAY]: () => 'Patching arrays is not supported.',
+  [VALIDATION_CODE.PATCHING_PRIMITIVE]: () => 'Patching primitives is not supported.'
 };

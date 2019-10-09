@@ -137,6 +137,7 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
+      - *restore_cache
       - run:
           name: Integration Tests
           command: yarn test:ci:integration:ssr
@@ -150,6 +151,15 @@ jobs:
           name: Integration Tests
           command: yarn integration:ng5
       # - *persist_coverage // we don't run code coverage for integration tests
+
+    integration_ivy_tests:
+      <<: *job_defaults
+      steps:
+        - *attach_workspace
+        - run:
+            name: Integration Tests
+            command: yarn integration:ivy
+        # - *persist_coverage // we don't run code coverage for integration tests
 
   integration_test_types:
     <<: *job_defaults

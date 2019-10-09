@@ -229,7 +229,7 @@ Because at least one action throws an error NGXS returns an error to the `onErro
 
 In NGXS, when you do asynchronous work you should return an `Observable` or `Promise` from your `@Action` method that represents that asynchronous work (and completion). The completion of the action will then be bound to the completion of the asynchronous work. If you use the `async/await` javascript syntax then NGXS will know about the completion because an `async` method returns the `Promise` for you. If you return an `Observable` NGXS will subscribe to the observable for you and bind the action's completion lifecycle event to the completion of the `Observable`.
 
-Sometimes you may not want the completion of an action to wait for the asynchronous work to complete. This is what we will refer to as "fire and forget". This can be acheived by simply not returning the handle to your asynchronous work from the `@Action` method. Note that in the case of an `Observable` you would have to `.subscribe(...)` or call `.toPromise()` to ensure that your observable runs.
+Sometimes you may not want the completion of an action to wait for the asynchronous work to complete. This is what we will refer to as "fire and forget". This can be achieved by simply not returning the handle to your asynchronous work from the `@Action` method. Note that in the case of an `Observable` you would have to `.subscribe(...)` or call `.toPromise()` to ensure that your observable runs.
 
 `Observable` version:
 

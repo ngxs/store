@@ -16,8 +16,7 @@ import { TODOS_STORAGE_KEY } from '@integration/store/todos/todos.model';
     BrowserAnimationsModule,
     BrowserTransferStateModule,
     NgxsStoragePluginModule.forRoot({ key: [TODOS_STORAGE_KEY] })
-  ],
-  providers: [{ provide: 'ORIGIN_URL', useValue: location.origin }]
+  ]
 })
 export class AppBrowserModule implements NgxsHmrLifeCycle<Snapshot> {
   public hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {

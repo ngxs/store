@@ -28,7 +28,7 @@ ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 
 <!--
 For bug reports please provide the *STEPS TO REPRODUCE* and if possible a *MINIMAL DEMO* of the problem via
-https://stackblitz.com/fork/ngxs-simple
+https://stackblitz.com/fork/ngxs-repro
 
 * Step 1
 * Step 2

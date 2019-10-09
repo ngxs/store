@@ -7,7 +7,7 @@
 - [Ngxs Todo](https://github.com/mailok/todo-ngxs)
 - [EL-3270 Electron IBM Terminal Emulator](https://github.com/mflorence99/el-3270)
 - [_El terminador_ Electron-based Terminal Manager, inspired by iTerm2](https://github.com/mflorence99/el-term)
-- [_Elf_ Electron-based File Manager, with state from selection to file system completely managed by NGXS](https://github.com/mflorence99/el-file) 
+- [_Elf_ Electron-based File Manager, with state from selection to file system completely managed by NGXS](https://github.com/mflorence99/el-file)
 - [Angular NGXS Tutorial - An Alternative to NgRx for State Management](https://coursetro.com/posts/code/152/Angular-NGXS-Tutorial---An-Alternative-to-Ngrx-for-State-Management)
 - [NGXS + Firebase Demo](https://github.com/fisenkodv/itinerary)
 - [Use NGXS in a shared module](https://stackblitz.com/edit/angular-shared-for-root-imports?file=app%2Fshared-components%2Fshared-components.module.ts)

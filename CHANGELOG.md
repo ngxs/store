@@ -1,11 +1,19 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev) 
-### To become [3.5.2](https://github.com/ngxs/store/milestone/8) or [3.6.0](https://github.com/ngxs/store/milestone/9)
+### To become [3.6.0](https://github.com/ngxs/store/milestone/9)
 
 ```bash
 $ npm install @ngxs/store@dev
 ``` 
  
-* ...
+* Feature: expose StateContextFactory, StateFactory [#1325](https://github.com/ngxs/store/pull/1325)
+* Feature: implement `propertyPath` parameter in the `UpdateFormValue` [1215](https://github.com/ngxs/store/pull/1215)
+* Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
+* Build: add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
+* Build: run SSR tests with cypress [#1281](https://github.com/ngxs/store/pull/1281)
+
+## NGXS-Labs
+
+* Feature: announced [@ngxs-labs/data](https://github.com/ngxs-labs/data)
 
 # 3.5.1 2019-08-29
 
@@ -24,6 +32,15 @@ $ npm install @ngxs/store@dev
 * Build: add cypress for E2E testing [#1258](https://github.com/ngxs/store/pull/1258)
 
 ## NGXS-Labs
+
+### Dispatch Decorator v2.1.0
+* Fix: remove `DispatchAction` and unnecessary closures [#252](https://github.com/ngxs-labs/dispatch-decorator/pull/252)
+
+### Dispatch Decorator v2.0.0
+
+* Build: prepare package for the Angular 8+ compatibility and support NGXS 3.5 [#247](https://github.com/ngxs-labs/dispatch-decorator/pull/247)
+* Build: configure `cypress` for SSR and E2E testing [#248](https://github.com/ngxs-labs/dispatch-decorator/pull/248)
+* Feat: implement `cancelUncompleted` option [#250](https://github.com/ngxs-labs/dispatch-decorator/pull/250)
 
 ### Emitter-plugin v2.0.0
 

@@ -1,7 +1,6 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../out-tsc/app",
     "baseUrl": "./",
     "paths": {
       "@ngxs/*": ["../@ngxs/*"],
@@ -11,7 +10,7 @@
     "types": ["node"],
     "typeRoots": ["../node_modules/@types"]
   },
-  "exclude": ["test.ssr.ts", "**/*.spec.ts", "**/*.mocha.ts", "node_modules"],
+  "exclude": ["**/*.spec.ts", "node_modules"],
   "angularCompilerOptions": {
     "entryModule": "app/app.server.module#AppServerModule"
   }

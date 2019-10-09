@@ -348,6 +348,31 @@ describe('State', () => {
       expect(simplePatch(null!)(simple)).toEqual({ a: 1, b: 2 });
     });
 
+    it('should be correct when patched null to null', () => {
+      expect(simplePatch(null!)(null!)).toEqual({});
+    });
+
+    it('should avoid the whole check if you want own properties only', () => {
+      function Origin() {
+        // @ts-ignore
+        this.x = `I'm an own property`;
+      }
+
+      Origin.prototype.y = `I'm not an own property`;
+
+      // @ts-ignore
+      const patcher: typeof Origin & Origin = new Origin();
+
+      expect(patcher.x).toEqual(`I'm an own property`);
+      expect(patcher.y).toEqual(`I'm not an own property`);
+
+      const existingState: any = {};
+      const resultState: any = simplePatch(patcher)(existingState);
+
+      expect(resultState.x).toEqual(`I'm an own property`);
+      expect(resultState.y).toEqual(`I'm not an own property`);
+    });
+
     it('should throw exception if value is array', () => {
       try {
         const simple: string[] = ['hello'];
