@@ -61,6 +61,18 @@ describe('Action', () => {
     static type = 'NESTED_ASYNC_ACTION 3';
   }
 
+  class NestedAsyncAction4 {
+    static type = 'NESTED_ASYNC_ACTION 4';
+  }
+
+  class NestedAsyncAction5 {
+    static type = 'NESTED_ASYNC_ACTION 5';
+  }
+
+  class NestedAsyncAction6 {
+    static type = 'NESTED_ASYNC_ACTION 6';
+  }
+
   class AsyncErrorAction {
     static type = 'ASYNC_ERROR_ACTION';
   }
@@ -122,9 +134,29 @@ describe('Action', () => {
     }
   }
 
+  @State({
+    name: 'nested_actions_2'
+  })
+  class NestedActions2State {
+    @Action([NestedAsyncAction4, NestedAsyncAction5])
+    combineAction({ dispatch }: StateContext<any>) {
+      return dispatch(new NestedAsyncAction6()).pipe(delay(0));
+    }
+
+    @Action(NestedAsyncAction5)
+    asyncAction2() {
+      return of({}).pipe(delay(100));
+    }
+
+    @Action(NestedAsyncAction6)
+    asyncAction3() {
+      return of({}).pipe(delay(0));
+    }
+  }
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([BarStore, NestedActions1State])],
+      imports: [NgxsModule.forRoot([BarStore, NestedActions1State, NestedActions2State])],
       providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
     });
 
@@ -505,6 +537,209 @@ describe('Action', () => {
             expect(combinedActionStatus).toEqual([true, true, true, false]);
           }));
         });
+
+        describe('nested actions 2', () => {
+          it('should be executing on nested actions (scenario 1)', fakeAsync(() => {
+            const nestedAction4Status: boolean[] = [];
+            const nestedAction5Status: boolean[] = [];
+            const nestedAction6Status: boolean[] = [];
+
+            const combinedAction45Status: boolean[] = [];
+            const combinedAction456Status: boolean[] = [];
+
+            actions.pipe(ofActionExecuting(NestedAsyncAction4)).subscribe(executing => {
+              nestedAction4Status.push(executing);
+            });
+
+            actions.pipe(ofActionExecuting(NestedAsyncAction5)).subscribe(executing => {
+              nestedAction5Status.push(executing);
+            });
+
+            actions.pipe(ofActionExecuting(NestedAsyncAction6)).subscribe(executing => {
+              nestedAction6Status.push(executing);
+            });
+
+            actions
+              .pipe(ofActionExecuting(NestedAsyncAction4, NestedAsyncAction5))
+              .subscribe(executing => {
+                combinedAction45Status.push(executing);
+              });
+
+            actions
+              .pipe(
+                ofActionExecuting(NestedAsyncAction4, NestedAsyncAction5, NestedAsyncAction6)
+              )
+              .subscribe(executing => {
+                combinedAction456Status.push(executing);
+              });
+
+            store.dispatch(new NestedAsyncAction4());
+            tick(1);
+            expect(nestedAction4Status).toEqual([true, false]);
+            expect(nestedAction5Status).toEqual([]);
+            expect(nestedAction6Status).toEqual([true, false]);
+
+            expect(combinedAction45Status).toEqual([]);
+            expect(combinedAction456Status).toEqual([]);
+          }));
+
+          it('should be executing on nested actions (scenario 2)', fakeAsync(() => {
+            const nestedAction4Status: boolean[] = [];
+            const nestedAction5Status: boolean[] = [];
+            const nestedAction6Status: boolean[] = [];
+
+            const combinedAction45Status: boolean[] = [];
+            const combinedAction456Status: boolean[] = [];
+
+            actions.pipe(ofActionExecuting(NestedAsyncAction4)).subscribe(executing => {
+              nestedAction4Status.push(executing);
+            });
+
+            actions.pipe(ofActionExecuting(NestedAsyncAction5)).subscribe(executing => {
+              nestedAction5Status.push(executing);
+            });
+
+            actions.pipe(ofActionExecuting(NestedAsyncAction6)).subscribe(executing => {
+              nestedAction6Status.push(executing);
+            });
+
+            actions
+              .pipe(ofActionExecuting(NestedAsyncAction4, NestedAsyncAction5))
+              .subscribe(executing => {
+                combinedAction45Status.push(executing);
+              });
+
+            actions
+              .pipe(
+                ofActionExecuting(NestedAsyncAction4, NestedAsyncAction5, NestedAsyncAction6)
+              )
+              .subscribe(executing => {
+                combinedAction456Status.push(executing);
+              });
+
+            store.dispatch([new NestedAsyncAction4(), new NestedAsyncAction5()]);
+            tick(1);
+            expect(nestedAction4Status).toEqual([true, false]);
+            expect(nestedAction5Status).toEqual([true]);
+            expect(nestedAction6Status).toEqual([true, true, true, false]);
+            tick(100);
+            expect(nestedAction4Status).toEqual([true, false]);
+            expect(nestedAction5Status).toEqual([true, false]);
+            expect(nestedAction6Status).toEqual([true, true, true, false]);
+
+            expect(combinedAction45Status).toEqual([true, true, false]);
+            expect(combinedAction456Status).toEqual([true, true, true, true, true, false]);
+          }));
+        });
+
+        it('should be executing on nested actions (scenario 3)', fakeAsync(() => {
+          const nestedAction4Status: boolean[] = [];
+          const nestedAction5Status: boolean[] = [];
+          const nestedAction6Status: boolean[] = [];
+
+          const combinedAction45Status: boolean[] = [];
+          const combinedAction456Status: boolean[] = [];
+
+          actions.pipe(ofActionExecuting(NestedAsyncAction4)).subscribe(executing => {
+            nestedAction4Status.push(executing);
+          });
+
+          actions.pipe(ofActionExecuting(NestedAsyncAction5)).subscribe(executing => {
+            nestedAction5Status.push(executing);
+          });
+
+          actions.pipe(ofActionExecuting(NestedAsyncAction6)).subscribe(executing => {
+            nestedAction6Status.push(executing);
+          });
+
+          actions
+            .pipe(ofActionExecuting(NestedAsyncAction4, NestedAsyncAction5))
+            .subscribe(executing => {
+              combinedAction45Status.push(executing);
+            });
+
+          actions
+            .pipe(
+              ofActionExecuting(NestedAsyncAction4, NestedAsyncAction5, NestedAsyncAction6)
+            )
+            .subscribe(executing => {
+              combinedAction456Status.push(executing);
+            });
+
+          store.dispatch(new NestedAsyncAction5());
+          tick(1);
+          expect(nestedAction4Status).toEqual([]);
+          expect(nestedAction5Status).toEqual([true]);
+          expect(nestedAction6Status).toEqual([true, false]);
+          tick(100);
+          expect(nestedAction4Status).toEqual([]);
+          expect(nestedAction5Status).toEqual([true, false]);
+          expect(nestedAction6Status).toEqual([true, false]);
+
+          expect(combinedAction45Status).toEqual([]);
+          expect(combinedAction456Status).toEqual([]);
+        }));
+
+        it('should be executing on nested actions (scenario 4)', fakeAsync(() => {
+          const nestedAction4Status: boolean[] = [];
+          const nestedAction5Status: boolean[] = [];
+          const nestedAction6Status: boolean[] = [];
+
+          const combinedAction45Status: boolean[] = [];
+          const combinedAction456Status: boolean[] = [];
+
+          actions.pipe(ofActionExecuting(NestedAsyncAction4)).subscribe(executing => {
+            nestedAction4Status.push(executing);
+          });
+
+          actions.pipe(ofActionExecuting(NestedAsyncAction5)).subscribe(executing => {
+            nestedAction5Status.push(executing);
+          });
+
+          actions.pipe(ofActionExecuting(NestedAsyncAction6)).subscribe(executing => {
+            nestedAction6Status.push(executing);
+          });
+
+          actions
+            .pipe(ofActionExecuting(NestedAsyncAction4, NestedAsyncAction5))
+            .subscribe(executing => {
+              combinedAction45Status.push(executing);
+            });
+
+          actions
+            .pipe(
+              ofActionExecuting(NestedAsyncAction4, NestedAsyncAction5, NestedAsyncAction6)
+            )
+            .subscribe(executing => {
+              combinedAction456Status.push(executing);
+            });
+
+          store.dispatch([
+            new NestedAsyncAction4(),
+            new NestedAsyncAction5(),
+            new NestedAsyncAction6()
+          ]);
+          tick(1);
+          expect(nestedAction4Status).toEqual([true, false]);
+          expect(nestedAction5Status).toEqual([true]);
+          expect(nestedAction6Status).toEqual([true, true, true, true, true, false]);
+          tick(100);
+          expect(nestedAction4Status).toEqual([true, false]);
+          expect(nestedAction5Status).toEqual([true, false]);
+          expect(nestedAction6Status).toEqual([true, true, true, true, true, false]);
+
+          expect(combinedAction45Status).toEqual([true, true, false]);
+          expect(combinedAction456Status).toEqual([
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            false
+          ]);
+        }));
       });
     });
   });
