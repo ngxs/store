@@ -460,7 +460,7 @@ describe('Action', () => {
           expect(actionStatus).toEqual([true, true, true, false]);
         }));
 
-        fit('should be executing on nested actions', fakeAsync(() => {
+        it('should be executing on nested actions', fakeAsync(() => {
           const action1Status: boolean[] = [];
           const action2Status: boolean[] = [];
           const action3Status: boolean[] = [];
