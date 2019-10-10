@@ -1,21 +1,14 @@
 {
-    "gitbook": "3.x.x",
-    "title": "NGXS",
-    "root": "/docs",
-    "plugins": [
-        "highlight",
-        "github",
-        "include-codeblock",
-        "versions",
-        "anchors",
-        "youtube"
-    ],
-    "pluginsConfig": {
-        "github": {
-            "url": "https://github.com/ngxs/store/"
-        },
-        "versions": {
-          "type": "branches"
-        }
+  "gitbook": "3.x.x",
+  "title": "NGXS",
+  "root": "/docs",
+  "plugins": ["highlight", "github", "include-codeblock", "versions", "anchors", "youtube"],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/ngxs/store/"
+    },
+    "versions": {
+      "type": "branches"
     }
+  }
 }

@@ -18,8 +18,9 @@ body {
   margin: auto;
 }
 
-ul, li {
-  padding:0;
+ul,
+li {
+  padding: 0;
   margin: 0;
   list-style: none;
 }
@@ -41,7 +42,7 @@ button {
 }
 
 .todo-list {
-  background: #FFF;
+  background: #fff;
   font-size: 20px;
   max-width: 30em;
   margin: auto;

@@ -1,7 +1,9 @@
 # Storage
+
 Back your stores with `localStorage`, `sessionStorage` or any other mechanism you wish.
 
 ## Installation
+
 ```bash
 npm install @ngxs/storage-plugin --save
 
@@ -10,6 +12,7 @@ yarn add @ngxs/storage-plugin
 ```
 
 ## Usage
+
 Import the `NgxsStoragePluginModule` into your app module like:
 
 ```TS
@@ -29,6 +32,7 @@ It is recommended to register the storage plugin before other plugins so
 initial state can be picked up by those plugins.
 
 ### Options
+
 The plugin has the following optional values:
 
 - `key`: State name(s) to be persisted. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided, it defaults to all states using the `@@STATE` key.
@@ -60,7 +64,7 @@ export class DetectivesState {}
 In order to persist all states there is no need to provide the `key` option, so it's enough just to write:
 
 ```ts
-NgxsStoragePluginModule.forRoot()
+NgxsStoragePluginModule.forRoot();
 ```
 
 But what if we wanted to persist only `NovelsState`? Then we would have needed to pass its name to the `key` option:
@@ -68,7 +72,7 @@ But what if we wanted to persist only `NovelsState`? Then we would have needed t
 ```ts
 NgxsStoragePluginModule.forRoot({
   key: 'novels'
-})
+});
 ```
 
 And if we wanted to persist `NovelsState` and `DetectivesState`:
@@ -76,12 +80,13 @@ And if we wanted to persist `NovelsState` and `DetectivesState`:
 ```ts
 NgxsStoragePluginModule.forRoot({
   key: ['novels', 'detectives']
-})
+});
 ```
 
 This is very handy to avoid persisting runtime-only states that shouldn't be saved to any storage.
 
 ### Custom Storage Engine
+
 You can add your own storage engine by implementing the `StorageEngine` interface.
 
 ```TS
@@ -91,7 +96,7 @@ export class MyStorageEngine implements StorageEngine {
   get length(): number {
     // Your logic here
   }
-  
+
   getItem(key: string): any {
     // Your logic here
   }
@@ -99,15 +104,15 @@ export class MyStorageEngine implements StorageEngine {
   setItem(key: string, val: any): void {
     // Your logic here
   }
-  
+
   removeItem(key: string): void {
     // Your logic here
   }
-  
+
   clear(): void {
     // Your logic here
   }
-  
+
   key(val: number): string {
     // Your logic here
   }
@@ -129,6 +134,7 @@ export class MyModule {}
 ```
 
 ### Migrations
+
 You can migrate data from one version to another during the startup of the store. Below
 is a strategy to migrate my state from `animals` to `newAnimals`.
 

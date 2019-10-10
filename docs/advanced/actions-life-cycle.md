@@ -224,7 +224,6 @@ store
 
 Because at least one action throws an error NGXS returns an error to the `onError` observable callback and neither the `onNext` or `onComplete` callbacks would be called.
 
-
 ## Asynchronous Actions continued - "Fire and forget" vs "Fire and wait"
 
 In NGXS, when you do asynchronous work you should return an `Observable` or `Promise` from your `@Action` method that represents that asynchronous work (and completion). The completion of the action will then be bound to the completion of the asynchronous work. If you use the `async/await` javascript syntax then NGXS will know about the completion because an `async` method returns the `Promise` for you. If you return an `Observable` NGXS will subscribe to the observable for you and bind the action's completion lifecycle event to the completion of the `Observable`.
@@ -284,11 +283,9 @@ export class BooksState {
 Here the `GetDetectives` action would be dispatched just before the `GetNovels` action completes. The `GetDetectives` action is just a "fire and forget" as far as the `GetNovels` action is concerned. To be clear, NGXS will wait for a response from the `getNovels` service call, then it will populate a new state with the returned novels, then it will dispatch the new `GetDetectives` action (which kicks off another asynchronous request), and then `GetNovels` would move into its' success state (without waiting for the completion of the `GetDetectives` action):
 
 ```ts
-store
-  .dispatch(new GetNovels())
-  .subscribe(() => {
-    // they will see me, but detectives will be still loading in the background
-  });
+store.dispatch(new GetNovels()).subscribe(() => {
+  // they will see me, but detectives will be still loading in the background
+});
 ```
 
 If you want the `GetNovels` action to wait for the `GetDetectives` action to complete, you will have to use `mergeMap` operator (or any operator that maps to the inner `Observable`, like `concatMap`, `switchMap`, `exhaustMap`) so that the `Observable` returned by the `@Action` method has bound its completion to the inner action's completion:
@@ -304,7 +301,9 @@ getNovels(ctx: StateContext<BooksStateModel>) {
   );
 }
 ```
+
 Often this type of code can be made simpler by converting to Promises and using the `async/await` syntax. The same method would be as follows:
+
 ```ts
 @Action(GetNovels)
 async getNovels(ctx: StateContext<BooksStateModel>) {
@@ -313,6 +312,7 @@ async getNovels(ctx: StateContext<BooksStateModel>) {
   await ctx.dispatch(new GetDetectives()).toPromise();
 }
 ```
+
 Note: leaving out the final `await` keyword here would cause this to be "fire and forget" again.
 
 ## Summary

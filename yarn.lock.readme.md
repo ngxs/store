@@ -12,7 +12,6 @@ Before changing a dependency, do the following:
 - make sure you are in sync with `upstream/master`: `git fetch upstream && git rebase upstream/master`
 - ensure that your `node_modules` directory is not stale by running `yarn install`
 
-
 To add a new dependency do the following: `yarn add <packagename> --dev`
 
 To update an existing dependency do the following: run `yarn upgrade <packagename>@<version|latest> --dev`
@@ -20,6 +19,5 @@ or `yarn upgrade <packagename> --dev` to update to the latest version that match
 in `package.json`
 
 To Remove an existing dependency do the following: run `yarn remove <packagename>`
-
 
 Once you've changed the dependency, commit the changes to `package.json` & `yarn.lock`, and you are done.

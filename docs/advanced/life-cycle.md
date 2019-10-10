@@ -1,6 +1,6 @@
-# Life Cycle
+# Life-cycle
 
-States can implement life cycle events.
+States can implement life-cycle events.
 
 ## `ngxsOnInit`
 

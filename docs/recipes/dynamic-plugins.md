@@ -38,10 +38,7 @@ import { NgxsModule } from '@ngxs/store';
 import { environment } from '../environments/environment';
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([]),
-    environment.plugins
-  ]
+  imports: [NgxsModule.forRoot([]), environment.plugins]
 })
 export class AppModule {}
 ```

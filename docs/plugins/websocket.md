@@ -1,7 +1,9 @@
 # WebSocket Plugin - Experimental Status
+
 Bind server web socket events to Ngxs store actions.
 
 ## Installation
+
 ```bash
 npm install @ngxs/websocket-plugin --save
 
@@ -10,6 +12,7 @@ yarn add @ngxs/websocket-plugin
 ```
 
 ## Configuration
+
 Add the `NgxsWebsocketPluginModule` plugin to your root app module:
 
 ```TS
@@ -35,6 +38,7 @@ The plugin has a variety of options that can be passed:
 - `deserializer`: Deserializer used for messages arriving from the web socket. Default: `JSON.parse`
 
 ## Usage
+
 Once connected, any message that comes across the web socket will be bound to the state event stream.
 
 Let's assume that a server side web socket sends a message to the client in the following format:

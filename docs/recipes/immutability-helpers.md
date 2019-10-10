@@ -45,7 +45,6 @@ Let's see how we would implement the `updateDueDate` action handler:
 
 ```ts
 export class TrelloState {
-
   @Action(UpdateDueDate)
   updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
     ctx.setState(state => ({
@@ -61,7 +60,6 @@ export class TrelloState {
       }
     }));
   }
-
 }
 ```
 
@@ -79,7 +77,6 @@ There are different ways to improve this code. Let us look at a few different pa
 import { patch } from '@ngxs/store/operators';
 
 export class TrelloState {
-
   @Action(UpdateDueDate)
   updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
     ctx.setState(
@@ -94,7 +91,6 @@ export class TrelloState {
       })
     );
   }
-
 }
 ```
 
@@ -106,7 +102,6 @@ export class TrelloState {
 import { produce } from 'immer';
 
 export class TrelloState {
-
   @Action(UpdateDueDate)
   updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
     const state = produce(ctx.getState(), draft => {
@@ -115,7 +110,6 @@ export class TrelloState {
 
     ctx.setState(state);
   }
-
 }
 ```
 
@@ -125,7 +119,6 @@ Immer's `produce` function can be also used as a state operator:
 import { produce } from 'immer';
 
 export class TrelloState {
-
   @Action(UpdateDueDate)
   updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
     ctx.setState(
@@ -134,11 +127,11 @@ export class TrelloState {
       })
     );
   }
-
 }
 ```
 
 You may notice how much less code this is and how much better it looks. From the `immer` repository:
+
 > Using Immer is like having a personal assistant; he takes a letter (the current state) and gives you a copy (draft) to jot changes onto. Once you are done, the assistant will take your draft and produce the real immutable, final letter for you (the next state).
 
 [Immer repository](https://github.com/immerjs/immer)
@@ -151,7 +144,6 @@ You may notice how much less code this is and how much better it looks. From the
 import update from 'immutability-helper';
 
 export class TrelloState {
-
   @Action(UpdateDueDate)
   updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
     const state = update(ctx.getState(), {
@@ -168,7 +160,6 @@ export class TrelloState {
 
     ctx.setState(state);
   }
-
 }
 ```
 
@@ -182,7 +173,6 @@ export class TrelloState {
 import immutable from 'object-path-immutable';
 
 export class TrelloState {
-
   @Action(UpdateDueDate)
   updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
     const state = immutable.set(
@@ -193,7 +183,6 @@ export class TrelloState {
 
     ctx.setState(state);
   }
-
 }
 ```
 
@@ -207,7 +196,6 @@ export class TrelloState {
 import * as iassign from 'immutable-assign';
 
 export class TrelloState {
-
   @Action(UpdateDueDate)
   updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
     const state = iassign(ctx.getState(), state => {
@@ -217,7 +205,6 @@ export class TrelloState {
 
     ctx.setState(state);
   }
-
 }
 ```
 
@@ -231,14 +218,12 @@ Ramda is a great library for functional programming and it is used in a large nu
 import * as R from 'ramda';
 
 export class TrelloState {
-
   @Action(UpdateDueDate)
   updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
     const property = R.lensPath(['tasks', action.taskId, 'dates', 'dueDate']);
     const state = R.set(property, action.dueDate, ctx.getState());
     ctx.setState(state);
   }
-
 }
 ```
 
@@ -252,7 +237,6 @@ export class TrelloState {
 import * as icepick from 'icepick';
 
 export class TrelloState {
-
   @Action(UpdateDueDate)
   updateDueDate(ctx: StateContext<TrelloStateModel>, action: UpdateDueDate) {
     const state = icepick.setIn(
@@ -263,7 +247,6 @@ export class TrelloState {
 
     ctx.setState(state);
   }
-
 }
 ```
 

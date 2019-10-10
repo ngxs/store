@@ -1,8 +1,10 @@
 # Canceling
+
 If you have an async action, you may want to cancel a previous Observable if the action has been dispatched again.
 This is useful for canceling previous requests like in a typeahead.
 
 ## Basic
+
 For basic scenarios, we can use the `cancelUncompleted` action decorator option.
 
 ```TS
@@ -26,6 +28,7 @@ export class ZooState {
 ```
 
 ## Advanced
+
 For more advanced cases, we can use normal Rx operators.
 
 ```TS
