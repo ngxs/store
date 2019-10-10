@@ -51,7 +51,7 @@ export class ZooState implements NgxsAfterBootstrap {
 }
 ```
 
-## Feature modules order of imports
+## Feature Modules Order of Imports
 
 If you have feature modules they need to be imported after the root module:
 
@@ -183,7 +183,7 @@ export function appInitializerFactory(configService: ConfigService) {
 export class AppModule {}
 ```
 
-The above example is used only for demonstrating purposes! This code will throw an error because the `getVersion` method is invoked before the `version` property is set. Why? Because `ngxsOnInit` methods on states are invoked earlier!
+The above example is used only for demonstration purposes! This code will throw an error because the `getVersion` method is invoked before the `version` property is set. Why? Because the `ngxsOnInit` methods on states are invoked before the `APP_INITIALIZER` is invoked!
 
 ### Solution
 
@@ -238,4 +238,4 @@ export class ConfigService {
 
 ### Summary
 
-Eventually do not try to access any data in state constructors or `ngxsOnInit` methods that is fetched during `APP_INITIALIZER` stage.
+In conclusion, do not try to access any data in state constructors or `ngxsOnInit` methods that is fetched during the `APP_INITIALIZER` stage.
