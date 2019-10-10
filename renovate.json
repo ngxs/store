@@ -15,20 +15,20 @@
     {
       "extends": ["monorepo:angular", "monorepo:angularcli"],
       "groupName": "@angular",
-      "schedule": ["before 3:00am every 2nd week of the month"]
+      "schedule": ["before 3am on the first day of the month"]
     },
     {
       "packageNames": ["typescript"],
       "groupName": "typescript",
       "updateTypes": "patch",
-      "schedule": ["before 3:00am every 2nd week of the month"]
+      "schedule": ["before 3am on the first day of the month"]
     },
     {
       "packagePatterns": ["*"],
       "excludePackageNames": ["typescript"],
       "groupName": "all dependencies",
       "groupSlug": "all",
-      "schedule": ["after 4:00am every 2nd week of the month"]
+      "schedule": ["before 3am on the first day of the month"]
     }
   ]
 }

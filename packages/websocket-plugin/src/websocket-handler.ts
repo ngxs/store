@@ -12,7 +12,8 @@ import {
   WebsocketMessageError,
   WebSocketDisconnected,
   TypeKeyPropertyMissingError,
-  WebSocketConnectionUpdated
+  WebSocketConnectionUpdated,
+  WebSocketConnected
 } from './symbols';
 
 @Injectable()
@@ -34,6 +35,9 @@ export class WebSocketHandler {
         // and doesn't complete socket subject if it's falsy
         this.disconnect();
       }
+    },
+    openObserver: {
+      next: () => this.store.dispatch(new WebSocketConnected())
     }
   };
 
