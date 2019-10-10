@@ -114,8 +114,8 @@ const ws = new Server({ server });
 
 server.listen(4200);
 
-ws.on('connection', (socket) => {
-  socket.on('message', (data) => {
+ws.on('connection', socket => {
+  socket.on('message', data => {
     // That's the object that we passed into `SendWebSocketMessage` constructor
     const { type, from, message } = JSON.parse(data);
 
@@ -129,7 +129,7 @@ ws.on('connection', (socket) => {
       // That's the same as `broadcast`
       // we want to send message to all connected
       // to the chat clients
-      ws.clients.forEach((client) => {
+      ws.clients.forEach(client => {
         client.send(event);
       });
     }
@@ -170,8 +170,9 @@ If you have difficulties with understanding how the plugin works, you can have a
 Here is a list of all the available actions you have:
 
 - `ConnectWebSocket`: Dispatch this action when you want to init the web socket. Optionally pass URL here.
-- `DisconnectWebSocket`: Dispatch this Action to disconnect a websockets.
-- `WebSocketDisconnected`: Action dispatched when web socket is disconnected. Use its handler for reconnecting.
+- `DisconnectWebSocket`: Dispatch this Action to disconnect a web socket.
+- `WebSocketConnected`: Action dispatched when a web socket is connected.
+- `WebSocketDisconnected`: Action dispatched when a web socket is disconnected. Use its handler for reconnecting.
 - `SendWebSocketMessage`: Send a message to the server.
 - `WebsocketMessageError`: Action dispatched by this plugin when an error ocurrs upon receiving a message.
 - `WebSocketConnectionUpdated`: Action dispatched by this plugin when a new connection is created on top of an existing one. Existing connection is closing.
