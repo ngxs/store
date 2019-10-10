@@ -89,6 +89,15 @@ export class DisconnectWebSocket {
 }
 
 /**
+ * Action triggered when websocket is connected
+ */
+export class WebSocketConnected {
+  static get type() {
+    return '[WebSocket] Connected';
+  }
+}
+
+/**
  * Action triggered when websocket is disconnected
  */
 export class WebSocketDisconnected {
