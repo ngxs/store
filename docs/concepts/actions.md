@@ -103,7 +103,7 @@ export class DeleteTodo {
 
 ```
 
-here we just add 'Todo' with namespace, so we can group similar actions.
+here we group similar actions into the `Todo` namespace.
 In this case just import namespace instead of multiple action classes in same file.
 
 ```TS
