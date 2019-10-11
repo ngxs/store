@@ -10,12 +10,18 @@ import { StorageOption, StorageEngine, NgxsStoragePluginOptions } from './symbol
 export const DEFAULT_STATE_KEY = '@@STATE';
 
 /**
+ * Internal type definition for the `key` option provided
+ * in the `forRoot` method when importing module
+ */
+export type StorageKey = string | StateClass | (string | StateClass)[];
+
+/**
  * This key is used to retrieve static metadatas on state classes.
  * This constant is taken from the core codebase
  */
 const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
 
-function transformKeyOption(key: string | StateClass | (string | StateClass)[]): string[] {
+function transformKeyOption(key: StorageKey): string[] {
   if (!Array.isArray(key)) {
     key = [key];
   }
