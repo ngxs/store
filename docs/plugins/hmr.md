@@ -113,7 +113,7 @@ const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
 if (environment.hmr) {
   import('@ngxs/hmr-plugin').then(plugin => {
-    plugin.hmr(module, bootstrap).catch((err: Error) => console.error(err))
+    plugin.hmr(module, bootstrap).catch((err: Error) => console.error(err));
   });
 } else {
   bootstrap().catch((err: Error) => console.log(err));
@@ -179,4 +179,24 @@ export class MyState {
     ctx.setState({ ... })
   }
 }
+```
+
+### HMR Options
+
+The following options are available:
+
+- `autoClearLogs` - Clear log after each hmr update (default value is `true`).
+- `deferTime` - Deferred time before loading the old state (default value is `100` ms);
+- `persistAfterDestroy` - Additionally persist state when the AppModule is disposed (default value is `false`).
+
+```ts
+import('@ngxs/hmr-plugin').then(plugin => {
+  plugin
+    .hmr(module, bootstrap, {
+      deferTime: 100,
+      autoClearLogs: true,
+      persistAfterDestroy: true
+    })
+    .catch((err: Error) => console.error(err));
+});
 ```
