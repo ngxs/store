@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
-import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from './operators/leave-ngxs';
+import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 
 /**
  * Status of a dispatched action
@@ -66,19 +66,48 @@ export class InternalActions extends OrderedSubject<ActionContext> {}
  * You can listen to this in services to react without stores.
  */
 @Injectable()
-export class Actions extends Observable<any> {
+export class Actions {
+  /**
+   * TODO(Artur): This has to be `Observable<ActionContext>` in the
+   * v4. Leave it as `any` to avoid breaking changes
+   */
+  private _internalActions$: Observable<any>;
+
+  /**
+   * We can't move it directly to the public getter
+   * because we have to invoke `bind` only once!
+   */
+  private _pipe: Observable<any>['pipe'];
+  private _forEach: Observable<any>['forEach'];
+  private _subscribe: Observable<any>['subscribe'];
+
   constructor(
-    actions$: InternalActions,
+    internalActions$: InternalActions,
     internalExecutionStrategy: InternalNgxsExecutionStrategy
   ) {
-    super(observer => {
-      actions$
-        .pipe(leaveNgxs(internalExecutionStrategy))
-        .subscribe(
-          res => observer.next(res),
-          err => observer.error(err),
-          () => observer.complete()
-        );
-    });
+    // `InternalActions` should not be referenced here as a private property
+    // same as an execution strategy. That's why all initializations are run
+    // inside the constructor
+    this._internalActions$ = internalActions$.pipe(leaveNgxs(internalExecutionStrategy));
+
+    this._pipe = this._internalActions$.pipe.bind(this._internalActions$);
+    this._forEach = this._internalActions$.forEach.bind(this._internalActions$);
+    this._subscribe = this._internalActions$.subscribe.bind(this._internalActions$);
+  }
+
+  get pipe() {
+    return this._pipe;
+  }
+
+  get forEach() {
+    return this._forEach;
+  }
+
+  get subscribe() {
+    return this._subscribe;
+  }
+
+  toPromise(promiseCtor?: typeof Promise | PromiseConstructorLike): Promise<any> {
+    return this._internalActions$.toPromise(promiseCtor!);
   }
 }
