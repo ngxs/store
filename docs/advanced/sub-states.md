@@ -51,7 +51,7 @@ export interface CartStateModel {
 export class CartState {}
 ```
 
-Then we describe our substate like normal:
+Then we describe our sub-state like normal:
 
 ```TS
 export interface CartSavedStateModel {

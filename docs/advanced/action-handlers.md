@@ -3,7 +3,7 @@
 Before reading this article - we advise you to begin to get acquainted with the [actions life cycle](./actions-life-cycle.md).
 
 Event sourcing involves modeling the state changes made by applications as an immutable sequence or “log” of events.
-Instead of focussing on current state, you focus on the changes that have occurred over time. It is the practice of
+Instead of focusing on current state, you focus on the changes that have occurred over time. It is the practice of
 modeling your system as a sequence of events. In NGXS, we called this Action Handlers.
 
 Typically actions directly correspond to state changes but it can be difficult to always make your component react
