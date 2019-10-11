@@ -9,21 +9,22 @@ import {
   actionMatcher,
   NgxsNextPluginFn
 } from '@ngxs/store';
+import { tap } from 'rxjs/operators';
 
 import {
+  StorageEngine,
   NgxsStoragePluginOptions,
-  NGXS_STORAGE_PLUGIN_OPTIONS,
   STORAGE_ENGINE,
-  StorageEngine
+  NGXS_STORAGE_PLUGIN_OPTIONS
 } from './symbols';
-import { tap } from 'rxjs/operators';
+import { DEFAULT_STATE_KEY } from './internals';
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
   constructor(
     @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
     @Inject(STORAGE_ENGINE) private _engine: StorageEngine,
-    @Inject(PLATFORM_ID) private _platformId: any
+    @Inject(PLATFORM_ID) private _platformId: string
   ) {}
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
@@ -31,15 +32,17 @@ export class NgxsStoragePlugin implements NgxsPlugin {
       return next(state, event);
     }
 
-    const options = this._options || <any>{};
+    const options = this._options || {};
     const matches = actionMatcher(event);
     const isInitAction = matches(InitState) || matches(UpdateState);
-    const keys = Array.isArray(options.key) ? options.key : [options.key];
+    // We cast to `string[]` here as we're sure that this option has been
+    // transformed by the factory function that provided token
+    const keys = options.key as string[];
     let hasMigration = false;
 
     if (isInitAction) {
       for (const key of keys) {
-        const isMaster = key === '@@STATE';
+        const isMaster = key === DEFAULT_STATE_KEY;
         let val: any = this._engine.getItem(key!);
 
         if (val !== 'undefined' && typeof val !== 'undefined' && val !== null) {
@@ -79,7 +82,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           for (const key of keys) {
             let val = nextState;
 
-            if (key !== '@@STATE') {
+            if (key !== DEFAULT_STATE_KEY) {
               val = getValue(nextState, key!);
             }
 

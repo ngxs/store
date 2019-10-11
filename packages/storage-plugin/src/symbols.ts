@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { StateClass } from '@ngxs/store/internals';
 
 export const enum StorageOption {
   LocalStorage,
@@ -9,7 +10,7 @@ export interface NgxsStoragePluginOptions {
   /**
    * Key for the state slice to store in the storage engine.
    */
-  key?: string | string[] | undefined;
+  key?: undefined | string | StateClass | (string | StateClass)[];
 
   /**
    * Storage engine to use. Deaults to localStorage but can provide

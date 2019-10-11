@@ -64,23 +64,77 @@ export class DetectivesState {}
 In order to persist all states there is no need to provide the `key` option, so it's enough just to write:
 
 ```ts
-NgxsStoragePluginModule.forRoot();
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot()
+  ]
+})
+export class AppModule {}
 ```
 
 But what if we wanted to persist only `NovelsState`? Then we would have needed to pass its name to the `key` option:
 
 ```ts
-NgxsStoragePluginModule.forRoot({
-  key: 'novels'
-});
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: 'novels'
+    })
+  ]
+})
+export class AppModule {}
+```
+
+It's also possible to provide a state class except of its name:
+
+```ts
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: NovelsState
+    })
+  ]
+})
+export class AppModule {}
 ```
 
 And if we wanted to persist `NovelsState` and `DetectivesState`:
 
 ```ts
-NgxsStoragePluginModule.forRoot({
-  key: ['novels', 'detectives']
-});
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: ['novels', 'detectives']
+    })
+  ]
+})
+export class AppModule {}
+```
+
+Or using state classes:
+
+```ts
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: [NovelsState, DetectivesState]
+    })
+  ]
+})
+export class AppModule {}
+```
+
+You can combine state classes and strings:
+
+```ts
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: ['novels', DetectivesState]
+    })
+  ]
+})
+export class AppModule {}
 ```
 
 This is very handy to avoid persisting runtime-only states that shouldn't be saved to any storage.
