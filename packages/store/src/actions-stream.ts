@@ -89,7 +89,9 @@ export class Actions {
     // same as an execution strategy. That's why all initializations are run
     // inside the constructor
     this._internalActions$ = internalActions$.pipe(leaveNgxs(internalExecutionStrategy));
-
+    // These property are `bind`ed only once and then exposed publicly via getters
+    // thus there is no performance leak. Also those type definitions are inferred
+    // automatically
     this._pipe = this._internalActions$.pipe.bind(this._internalActions$);
     this._forEach = this._internalActions$.forEach.bind(this._internalActions$);
     this._subscribe = this._internalActions$.subscribe.bind(this._internalActions$);
