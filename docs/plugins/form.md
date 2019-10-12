@@ -5,7 +5,7 @@ store to the form and vice versa. The values from the store are observable and
 the reactive form accepts raw objects, as a result we end up monkey patching
 this back and forth.
 
-In addition to these issues, there are workflow where you want
+In addition to these issues, there are workflows where you want
 to fill out a form and leave and then come back and resume your current status.
 This is an excellent use case for stores and we can conquer that case with this plugin.
 
