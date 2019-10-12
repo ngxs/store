@@ -121,7 +121,7 @@ describe('Dispatch', () => {
     store.dispatch(new Increment());
 
     // Assert
-    expect(thrownMessage).toEqual(null);
+    expect(thrownMessage).toBeNull();
   });
 
   it('should run outside zone and return back in zone', async(() => {
