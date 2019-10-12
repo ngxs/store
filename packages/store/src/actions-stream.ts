@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { leaveNgxs } from './operators/leave-ngxs';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
@@ -66,50 +66,17 @@ export class InternalActions extends OrderedSubject<ActionContext> {}
  * You can listen to this in services to react without stores.
  */
 @Injectable()
-export class Actions {
-  /**
-   * TODO(Artur): This has to be `Observable<ActionContext>` in the
-   * v4. Leave it as `any` to avoid breaking changes
-   */
-  private _internalActions$: Observable<any>;
-
-  /**
-   * We can't move it directly to the public getter
-   * because we have to invoke `bind` only once!
-   */
-  private _pipe: Observable<any>['pipe'];
-  private _forEach: Observable<any>['forEach'];
-  private _subscribe: Observable<any>['subscribe'];
-
+export class Actions extends Subject<any> {
   constructor(
     internalActions$: InternalActions,
     internalExecutionStrategy: InternalNgxsExecutionStrategy
   ) {
-    // `InternalActions` should not be referenced here as a private property
-    // same as an execution strategy. That's why all initializations are run
-    // inside the constructor
-    this._internalActions$ = internalActions$.pipe(leaveNgxs(internalExecutionStrategy));
-    // These property are `bind`ed only once and then exposed publicly via getters
-    // thus there is no performance leak. Also those type definitions are inferred
-    // automatically
-    this._pipe = this._internalActions$.pipe.bind(this._internalActions$);
-    this._forEach = this._internalActions$.forEach.bind(this._internalActions$);
-    this._subscribe = this._internalActions$.subscribe.bind(this._internalActions$);
-  }
+    super();
 
-  get pipe() {
-    return this._pipe;
-  }
-
-  get forEach() {
-    return this._forEach;
-  }
-
-  get subscribe() {
-    return this._subscribe;
-  }
-
-  toPromise(promiseCtor?: typeof Promise | PromiseConstructorLike): Promise<any> {
-    return this._internalActions$.toPromise(promiseCtor!);
+    internalActions$.pipe(leaveNgxs(internalExecutionStrategy)).subscribe({
+      next: actionContext => this.next(actionContext),
+      error: error => this.error(error),
+      complete: () => this.complete()
+    });
   }
 }
