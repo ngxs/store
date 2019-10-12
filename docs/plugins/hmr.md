@@ -185,7 +185,7 @@ export class MyState {
 
 The following options are available:
 
-- `autoClearLogs` - Clear log after each hmr update (default value is `true`).
+- `autoClearLogs` - Clear logs after each refresh (default value is `true`).
 - `deferTime` - Deferred time before loading the old state (default value is `100` ms);
 - `persistAfterDestroy` - Additionally persist state when the AppModule is disposed (default value is `false`).
 
