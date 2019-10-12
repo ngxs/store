@@ -55,7 +55,7 @@ describe('Dispatch', () => {
     expect(observedCalls).toEqual(['handleError(...)', 'observer.error(...)']);
   }));
 
-  fit('should not propagate an unhandled exception', () => {
+  it('should not propagate an unhandled exception', () => {
     // Arrange
     const message = 'This is an eval error...';
 
