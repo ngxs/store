@@ -67,6 +67,8 @@ export class InternalActions extends OrderedSubject<ActionContext> {}
  */
 @Injectable()
 export class Actions extends Subject<any> {
+  // This has to be `Subject<ActionContext>` in the v4. Because `InternalActions`
+  // is a `Subject<ActionContext>`. Leave it as `any` to avoid breaking changes
   constructor(
     internalActions$: InternalActions,
     internalExecutionStrategy: InternalNgxsExecutionStrategy
