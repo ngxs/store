@@ -3,12 +3,8 @@ import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { of, throwError, timer } from 'rxjs';
 import { delay, skip, tap } from 'rxjs/operators';
 
-import { State } from '../src/decorators/state';
-import { Action } from '../src/decorators/action';
-import { Store } from '../src/store';
-import { NgxsModule } from '../src/module';
-import { StateContext } from '../src/symbols';
 import { NoopErrorHandler } from './helpers/utils';
+import { State, Action, Store, NgxsModule, StateContext, NgxsExecutionStrategy } from '..';
 
 describe('Dispatch', () => {
   class Increment {
@@ -58,6 +54,75 @@ describe('Dispatch', () => {
 
     expect(observedCalls).toEqual(['handleError(...)', 'observer.error(...)']);
   }));
+
+  fit('should not propagate an unhandled exception', () => {
+    // Arrange
+    const message = 'This is an eval error...';
+
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    class CounterState {
+      @Action(Increment)
+      increment() {
+        throw new EvalError(message);
+      }
+    }
+
+    @Injectable()
+    class FakeExecutionStrategy implements NgxsExecutionStrategy {
+      enter<T>(func: () => T): T {
+        return func();
+      }
+
+      leave<T>(func: () => T): T {
+        return func();
+      }
+    }
+
+    @Injectable()
+    class CustomErrorHandler implements ErrorHandler {
+      handleError(error: Error): void {
+        throw error;
+      }
+    }
+
+    // Act
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: FakeExecutionStrategy
+        })
+      ],
+      providers: [
+        {
+          provide: ErrorHandler,
+          useClass: CustomErrorHandler
+        }
+      ]
+    });
+
+    const store: Store = TestBed.get(Store);
+
+    // `typeof message | null` as we don't know will be assigned or not.
+    // Let's test it out at the end
+    let thrownMessage: typeof message | null = null;
+
+    // Start spying after module is initialized, not before
+    jest.spyOn(FakeExecutionStrategy.prototype, 'leave').mockImplementationOnce(func => {
+      try {
+        return func();
+      } catch (e) {
+        thrownMessage = e.message;
+      }
+    });
+
+    store.dispatch(new Increment());
+
+    // Assert
+    expect(thrownMessage).toEqual(null);
+  });
 
   it('should run outside zone and return back in zone', async(() => {
     @State<number>({
