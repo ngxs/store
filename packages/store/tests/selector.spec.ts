@@ -2,13 +2,27 @@ import { async, TestBed } from '@angular/core/testing';
 import { StateClass } from '@ngxs/store/internals';
 
 import { State } from '../src/decorators/state';
-import { createSelector } from '../src/utils/selector-utils';
+import {
+  createSelector,
+  mergeSelectorOptions,
+  setupSelectorMetadata
+} from '../src/utils/selector-utils';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { Selector } from '../src/decorators/selector';
 import { NgxsConfig } from '../src/symbols';
 import { SelectorOptions } from '../src/decorators/selector-options';
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../src/configs/messages.config';
+import {
+  ensureSelectorOptions,
+  ensureSelectorMetadata,
+  getSelectorMetadata,
+  getSelectorOptions,
+  globalSelectorOptions,
+  SelectorMetaDataModel,
+  StateClassInternal,
+  defineSelectorOptions
+} from '../src/internal/internals';
 
 describe('Selector', () => {
   interface MyStateModel {
@@ -857,6 +871,205 @@ describe('Selector', () => {
       } catch (e) {
         expect(e.message).toEqual(CONFIG_MESSAGES[VALIDATION_CODE.SELECTOR_DECORATOR]());
       }
+    });
+  });
+
+  describe('Setup SelectorMetadata', () => {
+    it('should be correct define selector options', () => {
+      class MyTestState {
+        public static meCustom(): void {}
+      }
+
+      ensureSelectorOptions(MyTestState, {
+        suppressErrors: false,
+        injectContainerState: true
+      });
+
+      ensureSelectorOptions(MyTestState.meCustom, {
+        suppressErrors: true,
+        injectContainerState: false
+      });
+
+      expect(getSelectorOptions(MyTestState)).toEqual({
+        suppressErrors: false,
+        injectContainerState: true
+      });
+
+      expect(getSelectorOptions(MyTestState.meCustom)).toEqual({
+        suppressErrors: true,
+        injectContainerState: false
+      });
+
+      const invalidValue: StateClassInternal = null!;
+
+      ensureSelectorOptions(invalidValue, {
+        suppressErrors: false,
+        injectContainerState: true
+      });
+
+      expect(getSelectorOptions(invalidValue)).toEqual({});
+    });
+
+    it('should get correct priority extended selector options', () => {
+      class MyTestState {}
+
+      globalSelectorOptions.set({});
+      expect(globalSelectorOptions.get()).toEqual({});
+
+      ensureSelectorMetadata(MyTestState);
+      const metadataState: SelectorMetaDataModel = getSelectorMetadata(MyTestState);
+      metadataState.containerClass = MyTestState;
+
+      expect(metadataState.getSelectorOptions()).toEqual({});
+      expect(mergeSelectorOptions(metadataState)).toEqual({});
+
+      expect(mergeSelectorOptions(metadataState, { suppressErrors: true })).toEqual({
+        suppressErrors: true
+      });
+
+      globalSelectorOptions.set({ injectContainerState: true });
+      expect(globalSelectorOptions.get()).toEqual({ injectContainerState: true });
+
+      expect(mergeSelectorOptions(metadataState, { suppressErrors: true })).toEqual({
+        injectContainerState: true,
+        suppressErrors: true
+      });
+
+      expect(
+        mergeSelectorOptions(metadataState, {
+          injectContainerState: false,
+          suppressErrors: true
+        })
+      ).toEqual({
+        injectContainerState: false,
+        suppressErrors: true
+      });
+
+      expect(mergeSelectorOptions(metadataState)).toEqual({
+        injectContainerState: true
+      });
+
+      expect(getSelectorOptions(metadataState.containerClass)).toEqual({});
+
+      ensureSelectorOptions(MyTestState, {
+        suppressErrors: false,
+        injectContainerState: false
+      });
+
+      expect(getSelectorOptions(metadataState.containerClass)).toEqual({
+        suppressErrors: false,
+        injectContainerState: false
+      });
+
+      expect(
+        mergeSelectorOptions(metadataState, {
+          suppressErrors: true,
+          injectContainerState: true
+        })
+      ).toEqual({
+        suppressErrors: true,
+        injectContainerState: true
+      });
+    });
+
+    it('should be correct priority extended selector options by selector', () => {
+      class MySelectorState {
+        public static mySelector(state: any): any {
+          return state;
+        }
+      }
+
+      ensureSelectorMetadata(MySelectorState.mySelector);
+      const metadataSelector: SelectorMetaDataModel = getSelectorMetadata(
+        MySelectorState.mySelector
+      );
+
+      metadataSelector.containerClass = MySelectorState;
+      metadataSelector.originalFn = MySelectorState.mySelector;
+
+      globalSelectorOptions.set({});
+      expect(globalSelectorOptions.get()).toEqual({});
+
+      expect(mergeSelectorOptions(metadataSelector, {})).toEqual({});
+
+      expect(mergeSelectorOptions(metadataSelector, { suppressErrors: true })).toEqual({
+        suppressErrors: true
+      });
+
+      ensureSelectorOptions(MySelectorState, {
+        suppressErrors: false,
+        injectContainerState: true
+      });
+
+      expect(mergeSelectorOptions(metadataSelector)).toEqual({
+        suppressErrors: false,
+        injectContainerState: true
+      });
+
+      ensureSelectorOptions(MySelectorState.mySelector, {
+        suppressErrors: true,
+        injectContainerState: true
+      });
+
+      expect(mergeSelectorOptions(metadataSelector)).toEqual({
+        suppressErrors: true,
+        injectContainerState: true
+      });
+
+      expect(
+        mergeSelectorOptions(metadataSelector, {
+          suppressErrors: false,
+          injectContainerState: false
+        })
+      ).toEqual({
+        suppressErrors: false,
+        injectContainerState: false
+      });
+
+      defineSelectorOptions(MySelectorState, {});
+      defineSelectorOptions(MySelectorState.mySelector, {});
+      expect(mergeSelectorOptions(metadataSelector)).toEqual({});
+
+      globalSelectorOptions.set({ injectContainerState: false });
+      expect(mergeSelectorOptions(metadataSelector)).toEqual({
+        injectContainerState: false
+      });
+
+      defineSelectorOptions(MySelectorState, { injectContainerState: true });
+      expect(mergeSelectorOptions(metadataSelector)).toEqual({
+        injectContainerState: true
+      });
+
+      defineSelectorOptions(MySelectorState.mySelector, { injectContainerState: false });
+      expect(mergeSelectorOptions(metadataSelector)).toEqual({
+        injectContainerState: false
+      });
+
+      globalSelectorOptions.set({});
+      defineSelectorOptions(MySelectorState, {});
+      defineSelectorOptions(MySelectorState.mySelector, {});
+      expect(mergeSelectorOptions(metadataSelector, { suppressErrors: true })).toEqual({
+        suppressErrors: true
+      });
+    });
+
+    it('should be correct when invalid container class', () => {
+      expect(mergeSelectorOptions(null!)).toEqual({});
+
+      const metadata: SelectorMetaDataModel = setupSelectorMetadata(
+        createSelector(
+          null!,
+          null!,
+          null!
+        ),
+        null!,
+        null!
+      );
+
+      expect(metadata.getSelectorOptions()).toEqual({});
+      expect(mergeSelectorOptions(metadata, { suppressErrors: true })).toEqual({
+        suppressErrors: true
+      });
     });
   });
 });

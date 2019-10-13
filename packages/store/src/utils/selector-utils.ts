@@ -3,24 +3,14 @@ import { memoize } from '@ngxs/store/internals';
 import {
   ensureSelectorMetadata,
   getSelectorMetadata,
+  getSelectorOptions,
   getStoreMetadata,
   globalSelectorOptions,
   SelectFromState,
   SelectorMetaDataModel,
-  SharedSelectorOptions
+  SharedSelectorOptions,
+  StateClassInternal
 } from '../internal/internals';
-
-const SELECTOR_OPTIONS_META_KEY = 'NGXS_SELECTOR_OPTIONS_META';
-
-export const selectorOptionsMetaAccessor = {
-  getOptions: (target: any): SharedSelectorOptions => {
-    return (target && (<any>target)[SELECTOR_OPTIONS_META_KEY]) || {};
-  },
-  defineOptions: (target: any, options: SharedSelectorOptions) => {
-    if (!target) return;
-    (<any>target)[SELECTOR_OPTIONS_META_KEY] = options;
-  }
-};
 
 interface CreationMetadata {
   containerClass: any;
@@ -86,23 +76,27 @@ export function createSelector<T extends (...args: any[]) => any>(
   return memoizedFn;
 }
 
-function setupSelectorMetadata<T extends (...args: any[]) => any>(
+export function setupSelectorMetadata<T extends (...args: any[]) => any>(
   memoizedFn: T,
   originalFn: T,
   creationMetadata: CreationMetadata | undefined
-) {
-  const selectorMetaData = ensureSelectorMetadata(memoizedFn);
+): SelectorMetaDataModel {
+  const selectorMetaData: SelectorMetaDataModel = ensureSelectorMetadata(memoizedFn);
   selectorMetaData.originalFn = originalFn;
-  let getExplicitSelectorOptions = () => ({});
+
+  const getExplicitSelectorOptions: Function = () =>
+    creationMetadata && creationMetadata.getSelectorOptions;
+
   if (creationMetadata) {
     selectorMetaData.containerClass = creationMetadata.containerClass;
     selectorMetaData.selectorName = creationMetadata.selectorName;
-    getExplicitSelectorOptions =
-      creationMetadata.getSelectorOptions || getExplicitSelectorOptions;
   }
+
   const selectorMetaDataClone = { ...selectorMetaData };
+
   selectorMetaData.getSelectorOptions = () =>
-    getCustomSelectorOptions(selectorMetaDataClone, getExplicitSelectorOptions());
+    mergeSelectorOptions(selectorMetaDataClone, getExplicitSelectorOptions());
+
   return selectorMetaData;
 }
 
@@ -119,19 +113,22 @@ function getRuntimeSelectorInfo(
   };
 }
 
-function getCustomSelectorOptions(
+export function mergeSelectorOptions(
   selectorMetaData: SelectorMetaDataModel,
-  explicitOptions: SharedSelectorOptions
+  explicitOptions: SharedSelectorOptions = {}
 ): SharedSelectorOptions {
-  const selectorOptions: SharedSelectorOptions = {
+  const stateClass: StateClassInternal = selectorMetaData && selectorMetaData.containerClass;
+  const selectorFn: Function | null = selectorMetaData && selectorMetaData.originalFn;
+  const existSelectorOptions: SharedSelectorOptions =
+    selectorMetaData && selectorMetaData.getSelectorOptions();
+
+  return {
     ...globalSelectorOptions.get(),
-    ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.containerClass) || {}),
-    ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.originalFn) || {}),
-    ...(selectorMetaData.getSelectorOptions() || {}),
+    ...getSelectorOptions(stateClass),
+    ...getSelectorOptions(selectorFn),
+    ...existSelectorOptions,
     ...explicitOptions
   };
-
-  return selectorOptions;
 }
 
 function getSelectorsToApply(
@@ -157,7 +154,6 @@ function getSelectorsToApply(
 
 /**
  * This function gets the selector function to be used to get the selected slice from the app state
- * @ignore
  */
 export function getSelectorFn(selector: any): SelectFromState {
   const metadata = getSelectorMetadata(selector) || getStoreMetadata(selector);

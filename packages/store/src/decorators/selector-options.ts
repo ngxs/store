@@ -1,5 +1,4 @@
-import { SharedSelectorOptions } from '../internal/internals';
-import { selectorOptionsMetaAccessor } from '../utils/selector-utils';
+import { ensureSelectorOptions, SharedSelectorOptions } from '../internal/internals';
 
 /**
  * Decorator for setting selector options at a method or class level.
@@ -15,11 +14,11 @@ export function SelectorOptions(options: SharedSelectorOptions) {
         // Method Decorator
         const originalFn = descriptor.value || (<any>descriptor).originalFn;
         if (originalFn) {
-          selectorOptionsMetaAccessor.defineOptions(originalFn, options);
+          ensureSelectorOptions(originalFn, options);
         }
       } else {
         // Class Decorator
-        selectorOptionsMetaAccessor.defineOptions(target, options);
+        ensureSelectorOptions(target, options);
       }
     }
   );

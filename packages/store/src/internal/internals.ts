@@ -1,3 +1,4 @@
+import { PlainObjectOf, StateClass } from '@ngxs/store/internals';
 import { Observable } from 'rxjs';
 
 import {
@@ -5,11 +6,10 @@ import {
   META_OPTIONS_KEY,
   NgxsConfig,
   SELECTOR_META_KEY,
+  SELECTOR_OPTIONS_META_KEY,
   StoreOptions
 } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
-
-import { PlainObjectOf, StateClass } from '@ngxs/store/internals';
 
 function asReadonly<T>(value: T): Readonly<T> {
   return value;
@@ -19,6 +19,7 @@ function asReadonly<T>(value: T): Readonly<T> {
 export interface StateClassInternal<T = any, U = any> extends StateClass<T> {
   [META_KEY]?: MetaDataModel;
   [META_OPTIONS_KEY]?: StoreOptions<U>;
+  [SELECTOR_OPTIONS_META_KEY]?: SharedSelectorOptions;
 }
 
 export type StateKeyGraph = PlainObjectOf<string[]>;
@@ -365,4 +366,30 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
  */
 export function isObject(obj: any) {
   return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';
+}
+
+export function ensureSelectorOptions(
+  target: StateClassInternal | Function | null,
+  options: SharedSelectorOptions = {}
+): SharedSelectorOptions {
+  if (target && !target.hasOwnProperty(SELECTOR_OPTIONS_META_KEY)) {
+    Object.defineProperty(target, SELECTOR_OPTIONS_META_KEY, { value: options });
+  }
+
+  return getSelectorOptions(target);
+}
+
+export function defineSelectorOptions(
+  target: StateClassInternal | Function | null,
+  options: SharedSelectorOptions = {}
+): void {
+  if (target) {
+    Object.defineProperty(target, SELECTOR_OPTIONS_META_KEY, { value: options });
+  }
+}
+
+export function getSelectorOptions(
+  target: StateClassInternal | Function | null
+): SharedSelectorOptions {
+  return (target && (target as any)[SELECTOR_OPTIONS_META_KEY]) || {};
 }
