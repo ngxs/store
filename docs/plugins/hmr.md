@@ -180,3 +180,23 @@ export class MyState {
   }
 }
 ```
+
+### HMR Options
+
+The following options are available:
+
+- `autoClearLogs` - Clear logs after each refresh (default value is `true`).
+- `deferTime` - Deferred time before loading the old state (default value is `100` ms);
+- `persistAfterDestroy` - Additionally persist state when the AppModule is disposed (default value is `false`).
+
+```ts
+import('@ngxs/hmr-plugin').then(plugin => {
+  plugin
+    .hmr(module, bootstrap, {
+      deferTime: 100,
+      autoClearLogs: true,
+      persistAfterDestroy: true
+    })
+    .catch((err: Error) => console.error(err));
+});
+```

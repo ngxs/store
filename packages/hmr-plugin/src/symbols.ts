@@ -26,17 +26,23 @@ export type BootstrapModuleFn<T = any> = () => Promise<NgModuleRef<T>>;
 export interface NgxsHmrOptions {
   /**
    * @description
-   * clear log after each hmr update
+   * Clear logs after each refresh
    * (default: true)
    */
   autoClearLogs?: boolean;
 
   /**
    * @description
-   * deferred time before loading the old state
+   * Deferred time before loading the old state
    * (default: 100ms)
    */
   deferTime?: number;
+
+  /**
+   * @description
+   * Additionally persist state when the AppModule is disposed
+   */
+  persistAfterDestroy?: boolean;
 }
 
 type ModuleId = string | number;
