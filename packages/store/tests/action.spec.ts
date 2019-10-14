@@ -1,5 +1,6 @@
-import { ErrorHandler } from '@angular/core';
+import { AbstractAction, NgxsAction, RequiredType } from '@ngxs/store';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ErrorHandler } from '@angular/core';
 import { delay } from 'rxjs/operators';
 import { throwError, of } from 'rxjs';
 
@@ -261,5 +262,32 @@ describe('Action', () => {
     store.dispatch({ type: 'OBJECT_LITERAL' });
 
     expect(callbacksCalled).toEqual(['onObjectLiteral']);
+  });
+
+  it('should be correct runtime/compile time check', () => {
+    try {
+      class MyBadAction extends AbstractAction {}
+      new MyBadAction();
+    } catch (e) {
+      expect(e.message).toEqual('Action type is required');
+    }
+
+    class ConcreteAction extends AbstractAction {
+      public static type = 'CONCRETE_ACTION';
+    }
+
+    const concrete = new ConcreteAction('world');
+    expect(ConcreteAction.type).toEqual('CONCRETE_ACTION');
+    expect(concrete.payload).toEqual('world');
+
+    @RequiredType<NgxsAction>()
+    class MyAction {
+      public static type = 'MY_ACTION';
+      constructor(public payload: string) {}
+    }
+
+    const required: MyAction = new MyAction('ANY');
+    expect(MyAction.type).toEqual('MY_ACTION');
+    expect(required.payload).toEqual('ANY');
   });
 });

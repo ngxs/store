@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { Action } from '../../src/decorators/action';
 import { InitState, UpdateState } from '../../src/actions/actions';
-import { NgxsModule, State, Store } from '../../src/public_api';
+import { NgxsAction, NgxsModule, RequiredType, State, Store } from '../../src/public_api';
 import { assertType } from './utils/assert-type';
 
 describe('[TEST]: Action Types', () => {
@@ -13,13 +13,13 @@ describe('[TEST]: Action Types', () => {
   class FooAction {
     public type = 'FOO';
 
-    constructor(public payload: string) { }
+    constructor(public payload: string) {}
   }
 
   class BarAction {
     public static type = 'BAR';
 
-    constructor(public payload: string) { }
+    constructor(public payload: string) {}
   }
 
   beforeAll(() => {
@@ -31,6 +31,7 @@ describe('[TEST]: Action Types', () => {
   });
 
   it('should be correct type in action decorator', () => {
+    Action(); // $ExpectError
     assertType(() => Action(UpdateState)); // $ExpectType MethodDecorator
     assertType(() => Action(new FooAction('payload'))); // $ExpectType MethodDecorator
     assertType(() => Action({ type: 'foo' })); // $ExpectType MethodDecorator
@@ -41,7 +42,34 @@ describe('[TEST]: Action Types', () => {
     assertType(() => Action(new BarAction('foo'))); // $ExpectError
     assertType(() => Action([{ foo: 'bar' }])); // $ExpectError
     assertType(() => Action([InitState, UpdateState], { foo: 'bar' })); // $ExpectError
-    assertType(() => { Action(); }); // $ExpectError
+  });
+
+  it('should be compile error - property type is missing', () => {
+    assertType(() => Action({})); // $ExpectError
+
+    class MyActionWithMissingType {}
+    assertType(() => Action([MyActionWithMissingType])); // $ExpectError
+
+    @RequiredType<NgxsAction>() // $ExpectError
+    class MyInvalidAction {}
+    assertType(() => Action([MyInvalidAction])); // $ExpectError
+
+    @RequiredType<NgxsAction>()
+    class MyAction {
+      public static type = 'MY_ACTION';
+    }
+    assertType(() => Action([MyAction])); // $ExpectType MethodDecorator
+
+    class MySuperAction {
+      public static type = 'MY_ACTION';
+    }
+    assertType(() => Action([MySuperAction])); // $ExpectType MethodDecorator
+
+    @RequiredType<NgxsAction>() // $ExpectError
+    class RequiredOnlyStaticType {
+      public type = 'anything';
+    }
+    assertType(() => Action([RequiredOnlyStaticType])); // $ExpectError
   });
 
   it('should be correct type in dispatch', () => {
@@ -61,10 +89,10 @@ describe('[TEST]: Action Types', () => {
       defaults: 0
     })
     class MyState {
-      @Action(Increment) increment1() { } // $ExpectType () => void
-      @Action({ type: 'INCREMENT' }) increment2() { } // $ExpectType () => void
-      @Action(new Increment()) increment3() { } // $ExpectError
-      @Action({ foo: 123 }) increment4() { } // $ExpectError
+      @Action(Increment) increment1() {} // $ExpectType () => void
+      @Action({ type: 'INCREMENT' }) increment2() {} // $ExpectType () => void
+      @Action(new Increment()) increment3() {} // $ExpectError
+      @Action({ foo: 123 }) increment4() {} // $ExpectError
     }
 
     assertType(() => store.dispatch(new Increment())); // $ExpectType Observable<any>
