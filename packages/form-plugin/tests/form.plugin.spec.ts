@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 
-import { NgxsModule, State, Store, Actions, ofActionDispatched } from '@ngxs/store';
+import { NgxsModule, State, Store, Actions, ofActionDispatched, Selector } from '@ngxs/store';
 
 import {
   NgxsFormPluginModule,
@@ -19,7 +19,7 @@ import {
 } from '../';
 
 describe('NgxsFormPlugin', () => {
-  interface StateModel {
+  interface StudentStateModel {
     studentForm: Form;
   }
 
@@ -31,167 +31,185 @@ describe('NgxsFormPlugin', () => {
     status?: string;
   }
 
-  @State<StateModel>({
-    name: 'actions',
+  @State<StudentStateModel>({
+    name: 'student',
     defaults: {
-      studentForm: { model: undefined }
+      studentForm: {
+        model: undefined
+      }
     }
   })
-  class MyStore {}
+  class StudentState {
+    @Selector()
+    static getStudentForm(state: StudentStateModel): Form {
+      return state.studentForm;
+    }
+  }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyStore]), NgxsFormPluginModule.forRoot()]
+      imports: [NgxsModule.forRoot([StudentState]), NgxsFormPluginModule.forRoot()]
     });
   });
 
-  it('should set form dirty', () => {
-    const store: Store = TestBed.get(Store);
-    store.dispatch(new SetFormDirty('actions.studentForm'));
+  const getStore = (): Store => TestBed.get(Store);
 
-    store
-      .select((state: any) => state.actions.studentForm)
-      .subscribe((form: Form) => {
-        expect(form.dirty).toBe(true);
-      });
+  it('should set form dirty', () => {
+    // Arrange & act
+    const store = getStore();
+    store.dispatch(new SetFormDirty('student.studentForm'));
+
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(form.dirty).toEqual(true);
   });
 
   it('should set form pristine', () => {
-    const store: Store = TestBed.get(Store);
-    // first set dirty, then pristine
-    store.dispatch(new SetFormDirty('actions.studentForm'));
-    store.dispatch(new SetFormPristine('actions.studentForm'));
+    // Arrange & act
+    const store = getStore();
+    store.dispatch(new SetFormDirty('student.studentForm'));
+    store.dispatch(new SetFormPristine('student.studentForm'));
 
-    store
-      .select((state: any) => state.actions.studentForm)
-      .subscribe((form: Form) => {
-        expect(form.dirty).toBe(false);
-      });
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(form.dirty).toEqual(false);
   });
 
   it('should set form disabled', () => {
-    const store: Store = TestBed.get(Store);
-    store.dispatch(new SetFormDisabled('actions.studentForm'));
+    // Arrange & act
+    const store = getStore();
+    store.dispatch(new SetFormDisabled('student.studentForm'));
 
-    store
-      .select((state: any) => state.actions.studentForm)
-      .subscribe((form: Form) => {
-        expect(form.disabled).toBe(true);
-      });
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(form.disabled).toEqual(true);
   });
 
   it('should set form enabled', () => {
-    const store: Store = TestBed.get(Store);
-    // first set disabled, then enabled.
-    store.dispatch(new SetFormDisabled('actions.studentForm'));
-    store.dispatch(new SetFormEnabled('actions.studentForm'));
+    // Arrange & act
+    const store = getStore();
+    store.dispatch(new SetFormDisabled('student.studentForm'));
+    store.dispatch(new SetFormEnabled('student.studentForm'));
 
-    store
-      .select((state: any) => state.actions.studentForm)
-      .subscribe((form: Form) => {
-        expect(form.disabled).toBe(false);
-      });
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(form.disabled).toEqual(false);
   });
 
   it('should update form dirty', () => {
-    const store: Store = TestBed.get(Store);
-    store.dispatch(new UpdateFormDirty({ path: 'actions.studentForm', dirty: true }));
+    // Arrange & act
+    const store = getStore();
+    store.dispatch(
+      new UpdateFormDirty({
+        path: 'student.studentForm',
+        dirty: true
+      })
+    );
 
-    store
-      .select((state: any) => state.actions.studentForm)
-      .subscribe((form: Form) => {
-        expect(form.dirty).toBe(true);
-      });
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(form.dirty).toEqual(true);
   });
 
   it('should update form status', () => {
-    const store: Store = TestBed.get(Store);
-    store.dispatch(new UpdateFormStatus({ path: 'actions.studentForm', status: 'VALID' }));
+    // Arrange & act
+    const store = getStore();
+    store.dispatch(
+      new UpdateFormStatus({
+        path: 'student.studentForm',
+        status: 'VALID'
+      })
+    );
 
-    store
-      .select((state: any) => state.actions.studentForm)
-      .subscribe((form: Form) => {
-        expect(form.status).toBe('VALID');
-      });
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(form.status).toEqual('VALID');
   });
 
   it('should update form errors', () => {
-    const store: Store = TestBed.get(Store);
+    // Arrange & act
+    const store = getStore();
     store.dispatch(
       new UpdateFormErrors({
         errors: { address: 'address is too long', name: 'empty not allowed' },
-        path: 'actions.studentForm'
+        path: 'student.studentForm'
       })
     );
 
-    store
-      .select((state: any) => state.actions.studentForm)
-      .subscribe((form: Form) => {
-        expect(form.errors!.name).toBe('empty not allowed');
-        expect(form.errors!.address).toBe('address is too long');
-      });
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(form.errors!.name).toEqual('empty not allowed');
+    expect(form.errors!.address).toEqual('address is too long');
   });
 
   it('should update form value', () => {
-    const store: Store = TestBed.get(Store);
+    // Arrange & act
+    const store = getStore();
     store.dispatch(
       new UpdateFormValue({
         value: { address: 'waterloo, ontario', name: 'Lou Grant' },
-        path: 'actions.studentForm'
+        path: 'student.studentForm'
       })
     );
 
-    store
-      .select((state: any) => state.actions.studentForm)
-      .subscribe((form: Form) => {
-        expect(form.model.name).toBe('Lou Grant');
-        expect(form.model.address).toBe('waterloo, ontario');
-      });
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(form.model.name).toEqual('Lou Grant');
+    expect(form.model.address).toEqual('waterloo, ontario');
   });
 
   it('should update form array value', () => {
-    const store = TestBed.get(Store);
+    // Arrange & act
+    const store = getStore();
     store.dispatch(
       new UpdateFormValue({
         value: ['waterloo, ontario', 'Lou Grant'],
-        path: 'actions.studentForm'
+        path: 'student.studentForm'
       })
     );
 
-    store
-      .select((state: any) => state.actions.studentForm)
-      .subscribe((form: Form) => {
-        expect(Array.isArray(form.model)).toBeTruthy();
-        expect(form.model).toEqual(['waterloo, ontario', 'Lou Grant']);
-      });
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(Array.isArray(form.model)).toEqual(true);
+    expect(form.model).toEqual(['waterloo, ontario', 'Lou Grant']);
   });
 
   it('should update form', () => {
-    const store: Store = TestBed.get(Store);
+    // Arrange & act
+    const store = getStore();
     store.dispatch(
       new UpdateForm({
         value: { address: 'waterloo, ontario', name: 'Lou Grant' },
         errors: { address: 'address is too long', name: 'empty not allowed' },
         dirty: true,
         status: 'INVALID',
-        path: 'actions.studentForm'
+        path: 'student.studentForm'
       })
     );
 
-    store
-      .select((state: any) => state.actions.studentForm)
-      .subscribe((form: Form) => {
-        expect(form.status).toBe('INVALID');
-        expect(form.dirty).toBe(true);
-        expect(form.errors!.name).toBe('empty not allowed');
-        expect(form.errors!.address).toBe('address is too long');
-        expect(form.model.name).toBe('Lou Grant');
-        expect(form.model.address).toBe('waterloo, ontario');
-      });
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(form.status).toEqual('INVALID');
+    expect(form.dirty).toEqual(true);
+    expect(form.errors!.name).toEqual('empty not allowed');
+    expect(form.errors!.address).toEqual('address is too long');
+    expect(form.model.name).toEqual('Lou Grant');
+    expect(form.model.address).toEqual('waterloo, ontario');
   });
 
   describe('NgxsFormPlugin runtime behavior', () => {
     it('should sync model with form', () => {
+      // Arrange
       @State({
         name: 'todos',
         defaults: {
@@ -218,6 +236,7 @@ describe('NgxsFormPlugin', () => {
         });
       }
 
+      // Act
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
@@ -232,11 +251,14 @@ describe('NgxsFormPlugin', () => {
       fixture.detectChanges();
 
       const input = fixture.debugElement.query(By.css('form input')).nativeElement;
+
+      // Assert
       expect(fixture.componentInstance.form.dirty).toBe(true);
       expect(input.value).toBe('Buy some coffee');
     });
 
     it('should update the state if "ngxsFormClearOnDestroy" option is provided', () => {
+      // Arrange
       @State({
         name: 'todos',
         defaults: {
@@ -263,6 +285,7 @@ describe('NgxsFormPlugin', () => {
         });
       }
 
+      // Act
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
@@ -272,9 +295,10 @@ describe('NgxsFormPlugin', () => {
         declarations: [MockComponent]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store = getStore();
       const fixture = TestBed.createComponent(MockComponent);
 
+      // Assert
       expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
         model: undefined,
         dirty: false,
@@ -293,7 +317,8 @@ describe('NgxsFormPlugin', () => {
       });
     });
 
-    it('should update the state asynchronously when ngxsFormDebounce is greater or equal to zero', done => {
+    it('should update the state asynchronously when ngxsFormDebounce is greater or equal to zero', fakeAsync(() => {
+      // Arrange
       @State({
         name: 'todos',
         defaults: {
@@ -320,6 +345,7 @@ describe('NgxsFormPlugin', () => {
         });
       }
 
+      // Act
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
@@ -329,10 +355,11 @@ describe('NgxsFormPlugin', () => {
         declarations: [MockComponent]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store = getStore();
       const fixture = TestBed.createComponent(MockComponent);
       fixture.detectChanges();
 
+      // Assert
       expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
         model: { text: null },
         dirty: false,
@@ -340,7 +367,7 @@ describe('NgxsFormPlugin', () => {
         errors: {}
       });
 
-      fixture.componentInstance.form.controls['text'].setValue('Buy some coffee');
+      fixture.componentInstance.form.controls.text.setValue('Buy some coffee');
 
       expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
         model: { text: null },
@@ -349,19 +376,18 @@ describe('NgxsFormPlugin', () => {
         errors: {}
       });
 
-      setTimeout(function() {
-        expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
-          model: { text: 'Buy some coffee' },
-          dirty: false,
-          status: 'VALID',
-          errors: {}
-        });
+      tick(0);
 
-        done();
-      }, 1);
-    });
+      expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
+        model: { text: 'Buy some coffee' },
+        dirty: false,
+        status: 'VALID',
+        errors: {}
+      });
+    }));
 
     it('should update the state synchronously when ngxsFormDebounce is less than zero', () => {
+      // Arrange
       @State({
         name: 'todos',
         defaults: {
@@ -388,6 +414,7 @@ describe('NgxsFormPlugin', () => {
         });
       }
 
+      // Act
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
@@ -397,10 +424,11 @@ describe('NgxsFormPlugin', () => {
         declarations: [MockComponent]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store = getStore();
       const fixture = TestBed.createComponent(MockComponent);
       fixture.detectChanges();
 
+      // Assert
       expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
         model: { text: null },
         dirty: false,
@@ -408,7 +436,7 @@ describe('NgxsFormPlugin', () => {
         errors: {}
       });
 
-      fixture.componentInstance.form.controls['text'].setValue('Buy some coffee');
+      fixture.componentInstance.form.controls.text.setValue('Buy some coffee');
 
       expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
         model: { text: 'Buy some coffee' },
@@ -419,6 +447,7 @@ describe('NgxsFormPlugin', () => {
     });
 
     it('should update the state synchronously when form\'s updateOn is "blur"', () => {
+      // Arrange
       @State({
         name: 'todos',
         defaults: {
@@ -448,6 +477,7 @@ describe('NgxsFormPlugin', () => {
         );
       }
 
+      // Act
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
@@ -457,10 +487,11 @@ describe('NgxsFormPlugin', () => {
         declarations: [MockComponent]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store = getStore();
       const fixture = TestBed.createComponent(MockComponent);
       fixture.detectChanges();
 
+      // Assert
       expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
         model: { text: null },
         dirty: false,
@@ -468,7 +499,7 @@ describe('NgxsFormPlugin', () => {
         errors: {}
       });
 
-      fixture.componentInstance.form.controls['text'].setValue('Buy some coffee');
+      fixture.componentInstance.form.controls.text.setValue('Buy some coffee');
 
       expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
         model: { text: 'Buy some coffee' },
@@ -479,6 +510,7 @@ describe('NgxsFormPlugin', () => {
     });
 
     it('should update the state synchronously when form\'s updateOn is "submit"', () => {
+      // Arrange
       @State({
         name: 'todos',
         defaults: {
@@ -508,6 +540,7 @@ describe('NgxsFormPlugin', () => {
         );
       }
 
+      // Act
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
@@ -517,10 +550,11 @@ describe('NgxsFormPlugin', () => {
         declarations: [MockComponent]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store = getStore();
       const fixture = TestBed.createComponent(MockComponent);
       fixture.detectChanges();
 
+      // Assert
       expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
         model: { text: null },
         dirty: false,
@@ -539,6 +573,7 @@ describe('NgxsFormPlugin', () => {
     });
 
     it('should not dispatch UpdateFormStatus every time as "statusChanges" emits', () => {
+      // Arrange
       @State({
         name: 'todos',
         defaults: {
@@ -562,6 +597,7 @@ describe('NgxsFormPlugin', () => {
         });
       }
 
+      // Act
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
