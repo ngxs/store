@@ -1,7 +1,7 @@
 import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { PlainObject } from '@ngxs/store/internals';
+import { PlainObject, StateClass } from '@ngxs/store/internals';
 import { SharedSelectorOptions } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
@@ -33,7 +33,7 @@ export class NgxsConfig {
   compatibility: {
     /**
      * Support a strict Content Security Policy.
-     * This will cirumvent some optimisations that violate a strict CSP through the use of `new Function(...)`.
+     * This will circumvent some optimisations that violate a strict CSP through the use of `new Function(...)`.
      * (default: false)
      */
     strictContentSecurityPolicy: boolean;
@@ -129,7 +129,7 @@ export interface StoreOptions<T> {
   /**
    * Sub states for the given state.
    */
-  children?: any[];
+  children?: StateClass[];
 }
 
 export const enum LifecycleHooks {
