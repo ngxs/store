@@ -9,10 +9,7 @@ export {
   getSelectorMetadata,
   getStoreMetadata,
   ensureStoreMetadata,
-  ensureSelectorMetadata,
-  ensureSelectorOptions,
-  getSelectorOptions,
-  defineSelectorOptions
+  ensureSelectorMetadata
 } from './internal/internals';
 export {
   ofAction,

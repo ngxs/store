@@ -368,17 +368,6 @@ export function isObject(obj: any) {
   return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';
 }
 
-export function ensureSelectorOptions(
-  target: StateClassInternal | Function | null,
-  options: SharedSelectorOptions = {}
-): SharedSelectorOptions {
-  if (target && !target.hasOwnProperty(SELECTOR_OPTIONS_META_KEY)) {
-    Object.defineProperty(target, SELECTOR_OPTIONS_META_KEY, { value: options });
-  }
-
-  return getSelectorOptions(target);
-}
-
 export function defineSelectorOptions(
   target: StateClassInternal | Function | null,
   options: SharedSelectorOptions = {}

@@ -14,14 +14,13 @@ import { NgxsConfig } from '../src/symbols';
 import { SelectorOptions } from '../src/decorators/selector-options';
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../src/configs/messages.config';
 import {
-  ensureSelectorOptions,
-  ensureSelectorMetadata,
   getSelectorMetadata,
   getSelectorOptions,
   globalSelectorOptions,
   SelectorMetaDataModel,
   StateClassInternal,
-  defineSelectorOptions
+  defineSelectorOptions,
+  ensureSelectorMetadata
 } from '../src/internal/internals';
 
 describe('Selector', () => {
@@ -880,12 +879,12 @@ describe('Selector', () => {
         public static meCustom(): void {}
       }
 
-      ensureSelectorOptions(MyTestState, {
+      defineSelectorOptions(MyTestState, {
         suppressErrors: false,
         injectContainerState: true
       });
 
-      ensureSelectorOptions(MyTestState.meCustom, {
+      defineSelectorOptions(MyTestState.meCustom, {
         suppressErrors: true,
         injectContainerState: false
       });
@@ -902,7 +901,7 @@ describe('Selector', () => {
 
       const invalidValue: StateClassInternal = null!;
 
-      ensureSelectorOptions(invalidValue, {
+      defineSelectorOptions(invalidValue, {
         suppressErrors: false,
         injectContainerState: true
       });
@@ -951,7 +950,7 @@ describe('Selector', () => {
 
       expect(getSelectorOptions(metadataState.containerClass)).toEqual({});
 
-      ensureSelectorOptions(MyTestState, {
+      defineSelectorOptions(MyTestState, {
         suppressErrors: false,
         injectContainerState: false
       });
@@ -996,7 +995,7 @@ describe('Selector', () => {
         suppressErrors: true
       });
 
-      ensureSelectorOptions(MySelectorState, {
+      defineSelectorOptions(MySelectorState, {
         suppressErrors: false,
         injectContainerState: true
       });
@@ -1006,7 +1005,7 @@ describe('Selector', () => {
         injectContainerState: true
       });
 
-      ensureSelectorOptions(MySelectorState.mySelector, {
+      defineSelectorOptions(MySelectorState.mySelector, {
         suppressErrors: true,
         injectContainerState: true
       });
@@ -1054,6 +1053,8 @@ describe('Selector', () => {
     });
 
     it('should be correct when invalid container class', () => {
+      globalSelectorOptions.set({});
+
       expect(mergeSelectorOptions(null!)).toEqual({});
 
       const metadata: SelectorMetaDataModel = setupSelectorMetadata(
