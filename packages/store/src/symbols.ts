@@ -132,6 +132,14 @@ export interface StoreOptions<T> {
   children?: any[];
 }
 
+export class NgxsSimpleChanges {
+  constructor(
+    public previousValue: any,
+    public currentValue: any,
+    public firstChange: boolean
+  ) {}
+}
+
 export const enum LifecycleHooks {
   NgxsOnInit = 'ngxsOnInit',
   NgxsAfterBootstrap = 'ngxsAfterBootstrap'
@@ -142,6 +150,13 @@ export const enum LifecycleHooks {
  */
 export interface NgxsOnInit {
   ngxsOnInit(ctx?: StateContext<any>): void | any;
+}
+
+/**
+ * On init interface
+ */
+export interface NgxsOnChanges {
+  ngxsOnChanges(changes?: NgxsSimpleChanges): void;
 }
 
 /**

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { StateContext, StateOperator } from '../symbols';
+import { NgxsSimpleChanges, StateContext, StateOperator } from '../symbols';
 import { MappedStore } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
 import { InternalStateOperations } from '../internal/state-operations';
@@ -27,6 +27,23 @@ export class StateContextFactory {
 
     function setStateValue(currentAppState: any, newValue: T): any {
       const newAppState = setValue(currentAppState, metadata.depth, newValue);
+
+      if (metadata.instance && metadata.instance.ngxsOnChanges) {
+        const META_ON_CHANGE_FIRST = 'NGXS_ON_CHANGE_FIRST';
+        const firstChange: boolean = !metadata.instance[META_ON_CHANGE_FIRST];
+        metadata.instance[META_ON_CHANGE_FIRST] = true;
+
+        const previousValue: T = getState(currentAppState);
+        const currentValue: T = getState(newAppState);
+        const changes: NgxsSimpleChanges = new NgxsSimpleChanges(
+          previousValue,
+          currentValue,
+          firstChange
+        );
+
+        metadata.instance.ngxsOnChanges(changes);
+      }
+
       root.setState(newAppState);
       return newAppState;
       // In doing this refactoring I noticed that there is a 'bug' where the
