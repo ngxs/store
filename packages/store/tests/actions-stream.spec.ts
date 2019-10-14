@@ -87,26 +87,21 @@ describe('The Actions stream', () => {
     ]);
   });
 
-  it('has to splice "observers" array after "unsubscribe" is invoked', () => {
-    // Arrange
-    function onNext() {}
-
-    // Act
+  it('has to add subscriber to the internal "_subscriptions" property', () => {
+    // Arrange & act
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot()]
     });
 
     const actions$: Actions = TestBed.get(Actions);
-    const spy = jest.spyOn(actions$, 'subscribe');
-    const subscription = actions$.subscribe(onNext);
+    const subscription = actions$.subscribe(() => {});
 
-    const countOfObserversBefore = actions$.observers.length;
+    const isArrayBeforeUnsubscribe = Array.isArray(subscription['_subscriptions']);
     subscription.unsubscribe();
-    const countOfObserversAfter = actions$.observers.length;
+    const isNullyAfterUnsubscribe = subscription['_subscriptions'] === null;
 
     // Assert
-    expect(spy).toHaveBeenCalledWith(onNext);
-    expect(countOfObserversBefore).toBe(1);
-    expect(countOfObserversAfter).toBe(0);
+    expect(isArrayBeforeUnsubscribe).toBeTruthy();
+    expect(isNullyAfterUnsubscribe).toBeTruthy();
   });
 });

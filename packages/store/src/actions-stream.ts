@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 
 import { leaveNgxs } from './operators/leave-ngxs';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
@@ -66,19 +66,23 @@ export class InternalActions extends OrderedSubject<ActionContext> {}
  * You can listen to this in services to react without stores.
  */
 @Injectable()
-export class Actions extends Subject<any> {
-  // This has to be `Subject<ActionContext>` in the v4. Because `InternalActions`
+export class Actions extends Observable<any> {
+  // This has to be `Observable<ActionContext>` in the v4. Because `InternalActions`
   // is a `Subject<ActionContext>`. Leave it as `any` to avoid breaking changes
   constructor(
     internalActions$: InternalActions,
     internalExecutionStrategy: InternalNgxsExecutionStrategy
   ) {
-    super();
+    super(observer => {
+      const childSubscription = internalActions$
+        .pipe(leaveNgxs(internalExecutionStrategy))
+        .subscribe({
+          next: ctx => observer.next(ctx),
+          error: error => observer.error(error),
+          complete: () => observer.complete()
+        });
 
-    internalActions$.pipe(leaveNgxs(internalExecutionStrategy)).subscribe({
-      next: actionContext => this.next(actionContext),
-      error: error => this.error(error),
-      complete: () => this.complete()
+      observer.add(childSubscription);
     });
   }
 }
