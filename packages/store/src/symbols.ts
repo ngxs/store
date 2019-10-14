@@ -153,7 +153,7 @@ export interface NgxsOnInit {
 }
 
 /**
- * On init interface
+ * On change interface
  */
 export interface NgxsOnChanges {
   ngxsOnChanges(changes?: NgxsSimpleChanges): void;
