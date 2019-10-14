@@ -21,7 +21,8 @@
     "experimentalDecorators": true,
     "target": "es5",
     "lib": ["es2017", "dom"],
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["node_modules/@types"],
+    "types": ["jest", "node"]
   },
-  "exclude": ["@ngxs/**", "integrations/**"]
+  "exclude": ["@ngxs/**", "integrations/**", "cypress"]
 }
