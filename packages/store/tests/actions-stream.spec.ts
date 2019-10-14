@@ -1,12 +1,16 @@
-import { TestBed, async } from '@angular/core/testing';
-import { InternalActions, OrderedSubject, ActionStatus } from '../src/actions-stream';
+import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 
+import { NgxsModule } from '../src/module';
+import { InternalActions, OrderedSubject, ActionStatus, Actions } from '../src/actions-stream';
+
 describe('The Actions stream', () => {
-  it('should not use Subject because of the following issue (note that 3rd subscriber receives the events out of order)', async(() => {
+  it('should not use Subject because of the following issue (note that 3rd subscriber receives the events out of order)', () => {
+    // Arrange
     const statuses$ = new Subject<string>();
     const callsRecorded = <string[]>[];
 
+    // Act
     statuses$.subscribe(status => callsRecorded.push('1st Subscriber:' + status));
     statuses$.subscribe(status => {
       callsRecorded.push('2nd Subscriber:' + status);
@@ -16,6 +20,7 @@ describe('The Actions stream', () => {
 
     statuses$.next('dispatch');
 
+    // Assert
     expect(callsRecorded).toEqual([
       '1st Subscriber:dispatch',
       '2nd Subscriber:dispatch',
@@ -24,12 +29,14 @@ describe('The Actions stream', () => {
       '3rd Subscriber:complete',
       '3rd Subscriber:dispatch'
     ]);
-  }));
+  });
 
-  it('should rather use OrderedSubject because it preserves the order of dispatch for subscribers', async(() => {
+  it('should rather use OrderedSubject because it preserves the order of dispatch for subscribers', () => {
+    // Arrange
     const statuses$ = new OrderedSubject<string>();
     const callsRecorded = <string[]>[];
 
+    // Act
     statuses$.subscribe(status => callsRecorded.push('1st Subscriber:' + status));
     statuses$.subscribe(status => {
       callsRecorded.push('2nd Subscriber:' + status);
@@ -39,6 +46,7 @@ describe('The Actions stream', () => {
 
     statuses$.next('dispatch');
 
+    // Assert
     expect(callsRecorded).toEqual([
       '1st Subscriber:dispatch',
       '2nd Subscriber:dispatch',
@@ -47,9 +55,10 @@ describe('The Actions stream', () => {
       '2nd Subscriber:complete',
       '3rd Subscriber:complete'
     ]);
-  }));
+  });
 
-  it('should preserve the order of dispatch for subscribers', async(() => {
+  it('should preserve the order of dispatch for subscribers', () => {
+    // Arrange & act
     TestBed.configureTestingModule({
       providers: [InternalActions]
     });
@@ -67,6 +76,7 @@ describe('The Actions stream', () => {
 
     internalActions.next({ status: ActionStatus.Dispatched, action: null });
 
+    // Assert
     expect(callsRecorded).toEqual([
       '1st Subscriber:DISPATCHED',
       '2nd Subscriber:DISPATCHED',
@@ -75,5 +85,23 @@ describe('The Actions stream', () => {
       '2nd Subscriber:SUCCESSFUL',
       '3rd Subscriber:SUCCESSFUL'
     ]);
-  }));
+  });
+
+  it('has to add subscriber to the internal "_subscriptions" property', () => {
+    // Arrange & act
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot()]
+    });
+
+    const actions$: Actions = TestBed.get(Actions);
+    const subscription = actions$.subscribe(() => {});
+
+    const isArrayBeforeUnsubscribe = Array.isArray(subscription['_subscriptions']);
+    subscription.unsubscribe();
+    const isNullyAfterUnsubscribe = subscription['_subscriptions'] === null;
+
+    // Assert
+    expect(isArrayBeforeUnsubscribe).toBeTruthy();
+    expect(isNullyAfterUnsubscribe).toBeTruthy();
+  });
 });

@@ -23,5 +23,5 @@
     "lib": ["es2017", "dom"],
     "typeRoots": ["node_modules/@types"]
   },
-  "exclude": ["@ngxs/**", "integrations/**"]
+  "exclude": ["@ngxs/**", "integrations/**", "cypress"]
 }
