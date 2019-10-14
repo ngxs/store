@@ -39,7 +39,11 @@ export class InternalDispatcher {
 
     result.subscribe({
       error: error =>
-        this._ngxsExecutionStrategy.leave(() => this._errorHandler.handleError(error))
+        this._ngxsExecutionStrategy.leave(() => {
+          try {
+            this._errorHandler.handleError(error);
+          } catch {}
+        })
     });
 
     return result.pipe(leaveNgxs(this._ngxsExecutionStrategy));
