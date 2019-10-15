@@ -6,7 +6,7 @@ import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader'
 
 import { AppComponent } from '@integration/app.component';
 import { AppModule } from '@integration/app.module';
-import { TODOS_STORAGE_KEY } from '@integration/store/todos/todos.model';
+import { TodosState } from '@integration/store/todos/todos.state';
 
 @NgModule({
   imports: [
@@ -15,7 +15,7 @@ import { TODOS_STORAGE_KEY } from '@integration/store/todos/todos.model';
     NoopAnimationsModule,
     ServerTransferStateModule,
     ModuleMapLoaderModule,
-    NgxsStoragePluginModule.forRoot({ key: [TODOS_STORAGE_KEY] })
+    NgxsStoragePluginModule.forRoot({ key: [TodosState] })
   ],
   bootstrap: [AppComponent]
 })
