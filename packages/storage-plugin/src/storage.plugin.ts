@@ -32,12 +32,11 @@ export class NgxsStoragePlugin implements NgxsPlugin {
       return next(state, event);
     }
 
-    const options = this._options || {};
+    // We cast to `string[]` here as we're sure that this option has been
+    // transformed by the `storageOptionsFactory` function that provided token
+    const keys = this._options.key as string[];
     const matches = actionMatcher(event);
     const isInitAction = matches(InitState) || matches(UpdateState);
-    // We cast to `string[]` here as we're sure that this option has been
-    // transformed by the factory function that provided token
-    const keys = options.key as string[];
     let hasMigration = false;
 
     if (isInitAction) {
@@ -47,7 +46,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
         if (val !== 'undefined' && typeof val !== 'undefined' && val !== null) {
           try {
-            val = options.deserialize!(val);
+            val = this._options.deserialize!(val);
           } catch (e) {
             console.error(
               'Error ocurred while deserializing the store value, falling back to empty object.'
@@ -55,8 +54,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             val = {};
           }
 
-          if (options.migrations) {
-            options.migrations.forEach(strategy => {
+          if (this._options.migrations) {
+            this._options.migrations.forEach(strategy => {
               const versionMatch =
                 strategy.version === getValue(val, strategy.versionKey || 'version');
               const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
@@ -87,7 +86,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             }
 
             try {
-              this._engine.setItem(key!, options.serialize!(val));
+              this._engine.setItem(key!, this._options.serialize!(val));
             } catch (e) {
               console.error(
                 'Error ocurred while serializing the store value, value not updated.'

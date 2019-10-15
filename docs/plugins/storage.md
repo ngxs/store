@@ -85,7 +85,7 @@ But what if we wanted to persist only `NovelsState`? Then we would have needed t
 export class AppModule {}
 ```
 
-It's also possible to provide a state class except of its name:
+It's also possible to provide a state class as opposed to its name:
 
 ```ts
 @NgModule({
@@ -124,7 +124,7 @@ Or using state classes:
 export class AppModule {}
 ```
 
-You can combine state classes and strings:
+You can even combine state classes and strings:
 
 ```ts
 @NgModule({
