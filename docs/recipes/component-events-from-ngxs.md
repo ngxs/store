@@ -22,7 +22,7 @@ We develop the `app-email-list` custom element that emits `messagesLoaded` DOM e
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmailListComponent {
-  @Select(MessagesState.messages) messages$: Observable<Message[]>;
+  @Select(MessagesState.getMessages) messages$: Observable<Message[]>;
 
   @Output() messagesLoaded = new EventEmitter<Message[]>();
 
@@ -30,7 +30,7 @@ export class EmailListComponent {
 
   refresh(): void {
     this.store.dispatch(new LoadMessages()).subscribe(() => {
-      const messages = this.store.selectSnapshot(MessagesState.messages);
+      const messages = this.store.selectSnapshot(MessagesState.getMessages);
       this.messagesLoaded.emit(messages);
     });
   }
@@ -49,20 +49,20 @@ The above code is very simple and is used for demonstrating purposes only! As yo
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmailListComponent {
-  @Select(MessagesState.messages) messages$: Observable<Message[]>;
+  @Select(MessagesState.getMessages) messages$: Observable<Message[]>;
 
   @ViewChild(ButtonComponent, { static: true }) button: ButtonComponent;
 
   @Output() messagesLoaded = this.button.click.pipe(
     switchMap(() => this.store.dispatch(new LoadMessages())),
-    mapTo(this.store.selectSnapshot(MessagesState.messages))
+    map(() => this.store.selectSnapshot(MessagesState.getMessages))
   );
 
   constructor(private store: Store) {}
 }
 ```
 
-Assume that `ButtonComponent.click` is an `EventEmitter`. Wow, we've done it in a more declarative and reactive way. So every time the user clicks the `app-button` our `switchMap` will produce the next `store.dispatch` subscribe and unsubscribe from the previous one. Next we use the `mapTo` operator that will map our stream value to the `Message[]` array from our state.
+Assume that `ButtonComponent.click` is an `EventEmitter`. Wow, we've done it in a more declarative and reactive way. So every time the user clicks the `app-button` our `switchMap` will produce the next `store.dispatch` subscribe and unsubscribe from the previous one. Next we use the `map` operator that will map our stream value to the `Message[]` array from our state.
 
 Now let's take away that idea with A and B teams. As our store is a single source of truth thus we can listen to any action from any part of our application. DOM events can be handy to use with the `Actions` stream. Assume we've got a component that emits `booksLoaded` event every time when different genre of books are loaded:
 
