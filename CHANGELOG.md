@@ -6,15 +6,16 @@
 $ npm install @ngxs/store@dev
 ```
 
-- Feature: expose StateContextFactory, StateFactory [#1325](https://github.com/ngxs/store/pull/1325)
-- Feature: Form Plugin - implement `propertyPath` parameter in the `UpdateFormValue` [#1215](https://github.com/ngxs/store/pull/1215)
-- Feature: WebSocket Plugin - implement `WebSocketConnected` action [#1371](https://github.com/ngxs/store/pull/1371)
-- Feature: HMR Plugin - add option for persisting state after the root module is disposed [#1369](https://github.com/ngxs/store/pull/1369)
+- Feature: Expose StateContextFactory, StateFactory [#1325](https://github.com/ngxs/store/pull/1325)
+- Feature: Storage Plugin - Use state classes as keys [#1380](https://github.com/ngxs/store/pull/1380)
+- Feature: Form Plugin - Implement `propertyPath` parameter in the `UpdateFormValue` [#1215](https://github.com/ngxs/store/pull/1215)
+- Feature: WebSocket Plugin - Implement `WebSocketConnected` action [#1371](https://github.com/ngxs/store/pull/1371)
+- Feature: HMR Plugin - Add option for persisting state after the root module is disposed [#1369](https://github.com/ngxs/store/pull/1369)
 - Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
 - Fix: Do not re-throw error to the global handler if custom is provided [#1379](https://github.com/ngxs/store/pull/1379)
 - Fix: Group `Actions` subscriptions to remove memory leak [#1381](https://github.com/ngxs/store/pull/1381)
-- Build: add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
-- Build: run SSR tests with cypress [#1281](https://github.com/ngxs/store/pull/1281)
+- Build: Add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
+- Build: Run SSR tests with cypress [#1281](https://github.com/ngxs/store/pull/1281)
 
 ## NGXS-Labs
 
