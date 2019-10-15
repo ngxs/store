@@ -30,7 +30,7 @@ export class StateContextFactory {
 
       if (metadata.instance && metadata.instance.ngxsOnChanges) {
         const META_ON_CHANGE_FIRST = 'NGXS_ON_CHANGE_FIRST';
-        const firstChange: boolean = !metadata.instance[META_ON_CHANGE_FIRST];
+        const firstChange = !metadata.instance[META_ON_CHANGE_FIRST];
         metadata.instance[META_ON_CHANGE_FIRST] = true;
 
         const previousValue: T = getState(currentAppState);
