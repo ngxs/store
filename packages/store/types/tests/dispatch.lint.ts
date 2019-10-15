@@ -44,11 +44,29 @@ describe('[TEST]: Action Types', () => {
     assertType(() => { Action(); }); // $ExpectError
   });
 
+  it('should be success or compile error when property type is missing', () => {
+    assertType(() => Action({})); // $ExpectError
+
+    class MyActionWithMissingType {}
+    assertType(() => Action([MyActionWithMissingType])); // $ExpectError
+
+    class MyAction {
+      public static type = 'MY_ACTION';
+    }
+    assertType(() => Action([MyAction])); // $ExpectType MethodDecorator
+
+    class RequiredOnlyStaticType {
+      public type = 'anything';
+    }
+    assertType(() => Action([RequiredOnlyStaticType])); // $ExpectError
+  });
+
   it('should be correct type in dispatch', () => {
     assertType(() => store.dispatch([])); // $ExpectType Observable<any>
     assertType(() => store.dispatch(new FooAction('payload'))); // $ExpectError Actions
     assertType(() => store.dispatch(new BarAction('foo'))); // $ExpectError Actions
     assertType(() => store.dispatch()); // $ExpectError
+    assertType(() => store.dispatch({})); // $ExpectType Observable<any>
   });
 
   it('should prevent invalid types passed through', () => {
