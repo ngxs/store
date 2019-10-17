@@ -20,9 +20,9 @@
     "baseUrl": ".",
     "paths": {
       "@angular/*": ["../../../node_modules/@angular/*"],
-      "@ngxs/store/operators": ["../../../packages/store/operators/src"],
-      "@ngxs/store/internals": ["../../../packages/store/internals/src"],
-      "@ngxs/*": ["../../../packages/*"]
+      "@ngxs/store/operators": ["../../../@ngxs/store/operators/index.d.ts"],
+      "@ngxs/store/internals": ["../../../@ngxs/store/internals/index.d.ts"],
+      "@ngxs/*": ["../../../@ngxs/*/index.d.ts"]
     }
   }
 }
