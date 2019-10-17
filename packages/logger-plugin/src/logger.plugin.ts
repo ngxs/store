@@ -1,4 +1,5 @@
 import { Injectable, Inject, Injector } from '@angular/core';
+import { Observable, defer, EMPTY, merge } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
 import { NgxsPlugin, NgxsNextPluginFn, Store } from '@ngxs/store';
@@ -27,7 +28,7 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
 
     actionLogger.dispatched(state);
 
-    return next(state, event).pipe(
+    const result = next(state, event).pipe(
       tap(nextState => {
         actionLogger.completed(nextState);
       }),
@@ -36,5 +37,17 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
         throw error;
       })
     );
+
+    return afterSubscribe(result, () => actionLogger.syncWorkComplete());
   }
+}
+
+function afterSubscribe<T>(source: Observable<T>, callback: VoidFunction) {
+  return merge(
+    source,
+    defer(() => {
+      callback();
+      return EMPTY;
+    })
+  );
 }
