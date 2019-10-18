@@ -3,11 +3,11 @@ import { TestBed } from '@angular/core/testing';
 import { throwError } from 'rxjs';
 
 import { NgxsModule, Store, State, Action, StateContext, InitState } from '@ngxs/store';
-import { NoopErrorHandler } from '@ngxs/store/tests/helpers/utils';
 import { StateClass } from '@ngxs/store/internals';
 
 import { NgxsLoggerPluginModule, NgxsLoggerPluginOptions } from '../';
 import { LoggerSpy, formatActionCallStack } from './helpers';
+import { NoopErrorHandler } from '../../store/tests/helpers/utils';
 
 describe('NgxsLoggerPlugin', () => {
   const thrownErrorMessage = 'Error';

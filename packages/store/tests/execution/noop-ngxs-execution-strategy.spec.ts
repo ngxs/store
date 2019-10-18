@@ -1,8 +1,6 @@
 import { ApplicationRef, NgZone, Component, Type } from '@angular/core';
 import { TestBed, TestModuleMetadata } from '@angular/core/testing';
-
 import { Observable } from 'rxjs';
-
 import {
   State,
   Action,
@@ -10,9 +8,9 @@ import {
   NgxsModule,
   Store,
   Select,
-  Actions
-} from '../../src/public_api';
-import { NoopNgxsExecutionStrategy } from '@ngxs/store/src/execution/noop-ngxs-execution-strategy';
+  Actions,
+  NoopNgxsExecutionStrategy
+} from '@ngxs/store';
 
 describe('NoopNgxsExecutionStrategy', () => {
   class ZoneCounter {
