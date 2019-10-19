@@ -1,5 +1,13 @@
-import { State, Action, StateContext } from '@ngxs/store';
-import { patch, append, removeItem, insertItem, updateItem } from '@ngxs/store/operators';
+import { Action, State, StateContext } from '@ngxs/store';
+import {
+  append,
+  compose,
+  iif,
+  insertItem,
+  patch,
+  removeItem,
+  updateItem
+} from '@ngxs/store/operators';
 
 export interface AnimalsStateModel {
   zebras: string[];
@@ -30,6 +38,12 @@ export class ChangePandaName {
   constructor(public payload: { name: string; newName: string }) {}
 }
 
+export class ComposePanda {
+  static readonly type = '[Animals] Compose panda';
+
+  constructor(public payload: { zebras: string[]; pandas: string[] }) {}
+}
+
 @State<AnimalsStateModel>({
   name: 'animals',
   defaults: {
@@ -41,8 +55,9 @@ export class AnimalsState {
   @Action(AddZebra)
   addZebra(ctx: StateContext<AnimalsStateModel>, { payload }: AddZebra) {
     ctx.setState(
+      // $ExpectType StateOperator<AnimalsStateModel>
       patch({
-        zebras: append([payload]) // $ExpectError
+        zebras: append([payload]) // $ExpectType StateOperator<string[]>
       })
     );
   }
@@ -50,8 +65,9 @@ export class AnimalsState {
   @Action(RemovePanda)
   removePanda(ctx: StateContext<AnimalsStateModel>, { payload }: RemovePanda) {
     ctx.setState(
+      // $ExpectType StateOperator<AnimalsStateModel>
       patch({
-        pandas: removeItem<string>(name => name === payload) // $ExpectError
+        pandas: removeItem<string>(name => name === payload) // $ExpectType StateOperator<string[]>
       })
     );
   }
@@ -59,8 +75,9 @@ export class AnimalsState {
   @Action(Test)
   test(ctx: StateContext<AnimalsStateModel>, { payload }: Test) {
     ctx.setState(
+      // $ExpectType StateOperator<AnimalsStateModel>
       patch({
-        pandas: insertItem<string>(payload) // $ExpectError
+        pandas: insertItem<string>(payload) // $ExpectType StateOperator<string[]>
       })
     );
   }
@@ -68,9 +85,41 @@ export class AnimalsState {
   @Action(ChangePandaName)
   changePandaName(ctx: StateContext<AnimalsStateModel>, { payload }: ChangePandaName) {
     ctx.setState(
+      // $ExpectType StateOperator<AnimalsStateModel>
       patch({
-        pandas: updateItem<string>(name => name === payload.name, payload.newName)
+        pandas: updateItem(name => name === payload.name, payload.newName), // $ExpectType StateOperator<string[]>
+        zebras: iif(arr => arr!.length > 0, ['hello'], ['world']) // $ExpectType StateOperator<string[]>
       })
+    );
+  }
+
+  @Action(ComposePanda)
+  composePanda(
+    ctx: StateContext<AnimalsStateModel>,
+    { payload: { zebras, pandas } }: ComposePanda
+  ) {
+    ctx.setState(
+      // $ExpectType StateOperator<AnimalsStateModel>
+      patch({
+        zebras: compose(append(zebras)), // $ExpectType StateOperator<string[]>
+        pandas: compose(append(pandas)) // $ExpectType StateOperator<string[]>
+      })
+    );
+  }
+
+  @Action({ type: 'patchExplicit' })
+  patchExplicit(ctx: StateContext<AnimalsStateModel>) {
+    ctx.setState(
+      // $ExpectType StateOperator<AnimalsStateModel>
+      patch<AnimalsStateModel>({ zebras: [] })
+    );
+  }
+
+  @Action({ type: 'patchImplicit' })
+  patchImplicit(ctx: StateContext<AnimalsStateModel>) {
+    ctx.setState(
+      // $ExpectType StateOperator<{ zebras: never[]; }>
+      patch({ zebras: [] }) // $ExpectError
     );
   }
 }

@@ -19,28 +19,28 @@ describe('[TEST]: the removeItem State Operator', () => {
       objs: [{ name: '1' }, { name: '2' }, { name: '3' }]
     };
 
-    patch<Original>({ nums: removeItem(null!) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    patch<Original>({ nums: removeItem(undefined!) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ nums: removeItem(null!) })(original); // $ExpectType Original
+    patch<Original>({ nums: removeItem(undefined!) })(original); // $ExpectType Original
 
-    patch<Original>({ nums: removeItem<number>(1) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    patch<Original>({ nums: removeItem(1) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    patch<Original>({ nums: removeItem(item => item === 2) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ nums: removeItem<number>(1) })(original); // $ExpectType Original
+    patch<Original>({ nums: removeItem(1) })(original); // $ExpectType Original
+    patch<Original>({ nums: removeItem(item => item === 2) })(original); // $ExpectType Original
 
-    patch<Original>({ strs: removeItem<string>(1) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    patch<Original>({ strs: removeItem(1) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    patch<Original>({ strs: removeItem(item => item === '2') })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ strs: removeItem<string>(1) })(original); // $ExpectType Original
+    patch<Original>({ strs: removeItem(1) })(original); // $ExpectType Original
+    patch<Original>({ strs: removeItem(item => item === '2') })(original); // $ExpectType Original
 
-    patch<Original>({ bools: removeItem<boolean>(1) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    patch<Original>({ bools: removeItem(1) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    patch<Original>({ bools: removeItem(item => item === true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ bools: removeItem<boolean>(1) })(original); // $ExpectType Original
+    patch<Original>({ bools: removeItem(1) })(original); // $ExpectType Original
+    patch<Original>({ bools: removeItem(item => item === true) })(original); // $ExpectType Original
 
-    patch<Original>({ arrs: removeItem<number[]>(1) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    patch<Original>({ arrs: removeItem(1) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    patch<Original>({ arrs: removeItem(item => item === []) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ arrs: removeItem<number[]>(1) })(original); // $ExpectType Original
+    patch<Original>({ arrs: removeItem(1) })(original); // $ExpectType Original
+    patch<Original>({ arrs: removeItem(item => item === []) })(original); // $ExpectType Original
 
-    patch<Original>({ objs: removeItem<Original['objs'][0]>(1) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    patch<Original>({ objs: removeItem(1) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
-    patch<Original>({ objs: removeItem(item => item!.name === '') })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ objs: removeItem<Original['objs'][0]>(1) })(original); // $ExpectType Original
+    patch<Original>({ objs: removeItem(1) })(original); // $ExpectType Original
+    patch<Original>({ objs: removeItem(item => item!.name === '') })(original); // $ExpectType Original
   });
 
   it('should have the following valid complex usage', () => {
