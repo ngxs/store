@@ -57,7 +57,8 @@ export class AnimalsState {
     ctx.setState(
       // $ExpectType StateOperator<AnimalsStateModel>
       patch({
-        zebras: append([payload]) // $ExpectType StateOperator<string[]>
+        // $ExpectType StateOperator<string[]>
+        zebras: append([payload])
       })
     );
   }
@@ -67,7 +68,8 @@ export class AnimalsState {
     ctx.setState(
       // $ExpectType StateOperator<AnimalsStateModel>
       patch({
-        pandas: removeItem<string>(name => name === payload) // $ExpectType StateOperator<string[]>
+        // $ExpectType StateOperator<string[]>
+        pandas: removeItem<string>(name => name === payload)
       })
     );
   }
@@ -77,7 +79,8 @@ export class AnimalsState {
     ctx.setState(
       // $ExpectType StateOperator<AnimalsStateModel>
       patch({
-        pandas: insertItem<string>(payload) // $ExpectType StateOperator<string[]>
+        // $ExpectType StateOperator<string[]>
+        pandas: insertItem<string>(payload)
       })
     );
   }
@@ -87,8 +90,10 @@ export class AnimalsState {
     ctx.setState(
       // $ExpectType StateOperator<AnimalsStateModel>
       patch({
-        pandas: updateItem(name => name === payload.name, payload.newName), // $ExpectType StateOperator<string[]>
-        zebras: iif(arr => arr!.length > 0, ['hello'], ['world']) // $ExpectType StateOperator<string[]>
+        // $ExpectType StateOperator<string[]>
+        pandas: updateItem(name => name === payload.name, payload.newName),
+        // $ExpectType StateOperator<string[]>
+        zebras: iif(arr => arr!.length > 0, ['hello'], ['world'])
       })
     );
   }
@@ -101,8 +106,10 @@ export class AnimalsState {
     ctx.setState(
       // $ExpectType StateOperator<AnimalsStateModel>
       patch({
-        zebras: compose(append(zebras)), // $ExpectType StateOperator<string[]>
-        pandas: compose(append(pandas)) // $ExpectType StateOperator<string[]>
+        // $ExpectType StateOperator<string[]>
+        zebras: compose(append(zebras)),
+        // $ExpectType StateOperator<string[]>
+        pandas: compose(append(pandas))
       })
     );
   }

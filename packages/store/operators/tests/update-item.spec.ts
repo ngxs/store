@@ -360,7 +360,7 @@ describe('update item', () => {
           games: updateItem<Game>(
             item => item!.name === 'CS:GO',
             patch({
-              categories: updateItem(
+              categories: updateItem<Category>(
                 item => item!.name === 'shooter',
                 patch({ name: 'shooter' })
               )
