@@ -66,7 +66,7 @@ export class AnimalsState {
   @Action(RemovePanda)
   removePanda(ctx: StateContext<AnimalsStateModel>, { payload }: RemovePanda) {
     ctx.setState(
-      // $ExpectType <U extends PatchValues<{ pandas: string[]; }>>(existing: Readonly<U>) => U
+      // $ExpectType PatchOperator<{ pandas: string[]; }>
       patch({
         // $ExpectType StateOperator<string[]>
         pandas: removeItem<string>(name => name === payload)
@@ -77,7 +77,7 @@ export class AnimalsState {
   @Action(Test)
   test(ctx: StateContext<AnimalsStateModel>, { payload }: Test) {
     ctx.setState(
-      // $ExpectType <U extends PatchValues<{ pandas: string[]; }>>(existing: Readonly<U>) => U
+      // $ExpectType PatchOperator<{ pandas: string[]; }>
       patch({
         // $ExpectType StateOperator<string[]>
         pandas: insertItem<string>(payload)
@@ -88,7 +88,7 @@ export class AnimalsState {
   @Action(ChangePandaName)
   changePandaName(ctx: StateContext<AnimalsStateModel>, { payload }: ChangePandaName) {
     ctx.setState(
-      // $ExpectType <U extends PatchValues<{ pandas: string[]; zebras: string[]; }>>(existing: Readonly<U>) => U
+      // $ExpectType PatchOperator<{ pandas: string[]; zebras: string[]; }>
       patch({
         // $ExpectType StateOperator<string[]>
         pandas: updateItem(name => name === payload.name, payload.newName),
@@ -104,7 +104,7 @@ export class AnimalsState {
     { payload: { zebras, pandas } }: ComposePanda
   ) {
     ctx.setState(
-      // $ExpectType <U extends PatchValues<{ zebras: string[]; pandas: string[]; }>>(existing: Readonly<U>) => U
+      // $ExpectType PatchOperator<{ zebras: string[]; pandas: string[]; }>
       patch({
         // $ExpectType StateOperator<string[]>
         zebras: compose(append(zebras)),
@@ -117,7 +117,7 @@ export class AnimalsState {
   @Action({ type: 'patchExplicit' })
   patchExplicit(ctx: StateContext<AnimalsStateModel>) {
     ctx.setState(
-      // $ExpectType <U extends PatchValues<AnimalsStateModel>>(existing: Readonly<U>) => U
+      // $ExpectType PatchOperator<AnimalsStateModel>
       patch<AnimalsStateModel>({ zebras: [] })
     );
   }
@@ -125,7 +125,7 @@ export class AnimalsState {
   @Action({ type: 'patchImplicit' })
   patchImplicit(ctx: StateContext<AnimalsStateModel>) {
     ctx.setState(
-      // $ExpectType <U extends PatchValues<{ zebras: never[]; }>>(existing: Readonly<U>) => U
+      // $ExpectType PatchOperator<{ zebras: never[]; }>
       patch({ zebras: [] }) // $ExpectError
     );
   }
