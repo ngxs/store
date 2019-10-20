@@ -31,12 +31,12 @@ export class StateContextFactory {
       if (metadata.instance && metadata.instance.ngxsOnChanges) {
         const instance: NgxsLifeCycle = metadata.instance;
         instance.isFirstChange = true;
-        const changes: NgxsSimpleChange = getStateDiffChanges<T>(metadata, {
+        const change: NgxsSimpleChange = getStateDiffChanges<T>(metadata, {
           currentAppState,
           newAppState
         });
 
-        instance.ngxsOnChanges!(changes);
+        instance.ngxsOnChanges!(change);
       }
 
       root.setState(newAppState);

@@ -156,7 +156,7 @@ export interface NgxsOnInit {
  */
 export interface NgxsOnChanges {
   isFirstChange?: boolean;
-  ngxsOnChanges(changes?: NgxsSimpleChange): void;
+  ngxsOnChanges(change?: NgxsSimpleChange): void;
 }
 
 /**

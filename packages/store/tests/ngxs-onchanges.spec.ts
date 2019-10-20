@@ -12,10 +12,10 @@ import { Injectable } from '@angular/core';
 
 describe('ngxsOnChanges', () => {
   it('should be instanceof NgxsSimpleChange', () => {
-    const changes: NgxsSimpleChange = new NgxsSimpleChange(1, 2, false);
-    expect(changes.previousValue).toEqual(1);
-    expect(changes.currentValue).toEqual(2);
-    expect(changes.firstChange).toEqual(false);
+    const change: NgxsSimpleChange = new NgxsSimpleChange(1, 2, false);
+    expect(change.previousValue).toEqual(1);
+    expect(change.currentValue).toEqual(2);
+    expect(change.firstChange).toEqual(false);
   });
 
   it('should correct state preservation with simple state', () => {
@@ -39,8 +39,8 @@ describe('ngxsOnChanges', () => {
     class CounterState implements NgxsOnChanges {
       constructor(private apiCloud: OnlineCloudService) {}
 
-      public ngxsOnChanges(changes: NgxsSimpleChange): void {
-        this.apiCloud.db.push(changes);
+      public ngxsOnChanges(change: NgxsSimpleChange): void {
+        this.apiCloud.db.push(change);
       }
 
       @Action(Increment)
@@ -97,9 +97,9 @@ describe('ngxsOnChanges', () => {
       }
     })
     class MyChildState implements NgxsOnChanges {
-      public ngxsOnChanges(changes: NgxsSimpleChange): void {
-        allChangesQueue.push(changes);
-        childStateChangesQueue.push(changes);
+      public ngxsOnChanges(change: NgxsSimpleChange): void {
+        allChangesQueue.push(change);
+        childStateChangesQueue.push(change);
       }
 
       @Action(PushValue)
@@ -122,9 +122,9 @@ describe('ngxsOnChanges', () => {
       children: [MyChildState]
     })
     class MyState implements NgxsOnChanges {
-      public ngxsOnChanges(changes: NgxsSimpleChange): void {
-        allChangesQueue.push(changes);
-        parentStateChangesQueue.push(changes);
+      public ngxsOnChanges(change: NgxsSimpleChange): void {
+        allChangesQueue.push(change);
+        parentStateChangesQueue.push(change);
       }
 
       @Action(Append)

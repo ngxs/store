@@ -18,9 +18,9 @@ export interface ZooStateModel {
   }
 })
 export class ZooState implements NgxsOnChanges {
-  ngxsOnChanges(changes: NgxsSimpleChanges) {
-    console.log('prev state', changes.previousValue);
-    console.log('next state', changes.currentValue);
+  ngxsOnChanges(change: NgxsSimpleChange) {
+    console.log('prev state', change.previousValue);
+    console.log('next state', change.currentValue);
   }
 }
 ```

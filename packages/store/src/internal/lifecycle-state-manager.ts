@@ -50,12 +50,12 @@ export class LifecycleStateManager {
           .getRootStateOperations()
           .getState();
 
-        const firstDiffChanges: NgxsSimpleChange = getStateDiffChanges(metadata, {
+        const firstDiffChange: NgxsSimpleChange = getStateDiffChanges(metadata, {
           currentAppState,
           newAppState
         });
 
-        instance.ngxsOnChanges!(firstDiffChanges);
+        instance.ngxsOnChanges!(firstDiffChange);
       }
     }
   }
