@@ -70,7 +70,8 @@ describe('ngxsOnChanges', () => {
     const cloud: OnlineCloudService = TestBed.get(OnlineCloudService);
 
     expect(cloud.db).toEqual([
-      { previousValue: 0, currentValue: 1, firstChange: true },
+      { previousValue: undefined, currentValue: 0, firstChange: true },
+      { previousValue: 0, currentValue: 1, firstChange: false },
       { previousValue: 1, currentValue: 2, firstChange: false },
       { previousValue: 2, currentValue: 3, firstChange: false },
       { previousValue: 3, currentValue: 2, firstChange: false },
@@ -158,9 +159,19 @@ describe('ngxsOnChanges', () => {
 
     expect(parentStateChangesQueue).toEqual([
       {
+        previousValue: undefined,
+        currentValue: {
+          hello: 'world',
+          b: {
+            values: []
+          }
+        },
+        firstChange: true
+      },
+      {
         previousValue: { hello: 'world', b: { values: [] } },
         currentValue: { hello: 'world 2019', b: { values: [] } },
-        firstChange: true
+        firstChange: false
       },
       {
         previousValue: { hello: 'world 2019', b: { values: ['Mark', 'Artur', 'Max'] } },
@@ -171,9 +182,14 @@ describe('ngxsOnChanges', () => {
 
     expect(childStateChangesQueue).toEqual([
       {
+        previousValue: undefined,
+        currentValue: { values: [] },
+        firstChange: true
+      },
+      {
         previousValue: { values: [] },
         currentValue: { values: ['Mark'] },
-        firstChange: true
+        firstChange: false
       },
       {
         previousValue: { values: ['Mark'] },
@@ -189,14 +205,31 @@ describe('ngxsOnChanges', () => {
 
     expect(allChangesQueue).toEqual([
       {
+        previousValue: undefined,
+        currentValue: {
+          hello: 'world',
+          b: {
+            values: []
+          }
+        },
+        firstChange: true
+      },
+      {
+        previousValue: undefined,
+        currentValue: {
+          values: []
+        },
+        firstChange: true
+      },
+      {
         previousValue: { hello: 'world', b: { values: [] } },
         currentValue: { hello: 'world 2019', b: { values: [] } },
-        firstChange: true
+        firstChange: false
       },
       {
         previousValue: { values: [] },
         currentValue: { values: ['Mark'] },
-        firstChange: true
+        firstChange: false
       },
       {
         previousValue: { values: ['Mark'] },

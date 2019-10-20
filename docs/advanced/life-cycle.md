@@ -2,6 +2,31 @@
 
 States can implement life-cycle events.
 
+## `ngxsOnChanges`
+
+If a state implements the NgxsOnChanges interface, its ngxsOnChanges method respond when (re)sets state.
+The states' ngxsOnChanges methods are invoked in a topological sorted order going from parent to child.
+The first parameter is the NgxsSimpleChanges object of current and previous state.
+
+```TS
+export interface ZooStateModel {
+  animals: string[];
+}
+
+@State<ZooStateModel>({
+  name: 'zoo',
+  defaults: {
+    animals: []
+  }
+})
+export class ZooState implements NgxsOnChanges {
+  ngxsOnChanges(changes: NgxsSimpleChanges) {
+    console.log('prev state', changes.previousValue);
+    console.log('next state', changes.currentValue);
+  }
+}
+```
+
 ## `ngxsOnInit`
 
 If a state implements the `NgxsOnInit` interface, its `ngxsOnInit` method will be invoked after
@@ -50,6 +75,16 @@ export class ZooState implements NgxsAfterBootstrap {
   }
 }
 ```
+
+## Lifecycle sequence
+
+After creating the state by calling its constructor, NGXS calls the lifecycle hook methods in the following sequence at specific moments:
+
+| Hook                 | Purpose and Timing                                                        |
+| -------------------- | ------------------------------------------------------------------------- |
+| ngxsOnChanges()      | Called before ngxsOnInit() and whenever state change.                     |
+| ngxsOnInit()         | Called once, after the first ngxsOnChanges().                             |
+| ngxsAfterBootstrap() | Called once, after the root view and all its children have been rendered. |
 
 ## Feature Modules Order of Imports
 

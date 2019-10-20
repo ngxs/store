@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { NgxsSimpleChanges, StateContext, StateOperator } from '../symbols';
-import { MappedStore } from '../internal/internals';
+import { NgxsLifeCycle, NgxsSimpleChanges, StateContext, StateOperator } from '../symbols';
+import { getStateDiffChanges, MappedStore } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
 import { InternalStateOperations } from '../internal/state-operations';
 import { simplePatch } from './state-operators';
@@ -29,19 +29,14 @@ export class StateContextFactory {
       const newAppState = setValue(currentAppState, metadata.depth, newValue);
 
       if (metadata.instance && metadata.instance.ngxsOnChanges) {
-        const META_ON_CHANGE_FIRST = 'NGXS_ON_CHANGE_FIRST';
-        const firstChange = !metadata.instance[META_ON_CHANGE_FIRST];
-        metadata.instance[META_ON_CHANGE_FIRST] = true;
+        const instance: NgxsLifeCycle = metadata.instance;
+        instance.isFirstChange = true;
+        const changes: NgxsSimpleChanges = getStateDiffChanges<T>(metadata, {
+          currentAppState,
+          newAppState
+        });
 
-        const previousValue: T = getState(currentAppState);
-        const currentValue: T = getState(newAppState);
-        const changes: NgxsSimpleChanges = new NgxsSimpleChanges(
-          previousValue,
-          currentValue,
-          firstChange
-        );
-
-        metadata.instance.ngxsOnChanges(changes);
+        instance.ngxsOnChanges!(changes);
       }
 
       root.setState(newAppState);

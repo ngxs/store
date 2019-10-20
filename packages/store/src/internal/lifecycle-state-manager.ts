@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { NgxsBootstrapper } from '@ngxs/store/internals';
-import { filter, tap, mergeMap } from 'rxjs/operators';
+import { NgxsBootstrapper, PlainObject } from '@ngxs/store/internals';
+import { filter, mergeMap, tap } from 'rxjs/operators';
 
 import { StateContextFactory } from './state-context-factory';
 import { InternalStateOperations } from './state-operations';
-import { MappedStore, StatesAndDefaults } from './internals';
-import { LifecycleHooks, NgxsLifeCycle } from '../symbols';
+import { getStateDiffChanges, MappedStore, StatesAndDefaults } from './internals';
+import { LifecycleHooks, NgxsLifeCycle, NgxsSimpleChanges } from '../symbols';
 
 @Injectable()
 export class LifecycleStateManager {
@@ -34,7 +34,30 @@ export class LifecycleStateManager {
    * Invoke the init function on the states.
    */
   invokeInit(stateMetadatas: MappedStore[]): void {
+    this.invokeOnChanges(stateMetadatas);
     this.invokeLifecycleHooks(stateMetadatas, LifecycleHooks.NgxsOnInit);
+  }
+
+  /**
+   * Invoke the on changes function on the states.
+   */
+  invokeOnChanges(stateMetadatas: MappedStore[]): void {
+    for (const metadata of stateMetadatas) {
+      const instance: NgxsLifeCycle = metadata.instance;
+      if (instance.ngxsOnChanges) {
+        const currentAppState: PlainObject = {};
+        const newAppState: PlainObject = this.internalStateOperations
+          .getRootStateOperations()
+          .getState();
+
+        const firstDiffChanges: NgxsSimpleChanges = getStateDiffChanges(metadata, {
+          currentAppState,
+          newAppState
+        });
+
+        instance.ngxsOnChanges!(firstDiffChanges);
+      }
+    }
   }
 
   /**
