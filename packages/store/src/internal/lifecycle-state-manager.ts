@@ -5,7 +5,7 @@ import { filter, mergeMap, tap } from 'rxjs/operators';
 import { StateContextFactory } from './state-context-factory';
 import { InternalStateOperations } from './state-operations';
 import { getStateDiffChanges, MappedStore, StatesAndDefaults } from './internals';
-import { LifecycleHooks, NgxsLifeCycle, NgxsSimpleChanges } from '../symbols';
+import { LifecycleHooks, NgxsLifeCycle, NgxsSimpleChange } from '../symbols';
 
 @Injectable()
 export class LifecycleStateManager {
@@ -50,7 +50,7 @@ export class LifecycleStateManager {
           .getRootStateOperations()
           .getState();
 
-        const firstDiffChanges: NgxsSimpleChanges = getStateDiffChanges(metadata, {
+        const firstDiffChanges: NgxsSimpleChange = getStateDiffChanges(metadata, {
           currentAppState,
           newAppState
         });

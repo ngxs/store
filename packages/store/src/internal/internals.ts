@@ -6,7 +6,7 @@ import {
   META_OPTIONS_KEY,
   NgxsConfig,
   NgxsLifeCycle,
-  NgxsSimpleChanges,
+  NgxsSimpleChange,
   SELECTOR_META_KEY,
   StoreOptions
 } from '../symbols';
@@ -377,10 +377,9 @@ export function isObject(obj: any) {
 export function getStateDiffChanges<T>(
   metadata: MappedStore,
   diff: RootStateDiff<T>
-): NgxsSimpleChanges {
+): NgxsSimpleChange {
   const instance: NgxsLifeCycle = metadata.instance;
-  const isFirstChange = !instance.isFirstChange;
   const previousValue: T = getValue(diff.currentAppState, metadata.depth);
   const currentValue: T = getValue(diff.newAppState, metadata.depth);
-  return new NgxsSimpleChanges(previousValue, currentValue, isFirstChange);
+  return new NgxsSimpleChange(previousValue, currentValue, !instance.isFirstChange);
 }

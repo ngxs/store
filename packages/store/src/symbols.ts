@@ -135,7 +135,7 @@ export interface StoreOptions<T> {
   children?: any[];
 }
 
-export class NgxsSimpleChanges<T = any> {
+export class NgxsSimpleChange<T = any> {
   constructor(public previousValue: T, public currentValue: T, public firstChange: boolean) {}
 }
 
@@ -156,7 +156,7 @@ export interface NgxsOnInit {
  */
 export interface NgxsOnChanges {
   isFirstChange?: boolean;
-  ngxsOnChanges(changes?: NgxsSimpleChanges): void;
+  ngxsOnChanges(changes?: NgxsSimpleChange): void;
 }
 
 /**

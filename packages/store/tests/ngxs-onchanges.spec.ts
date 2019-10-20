@@ -2,7 +2,7 @@ import {
   Action,
   NgxsModule,
   NgxsOnChanges,
-  NgxsSimpleChanges,
+  NgxsSimpleChange,
   State,
   StateContext,
   Store
@@ -11,8 +11,8 @@ import { TestBed } from '@angular/core/testing';
 import { Injectable } from '@angular/core';
 
 describe('ngxsOnChanges', () => {
-  it('should be instanceof NgxsSimpleChanges', () => {
-    const changes: NgxsSimpleChanges = new NgxsSimpleChanges(1, 2, false);
+  it('should be instanceof NgxsSimpleChange', () => {
+    const changes: NgxsSimpleChange = new NgxsSimpleChange(1, 2, false);
     expect(changes.previousValue).toEqual(1);
     expect(changes.currentValue).toEqual(2);
     expect(changes.firstChange).toEqual(false);
@@ -29,7 +29,7 @@ describe('ngxsOnChanges', () => {
 
     @Injectable()
     class OnlineCloudService {
-      public readonly db: NgxsSimpleChanges[] = [];
+      public readonly db: NgxsSimpleChange[] = [];
     }
 
     @State<number>({
@@ -39,7 +39,7 @@ describe('ngxsOnChanges', () => {
     class CounterState implements NgxsOnChanges {
       constructor(private apiCloud: OnlineCloudService) {}
 
-      public ngxsOnChanges(changes: NgxsSimpleChanges): void {
+      public ngxsOnChanges(changes: NgxsSimpleChange): void {
         this.apiCloud.db.push(changes);
       }
 
@@ -80,9 +80,9 @@ describe('ngxsOnChanges', () => {
   });
 
   it('should correct state preservation with deep states', () => {
-    const allChangesQueue: NgxsSimpleChanges[] = [];
-    const parentStateChangesQueue: NgxsSimpleChanges[] = [];
-    const childStateChangesQueue: NgxsSimpleChanges[] = [];
+    const allChangesQueue: NgxsSimpleChange[] = [];
+    const parentStateChangesQueue: NgxsSimpleChange[] = [];
+    const childStateChangesQueue: NgxsSimpleChange[] = [];
 
     class PushValue {
       static type = 'Pusher';
@@ -97,7 +97,7 @@ describe('ngxsOnChanges', () => {
       }
     })
     class MyChildState implements NgxsOnChanges {
-      public ngxsOnChanges(changes: NgxsSimpleChanges): void {
+      public ngxsOnChanges(changes: NgxsSimpleChange): void {
         allChangesQueue.push(changes);
         childStateChangesQueue.push(changes);
       }
@@ -122,7 +122,7 @@ describe('ngxsOnChanges', () => {
       children: [MyChildState]
     })
     class MyState implements NgxsOnChanges {
-      public ngxsOnChanges(changes: NgxsSimpleChanges): void {
+      public ngxsOnChanges(changes: NgxsSimpleChange): void {
         allChangesQueue.push(changes);
         parentStateChangesQueue.push(changes);
       }
@@ -250,7 +250,7 @@ describe('ngxsOnChanges', () => {
 
     store.dispatch([new PushValue('<NG'), new Append('-'), new PushValue('XS>')]);
 
-    const lastThreeEvents: NgxsSimpleChanges[] = allChangesQueue.slice().slice(-3);
+    const lastThreeEvents: NgxsSimpleChange[] = allChangesQueue.slice().slice(-3);
 
     expect(lastThreeEvents).toEqual([
       {

@@ -27,7 +27,7 @@ export {
   NgxsAfterBootstrap,
   NgxsOnChanges,
   NgxsModuleOptions,
-  NgxsSimpleChanges
+  NgxsSimpleChange
 } from './symbols';
 export { Selector } from './decorators/selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
