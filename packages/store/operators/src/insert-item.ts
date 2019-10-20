@@ -1,10 +1,14 @@
+import { StateOperator } from '@ngxs/store';
 import { isNil, RepairType } from './utils';
 
 /**
  * @param value - Value to insert
  * @param [beforePosition] -  Specified index to insert value before, optional
  */
-export function insertItem<T>(value: T, beforePosition?: number) {
+export function insertItem<T>(
+  value: T,
+  beforePosition?: number
+): StateOperator<RepairType<T>[]> {
   return function insertItemOperator(existing: Readonly<RepairType<T>[]>): RepairType<T>[] {
     // Have to check explicitly for `null` and `undefined`
     // because `value` can be `0`, thus `!value` will return `true`

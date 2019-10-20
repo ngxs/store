@@ -35,8 +35,8 @@ export function iif<T>(
   condition: Predicate<T> | boolean,
   trueOperatorOrValue: StateOperator<T> | T,
   elseOperatorOrValue?: StateOperator<T> | T
-) {
-  return function iifOperator(existing: RepairType<Readonly<T>>): RepairType<T> {
+): StateOperator<RepairType<T>> {
+  return function iifOperator(existing: Readonly<RepairType<T>>): RepairType<T> {
     // Convert the value to a boolean
     let result = !!condition;
     // but if it is a function then run it to get the result
