@@ -379,7 +379,7 @@ export function getStateDiffChanges<T>(
   diff: RootStateDiff<T>
 ): NgxsSimpleChanges {
   const instance: NgxsLifeCycle = metadata.instance;
-  const isFirstChange: boolean = !instance.isFirstChange;
+  const isFirstChange = !instance.isFirstChange;
   const previousValue: T = getValue(diff.currentAppState, metadata.depth);
   const currentValue: T = getValue(diff.newAppState, metadata.depth);
   return new NgxsSimpleChanges(previousValue, currentValue, isFirstChange);

@@ -4,9 +4,7 @@ States can implement life-cycle events.
 
 ## `ngxsOnChanges`
 
-If a state implements the NgxsOnChanges interface, its ngxsOnChanges method respond when (re)sets state.
-The states' ngxsOnChanges methods are invoked in a topological sorted order going from parent to child.
-The first parameter is the NgxsSimpleChanges object of current and previous state.
+If a state implements the NgxsOnChanges interface, its ngxsOnChanges method respond when (re)sets state. The states' ngxsOnChanges methods are invoked in a topological sorted order going from parent to child. The first parameter is the NgxsSimpleChanges object of current and previous state.
 
 ```TS
 export interface ZooStateModel {
