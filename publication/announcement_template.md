@@ -1,4 +1,4 @@
-# Announcing NGXS 3.6
+# Announcing NGXS X.x
 
 (Intro)
 
