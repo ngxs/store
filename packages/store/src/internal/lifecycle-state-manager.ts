@@ -5,7 +5,7 @@ import { filter, mergeMap, tap } from 'rxjs/operators';
 import { StateContextFactory } from './state-context-factory';
 import { InternalStateOperations } from './state-operations';
 import { getStateDiffChanges, MappedStore, StatesAndDefaults } from './internals';
-import { LifecycleHooks, NgxsLifeCycle, NgxsSimpleChange } from '../symbols';
+import { NgxsLifeCycle, NgxsSimpleChange, StateContext } from '../symbols';
 
 @Injectable()
 export class LifecycleStateManager {
@@ -25,25 +25,16 @@ export class LifecycleStateManager {
         mergeMap(() => this.bootstrapper.appBootstrapped$),
         filter(appBootstrapped => !!appBootstrapped)
       )
-      .subscribe(() => {
-        this.invokeBootstrap(results!.states);
-      });
+      .subscribe(() => this.invokeBootstrap(results!.states));
   }
 
   /**
    * Invoke the init function on the states.
    */
   invokeInit(stateMetadatas: MappedStore[]): void {
-    this.invokeOnChanges(stateMetadatas);
-    this.invokeLifecycleHooks(stateMetadatas, LifecycleHooks.NgxsOnInit);
-  }
-
-  /**
-   * Invoke the on changes function on the states.
-   */
-  invokeOnChanges(stateMetadatas: MappedStore[]): void {
     for (const metadata of stateMetadatas) {
       const instance: NgxsLifeCycle = metadata.instance;
+
       if (instance.ngxsOnChanges) {
         const currentAppState: PlainObject = {};
         const newAppState: PlainObject = this.internalStateOperations
@@ -55,7 +46,11 @@ export class LifecycleStateManager {
           newAppState
         });
 
-        instance.ngxsOnChanges!(firstDiffChange);
+        instance.ngxsOnChanges(firstDiffChange);
+      }
+
+      if (instance.ngxsOnInit) {
+        instance.ngxsOnInit(this.getStateContext(metadata));
       }
     }
   }
@@ -64,17 +59,15 @@ export class LifecycleStateManager {
    * Invoke the bootstrap function on the states.
    */
   invokeBootstrap(stateMetadatas: MappedStore[]) {
-    this.invokeLifecycleHooks(stateMetadatas, LifecycleHooks.NgxsAfterBootstrap);
-  }
-
-  private invokeLifecycleHooks(stateMetadatas: MappedStore[], hook: LifecycleHooks): void {
     for (const metadata of stateMetadatas) {
       const instance: NgxsLifeCycle = metadata.instance;
-
-      if (instance[hook]) {
-        const stateContext = this.stateContextFactory.createStateContext(metadata);
-        instance[hook]!(stateContext);
+      if (instance.ngxsAfterBootstrap) {
+        instance.ngxsAfterBootstrap(this.getStateContext(metadata));
       }
     }
+  }
+
+  private getStateContext(metadata: MappedStore): StateContext<any> {
+    return this.stateContextFactory.createStateContext(metadata);
   }
 }

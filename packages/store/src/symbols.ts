@@ -139,11 +139,6 @@ export class NgxsSimpleChange<T = any> {
   constructor(public previousValue: T, public currentValue: T, public firstChange: boolean) {}
 }
 
-export const enum LifecycleHooks {
-  NgxsOnInit = 'ngxsOnInit',
-  NgxsAfterBootstrap = 'ngxsAfterBootstrap'
-}
-
 /**
  * On init interface
  */
