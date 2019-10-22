@@ -55,7 +55,7 @@ export class AnimalsState {
   @Action(AddZebra)
   addZebra(ctx: StateContext<AnimalsStateModel>, { payload }: AddZebra) {
     ctx.setState(
-      // $ExpectType <U extends PatchValues<{ zebras: string[]; }>>(existing: Readonly<U>) => U
+      // $ExpectType PatchOperator<{ zebras: string[]; }>
       patch({
         // $ExpectType StateOperator<string[]>
         zebras: append([payload])

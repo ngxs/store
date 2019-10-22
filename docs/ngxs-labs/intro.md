@@ -50,4 +50,9 @@ From time to time we will be posting about projects that have been started under
     <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Fentity-state/latest.svg"></td>
     <td>Development</td>
   </tr>
+  <tr>
+    <td><a href="https://npmjs.com/package/@ngxs-labs/actions-executing">@ngxs-labs/actions-executing</a></td>
+    <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Factions-executing/latest.svg"></td>
+    <td>Alpha</td>
+  </tr>
 </table>

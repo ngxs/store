@@ -41,11 +41,6 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@ngtools/json-schema@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/@ngtools/json-schema/-/json-schema-1.1.0.tgz#c3a0c544d62392acc2813a42c8a0dc6f58f86922"
-  integrity sha1-w6DFRNYjkqzCgTpCyKDcb1j4aSI=
-
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.npmjs.org/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
@@ -90,7 +85,7 @@ acorn@^6.2.0:
   resolved "https://registry.npmjs.org/acorn/-/acorn-6.2.0.tgz#67f0da2fc339d6cfb5d6fb244fd449f33cd8bbe3"
   integrity sha512-8oe72N3WPMjA+2zVG71Ia0nXZ8DpQH+QyyHO+p06jT8eg8FGG3FbcUIi8KziHlAfheJQZeoqbvq1mQSQHXKYLw==
 
-ajv@^6.5.5:
+ajv@^6.10.2, ajv@^6.5.5:
   version "6.10.2"
   resolved "https://registry.npmjs.org/ajv/-/ajv-6.10.2.tgz#d3cea04d6b017b2894ad69040fec8b623eb4bd52"
   integrity sha512-TXtUUEYHuaTEbLZWIKUr5pmBuhDLy+8KYtPYdcV8qC+pOZL+NKqYwvWSRrVXHn+ZmRRAu8vJTAznH7Oag6RVRw==
@@ -523,10 +518,15 @@ combined-stream@^1.0.6, combined-stream@~1.0.6:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@^2.12.0, commander@^2.20.0:
+commander@^2.20.0:
   version "2.20.0"
   resolved "https://registry.npmjs.org/commander/-/commander-2.20.0.tgz#d58bb2b5c1ee8f87b0d340027e9e94e222c5a422"
   integrity sha512-7j2y+40w61zy6YC2iRNpUe/NwhNyoXrYpHMrSunaMG64nRnaf96zO/KMQR4OyN/UnE5KLyEBnKHd4aG3rskjpQ==
+
+commander@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.npmjs.org/commander/-/commander-3.0.2.tgz#6837c3fb677ad9933d1cfba42dd14d5117d6b39e"
+  integrity sha512-Gar0ASD4BDyKC4hl4DwHqDrmvjoxWKZigVnAbn5H1owvm4CxCPdb0HQDehwNYMJpla5+M2tPmPARzhtYuwpHow==
 
 component-emitter@^1.2.1:
   version "1.3.0"
@@ -1771,18 +1771,18 @@ needle@^2.2.1:
     iconv-lite "^0.4.4"
     sax "^1.2.4"
 
-ng-packagr@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.npmjs.org/ng-packagr/-/ng-packagr-5.3.0.tgz#92434ca05ecbd1e01fe961a66c8a9a66b095f6fa"
-  integrity sha512-i+964lzZC7VVzatDCLDZndiXTog1XGozY7K1Bs78+uBF8O1YHNQP9wB9C5fR4uEaSKVhCWEBYekoS69flCugMA==
+ng-packagr@^5.7.0:
+  version "5.7.0"
+  resolved "https://registry.npmjs.org/ng-packagr/-/ng-packagr-5.7.0.tgz#3a450d2264724a900dbf6270a8b4c5439eb1f236"
+  integrity sha512-/75eqAyk2ef8J0aMLl7XCx1QXmqUUTsQDu+fNCFDIYpkpWBh0C8Rkdd72hMLPv3MMo63pfaNeiMXa0zzpQINyA==
   dependencies:
-    "@ngtools/json-schema" "^1.1.0"
+    ajv "^6.10.2"
     autoprefixer "^9.6.0"
     browserslist "^4.0.0"
     chalk "^2.3.1"
     chokidar "^3.0.0"
     clean-css "^4.1.11"
-    commander "^2.12.0"
+    commander "^3.0.0"
     fs-extra "^8.0.0"
     glob "^7.1.2"
     injection-js "^2.2.1"
@@ -1792,7 +1792,7 @@ ng-packagr@^5.3.0:
     postcss "^7.0.0"
     postcss-url "^8.0.0"
     read-pkg-up "^5.0.0"
-    rimraf "^2.6.1"
+    rimraf "^3.0.0"
     rollup "^1.12.1"
     rollup-plugin-commonjs "^10.0.0"
     rollup-plugin-json "^4.0.0"
@@ -1801,7 +1801,7 @@ ng-packagr@^5.3.0:
     rxjs "^6.0.0"
     sass "^1.17.3"
     stylus "^0.54.5"
-    terser "^4.0.0"
+    terser "^4.1.2"
     update-notifier "^3.0.0"
 
 nice-try@^1.0.4:
@@ -2359,6 +2359,13 @@ rimraf@^2.6.1:
   dependencies:
     glob "^7.1.3"
 
+rimraf@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/rimraf/-/rimraf-3.0.0.tgz#614176d4b3010b75e5c390eb0ee96f6dc0cebb9b"
+  integrity sha512-NDGVxTsjqfunkds7CqsOiEnxln4Bo7Nddl3XhS4pXg5OzwkLqJ971ZVAAnB+DDLnF76N+VnDEiBHaVV8I06SUg==
+  dependencies:
+    glob "^7.1.3"
+
 rollup-plugin-commonjs@^10.0.0:
   version "10.0.1"
   resolved "https://registry.npmjs.org/rollup-plugin-commonjs/-/rollup-plugin-commonjs-10.0.1.tgz#fbfcadf4ce2e826068e056a9f5c19287d9744ddf"
@@ -2754,10 +2761,10 @@ term-size@^1.2.0:
   dependencies:
     execa "^0.7.0"
 
-terser@^4.0.0:
-  version "4.1.2"
-  resolved "https://registry.npmjs.org/terser/-/terser-4.1.2.tgz#b2656c8a506f7ce805a3f300a2ff48db022fa391"
-  integrity sha512-jvNoEQSPXJdssFwqPSgWjsOrb+ELoE+ILpHPKXC83tIxOlh2U75F1KuB2luLD/3a6/7K3Vw5pDn+hvu0C4AzSw==
+terser@^4.1.2:
+  version "4.3.9"
+  resolved "https://registry.npmjs.org/terser/-/terser-4.3.9.tgz#e4be37f80553d02645668727777687dad26bbca8"
+  integrity sha512-NFGMpHjlzmyOtPL+fDw3G7+6Ueh/sz4mkaUYa4lJCxOPTNzd0Uj0aZJOmsDYoSQyfuVoWDMSWTPU3huyOm2zdA==
   dependencies:
     commander "^2.20.0"
     source-map "~0.6.1"

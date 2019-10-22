@@ -1,9 +1,9 @@
 /* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
 import { TestBed } from '@angular/core/testing';
+import { NgxsModule, Select, Selector, State, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
-import { NgxsModule, Select, Selector, State, Store } from '../../src/public_api';
 import { assertType } from './utils/assert-type';
 
 describe('[TEST]: Action Types', () => {

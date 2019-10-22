@@ -1,6 +1,6 @@
 /* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
-import { insertItem, patch } from '../../operators/src';
+import { insertItem, patch } from '@ngxs/store/operators';
 
 describe('[TEST]: the insertItem State Operator', () => {
   it('should have the following valid usages', () => {
