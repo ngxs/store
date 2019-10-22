@@ -113,6 +113,8 @@ export class NovelComponent implements OnDestroy {
             .pipe(
               mapTo(store.select(NovelsInfoState.getNovelById(params.id))),
               mergeMap(novel => novel)
+            .pipe(
+              mergeMap(() => store.select(NovelsInfoState.getNovelById(params.id))),
             )
         ),
         takeUntil(this.destroy$)
