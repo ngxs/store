@@ -141,9 +141,6 @@ export interface StoreOptions<T> {
  */
 export class NgxsSimpleChange<T = any> {
   constructor(public previousValue: T, public currentValue: T, public firstChange: boolean) {}
-  public isFirstChange(): boolean {
-    return this.firstChange;
-  }
 }
 
 /**
