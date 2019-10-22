@@ -135,8 +135,15 @@ export interface StoreOptions<T> {
   children?: any[];
 }
 
+/**
+ * Represents a basic change from a previous to a new value for a single state instance.
+ * Passed as a value in a NgxsSimpleChanges object to the ngxsOnChanges hook.
+ */
 export class NgxsSimpleChange<T = any> {
   constructor(public previousValue: T, public currentValue: T, public firstChange: boolean) {}
+  public isFirstChange(): boolean {
+    return this.firstChange;
+  }
 }
 
 /**
@@ -150,7 +157,6 @@ export interface NgxsOnInit {
  * On change interface
  */
 export interface NgxsOnChanges {
-  isFirstChange?: boolean;
   ngxsOnChanges(change?: NgxsSimpleChange): void;
 }
 

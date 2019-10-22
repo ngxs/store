@@ -52,6 +52,8 @@ export class LifecycleStateManager {
       if (instance.ngxsOnInit) {
         instance.ngxsOnInit(this.getStateContext(metadata));
       }
+
+      metadata.isInitialised = true;
     }
   }
 

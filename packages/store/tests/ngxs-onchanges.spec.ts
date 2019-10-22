@@ -16,6 +16,7 @@ describe('ngxsOnChanges', () => {
     expect(change.previousValue).toEqual(1);
     expect(change.currentValue).toEqual(2);
     expect(change.firstChange).toEqual(false);
+    expect(change.isFirstChange()).toEqual(false);
   });
 
   it('should correct state preservation with simple state', () => {

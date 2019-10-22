@@ -5,7 +5,6 @@ import {
   META_KEY,
   META_OPTIONS_KEY,
   NgxsConfig,
-  NgxsLifeCycle,
   NgxsSimpleChange,
   SELECTOR_META_KEY,
   StoreOptions
@@ -61,6 +60,7 @@ export interface SelectorMetaDataModel {
 
 export interface MappedStore {
   name: string;
+  isInitialised: boolean;
   actions: PlainObjectOf<ActionHandlerMetaData[]>;
   defaults: any;
   instance: any;
@@ -378,8 +378,7 @@ export function getStateDiffChanges<T>(
   metadata: MappedStore,
   diff: RootStateDiff<T>
 ): NgxsSimpleChange {
-  const instance: NgxsLifeCycle = metadata.instance;
   const previousValue: T = getValue(diff.currentAppState, metadata.depth);
   const currentValue: T = getValue(diff.newAppState, metadata.depth);
-  return new NgxsSimpleChange(previousValue, currentValue, !instance.isFirstChange);
+  return new NgxsSimpleChange(previousValue, currentValue, !metadata.isInitialised);
 }
