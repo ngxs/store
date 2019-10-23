@@ -140,7 +140,11 @@ export interface StoreOptions<T> {
  * Passed as a value in a NgxsSimpleChanges object to the ngxsOnChanges hook.
  */
 export class NgxsSimpleChange<T = any> {
-  constructor(public previousValue: T, public currentValue: T, public firstChange: boolean) {}
+  constructor(
+    public readonly previousValue: T,
+    public readonly currentValue: T,
+    public readonly firstChange: boolean
+  ) {}
 }
 
 /**
@@ -154,7 +158,7 @@ export interface NgxsOnInit {
  * On change interface
  */
 export interface NgxsOnChanges {
-  ngxsOnChanges(change?: NgxsSimpleChange): void;
+  ngxsOnChanges(change: NgxsSimpleChange): void;
 }
 
 /**
