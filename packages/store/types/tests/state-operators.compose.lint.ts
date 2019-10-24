@@ -1,7 +1,7 @@
 /* tslint:disable:max-line-length */
 
 /// <reference types="@types/jest" />
-import { compose } from '../../operators/src';
+import { compose } from '@ngxs/store/operators';
 
 describe('[TEST]: the compose State Operator', () => {
   it('should return the correct null or undefined type', () => {

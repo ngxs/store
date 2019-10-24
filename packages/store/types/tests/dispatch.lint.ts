@@ -1,10 +1,8 @@
 /* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
 import { TestBed } from '@angular/core/testing';
+import { Action, InitState, UpdateState, NgxsModule, State, Store } from '@ngxs/store';
 
-import { Action } from '../../src/decorators/action';
-import { InitState, UpdateState } from '../../src/actions/actions';
-import { NgxsModule, State, Store } from '../../src/public_api';
 import { assertType } from './utils/assert-type';
 
 describe('[TEST]: Action Types', () => {
@@ -13,13 +11,13 @@ describe('[TEST]: Action Types', () => {
   class FooAction {
     public type = 'FOO';
 
-    constructor(public payload: string) { }
+    constructor(public payload: string) {}
   }
 
   class BarAction {
     public static type = 'BAR';
 
-    constructor(public payload: string) { }
+    constructor(public payload: string) {}
   }
 
   beforeAll(() => {
@@ -41,7 +39,7 @@ describe('[TEST]: Action Types', () => {
     assertType(() => Action(new BarAction('foo'))); // $ExpectError
     assertType(() => Action([{ foo: 'bar' }])); // $ExpectError
     assertType(() => Action([InitState, UpdateState], { foo: 'bar' })); // $ExpectError
-    assertType(() => { Action(); }); // $ExpectError
+    assertType(() => Action()); // $ExpectError
   });
 
   it('should be success or compile error when property type is missing', () => {
@@ -79,10 +77,10 @@ describe('[TEST]: Action Types', () => {
       defaults: 0
     })
     class MyState {
-      @Action(Increment) increment1() { } // $ExpectType () => void
-      @Action({ type: 'INCREMENT' }) increment2() { } // $ExpectType () => void
-      @Action(new Increment()) increment3() { } // $ExpectError
-      @Action({ foo: 123 }) increment4() { } // $ExpectError
+      @Action(Increment) increment1() {} // $ExpectType () => void
+      @Action({ type: 'INCREMENT' }) increment2() {} // $ExpectType () => void
+      @Action(new Increment()) increment3() {} // $ExpectError
+      @Action({ foo: 123 }) increment4() {} // $ExpectError
     }
 
     assertType(() => store.dispatch(new Increment())); // $ExpectType Observable<any>
