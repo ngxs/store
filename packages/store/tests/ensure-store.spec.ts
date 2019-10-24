@@ -65,7 +65,7 @@ describe('Ensure metadata', () => {
     }));
 
     it('should get the meta data from the CountState', () => {
-      console.log(store.snapshot());
+      expect(store.snapshot()).toEqual({ count: { myCounter: 1 } });
 
       expect(getStoreMetadata(CountState)).toEqual({
         name: 'count',
