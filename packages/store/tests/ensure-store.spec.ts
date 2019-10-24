@@ -5,14 +5,17 @@ import {
   getSelectorMetadata,
   Selector,
   NgxsModule,
-  SelectorOptions
+  SelectorOptions,
+  Store
 } from '@ngxs/store';
-import { TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 
 import { SelectorMetaDataModel } from '../src/internal/internals';
 import { getSelectorFn } from '../src/utils/selector-utils';
 
 describe('Ensure metadata', () => {
+  let store: Store;
+
   it('should return undefined if not a state class', () => {
     class MyState {}
     expect(getStoreMetadata(MyState)).toBeUndefined();
@@ -53,13 +56,17 @@ describe('Ensure metadata', () => {
       public addTwo(): void {}
     }
 
-    beforeAll(() => {
+    beforeAll(async(() => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([CountState, MyCounterState])]
       });
-    });
+
+      store = TestBed.get(Store);
+    }));
 
     it('should get the meta data from the CountState', () => {
+      console.log(store.snapshot());
+
       expect(getStoreMetadata(CountState)).toEqual({
         name: 'count',
         actions: {
@@ -70,9 +77,9 @@ describe('Ensure metadata', () => {
           decrement: [{ fn: 'decrement', options: {}, type: 'decrement' }]
         },
         defaults: 0,
-        path: null,
-        instance: null,
-        selectFromAppState: null,
+        path: 'count',
+        instance: expect.any(CountState),
+        selectFromAppState: expect.any(Function),
         children: [MyCounterState]
       });
     });
@@ -82,10 +89,10 @@ describe('Ensure metadata', () => {
         name: 'myCounter',
         actions: { decrement: [{ fn: 'decrement', options: {}, type: 'decrement' }] },
         defaults: 1,
-        path: null,
-        selectFromAppState: null,
-        children: undefined,
-        instance: null
+        path: 'count.myCounter',
+        instance: expect.any(MyCounterState),
+        selectFromAppState: expect.any(Function),
+        children: undefined
       });
     });
 
@@ -103,10 +110,12 @@ describe('Ensure metadata', () => {
       expect(metadata.originalFn).not.toEqual(CountState.selectFn);
       expect(metadata.originalFn!(1)).toEqual(1); // state => state
 
-      expect(metadata.getSelectorOptions()).toEqual({});
-      expect(metadata.selectFromAppState).toEqual(getSelectorFn(CountState.selectFn));
+      expect(metadata.getSelectorOptions()).toEqual({
+        injectContainerState: true,
+        suppressErrors: true
+      });
 
-      // TODO(splincode): is normal for CountState?
+      expect(metadata.selectFromAppState).toEqual(getSelectorFn(CountState.selectFn));
       expect(getSelectorFn(CountState.selectFn)(0)).toBeUndefined();
     });
 
@@ -121,8 +130,6 @@ describe('Ensure metadata', () => {
 
       expect(countMetadata.selectorName).toEqual('canInheritSelectFn');
       expect(myCounterMetadata.selectorName).toEqual('canInheritSelectFn');
-
-      // TODO(splincode): is normal for CountState?
       expect(countMetadata.containerClass).toEqual(MyCounterState);
       expect(myCounterMetadata.containerClass).toEqual(MyCounterState);
 
@@ -130,8 +137,15 @@ describe('Ensure metadata', () => {
       expect(myCounterMetadata.originalFn).not.toEqual(MyCounterState.canInheritSelectFn);
       expect(countMetadata.originalFn!(1)).toEqual(2); // state => state * 2
       expect(myCounterMetadata.originalFn!(1)).toEqual(2); // state => state * 2
-      expect(countMetadata.getSelectorOptions()).toEqual({ suppressErrors: false });
-      expect(myCounterMetadata.getSelectorOptions()).toEqual({ suppressErrors: false });
+      expect(countMetadata.getSelectorOptions()).toEqual({
+        injectContainerState: true,
+        suppressErrors: false
+      });
+
+      expect(myCounterMetadata.getSelectorOptions()).toEqual({
+        injectContainerState: true,
+        suppressErrors: false
+      });
 
       expect(countMetadata.selectFromAppState).toEqual(
         getSelectorFn(CountState.canInheritSelectFn)
@@ -141,7 +155,6 @@ describe('Ensure metadata', () => {
         getSelectorFn(MyCounterState.canInheritSelectFn)
       );
 
-      // TODO(splincode): is normal for CountState, MyCounterState?
       expect(getSelectorFn(CountState.canInheritSelectFn)(0)).toEqual(NaN);
       expect(getSelectorFn(MyCounterState.canInheritSelectFn)(0)).toEqual(NaN);
     });
@@ -170,7 +183,6 @@ describe('Ensure metadata', () => {
         error = e;
       }
 
-      // TODO(splincode): is normal for SuperCountState?
       expect(flatString(error!.message)).toEqual(
         'Cannot set property canInheritSelectFn of function MyCounterState() { } which has only a getter'
       );

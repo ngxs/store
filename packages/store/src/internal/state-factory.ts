@@ -104,10 +104,13 @@ export class StateFactory {
     for (const name of sortedStates) {
       const stateClass: StateClassInternal = nameGraph[name];
       const depth: string = depths[name];
+
+      // external state metadata (ExampleState['NGXS_META'])
       const meta: MetaDataModel = stateClass[META_KEY]!;
 
       this.addRuntimeInfoToMeta(meta, depth);
 
+      // internal state metadata (only use in state factory)
       const stateMap: MappedStore = {
         name,
         depth,
@@ -115,6 +118,9 @@ export class StateFactory {
         instance: this._injector.get(stateClass),
         defaults: StateFactory.cloneDefaults(meta.defaults)
       };
+
+      // ensure unique instance in class meta data
+      meta.instance = stateMap.instance;
 
       // ensure our store hasn't already been added
       // but don't throw since it could be lazy
