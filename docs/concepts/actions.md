@@ -86,6 +86,7 @@ A great video on the topic is [Good Action Hygiene by Mike Ryan](https://www.you
 It's for NgRx, but the same naming conventions apply to NGXS.
 
 ## Group your actions
+
 Don't suffix your actions:
 
 ```TS

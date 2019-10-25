@@ -65,9 +65,7 @@ In order to persist all states there is no need to provide the `key` option, so 
 
 ```ts
 @NgModule({
-  imports: [
-    NgxsStoragePluginModule.forRoot()
-  ]
+  imports: [NgxsStoragePluginModule.forRoot()]
 })
 export class AppModule {}
 ```
