@@ -1,14 +1,14 @@
 import {
-  State,
   Action,
-  getStoreMetadata,
   getSelectorMetadata,
-  Selector,
+  getStoreMetadata,
   NgxsModule,
+  Selector,
   SelectorOptions,
+  State,
   Store
 } from '@ngxs/store';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { SelectorMetaDataModel } from '../src/internal/internals';
 import { getSelectorFn } from '../src/utils/selector-utils';
@@ -56,13 +56,13 @@ describe('Ensure metadata', () => {
       public addTwo(): void {}
     }
 
-    beforeAll(async(() => {
+    beforeAll(() => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([CountState, MyCounterState])]
       });
 
       store = TestBed.get(Store);
-    }));
+    });
 
     it('should get the meta data from the CountState', () => {
       expect(store.snapshot()).toEqual({ count: { myCounter: 1 } });
