@@ -25,7 +25,9 @@ export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
   imports: [NgxsModule]
 })
 export class NgxsWebsocketPluginModule {
-  static forRoot(options?: NgxsWebsocketPluginOptions): ModuleWithProviders {
+  static forRoot(
+    options?: NgxsWebsocketPluginOptions
+  ): ModuleWithProviders<NgxsWebsocketPluginModule> {
     return {
       ngModule: NgxsWebsocketPluginModule,
       providers: [

@@ -13,7 +13,7 @@ import { RouterState } from './router.state';
   providers: [{ provide: RouterStateSerializer, useClass: DefaultRouterStateSerializer }]
 })
 export class NgxsRouterPluginModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<NgxsRouterPluginModule> {
     return {
       ngModule: NgxsRouterPluginModule
     };

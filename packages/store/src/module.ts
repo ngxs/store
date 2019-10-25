@@ -55,7 +55,7 @@ export class NgxsModule {
   public static forRoot(
     states: StateClass[] = [],
     options: NgxsModuleOptions = {}
-  ): ModuleWithProviders {
+  ): ModuleWithProviders<NgxsRootModule> {
     return {
       ngModule: NgxsRootModule,
       providers: [
@@ -84,7 +84,7 @@ export class NgxsModule {
   /**
    * Feature module factory
    */
-  public static forFeature(states: StateClass[] = []): ModuleWithProviders {
+  public static forFeature(states: StateClass[] = []): ModuleWithProviders<NgxsFeatureModule> {
     return {
       ngModule: NgxsFeatureModule,
       providers: [

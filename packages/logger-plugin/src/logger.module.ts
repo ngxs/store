@@ -20,7 +20,9 @@ export function loggerOptionsFactory(options: NgxsLoggerPluginOptions) {
 
 @NgModule()
 export class NgxsLoggerPluginModule {
-  static forRoot(options?: NgxsLoggerPluginOptions): ModuleWithProviders {
+  static forRoot(
+    options?: NgxsLoggerPluginOptions
+  ): ModuleWithProviders<NgxsLoggerPluginModule> {
     return {
       ngModule: NgxsLoggerPluginModule,
       providers: [
