@@ -6,6 +6,7 @@
 $ npm install @ngxs/store@dev
 ```
 
+- Feature: added `ngxsOnChanges` lifecycle hook [#1389](https://github.com/ngxs/store/pull/1389)
 - Feature: Expose StateContextFactory, StateFactory [#1325](https://github.com/ngxs/store/pull/1325)
 - Feature: Improved type safety for children states [#1388](https://github.com/ngxs/store/pull/1388)
 - Feature: Storage Plugin - Use state classes as keys [#1380](https://github.com/ngxs/store/pull/1380), [#1405](https://github.com/ngxs/store/pull/1405)
