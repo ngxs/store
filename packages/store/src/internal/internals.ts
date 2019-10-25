@@ -1,15 +1,16 @@
+import { PlainObjectOf, StateClass } from '@ngxs/store/internals';
 import { Observable } from 'rxjs';
 
 import {
   META_KEY,
   META_OPTIONS_KEY,
   NgxsConfig,
+  NgxsSimpleChange,
   SELECTOR_META_KEY,
   StoreOptions
 } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
-
-import { PlainObjectOf, StateClass } from '@ngxs/store/internals';
+import { getValue } from '../utils/utils';
 
 function asReadonly<T>(value: T): Readonly<T> {
   return value;
@@ -59,6 +60,7 @@ export interface SelectorMetaDataModel {
 
 export interface MappedStore {
   name: string;
+  isInitialised: boolean;
   actions: PlainObjectOf<ActionHandlerMetaData[]>;
   defaults: any;
   instance: any;
@@ -71,6 +73,11 @@ export interface StatesAndDefaults {
 }
 
 export type Callback<T = any, V = any> = (...args: V[]) => T;
+
+export interface RootStateDiff<T> {
+  currentAppState: T;
+  newAppState: T;
+}
 
 /**
  * Ensures metadata is attached to the class and returns it.
@@ -365,4 +372,13 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
  */
 export function isObject(obj: any) {
   return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';
+}
+
+export function getStateDiffChanges<T>(
+  metadata: MappedStore,
+  diff: RootStateDiff<T>
+): NgxsSimpleChange {
+  const previousValue: T = getValue(diff.currentAppState, metadata.depth);
+  const currentValue: T = getValue(diff.newAppState, metadata.depth);
+  return new NgxsSimpleChange(previousValue, currentValue, !metadata.isInitialised);
 }

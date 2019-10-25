@@ -111,6 +111,7 @@ export class StateFactory {
       const stateMap: MappedStore = {
         name,
         depth,
+        isInitialised: false,
         actions: meta.actions,
         instance: this._injector.get(stateClass),
         defaults: StateFactory.cloneDefaults(meta.defaults)
