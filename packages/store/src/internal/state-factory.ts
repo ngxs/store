@@ -180,7 +180,7 @@ export class StateFactory {
         for (const actionMeta of actionMetas) {
           const stateContext = this._stateContextFactory.createStateContext(metadata);
           try {
-            let result = metadata.instance[actionMeta.fn](stateContext, action);
+            let result = metadata.instance![actionMeta.fn as string](stateContext, action);
 
             if (result instanceof Promise) {
               result = from(result);

@@ -6,10 +6,12 @@ import {
   META_OPTIONS_KEY,
   NgxsConfig,
   NgxsSimpleChange,
+  NgxsStateInstance,
   SELECTOR_META_KEY,
+  StateContext,
   StoreOptions
 } from '../symbols';
-import { ActionHandlerMetaData } from '../actions/symbols';
+import { ActionHandlerMetaData, ActionType } from '../actions/symbols';
 import { getValue } from '../utils/utils';
 
 function asReadonly<T>(value: T): Readonly<T> {
@@ -18,7 +20,7 @@ function asReadonly<T>(value: T): Readonly<T> {
 
 // inspired from https://stackoverflow.com/a/43674389
 export interface StateClassInternal<T = any, U = any> extends StateClass<T> {
-  [META_KEY]?: MetaDataModel;
+  [META_KEY]?: MetaDataModel<U, T>;
   [META_OPTIONS_KEY]?: StoreOptions<U>;
 }
 
@@ -33,17 +35,17 @@ export interface StateOperations<T> {
   dispatch(actions: any | any[]): Observable<void>;
 }
 
-export interface MetaDataModel {
+export interface MetaDataModel<T = any, U = any> {
   name: string | null;
   actions: PlainObjectOf<ActionHandlerMetaData[]>;
-  defaults: any;
+  defaults: T;
   path: string | null;
-  selectFromAppState: SelectFromState | null;
-  children?: StateClassInternal[];
-  instance: any;
+  selectFromAppState: SelectFromState<T> | null;
+  children?: StateClassInternal<U, T>[];
+  instance: NgxsStateInstance<T, U> | null;
 }
 
-export type SelectFromState = (state: any) => any;
+export type SelectFromState<T = any> = (state: T) => any;
 
 export interface SharedSelectorOptions {
   injectContainerState?: boolean;
@@ -58,18 +60,22 @@ export interface SelectorMetaDataModel {
   getSelectorOptions: () => SharedSelectorOptions;
 }
 
-export interface MappedStore {
+export interface MappedStore<T = any, U = any> {
   name: string;
   isInitialised: boolean;
   actions: PlainObjectOf<ActionHandlerMetaData[]>;
-  defaults: any;
-  instance: any;
+  defaults: T;
+  instance: NgxsStateInstance<T, U> | null;
   depth: string;
 }
 
 export interface StatesAndDefaults {
   defaults: any;
   states: MappedStore[];
+}
+
+export interface StateInstanceInternal<T = any> {
+  [methodName: string]: (ctx: StateContext<T>, action: ActionType) => any;
 }
 
 export type Callback<T = any, V = any> = (...args: V[]) => T;

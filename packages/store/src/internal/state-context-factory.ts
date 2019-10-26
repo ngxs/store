@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { NgxsLifeCycle, NgxsSimpleChange, StateContext, StateOperator } from '../symbols';
+import { NgxsSimpleChange, NgxsStateInstance, StateContext, StateOperator } from '../symbols';
 import { getStateDiffChanges, MappedStore } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
 import { InternalStateOperations } from '../internal/state-operations';
@@ -27,7 +27,7 @@ export class StateContextFactory {
 
     function setStateValue(currentAppState: any, newValue: T): any {
       const newAppState = setValue(currentAppState, metadata.depth, newValue);
-      const instance: NgxsLifeCycle = metadata.instance;
+      const instance: NgxsStateInstance = metadata.instance!;
 
       if (instance.ngxsOnChanges) {
         const change: NgxsSimpleChange = getStateDiffChanges<T>(metadata, {

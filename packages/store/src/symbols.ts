@@ -2,7 +2,7 @@ import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { PlainObject, StateClass } from '@ngxs/store/internals';
-import { SharedSelectorOptions } from './internal/internals';
+import { SharedSelectorOptions, StateInstanceInternal } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 
@@ -15,10 +15,6 @@ export const NG_DEV_MODE = new InjectionToken('NG_DEV_MODE');
 export const META_KEY = 'NGXS_META';
 export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
-
-export type NgxsLifeCycle = Partial<NgxsOnChanges> &
-  Partial<NgxsOnInit> &
-  Partial<NgxsAfterBootstrap>;
 
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
@@ -150,22 +146,28 @@ export class NgxsSimpleChange<T = any> {
 /**
  * On init interface
  */
-export interface NgxsOnInit {
-  ngxsOnInit(ctx?: StateContext<any>): void | any;
+export interface NgxsOnInit<T = any> {
+  ngxsOnInit(ctx?: StateContext<T>): void | any;
 }
 
 /**
  * On change interface
  */
-export interface NgxsOnChanges {
-  ngxsOnChanges(change: NgxsSimpleChange): void;
+export interface NgxsOnChanges<T = any> {
+  ngxsOnChanges(change: NgxsSimpleChange<T>): void;
 }
 
 /**
  * After bootstrap interface
  */
-export interface NgxsAfterBootstrap {
-  ngxsAfterBootstrap(ctx?: StateContext<any>): void;
+export interface NgxsAfterBootstrap<T = any> {
+  ngxsAfterBootstrap(ctx?: StateContext<T>): void;
 }
 
 export type NgxsModuleOptions = Partial<NgxsConfig>;
+
+export type NgxsStateInstance<T = any, U = any> = Partial<NgxsOnChanges<T>> &
+  Partial<NgxsOnInit<T>> &
+  Partial<NgxsAfterBootstrap<T>> &
+  StateInstanceInternal<T> &
+  Type<U>;
