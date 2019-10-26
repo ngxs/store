@@ -16,7 +16,10 @@ export const META_KEY = 'NGXS_META';
 export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 
-export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;
+export type NgxsLifeCycle = Partial<NgxsOnChanges> &
+  Partial<NgxsOnInit> &
+  Partial<NgxsAfterBootstrap>;
+
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
 /**
@@ -132,9 +135,16 @@ export interface StoreOptions<T> {
   children?: StateClass[];
 }
 
-export const enum LifecycleHooks {
-  NgxsOnInit = 'ngxsOnInit',
-  NgxsAfterBootstrap = 'ngxsAfterBootstrap'
+/**
+ * Represents a basic change from a previous to a new value for a single state instance.
+ * Passed as a value in a NgxsSimpleChanges object to the ngxsOnChanges hook.
+ */
+export class NgxsSimpleChange<T = any> {
+  constructor(
+    public readonly previousValue: T,
+    public readonly currentValue: T,
+    public readonly firstChange: boolean
+  ) {}
 }
 
 /**
@@ -142,6 +152,13 @@ export const enum LifecycleHooks {
  */
 export interface NgxsOnInit {
   ngxsOnInit(ctx?: StateContext<any>): void | any;
+}
+
+/**
+ * On change interface
+ */
+export interface NgxsOnChanges {
+  ngxsOnChanges(change: NgxsSimpleChange): void;
 }
 
 /**

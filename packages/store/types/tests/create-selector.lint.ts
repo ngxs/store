@@ -2,8 +2,8 @@
 /// <reference types="@types/jest" />
 import { Observable } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
+import { createSelector, NgxsModule, State, Store } from '@ngxs/store';
 
-import { createSelector, NgxsModule, State, Store } from '../../src/public_api';
 import { assertType } from './utils/assert-type';
 
 describe('[TEST]: createSelector', () => {

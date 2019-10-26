@@ -1,6 +1,6 @@
 /* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
-import { append, patch } from '../../operators/src';
+import { append, patch } from '@ngxs/store/operators';
 
 describe('[TEST]: the append State Operator', () => {
   it('should have the following valid usages', () => {

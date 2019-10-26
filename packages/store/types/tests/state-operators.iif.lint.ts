@@ -1,7 +1,7 @@
 /* tslint:disable:max-line-length */
 
 /// <reference types="@types/jest" />
-import { iif, patch } from '../../operators/src';
+import { iif, patch } from '@ngxs/store/operators';
 
 describe('[TEST]: the iif State Operator', () => {
   it('should return the correct implied null or undefined type', () => {

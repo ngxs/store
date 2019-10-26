@@ -3,6 +3,7 @@
 (Intro)
 
 ## Overview
+
 - 🚀 Feature 1
 - 🎨 Feature 2
 - ...
@@ -29,10 +30,12 @@
 ## Plugin Improvements
 
 ### Plugin X
+
 - Feature A description
 - Fix B description
 
 ### Plugin Y
+
 - ...
 
 ---
@@ -50,4 +53,5 @@
 ---
 
 ## Some Useful Links
+
 If you would like any further information on changes in this release please feel free to have a look at our change log. The code for NGXS is all available at https://github.com/ngxs/store and our docs are available at http://ngxs.io/. We have a thriving community on our slack channel so come and join us to keep abreast with the latest developments. Here is the slack invitation link: https://now-examples-slackin-eqzjxuxoem.now.sh/

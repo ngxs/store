@@ -1,6 +1,6 @@
 /* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
-import { Selector, State, SelectorOptions } from '../../src/public_api';
+import { Selector, State, SelectorOptions } from '@ngxs/store';
 import { assertType } from './utils/assert-type';
 
 describe('[TEST]: The SelectorOptions decorator', () => {
