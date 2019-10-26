@@ -17,6 +17,7 @@ exclude_paths:
   - "assets/"
   - "docs/"
   - "packages/**/tests/"
+  - "integrations/"
   - "integration/"
   - "tools/"
 ratings:
