@@ -7,6 +7,7 @@
 - 💥 New lifecycle hook `ngxsOnChanges`
 - 💦 Fixed Actions Stream Subscriptions Leak
 - 🚧 Improved type safety for children states
+- 🧤 Expose StateContextFactory, StateFactory
 - ...
 - 🐛 Bug Fixes
 - 🔌 Plugin Improvements and Fixes
@@ -27,7 +28,7 @@ class MyState implements NgxsOnChanges {
 }
 ```
 
-The method receives a `NgxsSimpleChanges` object that contins the current and previous property values as well as a flag to tell you if this is the first change.
+The method receives a `NgxsSimpleChanges` object that contains the current and previous property values as well as a flag to tell you if this is the first change.
 
 ```ts
 export class NgxsSimpleChange<T = any> {
@@ -159,6 +160,38 @@ function MyChildState() {}
   children: [MyChildState, { name: 'myChildOtherState' }, null] // failed compile, need uses only state class reference
 })
 class MyState {}
+```
+
+## 🧤 Expose StateContextFactory, StateFactory
+
+Now if you want to have access to the internal core of NGXS state machine in your plugins you can use tokens `NGXS_STATE_FACTORY`, `NGXS_STATE_CONTEXT_FACTORY`.
+
+```ts
+import { NGXS_STATE_FACTORY, NGXS_STATE_CONTEXT_FACTORY } from '@ngxs/store/internals';
+
+class MyPluginAccessor {
+  constructor(
+    @Inject(NGXS_STATE_FACTORY)
+    public factory: any,
+    @Inject(NGXS_STATE_CONTEXT_FACTORY)
+    public contextFactory: any
+  ) {}
+}
+
+@NgModule()
+class MyPluginModule {
+  public static forRoot(): ModuleWithProviders<MyPluginModule> {
+    return {
+      ngModule: MyPluginModule,
+      providers: [MyPluginAccessor]
+    };
+  }
+}
+
+@NgModule({
+  imports: [NgxsModule.forRoot(), MyPluginModule.forRoot()]
+})
+export class AppModule {}
 ```
 
 ## 🐛 Bug Fixes
