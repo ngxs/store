@@ -7,10 +7,12 @@ import {
   NgxsConfig,
   NgxsSimpleChange,
   SELECTOR_META_KEY,
+  StateContext,
   StoreOptions
 } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
 import { getValue } from '../utils/utils';
+import { InternalActions } from '../actions-stream';
 
 function asReadonly<T>(value: T): Readonly<T> {
   return value;
@@ -77,6 +79,29 @@ export type Callback<T = any, V = any> = (...args: V[]) => T;
 export interface RootStateDiff<T> {
   currentAppState: T;
   newAppState: T;
+}
+
+export interface StateAddedMap {
+  newStates: StateClassInternal[];
+}
+
+/**
+ * @description API can changes regardless of semver specification
+ */
+export interface StateContextFactoryInternal {
+  createStateContext<T>(metadata: MappedStore): StateContext<T>;
+}
+
+/**
+ * @description API can changes regardless of semver specification
+ */
+export interface StateFactoryInternal {
+  readonly states: MappedStore[];
+  readonly statesByName: StatesByName;
+  add(stateClasses: StateClassInternal[]): MappedStore[];
+  addAndReturnDefaults(stateClasses: StateClassInternal[]): StatesAndDefaults;
+  connectActionHandlers(): void;
+  invokeActions(actions$: InternalActions, action: any): Observable<any>;
 }
 
 /**

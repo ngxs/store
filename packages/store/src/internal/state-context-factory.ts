@@ -2,17 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { NgxsLifeCycle, NgxsSimpleChange, StateContext, StateOperator } from '../symbols';
-import { getStateDiffChanges, MappedStore } from '../internal/internals';
+import { getStateDiffChanges, MappedStore, StateContextFactoryInternal } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
 import { InternalStateOperations } from '../internal/state-operations';
 import { simplePatch } from './state-operators';
 
-/**
- * State Context factory class
- * @ignore
- */
 @Injectable()
-export class StateContextFactory {
+export class StateContextFactory implements StateContextFactoryInternal {
   constructor(private _internalStateOperations: InternalStateOperations) {}
 
   /**

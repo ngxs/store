@@ -1,3 +1,4 @@
+import { INITIAL_STATE_TOKEN, PlainObjectOf } from '@ngxs/store/internals';
 import { Injectable, Injector, Optional, SkipSelf, Inject } from '@angular/core';
 import { forkJoin, from, Observable, of, throwError } from 'rxjs';
 import {
@@ -19,7 +20,9 @@ import {
   MetaDataModel,
   nameToState,
   propGetter,
+  StateAddedMap,
   StateClassInternal,
+  StateFactoryInternal,
   StateKeyGraph,
   StatesAndDefaults,
   StatesByName,
@@ -31,14 +34,9 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { INITIAL_STATE_TOKEN, PlainObjectOf } from '@ngxs/store/internals';
 
-/**
- * State factory class
- * @ignore
- */
 @Injectable()
-export class StateFactory {
+export class StateFactory implements StateFactoryInternal {
   private _connected = false;
 
   constructor(
@@ -147,7 +145,7 @@ export class StateFactory {
   /**
    * Bind the actions to the handlers
    */
-  connectActionHandlers() {
+  connectActionHandlers(): void {
     if (this._connected) return;
     this._actions
       .pipe(
@@ -169,7 +167,7 @@ export class StateFactory {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(actions$: InternalActions, action: any) {
+  invokeActions(actions$: InternalActions, action: any): Observable<any> {
     const results = [];
 
     for (const metadata of this.states) {
@@ -212,9 +210,7 @@ export class StateFactory {
     return forkJoin(results);
   }
 
-  private addToStatesMap(
-    stateClasses: StateClassInternal[]
-  ): { newStates: StateClassInternal[] } {
+  private addToStatesMap(stateClasses: StateClassInternal[]): StateAddedMap {
     const newStates: StateClassInternal[] = [];
     const statesMap: StatesByName = this.statesByName;
 
