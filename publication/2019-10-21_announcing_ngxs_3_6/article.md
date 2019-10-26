@@ -4,6 +4,7 @@
 
 ## Overview
 
+- 💥 New lifecycle hook `ngxsOnChanges`
 - 💦 Fixed Actions Stream Subscriptions Leak
 - 🚧 Improved type safety for children states
 - ...
@@ -12,6 +13,120 @@
 - 🔬 NGXS Labs Projects Updates
 
 ---
+
+## 💥 New lifecycle hook `ngxsOnChanges`
+
+```ts
+@State({ .. })
+class MyState implements NgxsOnChanges {
+  public ngxsOnChanges(change: NgxsSimpleChange): void {
+    // ..
+  }
+}
+```
+
+The method receives a NgxsSimpleChanges object of current and previous property values.
+
+```ts
+export class NgxsSimpleChange<T = any> {
+  constructor(
+    public readonly previousValue: T,
+    public readonly currentValue: T,
+    public readonly firstChange: boolean
+  ) {}
+}
+```
+
+This is convenient if we want to dispatch any additional actions when any fields have changed. Called whenever state change.
+
+#### Lifecycle sequence
+
+After creating the state by calling its constructor, NGXS calls the lifecycle hook methods in the following sequence at specific moments:
+
+| Hook                 | Purpose and Timing                                                        |
+| -------------------- | ------------------------------------------------------------------------- |
+| ngxsOnChanges()      | Called before ngxsOnInit() and whenever state change.                     |
+| ngxsOnInit()         | Called once, after the first ngxsOnChanges().                             |
+| ngxsAfterBootstrap() | Called once, after the root view and all its children have been rendered. |
+
+It is necessary in the following use cases:
+
+I. A convenient way to track state changes:
+
+_Before_
+
+```ts
+@State({ .. })
+class MyState {}
+
+@Component({ })
+class MyComponent {
+  constructor(store: Store) {
+    store.select(MyState).subscribe((newState) => {
+       console.log('state is changed', newState);
+    })
+  }
+}
+```
+
+One of the problems is, if we do not use the `@ngxs/logger-plugin` or `@ngxs/devtools-plugin`, then we do not know what the previous state was before our state changed. It's great to have such an opportunity out of the box.
+
+_After_
+
+```ts
+@State({ .. })
+class MyState implements NgxsOnChanges {
+  public ngxsOnChanges({ previousValue, currentValue }: NgxsSimpleChange): void {
+    console.log('state is changed', previousValue, currentValue);
+  }
+}
+```
+
+Very comfortably!
+
+II. Convenient to synchronize with the server
+
+Sometimes needed to save state on the server every time the client changed it.
+
+_Before_
+
+```ts
+@State({ .. })
+class MyState {}
+
+@Component({})
+class MyComponent {
+  constructor(store: Store, api: ApiService) {
+    store.select(MyState).subscribe(async newState => {
+      await api.save(newState);
+    });
+  }
+}
+```
+
+_After_
+
+```ts
+@State({ .. })
+class MyState implements NgxsOnChanges {
+  constructor(api: ApiService) {}
+  public async ngxsOnChanges(change: NgxsSimpleChange): void {
+    await api.save(change.currentValue);
+  }
+}
+```
+
+III. You can write your own custom logger without another plugins
+
+```ts
+@State({ .. })
+class MyState implements NgxsOnChanges {
+  public ngxsOnChanges({ previousValue, currentValue }: NgxsSimpleChange): void {
+    console.log('prev state', previousValue);
+    console.log('next state', currentValue);
+  }
+}
+```
 
 ## 💦 Fixed Actions Stream Subscriptions Leak
 
@@ -92,8 +207,7 @@ export class NovelsState {}
 export class AppModule {}
 ```
 
-Therefore, it is not reliable, since you can change the name of the state and forget to change it in the configuration.
-Now you just need to pass the reference to the state class and the plugin will automatically use the state name.
+Therefore, it is not reliable, since you can change the name of the state and forget to change it in the configuration. Now you just need to pass the reference to the state class and the plugin will automatically use the state name.
 
 ```ts
 @NgModule({
