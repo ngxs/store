@@ -71,6 +71,41 @@ It is also recommended to use dynamic imports for the HMR plugin, for improved t
 
 - Feature: Storage Plugin - Use state classes as keys [#1380](https://github.com/ngxs/store/pull/1380)
 
+Before that, in order to maintain the state of the application, you had to do so:
+
+```ts
+@State<Novel[]>({
+  name: 'novels',
+  defaults: []
+})
+export class NovelsState {}
+```
+
+```ts
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: 'novels'
+    })
+  ]
+})
+export class AppModule {}
+```
+
+Therefore, it is not reliable, since you can change the name of the state and forget to change it in the configuration.
+Now you just need to pass the reference to the state class and the plugin will automatically use the state name.
+
+```ts
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: NovelsState
+    })
+  ]
+})
+export class AppModule {}
+```
+
 ### Form Plugin
 
 - Feature: Form Plugin - Implement `propertyPath` parameter in the `UpdateFormValue` [#1215](https://github.com/ngxs/store/pull/1215)
