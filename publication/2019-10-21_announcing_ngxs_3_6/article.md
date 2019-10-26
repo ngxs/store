@@ -238,9 +238,231 @@ Announcing [@ngxs-labs/data](https://github.com/ngxs-labs/data)
 
 #### Problem Statement:
 
-...
+The main problem is that with the large growth of the application, the number Action classes.
+
+```ts
+export interface Book {
+  id: string;
+  volumeInfo: any;
+}
+
+export class SearchAction {
+  static readonly type = '[Book] Search';
+
+  constructor(public payload: string) {}
+}
+
+export class SearchCompleteAction {
+  static readonly type = '[Book] Search Complete';
+
+  constructor(public payload: Book[]) {}
+}
+
+export class AddAction {
+  static readonly type = '[Book] add';
+
+  constructor(public payload: Book) {}
+}
+
+export class SelectAction {
+  static readonly type = '[Book] Select';
+
+  constructor(public payload: string) {}
+}
+
+export interface BookEntities {
+  [id: string]: Book;
+}
+
+export interface BookEntitiesModel {
+  ids: string[];
+  entities: BookEntities;
+  selectedBookId: string;
+}
+
+@State<BookEntitiesModel>({
+  name: 'book',
+  defaults: {
+    ids: [],
+    entities: {},
+    selectedBookId: null
+  }
+})
+class BookState {
+  @Selector()
+  public static entities(state: BookEntitiesModel): BookEntities {
+    return state.entities;
+  }
+
+  @Action(SearchCompleteAction)
+  complete(
+    { setState }: StateContext<BookEntitykModel>,
+    { payload: books }: SearchCompleteAction
+  ) {
+    setState(state => {
+      const newBooks = books.filter(book => !state.entities[book.id]);
+      const newBookIds = newBooks.map(book => book.id);
+      const newBookEntities = newBooks.reduce(
+        (entities: BookEntities, book: Book) => ({ ...entities, [book.id]: book }),
+        {}
+      );
+
+      return {
+        ids: [...state.ids, ...newBookIds],
+        entities: { ...state.entities, ...newBookEntities },
+        selectedBookId: state.selectedBookId
+      };
+    });
+  }
+
+  @Action(AddAction)
+  add({ setState }: StateContext<BookEntitykModel>, { payload: book }: AddAction) {
+    setState(state => {
+      if (state.ids.indexOf(book.id) > -1) {
+        return state;
+      }
+
+      return {
+        ids: [...state.ids, book.id],
+        entities: { ...state.entities, [book.id]: book },
+        selectedBookId: state.selectedBookId
+      };
+    });
+  }
+
+  @Action(SelectAction)
+  select(
+    { setState }: StateContext<BookEntitykModel>,
+    { payload: selectedBookId }: SelectAction
+  ) {
+    setState(state => ({
+      ids: state.ids,
+      entities: state.entities,
+      selectedBookId
+    }));
+  }
+}
+```
+
+As you can see, for each method, we need to write our own actions, which is not very convenient if we have a huge application consisting of a huge number of states with different operations.
+
+```ts
+@Component({
+  selector: 'book-page',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <preview-list
+      [books]="books$ | async"
+      (addBook)="addBook($event)"
+      (complete)="completeBooks($event)"
+      (selectBook)="selectBookById($event)"
+    >
+    </preview-list>
+  `
+})
+export class FindBookPageComponent {
+  @Select(BookState.entities) books$: Observable<BookEntities>;
+
+  constructor(private store: Store) {}
+
+  selectBookById(id: string) {
+    this.store.dispatch(new SelectAction(id));
+  }
+
+  addBook(book: Book) {
+    this.store.dispatch(new AddAction(book));
+  }
+
+  completeBooks(books: Book[]) {
+    this.store.dispatch(new SearchCompleteAction(books));
+  }
+}
+```
+
+Therefore, for those who are not comfortable developing using actions, we came up with a new concept - [`@ngxs-labs/data`](https://github.com/ngxs-labs/data).
 
 #### How it addresses this problem:
+
+You no longer need to create the actions for your operations in state.
+
+```ts
+import { StateRepository, NgxsDataRepository, query, action } from '@ngxs-labs/data';
+
+@StateRepository()
+@State<BookEntitiesModel>({
+  name: 'book',
+  defaults: {
+    ids: [],
+    entities: {},
+    selectedBookId: null
+  }
+})
+class BookState extends NgxsDataRepository<BookEntitiesModel> {
+  @query<BookEntitiesModel, BookEntities>(state => state.entites)
+  public books$: Observable<BookEntities>;
+
+  @action() completeBooks(books: Books[]) {
+    this.ctx.setState(state => {
+      const newBooks = books.filter(book => !state.entities[book.id]);
+      const newBookIds = newBooks.map(book => book.id);
+      const newBookEntities = newBooks.reduce(
+        (entities: BookEntities, book: Book) => ({ ...entities, [book.id]: book }),
+        {}
+      );
+
+      return {
+        ids: [...state.ids, ...newBookIds],
+        entities: { ...state.entities, ...newBookEntities },
+        selectedBookId: state.selectedBookId
+      };
+    });
+  }
+
+  @action() addBook(book: Book) {
+    this.ctx.setState(state => {
+      if (state.ids.indexOf(book.id) > -1) {
+        return state;
+      }
+
+      return {
+        ids: [...state.ids, book.id],
+        entities: { ...state.entities, [book.id]: book },
+        selectedBookId: state.selectedBookId
+      };
+    });
+  }
+
+  @action() selectBookById(selectedBookId: string) {
+    this.ctx.setState(state => ({
+      ids: state.ids,
+      entities: state.entities,
+      selectedBookId
+    }));
+  }
+}
+```
+
+```ts
+@Component({
+  selector: 'book-page',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <preview-list
+      [books]="bookState.books$ | async"
+      (addBook)="bookState.addBook($event)"
+      (complete)="bookState.completeBooks($event)"
+      (selectBook)="bookState.selectBookById($event)"
+    >
+    </preview-list>
+  `
+})
+export class FindBookPageComponent {
+  constructor(public bookState: BookState) {}
+}
+```
+
+Thanks to this, typing improves, you call methods of your state directly.
+And you no longer need to worry and come up with actions and types for these actions.
 
 ...
 
@@ -250,15 +472,117 @@ Announcing [@ngxs-labs/actions-executing](https://github.com/ngxs-labs/actions-e
 
 #### Problem Statement:
 
-...
+Sometimes we need to wait for some action completed. But how to do that?
+
+```ts
+interface BooksStateModel {
+  pending: false;
+  books: Book[];
+}
+
+@State<BooksStateModel>({
+  name: 'books',
+  defaults: {
+    pending: false,
+    books: []
+  }
+})
+export class BooksState {
+  constructor(private api: ApiService) {}
+
+  @Action(AddBook)
+  add(ctx: StateContext<BooksStateModel>) {
+    ctx.patchState({ pending: true });
+    return this.api.addBook().pipe(
+      tap((book: Book) => {
+        ctx.setState((state: BooksStateModel) => ({
+          pending: false,
+          books: state.books.concat(book)
+        }));
+      })
+    );
+  }
+}
+```
+
+As you can see, this is not very convenient, since we will have to do such things for each state.
+
+```ts
+@Component({
+  selector: 'app',
+  template: `
+    <button [disabled]="(books$ | async).pending" (click)="addBook()">
+      Add book
+    </button>
+
+    <span *ngIf="(books$ | async).pending">
+      Loading...
+    </span>
+  `
+})
+export class AppComponent {
+  @Select(BooksState)
+  books$: Observable<BooksStateModel>;
+
+  constructor(private store: Store) {}
+
+  addBook() {
+    this.store.dispatch(new AddBook());
+  }
+}
+```
 
 #### How it addresses this problem:
 
-...
+This plugin allows you to easily know if an action is being executed and control UI elements or control flow of your code to execute.
 
-### Labs project x new version released
+```ts
+@State<Book[]>({
+  name: 'books',
+  defaults: []
+})
+export class BooksState {
+  constructor(private api: ApiService) {}
 
-...
+  @Action(AddBook)
+  add(ctx: StateContext<Book[]>) {
+    return this.api.addBook().pipe(
+      tap((book: Book) => {
+        ctx.setState((state: Book[]) => state.concat(book));
+      })
+    );
+  }
+}
+```
+
+The most common scenarios for using this plugin are to display loading spinner or disable a button while an action is executing.
+
+```ts
+import { actionsExecuting, ActionsExecuting } from '@ngxs-labs/actions-executing';
+
+@Component({
+  selector: 'app',
+  template: `
+    <button [disabled]="addBookIsExecuting$ | async" (click)="addBook()">
+      Add book
+    </button>
+
+    <span *ngIf="addBookIsExecuting$ | async">
+      Loading...
+    </span>
+  `
+})
+export class AppComponent {
+  @Select(actionsExecuting([AddBook]))
+  addBookIsExecuting$: Observable<ActionsExecuting>;
+
+  constructor(private store: Store) {}
+
+  addBook() {
+    this.store.dispatch(new AddBook());
+  }
+}
+```
 
 ---
 
