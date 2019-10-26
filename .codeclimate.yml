@@ -1,4 +1,4 @@
-version: "2"
+version: '2'
 plugins:
   tslint:
     enabled: true
@@ -13,12 +13,13 @@ checks:
     config:
       threshold: 50
 exclude_paths:
-  - ".github/"
-  - "assets/"
-  - "docs/"
-  - "packages/**/tests/"
-  - "integration/"
-  - "tools/"
+  - '.github/'
+  - 'assets/'
+  - 'docs/'
+  - 'packages/**/tests/'
+  - 'integrations/'
+  - 'integration/'
+  - 'tools/'
 ratings:
-   paths:
-   - "packages/**/**.ts"
+  paths:
+    - 'packages/**/**.ts'

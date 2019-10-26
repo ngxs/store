@@ -9,3 +9,4 @@ dist*/**
 build/**
 coverage/**
 @ngxs/**
+**/dist/**
