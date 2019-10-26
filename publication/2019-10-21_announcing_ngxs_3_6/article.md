@@ -137,17 +137,39 @@ class MyState implements NgxsOnChanges {
 
 ## 🚧 Improved type safety for children states
 
-[#1388](https://github.com/ngxs/store/pull/1388)
-(Introduction [with problem statement], details and usage)
+_Before_
+
+```ts
+function MyChildState() {}
+
+@State({
+  name: 'myState',
+  children: [MyChildState, { name: 'myChildOtherState' }, null] // success compile
+})
+class MyState {}
+```
+
+_After_
+
+```ts
+function MyChildState() {}
+
+@State({
+  name: 'myState',
+  children: [MyChildState, { name: 'myChildOtherState' }, null] // failed compile, need uses only state class reference
+})
+class MyState {}
+```
 
 ## 🐛 Bug Fixes
 
 For Each:
 (Introduction, details and usage)
 
-- Fix: Explicit typings for state operators [#1395](https://github.com/ngxs/store/pull/1395)
+- Fix: Explicit typings for state operators [#1395](https://github.com/ngxs/store/pull/1395), [#1405](https://github.com/ngxs/store/pull/1405)
 - Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
 - Fix: Do not re-throw error to the global handler if custom is provided [#1379](https://github.com/ngxs/store/pull/1379)
+- Fix: Upgrade ng-packagr to fix Ivy issues [#1397](https://github.com/ngxs/store/pull/1397)
 
 ## 🔌 Plugin Improvements and Fixes
 
@@ -199,6 +221,7 @@ export class NovelsState {}
 ```
 
 We would previously have to use the `path` of the state:
+
 ```ts
 @NgModule({
   imports: [
@@ -211,6 +234,7 @@ export class AppModule {}
 ```
 
 Now you can use the State Class:
+
 ```ts
 @NgModule({
   imports: [
