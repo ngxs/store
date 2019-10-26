@@ -112,7 +112,9 @@ export function ensureStoreMetadata(target: StateClassInternal): MetaDataModel {
  *
  * @ignore
  */
-export function getStoreMetadata(target: StateClassInternal): MetaDataModel {
+export function getStoreMetadata<T = any, U = any>(
+  target: StateClassInternal<U, T>
+): MetaDataModel<T, U> {
   return target[META_KEY]!;
 }
 
