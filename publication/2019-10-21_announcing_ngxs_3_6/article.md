@@ -16,6 +16,8 @@
 
 ## 💥 New lifecycle hook `ngxsOnChanges`
 
+We have added a new lifecycle hook. It was inspired by the `onChanges` hook available in Angular. It was a very simple change that enabled us to add this hook and it opens the opportunity for soem really great use cases. The new hook looks like this:
+
 ```ts
 @State({ .. })
 class MyState implements NgxsOnChanges {
@@ -25,7 +27,7 @@ class MyState implements NgxsOnChanges {
 }
 ```
 
-The method receives a NgxsSimpleChanges object of current and previous property values.
+The method receives a `NgxsSimpleChanges` object that contins the current and previous property values as well as a flag to tell you if this is the first change.
 
 ```ts
 export class NgxsSimpleChange<T = any> {
@@ -37,7 +39,7 @@ export class NgxsSimpleChange<T = any> {
 }
 ```
 
-This is convenient if we want to dispatch any additional actions when any fields have changed. Called whenever state change.
+This new hook is very convenient if we want to dispatch any additional actions or respond in any way after any fields within that part of the state have changed.
 
 #### Lifecycle sequence
 
@@ -49,7 +51,7 @@ After creating the state by calling its constructor, NGXS calls the lifecycle ho
 | ngxsOnInit()         | Called once, after the first ngxsOnChanges().                             |
 | ngxsAfterBootstrap() | Called once, after the root view and all its children have been rendered. |
 
-It is necessary in the following use cases:
+#### Here are a couple of example use cases:
 
 I. A convenient way to track state changes:
 
@@ -69,7 +71,7 @@ class MyComponent {
 }
 ```
 
-One of the problems is, if we do not use the `@ngxs/logger-plugin` or `@ngxs/devtools-plugin`, then we do not know what the previous state was before our state changed. It's great to have such an opportunity out of the box.
+One of the problems is that if we are not using the `@ngxs/logger-plugin` or `@ngxs/devtools-plugin`, then we do not know what the previous state was before our state changed. It's great to have such an opportunity out of the box for quick, simple and focused debugging.
 
 _After_
 
@@ -77,16 +79,16 @@ _After_
 @State({ .. })
 class MyState implements NgxsOnChanges {
   public ngxsOnChanges({ previousValue, currentValue }: NgxsSimpleChange): void {
-    console.log('state is changed', previousValue, currentValue);
+    console.log('MyState has changed', previousValue, currentValue);
   }
 }
 ```
 
-Very comfortably!
+Nice!
 
 II. Convenient to synchronize with the server
 
-Sometimes needed to save state on the server every time the client changed it.
+Sometimes we need to save state on the server every time the client makes changes to it.
 
 _Before_
 
@@ -153,20 +155,20 @@ For Each:
 
 - Feature: HMR Plugin - Add option for persisting state after the root module is disposed [#1369](https://github.com/ngxs/store/pull/1369)
 
-Previously, if you did a reset of some state in your application, then you could get a side effect:
+If you make any changes to state in your application during the `ngOnDestroy` Angular lifecycle hook on any of your primary application components then it those changes may have missed the opportunity to be saved for Hot Module Reloading:
 
 ```ts
 @Component({ .. })
-class MyComponent implements OnDestroy {
+class AppComponent implements OnDestroy {
  ...
  public ngOnDestroy(): void {
-   this.store.reset({ .. }); // side-effect for HMR Lifecycle
+   this.store.reset({ .. }); // These changes will not be remembered by HMR
  }
 }
 ```
 
-Accordingly, your application states will be incorrectly works for further operation of the HMR.
-Now you can easily control this situation by turning on the flag `persistAfterDestroy`.
+Up until now there hasn't really been any way to work around this...
+Now you can easily control this situation by turning on the flag `persistAfterDestroy`. This will cause the state as it existed after the `ngOnDestroy` hook to be persisted and restored by the HMR plugin.
 
 ```ts
 if (environment.hmr) {
@@ -180,13 +182,13 @@ if (environment.hmr) {
 }
 ```
 
-It is also recommended to use dynamic imports for the HMR plugin, for improved tree-shaking.
+PS. It is recommended to use dynamic imports for the HMR plugin as you see above for improved tree-shaking.
 
 ### Storage Plugin
 
 - Feature: Storage Plugin - Use state classes as keys [#1380](https://github.com/ngxs/store/pull/1380)
 
-Before that, in order to maintain the state of the application, you had to do so:
+Currently, if you want a specific part of the state of the application to be stored then you have to provide the `path` of the state to the storage plugin. Now we have added the ability to provide the State Class instead of the path. As an example, given the following state:
 
 ```ts
 @State<Novel[]>({
@@ -196,6 +198,7 @@ Before that, in order to maintain the state of the application, you had to do so
 export class NovelsState {}
 ```
 
+We would previously have to use the `path` of the state:
 ```ts
 @NgModule({
   imports: [
@@ -207,8 +210,7 @@ export class NovelsState {}
 export class AppModule {}
 ```
 
-Therefore, it is not reliable, since you can change the name of the state and forget to change it in the configuration. Now you just need to pass the reference to the state class and the plugin will automatically use the state name.
-
+Now you can use the State Class:
 ```ts
 @NgModule({
   imports: [
@@ -219,6 +221,8 @@ Therefore, it is not reliable, since you can change the name of the state and fo
 })
 export class AppModule {}
 ```
+
+This is a great improvement because it removes the requirement for you to provide the `path` of a state in multiple places in your application (with the risk of getting out of sync if there are any changes to the `path`). Now you just need to pass the reference to the state class and the plugin will automatically translate it to the `path`.
 
 ### Form Plugin
 
