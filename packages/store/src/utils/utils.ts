@@ -2,6 +2,9 @@
  * Returns the type from an action instance/class.
  * @ignore
  */
+import { META_KEY } from '../symbols';
+import { StateClassInternal } from '../internal/internals';
+
 export function getActionTypeFromInstance(action: any): string | undefined {
   if (action.constructor && action.constructor.type) {
     return action.constructor.type;
@@ -60,3 +63,13 @@ export const setValue = (obj: any, prop: string, val: any) => {
  */
 export const getValue = (obj: any, prop: string): any =>
   prop.split('.').reduce((acc: any, part: string) => acc && acc[part], obj);
+
+export function isStateClass(
+  stateClass: StateClassInternal
+): stateClass is StateClassInternal {
+  return !!(
+    typeof stateClass === 'function' &&
+    stateClass.name !== 'Object' &&
+    stateClass[META_KEY]
+  );
+}

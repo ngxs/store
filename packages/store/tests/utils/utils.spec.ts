@@ -1,5 +1,8 @@
 import { ObjectUtils } from '@ngxs/store/internals';
-import { setValue } from '../../src/utils/utils';
+import { State } from '@ngxs/store';
+
+import { isStateClass, setValue } from '../../src/utils/utils';
+import { META_KEY } from '../../src/symbols';
 
 describe('utils', () => {
   describe('setValue', () => {
@@ -59,5 +62,18 @@ describe('utils', () => {
 
     expect(ObjectUtils.merge(null as any, null as any)).toEqual({});
     expect(ObjectUtils.merge(new A(), { id: 0 })).toEqual({ value: 'hello world', id: 0 });
+  });
+
+  it('should be check class is state or non state', () => {
+    class NonState {}
+
+    @State({ name: 'myState' })
+    class StateClass {}
+
+    expect(isStateClass(null!)).toEqual(false);
+    expect(isStateClass((() => {}) as any)).toEqual(false);
+    expect(isStateClass(NonState)).toEqual(false);
+    expect(isStateClass({ [META_KEY]: {} } as any)).toEqual(false);
+    expect(isStateClass(StateClass)).toEqual(true);
   });
 });
