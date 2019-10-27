@@ -17,20 +17,20 @@ describe('[TEST]: Metadata Types', () => {
     const meta = getStoreMetadata(MyBookState); // $ExpectType MetaDataModel<any, MyBookState>
     meta.instance; // $ExpectType NgxsStateInstance<any, MyBookState> | null
     meta.defaults; // $ExpectType any
-    meta.selectFromAppState; // $ExpectType SelectFromState<any> | null
+    meta.selectFromAppState; // $ExpectType SelectFromState | null
   });
 
   it('getStoreMetadata<T>(..)', () => {
     const meta = getStoreMetadata<BookModel>(MyBookState); // $ExpectType MetaDataModel<BookModel, any>
     meta.instance; // $ExpectType NgxsStateInstance<BookModel, any> | null
     meta.defaults; // $ExpectType BookModel
-    meta.selectFromAppState; // $ExpectType SelectFromState<BookModel> | null
+    meta.selectFromAppState; // $ExpectType SelectFromState | null
   });
 
   it('getStoreMetadata<T, U>(..)', () => {
     const meta = getStoreMetadata<BookModel, MyBookState>(MyBookState); // $ExpectType MetaDataModel<BookModel, MyBookState>
     meta.instance; // $ExpectType NgxsStateInstance<BookModel, MyBookState> | null
     meta.defaults; // $ExpectType BookModel
-    meta.selectFromAppState; // $ExpectType SelectFromState<BookModel> | null
+    meta.selectFromAppState; // $ExpectType SelectFromState | null
   });
 });

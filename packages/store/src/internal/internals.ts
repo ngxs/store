@@ -40,12 +40,12 @@ export interface MetaDataModel<T = any, U = any> {
   actions: PlainObjectOf<ActionHandlerMetaData[]>;
   defaults: T;
   path: string | null;
-  selectFromAppState: SelectFromState<T> | null;
+  selectFromAppState: SelectFromState | null;
   children?: StateClassInternal<U, T>[];
   instance: NgxsStateInstance<T, U> | null;
 }
 
-export type SelectFromState<T = any> = (state: T) => any;
+export type SelectFromState = (state: any) => any;
 
 export interface SharedSelectorOptions {
   injectContainerState?: boolean;
