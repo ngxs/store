@@ -366,7 +366,9 @@ store.dispatch(
 
 ### WebSocket Plugin
 
-- Feature: WebSocket Plugin - Implement `WebSocketConnected` action [#1371](https://github.com/ngxs/store/pull/1371)
+There is a new action for the WebSocket plugin.
+
+`WebSocketConnected` - Action dispatched when a web socket is connected.
 
 ---
 
