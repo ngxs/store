@@ -1,10 +1,10 @@
+import { META_KEY } from '../symbols';
+import { StateClassInternal } from '../internal/internals';
+
 /**
  * Returns the type from an action instance/class.
  * @ignore
  */
-import { META_KEY } from '../symbols';
-import { StateClassInternal } from '../internal/internals';
-
 export function getActionTypeFromInstance(action: any): string | undefined {
   if (action.constructor && action.constructor.type) {
     return action.constructor.type;
