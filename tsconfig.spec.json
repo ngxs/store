@@ -7,6 +7,6 @@
     "types": ["jest", "node"],
     "importHelpers": true
   },
-  "exclude": ["./packages/store/types/**"],
+  "exclude": ["@ngxs/**", "./packages/store/types/**"],
   "include": ["packages/**/*.ts", "packages/**/*.spec.ts"]
 }
