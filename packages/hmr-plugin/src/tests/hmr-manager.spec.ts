@@ -261,7 +261,7 @@ describe('HMR Plugin', () => {
   }));
 
   it('should be correct handling errors', async () => {
-    console.error = () => {}; // silent errors in logs for test
+    console.error = () => { }; // silent errors in logs for test
 
     try {
       await hmr({} as WebpackModule, null as any);
@@ -341,7 +341,7 @@ describe('HMR Plugin', () => {
       AppMockWithDestroyModule,
       {},
       {
-        persistAfterDestroy: true
+        restorePreDestroySnapshot: true
       }
     );
 
@@ -361,7 +361,7 @@ describe('HMR Plugin', () => {
         storedValue: store.snapshot()
       },
       {
-        persistAfterDestroy: true
+        restorePreDestroySnapshot: true
       }
     );
 
