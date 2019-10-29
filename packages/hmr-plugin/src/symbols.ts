@@ -37,12 +37,6 @@ export interface NgxsHmrOptions {
    * (default: 100ms)
    */
   deferTime?: number;
-
-  /**
-   * @description
-   * Restore the snapshot that was taken before the AppModule was disposed
-   */
-  restorePreDestroySnapshot?: boolean;
 }
 
 type ModuleId = string | number;

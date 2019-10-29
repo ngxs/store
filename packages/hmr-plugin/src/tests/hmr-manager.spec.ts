@@ -261,7 +261,7 @@ describe('HMR Plugin', () => {
   }));
 
   it('should be correct handling errors', async () => {
-    console.error = () => { }; // silent errors in logs for test
+    console.error = () => {}; // silent errors in logs for test
 
     try {
       await hmr({} as WebpackModule, null as any);
@@ -294,7 +294,6 @@ describe('HMR Plugin', () => {
 
   it('state has to be provided before module is disposed', fakeAsync(async () => {
     const { webpackModule, store } = await hmrTestBed(AppMockModuleNoHmrLifeCycle);
-
     expect(store.snapshot()).toEqual({
       mock_state: { value: 'test' }
     });
@@ -303,7 +302,9 @@ describe('HMR Plugin', () => {
 
     tick(1000);
 
-    expect(store.snapshot()).toEqual({
+    const { store: newStore } = await hmrTestBed(AppMockModuleNoHmrLifeCycle);
+
+    expect(newStore.snapshot()).toEqual({
       mock_state: { value: 'test' }
     });
   }));
@@ -311,7 +312,6 @@ describe('HMR Plugin', () => {
   it('state has to be provided before module is disposed with calling reset in ngOnDestroy', fakeAsync(async () => {
     class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
       public ngOnDestroy(): void {
-        // side effect for hmr
         store.reset({});
       }
     }
@@ -326,49 +326,22 @@ describe('HMR Plugin', () => {
 
     tick(1000);
 
-    expect(store.snapshot()).toEqual({});
+    const { store: newStore } = await hmrTestBed(AppMockWithDestroyModule);
+
+    expect(newStore.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
   }));
 
-  it('state has to be provided after module is disposed', fakeAsync(async () => {
-    class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
-      public ngOnDestroy(): void {
-        // side effect for hmr
-        store.reset({});
-      }
-    }
-
-    const { webpackModule, store } = await hmrTestBed(
-      AppMockWithDestroyModule,
-      {},
-      {
-        restorePreDestroySnapshot: true
-      }
-    );
-
-    expect(store.snapshot()).toEqual({ mock_state: { value: 'test' } });
+  it('should be unique instance state after destroy', async () => {
+    const { appModule, webpackModule } = await hmrTestBed(AppMockModuleNoHmrLifeCycle);
+    const instance: MockState = appModule.injector.get<MockState>(MockState);
 
     webpackModule.destroyModule();
 
-    tick(1000);
+    const { appModule: newAppModule } = await hmrTestBed(AppMockModuleNoHmrLifeCycle);
+    const newInstance: MockState = newAppModule.injector.get<MockState>(MockState);
 
-    expect(store.snapshot()).toEqual({ mock_state: { value: 'test' } });
-
-    store.reset({ ...store.snapshot(), hello: 'world' });
-
-    const { webpackModule: moduleTickV2, store: storeV2 } = await hmrTestBed(
-      AppMockWithDestroyModule,
-      {
-        storedValue: store.snapshot()
-      },
-      {
-        restorePreDestroySnapshot: true
-      }
-    );
-
-    moduleTickV2.destroyModule();
-
-    tick(1000);
-
-    expect(storeV2.snapshot()).toEqual({ mock_state: { value: 'test' }, hello: 'world' });
-  }));
+    expect(instance !== newInstance).toBeTruthy();
+  });
 });
