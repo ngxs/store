@@ -344,4 +344,31 @@ describe('HMR Plugin', () => {
 
     expect(instance !== newInstance).toBeTruthy();
   });
+
+  it('mutate old state in ngOnDestroy', fakeAsync(async () => {
+    class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
+      public ngOnDestroy(): void {
+        (store.snapshot() as any).mock_state.value = 'mutated value';
+        (store.snapshot() as any).mock_state.any_fields = 'mutated value';
+      }
+    }
+
+    const { webpackModule, store } = await hmrTestBed(AppMockWithDestroyModule);
+
+    expect(store.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
+
+    webpackModule.destroyModule();
+
+    expect(store.snapshot()).toEqual({
+      mock_state: { value: 'mutated value', any_fields: 'mutated value' }
+    });
+
+    const { store: newStore } = await hmrTestBed(AppMockWithDestroyModule);
+
+    expect(newStore.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
+  }));
 });
