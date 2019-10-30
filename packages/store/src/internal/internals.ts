@@ -40,7 +40,6 @@ export interface MetaDataModel {
   path: string | null;
   selectFromAppState: SelectFromState | null;
   children?: StateClassInternal[];
-  instance: any;
 }
 
 export type SelectFromState = (state: any) => any;
@@ -92,8 +91,7 @@ export function ensureStoreMetadata(target: StateClassInternal): MetaDataModel {
       defaults: {},
       path: null,
       selectFromAppState: null,
-      children: [],
-      instance: null
+      children: []
     };
 
     Object.defineProperty(target, META_KEY, { value: defaultMetadata });
