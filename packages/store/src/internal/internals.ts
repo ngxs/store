@@ -375,10 +375,10 @@ export function isObject(obj: any) {
 }
 
 export function getStateDiffChanges<T>(
-  metadata: MappedStore,
+  mappedStore: MappedStore,
   diff: RootStateDiff<T>
 ): NgxsSimpleChange {
-  const previousValue: T = getValue(diff.currentAppState, metadata.depth);
-  const currentValue: T = getValue(diff.newAppState, metadata.depth);
-  return new NgxsSimpleChange(previousValue, currentValue, !metadata.isInitialised);
+  const previousValue: T = getValue(diff.currentAppState, mappedStore.depth);
+  const currentValue: T = getValue(diff.newAppState, mappedStore.depth);
+  return new NgxsSimpleChange(previousValue, currentValue, !mappedStore.isInitialised);
 }

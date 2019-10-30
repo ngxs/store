@@ -18,19 +18,19 @@ export class StateContextFactory {
   /**
    * Create the state context
    */
-  createStateContext<T>(metadata: MappedStore): StateContext<T> {
+  createStateContext<T>(mappedStore: MappedStore): StateContext<T> {
     const root = this._internalStateOperations.getRootStateOperations();
 
     function getState(currentAppState: any): T {
-      return getValue(currentAppState, metadata.depth);
+      return getValue(currentAppState, mappedStore.depth);
     }
 
     function setStateValue(currentAppState: any, newValue: T): any {
-      const newAppState = setValue(currentAppState, metadata.depth, newValue);
-      const instance: NgxsLifeCycle = metadata.instance;
+      const newAppState = setValue(currentAppState, mappedStore.depth, newValue);
+      const instance: NgxsLifeCycle = mappedStore.instance;
 
       if (instance.ngxsOnChanges) {
-        const change: NgxsSimpleChange = getStateDiffChanges<T>(metadata, {
+        const change: NgxsSimpleChange = getStateDiffChanges<T>(mappedStore, {
           currentAppState,
           newAppState
         });
