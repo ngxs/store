@@ -71,7 +71,6 @@ describe('Ensure metadata', () => {
         },
         defaults: 0,
         path: null,
-        instance: null,
         selectFromAppState: null,
         children: [MyCounterState]
       });
@@ -84,8 +83,7 @@ describe('Ensure metadata', () => {
         defaults: 1,
         path: null,
         selectFromAppState: null,
-        children: undefined,
-        instance: null
+        children: undefined
       });
     });
 
