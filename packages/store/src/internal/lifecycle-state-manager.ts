@@ -31,9 +31,9 @@ export class LifecycleStateManager {
   /**
    * Invoke the init function on the states.
    */
-  invokeInit(stateMetadatas: MappedStore[]): void {
-    for (const metadata of stateMetadatas) {
-      const instance: NgxsLifeCycle = metadata.instance;
+  invokeInit(mappedStores: MappedStore[]): void {
+    for (const mappedStore of mappedStores) {
+      const instance: NgxsLifeCycle = mappedStore.instance;
 
       if (instance.ngxsOnChanges) {
         const currentAppState: PlainObject = {};
@@ -41,7 +41,7 @@ export class LifecycleStateManager {
           .getRootStateOperations()
           .getState();
 
-        const firstDiffChange: NgxsSimpleChange = getStateDiffChanges(metadata, {
+        const firstDiffChange: NgxsSimpleChange = getStateDiffChanges(mappedStore, {
           currentAppState,
           newAppState
         });
@@ -50,26 +50,26 @@ export class LifecycleStateManager {
       }
 
       if (instance.ngxsOnInit) {
-        instance.ngxsOnInit(this.getStateContext(metadata));
+        instance.ngxsOnInit(this.getStateContext(mappedStore));
       }
 
-      metadata.isInitialised = true;
+      mappedStore.isInitialised = true;
     }
   }
 
   /**
    * Invoke the bootstrap function on the states.
    */
-  invokeBootstrap(stateMetadatas: MappedStore[]) {
-    for (const metadata of stateMetadatas) {
-      const instance: NgxsLifeCycle = metadata.instance;
+  invokeBootstrap(mappedStores: MappedStore[]) {
+    for (const mappedStore of mappedStores) {
+      const instance: NgxsLifeCycle = mappedStore.instance;
       if (instance.ngxsAfterBootstrap) {
-        instance.ngxsAfterBootstrap(this.getStateContext(metadata));
+        instance.ngxsAfterBootstrap(this.getStateContext(mappedStore));
       }
     }
   }
 
-  private getStateContext(metadata: MappedStore): StateContext<any> {
-    return this.stateContextFactory.createStateContext(metadata);
+  private getStateContext(mappedStore: MappedStore): StateContext<any> {
+    return this.stateContextFactory.createStateContext(mappedStore);
   }
 }
