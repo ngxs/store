@@ -5,8 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --hmr",
-    "test": "ng build",
-    "pretest": "npm install",
+    "test": "ng build --prod",
+    "pretest": "yarn --pure-lockfile",
     "postinstall": "cpx -v -C \"../../@ngxs/**/*\" \"node_modules/@ngxs/\""
   },
   "private": true,
