@@ -1,4 +1,4 @@
-# Sub Stores
+# Sub States
 
 Complex and large state graphs are difficult to manage. Oftentimes we need
 to break these down into sub states that we can manage on a individual
@@ -16,7 +16,7 @@ Unidirectional data flow policy is also applied to the state management. We have
 
 Let's take the following example state graph:
 
-```TS
+```ts
 {
   cart: {
     checkedout: false,
@@ -34,7 +34,7 @@ Beneath that we have a `saved` object which represents another state slice.
 To express this relationship with NGXS, we simply need to use the `children`
 property in the `@State` decorator:
 
-```TS
+```ts
 export interface CartStateModel {
   checkedout: boolean;
   items: CartItem[];
@@ -53,7 +53,7 @@ export class CartState {}
 
 Then we describe our sub-state like normal:
 
-```TS
+```ts
 export interface CartSavedStateModel {
   dateSaved: Date;
   items: CartItem[];
@@ -71,7 +71,7 @@ export class CartSavedState {}
 
 The relationship between these two are bound by their hierarchical order. To finish this up, we need to import both of these into the `NgxsModule`:
 
-```TS
+```ts
 @NgModule({
   imports: [
     NgxsModule.forRoot([
@@ -98,7 +98,7 @@ from it.
 
 Let's have a look at the state graph again:
 
-```TS
+```ts
 {
   cart: {
     checkedout: false,
@@ -113,7 +113,7 @@ Let's have a look at the state graph again:
 
 This means that you have to avoid using `setState` function in the parent `CartState` state as your child state will erase. Assume you've got an action called `SetCheckedoutAndItems`:
 
-```TS
+```ts
 export interface CartStateModel {
   checkedout: boolean;
   items: CartItem[];
