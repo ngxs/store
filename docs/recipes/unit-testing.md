@@ -162,7 +162,7 @@ it('should wait for completion of the asynchronous action', async () => {
       return timer(delay).pipe(
         tap(() => {
           // We're incrementing the state value and setting it
-          ctx.setState((state) => state += 1);
+          ctx.setState(state => (state += 1));
         }),
         // After incrementing we want to decrement it again to the zero value
         mergeMap(() => ctx.dispatch(new DecrementAsync()))
@@ -175,7 +175,7 @@ it('should wait for completion of the asynchronous action', async () => {
 
       return timer(delay).pipe(
         tap(() => {
-          ctx.setState((state) => state -= 1);
+          ctx.setState(state => (state -= 1));
         })
       );
     }

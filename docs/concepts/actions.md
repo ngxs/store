@@ -92,23 +92,22 @@ Don't suffix your actions:
 ```ts
 export class AddTodo {
   static readonly type = '[Todo] Add';
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class EditTodo {
   static readonly type = '[Todo] Edit';
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class FetchAllTodos {
-  static readonly type = '[Todo] Fetch All'
+  static readonly type = '[Todo] Fetch All';
 }
 
 export class DeleteTodo {
   static readonly type = '[Todo] Delete';
-  constructor(public id: number) { }
+  constructor(public id: number) {}
 }
-
 ```
 
 here we group similar actions into the `Todo` namespace.
@@ -116,24 +115,23 @@ In this case just import namespace instead of multiple action classes in same fi
 
 ```ts
 export namespace Todo {
-
   export class Add {
     static readonly type = '[Todo] Add';
-    constructor(public payload: any) { }
+    constructor(public payload: any) {}
   }
 
   export class Edit {
     static readonly type = '[Todo] Edit';
-    constructor(public payload: any) { }
+    constructor(public payload: any) {}
   }
 
   export class FetchAll {
-    static readonly type = '[Todo] Fetch All'
+    static readonly type = '[Todo] Fetch All';
   }
 
   export class Delete {
     static readonly type = '[Todo] Delete';
-    constructor(public id: number) { }
+    constructor(public id: number) {}
   }
 }
 ```

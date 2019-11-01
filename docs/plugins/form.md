@@ -30,10 +30,7 @@ import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NovelsState } from './novels.state';
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([NovelsState]),
-    NgxsFormPluginModule.forRoot(),
-  ]
+  imports: [NgxsModule.forRoot([NovelsState]), NgxsFormPluginModule.forRoot()]
 })
 export class AppModule {}
 ```
@@ -44,9 +41,7 @@ If your form is used in a submodule, it must be imported there as well:
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 
 @NgModule({
-  imports: [
-    NgxsFormPluginModule,
-  ]
+  imports: [NgxsFormPluginModule]
 })
 export class SomeModule {}
 ```
@@ -87,7 +82,7 @@ import { FormGroup, FormControl } from '@angular/forms';
   selector: 'new-novel-form',
   template: `
     <form [formGroup]="newNovelForm" ngxsForm="novels.newNovelForm" (ngSubmit)="onSubmit()">
-      <input type="text" formControlName="novelName">
+      <input type="text" formControlName="novelName" />
       <button type="submit">Create</button>
     </form>
   `

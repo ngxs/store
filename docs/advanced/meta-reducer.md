@@ -12,10 +12,8 @@ state when a user logs out. An example implementation would be:
 import { getActionTypeFromInstance } from '@ngxs/store';
 
 export function logoutPlugin(state, action, next) {
-
   // Use the get action type helper to determine the type
   if (getActionTypeFromInstance(action) === Logout.type) {
-
     // if we are a logout type, lets erase all the state
     state = {};
   }

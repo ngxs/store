@@ -36,9 +36,11 @@ export class CreateMonkeys {
 export class AnimalsState {
   @Action(CreateMonkeys)
   createMonkeys(ctx: StateContext<AnimalsStateModel>) {
-    ctx.setState(patch({
-      monkeys: []
-    }));
+    ctx.setState(
+      patch({
+        monkeys: []
+      })
+    );
   }
 }
 ```

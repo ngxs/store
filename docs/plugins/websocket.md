@@ -147,7 +147,7 @@ Notice that you have to specify `type` property on server side, otherwise you wi
 NgxsWebsocketPluginModule.forRoot({
   url: 'ws://localhost:4200',
   typeKey: 'myAwesomeTypeKey'
-})
+});
 ```
 
 In order to kick off our websockets we have to dispatch the `ConnectWebSocket`

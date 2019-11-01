@@ -91,18 +91,13 @@ If you have feature modules they need to be imported after the root module:
 ```ts
 // feature.module.ts
 @NgModule({
-  imports: [
-    NgxsModule.forFeature([FeatureState])
-  ]
+  imports: [NgxsModule.forFeature([FeatureState])]
 })
-export class FeatureModule{}
+export class FeatureModule {}
 
 // app.module.ts
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([]),
-    FeatureModule,
-  ]
+  imports: [NgxsModule.forRoot([]), FeatureModule]
 })
 export class AppModule {}
 ```

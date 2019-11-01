@@ -33,10 +33,7 @@ import { NgxsModule } from '@ngxs/store';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([]),
-    NgxsRouterPluginModule.forRoot()
-  ]
+  imports: [NgxsModule.forRoot([]), NgxsRouterPluginModule.forRoot()]
 })
 export class AppModule {}
 ```
@@ -115,14 +112,12 @@ import { map } from 'rxjs/operators';
   `
 })
 export class AppComponent {
-
   data$ = this.actions$.pipe(
     ofActionSuccessful(RouterDataResolved),
     map((action: RouterDataResolved) => action.routerState.root.firstChild.data)
   );
 
   constructor(private actions$: Actions) {}
-
 }
 ```
 

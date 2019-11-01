@@ -22,10 +22,7 @@ import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([]),
-    NgxsReduxDevtoolsPluginModule.forRoot()
-  ]
+  imports: [NgxsModule.forRoot([]), NgxsReduxDevtoolsPluginModule.forRoot()]
 })
 export class AppModule {}
 ```

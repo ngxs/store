@@ -23,8 +23,9 @@ export class LoggerPlugin implements NgxsPlugin {
     console.log('Action started!', state);
     return next(state, action).pipe(
       tap(result => {
-      console.log('Action happened!', result);
-    }))
+        console.log('Action happened!', result);
+      })
+    );
   }
 }
 
@@ -44,7 +45,7 @@ export class NgxsLoggerPluginModule {
           useValue: config
         }
       ]
-    }
+    };
   }
 }
 ```

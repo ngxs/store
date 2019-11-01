@@ -13,7 +13,7 @@ export interface AuthStateModel {
 
 export class Login {
   static readonly type = '[Auth] Login';
-  constructor(public payload: { username: string, password: string }) {}
+  constructor(public payload: { username: string; password: string }) {}
 }
 
 export class Logout {
@@ -36,7 +36,6 @@ service.
   }
 })
 export class AuthState {
-
   @Selector()
   static token(state: AuthStateModel): string | null {
     return state.token;
@@ -73,7 +72,6 @@ export class AuthState {
       })
     );
   }
-
 }
 ```
 
@@ -107,14 +105,12 @@ We can easily accomplish this with a router guard provided by Angular.
 ```ts
 @Injectable()
 export class AuthGuard implements CanActivate {
-
   constructor(private store: Store) {}
 
   canActivate() {
     const isAuthenticated = this.store.selectSnapshot(AuthState.isAuthenticated);
     return isAuthenticated;
   }
-
 }
 ```
 
@@ -144,7 +140,6 @@ the login page.
   template: '..'
 })
 export class AppComponent implements OnInit {
-
   constructor(private actions: Actions, private router: Router) {}
 
   ngOnInit() {
@@ -152,7 +147,6 @@ export class AppComponent implements OnInit {
       this.router.navigate(['/login']);
     });
   }
-
 }
 ```
 

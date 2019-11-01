@@ -128,7 +128,7 @@ export class ZooState {
       zebraFood: [
         ...state.zebraFood,
         // this is the new ZebraFood instance that we add to the state
-        action.zebraToFeed,
+        action.zebraToFeed
       ]
     });
   }

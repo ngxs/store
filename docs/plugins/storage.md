@@ -20,10 +20,7 @@ import { NgxsModule } from '@ngxs/store';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([]),
-    NgxsStoragePluginModule.forRoot()
-  ]
+  imports: [NgxsModule.forRoot([]), NgxsStoragePluginModule.forRoot()]
 })
 export class AppModule {}
 ```
@@ -171,10 +168,7 @@ export class MyStorageEngine implements StorageEngine {
 }
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([]),
-    NgxsStoragePluginModule.forRoot()
-  ],
+  imports: [NgxsModule.forRoot([]), NgxsStoragePluginModule.forRoot()],
   providers: [
     {
       provide: STORAGE_ENGINE,
@@ -200,16 +194,16 @@ is a strategy to migrate my state from `animals` to `newAnimals`.
           version: 1,
           key: 'zoo',
           versionKey: 'myVersion',
-          migrate: (state) => {
+          migrate: state => {
             return {
               newAnimals: state.animals,
               version: 2 // Important to set this to the next version!
-            }
+            };
           }
         }
       ]
     })
-  ],
+  ]
 })
 export class MyModule {}
 ```

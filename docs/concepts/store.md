@@ -37,10 +37,7 @@ export class ZooComponent {
 You can also dispatch multiple actions at the same time by passing an array of actions like:
 
 ```ts
-this.store.dispatch([
-  new AddAnimal('Panda'),
-  new AddAnimal('Zebra')
-]);
+this.store.dispatch([new AddAnimal('Panda'), new AddAnimal('Zebra')]);
 ```
 
 Let's say after the action executes you want to clear

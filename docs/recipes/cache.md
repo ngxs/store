@@ -20,16 +20,12 @@ export class GetNovels {
   defaults: []
 })
 export class NovelsState {
-
   constructor(private novelsService: NovelsService) {}
 
   @Action(GetNovels)
   getNovels(ctx: StateContext<Novel[]>) {
-    return this.novelsService.getNovels().pipe(
-      tap(novels => ctx.setState(novels))
-    );
+    return this.novelsService.getNovels().pipe(tap(novels => ctx.setState(novels)));
   }
-
 }
 ```
 

@@ -70,7 +70,6 @@ the token from the auth state.
 ```ts
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
-
   constructor(private store: Store) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -83,7 +82,6 @@ export class JWTInterceptor implements HttpInterceptor {
 
     return next.handle(req);
   }
-
 }
 ```
 
@@ -105,12 +103,10 @@ import { State, Selector } from '@ngxs/store';
   defaults: []
 })
 export class ZooState {
-
   @Selector()
   static pandas(state: string[]) {
     return state.filter(s => s.indexOf('panda') > -1);
   }
-
 }
 ```
 
@@ -177,16 +173,12 @@ For instance, I can have a Lazy Selector that will filter my pandas to the provi
   defaults: []
 })
 export class ZooState {
-
   @Selector()
   static pandas(state: string[]) {
     return (type: string) => {
-      return state
-        .filter(s => s.indexOf('panda') > -1)
-        .filter(s => s.indexOf(type) > -1);
+      return state.filter(s => s.indexOf('panda') > -1).filter(s => s.indexOf(type) > -1);
     };
   }
-
 }
 ```
 
@@ -220,18 +212,14 @@ For instance, I can have a Dynamic Selector that will filter my pandas to the pr
   defaults: []
 })
 export class ZooState {
-
   static pandas(type: string) {
     return createSelector(
       [ZooState],
       (state: string[]) => {
-        return state
-          .filter(s => s.indexOf('panda') > -1)
-          .filter(s => s.indexOf(type) > -1);
+        return state.filter(s => s.indexOf('panda') > -1).filter(s => s.indexOf(type) > -1);
       }
     );
   }
-
 }
 ```
 
@@ -263,13 +251,14 @@ An interesting use case would be to allow for a selector to be reused to select 
 
 ```ts
 export class SharedSelectors {
-
   static getEntities(stateClass) {
-    return createSelector([stateClass], (state: { entities: any[] }) => {
-      return state.entities;
-    });
+    return createSelector(
+      [stateClass],
+      (state: { entities: any[] }) => {
+        return state.entities;
+      }
+    );
   }
-
 }
 ```
 
@@ -364,15 +353,10 @@ to join these two states together like:
 
 ```ts
 export class CityService {
-
   @Selector([Zoo, ThemePark])
   static zooThemeParks(zoos, themeParks) {
-    return [
-      ...zoos,
-      ...themeParks
-    ];
+    return [...zoos, ...themeParks];
   }
-
 }
 ```
 
@@ -478,15 +462,16 @@ When we have states that share similar structure, we can extract the shared sele
 
 ```ts
 export class EntitiesState {
-
-  static entities<T>() :T[] {
-    return createSelector([this], (state: { entities: T[] }) => {
-      return state.entities;
-    });
+  static entities<T>(): T[] {
+    return createSelector(
+      [this],
+      (state: { entities: T[] }) => {
+        return state.entities;
+      }
+    );
   }
 
   //...
-
 }
 ```
 
@@ -541,7 +526,7 @@ export class AppComponent {
 Or:
 
 ```ts
-this.store.select(UsersState.entities<User>())
+this.store.select(UsersState.entities<User>());
 ```
 
 ## Special Considerations
@@ -558,14 +543,9 @@ This error would be reported for each of the selectors defined below but, as dem
 // @dynamic
 @State<string[]>({
   name: 'animals',
-  defaults: [
-    'panda',
-    'horse',
-    'bee'
-  ]
+  defaults: ['panda', 'horse', 'bee']
 })
 export class ZooState {
-
   @Selector()
   static pandas(state: string[]) {
     return state.filter(s => s.indexOf('panda') > -1);
@@ -574,9 +554,7 @@ export class ZooState {
   @Selector()
   static horses(state: string[]) {
     return (type: string) => {
-      return state
-        .filter(s => s.indexOf('horse') > -1)
-        .filter(s => s.indexOf(type) > -1);
+      return state.filter(s => s.indexOf('horse') > -1).filter(s => s.indexOf(type) > -1);
     };
   }
 
@@ -584,13 +562,10 @@ export class ZooState {
     return createSelector(
       [ZooState],
       (state: string[]) => {
-        return state
-          .filter(s => s.indexOf('bee') > -1)
-          .filter(s => s.indexOf(type) > -1);
+        return state.filter(s => s.indexOf('bee') > -1).filter(s => s.indexOf(type) > -1);
       }
     );
   }
-
 }
 ```
 
@@ -600,14 +575,9 @@ See https://github.com/ng-packagr/ng-packagr/issues/696#issuecomment-387114613
 ```ts
 @State<string[]>({
   name: 'animals',
-  defaults: [
-    'panda',
-    'horse',
-    'bee'
-  ]
+  defaults: ['panda', 'horse', 'bee']
 })
 export class ZooState {
-
   @Selector()
   static pandas(state: string[]) {
     const result = state.filter(s => s.indexOf('panda') > -1);
@@ -617,9 +587,7 @@ export class ZooState {
   @Selector()
   static horses(state: string[]) {
     const fn = (type: string) => {
-      return state
-        .filter(s => s.indexOf('horse') > -1)
-        .filter(s => s.indexOf(type) > -1);
+      return state.filter(s => s.indexOf('horse') > -1).filter(s => s.indexOf(type) > -1);
     };
     return fn;
   }
@@ -628,13 +596,10 @@ export class ZooState {
     const selector = createSelector(
       [ZooState],
       (state: string[]) => {
-        return state
-          .filter(s => s.indexOf('bee') > -1)
-          .filter(s => s.indexOf(type) > -1);
+        return state.filter(s => s.indexOf('bee') > -1).filter(s => s.indexOf(type) > -1);
       }
     );
     return selector;
   }
-
 }
 ```

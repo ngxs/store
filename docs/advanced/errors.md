@@ -15,7 +15,6 @@ export class MyErrorHandler implements ErrorHandler {
   }
 }
 
-
 @NgModule({
   imports: [AppComponent],
   providers: [
@@ -25,7 +24,7 @@ export class MyErrorHandler implements ErrorHandler {
     }
   ]
 })
-export class AppModule { }
+export class AppModule {}
 ```
 
 ## Handling errors within an `@Action`
