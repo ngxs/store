@@ -28,15 +28,12 @@ yarn add @ngxs/router-plugin
 
 Add the `NgxsRouterPluginModule` plugin to your root app module:
 
-```TS
+```ts
 import { NgxsModule } from '@ngxs/store';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([]),
-    NgxsRouterPluginModule.forRoot()
-  ]
+  imports: [NgxsModule.forRoot([]), NgxsRouterPluginModule.forRoot()]
 })
 export class AppModule {}
 ```
@@ -48,7 +45,7 @@ You can also navigate using the store's dispatch method. It accepts the followin
 arguments: `new Navigate(path: any[], queryParams?: Params, extras?: NavigationExtras)`.
 A simple example would be navigating to the admin page like this:
 
-```TS
+```ts
 import { Store } from '@ngxs/store';
 import { Navigate } from '@ngxs/router-plugin';
 
@@ -72,7 +69,7 @@ action classes.
 
 You can listen to the `RouterDataResolved` action that is dispatch when the navigated route has some linked resolvers. For example:
 
-```TS
+```ts
 import { Actions, ofActionSuccessful } from '@ngxs/store';
 import { RouterDataResolved } from '@ngxs/router-plugin';
 
@@ -103,7 +100,7 @@ export class AppComponent {
 
 The more explicit example would be a situation where you would want to bind an input property providing some resolved data. For example:
 
-```TS
+```ts
 import { Actions, ofActionSuccessful } from '@ngxs/store';
 import { RouterDataResolved } from '@ngxs/router-plugin';
 
@@ -115,14 +112,12 @@ import { map } from 'rxjs/operators';
   `
 })
 export class AppComponent {
-
   data$ = this.actions$.pipe(
     ofActionSuccessful(RouterDataResolved),
     map((action: RouterDataResolved) => action.routerState.root.firstChild.data)
   );
 
   constructor(private actions$: Actions) {}
-
 }
 ```
 
@@ -130,7 +125,7 @@ export class AppComponent {
 
 You can implement your own router state serializer to serialize the router snapshot.
 
-```TS
+```ts
 import { Params, RouterStateSnapshot } from '@angular/router';
 
 import { NgxsModule } from '@ngxs/store';

@@ -5,7 +5,7 @@ at how we would implement this in NGXS.
 
 First, let's define our state model and our actions:
 
-```TS
+```ts
 export interface AuthStateModel {
   token: string | null;
   username: string | null;
@@ -13,7 +13,7 @@ export interface AuthStateModel {
 
 export class Login {
   static readonly type = '[Auth] Login';
-  constructor(public payload: { username: string, password: string }) {}
+  constructor(public payload: { username: string; password: string }) {}
 }
 
 export class Logout {
@@ -27,7 +27,7 @@ represents a JWT token that was issued for the session.
 Let's hook up these actions in our state class and wire that up to our login
 service.
 
-```TS
+```ts
 @State<AuthStateModel>({
   name: 'auth',
   defaults: {
@@ -36,7 +36,6 @@ service.
   }
 })
 export class AuthState {
-
   @Selector()
   static token(state: AuthStateModel): string | null {
     return state.token;
@@ -73,7 +72,6 @@ export class AuthState {
       })
     );
   }
-
 }
 ```
 
@@ -85,7 +83,7 @@ In this state class, we have:
 
 Now let's wire up the state in our module.
 
-```TS
+```ts
 @NgModule({
   imports: [
     NgxsModule.forRoot([AuthState]),
@@ -104,17 +102,15 @@ key in our state.
 Next, we want to make sure that our users can't go to any pages that require authentication.
 We can easily accomplish this with a router guard provided by Angular.
 
-```TS
+```ts
 @Injectable()
 export class AuthGuard implements CanActivate {
-
   constructor(private store: Store) {}
 
   canActivate() {
     const isAuthenticated = this.store.selectSnapshot(AuthState.isAuthenticated);
     return isAuthenticated;
   }
-
 }
 ```
 
@@ -123,7 +119,7 @@ select the token from the store. If the token is invalid it won't let the user g
 Let's make sure we implement this in our route itself by defining the `AuthGuard`
 in the `canActivate` definition.
 
-```TS
+```ts
 export const routes: Routes = [
   {
     path: 'admin',
@@ -138,13 +134,12 @@ to actually redirect the user to the login page. We can use our action
 stream to listen to the `Logout` action and tell the router to go to
 the login page.
 
-```TS
+```ts
 @Component({
   selector: 'app',
   template: '..'
 })
 export class AppComponent implements OnInit {
-
   constructor(private actions: Actions, private router: Router) {}
 
   ngOnInit() {
@@ -152,7 +147,6 @@ export class AppComponent implements OnInit {
       this.router.navigate(['/login']);
     });
   }
-
 }
 ```
 

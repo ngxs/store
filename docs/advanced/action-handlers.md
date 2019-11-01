@@ -30,7 +30,7 @@ Since it's an Observable, we can use the following pipes:
 
 All of the above pipes return the original `action` in the observable except for the `ofActionCompleted` pipe which returns some summary information for the completed action. This summary is an object with the following interface:
 
-```TS
+```ts
 interface ActionCompletion<T = any> {
   action: T;
   result: {
@@ -44,7 +44,7 @@ interface ActionCompletion<T = any> {
 Below is a action handler that filters for `RouteNavigate` actions and then tells the router to navigate to that
 route.
 
-```TS
+```ts
 import { Actions, ofActionDispatched } from '@ngxs/store';
 
 @Injectable()
@@ -60,11 +60,13 @@ export class RouteHandler {
 Remember you need to make sure to inject the `RouteHandler` somewhere in your application for DI to hook things up. If
 you want it to happen on application startup, Angular provides a method for doing this:
 
-```TS
+```ts
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 
 // Noop handler for factory function
-export function noop() { return function() {}; };
+export function noop() {
+  return function() {};
+}
 
 @NgModule({
   providers: [
@@ -81,7 +83,7 @@ export class AppModule {}
 
 Action handlers can be used in components too. Given the cart deletion example, we might construct something like:
 
-```TS
+```ts
 @Component({ ... })
 export class CartComponent {
   constructor(private actions$: Actions) {}

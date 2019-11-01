@@ -17,7 +17,7 @@ There are two actions that gets triggered in the internals of the library:
 Let's say we want to update the status of whether the animals have been fed
 in our Zoo. We would describe a class like:
 
-```TS
+```ts
 export class FeedAnimals {
   static readonly type = '[Zoo] Feed Animals';
 }
@@ -31,7 +31,7 @@ state, in this case flipping a boolean flag.
 Often you need an action to have some data associated with it.
 Here we have an action that should trigger feeding a zebra with hay.
 
-```TS
+```ts
 export class FeedZebra {
   static readonly type = '[Zoo] Feed Zebra';
   constructor(public name: string, public hayAmount: number) {}
@@ -89,51 +89,49 @@ It's for NgRx, but the same naming conventions apply to NGXS.
 
 Don't suffix your actions:
 
-```TS
+```ts
 export class AddTodo {
   static readonly type = '[Todo] Add';
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class EditTodo {
   static readonly type = '[Todo] Edit';
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class FetchAllTodos {
-  static readonly type = '[Todo] Fetch All'
+  static readonly type = '[Todo] Fetch All';
 }
 
 export class DeleteTodo {
   static readonly type = '[Todo] Delete';
-  constructor(public id: number) { }
+  constructor(public id: number) {}
 }
-
 ```
 
 here we group similar actions into the `Todo` namespace.
 In this case just import namespace instead of multiple action classes in same file.
 
-```TS
+```ts
 export namespace Todo {
-
   export class Add {
     static readonly type = '[Todo] Add';
-    constructor(public payload: any) { }
+    constructor(public payload: any) {}
   }
 
   export class Edit {
     static readonly type = '[Todo] Edit';
-    constructor(public payload: any) { }
+    constructor(public payload: any) {}
   }
 
   export class FetchAll {
-    static readonly type = '[Todo] Fetch All'
+    static readonly type = '[Todo] Fetch All';
   }
 
   export class Delete {
     static readonly type = '[Todo] Delete';
-    constructor(public id: number) { }
+    constructor(public id: number) {}
   }
 }
 ```

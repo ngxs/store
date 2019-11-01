@@ -15,15 +15,12 @@ yarn add @ngxs/storage-plugin
 
 Import the `NgxsStoragePluginModule` into your app module like:
 
-```TS
+```ts
 import { NgxsModule } from '@ngxs/store';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([]),
-    NgxsStoragePluginModule.forRoot()
-  ]
+  imports: [NgxsModule.forRoot([]), NgxsStoragePluginModule.forRoot()]
 })
 export class AppModule {}
 ```
@@ -141,7 +138,7 @@ This is very handy to avoid persisting runtime-only states that shouldn't be sav
 
 You can add your own storage engine by implementing the `StorageEngine` interface.
 
-```TS
+```ts
 import { NgxsStoragePluginModule, StorageEngine, STORAGE_ENGINE } from '@ngxs/storage-plugin';
 
 export class MyStorageEngine implements StorageEngine {
@@ -171,10 +168,7 @@ export class MyStorageEngine implements StorageEngine {
 }
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([]),
-    NgxsStoragePluginModule.forRoot()
-  ],
+  imports: [NgxsModule.forRoot([]), NgxsStoragePluginModule.forRoot()],
   providers: [
     {
       provide: STORAGE_ENGINE,
@@ -190,7 +184,7 @@ export class MyModule {}
 You can migrate data from one version to another during the startup of the store. Below
 is a strategy to migrate my state from `animals` to `newAnimals`.
 
-```TS
+```ts
 @NgModule({
   imports: [
     NgxsModule.forRoot([]),
@@ -200,16 +194,16 @@ is a strategy to migrate my state from `animals` to `newAnimals`.
           version: 1,
           key: 'zoo',
           versionKey: 'myVersion',
-          migrate: (state) => {
+          migrate: state => {
             return {
               newAnimals: state.animals,
               version: 2 // Important to set this to the next version!
-            }
+            };
           }
         }
       ]
     })
-  ],
+  ]
 })
 export class MyModule {}
 ```

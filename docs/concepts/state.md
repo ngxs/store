@@ -8,7 +8,7 @@ States are classes along with decorators to describe metadata
 and action mappings. To define a state container, let's create an
 ES2015 class and decorate it with the `State` decorator.
 
-```TS
+```ts
 import { State } from '@ngxs/store';
 
 @State<string[]>({
@@ -29,7 +29,7 @@ include:
 Our states can also participate in dependency injection. This is hooked up automatically
 so all you need to do is inject your dependencies in the constructor.
 
-```TS
+```ts
 @State<ZooStateModel>({
   name: 'zoo',
   defaults: {
@@ -50,7 +50,7 @@ accepts an action class or an array of action classes.
 
 Let's define a state that will listen to a `FeedAnimals` action to toggle whether the animals have been fed:
 
-```TS
+```ts
 import { State, Action, StateContext } from '@ngxs/store';
 
 export class FeedAnimals {
@@ -92,7 +92,7 @@ in the method.
 Actions can also pass along metadata that has to do with the action.
 Say we want to pass along how much hay and carrots each zebra needs.
 
-```TS
+```ts
 import { State, Action, StateContext } from '@ngxs/store';
 
 // This is an interface that is part of your domain model
@@ -128,7 +128,7 @@ export class ZooState {
       zebraFood: [
         ...state.zebraFood,
         // this is the new ZebraFood instance that we add to the state
-        action.zebraToFeed,
+        action.zebraToFeed
       ]
     });
   }
@@ -142,7 +142,7 @@ There is also a shortcut `patchState` function to make updating the state easier
 you only pass it the properties you want to update on the state and it handles the rest.
 The above function could be reduced to this:
 
-```TS
+```ts
 @Action(FeedZebra)
 feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
   const state = ctx.getState();
@@ -162,7 +162,7 @@ All immutability concerns need to be honoured by this function.
 For comparison, here are the two ways that you can invoke the `setState` function...  
 With a new constructed state value:
 
-```TS
+```ts
 @Action(MyAction)
 public addValue(ctx: StateContext, { payload }: MyAction) {
   ctx.setState({ ...ctx.getState(), value: payload  });
@@ -171,7 +171,7 @@ public addValue(ctx: StateContext, { payload }: MyAction) {
 
 With a function that returns the new state value:
 
-```TS
+```ts
 @Action(MyAction)
 public addValue(ctx: StateContext, { payload }: MyAction) {
   ctx.setState((state) => ({ ...state, value: payload }));
@@ -184,7 +184,7 @@ As another example you could use a library like [immer](https://github.com/mwest
 handle the immutability updates for you and provide a different way of expressing your immutable update
 through direct mutation of a draft object. We can use this external library because it supports the same signature as out `state operators` through their curried `produce` function. Here is the example from above expressed in this way:
 
-```TS
+```ts
 import produce from 'immer';
 
 // in class ZooState ...
@@ -204,7 +204,7 @@ This approach can also allow for the creation of well named helper functions tha
 between handlers that require the same type of update.
 The above example could be refactored to this:
 
-```TS
+```ts
 // in class ZooState ...
 @Action(FeedZebra)
 feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
@@ -232,7 +232,7 @@ we give you the flexibility to make that decision yourself based on your require
 
 Let's take a look at a simple async action:
 
-```TS
+```ts
 import { State, Action, StateContext } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
@@ -282,7 +282,7 @@ we need to return that so it knows that.
 Observables are not a requirement, you can use promises too. We could swap
 that observable chain to look like this:
 
-```TS
+```ts
 import { State, Action } from '@ngxs/store';
 
 export class FeedAnimals {
@@ -320,7 +320,7 @@ export class ZooState {
 If you want your action to dispatch another action, you can use the `dispatch` function
 that is contained in the state context object.
 
-```TS
+```ts
 import { State, Action, StateContext } from '@ngxs/store';
 import { map } from 'rxjs/operators';
 

@@ -11,16 +11,12 @@ yarn add @ngxs/store
 
 then in `app.module.ts`, import the `NgxsModule`:
 
-```TS
+```ts
 import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([
-      ZooState
-    ])
-  ]
+  imports: [NgxsModule.forRoot([ZooState])]
 })
 export class AppModule {}
 ```

@@ -73,12 +73,7 @@ The relationship between these two are bound by their hierarchical order. To fin
 
 ```ts
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([
-      CartState,
-      CartSavedState
-    ])
-  ]
+  imports: [NgxsModule.forRoot([CartState, CartSavedState])]
 })
 export class AppModule {}
 ```
@@ -134,7 +129,10 @@ export class SetCheckedoutAndItems {
 })
 export class CartState {
   @Action(SetCheckedoutAndItems)
-  setCheckedoutAndItems(ctx: StateContext<CartStateModel>, { checkedout, items }: SetCheckedoutAndItems) {
+  setCheckedoutAndItems(
+    ctx: StateContext<CartStateModel>,
+    { checkedout, items }: SetCheckedoutAndItems
+  ): void {
     ctx.patchState({ checkedout, items });
   }
 }

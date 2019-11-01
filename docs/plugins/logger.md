@@ -15,15 +15,12 @@ yarn add @ngxs/logger-plugin
 
 Add the `NgxsLoggerPluginModule` plugin to your root app module:
 
-```TS
+```ts
 import { NgxsModule } from '@ngxs/store';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([]),
-    NgxsLoggerPluginModule.forRoot()
-  ]
+  imports: [NgxsModule.forRoot([]), NgxsLoggerPluginModule.forRoot()]
 })
 export class AppModule {}
 ```

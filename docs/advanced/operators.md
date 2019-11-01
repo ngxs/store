@@ -12,7 +12,7 @@ The basic idea of operators is that we could describe the modifications to the s
 
 From theory to practice - let's take the following example:
 
-```TS
+```ts
 import { State, Action, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
@@ -36,9 +36,11 @@ export class CreateMonkeys {
 export class AnimalsState {
   @Action(CreateMonkeys)
   createMonkeys(ctx: StateContext<AnimalsStateModel>) {
-    ctx.setState(patch({
-      monkeys: []
-    }));
+    ctx.setState(
+      patch({
+        monkeys: []
+      })
+    );
   }
 }
 ```
@@ -46,7 +48,7 @@ export class AnimalsState {
 The `patch` operator expresses the intended modification quite nicely and returns a function that will apply these modifications as a new object based on the provided state.
 In order to understand what this is doing let's express this in a long handed form:
 
-```TS
+```ts
   // For demonstration purposes! This long handed form is not needed from NGXS v3.4 onwards.
   @Action(CreateMonkeys)
   createMonkeys(ctx: StateContext<AnimalsStateModel>) {
@@ -64,7 +66,7 @@ This is not the only operator, we introduce much more that can be used along wit
 
 If you want to update the value of a property based on some condition - you can use `iif`, it's signature is:
 
-```TS
+```ts
 iif<T>(
   condition: Predicate<T> | boolean,
   trueOperatorOrValue: StateOperator<T> | T,
@@ -74,31 +76,31 @@ iif<T>(
 
 If you want to update an item in the array using an operator or value - you can use `updateItem`, it's signature is:
 
-```TS
+```ts
 updateItem<T>(selector: number | Predicate<T>, operator: T | StateOperator<T>): StateOperator<T[]>
 ```
 
 If you want to remove an item from an array by index or predicate - you can use `removeItem`:
 
-```TS
+```ts
 removeItem<T>(selector: number | Predicate<T>): StateOperator<T[]>
 ```
 
 If you want to insert an item to an array, optionally before a specified index - use `insertItem` operator:
 
-```TS
+```ts
 insertItem<T>(value: T, beforePosition?: number): StateOperator<T[]>
 ```
 
 If you want to append specified items to the end of an array - the `append` operator is suitable for that:
 
-```TS
+```ts
 append<T>(items: T[]): StateOperator<T[]>
 ```
 
 It's also possible to compose multiple operators into a single operator that would apply each consecutively using `compose`:
 
-```TS
+```ts
 compose<T>(...operators: StateOperator<T>[]): StateOperator<T>
 ```
 
@@ -108,7 +110,7 @@ These operators introduce a new way of declarative state mutation.
 
 Let's look at more advanced examples:
 
-```TS
+```ts
 import { State, Action, StateContext } from '@ngxs/store';
 import { patch, append, removeItem, insertItem, updateItem } from '@ngxs/store/operators';
 
@@ -174,7 +176,7 @@ You will see that in each case above the state operators are wrapped within a ca
 
 You can also define your own operators for updates that are common to your domain. For example:
 
-```TS
+```ts
 function addEntity(entity: Entity): StateOperator<EntitiesStateModel> {
   return (state: ReadOnly<EntitiesStateModel>) => {
     return {
@@ -206,7 +208,7 @@ export class CitiesState {
 
 Here you can see that the developer chose to define a convenience method called `addEntity` for doing a common state modification. This operator could also have also been defined using existing operators like so:
 
-```TS
+```ts
 function addEntity(entity: Entity): StateOperator<EntitiesStateModel> {
   return patch<EntitiesStateModel>({
     entities: patch({ [entity.id]: entity }),
