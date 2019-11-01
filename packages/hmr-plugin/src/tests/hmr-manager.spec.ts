@@ -19,6 +19,8 @@ import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 import { HmrStateContextFactory } from '../internal/hmr-state-context-factory';
 import { hmrTestBed, setup } from './hmr-helpers';
 import { NgxsHmrSnapshot } from '../symbols';
+import { hrmIsReloaded } from '../utils/hmr-reloaded';
+import { hmrSetReloaded } from '../utils/hmr-set-reloaded';
 
 describe('HMR Plugin', () => {
   it('should initialize AppMockModule', async () => {
@@ -99,9 +101,13 @@ describe('HMR Plugin', () => {
       .pipe(ofActionDispatched(HmrBeforeDestroyAction))
       .subscribe(({ payload }) => (hmrSnapshot = payload));
 
+    expect(hrmIsReloaded()).toEqual(false);
+
     // Act
     await webpackModule.destroyModule();
     tick(1000);
+
+    expect(hrmIsReloaded()).toEqual(true);
 
     // Assert
     expect(hmrSnapshot).toEqual({
@@ -285,11 +291,13 @@ describe('HMR Plugin', () => {
   });
 
   it('should be correct destroy old module', async () => {
+    expect(hrmIsReloaded()).toEqual(false);
     const { appModule, webpackModule } = await hmrTestBed(AppMockModule);
     expect((appModule as any)['_destroyed']).toEqual(false);
 
     webpackModule.destroyModule();
     expect((appModule as any)['_destroyed']).toEqual(true);
+    expect(hrmIsReloaded()).toEqual(true);
   });
 
   it('state has to be provided before module is disposed', fakeAsync(async () => {
@@ -333,6 +341,29 @@ describe('HMR Plugin', () => {
     });
   }));
 
+  it('state cannot reset in ngOnDestroy when skip by ', fakeAsync(async () => {
+    let count = 0;
+
+    class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
+      public ngOnDestroy(): void {
+        if (hrmIsReloaded()) {
+          return;
+        }
+
+        count++;
+      }
+    }
+
+    const { webpackModule } = await hmrTestBed(AppMockWithDestroyModule);
+
+    expect(hrmIsReloaded()).toEqual(false);
+
+    webpackModule.destroyModule();
+
+    expect(hrmIsReloaded()).toEqual(true);
+    expect(count).toEqual(0);
+  }));
+
   it('should be unique instance state after destroy', async () => {
     const { appModule, webpackModule } = await hmrTestBed(AppMockModuleNoHmrLifeCycle);
     const instance: MockState = appModule.injector.get<MockState>(MockState);
@@ -371,4 +402,6 @@ describe('HMR Plugin', () => {
       mock_state: { value: 'test' }
     });
   }));
+
+  afterEach(() => hmrSetReloaded(false));
 });
