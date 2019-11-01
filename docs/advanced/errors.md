@@ -2,7 +2,7 @@
 
 NGXS uses Angular's default `ErrorHandler` class, so if an action throws an error, Angular's `ErrorHandler` is called. You can easily override this flow by providing your own handler like so:
 
-```TS
+```ts
 import { NgModule, ErrorHandler } from '@angular/core';
 
 @Injectable()
@@ -32,7 +32,7 @@ export class AppModule { }
 
 When you define an @Action you can handle error within the action and if you do so, the error will not propagate to Angular's global `ErrorHandler`, nor the `dispatch` Observable. This applies to both sync and async types of Actions.
 
-```TS
+```ts
   @Action(HandledError)
   handledError(ctx: StateContext<StateModel>) {
     try {
@@ -47,14 +47,14 @@ When you define an @Action you can handle error within the action and if you do 
 
 If an unhandled exception is thrown inside an action, the error will be propagated to the `ErrorHandler` and you can also catch it subscribing to the `dispatch` Observable. If you subscribe to the `dispatch` Observable the error will be caught twice, once in the ErrorHandler and on your `dispatch` handle.
 
-```TS
+```ts
   @Action(UnhandledError)
   unhandledError(ctx: StateContext<StateModel>) {
     // error is thrown
   }
 ```
 
-```TS
+```ts
   unhandled() {
     this.store.dispatch(new UnhandledError()).pipe(
       catchError(err => {

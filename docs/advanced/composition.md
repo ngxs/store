@@ -2,7 +2,7 @@
 
 You can compose multiple stores together using class inheritance. This is quite simple:
 
-```TS
+```ts
 @State({
   name: 'zoo',
   defaults: {

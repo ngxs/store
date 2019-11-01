@@ -8,7 +8,7 @@ Let's say you have 2 stores: Animals and Preferences. In your preferences store,
 by `localstorage`, you have the sort order for the Animals. You need to get the state from the
 preferences in order to be able to sort your animals. This is achievable with `selectSnapshot`.
 
-```TS
+```ts
 @State<PreferencesStateModel>({
   name: 'preferences',
   defaults: {

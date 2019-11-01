@@ -25,7 +25,7 @@ yarn add @ngxs/form-plugin
 In the root module of your application, import `NgxsFormPluginModule`
 and include it in the imports.
 
-```TS
+```ts
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NovelsState } from './novels.state';
 
@@ -40,7 +40,7 @@ export class AppModule {}
 
 If your form is used in a submodule, it must be imported there as well:
 
-```TS
+```ts
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 
 @NgModule({
@@ -55,7 +55,7 @@ export class SomeModule {}
 
 Define your default form state as part of your application state.
 
-```TS
+```ts
 import { State } from '@ngxs/store';
 
 @State({
@@ -79,7 +79,7 @@ decorate the form with the `ngxsForm` directive with the path
 of your state object. We are passing the _string_ path to `ngxsForm`.
 The directive uses this path to connect itself to the store and setup bindings.
 
-```TS
+```ts
 import { Component } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 
@@ -115,7 +115,7 @@ The directive also has two inputs you can utilize as well:
 In addition to it automatically keeping track of the form, you can also
 manually dispatch actions for things like resetting the form state. For example:
 
-```TS
+```ts
 this.store.dispatch(
   new UpdateFormDirty({
     dirty: false,

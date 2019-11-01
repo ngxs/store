@@ -3,7 +3,7 @@
 Unit testing is easy with NGXS. To perform a unit test we just dispatch the events, listen to the changes and
 perform our expectation. A basic test looks like this:
 
-```TS
+```ts
 import { TestBed } from '@angular/core/testing';
 
 describe('Zoo', () => {
@@ -28,7 +28,7 @@ describe('Zoo', () => {
 
 We recommend using `selectSnapshot` method instead of `selectOnce` or `select`. Jasmine and Jest might not run expectations inside the `subscribe` block. Given the following example:
 
-```TS
+```ts
 it('should select zoo', () => {
   store
     .selectOnce(state => state.zoo)
@@ -47,7 +47,7 @@ it('should select zoo', () => {
 Often times in your app you want to test what happens when the state is C and you dispatch action X. You
 can use the `store.reset(MyNewState)` to prepare the state for your next operation.
 
-```TS
+```ts
 // zoo.state.spec.ts
 import { TestBed } from '@angular/core/testing';
 
@@ -81,7 +81,7 @@ describe('Zoo', () => {
 Selectors are just plain functions that accept the state as the argument
 so its really easy to test them. A simple test might look like this:
 
-```TS
+```ts
 import { TestBed } from '@angular/core/testing';
 
 describe('Zoo', () => {
@@ -94,7 +94,7 @@ describe('Zoo', () => {
 
 In your application you may have selectors created dynamically using the `createSelector` function:
 
-```TS
+```ts
 export class ZooSelectors {
   static animalNames = (type: string) => {
     return createSelector(
@@ -109,7 +109,7 @@ export class ZooSelectors {
 Testing these selectors is really an easy task.
 You just need to mock the state and pass it as parameter to our selector:
 
-```TS
+```ts
 it('should select requested animal names from state', () => {
   const zooState = {
     animals: [
@@ -132,7 +132,7 @@ It's also very easy to test asynchronous actions using Jasmine or Jest. The grea
 
 The below example is not really complex, but it clearly shows how to test asynchronous code using `async/await`:
 
-```TS
+```ts
 import { timer } from 'rxjs';
 import { tap, mergeMap } from 'rxjs/operators';
 

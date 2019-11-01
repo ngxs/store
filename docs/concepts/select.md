@@ -14,7 +14,7 @@ You can select slices of data from the store using the `@Select` decorator. It h
 different ways to get your data out, whether passing the state class, a function, a different state class
 or a memoized selector.
 
-```TS
+```ts
 import { Select } from '@ngxs/store';
 import { ZooState, ZooStateModel } from './zoo.state';
 
@@ -38,7 +38,7 @@ export class ZooComponent {
 
 The `Store` class also has a `select` function:
 
-```TS
+```ts
 import { Store } from '@ngxs/store';
 
 @Component({ ... })
@@ -67,7 +67,7 @@ raw value. This is helpful for cases where you need to get a static value but ca
 use Observables. A good use case for this would be an interceptor that needs to get
 the token from the auth state.
 
-```TS
+```ts
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
 
@@ -97,7 +97,7 @@ the state portion you are dealing with.
 
 Let's create a selector that will return a list of pandas from the animals.
 
-```TS
+```ts
 import { State, Selector } from '@ngxs/store';
 
 @State<string[]>({
@@ -117,7 +117,7 @@ export class ZooState {
 Notice, the `state` is just the local state for this `ZooState` class. Now in our component,
 we simply do:
 
-```TS
+```ts
 @Component({...})
 export class AppComponent {
   @Select(ZooState.pandas) pandas$: Observable<string[]>;
@@ -150,7 +150,7 @@ We recommend setting these options at the global level, unless you are transitio
 
 We recommend using the following global settings for new projects in order to minimise the impact of the v4 upgrade:
 
-```TS
+```ts
 {
   // These Selector Settings are recommended in preparation for NGXS v4
   // (See above for their effects)
@@ -171,7 +171,7 @@ The function returned by the selector will be memoized automatically and the log
 
 For instance, I can have a Lazy Selector that will filter my pandas to the provided type of panda.
 
-```TS
+```ts
 @State<string[]>({
   name: 'animals',
   defaults: []
@@ -192,7 +192,7 @@ export class ZooState {
 
 then you can use `store.select` and evaluate the lazy function using the `rxjs` `map` pipeline function.
 
-```TS
+```ts
 import { Store } from '@ngxs/store';
 import { map } from 'rxjs/operators';
 
@@ -214,7 +214,7 @@ A dynamic selector is created by using the `createSelector` function as opposed 
 
 For instance, I can have a Dynamic Selector that will filter my pandas to the provided type of panda.
 
-```TS
+```ts
 @State<string[]>({
   name: 'animals',
   defaults: []
@@ -237,7 +237,7 @@ export class ZooState {
 
 then you can use `@Select` to call this function with the parameter provided.
 
-```TS
+```ts
 import { Store } from '@ngxs/store';
 import { map } from 'rxjs/operators';
 
@@ -261,7 +261,7 @@ _Dynamic Selectors (dynamic state slice)_
 
 An interesting use case would be to allow for a selector to be reused to select from States that have the same structure. For example:
 
-```TS
+```ts
 export class SharedSelectors {
 
   static getEntities(stateClass) {
@@ -275,7 +275,7 @@ export class SharedSelectors {
 
 then this could be used as follows:
 
-```TS
+```ts
 
 @Component({ ... })
 export class ZooComponent {
@@ -296,7 +296,7 @@ of the `Selector` decorator to join other selectors with this state selector.
 
 If you do not change the Selector Options (see [above](#selector-options)) then these selectors will have the following signature in NGXS v3.x:
 
-```TS
+```ts
 @State<PreferencesStateModel>({ ... })
 export class PreferencesState { ... }
 
@@ -324,7 +324,7 @@ The memoized selectors will recalculate when any of their input parameter values
 
 In NGXS v4 and above the default value of the [`injectContainerState`](#injectcontainerstate) selector option will change to `false`, resulting in selectors that are more optimised because they do not get the state model injected as the first parameter unless explicitly requested. With this setting the selectors would need to be defined as follows:
 
-```TS
+```ts
 @State<PreferencesStateModel>({ ... })
 export class PreferencesState { ... }
 
@@ -362,7 +362,7 @@ to show all the zoos and theme parks for a given city. These are two very distin
 state classes that are likely not related in any manner. We can use a meta selector
 to join these two states together like:
 
-```TS
+```ts
 export class CityService {
 
   @Selector([Zoo, ThemePark])
@@ -476,7 +476,7 @@ export class CounterQuery {
 
 When we have states that share similar structure, we can extract the shared selectors into a base class which we can later extend from. If we have an `entities` field on multiple states, we can create a base class containing a dynamic `@Selector()` for that field, and extend from it on the `@State` classes like this.
 
-```TS
+```ts
 export class EntitiesState {
 
   static entities<T>() :T[] {
@@ -492,7 +492,7 @@ export class EntitiesState {
 
 And extend the `EntitiesState` class on each `@State` like this:
 
-```TS
+```ts
 export interface UsersStateModel {
   entities: User[];
 }
@@ -524,7 +524,7 @@ export class ProductsState extends EntitiesState {
 
 Then you can use them as follows:
 
-```TS
+```ts
 
 @Component({ ... })
 export class AppComponent {
@@ -540,7 +540,7 @@ export class AppComponent {
 
 Or:
 
-```TS
+```ts
 this.store.select(UsersState.entities<User>())
 ```
 
@@ -554,7 +554,7 @@ _If you are building an Angular lib directly so that it can be deployed to npm t
 
 This error would be reported for each of the selectors defined below but, as demonstrated in the sample, you can prevent this by including the `// @dynamic` comment before the class expression and decorators:
 
-```TS
+```ts
 // @dynamic
 @State<string[]>({
   name: 'animals',
@@ -597,7 +597,7 @@ export class ZooState {
 As an alternative you can assign your result to a variable before you return it:  
 See https://github.com/ng-packagr/ng-packagr/issues/696#issuecomment-387114613
 
-```TS
+```ts
 @State<string[]>({
   name: 'animals',
   defaults: [

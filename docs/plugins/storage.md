@@ -15,7 +15,7 @@ yarn add @ngxs/storage-plugin
 
 Import the `NgxsStoragePluginModule` into your app module like:
 
-```TS
+```ts
 import { NgxsModule } from '@ngxs/store';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 
@@ -141,7 +141,7 @@ This is very handy to avoid persisting runtime-only states that shouldn't be sav
 
 You can add your own storage engine by implementing the `StorageEngine` interface.
 
-```TS
+```ts
 import { NgxsStoragePluginModule, StorageEngine, STORAGE_ENGINE } from '@ngxs/storage-plugin';
 
 export class MyStorageEngine implements StorageEngine {
@@ -190,7 +190,7 @@ export class MyModule {}
 You can migrate data from one version to another during the startup of the store. Below
 is a strategy to migrate my state from `animals` to `newAnimals`.
 
-```TS
+```ts
 @NgModule({
   imports: [
     NgxsModule.forRoot([]),

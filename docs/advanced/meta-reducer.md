@@ -8,7 +8,7 @@ this with [plugins](../plugins/intro.md).
 An example of a meta reducer might be to clear the entire
 state when a user logs out. An example implementation would be:
 
-```TS
+```ts
 import { getActionTypeFromInstance } from '@ngxs/store';
 
 export function logoutPlugin(state, action, next) {
@@ -27,7 +27,7 @@ export function logoutPlugin(state, action, next) {
 
 Then we import that like:
 
-```TS
+```ts
 import { NgModule } from '@angular/core';
 import { NGXS_PLUGINS } from '@ngxs/store';
 

@@ -15,7 +15,7 @@ yarn add @ngxs/websocket-plugin
 
 Add the `NgxsWebsocketPluginModule` plugin to your root app module:
 
-```TS
+```ts
 import { NgxsModule } from '@ngxs/store';
 import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
 
@@ -54,7 +54,7 @@ Let's assume that a server side web socket sends a message to the client in the 
 We will want to make an action that corresponds to this web socket message, that will
 look like:
 
-```TS
+```ts
 export class AddMessage {
   static type = '[Chat] Add message';
   constructor(public from: string, public message: string) {}
@@ -63,7 +63,7 @@ export class AddMessage {
 
 Assume we've got some `messages` state where we store our chat messages:
 
-```TS
+```ts
 export interface Message {
   from: string;
   message: string;
@@ -86,7 +86,7 @@ export class MessagesState {
 We are able to send messages to the server by dispatching the `SendWebSocketMessage` with
 the payload that you want to send to the server. Let's try it out:
 
-```TS
+```ts
 @Component({ ... })
 export class AppComponent {
 
@@ -107,7 +107,7 @@ export class AppComponent {
 
 When sending the message, remember the send is accepting a JSON-able object. The socket on the server side would be listening for the `message` event. For example, the server code could be as follows:
 
-```TS
+```ts
 const { Server } = require('ws');
 const { createServer } = require('http');
 
@@ -143,7 +143,7 @@ ws.on('connection', socket => {
 
 Notice that you have to specify `type` property on server side, otherwise you will get an error - `Type ... not found on message`. If you don't want to use a property called `type` as the key then you can specify your own property name when calling `forRoot`:
 
-```TS
+```ts
 NgxsWebsocketPluginModule.forRoot({
   url: 'ws://localhost:4200',
   typeKey: 'myAwesomeTypeKey'
@@ -154,7 +154,7 @@ In order to kick off our websockets we have to dispatch the `ConnectWebSocket`
 action. This will typically happen at startup or if you need to authenticate
 before, after authentication is done. You can optionally pass the URL here.
 
-```TS
+```ts
 @Component({ ... })
 export class AppComponent {
 

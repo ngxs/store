@@ -7,7 +7,7 @@ This is useful for canceling previous requests like in a typeahead.
 
 For basic scenarios, we can use the `cancelUncompleted` action decorator option.
 
-```TS
+```ts
 import { State, Action } from '@ngxs/store';
 
 @State<ZooStateModel>({
@@ -31,7 +31,7 @@ export class ZooState {
 
 For more advanced cases, we can use normal Rx operators.
 
-```TS
+```ts
 import { State, Action, Actions, ofAction } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
