@@ -31,7 +31,7 @@ export class ZooState {
   static zebras(age: string) {
     return createSelector(
       [ZooState],
-      (state: string[]) => {
+      (state: Animal[]) => {
         return state.filter(animal => animal.type === 'zebra' && animal.age === age);
       }
     );
@@ -100,7 +100,7 @@ export class ZooState {
       [ZooState],
       (state: ZooStateModel) => {
         return state[zooName].animals.filter(
-          animal => animals.type === 'panda' && animals.age === 'young'
+          animal => animal.type === 'panda' && animal.age === 'young'
         );
       }
     );
