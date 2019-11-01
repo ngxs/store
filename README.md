@@ -12,7 +12,10 @@
   </a>
   <a href="https://badge.fury.io/js/%40ngxs%2Fstore">
     <img src="https://badge.fury.io/js/%40ngxs%2Fstore.svg" />
-  </a> 
+  </a>
+  <a href="https://www.npmjs.com/package/@ngxs/store">
+    <img src="https://img.shields.io/npm/dw/@ngxs/store.svg" />
+  </a>
   
   <br />
   
@@ -25,6 +28,9 @@
   <a href="https://codeclimate.com/github/ngxs/store/test_coverage">
     <img src="https://api.codeclimate.com/v1/badges/5b43106a1ddff7d76a04/test_coverage" />
   </a> 
+  <a href="https://circleci.com/gh/ngxs/store">
+    <img src="https://circleci.com/gh/ngxs/store/tree/master.svg?style=svg" />
+  </a>
   <a href="https://circleci.com/gh/ngxs/store">
     <img src="https://circleci.com/gh/ngxs/store/tree/master.svg?style=svg" />
   </a>
