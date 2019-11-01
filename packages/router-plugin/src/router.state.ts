@@ -7,7 +7,8 @@ import {
   RoutesRecognized,
   ResolveEnd,
   GuardsCheckEnd,
-  UrlSerializer
+  UrlSerializer,
+  NavigationEnd
 } from '@angular/router';
 import { LocationStrategy, Location } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
@@ -20,7 +21,8 @@ import {
   RouterCancel,
   RouterError,
   RouterNavigation,
-  RouterDataResolved
+  RouterDataResolved,
+  RouterNavigated
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
 
@@ -115,6 +117,8 @@ export class RouterState {
         this.dispatchRouterCancel(e);
       } else if (e instanceof NavigationError) {
         this.dispatchRouterError(e);
+      } else if (e instanceof NavigationEnd && !this.navigationTriggeredByDispatch) {
+        this.dispatchRouterNavigated(e);
       }
     });
   }
@@ -171,6 +175,11 @@ export class RouterState {
         new NavigationError(event.id, event.url, `${event}`)
       )
     );
+  }
+
+  private dispatchRouterNavigated(event: NavigationEnd): void {
+    const routerState = this._serializer.serialize(this._router.routerState.snapshot);
+    this.dispatchRouterAction(new RouterNavigated(routerState, event));
   }
 
   private dispatchRouterAction<T>(action: RouterAction<T>): void {

@@ -5,7 +5,8 @@ import {
   Params,
   RouterStateSnapshot,
   RoutesRecognized,
-  ResolveEnd
+  ResolveEnd,
+  NavigationEnd
 } from '@angular/router';
 
 /**
@@ -74,10 +75,21 @@ export class RouterDataResolved<T = RouterStateSnapshot> {
 }
 
 /**
+ * An action dispatched when the `NavigationEnd` event is triggered.
+ */
+export class RouterNavigated<T = RouterStateSnapshot> {
+  static get type() {
+    return '[Router] RouterNavigated';
+  }
+  constructor(public routerState: T, public event: NavigationEnd) {}
+}
+
+/**
  * An union type of router actions.
  */
 export type RouterAction<T, V = RouterStateSnapshot> =
   | RouterNavigation<V>
   | RouterCancel<T, V>
   | RouterError<T, V>
-  | RouterDataResolved<V>;
+  | RouterDataResolved<V>
+  | RouterNavigated<V>;
