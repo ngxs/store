@@ -13,7 +13,7 @@ import {
 import { LocationStrategy, Location } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { isAngularInTestMode } from '@ngxs/store/internals';
-import { first, withLatestFrom } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 import {
   Navigate,
@@ -116,32 +116,30 @@ export class RouterState {
   }
 
   private setUpRouterEventsListener(): void {
-    this._router.events
-      .pipe(withLatestFrom(this._store.select(RouterState)))
-      .subscribe(([event, storeState]) => {
-        if (event instanceof NavigationStart) {
-          this.navigationStart(storeState);
-        } else if (event instanceof RoutesRecognized) {
-          this.routesRecognized(event);
-        } else if (event instanceof ResolveEnd) {
-          this.dispatchRouterDataResolved(event);
-        } else if (event instanceof NavigationCancel) {
-          this.dispatchRouterCancel(event);
-          this.reset();
-        } else if (event instanceof NavigationError) {
-          this.dispatchRouterError(event);
-          this.reset();
-        } else if (event instanceof NavigationEnd) {
-          this.reset();
-        }
-      });
+    this._router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        this.navigationStart();
+      } else if (event instanceof RoutesRecognized) {
+        this.routesRecognized(event);
+      } else if (event instanceof ResolveEnd) {
+        this.dispatchRouterDataResolved(event);
+      } else if (event instanceof NavigationCancel) {
+        this.dispatchRouterCancel(event);
+        this.reset();
+      } else if (event instanceof NavigationError) {
+        this.dispatchRouterError(event);
+        this.reset();
+      } else if (event instanceof NavigationEnd) {
+        this.reset();
+      }
+    });
   }
 
-  private navigationStart(storeState: RouterStateModel | null): void {
+  private navigationStart(): void {
     this.routerState = this._serializer.serialize(this._router.routerState.snapshot);
 
     if (this.trigger !== RouterTrigger.Store) {
-      this.storeState = storeState;
+      this.storeState = this._store.selectSnapshot(RouterState);
     }
   }
 
@@ -159,17 +157,20 @@ export class RouterState {
   }
 
   private navigateIfNeeded(): void {
-    if (
+    const canSkipNavigation =
       !this.storeState ||
       !this.storeState.state ||
       this.trigger === RouterTrigger.Router ||
-      this._router.url === this.storeState.state.url
-    ) {
+      this._router.url === this.storeState.state.url;
+
+    if (canSkipNavigation) {
       return;
     }
 
     this.trigger = RouterTrigger.Store;
-    this._ngZone.run(() => this._router.navigateByUrl(this.storeState!.state!.url));
+    this._ngZone.run(() => {
+      this._router.navigateByUrl(this.storeState!.state!.url);
+    });
   }
 
   private dispatchRouterNavigation(): void {
