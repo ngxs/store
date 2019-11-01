@@ -862,7 +862,7 @@ describe('Dispatch', () => {
     });
 
     describe('when many separate actions dispatched return out of order', () => {
-      it('should notify of the completion of the relative observable', async(() => {
+      it('should notify of the completion of the relative observable', fakeAsync(() => {
         class Append {
           static type = 'Test';
 
@@ -889,19 +889,38 @@ describe('Dispatch', () => {
 
         const store: Store = TestBed.get(Store);
 
-        store
-          .dispatch(new Append('dddd'))
-          .subscribe(state => expect(state.text).toEqual('abbcccdddd'));
-        store.dispatch(new Append('a')).subscribe(state => expect(state.text).toEqual('a'));
-        store
-          .dispatch(new Append('ccc'))
-          .subscribe(state => expect(state.text).toEqual('abbccc'));
-        store.dispatch(new Append('bb')).subscribe(state => expect(state.text).toEqual('abb'));
+        store.dispatch(new Append('dddd'));
+        tick(4 * 10);
+        expect(store.selectSnapshot(MyState)).toEqual('dddd');
+
+        store.dispatch(new Append('a'));
+        tick(10);
+        expect(store.selectSnapshot(MyState)).toEqual('dddda');
+
+        store.dispatch(new Append('ccc'));
+        tick(3 * 10);
+        expect(store.selectSnapshot(MyState)).toEqual('ddddaccc');
+
+        store.dispatch(new Append('bb'));
+        tick(2 * 10);
+        expect(store.selectSnapshot(MyState)).toEqual('ddddacccbb');
+
+        store.reset({ text: '' });
+
+        store.dispatch(new Append('dddd'));
+        store.dispatch(new Append('a'));
+        store.dispatch(new Append('ccc'));
+        store.dispatch(new Append('bb'));
+
+        // [4, 1, 3, 2] -> delay(payload.length * 10)
+        tick((4 + 1 + 3 + 2) * 10);
+
+        expect(store.selectSnapshot(MyState)).toEqual('abbcccdddd');
       }));
     });
 
     describe('when many actions dispatched together', () => {
-      it('should notify once all completed', async(() => {
+      it('should notify once all completed', fakeAsync(() => {
         class Append {
           static type = 'Test';
 
@@ -938,6 +957,9 @@ describe('Dispatch', () => {
               'abb'
             ]);
           });
+
+        tick((4 + 1 + 3 + 2) * 10);
+        expect(store.selectSnapshot(MyState)).toEqual('abbcccdddd');
       }));
     });
   });
