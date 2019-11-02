@@ -95,7 +95,7 @@ module.exports = {
   /**
    * The glob patterns Jest uses to detect test files.
    */
-  testMatch: ['<rootDir>/packages/**/**/*.spec.ts'],
+  testMatch: ['<rootDir>/packages/router-plugin/tests/**/*.spec.ts'],
 
   /**
    * An array of regexp pattern strings that are matched against all

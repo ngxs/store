@@ -6,9 +6,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgxsModule, Store } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
-import { NgxsRouterPluginModule, Navigate } from '../';
+import { NgxsRouterPluginModule, Navigate } from '../../';
 
-import { createNgxsRouterPluginTestingPlatform } from './helpers';
+import { createNgxsRouterPluginTestingPlatform } from '../helpers';
 
 @Component({
   selector: 'app-root',
@@ -18,19 +18,19 @@ class RootComponent {}
 
 @Component({
   selector: 'app-home',
-  template: '<h1>This is home page</h1>'
+  template: 'Home page'
 })
 class HomeComponent {}
 
 @Component({
   selector: 'app-login',
-  template: '<h1>This is login page</h1>'
+  template: 'Login page'
 })
 class LoginComponent {}
 
 @Component({
   selector: 'app-blog',
-  template: '<h1>This is blog page</h1>'
+  template: 'Blog page'
 })
 class BlogComponent {}
 
@@ -89,8 +89,7 @@ function getTestModule() {
 }
 
 // See https://github.com/ngxs/store/issues/1293
-// and https://github.com/ngxs/store/issues/1407
-describe('@ngxs/router-plugin #(1293,1407) issues', () => {
+describe('#1293 issue', () => {
   it(
     'should not infinitely redirect because of reverted snapshot',
     freshPlatform(async () => {
@@ -104,11 +103,11 @@ describe('@ngxs/router-plugin #(1293,1407) issues', () => {
 
       const url = router.url;
       const document = injector.get(DOCUMENT);
-      const h1 = document.querySelector('h1')!;
+      const root = document.querySelector('app-root')!;
 
       // Assert
       expect(url).toBe('/login');
-      expect(h1.innerHTML).toBe('This is login page');
+      expect(root.innerHTML).toContain('<app-login>Login page</app-login>');
     })
   );
 });

@@ -86,6 +86,73 @@ describe('RouterDataResolved', () => {
   }
 
   it(
+    'should wait for resolvers to complete and dispatch the `RouterDataResolved` event',
+    freshPlatform(async () => {
+      // Arrange
+      const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
+
+      // Act
+      const router: Router = injector.get(Router);
+      const store: Store = injector.get(Store);
+
+      // Assert
+      const dataFromTheOriginalRouter = router.routerState.snapshot.root.firstChild!.data;
+      expect(dataFromTheOriginalRouter).toEqual({ test });
+
+      const dataFromTheRouterState = store.selectSnapshot(RouterState.state)!.root.firstChild!
+        .data;
+      expect(dataFromTheOriginalRouter).toEqual(dataFromTheRouterState);
+    })
+  );
+
+  it(
+    'should keep resolved data if the navigation was performed between the same component but with params',
+    freshPlatform(async () => {
+      // Arrange
+      const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
+      const router: Router = injector.get(Router);
+      const store: Store = injector.get(Store);
+
+      // Act
+      await store
+        .dispatch(
+          new Navigate(
+            ['/route2'],
+            {
+              a: 10
+            },
+            {
+              queryParamsHandling: 'merge'
+            }
+          )
+        )
+        .toPromise();
+
+      await store
+        .dispatch(
+          new Navigate(
+            ['/route2'],
+            {
+              b: 20
+            },
+            {
+              queryParamsHandling: 'merge'
+            }
+          )
+        )
+        .toPromise();
+
+      // Assert
+      const dataFromTheOriginalRouter = router.routerState.snapshot.root.firstChild!.data;
+      expect(dataFromTheOriginalRouter).toEqual({ test });
+
+      const dataFromTheRouterState = store.selectSnapshot(RouterState.state)!.root.firstChild!
+        .data;
+      expect(dataFromTheOriginalRouter).toEqual(dataFromTheRouterState);
+    })
+  );
+
+  it(
     'should dispatch `RouterDataResolved` action',
     freshPlatform(
       fakeAsync(async () => {
