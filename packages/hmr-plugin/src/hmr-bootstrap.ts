@@ -2,8 +2,7 @@ import { NgModuleRef } from '@angular/core';
 import { HmrManager } from './hmr-manager';
 import { BootstrapModuleFn, NgxsHmrOptions, WebpackModule } from './symbols';
 import { HmrStorage } from './internal/hmr-storage';
-import { hmrApplicationMarked } from './utils/hmr-application-marked';
-import { hmrSetReloaded } from './utils/hmr-set-reloaded';
+import { hmrApplicationMarked, hmrSetReloaded } from './utils/internals';
 
 export async function hmr<T>(
   webpackModule: WebpackModule,

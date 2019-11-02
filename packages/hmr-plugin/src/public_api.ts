@@ -8,4 +8,4 @@ export {
 } from './symbols';
 export { HmrBeforeDestroyAction } from './actions/hmr-before-destroy.action';
 export { hmr } from './hmr-bootstrap';
-export { hrmIsReloaded } from './utils/hmr-reloaded';
+export { hrmIsReloaded } from './utils/externals';

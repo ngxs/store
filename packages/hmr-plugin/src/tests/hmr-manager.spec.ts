@@ -19,8 +19,8 @@ import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 import { HmrStateContextFactory } from '../internal/hmr-state-context-factory';
 import { hmrTestBed, setup } from './hmr-helpers';
 import { NgxsHmrSnapshot } from '../symbols';
-import { hrmIsReloaded } from '../utils/hmr-reloaded';
-import { hmrSetReloaded } from '../utils/hmr-set-reloaded';
+import { hrmIsReloaded } from '../utils/externals';
+import { hmrSetReloaded } from '../utils/internals';
 
 describe('HMR Plugin', () => {
   it('should initialize AppMockModule', async () => {
