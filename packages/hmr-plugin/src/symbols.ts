@@ -1,7 +1,7 @@
 import { StateContext } from '@ngxs/store';
 import { NgModuleRef } from '@angular/core';
 
-export enum HRM_RUNTIME {
+export enum HMR_RUNTIME {
   STATUS = 'NGXS_HMR_LIFECYCLE_STATUS'
 }
 
