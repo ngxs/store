@@ -29,19 +29,17 @@ import { RouterStateSerializer } from './serializer';
 export interface RouterStateModel<T = RouterStateSnapshot> {
   state?: T;
   navigationId?: number;
+  trigger: RouterTrigger;
 }
 
-const enum RouterTrigger {
-  None = 1,
-  Router,
-  Store
-}
+export type RouterTrigger = 'none' | 'router' | 'store';
 
 @State<RouterStateModel>({
   name: 'router',
   defaults: {
     state: undefined,
-    navigationId: undefined
+    navigationId: undefined,
+    trigger: 'none'
   }
 })
 @Injectable()
@@ -50,7 +48,7 @@ export class RouterState {
    * Determines how navigation was performed by the `RouterState` itself
    * or outside via `new Navigate(...)`
    */
-  private _trigger = RouterTrigger.None;
+  private _trigger: RouterTrigger = 'none';
 
   /**
    * That's the serialized state from the `Router` class
@@ -101,18 +99,19 @@ export class RouterState {
   @Action([RouterNavigation, RouterError, RouterCancel, RouterDataResolved])
   angularRouterAction(
     ctx: StateContext<RouterStateModel>,
-    action: RouterAction<any, RouterStateSnapshot>
+    action: RouterAction<RouterStateModel, RouterStateSnapshot>
   ): void {
     ctx.setState({
       ...ctx.getState(),
+      trigger: action.trigger,
       state: action.routerState,
       navigationId: action.event.id
     });
   }
 
   private setUpStoreListener(): void {
-    this._store.select(RouterState.state).subscribe(() => {
-      this.navigateIfNeeded();
+    this._store.select(RouterState).subscribe((state: RouterStateModel | undefined) => {
+      this.navigateIfNeeded(state);
     });
   }
 
@@ -141,28 +140,29 @@ export class RouterState {
   private navigationStart(): void {
     this._routerState = this._serializer.serialize(this._router.routerState.snapshot);
 
-    if (this._trigger !== RouterTrigger.Store) {
+    if (this._trigger !== 'none') {
       this._storeState = this._store.selectSnapshot(RouterState);
     }
   }
 
   private shouldDispatchRouterNavigation(): boolean {
     if (!this._storeState) return true;
-    return this._trigger !== RouterTrigger.Store;
+    return this._trigger !== 'store';
   }
 
-  private navigateIfNeeded(): void {
+  private navigateIfNeeded(state: RouterStateModel | undefined): void {
     const canSkipNavigation =
       !this._storeState ||
       !this._storeState.state ||
-      this._trigger === RouterTrigger.Router ||
+      !state ||
+      state.trigger === 'router' ||
       this._router.url === this._storeState.state.url;
 
     if (canSkipNavigation) {
       return;
     }
 
-    this._trigger = RouterTrigger.Store;
+    this._trigger = 'store';
     this._ngZone.run(() => {
       this._router.navigateByUrl(this._storeState!.state!.url);
     });
@@ -179,13 +179,16 @@ export class RouterState {
           this._lastRoutesRecognized.url,
           this._lastRoutesRecognized.urlAfterRedirects,
           nextRouterState
-        )
+        ),
+        this._trigger
       )
     );
   }
 
   private dispatchRouterCancel(event: NavigationCancel): void {
-    this.dispatchRouterAction(new RouterCancel(this._routerState!, this._storeState, event));
+    this.dispatchRouterAction(
+      new RouterCancel(this._routerState!, this._storeState, event, this._trigger)
+    );
     this.reset();
   }
 
@@ -194,18 +197,19 @@ export class RouterState {
       new RouterError(
         this._routerState!,
         this._storeState,
-        new NavigationError(event.id, event.url, `${event}`)
+        new NavigationError(event.id, event.url, `${event}`),
+        this._trigger
       )
     );
   }
 
   private dispatchRouterAction<T>(action: RouterAction<T>): void {
-    this._trigger = RouterTrigger.Router;
+    this._trigger = 'router';
 
     try {
       this._store.dispatch(action);
     } finally {
-      this._trigger = RouterTrigger.None;
+      this._trigger = 'none';
     }
   }
 
@@ -219,11 +223,11 @@ export class RouterState {
 
   private dispatchRouterDataResolved(event: ResolveEnd): void {
     const routerState = this._serializer.serialize(event.state);
-    this.dispatchRouterAction(new RouterDataResolved(routerState, event));
+    this.dispatchRouterAction(new RouterDataResolved(routerState, event, this._trigger));
   }
 
   private reset(): void {
-    this._trigger = RouterTrigger.None;
+    this._trigger = 'none';
     this._storeState = null;
     this._routerState = null;
   }

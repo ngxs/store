@@ -6,7 +6,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgxsModule, Store } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
-import { NgxsRouterPluginModule, Navigate } from '../../';
+import { NgxsRouterPluginModule, Navigate } from '../..';
 
 import { createNgxsRouterPluginTestingPlatform } from '../helpers';
 

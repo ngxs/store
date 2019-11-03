@@ -150,8 +150,8 @@ describe('NgxsRouterPlugin', () => {
       constructor(private store: Store) {}
 
       @Action(TestAction)
-      testAction({ setState }: StateContext<any>) {
-        setState(this.store.selectSnapshot(RouterState.state));
+      testAction(ctx: StateContext<unknown>) {
+        ctx.setState(this.store.selectSnapshot(RouterState.state));
       }
     }
 

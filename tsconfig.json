@@ -19,6 +19,8 @@
       "@ngxs/websocket-plugin": ["packages/websocket-plugin/index.ts"]
     },
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "declaration": false,

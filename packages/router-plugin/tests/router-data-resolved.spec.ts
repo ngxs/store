@@ -1,6 +1,5 @@
 import { Component, NgModule } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
-import { fakeAsync } from '@angular/core/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BrowserModule } from '@angular/platform-browser';
 import { Router, RouterModule, Resolve } from '@angular/router';
@@ -154,48 +153,46 @@ describe('RouterDataResolved', () => {
 
   it(
     'should dispatch `RouterDataResolved` action',
-    freshPlatform(
-      fakeAsync(async () => {
-        // Arrange
-        const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
-        const actions$: Actions = injector.get(Actions);
-        const store: Store = injector.get(Store);
+    freshPlatform(async () => {
+      // Arrange
+      const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
+      const actions$: Actions = injector.get(Actions);
+      const store: Store = injector.get(Store);
 
-        // Act
+      // Act
 
-        // The very first `ResolveEnd` event is triggered during root module bootstrapping
-        // `ofActionSuccessful(RouterDataResolved)` is asynchronous
-        // and expectations are called right after `store.dispatch`
-        // before the callback inside `actions$.subscribe(...)` is invoked
-        const speciallyPromisedData = actions$
-          .pipe(
-            ofActionSuccessful(RouterDataResolved),
-            first()
+      // The very first `ResolveEnd` event is triggered during root module bootstrapping
+      // `ofActionSuccessful(RouterDataResolved)` is asynchronous
+      // and expectations are called right after `store.dispatch`
+      // before the callback inside `actions$.subscribe(...)` is invoked
+      const speciallyPromisedData = actions$
+        .pipe(
+          ofActionSuccessful(RouterDataResolved),
+          first()
+        )
+        .toPromise()
+        .then(({ routerState }: RouterDataResolved) => {
+          return routerState!.root.firstChild!.data;
+        });
+
+      await store
+        .dispatch(
+          new Navigate(
+            ['/route3'],
+            {
+              a: 10
+            },
+            {
+              queryParamsHandling: 'merge'
+            }
           )
-          .toPromise()
-          .then(({ routerState }: RouterDataResolved) => {
-            return routerState!.root.firstChild!.data;
-          });
+        )
+        .toPromise();
 
-        await store
-          .dispatch(
-            new Navigate(
-              ['/route3'],
-              {
-                a: 10
-              },
-              {
-                queryParamsHandling: 'merge'
-              }
-            )
-          )
-          .toPromise();
-
-        // Assert
-        const dataFromTheEvent = await speciallyPromisedData;
-        expect(dataFromTheEvent).toEqual({ test });
-      })
-    )
+      // Assert
+      const dataFromTheEvent = await speciallyPromisedData;
+      expect(dataFromTheEvent).toEqual({ test });
+    })
   );
 
   it(
