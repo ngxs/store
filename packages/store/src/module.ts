@@ -42,9 +42,6 @@ import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-executi
 import { HostEnvironment } from './host-environment/host-environment';
 import { ConfigValidator } from './internal/config-validator';
 
-/**
- * Ngxs Module
- */
 @NgModule()
 export class NgxsModule {
   private static readonly ROOT_OPTIONS = new InjectionToken<NgxsModuleOptions>('ROOT_OPTIONS');

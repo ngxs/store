@@ -6,6 +6,7 @@ import { INITIAL_STATE_TOKEN, ObjectUtils, PlainObject } from '@ngxs/store/inter
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
+import { StateOperations } from './internal/internals';
 import { getSelectorFn } from './utils/selector-utils';
 import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
@@ -25,11 +26,15 @@ export class Store {
     this.initStateStream(initialStateValue);
   }
 
+  private get _rootStateOperations(): StateOperations<any> {
+    return this._internalStateOperations.getRootStateOperations();
+  }
+
   /**
    * Dispatches event(s).
    */
-  dispatch(event: any | any[]): Observable<any> {
-    return this._internalStateOperations.getRootStateOperations().dispatch(event);
+  public dispatch(event: any | any[]): Observable<any> {
+    return this._rootStateOperations.dispatch(event);
   }
 
   /**
@@ -37,7 +42,7 @@ export class Store {
    */
   select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
   select<T = any>(selector: string | Type<any>): Observable<T>;
-  select(selector: any): Observable<any> {
+  public select(selector: any): Observable<any> {
     const selectorFn = getSelectorFn(selector);
     return this._stateStream.pipe(
       map(selectorFn),
@@ -60,10 +65,9 @@ export class Store {
   /**
    * Select one slice of data from the store.
    */
-
   selectOnce<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
   selectOnce<T = any>(selector: string | Type<any>): Observable<T>;
-  selectOnce(selector: any): Observable<any> {
+  public selectOnce(selector: any): Observable<any> {
     return this.select(selector).pipe(take(1));
   }
 
@@ -72,7 +76,7 @@ export class Store {
    */
   selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T;
   selectSnapshot<T = any>(selector: string | Type<any>): T;
-  selectSnapshot(selector: any): any {
+  public selectSnapshot(selector: any): any {
     const selectorFn = getSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());
   }
@@ -80,23 +84,23 @@ export class Store {
   /**
    * Allow the user to subscribe to the root of the state
    */
-  subscribe(fn?: (value: any) => void): Subscription {
+  public subscribe(fn?: (value: any) => void): Subscription {
     return this._stateStream.pipe(leaveNgxs(this._internalExecutionStrategy)).subscribe(fn);
   }
 
   /**
    * Return the raw value of the state.
    */
-  snapshot(): any {
-    return this._internalStateOperations.getRootStateOperations().getState();
+  public snapshot(): any {
+    return this._rootStateOperations.getState();
   }
 
   /**
    * Reset the state to a specific point in time. This method is useful
    * for plugin's who need to modify the state directly or unit testing.
    */
-  reset(state: any) {
-    return this._internalStateOperations.getRootStateOperations().setState(state);
+  public reset(state: any): any {
+    return this._rootStateOperations.setState(state);
   }
 
   private initStateStream(initialStateValue: any): void {
