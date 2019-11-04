@@ -10,6 +10,7 @@ import { getSelectorFn } from './utils/selector-utils';
 import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
+import { StateToken } from './state-token/state-token';
 
 @Injectable()
 export class Store {
@@ -72,6 +73,7 @@ export class Store {
    */
   selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T;
   selectSnapshot<T = any>(selector: string | Type<any>): T;
+  selectSnapshot<T>(selector: StateToken<T>): T;
   selectSnapshot(selector: any): any {
     const selectorFn = getSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());

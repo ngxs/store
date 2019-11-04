@@ -1,4 +1,4 @@
-import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { Action, Selector, State, StateContext, StateToken } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
 import { tap } from 'rxjs/operators';
@@ -8,8 +8,10 @@ import { TodoState } from '@integration/store/todos/todo/todo.state';
 import { Pizza, TodoStateModel } from '@integration/store/todos/todos.model';
 import { LoadData, SetPrefix } from '@integration/store/todos/todos.actions';
 
+const TODOS_TOKEN: StateToken<TodoStateModel> = StateToken.create('todos');
+
 @State<TodoStateModel>({
-  name: 'todos',
+  name: TODOS_TOKEN,
   defaults: {
     todo: [],
     pizza: { model: undefined }

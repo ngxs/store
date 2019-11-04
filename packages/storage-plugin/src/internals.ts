@@ -2,6 +2,7 @@ import { isPlatformServer } from '@angular/common';
 import { StateClass } from '@ngxs/store/internals';
 
 import { StorageOption, StorageEngine, NgxsStoragePluginOptions } from './symbols';
+import { StateToken } from '@ngxs/store';
 
 /**
  * If the `key` option is not provided then the below constant
@@ -13,7 +14,11 @@ export const DEFAULT_STATE_KEY = '@@STATE';
  * Internal type definition for the `key` option provided
  * in the `forRoot` method when importing module
  */
-export type StorageKey = string | StateClass | (string | StateClass)[];
+export type StorageKey =
+  | string
+  | StateClass
+  | StateToken<any>
+  | (string | StateClass | StateToken<any>)[];
 
 /**
  * This key is used to retrieve static metadatas on state classes.
@@ -26,12 +31,14 @@ function transformKeyOption(key: StorageKey): string[] {
     key = [key];
   }
 
-  return key.map(keyOrStateClass => {
-    if (typeof keyOrStateClass === 'string') {
-      return keyOrStateClass;
+  return key.map((token: string | StateClass | StateToken<any>) => {
+    if (typeof token === 'string') {
+      return token;
+    } else if (token instanceof StateToken) {
+      return token.toString();
     }
 
-    const options = (keyOrStateClass as any)[META_OPTIONS_KEY];
+    const options = (token as any)[META_OPTIONS_KEY];
     return options.name;
   });
 }

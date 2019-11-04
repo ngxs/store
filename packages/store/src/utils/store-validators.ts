@@ -16,7 +16,7 @@ export abstract class StoreValidators {
     return MESSAGES[CODE.STATE_NAME](name);
   }
 
-  public static checkCorrectStateName(name: string) {
+  public static checkCorrectStateName(name: string | null) {
     if (!name) {
       throw new Error(MESSAGES[CODE.STATE_NAME_PROPERTY]());
     }

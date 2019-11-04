@@ -1,15 +1,16 @@
-import { CONFIG_MESSAGES, VALIDATION_CODE } from '../configs/messages.config';
-import { createSelector } from '../utils/selector-utils';
+import { CONFIG_MESSAGES, VALIDATION_CODE } from '../../configs/messages.config';
+import { createSelector } from '../../utils/selector-utils';
+import { SelectorSpec, SelectorType } from './symbols';
 
 /**
  * Decorator for memoizing a state selector.
  */
-export function Selector(selectors?: any[]): MethodDecorator {
-  return <T>(
+export function Selector<T>(selectors?: T[]): SelectorType<T> {
+  return <U>(
     target: any,
     key: string | symbol,
-    descriptor: TypedPropertyDescriptor<T>
-  ): TypedPropertyDescriptor<T> | void => {
+    descriptor: TypedPropertyDescriptor<SelectorSpec<T, U>>
+  ): TypedPropertyDescriptor<SelectorSpec<T, U>> | void => {
     const isNotMethod = !(descriptor && descriptor.value !== null);
 
     if (isNotMethod) {

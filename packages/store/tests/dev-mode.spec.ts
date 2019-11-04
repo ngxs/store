@@ -8,7 +8,7 @@ import { InitState, UpdateState } from '../src/actions/actions';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { StateContext } from '../src/symbols';
-import { Selector } from '../src/decorators/selector';
+import { Selector } from '../src/decorators/selector/selector';
 
 import { NoopErrorHandler } from './helpers/utils';
 

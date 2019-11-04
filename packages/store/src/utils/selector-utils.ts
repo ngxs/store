@@ -9,6 +9,7 @@ import {
   SelectorMetaDataModel,
   SharedSelectorOptions
 } from '../internal/internals';
+import { StateToken } from '../state-token/state-token';
 
 const SELECTOR_OPTIONS_META_KEY = 'NGXS_SELECTOR_OPTIONS_META';
 
@@ -65,7 +66,11 @@ export function createSelector<T extends (...args: any[]) => any>(
     const { argumentSelectorFunctions } = runtimeInfo;
 
     // Determine arguments from the app state using the selectors
-    results.push(...argumentSelectorFunctions.map(argFn => argFn(state)));
+    results.push(
+      ...argumentSelectorFunctions.map((argFn: Function | StateToken<any>) => {
+        return argFn instanceof StateToken ? argFn.select(state) : argFn(state);
+      })
+    );
 
     // if the lambda tries to access a something on the
     // state that doesn't exist, it will throw a TypeError.
@@ -159,7 +164,13 @@ function getSelectorsToApply(
  * This function gets the selector function to be used to get the selected slice from the app state
  * @ignore
  */
-export function getSelectorFn(selector: any): SelectFromState {
+export function getSelectorFn(selectorOrToken: StateToken<any> | any): SelectFromState {
+  let selector: any = selectorOrToken;
+
+  if (selectorOrToken instanceof StateToken) {
+    selector = selectorOrToken.stateClass;
+  }
+
   const metadata = getSelectorMetadata(selector) || getStoreMetadata(selector);
   return (metadata && metadata.selectFromAppState) || selector;
 }
