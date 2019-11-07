@@ -48,6 +48,7 @@ export function storageOptionsFactory(
     storage: StorageOption.LocalStorage,
     serialize: JSON.stringify,
     deserialize: JSON.parse,
+    suppressErrors: false,
     ...options
   };
 }
