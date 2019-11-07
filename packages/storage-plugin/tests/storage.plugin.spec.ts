@@ -461,5 +461,78 @@ describe('NgxsStoragePlugin', () => {
         names: ['Mark', 'Artur', 'Max']
       });
     });
+
+    describe('suppress errors', () => {
+      @State<CounterStateModel>({
+        name: 'myCounter',
+        defaults: { count: 100 }
+      })
+      class MyCounterState {
+        @Action({ type: 'setup' })
+        customSetup({ setState }: StateContext<CounterStateModel>, action: { payload: any }) {
+          setState(action.payload);
+        }
+      }
+
+      it('should be falling back to empty object with show errors', () => {
+        const spy = jest.spyOn(console, 'error').mockImplementation();
+
+        // Arrange
+        localStorage.setItem('myCounter', '{ count: 100 }');
+
+        // Act
+        TestBed.configureTestingModule({
+          imports: [
+            NgxsModule.forRoot([MyCounterState]),
+            NgxsStoragePluginModule.forRoot({ key: [MyCounterState] })
+          ]
+        });
+
+        const store: Store = TestBed.get(Store);
+
+        // Assert
+        expect(store.snapshot()).toEqual({ myCounter: {} });
+        expect(spy).toHaveBeenCalledWith(
+          'Error occurred while deserializing the store value, falling back to empty object.'
+        );
+
+        store.dispatch({ type: 'setup', payload: { counter: window } });
+
+        expect(store.snapshot()).toEqual({ myCounter: expect.anything() });
+        expect(spy).toHaveBeenCalledWith(
+          'Error occurred while serializing the store value, value not updated.'
+        );
+      });
+
+      it('should be falling back to empty object without errors', () => {
+        const spy = jest.spyOn(console, 'error').mockImplementation();
+
+        // Arrange
+        localStorage.setItem('myCounter', '{ count: 100 }');
+
+        // Act
+        TestBed.configureTestingModule({
+          imports: [
+            NgxsModule.forRoot([MyCounterState]),
+            NgxsStoragePluginModule.forRoot({ key: [MyCounterState], suppressErrors: true })
+          ]
+        });
+
+        const store: Store = TestBed.get(Store);
+
+        // Assert
+        expect(store.snapshot()).toEqual({ myCounter: {} });
+        expect(spy).not.toHaveBeenCalledWith(
+          'Error occurred while deserializing the store value, falling back to empty object.'
+        );
+
+        store.dispatch({ type: 'setup', payload: { counter: window } });
+
+        expect(store.snapshot()).toEqual({ myCounter: expect.anything() });
+        expect(spy).not.toHaveBeenCalledWith(
+          'Error occurred while serializing the store value, value not updated.'
+        );
+      });
+    });
   });
 });

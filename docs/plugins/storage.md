@@ -34,6 +34,7 @@ The plugin has the following optional values:
 
 - `key`: State name(s) to be persisted. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided, it defaults to all states using the `@@STATE` key.
 - `storage`: Storage strategy to use. This defaults to LocalStorage but you can pass SessionStorage or anything that implements the StorageEngine API.
+- `supressErrors`: Suppress deserialization, serialization error messages
 - `deserialize`: Custom deserializer. Defaults to `JSON.parse`
 - `serialize`: Custom serializer, defaults to `JSON.stringify`
 - `migrations`: Migration strategies

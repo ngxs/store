@@ -18,13 +18,15 @@ import {
   NGXS_STORAGE_PLUGIN_OPTIONS
 } from './symbols';
 import { DEFAULT_STATE_KEY } from './internals';
+import { StorageErrorHandler } from './storate-error-handler';
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
   constructor(
     @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
     @Inject(STORAGE_ENGINE) private _engine: StorageEngine,
-    @Inject(PLATFORM_ID) private _platformId: string
+    @Inject(PLATFORM_ID) private _platformId: string,
+    private readonly errorHandler: StorageErrorHandler
   ) {}
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
@@ -48,10 +50,10 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           try {
             val = this._options.deserialize!(val);
           } catch (e) {
-            console.error(
-              'Error ocurred while deserializing the store value, falling back to empty object.'
-            );
             val = {};
+            this.errorHandler.error(
+              'Error occurred while deserializing the store value, falling back to empty object.'
+            );
           }
 
           if (this._options.migrations) {
@@ -88,8 +90,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             try {
               this._engine.setItem(key!, this._options.serialize!(val));
             } catch (e) {
-              console.error(
-                'Error ocurred while serializing the store value, value not updated.'
+              this.errorHandler.error(
+                'Error occurred while serializing the store value, value not updated.'
               );
             }
           }

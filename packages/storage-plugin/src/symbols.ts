@@ -14,7 +14,7 @@ export interface NgxsStoragePluginOptions {
   key?: undefined | StorageKey;
 
   /**
-   * Storage engine to use. Deaults to localStorage but can provide
+   * Storage engine to use. Defaults to localStorage but can provide
    *
    * sessionStorage or custom implementation of the StorageEngine interface
    */
@@ -46,7 +46,12 @@ export interface NgxsStoragePluginOptions {
   }[];
 
   /**
-   * Serailizer for the object before its pushed into the engine.
+   * Suppress deserialization error messages
+   */
+  suppressErrors?: boolean;
+
+  /**
+   * Serializer for the object before its pushed into the engine.
    */
   serialize?(obj: any): string;
 
