@@ -3,7 +3,7 @@ import { ensureSelectorMetadata, propGetter } from '../internal/internals';
 import { SelectFactory } from '../decorators/select/select-factory';
 
 export class StateToken<T> {
-  protected constructor(private readonly name: TokenName<T>) {
+  protected constructor(private readonly name: string) {
     const selectorMetadata = ensureSelectorMetadata(<any>this);
     selectorMetadata.selectFromAppState = (state: any) => {
       // This is lazy initialized with the select from app state function
@@ -24,5 +24,10 @@ export class StateToken<T> {
 
   public toString(): string {
     return `StateToken[${this.name}]`;
+  }
+
+  // @ts-ignore
+  protected aFakeMethodReturningT_ToMakeTSHappy(model: T): T {
+    return model;
   }
 }
