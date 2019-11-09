@@ -32,7 +32,6 @@ import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
 import { INITIAL_STATE_TOKEN, PlainObjectOf } from '@ngxs/store/internals';
-import { StateToken } from '../state-token/state-token';
 
 /**
  * State factory class
@@ -117,11 +116,6 @@ export class StateFactory {
         instance: this._injector.get(stateClass),
         defaults: StateFactory.cloneDefaults(meta.defaults)
       };
-
-      const injected: StateToken<any> | null = StateToken.inject<any>(name);
-      if (injected) {
-        injected.stateClass = stateClass;
-      }
 
       // ensure our store hasn't already been added
       // but don't throw since it could be lazy

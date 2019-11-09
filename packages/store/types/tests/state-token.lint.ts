@@ -6,20 +6,9 @@ import { Observable } from 'rxjs';
 
 describe('[TEST]: StateToken', () => {
   it('should be provide generic', () => {
-    @State({ name: 'myState' })
-    class MyState {}
-
     // Argument of type '"hello"' is not assignable to parameter of type '"You must provide a type parameter"'.
     StateToken.create('hello'); // $ExpectError
     StateToken.create<string[]>('todos'); // $ExpectType StateToken<string[]>
-
-    // Argument of type '"world"' is not assignable to parameter of type '"You must provide a type parameter"'.
-    StateToken.inject('world'); // $ExpectError
-    StateToken.inject<{ state: number }>('world'); // $ExpectType StateToken<{ state: number; }>
-
-    // Argument of type 'typeof MyState' is not assignable to parameter of type '"You must provide a type parameter"'.
-    StateToken.inject(MyState); // $ExpectError
-    StateToken.inject<number>(MyState); // $ExpectType StateToken<number>
   });
 
   it('should be correct provide token in state name', () => {
@@ -29,7 +18,7 @@ describe('[TEST]: StateToken', () => {
       name: TODO_LIST_TOKEN,
       defaults: []
     })
-    class TodoListState {}
+    class TodoListState { }
 
     NgxsModule.forRoot([TodoListState]);
   });
@@ -47,7 +36,7 @@ describe('[TEST]: StateToken', () => {
       name: BAR_STATE_TOKEN,
       defaults: {} // $ExpectError
     })
-    class BarState {}
+    class BarState { }
 
     const FOO_STATE_TOKEN = StateToken.create<number[]>('foo');
 
@@ -56,7 +45,7 @@ describe('[TEST]: StateToken', () => {
       name: FOO_STATE_TOKEN,
       defaults: true // $ExpectError
     })
-    class FooState {}
+    class FooState { }
 
     NgxsModule.forRoot([BarState, FooState]);
   });
@@ -69,7 +58,7 @@ describe('[TEST]: StateToken', () => {
       name: APP_STATE_TOKEN, // $ExpectError
       defaults: []
     })
-    class AppState {}
+    class AppState { }
 
     NgxsModule.forRoot([AppState]);
   });
@@ -117,7 +106,7 @@ describe('[TEST]: StateToken', () => {
       name: FOO_TOKEN,
       defaults: { bar: false }
     })
-    class FooState {}
+    class FooState { }
 
     @Component({ selector: 'app' })
     class AppComponent {
