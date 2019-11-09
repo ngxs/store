@@ -27,7 +27,7 @@ export class StateToken<T> {
   }
 
   // @ts-ignore
-  protected aFakeMethodReturningT_ToMakeTSHappy(model: T): T {
+  protected aFakeMethodReturningTToMakeTSHappy(model: T): T {
     return model;
   }
 }
