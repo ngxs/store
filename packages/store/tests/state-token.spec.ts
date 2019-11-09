@@ -9,8 +9,7 @@ describe('[TEST]: StateToken', () => {
     it('should be create simple state token', () => {
       const TODO_TOKEN = StateToken.create<string>('todo');
       expect(TODO_TOKEN).toBeInstanceOf(StateToken);
-      expect(TODO_TOKEN.name).toEqual('todo');
-      expect(TODO_TOKEN.toString()).toEqual('todo');
+      expect(TODO_TOKEN.getName()).toEqual('todo');
     });
   });
 

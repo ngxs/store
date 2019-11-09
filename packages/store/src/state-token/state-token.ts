@@ -1,17 +1,17 @@
 import { TokenName } from './symbols';
 
 export class StateToken<T> {
-  protected constructor(public readonly name: string) {}
+  protected constructor(private readonly name: TokenName<T>) {}
 
   public static create<U = void>(name: TokenName<U>): StateToken<U> {
     return new StateToken<U>(name);
   }
 
-  public select(state: T): (state: T) => T {
-    return () => state;
+  public getName(): string {
+    return this.name;
   }
 
   public toString(): string {
-    return this.name;
+    return `StateToken[${this.name}]`;
   }
 }

@@ -22,7 +22,8 @@ export function State<T>(options: StoreOptions<T>) {
   function mutateMetaData(params: MutateMetaOptions<T>): void {
     const { meta, inheritedStateClass, optionsWithInheritance } = params;
     const { children, defaults, name } = optionsWithInheritance;
-    const stateName: string | null = (name && name.toString()) || null;
+    const stateName: string | null =
+      typeof name === 'string' ? name : (name && name.getName()) || null;
     StoreValidators.checkCorrectStateName(stateName);
 
     if (inheritedStateClass.hasOwnProperty(META_KEY)) {

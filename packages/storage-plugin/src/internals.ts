@@ -35,7 +35,7 @@ function transformKeyOption(key: StorageKey): string[] {
     if (typeof token === 'string') {
       return token;
     } else if (token instanceof StateToken) {
-      return token.toString();
+      return token.getName();
     }
 
     const options = (token as any)[META_OPTIONS_KEY];
