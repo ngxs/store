@@ -10,6 +10,8 @@ describe('[TEST]: StateToken', () => {
       const TODO_TOKEN = StateToken.create<string>('todo');
       expect(TODO_TOKEN).toBeInstanceOf(StateToken);
       expect(TODO_TOKEN.getName()).toEqual('todo');
+      expect(TODO_TOKEN.toString()).toEqual('StateToken[todo]');
+      expect(TODO_TOKEN['_$implicitType']).toEqual(expect.any(Function));
     });
   });
 

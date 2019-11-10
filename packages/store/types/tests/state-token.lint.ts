@@ -18,7 +18,7 @@ describe('[TEST]: StateToken', () => {
       name: TODO_LIST_TOKEN,
       defaults: []
     })
-    class TodoListState { }
+    class TodoListState {}
 
     NgxsModule.forRoot([TodoListState]);
   });
@@ -36,7 +36,7 @@ describe('[TEST]: StateToken', () => {
       name: BAR_STATE_TOKEN,
       defaults: {} // $ExpectError
     })
-    class BarState { }
+    class BarState {}
 
     const FOO_STATE_TOKEN = StateToken.create<number[]>('foo');
 
@@ -45,7 +45,7 @@ describe('[TEST]: StateToken', () => {
       name: FOO_STATE_TOKEN,
       defaults: true // $ExpectError
     })
-    class FooState { }
+    class FooState {}
 
     NgxsModule.forRoot([BarState, FooState]);
   });
@@ -58,7 +58,7 @@ describe('[TEST]: StateToken', () => {
       name: APP_STATE_TOKEN, // $ExpectError
       defaults: []
     })
-    class AppState { }
+    class AppState {}
 
     NgxsModule.forRoot([AppState]);
   });
@@ -106,7 +106,7 @@ describe('[TEST]: StateToken', () => {
       name: FOO_TOKEN,
       defaults: { bar: false }
     })
-    class FooState { }
+    class FooState {}
 
     @Component({ selector: 'app' })
     class AppComponent {
