@@ -1,8 +1,10 @@
 /// <reference types="@types/jest" />
-import { State, NgxsModule, StateToken, Select, Selector } from '@ngxs/store';
+import { State, NgxsModule, StateToken, Select, Selector, Store } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
+
+import { assertType } from './utils/assert-type';
 
 describe('[TEST]: StateToken', () => {
   it('should be provide generic', () => {
@@ -118,11 +120,34 @@ describe('[TEST]: StateToken', () => {
       @Select(FOO_TOKEN) public appV4$: string; // $ExpectError
       @Select(FOO_TOKEN) public appV5$: Observable<string>; // $ExpectError
       @Select(FOO_TOKEN) public appV6$: Observable<MyModel>; // $ExpectType Observable<MyModel>
+
+      constructor(public store: Store) {}
     }
 
     TestBed.configureTestingModule({
       declarations: [AppComponent],
       imports: [NgxsModule.forRoot([FooState])]
     });
+
+    const appComponent: AppComponent = TestBed.createComponent<AppComponent>(AppComponent)
+      .componentInstance;
+
+    const snapshotByToken = appComponent.store.selectSnapshot(FOO_TOKEN);
+    const snapshotByStateClass = appComponent.store.selectSnapshot(FooState);
+
+    assertType(() => snapshotByToken); // $ExpectType MyModel
+    assertType(() => snapshotByStateClass); // $ExpectType any
+
+    const selectByToken = appComponent.store.select(FOO_TOKEN);
+    const selectByStateClass = appComponent.store.select(FooState);
+
+    assertType(() => selectByToken); // $ExpectType Observable<MyModel>
+    assertType(() => selectByStateClass); // $ExpectType Observable<any>
+
+    const selectOnceByToken = appComponent.store.selectOnce(FOO_TOKEN);
+    const selectOnceByStateClass = appComponent.store.selectOnce(FooState);
+
+    assertType(() => selectOnceByToken); // $ExpectType Observable<MyModel>
+    assertType(() => selectOnceByStateClass); // $ExpectType Observable<any>
   });
 });

@@ -3,6 +3,7 @@ import { StateToken } from '../src/state-token/state-token';
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 describe('[TEST]: StateToken', () => {
   describe('Simple use', function() {
@@ -63,6 +64,15 @@ describe('[TEST]: StateToken', () => {
       );
 
       expect(store.selectSnapshot(TODO_LIST_TOKEN)).toEqual(['hello', 'world']);
+
+      expect(
+        await store
+          .select(TODO_LIST_TOKEN)
+          .pipe(take(1))
+          .toPromise()
+      ).toEqual(['hello', 'world']);
+
+      expect(await store.selectOnce(TODO_LIST_TOKEN).toPromise()).toEqual(['hello', 'world']);
     });
   });
 });

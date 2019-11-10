@@ -38,6 +38,7 @@ export class Store {
    */
   select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
   select<T = any>(selector: string | Type<any>): Observable<T>;
+  select<T>(selector: StateToken<T>): Observable<T>;
   select(selector: any): Observable<any> {
     const selectorFn = getSelectorFn(selector);
     return this._stateStream.pipe(
@@ -64,6 +65,7 @@ export class Store {
 
   selectOnce<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
   selectOnce<T = any>(selector: string | Type<any>): Observable<T>;
+  selectOnce<T>(selector: StateToken<T>): Observable<T>;
   selectOnce(selector: any): Observable<any> {
     return this.select(selector).pipe(take(1));
   }
