@@ -9,8 +9,8 @@
   - [Actions](concepts/actions.md)
   - [State](concepts/state.md)
   - [Select](concepts/select.md)
-  - [State Token](concepts/token.md)
 - Advanced
+  - [State Token](advanced/token.md)
   - [State Operators](advanced/operators.md)
   - [Options](advanced/options.md)
   - [Lazy Loading](advanced/lazy.md)
