@@ -9,6 +9,7 @@
   - [Actions](concepts/actions.md)
   - [State](concepts/state.md)
   - [Select](concepts/select.md)
+  - [State Token](concepts/token.md)
 - Advanced
   - [State Operators](advanced/operators.md)
   - [Options](advanced/options.md)
