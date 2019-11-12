@@ -1,9 +1,8 @@
-import { State, NgxsModule, Selector, Store, Select } from '@ngxs/store';
-import { StateToken } from '../src/state-token/state-token';
+import { NgxsModule, Select, Selector, State, StateToken, Store } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 describe('[TEST]: StateToken', () => {
   describe('Simple use', function() {
@@ -16,7 +15,7 @@ describe('[TEST]: StateToken', () => {
   });
 
   describe('Integration', () => {
-    it('should successfully create store', async () => {
+    it('should successfully create store', () => {
       const TODO_LIST_TOKEN = new StateToken<string[]>('todoList');
 
       @State<string[]>({
@@ -46,10 +45,10 @@ describe('[TEST]: StateToken', () => {
         constructor(public storeApp: Store) {}
       }
 
-      await TestBed.configureTestingModule({
+      TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([TodoListState])],
         declarations: [MyComponent]
-      }).compileComponents();
+      });
 
       const fixture = TestBed.createComponent(MyComponent);
       fixture.autoDetectChanges();
@@ -64,14 +63,18 @@ describe('[TEST]: StateToken', () => {
 
       expect(store.selectSnapshot(TODO_LIST_TOKEN)).toEqual(['hello', 'world']);
 
-      expect(
-        await store
-          .select(TODO_LIST_TOKEN)
-          .pipe(take(1))
-          .toPromise()
-      ).toEqual(['hello', 'world']);
+      const selectResult: string[] = [];
+      store
+        .select(TODO_LIST_TOKEN)
+        .pipe(take(1))
+        .subscribe((value: string[]) => selectResult.push(...value));
+      expect(selectResult).toEqual(['hello', 'world']);
 
-      expect(await store.selectOnce(TODO_LIST_TOKEN).toPromise()).toEqual(['hello', 'world']);
+      const selectOnceResult: string[] = [];
+      store
+        .selectOnce(TODO_LIST_TOKEN)
+        .subscribe((value: string[]) => selectOnceResult.push(...value));
+      expect(selectOnceResult).toEqual(['hello', 'world']);
     });
   });
 });
