@@ -19,8 +19,8 @@ import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 import { HmrStateContextFactory } from '../internal/hmr-state-context-factory';
 import { hmrTestBed, setup } from './hmr-helpers';
 import { NgxsHmrSnapshot } from '../symbols';
-import { hmrIsReloaded } from '../utils/externals';
-import { hmrSetReloaded } from '../utils/internals';
+import { isHmrReloaded } from '../utils/externals';
+import { setHmrReloadedTo } from '../utils/internals';
 
 describe('HMR Plugin', () => {
   it('should initialize AppMockModule', async () => {
@@ -101,13 +101,13 @@ describe('HMR Plugin', () => {
       .pipe(ofActionDispatched(HmrBeforeDestroyAction))
       .subscribe(({ payload }) => (hmrSnapshot = payload));
 
-    expect(hmrIsReloaded()).toEqual(false);
+    expect(isHmrReloaded()).toEqual(false);
 
     // Act
     await webpackModule.destroyModule();
     tick(1000);
 
-    expect(hmrIsReloaded()).toEqual(true);
+    expect(isHmrReloaded()).toEqual(true);
 
     // Assert
     expect(hmrSnapshot).toEqual({
@@ -243,7 +243,7 @@ describe('HMR Plugin', () => {
 
   it('check if the state is set correctly ', fakeAsync(async () => {
     class AppV2MockModule extends AppMockModule implements NgxsHmrLifeCycle {
-      public hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {
+      hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {
         ctx.setState((state: Snapshot) => ({ ...state, ...snapshot, custom: 456 }));
       }
     }
@@ -291,13 +291,13 @@ describe('HMR Plugin', () => {
   });
 
   it('should be correct destroy old module', async () => {
-    expect(hmrIsReloaded()).toEqual(false);
+    expect(isHmrReloaded()).toEqual(false);
     const { appModule, webpackModule } = await hmrTestBed(AppMockModule);
     expect((appModule as any)['_destroyed']).toEqual(false);
 
     webpackModule.destroyModule();
     expect((appModule as any)['_destroyed']).toEqual(true);
-    expect(hmrIsReloaded()).toEqual(true);
+    expect(isHmrReloaded()).toEqual(true);
   });
 
   it('state has to be provided before module is disposed', fakeAsync(async () => {
@@ -319,7 +319,7 @@ describe('HMR Plugin', () => {
 
   it('state has to be provided before module is disposed with calling reset in ngOnDestroy', fakeAsync(async () => {
     class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
-      public ngOnDestroy(): void {
+      ngOnDestroy(): void {
         store.reset({});
       }
     }
@@ -341,12 +341,12 @@ describe('HMR Plugin', () => {
     });
   }));
 
-  it('state cannot reset in ngOnDestroy when skip by ', fakeAsync(async () => {
+  it('"isHrmReloaded" should return "true" if app is being destroyed', fakeAsync(async () => {
     let count = 0;
 
     class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
-      public ngOnDestroy(): void {
-        if (hmrIsReloaded()) {
+      ngOnDestroy(): void {
+        if (isHmrReloaded()) {
           return;
         }
 
@@ -356,11 +356,11 @@ describe('HMR Plugin', () => {
 
     const { webpackModule } = await hmrTestBed(AppMockWithDestroyModule);
 
-    expect(hmrIsReloaded()).toEqual(false);
+    expect(isHmrReloaded()).toEqual(false);
 
     webpackModule.destroyModule();
 
-    expect(hmrIsReloaded()).toEqual(true);
+    expect(isHmrReloaded()).toEqual(true);
     expect(count).toEqual(0);
   }));
 
@@ -378,7 +378,7 @@ describe('HMR Plugin', () => {
 
   it('mutate old state in ngOnDestroy', fakeAsync(async () => {
     class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
-      public ngOnDestroy(): void {
+      ngOnDestroy(): void {
         (store.snapshot() as any).mock_state.value = 'mutated value';
         (store.snapshot() as any).mock_state.any_fields = 'mutated value';
       }
@@ -403,5 +403,5 @@ describe('HMR Plugin', () => {
     });
   }));
 
-  afterEach(() => hmrSetReloaded(false));
+  afterEach(() => setHmrReloadedTo(false));
 });

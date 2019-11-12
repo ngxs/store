@@ -1,15 +1,15 @@
-import { HMR_RUNTIME } from '../symbols';
+import { HmrRuntime } from '../symbols';
 
 declare const window: any;
 
-export function hmrSetReloaded(value: boolean = true): void {
-  if (window[HMR_RUNTIME.STATUS]) {
-    window[HMR_RUNTIME.STATUS].hmrReloaded = value;
+export function setHmrReloadedTo(value = true): void {
+  if (window[HmrRuntime.Status]) {
+    window[HmrRuntime.Status].hmrReloaded = value;
   }
 }
 
-export function hmrApplicationMarked(): void {
-  window[HMR_RUNTIME.STATUS] = window[HMR_RUNTIME.STATUS] || {
+export function markApplicationAsHmrReloaded(): void {
+  window[HmrRuntime.Status] = window[HmrRuntime.Status] || {
     hmrReloaded: false
   };
 }

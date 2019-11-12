@@ -1,7 +1,7 @@
-import { HMR_RUNTIME } from '../symbols';
+import { HmrRuntime } from '../symbols';
 
 declare const window: any;
 
-export function hmrIsReloaded(): boolean {
-  return !!(window[HMR_RUNTIME.STATUS] && window[HMR_RUNTIME.STATUS].hmrReloaded);
+export function isHmrReloaded(): boolean {
+  return !!(window[HmrRuntime.Status] && window[HmrRuntime.Status].hmrReloaded);
 }
