@@ -216,3 +216,38 @@ In the migration strategy, we define:
 - `key`: The key for the item to migrate. If not specified, it takes the entire storage state.
 
 Note: Its important to specify the strategies in the order of which they should progress.
+
+### Serialization
+
+You can define per-state serialization giving you the chance to instantiate objects using
+their concrete type during deserialization or to ommit certain values during serialization.
+
+```ts
+@NgModule({
+  imports: [
+    NgxsModule.forRoot([]),
+    NgxsStoragePluginModule.forRoot({
+      serialization: [
+        {
+          key: 'zoo',
+          deserialize: state => {
+            return <AnimalStateModel>{
+              zebra: new Zebra(state.zebra.name)
+            };
+          },
+          serialize: state => {
+            return JSON.stringify(state);
+          }
+        }
+      ]
+    })
+  ]
+})
+export class MyModule {}
+```
+
+In the serialization strategy, we define:
+
+- `key`: The key for the item to serialize/deserialize. If not specified, it takes the entire storage state.
+- `deserializer`: An optional function that accepts a state and expects the new object in return.
+- `serializer`: An optional function that accepts a state and expects the new string in return.

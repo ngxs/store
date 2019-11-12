@@ -54,6 +54,26 @@ export interface NgxsStoragePluginOptions {
    * Deserializer for the object before its pulled out of the engine.
    */
   deserialize?(obj: any): any;
+
+  /**
+   * Per state serialization strategies.
+   */
+  serialization?: {
+    /**
+     * Key to serialize/deserialize.
+     */
+    key?: string;
+
+    /**
+     * Serializer for the object before its pushed into the state.
+     */
+    serialize?: (obj: any) => string;
+
+    /**
+     * Deserializer for the object before its pulled out of the state.
+     */
+    deserialize?(obj: any): any;
+  }[];
 }
 
 export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_STORAGE_PLUGIN_OPTION');

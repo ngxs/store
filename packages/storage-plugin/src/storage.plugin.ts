@@ -66,6 +66,17 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             });
           }
 
+          if (this._options.serialization) {
+            this._options.serialization.forEach(strategy => {
+              if (
+                strategy.deserialize &&
+                ((!strategy.key && isMaster) || strategy.key === key)
+              ) {
+                val = strategy.deserialize(val);
+              }
+            });
+          }
+
           if (!isMaster) {
             state = setValue(state, key!, val);
           } else {
@@ -79,10 +90,22 @@ export class NgxsStoragePlugin implements NgxsPlugin {
       tap(nextState => {
         if (!isInitAction || (isInitAction && hasMigration)) {
           for (const key of keys) {
+            const isMaster = key === DEFAULT_STATE_KEY;
             let val = nextState;
 
-            if (key !== DEFAULT_STATE_KEY) {
+            if (!isMaster) {
               val = getValue(nextState, key!);
+            }
+
+            if (this._options.serialization) {
+              this._options.serialization.forEach(strategy => {
+                if (
+                  strategy.serialize &&
+                  ((!strategy.key && isMaster) || strategy.key === key)
+                ) {
+                  val = strategy.serialize(val);
+                }
+              });
             }
 
             try {
