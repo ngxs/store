@@ -12,7 +12,6 @@ describe('[TEST]: StateToken', () => {
       expect(TODO_TOKEN).toBeInstanceOf(StateToken);
       expect(TODO_TOKEN.getName()).toEqual('todo');
       expect(TODO_TOKEN.toString()).toEqual('StateToken[todo]');
-      expect(TODO_TOKEN['_$implicitType']).toEqual(expect.any(Function));
     });
   });
 
@@ -38,11 +37,11 @@ describe('[TEST]: StateToken', () => {
 
       @Component({
         selector: 'myApp',
-        template: '{{ myState | async | json }}'
+        template: '{{ myState$ | async | json }}'
       })
       class MyComponent {
         @Select(TODO_LIST_TOKEN)
-        public myState: Observable<string[]>;
+        public myState$: Observable<string[]>;
 
         constructor(public storeApp: Store) {}
       }
