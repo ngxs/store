@@ -16,13 +16,19 @@ describe('[TEST]: StateToken', () => {
   it('should be correct provide token in state name', () => {
     const TODO_LIST_TOKEN = new StateToken<string[]>('todoList');
 
-    @State<string[]>({
-      name: TODO_LIST_TOKEN,
-      defaults: []
+    @State({
+      name: TODO_LIST_TOKEN, // $ExpectType StateToken<string[]>
+      defaults: [] // $ExpectType never[]
     })
     class TodoListState {}
 
-    NgxsModule.forRoot([TodoListState]);
+    @State<string[]>({
+      name: TODO_LIST_TOKEN, // $ExpectType StateToken<string[]>
+      defaults: [] // $ExpectType never[]
+    })
+    class TodoListState2 {}
+
+    NgxsModule.forRoot([TodoListState, TodoListState2]);
   });
 
   it('should be type check defaults', () => {
@@ -34,22 +40,32 @@ describe('[TEST]: StateToken', () => {
     const BAR_STATE_TOKEN = new StateToken<MyStateModel>('bar');
 
     @State({
-      // Type {} is not assignable to type MyStateModel
-      name: BAR_STATE_TOKEN,
+      name: BAR_STATE_TOKEN, // $ExpectType StateToken<MyStateModel>
       defaults: {} // $ExpectError
     })
     class BarState {}
 
+    @State({
+      name: BAR_STATE_TOKEN, // $ExpectType StateToken<MyStateModel>
+      defaults: { hello: 'world', world: 1 } // $ExpectType { hello: string; world: number; }
+    })
+    class BarState2 {}
+
+    @State<MyStateModel>({
+      name: BAR_STATE_TOKEN, // $ExpectType StateToken<MyStateModel>
+      defaults: { hello: 'world', world: 1 } // $ExpectType { hello: string; world: number; }
+    })
+    class BarState3 {}
+
     const FOO_STATE_TOKEN = new StateToken<number[]>('foo');
 
     @State({
-      // Type {} is not assignable to type number[]
       name: FOO_STATE_TOKEN,
       defaults: true // $ExpectError
     })
     class FooState {}
 
-    NgxsModule.forRoot([BarState, FooState]);
+    NgxsModule.forRoot([BarState, BarState2, BarState3, FooState]);
   });
 
   it('should be invalid type by state token', () => {
@@ -67,7 +83,15 @@ describe('[TEST]: StateToken', () => {
     })
     class AppState2 {}
 
-    NgxsModule.forRoot([AppState, AppState2]);
+    const APP3_STATE_TOKEN = new StateToken<unknown>('app3');
+
+    @State({
+      name: APP3_STATE_TOKEN, // $ExpectType StateToken<unknown>
+      defaults: [] // $ExpectType never[]
+    })
+    class AppState3 {}
+
+    NgxsModule.forRoot([AppState, AppState2, AppState3]);
   });
 
   it('should be improved type safety for selector', () => {
