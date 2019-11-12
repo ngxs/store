@@ -8,7 +8,7 @@ import { TodoState } from '@integration/store/todos/todo/todo.state';
 import { Pizza, TodoStateModel } from '@integration/store/todos/todos.model';
 import { LoadData, SetPrefix } from '@integration/store/todos/todos.actions';
 
-const TODOS_TOKEN: StateToken<TodoStateModel> = StateToken.create('todos');
+const TODOS_TOKEN: StateToken<TodoStateModel> = new StateToken('todos');
 
 @State<TodoStateModel>({
   name: TODOS_TOKEN,

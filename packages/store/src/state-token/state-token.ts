@@ -2,8 +2,8 @@ import { TokenName } from './symbols';
 import { ensureSelectorMetadata, propGetter } from '../internal/internals';
 import { SelectFactory } from '../decorators/select/select-factory';
 
-export class StateToken<T> {
-  protected constructor(private readonly name: string) {
+export class StateToken<T = void> {
+  public constructor(private readonly name: TokenName<T>) {
     const selectorMetadata = ensureSelectorMetadata(<any>this);
     selectorMetadata.selectFromAppState = (state: any): T => {
       // This is lazy initialized with the select from app state function
@@ -12,15 +12,6 @@ export class StateToken<T> {
       selectorMetadata.selectFromAppState = getter;
       return getter(state);
     };
-  }
-
-  /**
-   * @description
-   * Single entry point to create a token.
-   * @param name - state name
-   */
-  public static create<U = void>(name: TokenName<U>): StateToken<U> {
-    return new StateToken<U>(name);
   }
 
   public getName(): string {

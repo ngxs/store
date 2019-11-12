@@ -46,7 +46,7 @@ export class ZooState {
 The name of your state can be made with some alias:
 
 ```ts
-const ZOO_STATE_TOKEN = StateToken.create<ZooStateModel>('zoo');
+const ZOO_STATE_TOKEN = new StateToken<ZooStateModel>('zoo');
 
 @State({
   name: ZOO_STATE_TOKEN,

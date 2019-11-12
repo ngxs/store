@@ -9,18 +9,18 @@ import { assertType } from './utils/assert-type';
 describe('[TEST]: StateToken', () => {
   it('should be provide generic', () => {
     // Argument of type '"hello"' is not assignable to parameter of type '"You must provide a type parameter"'.
-    StateToken.create('hello'); // $ExpectError
-    StateToken.create<string[]>('todos'); // $ExpectType StateToken<string[]>
+    new StateToken('hello'); // $ExpectError
+    new StateToken<string[]>('todos'); // $ExpectType StateToken<string[]>
   });
 
   it('should be correct provide token in state name', () => {
-    const TODO_LIST_TOKEN = StateToken.create<string[]>('todoList');
+    const TODO_LIST_TOKEN = new StateToken<string[]>('todoList');
 
     @State<string[]>({
       name: TODO_LIST_TOKEN,
       defaults: []
     })
-    class TodoListState {}
+    class TodoListState { }
 
     NgxsModule.forRoot([TodoListState]);
   });
@@ -31,42 +31,42 @@ describe('[TEST]: StateToken', () => {
       world: number;
     }
 
-    const BAR_STATE_TOKEN = StateToken.create<MyStateModel>('bar');
+    const BAR_STATE_TOKEN = new StateToken<MyStateModel>('bar');
 
     @State({
       // Type {} is not assignable to type MyStateModel
       name: BAR_STATE_TOKEN,
       defaults: {} // $ExpectError
     })
-    class BarState {}
+    class BarState { }
 
-    const FOO_STATE_TOKEN = StateToken.create<number[]>('foo');
+    const FOO_STATE_TOKEN = new StateToken<number[]>('foo');
 
     @State({
       // Type {} is not assignable to type number[]
       name: FOO_STATE_TOKEN,
       defaults: true // $ExpectError
     })
-    class FooState {}
+    class FooState { }
 
     NgxsModule.forRoot([BarState, FooState]);
   });
 
   it('should be invalid type by state token', () => {
-    const APP_STATE_TOKEN = StateToken.create<{ myApp: number[] }>('app');
+    const APP_STATE_TOKEN = new StateToken<{ myApp: number[] }>('app');
 
     @State<string[]>({
       // Type StateToken<{ myApp: number[] }> is not assignable to type StateToken<string[]>
       name: APP_STATE_TOKEN, // $ExpectError
       defaults: []
     })
-    class AppState {}
+    class AppState { }
 
     NgxsModule.forRoot([AppState]);
   });
 
   it('should be improved type safety for selector', () => {
-    const TODO_LIST_TOKEN = StateToken.create<string[]>('todos');
+    const TODO_LIST_TOKEN = new StateToken<string[]>('todos');
 
     @State({
       name: TODO_LIST_TOKEN,
@@ -102,7 +102,7 @@ describe('[TEST]: StateToken', () => {
       bar: boolean;
     }
 
-    const FOO_TOKEN = StateToken.create<MyModel>('foo');
+    const FOO_TOKEN = new StateToken<MyModel>('foo');
 
     @State({
       name: FOO_TOKEN,
@@ -129,7 +129,7 @@ describe('[TEST]: StateToken', () => {
       // TODO: invalid type check
       @Select(FooState.bar) public bar$: string; // $ExpectType string
 
-      constructor(public store: Store) {}
+      constructor(public store: Store) { }
     }
 
     TestBed.configureTestingModule({

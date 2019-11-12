@@ -10,7 +10,7 @@ interface TodoStateModel {
   completed: boolean;
 }
 
-const TODOS_STATE_TOKEN = StateToken.create<TodoStateModel[]>('todos');
+const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
 
 @State({
   name: TODOS_STATE_TOKEN,
@@ -27,7 +27,7 @@ class TodosState {
 Otherwise
 
 ```ts
-const TODOS_STATE_TOKEN = StateToken.create<TodoStateModel[]>('todos');
+const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
 
 @State({
   name: TODOS_STATE_TOKEN,

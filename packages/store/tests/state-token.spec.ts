@@ -8,7 +8,7 @@ import { take } from 'rxjs/operators';
 describe('[TEST]: StateToken', () => {
   describe('Simple use', function() {
     it('should be create simple state token', () => {
-      const TODO_TOKEN = StateToken.create<string>('todo');
+      const TODO_TOKEN = new StateToken<string>('todo');
       expect(TODO_TOKEN).toBeInstanceOf(StateToken);
       expect(TODO_TOKEN.getName()).toEqual('todo');
       expect(TODO_TOKEN.toString()).toEqual('StateToken[todo]');
@@ -18,7 +18,7 @@ describe('[TEST]: StateToken', () => {
 
   describe('Integration', () => {
     it('should be create store', async () => {
-      const TODO_LIST_TOKEN = StateToken.create<string[]>('todoList');
+      const TODO_LIST_TOKEN = new StateToken<string[]>('todoList');
 
       @State<string[]>({
         name: TODO_LIST_TOKEN,
