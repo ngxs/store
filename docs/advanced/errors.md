@@ -30,9 +30,7 @@ export class AppModule {}
 ## Handling errors within an `@Select`
 
 ```ts
-@Component({
-  /* .. */
-})
+@Component({ ... })
 class AppComponent {
   @Select(state => state.count.number.value) count$: Observable<number>;
 }
@@ -53,7 +51,7 @@ function getCount() {
   return state.count.number.value;
 }
 
-getCount(); // will throw
+const count = getCount(); // will throw
 ```
 
 RxJS will automatically complete the stream under the hood if any error is thrown.
@@ -76,27 +74,24 @@ export class AppModule {}
 This option allows to track errors and handle them.
 
 ```ts
-@Component({
-  /* .. */
-})
+@Component({ ... })
 class AppComponent {
   @Select(state => {
     try {
       return state.count.number.value;
-    } catch (err) {
-      console.log('error', err);
-      // throw err;
+    } catch (error) {
+      console.log('error', error);
+      // throw error;
       // Automatic unsubscription will occur if you use the `throw` statement here. Skip it if you don't want the stream to be completed on error.
-      // Do not do this if you do not want it.
     }
   })
   count$: Observable<number>;
 }
 ```
 
-#### Why does Rxjs unsubscribe on error?
+#### Why does RxJS unsubscribe on error?
 
-An explanation of why this matters can be found from RxJS design [guidelines](https://github.com/ReactiveX/rxjs/blob/master/docs_app/content/guide/observable.md#executing-observables).
+RxJS [design guidelines](https://github.com/ReactiveX/rxjs/blob/master/docs_app/content/guide/observable.md#executing-observables) provides a great explanation of this behavior.
 
 ## Handling errors within an `@Action`
 
