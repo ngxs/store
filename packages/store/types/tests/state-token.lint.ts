@@ -13,7 +13,7 @@ describe('[TEST]: StateToken', () => {
     new StateToken<string[]>('todos'); // $ExpectType StateToken<string[]>
   });
 
-  it('should be correct provide token in state name', () => {
+  it('should successfully provide state token in the "name" property', () => {
     const TODO_LIST_TOKEN = new StateToken<string[]>('todoList');
 
     @State({
@@ -94,7 +94,7 @@ describe('[TEST]: StateToken', () => {
     NgxsModule.forRoot([AppState, AppState2, AppState3]);
   });
 
-  it('should be improved type safety for selector', () => {
+  it('should infer types in the @Selector decorator', () => {
     const TODO_LIST_TOKEN = new StateToken<string[]>('todos');
 
     @State({
