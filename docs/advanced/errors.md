@@ -34,26 +34,38 @@ export class AppModule {}
   /* .. */
 })
 class AppComponent {
-  @Select(state => state.count.number.value)
-  public count$: Observable<number>;
+  @Select(state => state.count.number.value) count$: Observable<number>;
 }
 ```
 
-One of the main problems is that if your application state is not correct later.
+Let's take a look at the below example:
 
 ```ts
-this.store.reset({}); // destroy all states
+this.store.reset({}); // reset all states
 ```
 
-Then automatically all subscribers will be unsubscribed from the store, as an internal error will occur.
-To track such things, you must disable `suppressErrors` flag:
+The catch is that when resetting the entire state, the object will no longer have those deeply nested properties (`state.count.number.value`). Given the following code:
+
+```ts
+const state = {};
+
+function getCount() {
+  return state.count.number.value;
+}
+
+getCount(); // will throw
+```
+
+RxJS will automatically complete the stream under the hood if any error is thrown.
+
+You have to disable suppressing errors using the `suppressErrors` option:
 
 ```ts
 @NgModule({
   imports: [
     NgxsModule.forRoot([CountState], {
       selectorOptions: {
-        suppressErrors: false // default by true
+        suppressErrors: false // `true` by default
       }
     })
   ]
@@ -61,7 +73,7 @@ To track such things, you must disable `suppressErrors` flag:
 export class AppModule {}
 ```
 
-This way you can track application errors and add error handling.
+This option allows to track errors and handle them.
 
 ```ts
 @Component({
@@ -78,7 +90,7 @@ class AppComponent {
       // Do not do this if you do not want it.
     }
   })
-  public count$: Observable<number>;
+  count$: Observable<number>;
 }
 ```
 
@@ -96,10 +108,14 @@ In short, if you want your observers to keep listening to the store after a erro
 this.store.select(CountState).pipe(
   retryWhen(errors =>
     errors.pipe(
-      // log error message
-      tap(val => console.log(`Value ${val} was too high!`)),
-      // restart in 6 seconds
-      delayWhen(val => timer(val * 1000))
+      delay(1000),
+      tap(errorStatus => {
+        if (!errorStatus.startsWith('5')) {
+          throw errorStatus;
+        }
+
+        console.log('Retrying...');
+      })
     )
   )
 );
