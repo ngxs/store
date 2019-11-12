@@ -108,7 +108,12 @@ describe('[TEST]: StateToken', () => {
       name: FOO_TOKEN,
       defaults: { bar: false }
     })
-    class FooState {}
+    class FooState {
+      @Selector([FOO_TOKEN])
+      public static bar(state: MyModel) {
+        return state.bar;
+      }
+    }
 
     @Component({ selector: 'app' })
     class AppComponent {
@@ -120,6 +125,9 @@ describe('[TEST]: StateToken', () => {
       @Select(FOO_TOKEN) public appV4$: string; // $ExpectError
       @Select(FOO_TOKEN) public appV5$: Observable<string>; // $ExpectError
       @Select(FOO_TOKEN) public appV6$: Observable<MyModel>; // $ExpectType Observable<MyModel>
+
+      // TODO: invalid type check
+      @Select(FooState.bar) public bar$: string; // $ExpectType string
 
       constructor(public store: Store) {}
     }
