@@ -31,7 +31,7 @@ describe('[TEST]: StateToken', () => {
     NgxsModule.forRoot([TodoListState, TodoListState2]);
   });
 
-  it('should be type check defaults', () => {
+  it('should type check the "defaults" property', () => {
     interface MyStateModel {
       hello: string;
       world: number;
@@ -68,7 +68,7 @@ describe('[TEST]: StateToken', () => {
     NgxsModule.forRoot([BarState, BarState2, BarState3, FooState]);
   });
 
-  it('should be invalid type by state token', () => {
+  it('should throw if the provided "defaults" value is invalid', () => {
     const APP_STATE_TOKEN = new StateToken<{ myApp: number[] }>('app');
 
     @State({

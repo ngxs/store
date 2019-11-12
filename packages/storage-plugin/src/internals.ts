@@ -1,8 +1,8 @@
 import { isPlatformServer } from '@angular/common';
 import { StateClass } from '@ngxs/store/internals';
+import { StateToken } from '@ngxs/store';
 
 import { StorageOption, StorageEngine, NgxsStoragePluginOptions } from './symbols';
-import { StateToken } from '@ngxs/store';
 
 /**
  * If the `key` option is not provided then the below constant
