@@ -14,11 +14,11 @@ export class StateToken<T = void> {
     };
   }
 
-  public getName(): string {
+  getName(): string {
     return this.name;
   }
 
-  public toString(): string {
+  toString(): string {
     return `StateToken[${this.name}]`;
   }
 }

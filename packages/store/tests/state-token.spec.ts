@@ -7,7 +7,7 @@ import { take } from 'rxjs/operators';
 
 describe('[TEST]: StateToken', () => {
   describe('Simple use', function() {
-    it('should be create simple state token', () => {
+    it('should successfully create a simple token', () => {
       const TODO_TOKEN = new StateToken<string>('todo');
       expect(TODO_TOKEN).toBeInstanceOf(StateToken);
       expect(TODO_TOKEN.getName()).toEqual('todo');
@@ -16,7 +16,7 @@ describe('[TEST]: StateToken', () => {
   });
 
   describe('Integration', () => {
-    it('should be create store', async () => {
+    it('should successfully create store', async () => {
       const TODO_LIST_TOKEN = new StateToken<string[]>('todoList');
 
       @State<string[]>({
@@ -41,7 +41,7 @@ describe('[TEST]: StateToken', () => {
       })
       class MyComponent {
         @Select(TODO_LIST_TOKEN)
-        public myState$: Observable<string[]>;
+        myState$: Observable<string[]>;
 
         constructor(public storeApp: Store) {}
       }

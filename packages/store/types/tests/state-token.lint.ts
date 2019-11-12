@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { assertType } from './utils/assert-type';
 
 describe('[TEST]: StateToken', () => {
-  it('should be provide generic', () => {
+  it('should successfully create a simple token', () => {
     // Argument of type '"hello"' is not assignable to parameter of type '"You must provide a type parameter"'.
     new StateToken('hello'); // $ExpectError
     new StateToken<string[]>('todos'); // $ExpectType StateToken<string[]>
@@ -103,17 +103,17 @@ describe('[TEST]: StateToken', () => {
     })
     class TodoListState {
       @Selector([TODO_LIST_TOKEN]) // $ExpectType (state: string[]) => string[]
-      public static todosV1(state: string[]): string[] {
+      static todosV1(state: string[]): string[] {
         return state;
       }
 
       @Selector([TODO_LIST_TOKEN]) // $ExpectError
-      public static todosV2(state: number): number {
+      static todosV2(state: number): number {
         return state;
       }
 
       @Selector() // (state: string[]) => string[]
-      public static todosV3(state: string[]): string[] {
+      static todosV3(state: string[]): string[] {
         return state;
       }
 
@@ -139,24 +139,24 @@ describe('[TEST]: StateToken', () => {
     })
     class FooState {
       @Selector([FOO_TOKEN])
-      public static bar(state: MyModel) {
+      static bar(state: MyModel) {
         return state.bar;
       }
     }
 
     @Component({ selector: 'app' })
     class AppComponent {
-      @Select() public appV1$: string; // $ExpectType string
-      @Select() public appV2$: string; // $ExpectType string
-      @Select((state: string) => state) public appV3$: string; // string
+      @Select() appV1$: string; // $ExpectType string
+      @Select() appV2$: string; // $ExpectType string
+      @Select((state: string) => state) appV3$: string; // string
 
       // Argument of type is not assignable to parameter of type Observable<{ foo: boolean }>
-      @Select(FOO_TOKEN) public appV4$: string; // $ExpectError
-      @Select(FOO_TOKEN) public appV5$: Observable<string>; // $ExpectError
-      @Select(FOO_TOKEN) public appV6$: Observable<MyModel>; // $ExpectType Observable<MyModel>
+      @Select(FOO_TOKEN) appV4$: string; // $ExpectError
+      @Select(FOO_TOKEN) appV5$: Observable<string>; // $ExpectError
+      @Select(FOO_TOKEN) appV6$: Observable<MyModel>; // $ExpectType Observable<MyModel>
 
       // TODO: invalid type check
-      @Select(FooState.bar) public bar$: string; // $ExpectType string
+      @Select(FooState.bar) bar$: string; // $ExpectType string
 
       constructor(public store: Store) {}
     }

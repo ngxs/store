@@ -18,7 +18,7 @@ const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
 })
 class TodosState {
   @Selector(TODOS_STATE_TOKEN) // if you specify the wrong state type, will be a compilation error
-  public static completedList(state: TodoStateModel[]): TodoStateModel[] {
+  static completedList(state: TodoStateModel[]): TodoStateModel[] {
     return state.filter(todo => todo.completed);
   }
 }
@@ -35,7 +35,7 @@ const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
 })
 class TodosState {
   @Selector([TODOS_STATE_TOKEN]) // compilation error
-  public static completedList(state: string[]): string[] {
+  static completedList(state: string[]): string[] {
     return state;
   }
 }
@@ -47,7 +47,7 @@ class TodosState {
 @Component(/**/)
 class AppComponent {
   @Select(TODOS_STATE_TOKEN) // if you specify the wrong state type, will be a compilation error
-  public todos$: Observable<TodoStateModel[]>;
+  todos$: Observable<TodoStateModel[]>;
 }
 ```
 
@@ -57,10 +57,10 @@ Otherwise
 @Component(/**/)
 class AppComponent {
   @Select(TODOS_STATE_TOKEN) // compilation error
-  public todos$: Observable<string[]>;
+  todos$: Observable<string[]>;
 
   @Select(TODOS_STATE_TOKEN) // compilation error
-  public todos: string;
+  todos: string;
 }
 ```
 
@@ -71,7 +71,7 @@ class AppComponent {
 class AppComponent implements OnInit {
   constructor(private store: Store) {}
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.store.selectSnaphot(TODOS_STATE_TOKEN); // expect type TodoStateModel[]
     this.store.select(TODOS_STATE_TOKEN); // expect type Observable<TodoStateModel[]>
     this.store.selectOnce(TODOS_STATE_TOKEN); // expect type Observable<TodoStateModel[]>
