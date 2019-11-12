@@ -86,7 +86,7 @@ class AppComponent {
     } catch (err) {
       console.log('error', err);
       // throw err;
-      // If you forward an error further, then an automatic unsubscription from the stream will occur.
+      // Automatic unsubscription will occur if you use the `throw` statement here. Skip it if you don't want the stream to be completed on error.
       // Do not do this if you do not want it.
     }
   })
@@ -96,32 +96,7 @@ class AppComponent {
 
 #### Why does Rxjs unsubscribe on error?
 
-An explanation of why this matters can be found from Rx design guidelines:
-
-The single message indicating that an observable sequence has finished ensures that consumers of the observable sequence can deterministically establish that it is safe to perform cleanup operations.
-
-A single failure further ensures that abort semantics can be maintained for operators that work on multiple observable sequences.
-
-In short, if you want your observers to keep listening to the store after a error has occurred, do not deliver that error to the store, but rather handle it in some other way (e.g. use catch, retry or deliver the error to a dedicated subject).
-
-```ts
-this.store.select(CountState).pipe(
-  retryWhen(errors =>
-    errors.pipe(
-      delay(1000),
-      tap(errorStatus => {
-        if (!errorStatus.startsWith('5')) {
-          throw errorStatus;
-        }
-
-        console.log('Retrying...');
-      })
-    )
-  )
-);
-```
-
-If you have some reason to pass on the error yet still not close the observable, then you can just catch and return the Error instead of throwing it. That way the type of the observable goes from `Observable<T>` to `Observable<T | Error>` and the observable doesn't close on error.
+An explanation of why this matters can be found from RxJS design [guidelines](https://github.com/ReactiveX/rxjs/blob/master/docs_app/content/guide/observable.md#executing-observables).
 
 ## Handling errors within an `@Action`
 
