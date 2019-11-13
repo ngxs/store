@@ -68,8 +68,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           }
 
           this.executeSerializationStrategies(key, strategy => {
-            if (strategy.deserialize) {
-              val = strategy.deserialize(val);
+            if (strategy.onAfterDeserialize) {
+              val = strategy.onAfterDeserialize(val);
             }
           });
 
@@ -93,8 +93,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             }
 
             this.executeSerializationStrategies(key, strategy => {
-              if (strategy.serialize) {
-                val = strategy.serialize(val);
+              if (strategy.onBeforeSerialize) {
+                val = strategy.onBeforeSerialize(val);
               }
             });
 

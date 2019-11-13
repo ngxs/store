@@ -230,13 +230,13 @@ their concrete type during deserialization or to ommit certain values during ser
       serialization: [
         {
           key: 'zoo',
-          deserialize: state => {
+          onBeforeSerialize: state => {
+            return { zebra: { name: state.zebra.name.trim() } };
+          },
+          onAfterDeserialize: state => {
             return <AnimalStateModel>{
               zebra: new Zebra(state.zebra.name)
             };
-          },
-          serialize: state => {
-            return JSON.stringify(state);
           }
         }
       ]
@@ -249,5 +249,5 @@ export class MyModule {}
 In the serialization strategy, we define:
 
 - `key`: The key for the item to serialize/deserialize. If not specified, it takes the entire storage state.
-- `deserializer`: An optional function that accepts a state and expects the new object in return.
-- `serializer`: An optional function that accepts a state and expects the new string in return.
+- `onBeforeSerialize`: An optional method called before serialization that accepts a state and expects the new object in return.
+- `onAfterDeserialize`: An optional method called after deserialization that accepts a state and expects the new object in return.

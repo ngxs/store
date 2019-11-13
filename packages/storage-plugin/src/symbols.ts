@@ -14,14 +14,14 @@ export interface NgxsStoragePluginSerializationOptions {
   key?: string;
 
   /**
-   * Serializer for the object before its pushed into the state.
+   * Method to call before serialization.
    */
-  serialize?: (obj: any) => string;
+  onBeforeSerialize?: (obj: any) => any;
 
   /**
-   * Deserializer for the object before its pulled out of the state.
+   * Method to call after deserialization.
    */
-  deserialize?(obj: any): any;
+  onAfterDeserialize?: (obj: any) => any;
 }
 
 export interface NgxsStoragePluginOptions {

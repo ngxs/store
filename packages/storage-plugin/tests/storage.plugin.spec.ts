@@ -474,7 +474,7 @@ describe('NgxsStoragePlugin', () => {
     });
   });
 
-  it('should deserialize state and return concrete type.', () => {
+  it('should alter state and return concrete type after deserialization.', () => {
     // Arrange
     localStorage.setItem(
       'concreteType',
@@ -490,7 +490,7 @@ describe('NgxsStoragePlugin', () => {
           serialization: [
             {
               key: 'concreteType',
-              deserialize: (obj: any) => {
+              onAfterDeserialize: (obj: any) => {
                 return <CounterStateModel>{
                   count: obj.count,
                   instance: new Counter(obj.instance.count)
