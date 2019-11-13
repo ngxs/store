@@ -490,10 +490,10 @@ describe('NgxsStoragePlugin', () => {
           serialization: [
             {
               key: 'concreteType',
-              deserialize: (state: any) => {
+              deserialize: (obj: any) => {
                 return <CounterStateModel>{
-                  count: state.count,
-                  instance: new Counter(state.instance.count)
+                  count: obj.count,
+                  instance: new Counter(obj.instance.count)
                 };
               }
             }

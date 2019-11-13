@@ -7,6 +7,23 @@ export const enum StorageOption {
   SessionStorage
 }
 
+export interface NgxsStoragePluginSerializationOptions {
+  /**
+   * Serializer for the object before its pushed into the state.
+   */
+  serialize?: (obj: any) => string;
+
+  /**
+   * Deserializer for the object before its pulled out of the state.
+   */
+  deserialize?(obj: any): any;
+
+  /**
+   * Key to serialize/deserialize.
+   */
+  key?: string;
+}
+
 export interface NgxsStoragePluginOptions {
   /**
    * Key for the state slice to store in the storage engine.
@@ -58,22 +75,7 @@ export interface NgxsStoragePluginOptions {
   /**
    * Per state serialization strategies.
    */
-  serialization?: {
-    /**
-     * Key to serialize/deserialize.
-     */
-    key?: string;
-
-    /**
-     * Serializer for the object before its pushed into the state.
-     */
-    serialize?: (obj: any) => string;
-
-    /**
-     * Deserializer for the object before its pulled out of the state.
-     */
-    deserialize?(obj: any): any;
-  }[];
+  serialization?: NgxsStoragePluginSerializationOptions[];
 }
 
 export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_STORAGE_PLUGIN_OPTION');

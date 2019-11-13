@@ -14,6 +14,7 @@ import { tap } from 'rxjs/operators';
 import {
   StorageEngine,
   NgxsStoragePluginOptions,
+  NgxsStoragePluginSerializationOptions,
   STORAGE_ENGINE,
   NGXS_STORAGE_PLUGIN_OPTIONS
 } from './symbols';
@@ -66,16 +67,11 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             });
           }
 
-          if (this._options.serialization) {
-            this._options.serialization.forEach(strategy => {
-              if (
-                strategy.deserialize &&
-                ((!strategy.key && isMaster) || strategy.key === key)
-              ) {
-                val = strategy.deserialize(val);
-              }
-            });
-          }
+          this.executeSerializationStrategies(key, strategy => {
+            if (strategy.deserialize) {
+              val = strategy.deserialize(val);
+            }
+          });
 
           if (!isMaster) {
             state = setValue(state, key!, val);
@@ -90,23 +86,17 @@ export class NgxsStoragePlugin implements NgxsPlugin {
       tap(nextState => {
         if (!isInitAction || (isInitAction && hasMigration)) {
           for (const key of keys) {
-            const isMaster = key === DEFAULT_STATE_KEY;
             let val = nextState;
 
-            if (!isMaster) {
+            if (key !== DEFAULT_STATE_KEY) {
               val = getValue(nextState, key!);
             }
 
-            if (this._options.serialization) {
-              this._options.serialization.forEach(strategy => {
-                if (
-                  strategy.serialize &&
-                  ((!strategy.key && isMaster) || strategy.key === key)
-                ) {
-                  val = strategy.serialize(val);
-                }
-              });
-            }
+            this.executeSerializationStrategies(key, strategy => {
+              if (strategy.serialize) {
+                val = strategy.serialize(val);
+              }
+            });
 
             try {
               this._engine.setItem(key!, this._options.serialize!(val));
@@ -119,5 +109,18 @@ export class NgxsStoragePlugin implements NgxsPlugin {
         }
       })
     );
+  }
+
+  private executeSerializationStrategies(
+    key: string,
+    action: (strategy: NgxsStoragePluginSerializationOptions) => void
+  ) {
+    if (this._options.serialization) {
+      this._options.serialization.forEach(strategy => {
+        if ((!strategy.key && key === DEFAULT_STATE_KEY) || strategy.key === key) {
+          action(strategy);
+        }
+      });
+    }
   }
 }
