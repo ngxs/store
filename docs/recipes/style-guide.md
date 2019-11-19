@@ -56,10 +56,7 @@ This also applies to the usage of data collections such as Set, Map, WeakMap, We
 
 ```ts
 export class Todo {
-  constructor(public title: string, private complete: boolean = false) {}
-  public get isCompleted(): boolean {
-    return this.complete;
-  }
+  constructor(public title: string, public isCompleted = false) {}
 }
 
 @State<Todo[]>({
@@ -68,9 +65,9 @@ export class Todo {
 })
 class TodosState {
   @Action(AddTodo)
-  add(ctx: StateContext<Todo[]>, { title }: { title: string }): void {
+  add(ctx: StateContext<Todo[]>, action: AddTodo): void {
     // Avoid new Todo(title)
-    ctx.setState((state: Todo[]) => state.concat(new Todo(title)));
+    ctx.setState((state: Todo[]) => state.concat(new Todo(action.title)));
   }
 }
 
@@ -83,7 +80,7 @@ class TodosState {
   `
 })
 class AppComponent {
-  @Select(TodosState) public todos$: Observable<Todo[]>;
+  @Select(TodosState) todos$: Observable<Todo[]>;
 }
 ```
 
@@ -94,7 +91,7 @@ It is not recommended to add Class based object instances to your state because 
 ```ts
 export interface TodoModel {
   title: string;
-  complete: boolean;
+  isCompleted: boolean;
 }
 
 @State<TodoModel[]>({
@@ -103,8 +100,10 @@ export interface TodoModel {
 })
 class TodosState {
   @Action(AddTodo)
-  add(ctx: StateContext<TodoModel[]>, { title }: { title: string }): void {
-    ctx.setState((state: TodoModel[]) => state.concat({ title, complete: false }));
+  add(ctx: StateContext<TodoModel[]>, action: AddTodo): void {
+    ctx.setState((state: TodoModel[]) =>
+      state.concat({ title: action.title, isCompleted: false })
+    );
   }
 }
 
@@ -112,12 +111,12 @@ class TodosState {
   selector: 'app',
   template: `
     <ng-container *ngFor="let todo of todos$ | async">
-      {{ todo.complete }}
+      {{ todo.isCompleted }}
     </ng-container>
   `
 })
 class AppComponent {
-  @Select(TodosState) public todos$: Observable<Todo[]>;
+  @Select(TodosState) todos$: Observable<Todo[]>;
 }
 ```
 
