@@ -41,9 +41,9 @@ export class ZooState {
 }
 ```
 
-## Defining State Token
+## (Optional) Defining State Token
 
-The name of your state can be made with some alias:
+Optionally, you can choose to replace the `name` of your state can be made with a state token:
 
 ```ts
 const ZOO_STATE_TOKEN = new StateToken<ZooStateModel>('zoo');
@@ -59,7 +59,7 @@ export class ZooState {
 }
 ```
 
-You can see more about this in the [State Token](../advanced/token.md) section.
+This slightly more advanced approach has some benefits which you can read more about in the [State Token](../advanced/token.md) section.
 
 ## Defining Actions
 
