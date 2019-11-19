@@ -4,7 +4,7 @@ Below are suggestions for naming and style conventions.
 
 ### State Suffix
 
-A state should always be suffixed with the word `State`. Right: `ZooState` Wrong: `Zoo`
+A state should always be suffixed with the word `State`. Prefer: `ZooState` Avoid: `Zoo`
 
 ### State Filenames
 
@@ -17,7 +17,7 @@ state were called `ZooState`, we would call my state interface `ZooStateModel`.
 
 ### Select Suffix
 
-Selects should have a `$` suffix. Right: `animals$` Wrong: `animals`
+Selects should have a `$` suffix. Prefer: `animals$` Avoid: `animals`
 
 ### Plugin Suffix
 
@@ -46,7 +46,11 @@ Unit tests for the state should be named `my-state-name.state.spec.ts`
 Actions should NOT deal with view related operations (i.e. showing popups/etc). Use the action
 stream to handle these types of operations
 
-### Avoid saving entities, instances in your states
+### Avoid Saving Class Based Instances in Your State
+
+The objects stored in your state should be immutable and should support serialization and deserialization. It is therefore recommended to store pure object literals in your state. Class based instances are not trivial to serialize and deserialize, and also are generally focused on encapsulating internals and mutating internal state through exposed operations. This does not match the requirement for the data stored in state.
+
+This also applies to the usage of data collections such as Set, Map, WeakMap, WeakSet, etc. Since they are not amenable to deserialization and cannot easily be presented for normalization.
 
 #### Avoid
 
@@ -83,7 +87,7 @@ class AppComponent {
 }
 ```
 
-It is not recommended to use persistence of object instances, because this can lead to undefined behavior in the future.
+It is not recommended to add Class based object instances to your state because this can lead to undefined behavior in the future.
 
 #### Prefer
 
@@ -117,9 +121,10 @@ class AppComponent {
 }
 ```
 
-#### Why?
+### Flatten Deep Object Graphs
 
-You should use the new operator to create new objects of your class if you need to perform complex operations on the object itself. If in case you just need to access the properties only, you may use the object literal to create a new object.
+The general recommendation for handling hierarchical data in Redux is to normalise it.
+This would entail flattening it in the same way that you would design relational tables, having keys for references to parent objects.
 
 #### Avoid
 
@@ -163,7 +168,7 @@ export class GridState {}
 export class GridCollectionState {}
 ```
 
-It is not recommended to use data collections such as Set, Map, WeakMap, WeakSet, etc. Since they are not amenable to deserialization and cannot easily be presented for normalization.
+Note: It is not recommended to use data collections such as Set, Map, WeakMap, WeakSet, etc. Since they are not amenable to deserialization and cannot easily be presented for normalization.
 
 #### Prefer
 
@@ -210,8 +215,3 @@ export class GridState {}
 })
 export class GridCollectionState {}
 ```
-
-#### Why?
-
-The general recommendation for handling hierarchical data in Redux is to normalise it.
-This would entail flattening it ianthe same way that you would design relational tables, having keys for referring to their parents.
