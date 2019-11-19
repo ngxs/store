@@ -19,7 +19,7 @@ import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 import { HmrStateContextFactory } from '../internal/hmr-state-context-factory';
 import { hmrTestBed, setup } from './hmr-helpers';
 import { NgxsHmrSnapshot } from '../symbols';
-import { isHmrReloaded } from '../utils/externals';
+import { hmrIsReloaded } from '../utils/externals';
 import { setHmrReloadedTo } from '../utils/internals';
 
 describe('HMR Plugin', () => {
@@ -101,13 +101,13 @@ describe('HMR Plugin', () => {
       .pipe(ofActionDispatched(HmrBeforeDestroyAction))
       .subscribe(({ payload }) => (hmrSnapshot = payload));
 
-    expect(isHmrReloaded()).toEqual(false);
+    expect(hmrIsReloaded()).toEqual(false);
 
     // Act
     await webpackModule.destroyModule();
     tick(1000);
 
-    expect(isHmrReloaded()).toEqual(true);
+    expect(hmrIsReloaded()).toEqual(true);
 
     // Assert
     expect(hmrSnapshot).toEqual({
@@ -291,13 +291,13 @@ describe('HMR Plugin', () => {
   });
 
   it('should be correct destroy old module', async () => {
-    expect(isHmrReloaded()).toEqual(false);
+    expect(hmrIsReloaded()).toEqual(false);
     const { appModule, webpackModule } = await hmrTestBed(AppMockModule);
     expect((appModule as any)['_destroyed']).toEqual(false);
 
     webpackModule.destroyModule();
     expect((appModule as any)['_destroyed']).toEqual(true);
-    expect(isHmrReloaded()).toEqual(true);
+    expect(hmrIsReloaded()).toEqual(true);
   });
 
   it('state has to be provided before module is disposed', fakeAsync(async () => {
@@ -346,7 +346,7 @@ describe('HMR Plugin', () => {
 
     class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
       ngOnDestroy(): void {
-        if (isHmrReloaded()) {
+        if (hmrIsReloaded()) {
           return;
         }
 
@@ -356,11 +356,11 @@ describe('HMR Plugin', () => {
 
     const { webpackModule } = await hmrTestBed(AppMockWithDestroyModule);
 
-    expect(isHmrReloaded()).toEqual(false);
+    expect(hmrIsReloaded()).toEqual(false);
 
     webpackModule.destroyModule();
 
-    expect(isHmrReloaded()).toEqual(true);
+    expect(hmrIsReloaded()).toEqual(true);
     expect(count).toEqual(0);
   }));
 
