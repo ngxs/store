@@ -210,7 +210,7 @@ Examples:
 ```ts
 import { hmrIsReloaded } from '@ngxs/hmr-plugin';
 
-@Component(/* .. /*)
+@Component({ ... })
 class SomeComponent implements OnDestroy {
   ngOnDestroy(): void {
     if (hmrIsReloaded()) {
