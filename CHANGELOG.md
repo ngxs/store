@@ -9,6 +9,7 @@ $ npm install @ngxs/store@dev
 - Feature: Add `ngxsOnChanges` lifecycle hook [#1389](https://github.com/ngxs/store/pull/1389)
 - Feature: Expose StateContextFactory, StateFactory [#1325](https://github.com/ngxs/store/pull/1325)
 - Feature: Improved type safety for children states [#1388](https://github.com/ngxs/store/pull/1388)
+- Feature: Add StateToken<T> construct [#1436](https://github.com/ngxs/store/pull/1436)
 - Feature: Storage Plugin - Use state classes as keys [#1380](https://github.com/ngxs/store/pull/1380)
 - Feature: Form Plugin - Implement `propertyPath` parameter in the `UpdateFormValue` [#1215](https://github.com/ngxs/store/pull/1215)
 - Feature: WebSocket Plugin - Implement `WebSocketConnected` action [#1371](https://github.com/ngxs/store/pull/1371)
