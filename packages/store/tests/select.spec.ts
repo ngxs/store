@@ -7,7 +7,7 @@ import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
-import { Selector } from '../src/decorators/selector';
+import { Selector } from '../src/decorators/selector/selector';
 import { Select } from '../src/decorators/select/select';
 import { StateContext } from '../src/symbols';
 import { removeDollarAtTheEnd } from '../src/decorators/select/symbols';

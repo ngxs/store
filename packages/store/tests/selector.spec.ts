@@ -5,7 +5,7 @@ import { State } from '../src/decorators/state';
 import { createSelector } from '../src/utils/selector-utils';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
-import { Selector } from '../src/decorators/selector';
+import { Selector } from '../src/decorators/selector/selector';
 import { NgxsConfig } from '../src/symbols';
 import { SelectorOptions } from '../src/decorators/selector-options';
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../src/configs/messages.config';

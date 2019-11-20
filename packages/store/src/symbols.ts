@@ -5,6 +5,7 @@ import { PlainObject, StateClass } from '@ngxs/store/internals';
 import { SharedSelectorOptions } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
+import { StateToken } from './state-token/state-token';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
@@ -122,7 +123,7 @@ export interface StoreOptions<T> {
   /**
    * Name of the state. Required.
    */
-  name: string;
+  name: string | StateToken<T>;
 
   /**
    * Default values for the state. If not provided, uses empty object.

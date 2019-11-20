@@ -1,14 +1,23 @@
-import { Observable } from 'rxjs';
-import { createSelectObservable, createSelectorFn } from './symbols';
+import {
+  ComponentClass,
+  createSelectObservable,
+  createSelectorFn,
+  PropertyType,
+  SelectType
+} from './symbols';
 
 /**
  * Decorator for selecting a slice of state from the store.
  */
-export function Select(rawSelector?: any, ...paths: string[]): PropertyDecorator {
-  return function(target: any, propertyKey: string | symbol): void {
-    const name: string = propertyKey.toString();
+export function Select<T>(rawSelector?: T, ...paths: string[]): SelectType<T> {
+  return function<
+    U extends ComponentClass<any> & Record<K, PropertyType<T>>,
+    K extends string
+  >(target: U, key: K): void {
+    const name: string = key.toString();
     const selectorId = `__${name}__selector`;
     const selector = createSelectorFn(name, rawSelector, paths);
+
     Object.defineProperties(target, {
       [selectorId]: {
         writable: true,
@@ -18,7 +27,7 @@ export function Select(rawSelector?: any, ...paths: string[]): PropertyDecorator
       [name]: {
         enumerable: true,
         configurable: true,
-        get(): Observable<any> {
+        get(): PropertyType<T> {
           return this[selectorId] || (this[selectorId] = createSelectObservable(selector));
         }
       }

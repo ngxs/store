@@ -41,6 +41,26 @@ export class ZooState {
 }
 ```
 
+## (Optional) Defining State Token
+
+Optionally, you can choose to replace the `name` of your state can be made with a state token:
+
+```ts
+const ZOO_STATE_TOKEN = new StateToken<ZooStateModel>('zoo');
+
+@State({
+  name: ZOO_STATE_TOKEN,
+  defaults: {
+    feed: false
+  }
+})
+export class ZooState {
+  constructor(private zooService: ZooService) {}
+}
+```
+
+This slightly more advanced approach has some benefits which you can read more about in the [State Token](../advanced/token.md) section.
+
 ## Defining Actions
 
 Our states listen to actions via an `@Action` decorator. The action decorator

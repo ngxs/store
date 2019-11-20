@@ -20,14 +20,14 @@ describe('[TEST]: Action Types', () => {
   it('should be correct type in selector/select decorator', () => {
     class Any {}
 
-    Selector(); // $ExpectType MethodDecorator
-    assertType(() => Selector([{ foo: 'bar' }])); // $ExpectType MethodDecorator
+    Selector(); // $ExpectType SelectorType<unknown>
+    assertType(() => Selector([{ foo: 'bar' }])); // $ExpectType SelectorType<{ foo: string; }>
     assertType(() => Selector({})); // $ExpectError
 
-    Select(); // $ExpectType PropertyDecorator
-    assertType(() => Select({})); // $ExpectType PropertyDecorator
-    assertType(() => Select([])); // $ExpectType PropertyDecorator
-    assertType(() => Select(Any, 'a', 'b', 'c')); // $ExpectType PropertyDecorator
+    Select(); // $ExpectType SelectType<unknown>
+    assertType(() => Select({})); // $ExpectType SelectType<{}>
+    assertType(() => Select([])); // $ExpectType SelectType<never[]>
+    assertType(() => Select(Any, 'a', 'b', 'c')); // $ExpectType SelectType<typeof Any>
     assertType(() => Select(Any, ['a', 'b', 'c'])); // $ExpectError
 
     class AppComponent {
