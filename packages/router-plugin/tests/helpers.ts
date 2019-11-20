@@ -8,5 +8,5 @@ export async function createNgxsRouterPluginTestingPlatform<T>(module: Type<T>) 
   const store: Store = injector.get(Store);
   const router: Router = injector.get(Router);
   const actions$: Actions = injector.get(Actions);
-  return { store, router, actions$ };
+  return { store, router, actions$, injector };
 }

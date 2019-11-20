@@ -6,13 +6,15 @@ import {
   RouterStateSnapshot,
   RoutesRecognized,
   ResolveEnd,
-  GuardsCheckEnd,
-  UrlSerializer
+  UrlSerializer,
+  NavigationStart,
+  NavigationEnd,
+  GuardsCheckEnd
 } from '@angular/router';
 import { LocationStrategy, Location } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { isAngularInTestMode } from '@ngxs/store/internals';
-import { filter, take } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 import {
   Navigate,
@@ -27,26 +29,38 @@ import { RouterStateSerializer } from './serializer';
 export interface RouterStateModel<T = RouterStateSnapshot> {
   state?: T;
   navigationId?: number;
+  trigger: RouterTrigger;
 }
+
+export type RouterTrigger = 'none' | 'router' | 'store';
 
 @State<RouterStateModel>({
   name: 'router',
   defaults: {
     state: undefined,
-    navigationId: undefined
+    navigationId: undefined,
+    trigger: 'none'
   }
 })
 @Injectable()
 export class RouterState {
-  private routerStateSnapshot: RouterStateSnapshot;
-  private routerState: RouterStateModel;
-  private lastRoutesRecognized: RoutesRecognized;
-  private dispatchTriggeredByRouter = false; // used only in dev mode in combination with routerReducer
-  private navigationTriggeredByDispatch = false; // used only in dev mode in combination with routerReducer
+  /**
+   * Determines how navigation was performed by the `RouterState` itself
+   * or outside via `new Navigate(...)`
+   */
+  private _trigger: RouterTrigger = 'none';
 
   /**
-   * Selectors
+   * That's the serialized state from the `Router` class
    */
+  private _routerState: RouterStateSnapshot | null = null;
+
+  /**
+   * That's the value of the `RouterState` state
+   */
+  private _storeState: RouterStateModel | null = null;
+
+  private _lastRoutesRecognized: RoutesRecognized = null!;
 
   @Selector()
   static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
@@ -68,7 +82,7 @@ export class RouterState {
     private _location: Location
   ) {
     this.setUpStoreListener();
-    this.setUpStateRollbackEvents();
+    this.setUpRouterEventsListener();
     this.checkInitialNavigationOnce();
   }
 
@@ -85,111 +99,141 @@ export class RouterState {
   @Action([RouterNavigation, RouterError, RouterCancel, RouterDataResolved])
   angularRouterAction(
     ctx: StateContext<RouterStateModel>,
-    action: RouterAction<any, RouterStateSnapshot>
-  ) {
+    action: RouterAction<RouterStateModel, RouterStateSnapshot>
+  ): void {
     ctx.setState({
       ...ctx.getState(),
+      trigger: action.trigger,
       state: action.routerState,
       navigationId: action.event.id
     });
   }
 
   private setUpStoreListener(): void {
-    this._store.select(RouterState).subscribe(s => {
-      this.routerState = s;
-    });
-    this._store.select(RouterState.state).subscribe(() => {
-      this.navigateIfNeeded();
+    this._store.select(RouterState).subscribe((state: RouterStateModel | undefined) => {
+      this.navigateIfNeeded(state);
     });
   }
 
-  private setUpStateRollbackEvents(): void {
-    this._router.events.subscribe(e => {
-      if (e instanceof RoutesRecognized) {
-        this.lastRoutesRecognized = e;
-      } else if (e instanceof GuardsCheckEnd) {
-        this.guardsCheckEnd(e.state);
-      } else if (e instanceof ResolveEnd) {
-        this.dispatchRouterDataResolved(e);
-      } else if (e instanceof NavigationCancel) {
-        this.dispatchRouterCancel(e);
-      } else if (e instanceof NavigationError) {
-        this.dispatchRouterError(e);
+  private setUpRouterEventsListener(): void {
+    this._router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        this.navigationStart();
+      } else if (event instanceof RoutesRecognized) {
+        this._lastRoutesRecognized = event;
+      } else if (event instanceof GuardsCheckEnd && event.shouldActivate) {
+        this.guardsCheckEnd(event);
+      } else if (event instanceof ResolveEnd) {
+        this.dispatchRouterDataResolved(event);
+      } else if (event instanceof NavigationCancel) {
+        this.dispatchRouterCancel(event);
+        this.reset();
+      } else if (event instanceof NavigationError) {
+        this.dispatchRouterError(event);
+        this.reset();
+      } else if (event instanceof NavigationEnd) {
+        this.reset();
       }
     });
   }
 
-  private guardsCheckEnd(routerState: RouterStateSnapshot): void {
-    this.routerStateSnapshot = this._serializer.serialize(routerState);
-    if (this.shouldDispatchRouterNavigation()) {
-      this.dispatchRouterNavigation();
+  private navigationStart(): void {
+    this._routerState = this._serializer.serialize(this._router.routerState.snapshot);
+
+    if (this._trigger !== 'none') {
+      this._storeState = this._store.selectSnapshot(RouterState);
     }
   }
 
   private shouldDispatchRouterNavigation(): boolean {
-    if (!this.routerState) return true;
-    return !this.navigationTriggeredByDispatch;
+    if (!this._storeState) return true;
+    return this._trigger !== 'store';
   }
 
-  private navigateIfNeeded(): void {
-    if (!this.routerState || !this.routerState.state || this.dispatchTriggeredByRouter) {
+  private navigateIfNeeded(state: RouterStateModel | undefined): void {
+    const canSkipNavigation =
+      !this._storeState ||
+      !this._storeState.state ||
+      !state ||
+      state.trigger === 'router' ||
+      this._router.url === this._storeState.state.url;
+
+    if (canSkipNavigation) {
       return;
     }
 
-    if (this._router.url !== this.routerState.state.url) {
-      this.navigationTriggeredByDispatch = true;
-      this._ngZone.run(() => this._router.navigateByUrl(this.routerState.state!.url));
-    }
+    this._trigger = 'store';
+    this._ngZone.run(() => {
+      this._router.navigateByUrl(this._storeState!.state!.url);
+    });
   }
 
   private dispatchRouterNavigation(): void {
+    const nextRouterState = this._serializer.serialize(this._lastRoutesRecognized.state);
+
     this.dispatchRouterAction(
       new RouterNavigation(
-        this.routerStateSnapshot,
+        nextRouterState,
         new RoutesRecognized(
-          this.lastRoutesRecognized.id,
-          this.lastRoutesRecognized.url,
-          this.lastRoutesRecognized.urlAfterRedirects,
-          this.routerStateSnapshot
-        )
+          this._lastRoutesRecognized.id,
+          this._lastRoutesRecognized.url,
+          this._lastRoutesRecognized.urlAfterRedirects,
+          nextRouterState
+        ),
+        this._trigger
       )
     );
   }
 
   private dispatchRouterCancel(event: NavigationCancel): void {
-    this.routerStateSnapshot = this._serializer.serialize(this._router.routerState.snapshot);
     this.dispatchRouterAction(
-      new RouterCancel(this.routerStateSnapshot, this.routerState, event)
+      new RouterCancel(this._routerState!, this._storeState, event, this._trigger)
     );
+    this.reset();
   }
 
   private dispatchRouterError(event: NavigationError): void {
     this.dispatchRouterAction(
       new RouterError(
-        this.routerStateSnapshot,
-        this.routerState,
-        new NavigationError(event.id, event.url, `${event}`)
+        this._routerState!,
+        this._storeState,
+        new NavigationError(event.id, event.url, `${event}`),
+        this._trigger
       )
     );
   }
 
   private dispatchRouterAction<T>(action: RouterAction<T>): void {
-    this.dispatchTriggeredByRouter = true;
+    this._trigger = 'router';
+
     try {
       this._store.dispatch(action);
     } finally {
-      this.dispatchTriggeredByRouter = false;
-      this.navigationTriggeredByDispatch = false;
+      this._trigger = 'none';
+    }
+  }
+
+  private guardsCheckEnd(event: GuardsCheckEnd) {
+    this._routerState = this._serializer.serialize(event.state);
+
+    if (this.shouldDispatchRouterNavigation()) {
+      this.dispatchRouterNavigation();
     }
   }
 
   private dispatchRouterDataResolved(event: ResolveEnd): void {
-    this.routerStateSnapshot = this._serializer.serialize(event.state);
-    this.dispatchRouterAction(new RouterDataResolved(this.routerStateSnapshot, event));
+    const routerState = this._serializer.serialize(event.state);
+    this.dispatchRouterAction(new RouterDataResolved(routerState, event, this._trigger));
+  }
+
+  private reset(): void {
+    this._trigger = 'none';
+    this._storeState = null;
+    this._routerState = null;
   }
 
   /**
-   * No sense to mess up the `setUpStateRollbackEvents` method as we have
+   * No sense to mess up the `setUpRouterEventsListener` method as we have
    * to perform this check only once and unsubscribe after the first event
    * is triggered
    */
@@ -199,10 +243,7 @@ export class RouterState {
     }
 
     this._router.events
-      .pipe(
-        filter((event): event is RoutesRecognized => event instanceof RoutesRecognized),
-        take(1)
-      )
+      .pipe(first((event): event is RoutesRecognized => event instanceof RoutesRecognized))
       .subscribe(({ url }) => {
         // `location.pathname` always equals manually entered URL in the address bar
         // e.g. `location.pathname === '/foo'`, but the `router` state has been initialized
