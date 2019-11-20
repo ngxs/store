@@ -17,6 +17,7 @@ $ npm install @ngxs/store@dev
 - Fix: Do not re-throw error to the global handler if custom is provided [#1379](https://github.com/ngxs/store/pull/1379)
 - Fix: Group `Actions` subscriptions to remove memory leak [#1381](https://github.com/ngxs/store/pull/1381)
 - Fix: Upgrade ng-packagr to fix Ivy issues [#1397](https://github.com/ngxs/store/pull/1397)
+- Fix: Router Plugin - resolve infinite redirects and browser hanging [#1430](https://github.com/ngxs/store/pull/1430)
 - Build: Add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
 - Build: Run SSR tests with cypress [#1281](https://github.com/ngxs/store/pull/1281)
 
