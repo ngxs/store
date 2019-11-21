@@ -13,6 +13,7 @@ $ npm install @ngxs/store@dev
 - Feature: Storage Plugin - Use state classes as keys [#1380](https://github.com/ngxs/store/pull/1380)
 - Feature: Form Plugin - Implement `propertyPath` parameter in the `UpdateFormValue` [#1215](https://github.com/ngxs/store/pull/1215)
 - Feature: WebSocket Plugin - Implement `WebSocketConnected` action [#1371](https://github.com/ngxs/store/pull/1371)
+- Feature: HMR Plugin - Add `hmrIsReloaded` utility [#1435](https://github.com/ngxs/store/pull/1435)
 - Fix: Explicit typings for state operators [#1395](https://github.com/ngxs/store/pull/1395), [#1405](https://github.com/ngxs/store/pull/1405)
 - Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
 - Fix: Do not re-throw error to the global handler if custom is provided [#1379](https://github.com/ngxs/store/pull/1379)
