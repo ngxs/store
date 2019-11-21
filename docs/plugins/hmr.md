@@ -200,3 +200,24 @@ import('@ngxs/hmr-plugin').then(plugin => {
     .catch((err: Error) => console.error(err));
 });
 ```
+
+### HMR Utils
+
+- `hmrIsReloaded` - returns `true` if the application was hot module replaced at least once or more.
+
+Examples:
+
+```ts
+import { hmrIsReloaded } from '@ngxs/hmr-plugin';
+
+@Component({ ... })
+class SomeComponent implements OnDestroy {
+  ngOnDestroy(): void {
+    if (hmrIsReloaded()) {
+      return;
+    }
+
+    // heavy logic
+  }
+}
+```
