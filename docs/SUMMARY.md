@@ -14,6 +14,7 @@
   - [Options](advanced/options.md)
   - [Lazy Loading](advanced/lazy.md)
   - [Sub States](advanced/sub-states.md)
+  - [Mapped Sub States](advanced/mapped-sub-states.md)
   - [Cancellation](advanced/cancellation.md)
   - [Actions Life Cycle](advanced/actions-life-cycle.md)
   - [Action Handlers](advanced/action-handlers.md)

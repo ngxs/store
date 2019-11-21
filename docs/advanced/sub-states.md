@@ -1,4 +1,4 @@
-# Sub Stores
+# Sub States
 
 Complex and large state graphs are difficult to manage. Oftentimes we need
 to break these down into sub states that we can manage on a individual

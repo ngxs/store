@@ -12,7 +12,10 @@
   </a>
   <a href="https://badge.fury.io/js/%40ngxs%2Fstore">
     <img src="https://badge.fury.io/js/%40ngxs%2Fstore.svg" />
-  </a> 
+  </a>
+  <a href="https://www.npmjs.com/package/@ngxs/store">
+    <img src="https://img.shields.io/npm/dw/@ngxs/store.svg" />
+  </a>
   
   <br />
   
@@ -28,7 +31,9 @@
   <a href="https://circleci.com/gh/ngxs/store">
     <img src="https://circleci.com/gh/ngxs/store/tree/master.svg?style=svg" />
   </a>
-
+  <a href="https://github.com/ngxs/store/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" />
+  </a>
 </p>
 
 ---

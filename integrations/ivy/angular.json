@@ -67,5 +67,8 @@
       }
     }
   },
-  "defaultProject": "ivy"
+  "defaultProject": "ivy",
+  "cli": {
+    "analytics": false
+  }
 }
