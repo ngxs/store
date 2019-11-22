@@ -43,6 +43,8 @@ export function removeDollarAtTheEnd(name: string): string {
 
 export type PropertyType<T> = T extends StateToken<any>
   ? Observable<ExtractTokenType<T>>
+  : T extends (...args: any[]) => any
+  ? Observable<ReturnType<T>>
   : any;
 
 export type ComponentClass<T> = {

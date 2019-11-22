@@ -7,6 +7,7 @@ const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
 ```
 
 Or if you choose to not expose the model of your state class to the rest of the application then you can pass the type as `unknown` or `any`(this is useful if you want to keep all knowledge of the structure of your state class model private).
+
 ```ts
 const TODOS_STATE_TOKEN = new StateToken<unknown>('todos');
 ```
@@ -22,7 +23,7 @@ interface TodoStateModel {
 const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
 
 // Note: the @State model type is inferred from in your token.
-@State({ 
+@State({
   name: TODOS_STATE_TOKEN,
   defaults: []
 })
