@@ -93,8 +93,10 @@ describe('[TEST]: Action Types', () => {
     class CheckSelectorComponent {
       @Select() public A$: Observable<any>; // $ExpectType Observable<any>
       @Select(TodoState) public B$: Observable<Any>; // $ExpectType Observable<Any>
-      @Select(TodoState.reverse) public C$: Observable<Any>; // $ExpectType Observable<Any>
-      @Select(TodoState.reverse) public D$: number | object; // $ExpectType number | object
+      @Select(TodoState.reverse) public C$: Observable<Any>; // $ExpectError
+      @Select(TodoState.reverse) public C1$: Observable<string[]>; // $ExpectType Observable<string[]>
+      @Select(TodoState.reverse) public D$: number | object; // $ExpectError
+      @Select(TodoState.reverse) public D1$: Observable<string[]>; // $ExpectType Observable<string[]>
     }
 
     TestBed.get(CheckSelectorComponent); // $ExpectType any
