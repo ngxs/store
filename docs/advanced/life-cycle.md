@@ -78,11 +78,11 @@ export class ZooState implements NgxsAfterBootstrap {
 
 After creating the state by calling its constructor, NGXS calls the lifecycle hook methods in the following sequence at specific moments:
 
-| Hook                 | Purpose and Timing                                                        |
-| -------------------- | ------------------------------------------------------------------------- |
-| ngxsOnChanges()      | Called before ngxsOnInit() and whenever state change.                     |
-| ngxsOnInit()         | Called once, after the first ngxsOnChanges().                             |
-| ngxsAfterBootstrap() | Called once, after the root view and all its children have been rendered. |
+| Hook                 | Purpose and Timing                                                                                       |
+| -------------------- | -------------------------------------------------------------------------------------------------------- |
+| ngxsOnChanges()      | Called _before_ `ngxsOnInit()` and whenever state changes.                                               |
+| ngxsOnInit()         | Called _once_, after the _first_ `ngxsOnChanges()` and _before_ the `APP_INITIALIZER` token is resolved. |
+| ngxsAfterBootstrap() | Called _once_, after the root view and all its children have been rendered.                              |
 
 ## Feature Modules Order of Imports
 
