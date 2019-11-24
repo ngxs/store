@@ -185,35 +185,37 @@ In the `3.5.1` release we provided the fix for the [very old issue](https://gith
 
 ### HMR Plugin
 
-- Feature: HMR Plugin - Add option for persisting state after the root module is disposed [#1369](https://github.com/ngxs/store/pull/1369)
+- Feature: HMR Plugin - Add hmrIsReloaded utility [#1435](https://github.com/ngxs/store/pull/1435)
 
-If you make any changes to state in your application during the `ngOnDestroy` Angular lifecycle hook on any of your primary application components then it those changes may have missed the opportunity to be saved for Hot Module Replacement:
+If you make any changes in your application during the `ngOnDestroy` Angular lifecycle hook on any of your primary application components then it those changes may have any side effects for Hot Module Replacement.
 
 ```ts
 @Component({})
 class AppComponent implements OnDestroy {
   ngOnDestroy(): void {
-    this.store.reset({}); // These changes will not be remembered by HMR
+    // my super heavy logic (but not needed for HMR)
   }
 }
 ```
 
 Up until now there hasn't been any way to work around this...
-Now you can easily control this situation by turning on the flag `persistAfterDestroy`. This will cause the state as it existed after the `ngOnDestroy` hook to be persisted and restored by the HMR plugin.
+Now you can easily control this situation.
 
 ```ts
-if (environment.hmr) {
-  import('@ngxs/hmr-plugin').then(plugin => {
-    plugin
-      .hmr(module, bootstrap, { persistAfterDestroy: true })
-      .catch((err: Error) => console.error(err));
-  });
-} else {
-  bootstrap().catch((err: Error) => console.error(err));
+import { hmrIsReloaded } from '@ngxs/hmr-plugin';
+
+@Component({})
+class AppComponent implements OnDestroy {
+  ngOnDestroy(): void {
+    if (hmrIsReloaded()) {
+      return;
+    }
+    // my super heavy logic (but not needed for HMR)
+  }
 }
 ```
 
-P.S. It is recommended to use the dynamic import for the HMR plugin to benefit from tree-shaking.
+- `hmrIsReloaded` - returns `true` if the application was hot module replaced at least once or more.
 
 ### Storage Plugin
 

@@ -187,15 +187,13 @@ The following options are available:
 
 - `autoClearLogs` - Clear logs after each refresh (default value is `true`).
 - `deferTime` - Deferred time before loading the old state (default value is `100` ms);
-- `restorePreDestroySnapshot` - After reloading, restore the state that was captured before the AppModule was disposed (default value is `false`).
 
 ```ts
 import('@ngxs/hmr-plugin').then(plugin => {
   plugin
     .hmr(module, bootstrap, {
       deferTime: 100,
-      autoClearLogs: true,
-      restorePreDestroySnapshot: true
+      autoClearLogs: true
     })
     .catch((err: Error) => console.error(err));
 });
@@ -210,7 +208,7 @@ Examples:
 ```ts
 import { hmrIsReloaded } from '@ngxs/hmr-plugin';
 
-@Component({ ... })
+@Component({})
 class SomeComponent implements OnDestroy {
   ngOnDestroy(): void {
     if (hmrIsReloaded()) {
