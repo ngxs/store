@@ -4,10 +4,10 @@
 
 ## Overview
 
-- 💥 New lifecycle hook `ngxsOnChanges`
+- 💥 New Lifecycle Hook `ngxsOnChanges`
 - 💦 Fixed Actions Stream Subscriptions Leak
-- 🚧 Improved type safety for children states
-- 🧤 Expose StateContextFactory, StateFactory
+- 🚧 Improved Type Safety for Children States
+
 - ...
 - 🐛 Bug Fixes
 - 🔌 Plugin Improvements and Fixes
@@ -15,20 +15,20 @@
 
 ---
 
-## 💥 New lifecycle hook `ngxsOnChanges`
+## 💥 New Lifecycle Hook `ngxsOnChanges`
 
-We have added a new lifecycle hook. It was inspired by the `onChanges` hook available in Angular. It was a very simple change that enabled us to add this hook and it opens the opportunity for soem really great use cases. The new hook looks like this:
+We have added a new lifecycle hook. It was inspired by the `onChanges` hook available in Angular. It was a very simple change that enabled us to add this hook and it opens the opportunity for some great use cases. The new hook looks like this:
 
 ```ts
-@State({ .. })
+@State({})
 class MyState implements NgxsOnChanges {
-  public ngxsOnChanges(change: NgxsSimpleChange): void {
+  ngxsOnChanges(change: NgxsSimpleChange): void {
     // ..
   }
 }
 ```
 
-The method receives a `NgxsSimpleChanges` object that contains the current and previous property values as well as a flag to tell you if this is the first change.
+The method receives the `NgxsSimpleChanges` object that contains the current and previous property values as well as a flag to tell you if this is the first change.
 
 ```ts
 export class NgxsSimpleChange<T = any> {
@@ -42,32 +42,32 @@ export class NgxsSimpleChange<T = any> {
 
 This new hook is very convenient if we want to dispatch any additional actions or respond in any way after any fields within that part of the state have changed.
 
-#### Lifecycle sequence
+#### Lifecycle Sequence
 
 After creating the state by calling its constructor, NGXS calls the lifecycle hook methods in the following sequence at specific moments:
 
-| Hook                 | Purpose and Timing                                                        |
-| -------------------- | ------------------------------------------------------------------------- |
-| ngxsOnChanges()      | Called before ngxsOnInit() and whenever state change.                     |
-| ngxsOnInit()         | Called once, after the first ngxsOnChanges().                             |
-| ngxsAfterBootstrap() | Called once, after the root view and all its children have been rendered. |
+| Hook                 | Purpose and Timing                                                                                       |
+| -------------------- | -------------------------------------------------------------------------------------------------------- |
+| ngxsOnChanges()      | Called _before_ `ngxsOnInit()` and whenever state changes.                                               |
+| ngxsOnInit()         | Called _once_, after the _first_ `ngxsOnChanges()` and _before_ the `APP_INITIALIZER` token is resolved. |
+| ngxsAfterBootstrap() | Called _once_, after the root view and all its children have been rendered.                              |
 
-#### Here are a couple of example use cases:
+Let's have a look at couple of examples:
 
 I. A convenient way to track state changes:
 
 _Before_
 
 ```ts
-@State({ .. })
+@State({})
 class MyState {}
 
-@Component({ })
+@Component({})
 class MyComponent {
   constructor(store: Store) {
-    store.select(MyState).subscribe((newState) => {
-       console.log('state is changed', newState);
-    })
+    store.select(MyState).subscribe(newState => {
+      console.log('MyState has been changed: ', newState);
+    });
   }
 }
 ```
@@ -77,10 +77,10 @@ One of the problems is that if we are not using the `@ngxs/logger-plugin` or `@n
 _After_
 
 ```ts
-@State({ .. })
+@State({})
 class MyState implements NgxsOnChanges {
-  public ngxsOnChanges({ previousValue, currentValue }: NgxsSimpleChange): void {
-    console.log('MyState has changed', previousValue, currentValue);
+  ngxsOnChanges({ previousValue, currentValue }: NgxsSimpleChange): void {
+    console.log('MyState has been changed: ', previousValue, currentValue);
   }
 }
 ```
@@ -94,7 +94,7 @@ Sometimes we need to save state on the server every time the client makes change
 _Before_
 
 ```ts
-@State({ .. })
+@State({})
 class MyState {}
 
 @Component({})
@@ -102,6 +102,7 @@ class MyComponent {
   constructor(store: Store, api: ApiService) {
     store.select(MyState).subscribe(async newState => {
       await api.save(newState);
+      console.log('The new state has been successfully saved on the server!');
     });
   }
 }
@@ -110,21 +111,23 @@ class MyComponent {
 _After_
 
 ```ts
-@State({ .. })
+@State({})
 class MyState implements NgxsOnChanges {
   constructor(api: ApiService) {}
-  public async ngxsOnChanges(change: NgxsSimpleChange): void {
-    await api.save(change.currentValue);
+
+  async ngxsOnChanges(change: NgxsSimpleChange): void {
+    await api.save(change.currentValue).toPromise();
+    console.log('The new state has been successfully saved on the server!');
   }
 }
 ```
 
-III. You can write your own custom logger without another plugins
+III. You can write your custom logger without another plugins:
 
 ```ts
-@State({ .. })
+@State({})
 class MyState implements NgxsOnChanges {
-  public ngxsOnChanges({ previousValue, currentValue }: NgxsSimpleChange): void {
+  ngxsOnChanges({ previousValue, currentValue }: NgxsSimpleChange): void {
     console.log('prev state', previousValue);
     console.log('next state', currentValue);
   }
@@ -136,7 +139,7 @@ class MyState implements NgxsOnChanges {
 [#1381](https://github.com/ngxs/store/pull/1381)
 (Introduction [with problem statement], details and usage)
 
-## 🚧 Improved type safety for children states
+## 🚧 Improved Type Safety for Children States
 
 _Before_
 
@@ -145,7 +148,7 @@ function MyChildState() {}
 
 @State({
   name: 'myState',
-  children: [MyChildState, { name: 'myChildOtherState' }, null] // success compile
+  children: [MyChildState, { name: 'myChildOtherState' }, null] // successfully compiled as doesn't infer the correct type
 })
 class MyState {}
 ```
@@ -157,41 +160,9 @@ function MyChildState() {}
 
 @State({
   name: 'myState',
-  children: [MyChildState, { name: 'myChildOtherState' }, null] // failed compile, need uses only state class reference
+  children: [MyChildState, { name: 'myChildOtherState' }, null] // if you specify the wrong type, there will be a compilation error, as it requires a state class
 })
 class MyState {}
-```
-
-## 🧤 Expose StateContextFactory, StateFactory
-
-Now if you want to have access to the internal core of NGXS state machine in your plugins you can use tokens `NGXS_STATE_FACTORY`, `NGXS_STATE_CONTEXT_FACTORY`.
-
-```ts
-import { NGXS_STATE_FACTORY, NGXS_STATE_CONTEXT_FACTORY } from '@ngxs/store/internals';
-
-class MyPluginAccessor {
-  constructor(
-    @Inject(NGXS_STATE_FACTORY)
-    public factory: any,
-    @Inject(NGXS_STATE_CONTEXT_FACTORY)
-    public contextFactory: any
-  ) {}
-}
-
-@NgModule()
-class MyPluginModule {
-  public static forRoot(): ModuleWithProviders<MyPluginModule> {
-    return {
-      ngModule: MyPluginModule,
-      providers: [MyPluginAccessor]
-    };
-  }
-}
-
-@NgModule({
-  imports: [NgxsModule.forRoot(), MyPluginModule.forRoot()]
-})
-export class AppModule {}
 ```
 
 ## 🐛 Bug Fixes
@@ -206,23 +177,28 @@ For Each:
 
 ## 🔌 Plugin Improvements and Fixes
 
+### Router Plugin
+
+- Fix: Router Plugin - Resolve infinite redirects and browser hanging [#1430](https://github.com/ngxs/store/pull/1430)
+
+In the `3.5.1` release we provided the fix for the [very old issue](https://github.com/ngxs/store/issues/542), where the Router Plugin didn't restore its state after the `RouterCancel` action was emitted. This fix introduced a new bug that was associated with endless redirects and, as a result, browser freeze. The above PR resolves both issues, thereby there will no more browser hanging because of infinite redirects.
+
 ### HMR Plugin
 
 - Feature: HMR Plugin - Add option for persisting state after the root module is disposed [#1369](https://github.com/ngxs/store/pull/1369)
 
-If you make any changes to state in your application during the `ngOnDestroy` Angular lifecycle hook on any of your primary application components then it those changes may have missed the opportunity to be saved for Hot Module Reloading:
+If you make any changes to state in your application during the `ngOnDestroy` Angular lifecycle hook on any of your primary application components then it those changes may have missed the opportunity to be saved for Hot Module Replacement:
 
 ```ts
-@Component({ .. })
+@Component({})
 class AppComponent implements OnDestroy {
- ...
- public ngOnDestroy(): void {
-   this.store.reset({ .. }); // These changes will not be remembered by HMR
- }
+  ngOnDestroy(): void {
+    this.store.reset({}); // These changes will not be remembered by HMR
+  }
 }
 ```
 
-Up until now there hasn't really been any way to work around this...
+Up until now there hasn't been any way to work around this...
 Now you can easily control this situation by turning on the flag `persistAfterDestroy`. This will cause the state as it existed after the `ngOnDestroy` hook to be persisted and restored by the HMR plugin.
 
 ```ts
@@ -237,13 +213,13 @@ if (environment.hmr) {
 }
 ```
 
-PS. It is recommended to use dynamic imports for the HMR plugin as you see above for improved tree-shaking.
+P.S. It is recommended to use the dynamic import for the HMR plugin to benefit from tree-shaking.
 
 ### Storage Plugin
 
 - Feature: Storage Plugin - Use state classes as keys [#1380](https://github.com/ngxs/store/pull/1380)
 
-Currently, if you want a specific part of the state of the application to be stored then you have to provide the `path` of the state to the storage plugin. Now we have added the ability to provide the State Class instead of the path. As an example, given the following state:
+Currently, if you want a specific part of the state of the application to be stored then you have to provide the `path` of the state to the storage plugin. Now we have added the ability to provide the state class instead of the path. As an example, given the following state:
 
 ```ts
 @State<Novel[]>({
@@ -266,7 +242,7 @@ We would previously have to use the `path` of the state:
 export class AppModule {}
 ```
 
-Now you can use the State Class:
+Now you can use the state class:
 
 ```ts
 @NgModule({
@@ -294,7 +270,7 @@ _After_
 `UpdateFormValue({ value, path, propertyPath? })`
 
 ```ts
-interface NovelsStateModel {
+export interface NovelsStateModel {
   newNovelForm: {
     model?: {
       novelName: string;
@@ -304,6 +280,7 @@ interface NovelsStateModel {
     };
   };
 }
+
 @State<NovelsStateModel>({
   name: 'novels',
   defaults: {
@@ -344,6 +321,7 @@ export class NewNovelComponent {
       })
     ])
   });
+
   onSubmit() {
     //
   }
@@ -366,7 +344,7 @@ store.dispatch(
 
 ### WebSocket Plugin
 
-There is a new action for the WebSocket plugin.
+There is a new action for the `@ngxs/websocket-plugin`.
 
 `WebSocketConnected` - Action dispatched when a web socket is connected.
 
