@@ -11,7 +11,7 @@ import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
 import { StateToken } from './state-token/state-token';
-import { mergeObjects } from './internal/internals';
+import { merge } from './internal/internals';
 
 @Injectable()
 export class Store {
@@ -110,7 +110,7 @@ export class Store {
     if (storeIsEmpty) {
       const defaultStateNotEmpty: boolean = Object.keys(this._config.defaultsState).length > 0;
       const storeValues: PlainObject = defaultStateNotEmpty
-        ? mergeObjects(this._config.defaultsState, initialStateValue)
+        ? merge(this._config.defaultsState, initialStateValue)
         : initialStateValue;
 
       this._stateStream.next(storeValues);

@@ -381,6 +381,6 @@ export function getStateDiffChanges<T>(
   return new NgxsSimpleChange(previousValue, currentValue, !mappedStore.isInitialised);
 }
 
-export function mergeObjects(a: object, b: object): object {
-  return { ...(a || {}), ...(b || {}) };
+export function merge(a: object, b: object): object {
+  return { ...a, ...b };
 }

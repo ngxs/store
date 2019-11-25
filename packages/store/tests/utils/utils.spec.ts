@@ -1,5 +1,5 @@
 import { setValue } from '../../src/utils/utils';
-import { mergeObjects } from '../../src/internal/internals';
+import { merge } from '../../src/internal/internals';
 
 describe('utils', () => {
   describe('setValue', () => {
@@ -57,7 +57,7 @@ describe('utils', () => {
       public value = 'hello world';
     }
 
-    expect(mergeObjects(null as any, null as any)).toEqual({});
-    expect(mergeObjects(new A(), { id: 0 })).toEqual({ value: 'hello world', id: 0 });
+    expect(merge(null as any, null as any)).toEqual({});
+    expect(merge(new A(), { id: 0 })).toEqual({ value: 'hello world', id: 0 });
   });
 });
