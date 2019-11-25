@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store-internals.js",
-      "maxSize": "1.72kB"
+      "maxSize": "1.64kB"
     },
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store-operators.js",
@@ -10,7 +10,7 @@
     },
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store.js",
-      "maxSize": "18.67kB"
+      "maxSize": "18.68kB"
     },
     {
       "path": "./@ngxs/form-plugin/fesm2015/ngxs-form-plugin.js",
