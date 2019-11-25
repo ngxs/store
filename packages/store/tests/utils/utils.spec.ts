@@ -1,5 +1,7 @@
-import { ObjectUtils } from '@ngxs/store/internals';
+import { ObjectUtils, PlainObject } from '@ngxs/store/internals';
+import { propGetter } from '../../src/internal/internals';
 import { setValue } from '../../src/utils/utils';
+import { NgxsConfig } from '../../src/symbols';
 
 describe('utils', () => {
   describe('setValue', () => {
@@ -59,5 +61,25 @@ describe('utils', () => {
 
     expect(ObjectUtils.merge(null as any, null as any)).toEqual({});
     expect(ObjectUtils.merge(new A(), { id: 0 })).toEqual({ value: 'hello world', id: 0 });
+  });
+
+  describe('propGetter', () => {
+    const defaultConfig: NgxsConfig = new NgxsConfig();
+    const target: PlainObject = { a: { b: { c: 100 } } };
+
+    it('strictContentSecurityPolicy: false', () => {
+      expect(propGetter(['a', 'b', 'c'], defaultConfig)(target)).toEqual(100);
+      expect(propGetter(['a', 'b'], defaultConfig)(target)).toEqual({ c: 100 });
+    });
+
+    it('strictContentSecurityPolicy: true', () => {
+      const config: NgxsConfig = {
+        ...defaultConfig,
+        compatibility: { ...defaultConfig.compatibility, strictContentSecurityPolicy: true }
+      };
+
+      expect(propGetter(['a', 'b', 'c'], config)(target)).toEqual(100);
+      expect(propGetter(['a', 'b'], config)(target)).toEqual({ c: 100 });
+    });
   });
 });
