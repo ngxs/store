@@ -2,23 +2,23 @@
   "files": [
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store-internals.js",
-      "maxSize": "3 kB"
+      "maxSize": "1.72KB"
     },
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store-operators.js",
-      "maxSize": "3 kB"
+      "maxSize": "1.93KB"
     },
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store.js",
-      "maxSize": "19 kB"
+      "maxSize": "18.68 kB"
     },
     {
       "path": "./@ngxs/form-plugin/fesm2015/ngxs-form-plugin.js",
-      "maxSize": "2.40 kB"
+      "maxSize": "2.37 kB"
     },
     {
       "path": "./@ngxs/devtools-plugin/fesm2015/ngxs-devtools-plugin.js",
-      "maxSize": "2.10 kB"
+      "maxSize": "2.04 kB"
     },
     {
       "path": "./@ngxs/hmr-plugin/fesm2015/ngxs-hmr-plugin.js",
@@ -26,19 +26,19 @@
     },
     {
       "path": "./@ngxs/logger-plugin/fesm2015/ngxs-logger-plugin.js",
-      "maxSize": "2.30 kB"
+      "maxSize": "2.27 kB"
     },
     {
       "path": "./@ngxs/router-plugin/fesm2015/ngxs-router-plugin.js",
-      "maxSize": "4 kB"
+      "maxSize": "3.8 kB"
     },
     {
       "path": "./@ngxs/storage-plugin/fesm2015/ngxs-storage-plugin.js",
-      "maxSize": "2.40 kB"
+      "maxSize": "2.37 kB"
     },
     {
       "path": "./@ngxs/websocket-plugin/fesm2015/ngxs-websocket-plugin.js",
-      "maxSize": "3.20 kB"
+      "maxSize": "3.1 kB"
     }
   ]
 }

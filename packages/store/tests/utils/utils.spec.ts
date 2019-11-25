@@ -1,5 +1,5 @@
-import { ObjectUtils } from '@ngxs/store/internals';
 import { setValue } from '../../src/utils/utils';
+import { mergeObjects } from '../../src/internal/internals';
 
 describe('utils', () => {
   describe('setValue', () => {
@@ -57,7 +57,7 @@ describe('utils', () => {
       public value = 'hello world';
     }
 
-    expect(ObjectUtils.merge(null as any, null as any)).toEqual({});
-    expect(ObjectUtils.merge(new A(), { id: 0 })).toEqual({ value: 'hello world', id: 0 });
+    expect(mergeObjects(null as any, null as any)).toEqual({});
+    expect(mergeObjects(new A(), { id: 0 })).toEqual({ value: 'hello world', id: 0 });
   });
 });

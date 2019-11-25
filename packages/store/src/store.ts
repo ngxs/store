@@ -2,7 +2,7 @@
 import { Inject, Injectable, Optional, Type } from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
-import { INITIAL_STATE_TOKEN, ObjectUtils, PlainObject } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
@@ -11,6 +11,7 @@ import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
 import { StateToken } from './state-token/state-token';
+import { mergeObjects } from './internal/internals';
 
 @Injectable()
 export class Store {
@@ -109,7 +110,7 @@ export class Store {
     if (storeIsEmpty) {
       const defaultStateNotEmpty: boolean = Object.keys(this._config.defaultsState).length > 0;
       const storeValues: PlainObject = defaultStateNotEmpty
-        ? ObjectUtils.merge(this._config.defaultsState, initialStateValue)
+        ? mergeObjects(this._config.defaultsState, initialStateValue)
         : initialStateValue;
 
       this._stateStream.next(storeValues);
