@@ -34,11 +34,7 @@ import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
-  imports: [
-    AppRoutingModule, // 1. Init RouterModule.forRoot([ROUTES])
-    NgxsModule.forRoot([AppState]), // 2. Init NGXS Store with states
-    NgxsRouterPluginModule.forRoot() // 3. Init NGXS Router plugin
-  ]
+  imports: [NgxsModule.forRoot([]), NgxsRouterPluginModule.forRoot()]
 })
 export class AppModule {}
 ```

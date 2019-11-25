@@ -9,8 +9,8 @@ import { StoreIvyModule } from './store-ivy.module';
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    RouterModule.forRoot([{ path: '', component: AppComponent }]),
-    StoreIvyModule
+    StoreIvyModule,
+    RouterModule.forRoot([{ path: '', component: AppComponent }])
   ],
   bootstrap: [AppComponent]
 })
