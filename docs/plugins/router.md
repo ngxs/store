@@ -31,7 +31,6 @@ Add the `NgxsRouterPluginModule` plugin to your root app module:
 ```ts
 import { NgxsModule } from '@ngxs/store';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
-import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   imports: [NgxsModule.forRoot([]), NgxsRouterPluginModule.forRoot()]
