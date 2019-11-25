@@ -10,28 +10,25 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "9.0.0-rc.1",
-    "@angular/common": "9.0.0-rc.1",
-    "@angular/compiler": "9.0.0-rc.1",
-    "@angular/core": "9.0.0-rc.1",
-    "@angular/forms": "9.0.0-rc.1",
-    "@angular/platform-browser": "9.0.0-rc.1",
-    "@angular/platform-browser-dynamic": "9.0.0-rc.1",
-    "@angular/router": "9.0.0-rc.1",
+    "@angular/animations": "9.0.0-rc.3",
+    "@angular/common": "9.0.0-rc.3",
+    "@angular/compiler": "9.0.0-rc.3",
+    "@angular/core": "9.0.0-rc.3",
+    "@angular/forms": "9.0.0-rc.3",
+    "@angular/platform-browser": "9.0.0-rc.3",
+    "@angular/platform-browser-dynamic": "9.0.0-rc.3",
+    "@angular/router": "9.0.0-rc.3",
     "rxjs": "file:../../node_modules/rxjs",
     "tslib": "file:../../node_modules/tslib",
-    "zone.js": "0.10.1"
+    "zone.js": "0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.900.0-rc.1",
-    "@angular/cli": "9.0.0-rc.1",
-    "@angular/compiler-cli": "9.0.0-rc.1",
+    "@angular-devkit/build-angular": "0.900.0-rc.3",
+    "@angular/cli": "9.0.0-rc.3",
+    "@angular/compiler-cli": "9.0.0-rc.3",
     "@types/node": "8.9.4",
-    "@types/jasmine": "3.4.0",
-    "@types/jasminewd2": "2.0.3",
     "cpx": "^1.5.0",
     "ts-node": "8.3.0",
-    "tslint": "5.18.0",
     "typescript": "3.6.4"
   }
 }

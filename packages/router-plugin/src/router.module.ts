@@ -4,15 +4,14 @@ import { NgxsModule } from '@ngxs/store';
 import { RouterState } from './router.state';
 import { DefaultRouterStateSerializer, RouterStateSerializer } from './serializer';
 
-@NgModule()
+@NgModule({
+  imports: [NgxsModule.forFeature([RouterState])]
+})
 export class NgxsRouterPluginModule {
-  static forRoot(): ModuleWithProviders[] {
-    return [
-      NgxsModule.forFeature([RouterState]),
-      {
-        ngModule: NgxsRouterPluginModule,
-        providers: [{ provide: RouterStateSerializer, useClass: DefaultRouterStateSerializer }]
-      }
-    ];
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: NgxsRouterPluginModule,
+      providers: [{ provide: RouterStateSerializer, useClass: DefaultRouterStateSerializer }]
+    };
   }
 }
