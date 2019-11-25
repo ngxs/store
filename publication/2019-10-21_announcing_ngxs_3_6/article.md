@@ -187,7 +187,7 @@ In the `3.5.1` release we provided the fix for the [very old issue](https://gith
 
 - Feature: HMR Plugin - Add hmrIsReloaded utility [#1435](https://github.com/ngxs/store/pull/1435)
 
-If you make any changes in your application during the `ngOnDestroy` Angular lifecycle hook on any of your primary application components then it those changes may have any side effects for Hot Module Replacement.
+If you make any changes in your application during the `ngOnDestroy` Angular lifecycle hook on any of your primary application components then those changes could possibly have side effects for Hot Module Replacement.
 
 ```ts
 @Component({})
