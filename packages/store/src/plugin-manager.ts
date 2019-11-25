@@ -16,13 +16,10 @@ export class PluginManager {
     this.registerHandlers();
   }
 
-  private get rootPlugins(): NgxsPluginFn[] {
-    return (this._parentManager && this._parentManager.plugins) || this.plugins;
-  }
-
   private registerHandlers(): void {
     const pluginHandlers: NgxsPluginFn[] = this.getPluginHandlers();
-    this.rootPlugins.push(...pluginHandlers);
+    const rootPlugins = (this._parentManager && this._parentManager.plugins) || this.plugins;
+    rootPlugins.push(...pluginHandlers);
   }
 
   private getPluginHandlers(): NgxsPluginFn[] {

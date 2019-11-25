@@ -22,7 +22,8 @@ export function Action(
       actions = [actions];
     }
 
-    for (const action of actions) {
+    for (let i = 0; i < actions.length; i++) {
+      const action = actions[i];
       const type = action.type;
 
       if (!meta.actions[type]) {

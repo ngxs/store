@@ -32,7 +32,8 @@ export class LifecycleStateManager {
    * Invoke the init function on the states.
    */
   invokeInit(mappedStores: MappedStore[]): void {
-    for (const mappedStore of mappedStores) {
+    for (let i = 0; i < mappedStores.length; i++) {
+      const mappedStore = mappedStores[i];
       const instance: NgxsLifeCycle = mappedStore.instance;
 
       if (instance.ngxsOnChanges) {
@@ -61,7 +62,8 @@ export class LifecycleStateManager {
    * Invoke the bootstrap function on the states.
    */
   invokeBootstrap(mappedStores: MappedStore[]) {
-    for (const mappedStore of mappedStores) {
+    for (let i = 0; i < mappedStores.length; i++) {
+      const mappedStore = mappedStores[i];
       const instance: NgxsLifeCycle = mappedStore.instance;
       if (instance.ngxsAfterBootstrap) {
         instance.ngxsAfterBootstrap(this.getStateContext(mappedStore));

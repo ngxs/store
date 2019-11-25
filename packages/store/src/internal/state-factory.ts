@@ -101,7 +101,8 @@ export class StateFactory {
     const nameGraph: PlainObjectOf<StateClassInternal> = nameToState(newStates);
     const bootstrappedStores: MappedStore[] = [];
 
-    for (const name of sortedStates) {
+    for (let i = 0; i < sortedStates.length; i++) {
+      const name = sortedStates[i];
       const stateClass: StateClassInternal = nameGraph[name];
       const depth: string = depths[name];
       const meta: MetaDataModel = stateClass[META_KEY]!;
@@ -173,12 +174,14 @@ export class StateFactory {
   invokeActions(actions$: InternalActions, action: any) {
     const results = [];
 
-    for (const metadata of this.states) {
+    for (let i = 0; i < this.states.length; i++) {
+      const metadata = this.states[i];
       const type = getActionTypeFromInstance(action)!;
       const actionMetas = metadata.actions[type];
 
       if (actionMetas) {
-        for (const actionMeta of actionMetas) {
+        for (let j = 0; j < actionMetas.length; j++) {
+          const actionMeta = actionMetas[j];
           const stateContext = this._stateContextFactory.createStateContext(metadata);
           try {
             let result = metadata.instance[actionMeta.fn](stateContext, action);
@@ -219,7 +222,8 @@ export class StateFactory {
     const newStates: StateClassInternal[] = [];
     const statesMap: StatesByName = this.statesByName;
 
-    for (const stateClass of stateClasses) {
+    for (let i = 0; i < stateClasses.length; i++) {
+      const stateClass = stateClasses[i];
       const stateName: string = StoreValidators.checkStateNameIsUnique(stateClass, statesMap);
       const unmountedState = !statesMap[stateName];
       if (unmountedState) {
