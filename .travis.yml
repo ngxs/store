@@ -36,7 +36,7 @@ script:
   - yarn test:ci:integration:ssr
 
   # Run integration test with Angular 5
-  - yarn integration:ng5
+  - yarn integration:ng6
 
   # Run integration test with Angular 9 Ivy
   - yarn integration:ivy

@@ -102,7 +102,7 @@
     "bundlesize": "bundlesize --config bundlesize.config.json",
     "format": "prettier --write \"**/*.{js,ts,html,css,scss,md,json,yml}\"",
     "// - INTEGRATION": "Integration builds",
-    "integration:ng5": "cd integrations/hello-world-ng5 && yarn test",
+    "integration:ng6": "cd integrations/hello-world-ng6 && yarn test",
     "integration:ivy": "cd integrations/ivy && yarn test"
   },
   "private": true,
