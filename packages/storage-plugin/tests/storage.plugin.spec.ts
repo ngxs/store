@@ -16,11 +16,6 @@ describe('NgxsStoragePlugin', () => {
 
   interface CounterStateModel {
     count: number;
-    instance?: Counter;
-  }
-
-  class Counter {
-    constructor(public count: number) {}
   }
 
   @State<CounterStateModel>({
@@ -49,11 +44,15 @@ describe('NgxsStoragePlugin', () => {
   })
   class LazyLoadedState {}
 
-  @State<CounterStateModel>({
-    name: 'concreteType',
+  class CounterInfoStateModel {
+    constructor(public count: number) {}
+  }
+
+  @State<CounterInfoStateModel>({
+    name: 'counterInfo',
     defaults: { count: 0 }
   })
-  class ConcreteTypeState {}
+  class CounterInfoState {}
 
   afterEach(() => {
     localStorage.removeItem(DEFAULT_STATE_KEY);
@@ -474,26 +473,22 @@ describe('NgxsStoragePlugin', () => {
     });
   });
 
-  it('should alter state and return concrete type after deserialization.', () => {
+  it('should alter object before serialization.', () => {
     // Arrange
-    localStorage.setItem(
-      'concreteType',
-      JSON.stringify({ count: 100, instance: { count: 200 } })
-    );
+    localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
 
     // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([ConcreteTypeState]),
+        NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot({
-          key: 'concreteType',
           serialization: [
             {
-              key: 'concreteType',
-              onAfterDeserialize: (obj: any) => {
-                return <CounterStateModel>{
-                  count: obj.count,
-                  instance: new Counter(obj.instance.count)
+              onBeforeSerialize: (obj: any) => {
+                return {
+                  counter: {
+                    count: obj.counter.count * 2
+                  }
                 };
               }
             }
@@ -503,11 +498,45 @@ describe('NgxsStoragePlugin', () => {
     });
 
     const store: Store = TestBed.get(Store);
-    const state: CounterStateModel = store.selectSnapshot(ConcreteTypeState);
+
+    store.dispatch(new Increment());
+
+    const state: CounterStateModel = store.selectSnapshot(CounterState);
 
     // Assert
-    expect(state.instance).toBeInstanceOf(Counter);
+    expect(state.count).toBe(101);
+    expect(localStorage.getItem(DEFAULT_STATE_KEY)).toBe(
+      JSON.stringify({ counter: { count: 202 } })
+    );
+  });
+
+  it('should alter state and return concrete type after deserialization.', () => {
+    // Arrange
+    localStorage.setItem('counterInfo', JSON.stringify({ count: 100 }));
+
+    // Act
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([CounterInfoState]),
+        NgxsStoragePluginModule.forRoot({
+          key: 'counterInfo',
+          serialization: [
+            {
+              key: 'counterInfo',
+              onAfterDeserialize: (obj: any) => {
+                return new CounterInfoStateModel(obj.count);
+              }
+            }
+          ]
+        })
+      ]
+    });
+
+    const store: Store = TestBed.get(Store);
+    const state: CounterInfoStateModel = store.selectSnapshot(CounterInfoState);
+
+    // Assert
+    expect(state).toBeInstanceOf(CounterInfoStateModel);
     expect(state.count).toBe(100);
-    expect(state.instance!.count).toBe(200);
   });
 });

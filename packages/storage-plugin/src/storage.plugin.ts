@@ -38,7 +38,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     const keys = this._options.key as string[];
     const matches = actionMatcher(event);
     const isInitAction = matches(InitState) || matches(UpdateState);
-    let hasMigration = false;
+    let hasMigrationOrSerialization = false;
 
     if (isInitAction) {
       for (const key of keys) {
@@ -62,12 +62,16 @@ export class NgxsStoragePlugin implements NgxsPlugin {
               const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
               if (versionMatch && keyMatch) {
                 val = strategy.migrate(val);
-                hasMigration = true;
+                hasMigrationOrSerialization = true;
               }
             });
           }
 
           this.executeSerializationStrategies(key, strategy => {
+            if (strategy.onBeforeSerialize) {
+              hasMigrationOrSerialization = true;
+            }
+
             if (strategy.onAfterDeserialize) {
               val = strategy.onAfterDeserialize(val);
             }
@@ -84,7 +88,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
     return next(state, event).pipe(
       tap(nextState => {
-        if (!isInitAction || (isInitAction && hasMigration)) {
+        if (!isInitAction || (isInitAction && hasMigrationOrSerialization)) {
           for (const key of keys) {
             let val = nextState;
 
