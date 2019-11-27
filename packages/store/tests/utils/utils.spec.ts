@@ -1,5 +1,4 @@
 import { setValue } from '../../src/utils/utils';
-import { merge } from '../../src/internal/internals';
 
 describe('utils', () => {
   describe('setValue', () => {
@@ -50,14 +49,5 @@ describe('utils', () => {
         other: 'bar'
       });
     });
-  });
-
-  it('should be correct merged', () => {
-    class A {
-      public value = 'hello world';
-    }
-
-    expect(merge(null as any, null as any)).toEqual({});
-    expect(merge(new A(), { id: 0 })).toEqual({ value: 'hello world', id: 0 });
   });
 });

@@ -7,10 +7,10 @@ $ npm install @ngxs/store@dev
 ```
 
 - Feature: Add `ngxsOnChanges` lifecycle hook [#1389](https://github.com/ngxs/store/pull/1389)
-- Feature: Expose StateContextFactory, StateFactory [#1325](https://github.com/ngxs/store/pull/1325)
+- Feature: Expose `StateContextFactory`, `StateFactory` [#1325](https://github.com/ngxs/store/pull/1325)
 - Feature: Improved type safety for children states [#1388](https://github.com/ngxs/store/pull/1388)
-- Feature: Improved type safety for @Select decorator [#1453](https://github.com/ngxs/store/pull/1453)
-- Feature: Add StateToken<T> construct [#1436](https://github.com/ngxs/store/pull/1436)
+- Feature: Improved type safety for `@Select` decorator [#1453](https://github.com/ngxs/store/pull/1453)
+- Feature: Add `StateToken<T>` construct [#1436](https://github.com/ngxs/store/pull/1436)
 - Feature: Storage Plugin - Use state classes as keys [#1380](https://github.com/ngxs/store/pull/1380)
 - Feature: Form Plugin - Implement `propertyPath` parameter in the `UpdateFormValue` [#1215](https://github.com/ngxs/store/pull/1215)
 - Feature: WebSocket Plugin - Implement `WebSocketConnected` action [#1371](https://github.com/ngxs/store/pull/1371)
@@ -21,6 +21,7 @@ $ npm install @ngxs/store@dev
 - Fix: Group `Actions` subscriptions to remove memory leak [#1381](https://github.com/ngxs/store/pull/1381)
 - Fix: Upgrade ng-packagr to fix Ivy issues [#1397](https://github.com/ngxs/store/pull/1397)
 - Fix: Router Plugin - resolve infinite redirects and browser hanging [#1430](https://github.com/ngxs/store/pull/1430)
+- Fix: Router Plugin - build compatibility with Angular 9 (Ivy) [#1459](https://github.com/ngxs/store/pull/1459)
 - Build: Add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
 - Build: Run SSR tests with cypress [#1281](https://github.com/ngxs/store/pull/1281)
 

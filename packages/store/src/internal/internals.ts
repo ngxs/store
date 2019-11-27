@@ -380,7 +380,3 @@ export function getStateDiffChanges<T>(
   const currentValue: T = getValue(diff.newAppState, mappedStore.depth);
   return new NgxsSimpleChange(previousValue, currentValue, !mappedStore.isInitialised);
 }
-
-export function merge(a: object, b: object): object {
-  return { ...a, ...b };
-}
