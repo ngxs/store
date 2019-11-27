@@ -64,19 +64,24 @@ describe('utils', () => {
   });
 
   describe('propGetter', () => {
-    const defaultConfig: NgxsConfig = new NgxsConfig();
-    const target: PlainObject = { a: { b: { c: 100 } } };
-
     it('strictContentSecurityPolicy: false', () => {
-      expect(propGetter(['a', 'b', 'c'], defaultConfig)(target)).toEqual(100);
-      expect(propGetter(['a', 'b'], defaultConfig)(target)).toEqual({ c: 100 });
+      const config: NgxsConfig = new NgxsConfig();
+      const target: PlainObject = { a: { b: { c: 100 } } };
+      expect(propGetter(['a', 'b', 'c'], config)(target)).toEqual(100);
+      expect(propGetter(['a', 'b'], config)(target)).toEqual({ c: 100 });
     });
 
     it('strictContentSecurityPolicy: true', () => {
+      const defaultConfig: NgxsConfig = new NgxsConfig();
       const config: NgxsConfig = {
         ...defaultConfig,
-        compatibility: { ...defaultConfig.compatibility, strictContentSecurityPolicy: true }
+        compatibility: {
+          ...defaultConfig.compatibility,
+          strictContentSecurityPolicy: true
+        }
       };
+
+      const target: PlainObject = { a: { b: { c: 100 } } };
 
       expect(propGetter(['a', 'b', 'c'], config)(target)).toEqual(100);
       expect(propGetter(['a', 'b'], config)(target)).toEqual({ c: 100 });
