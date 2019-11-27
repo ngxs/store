@@ -3,121 +3,121 @@
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store-internals.js",
       "package": "@ngxs/store/internals",
-      "maxSize": "1.72kB",
+      "maxSize": "1.720kB",
       "target": "es2015"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store-internals.js",
       "package": "@ngxs/store/internals",
-      "maxSize": "1.83kB",
+      "maxSize": "1.830kB",
       "target": "es5"
     },
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store-operators.js",
       "package": "@ngxs/store/operators",
-      "maxSize": "1.94kB",
+      "maxSize": "1.934kB",
       "target": "es2015"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store-operators.js",
       "package": "@ngxs/store/operators",
-      "maxSize": "2.00kB",
+      "maxSize": "1.991kB",
       "target": "es5"
     },
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store.js",
       "package": "@ngxs/store",
-      "maxSize": "18.72kB",
+      "maxSize": "18.720kB",
       "target": "es2015"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store.js",
       "package": "@ngxs/store",
-      "maxSize": "19.93kB",
+      "maxSize": "19.930kB",
       "target": "es5"
     },
     {
       "path": "./@ngxs/form-plugin/fesm2015/ngxs-form-plugin.js",
       "package": "@ngxs/form-plugin",
-      "maxSize": "2.38kB",
+      "maxSize": "2.371kB",
       "target": "es2015"
     },
     {
       "path": "./@ngxs/form-plugin/fesm5/ngxs-form-plugin.js",
       "package": "@ngxs/form-plugin",
-      "maxSize": "2.66kB",
+      "maxSize": "2.660kB",
       "target": "es5"
     },
     {
       "path": "./@ngxs/devtools-plugin/fesm2015/ngxs-devtools-plugin.js",
       "package": "@ngxs/devtools-plugin",
-      "maxSize": "2.04kB",
+      "maxSize": "2.040kB",
       "target": "es2015"
     },
     {
       "path": "./@ngxs/devtools-plugin/fesm5/ngxs-devtools-plugin.js",
       "package": "@ngxs/devtools-plugin",
-      "maxSize": "2.21kB",
+      "maxSize": "2.210kB",
       "target": "es5"
     },
     {
       "path": "./@ngxs/hmr-plugin/fesm2015/ngxs-hmr-plugin.js",
       "package": "@ngxs/hmr-plugin",
-      "maxSize": "3.02kB",
+      "maxSize": "3.020kB",
       "target": "es2015"
     },
     {
       "path": "./@ngxs/hmr-plugin/fesm5/ngxs-hmr-plugin.js",
       "package": "@ngxs/hmr-plugin",
-      "maxSize": "3.40kB",
+      "maxSize": "3.394kB",
       "target": "es5"
     },
     {
       "path": "./@ngxs/logger-plugin/fesm2015/ngxs-logger-plugin.js",
       "package": "@ngxs/logger-plugin",
-      "maxSize": "2.28kB",
+      "maxSize": "2.272kB",
       "target": "es2015"
     },
     {
       "path": "./@ngxs/logger-plugin/fesm5/ngxs-logger-plugin.js",
       "package": "@ngxs/logger-plugin",
-      "maxSize": "2.39kB",
+      "maxSize": "2.390kB",
       "target": "es5"
     },
     {
       "path": "./@ngxs/router-plugin/fesm2015/ngxs-router-plugin.js",
       "package": "@ngxs/router-plugin",
-      "maxSize": "3.90kB",
+      "maxSize": "3.810kB",
       "target": "es2015"
     },
     {
       "path": "./@ngxs/router-plugin/fesm5/ngxs-router-plugin.js",
       "package": "@ngxs/router-plugin",
-      "maxSize": "4.10kB",
+      "maxSize": "4.095kB",
       "target": "es5"
     },
     {
       "path": "./@ngxs/storage-plugin/fesm2015/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
-      "maxSize": "2.38kB",
+      "maxSize": "2.372kB",
       "target": "es2015"
     },
     {
       "path": "./@ngxs/storage-plugin/fesm5/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
-      "maxSize": "2.68kB",
+      "maxSize": "2.672kB",
       "target": "es5"
     },
     {
       "path": "./@ngxs/websocket-plugin/fesm2015/ngxs-websocket-plugin.js",
       "package": "@ngxs/websocket-plugin",
-      "maxSize": "3.20kB",
+      "maxSize": "3.110kB",
       "target": "es2015"
     },
     {
       "path": "./@ngxs/websocket-plugin/fesm5/ngxs-websocket-plugin.js",
       "package": "@ngxs/websocket-plugin",
-      "maxSize": "3.48kB",
+      "maxSize": "3.474kB",
       "target": "es5"
     }
   ]
