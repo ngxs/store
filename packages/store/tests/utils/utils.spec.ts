@@ -67,6 +67,7 @@ describe('utils', () => {
     it('strictContentSecurityPolicy: false', () => {
       const config: NgxsConfig = new NgxsConfig();
       const target: PlainObject = { a: { b: { c: 100 } } };
+
       expect(propGetter(['a', 'b', 'c'], config)(target)).toEqual(100);
       expect(propGetter(['a', 'b'], config)(target)).toEqual({ c: 100 });
     });
