@@ -2,102 +2,122 @@
   "files": [
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store-internals.js",
-      "maxSize": "6.22kB",
+      "package": "@ngxs/store/internals",
+      "maxSize": "6.220kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store-internals.js",
-      "maxSize": "7.18kB",
+      "package": "@ngxs/store/internals",
+      "maxSize": "7.180kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store-operators.js",
-      "maxSize": "9.68kB",
+      "package": "@ngxs/store/operators",
+      "maxSize": "9.680kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store-operators.js",
-      "maxSize": "9.82kB",
+      "package": "@ngxs/store/operators",
+      "maxSize": "9.820kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store.js",
-      "maxSize": "104.6kB",
+      "package": "@ngxs/store",
+      "maxSize": "104.60kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store.js",
-      "maxSize": "119.81kB",
+      "package": "@ngxs/store",
+      "maxSize": "119.810kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/form-plugin/fesm2015/ngxs-form-plugin.js",
+      "package": "@ngxs/form-plugin",
       "maxSize": "15kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/form-plugin/fesm5/ngxs-form-plugin.js",
-      "maxSize": "17.79kB",
+      "package": "@ngxs/form-plugin",
+      "maxSize": "17.790kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/devtools-plugin/fesm2015/ngxs-devtools-plugin.js",
-      "maxSize": "8.84kB",
+      "package": "@ngxs/devtools-plugin",
+      "maxSize": "8.840kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/devtools-plugin/fesm5/ngxs-devtools-plugin.js",
+      "package": "@ngxs/devtools-plugin",
       "maxSize": "10.30kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/hmr-plugin/fesm2015/ngxs-hmr-plugin.js",
+      "package": "@ngxs/hmr-plugin",
       "maxSize": "16kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/hmr-plugin/fesm5/ngxs-hmr-plugin.js",
-      "maxSize": "19.49kB",
+      "package": "@ngxs/hmr-plugin",
+      "maxSize": "19.490kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/logger-plugin/fesm2015/ngxs-logger-plugin.js",
-      "maxSize": "10.43kB",
+      "package": "@ngxs/logger-plugin",
+      "maxSize": "10.430kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/logger-plugin/fesm5/ngxs-logger-plugin.js",
-      "maxSize": "12.11kB",
+      "package": "@ngxs/logger-plugin",
+      "maxSize": "12.110kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/router-plugin/fesm2015/ngxs-router-plugin.js",
-      "maxSize": "20.84kB",
+      "package": "@ngxs/router-plugin",
+      "maxSize": "20.840kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/router-plugin/fesm5/ngxs-router-plugin.js",
-      "maxSize": "25.18kB",
+      "package": "@ngxs/router-plugin",
+      "maxSize": "25.180kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/storage-plugin/fesm2015/ngxs-storage-plugin.js",
-      "maxSize": "10.28kB",
+      "package": "@ngxs/storage-plugin",
+      "maxSize": "10.280kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/storage-plugin/fesm5/ngxs-storage-plugin.js",
-      "maxSize": "11.84kB",
+      "package": "@ngxs/storage-plugin",
+      "maxSize": "11.840kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/websocket-plugin/fesm2015/ngxs-websocket-plugin.js",
-      "maxSize": "13.93kB",
+      "package": "@ngxs/websocket-plugin",
+      "maxSize": "13.930kB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/websocket-plugin/fesm5/ngxs-websocket-plugin.js",
-      "maxSize": "18.26kB",
+      "package": "@ngxs/websocket-plugin",
+      "maxSize": "18.260kB",
       "compression": "none"
     }
   ]
