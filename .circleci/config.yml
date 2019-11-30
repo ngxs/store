@@ -143,7 +143,7 @@ jobs:
           command: yarn test:ci:integration:ssr
       # - *persist_coverage // we don't run code coverage for integration tests
 
-  integration_ng5_tests:
+  integration_ng6_tests:
     <<: *job_defaults
     steps:
       - *attach_workspace
