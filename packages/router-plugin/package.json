@@ -8,7 +8,7 @@
     "@ngxs/store": "^0.0.0",
     "@angular/core": ">=6.1.0 <10.0.0",
     "@angular/router": ">=6.1.0 <10.0.0",
-    "rxjs": ">=6.1.0"
+    "rxjs": ">=6.0.0"
   },
   "ngPackage": {
     "lib": {
