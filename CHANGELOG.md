@@ -27,7 +27,7 @@ $ npm install @ngxs/store@dev
 
 ### BREAKING CHANGES
 
-- If you are using the version `TypeScript 2.7` ang `Angular 5`, their no longer supported, please update to `TypeScript 2.8` and `Angular 6` as minimal.
+- If you are using the version `TypeScript 2.7` ang `Angular 5`, their no longer supported, please update to `TypeScript 2.8.1` and `Angular 6.1.0` as minimal.
 
 ## NGXS-Labs
 
