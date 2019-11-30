@@ -17,7 +17,7 @@ export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
   imports: [NgxsModule]
 })
 export class NgxsReduxDevtoolsPluginModule {
-  static forRoot(options?: NgxsDevtoolsOptions): ModuleWithProviders {
+  static forRoot(options?: NgxsDevtoolsOptions): ModuleWithProviders<NgxsReduxDevtoolsPluginModule> {
     return {
       ngModule: NgxsReduxDevtoolsPluginModule,
       providers: [

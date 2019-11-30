@@ -10,7 +10,7 @@ import { FormDirective } from './directive';
   exports: [FormDirective]
 })
 export class NgxsFormPluginModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<NgxsFormPluginModule> {
     return {
       ngModule: NgxsFormPluginModule,
       providers: [
