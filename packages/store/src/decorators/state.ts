@@ -59,9 +59,8 @@ function ensureStateClassIsInjectable(target: StateClass): void {
   if (ivyEnabledInJitMode()) {
     // Do not run this check if Ivy is disabled or `ɵprov` exists on the class
     const ngInjectableDef = (target as any).ɵprov;
-    if (ngInjectableDef) {
-      return;
+    if (!ngInjectableDef) {
+      console.warn(CONFIG_MESSAGES[VALIDATION_CODE.UNDECORATED_STATE_IN_IVY](target.name));
     }
-    console.warn(CONFIG_MESSAGES[VALIDATION_CODE.UNDECORATED_STATE_IN_IVY](target.name));
   }
 }
