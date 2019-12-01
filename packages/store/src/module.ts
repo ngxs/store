@@ -24,19 +24,19 @@ import {
   NgxsModuleOptions,
   ROOT_STATE_TOKEN
 } from './symbols';
+import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
 import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatchedActionResults, InternalDispatcher } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
-import { StateStream } from './internal/state-stream';
 import { Store } from './store';
 import { SelectFactory } from './decorators/select/select-factory';
+import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
 import { NgxsRootModule } from './modules/ngxs-root.module';
 import { NgxsFeatureModule } from './modules/ngxs-feature.module';
-import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { HostEnvironment } from './host-environment/host-environment';
