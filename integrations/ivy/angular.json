@@ -63,6 +63,9 @@
               "browserTarget": "ivy:build:production"
             }
           }
+        },
+        "test": {
+          "builder": "@angular-builders/jest:run"
         }
       }
     }
