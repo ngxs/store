@@ -34,6 +34,7 @@ $ npm install @ngxs/store@dev
 
 - Feature: announced [@ngxs-labs/data](https://github.com/ngxs-labs/data)
 - Feature: announced [@ngxs-labs/actions-executing](https://github.com/ngxs-labs/actions-executing)
+- Feature: announced [@ngxs-labs/attach-action](https://github.com/ngxs-labs/attach-action)
 
 # 3.5.1 2019-08-29
 
