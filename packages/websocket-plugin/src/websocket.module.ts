@@ -1,5 +1,4 @@
 import { NgModule, ModuleWithProviders, APP_INITIALIZER, InjectionToken } from '@angular/core';
-import { NgxsModule } from '@ngxs/store';
 
 import { WebSocketHandler } from './websocket-handler';
 import { NgxsWebsocketPluginOptions, NGXS_WEBSOCKET_OPTIONS, noop } from './symbols';
@@ -21,11 +20,11 @@ export function websocketOptionsFactory(options: NgxsWebsocketPluginOptions) {
 
 export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
 
-@NgModule({
-  imports: [NgxsModule]
-})
+@NgModule()
 export class NgxsWebsocketPluginModule {
-  static forRoot(options?: NgxsWebsocketPluginOptions): ModuleWithProviders {
+  static forRoot(
+    options?: NgxsWebsocketPluginOptions
+  ): ModuleWithProviders<NgxsWebsocketPluginModule> {
     return {
       ngModule: NgxsWebsocketPluginModule,
       providers: [
