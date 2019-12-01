@@ -107,11 +107,11 @@ export class NgxsModule {
     return [
       {
         provide: NG_DEV_MODE,
-        useValue: isAngularInTestMode
+        useValue: isDevMode
       },
       {
         provide: NG_TEST_MODE,
-        useValue: isDevMode
+        useValue: isAngularInTestMode
       },
       {
         provide: NGXS_EXECUTION_STRATEGY,
