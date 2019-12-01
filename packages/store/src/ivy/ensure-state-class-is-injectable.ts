@@ -1,3 +1,5 @@
+import { isAngularInTestMode } from '@ngxs/store/internals';
+
 import { ivyEnabledInDevMode } from './ivy-enabled-in-dev-mode';
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../configs/messages.config';
 
@@ -7,6 +9,10 @@ import { CONFIG_MESSAGES, VALIDATION_CODE } from '../configs/messages.config';
  * if another decorator was used, e.g. pipes).
  */
 export function ensureStateClassIsInjectable(target: any): void {
+  if (isAngularInTestMode()) {
+    return;
+  }
+
   // `ɵprov` is a static property added by the NGCC compiler. It always exists in
   // AOT mode because this property is added before runtime. If an application is running in
   // JIT mode then this property can be added by the `@Injectable()` decorator. The `@Injectable()`
