@@ -1,5 +1,3 @@
-import { PlainObjectOf } from '@ngxs/store/internals';
-
 export enum VALIDATION_CODE {
   STATE_NAME = 'STATE_NAME',
   STATE_UNIQUE = 'STATE_UNIQUE',
@@ -12,10 +10,11 @@ export enum VALIDATION_CODE {
   SELECTOR_DECORATOR = 'SELECTOR_DECORATOR',
   ZONE_WARNING = 'ZONE_WARNING',
   PATCHING_ARRAY = 'PATCHING_ARRAY',
-  PATCHING_PRIMITIVE = 'PATCHING_PRIMITIVE'
+  PATCHING_PRIMITIVE = 'PATCHING_PRIMITIVE',
+  UNDECORATED_STATE_IN_IVY = 'UNDECORATED_STATE_IN_IVY'
 }
 
-export const CONFIG_MESSAGES: PlainObjectOf<Function> = {
+export const CONFIG_MESSAGES = {
   [VALIDATION_CODE.STATE_NAME]: (name: string) =>
     `${name} is not a valid state name. It needs to be a valid object property name.`,
   [VALIDATION_CODE.STATE_NAME_PROPERTY]: () => `States must register a 'name' property`,
@@ -30,7 +29,7 @@ export const CONFIG_MESSAGES: PlainObjectOf<Function> = {
     'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n' +
     'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
   [VALIDATION_CODE.SELECT_FACTORY_NOT_CONNECTED]: () =>
-    'SelectFactory not connected to store!',
+    'You have forgotten to import the NGXS module!',
   [VALIDATION_CODE.ACTION_DECORATOR]: () =>
     '@Action() decorator cannot be used with static methods',
   [VALIDATION_CODE.SELECTOR_DECORATOR]: () => 'Selectors only work on methods',
@@ -39,5 +38,7 @@ export const CONFIG_MESSAGES: PlainObjectOf<Function> = {
     'Please set the value of the executionStrategy property to NoopNgxsExecutionStrategy.\n' +
     'NgxsModule.forRoot(states, { executionStrategy: NoopNgxsExecutionStrategy })',
   [VALIDATION_CODE.PATCHING_ARRAY]: () => 'Patching arrays is not supported.',
-  [VALIDATION_CODE.PATCHING_PRIMITIVE]: () => 'Patching primitives is not supported.'
+  [VALIDATION_CODE.PATCHING_PRIMITIVE]: () => 'Patching primitives is not supported.',
+  [VALIDATION_CODE.UNDECORATED_STATE_IN_IVY]: (name: string) =>
+    `'${name}' class should be decorated with @Injectable() right after the @State() decorator`
 };

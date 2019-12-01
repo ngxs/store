@@ -4,31 +4,34 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --hmr",
-    "test": "ng build --prod",
-    "pretest": "yarn --pure-lockfile",
-    "postinstall": "cpx -v -C \"../../@ngxs/**/*\" \"node_modules/@ngxs/\""
+    "test:ivy": "ng test --runInBand",
+    "build:prod": "ng build --prod",
+    "test": "yarn test:ivy && yarn build:prod",
+    "pretest": "yarn --frozen-lockfile --non-interactive --no-progress",
+    "postinstall": "cpx -v -C \"../../@ngxs/**/*\" \"node_modules/@ngxs/\" && yarn ngcc"
   },
   "private": true,
-  "dependencies": {
-    "@angular/animations": "9.0.0-rc.3",
+  "devDependencies": {
+    "@angular-builders/jest": "file:../../node_modules/@angular-builders/jest",
+    "@angular-devkit/build-angular": "0.900.0-rc.3",
+    "@angular/cli": "9.0.0-rc.3",
     "@angular/common": "9.0.0-rc.3",
     "@angular/compiler": "9.0.0-rc.3",
+    "@angular/compiler-cli": "9.0.0-rc.3",
     "@angular/core": "9.0.0-rc.3",
     "@angular/forms": "9.0.0-rc.3",
     "@angular/platform-browser": "9.0.0-rc.3",
     "@angular/platform-browser-dynamic": "9.0.0-rc.3",
     "@angular/router": "9.0.0-rc.3",
+    "@types/jest": "file:../../node_modules/@types/jest",
+    "@types/node": "file:../../node_modules/@types/node",
+    "core-js": "file:../../node_modules/core-js",
+    "cpx": "^1.5.0",
+    "jest": "file:../../node_modules/jest",
+    "jest-preset-angular": "file:../../node_modules/jest-preset-angular",
     "rxjs": "file:../../node_modules/rxjs",
     "tslib": "file:../../node_modules/tslib",
-    "zone.js": "0.10.2"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "0.900.0-rc.3",
-    "@angular/cli": "9.0.0-rc.3",
-    "@angular/compiler-cli": "9.0.0-rc.3",
-    "@types/node": "8.9.4",
-    "cpx": "^1.5.0",
-    "ts-node": "8.3.0",
-    "typescript": "3.6.4"
+    "typescript": "3.6.4",
+    "zone.js": "file:../../node_modules/zone.js"
   }
 }

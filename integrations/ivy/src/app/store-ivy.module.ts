@@ -18,7 +18,6 @@ import { AppState } from './app.state';
     NgxsStoragePluginModule.forRoot(),
     NgxsWebsocketPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot()
-  ],
-  exports: [NgxsModule]
+  ]
 })
 export class StoreIvyModule {}
