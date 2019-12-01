@@ -56,11 +56,12 @@ function ensureStateClassIsInjectable(target: StateClass): void {
   // runtime. If app is running in JIT mode then this property can be added by the
   // `@Injectable()` decorator. The `@Injectable()` decorator has to go after the
   // `@State()` decorator, thus we prevent users from unwanted DI errors.
-  const ngInjectableDef = (target as any).ɵprov;
-  // Do not run this check if Ivy is disabled or app is AOT compiled
-  if (!ivyEnabledInJitMode() || ngInjectableDef) {
-    return;
+  if (ivyEnabledInJitMode()) {
+    // Do not run this check if Ivy is disabled or `ɵprov` exists on the class
+    const ngInjectableDef = (target as any).ɵprov;
+    if (ngInjectableDef) {
+      return;
+    }
+    console.warn(CONFIG_MESSAGES[VALIDATION_CODE.UNDECORATED_STATE_IN_IVY](target.name));
   }
-
-  console.warn(CONFIG_MESSAGES[VALIDATION_CODE.UNDECORATED_STATE_IN_IVY](target.name));
 }
