@@ -1,4 +1,4 @@
-import { ObjectUtils, PlainObject } from '@ngxs/store/internals';
+import { PlainObject } from '@ngxs/store/internals';
 import { propGetter } from '../../src/internal/internals';
 import { setValue } from '../../src/utils/utils';
 import { NgxsConfig } from '../../src/symbols';
@@ -52,15 +52,6 @@ describe('utils', () => {
         other: 'bar'
       });
     });
-  });
-
-  it('should be correct merged', () => {
-    class A {
-      public value = 'hello world';
-    }
-
-    expect(ObjectUtils.merge(null as any, null as any)).toEqual({});
-    expect(ObjectUtils.merge(new A(), { id: 0 })).toEqual({ value: 'hello world', id: 0 });
   });
 
   describe('propGetter', () => {
