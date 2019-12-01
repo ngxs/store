@@ -15,6 +15,7 @@ $ npm install @ngxs/store@dev
 - Feature: Form Plugin - Implement `propertyPath` parameter in the `UpdateFormValue` [#1215](https://github.com/ngxs/store/pull/1215)
 - Feature: WebSocket Plugin - Implement `WebSocketConnected` action [#1371](https://github.com/ngxs/store/pull/1371)
 - Feature: HMR Plugin - Add `hmrIsReloaded` utility [#1435](https://github.com/ngxs/store/pull/1435)
+- Fix: Use generic `ModuleWithProviders` type for Ivy compatiblility [#1469](https://github.com/ngxs/store/pull/1469)
 - Fix: Explicit typings for state operators [#1395](https://github.com/ngxs/store/pull/1395), [#1405](https://github.com/ngxs/store/pull/1405)
 - Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
 - Fix: Do not re-throw error to the global handler if custom is provided [#1379](https://github.com/ngxs/store/pull/1379)
@@ -24,6 +25,10 @@ $ npm install @ngxs/store@dev
 - Fix: Router Plugin - build compatibility with Angular 9 (Ivy) [#1459](https://github.com/ngxs/store/pull/1459)
 - Build: Add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
 - Build: Run SSR tests with cypress [#1281](https://github.com/ngxs/store/pull/1281)
+
+### BREAKING CHANGES
+
+- If you are using `TypeScript 2.7` and `Angular 5` you will need to update to `TypeScript 2.8.1` and `Angular 6.1.0` at a minimum. We were forced to drop support for these in order to provide support for Ivy. These versions are also no longer supported the Angular team either. This has not resulted in a major version change for NGXS due to the fact that it is not our API that has changed, rather a dependency.
 
 ## NGXS-Labs
 

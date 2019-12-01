@@ -143,13 +143,13 @@ jobs:
           command: yarn test:ci:integration:ssr
       # - *persist_coverage // we don't run code coverage for integration tests
 
-  integration_ng5_tests:
+  integration_ng6_tests:
     <<: *job_defaults
     steps:
       - *attach_workspace
       - run:
           name: Integration Tests
-          command: yarn integration:ng5
+          command: yarn integration:ng6
       # - *persist_coverage // we don't run code coverage for integration tests
 
     integration_ivy_tests:
@@ -251,7 +251,7 @@ workflows:
           requires:
             - build
 
-      - integration_ng5_tests:
+      - integration_ng6_tests:
           requires:
             - build
 
@@ -268,7 +268,7 @@ workflows:
             - unit_tests
             - integration_tests
             - integration_ssr_tests
-            - integration_ng5_tests
+            - integration_ng6_tests
             - integration_test_types
             - bundlesize
 
@@ -284,7 +284,7 @@ workflows:
             - unit_tests
             - integration_tests
             - integration_ssr_tests
-            - integration_ng5_tests
+            - integration_ng6_tests
             - integration_test_types
             - bundlesize
 
@@ -299,6 +299,6 @@ workflows:
             - unit_tests
             - integration_tests
             - integration_ssr_tests
-            - integration_ng5_tests
+            - integration_ng6_tests
             - integration_test_types
             - bundlesize
