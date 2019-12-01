@@ -11,6 +11,7 @@ $ npm install @ngxs/store@dev
 - Feature: Improved type safety for children states [#1388](https://github.com/ngxs/store/pull/1388)
 - Feature: Improved type safety for `@Select` decorator [#1453](https://github.com/ngxs/store/pull/1453)
 - Feature: Add `StateToken<T>` construct [#1436](https://github.com/ngxs/store/pull/1436)
+- Feature: warn about undecorated state class if Ivy and JIT are both enabled [#1472](https://github.com/ngxs/store/pull/1472)
 - Feature: Storage Plugin - Use state classes as keys [#1380](https://github.com/ngxs/store/pull/1380)
 - Feature: Form Plugin - Implement `propertyPath` parameter in the `UpdateFormValue` [#1215](https://github.com/ngxs/store/pull/1215)
 - Feature: WebSocket Plugin - Implement `WebSocketConnected` action [#1371](https://github.com/ngxs/store/pull/1371)
