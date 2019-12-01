@@ -25,6 +25,10 @@ $ npm install @ngxs/store@dev
 - Build: Add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
 - Build: Run SSR tests with cypress [#1281](https://github.com/ngxs/store/pull/1281)
 
+### BREAKING CHANGES
+
+- If you are using `TypeScript 2.7` and `Angular 5` you will need to update to `TypeScript 2.8.1` and `Angular 6.1.0` at a minimum. We were forced to drop support for these in order to provide support for Ivy. These versions are also no longer supported the Angular team either. This has not resulted in a major version change for MGXS due to the fact that it is not our API that has changed, rather a dependency.
+
 ## NGXS-Labs
 
 - Feature: announced [@ngxs-labs/data](https://github.com/ngxs-labs/data)
