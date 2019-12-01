@@ -5,7 +5,7 @@ import { Callback } from '../internal/internals';
 @Injectable()
 export class HostEnvironment {
   constructor(
-    @Inject(NG_DEV_MODE) public isTestMode: Callback<boolean>,
-    @Inject(NG_TEST_MODE) public isDevMode: Callback<boolean>
+    @Inject(NG_DEV_MODE) public isNgDevMode: Callback<boolean>,
+    @Inject(NG_TEST_MODE) public isNgTestMode: Callback<boolean>
   ) {}
 }

@@ -12,15 +12,15 @@ export class ConfigValidator {
   constructor(private _host: HostEnvironment, private _config: NgxsConfig) {}
 
   private get isIncorrectProduction(): boolean {
-    return !this._host.isDevMode() && this._config.developmentMode;
+    return !this._host.isNgTestMode() && this._config.developmentMode;
   }
 
   private get isIncorrectDevelopment(): boolean {
-    return this._host.isDevMode() && !this._config.developmentMode;
+    return this._host.isNgTestMode() && !this._config.developmentMode;
   }
 
   public verifyDevMode(): void {
-    if (this._host.isTestMode()) {
+    if (this._host.isNgDevMode()) {
       return;
     }
 

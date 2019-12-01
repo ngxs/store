@@ -20,8 +20,8 @@ describe('ConfigValidator', () => {
     host = TestBed.get(HostEnvironment);
 
     // Assert
-    expect(host.isDevMode()).toBe(true);
-    expect(host.isTestMode()).toBe(true);
+    expect(host.isNgTestMode()).toBe(true);
+    expect(host.isNgDevMode()).toBe(true);
     expect(validator.verifyDevMode()).toBe(undefined);
   });
 
@@ -39,8 +39,8 @@ describe('ConfigValidator', () => {
 
     try {
       // Assert
-      expect(host.isDevMode()).toBe(true);
-      expect(host.isTestMode()).toBe(false);
+      expect(host.isNgTestMode()).toBe(true);
+      expect(host.isNgDevMode()).toBe(false);
       const INCORRECT_DEVELOPMENT = CONFIG_MESSAGES[VALIDATION_CODE.INCORRECT_DEVELOPMENT]();
       expect(spy).toHaveBeenCalledWith(INCORRECT_DEVELOPMENT);
     } finally {
@@ -65,8 +65,8 @@ describe('ConfigValidator', () => {
 
     try {
       // Assert
-      expect(host.isDevMode()).toBe(false);
-      expect(host.isTestMode()).toBe(false);
+      expect(host.isNgTestMode()).toBe(false);
+      expect(host.isNgDevMode()).toBe(false);
       const INCORRECT_PRODUCTION = CONFIG_MESSAGES[VALIDATION_CODE.INCORRECT_PRODUCTION]();
       expect(spy).toHaveBeenCalledWith(INCORRECT_PRODUCTION);
     } finally {
