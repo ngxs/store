@@ -27,7 +27,7 @@ $ npm install @ngxs/store@dev
 
 ### BREAKING CHANGES
 
-- If you are using the version `TypeScript 2.7` ang `Angular 5`, their no longer supported, please update to `TypeScript 2.8.1` and `Angular 6.1.0` as minimal.
+- If you are using `TypeScript 2.7` and `Angular 5` you will need to update to `TypeScript 2.8.1` and `Angular 6.1.0` at a minimum. We were forced to drop support for these in order to provide support for Ivy. These versions are also no longer supported the Angular team either. This has not resulted in a major version change for MGXS due to the fact that it is not our API that has changed, rather a dependency.
 
 ## NGXS-Labs
 
