@@ -14,7 +14,8 @@ addons:
 cache:
   yarn: true
   directories:
-    - '$HOME/.npm'
+    - '~/.npm'
+    - '~/.cache'
     - 'node_modules'
 
 install:
