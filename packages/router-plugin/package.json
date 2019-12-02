@@ -15,7 +15,8 @@
       "flatModuleFile": "ngxs-router-plugin",
       "entryFile": "index.ts",
       "umdModuleIds": {
-        "@ngxs/store": "ngxs-store"
+        "@ngxs/store": "ngxs-store",
+        "@ngxs/store/internals": "ngxs-store-internals"
       }
     },
     "dest": "../../@ngxs/router-plugin"
