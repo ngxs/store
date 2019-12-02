@@ -11,13 +11,8 @@ addons:
     packages:
       - libgconf-2-4
 
-cache:
-  directories:
-    # Cache Cypress binary
-    - ~/.cache
-
 install:
-  - travis_wait 30 yarn install --frozen-lockfile --non-interactive
+  - yarn install --frozen-lockfile --non-interactive
 
 script:
   # Run static analyzers
