@@ -14,9 +14,7 @@ addons:
 cache:
   yarn: true
   directories:
-    - '~/.npm'
     - '~/.cache'
-    - 'node_modules'
 
 install:
   - yarn install --frozen-lockfile --non-interactive
