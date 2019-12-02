@@ -1,4 +1,10 @@
-let _ivyEnabledInDevMode: boolean | null = null;
+import { ReplaySubject, Observable } from 'rxjs';
+
+/**
+ * Keep it as a single `const` variable since this `ReplaySubject`
+ * will be private and accessible only within this file.
+ */
+const _ivyEnabledInDevMode$ = new ReplaySubject<boolean>(1);
 
 /**
  * Ivy exposes helper functions to the global `window.ng` object.
@@ -11,22 +17,21 @@ let _ivyEnabledInDevMode: boolean | null = null;
  * to see warnings in both JIT/AOT modes, but only if an application
  * is in development.
  */
-export async function ivyEnabledInDevMode(): Promise<boolean> {
-  if (_ivyEnabledInDevMode !== null) {
-    return _ivyEnabledInDevMode;
-  }
-
-  // Unfortunately, NGXS code is running before Ivy exposes those helper functions
-  // without `Promise.resolve().then(...)` `window.ng` will always equal `undefined`
-  await Promise.resolve();
-
+export function setIvyEnabledInDevMode(): void {
   try {
     // `try-catch` will also handle server-side rendering, as
     // `window is not defined` will not be thrown.
     const ng = (window as any).ng;
-    return (_ivyEnabledInDevMode =
-      !!ng && typeof ng.getComponent === 'function' && typeof ng.markDirty === 'function');
+    const ivyEnabledInDevMode =
+      !!ng && typeof ng.getComponent === 'function' && typeof ng.markDirty === 'function';
+    _ivyEnabledInDevMode$.next(ivyEnabledInDevMode);
   } catch {
-    return false;
+    _ivyEnabledInDevMode$.next(false);
+  } finally {
+    _ivyEnabledInDevMode$.complete();
   }
+}
+
+export function ivyEnabledInDevMode(): Observable<boolean> {
+  return _ivyEnabledInDevMode$.asObservable();
 }
