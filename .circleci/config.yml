@@ -4,7 +4,7 @@ version: 2
 job_defaults_var: &job_defaults
   working_directory: ~/workspace/app
   docker:
-    - image: circleci/node:12.0.0-browsers
+    - image: circleci/node:13.2.0-browsers
 
 # Yarn cache key
 cache_var: &cache_key yarn-packages-v2-{{ .Branch }}-{{ checksum "yarn.lock" }}
