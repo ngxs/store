@@ -8,7 +8,9 @@
     "build:prod": "ng build --prod",
     "test": "yarn test:ivy && yarn build:prod",
     "pretest": "yarn --frozen-lockfile --non-interactive --no-progress",
-    "postinstall": "cpx -v -C \"../../@ngxs/**/*\" \"node_modules/@ngxs/\" && yarn ngcc"
+    "postinstall": "cpx -v -C \"../../@ngxs/**/*\" \"node_modules/@ngxs/\" && yarn router-plugin-exclude && yarn ngcc",
+    "//": "Value at position 0 in the NgModule.imports of NgxsRouterPluginModule is not a reference",
+    "router-plugin-exclude": "rm -rf \"node_modules/@ngxs/router-plugin\""
   },
   "private": true,
   "devDependencies": {
