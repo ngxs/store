@@ -29,6 +29,6 @@
     "zone.js": "0.8.19",
     "typescript": "2.8.1",
     "core-js": "^2.5.5",
-    "cpx": "^1.5.0"
+    "cpx": "file:../../node_modules/cpx"
   }
 }
