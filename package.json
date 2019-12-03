@@ -139,6 +139,7 @@
     "bundlesize": "^0.18.0",
     "codelyzer": "^5.2.0",
     "core-js": "^3.4.5",
+    "cpx": "^1.5.0",
     "cross-env": "^5.2.1",
     "cypress": "^3.7.0",
     "dtslint": "^0.9.8",

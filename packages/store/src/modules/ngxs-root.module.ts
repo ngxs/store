@@ -12,6 +12,7 @@ import {
 } from '../internal/internals';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
 import { InitState } from '../actions/actions';
+import { setIvyEnabledInDevMode } from '../ivy/ivy-enabled-in-dev-mode';
 
 /**
  * Root module
@@ -30,17 +31,20 @@ export class NgxsRootModule {
     config: NgxsConfig,
     lifecycleStateManager: LifecycleStateManager
   ) {
+    // Validate states on having the `@Injectable()` decorator in Ivy
+    setIvyEnabledInDevMode();
+
     globalSelectorOptions.set(config.selectorOptions || {});
 
-    // add stores to the state graph and return their defaults
+    // Add stores to the state graph and return their defaults
     const results: StatesAndDefaults = factory.addAndReturnDefaults(states);
 
     internalStateOperations.setStateToTheCurrentWithNew(results);
 
-    // connect our actions stream
+    // Connect our actions stream
     factory.connectActionHandlers();
 
-    // dispatch the init action and invoke init and bootstrap functions after
+    // Dispatch the init action and invoke init and bootstrap functions after
     lifecycleStateManager.ngxsBootstrap(new InitState(), results);
   }
 }
