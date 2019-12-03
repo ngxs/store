@@ -3,7 +3,7 @@
 
 
 "@angular-builders/jest@file:../../node_modules/@angular-builders/jest":
-  version "8.3.1"
+  version "8.2.0"
   dependencies:
     jest-preset-angular "^7.1.1"
     lodash "^4.17.10"
@@ -1139,10 +1139,17 @@
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@file:../../node_modules/@types/jest":
-  version "24.0.23"
+"@types/jest-diff@*":
+  version "24.3.0"
+  resolved "https://registry.npmjs.org/@types/jest-diff/-/jest-diff-24.3.0.tgz#29e237a3d954babfe6e23cc59b57ecd8ca8d858d"
+  integrity sha512-vx1CRDeDUwQ0Pc7v+hS61O1ETA81kD04IMEC0hS1kPyVtHDdZrokAvpF7MT9VI/fVSzicelUZNCepDvhRV1PeA==
   dependencies:
-    jest-diff "^24.3.0"
+    jest-diff "*"
+
+"@types/jest@file:../../node_modules/@types/jest":
+  version "24.0.21"
+  dependencies:
+    "@types/jest-diff" "*"
 
 "@types/minimatch@*":
   version "3.0.3"
@@ -1155,7 +1162,7 @@
   integrity sha512-u/SJDyXwuihpwjXy7hOOghagLEV1KdAST6syfnOk6QZAMzZuWZqXy5aYYZbh8Jdpd4escVFP0MvftHNDb9pruA==
 
 "@types/node@file:../../node_modules/@types/node":
-  version "12.12.12"
+  version "12.7.9"
 
 "@types/source-list-map@*":
   version "0.1.2"
@@ -2644,7 +2651,7 @@ core-js@^2.4.0:
   integrity sha512-I39t74+4t+zau64EN1fE5v2W31Adtc/REhzWN+gWRRXg6WH5qAsZm62DHpQ1+Yhe4047T55jvzz7MUqF/dBBlA==
 
 "core-js@file:../../node_modules/core-js":
-  version "3.4.2"
+  version "3.3.6"
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
@@ -4702,7 +4709,7 @@ jest-config@^24.9.0:
     pretty-format "^24.9.0"
     realpath-native "^1.1.0"
 
-jest-diff@^24.3.0, jest-diff@^24.9.0:
+jest-diff@*, jest-diff@^24.9.0:
   version "24.9.0"
   resolved "https://registry.npmjs.org/jest-diff/-/jest-diff-24.9.0.tgz#931b7d0d5778a1baf7452cb816e325e3724055da"
   integrity sha512-qMfrTs8AdJE2iqrTp0hzh7kTd2PQWrsFyj9tORoKmu32xjPjeE4NyjVRDz8ybYwqS2ik8N4hsIpiVTyFeo2lBQ==
