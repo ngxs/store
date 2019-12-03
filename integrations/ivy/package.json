@@ -8,7 +8,8 @@
     "build:prod": "ng build --prod",
     "test": "yarn test:ivy && yarn build:prod",
     "pretest": "yarn --frozen-lockfile --non-interactive --no-progress",
-    "preinstall": "cpx -v -C \"../../@ngxs/**/*\" \"@ngxs/\" && yarn router-plugin-exclude",
+    "copy:ngxs": "yarn --cwd ../../ cpx -v -C \"./@ngxs/**/*\" \"./integrations/ivy/@ngxs/\"",
+    "preinstall": "yarn copy:ngxs && yarn router-plugin-exclude",
     "postinstall": "yarn ngcc",
     "//": "Value at position 0 in the NgModule.imports of NgxsRouterPluginModule is not a reference",
     "router-plugin-exclude": "rm -rf \"@ngxs/router-plugin\""
@@ -35,7 +36,6 @@
     "@types/jest": "file:../../node_modules/@types/jest",
     "@types/node": "file:../../node_modules/@types/node",
     "core-js": "file:../../node_modules/core-js",
-    "cpx": "^1.5.0",
     "jest": "file:../../node_modules/jest",
     "jest-preset-angular": "file:../../node_modules/jest-preset-angular",
     "rxjs": "file:../../node_modules/rxjs",
