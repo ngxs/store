@@ -13,8 +13,8 @@ addons:
 
 cache:
   directories:
-    # Cache Cypress binary
-    - ~/.cache
+    - ~/.cache/
+    - ~/.cache/yarn/
 
 env:
   global:
