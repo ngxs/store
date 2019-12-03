@@ -15,6 +15,11 @@ cache:
   directories:
     # Cache Cypress binary
     - ~/.cache
+
+env:
+  global:
+    - CYPRESS_CACHE_FOLDER = "~/.cache/Cypress"
+
 install:
   - travis_wait 30 yarn install --frozen-lockfile --non-interactive
 
