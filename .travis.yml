@@ -11,16 +11,14 @@ addons:
     packages:
       - libgconf-2-4
 
-cache:
-  directories:
-    - ~/.cache/
+cache: false
 
 env:
   global:
     - CYPRESS_CACHE_FOLDER = "~/.cache/Cypress"
 
 install:
-  - travis_wait 30 yarn install --frozen-lockfile --non-interactive
+  - yarn install --frozen-lockfile --non-interactive
 
 script:
   # Run static analyzers
