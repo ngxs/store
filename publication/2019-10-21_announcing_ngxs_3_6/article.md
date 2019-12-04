@@ -4,9 +4,11 @@
 
 ## Overview
 
+- 🦄 Ivy Support (TODO decide icon: 🦄 🌼 🍒 🌸 🎄 👀 🍀 🌿 🌈 🚀 ☘️ 🌟 ⭐️ 🎋 🏆)
 - 💥 New Lifecycle Hook `ngxsOnChanges`
 - 💦 Fixed Actions Stream Subscriptions Leak
-- 🚧 Improved Type Safety for Children States
+- ㊗ ️ State Token
+- 🚧 Improved Type Safety
 
 - ...
 - 🐛 Bug Fixes
@@ -14,6 +16,16 @@
 - 🔬 NGXS Labs Projects Updates
 
 ---
+
+## 🦄 Ivy Support
+
+TODO add content here
+
+Feature: warn about undecorated state class if Ivy is enabled in dev (both JIT/AOT) [#1472](https://github.com/ngxs/store/pull/1472), [#1474](https://github.com/ngxs/store/pull/1474)
+
+Do we even need to make note of this?... Fix: Router Plugin - build compatibility with Angular 9 (Ivy) [#1459](https://github.com/ngxs/store/pull/1459)
+
+Others notable features?
 
 ## 💥 New Lifecycle Hook `ngxsOnChanges`
 
@@ -139,7 +151,21 @@ class MyState implements NgxsOnChanges {
 [#1381](https://github.com/ngxs/store/pull/1381)
 (Introduction [with problem statement], details and usage)
 
-## 🚧 Improved Type Safety for Children States
+## ㊗ ️ State Token
+
+TODO - Add Details
+
+Ref: [#1436](https://github.com/ngxs/store/pull/1436)
+
+## 🚧 Improved Type Safety
+
+### For @Select decorator
+
+TODO - Add Details - Feature: Improved type safety for `@Select` decorator
+
+Ref: [#1453](https://github.com/ngxs/store/pull/1453)
+
+### For Children States
 
 _Before_
 
@@ -167,9 +193,10 @@ class MyState {}
 
 ## 🐛 Bug Fixes
 
-For Each:
+For Each: TODO - Add Details
 (Introduction, details and usage)
 
+- Fix: Use generic `ModuleWithProviders` type for Ivy compatiblility [#1469](https://github.com/ngxs/store/pull/1469)
 - Fix: Explicit typings for state operators [#1395](https://github.com/ngxs/store/pull/1395), [#1405](https://github.com/ngxs/store/pull/1405)
 - Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
 - Fix: Do not re-throw error to the global handler if custom is provided [#1379](https://github.com/ngxs/store/pull/1379)
@@ -182,6 +209,8 @@ For Each:
 - Fix: Router Plugin - Resolve infinite redirects and browser hanging [#1430](https://github.com/ngxs/store/pull/1430)
 
 In the `3.5.1` release we provided the fix for the [very old issue](https://github.com/ngxs/store/issues/542), where the Router Plugin didn't restore its state after the `RouterCancel` action was emitted. This fix introduced a new bug that was associated with endless redirects and, as a result, browser freeze. The above PR resolves both issues, thereby there will no more browser hanging because of infinite redirects.
+
+TODO - Add Details
 
 ### HMR Plugin
 
@@ -344,13 +373,15 @@ store.dispatch(
 );
 ```
 
+Ref: [#1215](https://github.com/ngxs/store/pull/1215)
+
 ### WebSocket Plugin
 
 There is a new action for the `@ngxs/websocket-plugin`.
 
 `WebSocketConnected` - Action dispatched when a web socket is connected.
 
----
+## Ref: [#1371](https://github.com/ngxs/store/pull/1371)
 
 ## 🔬 NGXS Labs Projects Updates
 
