@@ -19,13 +19,142 @@
 
 ## 🦄 Ivy Support
 
-TODO add content here
+We are actively working on support for Ivy and are 99% there.
+The `@ngxs/store` library is fully compatible with Ivy and most of our plugins are compatible.
+The only plugin that has an issue is the `@ngxs/router-plugin`. We are working with the Angular team to resolve this issue (see https://github.com/angular/angular/issues/34191).
 
-Feature: warn about undecorated state class if Ivy is enabled in dev (both JIT/AOT) [#1472](https://github.com/ngxs/store/pull/1472), [#1474](https://github.com/ngxs/store/pull/1474)
+Due to changes in Angular DI with Ivy there will be a very small change that you will have to make to your states. This is detailed in the docs here: https://www.ngxs.io/v/master/advanced/ivy-migration-guide
+To support our users in making this small change we have added a check in development mode to warn of incorrect configuration when using Ivy.
 
-Do we even need to make note of this?... Fix: Router Plugin - build compatibility with Angular 9 (Ivy) [#1459](https://github.com/ngxs/store/pull/1459)
+Related PRs: [#1278](https://github.com/ngxs/store/pull/1278), [#1397](https://github.com/ngxs/store/pull/1397), [#1459](https://github.com/ngxs/store/pull/1459), [#1469](https://github.com/ngxs/store/pull/1469), [#1472](https://github.com/ngxs/store/pull/1472), [#1474](https://github.com/ngxs/store/pull/1474)
 
-Others notable features?
+## 💦 Fixed Actions Stream Subscriptions Leak
+
+We fixed a subtle memory leak that would occur in applications where the `Actions` stream was used from objects that had a short lived lifetime (ie. components). This bug would keep these objects in memory through an implicit reference from an undisposed subscription to `this`.
+
+Related PRs: [#1381](https://github.com/ngxs/store/pull/1381)
+
+## 🚧 Improved Type Safety
+
+We have added vastly improved type safety for the `@Select` decorator. If your application fails some type checks after upgrading then we have just saved you some potentially obnoxious runtime bugs 😉.
+
+We have also added some typing sanity checks to what can be passed to the `children` property of a state.
+
+Related PRs: [#1453](https://github.com/ngxs/store/pull/1453), [#1388](https://github.com/ngxs/store/pull/1388)
+
+## ㊗ ️ State Token
+
+A state token can be used as a representation of a state class without referring directly to the state class itself. When creating an StateToken you will provide the location that the state should be stored on your state tree. You can also set a default state model type of the parameterized type T, which can assist with ensuring the type safety of referring to your state in your application. The state token is declared as follows:
+
+```ts
+const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
+```
+
+Or if you choose to not expose the model of your state class to the rest of the application then you can pass the type as unknown or any(this is useful if you want to keep all knowledge of the structure of your state class model private).
+
+```ts
+const TODOS_STATE_TOKEN = new StateToken<unknown>('todos');
+```
+
+If you use pass this token as the name property in your @State declaration (or if the path specified matches your name property then you can use this token to refer to this state class from other parts of your application (in your selectors, or in plugins like the storage plugin that need to refer to a state class). The token can be used in your @State declaration as follows:
+
+```ts
+interface TodoStateModel {
+  title: string;
+  completed: boolean;
+}
+
+const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
+
+// Note: the @State model type is inferred from in your token.
+@State({
+  name: TODOS_STATE_TOKEN,
+  defaults: []
+})
+class TodosState {
+  // ...
+}
+```
+
+A state token with a model type provided can be used in other parts of your application to improve type safety in the following aspects:
+Improved type checking for @State, @Selector in a state class
+
+```ts
+interface TodoStateModel {
+  title: string;
+  completed: boolean;
+}
+
+const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
+
+@State({
+  name: TODOS_STATE_TOKEN,
+  defaults: [] // if you specify the wrong state type, will be a compilation error
+})
+class TodosState {
+  @Selector(TODOS_STATE_TOKEN) // if you specify the wrong state type, will be a compilation error
+  static completedList(state: TodoStateModel[]): TodoStateModel[] {
+    return state.filter(todo => todo.completed);
+  }
+}
+```
+
+The following code demonstrates mismatched types that will be picked up as compilation errors:
+
+```ts
+const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
+
+@State({
+  name: TODOS_STATE_TOKEN,
+  defaults: {} // compilation error - array was expected, inferred from the token type
+})
+class TodosState {
+  @Selector([TODOS_STATE_TOKEN]) // compilation error - TodoStateModel[] does not match string[]
+  static completedList(state: string[]): string[] {
+    return state;
+  }
+}
+```
+
+Improved type checking for @Select
+
+```ts
+@Component(/**/)
+class AppComponent {
+  @Select(TODOS_STATE_TOKEN) // if you specify the wrong property type, there will be a compilation error
+  todos$: Observable<TodoStateModel[]>;
+}
+```
+
+The following code demonstrates mismatched types that will be picked up as compilation errors:
+
+```ts
+@Component(/**/)
+class AppComponent {
+  @Select(TODOS_STATE_TOKEN) // compilation error
+  todos$: Observable<string[]>;
+
+  @Select(TODOS_STATE_TOKEN) // compilation error
+  todos: string;
+}
+```
+
+Improved type inference for store.select, store.selectOnce, store.selectSnapshot
+
+```ts
+@Component(/**/)
+class AppComponent implements OnInit {
+  constructor(private store: Store) {}
+
+  ngOnInit(): void {
+    const todos = this.store.selectSnaphot(TODOS_STATE_TOKEN); // infers type TodoStateModel[]
+    const todos$ = this.store.select(TODOS_STATE_TOKEN); // infers type Observable<TodoStateModel[]>
+    const oneTodos$ = this.store.selectOnce(TODOS_STATE_TOKEN); // infers type Observable<TodoStateModel[]>
+  }
+}
+```
+
+Ref: [Proposal](https://github.com/ngxs/store/issues/1391), [PR](https://github.com/ngxs/store/pull/1436)
 
 ## 💥 New Lifecycle Hook `ngxsOnChanges`
 
@@ -64,7 +193,7 @@ After creating the state by calling its constructor, NGXS calls the lifecycle ho
 | ngxsOnInit()         | Called _once_, after the _first_ `ngxsOnChanges()` and _before_ the `APP_INITIALIZER` token is resolved. |
 | ngxsAfterBootstrap() | Called _once_, after the root view and all its children have been rendered.                              |
 
-Let's have a look at couple of examples:
+Let's look at couple of simple examples:
 
 I. A convenient way to track state changes:
 
@@ -84,7 +213,7 @@ class MyComponent {
 }
 ```
 
-One of the problems is that if we are not using the `@ngxs/logger-plugin` or `@ngxs/devtools-plugin`, then we do not know what the previous state was before our state changed. It's great to have such an opportunity out of the box for quick, simple and focused debugging.
+One of the problems is that if we are not using the `@ngxs/logger-plugin` or `@ngxs/devtools-plugin`, then we do not know what the previous state was before our state changed. With this new lifecycle hook we can get quick, simple and focused debugging.
 
 _After_
 
@@ -97,11 +226,9 @@ class MyState implements NgxsOnChanges {
 }
 ```
 
-Nice!
-
 II. Convenient to synchronize with the server
 
-Sometimes we need to save state on the server every time the client makes changes to it.
+Sometimes we need to save the state to the server whenever it is changed in the client.
 
 _Before_
 
@@ -134,69 +261,13 @@ class MyState implements NgxsOnChanges {
 }
 ```
 
-III. You can write your custom logger without another plugins:
-
-```ts
-@State({})
-class MyState implements NgxsOnChanges {
-  ngxsOnChanges({ previousValue, currentValue }: NgxsSimpleChange): void {
-    console.log('prev state', previousValue);
-    console.log('next state', currentValue);
-  }
-}
-```
-
-## 💦 Fixed Actions Stream Subscriptions Leak
-
-[#1381](https://github.com/ngxs/store/pull/1381)
-(Introduction [with problem statement], details and usage)
-
-## ㊗ ️ State Token
-
-TODO - Add Details
-
-Ref: [#1436](https://github.com/ngxs/store/pull/1436)
-
-## 🚧 Improved Type Safety
-
-### For @Select decorator
-
-TODO - Add Details - Feature: Improved type safety for `@Select` decorator
-
-Ref: [#1453](https://github.com/ngxs/store/pull/1453)
-
-### For Children States
-
-_Before_
-
-```ts
-function MyChildState() {}
-
-@State({
-  name: 'myState',
-  children: [MyChildState, { name: 'myChildOtherState' }, null] // successfully compiled as doesn't infer the correct type
-})
-class MyState {}
-```
-
-_After_
-
-```ts
-function MyChildState() {}
-
-@State({
-  name: 'myState',
-  children: [MyChildState, { name: 'myChildOtherState' }, null] // if you specify the wrong type, there will be a compilation error, as it requires a state class
-})
-class MyState {}
-```
+Ref: [Proposal](https://github.com/ngxs/store/issues/749), [PR #1389](https://github.com/ngxs/store/pull/1389)
 
 ## 🐛 Bug Fixes
 
 For Each: TODO - Add Details
 (Introduction, details and usage)
 
-- Fix: Use generic `ModuleWithProviders` type for Ivy compatiblility [#1469](https://github.com/ngxs/store/pull/1469)
 - Fix: Explicit typings for state operators [#1395](https://github.com/ngxs/store/pull/1395), [#1405](https://github.com/ngxs/store/pull/1405)
 - Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
 - Fix: Do not re-throw error to the global handler if custom is provided [#1379](https://github.com/ngxs/store/pull/1379)
