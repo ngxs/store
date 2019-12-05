@@ -154,7 +154,7 @@ class AppComponent implements OnInit {
 }
 ```
 
-Ref: [Proposal](https://github.com/ngxs/store/issues/1391), [PR](https://github.com/ngxs/store/pull/1436)
+Ref: [Proposal](https://github.com/ngxs/store/issues/1391), [PR #1436](https://github.com/ngxs/store/pull/1436)
 
 ## 💥 New Lifecycle Hook `ngxsOnChanges`
 
@@ -268,10 +268,11 @@ Ref: [Proposal](https://github.com/ngxs/store/issues/749), [PR #1389](https://gi
 For Each: TODO - Add Details
 (Introduction, details and usage)
 
-- Fix: Explicit typings for state operators [#1395](https://github.com/ngxs/store/pull/1395), [#1405](https://github.com/ngxs/store/pull/1405)
-- Fix: Warn if the zone is not actual "NgZone" [#1270](https://github.com/ngxs/store/pull/1270)
-- Fix: Do not re-throw error to the global handler if custom is provided [#1379](https://github.com/ngxs/store/pull/1379)
-- Fix: Upgrade ng-packagr to fix Ivy issues [#1397](https://github.com/ngxs/store/pull/1397)
+- Add explicit typings for state operators to fix issues with strict mode in typescript
+  [Issue](https://github.com/ngxs/store/issues/1375), [PR #1395](https://github.com/ngxs/store/pull/1395), [PR #1405](https://github.com/ngxs/store/pull/1405)
+- Warn if the zone is not actual "NgZone" [PR #1270](https://github.com/ngxs/store/pull/1270)
+- Do not re-throw error to the global handler if custom handler is provided.
+  Issues: [#1145](https://github.com/ngxs/store/issues/1145), [#803](https://github.com/ngxs/store/issues/803), [#463](https://github.com/ngxs/store/issues/463), PR: [#1379](https://github.com/ngxs/store/pull/1379)
 
 ## 🔌 Plugin Improvements and Fixes
 
@@ -279,9 +280,7 @@ For Each: TODO - Add Details
 
 - Fix: Router Plugin - Resolve infinite redirects and browser hanging [#1430](https://github.com/ngxs/store/pull/1430)
 
-In the `3.5.1` release we provided the fix for the [very old issue](https://github.com/ngxs/store/issues/542), where the Router Plugin didn't restore its state after the `RouterCancel` action was emitted. This fix introduced a new bug that was associated with endless redirects and, as a result, browser freeze. The above PR resolves both issues, thereby there will no more browser hanging because of infinite redirects.
-
-TODO - Add Details
+In the `3.5.1` release we provided the fix for the [very old issue](https://github.com/ngxs/store/issues/542), where the Router Plugin didn't restore its state after the `RouterCancel` action was emitted. This fix introduced a new bug that was associated with endless redirects and, as a result, browser freeze. The above PR resolves both issues, so there will no more browser hanging because of infinite redirects.
 
 ### HMR Plugin
 
@@ -315,7 +314,7 @@ class AppComponent implements OnDestroy {
 }
 ```
 
-- `hmrIsReloaded` - returns `true` if the application was hot module replaced at least once or more.
+`hmrIsReloaded` - returns `true` if the application was hot module replaced at least once or more.
 
 ### Storage Plugin
 
@@ -361,15 +360,17 @@ This is a great improvement because it removes the requirement for you to provid
 
 ### Form Plugin
 
-Today the form plugin exposes the `UpdateFormValue` action that provides the ability to update nested form properties by supplying a `propertyPath` parameter.
+The form plugin `UpdateFormValue` action has been enhanced with the ability to specify a `propertyPath` parameter in order to update nested form properties directly.
 
 _Before_
 
-`UpdateFormValue({ value, path, propertyPath? })`
+`UpdateFormValue({ value, path })`
 
 _After_
 
 `UpdateFormValue({ value, path, propertyPath? })`
+
+Given the following state:
 
 ```ts
 export interface NovelsStateModel {
@@ -444,7 +445,7 @@ store.dispatch(
 );
 ```
 
-Ref: [#1215](https://github.com/ngxs/store/pull/1215)
+Ref: [Issue #910](https://github.com/ngxs/store/issues/910), [Issue #260](https://github.com/ngxs/store/issues/260), [PR #1215](https://github.com/ngxs/store/pull/1215)
 
 ### WebSocket Plugin
 
@@ -452,7 +453,7 @@ There is a new action for the `@ngxs/websocket-plugin`.
 
 `WebSocketConnected` - Action dispatched when a web socket is connected.
 
-## Ref: [#1371](https://github.com/ngxs/store/pull/1371)
+Ref: [#1371](https://github.com/ngxs/store/pull/1371)
 
 ## 🔬 NGXS Labs Projects Updates
 
