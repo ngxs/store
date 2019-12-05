@@ -20,8 +20,8 @@ describe('ConfigValidator', () => {
     host = TestBed.get(HostEnvironment);
 
     // Assert
-    expect(host.isDevMode()).toBe(true);
     expect(host.isTestMode()).toBe(true);
+    expect(host.isDevMode()).toBe(true);
     expect(validator.verifyDevMode()).toBe(undefined);
   });
 
@@ -31,7 +31,7 @@ describe('ConfigValidator', () => {
 
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([], { developmentMode: false })],
-      providers: [{ provide: NG_DEV_MODE, useValue: () => false }]
+      providers: [{ provide: NG_TEST_MODE, useValue: () => false }]
     });
 
     validator = TestBed.get(ConfigValidator);
@@ -39,8 +39,8 @@ describe('ConfigValidator', () => {
 
     try {
       // Assert
-      expect(host.isDevMode()).toBe(true);
       expect(host.isTestMode()).toBe(false);
+      expect(host.isDevMode()).toBe(true);
       const INCORRECT_DEVELOPMENT = CONFIG_MESSAGES[VALIDATION_CODE.INCORRECT_DEVELOPMENT]();
       expect(spy).toHaveBeenCalledWith(INCORRECT_DEVELOPMENT);
     } finally {
