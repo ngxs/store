@@ -7,11 +7,11 @@ import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
 // import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 
-import { AppState } from './app.state';
+import { CounterState } from './counter/counter.state';
 
 @NgModule({
   imports: [
-    NgxsModule.forRoot([AppState]),
+    NgxsModule.forRoot([CounterState]),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxsFormPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot(),
@@ -21,4 +21,4 @@ import { AppState } from './app.state';
     // NgxsRouterPluginModule.forRoot()
   ]
 })
-export class StoreIvyModule {}
+export class StoreModule {}

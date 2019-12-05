@@ -18,5 +18,6 @@
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
     "enableIvy": true
-  }
+  },
+  "exclude": ["cypress"]
 }
