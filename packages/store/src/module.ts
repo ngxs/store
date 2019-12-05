@@ -106,11 +106,11 @@ export class NgxsModule {
   ): Provider[] {
     return [
       {
-        provide: NG_DEV_MODE,
+        provide: NG_TEST_MODE,
         useValue: isAngularInTestMode
       },
       {
-        provide: NG_TEST_MODE,
+        provide: NG_DEV_MODE,
         useValue: isDevMode
       },
       {
