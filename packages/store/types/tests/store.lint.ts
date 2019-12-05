@@ -1,10 +1,19 @@
 /// <reference types="@types/jest" />
 
-import { Store } from '@ngxs/store';
+import { NgxsModule, Store } from '@ngxs/store';
 import { assertType } from './utils/assert-type';
+import { TestBed } from '@angular/core/testing';
 
 describe('[TEST]: Action Types', () => {
   let store: Store;
+
+  beforeAll(() => {
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot()]
+    });
+
+    store = TestBed.get(Store);
+  });
 
   it('should be correct return type from reset', () => {
     interface MyAppState {
