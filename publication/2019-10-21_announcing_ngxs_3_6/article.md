@@ -11,7 +11,7 @@
 - 🚧 Improved Type Safety
 
 - ...
-- 🐛 Bug Fixes
+- 🔧 Other Fixes
 - 🔌 Plugin Improvements and Fixes
 - 🔬 NGXS Labs Projects Updates
 
@@ -263,10 +263,7 @@ class MyState implements NgxsOnChanges {
 
 Ref: [Proposal](https://github.com/ngxs/store/issues/749), [PR #1389](https://github.com/ngxs/store/pull/1389)
 
-## 🐛 Bug Fixes
-
-For Each: TODO - Add Details
-(Introduction, details and usage)
+## 🔧 Other Fixes
 
 - Add explicit typings for state operators to fix issues with strict mode in typescript
   [Issue](https://github.com/ngxs/store/issues/1375), [PR #1395](https://github.com/ngxs/store/pull/1395), [PR #1405](https://github.com/ngxs/store/pull/1405)
