@@ -92,7 +92,7 @@ describe('[TEST]: Action Types', () => {
   it('should be correct type base API', () => {
     assertType(() => store.snapshot()); // $ExpectType any
     assertType(() => store.subscribe()); // $ExpectType Subscription
-    assertType(() => store.reset({})); // $ExpectType any
+    assertType(() => store.reset({})); // $ExpectType {}
     assertType(() => store.reset()); // $ExpectError
   });
 });

@@ -99,7 +99,7 @@ export class Store {
    * Reset the state to a specific point in time. This method is useful
    * for plugin's who need to modify the state directly or unit testing.
    */
-  reset(state: any) {
+  reset<T = any>(state: T): T {
     return this._internalStateOperations.getRootStateOperations().setState(state);
   }
 
