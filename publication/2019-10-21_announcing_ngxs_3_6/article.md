@@ -4,7 +4,7 @@
 
 ## Overview
 
-- 🦄 Ivy Support (TODO decide icon: 🦄 🌼 🍒 🌸 🎄 👀 🍀 🌿 🌈 🚀 ☘️ 🌟 ⭐️ 🎋 🏆)
+- 🦄 Ivy Support
 - 💥 New Lifecycle Hook `ngxsOnChanges`
 - 💦 Fixed Actions Stream Subscriptions Leak
 - ㊗ ️ State Token
