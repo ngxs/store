@@ -150,13 +150,13 @@ jobs:
           name: Run integration tests for the Angular 6 application
           command: yarn integration:ng6
 
-    integration_ivy_tests:
-      <<: *job_defaults
-      steps:
-        - *attach_workspace
-        - run:
-            name: Run integration tests for the Ivy application
-            command: yarn integration:ivy
+  integration_ivy_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for the Ivy application
+          command: yarn integration:ivy
 
   integration_test_types:
     <<: *job_defaults
