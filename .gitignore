@@ -23,7 +23,7 @@
 *.sublime-workspace
 *.bak
 /builds
-/dist-integration
+dist-integration
 /dist
 
 # IDE - VSCode

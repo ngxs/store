@@ -79,8 +79,6 @@
     "// - TESTING": "Test all modules #requires yarn build:packages",
     "test": "ng test",
     "test:integration": "ng run integration:test --colors --runInBand",
-    "test:ssr:server": "cd integration && ts-node server.ts",
-    "test:ssr:script": "node ./node_modules/npm-delay 2000 && cd integration && ts-node test.ssr.ts",
     "test:types": "dtslint packages/store/types --localTs node_modules/typescript/lib",
     "// - E2E": "E2E testing #requires yarn build:integration",
     "cy:open": "cypress open --config integrationFolder=cypress/integration",
@@ -107,7 +105,7 @@
     "format": "prettier --write \"**/*.{js,ts,html,css,scss,md,json,yml}\"",
     "// - INTEGRATION": "Integration builds",
     "integration:ng6": "cd integrations/hello-world-ng6 && yarn test",
-    "integration:ivy": "cd integrations/ivy && yarn test"
+    "integration:ivy": "cd integrations/ivy && yarn test:ivy"
   },
   "private": true,
   "devDependencies": {
@@ -151,8 +149,6 @@
     "lint-staged": "^9.5.0",
     "mock-socket": "^8.1.0",
     "ng-packagr": "^5.7.1",
-    "npm-delay": "^1.0.4",
-    "npm-run-all": "^4.1.5",
     "prettier": "1.19.1",
     "rxjs": "^6.5.3",
     "start-server-and-test": "^1.10.6",
