@@ -139,27 +139,24 @@ jobs:
       - *attach_workspace
       - *restore_cache
       - run:
-          name: Integration Tests
+          name: Run integration tests for the SSR build application
           command: yarn test:ci:integration:ssr
-      # - *persist_coverage // we don't run code coverage for integration tests
 
   integration_ng6_tests:
     <<: *job_defaults
     steps:
       - *attach_workspace
       - run:
-          name: Integration Tests
+          name: Run integration tests for the Angular 6 application
           command: yarn integration:ng6
-      # - *persist_coverage // we don't run code coverage for integration tests
 
     integration_ivy_tests:
       <<: *job_defaults
       steps:
         - *attach_workspace
         - run:
-            name: Integration Tests
+            name: Run integration tests for the Ivy application
             command: yarn integration:ivy
-        # - *persist_coverage // we don't run code coverage for integration tests
 
   integration_test_types:
     <<: *job_defaults
@@ -168,7 +165,6 @@ jobs:
       - run:
           name: Test types
           command: yarn test:types
-      # - *persist_coverage // we don't run code coverage for integration tests
 
   bundlesize:
     <<: *job_defaults
@@ -177,7 +173,6 @@ jobs:
       - run:
           name: Check the size of NGXS bundle
           command: yarn bundlesize
-      # - *persist_coverage // we don't run code coverage for integration tests
 
   upload_coverage:
     <<: *job_defaults
@@ -252,6 +247,10 @@ workflows:
             - build
 
       - integration_ng6_tests:
+          requires:
+            - build
+
+      - integration_ivy_tests:
           requires:
             - build
 
