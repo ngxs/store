@@ -11,7 +11,7 @@ $ npm install @ngxs/store@dev
 - Feature: Improved type safety for children states [#1388](https://github.com/ngxs/store/pull/1388)
 - Feature: Improved type safety for `@Select` decorator [#1453](https://github.com/ngxs/store/pull/1453)
 - Feature: Add `StateToken<T>` construct [#1436](https://github.com/ngxs/store/pull/1436)
-- Feature: warn about undecorated state class if Ivy and JIT are both enabled [#1472](https://github.com/ngxs/store/pull/1472)
+- Feature: Warn about undecorated state class if Ivy is enabled in dev (both JIT/AOT) [#1472](https://github.com/ngxs/store/pull/1472), [#1474](https://github.com/ngxs/store/pull/1474)
 - Feature: Storage Plugin - Use state classes as keys [#1380](https://github.com/ngxs/store/pull/1380)
 - Feature: Form Plugin - Implement `propertyPath` parameter in the `UpdateFormValue` [#1215](https://github.com/ngxs/store/pull/1215)
 - Feature: WebSocket Plugin - Implement `WebSocketConnected` action [#1371](https://github.com/ngxs/store/pull/1371)
@@ -24,6 +24,7 @@ $ npm install @ngxs/store@dev
 - Fix: Upgrade ng-packagr to fix Ivy issues [#1397](https://github.com/ngxs/store/pull/1397)
 - Fix: Router Plugin - resolve infinite redirects and browser hanging [#1430](https://github.com/ngxs/store/pull/1430)
 - Fix: Router Plugin - build compatibility with Angular 9 (Ivy) [#1459](https://github.com/ngxs/store/pull/1459)
+- Fix: Devtools Plugin - remove `NgxsModule` from imports to ensure Ivy compatibility [#1491](https://github.com/ngxs/store/pull/1491)
 - Build: Add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
 - Build: Run SSR tests with cypress [#1281](https://github.com/ngxs/store/pull/1281)
 
