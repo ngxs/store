@@ -27,6 +27,7 @@ $ npm install @ngxs/store@dev
 - Fix: Devtools Plugin - remove `NgxsModule` from imports to ensure Ivy compatibility [#1491](https://github.com/ngxs/store/pull/1491)
 - Build: Add build integration test with Angular 9 (Ivy) [#1278](https://github.com/ngxs/store/pull/1278)
 - Build: Run SSR tests with cypress [#1281](https://github.com/ngxs/store/pull/1281)
+- Build: Add E2E tests for the Ivy integration [#1492](https://github.com/ngxs/store/pull/1492)
 
 ### BREAKING CHANGES
 
