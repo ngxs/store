@@ -21,6 +21,7 @@
 - [Reactive Programming with Observables & NGXS](https://github.com/kctang/reactive-with-ngxs)
 - [Port of NgRx Example App](https://github.com/eranshmil/ngxs-example-app)
 - [State Management with NGXS](https://github.com/joaqcid/state-mgmt-with-ngxs)
+- [Fretboard Learning (Game/tool built using angular, Ionic and NGXS)](https://guitar-fretboard-learning.web.app/)
 
 ### Media
 
