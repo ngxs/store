@@ -1,10 +1,14 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev)
 
-### To become [3.6.0](https://github.com/ngxs/store/milestone/9)
+### To become next version
 
 ```bash
 $ npm install @ngxs/store@dev
 ```
+
+- ...
+
+# 3.6.0 2019-12-11
 
 - Feature: Add `ngxsOnChanges` lifecycle hook [#1389](https://github.com/ngxs/store/pull/1389)
 - Feature: Expose `StateContextFactory`, `StateFactory` [#1325](https://github.com/ngxs/store/pull/1325)
