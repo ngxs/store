@@ -454,13 +454,13 @@ Ref: [#1371](https://github.com/ngxs/store/pull/1371)
 
 ## 🔬 NGXS Labs Projects Updates
 
-### Labs project `@ngxs-labs/data` created
+### New Labs Project: `@ngxs-labs/data`
 
 Announcing [@ngxs-labs/data](https://github.com/ngxs-labs/data)
 
-#### Problem Statement:
+#### The Problem:
 
-The main problem is that with the large growth of the application, the number Action classes.
+As an application grows larger the number Action classes increases. Often these actions are merely a call through to the state. In this case the abstraction that actions provide may be of less value than the extra effort required to maintain them. Let's look at the following state:
 
 ```ts
 export interface Book {
@@ -468,25 +468,19 @@ export interface Book {
   volumeInfo: any;
 }
 
-export class SearchAction {
-  static readonly type = '[Book] Search';
-
-  constructor(public payload: string) {}
-}
-
-export class SearchCompleteAction {
+export class SearchBooksComplete {
   static readonly type = '[Book] Search Complete';
 
   constructor(public payload: Book[]) {}
 }
 
-export class AddAction {
+export class AddBook {
   static readonly type = '[Book] add';
 
   constructor(public payload: Book) {}
 }
 
-export class SelectAction {
+export class SelectBook {
   static readonly type = '[Book] Select';
 
   constructor(public payload: string) {}
@@ -516,10 +510,10 @@ class BookState {
     return state.entities;
   }
 
-  @Action(SearchCompleteAction)
+  @Action(SearchBooksComplete)
   complete(
     { setState }: StateContext<BookEntitykModel>,
-    { payload: books }: SearchCompleteAction
+    { payload: books }: SearchBooksComplete
   ) {
     setState(state => {
       const newBooks = books.filter(book => !state.entities[book.id]);
@@ -537,8 +531,8 @@ class BookState {
     });
   }
 
-  @Action(AddAction)
-  add({ setState }: StateContext<BookEntitykModel>, { payload: book }: AddAction) {
+  @Action(AddBook)
+  add({ setState }: StateContext<BookEntitykModel>, { payload: book }: AddBook) {
     setState(state => {
       if (state.ids.indexOf(book.id) > -1) {
         return state;
@@ -552,10 +546,10 @@ class BookState {
     });
   }
 
-  @Action(SelectAction)
+  @Action(SelectBook)
   select(
     { setState }: StateContext<BookEntitykModel>,
-    { payload: selectedBookId }: SelectAction
+    { payload: selectedBookId }: SelectBook
   ) {
     setState(state => ({
       ids: state.ids,
@@ -566,7 +560,7 @@ class BookState {
 }
 ```
 
-As you can see, for each method, we need to write our own actions, which is not very convenient if we have a huge application consisting of a huge number of states with different operations.
+As you can see, for each method we need to write an action and our component would look like this:
 
 ```ts
 @Component({
@@ -588,24 +582,24 @@ export class FindBookPageComponent {
   constructor(private store: Store) {}
 
   selectBookById(id: string) {
-    this.store.dispatch(new SelectAction(id));
+    this.store.dispatch(new SelectBook(id));
   }
 
   addBook(book: Book) {
-    this.store.dispatch(new AddAction(book));
+    this.store.dispatch(new AddBook(book));
   }
 
   completeBooks(books: Book[]) {
-    this.store.dispatch(new SearchCompleteAction(books));
+    this.store.dispatch(new SearchBooksComplete(books));
   }
 }
 ```
 
-Therefore, for those who are not comfortable developing using actions, we came up with a new concept - [`@ngxs-labs/data`](https://github.com/ngxs-labs/data).
+If you woulkd rather not write actions in your application then the [`@ngxs-labs/data`](https://github.com/ngxs-labs/data) plugin is for you!
 
-#### How it addresses this problem:
+#### How This Plugin Helps:
 
-You no longer need to create the actions for your operations in state.
+By leveraging this plugin you can remove the need to create actions for the operations in your state. Your state now acts as a facade where its public methods can be invoked directly and the state operation will be invoked accordingly (behind the scenes a runtime action is created and dispatched, and the declared function handles the action).
 
 ```ts
 import { StateRepository, NgxsDataRepository, query, action } from '@ngxs-labs/data';
@@ -683,18 +677,19 @@ export class FindBookPageComponent {
 }
 ```
 
-Thanks to this, typing improves, you call methods of your state directly.
-And you no longer need to worry and come up with actions and types for these actions.
+As you can see you can now call methods of your state directly and you no longer need to worry and come up with actions to communicate with your state.
 
-...
+As with anything there are trade-offs to this approach, so please ensure that you have read about the benefits to CQRS before abandoning the idea of Actions. On the other hand, this is a much simpler approach to state menagement that may be a better fit for your team and your product.
 
-### Labs project `@ngxs-labs/actions-executing` created
+---
+
+### New Labs Project: `@ngxs-labs/actions-executing`
 
 Announcing [@ngxs-labs/actions-executing](https://github.com/ngxs-labs/actions-executing)
 
-#### Problem Statement:
+#### The Problem:
 
-Sometimes we need to wait for some action completed. But how to do that?
+Sometimes we want to wait for some action to complete and we want to update our UI accordingly to repreent this pending state. The most common pattern for doing this is as follows:
 
 ```ts
 interface BooksStateModel {
@@ -727,7 +722,7 @@ export class BooksState {
 }
 ```
 
-As you can see, this is not very convenient, since we will have to do such things for each state.
+What started as a UI concern has now littered our state with extra code. We will also end up having selectors to expose this property.
 
 ```ts
 @Component({
@@ -754,9 +749,32 @@ export class AppComponent {
 }
 ```
 
-#### How it addresses this problem:
+Is there another approach we can take to address this need more cleanly?
 
-This plugin allows you to easily know if an action is being executed and control UI elements or control flow of your code to execute.
+#### How This Plugin Helps:
+
+We can now use the `@ngxs-labs/actions-executing` plugin to easily determine if an action is being executed and control UI elements or application flow in response. In order to use this plugin we need to load the plugin in our `AppModule` as follows:
+
+```ts
+//...
+import { NgxsModule } from '@ngxs/store';
+import { NgxsActionsExecutingModule } from '@ngxs-labs/actions-executing';
+
+@NgModule({
+  //...
+  imports: [
+    //...
+    NgxsModule.forRoot([
+      //... your states
+    ]),
+    NgxsActionsExecutingModule.forRoot()
+  ]
+  //...
+})
+export class AppModule {}
+```
+
+The state becomes much simpler with the `pending` property removed:
 
 ```ts
 @State<Book[]>({
@@ -770,14 +788,14 @@ export class BooksState {
   add(ctx: StateContext<Book[]>) {
     return this.api.addBook().pipe(
       tap((book: Book) => {
-        ctx.setState((state: Book[]) => state.concat(book));
+        ctx.setState(state => state.concat(book));
       })
     );
   }
 }
 ```
 
-The most common scenarios for using this plugin are to display loading spinner or disable a button while an action is executing.
+By leveraging the plugin our component can display a loading spinner or disable a button while an action is executing. The component code will now become:
 
 ```ts
 import { actionsExecuting, ActionsExecuting } from '@ngxs-labs/actions-executing';
@@ -805,6 +823,8 @@ export class AppComponent {
   }
 }
 ```
+
+The `actionsExecuting` selector can be used to track one, many or even all actions (by leaving out the parameter). Included in the data it returns is the count of the executing actions by action type.
 
 ---
 
