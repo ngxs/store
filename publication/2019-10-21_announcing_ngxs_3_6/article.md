@@ -8,7 +8,7 @@ NGXS v3.6 has been the result of months of hard work by the team, an unwavering 
 - 💦 Fixed Actions Stream Subscriptions Leak
 - 🚧 Improved Type Safety
 - ㊗ ️ State Token
-- 💥 New Lifecycle Hook `ngxsOnChanges`
+- 💥 New Lifecycle Hook: ngxsOnChanges
 - 🔧 Other Fixes
 - 🔌 Plugin Improvements and Fixes
 - 🔬 NGXS Labs Projects Updates
@@ -21,16 +21,16 @@ We are actively working on support for Ivy and are 99% there.
 The `@ngxs/store` library is fully compatible with Ivy and most of our plugins are compatible.
 The only plugin that has an issue is the `@ngxs/router-plugin`. We are working with the Angular team to resolve this issue (see https://github.com/angular/angular/issues/34191).
 
-Due to changes in Angular DI with Ivy there will be a very small change that you will have to make to your states. This is detailed in the docs here: https://www.ngxs.io/v/master/advanced/ivy-migration-guide
-To support our users in making this small change we have added a check in development mode to warn of incorrect configuration when using Ivy.
+Due to changes in Angular DI with Ivy, there will be a very small change that you will have to make to your states. This is detailed in the docs here: https://www.ngxs.io/v/master/advanced/ivy-migration-guide
+To support our users in making this small change we have added a check (in development mode) to warn of incorrect configuration when using Ivy.
 
-If you pick up any issues in testing this version with Ivy please log an issue and we will look into immediately.
+If you pick up any issues in testing this version with Ivy please log an issue and we will look into it immediately.
 
 Related PRs: [#1278](https://github.com/ngxs/store/pull/1278), [#1397](https://github.com/ngxs/store/pull/1397), [#1459](https://github.com/ngxs/store/pull/1459), [#1469](https://github.com/ngxs/store/pull/1469), [#1472](https://github.com/ngxs/store/pull/1472), [#1474](https://github.com/ngxs/store/pull/1474)
 
 ## 💦 Fixed Actions Stream Subscriptions Leak
 
-We fixed a subtle memory leak that would occur in applications where the `Actions` stream was used from objects that had a short lived lifetime (ie. components). This bug would keep these objects in memory through an implicit reference from an undisposed subscription to `this`.
+We fixed a subtle memory leak that would occur in applications where the `Actions` stream was used from objects that had a short-lived lifetime (ie. components). This bug would keep these objects in memory through an implicit reference from an undisposed subscription to `this`.
 
 Related PRs: [#1381](https://github.com/ngxs/store/pull/1381)
 
@@ -44,19 +44,21 @@ Related PRs: [#1453](https://github.com/ngxs/store/pull/1453), [#1388](https://g
 
 ## ㊗ ️ State Token
 
-A state token can be used as a representation of a state class without referring directly to the state class itself. When creating an StateToken you will provide the location that the state should be stored on your state tree. You can also set a default state model type of the parameterized type T, which can assist with ensuring the type safety of referring to your state in your application. The state token is declared as follows:
+We have added a new optional construct called a State Token to NGXS. It is very similar in concept to Injection Tokens in Angular. A State Token can be used as a representation of a state class without referring directly to the state class itself. This allows for a layer of indirection when referring to a state which improves type safety, refactoring and potential for referring to a state before it is lazy loaded.
+
+When creating a StateToken you will provide the location that the state should be stored on your state tree. You can also set a default state model type of the parameterized type T, which can assist with ensuring the type safety of referring to your state in your application. The state token is declared as follows:
 
 ```ts
 const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
 ```
 
-Or if you choose to not expose the model of your state class to the rest of the application then you can pass the type as unknown or any(this is useful if you want to keep all knowledge of the structure of your state class model private).
+You may choose to not expose the model of your state class to the rest of the application. You can do this by passing a type of `unknown` or `any` to the token. This is useful if you want to keep all knowledge of the structure of your state class model private.
 
 ```ts
 const TODOS_STATE_TOKEN = new StateToken<unknown>('todos');
 ```
 
-If you use pass this token as the name property in your @State declaration (or if the path specified matches your name property then you can use this token to refer to this state class from other parts of your application (in your selectors, or in plugins like the storage plugin that need to refer to a state class). The token can be used in your @State declaration as follows:
+You can use this token as the name property in your @State declaration. It will be used to provide the path for the state and can also infer the state model type if it has been included in the token. The token can be used in your @State declaration as follows:
 
 ```ts
 interface TodoStateModel {
@@ -64,6 +66,7 @@ interface TodoStateModel {
   completed: boolean;
 }
 
+// Most likely declared in a different file
 const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
 
 // Note: the @State model type is inferred from in your token.
@@ -76,8 +79,7 @@ class TodosState {
 }
 ```
 
-A state token with a model type provided can be used in other parts of your application to improve type safety in the following aspects:
-Improved type checking for @State, @Selector in a state class
+A state token with a model type provided can be used in other parts of your application to improve type safety for the `@State`, `@Selector` and `@Select` decorators.
 
 ```ts
 interface TodoStateModel {
@@ -116,7 +118,7 @@ class TodosState {
 }
 ```
 
-Improved type checking for @Select
+The improved type checking for `@Select` will result in the following:
 
 ```ts
 @Component(/**/)
@@ -139,7 +141,7 @@ class AppComponent {
 }
 ```
 
-Improved type inference for store.select, store.selectOnce, store.selectSnapshot
+We also get improved type inference for `store.select`, `store.selectOnce` and `store.selectSnapshot`:
 
 ```ts
 @Component(/**/)
@@ -156,7 +158,7 @@ class AppComponent implements OnInit {
 
 Ref: [Proposal](https://github.com/ngxs/store/issues/1391), [PR #1436](https://github.com/ngxs/store/pull/1436)
 
-## 💥 New Lifecycle Hook `ngxsOnChanges`
+## 💥 New Lifecycle Hook: ngxsOnChanges
 
 We have added a new lifecycle hook. It was inspired by the `onChanges` hook available in Angular. It was a very simple change that enabled us to add this hook and it opens the opportunity for some great use cases. The new hook looks like this:
 
@@ -193,7 +195,7 @@ After creating the state by calling its constructor, NGXS calls the lifecycle ho
 | ngxsOnInit()         | Called _once_, after the _first_ `ngxsOnChanges()` and _before_ the `APP_INITIALIZER` token is resolved. |
 | ngxsAfterBootstrap() | Called _once_, after the root view and all its children have been rendered.                              |
 
-Let's look at couple of simple examples:
+Let's look at a couple of simple examples:
 
 I. A convenient way to track state changes:
 
@@ -353,7 +355,7 @@ Now you can use the state class:
 export class AppModule {}
 ```
 
-This is a great improvement because it removes the requirement for you to provide the `path` of a state in multiple places in your application (with the risk of getting out of sync if there are any changes to the `path`). Now you just need to pass the reference to the state class (or the state token) and the plugin will automatically translate it to the `path`.
+This is a great improvement because it removes the requirement for you to provide the `path` of a state in multiple places in your application (with the risk of getting out of sync if there are any changes to the `path`). Now you can just pass the reference to the state class (or the state token) and the plugin will automatically translate it to the `path`.
 
 ### Form Plugin
 
@@ -454,7 +456,7 @@ Ref: [PR #1371](https://github.com/ngxs/store/pull/1371)
 
 ## 🔬 NGXS Labs Projects Updates
 
-### New Labs Project: `@ngxs-labs/data`
+### New Labs Project: @ngxs-labs/data
 
 Announcing [@ngxs-labs/data](https://github.com/ngxs-labs/data)
 
@@ -658,6 +660,8 @@ class BookState extends NgxsDataRepository<BookEntitiesModel> {
 }
 ```
 
+And the component now looks like this:
+
 ```ts
 @Component({
   selector: 'book-page',
@@ -679,17 +683,17 @@ export class FindBookPageComponent {
 
 As you can see you can now call methods of your state directly and you no longer need to worry and come up with actions to communicate with your state.
 
-As with anything there are trade-offs to this approach, so please ensure that you have read about the benefits to CQRS before abandoning the idea of Actions. On the other hand, this is a much simpler approach to state menagement that may be a better fit for your team and your product.
+As with anything, there are trade-offs to this approach, so please ensure that you have read about the benefits to CQRS before abandoning the idea of Actions. On the other hand, this is a much simpler approach to state management that may be a better fit for your team and your product.
 
 ---
 
-### New Labs Project: `@ngxs-labs/actions-executing`
+### New Labs Project: @ngxs-labs/actions-executing
 
 Announcing [@ngxs-labs/actions-executing](https://github.com/ngxs-labs/actions-executing)
 
 #### The Problem:
 
-Sometimes we want to wait for some action to complete and we want to update our UI accordingly to repreent this pending state. The most common pattern for doing this is as follows:
+Sometimes we want to wait for some action to complete and we want to update our UI accordingly to represent this pending state. The most common pattern for doing this is as follows:
 
 ```ts
 interface BooksStateModel {
@@ -830,4 +834,4 @@ The `actionsExecuting` selector can be used to track one, many or even all actio
 
 ## Some Useful Links
 
-If you would like any further information on changes in this release please feel free to have a look at our change log. The code for NGXS is all available at https://github.com/ngxs/store and our docs are available at http://ngxs.io/. We have a thriving community on our slack channel so come and join us to keep abreast with the latest developments. Here is the slack invitation link: https://now-examples-slackin-eqzjxuxoem.now.sh/
+If you would like any further information on changes in this release please feel free to have a look at our changelog. The code for NGXS is all available at https://github.com/ngxs/store and our docs are available at http://ngxs.io/. We have a thriving community on our slack channel so come and join us to keep abreast of the latest developments. Here is the slack invitation link: https://now-examples-slackin-eqzjxuxoem.now.sh/
