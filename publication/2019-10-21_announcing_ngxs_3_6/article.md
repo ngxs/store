@@ -4,20 +4,18 @@
 
 ## Overview
 
-- 🦄 Ivy Support
-- 💥 New Lifecycle Hook `ngxsOnChanges`
+- 🌿 Ivy Support
 - 💦 Fixed Actions Stream Subscriptions Leak
-- ㊗ ️ State Token
 - 🚧 Improved Type Safety
-
-- ...
+- ㊗ ️ State Token
+- 💥 New Lifecycle Hook `ngxsOnChanges`
 - 🔧 Other Fixes
 - 🔌 Plugin Improvements and Fixes
 - 🔬 NGXS Labs Projects Updates
 
 ---
 
-## 🦄 Ivy Support
+## 🌿 Ivy Support
 
 We are actively working on support for Ivy and are 99% there.
 The `@ngxs/store` library is fully compatible with Ivy and most of our plugins are compatible.
@@ -25,6 +23,8 @@ The only plugin that has an issue is the `@ngxs/router-plugin`. We are working w
 
 Due to changes in Angular DI with Ivy there will be a very small change that you will have to make to your states. This is detailed in the docs here: https://www.ngxs.io/v/master/advanced/ivy-migration-guide
 To support our users in making this small change we have added a check in development mode to warn of incorrect configuration when using Ivy.
+
+If you pick up any issues in testing this version with Ivy please log an issue and we will look into immediately.
 
 Related PRs: [#1278](https://github.com/ngxs/store/pull/1278), [#1397](https://github.com/ngxs/store/pull/1397), [#1459](https://github.com/ngxs/store/pull/1459), [#1469](https://github.com/ngxs/store/pull/1469), [#1472](https://github.com/ngxs/store/pull/1472), [#1474](https://github.com/ngxs/store/pull/1474)
 
@@ -277,7 +277,7 @@ Ref: [Proposal](https://github.com/ngxs/store/issues/749), [PR #1389](https://gi
 
 - Fix: Router Plugin - Resolve infinite redirects and browser hanging [#1430](https://github.com/ngxs/store/pull/1430)
 
-In the `3.5.1` release we provided the fix for the [very old issue](https://github.com/ngxs/store/issues/542), where the Router Plugin didn't restore its state after the `RouterCancel` action was emitted. This fix introduced a new bug that was associated with endless redirects and, as a result, browser freeze. The above PR resolves both issues, so there will no more browser hanging because of infinite redirects.
+In the `3.5.1` release we provided the fix for a [very old issue](https://github.com/ngxs/store/issues/542), where the Router Plugin didn't restore its state after the `RouterCancel` action was emitted. This fix unfortunately introduced a new bug that caused endless redirects and, as a result, crashed the browser! The above PR resolves both issues. 🎉
 
 ### HMR Plugin
 
@@ -289,7 +289,7 @@ If you make any changes in your application during the `ngOnDestroy` Angular lif
 @Component({})
 class AppComponent implements OnDestroy {
   ngOnDestroy(): void {
-    // my super heavy logic (but not needed for HMR)
+    // my very heavy logic (but not needed for HMR)
   }
 }
 ```
@@ -317,7 +317,7 @@ class AppComponent implements OnDestroy {
 
 - Feature: Storage Plugin - Use state classes as keys [#1380](https://github.com/ngxs/store/pull/1380)
 
-Currently, if you want a specific part of the state of the application to be stored then you have to provide the `path` of the state to the storage plugin. Now we have added the ability to provide the state class instead of the path. As an example, given the following state:
+Currently, if you want a specific part of the state of the application to be stored then you have to provide the `path` of the state to the storage plugin. Now we have added the ability to provide the state class or a state token instead of the path. As an example, given the following state:
 
 ```ts
 @State<Novel[]>({
@@ -353,7 +353,7 @@ Now you can use the state class:
 export class AppModule {}
 ```
 
-This is a great improvement because it removes the requirement for you to provide the `path` of a state in multiple places in your application (with the risk of getting out of sync if there are any changes to the `path`). Now you just need to pass the reference to the state class and the plugin will automatically translate it to the `path`.
+This is a great improvement because it removes the requirement for you to provide the `path` of a state in multiple places in your application (with the risk of getting out of sync if there are any changes to the `path`). Now you just need to pass the reference to the state class (or the state token) and the plugin will automatically translate it to the `path`.
 
 ### Form Plugin
 
@@ -392,7 +392,7 @@ export interface NovelsStateModel {
 export class NovelsState {}
 ```
 
-The state contains information about the new novel name and its authors. Let's create a component that will render the reactive form with bounded `ngxsForm` directive:
+The state contains information about the new novel name and its authors. Let's create a component that will render the reactive form with the `ngxsForm` directive to connect the form to the store:
 
 ```ts
 @Component({
@@ -428,7 +428,7 @@ export class NewNovelComponent {
 }
 ```
 
-Let's look at the component above again. Assume we want to update the name of the first author in our form, from anywhere in our application. The code would look as follows:
+Now, if we want to update the name of the first author in our form from anywhere in our application we can leverage the new property. The code will look as follows:
 
 ```ts
 store.dispatch(
@@ -448,9 +448,9 @@ Ref: [Issue #910](https://github.com/ngxs/store/issues/910), [Issue #260](https:
 
 There is a new action for the `@ngxs/websocket-plugin`.
 
-`WebSocketConnected` - Action dispatched when a web socket is connected.
+`WebSocketConnected` - This action is dispatched when a web socket is connected. Previously we only had actions for `WebSocketDisconnected` and `WebSocketConnectionUpdated`. This new action completes the picture to allow for observing the web socket connection lifecycle.
 
-Ref: [#1371](https://github.com/ngxs/store/pull/1371)
+Ref: [PR #1371](https://github.com/ngxs/store/pull/1371)
 
 ## 🔬 NGXS Labs Projects Updates
 
@@ -595,7 +595,7 @@ export class FindBookPageComponent {
 }
 ```
 
-If you woulkd rather not write actions in your application then the [`@ngxs-labs/data`](https://github.com/ngxs-labs/data) plugin is for you!
+If you would rather not write actions in your application then the [`@ngxs-labs/data`](https://github.com/ngxs-labs/data) plugin is for you!
 
 #### How This Plugin Helps:
 
