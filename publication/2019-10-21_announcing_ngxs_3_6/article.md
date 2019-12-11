@@ -1,6 +1,6 @@
 # Announcing NGXS 3.6
 
-(Intro)
+NGXS v3.6 has been the result of months of hard work by the team, an unwavering commitment to ensuring the stability of the library and a steady focus on what will enhance the core of the library without compromising the simplicity that it offers.
 
 ## Overview
 
