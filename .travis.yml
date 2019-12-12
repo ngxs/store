@@ -39,6 +39,9 @@ script:
   # Run integration test with Angular 6
   - yarn integration:ng6
 
+  # Run integration test with Angular 8 + NGXS Labs packages
+  - yarn integration:ngxs-labs
+
   # Run integration test with Angular 9 Ivy
   - yarn integration:ivy
 

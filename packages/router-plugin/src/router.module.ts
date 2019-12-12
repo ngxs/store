@@ -5,7 +5,8 @@ import { RouterState } from './router.state';
 import { DefaultRouterStateSerializer, RouterStateSerializer } from './serializer';
 
 @NgModule({
-  imports: [NgxsModule.forFeature([RouterState])]
+  imports: [NgxsModule.forFeature([RouterState])],
+  exports: [NgxsModule]
 })
 export class NgxsRouterPluginModule {
   static forRoot(): ModuleWithProviders<NgxsRouterPluginModule> {

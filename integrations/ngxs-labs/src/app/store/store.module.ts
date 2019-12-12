@@ -7,17 +7,26 @@ import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 
-import { CounterState } from './counter/counter.state';
+import { AppState } from './app.state';
+import { CounterEmitterState } from './couter-emitter.state';
+import { NgxsEmitPluginModule } from '@ngxs-labs/emitter';
+import { NgxsDispatchPluginModule } from '@ngxs-labs/dispatch-decorator';
+import { CounterState } from './counter.state';
+import { AnimalState } from './animal.state';
 
 @NgModule({
   imports: [
-    NgxsModule.forRoot([CounterState]),
+    NgxsModule.forRoot([AppState, CounterEmitterState, CounterState, AnimalState]),
+    // OFFICIAL NGXS packages
     NgxsReduxDevtoolsPluginModule.forRoot(),
     NgxsFormPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot(),
     NgxsStoragePluginModule.forRoot(),
     NgxsWebsocketPluginModule.forRoot(),
-    NgxsRouterPluginModule.forRoot()
+    NgxsRouterPluginModule.forRoot(),
+    // NGXS-LABS packages
+    NgxsEmitPluginModule.forRoot(),
+    NgxsDispatchPluginModule.forRoot()
   ],
   exports: [NgxsModule]
 })

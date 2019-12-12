@@ -1,0 +1,27 @@
+<h1>CounterState</h1>
+
+<ng-container *ngIf="counter$ | async as counter">
+  <h1>{{ counter }}</h1>
+</ng-container>
+
+<button (click)="increment()">Increment</button>
+<button (click)="decrement()">Decrement</button>
+
+<hr />
+
+<h1>CounterEmitterState</h1>
+
+<ng-container *ngIf="counterEmitter$ | async as counterEmitter">
+  <h1>{{ counterEmitter }}</h1>
+</ng-container>
+
+<button (click)="incrementEmitter.emit()">Increment</button>
+<button (click)="decrementEmitter.emit()">Decrement</button>
+
+<h1>AnimalState</h1>
+
+<input type="text" #element />
+<button (click)="addAnimal(element.value)">Add animal</button>
+<br /><br />
+
+<pre>{{ animal$ | async | json }}</pre>

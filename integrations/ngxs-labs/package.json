@@ -1,0 +1,37 @@
+{
+  "name": "ngxs-labs",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --hmr",
+    "test": "ng build --prod",
+    "pretest": "yarn --frozen-lockfile --non-interactive --no-progress",
+    "postinstall": "cpx -v -C \"../../@ngxs/**/*\" \"node_modules/@ngxs/\""
+  },
+  "private": true,
+  "devDependencies": {
+    "immer": "2.1.5",
+    "@ngxs-labs/emitter": "latest",
+    "@ngxs-labs/immer-adapter": "latest",
+    "@ngxs-labs/dispatch-decorator": "latest",
+    "@angular/animations": "8.2.14",
+    "@angular/common": "8.2.14",
+    "@angular/compiler": "8.2.14",
+    "@angular/core": "8.2.14",
+    "@angular/forms": "8.2.14",
+    "@angular/platform-browser": "8.2.14",
+    "@angular/platform-browser-dynamic": "8.2.14",
+    "@angular/compiler-cli": "8.2.14",
+    "@angular-devkit/build-ng-packagr": "0.803.20",
+    "@angular-devkit/build-angular": "0.803.20",
+    "@angular/router": "8.2.14",
+    "@angular/cli": "8.3.20",
+    "@types/node": "8.10.59",
+    "rxjs": "6.5.3",
+    "zone.js": "file:../../node_modules/zone.js",
+    "typescript": "3.4.5",
+    "core-js": "file:../../node_modules/core-js",
+    "cpx": "file:../../node_modules/cpx"
+  }
+}

@@ -99,7 +99,7 @@ export class RouterState {
   @Action([RouterNavigation, RouterError, RouterCancel, RouterDataResolved])
   angularRouterAction(
     ctx: StateContext<RouterStateModel>,
-    action: RouterAction<RouterStateModel, RouterStateSnapshot>
+    action: RouterAction<RouterStateModel>
   ): void {
     ctx.setState({
       ...ctx.getState(),
