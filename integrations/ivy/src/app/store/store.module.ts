@@ -5,7 +5,7 @@ import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
-import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
+// import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 
 import { CounterState } from './counter/counter.state';
 
@@ -16,9 +16,9 @@ import { CounterState } from './counter/counter.state';
     NgxsFormPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot(),
     NgxsStoragePluginModule.forRoot(),
-    NgxsWebsocketPluginModule.forRoot(),
-    NgxsRouterPluginModule.forRoot()
-  ],
-  exports: [NgxsModule]
+    NgxsWebsocketPluginModule.forRoot()
+    // TODO: https://github.com/angular/angular/issues/34191
+    // NgxsRouterPluginModule.forRoot()
+  ]
 })
 export class StoreModule {}
