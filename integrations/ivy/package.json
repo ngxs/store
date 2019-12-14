@@ -16,7 +16,7 @@
     "e2e:ci": "start-test serve:integration:static 4200 cy:run",
     "copy:ngxs": "yarn --cwd ../../ cpx -v -C \"@ngxs/**/*\" integrations/ivy/node_modules/@ngxs",
     "preinstall": "yarn copy:ngxs && yarn router-plugin-exclude",
-    "postinstall": "yarn ngcc",
+    "postinstall": "yarn ngcc --async false",
     "//": "Value at position 0 in the NgModule.imports of NgxsRouterPluginModule is not a reference",
     "router-plugin-exclude": "rm -rf \"node_modules/@ngxs/router-plugin\""
   },
