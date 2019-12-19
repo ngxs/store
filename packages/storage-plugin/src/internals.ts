@@ -1,6 +1,6 @@
 import { isPlatformServer } from '@angular/common';
 import { StateClass } from '@ngxs/store/internals';
-import { StateToken } from '@ngxs/store';
+import { ActionType, InitState, StateToken, UpdateState } from '@ngxs/store';
 
 import { StorageOption, StorageEngine, NgxsStoragePluginOptions } from './symbols';
 
@@ -75,3 +75,21 @@ export function engineFactory(
 
   return null;
 }
+
+export function checkIsInitAction(action: ActionType | InitState | UpdateState): boolean {
+  return action instanceof InitState || action instanceof UpdateState;
+}
+
+export function isNotNull(val: any): boolean {
+  return val !== 'undefined' && typeof val !== 'undefined' && val !== null;
+}
+
+export interface States {
+  [key: string]: any;
+}
+
+export const DATA_ERROR_CODE = {
+  DESERIALIZE:
+    'Error occurred while deserializing the store value, falling back to empty object.',
+  SERIALIZE: 'Error occurred while serializing the store value, value not updated.'
+};

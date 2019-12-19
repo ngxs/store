@@ -1,100 +1,109 @@
-import { PLATFORM_ID, Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
-import {
-  NgxsPlugin,
-  setValue,
-  getValue,
-  InitState,
-  UpdateState,
-  actionMatcher,
-  NgxsNextPluginFn
-} from '@ngxs/store';
+import { ActionType, getValue, NgxsNextPluginFn, NgxsPlugin, setValue } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
 import {
-  StorageEngine,
+  NGXS_STORAGE_PLUGIN_OPTIONS,
   NgxsStoragePluginOptions,
   STORAGE_ENGINE,
-  NGXS_STORAGE_PLUGIN_OPTIONS
+  StorageEngine
 } from './symbols';
-import { DEFAULT_STATE_KEY } from './internals';
+import {
+  checkIsInitAction,
+  DATA_ERROR_CODE,
+  DEFAULT_STATE_KEY,
+  isNotNull,
+  States
+} from './internals';
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
+  private hasMigration = false;
+
   constructor(
     @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
     @Inject(STORAGE_ENGINE) private _engine: StorageEngine,
     @Inject(PLATFORM_ID) private _platformId: string
   ) {}
 
-  handle(state: any, event: any, next: NgxsNextPluginFn) {
+  public handle(states: States, action: ActionType, next: NgxsNextPluginFn): NgxsNextPluginFn {
     if (isPlatformServer(this._platformId) && this._engine === null) {
-      return next(state, event);
+      return next(states, action);
     }
 
-    // We cast to `string[]` here as we're sure that this option has been
-    // transformed by the `storageOptionsFactory` function that provided token
-    const keys = this._options.key as string[];
-    const matches = actionMatcher(event);
-    const isInitAction = matches(InitState) || matches(UpdateState);
-    let hasMigration = false;
+    states = checkIsInitAction(action) ? this.pullStatesFromStorage(states) : states;
+    return next(states, action).pipe(
+      tap((nextStates: States) => this.nextCycleSynchronization(nextStates, action))
+    );
+  }
 
-    if (isInitAction) {
-      for (const key of keys) {
-        const isMaster = key === DEFAULT_STATE_KEY;
-        let val: any = this._engine.getItem(key!);
+  private nextCycleSynchronization(nextStates: States, action: ActionType): void {
+    const isInitAction: boolean = checkIsInitAction(action);
+    if (!isInitAction || (isInitAction && this.hasMigration)) {
+      this.pushStatesIntoStorage(nextStates);
+    }
+  }
 
-        if (val !== 'undefined' && typeof val !== 'undefined' && val !== null) {
-          try {
-            val = this._options.deserialize!(val);
-          } catch (e) {
-            console.error(
-              'Error ocurred while deserializing the store value, falling back to empty object.'
-            );
-            val = {};
-          }
+  /**
+   * Note: we cast to `string[]` here as we're sure that this option has been
+   * transformed by the `storageOptionsFactory` function that provided token
+   */
+  private keys(): string[] {
+    return this._options.key as string[];
+  }
 
-          if (this._options.migrations) {
-            this._options.migrations.forEach(strategy => {
-              const versionMatch =
-                strategy.version === getValue(val, strategy.versionKey || 'version');
-              const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
-              if (versionMatch && keyMatch) {
-                val = strategy.migrate(val);
-                hasMigration = true;
-              }
-            });
-          }
+  /**
+   * Note: we read the values from the storage and fill the states
+   */
+  private pullStatesFromStorage(states: States): States {
+    for (const key of this.keys()) {
+      const isMaster: boolean = key === DEFAULT_STATE_KEY;
+      let value: any = this._engine.getItem(key!);
 
-          if (!isMaster) {
-            state = setValue(state, key!, val);
-          } else {
-            state = { ...state, ...val };
-          }
+      if (isNotNull(value)) {
+        try {
+          value = this._options.deserialize!(value);
+        } catch (e) {
+          console.error(DATA_ERROR_CODE.DESERIALIZE);
+          value = {};
         }
+
+        if (this._options.migrations) {
+          this._options.migrations.forEach(strategy => {
+            const versionIsMatched: boolean =
+              strategy.version === getValue(value, strategy.versionKey || 'version');
+            const keyIsMatched: boolean = (!strategy.key && isMaster) || strategy.key === key;
+            if (versionIsMatched && keyIsMatched) {
+              value = strategy.migrate(value);
+              this.hasMigration = true;
+            }
+          });
+        }
+
+        states = !isMaster ? setValue(states, key!, value) : { ...states, ...value };
       }
     }
 
-    return next(state, event).pipe(
-      tap(nextState => {
-        if (!isInitAction || (isInitAction && hasMigration)) {
-          for (const key of keys) {
-            let val = nextState;
+    return states;
+  }
 
-            if (key !== DEFAULT_STATE_KEY) {
-              val = getValue(nextState, key!);
-            }
+  /**
+   * Note: We update states after the first synchronization
+   */
+  private pushStatesIntoStorage(states: States): void {
+    for (const key of this.keys()) {
+      let value: States = states;
 
-            try {
-              this._engine.setItem(key!, this._options.serialize!(val));
-            } catch (e) {
-              console.error(
-                'Error ocurred while serializing the store value, value not updated.'
-              );
-            }
-          }
-        }
-      })
-    );
+      if (key !== DEFAULT_STATE_KEY) {
+        value = getValue(states, key!);
+      }
+
+      try {
+        this._engine.setItem(key!, this._options.serialize!(value));
+      } catch (e) {
+        console.error(DATA_ERROR_CODE.SERIALIZE);
+      }
+    }
   }
 }
