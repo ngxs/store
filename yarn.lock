@@ -11055,7 +11055,7 @@ typedarray@^0.0.6:
   resolved "https://registry.npmjs.org/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@3.5.3, typescript@~3.5.3:
+typescript@3.5.3:
   version "3.5.3"
   resolved "https://registry.npmjs.org/typescript/-/typescript-3.5.3.tgz#c830f657f93f1ea846819e929092f5fe5983e977"
   integrity sha512-ACzBtm/PhXBDId6a6sDJfroT2pOWt/oOnk4/dElG5G33ZL776N3Y6/6bKZJBFpd+b05F3Ct9qDjMeJmRWtE2/g==
@@ -11064,6 +11064,11 @@ typescript@next:
   version "3.8.0-dev.20191203"
   resolved "https://registry.npmjs.org/typescript/-/typescript-3.8.0-dev.20191203.tgz#cccec5a4a79dd7f3303e3a037cb530a4f743c98d"
   integrity sha512-ZPMH02RdXSYkYr5JsxksisQsRlJ22w5yXn97vzIgp3ehFnMo/3O1fReQV99iEN4keTLD9IiGGxO0h2u6aKfJUQ==
+
+typescript@~3.7.4:
+  version "3.7.4"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-3.7.4.tgz#1743a5ec5fef6a1fa9f3e4708e33c81c73876c19"
+  integrity sha512-A25xv5XCtarLwXpcDNZzCGvW2D1S3/bACratYBx2sax8PefsFhlYmkQicKHvpYflFS8if4zne5zT5kpJ7pzuvw==
 
 uglify-js@^3.1.4:
   version "3.7.1"
