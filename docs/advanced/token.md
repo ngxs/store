@@ -49,7 +49,7 @@ const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
   defaults: [] // if you specify the wrong state type, will be a compilation error
 })
 class TodosState {
-  @Selector(TODOS_STATE_TOKEN) // if you specify the wrong state type, will be a compilation error
+  @Selector([TODOS_STATE_TOKEN]) // if you specify the wrong state type, will be a compilation error
   static completedList(state: TodoStateModel[]): TodoStateModel[] {
     return state.filter(todo => todo.completed);
   }
