@@ -21,6 +21,11 @@ From time to time we will be posting about projects that have been started under
     <th>Status</th>
   </tr>
   <tr>
+    <td><a href="https://npmjs.com/package/@ngxs-labs/data">@ngxs-labs/data</a></td>
+    <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Fdata/latest.svg"></td>
+    <td>Stable</td>
+  </tr>
+  <tr>
     <td><a href="https://npmjs.com/package/@ngxs-labs/emitter">@ngxs-labs/emitter</a></td>
     <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Femitter/latest.svg"></td>
     <td>Stable</td>
