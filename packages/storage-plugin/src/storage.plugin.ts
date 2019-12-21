@@ -22,7 +22,7 @@ import { DEFAULT_STATE_KEY } from './internals';
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
   constructor(
-    @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
+    @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions<string[]>,
     @Inject(STORAGE_ENGINE) private _engine: StorageEngine,
     @Inject(PLATFORM_ID) private _platformId: string
   ) {}
@@ -32,9 +32,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
       return next(state, event);
     }
 
-    // We cast to `string[]` here as we're sure that this option has been
-    // transformed by the `storageOptionsFactory` function that provided token
-    const keys = this._options.key as string[];
+    const keys: string[] = this._options.key!;
     const matches = actionMatcher(event);
     const isInitAction = matches(InitState) || matches(UpdateState);
     let hasMigration = false;

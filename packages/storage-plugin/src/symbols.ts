@@ -7,11 +7,11 @@ export const enum StorageOption {
   SessionStorage
 }
 
-export interface NgxsStoragePluginOptions {
+export interface NgxsStoragePluginOptions<T = StorageKey> {
   /**
    * Key for the state slice to store in the storage engine.
    */
-  key?: undefined | StorageKey;
+  key?: T;
 
   /**
    * Storage engine to use. Deaults to localStorage but can provide
