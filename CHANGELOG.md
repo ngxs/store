@@ -6,6 +6,9 @@
 $ npm install @ngxs/store@dev
 ```
 
+- Build: Add router-plugin back to ivy integration test [#1506](https://github.com/ngxs/store/pull/1506)
+- Build: Run ngcc synchronously to get Ivy build working again [#1497](https://github.com/ngxs/store/pull/1497)
+
 ## NGXS-Labs
 
 ### Data-plugin v2.0.0 2019-12-16
