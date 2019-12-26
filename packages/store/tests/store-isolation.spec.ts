@@ -6,15 +6,10 @@ import { State } from '../src/decorators/state';
 
 describe('Store (isolation)', () => {
   describe('when selecting a child state', () => {
-    @State<string>({
-      name: 'child'
-    })
+    @State<string>({ name: 'child' })
     class ChildState {}
 
-    @State<{}>({
-      name: 'parent',
-      children: [ChildState]
-    })
+    @State<{}>({ name: 'parent', children: [ChildState] })
     class ParentState {}
 
     it('should select undefined if not initialised in store', () => {
