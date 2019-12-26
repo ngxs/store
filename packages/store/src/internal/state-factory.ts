@@ -68,18 +68,15 @@ export class StateFactory {
     return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
   }
 
-  private _keyMappings: PlainObjectOf<string> = {};
+  private _statePaths: PlainObjectOf<string> = {};
 
   public getRuntimeSelectorContext: () => RuntimeSelectorContext = memoize(() => {
     const stateFactory = this;
     return this._parentFactory
       ? this._parentFactory.getRuntimeSelectorContext()
       : {
-          getStatePath: (key: string) => {
-            return stateFactory._keyMappings[key];
-          },
           getStateGetter(key: string) {
-            const path = this.getStatePath(key);
+            const path = stateFactory._statePaths[key];
             return path ? propGetter(path.split('.'), stateFactory._config) : () => undefined;
           }
         };
@@ -115,20 +112,20 @@ export class StateFactory {
 
     const stateGraph: StateKeyGraph = buildGraph(newStates);
     const sortedStates: string[] = topologicalSort(stateGraph);
-    const depths: PlainObjectOf<string> = findFullParentPath(stateGraph);
+    const paths: PlainObjectOf<string> = findFullParentPath(stateGraph);
     const nameGraph: PlainObjectOf<StateClassInternal> = nameToState(newStates);
     const bootstrappedStores: MappedStore[] = [];
 
     for (const name of sortedStates) {
       const stateClass: StateClassInternal = nameGraph[name];
-      const depth: string = depths[name];
+      const path: string = paths[name];
       const meta: MetaDataModel = stateClass[META_KEY]!;
 
-      this.addRuntimeInfoToMeta(meta, depth);
+      this.addRuntimeInfoToMeta(meta, path);
 
       const stateMap: MappedStore = {
         name,
-        depth,
+        path,
         isInitialised: false,
         actions: meta.actions,
         instance: this._injector.get(stateClass),
@@ -138,7 +135,7 @@ export class StateFactory {
       // ensure our store hasn't already been added
       // but don't throw since it could be lazy
       // loaded from different paths
-      if (!this.hasBeenMountedAndBootstrapped(name, depth)) {
+      if (!this.hasBeenMountedAndBootstrapped(name, path)) {
         bootstrappedStores.push(stateMap);
       }
 
@@ -157,7 +154,7 @@ export class StateFactory {
     const mappedStores: MappedStore[] = this.add(classes);
     const defaults = mappedStores.reduce(
       (result: any, mappedStore: MappedStore) =>
-        setValue(result, mappedStore.depth, mappedStore.defaults),
+        setValue(result, mappedStore.path, mappedStore.defaults),
       {}
     );
     return { defaults, states: mappedStores };
@@ -249,10 +246,12 @@ export class StateFactory {
     return { newStates };
   }
 
-  private addRuntimeInfoToMeta(meta: MetaDataModel, depth: string): void {
-    this._keyMappings[meta.name!] = depth;
-    // TODO: v4 - we can get rid of the path when we get rid of the incorrectly exposed getStoreMetadata
-    meta.path = depth;
+  private addRuntimeInfoToMeta(meta: MetaDataModel, path: string): void {
+    this._statePaths[meta.name!] = path;
+    // TODO: v4 - we plan to get rid of the path property because it is non-deterministic
+    // we can do this when we get rid of the incorrectly exposed getStoreMetadata
+    // We will need to come up with an alternative in v4 because this is used by many plugins
+    meta.path = path;
   }
 
   /**

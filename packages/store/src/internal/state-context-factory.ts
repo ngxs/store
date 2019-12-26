@@ -22,11 +22,11 @@ export class StateContextFactory {
     const root = this._internalStateOperations.getRootStateOperations();
 
     function getState(currentAppState: any): T {
-      return getValue(currentAppState, mappedStore.depth);
+      return getValue(currentAppState, mappedStore.path);
     }
 
     function setStateValue(currentAppState: any, newValue: T): any {
-      const newAppState = setValue(currentAppState, mappedStore.depth, newValue);
+      const newAppState = setValue(currentAppState, mappedStore.path, newValue);
       const instance: NgxsLifeCycle = mappedStore.instance;
 
       if (instance.ngxsOnChanges) {
