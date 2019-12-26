@@ -70,16 +70,21 @@ export class StateFactory {
 
   private _statePaths: PlainObjectOf<string> = {};
 
-  public getRuntimeSelectorContext: () => RuntimeSelectorContext = memoize(() => {
+  private get statePaths(): PlainObjectOf<string> {
+    return this._parentFactory ? this._parentFactory.statePaths : this._statePaths;
+  }
+
+  public getRuntimeSelectorContext = memoize(() => {
     const stateFactory = this;
-    return this._parentFactory
+    const context: RuntimeSelectorContext = this._parentFactory
       ? this._parentFactory.getRuntimeSelectorContext()
       : {
           getStateGetter(key: string) {
-            const path = stateFactory._statePaths[key];
+            const path = stateFactory.statePaths[key];
             return path ? propGetter(path.split('.'), stateFactory._config) : () => undefined;
           }
         };
+    return context;
   });
 
   private static cloneDefaults(defaults: any): any {
@@ -247,7 +252,7 @@ export class StateFactory {
   }
 
   private addRuntimeInfoToMeta(meta: MetaDataModel, path: string): void {
-    this._statePaths[meta.name!] = path;
+    this.statePaths[meta.name!] = path;
     // TODO: v4 - we plan to get rid of the path property because it is non-deterministic
     // we can do this when we get rid of the incorrectly exposed getStoreMetadata
     // We will need to come up with an alternative in v4 because this is used by many plugins
