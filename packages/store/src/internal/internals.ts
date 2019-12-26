@@ -42,7 +42,12 @@ export interface MetaDataModel {
   children?: StateClassInternal[];
 }
 
-export type SelectFromState = (state: any) => any;
+export interface RuntimeSelectorContext {
+  getStatePath(key: any): string;
+  getStateGetter(key: any): (state: any) => any;
+}
+
+export type SelectFromState = (state: any, runtimeContext: RuntimeSelectorContext) => any;
 
 export interface SharedSelectorOptions {
   injectContainerState?: boolean;
@@ -90,7 +95,10 @@ export function ensureStoreMetadata(target: StateClassInternal): MetaDataModel {
       actions: {},
       defaults: {},
       path: null,
-      selectFromAppState: null,
+      selectFromAppState(state: any, context: RuntimeSelectorContext) {
+        const getter = context.getStateGetter(defaultMetadata.name);
+        return getter(state);
+      },
       children: []
     };
 

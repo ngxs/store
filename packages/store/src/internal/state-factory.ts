@@ -23,7 +23,8 @@ import {
   StateKeyGraph,
   StatesAndDefaults,
   StatesByName,
-  topologicalSort
+  topologicalSort,
+  RuntimeSelectorContext
 } from './internals';
 import { getActionTypeFromInstance, getValue, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -31,7 +32,7 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { INITIAL_STATE_TOKEN, PlainObjectOf } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
 
 /**
  * State factory class
@@ -66,6 +67,23 @@ export class StateFactory {
   public get statesByName(): StatesByName {
     return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
   }
+
+  private _keyMappings: PlainObjectOf<string> = {};
+
+  public getRuntimeSelectorContext: () => RuntimeSelectorContext = memoize(() => {
+    const stateFactory = this;
+    return this._parentFactory
+      ? this._parentFactory.getRuntimeSelectorContext()
+      : {
+          getStatePath: (key: string) => {
+            return stateFactory._keyMappings[key];
+          },
+          getStateGetter(key: string) {
+            const path = this.getStatePath(key);
+            return path ? propGetter(path.split('.'), stateFactory._config) : () => undefined;
+          }
+        };
+  });
 
   private static cloneDefaults(defaults: any): any {
     let value = {};
@@ -232,8 +250,9 @@ export class StateFactory {
   }
 
   private addRuntimeInfoToMeta(meta: MetaDataModel, depth: string): void {
+    this._keyMappings[meta.name!] = depth;
+    // TODO: v4 - we can get rid of the path when we get rid of the incorrectly exposed getStoreMetadata
     meta.path = depth;
-    meta.selectFromAppState = propGetter(depth.split('.'), this._config);
   }
 
   /**

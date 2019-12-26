@@ -11,6 +11,7 @@ import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
 import { StateToken } from './state-token/state-token';
+import { StateFactory } from './internal/state-factory';
 
 @Injectable()
 export class Store {
@@ -19,6 +20,7 @@ export class Store {
     private _internalStateOperations: InternalStateOperations,
     private _config: NgxsConfig,
     private _internalExecutionStrategy: InternalNgxsExecutionStrategy,
+    private _stateFactory: StateFactory,
     @Optional()
     @Inject(INITIAL_STATE_TOKEN)
     initialStateValue: any
@@ -40,7 +42,7 @@ export class Store {
   select<T = any>(selector: string | Type<any>): Observable<T>;
   select<T>(selector: StateToken<T>): Observable<T>;
   select(selector: any): Observable<any> {
-    const selectorFn = getSelectorFn(selector);
+    const selectorFn = this.getStoreBoundSelectorFn(selector);
     return this._stateStream.pipe(
       map(selectorFn),
       catchError((err: Error): Observable<never> | Observable<undefined> => {
@@ -77,7 +79,7 @@ export class Store {
   selectSnapshot<T = any>(selector: string | Type<any>): T;
   selectSnapshot<T>(selector: StateToken<T>): T;
   selectSnapshot(selector: any): any {
-    const selectorFn = getSelectorFn(selector);
+    const selectorFn = this.getStoreBoundSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());
   }
 
@@ -101,6 +103,14 @@ export class Store {
    */
   reset(state: any) {
     return this._internalStateOperations.getRootStateOperations().setState(state);
+  }
+
+  private getStoreBoundSelectorFn(selector: any) {
+    const fn = getSelectorFn(selector);
+    const runtimeContext = this._stateFactory.getRuntimeSelectorContext();
+    return (state: any) => {
+      return fn(state, runtimeContext);
+    };
   }
 
   private initStateStream(initialStateValue: any): void {
