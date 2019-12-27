@@ -23,7 +23,8 @@ import {
   StateKeyGraph,
   StatesAndDefaults,
   StatesByName,
-  topologicalSort
+  topologicalSort,
+  RuntimeSelectorContext
 } from './internals';
 import { getActionTypeFromInstance, getValue, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -31,7 +32,7 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { INITIAL_STATE_TOKEN, PlainObjectOf } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
 
 /**
  * State factory class
@@ -67,6 +68,25 @@ export class StateFactory {
     return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
   }
 
+  private _statePaths: PlainObjectOf<string> = {};
+
+  private get statePaths(): PlainObjectOf<string> {
+    return this._parentFactory ? this._parentFactory.statePaths : this._statePaths;
+  }
+
+  public getRuntimeSelectorContext = memoize(() => {
+    const stateFactory = this;
+    const context: RuntimeSelectorContext = this._parentFactory
+      ? this._parentFactory.getRuntimeSelectorContext()
+      : {
+          getStateGetter(key: string) {
+            const path = stateFactory.statePaths[key];
+            return path ? propGetter(path.split('.'), stateFactory._config) : () => undefined;
+          }
+        };
+    return context;
+  });
+
   private static cloneDefaults(defaults: any): any {
     let value = {};
 
@@ -97,20 +117,20 @@ export class StateFactory {
 
     const stateGraph: StateKeyGraph = buildGraph(newStates);
     const sortedStates: string[] = topologicalSort(stateGraph);
-    const depths: PlainObjectOf<string> = findFullParentPath(stateGraph);
+    const paths: PlainObjectOf<string> = findFullParentPath(stateGraph);
     const nameGraph: PlainObjectOf<StateClassInternal> = nameToState(newStates);
     const bootstrappedStores: MappedStore[] = [];
 
     for (const name of sortedStates) {
       const stateClass: StateClassInternal = nameGraph[name];
-      const depth: string = depths[name];
+      const path: string = paths[name];
       const meta: MetaDataModel = stateClass[META_KEY]!;
 
-      this.addRuntimeInfoToMeta(meta, depth);
+      this.addRuntimeInfoToMeta(meta, path);
 
       const stateMap: MappedStore = {
         name,
-        depth,
+        path,
         isInitialised: false,
         actions: meta.actions,
         instance: this._injector.get(stateClass),
@@ -120,7 +140,7 @@ export class StateFactory {
       // ensure our store hasn't already been added
       // but don't throw since it could be lazy
       // loaded from different paths
-      if (!this.hasBeenMountedAndBootstrapped(name, depth)) {
+      if (!this.hasBeenMountedAndBootstrapped(name, path)) {
         bootstrappedStores.push(stateMap);
       }
 
@@ -139,7 +159,7 @@ export class StateFactory {
     const mappedStores: MappedStore[] = this.add(classes);
     const defaults = mappedStores.reduce(
       (result: any, mappedStore: MappedStore) =>
-        setValue(result, mappedStore.depth, mappedStore.defaults),
+        setValue(result, mappedStore.path, mappedStore.defaults),
       {}
     );
     return { defaults, states: mappedStores };
@@ -231,9 +251,12 @@ export class StateFactory {
     return { newStates };
   }
 
-  private addRuntimeInfoToMeta(meta: MetaDataModel, depth: string): void {
-    meta.path = depth;
-    meta.selectFromAppState = propGetter(depth.split('.'), this._config);
+  private addRuntimeInfoToMeta(meta: MetaDataModel, path: string): void {
+    this.statePaths[meta.name!] = path;
+    // TODO: v4 - we plan to get rid of the path property because it is non-deterministic
+    // we can do this when we get rid of the incorrectly exposed getStoreMetadata
+    // We will need to come up with an alternative in v4 because this is used by many plugins
+    meta.path = path;
   }
 
   /**

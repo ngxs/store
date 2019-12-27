@@ -71,7 +71,7 @@ describe('Ensure metadata', () => {
         },
         defaults: 0,
         path: null,
-        selectFromAppState: null,
+        selectFromAppState: expect.any(Function),
         children: [MyCounterState]
       });
     });
@@ -82,7 +82,7 @@ describe('Ensure metadata', () => {
         actions: { decrement: [{ fn: 'decrement', options: {}, type: 'decrement' }] },
         defaults: 1,
         path: null,
-        selectFromAppState: null,
+        selectFromAppState: expect.any(Function),
         children: undefined
       });
     });
@@ -103,9 +103,6 @@ describe('Ensure metadata', () => {
 
       expect(metadata.getSelectorOptions()).toEqual({});
       expect(metadata.selectFromAppState).toEqual(getSelectorFn(CountState.selectFn));
-
-      // TODO(splincode): is normal for CountState?
-      expect(getSelectorFn(CountState.selectFn)(0)).toBeUndefined();
     });
 
     it('should get the selector meta data from the CountState.canInheritSelectFn, MyCounterState.canInheritSelectFn', () => {
@@ -138,10 +135,6 @@ describe('Ensure metadata', () => {
       expect(myCounterMetadata.selectFromAppState).toEqual(
         getSelectorFn(MyCounterState.canInheritSelectFn)
       );
-
-      // TODO(splincode): is normal for CountState, MyCounterState?
-      expect(getSelectorFn(CountState.canInheritSelectFn)(0)).toEqual(NaN);
-      expect(getSelectorFn(MyCounterState.canInheritSelectFn)(0)).toEqual(NaN);
     });
 
     it('should get the selector meta data from the SuperCountState.canInheritSelectFn', () => {

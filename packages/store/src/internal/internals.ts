@@ -42,7 +42,11 @@ export interface MetaDataModel {
   children?: StateClassInternal[];
 }
 
-export type SelectFromState = (state: any) => any;
+export interface RuntimeSelectorContext {
+  getStateGetter(key: any): (state: any) => any;
+}
+
+export type SelectFromState = (state: any, runtimeContext: RuntimeSelectorContext) => any;
 
 export interface SharedSelectorOptions {
   injectContainerState?: boolean;
@@ -63,7 +67,7 @@ export interface MappedStore {
   actions: PlainObjectOf<ActionHandlerMetaData[]>;
   defaults: any;
   instance: any;
-  depth: string;
+  path: string;
 }
 
 export interface StatesAndDefaults {
@@ -90,7 +94,10 @@ export function ensureStoreMetadata(target: StateClassInternal): MetaDataModel {
       actions: {},
       defaults: {},
       path: null,
-      selectFromAppState: null,
+      selectFromAppState(state: any, context: RuntimeSelectorContext) {
+        const getter = context.getStateGetter(defaultMetadata.name);
+        return getter(state);
+      },
       children: []
     };
 
@@ -376,7 +383,7 @@ export function getStateDiffChanges<T>(
   mappedStore: MappedStore,
   diff: RootStateDiff<T>
 ): NgxsSimpleChange {
-  const previousValue: T = getValue(diff.currentAppState, mappedStore.depth);
-  const currentValue: T = getValue(diff.newAppState, mappedStore.depth);
+  const previousValue: T = getValue(diff.currentAppState, mappedStore.path);
+  const currentValue: T = getValue(diff.newAppState, mappedStore.path);
   return new NgxsSimpleChange(previousValue, currentValue, !mappedStore.isInitialised);
 }

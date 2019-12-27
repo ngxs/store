@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../../configs/messages.config';
 import { propGetter } from '../../internal/internals';
 import { SelectFactory } from './select-factory';
-import { META_KEY } from '../../symbols';
 import { StateToken } from '../../state-token/state-token';
 import { ExtractTokenType } from '../../state-token/symbols';
 
@@ -25,8 +24,6 @@ export function createSelectorFn(name: string, rawSelector?: any, paths: string[
       ? [rawSelector, ...paths]
       : rawSelector.split('.');
     return propGetter(propsArray, SelectFactory.config!);
-  } else if (rawSelector[META_KEY] && rawSelector[META_KEY].path) {
-    return propGetter(rawSelector[META_KEY].path.split('.'), SelectFactory.config!);
   }
 
   return rawSelector;

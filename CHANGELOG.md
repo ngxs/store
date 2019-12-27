@@ -6,6 +6,7 @@
 $ npm install @ngxs/store@dev
 ```
 
+- Fix: Selectors should be deterministic based on store being used [#1508](https://github.com/ngxs/store/pull/1508)
 - Build: Add router-plugin back to ivy integration test [#1506](https://github.com/ngxs/store/pull/1506)
 - Build: Run ngcc synchronously to get Ivy build working again [#1497](https://github.com/ngxs/store/pull/1497)
 

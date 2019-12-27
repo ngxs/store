@@ -7,7 +7,8 @@ import {
   globalSelectorOptions,
   SelectFromState,
   SelectorMetaDataModel,
-  SharedSelectorOptions
+  SharedSelectorOptions,
+  RuntimeSelectorContext
 } from '../internal/internals';
 
 const SELECTOR_OPTIONS_META_KEY = 'NGXS_SELECTOR_OPTIONS_META';
@@ -30,7 +31,7 @@ interface CreationMetadata {
 
 interface RuntimeSelectorInfo {
   selectorOptions: SharedSelectorOptions;
-  argumentSelectorFunctions: ((state: any) => any)[];
+  argumentSelectorFunctions: SelectFromState[];
 }
 
 /**
@@ -57,7 +58,10 @@ export function createSelector<T extends (...args: any[]) => any>(
   const selectorMetaData = setupSelectorMetadata<T>(memoizedFn, originalFn, creationMetadata);
   let runtimeInfo: RuntimeSelectorInfo;
 
-  const selectFromAppState = (state: any) => {
+  const selectFromAppState: SelectFromState = (
+    state: any,
+    context: RuntimeSelectorContext
+  ) => {
     const results = [];
 
     runtimeInfo = runtimeInfo || getRuntimeSelectorInfo(selectorMetaData, selectors);
@@ -65,7 +69,7 @@ export function createSelector<T extends (...args: any[]) => any>(
     const { argumentSelectorFunctions } = runtimeInfo;
 
     // Determine arguments from the app state using the selectors
-    results.push(...argumentSelectorFunctions.map(argFn => argFn(state)));
+    results.push(...argumentSelectorFunctions.map(argFn => argFn(state, context)));
 
     // if the lambda tries to access a something on the
     // state that doesn't exist, it will throw a TypeError.
