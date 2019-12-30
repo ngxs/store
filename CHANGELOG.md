@@ -14,7 +14,6 @@ $ npm install @ngxs/store@dev
 
 ### Data-plugin v2.0.0 2019-12-16
 
-- Feature: Support TypeScript 3.7
 - Feature: Support NGXS 3.6
 
 #### BREAKING CHANGES
