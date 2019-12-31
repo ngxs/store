@@ -4,11 +4,10 @@ import { ensureSelectorMetadata, RuntimeSelectorContext } from '../internal/inte
 export class StateToken<T = void> {
   constructor(private readonly name: TokenName<T>) {
     const selectorMetadata = ensureSelectorMetadata(<any>this);
-    selectorMetadata.selectFromAppState = (
-      state: any,
+    selectorMetadata.makeRootSelector = (
       runtimeContext: RuntimeSelectorContext
-    ): T => {
-      return runtimeContext.getStateGetter(this.name)(state);
+    ): ((state: any) => T) => {
+      return runtimeContext.getStateGetter(this.name);
     };
   }
 

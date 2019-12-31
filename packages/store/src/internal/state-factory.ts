@@ -24,7 +24,8 @@ import {
   StatesAndDefaults,
   StatesByName,
   topologicalSort,
-  RuntimeSelectorContext
+  RuntimeSelectorContext,
+  SharedSelectorOptions
 } from './internals';
 import { getActionTypeFromInstance, getValue, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -82,6 +83,13 @@ export class StateFactory {
           getStateGetter(key: string) {
             const path = stateFactory.statePaths[key];
             return path ? propGetter(path.split('.'), stateFactory._config) : () => undefined;
+          },
+          getSelectorOptions(localOptions?: SharedSelectorOptions) {
+            const globalSelectorOptions = stateFactory._config.selectorOptions;
+            return {
+              ...globalSelectorOptions,
+              ...(localOptions || {})
+            };
           }
         };
     return context;

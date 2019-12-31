@@ -4,12 +4,8 @@ import { StateFactory } from '../internal/state-factory';
 import { InternalStateOperations } from '../internal/state-operations';
 import { Store } from '../store';
 import { SelectFactory } from '../decorators/select/select-factory';
-import { NgxsConfig, ROOT_STATE_TOKEN } from '../symbols';
-import {
-  globalSelectorOptions,
-  StateClassInternal,
-  StatesAndDefaults
-} from '../internal/internals';
+import { ROOT_STATE_TOKEN } from '../symbols';
+import { StateClassInternal, StatesAndDefaults } from '../internal/internals';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
 import { InitState } from '../actions/actions';
 import { setIvyEnabledInDevMode } from '../ivy/ivy-enabled-in-dev-mode';
@@ -28,13 +24,10 @@ export class NgxsRootModule {
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
     states: StateClassInternal[] = [],
-    config: NgxsConfig,
     lifecycleStateManager: LifecycleStateManager
   ) {
     // Validate states on having the `@Injectable()` decorator in Ivy
     setIvyEnabledInDevMode();
-
-    globalSelectorOptions.set(config.selectorOptions || {});
 
     // Add stores to the state graph and return their defaults
     const results: StatesAndDefaults = factory.addAndReturnDefaults(states);

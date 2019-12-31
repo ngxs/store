@@ -6,7 +6,7 @@ import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
-import { getSelectorFn } from './utils/selector-utils';
+import { getRootSelectorFactory } from './utils/selector-utils';
 import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
@@ -106,11 +106,9 @@ export class Store {
   }
 
   private getStoreBoundSelectorFn(selector: any) {
-    const fn = getSelectorFn(selector);
+    const makeSelectorFn = getRootSelectorFactory(selector);
     const runtimeContext = this._stateFactory.getRuntimeSelectorContext();
-    return (state: any) => {
-      return fn(state, runtimeContext);
-    };
+    return makeSelectorFn(runtimeContext);
   }
 
   private initStateStream(initialStateValue: any): void {
