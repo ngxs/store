@@ -9,6 +9,8 @@ import { NgModule, NgModuleFactoryLoader } from '@angular/core';
 import { RouterTestingModule, SpyNgModuleFactoryLoader } from '@angular/router/testing';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { StateToken } from '../src/public_api';
+import { StateClass } from '../internals/src/index';
 
 describe('Store (isolation)', () => {
   describe('when selecting a child state', () => {
@@ -136,6 +138,72 @@ describe('Store (isolation)', () => {
       });
       const store: Store = TestBed.get(Store);
       setToTestState(store);
+      // Act
+      const result = store.selectSnapshot(ParentState.getPaths);
+      // Assert
+      expect(result).toEqual('undefined, undefined');
+    });
+  });
+
+  describe('when selecting a child state using a state token', () => {
+    const CHILD_STATE_TOKEN = new StateToken<string>('child');
+    const PARENT_STATE_TOKEN = new StateToken<{ path: string }>('parent');
+
+    @State<string>({ name: CHILD_STATE_TOKEN })
+    @SelectorOptions({ injectContainerState: false })
+    class ChildState {
+      @Selector([CHILD_STATE_TOKEN]) static getPath(state: string) {
+        return state;
+      }
+    }
+
+    @State<{ path: string }>({ name: PARENT_STATE_TOKEN, children: [ChildState] })
+    @SelectorOptions({ injectContainerState: false })
+    class ParentState {
+      @Selector([PARENT_STATE_TOKEN, ChildState.getPath])
+      static getPaths(parent: any, childPath: string) {
+        return `${parent && parent.path}, ${childPath}`;
+      }
+    }
+
+    function setToTestState(store: Store) {
+      store.reset({ parent: { path: 'parent', child: 'parent.child' }, child: 'child' });
+    }
+
+    function setup(states: StateClass<any>[]) {
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot(states, {
+            selectorOptions: { suppressErrors: false }
+          })
+        ]
+      });
+      const store: Store = TestBed.get(Store);
+      setToTestState(store);
+      return { store };
+    }
+
+    it('should select undefined if not initialised in store', () => {
+      // Arrange
+      const { store } = setup([]);
+      // Act
+      const result = store.selectSnapshot(ParentState.getPaths);
+      // Assert
+      expect(result).toEqual('undefined, undefined');
+    });
+
+    it('should select successfully if initialised in store', () => {
+      // Arrange
+      const { store } = setup([ChildState, ParentState]);
+      // Act
+      const result = store.selectSnapshot(ParentState.getPaths);
+      // Assert
+      expect(result).toEqual('parent, parent.child');
+    });
+
+    it('should select undefined if not initialised in store in subsequent test', () => {
+      // Arrange
+      const { store } = setup([]);
       // Act
       const result = store.selectSnapshot(ParentState.getPaths);
       // Assert
