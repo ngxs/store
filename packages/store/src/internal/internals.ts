@@ -43,8 +43,6 @@ export interface RuntimeSelectorContext {
   getSelectorOptions(localOptions?: SharedSelectorOptions): SharedSelectorOptions;
 }
 
-export type SelectFromState = (state: any, runtimeContext: RuntimeSelectorContext) => any;
-
 export type SelectFromRootState = (rootState: any) => any;
 export type SelectorFactory = (runtimeContext: RuntimeSelectorContext) => SelectFromRootState;
 
