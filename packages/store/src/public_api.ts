@@ -20,7 +20,7 @@ export {
   getStoreMetadata,
   ensureStoreMetadata,
   ensureSelectorMetadata
-} from './internal/internals';
+} from './public_to_deprecate';
 export {
   ofAction,
   ofActionDispatched,
