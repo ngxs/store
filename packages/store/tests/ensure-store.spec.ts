@@ -71,7 +71,6 @@ describe('Ensure metadata', () => {
         },
         defaults: 0,
         path: null,
-        selectFromAppState: expect.any(Function),
         makeRootSelector: expect.any(Function),
         children: [MyCounterState]
       });
@@ -83,7 +82,6 @@ describe('Ensure metadata', () => {
         actions: { decrement: [{ fn: 'decrement', options: {}, type: 'decrement' }] },
         defaults: 1,
         path: null,
-        selectFromAppState: expect.any(Function),
         makeRootSelector: expect.any(Function),
         children: undefined
       });
@@ -95,7 +93,7 @@ describe('Ensure metadata', () => {
     });
 
     it('should get the selector meta data from the CountState.selectFn', () => {
-      const metadata: SelectorMetaDataModel = getSelectorMetadata(CountState.selectFn);
+      const metadata = <SelectorMetaDataModel>getSelectorMetadata(CountState.selectFn);
 
       expect(metadata.selectorName).toEqual('selectFn');
       expect(metadata.containerClass).toEqual(CountState);
@@ -108,12 +106,12 @@ describe('Ensure metadata', () => {
     });
 
     it('should get the selector meta data from the CountState.canInheritSelectFn, MyCounterState.canInheritSelectFn', () => {
-      const countMetadata: SelectorMetaDataModel = getSelectorMetadata(
-        CountState.canInheritSelectFn
+      const countMetadata = <SelectorMetaDataModel>(
+        getSelectorMetadata(CountState.canInheritSelectFn)
       );
 
-      const myCounterMetadata: SelectorMetaDataModel = getSelectorMetadata(
-        MyCounterState.canInheritSelectFn
+      const myCounterMetadata = <SelectorMetaDataModel>(
+        getSelectorMetadata(MyCounterState.canInheritSelectFn)
       );
 
       expect(countMetadata.selectorName).toEqual('canInheritSelectFn');
@@ -154,8 +152,8 @@ describe('Ensure metadata', () => {
           }
         }
 
-        const metadata: SelectorMetaDataModel = getSelectorMetadata(
-          SuperCountState.canInheritSelectFn
+        const metadata = <SelectorMetaDataModel>(
+          getSelectorMetadata(SuperCountState.canInheritSelectFn)
         );
 
         expect(metadata.containerClass).toEqual(SuperCountState);
