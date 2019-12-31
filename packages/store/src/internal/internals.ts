@@ -34,7 +34,6 @@ export interface MetaDataModel {
   actions: PlainObjectOf<ActionHandlerMetaData[]>;
   defaults: any;
   path: string | null;
-  selectFromAppState: SelectFromState | null;
   makeRootSelector: SelectorFactory | null;
   children?: StateClassInternal[];
 }
@@ -55,7 +54,6 @@ export interface SharedSelectorOptions {
 }
 
 export interface SelectorMetaDataModel {
-  selectFromAppState: SelectFromState | null;
   makeRootSelector: SelectorFactory | null;
   originalFn: Function | null;
   containerClass: any;
@@ -96,10 +94,6 @@ export function ensureStoreMetadata(target: StateClassInternal): MetaDataModel {
       actions: {},
       defaults: {},
       path: null,
-      selectFromAppState(state: any, context: RuntimeSelectorContext) {
-        const getter = context.getStateGetter(defaultMetadata.name);
-        return getter(state);
-      },
       makeRootSelector(context: RuntimeSelectorContext) {
         return context.getStateGetter(defaultMetadata.name);
       },
@@ -128,7 +122,6 @@ export function getStoreMetadata(target: StateClassInternal): MetaDataModel {
 export function ensureSelectorMetadata(target: Function): SelectorMetaDataModel {
   if (!target.hasOwnProperty(SELECTOR_META_KEY)) {
     const defaultMetadata: SelectorMetaDataModel = {
-      selectFromAppState: null,
       makeRootSelector: null,
       originalFn: null,
       containerClass: null,
