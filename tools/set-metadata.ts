@@ -11,7 +11,8 @@ export async function setMetadata() {
     'contributors',
     'license',
     'bugs',
-    'homepage'
+    'homepage',
+    'funding'
   ];
 
   const packages = getPackages();
