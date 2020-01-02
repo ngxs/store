@@ -5,6 +5,8 @@ import {
   getActionTypeFromInstance,
   NgxsNextPluginFn
 } from '@ngxs/store';
+import { Observable } from 'rxjs';
+
 import {
   UpdateForm,
   UpdateFormDirty,
@@ -19,49 +21,49 @@ import {
 
 @Injectable()
 export class NgxsFormPlugin implements NgxsPlugin {
-  handle(state: any, event: any, next: NgxsNextPluginFn) {
-    const type = getActionTypeFromInstance(event);
+  handle(state: any, action: any, next: NgxsNextPluginFn): Observable<any> {
+    const type = getActionTypeFromInstance(action);
 
     let nextState = state;
 
     if (type === UpdateFormValue.type || type === UpdateForm.type) {
-      const { value } = event.payload;
+      const { value } = action.payload;
       const payloadValue = Array.isArray(value) ? value.slice() : { ...value };
-      const path = this.joinPathWithPropertyPath(event);
+      const path = this.joinPathWithPropertyPath(action);
       nextState = setValue(nextState, path, payloadValue);
     }
 
     if (type === UpdateFormStatus.type || type === UpdateForm.type) {
-      nextState = setValue(nextState, `${event.payload.path}.status`, event.payload.status);
+      nextState = setValue(nextState, `${action.payload.path}.status`, action.payload.status);
     }
 
     if (type === UpdateFormErrors.type || type === UpdateForm.type) {
-      nextState = setValue(nextState, `${event.payload.path}.errors`, {
-        ...event.payload.errors
+      nextState = setValue(nextState, `${action.payload.path}.errors`, {
+        ...action.payload.errors
       });
     }
 
     if (type === UpdateFormDirty.type || type === UpdateForm.type) {
-      nextState = setValue(nextState, `${event.payload.path}.dirty`, event.payload.dirty);
+      nextState = setValue(nextState, `${action.payload.path}.dirty`, action.payload.dirty);
     }
 
     if (type === SetFormDirty.type) {
-      nextState = setValue(nextState, `${event.payload}.dirty`, true);
+      nextState = setValue(nextState, `${action.payload}.dirty`, true);
     }
 
     if (type === SetFormPristine.type) {
-      nextState = setValue(nextState, `${event.payload}.dirty`, false);
+      nextState = setValue(nextState, `${action.payload}.dirty`, false);
     }
 
     if (type === SetFormDisabled.type) {
-      nextState = setValue(nextState, `${event.payload}.disabled`, true);
+      nextState = setValue(nextState, `${action.payload}.disabled`, true);
     }
 
     if (type === SetFormEnabled.type) {
-      nextState = setValue(nextState, `${event.payload}.disabled`, false);
+      nextState = setValue(nextState, `${action.payload}.disabled`, false);
     }
 
-    return next(nextState, event);
+    return next(nextState, action);
   }
 
   private joinPathWithPropertyPath({ payload }: UpdateFormValue): string {

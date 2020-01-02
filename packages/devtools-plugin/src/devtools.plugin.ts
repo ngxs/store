@@ -1,6 +1,7 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { getActionTypeFromInstance, NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
+import { ActionType, getActionTypeFromInstance, NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
 import { tap, catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import {
   NGXS_DEVTOOLS_OPTIONS,
@@ -14,7 +15,7 @@ import {
  * http://extension.remotedev.io/
  */
 @Injectable()
-export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
+export class NgxsReduxDevtoolsPlugin implements NgxsPlugin<ActionType> {
   private readonly devtoolsExtension: NgxsDevtoolsExtension | null = null;
   private readonly windowObj: any = typeof window !== 'undefined' ? window : {};
 
@@ -40,7 +41,7 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
   /**
    * Middleware handle function
    */
-  handle(state: any, action: any, next: NgxsNextPluginFn) {
+  handle(state: any, action: ActionType, next: NgxsNextPluginFn): Observable<any> {
     const isDisabled = this._options && this._options.disabled;
     if (!this.devtoolsExtension || isDisabled) {
       return next(state, action);

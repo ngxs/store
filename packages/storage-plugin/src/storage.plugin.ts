@@ -7,9 +7,11 @@ import {
   InitState,
   UpdateState,
   actionMatcher,
-  NgxsNextPluginFn
+  NgxsNextPluginFn,
+  ActionType
 } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import {
   StorageEngine,
@@ -20,22 +22,22 @@ import {
 import { DEFAULT_STATE_KEY } from './internals';
 
 @Injectable()
-export class NgxsStoragePlugin implements NgxsPlugin {
+export class NgxsStoragePlugin implements NgxsPlugin<ActionType> {
   constructor(
     @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
     @Inject(STORAGE_ENGINE) private _engine: StorageEngine,
     @Inject(PLATFORM_ID) private _platformId: string
   ) {}
 
-  handle(state: any, event: any, next: NgxsNextPluginFn) {
+  handle(state: any, action: ActionType, next: NgxsNextPluginFn): Observable<any> {
     if (isPlatformServer(this._platformId) && this._engine === null) {
-      return next(state, event);
+      return next(state, action);
     }
 
     // We cast to `string[]` here as we're sure that this option has been
     // transformed by the `storageOptionsFactory` function that provided token
     const keys = this._options.key as string[];
-    const matches = actionMatcher(event);
+    const matches = actionMatcher(action);
     const isInitAction = matches(InitState) || matches(UpdateState);
     let hasMigration = false;
 
@@ -75,7 +77,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
       }
     }
 
-    return next(state, event).pipe(
+    return next(state, action).pipe(
       tap(nextState => {
         if (!isInitAction || (isInitAction && hasMigration)) {
           for (const key of keys) {

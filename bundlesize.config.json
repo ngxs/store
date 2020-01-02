@@ -46,14 +46,14 @@
       "path": "./@ngxs/form-plugin/fesm2015/ngxs-form-plugin.js",
       "package": "@ngxs/form-plugin",
       "target": "es2015",
-      "maxSize": "14.910KB",
+      "maxSize": "14.920KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/form-plugin/fesm5/ngxs-form-plugin.js",
       "package": "@ngxs/form-plugin",
       "target": "es5",
-      "maxSize": "17.790KB",
+      "maxSize": "17.810KB",
       "compression": "none"
     },
     {
@@ -88,14 +88,14 @@
       "path": "./@ngxs/logger-plugin/fesm2015/ngxs-logger-plugin.js",
       "package": "@ngxs/logger-plugin",
       "target": "es2015",
-      "maxSize": "10.425KB",
+      "maxSize": "10.430KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/logger-plugin/fesm5/ngxs-logger-plugin.js",
       "package": "@ngxs/logger-plugin",
       "target": "es5",
-      "maxSize": "12.110KB",
+      "maxSize": "12.120KB",
       "compression": "none"
     },
     {
@@ -116,14 +116,14 @@
       "path": "./@ngxs/storage-plugin/fesm2015/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
       "target": "es2015",
-      "maxSize": "10.271KB",
+      "maxSize": "10.280KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/storage-plugin/fesm5/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
       "target": "es5",
-      "maxSize": "11.831KB",
+      "maxSize": "11.840KB",
       "compression": "none"
     },
     {

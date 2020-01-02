@@ -6,6 +6,7 @@ import { SharedSelectorOptions, Callback } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 import { StateToken } from './state-token/state-token';
+import { ActionType } from './actions/symbols';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
@@ -21,7 +22,7 @@ export type NgxsLifeCycle = Partial<NgxsOnChanges> &
   Partial<NgxsOnInit> &
   Partial<NgxsAfterBootstrap>;
 
-export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
+export type NgxsPluginFn = (state: any, action: ActionType, next: NgxsNextPluginFn) => Observable<any>;
 
 /**
  * The NGXS config settings.
@@ -104,16 +105,16 @@ export interface StateContext<T> {
   dispatch(actions: any | any[]): Observable<void>;
 }
 
-export type NgxsNextPluginFn = (state: any, mutation: any) => any;
+export type NgxsNextPluginFn = (state: any, action: ActionType) => Observable<any>;
 
 /**
  * Plugin interface
  */
-export interface NgxsPlugin {
+export interface NgxsPlugin<T = any> {
   /**
    * Handle the state/action before its submitted to the state handlers.
    */
-  handle(state: any, action: any, next: NgxsNextPluginFn): any;
+  handle(state: any, action: T, next: NgxsNextPluginFn): Observable<any>;
 }
 
 /**
