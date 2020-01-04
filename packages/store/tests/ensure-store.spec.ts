@@ -10,7 +10,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 
 import { SelectorMetaDataModel } from '../src/internal/internals';
-import { getSelectorFn } from '../src/utils/selector-utils';
+import { getRootSelectorFactory } from '../src/utils/selector-utils';
 
 describe('Ensure metadata', () => {
   it('should return undefined if not a state class', () => {
@@ -71,7 +71,7 @@ describe('Ensure metadata', () => {
         },
         defaults: 0,
         path: null,
-        selectFromAppState: expect.any(Function),
+        makeRootSelector: expect.any(Function),
         children: [MyCounterState]
       });
     });
@@ -82,7 +82,7 @@ describe('Ensure metadata', () => {
         actions: { decrement: [{ fn: 'decrement', options: {}, type: 'decrement' }] },
         defaults: 1,
         path: null,
-        selectFromAppState: expect.any(Function),
+        makeRootSelector: expect.any(Function),
         children: undefined
       });
     });
@@ -93,7 +93,7 @@ describe('Ensure metadata', () => {
     });
 
     it('should get the selector meta data from the CountState.selectFn', () => {
-      const metadata: SelectorMetaDataModel = getSelectorMetadata(CountState.selectFn);
+      const metadata = <SelectorMetaDataModel>getSelectorMetadata(CountState.selectFn);
 
       expect(metadata.selectorName).toEqual('selectFn');
       expect(metadata.containerClass).toEqual(CountState);
@@ -102,16 +102,16 @@ describe('Ensure metadata', () => {
       expect(metadata.originalFn!(1)).toEqual(1); // state => state
 
       expect(metadata.getSelectorOptions()).toEqual({});
-      expect(metadata.selectFromAppState).toEqual(getSelectorFn(CountState.selectFn));
+      expect(metadata.makeRootSelector).toEqual(getRootSelectorFactory(CountState.selectFn));
     });
 
     it('should get the selector meta data from the CountState.canInheritSelectFn, MyCounterState.canInheritSelectFn', () => {
-      const countMetadata: SelectorMetaDataModel = getSelectorMetadata(
-        CountState.canInheritSelectFn
+      const countMetadata = <SelectorMetaDataModel>(
+        getSelectorMetadata(CountState.canInheritSelectFn)
       );
 
-      const myCounterMetadata: SelectorMetaDataModel = getSelectorMetadata(
-        MyCounterState.canInheritSelectFn
+      const myCounterMetadata = <SelectorMetaDataModel>(
+        getSelectorMetadata(MyCounterState.canInheritSelectFn)
       );
 
       expect(countMetadata.selectorName).toEqual('canInheritSelectFn');
@@ -128,12 +128,12 @@ describe('Ensure metadata', () => {
       expect(countMetadata.getSelectorOptions()).toEqual({ suppressErrors: false });
       expect(myCounterMetadata.getSelectorOptions()).toEqual({ suppressErrors: false });
 
-      expect(countMetadata.selectFromAppState).toEqual(
-        getSelectorFn(CountState.canInheritSelectFn)
+      expect(countMetadata.makeRootSelector).toEqual(
+        getRootSelectorFactory(CountState.canInheritSelectFn)
       );
 
-      expect(myCounterMetadata.selectFromAppState).toEqual(
-        getSelectorFn(MyCounterState.canInheritSelectFn)
+      expect(myCounterMetadata.makeRootSelector).toEqual(
+        getRootSelectorFactory(MyCounterState.canInheritSelectFn)
       );
     });
 
@@ -152,8 +152,8 @@ describe('Ensure metadata', () => {
           }
         }
 
-        const metadata: SelectorMetaDataModel = getSelectorMetadata(
-          SuperCountState.canInheritSelectFn
+        const metadata = <SelectorMetaDataModel>(
+          getSelectorMetadata(SuperCountState.canInheritSelectFn)
         );
 
         expect(metadata.containerClass).toEqual(SuperCountState);

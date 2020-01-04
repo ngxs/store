@@ -1,14 +1,17 @@
 import { TokenName } from './symbols';
-import { ensureSelectorMetadata, RuntimeSelectorContext } from '../internal/internals';
+import {
+  ensureSelectorMetadata,
+  RuntimeSelectorContext,
+  SelectFromRootState
+} from '../internal/internals';
 
 export class StateToken<T = void> {
   constructor(private readonly name: TokenName<T>) {
     const selectorMetadata = ensureSelectorMetadata(<any>this);
-    selectorMetadata.selectFromAppState = (
-      state: any,
+    selectorMetadata.makeRootSelector = (
       runtimeContext: RuntimeSelectorContext
-    ): T => {
-      return runtimeContext.getStateGetter(this.name)(state);
+    ): SelectFromRootState => {
+      return runtimeContext.getStateGetter(this.name);
     };
   }
 
