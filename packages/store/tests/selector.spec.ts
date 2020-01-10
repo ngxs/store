@@ -569,10 +569,7 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const selector = createSelector(
-        [MyState],
-        (state: MyStateModel) => state.foo
-      );
+      const selector = createSelector([MyState], (state: MyStateModel) => state.foo);
       const slice: string = store.selectSnapshot(selector);
       expect(slice).toBe('Hello');
     }));
@@ -583,13 +580,10 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const selector = createSelector(
-        [MyState],
-        (state: MyStateModel) => {
-          const foo = state.foo;
-          return foo === 'Hello' ? null : foo;
-        }
-      );
+      const selector = createSelector([MyState], (state: MyStateModel) => {
+        const foo = state.foo;
+        return foo === 'Hello' ? null : foo;
+      });
       const slice = store.selectSnapshot(selector);
       expect(slice).toBe(null);
     }));
@@ -600,13 +594,10 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const selector = createSelector(
-        [MyState],
-        (state: MyStateModel) => {
-          const foo = state.foo;
-          return foo === 'Hello' ? undefined : foo;
-        }
-      );
+      const selector = createSelector([MyState], (state: MyStateModel) => {
+        const foo = state.foo;
+        return foo === 'Hello' ? undefined : foo;
+      });
       const slice = store.selectSnapshot(selector);
       expect(slice).toBe(undefined);
     }));
@@ -617,10 +608,7 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.get(Store);
-      const selector = createSelector(
-        [MyState.foo],
-        (state: string) => state
-      );
+      const selector = createSelector([MyState.foo], (state: string) => state);
       const slice: string = store.selectSnapshot(selector);
       expect(slice).toBe('Hello');
     }));
@@ -632,10 +620,7 @@ describe('Selector', () => {
 
       const store: Store = TestBed.get(Store);
       const myState = store.selectSnapshot<MyStateModel>(MyState);
-      const selector = createSelector(
-        [MyState],
-        (state: MyStateModel) => state.foo
-      );
+      const selector = createSelector([MyState], (state: MyStateModel) => state.foo);
       const slice: string = selector(myState);
       expect(slice).toBe('Hello');
     }));
@@ -673,20 +658,14 @@ describe('Selector', () => {
 
         const store: Store = TestBed.get(Store);
 
-        const fooSelector = createSelector(
-          [TestState],
-          (state: MyStateModel) => {
-            selectorCalls.push('foo');
-            return state.foo;
-          }
-        );
-        const barSelector = createSelector(
-          [TestState],
-          (state: MyStateModel) => {
-            selectorCalls.push('bar');
-            return state.bar;
-          }
-        );
+        const fooSelector = createSelector([TestState], (state: MyStateModel) => {
+          selectorCalls.push('foo');
+          return state.foo;
+        });
+        const barSelector = createSelector([TestState], (state: MyStateModel) => {
+          selectorCalls.push('bar');
+          return state.bar;
+        });
         store.selectSnapshot(fooSelector);
         store.selectSnapshot(fooSelector);
         store.selectSnapshot(barSelector);
@@ -712,16 +691,13 @@ describe('Selector', () => {
         });
 
         const store: Store = TestBed.get(Store);
-        const fooSelector = createSelector(
-          [TestState],
-          (state: MyStateModel) => {
-            selectorCalls.push('foo[outer]');
-            return () => {
-              selectorCalls.push('foo[inner]');
-              return state.foo;
-            };
-          }
-        );
+        const fooSelector = createSelector([TestState], (state: MyStateModel) => {
+          selectorCalls.push('foo[outer]');
+          return () => {
+            selectorCalls.push('foo[inner]');
+            return state.foo;
+          };
+        });
         store.selectSnapshot(fooSelector);
         store.selectSnapshot(fooSelector)();
         const fn = store.selectSnapshot(fooSelector);
@@ -833,12 +809,10 @@ describe('Selector', () => {
       store.select(NumberListState).subscribe((state: number[]) => (snapshot = state));
       expect(snapshot).toEqual([1, 2, 3, 4]);
 
-      store
-        .select(NumberListState.reverse)
-        .subscribe(
-          (state: number[]) => (snapshot = state),
-          (err: TypeError) => (errorMessage = err.message)
-        );
+      store.select(NumberListState.reverse).subscribe(
+        (state: number[]) => (snapshot = state),
+        (err: TypeError) => (errorMessage = err.message)
+      );
 
       expect(snapshot).toEqual([1, 2, 3, 4]);
       expect(errorMessage).toEqual(
@@ -857,6 +831,79 @@ describe('Selector', () => {
       } catch (e) {
         expect(e.message).toEqual(CONFIG_MESSAGES[VALIDATION_CODE.SELECTOR_DECORATOR]());
       }
+    });
+  });
+
+  describe('when declared out of order', () => {
+    interface Contact {
+      name: string;
+    }
+
+    type EntityMap<T> = {
+      [id: string]: T;
+    };
+
+    interface ContactsStateModel {
+      entities: EntityMap<Contact>;
+      ids: number[];
+    }
+
+    @State<ContactsStateModel>({
+      name: 'contacts',
+      defaults: {
+        entities: {},
+        ids: []
+      }
+    })
+    class ContactsState {
+      @Selector([ContactsState.ids, ContactsState.entityMap])
+      static orderedContactNames(ids: number[], map: EntityMap<Contact>) {
+        return ids.map(id => map[id].name);
+      }
+
+      @Selector()
+      private static ids(state: ContactsStateModel) {
+        return state.ids;
+      }
+
+      @Selector()
+      private static entityMap(state: ContactsStateModel) {
+        return state.entities;
+      }
+    }
+
+    function setup(initialState?: { contacts: ContactsStateModel }) {
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([ContactsState], {
+            selectorOptions: { suppressErrors: false }
+          })
+        ]
+      });
+
+      const store = TestBed.get(Store);
+      if (initialState) {
+        store.reset(initialState);
+      }
+      return { store };
+    }
+
+    it('should not give error for selector', () => {
+      // Arrange
+      const { store } = setup({
+        contacts: {
+          entities: {
+            456: { name: 'Artur' },
+            234: { name: 'Mark' },
+            123: { name: 'Max' }
+          },
+          ids: [234, 123, 456]
+        }
+      });
+      // Act
+      const result = store.selectSnapshot(ContactsState.orderedContactNames);
+      // Assert
+      expect(result).toEqual(['Mark', 'Max', 'Artur']);
     });
   });
 });
