@@ -6,6 +6,7 @@
 $ npm install @ngxs/store@dev
 ```
 
+- Fix: Selectors should not be declaration order sensitive [#1514](https://github.com/ngxs/store/pull/1514)
 - Fix: Selectors should be deterministic based on store being used [#1508](https://github.com/ngxs/store/pull/1508)
 - Fix: Add support for using State Tokens in sub states [#1509](https://github.com/ngxs/store/pull/1509)
 - Fix: Optimize selector runtime binding [#1510](https://github.com/ngxs/store/pull/1510)
