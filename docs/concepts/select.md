@@ -213,12 +213,9 @@ For instance, I can have a Dynamic Selector that will filter my pandas to the pr
 })
 export class ZooState {
   static pandas(type: string) {
-    return createSelector(
-      [ZooState],
-      (state: string[]) => {
-        return state.filter(s => s.indexOf('panda') > -1).filter(s => s.indexOf(type) > -1);
-      }
-    );
+    return createSelector([ZooState], (state: string[]) => {
+      return state.filter(s => s.indexOf('panda') > -1).filter(s => s.indexOf(type) > -1);
+    });
   }
 }
 ```
@@ -252,12 +249,9 @@ An interesting use case would be to allow for a selector to be reused to select 
 ```ts
 export class SharedSelectors {
   static getEntities(stateClass) {
-    return createSelector(
-      [stateClass],
-      (state: { entities: any[] }) => {
-        return state.entities;
-      }
-    );
+    return createSelector([stateClass], (state: { entities: any[] }) => {
+      return state.entities;
+    });
   }
 }
 ```
@@ -364,97 +358,7 @@ now we can use this `zooThemeParks` selector anywhere in our application.
 
 ### The Order of Interacting Selectors
 
-This topic may be helpful for those users who keep their selectors in separate classes. Let's look at the code below:
-
-```ts
-// counter.state.ts
-export interface CounterStateModel {
-  counter: number;
-}
-
-@State<CounterStateModel>({
-  name: 'counter',
-  defaults: {
-    counter: 0
-  }
-})
-export class CounterState {}
-
-// counter.query.ts
-export class CounterQuery {
-  @Selector([CounterQuery.getCounter])
-  static getCounterCube(counter: number): number {
-    return counter ** 3;
-  }
-
-  // Note: this selector being declared after its usage will cause an issue!!!
-  @Selector([CounterState])
-  static getCounter(state: CounterStateModel): number {
-    return state.counter;
-  }
-
-  @Selector([CounterQuery.getCounter])
-  static getCounterSquare(counter: number): number {
-    return counter ** 2;
-  }
-}
-```
-
-As you see in the code above there is a reusable selector `getCounter` that returns the `counter` property from the whole state. The `getCounter` selector is used by 2 other selectors `getCounterSquare` and `getCounterCube`. The snag lies in the `getCounterCube` selector because it's declared before the `getCounter` selector. Let's look at the code emitted by the TypeScript compiler:
-
-```ts
-__decorate([Selector([CounterQuery.getCounter])], CounterQuery, 'getCounterCube', null);
-__decorate([Selector([CounterState])], CounterQuery, 'getCounter', null);
-__decorate([Selector([CounterQuery.getCounter])], CounterQuery, 'getCounterSquare', null);
-```
-
-The `@Selector` decorator tries to access the `getCounter` selector that hasn't been decorated yet. How could we fix it? We have to change the order of selectors:
-
-```ts
-export class CounterQuery {
-  @Selector([CounterState])
-  static getCounter(state: CounterStateModel): number {
-    return state.counter;
-  }
-
-  @Selector([CounterQuery.getCounter])
-  static getCounterCube(counter: number): number {
-    return counter ** 3;
-  }
-
-  @Selector([CounterQuery.getCounter])
-  static getCounterSquare(counter: number): number {
-    return counter ** 2;
-  }
-}
-```
-
-Another solution could be the usage of the `createSelector` function rather than changing the order:
-
-```ts
-export class CounterQuery {
-  static getCounterCube() {
-    return createSelector(
-      [CounterQuery.getCounter()],
-      (counter: number) => counter ** 3
-    );
-  }
-
-  static getCounter() {
-    return createSelector(
-      [CounterState],
-      (state: CounterStateModel) => state.counter
-    );
-  }
-
-  static getCounterSquare() {
-    return createSelector(
-      [CounterQuery.getCounter()],
-      (counter: number) => counter ** 2
-    );
-  }
-}
-```
+In versions of NGXS prior to 3.6.1 there was an issue where the order which the selectors were declared would matter. This was fixed in PR [#1514](https://github.com/ngxs/store/pull/1514) and selectors can now be declared in any arbitrary order.
 
 ### Inheriting Selectors
 
@@ -463,12 +367,9 @@ When we have states that share similar structure, we can extract the shared sele
 ```ts
 export class EntitiesState {
   static entities<T>(): T[] {
-    return createSelector(
-      [this],
-      (state: { entities: T[] }) => {
-        return state.entities;
-      }
-    );
+    return createSelector([this], (state: { entities: T[] }) => {
+      return state.entities;
+    });
   }
 
   //...
@@ -559,12 +460,9 @@ export class ZooState {
   }
 
   static bees(type: string) {
-    return createSelector(
-      [ZooState],
-      (state: string[]) => {
-        return state.filter(s => s.indexOf('bee') > -1).filter(s => s.indexOf(type) > -1);
-      }
-    );
+    return createSelector([ZooState], (state: string[]) => {
+      return state.filter(s => s.indexOf('bee') > -1).filter(s => s.indexOf(type) > -1);
+    });
   }
 }
 ```
@@ -593,12 +491,9 @@ export class ZooState {
   }
 
   static bees(type: string) {
-    const selector = createSelector(
-      [ZooState],
-      (state: string[]) => {
-        return state.filter(s => s.indexOf('bee') > -1).filter(s => s.indexOf(type) > -1);
-      }
-    );
+    const selector = createSelector([ZooState], (state: string[]) => {
+      return state.filter(s => s.indexOf('bee') > -1).filter(s => s.indexOf(type) > -1);
+    });
     return selector;
   }
 }

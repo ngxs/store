@@ -55,7 +55,9 @@ export function createSelector<T extends (...args: any[]) => any>(
     return returnValue;
   } as T;
   const memoizedFn = memoize(wrappedFn);
-  const selectorMetaData = setupSelectorMetadata<T>(memoizedFn, originalFn, creationMetadata);
+  Object.setPrototypeOf(memoizedFn, originalFn);
+
+  const selectorMetaData = setupSelectorMetadata<T>(originalFn, creationMetadata);
 
   const makeRootSelector: SelectorFactory = (context: RuntimeSelectorContext) => {
     const { argumentSelectorFunctions, selectorOptions } = getRuntimeSelectorInfo(
@@ -89,11 +91,10 @@ export function createSelector<T extends (...args: any[]) => any>(
 }
 
 function setupSelectorMetadata<T extends (...args: any[]) => any>(
-  memoizedFn: T,
   originalFn: T,
   creationMetadata: CreationMetadata | undefined
 ) {
-  const selectorMetaData = ensureSelectorMetadata(memoizedFn);
+  const selectorMetaData = ensureSelectorMetadata(originalFn);
   selectorMetaData.originalFn = originalFn;
   let getExplicitSelectorOptions = () => ({});
   if (creationMetadata) {
