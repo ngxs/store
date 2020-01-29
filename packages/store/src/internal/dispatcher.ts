@@ -8,6 +8,8 @@ import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
+import { CONFIG_MESSAGES, VALIDATION_CODE } from '../configs/messages.config';
+import { HostEnvironment } from '../host-environment/host-environment';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -26,7 +28,8 @@ export class InternalDispatcher {
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
     private _stateStream: StateStream,
-    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy
+    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy,
+    private _host: HostEnvironment
   ) {}
 
   /**
@@ -51,9 +54,17 @@ export class InternalDispatcher {
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
     if (Array.isArray(actionOrActions)) {
+      this.checkEmptyArray(actionOrActions);
       return forkJoin(actionOrActions.map(a => this.dispatchSingle(a)));
     } else {
       return this.dispatchSingle(actionOrActions);
+    }
+  }
+
+  private checkEmptyArray(actionOrActions: any[]): void {
+    const isBrowserDevMode: boolean = this._host.isDevMode() && !this._host.isTestMode();
+    if (isBrowserDevMode && actionOrActions.length === 0) {
+      console.warn(CONFIG_MESSAGES[VALIDATION_CODE.EMPTY_DISPATCH]());
     }
   }
 

@@ -11,7 +11,8 @@ export enum VALIDATION_CODE {
   ZONE_WARNING = 'ZONE_WARNING',
   PATCHING_ARRAY = 'PATCHING_ARRAY',
   PATCHING_PRIMITIVE = 'PATCHING_PRIMITIVE',
-  UNDECORATED_STATE_IN_IVY = 'UNDECORATED_STATE_IN_IVY'
+  UNDECORATED_STATE_IN_IVY = 'UNDECORATED_STATE_IN_IVY',
+  EMPTY_DISPATCH = 'EMPTY_DISPATCH'
 }
 
 export const CONFIG_MESSAGES = {
@@ -40,5 +41,7 @@ export const CONFIG_MESSAGES = {
   [VALIDATION_CODE.PATCHING_ARRAY]: () => 'Patching arrays is not supported.',
   [VALIDATION_CODE.PATCHING_PRIMITIVE]: () => 'Patching primitives is not supported.',
   [VALIDATION_CODE.UNDECORATED_STATE_IN_IVY]: (name: string) =>
-    `'${name}' class should be decorated with @Injectable() right after the @State() decorator`
+    `'${name}' class should be decorated with @Injectable() right after the @State() decorator`,
+  [VALIDATION_CODE.EMPTY_DISPATCH]: () =>
+    `WARNING: Don't dispatch empty array, because it's just emits 'complete', and nothing else, because returning observable EMPTY that stops a chain of observables.`
 };
