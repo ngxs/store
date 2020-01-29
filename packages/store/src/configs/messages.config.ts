@@ -43,5 +43,6 @@ export const CONFIG_MESSAGES = {
   [VALIDATION_CODE.UNDECORATED_STATE_IN_IVY]: (name: string) =>
     `'${name}' class should be decorated with @Injectable() right after the @State() decorator`,
   [VALIDATION_CODE.EMPTY_DISPATCH]: () =>
-    `WARNING: Don't dispatch empty array, because it's just emits 'complete', and nothing else, because returning observable EMPTY that stops a chain of observables.`
+    `WARNING: Don't dispatch empty array, because it's just emits 'complete', and nothing else, ` +
+    `because returning observable EMPTY that stops a chain of observables.`
 };
