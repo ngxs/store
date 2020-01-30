@@ -2,13 +2,11 @@ import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 import { Subscription, throwError } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { NG_TEST_MODE } from '../src/symbols';
 
 describe('Dispatching an empty array with errors', () => {
   let subscription: Subscription;
   let events: string[] = [];
   let store: Store;
-  const spy: any = {};
 
   class ActionError {
     static type = 'error';
@@ -45,15 +43,10 @@ describe('Dispatching an empty array with errors', () => {
 
   beforeAll(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([AppState])],
-      providers: [{ provide: NG_TEST_MODE, useValue: () => false }]
+      imports: [NgxsModule.forRoot([AppState])]
     });
 
     store = TestBed.get(Store);
-  });
-
-  beforeEach(() => {
-    spy.console = jest.spyOn(console, 'warn').mockImplementation(() => {});
   });
 
   it('dispatch([ ])', () => {
@@ -66,11 +59,8 @@ describe('Dispatching an empty array with errors', () => {
         complete: () => events.push('complete')
       });
 
-    expect(events).toEqual(['complete', 'finalize']);
+    expect(events).toEqual(['next', 'complete', 'finalize']);
     expect(subscription.closed).toEqual(true);
-    expect(spy.console).toBeCalledWith(
-      `WARNING: Don't dispatch empty array, because it's just emits 'complete', and nothing else, because returning observable EMPTY that stops a chain of observables.`
-    );
   });
 
   it('dispatch([ new ActionEmptyArray() ])', () => {
@@ -83,7 +73,7 @@ describe('Dispatching an empty array with errors', () => {
         complete: () => events.push('complete')
       });
 
-    expect(events).toEqual(['complete', 'finalize']);
+    expect(events).toEqual(['next', 'complete', 'finalize']);
     expect(subscription.closed).toEqual(true);
   });
 
@@ -97,7 +87,7 @@ describe('Dispatching an empty array with errors', () => {
         complete: () => events.push('complete')
       });
 
-    expect(events).toEqual(['complete', 'finalize']);
+    expect(events).toEqual(['next', 'complete', 'finalize']);
     expect(subscription.closed).toEqual(true);
   });
 
@@ -167,11 +157,8 @@ describe('Dispatching an empty array with errors', () => {
         complete: () => events.push('complete')
       });
 
-    expect(events).toEqual(['complete', 'finalize']);
+    expect(events).toEqual(['error', 'finalize']);
     expect(subscription.closed).toEqual(true);
-    expect(spy.console).toBeCalledWith(
-      `WARNING: Don't dispatch empty array, because it's just emits 'complete', and nothing else, because returning observable EMPTY that stops a chain of observables.`
-    );
   });
 
   it('dispatch([ new ActionEmptyArray(), new ActionDispatchError() ])', () => {
@@ -184,15 +171,11 @@ describe('Dispatching an empty array with errors', () => {
         complete: () => events.push('complete')
       });
 
-    expect(events).toEqual(['complete', 'finalize']);
+    expect(events).toEqual(['error', 'finalize']);
     expect(subscription.closed).toEqual(true);
-    expect(spy.console).toBeCalledWith(
-      `WARNING: Don't dispatch empty array, because it's just emits 'complete', and nothing else, because returning observable EMPTY that stops a chain of observables.`
-    );
   });
 
   afterEach(() => {
-    spy.console.mockRestore();
     events = [];
   });
 });

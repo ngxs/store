@@ -691,7 +691,7 @@ describe('Dispatch', () => {
           next: () => (nextCalled = true)
         });
 
-        expect(nextCalled).toBeFalsy();
+        expect(nextCalled).toBeTruthy();
       }));
 
       it('should not have an error value', async(() => {

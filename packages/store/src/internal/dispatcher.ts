@@ -8,8 +8,7 @@ import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
-import { CONFIG_MESSAGES, VALIDATION_CODE } from '../configs/messages.config';
-import { HostEnvironment } from '../host-environment/host-environment';
+import { ActionType } from '../actions/symbols';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -28,14 +27,13 @@ export class InternalDispatcher {
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
     private _stateStream: StateStream,
-    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy,
-    private _host: HostEnvironment
+    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy
   ) {}
 
   /**
    * Dispatches event(s).
    */
-  dispatch(actionOrActions: any | any[]): Observable<any> {
+  dispatch(actionOrActions: ActionType | ActionType[]): Observable<any> {
     const result = this._ngxsExecutionStrategy.enter(() =>
       this.dispatchByEvents(actionOrActions)
     );
@@ -52,23 +50,18 @@ export class InternalDispatcher {
     return result.pipe(leaveNgxs(this._ngxsExecutionStrategy));
   }
 
-  private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
+  private dispatchByEvents(actionOrActions: ActionType | ActionType[]): Observable<any> {
     if (Array.isArray(actionOrActions)) {
-      this.checkEmptyArray(actionOrActions);
-      return forkJoin(actionOrActions.map(a => this.dispatchSingle(a)));
+      const isEmpty: boolean = actionOrActions.length === 0;
+      return isEmpty
+        ? of(this._stateStream.getValue())
+        : forkJoin(actionOrActions.map((action: ActionType) => this.dispatchSingle(action)));
     } else {
       return this.dispatchSingle(actionOrActions);
     }
   }
 
-  private checkEmptyArray(actionOrActions: any[]): void {
-    const isBrowserDevMode: boolean = this._host.isDevMode() && !this._host.isTestMode();
-    if (isBrowserDevMode && actionOrActions.length === 0) {
-      console.warn(CONFIG_MESSAGES[VALIDATION_CODE.EMPTY_DISPATCH]());
-    }
-  }
-
-  private dispatchSingle(action: any): Observable<any> {
+  private dispatchSingle(action: ActionType): Observable<any> {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
