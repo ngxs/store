@@ -26,17 +26,17 @@ describe('Dispatching an empty array with errors', () => {
   })
   class AppState {
     @Action(ActionError)
-    public actionError() {
+    actionError() {
       return throwError('ActionError: should be shown in the console');
     }
 
     @Action(ActionEmptyArray)
-    public actionTwo(ctx: StateContext<{}>) {
+    actionTwo(ctx: StateContext<{}>) {
       return ctx.dispatch([]);
     }
 
     @Action(ActionDispatchError)
-    public actionThree(ctx: StateContext<{}>) {
+    actionThree(ctx: StateContext<{}>) {
       return ctx.dispatch([new ActionError()]);
     }
   }
