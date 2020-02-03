@@ -23,7 +23,7 @@ export function setIvyEnabledInDevMode(): void {
     // `try-catch` will also handle server-side rendering, as
     // `window is not defined` will not be thrown.
     const ng = (window as any).ng;
-    const _viewEngineEnabled = (!!ng && !!ng.probe) || !!ng.coreTokens;
+    const _viewEngineEnabled = !!ng.probe && !!ng.coreTokens;
     const _ivyEnabledInDevMode = !_viewEngineEnabled && isDevMode();
     _ivyEnabledInDevMode$.next(_ivyEnabledInDevMode);
   } catch {
