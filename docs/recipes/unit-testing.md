@@ -97,10 +97,8 @@ In your application you may have selectors created dynamically using the `create
 ```ts
 export class ZooSelectors {
   static animalNames = (type: string) => {
-    return createSelector(
-      [ZooState],
-      (state: ZooStateModel) =>
-        state.animals.filter(animal => animal.type === type).map(animal => animal.name)
+    return createSelector([ZooState], (state: ZooStateModel) =>
+      state.animals.filter(animal => animal.type === type).map(animal => animal.name)
     );
   };
 }

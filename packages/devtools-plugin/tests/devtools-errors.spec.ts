@@ -102,9 +102,10 @@ describe('[TEST]: Devtools with errors', () => {
       }
     ]);
 
-    store
-      .dispatch({ type: 'error' })
-      .subscribe(() => null, (err: Error) => expect(err.message).toEqual('Error in state'));
+    store.dispatch({ type: 'error' }).subscribe(
+      () => null,
+      (err: Error) => expect(err.message).toEqual('Error in state')
+    );
 
     expect(devtools.devtoolsStack).toEqual([
       {
@@ -152,9 +153,10 @@ describe('[TEST]: Devtools with errors', () => {
     store.dispatch({ type: 'increment' });
     expect(store.snapshot()).toEqual({ count: 1 });
 
-    store
-      .dispatch({ type: 'error_2' })
-      .subscribe(() => null, (err: Error) => expect(err.message).toEqual('Error_2 in state'));
+    store.dispatch({ type: 'error_2' }).subscribe(
+      () => null,
+      (err: Error) => expect(err.message).toEqual('Error_2 in state')
+    );
 
     expect(devtools.devtoolsStack).toEqual([
       {
