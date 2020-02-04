@@ -1,4 +1,5 @@
-import { ReplaySubject, Observable } from 'rxjs';
+import { isDevMode } from '@angular/core';
+import { Observable, ReplaySubject } from 'rxjs';
 
 /**
  * Keep it as a single `const` variable since this `ReplaySubject`
@@ -10,7 +11,7 @@ const _ivyEnabledInDevMode$ = new ReplaySubject<boolean>(1);
  * Ivy exposes helper functions to the global `window.ng` object.
  * Those functions are `getComponent, getContext,
  * getListeners, getViewComponent, getHostElement, getInjector,
- * getRootComponents, getDirectives, getDebugNode, markDirty`
+ * getRootComponents, getDirectives, getDebugNode`
  * Previously, old view engine exposed `window.ng.coreTokens` and
  * `window.ng.probe` if an application was in development/production.
  * Ivy doesn't expose these functions in production. Developers will be able
@@ -22,8 +23,8 @@ export function setIvyEnabledInDevMode(): void {
     // `try-catch` will also handle server-side rendering, as
     // `window is not defined` will not be thrown.
     const ng = (window as any).ng;
-    const _ivyEnabledInDevMode =
-      !!ng && typeof ng.getComponent === 'function' && typeof ng.markDirty === 'function';
+    const _viewEngineEnabled = !!ng.probe && !!ng.coreTokens;
+    const _ivyEnabledInDevMode = !_viewEngineEnabled && isDevMode();
     _ivyEnabledInDevMode$.next(_ivyEnabledInDevMode);
   } catch {
     _ivyEnabledInDevMode$.next(false);
