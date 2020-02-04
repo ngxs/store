@@ -53,10 +53,7 @@ export class GetNovelById {
 })
 export class NovelsInfoState {
   static getNovelById(id: string) {
-    return createSelector(
-      [NovelsInfoState],
-      (state: NovelsInfoStateModel) => state[id]
-    );
+    return createSelector([NovelsInfoState], (state: NovelsInfoStateModel) => state[id]);
   }
 
   constructor(private novelsService: NovelsService) {}

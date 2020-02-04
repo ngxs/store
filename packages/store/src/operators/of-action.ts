@@ -82,10 +82,7 @@ function ofActionOperator<T = any>(
   const allowedMap = createAllowedActionTypesMap(allowedTypes);
   const allowedStatusMap = statuses && createAllowedStatusesMap(statuses);
   return function(o: Observable<ActionContext>) {
-    return o.pipe(
-      filterStatus(allowedMap, allowedStatusMap),
-      mapOperator()
-    );
+    return o.pipe(filterStatus(allowedMap, allowedStatusMap), mapOperator());
   };
 }
 
@@ -120,21 +117,15 @@ interface FilterMap {
 }
 
 function createAllowedActionTypesMap(types: any[]): FilterMap {
-  return types.reduce(
-    (filterMap: FilterMap, klass: any) => {
-      filterMap[getActionTypeFromInstance(klass)!] = true;
-      return filterMap;
-    },
-    <FilterMap>{}
-  );
+  return types.reduce((filterMap: FilterMap, klass: any) => {
+    filterMap[getActionTypeFromInstance(klass)!] = true;
+    return filterMap;
+  }, <FilterMap>{});
 }
 
 function createAllowedStatusesMap(statuses: ActionStatus[]): FilterMap {
-  return statuses.reduce(
-    (filterMap: FilterMap, status: ActionStatus) => {
-      filterMap[status] = true;
-      return filterMap;
-    },
-    <FilterMap>{}
-  );
+  return statuses.reduce((filterMap: FilterMap, status: ActionStatus) => {
+    filterMap[status] = true;
+    return filterMap;
+  }, <FilterMap>{});
 }
