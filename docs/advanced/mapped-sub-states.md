@@ -20,21 +20,15 @@ interface Animal {
 })
 export class ZooState {
   static pandas(age: string) {
-    return createSelector(
-      [ZooState],
-      (state: Animal[]) => {
-        return state.filter(animal => animal.type === 'panda' && animal.age === age);
-      }
-    );
+    return createSelector([ZooState], (state: Animal[]) => {
+      return state.filter(animal => animal.type === 'panda' && animal.age === age);
+    });
   }
 
   static zebras(age: string) {
-    return createSelector(
-      [ZooState],
-      (state: Animal[]) => {
-        return state.filter(animal => animal.type === 'zebra' && animal.age === age);
-      }
-    );
+    return createSelector([ZooState], (state: Animal[]) => {
+      return state.filter(animal => animal.type === 'zebra' && animal.age === age);
+    });
   }
 
   static pandasAndZebras(age: string) {
@@ -80,30 +74,21 @@ interface ZooStateModel {
 })
 export class ZooState {
   static getZooAnimals(zooName: string) {
-    return createSelector(
-      [ZooState],
-      (state: ZooStateModel[]) => state[zooName].animals
-    );
+    return createSelector([ZooState], (state: ZooStateModel[]) => state[zooName].animals);
   }
 
   static pandas(zooName: string) {
-    return createSelector(
-      [ZooState.getAnimals(zooName)],
-      (state: Animal[]) => {
-        return state.filter(animal => animal.type === 'panda' && animal.age === 'young');
-      }
-    );
+    return createSelector([ZooState.getAnimals(zooName)], (state: Animal[]) => {
+      return state.filter(animal => animal.type === 'panda' && animal.age === 'young');
+    });
   }
 
   static pandasWithoutMemoize(zooName: string) {
-    return createSelector(
-      [ZooState],
-      (state: ZooStateModel) => {
-        return state[zooName].animals.filter(
-          animal => animal.type === 'panda' && animal.age === 'young'
-        );
-      }
-    );
+    return createSelector([ZooState], (state: ZooStateModel) => {
+      return state[zooName].animals.filter(
+        animal => animal.type === 'panda' && animal.age === 'young'
+      );
+    });
   }
 }
 ```

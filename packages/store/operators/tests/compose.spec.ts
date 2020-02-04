@@ -230,19 +230,12 @@ describe('compose', () => {
 
       // Act
       const newValue = patch({
-        a: compose<Original['a']>(
-          removeItem(0),
-          append([{ name: 'Artur' }])
-        ),
+        a: compose<Original['a']>(removeItem(0), append([{ name: 'Artur' }])),
         b: patch({
           numbers: compose(
             iif<Original['b']['numbers']>(
               numbers => numbers!.length === 5,
-              compose(
-                removeItem(0),
-                removeItem(0),
-                insertItem(10)
-              )
+              compose(removeItem(0), removeItem(0), insertItem(10))
             )
           )
         }),

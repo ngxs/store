@@ -98,14 +98,9 @@ describe('NgxsRouterPlugin', () => {
 
     let count = 0;
 
-    actions$
-      .pipe(
-        ofActionSuccessful(RouterNavigation),
-        take(2)
-      )
-      .subscribe(() => {
-        count++;
-      });
+    actions$.pipe(ofActionSuccessful(RouterNavigation), take(2)).subscribe(() => {
+      count++;
+    });
 
     await store
       .dispatch(
