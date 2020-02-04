@@ -6,7 +6,7 @@
 $ npm install @ngxs/store@dev
 ```
 
-- ...
+- Fix: Fix regression after upgrade to angular.rc-11 [#1526](https://github.com/ngxs/store/pull/1526)
 
 # 3.6.1 2020-01-15
 
