@@ -1,6 +1,6 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
-import { defaultIfEmpty, exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
+import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
 
 import { compose } from '../utils/compose';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
@@ -51,9 +51,8 @@ export class InternalDispatcher {
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
     if (Array.isArray(actionOrActions)) {
-      return forkJoin(actionOrActions.map(action => this.dispatchSingle(action))).pipe(
-        defaultIfEmpty(this._stateStream.getValue())
-      );
+      if (actionOrActions.length === 0) return of(this._stateStream.getValue());
+      return forkJoin(actionOrActions.map(action => this.dispatchSingle(action)));
     } else {
       return this.dispatchSingle(actionOrActions);
     }
