@@ -675,7 +675,7 @@ describe('Dispatch', () => {
         expect(completionCalled).toBeTruthy();
       }));
 
-      it('should not have a next value', async(() => {
+      it('should have a next value', async(() => {
         @State<number>({
           name: 'counter',
           defaults: 0
@@ -692,7 +692,7 @@ describe('Dispatch', () => {
           next: () => (nextCalled = true)
         });
 
-        expect(nextCalled).toBeFalsy();
+        expect(nextCalled).toBeTruthy();
       }));
 
       it('should not have an error value', async(() => {

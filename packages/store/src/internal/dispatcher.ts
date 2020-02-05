@@ -51,7 +51,8 @@ export class InternalDispatcher {
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
     if (Array.isArray(actionOrActions)) {
-      return forkJoin(actionOrActions.map(a => this.dispatchSingle(a)));
+      if (actionOrActions.length === 0) return of(this._stateStream.getValue());
+      return forkJoin(actionOrActions.map(action => this.dispatchSingle(action)));
     } else {
       return this.dispatchSingle(actionOrActions);
     }
