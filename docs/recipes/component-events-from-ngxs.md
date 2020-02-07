@@ -81,8 +81,9 @@ export class LoadBooks {
 
 export class BooksState {
   static getBooks(genre: Genre) {
-    return createSelector([BooksState], (books: Book[]) =>
-      books.filter(book => book.genre === genre)
+    return createSelector(
+      [BooksState],
+      (books: Book[]) => books.filter(book => book.genre === genre)
     );
   }
 }

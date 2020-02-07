@@ -166,7 +166,10 @@ describe('RouterDataResolved', () => {
       // and expectations are called right after `store.dispatch`
       // before the callback inside `actions$.subscribe(...)` is invoked
       const speciallyPromisedData = actions$
-        .pipe(ofActionSuccessful(RouterDataResolved), first())
+        .pipe(
+          ofActionSuccessful(RouterDataResolved),
+          first()
+        )
         .toPromise()
         .then(({ routerState }: RouterDataResolved) => {
           return routerState!.root.firstChild!.data;

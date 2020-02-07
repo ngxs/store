@@ -114,7 +114,10 @@ export class FormDirective implements OnInit, OnDestroy {
     });
 
     this._formGroupDirective
-      .statusChanges!.pipe(distinctUntilChanged(), this.debounceChange())
+      .statusChanges!.pipe(
+        distinctUntilChanged(),
+        this.debounceChange()
+      )
       .subscribe((status: string) => {
         this._store.dispatch(
           new UpdateFormStatus({
@@ -149,7 +152,10 @@ export class FormDirective implements OnInit, OnDestroy {
     return skipDebounceTime
       ? (change: Observable<any>) => change.pipe(takeUntil(this._destroy$))
       : (change: Observable<any>) =>
-          change.pipe(debounceTime(this.debounce), takeUntil(this._destroy$));
+          change.pipe(
+            debounceTime(this.debounce),
+            takeUntil(this._destroy$)
+          );
   }
 
   private get form(): FormGroup {
