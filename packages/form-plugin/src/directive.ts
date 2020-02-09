@@ -153,7 +153,11 @@ export class FormDirective implements OnInit, OnDestroy {
     return skipDebounceTime
       ? (change: Observable<any>) => change.pipe(takeUntil(this._destroy$))
       : (change: Observable<any>) =>
-          change.pipe(debounceTime(this.debounce), takeUntil(this._destroy$));
+          change.pipe(
+            // prettier-ignore
+            debounceTime(this.debounce),
+            takeUntil(this._destroy$)
+          );
   }
 
   private get form(): FormGroup {

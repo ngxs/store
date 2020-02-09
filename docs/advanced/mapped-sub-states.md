@@ -53,6 +53,7 @@ This construct will merge 2 dynamic selectors and memoize the result.
 
 Another example could be multiple Zoos in our application:
 
+<!-- prettier-ignore -->
 ```ts
 interface Animal {
   type: string;
@@ -81,21 +82,30 @@ interface ZooStateModel {
 })
 export class ZooState {
   static getZooAnimals(zooName: string) {
-    return createSelector([ZooState], (state: ZooStateModel[]) => state[zooName].animals);
+    return createSelector(
+      [ZooState],
+      (state: ZooStateModel[]) => state[zooName].animals
+    );
   }
 
   static pandas(zooName: string) {
-    return createSelector([ZooState.getAnimals(zooName)], (state: Animal[]) => {
-      return state.filter(animal => animal.type === 'panda' && animal.age === 'young');
-    });
+    return createSelector(
+      [ZooState.getAnimals(zooName)],
+      (state: Animal[]) => {
+        return state.filter(animal => animal.type === 'panda' && animal.age === 'young');
+      }
+    );
   }
 
   static pandasWithoutMemoize(zooName: string) {
-    return createSelector([ZooState], (state: ZooStateModel) => {
-      return state[zooName].animals.filter(
-        animal => animal.type === 'panda' && animal.age === 'young'
-      );
-    });
+    return createSelector(
+      [ZooState],
+      (state: ZooStateModel) => {
+        return state[zooName].animals.filter(
+          animal => animal.type === 'panda' && animal.age === 'young'
+        );
+      }
+    );
   }
 }
 ```
