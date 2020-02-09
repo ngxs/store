@@ -40,7 +40,7 @@
 
 ### Quick Links
 
-- ✨ Learn about it on the [docs site](https://ngxs.gitbooks.io/ngxs/)
+- ✨ Learn about it on the [docs site](https://ngxs.io/)
 - 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-repro)
 - 😎 Checkout the [sample application](integration)
 - 🔧 Scaffolding application using [NGXS Schematics](https://github.com/ngxs/schematics)
