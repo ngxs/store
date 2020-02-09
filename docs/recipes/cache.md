@@ -34,6 +34,7 @@ When the user selects a particular novel - he is redirected to a page with full 
 We want to load this information only once. Let's create a state and call it `novelsInfo`, this will be
 the object whose keys are the identifiers of the novels:
 
+<!-- prettier-ignore -->
 ```ts
 import { State, Action, StateContext, createSelector } from '@ngxs/store';
 import { tap } from 'rxjs/operators';

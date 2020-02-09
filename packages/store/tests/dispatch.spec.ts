@@ -48,9 +48,10 @@ describe('Dispatch', () => {
 
     const store: Store = TestBed.get(Store);
 
-    store
-      .dispatch(new Increment())
-      .subscribe(() => {}, () => observedCalls.push('observer.error(...)'));
+    store.dispatch(new Increment()).subscribe(
+      () => {},
+      () => observedCalls.push('observer.error(...)')
+    );
 
     expect(observedCalls).toEqual(['handleError(...)', 'observer.error(...)']);
   }));
@@ -737,13 +738,11 @@ describe('Dispatch', () => {
         const store: Store = TestBed.get(Store);
 
         const subscriptionsCalled: string[] = [];
-        store
-          .dispatch(new Increment())
-          .subscribe(
-            () => subscriptionsCalled.push('previous'),
-            () => subscriptionsCalled.push('previous error'),
-            () => subscriptionsCalled.push('previous complete')
-          );
+        store.dispatch(new Increment()).subscribe(
+          () => subscriptionsCalled.push('previous'),
+          () => subscriptionsCalled.push('previous error'),
+          () => subscriptionsCalled.push('previous complete')
+        );
         store.dispatch(new Increment());
         resolvers[0]();
         resolvers[1]();
@@ -772,20 +771,16 @@ describe('Dispatch', () => {
         const store: Store = TestBed.get(Store);
 
         const subscriptionsCalled: string[] = [];
-        store
-          .dispatch(new Increment())
-          .subscribe(
-            () => subscriptionsCalled.push('previous'),
-            () => subscriptionsCalled.push('previous error'),
-            () => subscriptionsCalled.push('previous complete')
-          );
-        store
-          .dispatch(new Increment())
-          .subscribe(
-            () => subscriptionsCalled.push('latest'),
-            () => subscriptionsCalled.push('latest error'),
-            () => subscriptionsCalled.push('latest complete')
-          );
+        store.dispatch(new Increment()).subscribe(
+          () => subscriptionsCalled.push('previous'),
+          () => subscriptionsCalled.push('previous error'),
+          () => subscriptionsCalled.push('previous complete')
+        );
+        store.dispatch(new Increment()).subscribe(
+          () => subscriptionsCalled.push('latest'),
+          () => subscriptionsCalled.push('latest error'),
+          () => subscriptionsCalled.push('latest complete')
+        );
         resolvers[0]();
         resolvers[1]();
         tick(0);
@@ -818,13 +813,11 @@ describe('Dispatch', () => {
         const store: Store = TestBed.get(Store);
 
         const subscriptionsCalled: string[] = [];
-        store
-          .dispatch(new Increment())
-          .subscribe(
-            () => subscriptionsCalled.push('next'),
-            error => subscriptionsCalled.push('error: ' + error),
-            () => subscriptionsCalled.push('complete')
-          );
+        store.dispatch(new Increment()).subscribe(
+          () => subscriptionsCalled.push('next'),
+          error => subscriptionsCalled.push('error: ' + error),
+          () => subscriptionsCalled.push('complete')
+        );
         expect(subscriptionsCalled).toEqual(['error: This is my error message!']);
       }));
     });
@@ -850,13 +843,11 @@ describe('Dispatch', () => {
         const store: Store = TestBed.get(Store);
 
         const subscriptionsCalled: string[] = [];
-        store
-          .dispatch(new Increment())
-          .subscribe(
-            () => subscriptionsCalled.push('next'),
-            (error: Error) => subscriptionsCalled.push('error: ' + error.message),
-            () => subscriptionsCalled.push('complete')
-          );
+        store.dispatch(new Increment()).subscribe(
+          () => subscriptionsCalled.push('next'),
+          (error: Error) => subscriptionsCalled.push('error: ' + error.message),
+          () => subscriptionsCalled.push('complete')
+        );
         expect(subscriptionsCalled).toEqual(['error: This is my error message!']);
       }));
     });

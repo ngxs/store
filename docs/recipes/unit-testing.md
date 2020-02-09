@@ -94,6 +94,7 @@ describe('Zoo', () => {
 
 In your application you may have selectors created dynamically using the `createSelector` function:
 
+<!-- prettier-ignore -->
 ```ts
 export class ZooSelectors {
   static animalNames = (type: string) => {

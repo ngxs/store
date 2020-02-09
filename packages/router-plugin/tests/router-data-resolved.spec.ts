@@ -167,6 +167,7 @@ describe('RouterDataResolved', () => {
       // before the callback inside `actions$.subscribe(...)` is invoked
       const speciallyPromisedData = actions$
         .pipe(
+          // prettier-ignore
           ofActionSuccessful(RouterDataResolved),
           first()
         )

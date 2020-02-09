@@ -100,6 +100,7 @@ describe('NgxsRouterPlugin', () => {
 
     actions$
       .pipe(
+        // prettier-ignore
         ofActionSuccessful(RouterNavigation),
         take(2)
       )

@@ -66,6 +66,7 @@ Assume that `ButtonComponent.click` is an `EventEmitter`. Wow, we've done it in 
 
 Now let's take away that idea with A and B teams. As our store is a single source of truth thus we can listen to any action from any part of our application. DOM events can be handy to use with the `Actions` stream. Assume we've got a component that emits `booksLoaded` event every time when different genre of books are loaded:
 
+<!-- prettier-ignore -->
 ```ts
 // books.state.ts
 const enum Genre {
