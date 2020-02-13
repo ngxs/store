@@ -47,7 +47,7 @@ route.
 ```ts
 import { Actions, ofActionDispatched } from '@ngxs/store';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RouteHandler {
   constructor(private router: Router, private actions$: Actions) {
     this.actions$
