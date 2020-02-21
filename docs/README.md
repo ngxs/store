@@ -15,6 +15,10 @@ truth for your application's state, providing simple rules for predictable state
 NGXS is modeled after the CQRS pattern popularly implemented in libraries like Redux and NgRx
 but reduces boilerplate by using modern TypeScript features such as classes and decorators.
 
+## 🌱 Does NGXS work with Ivy?
+
+Yes, it does, and very easily. Check out the [NGXS Ivy migration guide](https://ngxs.io/advanced/ivy-migration-guide) for details.
+
 ## 👋 New to NGXS?
 
 If you're just getting started with NGXS, I recommend you head over to the [concepts](concepts/intro.md)
