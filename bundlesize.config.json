@@ -116,14 +116,14 @@
       "path": "./@ngxs/storage-plugin/fesm2015/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
       "target": "es2015",
-      "maxSize": "10.271KB",
+      "maxSize": "11.19KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/storage-plugin/fesm5/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
       "target": "es5",
-      "maxSize": "11.831KB",
+      "maxSize": "12.79KB",
       "compression": "none"
     },
     {
