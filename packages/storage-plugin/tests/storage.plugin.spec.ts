@@ -49,6 +49,16 @@ describe('NgxsStoragePlugin', () => {
     sessionStorage.removeItem(DEFAULT_STATE_KEY);
   });
 
+  class CounterInfoStateModel {
+    constructor(public count: number) {}
+  }
+
+  @State<CounterInfoStateModel>({
+    name: 'counterInfo',
+    defaults: { count: 0 }
+  })
+  class CounterInfoState {}
+
   it('should get initial data from localstorage', () => {
     // Arrange
     localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
@@ -460,6 +470,68 @@ describe('NgxsStoragePlugin', () => {
         },
         names: ['Mark', 'Artur', 'Max']
       });
+    });
+  });
+
+  describe('Custom serialization', () => {
+    it('should alter object before serialization.', () => {
+      // Arrange
+      localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState]),
+          NgxsStoragePluginModule.forRoot({
+            beforeSerialize: obj => {
+              return {
+                counter: {
+                  count: obj.counter.count * 2
+                }
+              };
+            }
+          })
+        ]
+      });
+
+      const store: Store = TestBed.get(Store);
+
+      store.dispatch(new Increment());
+
+      const state: CounterStateModel = store.selectSnapshot(CounterState);
+
+      // Assert
+      expect(state.count).toBe(101);
+      expect(localStorage.getItem(DEFAULT_STATE_KEY)).toBe(
+        JSON.stringify({ counter: { count: 202 } })
+      );
+    });
+
+    it('should alter state and return concrete type after deserialization.', () => {
+      // Arrange
+      localStorage.setItem('counterInfo', JSON.stringify({ count: 100 }));
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterInfoState]),
+          NgxsStoragePluginModule.forRoot({
+            key: 'counterInfo',
+            afterDeserialize: (obj, key) => {
+              if (key === 'counterInfo') {
+                return new CounterInfoStateModel(obj.count);
+              }
+            }
+          })
+        ]
+      });
+
+      const store: Store = TestBed.get(Store);
+      const state: CounterInfoStateModel = store.selectSnapshot(CounterInfoState);
+
+      // Assert
+      expect(state).toBeInstanceOf(CounterInfoStateModel);
+      expect(state.count).toBe(100);
     });
   });
 });
