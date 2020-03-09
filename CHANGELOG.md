@@ -6,7 +6,7 @@
 $ npm install @ngxs/store@dev
 ```
 
-- ...
+- Feature: Storage plugin - Add before and after serialize hooks [#1513](https://github.com/ngxs/store/pull/1513)
 
 # 3.6.2 2020-02-07
 
