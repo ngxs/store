@@ -6,7 +6,8 @@
 $ npm install @ngxs/store@dev
 ```
 
-- Feature: Storage plugin - Add before and after serialize hooks [#1513](https://github.com/ngxs/store/pull/1513)
+- Feature: Storage Plugin - Add before and after serialize hooks [#1513](https://github.com/ngxs/store/pull/1513)
+- Performance: Logger Plugin - Plugin should lazy inject the store once [#1550](https://github.com/ngxs/store/pull/1550)
 
 # 3.6.2 2020-02-07
 
