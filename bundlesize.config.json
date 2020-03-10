@@ -88,14 +88,14 @@
       "path": "./@ngxs/logger-plugin/fesm2015/ngxs-logger-plugin.js",
       "package": "@ngxs/logger-plugin",
       "target": "es2015",
-      "maxSize": "10.425KB",
+      "maxSize": "10.610KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/logger-plugin/fesm5/ngxs-logger-plugin.js",
       "package": "@ngxs/logger-plugin",
       "target": "es5",
-      "maxSize": "12.110KB",
+      "maxSize": "12.291KB",
       "compression": "none"
     },
     {

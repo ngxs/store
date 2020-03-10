@@ -9,6 +9,9 @@ import { LogWriter } from './log-writer';
 
 @Injectable()
 export class NgxsLoggerPlugin implements NgxsPlugin {
+  private _store: Store;
+  private _logWriter: LogWriter;
+
   constructor(
     @Inject(NGXS_LOGGER_PLUGIN_OPTIONS) private _options: NgxsLoggerPluginOptions,
     private _injector: Injector
@@ -19,11 +22,11 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
       return next(state, event);
     }
 
-    const logWriter = new LogWriter(this._options);
+    this._logWriter = this._logWriter || new LogWriter(this._options);
     // Retrieve lazily to avoid cyclic dependency exception
-    const store = this._injector.get<Store>(Store);
+    this._store = this._store || this._injector.get<Store>(Store);
 
-    const actionLogger = new ActionLogger(event, store, logWriter);
+    const actionLogger = new ActionLogger(event, this._store, this._logWriter);
 
     actionLogger.dispatched(state);
 
