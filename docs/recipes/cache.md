@@ -19,6 +19,7 @@ export class GetNovels {
   name: 'novels',
   defaults: []
 })
+@Injectable
 export class NovelsState {
   constructor(private novelsService: NovelsService) {}
 
