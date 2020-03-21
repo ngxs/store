@@ -70,6 +70,7 @@ export class GetNews {
     lastSearchedTitle: null
   }
 })
+@Injectable()
 export class NewsState {
   @Selector()
   static getNews(state: NewsStateModel): News[] {
