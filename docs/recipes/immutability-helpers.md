@@ -22,13 +22,13 @@ export interface TrelloStateModel {
     [taskId: string]: Task;
   };
 }
-
 @State<TrelloStateModel>({
   name: 'trello',
   defaults: {
     tasks: {}
   }
 })
+@Injectable()
 export class TrelloState {}
 ```
 
