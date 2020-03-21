@@ -35,6 +35,7 @@ service.
     username: null
   }
 })
+@Injectable() // Angular9 IVY Update, check detail in here; https://github.com/ngxs/store/blob/master/docs/advanced/ivy-migration-guide.md
 export class AuthState {
   @Selector()
   static token(state: AuthStateModel): string | null {
