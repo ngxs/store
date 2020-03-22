@@ -35,6 +35,7 @@ service.
     username: null
   }
 })
+@Injectable()
 export class AuthState {
   @Selector()
   static token(state: AuthStateModel): string | null {
