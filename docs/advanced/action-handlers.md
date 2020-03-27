@@ -94,7 +94,7 @@ export class CartComponent {
 }
 ```
 
-Remember to unsubscribe from action handler with something like this:
+Remember to unsubscribe from an action handler with something like this:
 
 ```ts
 @Component({ ... })
