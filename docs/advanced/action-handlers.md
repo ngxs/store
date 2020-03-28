@@ -93,3 +93,28 @@ export class CartComponent {
   }
 }
 ```
+
+Remember to unsubscribe from an action handler with something like this:
+
+```ts
+@Component({ ... })
+export class CartComponent implements OnInit, OnDestroy {
+  private ngUnsubscribe = new Subject();
+
+  constructor(private actions$: Actions) {}
+
+  ngOnInit() {
+    this.actions$
+      .pipe(
+        ofActionSuccessful(CartDelete),
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(() => alert('Item deleted'));
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+}
+```
