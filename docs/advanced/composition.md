@@ -9,6 +9,7 @@ You can compose multiple stores together using class inheritance. This is quite 
     type: null
   }
 })
+@Injectable()
 class ZooState {
   @Action(Eat)
   eat(ctx: StateContext) {
@@ -19,6 +20,7 @@ class ZooState {
 @State({
   name: 'stlzoo'
 })
+@Injectable()
 class StLouisZooState extends ZooState {
   @Action(Drink)
   drink(ctx: StateContext) {

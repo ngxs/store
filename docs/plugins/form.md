@@ -51,6 +51,7 @@ export class SomeModule {}
 Define your default form state as part of your application state.
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State } from '@ngxs/store';
 
 @State({
@@ -64,6 +65,7 @@ import { State } from '@ngxs/store';
     }
   }
 })
+@Injectable()
 export class NovelsState {}
 ```
 
@@ -153,6 +155,7 @@ interface NovelsStateModel {
     }
   }
 })
+@Injectable()
 export class NovelsState {}
 ```
 

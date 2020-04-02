@@ -48,6 +48,7 @@ export interface CartStateModel {
   },
   children: [CartSavedState]
 })
+@Injectable()
 export class CartState {}
 ```
 
@@ -66,6 +67,7 @@ export interface CartSavedStateModel {
     items: []
   }
 })
+@Injectable()
 export class CartSavedState {}
 ```
 
@@ -127,6 +129,7 @@ export class SetCheckedoutAndItems {
   },
   children: [CartSavedState]
 })
+@Injectable()
 export class CartState {
   @Action(SetCheckedoutAndItems)
   setCheckedoutAndItems(

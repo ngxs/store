@@ -48,6 +48,7 @@ The `key` option is used to determine what states should be persisted in the sto
   name: 'novels',
   defaults: []
 })
+@Injectable()
 export class NovelsState {}
 
 // detectives.state.ts
@@ -55,6 +56,7 @@ export class NovelsState {}
   name: 'detectives',
   defaults: []
 })
+@Injectable()
 export class DetectivesState {}
 ```
 

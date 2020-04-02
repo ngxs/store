@@ -63,6 +63,7 @@ export class Todo {
   name: 'todos',
   defaults: []
 })
+@Injectable()
 class TodosState {
   @Action(AddTodo)
   add(ctx: StateContext<Todo[]>, action: AddTodo): void {
@@ -98,6 +99,7 @@ export interface TodoModel {
   name: 'todos',
   defaults: []
 })
+@Injectable()
 class TodosState {
   @Action(AddTodo)
   add(ctx: StateContext<TodoModel[]>, action: AddTodo): void {
@@ -147,6 +149,7 @@ export interface GridCollectionStateModel {
     id: -1
   }
 })
+@Injectable()
 export class RowState {}
 
 @State<GridStateModel>({
@@ -156,6 +159,7 @@ export class RowState {}
     rows: new Map<number, RowState>()
   }
 })
+@Injectable()
 export class GridState {}
 
 @State<GridCollectionStateModel>({
@@ -164,6 +168,7 @@ export class GridState {}
     grids: new Map<number, GridState>()
   }
 })
+@Injectable()
 export class GridCollectionState {}
 ```
 
@@ -195,6 +200,7 @@ export interface GridCollectionStateModel {
     id: -1
   }
 })
+@Injectable()
 export class RowState {}
 
 @State<GridStateModel>({
@@ -204,6 +210,7 @@ export class RowState {}
     rows: {}
   }
 })
+@Injectable()
 export class GridState {}
 
 @State<GridCollectionStateModel>({
@@ -212,5 +219,6 @@ export class GridState {}
     grids: {}
   }
 })
+@Injectable()
 export class GridCollectionState {}
 ```

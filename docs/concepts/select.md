@@ -96,12 +96,14 @@ the state portion you are dealing with.
 Let's create a selector that will return a list of pandas from the animals.
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State, Selector } from '@ngxs/store';
 
 @State<string[]>({
   name: 'animals',
   defaults: []
 })
+@Injectable()
 export class ZooState {
   @Selector()
   static pandas(state: string[]) {
@@ -172,6 +174,7 @@ For instance, I can have a Lazy Selector that will filter my pandas to the provi
   name: 'animals',
   defaults: []
 })
+@Injectable()
 export class ZooState {
   @Selector()
   static pandas(state: string[]) {
@@ -211,6 +214,7 @@ For instance, I can have a Dynamic Selector that will filter my pandas to the pr
   name: 'animals',
   defaults: []
 })
+@Injectable()
 export class ZooState {
   static pandas(type: string) {
     return createSelector([ZooState], (state: string[]) => {
@@ -281,9 +285,11 @@ If you do not change the Selector Options (see [above](#selector-options)) then 
 
 ```ts
 @State<PreferencesStateModel>({ ... })
+@Injectable()
 export class PreferencesState { ... }
 
 @State<string[]>({ ... })
+@Injectable()
 export class ZooState {
 
   @Selector([PreferencesState])
@@ -309,9 +315,11 @@ In NGXS v4 and above the default value of the [`injectContainerState`](#injectco
 
 ```ts
 @State<PreferencesStateModel>({ ... })
+@Injectable()
 export class PreferencesState { ... }
 
 @State<string[]>({ ... })
+@Injectable()
 export class ZooState {
 
  @Selector([ZooState, PreferencesState])
@@ -389,6 +397,7 @@ export interface UsersStateModel {
     entities: []
   }
 })
+@Injectable()
 export class UsersState extends EntitiesState {
   //...
 }
@@ -403,6 +412,7 @@ export interface ProductsStateModel {
     entities: []
   }
 })
+@Injectable()
 export class ProductsState extends EntitiesState {
   //...
 }
@@ -446,6 +456,7 @@ This error would be reported for each of the selectors defined below but, as dem
   name: 'animals',
   defaults: ['panda', 'horse', 'bee']
 })
+@Injectable()
 export class ZooState {
   @Selector()
   static pandas(state: string[]) {
@@ -475,6 +486,7 @@ See https://github.com/ng-packagr/ng-packagr/issues/696#issuecomment-387114613
   name: 'animals',
   defaults: ['panda', 'horse', 'bee']
 })
+@Injectable()
 export class ZooState {
   @Selector()
   static pandas(state: string[]) {

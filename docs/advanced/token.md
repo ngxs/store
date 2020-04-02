@@ -27,6 +27,7 @@ const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
   name: TODOS_STATE_TOKEN,
   defaults: []
 })
+@Injectable()
 class TodosState {
   // ...
 }
@@ -48,6 +49,7 @@ const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
   name: TODOS_STATE_TOKEN,
   defaults: [] // if you specify the wrong state type, will be a compilation error
 })
+@Injectable()
 class TodosState {
   @Selector([TODOS_STATE_TOKEN]) // if you specify the wrong state type, will be a compilation error
   static completedList(state: TodoStateModel[]): TodoStateModel[] {
@@ -65,6 +67,7 @@ const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
   name: TODOS_STATE_TOKEN,
   defaults: {} // compilation error - array was expected, inferred from the token type
 })
+@Injectable()
 class TodosState {
   @Selector([TODOS_STATE_TOKEN]) // compilation error - TodoStateModel[] does not match string[]
   static completedList(state: string[]): string[] {
