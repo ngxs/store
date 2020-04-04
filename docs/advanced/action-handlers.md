@@ -45,6 +45,7 @@ Below is a action handler that filters for `RouteNavigate` actions and then tell
 route.
 
 ```ts
+import { Injectable } from '@angular/core';
 import { Actions, ofActionDispatched } from '@ngxs/store';
 
 @Injectable({ providedIn: 'root' })

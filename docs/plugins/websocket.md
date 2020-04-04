@@ -73,6 +73,7 @@ export interface Message {
   name: 'messages',
   defaults: []
 })
+@Injectable()
 export class MessagesState {
   @Action(AddMessage)
   addMessage(ctx: StateContext<Message[]>, { from, message }: AddMessage) {

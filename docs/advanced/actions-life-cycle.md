@@ -144,6 +144,7 @@ export class GetDetectives {
     detectives: []
   }
 })
+@Injectable()
 export class BooksState {
   constructor(private booksService: BooksService) {}
 

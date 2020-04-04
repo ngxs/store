@@ -97,10 +97,8 @@ In your application you may have selectors created dynamically using the `create
 ```ts
 export class ZooSelectors {
   static animalNames = (type: string) => {
-    return createSelector(
-      [ZooState],
-      (state: ZooStateModel) =>
-        state.animals.filter(animal => animal.type === type).map(animal => animal.name)
+    return createSelector([ZooState], (state: ZooStateModel) =>
+      state.animals.filter(animal => animal.type === type).map(animal => animal.name)
     );
   };
 }
@@ -154,6 +152,7 @@ it('should wait for completion of the asynchronous action', async () => {
     name: 'counter',
     defaults: 0
   })
+  @Injectable()
   class CounterState {
     @Action(IncrementAsync)
     incrementAsync(ctx: StateContext<number>) {

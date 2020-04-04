@@ -8,6 +8,7 @@ using the store's current values and returning them instead of calling the HTTP
 service.
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
@@ -36,6 +37,7 @@ We want to load this information only once. Let's create a state and call it `no
 the object whose keys are the identifiers of the novels:
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext, createSelector } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
@@ -52,12 +54,10 @@ export class GetNovelById {
   name: 'novelsInfo',
   defaults: {}
 })
+@Injectable()
 export class NovelsInfoState {
   static getNovelById(id: string) {
-    return createSelector(
-      [NovelsInfoState],
-      (state: NovelsInfoStateModel) => state[id]
-    );
+    return createSelector([NovelsInfoState], (state: NovelsInfoStateModel) => state[id]);
   }
 
   constructor(private novelsService: NovelsService) {}

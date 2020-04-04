@@ -13,6 +13,7 @@ The basic idea of operators is that we could describe the modifications to the s
 From theory to practice - let's take the following example:
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
@@ -33,6 +34,7 @@ export class CreateMonkeys {
     pandas: []
   }
 })
+@Injectable()
 export class AnimalsState {
   @Action(CreateMonkeys)
   createMonkeys(ctx: StateContext<AnimalsStateModel>) {
@@ -111,6 +113,7 @@ These operators introduce a new way of declarative state mutation.
 Let's look at more advanced examples:
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { patch, append, removeItem, insertItem, updateItem } from '@ngxs/store/operators';
 
@@ -141,6 +144,7 @@ export class ChangePandaName {
     pandas: ['Michael', 'John']
   }
 })
+@Injectable()
 export class AnimalsState {
   @Action(AddZebra)
   addZebra(ctx: StateContext<AnimalsStateModel>, { payload }: AddZebra) {
@@ -198,6 +202,7 @@ interface CitiesStateModel {
     ids: []
   }
 })
+@Injectable()
 export class CitiesState {
   @Action(AddCity)
   addCity(ctx: StateContext<CitiesStateModel>, { payload }: AddCity) {
