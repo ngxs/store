@@ -9,12 +9,14 @@ and action mappings. To define a state container, let's create an
 ES2015 class and decorate it with the `State` decorator.
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State } from '@ngxs/store';
 
 @State<string[]>({
   name: 'animals',
   defaults: []
 })
+@Injectable()
 export class AnimalsState {}
 ```
 
@@ -36,6 +38,7 @@ so all you need to do is inject your dependencies in the constructor.
     feed: false
   }
 })
+@Injectable()
 export class ZooState {
   constructor(private zooService: ZooService) {}
 }
@@ -54,6 +57,7 @@ const ZOO_STATE_TOKEN = new StateToken<ZooStateModel>('zoo');
     feed: false
   }
 })
+@Injectable()
 export class ZooState {
   constructor(private zooService: ZooService) {}
 }
@@ -71,6 +75,7 @@ accepts an action class or an array of action classes.
 Let's define a state that will listen to a `FeedAnimals` action to toggle whether the animals have been fed:
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 
 export class FeedAnimals {
@@ -87,6 +92,7 @@ export interface ZooStateModel {
     feed: false
   }
 })
+@Injectable()
 export class ZooState {
   @Action(FeedAnimals)
   feedAnimals(ctx: StateContext<ZooStateModel>) {
@@ -113,6 +119,7 @@ Actions can also pass along metadata that has to do with the action.
 Say we want to pass along how much hay and carrots each zebra needs.
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 
 // This is an interface that is part of your domain model
@@ -139,6 +146,7 @@ export interface ZooStateModel {
     zebraFood: []
   }
 })
+@Injectable()
 export class ZooState {
   @Action(FeedZebra)
   feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
@@ -253,6 +261,7 @@ we give you the flexibility to make that decision yourself based on your require
 Let's take a look at a simple async action:
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
@@ -271,6 +280,7 @@ export interface ZooStateModel {
     feedAnimals: []
   }
 })
+@Injectable()
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 
@@ -303,6 +313,7 @@ Observables are not a requirement, you can use promises too. We could swap
 that observable chain to look like this:
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State, Action } from '@ngxs/store';
 
 export class FeedAnimals {
@@ -320,6 +331,7 @@ export interface ZooStateModel {
     feedAnimals: []
   }
 })
+@Injectable()
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 
@@ -341,6 +353,7 @@ If you want your action to dispatch another action, you can use the `dispatch` f
 that is contained in the state context object.
 
 ```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { map } from 'rxjs/operators';
 
@@ -354,6 +367,7 @@ export interface ZooStateModel {
     feedAnimals: []
   }
 })
+@Injectable()
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 

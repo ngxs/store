@@ -15,6 +15,7 @@ preferences in order to be able to sort your animals. This is achievable with `s
     sort: [{ prop: 'name', dir: 'asc' }]
   }
 })
+@Injectable()
 export class PreferencesState {
   @Selector()
   static getSort(state: PreferencesStateModel) {
@@ -28,6 +29,7 @@ export class PreferencesState {
     animals: []
   ]
 })
+@Injectable()
 export class AnimalState {
 
   constructor(private store: Store) {}
