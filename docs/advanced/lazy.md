@@ -38,7 +38,7 @@ And it's registered in the root module via `NgxsModule.forRoot([ZoosState])`. As
 export class OfficesState {}
 ```
 
-You register this state is some lazy-loaded module via `NgxsModule.forFeature([OfficesState])`. After the lazy module is loaded - the global state will have such signature:
+You register this state in some lazy-loaded module via `NgxsModule.forFeature([OfficesState])`. After the lazy module is loaded - the global state will have such signature:
 
 ```ts
 {
