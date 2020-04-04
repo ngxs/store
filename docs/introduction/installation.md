@@ -16,7 +16,11 @@ import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
 
 @NgModule({
-  imports: [NgxsModule.forRoot([ZooState])]
+  imports: [
+    NgxsModule.forRoot([ZooState], {
+      developmentMode: !environment.production
+    })
+  ]
 })
 export class AppModule {}
 ```
