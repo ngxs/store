@@ -374,7 +374,7 @@ When we have states that share similar structure, we can extract the shared sele
 
 ```ts
 export class EntitiesState {
-  static entities<T>(): T[] {
+  static entities<T>() {
     return createSelector([this], (state: { entities: T[] }) => {
       return state.entities;
     });
