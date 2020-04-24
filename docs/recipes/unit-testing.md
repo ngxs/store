@@ -14,7 +14,7 @@ describe('Zoo', () => {
       imports: [NgxsModule.forRoot([ZooState])]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   it('it toggles feed', () => {
@@ -63,7 +63,7 @@ describe('Zoo', () => {
       imports: [NgxsModule.forRoot([ZooState])]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     store.reset(SOME_DESIRED_STATE);
   });
 
@@ -184,7 +184,7 @@ it('should wait for completion of the asynchronous action', async () => {
     imports: [NgxsModule.forRoot([CounterState])]
   });
 
-  const store: Store = TestBed.get(Store);
+  const store: Store = TestBed.inject(Store);
 
   await store.dispatch(new IncrementAsync()).toPromise();
 
