@@ -178,4 +178,24 @@ describe('NgxsLoggerPlugin', () => {
 
     expect(logger.callStack).toEqual(expectedCallStack);
   });
+
+  it('should pass state snapshot to filter predicate', () => {
+    const { store, logger } = setup([TestState], {
+      filter: (_, state) => state.test.bar
+    });
+
+    const expectedCallStack = LoggerSpy.createCallStack([
+      ...formatActionCallStack({
+        action: UpdateBarAction.type,
+        prevState: { bar: defaultBarValue },
+        payload: { bar: 'bar' },
+        nextState: { bar: 'bar' }
+      })
+    ]);
+
+    store.dispatch(new UpdateBarAction());
+    store.dispatch(new UpdateBarAction('bar'));
+
+    expect(logger.callStack).toEqual(expectedCallStack);
+  });
 });

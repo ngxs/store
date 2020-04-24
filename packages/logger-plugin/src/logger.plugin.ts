@@ -16,7 +16,7 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
   ) {}
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
-    if (this._options.disabled || !this._options.filter!(event)) {
+    if (this._options.disabled || !this._options.filter!(event, state)) {
       return next(state, event);
     }
 
