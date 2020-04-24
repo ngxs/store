@@ -1,13 +1,19 @@
 import { ErrorHandler } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { throwError } from 'rxjs';
-
-import { NgxsModule, Store, State, Action, StateContext, InitState } from '@ngxs/store';
+import {
+  Action,
+  getActionTypeFromInstance,
+  InitState,
+  NgxsModule,
+  State,
+  StateContext,
+  Store
+} from '@ngxs/store';
 import { StateClass } from '@ngxs/store/internals';
-
+import { throwError } from 'rxjs';
 import { NgxsLoggerPluginModule, NgxsLoggerPluginOptions } from '../';
-import { LoggerSpy, formatActionCallStack } from './helpers';
 import { NoopErrorHandler } from '../../store/tests/helpers/utils';
+import { formatActionCallStack, LoggerSpy } from './helpers';
 
 describe('NgxsLoggerPlugin', () => {
   const thrownErrorMessage = 'Error';
@@ -155,6 +161,20 @@ describe('NgxsLoggerPlugin', () => {
     store.dispatch(new UpdateBarAction());
 
     const expectedCallStack = LoggerSpy.createCallStack([]);
+
+    expect(logger.callStack).toEqual(expectedCallStack);
+  });
+
+  it('should not log if predicate returns false for an action', () => {
+    const { store, logger } = setup([TestState], {
+      filter: action => getActionTypeFromInstance(action) !== UpdateBarAction.type
+    });
+
+    const expectedCallStack = LoggerSpy.createCallStack([
+      ...formatActionCallStack({ action: InitState.type, prevState: stateModelDefaults })
+    ]);
+
+    store.dispatch(new UpdateBarAction());
 
     expect(logger.callStack).toEqual(expectedCallStack);
   });

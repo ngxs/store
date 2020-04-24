@@ -1,11 +1,9 @@
-import { Injectable, Inject, Injector } from '@angular/core';
-import { tap, catchError } from 'rxjs/operators';
-
-import { NgxsPlugin, NgxsNextPluginFn, Store } from '@ngxs/store';
-
-import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
+import { catchError, tap } from 'rxjs/operators';
 import { ActionLogger } from './action-logger';
 import { LogWriter } from './log-writer';
+import { NgxsLoggerPluginOptions, NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';
 
 @Injectable()
 export class NgxsLoggerPlugin implements NgxsPlugin {
@@ -18,7 +16,7 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
   ) {}
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
-    if (this._options.disabled) {
+    if (this._options.disabled || !this._options.filter!(event)) {
       return next(state, event);
     }
 
