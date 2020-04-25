@@ -30,8 +30,36 @@ export class AppModule {}
 The plugin supports the following options passed via the `forRoot` method:
 
 - `logger`: Supply a different logger, useful for logging to backend. Defaults to `console`.
-- `collapsed`: Collapse the log by default or not. Defaults to true.
-- `disabled`: Disable the logger during production.
+- `collapsed`: Collapse the log by default or not. Defaults to `true`.
+- `disabled`: Disable the logger during production. Defaults to `false`.
+- `filter`: Filter actions to be logged. Takes action and state snapshot as parameters. Default predicate returns `true` for all actions.
+
+```ts
+import { NgxsModule, getActionTypeFromInstance } from '@ngxs/store';
+import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
+import { environment } from '../environments/environment';
+import { customLogger } from './path/to/custom/logger';
+import { SomeAction } from './path/to/some/action';
+
+@NgModule({
+  imports: [
+    NgxsModule.forRoot([]),
+    NgxsLoggerPluginModule.forRoot({
+      // Use customLogger instead of console
+      logger: customLogger,
+      // Do not collapse log groups
+      collapsed: false,
+      // Do not log in production mode
+      disabled: environment.production,
+      // Do not log SomeAction
+      filter: action => getActionTypeFromInstance(action) !== SomeAction.type
+    })
+  ]
+})
+export class AppModule {}
+```
+
+> The `filter` predicate takes state snapshot as the second parameter. This should prove useful for some edge cases. However, beware of the fact that the predicate is called for every action dispatched. You may consider using a memoized function for filters more complicated than a simple action comparison.
 
 ### Notes
 
