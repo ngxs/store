@@ -289,7 +289,10 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
     'should warn if zone is "nooped"',
     freshPlatform(async () => {
       // Arrange
-      @State({ name: 'foo' })
+      @State({
+        name: 'foo'
+      })
+      @Injectable()
       class FooState {}
 
       @Component({

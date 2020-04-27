@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { Component, Injectable, NgModule } from '@angular/core';
 import {
   BrowserModule,
   ɵBrowserDomAdapter as BrowserDomAdapter,
@@ -18,6 +18,7 @@ import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
     value: 'test'
   }
 })
+@Injectable()
 export class MockState {
   public static init: boolean;
   public static destroy: boolean;

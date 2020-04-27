@@ -5,9 +5,14 @@ import { TestBed } from '@angular/core/testing';
 import { ReduxDevtoolsMockConnector } from './utils/redux-connector';
 import { createReduxDevtoolsExtension } from './utils/create-devtools';
 import { throwError } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 describe('[TEST]: Devtools with errors', () => {
-  @State({ name: 'count', defaults: 0 })
+  @State({
+    name: 'count',
+    defaults: 0
+  })
+  @Injectable()
   class CountState {
     @Action({ type: 'decrement' })
     decrement(ctx: StateContext<number>) {
@@ -102,9 +107,10 @@ describe('[TEST]: Devtools with errors', () => {
       }
     ]);
 
-    store
-      .dispatch({ type: 'error' })
-      .subscribe(() => null, (err: Error) => expect(err.message).toEqual('Error in state'));
+    store.dispatch({ type: 'error' }).subscribe(
+      () => null,
+      (err: Error) => expect(err.message).toEqual('Error in state')
+    );
 
     expect(devtools.devtoolsStack).toEqual([
       {
@@ -152,9 +158,10 @@ describe('[TEST]: Devtools with errors', () => {
     store.dispatch({ type: 'increment' });
     expect(store.snapshot()).toEqual({ count: 1 });
 
-    store
-      .dispatch({ type: 'error_2' })
-      .subscribe(() => null, (err: Error) => expect(err.message).toEqual('Error_2 in state'));
+    store.dispatch({ type: 'error_2' }).subscribe(
+      () => null,
+      (err: Error) => expect(err.message).toEqual('Error_2 in state')
+    );
 
     expect(devtools.devtoolsStack).toEqual([
       {

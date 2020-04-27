@@ -96,6 +96,7 @@ describe('ngxsOnChanges', () => {
         values: []
       }
     })
+    @Injectable()
     class MyChildState implements NgxsOnChanges {
       public ngxsOnChanges(change: NgxsSimpleChange): void {
         allChangesQueue.push(change);
@@ -121,6 +122,7 @@ describe('ngxsOnChanges', () => {
       },
       children: [MyChildState]
     })
+    @Injectable()
     class MyState implements NgxsOnChanges {
       public ngxsOnChanges(change: NgxsSimpleChange): void {
         allChangesQueue.push(change);

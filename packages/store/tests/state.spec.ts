@@ -1,4 +1,11 @@
-import { AfterViewInit, ApplicationRef, Component, NgModule, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ApplicationRef,
+  Component,
+  Injectable,
+  NgModule,
+  OnInit
+} from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import {
@@ -22,6 +29,7 @@ describe('State', () => {
     @State({
       name: 'moo'
     })
+    @Injectable()
     class BarState {}
 
     const meta = (<any>BarState)[META_KEY];
@@ -41,6 +49,7 @@ describe('State', () => {
     @State({
       name: 'bar'
     })
+    @Injectable()
     class BarState {
       @Action(Eat)
       eat() {}
@@ -49,6 +58,7 @@ describe('State', () => {
     @State({
       name: 'bar2'
     })
+    @Injectable()
     class Bar2State extends BarState {
       @Action(Drink)
       drink() {}
@@ -66,6 +76,7 @@ describe('State', () => {
       @State({
         name: 'bar-foo'
       })
+      @Injectable()
       class MyState {}
 
       (<any>window)['foo'] = MyState; // to help with unread warning
@@ -79,6 +90,7 @@ describe('State', () => {
   it('should throw when state parameters are not passed', () => {
     try {
       @State(null!)
+      @Injectable()
       class MyOtherState {}
 
       TestBed.configureTestingModule({
@@ -283,7 +295,10 @@ describe('State', () => {
     beforeEach(() => (hooks = []));
 
     it('should invoke "ngxsAfterBootstrap" after "ngxsOnInit" and after root component\'s "ngAfterViewInit"', () => {
-      @State({ name: 'foo' })
+      @State({
+        name: 'foo'
+      })
+      @Injectable()
       class FooState implements NgxsOnInit, NgxsAfterBootstrap {
         public ngxsOnInit(): void {
           hooks.push(LifecycleHooks.NgxsOnInit);
@@ -309,7 +324,10 @@ describe('State', () => {
     });
 
     it('should invoke "ngxsAfterBootstrap" for feature states', () => {
-      @State({ name: 'fooFeature' })
+      @State({
+        name: 'fooFeature'
+      })
+      @Injectable()
       class FooFeatureState implements NgxsOnInit, NgxsAfterBootstrap {
         public ngxsOnInit(): void {
           hooks.push(LifecycleHooks.NgxsOnInit);

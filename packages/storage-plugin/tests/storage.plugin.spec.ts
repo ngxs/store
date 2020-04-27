@@ -4,6 +4,7 @@ import { NgxsModule, State, Store, Action, StateContext } from '@ngxs/store';
 
 import { DEFAULT_STATE_KEY } from '../src/internals';
 import { NgxsStoragePluginModule, StorageOption, StorageEngine, STORAGE_ENGINE } from '../';
+import { Injectable } from '@angular/core';
 
 describe('NgxsStoragePlugin', () => {
   class Increment {
@@ -397,6 +398,7 @@ describe('NgxsStoragePlugin', () => {
       name: 'names',
       defaults: []
     })
+    @Injectable()
     class NamesState {}
 
     it('should be possible to provide a state class as a key', () => {
