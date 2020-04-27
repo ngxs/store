@@ -6,6 +6,7 @@
 $ npm install @ngxs/store@dev
 ```
 
+- Fix: `ofAction*` methods should error on invalid parameters [#1574](https://github.com/ngxs/store/pull/1574)
 - Feature: Storage Plugin - Add before and after serialize hooks [#1513](https://github.com/ngxs/store/pull/1513)
 - Feature: Logger Plugin - Add filter for Logger Plugin [#1571](https://github.com/ngxs/store/pull/1571)
 - Performance: Logger Plugin - Plugin should lazy inject the store once [#1550](https://github.com/ngxs/store/pull/1550)
