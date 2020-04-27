@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { Component, Injectable, NgModule } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BrowserModule } from '@angular/platform-browser';
@@ -166,10 +166,7 @@ describe('RouterDataResolved', () => {
       // and expectations are called right after `store.dispatch`
       // before the callback inside `actions$.subscribe(...)` is invoked
       const speciallyPromisedData = actions$
-        .pipe(
-          ofActionSuccessful(RouterDataResolved),
-          first()
-        )
+        .pipe(ofActionSuccessful(RouterDataResolved), first())
         .toPromise()
         .then(({ routerState }: RouterDataResolved) => {
           return routerState!.root.firstChild!.data;
@@ -203,6 +200,7 @@ describe('RouterDataResolved', () => {
         name: 'counter',
         defaults: 0
       })
+      @Injectable()
       class CounterState {
         @Action(RouterNavigation)
         routerNavigation(ctx: StateContext<number>): void {
@@ -236,6 +234,7 @@ describe('RouterDataResolved', () => {
         name: 'counter',
         defaults: 0
       })
+      @Injectable()
       class CounterState {
         @Selector()
         static counter(state: number) {

@@ -1,6 +1,6 @@
 import { RouterTestingModule } from '@angular/router/testing';
 import { APP_BASE_HREF, DOCUMENT } from '@angular/common';
-import { Component, NgModule } from '@angular/core';
+import { Component, Injectable, NgModule } from '@angular/core';
 import { Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgxsModule, State, Action, StateContext } from '@ngxs/store';
@@ -66,7 +66,10 @@ describe('#1407 issue', () => {
       // Arrange
       let navigateDispatchedTimes = 0;
 
-      @State({ name: 'queryParams' })
+      @State({
+        name: 'queryParams'
+      })
+      @Injectable()
       class QueryParamsState {
         @Action(RouterNavigation)
         handleQueryParams(ctx: StateContext<unknown>, action: RouterNavigation) {

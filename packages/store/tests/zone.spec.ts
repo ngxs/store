@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, NgModule, NgZone } from '@angular/core';
+import { ApplicationRef, Component, Injectable, NgModule, NgZone } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -159,7 +159,10 @@ describe('zone', () => {
       public static readonly type = 'Foo';
     }
 
-    @State({ name: 'foo' })
+    @State({
+      name: 'foo'
+    })
+    @Injectable()
     class FooState {
       @Action(FooAction)
       public fooAction(): void {
@@ -185,7 +188,10 @@ describe('zone', () => {
       public static readonly type = 'Foo';
     }
 
-    @State({ name: 'foo' })
+    @State({
+      name: 'foo'
+    })
+    @Injectable()
     class FooState {
       @Action(FooAction)
       public fooAction(): void {
@@ -210,7 +216,10 @@ describe('zone', () => {
         public static readonly type = 'Foo';
       }
 
-      @State({ name: 'foo' })
+      @State({
+        name: 'foo'
+      })
+      @Injectable()
       class FooState {
         @Action(FooAction)
         public fooAction(): void {

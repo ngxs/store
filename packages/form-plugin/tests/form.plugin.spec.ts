@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -221,6 +221,7 @@ describe('NgxsFormPlugin', () => {
           }
         }
       })
+      @Injectable()
       class TodosState {}
 
       @Component({
@@ -270,6 +271,7 @@ describe('NgxsFormPlugin', () => {
           }
         }
       })
+      @Injectable()
       class TodosState {}
 
       @Component({
@@ -330,6 +332,7 @@ describe('NgxsFormPlugin', () => {
           }
         }
       })
+      @Injectable()
       class TodosState {}
 
       @Component({
@@ -399,6 +402,7 @@ describe('NgxsFormPlugin', () => {
           }
         }
       })
+      @Injectable()
       class TodosState {}
 
       @Component({
@@ -459,6 +463,7 @@ describe('NgxsFormPlugin', () => {
           }
         }
       })
+      @Injectable()
       class TodosState {}
 
       @Component({
@@ -522,6 +527,7 @@ describe('NgxsFormPlugin', () => {
           }
         }
       })
+      @Injectable()
       class TodosState {}
 
       @Component({
@@ -582,6 +588,7 @@ describe('NgxsFormPlugin', () => {
           }
         }
       })
+      @Injectable()
       class TodosState {}
 
       @Component({

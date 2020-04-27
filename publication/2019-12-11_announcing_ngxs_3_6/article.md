@@ -61,6 +61,8 @@ const TODOS_STATE_TOKEN = new StateToken<unknown>('todos');
 You can use this token as the name property in your @State declaration. It will be used to provide the path for the state and can also infer the state model type if it has been included in the token. The token can be used in your @State declaration as follows:
 
 ```ts
+import { Injectable } from '@angular/core';
+
 interface TodoStateModel {
   title: string;
   completed: boolean;
@@ -74,6 +76,7 @@ const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
   name: TODOS_STATE_TOKEN,
   defaults: []
 })
+@Injectable()
 class TodosState {
   // ...
 }
@@ -82,6 +85,8 @@ class TodosState {
 A state token with a model type provided can be used in other parts of your application to improve type safety for the `@State`, `@Selector` and `@Select` decorators.
 
 ```ts
+import { Injectable } from '@angular/core';
+
 interface TodoStateModel {
   title: string;
   completed: boolean;
@@ -93,6 +98,7 @@ const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
   name: TODOS_STATE_TOKEN,
   defaults: [] // if you specify the wrong state type, will be a compilation error
 })
+@Injectable()
 class TodosState {
   @Selector(TODOS_STATE_TOKEN) // if you specify the wrong state type, will be a compilation error
   static completedList(state: TodoStateModel[]): TodoStateModel[] {
@@ -110,6 +116,7 @@ const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
   name: TODOS_STATE_TOKEN,
   defaults: {} // compilation error - array was expected, inferred from the token type
 })
+@Injectable()
 class TodosState {
   @Selector([TODOS_STATE_TOKEN]) // compilation error - TodoStateModel[] does not match string[]
   static completedList(state: string[]): string[] {
@@ -164,6 +171,7 @@ We have added a new lifecycle hook. It was inspired by the `onChanges` hook avai
 
 ```ts
 @State({})
+@Injectable()
 class MyState implements NgxsOnChanges {
   ngxsOnChanges(change: NgxsSimpleChange): void {
     // ..
@@ -203,6 +211,7 @@ _Before_
 
 ```ts
 @State({})
+@Injectable()
 class MyState {}
 
 @Component({})
@@ -221,6 +230,7 @@ _After_
 
 ```ts
 @State({})
+@Injectable()
 class MyState implements NgxsOnChanges {
   ngxsOnChanges({ previousValue, currentValue }: NgxsSimpleChange): void {
     console.log('MyState has been changed: ', previousValue, currentValue);
@@ -236,6 +246,7 @@ _Before_
 
 ```ts
 @State({})
+@Injectable()
 class MyState {}
 
 @Component({})
@@ -253,6 +264,7 @@ _After_
 
 ```ts
 @State({})
+@Injectable()
 class MyState implements NgxsOnChanges {
   constructor(api: ApiService) {}
 

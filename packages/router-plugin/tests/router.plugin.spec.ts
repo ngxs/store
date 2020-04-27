@@ -1,4 +1,4 @@
-import { Component, Provider, Type, NgModule } from '@angular/core';
+import { Component, Provider, Type, NgModule, Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router, Params, RouterStateSnapshot } from '@angular/router';
@@ -98,14 +98,9 @@ describe('NgxsRouterPlugin', () => {
 
     let count = 0;
 
-    actions$
-      .pipe(
-        ofActionSuccessful(RouterNavigation),
-        take(2)
-      )
-      .subscribe(() => {
-        count++;
-      });
+    actions$.pipe(ofActionSuccessful(RouterNavigation), take(2)).subscribe(() => {
+      count++;
+    });
 
     await store
       .dispatch(
@@ -146,6 +141,7 @@ describe('NgxsRouterPlugin', () => {
       name: 'test',
       defaults: null
     })
+    @Injectable()
     class TestState {
       constructor(private store: Store) {}
 

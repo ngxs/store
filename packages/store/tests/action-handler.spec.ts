@@ -1,4 +1,4 @@
-import { ErrorHandler } from '@angular/core';
+import { ErrorHandler, Injectable } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { StateClass } from '@ngxs/store/internals';
 import { timer } from 'rxjs';
@@ -40,7 +40,10 @@ describe('Action handlers', () => {
   describe('for synchronous handlers ', () => {
     it('should throw an exception if @Action() decorator is used with static method', () => {
       try {
-        @State({ name: 'counter' })
+        @State({
+          name: 'counter'
+        })
+        @Injectable()
         class CounterState {
           @Action(TestAction)
           static increment() {}
