@@ -2,6 +2,7 @@ import { OperatorFunction, Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 import { getActionTypeFromInstance } from '../utils/utils';
 import { ActionContext, ActionStatus } from '../actions-stream';
+import { CONFIG_MESSAGES, VALIDATION_CODE } from '../configs/messages.config';
 
 export interface ActionCompletion<T = any, E = Error> {
   action: T;
@@ -82,10 +83,7 @@ function ofActionOperator<T = any>(
   const allowedMap = createAllowedActionTypesMap(allowedTypes);
   const allowedStatusMap = statuses && createAllowedStatusesMap(statuses);
   return function(o: Observable<ActionContext>) {
-    return o.pipe(
-      filterStatus(allowedMap, allowedStatusMap),
-      mapOperator()
-    );
+    return o.pipe(filterStatus(allowedMap, allowedStatusMap), mapOperator());
   };
 }
 
@@ -120,21 +118,18 @@ interface FilterMap {
 }
 
 function createAllowedActionTypesMap(types: any[]): FilterMap {
-  return types.reduce(
-    (filterMap: FilterMap, klass: any) => {
-      filterMap[getActionTypeFromInstance(klass)!] = true;
-      return filterMap;
-    },
-    <FilterMap>{}
-  );
+  return types.reduce((filterMap: FilterMap, klass: any) => {
+    if (Array.isArray(klass)) {
+      throw new Error(CONFIG_MESSAGES[VALIDATION_CODE.INCORRECT_OFACTION_PARAMETER]());
+    }
+    filterMap[getActionTypeFromInstance(klass)!] = true;
+    return filterMap;
+  }, <FilterMap>{});
 }
 
 function createAllowedStatusesMap(statuses: ActionStatus[]): FilterMap {
-  return statuses.reduce(
-    (filterMap: FilterMap, status: ActionStatus) => {
-      filterMap[status] = true;
-      return filterMap;
-    },
-    <FilterMap>{}
-  );
+  return statuses.reduce((filterMap: FilterMap, status: ActionStatus) => {
+    filterMap[status] = true;
+    return filterMap;
+  }, <FilterMap>{});
 }

@@ -5,6 +5,7 @@ export enum VALIDATION_CODE {
   STATE_DECORATOR = 'STATE_DECORATOR',
   INCORRECT_PRODUCTION = 'INCORRECT_PRODUCTION',
   INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT',
+  INCORRECT_OFACTION_PARAMETER = 'INCORRECT_OFACTION_PARAMETER',
   SELECT_FACTORY_NOT_CONNECTED = 'SELECT_FACTORY_NOT_CONNECTED',
   ACTION_DECORATOR = 'ACTION_DECORATOR',
   SELECTOR_DECORATOR = 'SELECTOR_DECORATOR',
@@ -28,6 +29,8 @@ export const CONFIG_MESSAGES = {
   [VALIDATION_CODE.INCORRECT_DEVELOPMENT]: () =>
     'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n' +
     'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
+  [VALIDATION_CODE.INCORRECT_OFACTION_PARAMETER]: () =>
+    'The ofAction* operators only accept actions as parameters and not as an array.',
   [VALIDATION_CODE.SELECT_FACTORY_NOT_CONNECTED]: () =>
     'You have forgotten to import the NGXS module!',
   [VALIDATION_CODE.ACTION_DECORATOR]: () =>
