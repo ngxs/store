@@ -1,5 +1,5 @@
 {
-  "rangeStrategy": "bump",
+  "rangeStrategy": "pin",
   "separateMajorMinor": false,
   "timezone": "UTC",
   "baseBranches": ["master"],
