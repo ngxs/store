@@ -7,6 +7,8 @@
     "eofline": false,
     "no-unnecessary-class": false,
     "strict-comparisons": false,
+    "prefer-while": false,
+    "no-construct": false,
     "member-access": false,
     "no-object-literal-type-assertion": false,
     "interface-over-type-literal": false,
