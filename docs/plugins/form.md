@@ -182,14 +182,18 @@ The state contains information about the new novel name and its authors. Let's c
   `
 })
 export class NewNovelComponent {
-  newNovelForm = new FormGroup({
-    novelName: new FormControl('Zenith'),
-    authors: new FormArray([
-      new FormGroup({
-        name: new FormControl('Sasha Alsberg')
-      })
-    ])
-  });
+  newNovelForm: FormGroup;
+  
+  constructor(private fb: FormBuilder) {
+		this.newNovelForm = this.fb.group({
+			novelName: 'Zenith',
+			authors: this.fb.array([
+				this.fb.group({
+					name: 'Sasha Alsberg',
+				}),
+			]),
+		});
+	}
 
   onSubmit() {
     //
