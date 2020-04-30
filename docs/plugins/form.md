@@ -162,8 +162,8 @@ export class NovelsState {}
 The state contains information about the new novel name and its authors. Let's create a component that will render the reactive form with bounded `ngxsForm` directive:
 
 ```ts
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'new-novel-form',
@@ -182,16 +182,14 @@ import { FormGroup, FormBuilder } from '@angular/forms';
     </form>
   `
 })
-export class NewNovelComponent implements OnInit  {
+export class NewNovelComponent {
   newNovelForm: FormGroup;
   
-  constructor(private fb: FormBuilder) {}
-
-  ngOnInit() {
-		this.newNovelForm = this.fb.group({
+  constructor(private fb: FormBuilder) {
+		this.newNovelForm = fb.group({
 			novelName: 'Zenith',
-			authors: this.fb.array([
-				this.fb.group({
+			authors: fb.array([
+				fb.group({
 					name: 'Sasha Alsberg',
 				}),
 			]),
