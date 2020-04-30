@@ -29,7 +29,7 @@ app.use(express.static(DIST_FOLDER, { index: false }));
 
 app.get('*', async (req, res) => {
   const url = req.url;
-  // tslint:disable-next-line:no-console
+  // eslint-disable-next-line no-console
   console.time(`GET: ${url}`);
 
   const html = await renderModuleFactory(AppServerModuleNgFactory, {
@@ -38,7 +38,7 @@ app.get('*', async (req, res) => {
     extraProviders: [provideModuleMap(LAZY_MODULE_MAP)]
   });
 
-  // tslint:disable-next-line:no-console
+  // eslint-disable-next-line no-console
   console.timeEnd(`GET: ${url}`);
   res.send(html);
 });

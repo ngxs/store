@@ -96,7 +96,6 @@ function createRootNode(selector = 'app-root'): void {
 }
 
 export class WebpackMockModule implements WebpackModule {
-  private _destroyModuleCallback: (data: any) => void;
   acceptInvoked: boolean;
   disposeInvoked: boolean;
 
@@ -112,6 +111,8 @@ export class WebpackMockModule implements WebpackModule {
       }
     }
   };
+
+  private _destroyModuleCallback: (data: any) => void;
 
   public destroyModule() {
     this._destroyModuleCallback(this.hot.data);

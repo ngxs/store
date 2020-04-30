@@ -1,4 +1,3 @@
-/* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
 import { TestBed } from '@angular/core/testing';
 import { Action, InitState, UpdateState, NgxsModule, State, Store } from '@ngxs/store';

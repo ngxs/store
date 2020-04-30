@@ -1,5 +1,3 @@
-/* tslint:disable:max-line-length */
-
 /// <reference types="@types/jest" />
 import { compose } from '@ngxs/store/operators';
 

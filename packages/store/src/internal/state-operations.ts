@@ -39,6 +39,15 @@ export class InternalStateOperations {
     return rootStateOperations;
   }
 
+  setStateToTheCurrentWithNew(results: StatesAndDefaults): void {
+    const stateOperations: StateOperations<any> = this.getRootStateOperations();
+
+    // Get our current stream
+    const currentState = stateOperations.getState();
+    // Set the state to the current + new
+    stateOperations.setState({ ...currentState, ...results.defaults });
+  }
+
   private ensureStateAndActionsAreImmutable(root: StateOperations<any>): StateOperations<any> {
     return {
       getState: () => root.getState(),
@@ -50,14 +59,5 @@ export class InternalStateOperations {
         return root.dispatch(actions);
       }
     };
-  }
-
-  setStateToTheCurrentWithNew(results: StatesAndDefaults): void {
-    const stateOperations: StateOperations<any> = this.getRootStateOperations();
-
-    // Get our current stream
-    const currentState = stateOperations.getState();
-    // Set the state to the current + new
-    stateOperations.setState({ ...currentState, ...results.defaults });
   }
 }

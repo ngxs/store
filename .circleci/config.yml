@@ -76,21 +76,13 @@ jobs:
           path: ngxs-core.tgz
           destination: dist/ngxs-core.tgz
 
-  tslint:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run TSLint analyzer
-          command: yarn lint
-
-  eslint:
+  lint:
     <<: *job_defaults
     steps:
       - *attach_workspace
       - run:
           name: Run ESLint analyzer
-          command: yarn eslint
+          command: yarn lint
 
   unit_tests:
     <<: *job_defaults
@@ -222,11 +214,7 @@ workflows:
             tags:
               only: /.*/
 
-      - tslint:
-          requires:
-            - build
-
-      - eslint:
+      - lint:
           requires:
             - build
 

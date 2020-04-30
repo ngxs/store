@@ -20,14 +20,6 @@
             "configPath": "../jest.config.js",
             "no-cache": false
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["tsconfig.lib.json", "tsconfig.spec.json"],
-            "tslintConfig": "tslint.json",
-            "exclude": ["**/node_modules/**", "./integrations/**", "./packages/store/types/**"]
-          }
         }
       }
     },
@@ -131,14 +123,6 @@
           "options": {
             "configPath": "./jest.integration.config.js",
             "no-cache": false
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["integration/tsconfig.app.json", "integration/tsconfig.spec.json"],
-            "tslintConfig": "tslint.json",
-            "exclude": ["**/node_modules/**"]
           }
         }
       }

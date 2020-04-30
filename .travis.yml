@@ -23,7 +23,6 @@ install:
 script:
   # Run static analyzers
   - yarn lint
-  - yarn eslint
 
   # Build packages and integration app
   - yarn build

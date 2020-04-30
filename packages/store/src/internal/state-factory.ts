@@ -1,4 +1,4 @@
-import { Injectable, Injector, Optional, SkipSelf, Inject } from '@angular/core';
+import { Inject, Injectable, Injector, Optional, SkipSelf } from '@angular/core';
 import { forkJoin, from, Observable, of, throwError } from 'rxjs';
 import {
   catchError,
@@ -19,13 +19,13 @@ import {
   MetaDataModel,
   nameToState,
   propGetter,
+  RuntimeSelectorContext,
+  SharedSelectorOptions,
   StateClassInternal,
   StateKeyGraph,
   StatesAndDefaults,
   StatesByName,
-  topologicalSort,
-  RuntimeSelectorContext,
-  SharedSelectorOptions
+  topologicalSort
 } from './internals';
 import { getActionTypeFromInstance, getValue, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -33,7 +33,7 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, memoize, PlainObjectOf } from '@ngxs/store/internals';
 
 /**
  * State factory class
@@ -41,40 +41,6 @@ import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/interna
  */
 @Injectable()
 export class StateFactory {
-  private _connected = false;
-
-  constructor(
-    private _injector: Injector,
-    private _config: NgxsConfig,
-    @Optional()
-    @SkipSelf()
-    private _parentFactory: StateFactory,
-    private _actions: InternalActions,
-    private _actionResults: InternalDispatchedActionResults,
-    private _stateContextFactory: StateContextFactory,
-    @Optional()
-    @Inject(INITIAL_STATE_TOKEN)
-    private _initialState: any
-  ) {}
-
-  private _states: MappedStore[] = [];
-
-  public get states(): MappedStore[] {
-    return this._parentFactory ? this._parentFactory.states : this._states;
-  }
-
-  private _statesByName: StatesByName = {};
-
-  public get statesByName(): StatesByName {
-    return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
-  }
-
-  private _statePaths: PlainObjectOf<string> = {};
-
-  private get statePaths(): PlainObjectOf<string> {
-    return this._parentFactory ? this._parentFactory.statePaths : this._statePaths;
-  }
-
   public getRuntimeSelectorContext = memoize(() => {
     const stateFactory = this;
     const context: RuntimeSelectorContext = this._parentFactory
@@ -94,6 +60,37 @@ export class StateFactory {
         };
     return context;
   });
+
+  private _connected = false;
+  private _states: MappedStore[] = [];
+  private _statePaths: PlainObjectOf<string> = {};
+  private _statesByName: StatesByName = {};
+
+  constructor(
+    private _injector: Injector,
+    private _config: NgxsConfig,
+    @Optional()
+    @SkipSelf()
+    private _parentFactory: StateFactory,
+    private _actions: InternalActions,
+    private _actionResults: InternalDispatchedActionResults,
+    private _stateContextFactory: StateContextFactory,
+    @Optional()
+    @Inject(INITIAL_STATE_TOKEN)
+    private _initialState: any
+  ) {}
+
+  public get states(): MappedStore[] {
+    return this._parentFactory ? this._parentFactory.states : this._states;
+  }
+
+  public get statesByName(): StatesByName {
+    return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
+  }
+
+  private get statePaths(): PlainObjectOf<string> {
+    return this._parentFactory ? this._parentFactory.statePaths : this._statePaths;
+  }
 
   private static cloneDefaults(defaults: any): any {
     let value = {};

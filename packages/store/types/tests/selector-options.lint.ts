@@ -1,4 +1,3 @@
-/* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
 import { Selector, State, SelectorOptions } from '@ngxs/store';
 import { assertType } from './utils/assert-type';
@@ -7,7 +6,7 @@ describe('[TEST]: The SelectorOptions decorator', () => {
   it('should be valid on on State classes', () => {
     @State<string>({ name: 'my-state' })
     @SelectorOptions({ injectContainerState: false })
-    class MyState { }
+    class MyState {}
   });
 
   it('should be valid on on State class selectors', () => {
@@ -23,7 +22,7 @@ describe('[TEST]: The SelectorOptions decorator', () => {
 
   it('should be valid on on query classes', () => {
     @State<string>({ name: 'my-state' })
-    class MyState { }
+    class MyState {}
 
     @SelectorOptions({ suppressErrors: false })
     class MyStateQueries {
@@ -36,7 +35,7 @@ describe('[TEST]: The SelectorOptions decorator', () => {
 
   it('should be valid on on query class selectors', () => {
     @State<string>({ name: 'my-state' })
-    class MyState { }
+    class MyState {}
 
     class MyStateQueries {
       @Selector([MyState])

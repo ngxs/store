@@ -1,4 +1,3 @@
-/* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
 import { updateItem, patch } from '@ngxs/store/operators';
 

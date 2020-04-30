@@ -1,4 +1,3 @@
-/* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
 import { Observable } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
@@ -25,9 +24,8 @@ describe('[TEST]: createSelector', () => {
     class TodoState {
       // $ExpectType () => (state: string[]) => string[]
       static todoA() {
-        return createSelector(
-          [TodoState],
-          (state: string[]) => state.map(todo => todo).reverse()
+        return createSelector([TodoState], (state: string[]) =>
+          state.map(todo => todo).reverse()
         );
       }
 

@@ -1,8 +1,7 @@
 version: '2'
 plugins:
-  tslint:
+  eslint:
     enabled: true
-    config: tslint.json
   nodesecurity:
     enabled: true
 checks:
@@ -20,6 +19,8 @@ exclude_paths:
   - 'integrations/'
   - 'integration/'
   - 'tools/'
+  - 'cypress/'
+  - 'jest.config.js'
 ratings:
   paths:
     - 'packages/**/**.ts'

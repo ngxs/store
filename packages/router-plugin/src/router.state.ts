@@ -1,17 +1,17 @@
-import { NgZone, Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import {
+  GuardsCheckEnd,
   NavigationCancel,
+  NavigationEnd,
   NavigationError,
+  NavigationStart,
+  ResolveEnd,
   Router,
   RouterStateSnapshot,
   RoutesRecognized,
-  ResolveEnd,
-  UrlSerializer,
-  NavigationStart,
-  NavigationEnd,
-  GuardsCheckEnd
+  UrlSerializer
 } from '@angular/router';
-import { LocationStrategy, Location } from '@angular/common';
+import { Location, LocationStrategy } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { isAngularInTestMode } from '@ngxs/store/internals';
 import { first } from 'rxjs/operators';
@@ -20,9 +20,9 @@ import {
   Navigate,
   RouterAction,
   RouterCancel,
+  RouterDataResolved,
   RouterError,
-  RouterNavigation,
-  RouterDataResolved
+  RouterNavigation
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
 
@@ -62,16 +62,6 @@ export class RouterState {
 
   private _lastRoutesRecognized: RoutesRecognized = null!;
 
-  @Selector()
-  static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
-    return state && state.state;
-  }
-
-  @Selector()
-  static url(state: RouterStateModel): string | undefined {
-    return state && state.state && state.state.url;
-  }
-
   constructor(
     private _store: Store,
     private _router: Router,
@@ -84,6 +74,16 @@ export class RouterState {
     this.setUpStoreListener();
     this.setUpRouterEventsListener();
     this.checkInitialNavigationOnce();
+  }
+
+  @Selector()
+  static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
+    return state && state.state;
+  }
+
+  @Selector()
+  static url(state: RouterStateModel): string | undefined {
+    return state && state.state && state.state.url;
   }
 
   @Action(Navigate)
