@@ -10,6 +10,10 @@ $ npm install @ngxs/store@dev
 - Feature: Logger Plugin - Add filter for Logger Plugin [#1571](https://github.com/ngxs/store/pull/1571)
 - Performance: Logger Plugin - Plugin should lazy inject the store once [#1550](https://github.com/ngxs/store/pull/1550)
 
+### Data-plugin v3.0.0 2019-05-05
+
+- Feature: Announced [`@ngxs-labs/data`](https://github.com/ngxs-labs/data/)
+
 # 3.6.2 2020-02-07
 
 - Fix: Handle empty array dispatch edge case [#1521](https://github.com/ngxs/store/pull/1521)
