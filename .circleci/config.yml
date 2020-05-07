@@ -150,6 +150,14 @@ jobs:
           name: Run integration tests for the Angular 6 application
           command: yarn integration:ng6
 
+  integration_ng8_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for the Angular 8 application
+          command: yarn integration:ng8
+
   integration_ivy_tests:
     <<: *job_defaults
     steps:
