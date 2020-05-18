@@ -1,4 +1,4 @@
-import { ErrorHandler } from '@angular/core';
+import { ErrorHandler, Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   Action,
@@ -41,6 +41,7 @@ describe('NgxsLoggerPlugin', () => {
     name: 'test',
     defaults: stateModelDefaults
   })
+  @Injectable()
   class TestState {
     @Action(UpdateBarAction)
     updateBar({ patchState }: StateContext<StateModel>, { bar }: UpdateBarAction) {
@@ -67,7 +68,7 @@ describe('NgxsLoggerPlugin', () => {
       providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     return {
       store,

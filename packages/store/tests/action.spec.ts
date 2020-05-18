@@ -70,8 +70,8 @@ describe('Action', () => {
       providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
     });
 
-    store = TestBed.get(Store);
-    actions = TestBed.get(Actions);
+    store = TestBed.inject(Store);
+    actions = TestBed.inject(Actions);
   });
 
   it('supports multiple actions', () => {

@@ -338,6 +338,7 @@ Currently, if you want a specific part of the state of the application to be sto
   name: 'novels',
   defaults: []
 })
+@Injectable()
 export class NovelsState {}
 ```
 
@@ -403,6 +404,7 @@ export interface NovelsStateModel {
     }
   }
 })
+@Injectable()
 export class NovelsState {}
 ```
 
@@ -518,6 +520,7 @@ export interface BookEntitiesModel {
     selectedBookId: null
   }
 })
+@Injectable()
 class BookState {
   @Selector()
   public static entities(state: BookEntitiesModel): BookEntities {
@@ -627,6 +630,7 @@ import { StateRepository, NgxsDataRepository, query, action } from '@ngxs-labs/d
     selectedBookId: null
   }
 })
+@Injectable()
 class BookState extends NgxsDataRepository<BookEntitiesModel> {
   @query<BookEntitiesModel, BookEntities>(state => state.entites)
   public books$: Observable<BookEntities>;
@@ -720,6 +724,7 @@ interface BooksStateModel {
     books: []
   }
 })
+@Injectable()
 export class BooksState {
   constructor(private api: ApiService) {}
 
@@ -797,6 +802,7 @@ The state becomes much simpler with the `pending` property removed:
   name: 'books',
   defaults: []
 })
+@Injectable()
 export class BooksState {
   constructor(private api: ApiService) {}
 

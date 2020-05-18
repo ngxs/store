@@ -70,7 +70,7 @@ describe('module', () => {
       imports: [NgxsModule.forRoot()]
     });
 
-    expect(TestBed.get(Store)).toBeTruthy();
+    expect(TestBed.inject(Store)).toBeTruthy();
   });
 
   it('should configure and return `RootState`', () => {
@@ -78,8 +78,8 @@ describe('module', () => {
       imports: [RootModule]
     });
 
-    expect(TestBed.get(Store)).toBeTruthy();
-    expect(TestBed.get(RootState)).toBeTruthy();
+    expect(TestBed.inject(Store)).toBeTruthy();
+    expect(TestBed.inject(RootState)).toBeTruthy();
   });
 
   it('should configure feature module and return `RootState` and `FeatureState`', () => {
@@ -87,9 +87,9 @@ describe('module', () => {
       imports: [RootModule, FeatureModule]
     });
 
-    expect(TestBed.get(Store)).toBeTruthy();
-    expect(TestBed.get(RootState)).toBeTruthy();
-    expect(TestBed.get(FeatureModule)).toBeTruthy();
+    expect(TestBed.inject(Store)).toBeTruthy();
+    expect(TestBed.inject(RootState)).toBeTruthy();
+    expect(TestBed.inject(FeatureModule)).toBeTruthy();
   });
 
   it('should configure feature modules and return them', () => {
@@ -97,9 +97,9 @@ describe('module', () => {
       imports: [RootModule, FeatureModule, FeatureModule2]
     });
 
-    expect(TestBed.get(Store)).toBeTruthy();
-    expect(TestBed.get(RootState)).toBeTruthy();
-    expect(TestBed.get(FeatureModule, FeatureState2)).toBeTruthy();
+    expect(TestBed.inject(Store)).toBeTruthy();
+    expect(TestBed.inject(RootState)).toBeTruthy();
+    expect(TestBed.inject(FeatureModule, FeatureState2)).toBeTruthy();
   });
 
   it('should allow empty root module and a feature module', () => {
@@ -107,8 +107,8 @@ describe('module', () => {
       imports: [NgxsModule.forRoot(), FeatureModule]
     });
 
-    expect(TestBed.get(Store)).toBeTruthy();
-    expect(TestBed.get(FeatureModule)).toBeTruthy();
+    expect(TestBed.inject(Store)).toBeTruthy();
+    expect(TestBed.inject(FeatureModule)).toBeTruthy();
   });
 
   it('should initialize all feature modules state', async(() => {
@@ -116,7 +116,7 @@ describe('module', () => {
       imports: [NgxsModule.forRoot(), FeatureModule, FeatureModule2]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     expect(store).toBeTruthy();
     store.select(FeatureState.getBar).subscribe((bar: string) => expect(bar).toEqual('World'));
     store.select(FeatureState2.getBaz).subscribe((baz: string) => expect(baz).toEqual('!'));

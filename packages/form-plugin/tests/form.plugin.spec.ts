@@ -52,7 +52,7 @@ describe('NgxsFormPlugin', () => {
     });
   });
 
-  const getStore = (): Store => TestBed.get(Store);
+  const getStore = (): Store => TestBed.inject(Store);
 
   it('should set form dirty', () => {
     // Arrange & act
@@ -614,7 +614,7 @@ describe('NgxsFormPlugin', () => {
         declarations: [MockComponent]
       });
 
-      const actions$: Actions = TestBed.get(Actions);
+      const actions$: Actions = TestBed.inject(Actions);
       const fixture = TestBed.createComponent(MockComponent);
       fixture.detectChanges();
 

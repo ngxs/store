@@ -19,7 +19,7 @@
     "typeRoots": ["node_modules/@types"],
     "baseUrl": ".",
     "paths": {
-      "@angular/*": ["../../../node_modules/@angular/*"],
+      "@angular/core": ["../../../node_modules/@angular/core/core.d.ts"],
       "@ngxs/store/operators": ["../../../@ngxs/store/operators/index.d.ts"],
       "@ngxs/store/internals": ["../../../@ngxs/store/internals/index.d.ts"],
       "@ngxs/*": ["../../../@ngxs/*/index.d.ts"]

@@ -16,8 +16,8 @@ describe('ConfigValidator', () => {
       imports: [NgxsModule.forRoot([])]
     });
 
-    validator = TestBed.get(ConfigValidator);
-    host = TestBed.get(HostEnvironment);
+    validator = TestBed.inject(ConfigValidator);
+    host = TestBed.inject(HostEnvironment);
 
     // Assert
     expect(host.isTestMode()).toBe(true);
@@ -34,8 +34,8 @@ describe('ConfigValidator', () => {
       providers: [{ provide: NG_TEST_MODE, useValue: () => false }]
     });
 
-    validator = TestBed.get(ConfigValidator);
-    host = TestBed.get(HostEnvironment);
+    validator = TestBed.inject(ConfigValidator);
+    host = TestBed.inject(HostEnvironment);
 
     try {
       // Assert
@@ -60,8 +60,8 @@ describe('ConfigValidator', () => {
       ]
     });
 
-    validator = TestBed.get(ConfigValidator);
-    host = TestBed.get(HostEnvironment);
+    validator = TestBed.inject(ConfigValidator);
+    host = TestBed.inject(HostEnvironment);
 
     try {
       // Assert
