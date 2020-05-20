@@ -14,7 +14,7 @@ import { StateToken } from './state-token/state-token';
 import { StateFactory } from './internal/state-factory';
 
 @Injectable()
-export class Store {
+export class Store<S = any> {
   constructor(
     private _stateStream: StateStream,
     private _internalStateOperations: InternalStateOperations,
@@ -38,7 +38,7 @@ export class Store {
   /**
    * Selects a slice of data from the store.
    */
-  select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
+  select<T>(selector: (state: S, ...states: any[]) => T): Observable<T>;
   select<T = any>(selector: string | Type<any>): Observable<T>;
   select<T>(selector: StateToken<T>): Observable<T>;
   select(selector: any): Observable<any> {
@@ -65,7 +65,7 @@ export class Store {
    * Select one slice of data from the store.
    */
 
-  selectOnce<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
+  selectOnce<T>(selector: (state: S, ...states: any[]) => T): Observable<T>;
   selectOnce<T = any>(selector: string | Type<any>): Observable<T>;
   selectOnce<T>(selector: StateToken<T>): Observable<T>;
   selectOnce(selector: any): Observable<any> {
@@ -93,7 +93,7 @@ export class Store {
   /**
    * Return the raw value of the state.
    */
-  snapshot(): any {
+  snapshot(): S {
     return this._internalStateOperations.getRootStateOperations().getState();
   }
 
@@ -101,7 +101,7 @@ export class Store {
    * Reset the state to a specific point in time. This method is useful
    * for plugin's who need to modify the state directly or unit testing.
    */
-  reset(state: any) {
+  reset(state: S) {
     return this._internalStateOperations.getRootStateOperations().setState(state);
   }
 
