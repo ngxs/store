@@ -9,6 +9,7 @@ $ npm install @ngxs/store@dev
 - Feature: Storage Plugin - Add before and after serialize hooks [#1513](https://github.com/ngxs/store/pull/1513)
 - Feature: Logger Plugin - Add filter for Logger Plugin [#1571](https://github.com/ngxs/store/pull/1571)
 - Performance: Logger Plugin - Plugin should lazy inject the store once [#1550](https://github.com/ngxs/store/pull/1550)
+- Build: Compile using Angular 9 [#1596](https://github.com/ngxs/store/pull/1596)
 
 ### Data-plugin v3.0.0 2019-05-05
 
