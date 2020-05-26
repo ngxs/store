@@ -1,21 +1,22 @@
 import { Component, Injectable } from '@angular/core';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 
-import { NgxsModule, State, Store, Actions, ofActionDispatched, Selector } from '@ngxs/store';
+import { Actions, NgxsModule, ofActionDispatched, Selector, State, Store } from '@ngxs/store';
 
 import {
   NgxsFormPluginModule,
+  ResetForm,
+  SetFormDirty,
+  SetFormDisabled,
+  SetFormEnabled,
+  SetFormPristine,
   UpdateForm,
   UpdateFormDirty,
   UpdateFormErrors,
   UpdateFormStatus,
-  UpdateFormValue,
-  SetFormDirty,
-  SetFormDisabled,
-  SetFormEnabled,
-  SetFormPristine
+  UpdateFormValue
 } from '../';
 
 describe('NgxsFormPlugin', () => {
@@ -205,6 +206,27 @@ describe('NgxsFormPlugin', () => {
     expect(form.errors!.address).toEqual('address is too long');
     expect(form.model.name).toEqual('Lou Grant');
     expect(form.model.address).toEqual('waterloo, ontario');
+  });
+
+  it('should reset form', () => {
+    // Arrange & act
+    const store = getStore();
+
+    store.dispatch([
+      new UpdateForm({
+        errors: {},
+        dirty: true,
+        status: 'INVALID',
+        value: { name: 'Ozan Turhan' },
+        path: 'student.studentForm'
+      }),
+      new ResetForm({ path: 'student.studentForm' })
+    ]);
+
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(form).toEqual({ model: {} });
   });
 
   describe('NgxsFormPlugin runtime behavior', () => {
@@ -644,6 +666,124 @@ describe('NgxsFormPlugin', () => {
 
       // Assert
       expect(statuses).toEqual(['INVALID', 'VALID']);
+    });
+
+    it('should reset form when ResetForm action call', () => {
+      // Arrange
+      @State({
+        name: 'todos',
+        defaults: {
+          todosForm: {
+            model: {
+              text: 'Buy some coffee'
+            },
+            dirty: true
+          }
+        }
+      })
+      @Injectable()
+      class TodosState {}
+
+      @Component({
+        template: `
+          <form [formGroup]="form" ngxsForm="todos.todosForm">
+            <input formControlName="text" /> <button type="submit">Add todo</button>
+          </form>
+        `
+      })
+      class MockComponent {
+        public form = new FormGroup({
+          text: new FormControl()
+        });
+      }
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          NgxsModule.forRoot([TodosState]),
+          NgxsFormPluginModule.forRoot()
+        ],
+        declarations: [MockComponent]
+      });
+
+      const store = getStore();
+      const fixture = TestBed.createComponent(MockComponent);
+
+      fixture.detectChanges();
+
+      store.dispatch(new ResetForm({ path: 'todos.todosForm' }));
+
+      fixture.detectChanges();
+
+      const input = fixture.debugElement.query(By.css('form input')).nativeElement;
+
+      // Assert
+      expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
+        model: {}
+      });
+      expect(input.value).toEqual('');
+    });
+
+    it('should reset form with value when ResetForm action call', () => {
+      // Arrange
+      @State({
+        name: 'todos',
+        defaults: {
+          todosForm: {
+            model: {
+              text: 'Buy some coffee'
+            },
+            dirty: true
+          }
+        }
+      })
+      @Injectable()
+      class TodosState {}
+
+      @Component({
+        template: `
+          <form [formGroup]="form" ngxsForm="todos.todosForm">
+            <input formControlName="text" /> <button type="submit">Add todo</button>
+          </form>
+        `
+      })
+      class MockComponent {
+        public form = new FormGroup({
+          text: new FormControl()
+        });
+      }
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          NgxsModule.forRoot([TodosState]),
+          NgxsFormPluginModule.forRoot()
+        ],
+        declarations: [MockComponent]
+      });
+
+      const store = getStore();
+      const fixture = TestBed.createComponent(MockComponent);
+
+      fixture.detectChanges();
+
+      store.dispatch(
+        new ResetForm({ path: 'todos.todosForm', value: { text: 'Buy some tea' } })
+      );
+
+      fixture.detectChanges();
+
+      const input = fixture.debugElement.query(By.css('form input')).nativeElement;
+
+      // Assert
+      expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
+        model: {
+          text: 'Buy some tea'
+        }
+      });
+      expect(input.value).toEqual('Buy some tea');
     });
   });
 });

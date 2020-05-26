@@ -1,14 +1,15 @@
-import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormGroupDirective, FormGroup } from '@angular/forms';
-import { Store, getValue } from '@ngxs/store';
-import { Subject, Observable } from 'rxjs';
-import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup, FormGroupDirective } from '@angular/forms';
+import { Actions, getValue, ofActionDispatched, Store } from '@ngxs/store';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import {
-  UpdateFormStatus,
-  UpdateFormValue,
+  ResetForm,
+  UpdateForm,
   UpdateFormDirty,
   UpdateFormErrors,
-  UpdateForm
+  UpdateFormStatus,
+  UpdateFormValue
 } from './actions';
 
 @Directive({ selector: '[ngxsForm]' })
@@ -26,12 +27,24 @@ export class FormDirective implements OnInit, OnDestroy {
   private _updating = false;
 
   constructor(
+    private _actions$: Actions,
     private _store: Store,
     private _formGroupDirective: FormGroupDirective,
     private _cd: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    this._actions$
+      .pipe(
+        ofActionDispatched(ResetForm),
+        filter((action: ResetForm) => action.payload.path === this.path),
+        takeUntil(this._destroy$)
+      )
+      .subscribe(({ payload: { value } }: ResetForm) => {
+        this.form.reset(value);
+        this._cd.markForCheck();
+      });
+
     this.getStateStream(`${this.path}.model`).subscribe(model => {
       if (this._updating || !model) {
         return;
@@ -114,10 +127,7 @@ export class FormDirective implements OnInit, OnDestroy {
     });
 
     this._formGroupDirective
-      .statusChanges!.pipe(
-        distinctUntilChanged(),
-        this.debounceChange()
-      )
+      .statusChanges!.pipe(distinctUntilChanged(), this.debounceChange())
       .subscribe((status: string) => {
         this._store.dispatch(
           new UpdateFormStatus({
@@ -152,10 +162,7 @@ export class FormDirective implements OnInit, OnDestroy {
     return skipDebounceTime
       ? (change: Observable<any>) => change.pipe(takeUntil(this._destroy$))
       : (change: Observable<any>) =>
-          change.pipe(
-            debounceTime(this.debounce),
-            takeUntil(this._destroy$)
-          );
+          change.pipe(debounceTime(this.debounce), takeUntil(this._destroy$));
   }
 
   private get form(): FormGroup {
