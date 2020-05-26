@@ -142,6 +142,14 @@ jobs:
           name: Run integration tests for the Angular 6 application
           command: yarn integration:ng6
 
+  integration_ng8_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for the Angular 8 application
+          command: yarn integration:ng8
+
   integration_ivy_tests:
     <<: *job_defaults
     steps:
@@ -238,6 +246,10 @@ workflows:
           requires:
             - build
 
+      - integration_ng8_tests:
+          requires:
+            - build
+
       - integration_ivy_tests:
           requires:
             - build
@@ -256,6 +268,7 @@ workflows:
             - integration_tests
             - integration_ssr_tests
             - integration_ng6_tests
+            - integration_ng8_tests
             - integration_test_types
             - bundlesize
 
@@ -272,6 +285,7 @@ workflows:
             - integration_tests
             - integration_ssr_tests
             - integration_ng6_tests
+            - integration_ng8_tests
             - integration_test_types
             - bundlesize
 
@@ -287,5 +301,6 @@ workflows:
             - integration_tests
             - integration_ssr_tests
             - integration_ng6_tests
+            - integration_ng8_tests
             - integration_test_types
             - bundlesize

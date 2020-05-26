@@ -1,6 +1,6 @@
 import { NgxsModule, Select, Selector, State, StateToken, Store } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -22,6 +22,7 @@ describe('[TEST]: StateToken', () => {
         name: TODO_LIST_TOKEN,
         defaults: ['hello', 'world']
       })
+      @Injectable()
       class TodoListState {
         @Selector([TODO_LIST_TOKEN])
         static todos(state: string[]) {

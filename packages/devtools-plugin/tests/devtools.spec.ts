@@ -32,7 +32,7 @@ describe('[TEST]: Devtools', () => {
       imports: [NgxsModule.forRoot([CountState]), NgxsReduxDevtoolsPluginModule.forRoot()]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   it('should be correct execution redux devtools with catching actions', () => {

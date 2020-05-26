@@ -69,7 +69,7 @@ describe('NgxsStoragePlugin', () => {
       imports: [NgxsModule.forRoot([CounterState]), NgxsStoragePluginModule.forRoot()]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     const state: CounterStateModel = store.selectSnapshot(CounterState);
 
     // Assert
@@ -85,7 +85,7 @@ describe('NgxsStoragePlugin', () => {
       imports: [NgxsModule.forRoot([CounterState]), NgxsStoragePluginModule.forRoot()]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     store.dispatch(new Increment());
     store.dispatch(new Increment());
@@ -120,7 +120,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const state: CounterStateModel = store.selectSnapshot(TestState);
 
       // Assert
@@ -144,7 +144,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const state: CounterStateModel = store.selectSnapshot(TestState);
 
       // Assert
@@ -168,7 +168,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const state: CounterStateModel = store.selectSnapshot(TestState);
 
       // Assert
@@ -203,7 +203,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     // Call `selectSnapshot` so the `NgxsStoragePlugin.handle` will be invoked also
     // and will run migations
     store.selectSnapshot(CounterState);
@@ -243,7 +243,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     // Call `selectSnapshot` so the `NgxsStoragePlugin.handle` will be invoked also
     // and will run migations
     store.selectSnapshot(CounterState);
@@ -266,7 +266,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     const state: CounterStateModel = store.selectSnapshot(CounterState);
 
     // Assert
@@ -285,7 +285,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     store.dispatch(new Increment());
     store.dispatch(new Increment());
@@ -355,7 +355,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     store.dispatch(new Increment());
     store.dispatch(new Increment());
@@ -383,7 +383,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     const state: {
       counter: CounterStateModel;
       lazyLoaded: CounterStateModel;
@@ -415,7 +415,7 @@ describe('NgxsStoragePlugin', () => {
         ]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const state: CounterStateModel = store.selectSnapshot(CounterState);
 
       // Assert
@@ -437,7 +437,7 @@ describe('NgxsStoragePlugin', () => {
         ]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
 
       // Assert
       expect(store.snapshot()).toEqual({
@@ -463,7 +463,7 @@ describe('NgxsStoragePlugin', () => {
         ]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
 
       // Assert
       expect(store.snapshot()).toEqual({
@@ -496,7 +496,7 @@ describe('NgxsStoragePlugin', () => {
         ]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
 
       store.dispatch(new Increment());
 
@@ -528,7 +528,7 @@ describe('NgxsStoragePlugin', () => {
         ]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const state: CounterInfoStateModel = store.selectSnapshot(CounterInfoState);
 
       // Assert

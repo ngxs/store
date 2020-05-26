@@ -29,7 +29,7 @@ describe('[TEST]: Devtools with custom settings', () => {
       ]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     store.dispatch({ type: 'increment' });
     expect(store.snapshot()).toEqual({ count: 1 });
   });
@@ -45,7 +45,7 @@ describe('[TEST]: Devtools with custom settings', () => {
       ]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     expect(devtools.options).toEqual({ name: 'custom', maxAge: 1000 });
   });

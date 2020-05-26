@@ -36,6 +36,7 @@ describe('ngxsOnChanges', () => {
       name: 'counter',
       defaults: 0
     })
+    @Injectable()
     class CounterState implements NgxsOnChanges {
       constructor(private apiCloud: OnlineCloudService) {}
 
@@ -59,7 +60,7 @@ describe('ngxsOnChanges', () => {
       providers: [OnlineCloudService]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     store.dispatch(new Increment());
     store.dispatch(new Increment());
@@ -67,7 +68,7 @@ describe('ngxsOnChanges', () => {
     store.dispatch(new Decrement());
     store.dispatch(new Increment());
 
-    const cloud: OnlineCloudService = TestBed.get(OnlineCloudService);
+    const cloud: OnlineCloudService = TestBed.inject(OnlineCloudService);
 
     expect(cloud.db).toEqual([
       { previousValue: undefined, currentValue: 0, firstChange: true },
@@ -139,7 +140,7 @@ describe('ngxsOnChanges', () => {
       imports: [NgxsModule.forRoot([MyState, MyChildState])]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     expect(store.snapshot()).toEqual({ a: { hello: 'world', b: { values: [] } } });
 
     store.dispatch(new Append(' 2019'));

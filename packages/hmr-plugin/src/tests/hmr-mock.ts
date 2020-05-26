@@ -1,8 +1,7 @@
 import { Component, Injectable, NgModule } from '@angular/core';
 import {
   BrowserModule,
-  ɵBrowserDomAdapter as BrowserDomAdapter,
-  ɵDomAdapter as DomAdapter
+  ɵBrowserDomAdapter as BrowserDomAdapter
 } from '@angular/platform-browser';
 import { Action, NgxsModule, State, StateContext } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
@@ -82,17 +81,10 @@ export class AppMockModuleNoHmrLifeCycle {
 }
 
 function createRootNode(selector = 'app-root'): void {
-  const document = TestBed.get(DOCUMENT);
-  const adapter: DomAdapter = new BrowserDomAdapter();
-
-  const root = adapter.firstChild(
-    adapter.content(adapter.createTemplate(`<${selector}></${selector}>`))
-  );
-
-  const oldRoots = adapter.querySelectorAll(document, selector);
-  oldRoots.forEach(oldRoot => adapter.remove(oldRoot));
-
-  adapter.appendChild(document.body, root);
+  const document = TestBed.inject(DOCUMENT);
+  const adapter = new BrowserDomAdapter();
+  const root = adapter.createElement(selector);
+  document.body.appendChild(root);
 }
 
 export class WebpackMockModule implements WebpackModule {

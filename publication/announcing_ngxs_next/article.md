@@ -80,6 +80,40 @@ The predicate given in this example lets you log only `SomeAction` and only when
 
 **Important Note:** The predicate will be called for every action. This may cause performance issues in development, especially when you are planning to keep the predicate after debugging. Therefore, please consider using a memoized function for filters more complicated than a simple action comparison. You may take advantage of memoization libraries for that.
 
+### Storage Plugin
+
+- Feature: Serialization Interceptors in Storage Plugin [#1513](https://github.com/ngxs/store/pull/1513)
+
+You can define your own logic before or after the state get serialized or deserialized.
+
+- beforeSerialize: Use this option to alter the state before it gets serialized.
+- afterSerialize: Use this option to alter the state after it gets deserialized. For instance, you can use it to instantiate a concrete class.
+
+```
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: 'counter',
+      beforeSerialize: (obj, key) => {
+        if (key === 'counter') {
+          return {
+            count: obj.count < 10 ? obj.count : 10
+          };
+        }
+        return obj;
+      },
+      afterDeserialize: (obj, key) => {
+        if (key === 'counter') {
+          return new CounterInfoStateModel(obj.count);
+        }
+        return obj;
+      }
+    })
+  ]
+})
+export class AppModule {}
+```
+
 ### Plugin X
 
 - Feature A description

@@ -1,48 +1,79 @@
 import 'zone.js/dist/zone-node';
-import 'reflect-metadata';
 
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { APP_BASE_HREF } from '@angular/common';
+import '@angular/localize/init';
+import { ngExpressEngine } from '@nguniversal/express-engine';
+import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 import * as express from 'express';
+import { existsSync } from 'fs';
+import { join } from 'path';
 
-import { enableProdMode } from '@angular/core';
-import { renderModuleFactory } from '@angular/platform-server';
-import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
+import { AppServerModule } from './main.server';
 
-const {
-  AppServerModuleNgFactory,
-  LAZY_MODULE_MAP
-} = require('../dist-integration-server/main');
+// The Express app is exported so that it can be used by serverless Functions.
+export function app() {
+  const server = express();
+  const distFolder = join(process.cwd(), 'dist-integration');
+  const indexHtml = existsSync(join(distFolder, 'index.original.html'))
+    ? 'index.original.html'
+    : 'index';
 
-const PORT = process.env.PORT || 4200;
-const DIST_FOLDER = join(__dirname, '../dist-integration');
+  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
+  server.engine(
+    'html',
+    ngExpressEngine({
+      bootstrap: AppServerModule
+    }) as any
+  );
 
-enableProdMode();
+  server.set('view engine', 'html');
+  server.set('views', distFolder);
 
-const app = express();
-// Read `index.html` only once and cache it
-const document = readFileSync(join(DIST_FOLDER, 'index.html')).toString();
+  // Example Express Rest API endpoints
+  // app.get('/api/**', (req, res) => { });
+  // Serve static files from /browser
+  server.get(
+    '*.*',
+    express.static(distFolder, {
+      maxAge: '1y'
+    })
+  );
 
-// `index: false` means to ignore plain `index.html` thus
-// the render responsibility is fully taken by Angular Universal
-app.use(express.static(DIST_FOLDER, { index: false }));
-
-app.get('*', async (req, res) => {
-  const url = req.url;
-  // eslint-disable-next-line no-console
-  console.time(`GET: ${url}`);
-
-  const html = await renderModuleFactory(AppServerModuleNgFactory, {
-    url,
-    document,
-    extraProviders: [provideModuleMap(LAZY_MODULE_MAP)]
+  // All regular routes use the Universal engine
+  server.get('*', (req, res) => {
+    res.render(indexHtml, {
+      req,
+      providers: [
+        { provide: APP_BASE_HREF, useValue: req.baseUrl },
+        { provide: REQUEST, useValue: req },
+        { provide: RESPONSE, useValue: res }
+      ]
+    });
   });
 
-  // eslint-disable-next-line no-console
-  console.timeEnd(`GET: ${url}`);
-  res.send(html);
-});
+  return server;
+}
 
-app.listen(PORT, () => {
-  console.log(`Express server is running and listening at http://localhost:${PORT}!`);
-});
+function run() {
+  const port = process.env.PORT || 4200;
+
+  // Start up the Node server
+  const server = app();
+  server.listen(port, () => {
+    console.log(`Node Express server listening on http://localhost:${port}`);
+  });
+}
+
+// Webpack will replace 'require' with '__webpack_require__'
+// '__non_webpack_require__' is a proxy to Node 'require'
+// The below code is to ensure that the server is run only when not requiring the bundle.
+// eslint-disable-next-line
+declare const __non_webpack_require__: NodeRequire;
+// eslint-disable-next-line
+const mainModule = __non_webpack_require__.main;
+const moduleFilename = (mainModule && mainModule.filename) || '';
+if (moduleFilename === __filename || moduleFilename.includes('iisnode')) {
+  run();
+}
+
+export * from './main.server';

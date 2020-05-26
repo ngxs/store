@@ -1,7 +1,7 @@
-import { NgModule, NgModuleFactoryLoader } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { RouterTestingModule, SpyNgModuleFactoryLoader } from '@angular/router/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 
 import { Action, NgxsModule, State, StateContext, Store } from '../src/public_api';
@@ -9,7 +9,6 @@ import { Action, NgxsModule, State, StateContext, Store } from '../src/public_ap
 describe('Lazy loading with duplicate bootstrap states', () => {
   let store: Store;
   let router: Router;
-  let loader: SpyNgModuleFactoryLoader;
 
   class CounterAction {
     public static type = 'increment';
@@ -42,19 +41,13 @@ describe('Lazy loading with duplicate bootstrap states', () => {
   });
 
   beforeEach(() => {
-    store = TestBed.get(Store);
-    router = TestBed.get(Router);
-    loader = TestBed.get(NgModuleFactoryLoader);
-    loader.stubbedModules = {
-      lazyModuleA: LazyModuleA,
-      lazyModuleB: LazyModuleB,
-      lazyModuleC: LazyModuleC
-    };
+    store = TestBed.inject(Store);
+    router = TestBed.inject(Router);
 
     router.resetConfig([
-      { path: 'pathA', loadChildren: 'lazyModuleA' },
-      { path: 'pathB', loadChildren: 'lazyModuleB' },
-      { path: 'pathC', loadChildren: 'lazyModuleC' }
+      { path: 'pathA', loadChildren: () => LazyModuleA },
+      { path: 'pathB', loadChildren: () => LazyModuleB },
+      { path: 'pathC', loadChildren: () => LazyModuleC }
     ]);
   });
 

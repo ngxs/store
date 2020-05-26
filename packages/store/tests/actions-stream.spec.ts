@@ -63,7 +63,7 @@ describe('The Actions stream', () => {
       providers: [InternalActions]
     });
 
-    const internalActions: InternalActions = TestBed.get(InternalActions);
+    const internalActions: InternalActions = TestBed.inject(InternalActions);
     const callsRecorded = <string[]>[];
 
     internalActions.subscribe(({ status }) => callsRecorded.push('1st Subscriber:' + status));
@@ -93,7 +93,7 @@ describe('The Actions stream', () => {
       imports: [NgxsModule.forRoot()]
     });
 
-    const actions$: Actions = TestBed.get(Actions);
+    const actions$: Actions = TestBed.inject(Actions);
     const subscription = actions$.subscribe(() => {});
 
     const isArrayBeforeUnsubscribe = Array.isArray(subscription['_subscriptions']);
