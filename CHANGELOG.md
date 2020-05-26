@@ -11,7 +11,7 @@ $ npm install @ngxs/store@dev
 - Performance: Logger Plugin - Plugin should lazy inject the store once [#1550](https://github.com/ngxs/store/pull/1550)
 - Build: Compile using Angular 9 [#1596](https://github.com/ngxs/store/pull/1596)
 
-### Data-plugin v3.0.0 2019-05-05
+### Data-plugin v3.0.0 2020-05-05
 
 - Feature: Announced [`@ngxs-labs/data`](https://github.com/ngxs-labs/data/)
 
