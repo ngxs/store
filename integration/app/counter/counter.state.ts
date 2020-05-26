@@ -1,5 +1,6 @@
 import { Action, NgxsAfterBootstrap, NgxsOnInit, State, StateContext } from '@ngxs/store';
 import { CounterStateChangeAction } from '@integration/counter/counter.actions';
+import { Injectable } from '@angular/core';
 
 export interface CounterStateModel {
   loaded: boolean;
@@ -13,6 +14,7 @@ export interface CounterStateModel {
     count: 0
   }
 })
+@Injectable()
 export class CounterState implements NgxsOnInit, NgxsAfterBootstrap {
   public ngxsOnInit(ctx: StateContext<CounterStateModel>): void {
     this.incrementAfterLoad(ctx);

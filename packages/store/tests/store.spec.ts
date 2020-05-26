@@ -6,6 +6,7 @@ import { NgxsModule } from '../src/module';
 import { State } from '../src/decorators/state';
 import { Action } from '../src/decorators/action';
 import { StateContext } from '../src/symbols';
+import { Injectable } from '@angular/core';
 
 describe('Store', () => {
   interface SubSubStateModel {
@@ -38,6 +39,7 @@ describe('Store', () => {
       name: 'Danny'
     }
   })
+  @Injectable()
   class MySubSubState {}
 
   @State<SubStateModel>({
@@ -48,6 +50,7 @@ describe('Store', () => {
     },
     children: [MySubSubState]
   })
+  @Injectable()
   class MySubState {}
 
   @State<StateModel>({
@@ -58,6 +61,7 @@ describe('Store', () => {
     },
     children: [MySubState]
   })
+  @Injectable()
   class MyState {
     @Action(FooIt)
     fooIt({ setState }: StateContext<StateModel>) {
@@ -76,6 +80,7 @@ describe('Store', () => {
       under: 'score'
     }
   })
+  @Injectable()
   class MyOtherState {}
 
   let store: Store;
@@ -85,7 +90,7 @@ describe('Store', () => {
       imports: [NgxsModule.forRoot([MySubState, MySubSubState, MyState, MyOtherState])]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   it('should subscribe to the root state', async(() => {

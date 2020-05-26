@@ -4,15 +4,16 @@ import { ɵgetDOM as getDOM } from '@angular/platform-browser';
 import { destroyPlatform, createPlatform } from '@angular/core';
 
 function createRootElement() {
-  const document = TestBed.get(DOCUMENT);
+  const document = TestBed.inject(DOCUMENT);
   const root = getDOM().createElement('app-root', document);
-  getDOM().appendChild(document.body, root);
+  document.body.appendChild(root);
 }
 
 function removeRootElement() {
-  const document = TestBed.get(DOCUMENT);
-  const root = getDOM().querySelector(document, 'app-root');
-  document.body.removeChild(root);
+  const root: Element = document.getElementsByTagName('app-root').item(0)!;
+  try {
+    document.body.removeChild(root);
+  } catch {}
 }
 
 function destroyPlatformBeforeBootstrappingTheNewOne() {

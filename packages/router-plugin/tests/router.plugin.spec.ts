@@ -27,8 +27,8 @@ describe('NgxsRouterPlugin', () => {
   it('should select router state', async () => {
     // Arrange
     createTestModule();
-    const router: Router = TestBed.get(Router);
-    const store: Store = TestBed.get(Store);
+    const router: Router = TestBed.inject(Router);
+    const store: Store = TestBed.inject(Store);
 
     // Act
     await router.navigateByUrl('/testpath');
@@ -44,7 +44,7 @@ describe('NgxsRouterPlugin', () => {
   it('should handle Navigate action', async () => {
     // Arrange
     createTestModule();
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     // Act
     await store.dispatch(new Navigate(['a-path'])).toPromise();
@@ -75,7 +75,7 @@ describe('NgxsRouterPlugin', () => {
       providers: [{ provide: RouterStateSerializer, useClass: CustomRouterStateSerializer }]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     // Act
     await store.dispatch(new Navigate(['a-path'], { foo: 'bar' })).toPromise();
@@ -93,8 +93,8 @@ describe('NgxsRouterPlugin', () => {
   it('should dispatch `RouterNavigation` event if it was navigated to the same route with query params', async () => {
     createTestModule();
 
-    const actions$: Actions = TestBed.get(Actions);
-    const store: Store = TestBed.get(Store);
+    const actions$: Actions = TestBed.inject(Actions);
+    const store: Store = TestBed.inject(Store);
 
     let count = 0;
 
@@ -155,13 +155,13 @@ describe('NgxsRouterPlugin', () => {
       states: [TestState]
     });
 
-    const router: Router = TestBed.get(Router);
+    const router: Router = TestBed.inject(Router);
 
     // Act
     await router.navigateByUrl('/testpath');
 
     // Assert
-    const state = TestBed.get(Store).selectSnapshot(TestState);
+    const state = TestBed.inject(Store).selectSnapshot(TestState);
     expect(state).toBeTruthy();
     expect(state.url).toEqual('/testpath');
   });

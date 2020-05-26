@@ -5,6 +5,7 @@
     "indent": [false, "tabs"],
     "no-useless-files": false,
     "eofline": false,
+    "no-sparse-arrays": false,
     "no-unnecessary-class": false,
     "strict-comparisons": false,
     "prefer-while": false,

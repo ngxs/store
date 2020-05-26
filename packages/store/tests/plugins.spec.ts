@@ -42,7 +42,7 @@ describe('Plugins', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     store.dispatch(new Foo());
 
     expect(pluginInvoked).toEqual(2);

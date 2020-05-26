@@ -9,11 +9,13 @@ import {
 
 import { AddTodo, RemoveTodo } from '@integration/store/todos/todo/todo.actions';
 import { Todo } from '@integration/store/todos/todos.model';
+import { Injectable } from '@angular/core';
 
 @State<Todo[]>({
   name: 'todo',
   defaults: []
 })
+@Injectable()
 export class TodoState implements NgxsOnInit, NgxsAfterBootstrap {
   @Selector()
   public static pandas(state: Todo[]): Todo[] {

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { first, last } from 'rxjs/operators';
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
@@ -40,6 +40,7 @@ describe('Select', () => {
       name: 'Danny'
     }
   })
+  @Injectable()
   class MySubSubState {}
 
   @State<SubStateModel>({
@@ -50,6 +51,7 @@ describe('Select', () => {
     },
     children: [MySubSubState]
   })
+  @Injectable()
   class MySubState {}
 
   @State<StateModel>({
@@ -60,6 +62,7 @@ describe('Select', () => {
     },
     children: [MySubState]
   })
+  @Injectable()
   class MyState {
     @Action(FooIt)
     fooIt({ setState }: StateContext<StateModel>) {
@@ -325,6 +328,7 @@ describe('Select', () => {
       foo: 'Hello'
     }
   })
+  @Injectable()
   class NullSelectorState {
     @Selector()
     static notHere(state: any) {
@@ -361,6 +365,7 @@ describe('Select', () => {
       name: 'count',
       defaults: { number: { value: 0 } }
     })
+    @Injectable()
     class CountState {
       @Action({ type: 'IncorrectClearState' })
       public incorrectClear({ setState }: StateContext<{ number: { value: number } }>): void {

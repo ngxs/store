@@ -85,9 +85,9 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       ],
       declarations: [...(moduleDef.declarations || [])]
     });
-    const store: Store = TestBed.get(Store);
-    const zone: NgZone = TestBed.get(NgZone);
-    const get = <T>(classType: Type<T>) => <T>TestBed.get(classType);
+    const store: Store = TestBed.inject(Store);
+    const zone: NgZone = TestBed.inject(NgZone);
+    const get = <T>(classType: Type<T>) => <T>TestBed.inject(classType);
     return { zone, store, ticks, get };
   }
 

@@ -11,5 +11,5 @@
     "target": "es2015",
     "types": ["node"]
   },
-  "exclude": ["test.ssr.ts", "**/*.spec.ts", "**/*.mocha.ts", "server.ts"]
+  "files": ["main.browser.ts", "polyfills.ts"]
 }

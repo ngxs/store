@@ -30,7 +30,7 @@ describe('AppComponent', () => {
     component = fixture.componentInstance;
 
     // reset store because of storage plugin
-    const store = TestBed.get(Store);
+    const store = TestBed.inject(Store);
     store.reset(initialState);
   });
 

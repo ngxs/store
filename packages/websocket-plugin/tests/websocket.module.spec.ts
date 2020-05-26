@@ -24,6 +24,7 @@ import {
   WebSocketConnectionUpdated,
   WebSocketConnected
 } from '../';
+import { Injectable } from '@angular/core';
 
 type WebSocketMessage = string | Blob | ArrayBuffer | ArrayBufferView;
 
@@ -51,8 +52,8 @@ describe('NgxsWebsocketPlugin', () => {
 
   const url = 'ws://localhost:8080';
 
-  const getStore = (): Store => TestBed.get(Store);
-  const getActions$ = (): Actions => TestBed.get(Actions);
+  const getStore = (): Store => TestBed.inject(Store);
+  const getActions$ = (): Actions => TestBed.inject(Actions);
 
   const createModuleAndServer = (states: any[] = []) => {
     TestBed.configureTestingModule({
@@ -231,6 +232,7 @@ describe('NgxsWebsocketPlugin', () => {
       name: 'messages',
       defaults: []
     })
+    @Injectable()
     class MessagesState {
       @Action(AddMessage)
       addMessage(ctx: StateContext<Message[]>, { from, message }: AddMessage) {

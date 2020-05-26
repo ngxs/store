@@ -1,7 +1,7 @@
-import { Component, NgModule, NgModuleFactoryLoader } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RouterModule, Router } from '@angular/router';
-import { SpyNgModuleFactoryLoader, RouterTestingModule } from '@angular/router/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Observable } from 'rxjs';
 
 import { Store, NgxsModule, Select } from '../src/public_api';
@@ -58,18 +58,11 @@ describe('Lazy Loading', () => {
       providers: [MathService]
     });
 
-    router = TestBed.get(Router);
-
-    const loader: SpyNgModuleFactoryLoader = TestBed.get(NgModuleFactoryLoader);
-
-    loader.stubbedModules = {
-      lazyModule: MyLazyModule,
-      secondLazyModule: SecondLazyModule
-    };
+    router = TestBed.inject(Router);
 
     router.resetConfig([
-      { path: 'todos', loadChildren: 'lazyModule' },
-      { path: 'simple', loadChildren: 'secondLazyModule' }
+      { path: 'todos', loadChildren: () => MyLazyModule },
+      { path: 'simple', loadChildren: () => SecondLazyModule }
     ]);
   });
 
@@ -95,7 +88,7 @@ describe('Lazy Loading', () => {
   });
 
   it('should correctly dispatch actions and respond in feature module', () => {
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     navigate().then(() => {
       const c0 = TestBed.createComponent(MyComponent).componentInstance; // eager

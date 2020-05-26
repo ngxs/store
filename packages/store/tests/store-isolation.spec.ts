@@ -5,8 +5,8 @@ import { NgxsModule } from '../src/module';
 import { State } from '../src/decorators/state';
 import { Selector } from '../src/decorators/selector/selector';
 import { SelectorOptions } from '../src/decorators/selector-options';
-import { NgModule, NgModuleFactoryLoader } from '@angular/core';
-import { RouterTestingModule, SpyNgModuleFactoryLoader } from '@angular/router/testing';
+import { Injectable, NgModule } from '@angular/core';
+import { RouterTestingModule } from '@angular/router/testing';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { StateToken } from '../src/public_api';
@@ -15,9 +15,11 @@ import { StateClass } from '../internals/src/index';
 describe('Store (isolation)', () => {
   describe('when selecting a child state', () => {
     @State<string>({ name: 'child' })
+    @Injectable()
     class ChildState {}
 
     @State<{}>({ name: 'parent', children: [ChildState] })
+    @Injectable()
     class ParentState {}
 
     it('should select undefined if not initialised in store', () => {
@@ -29,7 +31,7 @@ describe('Store (isolation)', () => {
           })
         ]
       });
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       store.reset({ child: 'child' });
       // Act
       const result = store.selectSnapshot(ChildState);
@@ -46,7 +48,7 @@ describe('Store (isolation)', () => {
           })
         ]
       });
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       store.reset({ parent: { child: 'parent.child' }, child: 'child' });
       // Act
       const result = store.selectSnapshot(ChildState);
@@ -63,7 +65,7 @@ describe('Store (isolation)', () => {
           })
         ]
       });
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       store.reset({ parent: { child: 'parent.child' }, child: 'child' });
       // Act
       const result = store.selectSnapshot(ChildState);
@@ -74,6 +76,7 @@ describe('Store (isolation)', () => {
 
   describe('when selecting a child state using a selector', () => {
     @State<string>({ name: 'child' })
+    @Injectable()
     class ChildState {
       @Selector() static getPath(state: string) {
         return state;
@@ -82,6 +85,7 @@ describe('Store (isolation)', () => {
 
     @State<{ path: string }>({ name: 'parent', children: [ChildState] })
     @SelectorOptions({ injectContainerState: false })
+    @Injectable()
     class ParentState {
       @Selector([ParentState, ChildState.getPath])
       static getPaths(parent: any, childPath: string) {
@@ -102,7 +106,7 @@ describe('Store (isolation)', () => {
           })
         ]
       });
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       setToTestState(store);
       // Act
       const result = store.selectSnapshot(ParentState.getPaths);
@@ -119,7 +123,7 @@ describe('Store (isolation)', () => {
           })
         ]
       });
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       setToTestState(store);
       // Act
       const result = store.selectSnapshot(ParentState.getPaths);
@@ -136,7 +140,7 @@ describe('Store (isolation)', () => {
           })
         ]
       });
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       setToTestState(store);
       // Act
       const result = store.selectSnapshot(ParentState.getPaths);
@@ -151,6 +155,7 @@ describe('Store (isolation)', () => {
 
     @State<string>({ name: CHILD_STATE_TOKEN })
     @SelectorOptions({ injectContainerState: false })
+    @Injectable()
     class ChildState {
       @Selector([CHILD_STATE_TOKEN]) static getPath(state: string) {
         return state;
@@ -159,6 +164,7 @@ describe('Store (isolation)', () => {
 
     @State<{ path: string }>({ name: PARENT_STATE_TOKEN, children: [ChildState] })
     @SelectorOptions({ injectContainerState: false })
+    @Injectable()
     class ParentState {
       @Selector([PARENT_STATE_TOKEN, ChildState.getPath])
       static getPaths(parent: any, childPath: string) {
@@ -178,7 +184,7 @@ describe('Store (isolation)', () => {
           })
         ]
       });
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       setToTestState(store);
       return { store };
     }
@@ -213,6 +219,7 @@ describe('Store (isolation)', () => {
 
   describe('when selecting a lazy child state using a selector', () => {
     @State<string>({ name: 'child' })
+    @Injectable()
     class ChildState {
       @Selector() static getPath(state: string) {
         return state;
@@ -221,6 +228,7 @@ describe('Store (isolation)', () => {
 
     @State<{ path: string }>({ name: 'parent', children: [ChildState] })
     @SelectorOptions({ injectContainerState: false })
+    @Injectable()
     class ParentState {
       @Selector([ParentState, ChildState.getPath])
       static getPaths(parent: any, childPath: string) {
@@ -241,13 +249,10 @@ describe('Store (isolation)', () => {
         ]
       });
 
-      const store: Store = TestBed.get(Store);
-      const router: Router = TestBed.get(Router);
-      const loader: SpyNgModuleFactoryLoader = TestBed.get(NgModuleFactoryLoader);
-      loader.stubbedModules = {
-        lazyModule: LazyModule
-      };
-      router.resetConfig([{ path: 'lazy-path', loadChildren: 'lazyModule' }]);
+      const store: Store = TestBed.inject(Store);
+      const router: Router = TestBed.inject(Router);
+
+      router.resetConfig([{ path: 'lazy-path', loadChildren: () => LazyModule }]);
       async function navigateToLazyRoute() {
         return await router.navigateByUrl('/lazy-path');
       }

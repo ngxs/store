@@ -39,7 +39,7 @@ describe('Inheritance @State', () => {
       imports: [NgxsModule.forRoot([MyState, MyOtherState, MyChildAState, MyChildBState])]
     });
 
-    const store = TestBed.get(Store);
+    const store = TestBed.inject(Store);
     const state = store.selectSnapshot(MyState);
     const otherState = store.selectSnapshot(MyOtherState);
 
@@ -77,7 +77,7 @@ describe('Inheritance @State', () => {
       imports: [NgxsModule.forRoot([FirstState, MyChildState, SecondState, ThirdState])]
     });
 
-    const store = TestBed.get(Store);
+    const store = TestBed.inject(Store);
 
     expect(store.snapshot()).toEqual({
       first: {

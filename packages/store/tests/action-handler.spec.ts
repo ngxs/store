@@ -32,8 +32,8 @@ describe('Action handlers', () => {
     });
 
     return {
-      store: <Store>TestBed.get(Store),
-      actions: <Actions>TestBed.get(Actions)
+      store: <Store>TestBed.inject(Store),
+      actions: <Actions>TestBed.inject(Actions)
     };
   }
 
@@ -61,6 +61,7 @@ describe('Action handlers', () => {
 
       const defaultState = { name: 'current state' };
       @State<IFooStateModel>({ name: 'foo', defaults: defaultState })
+      @Injectable()
       class FooState {
         @Action(TestAction)
         test({ getState }: StateContext<IFooStateModel>) {
@@ -78,6 +79,7 @@ describe('Action handlers', () => {
     it(`should allow for the state to be set`, () => {
       // Arrange
       @State<IFooStateModel>({ name: 'foo', defaults: { name: 'old state' } })
+      @Injectable()
       class FooState {
         @Action(TestAction)
         test({ setState }: StateContext<IFooStateModel>, { payload }: TestAction) {
@@ -97,6 +99,7 @@ describe('Action handlers', () => {
     it(`should allow for the state to be set using a function`, () => {
       // Arrange
       @State<IFooStateModel>({ name: 'foo', defaults: { name: 'my state' } })
+      @Injectable()
       class FooState {
         @Action(TestAction)
         test({ setState }: StateContext<IFooStateModel>, { payload }: TestAction) {
@@ -118,6 +121,7 @@ describe('Action handlers', () => {
     it(`should allow for patching the state`, () => {
       // Arrange
       @State<IFooStateModel>({ name: 'foo', defaults: { name: 'my state' } })
+      @Injectable()
       class FooState {
         @Action(TestAction)
         test({ patchState }: StateContext<IFooStateModel>, { payload }: TestAction) {
@@ -138,6 +142,7 @@ describe('Action handlers', () => {
       const increment = Symbol('increment');
 
       @State<number>({ name: 'counter', defaults: 0 })
+      @Injectable()
       class CounterState {
         @Action(TestAction)
         [increment]({ setState }: StateContext<number>) {
@@ -159,6 +164,7 @@ describe('Action handlers', () => {
 
       const defaultState = { name: 'current state' };
       @State<IFooStateModel>({ name: 'foo', defaults: defaultState })
+      @Injectable()
       class FooState {
         @Action(TestAction)
         test({ getState }: StateContext<IFooStateModel>) {
@@ -183,6 +189,7 @@ describe('Action handlers', () => {
     it(`should allow for the state to be set during the callback`, fakeAsync(() => {
       // Arrange
       @State<IFooStateModel>({ name: 'foo', defaults: { name: 'old state' } })
+      @Injectable()
       class FooState {
         @Action(TestAction)
         test({ setState }: StateContext<IFooStateModel>, { payload }: TestAction) {
@@ -209,6 +216,7 @@ describe('Action handlers', () => {
     it(`should allow for the state to be set using a function during the callback`, fakeAsync(() => {
       // Arrange
       @State<IFooStateModel>({ name: 'foo', defaults: { name: 'my state' } })
+      @Injectable()
       class FooState {
         @Action(TestAction)
         test({ setState }: StateContext<IFooStateModel>, { payload }: TestAction) {
@@ -237,6 +245,7 @@ describe('Action handlers', () => {
     it(`should allow for patching the state during the callback`, fakeAsync(() => {
       // Arrange
       @State<IFooStateModel>({ name: 'foo', defaults: { name: 'my state' } })
+      @Injectable()
       class FooState {
         @Action(TestAction)
         test({ patchState }: StateContext<IFooStateModel>, { payload }: TestAction) {

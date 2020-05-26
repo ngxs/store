@@ -1,10 +1,7 @@
 import { ApplicationRef } from '@angular/core';
 import { TestBed, TestBedStatic } from '@angular/core/testing';
 import { DOCUMENT } from '@angular/common';
-import {
-  ɵBrowserDomAdapter as BrowserDomAdapter,
-  ɵDomAdapter as DomAdapter
-} from '@angular/platform-browser';
+import { ɵBrowserDomAdapter as BrowserDomAdapter } from '@angular/platform-browser';
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
@@ -34,7 +31,7 @@ export class NgxsTestBed {
 
     return {
       get store(): Store {
-        return TestBed.get(Store);
+        return TestBed.inject(Store);
       },
       get getTestBed(): TestBedStatic {
         return TestBed;
@@ -44,7 +41,7 @@ export class NgxsTestBed {
 
   private static ngxsBootstrap(): void {
     NgxsTestBed.createRootNode();
-    NgxsTestModule.ngDoBootstrap(TestBed.get(ApplicationRef));
+    NgxsTestModule.ngDoBootstrap(TestBed.inject(ApplicationRef));
   }
 
   private static resetTestBed(): void {
@@ -53,16 +50,9 @@ export class NgxsTestBed {
   }
 
   private static createRootNode(selector = 'app-root'): void {
-    const document = TestBed.get(DOCUMENT);
-    const adapter: DomAdapter = new BrowserDomAdapter();
-
-    const root = adapter.firstChild(
-      adapter.content(adapter.createTemplate(`<${selector}></${selector}>`))
-    );
-
-    const oldRoots = adapter.querySelectorAll(document, selector);
-    oldRoots.forEach(oldRoot => adapter.remove(oldRoot));
-
-    adapter.appendChild(document.body, root);
+    const document = TestBed.inject(DOCUMENT);
+    const adapter = new BrowserDomAdapter();
+    const root = adapter.createElement(selector);
+    document.body.appendChild(root);
   }
 }

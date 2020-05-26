@@ -32,7 +32,7 @@ describe('Reusable States', () => {
       ]
     });
 
-    const store = TestBed.get(Store);
+    const store = TestBed.inject(Store);
 
     let stateValue = store.selectSnapshot(FooState);
     expect(stateValue).toEqual([1, 2, 3]);
@@ -69,7 +69,7 @@ describe('Reusable States', () => {
       ]
     });
 
-    const store = TestBed.get(Store);
+    const store = TestBed.inject(Store);
 
     let stateValue = store.selectSnapshot(FooState);
     expect(stateValue).toEqual([1, 2, 3]);
@@ -94,7 +94,7 @@ describe('Reusable States', () => {
       ]
     });
 
-    const store = TestBed.get(Store);
+    const store = TestBed.inject(Store);
 
     expect(store.snapshot()).toEqual({
       configState: { a: 1, b: 2 },

@@ -44,7 +44,7 @@ describe('[TEST]: Devtools with errors', () => {
       imports: [NgxsModule.forRoot([CountState]), NgxsReduxDevtoolsPluginModule.forRoot()]
     });
 
-    const store = TestBed.get(Store);
+    const store = TestBed.inject(Store);
 
     expect(devtools.devtoolsStack).toEqual([
       {

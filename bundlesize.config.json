@@ -18,126 +18,126 @@
       "path": "./@ngxs/store/fesm2015/ngxs-store-operators.js",
       "package": "@ngxs/store/operators",
       "target": "es2015",
-      "maxSize": "9.680KB",
+      "maxSize": "9.985KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store-operators.js",
       "package": "@ngxs/store/operators",
       "target": "es5",
-      "maxSize": "9.813KB",
+      "maxSize": "10.125KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm2015/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es2015",
-      "maxSize": "110.535KB",
+      "maxSize": "114.315KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es5",
-      "maxSize": "129.975KB",
+      "maxSize": "134.255KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/form-plugin/fesm2015/ngxs-form-plugin.js",
       "package": "@ngxs/form-plugin",
       "target": "es2015",
-      "maxSize": "14.910KB",
+      "maxSize": "15.450KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/form-plugin/fesm5/ngxs-form-plugin.js",
       "package": "@ngxs/form-plugin",
       "target": "es5",
-      "maxSize": "17.790KB",
+      "maxSize": "19.345KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/devtools-plugin/fesm2015/ngxs-devtools-plugin.js",
       "package": "@ngxs/devtools-plugin",
       "target": "es2015",
-      "maxSize": "8.831KB",
+      "maxSize": "9.035KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/devtools-plugin/fesm5/ngxs-devtools-plugin.js",
       "package": "@ngxs/devtools-plugin",
       "target": "es5",
-      "maxSize": "10.291KB",
+      "maxSize": "10.525KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/hmr-plugin/fesm2015/ngxs-hmr-plugin.js",
       "package": "@ngxs/hmr-plugin",
       "target": "es2015",
-      "maxSize": "15.994KB",
+      "maxSize": "16.550KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/hmr-plugin/fesm5/ngxs-hmr-plugin.js",
       "package": "@ngxs/hmr-plugin",
       "target": "es5",
-      "maxSize": "19.490KB",
+      "maxSize": "20.135KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/logger-plugin/fesm2015/ngxs-logger-plugin.js",
       "package": "@ngxs/logger-plugin",
       "target": "es2015",
-      "maxSize": "10.910KB",
+      "maxSize": "11.315KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/logger-plugin/fesm5/ngxs-logger-plugin.js",
       "package": "@ngxs/logger-plugin",
       "target": "es5",
-      "maxSize": "12.619KB",
+      "maxSize": "13.075KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/router-plugin/fesm2015/ngxs-router-plugin.js",
       "package": "@ngxs/router-plugin",
       "target": "es2015",
-      "maxSize": "20.840KB",
+      "maxSize": "21.525KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/router-plugin/fesm5/ngxs-router-plugin.js",
       "package": "@ngxs/router-plugin",
       "target": "es5",
-      "maxSize": "25.180KB",
+      "maxSize": "26.000KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/storage-plugin/fesm2015/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
       "target": "es2015",
-      "maxSize": "11.19KB",
+      "maxSize": "11.520KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/storage-plugin/fesm5/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
       "target": "es5",
-      "maxSize": "12.79KB",
+      "maxSize": "13.510KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/websocket-plugin/fesm2015/ngxs-websocket-plugin.js",
       "package": "@ngxs/websocket-plugin",
       "target": "es2015",
-      "maxSize": "13.850KB",
+      "maxSize": "14.325KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/websocket-plugin/fesm5/ngxs-websocket-plugin.js",
       "package": "@ngxs/websocket-plugin",
       "target": "es5",
-      "maxSize": "18.180KB",
+      "maxSize": "18.765KB",
       "compression": "none"
     }
   ]
