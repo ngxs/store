@@ -8,8 +8,7 @@ import {
   ResolveEnd,
   UrlSerializer,
   NavigationStart,
-  NavigationEnd,
-  GuardsCheckEnd
+  NavigationEnd
 } from '@angular/router';
 import { LocationStrategy, Location } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
@@ -121,8 +120,6 @@ export class RouterState {
         this.navigationStart();
       } else if (event instanceof RoutesRecognized) {
         this._lastRoutesRecognized = event;
-      } else if (event instanceof GuardsCheckEnd && event.shouldActivate) {
-        this.guardsCheckEnd(event);
       } else if (event instanceof ResolveEnd) {
         this.dispatchRouterDataResolved(event);
       } else if (event instanceof NavigationCancel) {
@@ -132,6 +129,7 @@ export class RouterState {
         this.dispatchRouterError(event);
         this.reset();
       } else if (event instanceof NavigationEnd) {
+        this.navigationEnd();
         this.reset();
       }
     });
@@ -142,6 +140,12 @@ export class RouterState {
 
     if (this._trigger !== 'none') {
       this._storeState = this._store.selectSnapshot(RouterState);
+    }
+  }
+
+  private navigationEnd(): void {
+    if (this.shouldDispatchRouterNavigation()) {
+      this.dispatchRouterNavigation();
     }
   }
 
@@ -189,7 +193,6 @@ export class RouterState {
     this.dispatchRouterAction(
       new RouterCancel(this._routerState!, this._storeState, event, this._trigger)
     );
-    this.reset();
   }
 
   private dispatchRouterError(event: NavigationError): void {
@@ -210,14 +213,6 @@ export class RouterState {
       this._store.dispatch(action);
     } finally {
       this._trigger = 'none';
-    }
-  }
-
-  private guardsCheckEnd(event: GuardsCheckEnd) {
-    this._routerState = this._serializer.serialize(event.state);
-
-    if (this.shouldDispatchRouterNavigation()) {
-      this.dispatchRouterNavigation();
     }
   }
 
