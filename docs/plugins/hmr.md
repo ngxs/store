@@ -35,7 +35,7 @@ export const environment = {
 ```
 
 Update angular.json to include an hmr environment as explained here and add configurations within build and serve to enable hmr.
-Note that <project-name> here represents the name of the project you are adding this configuration to in angular.json.
+Note that \<project-name\> here represents the name of the project you are adding this configuration to in angular.json.
 
 ```text
   "build": {
