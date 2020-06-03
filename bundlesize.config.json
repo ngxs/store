@@ -74,14 +74,14 @@
       "path": "./@ngxs/hmr-plugin/fesm2015/ngxs-hmr-plugin.js",
       "package": "@ngxs/hmr-plugin",
       "target": "es2015",
-      "maxSize": "16.550KB",
+      "maxSize": "16.980KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/hmr-plugin/fesm5/ngxs-hmr-plugin.js",
       "package": "@ngxs/hmr-plugin",
       "target": "es5",
-      "maxSize": "20.135KB",
+      "maxSize": "20.570KB",
       "compression": "none"
     },
     {

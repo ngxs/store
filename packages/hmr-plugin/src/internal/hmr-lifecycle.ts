@@ -7,6 +7,7 @@ import { HmrCallback, NgxsHmrLifeCycle } from '../symbols';
 import { HmrStateContextFactory } from './hmr-state-context-factory';
 import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 import { HmrStorage } from './hmr-storage';
+import { isIvy } from './is-ivy';
 
 export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   constructor(
@@ -20,6 +21,7 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   public hmrNgxsStoreOnInit(hmrAfterOnInit: HmrCallback<S>) {
     let moduleHmrInit: HmrCallback<S> = this.getModuleHmrInitCallback();
     moduleHmrInit = moduleHmrInit.bind(this.ngAppModule);
+    this.detectIvyWithJIT();
     this.stateEventLoop((ctx, state) => {
       moduleHmrInit(ctx, state);
       hmrAfterOnInit(ctx, state);
@@ -68,5 +70,15 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
         }, this.options.deferTime);
       });
     });
+  }
+
+  private detectIvyWithJIT(): void {
+    const jit: boolean = this.ngAppModule.constructor.hasOwnProperty('__annotations__');
+    const isIvyMode: boolean =
+      this.options.isIvyMode === undefined ? isIvy() : this.options.isIvyMode;
+
+    if (isIvyMode && jit) {
+      console.error(`@ngxs/hrm-plugin: not working with JIT mode in Angular Ivy`);
+    }
   }
 }

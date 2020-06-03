@@ -11,7 +11,7 @@ export interface CounterStateModel {
   name: 'counter',
   defaults: {
     loaded: false,
-    count: 0
+    count: 102
   }
 })
 @Injectable()
