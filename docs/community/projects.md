@@ -22,6 +22,7 @@
 - [Port of NgRx Example App](https://github.com/eranshmil/ngxs-example-app)
 - [State Management with NGXS](https://github.com/joaqcid/state-mgmt-with-ngxs)
 - [Fretboard Learning (Game/tool built using angular, Ionic and NGXS)](https://guitar-fretboard-learning.web.app/)
+- [Arkham Horror Card Game (Built using Angular and NGXS)](https://github.com/sandb0x4477/arkham-horror-lcg)
 
 ### Media
 
