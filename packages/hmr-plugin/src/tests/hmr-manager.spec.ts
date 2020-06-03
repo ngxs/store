@@ -403,5 +403,25 @@ describe('HMR Plugin', () => {
     });
   }));
 
+  it('should be shown error when use Angular Ivy with JIT mode', async () => {
+    class AppJitModule extends AppMockModuleNoHmrLifeCycle {}
+    Object.defineProperty(AppJitModule, '__annotations__', { value: [] });
+
+    const spy = jest.spyOn(console, 'error').mockImplementation();
+
+    const { store } = await hmrTestBed(
+      AppJitModule,
+      { storedValue: { hello: 'world' } },
+      { isIvyMode: true }
+    );
+
+    expect(store.snapshot()).toEqual({ hello: 'world', mock_state: { value: 'test' } });
+    expect(spy).toHaveBeenCalledWith(
+      '@ngxs/hrm-plugin: not working with JIT mode in Angular Ivy'
+    );
+
+    spy.mockRestore();
+  });
+
   afterEach(() => setHmrReloadedTo(false));
 });

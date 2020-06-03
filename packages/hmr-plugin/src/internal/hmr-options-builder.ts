@@ -1,29 +1,26 @@
-import { isJIT } from '@ngxs/store/internals';
-
 import { NgxsHmrOptions } from '../symbols';
-import { ivyEnabledInDevMode } from '../../../store/src/ivy/ivy-enabled-in-dev-mode';
+import { isDevMode } from '@angular/core';
 
 export class HmrOptionBuilder {
   public readonly deferTime: number;
   public readonly autoClearLogs: boolean;
+  public readonly isIvyMode: boolean;
 
-  constructor({ deferTime, autoClearLogs }: NgxsHmrOptions) {
+  constructor({ deferTime, autoClearLogs, isIvyMode }: NgxsHmrOptions) {
     this.deferTime = deferTime || 100;
     this.autoClearLogs = autoClearLogs === undefined ? true : autoClearLogs;
-    this.validateIvyMode();
+    this.isIvyMode = isIvyMode === undefined ? HmrOptionBuilder.isIvy() : isIvyMode;
+  }
+
+  private static isIvy(): boolean {
+    const ng = (window as any).ng;
+    const _viewEngineEnabled = !!ng.probe && !!ng.coreTokens;
+    return !_viewEngineEnabled && isDevMode();
   }
 
   public clearLogs(): void {
     if (this.autoClearLogs) {
       console.clear();
     }
-  }
-
-  private validateIvyMode(): void {
-    ivyEnabledInDevMode().subscribe(_ivyEnabledInDevMode => {
-      if (isJIT()) {
-        console.error(`@ngxs/hrm-plugin: doesn't work with JIT mode with Ivy render.`);
-      }
-    });
   }
 }

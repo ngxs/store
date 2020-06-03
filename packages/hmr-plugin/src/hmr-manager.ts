@@ -43,6 +43,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
     this.ngModule = await bootstrapFn();
     this.context = new HmrStateContextFactory(this.ngModule);
     this.lifecycle = this.createLifecycle();
+    this.detectIvyWithJIT();
 
     tick();
 
@@ -111,5 +112,14 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
     styles
       .filter((style: HTMLStyleElement) => style.innerText.includes('_ng'))
       .map((style: HTMLStyleElement) => head!.removeChild(style));
+  }
+
+  private detectIvyWithJIT(): void {
+    const jit = this.ngModule.instance.constructor.hasOwnProperty('__annotations__');
+    const isIvyMode = this.optionsBuilder.isIvyMode;
+
+    if (isIvyMode && jit) {
+      console.error(`@ngxs/hrm-plugin: not working with JIT mode in Angular Ivy`);
+    }
   }
 }
