@@ -83,7 +83,7 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
 
     if (this.options.isIvyMode && jit) {
       throw new Error(
-        `@ngxs/hrm-plugin doesn't work with JIT mode in Angular Ivy. Please use AOT mode.`
+        `@ngxs/hmr-plugin doesn't work with JIT mode in Angular Ivy. Please use AOT mode.`
       );
     }
   }

@@ -416,7 +416,7 @@ describe('HMR Plugin', () => {
     }
 
     expect(message).toEqual(
-      `@ngxs/hrm-plugin doesn't work with JIT mode in Angular Ivy. Please use AOT mode.`
+      `@ngxs/hmr-plugin doesn't work with JIT mode in Angular Ivy. Please use AOT mode.`
     );
   });
 
