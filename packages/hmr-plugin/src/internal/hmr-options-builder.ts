@@ -3,7 +3,7 @@ import { NgxsHmrOptions } from '../symbols';
 export class HmrOptionBuilder {
   public readonly deferTime: number;
   public readonly autoClearLogs: boolean;
-  public readonly isIvyMode: boolean | undefined;
+  public isIvyMode: boolean | undefined;
 
   constructor({ deferTime, autoClearLogs, isIvyMode }: NgxsHmrOptions) {
     this.deferTime = deferTime || 100;

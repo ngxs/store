@@ -1,13 +1,13 @@
 import { NgxsBootstrapper } from '@ngxs/store/internals';
 import { Observable, Subscription } from 'rxjs';
 import { StateContext } from '@ngxs/store';
+import { isDevMode } from '@angular/core';
 
 import { HmrOptionBuilder } from './hmr-options-builder';
 import { HmrCallback, NgxsHmrLifeCycle } from '../symbols';
 import { HmrStateContextFactory } from './hmr-state-context-factory';
 import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
 import { HmrStorage } from './hmr-storage';
-import { isIvy } from './is-ivy';
 
 export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   constructor(
@@ -74,11 +74,17 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
 
   private detectIvyWithJIT(): void {
     const jit: boolean = this.ngAppModule.constructor.hasOwnProperty('__annotations__');
-    const isIvyMode: boolean =
-      this.options.isIvyMode === undefined ? isIvy() : this.options.isIvyMode;
 
-    if (isIvyMode && jit) {
-      console.error(`@ngxs/hrm-plugin: not working with JIT mode in Angular Ivy`);
+    if (this.options.isIvyMode === undefined) {
+      const ng = (window as any).ng || {};
+      const _viewEngineEnabled = !!ng.probe && !!ng.coreTokens;
+      this.options.isIvyMode = !_viewEngineEnabled && isDevMode();
+    }
+
+    if (this.options.isIvyMode && jit) {
+      throw new Error(
+        `@ngxs/hrm-plugin doesn't work with JIT mode in Angular Ivy. Please use AOT mode.`
+      );
     }
   }
 }
