@@ -159,7 +159,7 @@
     "tsickle": "^0.38.1",
     "tslib": "^1.11.1",
     "tslint": "^5.20.1",
-    "typescript": "~3.8.3",
+    "typescript": "~3.9.5",
     "zone.js": "~0.10.3"
   }
 }
