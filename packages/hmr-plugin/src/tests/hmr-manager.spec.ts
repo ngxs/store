@@ -405,12 +405,17 @@ describe('HMR Plugin', () => {
 
   it('should show error when using Angular Ivy with JIT mode', async () => {
     class AppJitModule extends AppMockModuleNoHmrLifeCycle {}
+
+    // Note: emulate JIT mode
     Object.defineProperty(AppJitModule, '__annotations__', { value: [] });
+
+    // Note: emulate Ivy mode
+    Object.defineProperty(AppJitModule, 'ɵmod', { value: {} });
 
     let message: string | null = null;
 
     try {
-      await hmrTestBed(AppJitModule, {}, { isIvyMode: true });
+      await hmrTestBed(AppJitModule);
     } catch (e) {
       message = e.message;
     }

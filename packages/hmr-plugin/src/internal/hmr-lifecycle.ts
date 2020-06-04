@@ -1,7 +1,6 @@
 import { NgxsBootstrapper } from '@ngxs/store/internals';
 import { Observable, Subscription } from 'rxjs';
 import { StateContext } from '@ngxs/store';
-import { isDevMode } from '@angular/core';
 
 import { HmrOptionBuilder } from './hmr-options-builder';
 import { HmrCallback, NgxsHmrLifeCycle } from '../symbols';
@@ -74,14 +73,8 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
 
   private detectIvyWithJIT(): void {
     const jit: boolean = this.ngAppModule.constructor.hasOwnProperty('__annotations__');
-
-    if (this.options.isIvyMode === undefined) {
-      const ng = (window as any).ng || {};
-      const _viewEngineEnabled = !!ng.probe && !!ng.coreTokens;
-      this.options.isIvyMode = !_viewEngineEnabled && isDevMode();
-    }
-
-    if (this.options.isIvyMode && jit) {
+    const ivy: boolean = this.ngAppModule.constructor.hasOwnProperty('ɵmod');
+    if (jit && ivy) {
       throw new Error(
         `@ngxs/hmr-plugin doesn't work with JIT mode in Angular Ivy. Please use AOT mode.`
       );

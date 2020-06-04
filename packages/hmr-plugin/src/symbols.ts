@@ -41,13 +41,6 @@ export interface NgxsHmrOptions {
    * (default: 100ms)
    */
   deferTime?: number;
-
-  /**
-   * @description
-   * The option for set Angular Ivy mode
-   * (default: runtime detect)
-   */
-  isIvyMode?: boolean;
 }
 
 type ModuleId = string | number;
