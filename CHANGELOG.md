@@ -10,6 +10,7 @@ $ npm install @ngxs/store@dev
 - Feature: Logger Plugin - Add filter for Logger Plugin [#1571](https://github.com/ngxs/store/pull/1571)
 - Performance: Logger Plugin - Plugin should lazy inject the store once [#1550](https://github.com/ngxs/store/pull/1550)
 - Fix: Router Plugin - Update state after route successfully activates [#1606](https://github.com/ngxs/store/pull/1606)
+- Fix: HMR Plugin - Show error when use Angular Ivy with JIT mode [#1607](https://github.com/ngxs/store/pull/1607)
 - Build: Compile using Angular 9 [#1596](https://github.com/ngxs/store/pull/1596)
 
 ### Data-plugin v3.0.0 2020-05-05
