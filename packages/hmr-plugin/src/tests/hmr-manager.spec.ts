@@ -403,5 +403,27 @@ describe('HMR Plugin', () => {
     });
   }));
 
+  it('should show error when using Angular Ivy with JIT mode', async () => {
+    class AppJitModule extends AppMockModuleNoHmrLifeCycle {}
+
+    // Note: emulate JIT mode
+    Object.defineProperty(AppJitModule, '__annotations__', { value: [] });
+
+    // Note: emulate Ivy mode
+    Object.defineProperty(AppJitModule, 'ɵmod', { value: {} });
+
+    let message: string | null = null;
+
+    try {
+      await hmrTestBed(AppJitModule);
+    } catch (e) {
+      message = e.message;
+    }
+
+    expect(message).toEqual(
+      `@ngxs/hmr-plugin doesn't work with JIT mode in Angular Ivy. Please use AOT mode.`
+    );
+  });
+
   afterEach(() => setHmrReloadedTo(false));
 });
