@@ -66,6 +66,7 @@ describe('Zoo', () => {
 
     store = TestBed.inject(Store);
     store.reset({
+      ...store.snapshot(),
       zoo: SOME_DESIRED_STATE
     });
   });
