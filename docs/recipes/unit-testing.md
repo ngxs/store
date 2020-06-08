@@ -46,6 +46,7 @@ it('should select zoo', () => {
 
 Often times in your app you want to test what happens when the state is C and you dispatch action X. You
 can use the `store.reset(MyNewState)` to prepare the state for your next operation.
+Note: You need to provide the registered state name as key if you reset the state.
 
 ```ts
 // zoo.state.spec.ts
@@ -64,7 +65,9 @@ describe('Zoo', () => {
     });
 
     store = TestBed.inject(Store);
-    store.reset(SOME_DESIRED_STATE);
+    store.reset({
+      zoo: SOME_DESIRED_STATE
+    });
   });
 
   it('it toggles feed', () => {
