@@ -216,6 +216,16 @@ export class StateFactory {
             }
 
             if (result instanceof Observable) {
+              // If this observable has been completed w/o emitting
+              // any value then we wouldn't want to complete the whole chain
+              // of actions. Since if any observable completes then
+              // action will be canceled.
+              // For instance if any action handler would've had such statement:
+              // `handler(ctx) { return EMPTY; }`
+              // then the action will be canceled.
+              // See https://github.com/ngxs/store/issues/1568
+              result = result.pipe(defaultIfEmpty({}));
+
               if (actionMeta.options.cancelUncompleted) {
                 // todo: ofActionDispatched should be used with action class
                 result = result.pipe(
