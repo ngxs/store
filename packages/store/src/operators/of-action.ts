@@ -1,5 +1,7 @@
 import { OperatorFunction, Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
+
+import { ActionType } from '../actions/symbols';
 import { getActionTypeFromInstance } from '../utils/utils';
 import { ActionContext, ActionStatus } from '../actions-stream';
 
@@ -12,15 +14,17 @@ export interface ActionCompletion<T = any, E = Error> {
   };
 }
 
-export function ofAction<T>(allowedType: any): OperatorFunction<ActionContext, T>;
-export function ofAction<T>(...allowedTypes: any[]): OperatorFunction<ActionContext, T>;
+export function ofAction<T = any>(allowedType: ActionType): OperatorFunction<ActionContext, T>;
+export function ofAction<T = any>(
+  ...allowedTypes: ActionType[]
+): OperatorFunction<ActionContext, T>;
 
 /**
  * RxJS operator for selecting out specific actions.
  *
  * This will grab actions that have just been dispatched as well as actions that have completed
  */
-export function ofAction(...allowedTypes: any[]) {
+export function ofAction(...allowedTypes: ActionType[]): OperatorFunction<ActionContext, any> {
   return ofActionOperator(allowedTypes);
 }
 
@@ -29,7 +33,9 @@ export function ofAction(...allowedTypes: any[]) {
  *
  * This will ONLY grab actions that have just been dispatched
  */
-export function ofActionDispatched(...allowedTypes: any[]) {
+export function ofActionDispatched(
+  ...allowedTypes: ActionType[]
+): OperatorFunction<ActionContext, any> {
   return ofActionOperator(allowedTypes, [ActionStatus.Dispatched]);
 }
 
@@ -38,7 +44,9 @@ export function ofActionDispatched(...allowedTypes: any[]) {
  *
  * This will ONLY grab actions that have just been successfully completed
  */
-export function ofActionSuccessful(...allowedTypes: any[]) {
+export function ofActionSuccessful(
+  ...allowedTypes: ActionType[]
+): OperatorFunction<ActionContext, any> {
   return ofActionOperator(allowedTypes, [ActionStatus.Successful]);
 }
 
@@ -47,7 +55,9 @@ export function ofActionSuccessful(...allowedTypes: any[]) {
  *
  * This will ONLY grab actions that have just been canceled
  */
-export function ofActionCanceled(...allowedTypes: any[]) {
+export function ofActionCanceled(
+  ...allowedTypes: ActionType[]
+): OperatorFunction<ActionContext, any> {
   return ofActionOperator(allowedTypes, [ActionStatus.Canceled]);
 }
 
@@ -56,7 +66,9 @@ export function ofActionCanceled(...allowedTypes: any[]) {
  *
  * This will ONLY grab actions that have just been completed
  */
-export function ofActionCompleted(...allowedTypes: any[]) {
+export function ofActionCompleted(
+  ...allowedTypes: ActionType[]
+): OperatorFunction<ActionContext, ActionCompletion> {
   const allowedStatuses = [
     ActionStatus.Successful,
     ActionStatus.Canceled,
@@ -70,22 +82,24 @@ export function ofActionCompleted(...allowedTypes: any[]) {
  *
  * This will ONLY grab actions that have just thrown an error
  */
-export function ofActionErrored(...allowedTypes: any[]) {
+export function ofActionErrored(
+  ...allowedTypes: ActionType[]
+): OperatorFunction<ActionContext, any> {
   return ofActionOperator(allowedTypes, [ActionStatus.Errored]);
 }
 
-function ofActionOperator<T = any>(
-  allowedTypes: any[],
+function ofActionOperator(
+  allowedTypes: ActionType[],
   statuses?: ActionStatus[],
-  mapOperator: () => OperatorFunction<ActionContext, T> = mapAction
-) {
+  // This actually could've been `OperatorFunction<ActionContext, ActionCompletion | any>`,
+  // since it maps either to `ctx.action` OR to `ActionCompletion`. But `ActionCompleteion | any`
+  // defaults to `any`, thus there is no sense from union type.
+  mapOperator: () => OperatorFunction<ActionContext, any> = mapAction
+): OperatorFunction<ActionContext, any> {
   const allowedMap = createAllowedActionTypesMap(allowedTypes);
   const allowedStatusMap = statuses && createAllowedStatusesMap(statuses);
   return function(o: Observable<ActionContext>) {
-    return o.pipe(
-      filterStatus(allowedMap, allowedStatusMap),
-      mapOperator()
-    );
+    return o.pipe(filterStatus(allowedMap, allowedStatusMap), mapOperator());
   };
 }
 
@@ -119,22 +133,16 @@ interface FilterMap {
   [key: string]: boolean;
 }
 
-function createAllowedActionTypesMap(types: any[]): FilterMap {
-  return types.reduce(
-    (filterMap: FilterMap, klass: any) => {
-      filterMap[getActionTypeFromInstance(klass)!] = true;
-      return filterMap;
-    },
-    <FilterMap>{}
-  );
+function createAllowedActionTypesMap(types: ActionType[]): FilterMap {
+  return types.reduce((filterMap: FilterMap, klass: any) => {
+    filterMap[getActionTypeFromInstance(klass)!] = true;
+    return filterMap;
+  }, <FilterMap>{});
 }
 
 function createAllowedStatusesMap(statuses: ActionStatus[]): FilterMap {
-  return statuses.reduce(
-    (filterMap: FilterMap, status: ActionStatus) => {
-      filterMap[status] = true;
-      return filterMap;
-    },
-    <FilterMap>{}
-  );
+  return statuses.reduce((filterMap: FilterMap, status: ActionStatus) => {
+    filterMap[status] = true;
+    return filterMap;
+  }, <FilterMap>{});
 }
