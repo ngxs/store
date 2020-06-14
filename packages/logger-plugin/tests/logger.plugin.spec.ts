@@ -1,19 +1,14 @@
-import { ErrorHandler, Injectable } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { Injectable } from '@angular/core';
 import {
   Action,
   getActionTypeFromInstance,
   InitState,
-  NgxsModule,
   State,
-  StateContext,
-  Store
+  StateContext
 } from '@ngxs/store';
-import { StateClass } from '@ngxs/store/internals';
 import { throwError } from 'rxjs';
-import { NgxsLoggerPluginModule, NgxsLoggerPluginOptions } from '../';
-import { NoopErrorHandler } from '../../store/tests/helpers/utils';
-import { formatActionCallStack, LoggerSpy } from './helpers';
+
+import { setup, formatActionCallStack, LoggerSpy } from './helpers';
 
 describe('NgxsLoggerPlugin', () => {
   const thrownErrorMessage = 'Error';
@@ -52,28 +47,6 @@ describe('NgxsLoggerPlugin', () => {
     error() {
       return throwError(new Error(thrownErrorMessage));
     }
-  }
-
-  function setup(states: StateClass[], opts?: NgxsLoggerPluginOptions) {
-    const logger = new LoggerSpy();
-
-    TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states),
-        NgxsLoggerPluginModule.forRoot({
-          ...opts,
-          logger
-        })
-      ],
-      providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
-    });
-
-    const store: Store = TestBed.inject(Store);
-
-    return {
-      store,
-      logger
-    };
   }
 
   it('should log success action', () => {
