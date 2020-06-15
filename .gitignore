@@ -26,6 +26,10 @@
 dist-integration
 /dist
 
+# IDE - VS
+/.vs/slnx.sqlite
+*.suo
+
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json

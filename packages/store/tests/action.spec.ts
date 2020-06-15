@@ -1,4 +1,4 @@
-import { ErrorHandler } from '@angular/core';
+import { ErrorHandler, Injectable } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { delay } from 'rxjs/operators';
 import { throwError, of } from 'rxjs';
@@ -43,6 +43,7 @@ describe('Action', () => {
   @State({
     name: 'bar'
   })
+  @Injectable()
   class BarStore {
     @Action([Action1, Action2])
     foo() {}
@@ -69,8 +70,8 @@ describe('Action', () => {
       providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
     });
 
-    store = TestBed.get(Store);
-    actions = TestBed.get(Actions);
+    store = TestBed.inject(Store);
+    actions = TestBed.inject(Actions);
   });
 
   it('supports multiple actions', () => {

@@ -4,12 +4,17 @@ import { TestBed } from '@angular/core/testing';
 
 import { ReduxDevtoolsMockConnector } from './utils/redux-connector';
 import { createReduxDevtoolsExtension } from './utils/create-devtools';
+import { Injectable } from '@angular/core';
 
 describe('[TEST]: Devtools', () => {
   let devtools: ReduxDevtoolsMockConnector;
   let store: Store;
 
-  @State({ name: 'count', defaults: 0 })
+  @State({
+    name: 'count',
+    defaults: 0
+  })
+  @Injectable()
   class CountState {
     @Action({ type: 'increment' })
     increment(ctx: StateContext<number>) {
@@ -27,7 +32,7 @@ describe('[TEST]: Devtools', () => {
       imports: [NgxsModule.forRoot([CountState]), NgxsReduxDevtoolsPluginModule.forRoot()]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   it('should be correct execution redux devtools with catching actions', () => {

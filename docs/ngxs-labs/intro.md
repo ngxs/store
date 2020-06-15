@@ -65,4 +65,9 @@ From time to time we will be posting about projects that have been started under
     <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Fattach-action/latest.svg"></td>
     <td>Alpha</td>
   </tr>
+  <tr>
+    <td><a href="https://npmjs.com/package/@ngxs-labs/firestore-plugin">@ngxs-labs/firestore-plugin</a></td>
+    <td><img src="https://img.shields.io/npm/v/%40ngxs-labs%2Ffirestore-plugin/latest.svg"></td>
+    <td>Alpha</td>
+  </tr>
 </table>

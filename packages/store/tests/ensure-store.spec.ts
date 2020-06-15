@@ -11,6 +11,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { SelectorMetaDataModel } from '../src/internal/internals';
 import { getRootSelectorFactory } from '../src/utils/selector-utils';
+import { Injectable } from '@angular/core';
 
 describe('Ensure metadata', () => {
   it('should return undefined if not a state class', () => {
@@ -24,6 +25,7 @@ describe('Ensure metadata', () => {
       name: 'myCounter',
       defaults: 1
     })
+    @Injectable()
     class MyCounterState {
       @Selector()
       @SelectorOptions({ suppressErrors: false })
@@ -40,6 +42,7 @@ describe('Ensure metadata', () => {
       defaults: 0,
       children: [MyCounterState]
     })
+    @Injectable()
     class CountState extends MyCounterState {
       @Selector()
       public static selectFn(state: number): number {
@@ -145,6 +148,7 @@ describe('Ensure metadata', () => {
           name: 'superCount',
           defaults: 0
         })
+        @Injectable()
         class SuperCountState extends MyCounterState {
           @Selector()
           public static canInheritSelectFn(state: number): number {

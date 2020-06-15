@@ -35,8 +35,10 @@ The plugin has the following optional values:
 - `key`: State name(s) to be persisted. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided, it defaults to all states using the `@@STATE` key.
 - `storage`: Storage strategy to use. This defaults to LocalStorage but you can pass SessionStorage or anything that implements the StorageEngine API.
 - `deserialize`: Custom deserializer. Defaults to `JSON.parse`
-- `serialize`: Custom serializer, defaults to `JSON.stringify`
+- `serialize`: Custom serializer. Defaults to `JSON.stringify`
 - `migrations`: Migration strategies
+- `beforeSerialize`: Interceptor executed before serialization
+- `afterDeserialize`: Interceptor executed after deserialization
 
 ### Key option
 
@@ -179,6 +181,38 @@ export class MyStorageEngine implements StorageEngine {
   ]
 })
 export class MyModule {}
+```
+
+### Serialization Interceptors
+
+You can define your own logic before or after the state get serialized or deserialized.
+
+- beforeSerialize: Use this option to alter the state before it gets serialized.
+- afterSerialize: Use this option to alter the state after it gets deserialized. For instance, you can use it to instantiate a concrete class.
+
+```ts
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: 'counter',
+      beforeSerialize: (obj, key) => {
+        if (key === 'counter') {
+          return {
+            count: obj.count < 10 ? obj.count : 10
+          };
+        }
+        return obj;
+      },
+      afterDeserialize: (obj, key) => {
+        if (key === 'counter') {
+          return new CounterInfoStateModel(obj.count);
+        }
+        return obj;
+      }
+    })
+  ]
+})
+export class AppModule {}
 ```
 
 ### Migrations

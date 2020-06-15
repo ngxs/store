@@ -20,6 +20,7 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   public hmrNgxsStoreOnInit(hmrAfterOnInit: HmrCallback<S>) {
     let moduleHmrInit: HmrCallback<S> = this.getModuleHmrInitCallback();
     moduleHmrInit = moduleHmrInit.bind(this.ngAppModule);
+    this.detectIvyWithJIT();
     this.stateEventLoop((ctx, state) => {
       moduleHmrInit(ctx, state);
       hmrAfterOnInit(ctx, state);
@@ -68,5 +69,15 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
         }, this.options.deferTime);
       });
     });
+  }
+
+  private detectIvyWithJIT(): void {
+    const jit: boolean = this.ngAppModule.constructor.hasOwnProperty('__annotations__');
+    const ivy: boolean = this.ngAppModule.constructor.hasOwnProperty('ɵmod');
+    if (jit && ivy) {
+      throw new Error(
+        `@ngxs/hmr-plugin doesn't work with JIT mode in Angular Ivy. Please use AOT mode.`
+      );
+    }
   }
 }

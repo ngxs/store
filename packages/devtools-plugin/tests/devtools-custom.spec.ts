@@ -4,11 +4,16 @@ import { TestBed } from '@angular/core/testing';
 
 import { ReduxDevtoolsMockConnector } from './utils/redux-connector';
 import { createReduxDevtoolsExtension } from './utils/create-devtools';
+import { Injectable } from '@angular/core';
 
 describe('[TEST]: Devtools with custom settings', () => {
   let store: Store;
 
-  @State({ name: 'count', defaults: 0 })
+  @State({
+    name: 'count',
+    defaults: 0
+  })
+  @Injectable()
   class CountState {
     @Action({ type: 'increment' })
     increment(ctx: StateContext<number>) {
@@ -24,7 +29,7 @@ describe('[TEST]: Devtools with custom settings', () => {
       ]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     store.dispatch({ type: 'increment' });
     expect(store.snapshot()).toEqual({ count: 1 });
   });
@@ -40,7 +45,7 @@ describe('[TEST]: Devtools with custom settings', () => {
       ]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     expect(devtools.options).toEqual({ name: 'custom', maxAge: 1000 });
   });

@@ -1,8 +1,7 @@
-import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
+import { InjectionToken, ModuleWithProviders, NgModule } from '@angular/core';
 import { NGXS_PLUGINS } from '@ngxs/store';
-
-import { NgxsLoggerPluginOptions, NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';
 import { NgxsLoggerPlugin } from './logger.plugin';
+import { NgxsLoggerPluginOptions, NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';
 
 export const USER_OPTIONS = new InjectionToken('LOGGER_USER_OPTIONS');
 
@@ -10,7 +9,8 @@ export function loggerOptionsFactory(options: NgxsLoggerPluginOptions) {
   const defaultLoggerOptions: NgxsLoggerPluginOptions = {
     logger: console,
     collapsed: false,
-    disabled: false
+    disabled: false,
+    filter: () => true
   };
 
   return {

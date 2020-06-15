@@ -1,29 +1,30 @@
-import { Injectable, Inject, Injector } from '@angular/core';
-import { tap, catchError } from 'rxjs/operators';
-
-import { NgxsPlugin, NgxsNextPluginFn, Store } from '@ngxs/store';
-
-import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
+import { catchError, tap } from 'rxjs/operators';
 import { ActionLogger } from './action-logger';
 import { LogWriter } from './log-writer';
+import { NgxsLoggerPluginOptions, NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';
 
 @Injectable()
 export class NgxsLoggerPlugin implements NgxsPlugin {
+  private _store: Store;
+  private _logWriter: LogWriter;
+
   constructor(
     @Inject(NGXS_LOGGER_PLUGIN_OPTIONS) private _options: NgxsLoggerPluginOptions,
     private _injector: Injector
   ) {}
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
-    if (this._options.disabled) {
+    if (this._options.disabled || !this._options.filter!(event, state)) {
       return next(state, event);
     }
 
-    const logWriter = new LogWriter(this._options);
+    this._logWriter = this._logWriter || new LogWriter(this._options);
     // Retrieve lazily to avoid cyclic dependency exception
-    const store = this._injector.get<Store>(Store);
+    this._store = this._store || this._injector.get<Store>(Store);
 
-    const actionLogger = new ActionLogger(event, store, logWriter);
+    const actionLogger = new ActionLogger(event, this._store, this._logWriter);
 
     actionLogger.dispatched(state);
 

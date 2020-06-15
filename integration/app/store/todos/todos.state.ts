@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { TodoState } from '@integration/store/todos/todo/todo.state';
 import { Pizza, TodoStateModel } from '@integration/store/todos/todos.model';
 import { LoadData, SetPrefix } from '@integration/store/todos/todos.actions';
+import { Injectable } from '@angular/core';
 
 const TODOS_TOKEN: StateToken<TodoStateModel> = new StateToken('todos');
 
@@ -18,6 +19,7 @@ const TODOS_TOKEN: StateToken<TodoStateModel> = new StateToken('todos');
   },
   children: [TodoState]
 })
+@Injectable()
 export class TodosState {
   @Selector()
   public static pizza(state: TodoStateModel): Pizza {

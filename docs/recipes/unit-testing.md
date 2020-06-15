@@ -47,6 +47,8 @@ it('should select zoo', () => {
 Often times in your app you want to test what happens when the state is C and you dispatch action X. You
 can use the `store.reset(MyNewState)` to prepare the state for your next operation.
 
+Note: You need to provide the registered state name as key if you reset the state. `store.reset` will reflect to your whole state! Merge the current with your new changes to be sure nothing gets lost.
+
 ```ts
 // zoo.state.spec.ts
 import { TestBed } from '@angular/core/testing';
@@ -64,7 +66,10 @@ describe('Zoo', () => {
     });
 
     store = TestBed.inject(Store);
-    store.reset(SOME_DESIRED_STATE);
+    store.reset({
+      ...store.snapshot(),
+      zoo: SOME_DESIRED_STATE
+    });
   });
 
   it('it toggles feed', () => {

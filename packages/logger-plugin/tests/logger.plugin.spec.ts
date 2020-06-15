@@ -1,13 +1,19 @@
-import { ErrorHandler } from '@angular/core';
+import { ErrorHandler, Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { throwError } from 'rxjs';
-
-import { NgxsModule, Store, State, Action, StateContext, InitState } from '@ngxs/store';
+import {
+  Action,
+  getActionTypeFromInstance,
+  InitState,
+  NgxsModule,
+  State,
+  StateContext,
+  Store
+} from '@ngxs/store';
 import { StateClass } from '@ngxs/store/internals';
-
+import { throwError } from 'rxjs';
 import { NgxsLoggerPluginModule, NgxsLoggerPluginOptions } from '../';
-import { LoggerSpy, formatActionCallStack } from './helpers';
 import { NoopErrorHandler } from '../../store/tests/helpers/utils';
+import { formatActionCallStack, LoggerSpy } from './helpers';
 
 describe('NgxsLoggerPlugin', () => {
   const thrownErrorMessage = 'Error';
@@ -35,6 +41,7 @@ describe('NgxsLoggerPlugin', () => {
     name: 'test',
     defaults: stateModelDefaults
   })
+  @Injectable()
   class TestState {
     @Action(UpdateBarAction)
     updateBar({ patchState }: StateContext<StateModel>, { bar }: UpdateBarAction) {
@@ -61,7 +68,7 @@ describe('NgxsLoggerPlugin', () => {
       providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     return {
       store,
@@ -155,6 +162,40 @@ describe('NgxsLoggerPlugin', () => {
     store.dispatch(new UpdateBarAction());
 
     const expectedCallStack = LoggerSpy.createCallStack([]);
+
+    expect(logger.callStack).toEqual(expectedCallStack);
+  });
+
+  it('should not log if predicate returns false for an action', () => {
+    const { store, logger } = setup([TestState], {
+      filter: action => getActionTypeFromInstance(action) !== UpdateBarAction.type
+    });
+
+    const expectedCallStack = LoggerSpy.createCallStack([
+      ...formatActionCallStack({ action: InitState.type, prevState: stateModelDefaults })
+    ]);
+
+    store.dispatch(new UpdateBarAction());
+
+    expect(logger.callStack).toEqual(expectedCallStack);
+  });
+
+  it('should pass state snapshot to filter predicate', () => {
+    const { store, logger } = setup([TestState], {
+      filter: (_, state) => state.test.bar
+    });
+
+    const expectedCallStack = LoggerSpy.createCallStack([
+      ...formatActionCallStack({
+        action: UpdateBarAction.type,
+        prevState: { bar: defaultBarValue },
+        payload: { bar: 'bar' },
+        nextState: { bar: 'bar' }
+      })
+    ]);
+
+    store.dispatch(new UpdateBarAction());
+    store.dispatch(new UpdateBarAction('bar'));
 
     expect(logger.callStack).toEqual(expectedCallStack);
   });

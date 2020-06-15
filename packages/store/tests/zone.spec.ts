@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, NgModule, NgZone } from '@angular/core';
+import { ApplicationRef, Component, Injectable, NgModule, NgZone } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -17,6 +17,7 @@ describe('zone', () => {
     name: 'counter',
     defaults: 0
   })
+  @Injectable()
   class CounterState {
     @Action(Increment)
     public increment({ setState, getState }: StateContext<number>): void {
@@ -44,8 +45,8 @@ describe('zone', () => {
         ]
       });
 
-      const store: Store = TestBed.get(Store);
-      const zone: NgZone = TestBed.get(NgZone);
+      const store: Store = TestBed.inject(Store);
+      const zone: NgZone = TestBed.inject(NgZone);
 
       // NGXS performes initializions inside Angular zone
       // thus it causes app to tick
@@ -88,8 +89,8 @@ describe('zone', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
-    const zone: NgZone = TestBed.get(NgZone);
+    const store: Store = TestBed.inject(Store);
+    const zone: NgZone = TestBed.inject(NgZone);
 
     // NGXS performes initializions inside Angular zone
     // thus it causes app to tick
@@ -132,8 +133,8 @@ describe('zone', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
-    const zone: NgZone = TestBed.get(NgZone);
+    const store: Store = TestBed.inject(Store);
+    const zone: NgZone = TestBed.inject(NgZone);
 
     // NGXS performed all initializations outside Angular zone
     expect(ticks).toBe(0);
@@ -159,7 +160,10 @@ describe('zone', () => {
       public static readonly type = 'Foo';
     }
 
-    @State({ name: 'foo' })
+    @State({
+      name: 'foo'
+    })
+    @Injectable()
     class FooState {
       @Action(FooAction)
       public fooAction(): void {
@@ -173,8 +177,8 @@ describe('zone', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
-    const ngZone: NgZone = TestBed.get(NgZone);
+    const store: Store = TestBed.inject(Store);
+    const ngZone: NgZone = TestBed.inject(NgZone);
     ngZone.run(() => {
       store.dispatch(new FooAction());
     });
@@ -185,7 +189,10 @@ describe('zone', () => {
       public static readonly type = 'Foo';
     }
 
-    @State({ name: 'foo' })
+    @State({
+      name: 'foo'
+    })
+    @Injectable()
     class FooState {
       @Action(FooAction)
       public fooAction(): void {
@@ -199,7 +206,7 @@ describe('zone', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     store.dispatch(new FooAction());
   });
 
@@ -210,7 +217,10 @@ describe('zone', () => {
         public static readonly type = 'Foo';
       }
 
-      @State({ name: 'foo' })
+      @State({
+        name: 'foo'
+      })
+      @Injectable()
       class FooState {
         @Action(FooAction)
         public fooAction(): void {

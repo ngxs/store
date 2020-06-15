@@ -85,7 +85,7 @@
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "dist-integration-server",
-            "main": "./integration/main.server.ts",
+            "main": "./integration/server.ts",
             "tsConfig": "./integration/tsconfig.server.json"
           },
           "configurations": {
@@ -148,5 +148,8 @@
   "schematics": {
     "@schematics/angular:component": {},
     "@schematics/angular:directive": {}
+  },
+  "cli": {
+    "analytics": false
   }
 }

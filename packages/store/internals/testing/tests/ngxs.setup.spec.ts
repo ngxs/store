@@ -2,6 +2,7 @@ import { NgxsAfterBootstrap, NgxsOnInit, State, StateContext } from '@ngxs/store
 import { NgxsTestBed } from '@ngxs/store/internals/testing';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { InitialState } from '@ngxs/store/internals';
+import { Injectable } from '@angular/core';
 
 describe('Full testing NGXS States with NgxsTestBed', () => {
   @State<any>({ name: 'app', defaults: { count: 0 } })
@@ -96,6 +97,7 @@ describe('Full testing NGXS States with NgxsTestBed', () => {
       name: 'myState',
       defaults: new InitialMyState()
     })
+    @Injectable()
     class MyState {}
 
     it('without initial/default state', () => {

@@ -46,7 +46,7 @@ describe('Dispatching an empty array with errors', () => {
       imports: [NgxsModule.forRoot([AppState])]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   it('dispatch([ ])', () => {

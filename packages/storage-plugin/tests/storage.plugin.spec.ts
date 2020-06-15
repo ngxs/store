@@ -4,6 +4,7 @@ import { NgxsModule, State, Store, Action, StateContext } from '@ngxs/store';
 
 import { DEFAULT_STATE_KEY } from '../src/internals';
 import { NgxsStoragePluginModule, StorageOption, StorageEngine, STORAGE_ENGINE } from '../';
+import { Injectable } from '@angular/core';
 
 describe('NgxsStoragePlugin', () => {
   class Increment {
@@ -49,6 +50,16 @@ describe('NgxsStoragePlugin', () => {
     sessionStorage.removeItem(DEFAULT_STATE_KEY);
   });
 
+  class CounterInfoStateModel {
+    constructor(public count: number) {}
+  }
+
+  @State<CounterInfoStateModel>({
+    name: 'counterInfo',
+    defaults: { count: 0 }
+  })
+  class CounterInfoState {}
+
   it('should get initial data from localstorage', () => {
     // Arrange
     localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
@@ -58,7 +69,7 @@ describe('NgxsStoragePlugin', () => {
       imports: [NgxsModule.forRoot([CounterState]), NgxsStoragePluginModule.forRoot()]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     const state: CounterStateModel = store.selectSnapshot(CounterState);
 
     // Assert
@@ -74,7 +85,7 @@ describe('NgxsStoragePlugin', () => {
       imports: [NgxsModule.forRoot([CounterState]), NgxsStoragePluginModule.forRoot()]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     store.dispatch(new Increment());
     store.dispatch(new Increment());
@@ -109,7 +120,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const state: CounterStateModel = store.selectSnapshot(TestState);
 
       // Assert
@@ -133,7 +144,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const state: CounterStateModel = store.selectSnapshot(TestState);
 
       // Assert
@@ -157,7 +168,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const state: CounterStateModel = store.selectSnapshot(TestState);
 
       // Assert
@@ -192,7 +203,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     // Call `selectSnapshot` so the `NgxsStoragePlugin.handle` will be invoked also
     // and will run migations
     store.selectSnapshot(CounterState);
@@ -232,7 +243,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     // Call `selectSnapshot` so the `NgxsStoragePlugin.handle` will be invoked also
     // and will run migations
     store.selectSnapshot(CounterState);
@@ -255,7 +266,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     const state: CounterStateModel = store.selectSnapshot(CounterState);
 
     // Assert
@@ -274,7 +285,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     store.dispatch(new Increment());
     store.dispatch(new Increment());
@@ -344,7 +355,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     store.dispatch(new Increment());
     store.dispatch(new Increment());
@@ -372,7 +383,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     const state: {
       counter: CounterStateModel;
       lazyLoaded: CounterStateModel;
@@ -387,6 +398,7 @@ describe('NgxsStoragePlugin', () => {
       name: 'names',
       defaults: []
     })
+    @Injectable()
     class NamesState {}
 
     it('should be possible to provide a state class as a key', () => {
@@ -403,7 +415,7 @@ describe('NgxsStoragePlugin', () => {
         ]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const state: CounterStateModel = store.selectSnapshot(CounterState);
 
       // Assert
@@ -425,7 +437,7 @@ describe('NgxsStoragePlugin', () => {
         ]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
 
       // Assert
       expect(store.snapshot()).toEqual({
@@ -451,7 +463,7 @@ describe('NgxsStoragePlugin', () => {
         ]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
 
       // Assert
       expect(store.snapshot()).toEqual({
@@ -460,6 +472,68 @@ describe('NgxsStoragePlugin', () => {
         },
         names: ['Mark', 'Artur', 'Max']
       });
+    });
+  });
+
+  describe('Custom serialization', () => {
+    it('should alter object before serialization.', () => {
+      // Arrange
+      localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState]),
+          NgxsStoragePluginModule.forRoot({
+            beforeSerialize: obj => {
+              return {
+                counter: {
+                  count: obj.counter.count * 2
+                }
+              };
+            }
+          })
+        ]
+      });
+
+      const store: Store = TestBed.inject(Store);
+
+      store.dispatch(new Increment());
+
+      const state: CounterStateModel = store.selectSnapshot(CounterState);
+
+      // Assert
+      expect(state.count).toBe(101);
+      expect(localStorage.getItem(DEFAULT_STATE_KEY)).toBe(
+        JSON.stringify({ counter: { count: 202 } })
+      );
+    });
+
+    it('should alter state and return concrete type after deserialization.', () => {
+      // Arrange
+      localStorage.setItem('counterInfo', JSON.stringify({ count: 100 }));
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterInfoState]),
+          NgxsStoragePluginModule.forRoot({
+            key: 'counterInfo',
+            afterDeserialize: (obj, key) => {
+              if (key === 'counterInfo') {
+                return new CounterInfoStateModel(obj.count);
+              }
+            }
+          })
+        ]
+      });
+
+      const store: Store = TestBed.inject(Store);
+      const state: CounterInfoStateModel = store.selectSnapshot(CounterInfoState);
+
+      // Assert
+      expect(state).toBeInstanceOf(CounterInfoStateModel);
+      expect(state.count).toBe(100);
     });
   });
 });
