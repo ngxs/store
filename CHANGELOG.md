@@ -9,6 +9,7 @@ $ npm install @ngxs/store@dev
 - Feature: Storage Plugin - Add before and after serialize hooks [#1513](https://github.com/ngxs/store/pull/1513)
 - Feature: Logger Plugin - Add filter for Logger Plugin [#1571](https://github.com/ngxs/store/pull/1571)
 - Performance: Logger Plugin - Plugin should lazy inject the store once [#1550](https://github.com/ngxs/store/pull/1550)
+- Fix: `ofAction*` methods should prevent passing anything except of `ActionType` [#1616](https://github.com/ngxs/store/pull/1616)
 - Fix: Actions are not canceled when any `Observable` returned by any handler is completed without emitting [#1615](https://github.com/ngxs/store/pull/1615)
 - Fix: Router Plugin - Update state after route successfully activates [#1606](https://github.com/ngxs/store/pull/1606)
 - Fix: HMR Plugin - Show error when use Angular Ivy with JIT mode [#1607](https://github.com/ngxs/store/pull/1607)
