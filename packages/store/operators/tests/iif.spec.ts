@@ -334,7 +334,11 @@ describe('iif', () => {
               greeting: 'How are you?'
             })
           ),
-          c: iif(c => c !== 100, () => 0 + 100, 10)
+          c: iif(
+            c => c !== 100,
+            () => 0 + 100,
+            10
+          )
         })(original);
 
         const newValue2 = patch<Model>({

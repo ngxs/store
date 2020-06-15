@@ -10,3 +10,4 @@ build/**
 coverage/**
 @ngxs/**
 **/dist/**
+**/dist-integration/**

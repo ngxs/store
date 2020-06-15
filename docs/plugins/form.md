@@ -184,18 +184,18 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class NewNovelComponent {
   newNovelForm: FormGroup;
-  
+
   constructor(private fb: FormBuilder) {
-		this.newNovelForm = fb.group({
-			novelName: 'Zenith',
-			authors: fb.array([
-				fb.group({
-					name: 'Sasha Alsberg',
-				}),
-			]),
-		});
+    this.newNovelForm = fb.group({
+      novelName: 'Zenith',
+      authors: fb.array([
+        fb.group({
+          name: 'Sasha Alsberg'
+        })
+      ])
+    });
   }
-  
+
   onSubmit() {
     //
   }
