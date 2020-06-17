@@ -1,10 +1,18 @@
 /* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule, Select, Selector, State, Store } from '@ngxs/store';
+import { NgxsModule, Select, Selector, State, StateToken, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
 import { assertType } from './utils/assert-type';
+import { Component } from '@angular/core';
+import {
+  ComponentClass,
+  createSelectObservable,
+  createSelectorFn,
+  PropertyType,
+  SelectType
+} from '../../src/decorators/select/symbols';
 
 describe('[TEST]: Action Types', () => {
   let store: Store;
@@ -137,5 +145,36 @@ describe('[TEST]: Action Types', () => {
         return state;
       }
     }
+  });
+
+  it('issues/1532', () => {
+    const TODOS_TOKEN = new StateToken<string[]>('todos');
+
+    @State({ name: TODOS_TOKEN })
+    class ThemePark {
+      @Selector([TODOS_TOKEN]) // $ExpectType (state: string[]) => string[]
+      private static bar(state: string[]) {
+        return state;
+      }
+    }
+
+    @Component({ selector: 'app' })
+    class AppComponent {
+      // $ExpectType (state: string[]) => string[]
+      @Select(TODOS_TOKEN) public readonly publicTodos: Observable<string[]>;
+
+      // TODO: need fix
+      // $ExpectError
+      @Select(TODOS_TOKEN) protected readonly protectedTodos: Observable<string[]>;
+
+      // TODO: need fix
+      // $ExpectError
+      @Select(TODOS_TOKEN) private readonly privateTodos: Observable<string[]>;
+    }
+
+    TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      imports: [NgxsModule.forRoot([ThemePark])]
+    });
   });
 });
