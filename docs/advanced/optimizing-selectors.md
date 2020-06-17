@@ -31,7 +31,7 @@ One way to solve this problem is to turn off the `injectContainerState` selector
 ```ts
 @Selector([SomeState])
 static getData(state: SomeStateModel) {
-   return state.data;
+  return state.data;
 }
 
 @Selector([SomeState.getData])
