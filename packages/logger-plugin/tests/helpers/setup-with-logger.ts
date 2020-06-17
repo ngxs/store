@@ -7,7 +7,7 @@ import { LoggerSpy } from './logger-spy';
 import { NoopErrorHandler } from '../../../store/tests/helpers/utils';
 import { NgxsLoggerPluginModule, NgxsLoggerPluginOptions } from '../../';
 
-export function setup(states: StateClass[], opts?: NgxsLoggerPluginOptions) {
+export function setupWithLogger(states: StateClass[], opts?: NgxsLoggerPluginOptions) {
   const logger = new LoggerSpy();
 
   TestBed.configureTestingModule({

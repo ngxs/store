@@ -1,6 +1,6 @@
 import { InitState, State } from '@ngxs/store';
 
-import { setup, LoggerSpy, formatActionCallStack } from '../helpers';
+import { setupWithLogger, LoggerSpy, formatActionCallStack } from '../helpers';
 
 describe('https://github.com/ngxs/store/issues/1551', () => {
   class RemoveTodo {
@@ -24,7 +24,7 @@ describe('https://github.com/ngxs/store/issues/1551', () => {
 
   it('should not filter out numbers', () => {
     // Arrange & act
-    const { store, logger } = setup([TodosState]);
+    const { store, logger } = setupWithLogger([TodosState]);
 
     store.dispatch(new RemoveTodo(0));
 
@@ -47,7 +47,7 @@ describe('https://github.com/ngxs/store/issues/1551', () => {
 
   it('should not filter out nully values', () => {
     // Arrange & act
-    const { store, logger } = setup([TodosState]);
+    const { store, logger } = setupWithLogger([TodosState]);
 
     store.dispatch(new RemoveTodo(null));
 
