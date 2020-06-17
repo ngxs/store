@@ -54,7 +54,7 @@ export class SomeState {
   }
 }
 
-export class SomeSelectors {
+export class SomeStateQueries {
   @Selector([SomeState.getData])
   static getViewData(data: Data[]) {
     return data.map(d => expensiveFunction(d));
