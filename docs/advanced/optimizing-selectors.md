@@ -36,7 +36,7 @@ static getData(state: SomeStateModel) {
 
 @Selector([SomeState.getData])
 static getViewData(data: Data[]) {
-   return data.map(d => expensiveFunction(d));
+  return data.map(d => expensiveFunction(d));
 }
 ```
 
