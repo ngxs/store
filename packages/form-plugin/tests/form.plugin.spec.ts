@@ -208,25 +208,50 @@ describe('NgxsFormPlugin', () => {
     expect(form.model.address).toEqual('waterloo, ontario');
   });
 
-  it('should reset form', () => {
+  it('should reset form', async () => {
     // Arrange & act
     const store = getStore();
 
-    store.dispatch([
-      new UpdateForm({
-        errors: {},
-        dirty: true,
-        status: 'INVALID',
-        value: { name: 'Ozan Turhan' },
-        path: 'student.studentForm'
-      }),
-      new ResetForm({ path: 'student.studentForm' })
-    ]);
+    await store
+      .dispatch([
+        new UpdateForm({
+          errors: {},
+          dirty: true,
+          status: 'INVALID',
+          value: { name: 'Ozan Turhan' },
+          path: 'student.studentForm'
+        }),
+        new ResetForm({ path: 'student.studentForm' })
+      ])
+      .toPromise();
 
     const form = store.selectSnapshot(StudentState.getStudentForm);
 
     // Assert
     expect(form).toEqual({ model: {} });
+  });
+
+  it('should reset form with value', async () => {
+    // Arrange & act
+    const store = getStore();
+
+    await store
+      .dispatch([
+        new UpdateForm({
+          errors: {},
+          dirty: true,
+          status: 'INVALID',
+          value: { name: 'Ozan Turhan' },
+          path: 'student.studentForm'
+        }),
+        new ResetForm({ path: 'student.studentForm', value: { name: 'Mehmet Ozan Turhan' } })
+      ])
+      .toPromise();
+
+    const form = store.selectSnapshot(StudentState.getStudentForm);
+
+    // Assert
+    expect(form).toEqual({ model: { name: 'Mehmet Ozan Turhan' } });
   });
 
   describe('NgxsFormPlugin runtime behavior', () => {
@@ -626,7 +651,6 @@ describe('NgxsFormPlugin', () => {
         });
       }
 
-      // Act
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
@@ -640,6 +664,7 @@ describe('NgxsFormPlugin', () => {
       const fixture = TestBed.createComponent(MockComponent);
       fixture.detectChanges();
 
+      // Act
       const statuses: string[] = [];
 
       const subscription = actions$
@@ -669,7 +694,6 @@ describe('NgxsFormPlugin', () => {
     });
 
     it('should reset form when ResetForm action call', () => {
-      // Arrange
       @State({
         name: 'todos',
         defaults: {
@@ -697,7 +721,6 @@ describe('NgxsFormPlugin', () => {
         });
       }
 
-      // Act
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
@@ -712,21 +735,99 @@ describe('NgxsFormPlugin', () => {
 
       fixture.detectChanges();
 
+      // Act
       store.dispatch(new ResetForm({ path: 'todos.todosForm' }));
 
       fixture.detectChanges();
 
+      // Arrange
       const input = fixture.debugElement.query(By.css('form input')).nativeElement;
 
       // Assert
       expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
-        model: {}
+        dirty: false,
+        errors: {},
+        model: {
+          text: null
+        },
+        status: 'VALID'
       });
       expect(input.value).toEqual('');
     });
 
-    it('should reset form with value when ResetForm action call', () => {
+    it('should reset form when ResetForm action call after input changes', fakeAsync(() => {
       // Arrange
+      @State({
+        name: 'todos',
+        defaults: {
+          todosForm: {
+            model: {
+              text: 'Buy some coffee'
+            },
+            dirty: true
+          }
+        }
+      })
+      @Injectable()
+      class TodosState {}
+
+      @Component({
+        template: `
+          <form [formGroup]="form" [ngxsFormDebounce]="500" ngxsForm="todos.todosForm">
+            <input formControlName="text" /> <button type="submit">Add todo</button>
+          </form>
+        `
+      })
+      class MockComponent {
+        public form = new FormGroup({
+          text: new FormControl()
+        });
+      }
+
+      TestBed.configureTestingModule({
+        imports: [
+          ReactiveFormsModule,
+          NgxsModule.forRoot([TodosState]),
+          NgxsFormPluginModule.forRoot()
+        ],
+        declarations: [MockComponent]
+      });
+
+      const store = getStore();
+      const fixture = TestBed.createComponent(MockComponent);
+      fixture.detectChanges();
+
+      const input = fixture.debugElement.query(By.css('form input')).nativeElement;
+      input.value = 'Buy some tea';
+      input.dispatchEvent(new KeyboardEvent('input'));
+
+      tick(200);
+
+      expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
+        dirty: true,
+        model: {
+          text: 'Buy some coffee'
+        },
+        status: 'VALID'
+      });
+
+      // Act
+      store.dispatch(new ResetForm({ path: 'todos.todosForm' }));
+
+      tick(500);
+
+      // Assert
+      expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
+        dirty: false,
+        errors: {},
+        model: {
+          text: null
+        },
+        status: 'VALID'
+      });
+    }));
+
+    it('should reset form with value when ResetForm action call', () => {
       @State({
         name: 'todos',
         defaults: {
@@ -754,7 +855,6 @@ describe('NgxsFormPlugin', () => {
         });
       }
 
-      // Act
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
@@ -769,19 +869,24 @@ describe('NgxsFormPlugin', () => {
 
       fixture.detectChanges();
 
+      // Act
       store.dispatch(
         new ResetForm({ path: 'todos.todosForm', value: { text: 'Buy some tea' } })
       );
 
       fixture.detectChanges();
 
+      // Arrange
       const input = fixture.debugElement.query(By.css('form input')).nativeElement;
 
       // Assert
       expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
+        dirty: false,
+        errors: {},
         model: {
           text: 'Buy some tea'
-        }
+        },
+        status: 'VALID'
       });
       expect(input.value).toEqual('Buy some tea');
     });

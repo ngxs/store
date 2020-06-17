@@ -42,6 +42,7 @@ export class FormDirective implements OnInit, OnDestroy {
       )
       .subscribe(({ payload: { value } }: ResetForm) => {
         this.form.reset(value);
+        this.updateFormStateWithRawValue(true);
         this._cd.markForCheck();
       });
 
@@ -103,27 +104,7 @@ export class FormDirective implements OnInit, OnDestroy {
     });
 
     this._formGroupDirective.valueChanges!.pipe(this.debounceChange()).subscribe(() => {
-      const value = this._formGroupDirective.control.getRawValue();
-      this._updating = true;
-      this._store
-        .dispatch([
-          new UpdateFormValue({
-            path: this.path,
-            value
-          }),
-          new UpdateFormDirty({
-            path: this.path,
-            dirty: this._formGroupDirective.dirty
-          }),
-          new UpdateFormErrors({
-            path: this.path,
-            errors: this._formGroupDirective.errors
-          })
-        ])
-        .subscribe({
-          error: () => (this._updating = false),
-          complete: () => (this._updating = false)
-        });
+      this.updateFormStateWithRawValue();
     });
 
     this._formGroupDirective
@@ -138,6 +119,41 @@ export class FormDirective implements OnInit, OnDestroy {
       });
   }
 
+  updateFormStateWithRawValue(withFormStatus?: boolean) {
+    if (this._updating) return;
+
+    const value = this._formGroupDirective.control.getRawValue();
+
+    const actions: any[] = [
+      new UpdateFormValue({
+        path: this.path,
+        value
+      }),
+      new UpdateFormDirty({
+        path: this.path,
+        dirty: this._formGroupDirective.dirty
+      }),
+      new UpdateFormErrors({
+        path: this.path,
+        errors: this._formGroupDirective.errors
+      })
+    ];
+
+    if (withFormStatus) {
+      actions.push(
+        new UpdateFormStatus({
+          path: this.path,
+          status: this._formGroupDirective.status
+        })
+      );
+    }
+
+    this._updating = true;
+    this._store.dispatch(actions).subscribe({
+      error: () => (this._updating = false),
+      complete: () => (this._updating = false)
+    });
+  }
   ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
