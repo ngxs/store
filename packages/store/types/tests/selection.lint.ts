@@ -151,9 +151,19 @@ describe('[TEST]: Action Types', () => {
     const TODOS_TOKEN = new StateToken<string[]>('todos');
 
     @State({ name: TODOS_TOKEN })
-    class ThemePark {
+    class TodosState {
       @Selector([TODOS_TOKEN]) // $ExpectType (state: string[]) => string[]
-      private static bar(state: string[]) {
+      public static publicState(state: string[]) {
+        return state;
+      }
+
+      @Selector([TODOS_TOKEN]) // $ExpectType (state: string[]) => string[]
+      private static privateState(state: string[]) {
+        return state;
+      }
+
+      @Selector([TODOS_TOKEN]) // $ExpectType (state: string[]) => string[]
+      private static protectedState(state: string[]) {
         return state;
       }
     }
@@ -174,7 +184,7 @@ describe('[TEST]: Action Types', () => {
 
     TestBed.configureTestingModule({
       declarations: [AppComponent],
-      imports: [NgxsModule.forRoot([ThemePark])]
+      imports: [NgxsModule.forRoot([TodosState])]
     });
   });
 });
