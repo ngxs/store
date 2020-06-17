@@ -54,8 +54,7 @@ export class SomeState {
   }
 }
 
-@Injectable()
-export class SomeSelectorService {
+export class SomeSelectors {
   @Selector([SomeState.getData])
   static getViewData(data: Data[]) {
     return data.map(d => expensiveFunction(d));
