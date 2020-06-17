@@ -40,6 +40,6 @@ export class ActionLogger {
   private _getNonEmptyProperties(event: any) {
     const keys = Object.keys(event);
     const values = keys.map(key => event[key]);
-    return values.filter(value => !!value);
+    return values.filter(value => value !== undefined);
   }
 }

@@ -1,19 +1,14 @@
-import { ErrorHandler, Injectable } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { Injectable } from '@angular/core';
 import {
   Action,
   getActionTypeFromInstance,
   InitState,
-  NgxsModule,
   State,
-  StateContext,
-  Store
+  StateContext
 } from '@ngxs/store';
-import { StateClass } from '@ngxs/store/internals';
 import { throwError } from 'rxjs';
-import { NgxsLoggerPluginModule, NgxsLoggerPluginOptions } from '../';
-import { NoopErrorHandler } from '../../store/tests/helpers/utils';
-import { formatActionCallStack, LoggerSpy } from './helpers';
+
+import { setupWithLogger, formatActionCallStack, LoggerSpy } from './helpers';
 
 describe('NgxsLoggerPlugin', () => {
   const thrownErrorMessage = 'Error';
@@ -54,30 +49,8 @@ describe('NgxsLoggerPlugin', () => {
     }
   }
 
-  function setup(states: StateClass[], opts?: NgxsLoggerPluginOptions) {
-    const logger = new LoggerSpy();
-
-    TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states),
-        NgxsLoggerPluginModule.forRoot({
-          ...opts,
-          logger
-        })
-      ],
-      providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
-    });
-
-    const store: Store = TestBed.inject(Store);
-
-    return {
-      store,
-      logger
-    };
-  }
-
   it('should log success action', () => {
-    const { store, logger } = setup([TestState]);
+    const { store, logger } = setupWithLogger([TestState]);
 
     store.dispatch(new UpdateBarAction());
 
@@ -95,7 +68,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should log success action with payload', () => {
-    const { store, logger } = setup([TestState]);
+    const { store, logger } = setupWithLogger([TestState]);
     const payload = 'qux';
 
     store.dispatch(new UpdateBarAction(payload));
@@ -115,7 +88,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should log error action', () => {
-    const { store, logger } = setup([TestState]);
+    const { store, logger } = setupWithLogger([TestState]);
 
     store.dispatch(new ErrorAction());
 
@@ -134,7 +107,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should log collapsed success action', () => {
-    const { store, logger } = setup([TestState], { collapsed: true });
+    const { store, logger } = setupWithLogger([TestState], { collapsed: true });
 
     store.dispatch(new UpdateBarAction());
 
@@ -157,7 +130,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should not log while disabled', () => {
-    const { store, logger } = setup([TestState], { disabled: true });
+    const { store, logger } = setupWithLogger([TestState], { disabled: true });
 
     store.dispatch(new UpdateBarAction());
 
@@ -167,7 +140,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should not log if predicate returns false for an action', () => {
-    const { store, logger } = setup([TestState], {
+    const { store, logger } = setupWithLogger([TestState], {
       filter: action => getActionTypeFromInstance(action) !== UpdateBarAction.type
     });
 
@@ -181,7 +154,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should pass state snapshot to filter predicate', () => {
-    const { store, logger } = setup([TestState], {
+    const { store, logger } = setupWithLogger([TestState], {
       filter: (_, state) => state.test.bar
     });
 

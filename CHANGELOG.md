@@ -13,6 +13,7 @@ $ npm install @ngxs/store@dev
 - Fix: Actions are not canceled when any `Observable` returned by any handler is completed without emitting [#1615](https://github.com/ngxs/store/pull/1615)
 - Fix: Router Plugin - Update state after route successfully activates [#1606](https://github.com/ngxs/store/pull/1606)
 - Fix: HMR Plugin - Show error when use Angular Ivy with JIT mode [#1607](https://github.com/ngxs/store/pull/1607)
+- Fix: Logger Plugin - Filter out only `undefined` payloads [#1617](https://github.com/ngxs/store/pull/1617)
 - Build: Compile using Angular 9 [#1596](https://github.com/ngxs/store/pull/1596)
 
 ### Data-plugin v3.0.0 2020-05-05
