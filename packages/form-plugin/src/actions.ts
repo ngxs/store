@@ -88,5 +88,5 @@ export class ResetForm {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Forms] Reset Form';
   }
-  constructor(public payload: { path: string; value?: any; propertyPath?: string }) {}
+  constructor(public payload: { path: string; value?: any }) {}
 }
