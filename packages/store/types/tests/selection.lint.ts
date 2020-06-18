@@ -170,7 +170,7 @@ describe('[TEST]: Action Types', () => {
 
     @Component({ selector: 'app' })
     class AppComponent {
-      // $ExpectType (state: string[]) => string[]
+      // $ExpectType Observable<string[]>
       @Select(TODOS_TOKEN) public readonly publicTodos: Observable<string[]>;
 
       // TODO: need fix
