@@ -130,7 +130,7 @@ The form plugin comes with the following `actions` out of the box:
 - `SetFormEnabled(path)` - Set the form to enabled
 - `SetFormDirty(path)` - Set the form to dirty (shortcut for `UpdateFormDirty`)
 - `SetFormPristine(path)` - Set the form to pristine (shortcut for `UpdateFormDirty`)
-- `ResetForm({ path, value?, propertyPath? })` - Reset the form with value or without value (or optionally an inner property value).
+- `ResetForm({ path, value? })` - Reset the form with value or without value.
 
 ### Updating Specific Form Properties
 
