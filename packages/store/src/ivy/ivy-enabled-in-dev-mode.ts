@@ -1,11 +1,7 @@
 import { isDevMode } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 
-/**
- * Keep it as a single `const` variable since this `ReplaySubject`
- * will be private and accessible only within this file.
- */
-const _ivyEnabledInDevMode$ = new ReplaySubject<boolean>(1);
+export const ivyEnabledInDevMode$ = new ReplaySubject<boolean>(1);
 
 /**
  * Ivy exposes helper functions to the global `window.ng` object.
@@ -25,14 +21,10 @@ export function setIvyEnabledInDevMode(): void {
     const ng = (window as any).ng;
     const _viewEngineEnabled = !!ng.probe && !!ng.coreTokens;
     const _ivyEnabledInDevMode = !_viewEngineEnabled && isDevMode();
-    _ivyEnabledInDevMode$.next(_ivyEnabledInDevMode);
+    ivyEnabledInDevMode$.next(_ivyEnabledInDevMode);
   } catch {
-    _ivyEnabledInDevMode$.next(false);
+    ivyEnabledInDevMode$.next(false);
   } finally {
-    _ivyEnabledInDevMode$.complete();
+    ivyEnabledInDevMode$.complete();
   }
-}
-
-export function ivyEnabledInDevMode(): Observable<boolean> {
-  return _ivyEnabledInDevMode$.asObservable();
 }
