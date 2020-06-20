@@ -1,4 +1,4 @@
-import { ivyEnabledInDevMode } from './ivy-enabled-in-dev-mode';
+import { ivyEnabledInDevMode$ } from './ivy-enabled-in-dev-mode';
 import { CONFIG_MESSAGES, VALIDATION_CODE } from '../configs/messages.config';
 
 /**
@@ -11,7 +11,7 @@ export function ensureStateClassIsInjectable(target: any): void {
   // AOT mode because this property is added before runtime. If an application is running in
   // JIT mode then this property can be added by the `@Injectable()` decorator. The `@Injectable()`
   // decorator has to go after the `@State()` decorator, thus we prevent users from unwanted DI errors.
-  ivyEnabledInDevMode().subscribe(_ivyEnabledInDevMode => {
+  ivyEnabledInDevMode$.subscribe(_ivyEnabledInDevMode => {
     if (_ivyEnabledInDevMode) {
       const ngInjectableDef = target.ɵprov;
       if (!ngInjectableDef) {
