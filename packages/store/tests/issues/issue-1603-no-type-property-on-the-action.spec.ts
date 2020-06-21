@@ -28,9 +28,9 @@ describe('https://github.com/ngxs/store/issues/1603', () => {
     // Arrange
     let message: string | null = null;
     const store = TestBed.inject(Store);
+    const stateFactory = TestBed.inject(NGXS_STATE_FACTORY);
 
     // Act
-    const stateFactory = TestBed.inject(NGXS_STATE_FACTORY);
     const originalInvokeActions = stateFactory.invokeActions;
 
     const spy = jest
@@ -44,6 +44,35 @@ describe('https://github.com/ngxs/store/issues/1603', () => {
       });
 
     store.dispatch(new MyAction());
+
+    try {
+      // Assert
+      expect(message).toContain(`This action doesn't have the static type property`);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it('should throw an error when dispatched action (plain object) does not have a type property', () => {
+    // Arrange
+    let message: string | null = null;
+    const store = TestBed.inject(Store);
+    const stateFactory = TestBed.inject(NGXS_STATE_FACTORY);
+
+    // Act
+    const originalInvokeActions = stateFactory.invokeActions;
+
+    const spy = jest
+      .spyOn(stateFactory, 'invokeActions')
+      .mockImplementationOnce(function(this: unknown) {
+        try {
+          return originalInvokeActions.apply(this, arguments);
+        } catch (error) {
+          message = error.message;
+        }
+      });
+
+    store.dispatch({});
 
     try {
       // Assert
