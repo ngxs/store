@@ -118,10 +118,10 @@ export class AppModule {}
 
 - Feature: Reset Form Action [#1604](github.com/ngxs/store/pull/1604)
 
-You can reset form with `ResetForm` action.
+You can reset the form with the `ResetForm` action.
 
-- This action reset your form and related form state.
-- Form status, dirty, values etc. will be reset by related form values after calling this action.
+- This action resets the form and related form state.
+- The form status, dirty, values, etc. will be reset by related form values after calling this action.
 
 Example:
 
@@ -152,7 +152,7 @@ class FormExampleComponent {
       new ResetForm({
         path: 'exampleState.form',
         value: {
-          text: 'Defaul Text',
+          text: 'Default Text',
         },
       }),
     );
