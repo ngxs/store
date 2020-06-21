@@ -14,6 +14,7 @@ $ npm install @ngxs/store@dev
 - Fix: Router Plugin - Update state after route successfully activates [#1606](https://github.com/ngxs/store/pull/1606)
 - Fix: HMR Plugin - Show error when use Angular Ivy with JIT mode [#1607](https://github.com/ngxs/store/pull/1607)
 - Fix: Logger Plugin - Filter out only `undefined` payloads [#1617](https://github.com/ngxs/store/pull/1617)
+- Build: Upgrade TS to 3.9.5 to ensure that no breaking changes get added [#1626](https://github.com/ngxs/store/pull/1626)
 - Build: Compile using Angular 9 [#1596](https://github.com/ngxs/store/pull/1596)
 
 ### Data-plugin v3.0.0 2020-05-05
