@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Subscription, throwError } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-describe('Dispatching an empty array with errors', () => {
+describe('https://github.com/ngxs/store/issues/709', () => {
   let subscription: Subscription;
   let events: string[] = [];
   let store: Store;
