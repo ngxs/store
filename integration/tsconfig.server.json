@@ -14,6 +14,7 @@
   "files": ["main.server.ts", "server.ts"],
   "exclude": ["cypress"],
   "angularCompilerOptions": {
+    "disableTypeScriptVersionCheck": true,
     "entryModule": "app/app.server.module#AppServerModule"
   }
 }

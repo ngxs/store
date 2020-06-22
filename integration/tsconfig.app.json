@@ -11,5 +11,8 @@
     "target": "es2015",
     "types": ["node"]
   },
-  "files": ["main.browser.ts", "polyfills.ts"]
+  "files": ["main.browser.ts", "polyfills.ts"],
+  "angularCompilerOptions": {
+    "disableTypeScriptVersionCheck": true
+  }
 }
