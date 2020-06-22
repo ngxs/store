@@ -199,14 +199,7 @@ export class StateFactory {
    * Invoke actions on the states.
    */
   invokeActions(actions$: InternalActions, action: any) {
-    const type: string | undefined = getActionTypeFromInstance(action);
-
-    if (!type) {
-      throw new Error(
-        `This action doesn't have the static type property: [ TODO DECIDE WHAT'S HERE ?? ]`
-      );
-    }
-
+    const type = getActionTypeFromInstance(action)!;
     const results = [];
 
     for (const metadata of this.states) {

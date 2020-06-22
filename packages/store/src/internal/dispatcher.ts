@@ -8,6 +8,7 @@ import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
+import { getActionTypeFromInstance } from '../utils/utils';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -32,7 +33,7 @@ export class InternalDispatcher {
   /**
    * Dispatches event(s).
    */
-  dispatch(actionOrActions: any | any[]): Observable<any> {
+  dispatch(actionOrActions: any): Observable<any> {
     const result = this._ngxsExecutionStrategy.enter(() =>
       this.dispatchByEvents(actionOrActions)
     );
@@ -49,7 +50,7 @@ export class InternalDispatcher {
     return result.pipe(leaveNgxs(this._ngxsExecutionStrategy));
   }
 
-  private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
+  private dispatchByEvents(actionOrActions: any): Observable<any> {
     if (Array.isArray(actionOrActions)) {
       if (actionOrActions.length === 0) return of(this._stateStream.getValue());
       return forkJoin(actionOrActions.map(action => this.dispatchSingle(action)));
@@ -59,6 +60,16 @@ export class InternalDispatcher {
   }
 
   private dispatchSingle(action: any): Observable<any> {
+    const type: string | undefined = getActionTypeFromInstance(action);
+
+    if (!type) {
+      const error = new Error(
+        `This action doesn't have a type property: ${action.constructor.name}`
+      );
+
+      return throwError(error);
+    }
+
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
