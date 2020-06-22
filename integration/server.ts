@@ -1,7 +1,6 @@
 import 'zone.js/dist/zone-node';
 
 import { APP_BASE_HREF } from '@angular/common';
-import '@angular/localize/init';
 import { ngExpressEngine } from '@nguniversal/express-engine';
 import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 import * as express from 'express';

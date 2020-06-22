@@ -9,13 +9,17 @@ $ npm install @ngxs/store@dev
 - Feature: Throw an error when actions do not have a static type property [#1625](https://github.com/ngxs/store/pull/1625)
 - Feature: Storage Plugin - Add before and after serialize hooks [#1513](https://github.com/ngxs/store/pull/1513)
 - Feature: Logger Plugin - Add filter for Logger Plugin [#1571](https://github.com/ngxs/store/pull/1571)
+- Feature: Form Plugin - Add reset form action [#1604](https://github.com/ngxs/store/pull/1604)
 - Performance: Logger Plugin - Plugin should lazy inject the store once [#1550](https://github.com/ngxs/store/pull/1550)
 - Fix: `ofAction*` methods should prevent passing anything except of `ActionType` [#1616](https://github.com/ngxs/store/pull/1616)
 - Fix: Actions are not canceled when any `Observable` returned by any handler is completed without emitting [#1615](https://github.com/ngxs/store/pull/1615)
 - Fix: Router Plugin - Update state after route successfully activates [#1606](https://github.com/ngxs/store/pull/1606)
 - Fix: HMR Plugin - Show error when use Angular Ivy with JIT mode [#1607](https://github.com/ngxs/store/pull/1607)
 - Fix: Logger Plugin - Filter out only `undefined` payloads [#1617](https://github.com/ngxs/store/pull/1617)
+- Build: Upgrade TS to 3.9.5 to ensure that no breaking changes get added [#1626](https://github.com/ngxs/store/pull/1626)
 - Build: Compile using Angular 9 [#1596](https://github.com/ngxs/store/pull/1596)
+
+## NGXS-Labs
 
 ### Data-plugin v3.0.0 2020-05-05
 
