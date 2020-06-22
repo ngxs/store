@@ -130,6 +130,7 @@ The form plugin comes with the following `actions` out of the box:
 - `SetFormEnabled(path)` - Set the form to enabled
 - `SetFormDirty(path)` - Set the form to dirty (shortcut for `UpdateFormDirty`)
 - `SetFormPristine(path)` - Set the form to pristine (shortcut for `UpdateFormDirty`)
+- `ResetForm({ path, value? })` - Reset the form with or without the form value.
 
 ### Updating Specific Form Properties
 
@@ -183,17 +184,17 @@ The state contains information about the new novel name and its authors. Let's c
 })
 export class NewNovelComponent {
   newNovelForm: FormGroup;
-  
+
   constructor(private fb: FormBuilder) {
-		this.newNovelForm = this.fb.group({
-			novelName: 'Zenith',
-			authors: this.fb.array([
-				this.fb.group({
-					name: 'Sasha Alsberg',
-				}),
-			]),
-		});
-	}
+    this.newNovelForm = this.fb.group({
+      novelName: 'Zenith',
+      authors: this.fb.array([
+        this.fb.group({
+          name: 'Sasha Alsberg'
+        })
+      ])
+    });
+  }
 
   onSubmit() {
     //

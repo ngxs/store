@@ -114,6 +114,52 @@ You can define your own logic before or after the state get serialized or deseri
 export class AppModule {}
 ```
 
+### Form Plugin
+
+- Feature: Reset Form Action [#1604](github.com/ngxs/store/pull/1604)
+
+You can reset the form with the `ResetForm` action.
+
+- This action resets the form and related form state.
+- The form status, dirty, values, etc. will be reset by related form values after calling this action.
+
+Example:
+
+```html
+<form [formGroup]="form" ngxsForm="exampleState.form">
+  <input formControlName="text" /> <button type="submit">Add todo</button>
+
+  <button (click)="resetForm()">Reset Form</button>
+  <button (click)="resetFormWithValue()">Reset Form With Value</button>
+</form>
+```
+
+```typescript
+@Component({...})
+class FormExampleComponent {
+  public form = new FormGroup({
+    text: new FormControl(),
+  });
+
+  constructor(private store: Store) {}
+
+  resetForm() {
+    this.store.dispatch(new ResetForm({ path: 'exampleState.form' }));
+  }
+
+  resetFormWithValue() {
+    this.store.dispatch(
+      new ResetForm({
+        path: 'exampleState.form',
+        value: {
+          text: 'Default Text',
+        },
+      }),
+    );
+  }
+}
+```
+
 ### Plugin X
 
 - Feature A description
