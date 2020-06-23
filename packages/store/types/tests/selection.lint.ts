@@ -156,12 +156,12 @@ describe('[TEST]: Action Types', () => {
       }
 
       @Selector([TODOS_TOKEN]) // $ExpectType (state: string[]) => string[]
-      private static privateState(state: string[]) {
+      protected static protectedState(state: string[]) {
         return state;
       }
 
       @Selector([TODOS_TOKEN]) // $ExpectType (state: string[]) => string[]
-      private static protectedState(state: string[]) {
+      private static privateState(state: string[]) {
         return state;
       }
     }
