@@ -65,7 +65,7 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
     if (isInitAction) {
       this.devtoolsExtension!.init(state);
     } else {
-      this.devtoolsExtension!.send({ ...action, type }, newState);
+      this.devtoolsExtension!.send({ ...action, action: null, type }, newState);
     }
   }
 
