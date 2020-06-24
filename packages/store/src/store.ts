@@ -31,7 +31,7 @@ export class Store {
   /**
    * Dispatches event(s).
    */
-  dispatch(actionOrActions: any): Observable<any> {
+  dispatch(actionOrActions: any | any[]): Observable<any> {
     return this._internalStateOperations.getRootStateOperations().dispatch(actionOrActions);
   }
 

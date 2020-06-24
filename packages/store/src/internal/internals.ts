@@ -26,7 +26,7 @@ export interface StateOperations<T> {
 
   setState(val: T): T;
 
-  dispatch(actionOrActions: any): Observable<void>;
+  dispatch(actionOrActions: any | any[]): Observable<void>;
 }
 
 export interface MetaDataModel {

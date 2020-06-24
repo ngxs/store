@@ -33,7 +33,7 @@ export class InternalDispatcher {
   /**
    * Dispatches event(s).
    */
-  dispatch(actionOrActions: any): Observable<any> {
+  dispatch(actionOrActions: any | any[]): Observable<any> {
     const result = this._ngxsExecutionStrategy.enter(() =>
       this.dispatchByEvents(actionOrActions)
     );
@@ -50,7 +50,7 @@ export class InternalDispatcher {
     return result.pipe(leaveNgxs(this._ngxsExecutionStrategy));
   }
 
-  private dispatchByEvents(actionOrActions: any): Observable<any> {
+  private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
     if (Array.isArray(actionOrActions)) {
       if (actionOrActions.length === 0) return of(this._stateStream.getValue());
       return forkJoin(actionOrActions.map(action => this.dispatchSingle(action)));
