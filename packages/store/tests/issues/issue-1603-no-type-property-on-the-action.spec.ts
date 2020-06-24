@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule, State, Action, Store, Actions, ofActionDispatched } from '@ngxs/store';
 
-describe('https://github.com/ngxs/store/issues/1603', () => {
+describe('Throw error when actions do not have a type property (https://github.com/ngxs/store/issues/1603)', () => {
   class MyAction {
     // P.S. it's a type declaration and not an assignment
     // expression because we want to test exactly this behaviour.
