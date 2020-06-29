@@ -1,4 +1,4 @@
-import 'jest-preset-angular';
+import 'zone.js/dist/zone';
 
 const CI = process.env['CI'] === 'true';
 

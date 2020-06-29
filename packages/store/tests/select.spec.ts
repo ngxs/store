@@ -113,7 +113,7 @@ describe('Select', () => {
       comp.componentInstance.state.subscribe();
     } catch (e) {
       expect(e.message).toEqual(
-        `Cannot assign to read only property '__state__selector' of object '[object Object]'`
+        `Cannot add property __NG_ELEMENT_ID__, object is not extensible`
       );
     }
   });

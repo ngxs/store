@@ -1,4 +1,4 @@
-import { InjectionToken, Injector, NgModuleRef, OnDestroy, Type } from '@angular/core';
+import { InjectionToken, Injector, NgModule, NgModuleRef, OnDestroy, Type } from '@angular/core';
 import { fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
 import {
   hmr,
@@ -242,6 +242,7 @@ describe('HMR Plugin', () => {
   }));
 
   it('check if the state is set correctly ', fakeAsync(async () => {
+    @NgModule()
     class AppV2MockModule extends AppMockModule implements NgxsHmrLifeCycle {
       hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {
         ctx.setState((state: Snapshot) => ({ ...state, ...snapshot, custom: 456 }));
@@ -318,6 +319,7 @@ describe('HMR Plugin', () => {
   }));
 
   it('state has to be provided before module is disposed with calling reset in ngOnDestroy', fakeAsync(async () => {
+    @NgModule()
     class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
       ngOnDestroy(): void {
         store.reset({});
@@ -344,6 +346,7 @@ describe('HMR Plugin', () => {
   it('"isHrmReloaded" should return "true" if app is being destroyed', fakeAsync(async () => {
     let count = 0;
 
+    @NgModule()
     class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
       ngOnDestroy(): void {
         if (hmrIsReloaded()) {
@@ -377,6 +380,7 @@ describe('HMR Plugin', () => {
   });
 
   it('mutate old state in ngOnDestroy', fakeAsync(async () => {
+    @NgModule()
     class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
       ngOnDestroy(): void {
         (store.snapshot() as any).mock_state.value = 'mutated value';
@@ -404,6 +408,7 @@ describe('HMR Plugin', () => {
   }));
 
   it('should show error when using Angular Ivy with JIT mode', async () => {
+    @NgModule()
     class AppJitModule extends AppMockModuleNoHmrLifeCycle {}
 
     // Note: emulate JIT mode

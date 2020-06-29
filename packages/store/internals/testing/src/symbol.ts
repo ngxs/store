@@ -6,7 +6,7 @@ import { StateClass } from '@ngxs/store/internals';
 export interface NgxsOptionsTesting {
   states?: StateClass[];
   ngxsOptions?: NgxsModuleOptions;
-  imports?: ModuleWithProviders[];
+  imports?: ModuleWithProviders<unknown>[];
   before?: () => void;
 }
 

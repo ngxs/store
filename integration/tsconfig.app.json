@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
@@ -11,8 +11,5 @@
     "target": "es2015",
     "types": ["node"]
   },
-  "files": ["main.browser.ts", "polyfills.ts"],
-  "angularCompilerOptions": {
-    "disableTypeScriptVersionCheck": true
-  }
+  "files": ["main.browser.ts", "polyfills.ts"]
 }

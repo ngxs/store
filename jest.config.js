@@ -2,7 +2,7 @@
 // Configuring Jest
 const path = require('path');
 const { pathsToModuleNameMapper: resolver } = require('ts-jest/utils');
-const { compilerOptions } = require('./tsconfig');
+const { compilerOptions } = require('./tsconfig.base');
 
 const moduleNameMapper = resolver(compilerOptions.paths, { prefix: '<rootDir>/' });
 const CI = process.env['CI'] === 'true';
@@ -77,11 +77,6 @@ module.exports = {
    * matches any of the patterns, it will not be require()-able in the test environment.
    */
   modulePathIgnorePatterns: ['<rootDir>/@ngxs/'],
-
-  /**
-   * A preset that is used as a base for Jest's configuration.
-   */
-  preset: 'jest-preset-angular',
 
   /**
    * A list of paths to modules that run some code to configure or set up the testing
