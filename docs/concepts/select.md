@@ -116,7 +116,7 @@ Notice, the `state` is just the local state for this `ZooState` class. Now in ou
 we simply do:
 
 ```ts
-@Component({...})
+@Component({ ... })
 export class AppComponent {
   @Select(ZooState.pandas) pandas$: Observable<string[]>;
 }
@@ -510,3 +510,32 @@ export class ZooState {
   }
 }
 ```
+
+### Using Select Decorator with `strictPropertyInitialization`
+
+If `strictPropertyInitialization` option is enabled then the TypeScript compiler will require all class properties to be explicitly initialized in the constructor. Given the following code:
+
+```ts
+@Component({ ... })
+export class ZooComponent {
+  @Select(ZooState.pandas) pandas$: Observable<string[]>;
+}
+```
+
+In the above example the compiler will emit the following error only if `strictPropertyInitialization` is turned on:
+
+```
+// Type error: Property 'pandas$' has no initializer
+// and is not definitely assigned in the constructor
+```
+
+We can solve that by applying the [definite assignment assertion](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#definite-assignment-assertions) to `pandas$` property declaration:
+
+```ts
+@Component({ ... })
+export class ZooComponent {
+  @Select(ZooState.pandas) pandas$!: Observable<string[]>;
+}
+```
+
+By adding the definite assignment assertion we're telling the type-checker that we're sure that `pandas$` property will be initialized (by the `@Select` decorator).
