@@ -145,7 +145,7 @@ describe('[TEST]: Action Types', () => {
     }
   });
 
-  it('issues/1532', () => {
+  it('should support protected and private methods (https://github.com/ngxs/store/issues/1532)', () => {
     const TODOS_TOKEN = new StateToken<string[]>('todos');
 
     @State({ name: TODOS_TOKEN })
