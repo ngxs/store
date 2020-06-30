@@ -199,10 +199,10 @@ export class StateFactory {
    * Invoke actions on the states.
    */
   invokeActions(actions$: InternalActions, action: any) {
+    const type = getActionTypeFromInstance(action)!;
     const results = [];
 
     for (const metadata of this.states) {
-      const type = getActionTypeFromInstance(action)!;
       const actionMetas = metadata.actions[type];
 
       if (actionMetas) {

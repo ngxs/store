@@ -29,7 +29,7 @@ export class InternalStateOperations {
     const rootStateOperations = {
       getState: () => this._stateStream.getValue(),
       setState: (newState: any) => this._stateStream.next(newState),
-      dispatch: (actions: any[]) => this._dispatcher.dispatch(actions)
+      dispatch: (actionOrActions: any | any[]) => this._dispatcher.dispatch(actionOrActions)
     };
 
     if (this._config.developmentMode) {

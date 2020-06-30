@@ -8,6 +8,7 @@ import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
+import { getActionTypeFromInstance } from '../utils/utils';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -59,6 +60,14 @@ export class InternalDispatcher {
   }
 
   private dispatchSingle(action: any): Observable<any> {
+    const type: string | undefined = getActionTypeFromInstance(action);
+    if (!type) {
+      const error = new Error(
+        `This action doesn't have a type property: ${action.constructor.name}`
+      );
+      return throwError(error);
+    }
+
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 

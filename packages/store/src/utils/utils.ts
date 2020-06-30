@@ -5,9 +5,9 @@
 export function getActionTypeFromInstance(action: any): string | undefined {
   if (action.constructor && action.constructor.type) {
     return action.constructor.type;
+  } else {
+    return action.type;
   }
-
-  return action.type;
 }
 
 /**
