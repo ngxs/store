@@ -61,12 +61,10 @@ export class InternalDispatcher {
 
   private dispatchSingle(action: any): Observable<any> {
     const type: string | undefined = getActionTypeFromInstance(action);
-
     if (!type) {
       const error = new Error(
         `This action doesn't have a type property: ${action.constructor.name}`
       );
-
       return throwError(error);
     }
 
