@@ -43,15 +43,3 @@ export type PropertyType<T> = T extends StateToken<any>
   : T extends (...args: any[]) => any
   ? Observable<ReturnType<T>>
   : any;
-
-export type ComponentClass<T> = {
-  [P in keyof T]: T[P];
-};
-
-export type SelectType<T> = <
-  U extends ComponentClass<any> & Record<K, PropertyType<T>>,
-  K extends string
->(
-  target: U,
-  key: K
-) => void;

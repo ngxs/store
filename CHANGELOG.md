@@ -12,6 +12,7 @@ $ npm install @ngxs/store@dev
 - Feature: Form Plugin - Add reset form action [#1604](https://github.com/ngxs/store/pull/1604)
 - Performance: Logger Plugin - Plugin should lazy inject the store once [#1550](https://github.com/ngxs/store/pull/1550)
 - Fix: `ofAction*` methods should prevent passing anything except of `ActionType` [#1616](https://github.com/ngxs/store/pull/1616)
+- Fix: Remove the recent `@Select` type safety check due to issues with private/protected properties [#1623](https://github.com/ngxs/store/pull/1623)
 - Fix: Actions are not canceled when any `Observable` returned by any handler is completed without emitting [#1615](https://github.com/ngxs/store/pull/1615)
 - Fix: Router Plugin - Update state after route successfully activates [#1606](https://github.com/ngxs/store/pull/1606)
 - Fix: HMR Plugin - Show error when use Angular Ivy with JIT mode [#1607](https://github.com/ngxs/store/pull/1607)

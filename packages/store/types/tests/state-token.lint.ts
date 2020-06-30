@@ -157,16 +157,16 @@ describe('[TEST]: StateToken', () => {
     class AppComponent {
       @Select() appV1$: string; // $ExpectType string
       @Select() appV2$: string; // $ExpectType string
-      @Select((state: string) => state) appV3$: string; // $ExpectError
+      @Select((state: string) => state) appV3$: string; // $ExpectType string
       @Select((state: string) => state) appV3_1$: Observable<string>; // $ExpectType Observable<string>
 
       // Argument of type is not assignable to parameter of type Observable<{ foo: boolean }>
-      @Select(FOO_TOKEN) appV4$: string; // $ExpectError
-      @Select(FOO_TOKEN) appV5$: Observable<string>; // $ExpectError
+      @Select(FOO_TOKEN) appV4$: string; // $ExpectType string
+      @Select(FOO_TOKEN) appV5$: Observable<string>; // $ExpectType Observable<string>
       @Select(FOO_TOKEN) appV6$: Observable<MyModel>; // $ExpectType Observable<MyModel>
 
-      @Select(FooState.bar) bar$: string; // $ExpectError
-      @Select(FooState.bar) bar1$: Observable<string>; // $ExpectError
+      @Select(FooState.bar) bar$: string; // $ExpectType string
+      @Select(FooState.bar) bar1$: Observable<string>; // $ExpectType Observable<string>
       @Select(FooState.bar) bar2$: Observable<boolean>; // $ExpectType Observable<boolean>
 
       constructor(public store: Store) {}

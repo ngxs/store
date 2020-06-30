@@ -1,10 +1,16 @@
 /* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule, Select, Selector, State, Store } from '@ngxs/store';
+import { NgxsModule, Select, Selector, State, StateToken, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
 import { assertType } from './utils/assert-type';
+import { Component } from '@angular/core';
+import {
+  createSelectObservable,
+  createSelectorFn,
+  PropertyType
+} from '../../src/decorators/select/symbols';
 
 describe('[TEST]: Action Types', () => {
   let store: Store;
@@ -24,10 +30,10 @@ describe('[TEST]: Action Types', () => {
     assertType(() => Selector([{ foo: 'bar' }])); // $ExpectType SelectorType<{ foo: string; }>
     assertType(() => Selector({})); // $ExpectError
 
-    Select(); // $ExpectType SelectType<unknown>
-    assertType(() => Select({})); // $ExpectType SelectType<{}>
-    assertType(() => Select([])); // $ExpectType SelectType<never[]>
-    assertType(() => Select(Any, 'a', 'b', 'c')); // $ExpectType SelectType<typeof Any>
+    Select(); // $ExpectType PropertyDecorator
+    assertType(() => Select({})); // $ExpectType PropertyDecorator
+    assertType(() => Select([])); // $ExpectType PropertyDecorator
+    assertType(() => Select(Any, 'a', 'b', 'c')); // $ExpectType PropertyDecorator
     assertType(() => Select(Any, ['a', 'b', 'c'])); // $ExpectError
 
     class AppComponent {
@@ -93,9 +99,9 @@ describe('[TEST]: Action Types', () => {
     class CheckSelectorComponent {
       @Select() public A$: Observable<any>; // $ExpectType Observable<any>
       @Select(TodoState) public B$: Observable<Any>; // $ExpectType Observable<Any>
-      @Select(TodoState.reverse) public C$: Observable<Any>; // $ExpectError
+      @Select(TodoState.reverse) public C$: Observable<Any>; // $ExpectType Observable<Any>
       @Select(TodoState.reverse) public C1$: Observable<string[]>; // $ExpectType Observable<string[]>
-      @Select(TodoState.reverse) public D$: number | object; // $ExpectError
+      @Select(TodoState.reverse) public D$: number | object; // $ExpectType number | object
       @Select(TodoState.reverse) public D1$: Observable<string[]>; // $ExpectType Observable<string[]>
     }
 
@@ -137,5 +143,44 @@ describe('[TEST]: Action Types', () => {
         return state;
       }
     }
+  });
+
+  it('should support protected and private methods (https://github.com/ngxs/store/issues/1532)', () => {
+    const TODOS_TOKEN = new StateToken<string[]>('todos');
+
+    @State({ name: TODOS_TOKEN })
+    class TodosState {
+      @Selector([TODOS_TOKEN]) // $ExpectType (state: string[]) => string[]
+      public static publicState(state: string[]) {
+        return state;
+      }
+
+      @Selector([TODOS_TOKEN]) // $ExpectType (state: string[]) => string[]
+      protected static protectedState(state: string[]) {
+        return state;
+      }
+
+      @Selector([TODOS_TOKEN]) // $ExpectType (state: string[]) => string[]
+      private static privateState(state: string[]) {
+        return state;
+      }
+    }
+
+    @Component({ selector: 'app' })
+    class AppComponent {
+      // $ExpectType Observable<any>
+      @Select(TODOS_TOKEN) public readonly publicTodos: Observable<any>;
+
+      // $ExpectType Observable<any>
+      @Select(TODOS_TOKEN) protected readonly protectedTodos: Observable<any>;
+
+      // $ExpectType Observable<any>
+      @Select(TODOS_TOKEN) private readonly privateTodos: Observable<any>;
+    }
+
+    TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      imports: [NgxsModule.forRoot([TodosState])]
+    });
   });
 });

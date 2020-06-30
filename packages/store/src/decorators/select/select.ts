@@ -1,19 +1,10 @@
-import {
-  ComponentClass,
-  createSelectObservable,
-  createSelectorFn,
-  PropertyType,
-  SelectType
-} from './symbols';
+import { createSelectObservable, createSelectorFn, PropertyType } from './symbols';
 
 /**
  * Decorator for selecting a slice of state from the store.
  */
-export function Select<T>(rawSelector?: T, ...paths: string[]): SelectType<T> {
-  return function<
-    U extends ComponentClass<any> & Record<K, PropertyType<T>>,
-    K extends string
-  >(target: U, key: K): void {
+export function Select<T>(rawSelector?: T, ...paths: string[]): PropertyDecorator {
+  return function(target, key): void {
     const name: string = key.toString();
     const selectorId = `__${name}__selector`;
     const selector = createSelectorFn(name, rawSelector, paths);
