@@ -529,7 +529,7 @@ In the above example the compiler will emit the following error only if `strictP
 // and is not definitely assigned in the constructor
 ```
 
-We can solve that by applying the [definite assignment assertion](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#definite-assignment-assertions) to `pandas$` property declaration:
+We can solve that by applying the [definite assignment assertion](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#definite-assignment-assertions) to `pandas$` property declaration (note the added exclamation mark):
 
 ```ts
 @Component({ ... })
