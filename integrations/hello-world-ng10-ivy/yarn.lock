@@ -1064,6 +1064,41 @@
     rxjs "6.5.5"
     webpack-sources "1.4.3"
 
+"@ngxs/devtools-plugin@file:./node_modules/@ngxs/devtools-plugin":
+  version "3.6.2"
+  dependencies:
+    tslib "^1.9.0"
+
+"@ngxs/form-plugin@file:./node_modules/@ngxs/form-plugin":
+  version "3.6.2"
+  dependencies:
+    tslib "^1.9.0"
+
+"@ngxs/logger-plugin@file:./node_modules/@ngxs/logger-plugin":
+  version "3.6.2"
+  dependencies:
+    tslib "^1.9.0"
+
+"@ngxs/router-plugin@file:./node_modules/@ngxs/router-plugin":
+  version "3.6.2"
+  dependencies:
+    tslib "^1.9.0"
+
+"@ngxs/storage-plugin@file:./node_modules/@ngxs/storage-plugin":
+  version "3.6.2"
+  dependencies:
+    tslib "^1.9.0"
+
+"@ngxs/store@file:./node_modules/@ngxs/store":
+  version "3.6.2"
+  dependencies:
+    tslib "^1.9.0"
+
+"@ngxs/websocket-plugin@file:./node_modules/@ngxs/websocket-plugin":
+  version "3.6.2"
+  dependencies:
+    tslib "^1.9.0"
+
 "@nodelib/fs.scandir@2.1.3":
   version "2.1.3"
   resolved "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.3.tgz#3a582bdb53804c6ba6d146579c46e52130cf4a3b"
