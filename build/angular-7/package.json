@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "prebuild": "yarn install --frozen-lockfile --non-interactive",
-    "build": "ts-node index"
+    "build": "ts-node --project ../../tsconfig.base.json index"
   },
   "author": "",
   "license": "ISC",
