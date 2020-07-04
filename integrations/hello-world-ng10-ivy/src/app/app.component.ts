@@ -9,7 +9,6 @@ import { Observable } from 'rxjs';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'hello-world-ng10-ivy';
   @Select(CounterState) counter$: Observable<number>;
 
   constructor(private store: Store) {}

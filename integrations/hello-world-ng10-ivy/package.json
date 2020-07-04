@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "start-test": "start-server-and-test",
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
+    "build:prod": "ng build --prod",
+    "test": "ng test --runInBand --silent",
+    "test:integration": "yarn install:ivy && yarn test && yarn build:prod && yarn e2e:ci",
     "preinstall": "yarn --cwd ../../ cpx -v -C \"@ngxs/**/*\" integrations/hello-world-ng10-ivy/node_modules/@ngxs",
     "install:ivy": "yarn --frozen-lockfile --non-interactive --no-progress",
     "postinstall": "yarn ngcc --async false",
@@ -38,25 +40,21 @@
     "@ngxs/websocket-plugin": "file:./node_modules/@ngxs/websocket-plugin"
   },
   "devDependencies": {
+    "@angular-builders/jest": "file:../../node_modules/@angular-builders/jest",
     "@angular-devkit/build-angular": "~0.1000.1",
     "@angular/cli": "~10.0.1",
     "@angular/compiler-cli": "~10.0.2",
     "@types/node": "^12.11.1",
-    "@types/jasmine": "~3.5.0",
-    "@types/jasminewd2": "~2.0.3",
+    "@types/jest": "file:../../node_modules/@types/jest",
     "codelyzer": "^6.0.0-next.1",
-    "jasmine-core": "~3.5.0",
-    "jasmine-spec-reporter": "~5.0.0",
-    "karma": "~5.0.0",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage-istanbul-reporter": "~3.0.2",
-    "karma-jasmine": "~3.3.0",
-    "karma-jasmine-html-reporter": "^1.5.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.5",
     "start-server-and-test": "file:../../node_modules/start-server-and-test",
     "cypress": "file:../../node_modules/cypress",
-    "angular-http-server": "file:../../node_modules/angular-http-server"
+    "@cypress/webpack-preprocessor": "file:../../node_modules/@cypress/webpack-preprocessor",
+    "angular-http-server": "file:../../node_modules/angular-http-server",
+    "jest": "file:../../node_modules/jest",
+    "jest-preset-angular": "file:../../node_modules/jest-preset-angular"
   }
 }

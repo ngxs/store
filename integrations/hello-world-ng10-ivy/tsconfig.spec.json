@@ -3,8 +3,9 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["jasmine"]
+    "module": "commonjs",
+    "types": ["node", "jest"]
   },
-  "files": ["src/test.ts", "src/polyfills.ts"],
+  "files": ["src/polyfills.ts"],
   "include": ["src/**/*.spec.ts", "src/**/*.d.ts"]
 }
