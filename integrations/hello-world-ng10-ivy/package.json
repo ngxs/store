@@ -7,10 +7,14 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
     "preinstall": "yarn --cwd ../../ cpx -v -C \"@ngxs/**/*\" integrations/hello-world-ng10-ivy/node_modules/@ngxs",
     "install:ivy": "yarn --frozen-lockfile --non-interactive --no-progress",
-    "postinstall": "yarn ngcc --async false"
+    "postinstall": "yarn ngcc --async false",
+    "cy:open": "cypress open --config integrationFolder=cypress/integration",
+    "cy:run": "cypress run --config integrationFolder=cypress/integration",
+    "serve:integration:static": "angular-http-server --path dist-integration -p 4200 --silent",
+    "e2e": "start-test serve:integration:static 4200 cy:open",
+    "e2e:ci": "start-test serve:integration:static 4200 cy:run"
   },
   "private": true,
   "dependencies": {
@@ -48,9 +52,11 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~3.3.0",
     "karma-jasmine-html-reporter": "^1.5.0",
-    "protractor": "~7.0.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~3.9.5"
+    "typescript": "~3.9.5",
+    "start-server-and-test": "file:../../node_modules/start-server-and-test",
+    "cypress": "file:../../node_modules/cypress",
+    "angular-http-server": "file:../../node_modules/angular-http-server"
   }
 }

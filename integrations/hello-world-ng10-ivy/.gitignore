@@ -2,6 +2,7 @@
 
 # compiled output
 /dist
+/dist-integration
 /tmp
 /out-tsc
 # Only exists if Bazel was run
