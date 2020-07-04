@@ -13,7 +13,7 @@
     }
   },
   "angularCompilerOptions": {
-    "enableIvy": true,
+    "enableIvy": false,
     "annotateForClosureCompiler": true,
     "skipTemplateCodegen": true,
     "fullTemplateTypeCheck": true,
