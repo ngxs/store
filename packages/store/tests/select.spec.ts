@@ -86,38 +86,6 @@ describe('Select', () => {
     }
   });
 
-  it('should throw an exception when the component class is frozen', () => {
-    function FreezeClass(target: Function): void {
-      Object.seal(target);
-      Object.freeze(target);
-      Object.freeze(target.prototype);
-    }
-
-    try {
-      @FreezeClass
-      @Component({
-        selector: 'my-select',
-        template: ''
-      })
-      class MySelectComponent {
-        @Select((state: any) => state)
-        public state: Observable<any>;
-      }
-
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)],
-        declarations: [MySelectComponent]
-      });
-
-      const comp = TestBed.createComponent(MySelectComponent);
-      comp.componentInstance.state.subscribe();
-    } catch (e) {
-      expect(e.message).toEqual(
-        `Cannot add property __NG_ELEMENT_ID__, object is not extensible`
-      );
-    }
-  });
-
   it('should remove dollar sign at the end of property name', () => {
     expect(removeDollarAtTheEnd('foo$')).toBe('foo');
     expect(removeDollarAtTheEnd('foo')).toBe('foo');
