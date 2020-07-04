@@ -8,8 +8,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "pretest": "yarn --frozen-lockfile --non-interactive --no-progress",
-    "postinstall": "cpx -v -C \"../../@ngxs/**/*\" \"node_modules/@ngxs/\""
+    "preinstall": "yarn --cwd ../../ cpx -v -C \"@ngxs/**/*\" integrations/hello-world-ng10-ivy/node_modules/@ngxs",
+    "install:ivy": "yarn --frozen-lockfile --non-interactive --no-progress",
+    "postinstall": "yarn ngcc --async false"
   },
   "private": true,
   "dependencies": {
@@ -21,16 +22,16 @@
     "@angular/platform-browser": "~10.0.2",
     "@angular/platform-browser-dynamic": "~10.0.2",
     "@angular/router": "~10.0.2",
+    "rxjs": "~6.5.5",
+    "tslib": "^2.0.0",
+    "zone.js": "~0.10.3",
     "@ngxs/devtools-plugin": "file:./node_modules/@ngxs/devtools-plugin",
     "@ngxs/form-plugin": "file:./node_modules/@ngxs/form-plugin",
     "@ngxs/logger-plugin": "file:./node_modules/@ngxs/logger-plugin",
     "@ngxs/storage-plugin": "file:./node_modules/@ngxs/storage-plugin",
     "@ngxs/router-plugin": "file:./node_modules/@ngxs/router-plugin",
     "@ngxs/store": "file:./node_modules/@ngxs/store",
-    "@ngxs/websocket-plugin": "file:./node_modules/@ngxs/websocket-plugin",
-    "rxjs": "~6.5.5",
-    "tslib": "^2.0.0",
-    "zone.js": "~0.10.3"
+    "@ngxs/websocket-plugin": "file:./node_modules/@ngxs/websocket-plugin"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1000.1",

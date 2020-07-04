@@ -109,5 +109,8 @@
       }
     }
   },
-  "defaultProject": "hello-world-ng10-ivy"
+  "defaultProject": "hello-world-ng10-ivy",
+  "cli": {
+    "analytics": false
+  }
 }
