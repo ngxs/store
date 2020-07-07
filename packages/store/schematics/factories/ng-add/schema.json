@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsNgxsNgAdd",
+  "title": "Ngxs NgAdd Options Schema",
+  "type": "object",
+  "properties": {
+    "skipInstall": {
+      "type": "boolean",
+      "description": "The flag to skip packages installing.",
+      "default": false
+    }
+  },
+  "required": []
+}

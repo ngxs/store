@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsNgxsState",
+  "title": "Ngxs State Options Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "The name of the state.",
+      "type": "string",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for the state?"
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path to create the state."
+    },
+    "sourceRoot": {
+      "type": "string",
+      "format": "path",
+      "description": "The source root path"
+    },
+    "spec": {
+      "type": "boolean",
+      "description": "Specifies if a spec file is generated.",
+      "default": true
+    }
+  },
+  "required": ["name"]
+}

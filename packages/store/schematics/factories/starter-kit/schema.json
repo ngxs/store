@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsNgxsStarterKit",
+  "title": "Ngxs Starter Kit Options Schema",
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path to create the starter kit."
+    },
+    "sourceRoot": {
+      "type": "string",
+      "format": "path",
+      "description": "The source root path"
+    },
+    "spec": {
+      "type": "boolean",
+      "description": "Specifies if a spec file is generated.",
+      "default": true
+    }
+  },
+  "required": []
+}

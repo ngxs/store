@@ -1,0 +1,36 @@
+{
+  "extends": ["@schematics/angular"],
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "store": {
+      "factory": "./factories/store/store.factory#store",
+      "description": "Create a NGXS full store",
+      "aliases": ["ngxs-store"],
+      "schema": "./factories/store/schema.json"
+    },
+    "state": {
+      "factory": "./factories/state/state.factory#state",
+      "description": "Create a NGXS state",
+      "aliases": ["ngxs-state"],
+      "schema": "./factories/state/schema.json"
+    },
+    "actions": {
+      "factory": "./factories/actions/actions.factory#actions",
+      "description": "Create a NGXS actions",
+      "aliases": ["ngxs-actions"],
+      "schema": "./factories/actions/schema.json"
+    },
+    "starter-kit": {
+      "factory": "./factories/starter-kit/starter-kit.factory#starterKit",
+      "description": "Create a NGXS starter kit with simple or best practise type",
+      "aliases": ["ngxs-sk"],
+      "schema": "./factories/starter-kit/schema.json"
+    },
+    "ng-add": {
+      "factory": "./factories/ng-add/ng-add.factory#ngAdd",
+      "description": "Add Ngxs Store and plugins in package.json",
+      "aliases": ["ngxs-init"],
+      "schema": "./factories/ng-add/schema.json"
+    }
+  }
+}
