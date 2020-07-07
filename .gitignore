@@ -60,7 +60,7 @@ testem.log
 .DS_Store
 Thumbs.db
 /storybook-static
-/yarn-error.log
+yarn-error.log
 .ng_pkg_build/
 package-lock.json
 dist-integration-server/
