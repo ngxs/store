@@ -18,5 +18,13 @@
       }
     },
     "dest": "../../@ngxs/store"
+  },
+  "schematics": "./schematics/collection.json",
+  "scripts": {
+    "build": "../../node_modules/.bin/tsc -p tsconfig.schematics.json",
+    "copy:schemas": "cp --parents schematics/*/schema.json ../../dist/store/",
+    "copy:files": "cp --parents -p schematics/*/files/** ../../dist/store/",
+    "copy:collection": "cp schematics/collection.json ../../dist/store/schematics/collection.json",
+    "postbuild": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
   }
 }
