@@ -172,7 +172,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Run integration tests for ng10 ivy off application
-          command: yarn integration:ivy;off
+          command: yarn integration:ng10:ivy:off
 
   integration_test_types:
     <<: *job_defaults
