@@ -106,7 +106,8 @@
     "// - INTEGRATION": "Integration builds",
     "integration:ng6": "cd integrations/hello-world-ng6 && yarn test",
     "integration:ng8": "cd integrations/hello-world-ng8 && yarn test",
-    "integration:ivy": "cd integrations/ivy && yarn test:ivy"
+    "integration:ivy": "cd integrations/ivy && yarn test:ivy",
+    "integration:ng10:ivy:off": "cd integrations/hello-world-ng10-ivy-off && yarn test:integration"
   },
   "private": true,
   "devDependencies": {
