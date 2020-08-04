@@ -43,11 +43,11 @@ script:
   - yarn test:ci:e2e
   - yarn test:ci:integration:ssr
 
-  # Run integration test with Angular 9 Ivy
-  - yarn integration:ng9-ivy
-
   # Run integration test with Angular 9 without Ivy
   - yarn integration:ng9-ivy-off
+
+  # Run integration test with Angular 9 Ivy
+  - yarn integration:ng9-ivy
 
   # Run declaration files linter
   - yarn test:types
