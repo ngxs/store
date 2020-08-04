@@ -8,7 +8,6 @@
     "test:ivy": "yarn install:ivy && yarn test && yarn build:prod && yarn e2e:ci",
     "preinstall": "yarn --cwd ../../ cpx -v -C \"@ngxs/**/*\" integrations/hello-world-ng9-ivy-off/node_modules/@ngxs",
     "install:ivy": "yarn --frozen-lockfile --non-interactive --no-progress",
-    "postinstall": "yarn ngcc --async false",
     "test": "ng test --runInBand --silent",
     "build:prod": "ng build --prod",
     "cy:open": "cypress open --config integrationFolder=cypress/integration",

@@ -9,7 +9,7 @@ describe('NGXS with Ivy enabled', () => {
     expect(ivyEnabled).toBeFalsy();
   });
 
-  it('should warn if state class is not decorated with @Injectable()', () => {
+  it('should not warn if state class is not decorated with @Injectable()', () => {
     // Arrange
     const spy = jest.spyOn(console, 'warn');
 
@@ -26,9 +26,6 @@ describe('NGXS with Ivy enabled', () => {
     TestBed.inject(CountriesState);
 
     // Assert
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith(
-      `'CountriesState' class should be decorated with @Injectable() right after the @State() decorator`
-    );
+    expect(spy).toHaveBeenCalledTimes(0);
   });
 });
