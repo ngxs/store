@@ -45,6 +45,7 @@ script:
 
   # Run integration test with Angular 9, 10 Ivy On,Off
   - yarn integration:ivy
+  - yarn integration:ng10ivy
   - yarn integration:ng10:ivy:off
 
   # Run declaration files linter
