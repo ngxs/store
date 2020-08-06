@@ -174,6 +174,22 @@ jobs:
           name: Run integration tests for the Angular 9 application without Ivy
           command: yarn integration:ng9-ivy-off
 
+  integration_ng10_ivy_off_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng10 ivy off application
+          command: yarn integration:ng10:ivy:off
+
+  integration_ng10_ivy_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng10 (Ivy) application
+          command: yarn integration:ng10ivy                
+
   integration_test_types:
     <<: *job_defaults
     steps:
@@ -275,6 +291,14 @@ workflows:
             - build
 
       - integration_ng9_ivy_off_tests:
+          requires:
+            - build
+
+      - integration_ng10_ivy_off_tests:
+          requires:
+            - build            
+
+      - integration_ng10_ivy_tests:
           requires:
             - build
 
