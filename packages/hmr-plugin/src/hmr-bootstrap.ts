@@ -4,6 +4,10 @@ import { BootstrapModuleFn, NgxsHmrOptions, WebpackModule } from './symbols';
 import { HmrStorage } from './internal/hmr-storage';
 import { markApplicationAsHmrReloaded, setHmrReloadedTo } from './utils/internals';
 
+/**
+ * Hot Module Replacement plugin for NGXS
+ * @deprecated will be removed
+ */
 export async function hmr<T>(
   webpackModule: WebpackModule,
   bootstrapFn: BootstrapModuleFn<T>,
