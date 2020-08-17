@@ -6,7 +6,8 @@ import { markApplicationAsHmrReloaded, setHmrReloadedTo } from './utils/internal
 
 /**
  * Hot Module Replacement plugin for NGXS
- * @deprecated will be removed
+ * @deprecated As of Angular v10, HMR is no longer supported and will be deprecated.
+ * More information [here](https://www.ngxs.io/plugins/hmr).
  */
 export async function hmr<T>(
   webpackModule: WebpackModule,
