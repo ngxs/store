@@ -158,21 +158,21 @@ jobs:
           name: Run integration tests for the Angular 8 application
           command: yarn integration:ng8
 
-  integration_ng9_ivy_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for the Angular 9 application with Ivy
-          command: yarn integration:ng9:ivy
-
   integration_ng9_ivy_off_tests:
     <<: *job_defaults
     steps:
       - *attach_workspace
       - run:
-          name: Run integration tests for the Angular 9 application without Ivy
+          name: Run integration tests for ng9 ivy off application
           command: yarn integration:ng9:ivy:off
+
+  integration_ng9_ivy_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng9 (Ivy) application
+          command: yarn integration:ng9:ivy
 
   integration_ng10_ivy_off_tests:
     <<: *job_defaults
@@ -188,7 +188,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Run integration tests for ng10 (Ivy) application
-          command: yarn integration:ng10ivy
+          command: yarn integration:ng10:ivy
 
   integration_test_types:
     <<: *job_defaults
