@@ -19,6 +19,7 @@ $ npm install @ngxs/store@dev
 - Fix: Logger Plugin - Filter out only `undefined` payloads [#1617](https://github.com/ngxs/store/pull/1617)
 - Fix: Devtools Plugin - Actions with "action" property should not be logged as <UNDEFINED> [#1628](https://github.com/ngxs/store/pull/1628)
 - Test: Add integration tests for Angular 10 with Ivy [#1641](https://github.com/ngxs/store/pull/1641) and without Ivy [#1647](https://github.com/ngxs/store/pull/1647)
+- Test: Add integration tests for Angular 9 without Ivy [#1649](https://github.com/ngxs/store/pull/1649)
 - Build: Upgrade TS to 3.9.5 to ensure that no breaking changes get added [#1626](https://github.com/ngxs/store/pull/1626)
 - Build: Compile using Angular 9 [#1596](https://github.com/ngxs/store/pull/1596)
 
