@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ivy": {
+    "app": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -56,11 +56,11 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ivy:build"
+            "browserTarget": "app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ivy:build:production"
+              "browserTarget": "app:build:production"
             }
           }
         },
@@ -70,7 +70,7 @@
       }
     }
   },
-  "defaultProject": "ivy",
+  "defaultProject": "app",
   "cli": {
     "analytics": false
   }
