@@ -2114,9 +2114,9 @@ camelcase@^6.0.0:
   integrity sha512-8KMDF1Vz2gzOq54ONPJS65IvTUaB1cHJ2DMM7MbPmLZljDH1qpzzLsWdiN9pHh6qvkRVDTi/07+eNGch/oLU4w==
 
 caniuse-lite@^1.0.30000929:
-  version "1.0.30001117"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001117.tgz#69a9fae5d480eaa9589f7641a83842ad396d17c4"
-  integrity sha512-4tY0Fatzdx59kYjQs+bNxUwZB03ZEBgVmJ1UkFPz/Q8OLiUUbjct2EdpnXj0fvFTPej2EkbPIG0w8BWsjAyk1Q==
+  version "1.0.30001122"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001122.tgz#2c8ff631330d986a07a7ba7125cce77a1373b475"
+  integrity sha512-pxjw28CThdrqfz06nJkpAc5SXM404TXB/h5f4UJX+rrXJKE/1bu/KAILc2AY+O6cQIFtRjV9qOR2vaEp9LDGUA==
 
 caniuse-lite@^1.0.30001111:
   version "1.0.30001116"
@@ -5601,9 +5601,9 @@ log-update@^2.3.0:
     wrap-ansi "^3.0.1"
 
 loglevel@^1.4.1:
-  version "1.6.8"
-  resolved "https://registry.npmjs.org/loglevel/-/loglevel-1.6.8.tgz#8a25fb75d092230ecd4457270d80b54e28011171"
-  integrity sha512-bsU7+gc9AJ2SqpzxwU3+1fedl8zAntbtC5XYlt3s2j1hJcn2PsXSmgN8TaLG/J1/2mod4+cE/3vNL70/c1RNCA==
+  version "1.7.0"
+  resolved "https://registry.npmjs.org/loglevel/-/loglevel-1.7.0.tgz#728166855a740d59d38db01cf46f042caa041bb0"
+  integrity sha512-i2sY04nal5jDcagM3FMfG++T69GEEM8CYuOfeOIvmXzOIcwE9a/CJPR0MFM97pYMj/u10lzz7/zd7+qwhrBTqQ==
 
 loose-envify@^1.0.0:
   version "1.4.0"
