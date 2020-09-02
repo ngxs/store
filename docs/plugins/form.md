@@ -163,12 +163,14 @@ export class NovelsState {}
 The state contains information about the new novel name and its authors. Let's create a component that will render the reactive form with bounded `ngxsForm` directive:
 
 ```ts
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
 @Component({
   selector: 'new-novel-form',
   template: `
     <form [formGroup]="newNovelForm" ngxsForm="novels.newNovelForm" (ngSubmit)="onSubmit()">
       <input type="text" formControlName="novelName" />
-
       <div
         formArrayName="authors"
         *ngFor="let author of newNovelForm.get('authors').controls; index as index"
@@ -177,7 +179,6 @@ The state contains information about the new novel name and its authors. Let's c
           <input formControlName="name" />
         </div>
       </div>
-
       <button type="submit">Create</button>
     </form>
   `
