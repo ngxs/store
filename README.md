@@ -7,8 +7,8 @@
   <a href="https://travis-ci.org/ngxs/store">
     <img src="https://api.travis-ci.org/ngxs/store.svg?branch=master" />
   </a>
-  <a href="https://now-examples-slackin-eqzjxuxoem.now.sh/">
-    <img src="https://now-examples-slackin-eqzjxuxoem.now.sh/badge.svg" />
+  <a href="https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q">
+    <img src="https://img.shields.io/badge/slack-join%20us-blue.svg?style=flat&logo=slack" />
   </a>
   <a href="https://badge.fury.io/js/%40ngxs%2Fstore">
     <img src="https://badge.fury.io/js/%40ngxs%2Fstore.svg" />
