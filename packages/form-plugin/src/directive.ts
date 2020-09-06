@@ -40,8 +40,6 @@ export class FormDirective implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    console.log('helllooooooooooo');
-    console.log(typeof this.clearDestroy, !!this.clearDestroy);
     this.getStateStream(`${this.path}.model`).subscribe(model => {
       if (this._updating || !model) {
         return;
