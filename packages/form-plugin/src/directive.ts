@@ -1,6 +1,6 @@
 import { Directive, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroupDirective, FormGroup } from '@angular/forms';
-import { Store, getValue } from '@ngxs/store';
+import { Store, getValue, coerceBoolean } from '@ngxs/store';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 import {
@@ -20,7 +20,15 @@ export class FormDirective implements OnInit, OnDestroy {
   debounce = 100;
 
   @Input('ngxsFormClearOnDestroy')
-  clearDestroy = false;
+  set clearDestroy(val: boolean) {
+    this._clearDestroy = coerceBoolean(val);
+  }
+
+  get clearDestroy(): boolean {
+    return this._clearDestroy;
+  }
+
+  _clearDestroy = false;
 
   private readonly _destroy$ = new Subject<void>();
   private _updating = false;
@@ -32,6 +40,8 @@ export class FormDirective implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    console.log('helllooooooooooo');
+    console.log(typeof this.clearDestroy, !!this.clearDestroy);
     this.getStateStream(`${this.path}.model`).subscribe(model => {
       if (this._updating || !model) {
         return;
