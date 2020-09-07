@@ -52,8 +52,8 @@
     "@types/node": "file:../../node_modules/@types/node",
     "angular-http-server": "file:../../node_modules/angular-http-server",
     "cypress": "file:../../node_modules/cypress",
-    "jest": "file:../../node_modules/jest",
-    "jest-preset-angular": "file:../../node_modules/jest-preset-angular",
+    "jest": "25.5.4",
+    "jest-preset-angular": "8.2.1",
     "start-server-and-test": "file:../../node_modules/start-server-and-test",
     "ts-loader": "file:../../node_modules/ts-loader"
   }
