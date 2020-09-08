@@ -10,6 +10,7 @@ $ npm install @ngxs/store@dev
 - Feature: Storage Plugin - Add before and after serialize hooks [#1513](https://github.com/ngxs/store/pull/1513)
 - Feature: Logger Plugin - Add filter for Logger Plugin [#1571](https://github.com/ngxs/store/pull/1571)
 - Feature: Form Plugin - Add reset form action [#1604](https://github.com/ngxs/store/pull/1604)
+- Feature: Form Plugin - `ngxsFormClearOnDestroy` should allow the attribute with no value [#1662](https://github.com/ngxs/store/pull/1662)
 - Performance: Logger Plugin - Plugin should lazy inject the store once [#1550](https://github.com/ngxs/store/pull/1550)
 - Fix: `ofAction*` methods should prevent passing anything except of `ActionType` [#1616](https://github.com/ngxs/store/pull/1616)
 - Fix: Remove the recent `@Select` type safety check due to issues with private/protected properties [#1623](https://github.com/ngxs/store/pull/1623)
