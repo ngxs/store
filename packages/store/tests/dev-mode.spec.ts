@@ -8,7 +8,7 @@ import { InitState, UpdateState } from '../src/actions/actions';
 import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { StateContext } from '../src/symbols';
-import { Selector } from '../src/decorators/selector';
+import { Selector } from '../src/decorators/selector/selector';
 
 import { NoopErrorHandler } from './helpers/utils';
 
@@ -28,6 +28,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { count: 0 }
       })
+      @Injectable()
       class MyStore {
         @Action(Increment)
         increment({ getState, setState }: StateContext<StateModel>, { amount }: Increment) {
@@ -39,7 +40,7 @@ describe('Development Mode', () => {
         imports: [NgxsModule.forRoot([MyStore], { developmentMode: false })]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const observedCallbacks: string[] = [];
 
       store.dispatch(new Increment()).subscribe({
@@ -56,6 +57,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { count: 0 }
       })
+      @Injectable()
       class MyStore {
         @Action(Increment)
         mutatingIncrement(
@@ -73,7 +75,7 @@ describe('Development Mode', () => {
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const observedCallbacks: string[] = [];
 
       store.dispatch(new Increment()).subscribe({
@@ -92,6 +94,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { count: 0 }
       })
+      @Injectable()
       class MyStore {
         @Action(Increment)
         increment({ getState, setState }: StateContext<StateModel>, { amount }: Increment) {
@@ -103,7 +106,7 @@ describe('Development Mode', () => {
         imports: [NgxsModule.forRoot([MyStore], { developmentMode: true })]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const observedCallbacks: string[] = [];
 
       store.dispatch(new Increment()).subscribe({
@@ -120,6 +123,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { count: 0 }
       })
+      @Injectable()
       class MyStore {
         @Action(InitState)
         init({ getState, setState }: StateContext<StateModel>) {
@@ -146,7 +150,7 @@ describe('Development Mode', () => {
           }
         ]
       });
-      TestBed.get(Store);
+      TestBed.inject(Store);
 
       expect(observedErrors).toEqual([
         `error: TypeError: Cannot assign to read only property 'count' of object '[object Object]'`
@@ -158,6 +162,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { count: 0 }
       })
+      @Injectable()
       class MyStore {
         @Action(UpdateState)
         updateState({ getState, setState }: StateContext<StateModel>) {
@@ -188,7 +193,7 @@ describe('Development Mode', () => {
           }
         ]
       });
-      TestBed.get(Store);
+      TestBed.inject(Store);
 
       expect(observedErrors).toEqual([
         `error: TypeError: Cannot assign to read only property 'count' of object '[object Object]'`
@@ -200,6 +205,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { count: 0 }
       })
+      @Injectable()
       class MyStore {
         @Action(Increment)
         mutatingIncrement(
@@ -217,7 +223,7 @@ describe('Development Mode', () => {
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const observedCallbacks: string[] = [];
 
       store.dispatch(new Increment()).subscribe({
@@ -240,6 +246,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { count: 0 }
       })
+      @Injectable()
       class MyStore {
         @Action(Reset)
         reset({ setState }: StateContext<StateModel>) {
@@ -262,7 +269,7 @@ describe('Development Mode', () => {
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const observedCallbacks: string[] = [];
 
       store.dispatch(new Reset());
@@ -282,6 +289,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { count: 0 }
       })
+      @Injectable()
       class MyStore {
         @Selector()
         static getCount(state: StateModel): number {
@@ -294,7 +302,7 @@ describe('Development Mode', () => {
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
 
       // todo: remove any
       store.select<StateModel>(<any>MyStore).subscribe((state: StateModel) => {
@@ -313,6 +321,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { inner: { count: 0 } }
       })
+      @Injectable()
       class MyStore {
         @Selector()
         static getCounterModel(state: { inner: StateModel }): StateModel {
@@ -325,7 +334,7 @@ describe('Development Mode', () => {
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
 
       store.select(MyStore.getCounterModel).subscribe((state: StateModel) => {
         try {
@@ -343,6 +352,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { count: 0 }
       })
+      @Injectable()
       class MyStore {}
 
       TestBed.configureTestingModule({
@@ -350,7 +360,7 @@ describe('Development Mode', () => {
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
 
       const state = store.selectSnapshot<StateModel>(appState => appState.counter);
       try {
@@ -383,7 +393,7 @@ describe('Development Mode', () => {
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const observedCallbacks: string[] = [];
 
       store.dispatch(new Increment()).subscribe({
@@ -408,7 +418,7 @@ describe('Development Mode', () => {
       })
       class MyStore {
         @Action(Start)
-        start({ dispatch }: StateContext<StateModel>, action: Increment) {
+        start({ dispatch }: StateContext<StateModel>) {
           return dispatch(new Increment());
         }
 
@@ -427,7 +437,7 @@ describe('Development Mode', () => {
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
-      const store: Store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
       const observedCallbacks: string[] = [];
 
       store.dispatch(new Start()).subscribe({

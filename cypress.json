@@ -1,0 +1,7 @@
+{
+  "baseUrl": "http://localhost:4200",
+  "video": false,
+  "responseTimeout": 60000,
+  "pageLoadTimeout": 120000,
+  "ignoreTestFiles": ["**/plugins/**.js", "**/tsconfig.json"]
+}

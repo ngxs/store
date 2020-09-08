@@ -1,11 +1,14 @@
 # Canceling
+
 If you have an async action, you may want to cancel a previous Observable if the action has been dispatched again.
 This is useful for canceling previous requests like in a typeahead.
 
 ## Basic
+
 For basic scenarios, we can use the `cancelUncompleted` action decorator option.
 
-```TS
+```ts
+import { Injectable } from '@angular/core';
 import { State, Action } from '@ngxs/store';
 
 @State<ZooStateModel>({
@@ -13,6 +16,7 @@ import { State, Action } from '@ngxs/store';
     animals: []
   }
 })
+@Injectable()
 export class ZooState {
   constructor(private animalService: AnimalService, private actions$: Actions) {}
 
@@ -26,9 +30,11 @@ export class ZooState {
 ```
 
 ## Advanced
+
 For more advanced cases, we can use normal Rx operators.
 
-```TS
+```ts
+import { Injectable } from '@angular/core';
 import { State, Action, Actions, ofAction } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
@@ -37,6 +43,7 @@ import { tap } from 'rxjs/operators';
     animals: []
   }
 })
+@Injectable()
 export class ZooState {
   constructor(private animalService: AnimalService, private actions$: Actions) {}
 

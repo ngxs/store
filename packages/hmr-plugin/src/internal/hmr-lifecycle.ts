@@ -20,6 +20,7 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   public hmrNgxsStoreOnInit(hmrAfterOnInit: HmrCallback<S>) {
     let moduleHmrInit: HmrCallback<S> = this.getModuleHmrInitCallback();
     moduleHmrInit = moduleHmrInit.bind(this.ngAppModule);
+    this.detectIvyWithJIT();
     this.stateEventLoop((ctx, state) => {
       moduleHmrInit(ctx, state);
       hmrAfterOnInit(ctx, state);
@@ -49,7 +50,7 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   }
 
   private stateEventLoop(callback: HmrCallback<S>): void {
-    if (!this.storage.existHmrStorage) return;
+    if (!this.storage.hasData()) return;
 
     const appBootstrapped$: Observable<boolean> = this.bootstrap.appBootstrapped$;
     const state$: Observable<any> = this.context.store.select(state => state);
@@ -64,9 +65,19 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
           storeEventId.unsubscribe();
           // if events are no longer running on the call stack,
           // then we can update the state
-          callback(this.context.createStateContext(), this.storage.snapshot);
+          callback(this.context.createStateContext(), this.storage.snapshot as Partial<S>);
         }, this.options.deferTime);
       });
     });
+  }
+
+  private detectIvyWithJIT(): void {
+    const jit: boolean = this.ngAppModule.constructor.hasOwnProperty('__annotations__');
+    const ivy: boolean = this.ngAppModule.constructor.hasOwnProperty('ɵmod');
+    if (jit && ivy) {
+      throw new Error(
+        `@ngxs/hmr-plugin doesn't work with JIT mode in Angular Ivy. Please use AOT mode.`
+      );
+    }
   }
 }

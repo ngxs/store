@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { ServerModule, ServerTransferStateModule } from '@angular/platform-server';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 
 import { AppComponent } from '@integration/app.component';
 import { AppModule } from '@integration/app.module';
+import { TodosState } from '@integration/store/todos/todos.state';
 
 @NgModule({
   imports: [
@@ -12,7 +13,7 @@ import { AppModule } from '@integration/app.module';
     ServerModule,
     NoopAnimationsModule,
     ServerTransferStateModule,
-    ModuleMapLoaderModule
+    NgxsStoragePluginModule.forRoot({ key: [TodosState] })
   ],
   bootstrap: [AppComponent]
 })

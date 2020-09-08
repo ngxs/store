@@ -1,23 +1,34 @@
-import { TestBed } from '@angular/core/testing';
-import { Component, ApplicationRef, NgModule, OnInit, AfterViewInit } from '@angular/core';
 import {
-  ɵDomAdapter as DomAdapter,
-  ɵBrowserDomAdapter as BrowserDomAdapter,
+  AfterViewInit,
+  ApplicationRef,
+  Component,
+  Injectable,
+  NgModule,
+  OnInit
+} from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { TestBed } from '@angular/core/testing';
+import {
   BrowserModule,
-  DOCUMENT
+  ɵBrowserDomAdapter as BrowserDomAdapter
 } from '@angular/platform-browser';
 
 import { InitState, UpdateState } from '../src/actions/actions';
 import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../src/public_api';
-
 import { META_KEY, NgxsAfterBootstrap } from '../src/symbols';
 import { StoreValidators } from '../src/utils/store-validators';
+import { simplePatch } from '../src/internal/state-operators';
+import {
+  CONFIG_MESSAGES as MESSAGES,
+  VALIDATION_CODE as CODE
+} from '../src/configs/messages.config';
 
 describe('State', () => {
   it('describes correct name', () => {
     @State({
       name: 'moo'
     })
+    @Injectable()
     class BarState {}
 
     const meta = (<any>BarState)[META_KEY];
@@ -37,6 +48,7 @@ describe('State', () => {
     @State({
       name: 'bar'
     })
+    @Injectable()
     class BarState {
       @Action(Eat)
       eat() {}
@@ -45,6 +57,7 @@ describe('State', () => {
     @State({
       name: 'bar2'
     })
+    @Injectable()
     class Bar2State extends BarState {
       @Action(Drink)
       drink() {}
@@ -62,6 +75,7 @@ describe('State', () => {
       @State({
         name: 'bar-foo'
       })
+      @Injectable()
       class MyState {}
 
       (<any>window)['foo'] = MyState; // to help with unread warning
@@ -72,6 +86,20 @@ describe('State', () => {
     expect(message).toBe(StoreValidators.stateNameErrorMessage('bar-foo'));
   });
 
+  it('should throw when state parameters are not passed', () => {
+    try {
+      @State(null!)
+      @Injectable()
+      class MyOtherState {}
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([MyOtherState])]
+      });
+    } catch (err) {
+      expect(err.message).toEqual(MESSAGES[CODE.STATE_NAME_PROPERTY]());
+    }
+  });
+
   describe('given the ngxsOnInit lifecycle method is present', () => {
     it('should call the ngxsOnInit method on root module initialisation', () => {
       const listener: string[] = [];
@@ -80,8 +108,9 @@ describe('State', () => {
         name: 'foo',
         defaults: 0
       })
+      @Injectable()
       class FooState implements NgxsOnInit {
-        ngxsOnInit(stateContext: StateContext<number>) {
+        ngxsOnInit() {
           listener.push('onInit');
         }
       }
@@ -90,7 +119,7 @@ describe('State', () => {
         imports: [NgxsModule.forRoot([FooState])]
       });
 
-      TestBed.get(FooState);
+      TestBed.inject(FooState);
 
       expect(listener).toEqual(['onInit']);
     });
@@ -100,6 +129,7 @@ describe('State', () => {
         name: 'foo',
         defaults: []
       })
+      @Injectable()
       class FooState implements NgxsOnInit {
         ngxsOnInit(ctx: StateContext<string[]>) {
           ctx.setState([...ctx.getState(), 'onInit']);
@@ -110,9 +140,9 @@ describe('State', () => {
         imports: [NgxsModule.forRoot([]), NgxsModule.forFeature([FooState])]
       });
 
-      TestBed.get(FooState);
+      TestBed.inject(FooState);
 
-      expect(TestBed.get(Store).snapshot().foo).toEqual(['onInit']);
+      expect(TestBed.inject(Store).snapshot().foo).toEqual(['onInit']);
     });
 
     it('should call an InitState action handler before the ngxsOnInit method on root module initialisation', () => {
@@ -120,6 +150,7 @@ describe('State', () => {
         name: 'foo',
         defaults: []
       })
+      @Injectable()
       class FooState implements NgxsOnInit {
         ngxsOnInit(ctx: StateContext<string[]>) {
           ctx.setState([...ctx.getState(), 'onInit']);
@@ -135,9 +166,55 @@ describe('State', () => {
         imports: [NgxsModule.forRoot([FooState])]
       });
 
-      TestBed.get(FooState);
+      TestBed.inject(FooState);
 
-      expect(TestBed.get(Store).snapshot().foo).toEqual(['initState', 'onInit']);
+      expect(TestBed.inject(Store).snapshot().foo).toEqual(['initState', 'onInit']);
+    });
+
+    it('should call an UpdateState action handler with multiple states', () => {
+      const expectedStates = { foo: ['test'], bar: 'baz', qux: { key: 'value' } };
+
+      @State<any>({
+        name: 'eager',
+        defaults: []
+      })
+      @Injectable()
+      class EagerState {
+        @Action(UpdateState)
+        updateState(ctx: StateContext<any[]>, action: UpdateState) {
+          ctx.setState({ ...ctx.getState(), ...action.addedStates });
+        }
+      }
+
+      @State<string[]>({
+        name: 'foo',
+        defaults: expectedStates.foo
+      })
+      @Injectable()
+      class FooState {}
+
+      @State<string>({
+        name: 'bar',
+        defaults: expectedStates.bar
+      })
+      @Injectable()
+      class BarState {}
+
+      @State<any>({
+        name: 'qux',
+        defaults: expectedStates.qux
+      })
+      @Injectable()
+      class QuxState {}
+
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([EagerState]),
+          NgxsModule.forFeature([FooState, BarState, QuxState])
+        ]
+      });
+
+      expect(TestBed.inject(Store).snapshot().eager).toEqual(expectedStates);
     });
 
     it('should call an UpdateState action handler before the ngxsOnInit method on feature module initialisation', () => {
@@ -145,6 +222,7 @@ describe('State', () => {
         name: 'foo',
         defaults: []
       })
+      @Injectable()
       class FooState implements NgxsOnInit {
         ngxsOnInit(ctx: StateContext<string[]>) {
           ctx.setState([...ctx.getState(), 'onInit']);
@@ -165,25 +243,18 @@ describe('State', () => {
         imports: [NgxsModule.forRoot([]), NgxsModule.forFeature([FooState])]
       });
 
-      TestBed.get(FooState);
+      TestBed.inject(FooState);
 
-      expect(TestBed.get(Store).snapshot().foo).toEqual(['updateState', 'onInit']);
+      expect(TestBed.inject(Store).snapshot().foo).toEqual(['updateState', 'onInit']);
     });
   });
 
-  describe('"ngxsAfterBootstrap" lifecycle hook', () => {
+  describe('ngxsAfterBootstrap" lifecycle hook', () => {
     function createRootNode(selector = 'app-root'): void {
-      const document = TestBed.get(DOCUMENT);
-      const adapter: DomAdapter = new BrowserDomAdapter();
-
-      const root = adapter.firstChild(
-        adapter.content(adapter.createTemplate(`<${selector}></${selector}>`))
-      );
-
-      const oldRoots = adapter.querySelectorAll(document, selector);
-      oldRoots.forEach(oldRoot => adapter.remove(oldRoot));
-
-      adapter.appendChild(document.body, root);
+      const document = TestBed.inject(DOCUMENT);
+      const adapter = new BrowserDomAdapter();
+      const root = adapter.createElement(selector);
+      document.body.appendChild(root);
     }
 
     const enum LifecycleHooks {
@@ -224,7 +295,10 @@ describe('State', () => {
     beforeEach(() => (hooks = []));
 
     it('should invoke "ngxsAfterBootstrap" after "ngxsOnInit" and after root component\'s "ngAfterViewInit"', () => {
-      @State({ name: 'foo' })
+      @State({
+        name: 'foo'
+      })
+      @Injectable()
       class FooState implements NgxsOnInit, NgxsAfterBootstrap {
         public ngxsOnInit(): void {
           hooks.push(LifecycleHooks.NgxsOnInit);
@@ -239,7 +313,7 @@ describe('State', () => {
         imports: [MockModule, NgxsModule.forRoot([FooState])]
       });
 
-      MockModule.ngDoBootstrap(TestBed.get(ApplicationRef));
+      MockModule.ngDoBootstrap(TestBed.inject(ApplicationRef));
 
       expect(hooks).toEqual([
         LifecycleHooks.NgxsOnInit,
@@ -250,7 +324,10 @@ describe('State', () => {
     });
 
     it('should invoke "ngxsAfterBootstrap" for feature states', () => {
-      @State({ name: 'fooFeature' })
+      @State({
+        name: 'fooFeature'
+      })
+      @Injectable()
       class FooFeatureState implements NgxsOnInit, NgxsAfterBootstrap {
         public ngxsOnInit(): void {
           hooks.push(LifecycleHooks.NgxsOnInit);
@@ -265,7 +342,7 @@ describe('State', () => {
         imports: [MockModule, NgxsModule.forRoot(), NgxsModule.forFeature([FooFeatureState])]
       });
 
-      MockModule.ngDoBootstrap(TestBed.get(ApplicationRef));
+      MockModule.ngDoBootstrap(TestBed.inject(ApplicationRef));
 
       expect(hooks).toEqual([
         LifecycleHooks.NgxsOnInit,
@@ -273,6 +350,71 @@ describe('State', () => {
         LifecycleHooks.NgAfterViewInit,
         LifecycleHooks.NgxsAfterBootstrap
       ]);
+    });
+  });
+
+  describe('simple patch', () => {
+    it('should be correct patch object', () => {
+      interface Simple {
+        a: number;
+        b: number;
+      }
+
+      const simple: Simple = { a: 1, b: 2 };
+
+      expect(simplePatch({ a: 3 })(simple)).toEqual({ a: 3, b: 2 });
+      expect(simplePatch(null!)(simple)).toEqual({ a: 1, b: 2 });
+    });
+
+    it('should be correct when patched null to null', () => {
+      expect(simplePatch(null!)(null!)).toEqual({});
+    });
+
+    it('should avoid the whole check if you want own properties only', () => {
+      function Origin() {
+        // @ts-ignore
+        this.x = `I'm an own property`;
+      }
+
+      Origin.prototype.y = `I'm not an own property`;
+
+      // @ts-ignore
+      const patcher: typeof Origin & Origin = new Origin();
+
+      expect(patcher.x).toEqual(`I'm an own property`);
+      expect(patcher.y).toEqual(`I'm not an own property`);
+
+      const existingState: any = {};
+      const resultState: any = simplePatch(patcher)(existingState);
+
+      expect(resultState.x).toEqual(`I'm an own property`);
+      expect(resultState.y).toEqual(`I'm not an own property`);
+    });
+
+    it('should throw exception if value is array', () => {
+      try {
+        const simple: string[] = ['hello'];
+        simplePatch(['world'])(simple);
+      } catch (e) {
+        expect(e.message).toEqual('Patching arrays is not supported.');
+      }
+    });
+
+    it('should throw exception if value is primitive', () => {
+      try {
+        simplePatch('one')('two');
+      } catch (e) {
+        expect(e.message).toEqual('Patching primitives is not supported.');
+      }
+    });
+
+    it('should throw exception if value is lambda', () => {
+      try {
+        const lambda: any = () => {};
+        console.log(simplePatch(lambda)({}));
+      } catch (e) {
+        expect(e.message).toEqual('Patching primitives is not supported.');
+      }
     });
   });
 });

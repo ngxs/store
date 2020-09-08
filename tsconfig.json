@@ -2,15 +2,25 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "downlevelIteration": true,
     "outDir": "out-tsc/lib",
     "paths": {
       "@integration/*": ["integration/app/*"],
-      "@integration/env/*": ["integration/environments/*"],
-      "@ngxs/store/operators": ["packages/store/operators/src"],
-      "@ngxs/store/internals": ["packages/store/internals/src"],
-      "@ngxs/*": ["packages/*"]
+      "@ngxs/store": ["packages/store/index.ts"],
+      "@ngxs/store/operators": ["packages/store/operators/src/index.ts"],
+      "@ngxs/store/internals": ["packages/store/internals/src/index.ts"],
+      "@ngxs/store/internals/testing": ["packages/store/internals/testing/index.ts"],
+      "@ngxs/devtools-plugin": ["packages/devtools-plugin/index.ts"],
+      "@ngxs/form-plugin": ["packages/form-plugin/index.ts"],
+      "@ngxs/hmr-plugin": ["packages/hmr-plugin/index.ts"],
+      "@ngxs/logger-plugin": ["packages/logger-plugin/index.ts"],
+      "@ngxs/router-plugin": ["packages/router-plugin/index.ts"],
+      "@ngxs/storage-plugin": ["packages/storage-plugin/index.ts"],
+      "@ngxs/websocket-plugin": ["packages/websocket-plugin/index.ts"]
     },
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "declaration": false,
@@ -21,8 +31,5 @@
     "lib": ["es2017", "dom"],
     "typeRoots": ["node_modules/@types"]
   },
-  "exclude": [
-    "@ngxs/**",
-    "integrations/**"
-  ]
+  "exclude": ["@ngxs/**", "integrations/**", "cypress"]
 }

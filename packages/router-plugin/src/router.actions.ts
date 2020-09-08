@@ -4,8 +4,11 @@ import {
   NavigationExtras,
   Params,
   RouterStateSnapshot,
-  RoutesRecognized
+  RoutesRecognized,
+  ResolveEnd
 } from '@angular/router';
+
+import { RouterTrigger } from './router.state';
 
 /**
  * Public event api of the router
@@ -36,7 +39,11 @@ export class RouterNavigation<T = RouterStateSnapshot> {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Router] RouterNavigation';
   }
-  constructor(public routerState: T, public event: RoutesRecognized) {}
+  constructor(
+    public routerState: T,
+    public event: RoutesRecognized,
+    public trigger: RouterTrigger = 'none'
+  ) {}
 }
 
 /**
@@ -47,7 +54,12 @@ export class RouterCancel<T, V = RouterStateSnapshot> {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Router] RouterCancel';
   }
-  constructor(public routerState: V, public storeState: T, public event: NavigationCancel) {}
+  constructor(
+    public routerState: V,
+    public storeState: T,
+    public event: NavigationCancel,
+    public trigger: RouterTrigger = 'none'
+  ) {}
 }
 
 /**
@@ -58,7 +70,27 @@ export class RouterError<T, V = RouterStateSnapshot> {
     // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
     return '[Router] RouterError';
   }
-  constructor(public routerState: V, public storeState: T, public event: NavigationError) {}
+  constructor(
+    public routerState: V,
+    public storeState: T,
+    public event: NavigationError,
+    public trigger: RouterTrigger = 'none'
+  ) {}
+}
+
+/**
+ * An action dispatched when the `ResolveEnd` event is triggered.
+ */
+export class RouterDataResolved<T = RouterStateSnapshot> {
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Router] RouterDataResolved';
+  }
+  constructor(
+    public routerState: T,
+    public event: ResolveEnd,
+    public trigger: RouterTrigger = 'none'
+  ) {}
 }
 
 /**
@@ -67,4 +99,5 @@ export class RouterError<T, V = RouterStateSnapshot> {
 export type RouterAction<T, V = RouterStateSnapshot> =
   | RouterNavigation<V>
   | RouterCancel<T, V>
-  | RouterError<T, V>;
+  | RouterError<T, V>
+  | RouterDataResolved<V>;

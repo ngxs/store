@@ -1,24 +1,11 @@
-import {
-  ApplicationRef,
-  NgZone,
-  Component,
-  PlatformRef,
-  NgModule,
-  DoBootstrap,
-  NgModuleRef
-} from '@angular/core';
-import { TestBed, async, fakeAsync } from '@angular/core/testing';
-import {
-  ɵDomAdapter as DomAdapter,
-  ɵBrowserDomAdapter as BrowserDomAdapter,
-  BrowserModule,
-  DOCUMENT
-} from '@angular/platform-browser';
-
-import { Observable, Subscription } from 'rxjs';
+import { ApplicationRef, Component, Injectable, NgModule, NgZone } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { BrowserModule } from '@angular/platform-browser';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { freshPlatform } from '@ngxs/store/internals/testing';
 import { take } from 'rxjs/operators';
 
-import { State, Action, StateContext, NgxsModule, Store, Select } from '../src/public_api';
+import { Action, NgxsModule, State, StateContext, Store } from '../src/public_api';
 import { NoopNgxsExecutionStrategy } from '../src/execution/noop-ngxs-execution-strategy';
 
 describe('zone', () => {
@@ -30,6 +17,7 @@ describe('zone', () => {
     name: 'counter',
     defaults: 0
   })
+  @Injectable()
   class CounterState {
     @Action(Increment)
     public increment({ setState, getState }: StateContext<number>): void {
@@ -57,8 +45,8 @@ describe('zone', () => {
         ]
       });
 
-      const store: Store = TestBed.get(Store);
-      const zone: NgZone = TestBed.get(NgZone);
+      const store: Store = TestBed.inject(Store);
+      const zone: NgZone = TestBed.inject(NgZone);
 
       // NGXS performes initializions inside Angular zone
       // thus it causes app to tick
@@ -101,8 +89,8 @@ describe('zone', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
-    const zone: NgZone = TestBed.get(NgZone);
+    const store: Store = TestBed.inject(Store);
+    const zone: NgZone = TestBed.inject(NgZone);
 
     // NGXS performes initializions inside Angular zone
     // thus it causes app to tick
@@ -145,8 +133,8 @@ describe('zone', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
-    const zone: NgZone = TestBed.get(NgZone);
+    const store: Store = TestBed.inject(Store);
+    const zone: NgZone = TestBed.inject(NgZone);
 
     // NGXS performed all initializations outside Angular zone
     expect(ticks).toBe(0);
@@ -172,7 +160,10 @@ describe('zone', () => {
       public static readonly type = 'Foo';
     }
 
-    @State({ name: 'foo' })
+    @State({
+      name: 'foo'
+    })
+    @Injectable()
     class FooState {
       @Action(FooAction)
       public fooAction(): void {
@@ -186,8 +177,8 @@ describe('zone', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
-    const ngZone: NgZone = TestBed.get(NgZone);
+    const store: Store = TestBed.inject(Store);
+    const ngZone: NgZone = TestBed.inject(NgZone);
     ngZone.run(() => {
       store.dispatch(new FooAction());
     });
@@ -198,7 +189,10 @@ describe('zone', () => {
       public static readonly type = 'Foo';
     }
 
-    @State({ name: 'foo' })
+    @State({
+      name: 'foo'
+    })
+    @Injectable()
     class FooState {
       @Action(FooAction)
       public fooAction(): void {
@@ -212,69 +206,51 @@ describe('zone', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
     store.dispatch(new FooAction());
   });
 
-  function createRootNode(selector = 'app-root'): void {
-    const document = TestBed.get(DOCUMENT);
-    const adapter: DomAdapter = new BrowserDomAdapter();
-
-    const root = adapter.firstChild(
-      adapter.content(adapter.createTemplate(`<${selector}></${selector}>`))
-    );
-
-    const oldRoots = adapter.querySelectorAll(document, selector);
-    oldRoots.forEach(oldRoot => adapter.remove(oldRoot));
-
-    adapter.appendChild(document.body, root);
-  }
-
-  it('actions should be handled outside zone if zone is "nooped"', async(() => {
-    class FooAction {
-      public static readonly type = 'Foo';
-    }
-
-    @State({ name: 'foo' })
-    class FooState {
-      @Action(FooAction)
-      public fooAction(): void {
-        expect(NgZone.isInAngularZone()).toBeFalsy();
+  it(
+    'actions should be handled outside zone if zone is "nooped"',
+    freshPlatform(async () => {
+      class FooAction {
+        public static readonly type = 'Foo';
       }
-    }
 
-    @Component({
-      selector: 'app-root',
-      template: ''
-    })
-    class MockComponent {}
-
-    @NgModule({
-      imports: [
-        BrowserModule,
-        NgxsModule.forRoot([FooState], {
-          executionStrategy: NoopNgxsExecutionStrategy
-        })
-      ],
-      declarations: [MockComponent],
-      entryComponents: [MockComponent]
-    })
-    class MockModule implements DoBootstrap {
-      public ngDoBootstrap(app: ApplicationRef): void {
-        createRootNode();
-        app.bootstrap(MockComponent);
-      }
-    }
-
-    const platformRef: PlatformRef = TestBed.get(PlatformRef);
-
-    platformRef
-      .bootstrapModule(MockModule, {
-        ngZone: 'noop'
+      @State({
+        name: 'foo'
       })
-      .then((module: NgModuleRef<MockModule>) => {
-        const store = module.injector.get<Store>(Store);
-        store.dispatch(new FooAction());
+      @Injectable()
+      class FooState {
+        @Action(FooAction)
+        public fooAction(): void {
+          expect(NgZone.isInAngularZone()).toBeFalsy();
+        }
+      }
+
+      @Component({
+        selector: 'app-root',
+        template: ''
+      })
+      class MockComponent {}
+
+      @NgModule({
+        imports: [
+          BrowserModule,
+          NgxsModule.forRoot([FooState], {
+            executionStrategy: NoopNgxsExecutionStrategy
+          })
+        ],
+        declarations: [MockComponent],
+        bootstrap: [MockComponent]
+      })
+      class MockModule {}
+
+      const { injector } = await platformBrowserDynamic().bootstrapModule(MockModule, {
+        ngZone: 'noop'
       });
-  }));
+      const store = injector.get<Store>(Store);
+      store.dispatch(new FooAction());
+    })
+  );
 });

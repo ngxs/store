@@ -6,9 +6,9 @@ import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 
-import { environment as env } from '@integration/env/environment';
 import { TodosState } from '@integration/store/todos/todos.state';
 import { TodoState } from '@integration/store/todos/todo/todo.state';
+import { environment as env } from '../../environments/environment';
 
 @NgModule({
   imports: [

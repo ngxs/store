@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { NgxsModule } from '../src/module';
 import { State } from '../src/decorators/state';
 import { Store } from '../src/store';
+import { Injectable } from '@angular/core';
 
 describe('StoreValidator', () => {
   describe('duplicate state name check', () => {
@@ -12,19 +13,21 @@ describe('StoreValidator', () => {
           name: 'duplicate',
           defaults: 'first'
         })
+        @Injectable()
         class MyOtherState {}
 
         @State<string>({
           name: 'duplicate',
           defaults: 'second'
         })
+        @Injectable()
         class MyDuplicateState {}
 
         TestBed.configureTestingModule({
           imports: [NgxsModule.forRoot([MyOtherState, MyDuplicateState])]
         });
 
-        TestBed.get(Store);
+        TestBed.inject(Store);
       } catch (e) {
         errorMessage = e.message;
       }
@@ -59,7 +62,7 @@ describe('StoreValidator', () => {
           imports: [NgxsModule.forRoot([MyOtherState, MyAnotherState, MyDuplicateChildState])]
         });
 
-        TestBed.get(Store);
+        TestBed.inject(Store);
       } catch (e) {
         errorMessage = e.message;
       }
@@ -90,7 +93,7 @@ describe('StoreValidator', () => {
           ]
         });
 
-        TestBed.get(Store);
+        TestBed.inject(Store);
       } catch (e) {
         errorMessage = e.message;
       }
@@ -122,7 +125,7 @@ describe('StoreValidator', () => {
           ]
         });
 
-        const store: Store = TestBed.get(Store);
+        const store: Store = TestBed.inject(Store);
         expect(store).toBeDefined();
       } catch (e) {
         errorMessage = e.message;
@@ -141,7 +144,7 @@ describe('StoreValidator', () => {
           imports: [NgxsModule.forRoot([TestState])]
         });
 
-        TestBed.get(Store);
+        TestBed.inject(Store);
       } catch (e) {
         errorMessage = e.message;
       }
@@ -164,7 +167,7 @@ describe('StoreValidator', () => {
           imports: [NgxsModule.forRoot([MyState, ChildState])]
         });
 
-        TestBed.get(Store);
+        TestBed.inject(Store);
       } catch (e) {
         errorMessage = e.message;
       }

@@ -1,25 +1,20 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../out-tsc/app",
     "baseUrl": "./",
     "paths": {
       "@ngxs/*": ["../@ngxs/*"],
-      "@integration/*": ["./app/*"],
-      "@integration/env/*": ["./environments/*"]
+      "@integration/*": ["./app/*"]
     },
     "module": "commonjs",
+    "target": "es2016",
     "types": ["node"],
     "typeRoots": ["../node_modules/@types"]
   },
-  "exclude": [
-    "test.ts",
-    "test.ssr.ts",
-    "**/*.spec.ts",
-    "**/*.mocha.ts",
-    "node_modules"
-  ],
+  "files": ["main.server.ts", "server.ts"],
+  "exclude": ["cypress"],
   "angularCompilerOptions": {
+    "disableTypeScriptVersionCheck": true,
     "entryModule": "app/app.server.module#AppServerModule"
   }
 }

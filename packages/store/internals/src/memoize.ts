@@ -24,7 +24,7 @@ function areArgumentsShallowlyEqual(
 
 /**
  * Memoize a function on its last inputs only.
- * Oringinally from: https://github.com/reduxjs/reselect/blob/master/src/index.js
+ * Originally from: https://github.com/reduxjs/reselect/blob/master/src/index.js
  *
  * @ignore
  */

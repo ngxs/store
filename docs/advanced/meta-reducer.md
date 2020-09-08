@@ -1,4 +1,5 @@
 # Meta Reducer
+
 A meta reducer is a higher order reducer that allows you to
 take action on the global state rather than a state slice.
 In NGXS, we don't have this concept but you can accomplish
@@ -7,14 +8,12 @@ this with [plugins](../plugins/intro.md).
 An example of a meta reducer might be to clear the entire
 state when a user logs out. An example implementation would be:
 
-```TS
+```ts
 import { getActionTypeFromInstance } from '@ngxs/store';
 
 export function logoutPlugin(state, action, next) {
-
   // Use the get action type helper to determine the type
   if (getActionTypeFromInstance(action) === Logout.type) {
-
     // if we are a logout type, lets erase all the state
     state = {};
   }
@@ -26,7 +25,7 @@ export function logoutPlugin(state, action, next) {
 
 Then we import that like:
 
-```TS
+```ts
 import { NgModule } from '@angular/core';
 import { NGXS_PLUGINS } from '@ngxs/store';
 
@@ -36,7 +35,7 @@ import { NGXS_PLUGINS } from '@ngxs/store';
     {
       provide: NGXS_PLUGINS,
       useValue: logoutPlugin,
-      multi: true  
+      multi: true
     }
   ]
 })

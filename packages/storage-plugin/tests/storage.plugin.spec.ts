@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NgxsModule, State, Store, Action } from '@ngxs/store';
+import { NgxsModule, State, Store, Action, StateContext } from '@ngxs/store';
 
+import { DEFAULT_STATE_KEY } from '../src/internals';
 import { NgxsStoragePluginModule, StorageOption, StorageEngine, STORAGE_ENGINE } from '../';
-import { StateContext } from '@ngxs/store';
+import { Injectable } from '@angular/core';
 
 describe('NgxsStoragePlugin', () => {
   class Increment {
@@ -14,65 +15,77 @@ describe('NgxsStoragePlugin', () => {
     static type = 'DECREMENT';
   }
 
-  interface StateModel {
+  interface CounterStateModel {
     count: number;
   }
 
-  @State<StateModel>({
+  @State<CounterStateModel>({
     name: 'counter',
     defaults: { count: 0 }
   })
-  class MyStore {
+  class CounterState {
     @Action(Increment)
-    increment({ getState, setState }: StateContext<StateModel>) {
+    increment({ getState, setState }: StateContext<CounterStateModel>) {
       setState({
-        count: Number(getState().count) + 1
+        count: getState().count + 1
       });
     }
 
     @Action(Decrement)
-    decrement({ getState, setState }: StateContext<StateModel>) {
+    decrement({ getState, setState }: StateContext<CounterStateModel>) {
       setState({
-        count: Number(getState().count) - 1
+        count: getState().count - 1
       });
     }
   }
 
-  @State<StateModel>({
+  @State<CounterStateModel>({
     name: 'lazyLoaded',
     defaults: { count: 0 }
   })
-  class LazyLoadedStore {}
+  class LazyLoadedState {}
 
   afterEach(() => {
-    localStorage.removeItem('@@STATE');
-    sessionStorage.removeItem('@@STATE');
+    localStorage.removeItem(DEFAULT_STATE_KEY);
+    sessionStorage.removeItem(DEFAULT_STATE_KEY);
   });
 
-  it('should get initial data from localstorage', () => {
-    localStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
+  class CounterInfoStateModel {
+    constructor(public count: number) {}
+  }
 
+  @State<CounterInfoStateModel>({
+    name: 'counterInfo',
+    defaults: { count: 0 }
+  })
+  class CounterInfoState {}
+
+  it('should get initial data from localstorage', () => {
+    // Arrange
+    localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
+
+    // Act
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyStore]), NgxsStoragePluginModule.forRoot()]
+      imports: [NgxsModule.forRoot([CounterState]), NgxsStoragePluginModule.forRoot()]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
+    const state: CounterStateModel = store.selectSnapshot(CounterState);
 
-    store
-      .select((state: any) => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(state.count).toBe(100);
-      });
+    // Assert
+    expect(state.count).toBe(100);
   });
 
   it('should save data to localstorage', () => {
-    localStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
+    // Arrange
+    localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
 
+    // Act
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyStore]), NgxsStoragePluginModule.forRoot()]
+      imports: [NgxsModule.forRoot([CounterState]), NgxsStoragePluginModule.forRoot()]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     store.dispatch(new Increment());
     store.dispatch(new Increment());
@@ -80,83 +93,98 @@ describe('NgxsStoragePlugin', () => {
     store.dispatch(new Increment());
     store.dispatch(new Increment());
 
-    store
-      .select((state: any) => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(state.count).toBe(105);
+    const state: CounterStateModel = store.selectSnapshot(CounterState);
 
-        expect(localStorage.getItem('@@STATE')).toBe(
-          JSON.stringify({ counter: { count: 105 } })
-        );
-      });
+    // Assert
+    expect(state.count).toBe(105);
+    expect(localStorage.getItem(DEFAULT_STATE_KEY)).toBe(
+      JSON.stringify({ counter: { count: 105 } })
+    );
   });
 
   describe('when blank values are returned from localstorage', () => {
     it('should use default data if null retrieved from localstorage', () => {
-      localStorage.setItem('@@STATE', <any>null);
+      // Arrange
+      localStorage.setItem(DEFAULT_STATE_KEY, <any>null);
 
-      @State<StateModel>({ name: 'counter', defaults: { count: 123 } })
-      class TestStore {}
+      @State<CounterStateModel>({
+        name: 'counter',
+        defaults: {
+          count: 123
+        }
+      })
+      class TestState {}
 
+      // Act
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TestStore]), NgxsStoragePluginModule.forRoot()]
+        imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
       });
 
-      const store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
+      const state: CounterStateModel = store.selectSnapshot(TestState);
 
-      store
-        .select((state: any) => state.counter)
-        .subscribe((state: StateModel) => {
-          expect(state.count).toBe(123);
-        });
+      // Assert
+      expect(state.count).toBe(123);
     });
 
     it('should use default data if undefined retrieved from localstorage', () => {
-      localStorage.setItem('@@STATE', <any>undefined);
+      // Arrange
+      localStorage.setItem(DEFAULT_STATE_KEY, <any>undefined);
 
-      @State<StateModel>({ name: 'counter', defaults: { count: 123 } })
-      class TestStore {}
+      @State<CounterStateModel>({
+        name: 'counter',
+        defaults: {
+          count: 123
+        }
+      })
+      class TestState {}
 
+      // Act
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TestStore]), NgxsStoragePluginModule.forRoot()]
+        imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
       });
 
-      const store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
+      const state: CounterStateModel = store.selectSnapshot(TestState);
 
-      store
-        .select((state: any) => state.counter)
-        .subscribe((state: StateModel) => {
-          expect(state.count).toBe(123);
-        });
+      // Assert
+      expect(state.count).toBe(123);
     });
 
     it(`should use default data if the string 'undefined' retrieved from localstorage`, () => {
-      localStorage.setItem('@@STATE', 'undefined');
+      // Arrange
+      localStorage.setItem(DEFAULT_STATE_KEY, 'undefined');
 
-      @State<StateModel>({ name: 'counter', defaults: { count: 123 } })
-      class TestStore {}
+      @State<CounterStateModel>({
+        name: 'counter',
+        defaults: {
+          count: 123
+        }
+      })
+      class TestState {}
 
+      // Act
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TestStore]), NgxsStoragePluginModule.forRoot()]
+        imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
       });
 
-      const store = TestBed.get(Store);
+      const store: Store = TestBed.inject(Store);
+      const state: CounterStateModel = store.selectSnapshot(TestState);
 
-      store
-        .select((state: any) => state.counter)
-        .subscribe((state: StateModel) => {
-          expect(state.count).toBe(123);
-        });
+      // Assert
+      expect(state.count).toBe(123);
     });
   });
 
   it('should migrate global localstorage', () => {
+    // Arrange
     const data = JSON.stringify({ counter: { count: 100, version: 1 } });
-    localStorage.setItem('@@STATE', data);
+    localStorage.setItem(DEFAULT_STATE_KEY, data);
 
+    // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([MyStore]),
+        NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot({
           migrations: [
             {
@@ -175,24 +203,26 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
+    // Call `selectSnapshot` so the `NgxsStoragePlugin.handle` will be invoked also
+    // and will run migations
+    store.selectSnapshot(CounterState);
 
-    store
-      .select((state: any) => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(localStorage.getItem('@@STATE')).toBe(
-          JSON.stringify({ counter: { counts: 100, version: 2 } })
-        );
-      });
+    // Assert
+    expect(localStorage.getItem(DEFAULT_STATE_KEY)).toBe(
+      JSON.stringify({ counter: { counts: 100, version: 2 } })
+    );
   });
 
   it('should migrate single localstorage', () => {
+    // Arrange
     const data = JSON.stringify({ count: 100, version: 1 });
     localStorage.setItem('counter', data);
 
+    // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([MyStore]),
+        NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot({
           key: 'counter',
           migrations: [
@@ -213,51 +243,49 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
+    // Call `selectSnapshot` so the `NgxsStoragePlugin.handle` will be invoked also
+    // and will run migations
+    store.selectSnapshot(CounterState);
 
-    store
-      .select((state: any) => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(localStorage.getItem('counter')).toBe(
-          JSON.stringify({ counts: 100, version: 2 })
-        );
-      });
+    // Assert
+    expect(localStorage.getItem('counter')).toBe(JSON.stringify({ counts: 100, version: 2 }));
   });
 
   it('should correct get data from session storage', () => {
-    sessionStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
+    // Arrange
+    sessionStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
 
+    // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([MyStore]),
+        NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot({
           storage: StorageOption.SessionStorage
         })
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
+    const state: CounterStateModel = store.selectSnapshot(CounterState);
 
-    store
-      .select((state: any) => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(state.count).toBe(100);
-      });
+    // Assert
+    expect(state.count).toBe(100);
   });
 
   it('should save data to sessionStorage', () => {
-    sessionStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
+    sessionStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
 
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([MyStore]),
+        NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot({
           storage: StorageOption.SessionStorage
         })
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     store.dispatch(new Increment());
     store.dispatch(new Increment());
@@ -265,21 +293,20 @@ describe('NgxsStoragePlugin', () => {
     store.dispatch(new Increment());
     store.dispatch(new Increment());
 
-    store
-      .select((state: any) => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(state.count).toBe(105);
+    const state: CounterStateModel = store.selectSnapshot(CounterState);
 
-        expect(sessionStorage.getItem('@@STATE')).toBe(
-          JSON.stringify({ counter: { count: 105 } })
-        );
-      });
+    // Assert
+    expect(state.count).toBe(105);
+    expect(sessionStorage.getItem(DEFAULT_STATE_KEY)).toBe(
+      JSON.stringify({ counter: { count: 105 } })
+    );
   });
 
   it('should use a custom storage engine', () => {
+    // Arrange
     class CustomStorage implements StorageEngine {
       static Storage: any = {
-        '@@STATE': {
+        [DEFAULT_STATE_KEY]: {
           counter: {
             count: 100
           }
@@ -307,9 +334,10 @@ describe('NgxsStoragePlugin', () => {
       }
     }
 
+    // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([MyStore]),
+        NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot({
           serialize(val) {
             return val;
@@ -327,7 +355,7 @@ describe('NgxsStoragePlugin', () => {
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
 
     store.dispatch(new Increment());
     store.dispatch(new Increment());
@@ -335,32 +363,177 @@ describe('NgxsStoragePlugin', () => {
     store.dispatch(new Increment());
     store.dispatch(new Increment());
 
-    store
-      .select((state: any) => state.counter)
-      .subscribe((state: StateModel) => {
-        expect(state.count).toBe(105);
+    const state: CounterStateModel = store.selectSnapshot(CounterState);
 
-        expect(CustomStorage.Storage['@@STATE']).toEqual({ counter: { count: 105 } });
-      });
+    // Assert
+    expect(state.count).toBe(105);
+    expect(CustomStorage.Storage[DEFAULT_STATE_KEY]).toEqual({ counter: { count: 105 } });
   });
 
   it('should merge unloaded data from feature with local storage', () => {
-    localStorage.setItem('@@STATE', JSON.stringify({ counter: { count: 100 } }));
+    // Arrange
+    localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
 
+    // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([MyStore]),
+        NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot(),
-        NgxsModule.forFeature([LazyLoadedStore])
+        NgxsModule.forFeature([LazyLoadedState])
       ]
     });
 
-    const store: Store = TestBed.get(Store);
+    const store: Store = TestBed.inject(Store);
+    const state: {
+      counter: CounterStateModel;
+      lazyLoaded: CounterStateModel;
+    } = store.snapshot();
 
-    store
-      .select((state: any) => state)
-      .subscribe((state: { counter: StateModel; lazyLoaded: StateModel }) => {
-        expect(state.lazyLoaded).toBeDefined();
+    // Assert
+    expect(state.lazyLoaded).toBeDefined();
+  });
+
+  describe('State classes as key', () => {
+    @State({
+      name: 'names',
+      defaults: []
+    })
+    @Injectable()
+    class NamesState {}
+
+    it('should be possible to provide a state class as a key', () => {
+      // Arrange
+      localStorage.setItem('counter', JSON.stringify({ count: 100 }));
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState]),
+          NgxsStoragePluginModule.forRoot({
+            key: CounterState
+          })
+        ]
       });
+
+      const store: Store = TestBed.inject(Store);
+      const state: CounterStateModel = store.selectSnapshot(CounterState);
+
+      // Assert
+      expect(state.count).toBe(100);
+    });
+
+    it('should be possible to provide array of state classes', () => {
+      // Arrange
+      localStorage.setItem('counter', JSON.stringify({ count: 100 }));
+      localStorage.setItem('names', JSON.stringify(['Mark', 'Artur', 'Max']));
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState, NamesState]),
+          NgxsStoragePluginModule.forRoot({
+            key: [CounterState, NamesState]
+          })
+        ]
+      });
+
+      const store: Store = TestBed.inject(Store);
+
+      // Assert
+      expect(store.snapshot()).toEqual({
+        counter: {
+          count: 100
+        },
+        names: ['Mark', 'Artur', 'Max']
+      });
+    });
+
+    it('should be possible to use both state classes and strings', () => {
+      // Arrange
+      localStorage.setItem('counter', JSON.stringify({ count: 100 }));
+      localStorage.setItem('names', JSON.stringify(['Mark', 'Artur', 'Max']));
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState, NamesState]),
+          NgxsStoragePluginModule.forRoot({
+            key: [CounterState, 'names']
+          })
+        ]
+      });
+
+      const store: Store = TestBed.inject(Store);
+
+      // Assert
+      expect(store.snapshot()).toEqual({
+        counter: {
+          count: 100
+        },
+        names: ['Mark', 'Artur', 'Max']
+      });
+    });
+  });
+
+  describe('Custom serialization', () => {
+    it('should alter object before serialization.', () => {
+      // Arrange
+      localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState]),
+          NgxsStoragePluginModule.forRoot({
+            beforeSerialize: obj => {
+              return {
+                counter: {
+                  count: obj.counter.count * 2
+                }
+              };
+            }
+          })
+        ]
+      });
+
+      const store: Store = TestBed.inject(Store);
+
+      store.dispatch(new Increment());
+
+      const state: CounterStateModel = store.selectSnapshot(CounterState);
+
+      // Assert
+      expect(state.count).toBe(101);
+      expect(localStorage.getItem(DEFAULT_STATE_KEY)).toBe(
+        JSON.stringify({ counter: { count: 202 } })
+      );
+    });
+
+    it('should alter state and return concrete type after deserialization.', () => {
+      // Arrange
+      localStorage.setItem('counterInfo', JSON.stringify({ count: 100 }));
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterInfoState]),
+          NgxsStoragePluginModule.forRoot({
+            key: 'counterInfo',
+            afterDeserialize: (obj, key) => {
+              if (key === 'counterInfo') {
+                return new CounterInfoStateModel(obj.count);
+              }
+            }
+          })
+        ]
+      });
+
+      const store: Store = TestBed.inject(Store);
+      const state: CounterInfoStateModel = store.selectSnapshot(CounterInfoState);
+
+      // Assert
+      expect(state).toBeInstanceOf(CounterInfoStateModel);
+      expect(state.count).toBe(100);
+    });
   });
 });

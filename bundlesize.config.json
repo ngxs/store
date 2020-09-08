@@ -1,0 +1,144 @@
+{
+  "files": [
+    {
+      "path": "./@ngxs/store/fesm2015/ngxs-store-internals.js",
+      "package": "@ngxs/store/internals",
+      "target": "es2015",
+      "maxSize": "6.220KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/store/fesm5/ngxs-store-internals.js",
+      "package": "@ngxs/store/internals",
+      "target": "es5",
+      "maxSize": "7.180KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/store/fesm2015/ngxs-store-operators.js",
+      "package": "@ngxs/store/operators",
+      "target": "es2015",
+      "maxSize": "9.985KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/store/fesm5/ngxs-store-operators.js",
+      "package": "@ngxs/store/operators",
+      "target": "es5",
+      "maxSize": "10.125KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/store/fesm2015/ngxs-store.js",
+      "package": "@ngxs/store",
+      "target": "es2015",
+      "maxSize": "111.56KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/store/fesm5/ngxs-store.js",
+      "package": "@ngxs/store",
+      "target": "es5",
+      "maxSize": "131.07KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/form-plugin/fesm2015/ngxs-form-plugin.js",
+      "package": "@ngxs/form-plugin",
+      "target": "es2015",
+      "maxSize": "17.039KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/form-plugin/fesm5/ngxs-form-plugin.js",
+      "package": "@ngxs/form-plugin",
+      "target": "es5",
+      "maxSize": "20.291KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/devtools-plugin/fesm2015/ngxs-devtools-plugin.js",
+      "package": "@ngxs/devtools-plugin",
+      "target": "es2015",
+      "maxSize": "9.035KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/devtools-plugin/fesm5/ngxs-devtools-plugin.js",
+      "package": "@ngxs/devtools-plugin",
+      "target": "es5",
+      "maxSize": "10.525KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/hmr-plugin/fesm2015/ngxs-hmr-plugin.js",
+      "package": "@ngxs/hmr-plugin",
+      "target": "es2015",
+      "maxSize": "16.640KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/hmr-plugin/fesm5/ngxs-hmr-plugin.js",
+      "package": "@ngxs/hmr-plugin",
+      "target": "es5",
+      "maxSize": "20.22KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/logger-plugin/fesm2015/ngxs-logger-plugin.js",
+      "package": "@ngxs/logger-plugin",
+      "target": "es2015",
+      "maxSize": "11.315KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/logger-plugin/fesm5/ngxs-logger-plugin.js",
+      "package": "@ngxs/logger-plugin",
+      "target": "es5",
+      "maxSize": "13.075KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/router-plugin/fesm2015/ngxs-router-plugin.js",
+      "package": "@ngxs/router-plugin",
+      "target": "es2015",
+      "maxSize": "21.525KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/router-plugin/fesm5/ngxs-router-plugin.js",
+      "package": "@ngxs/router-plugin",
+      "target": "es5",
+      "maxSize": "26.000KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/storage-plugin/fesm2015/ngxs-storage-plugin.js",
+      "package": "@ngxs/storage-plugin",
+      "target": "es2015",
+      "maxSize": "11.520KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/storage-plugin/fesm5/ngxs-storage-plugin.js",
+      "package": "@ngxs/storage-plugin",
+      "target": "es5",
+      "maxSize": "13.510KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/websocket-plugin/fesm2015/ngxs-websocket-plugin.js",
+      "package": "@ngxs/websocket-plugin",
+      "target": "es2015",
+      "maxSize": "14.325KB",
+      "compression": "none"
+    },
+    {
+      "path": "./@ngxs/websocket-plugin/fesm5/ngxs-websocket-plugin.js",
+      "package": "@ngxs/websocket-plugin",
+      "target": "es5",
+      "maxSize": "18.765KB",
+      "compression": "none"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 ## Installation
-To get started, install the package from npm. The latest version (3.x) supports Angular/RX 6, if you want support for Angular5, use version 2.x.
+
+To get started, install the package from npm. The latest version (3.x) supports Angular/RxJS 6+, if you want support for Angular 5, use version 2.x.
 
 ```bash
 npm install @ngxs/store --save
@@ -10,21 +11,21 @@ yarn add @ngxs/store
 
 then in `app.module.ts`, import the `NgxsModule`:
 
-```TS
+```ts
 import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
 
 @NgModule({
   imports: [
-    NgxsModule.forRoot([
-      ZooState
-    ])
+    NgxsModule.forRoot([ZooState], {
+      developmentMode: !environment.production
+    })
   ]
 })
 export class AppModule {}
 ```
 
-When you include the module in the import, you can pass root stores along with options.
+When you include the module in the import, you can pass root stores along with [options](../advanced/options.md).
 If you are lazy loading, you can use the `forFeature` option with the same arguments.
 
 Options such as `developmentMode` can be passed to the module as the second argument in the `forRoot` method.
@@ -35,8 +36,8 @@ module.
 It's important that you add `NgxsModule.forRoot([])` at the root of your module even if
 all of your states are feature states.
 
-
 ## Development Builds
+
 Our continuous integration server runs all tests on every commit to master and if they pass it will publish a new development build to NPM and tag it with the @dev tag.
 
 This means that if you want the bleeding edge of `@ngxs/store` or any of the plugins you can simply do:
@@ -63,4 +64,5 @@ Your package.json file will be locked to that specific version.
   }
 }
 ```
+
 If you later want to again update to the bleeding edge, you will have to run the above command again.

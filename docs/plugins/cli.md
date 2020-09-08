@@ -3,6 +3,7 @@
 ![CLI Screenshot](../assets/cli.gif)
 
 ## Install
+
 The CLI can be installed using NPM:
 
 ```bash
@@ -38,19 +39,18 @@ NGXS CLI
 
   $ ngxs --name name --spec boolean --directory path --folder-name name
   $ ngxs --help
-  
+
 Options
 
-  --name name         Store name  
+  --name name         Store name
   --directory path    By default, the prompt is set to the current directory
-  --folder-name name   Use your own folder name, default: state  
+  --folder-name name   Use your own folder name, default: state
   --spec boolean      Creates a spec file for store, default: true
 
 Custom template generator
 
   --plopfile path   Path to the plopfile
 ```
-
 
 #### What is Plop?
 

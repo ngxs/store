@@ -4,14 +4,12 @@
     "baseUrl": "./",
     "paths": {
       "@ngxs/*": ["../@ngxs/*"],
-      "@integration/*": ["./app/*"],
-      "@integration/env/*": ["./environments/*"]
+      "@integration/*": ["./app/*"]
     },
-    "outDir": "./out-tsc/spec",
     "module": "commonjs",
     "target": "es5",
-    "types": ["jasmine"]
+    "types": ["jest", "node"]
   },
-  "files": ["test.ts", "polyfills.ts"],
+  "files": ["polyfills.ts"],
   "include": ["**/*.spec.ts"]
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 
-import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from './operators/leave-ngxs';
+import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 
 /**
  * Status of a dispatched action
@@ -67,18 +67,22 @@ export class InternalActions extends OrderedSubject<ActionContext> {}
  */
 @Injectable()
 export class Actions extends Observable<any> {
+  // This has to be `Observable<ActionContext>` in the v4. Because `InternalActions`
+  // is a `Subject<ActionContext>`. Leave it as `any` to avoid breaking changes
   constructor(
-    actions$: InternalActions,
+    internalActions$: InternalActions,
     internalExecutionStrategy: InternalNgxsExecutionStrategy
   ) {
     super(observer => {
-      actions$
+      const childSubscription = internalActions$
         .pipe(leaveNgxs(internalExecutionStrategy))
-        .subscribe(
-          res => observer.next(res),
-          err => observer.error(err),
-          () => observer.complete()
-        );
+        .subscribe({
+          next: ctx => observer.next(ctx),
+          error: error => observer.error(error),
+          complete: () => observer.complete()
+        });
+
+      observer.add(childSubscription);
     });
   }
 }

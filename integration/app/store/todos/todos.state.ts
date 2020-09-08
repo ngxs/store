@@ -1,4 +1,4 @@
-import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { Action, Selector, State, StateContext, StateToken } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
 import { tap } from 'rxjs/operators';
@@ -7,15 +7,19 @@ import { of } from 'rxjs';
 import { TodoState } from '@integration/store/todos/todo/todo.state';
 import { Pizza, TodoStateModel } from '@integration/store/todos/todos.model';
 import { LoadData, SetPrefix } from '@integration/store/todos/todos.actions';
+import { Injectable } from '@angular/core';
+
+const TODOS_TOKEN: StateToken<TodoStateModel> = new StateToken('todos');
 
 @State<TodoStateModel>({
-  name: 'todos',
+  name: TODOS_TOKEN,
   defaults: {
     todo: [],
     pizza: { model: undefined }
   },
   children: [TodoState]
 })
+@Injectable()
 export class TodosState {
   @Selector()
   public static pizza(state: TodoStateModel): Pizza {
@@ -23,7 +27,7 @@ export class TodosState {
   }
 
   @Action(SetPrefix)
-  public setPrefix({ getState, setState, patchState }: StateContext<TodoStateModel>) {
+  public setPrefix({ setState }: StateContext<TodoStateModel>) {
     setState(
       patch({
         pizza: patch({

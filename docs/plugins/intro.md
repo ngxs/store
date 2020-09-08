@@ -9,7 +9,7 @@ and then a `forRoot` method on your module.
 
 Let's take a look at a basic example of a logger:
 
-```TS
+```ts
 import { Injectable, Inject, NgModule } from '@angular/core';
 import { NgxsPlugin, NGXS_PLUGINS } from '@ngxs/store';
 
@@ -23,8 +23,9 @@ export class LoggerPlugin implements NgxsPlugin {
     console.log('Action started!', state);
     return next(state, action).pipe(
       tap(result => {
-      console.log('Action happened!', result);
-    }))
+        console.log('Action happened!', result);
+      })
+    );
   }
 }
 
@@ -37,14 +38,14 @@ export class NgxsLoggerPluginModule {
         {
           provide: NGXS_PLUGINS,
           useClass: LoggerPlugin,
-          multi: true  
+          multi: true
         },
         {
           provide: NGXS_LOGGER_PLUGIN_OPTIONS,
           useValue: config
         }
       ]
-    }
+    };
   }
 }
 ```
@@ -52,7 +53,7 @@ export class NgxsLoggerPluginModule {
 You can also use pure functions for plugins. The above example in a pure function
 would look like this:
 
-```TS
+```ts
 export function logPlugin(state, action, next) {
   console.log('Action started!', state);
   return next(state, action).pipe(tap(result) => {
@@ -65,7 +66,7 @@ NOTE: When providing a pure function make sure to use `useValue` instead of `use
 
 To register a plugin with NGXS, import the plugin module in your module and optionally pass in the plugin options like this:
 
-```TS
+```ts
 @NgModule({
   imports: [NgxsModule.forRoot([ZooStore]), NgxsLoggerPluginModule.forRoot({})]
 })

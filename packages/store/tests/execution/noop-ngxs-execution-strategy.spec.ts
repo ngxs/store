@@ -1,8 +1,6 @@
 import { ApplicationRef, NgZone, Component, Type } from '@angular/core';
 import { TestBed, TestModuleMetadata } from '@angular/core/testing';
-
 import { Observable } from 'rxjs';
-
 import {
   State,
   Action,
@@ -10,9 +8,9 @@ import {
   NgxsModule,
   Store,
   Select,
-  Actions
-} from '../../src/public_api';
-import { NoopNgxsExecutionStrategy } from '@ngxs/store/src/execution/noop-ngxs-execution-strategy';
+  Actions,
+  NoopNgxsExecutionStrategy
+} from '@ngxs/store';
 
 describe('NoopNgxsExecutionStrategy', () => {
   class ZoneCounter {
@@ -56,10 +54,6 @@ describe('NoopNgxsExecutionStrategy', () => {
     public counter$: Observable<number>;
   }
 
-  function repeat<T>(value: T, times: number): T[] {
-    return <T[]>new Array(times).fill(value);
-  }
-
   function setup(moduleDef?: TestModuleMetadata) {
     moduleDef = moduleDef || {
       imports: [
@@ -86,9 +80,9 @@ describe('NoopNgxsExecutionStrategy', () => {
       ],
       declarations: [...(moduleDef.declarations || [])]
     });
-    const store: Store = TestBed.get(Store);
-    const zone: NgZone = TestBed.get(NgZone);
-    const get = <T>(classType: Type<T>) => <T>TestBed.get(classType);
+    const store: Store = TestBed.inject(Store);
+    const zone: NgZone = TestBed.inject(NgZone);
+    const get = <T>(classType: Type<T>) => <T>TestBed.inject(classType);
     return { zone, store, ticks, get };
   }
 

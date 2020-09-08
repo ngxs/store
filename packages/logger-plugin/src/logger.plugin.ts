@@ -1,97 +1,41 @@
-import { Injectable, Inject } from '@angular/core';
-import { tap, finalize, catchError } from 'rxjs/operators';
-
-import { NgxsPlugin, getActionTypeFromInstance, NgxsNextPluginFn } from '@ngxs/store';
-
-import { NGXS_LOGGER_PLUGIN_OPTIONS, NgxsLoggerPluginOptions } from './symbols';
-import { pad } from './internals';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
+import { catchError, tap } from 'rxjs/operators';
+import { ActionLogger } from './action-logger';
+import { LogWriter } from './log-writer';
+import { NgxsLoggerPluginOptions, NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';
 
 @Injectable()
 export class NgxsLoggerPlugin implements NgxsPlugin {
-  constructor(@Inject(NGXS_LOGGER_PLUGIN_OPTIONS) private _options: NgxsLoggerPluginOptions) {}
+  private _store: Store;
+  private _logWriter: LogWriter;
+
+  constructor(
+    @Inject(NGXS_LOGGER_PLUGIN_OPTIONS) private _options: NgxsLoggerPluginOptions,
+    private _injector: Injector
+  ) {}
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
-    if (this._options.disabled) {
+    if (this._options.disabled || !this._options.filter!(event, state)) {
       return next(state, event);
     }
 
-    const options = this._options || <any>{};
-    const logger = options.logger || console;
-    const actionName = getActionTypeFromInstance(event);
-    const time = new Date();
+    this._logWriter = this._logWriter || new LogWriter(this._options);
+    // Retrieve lazily to avoid cyclic dependency exception
+    this._store = this._store || this._injector.get<Store>(Store);
 
-    // tslint:disable-next-line
-    const formattedTime = ` @ ${pad(time.getHours(), 2)}:${pad(time.getMinutes(), 2)}:${pad(
-      time.getSeconds(),
-      2
-    )}.${pad(time.getMilliseconds(), 3)}`;
+    const actionLogger = new ActionLogger(event, this._store, this._logWriter);
 
-    const message = `action ${actionName}${formattedTime}`;
-    const startMessage = options.collapsed ? logger.groupCollapsed : logger.group;
-
-    try {
-      startMessage.call(logger, message);
-    } catch (e) {
-      console.log(message);
-    }
-
-    // print payload only if at least one property is supplied
-    if (this._hasPayload(event)) {
-      this.log('payload', 'color: #9E9E9E; font-weight: bold', { ...event });
-    }
-
-    this.log('prev state', 'color: #9E9E9E; font-weight: bold', state);
+    actionLogger.dispatched(state);
 
     return next(state, event).pipe(
       tap(nextState => {
-        this.log('next state', 'color: #4CAF50; font-weight: bold', nextState);
+        actionLogger.completed(nextState);
       }),
       catchError(error => {
-        this.log('error', 'color: #FD8182; font-weight: bold', error);
-
+        actionLogger.errored(error);
         throw error;
-      }),
-      finalize(() => {
-        try {
-          logger.groupEnd();
-        } catch (e) {
-          logger.log('—— log end ——');
-        }
       })
     );
-  }
-
-  log(title: string, color: string, payload: any) {
-    const options = this._options || <any>{};
-    const logger = options.logger || console;
-
-    if (this.isIE()) {
-      logger.log(title, payload);
-    } else {
-      logger.log('%c ' + title, color, payload);
-    }
-  }
-
-  isIE(): boolean {
-    const ua =
-      typeof window !== 'undefined' && window.navigator.userAgent
-        ? window.navigator.userAgent
-        : '';
-    let ms_ie = false;
-
-    const old_ie = ua.indexOf('MSIE ');
-    const new_ie = ua.indexOf('Trident/');
-
-    if (old_ie > -1 || new_ie > -1) {
-      ms_ie = true;
-    }
-
-    return ms_ie;
-  }
-
-  private _hasPayload(event: any) {
-    const nonEmptyProperties = Object.entries(event).filter(([, value]) => !!value);
-
-    return nonEmptyProperties.length > 0;
   }
 }

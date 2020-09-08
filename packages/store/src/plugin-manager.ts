@@ -1,13 +1,9 @@
-import { Injectable, Optional, SkipSelf, Inject } from '@angular/core';
-import { NgxsPluginFn, NGXS_PLUGINS, NgxsPlugin } from './symbols';
+import { Inject, Injectable, Optional, SkipSelf } from '@angular/core';
+import { NGXS_PLUGINS, NgxsPlugin, NgxsPluginFn } from './symbols';
 
-/**
- * Plugin manager class
- * @ignore
- */
 @Injectable()
 export class PluginManager {
-  plugins: NgxsPluginFn[] = [];
+  public plugins: NgxsPluginFn[] = [];
 
   constructor(
     @Optional()
@@ -15,26 +11,25 @@ export class PluginManager {
     private _parentManager: PluginManager,
     @Inject(NGXS_PLUGINS)
     @Optional()
-    private _plugins: NgxsPlugin[]
+    private _pluginHandlers: NgxsPlugin[]
   ) {
-    this.register();
+    this.registerHandlers();
   }
 
-  private register() {
-    if (!this._plugins) {
-      return;
-    }
+  private get rootPlugins(): NgxsPluginFn[] {
+    return (this._parentManager && this._parentManager.plugins) || this.plugins;
+  }
 
-    this.plugins = this._plugins.map(plugin => {
-      if (plugin.handle) {
-        return plugin.handle.bind(plugin);
-      } else {
-        return plugin;
-      }
-    });
+  private registerHandlers(): void {
+    const pluginHandlers: NgxsPluginFn[] = this.getPluginHandlers();
+    this.rootPlugins.push(...pluginHandlers);
+  }
 
-    if (this._parentManager) {
-      this._parentManager.plugins.push(...this.plugins);
-    }
+  private getPluginHandlers(): NgxsPluginFn[] {
+    const handlers: NgxsPlugin[] = this._pluginHandlers || [];
+    return handlers.map(
+      (plugin: NgxsPlugin) =>
+        (plugin.handle ? plugin.handle.bind(plugin) : plugin) as NgxsPluginFn
+    );
   }
 }

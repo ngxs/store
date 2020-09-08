@@ -1,4 +1,4 @@
-import { ErrorHandler } from '@angular/core';
+import { ErrorHandler, Injectable } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { delay } from 'rxjs/operators';
 import { throwError, of } from 'rxjs';
@@ -43,6 +43,7 @@ describe('Action', () => {
   @State({
     name: 'bar'
   })
+  @Injectable()
   class BarStore {
     @Action([Action1, Action2])
     foo() {}
@@ -69,8 +70,8 @@ describe('Action', () => {
       providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
     });
 
-    store = TestBed.get(Store);
-    actions = TestBed.get(Actions);
+    store = TestBed.inject(Store);
+    actions = TestBed.inject(Actions);
   });
 
   it('supports multiple actions', () => {
@@ -83,15 +84,15 @@ describe('Action', () => {
   it('calls actions on dispatch and on complete', fakeAsync(() => {
     const callbacksCalled: string[] = [];
 
-    actions.pipe(ofAction(Action1)).subscribe(action => {
+    actions.pipe(ofAction(Action1)).subscribe(() => {
       callbacksCalled.push('ofAction');
     });
 
-    actions.pipe(ofActionDispatched(Action1)).subscribe(action => {
+    actions.pipe(ofActionDispatched(Action1)).subscribe(() => {
       callbacksCalled.push('ofActionDispatched');
     });
 
-    actions.pipe(ofActionSuccessful(Action1)).subscribe(action => {
+    actions.pipe(ofActionSuccessful(Action1)).subscribe(() => {
       callbacksCalled.push('ofActionSuccessful');
       expect(callbacksCalled).toEqual([
         'ofAction',
@@ -101,7 +102,7 @@ describe('Action', () => {
       ]);
     });
 
-    actions.pipe(ofActionCompleted(Action1)).subscribe(({ action, result }) => {
+    actions.pipe(ofActionCompleted(Action1)).subscribe(({ result }) => {
       callbacksCalled.push('ofActionCompleted');
       expect(result).toEqual({
         canceled: false,
@@ -133,22 +134,22 @@ describe('Action', () => {
   it('calls only the dispatched and error action', fakeAsync(() => {
     const callbacksCalled: string[] = [];
 
-    actions.pipe(ofAction(Action1)).subscribe(action => {
+    actions.pipe(ofAction(Action1)).subscribe(() => {
       callbacksCalled.push('ofAction[Action1]');
     });
-    actions.pipe(ofAction(ErrorAction)).subscribe(action => {
+    actions.pipe(ofAction(ErrorAction)).subscribe(() => {
       callbacksCalled.push('ofAction');
     });
 
-    actions.pipe(ofActionDispatched(ErrorAction)).subscribe(action => {
+    actions.pipe(ofActionDispatched(ErrorAction)).subscribe(() => {
       callbacksCalled.push('ofActionDispatched');
     });
 
-    actions.pipe(ofActionSuccessful(ErrorAction)).subscribe(action => {
+    actions.pipe(ofActionSuccessful(ErrorAction)).subscribe(() => {
       callbacksCalled.push('ofActionSuccessful');
     });
 
-    actions.pipe(ofActionErrored(ErrorAction)).subscribe(action => {
+    actions.pipe(ofActionErrored(ErrorAction)).subscribe(() => {
       callbacksCalled.push('ofActionErrored');
       expect(callbacksCalled).toEqual([
         'ofAction',
@@ -158,7 +159,7 @@ describe('Action', () => {
       ]);
     });
 
-    actions.pipe(ofActionCompleted(ErrorAction)).subscribe(({ action, result }) => {
+    actions.pipe(ofActionCompleted(ErrorAction)).subscribe(({ result }) => {
       callbacksCalled.push('ofActionCompleted');
       expect(result).toEqual({
         canceled: false,
@@ -168,7 +169,7 @@ describe('Action', () => {
     });
 
     store.dispatch(new ErrorAction()).subscribe({
-      error: error =>
+      error: () =>
         expect(callbacksCalled).toEqual([
           'ofAction',
           'ofActionDispatched',
@@ -191,19 +192,19 @@ describe('Action', () => {
   it('calls only the dispatched and canceled action', fakeAsync(() => {
     const callbacksCalled: string[] = [];
 
-    actions.pipe(ofAction(CancelingAction)).subscribe(action => {
+    actions.pipe(ofAction(CancelingAction)).subscribe(() => {
       callbacksCalled.push('ofAction');
     });
 
-    actions.pipe(ofActionDispatched(CancelingAction)).subscribe(action => {
+    actions.pipe(ofActionDispatched(CancelingAction)).subscribe(() => {
       callbacksCalled.push('ofActionDispatched');
     });
 
-    actions.pipe(ofActionErrored(CancelingAction)).subscribe(action => {
+    actions.pipe(ofActionErrored(CancelingAction)).subscribe(() => {
       callbacksCalled.push('ofActionErrored');
     });
 
-    actions.pipe(ofActionSuccessful(CancelingAction)).subscribe(action => {
+    actions.pipe(ofActionSuccessful(CancelingAction)).subscribe(() => {
       callbacksCalled.push('ofActionSuccessful');
       expect(callbacksCalled).toEqual([
         'ofAction',
@@ -217,7 +218,7 @@ describe('Action', () => {
       ]);
     });
 
-    actions.pipe(ofActionCanceled(CancelingAction)).subscribe(action => {
+    actions.pipe(ofActionCanceled(CancelingAction)).subscribe(() => {
       callbacksCalled.push('ofActionCanceled');
       expect(callbacksCalled).toEqual([
         'ofAction',
@@ -229,7 +230,7 @@ describe('Action', () => {
       ]);
     });
 
-    store.dispatch([new CancelingAction(), new CancelingAction()]).subscribe(action => {
+    store.dispatch([new CancelingAction(), new CancelingAction()]).subscribe(() => {
       expect(callbacksCalled).toEqual([
         'ofAction',
         'ofActionDispatched',

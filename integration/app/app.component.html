@@ -22,10 +22,10 @@
     <input placeholder="New Todo" #text /> <button (click)="addTodo(text.value)">Add</button>
   </div>
   <ul>
-    <li class="todo" *ngFor="let todo of (todos$ | async); let i = index">
+    <li class="todo" *ngFor="let todo of todos$ | async; let i = index">
       {{ todo }} <button (click)="removeTodo(i)">🗑</button>
     </li>
-    <li *ngFor="let todo of (pandas$ | async)">🐼</li>
+    <li *ngFor="let todo of pandas$ | async">🐼</li>
   </ul>
 
   <div class="menu">
@@ -37,5 +37,4 @@
   <div class="content">
     <router-outlet></router-outlet>
   </div>
-
 </div>

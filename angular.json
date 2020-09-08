@@ -15,24 +15,18 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/jest:run",
           "options": {
-            "main": "packages/test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "tsConfig": "./tsconfig.spec.json"
+            "configPath": "../jest.config.js",
+            "no-cache": false
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "tsconfig.lib.json",
-              "tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**",
-              "./integrations/**"
-            ]
+            "tsConfig": ["tsconfig.lib.json", "tsconfig.spec.json"],
+            "tslintConfig": "tslint.json",
+            "exclude": ["**/node_modules/**", "./integrations/**", "./packages/store/types/**"]
           }
         }
       }
@@ -51,11 +45,13 @@
             "tsConfig": "./integration/tsconfig.app.json",
             "polyfills": "./integration/polyfills.ts",
             "assets": [
-              "./integration/favicon.ico"
+              {
+                "glob": "favicon.ico",
+                "input": "./integration",
+                "output": "./"
+              }
             ],
-            "styles": [
-              "./integration/styles.scss"
-            ]
+            "styles": ["./integration/styles.scss"]
           },
           "configurations": {
             "production": {
@@ -89,21 +85,13 @@
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "dist-integration-server",
-            "main": "./integration/main.server.ts",
+            "main": "./integration/server.ts",
             "tsConfig": "./integration/tsconfig.server.json"
           },
           "configurations": {
-            "dev": {
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": true
-            },
             "production": {
               "optimization": true,
-              "outputHashing": "all",
+              "outputHashing": "none",
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
@@ -139,24 +127,18 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/jest:run",
           "options": {
-            "main": "./integration/test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "polyfills": "./integration/polyfills.ts",
-            "tsConfig": "./integration/tsconfig.spec.json"
+            "configPath": "./jest.integration.config.js",
+            "no-cache": false
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "integration/tsconfig.app.json",
-              "integration/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["integration/tsconfig.app.json", "integration/tsconfig.spec.json"],
+            "tslintConfig": "tslint.json",
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -166,5 +148,8 @@
   "schematics": {
     "@schematics/angular:component": {},
     "@schematics/angular:directive": {}
+  },
+  "cli": {
+    "analytics": false
   }
 }

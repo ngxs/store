@@ -37,8 +37,8 @@ describe('compose', () => {
 
       // Act
       const newValue = patch({
-        a: compose(
-          iif(
+        a: compose<typeof original['a']>(
+          iif<typeof original['a']>(
             a => a!.hello === 'world',
             patch({
               hello: 'world'
@@ -60,10 +60,10 @@ describe('compose', () => {
       };
 
       // Act
-      const newValue = compose(
+      const newValue = compose<typeof original>(
         patch({ a: 10 }),
-        iif(object => object!.b === 2, patch({ b: 20 })),
-        iif(object => object!.c === 3, patch({ c: 30 }))
+        iif<typeof original>(object => object!.b === 2, patch({ b: 20 })),
+        iif<typeof original>(object => object!.c === 3, patch({ c: 30 }))
       )(original);
 
       // Assert
@@ -332,7 +332,10 @@ describe('compose', () => {
       const newValue2 = patch({
         nestedStock: patch({
           wine: compose(
-            iif(wines => wines!.length === 0, append([{ name: 'Geneve', quantity: 10 }])),
+            iif<Wine[]>(
+              wines => wines!.length === 0,
+              append([{ name: 'Geneve', quantity: 10 }])
+            ),
             insertItem({ name: 'Geneve 2', quantity: 20 })
           ),
           nestedStock: patch({

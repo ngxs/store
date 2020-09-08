@@ -1,14 +1,14 @@
-import { Injectable, ErrorHandler } from '@angular/core';
-import { Observable, of, forkJoin, empty, Subject, throwError } from 'rxjs';
-import { shareReplay, filter, exhaustMap, take } from 'rxjs/operators';
+import { ErrorHandler, Injectable } from '@angular/core';
+import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
+import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
 
 import { compose } from '../utils/compose';
-import { InternalActions, ActionStatus, ActionContext } from '../actions-stream';
+import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
-import { NgxsConfig } from '../symbols';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
+import { getActionTypeFromInstance } from '../utils/utils';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -40,7 +40,11 @@ export class InternalDispatcher {
 
     result.subscribe({
       error: error =>
-        this._ngxsExecutionStrategy.leave(() => this._errorHandler.handleError(error))
+        this._ngxsExecutionStrategy.leave(() => {
+          try {
+            this._errorHandler.handleError(error);
+          } catch {}
+        })
     });
 
     return result.pipe(leaveNgxs(this._ngxsExecutionStrategy));
@@ -48,13 +52,22 @@ export class InternalDispatcher {
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
     if (Array.isArray(actionOrActions)) {
-      return forkJoin(actionOrActions.map(a => this.dispatchSingle(a)));
+      if (actionOrActions.length === 0) return of(this._stateStream.getValue());
+      return forkJoin(actionOrActions.map(action => this.dispatchSingle(action)));
     } else {
       return this.dispatchSingle(actionOrActions);
     }
   }
 
   private dispatchSingle(action: any): Observable<any> {
+    const type: string | undefined = getActionTypeFromInstance(action);
+    if (!type) {
+      const error = new Error(
+        `This action doesn't have a type property: ${action.constructor.name}`
+      );
+      return throwError(error);
+    }
+
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
@@ -92,7 +105,7 @@ export class InternalDispatcher {
             case ActionStatus.Errored:
               return throwError(ctx.error);
             default:
-              return empty();
+              return EMPTY;
           }
         })
       )

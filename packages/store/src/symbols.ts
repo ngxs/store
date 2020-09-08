@@ -1,17 +1,26 @@
 import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ObjectKeyMap } from './internal/internals';
+import { PlainObject, StateClass } from '@ngxs/store/internals';
+import { SharedSelectorOptions, Callback } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
+import { StateToken } from './state-token/state-token';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
+export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
+export const NG_TEST_MODE = new InjectionToken<Callback<boolean>>('NG_TEST_MODE');
+export const NG_DEV_MODE = new InjectionToken<Callback<boolean>>('NG_DEV_MODE');
+
 export const META_KEY = 'NGXS_META';
 export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
 export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 
-export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
+export type NgxsLifeCycle = Partial<NgxsOnChanges> &
+  Partial<NgxsOnInit> &
+  Partial<NgxsAfterBootstrap>;
+
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 
 /**
@@ -28,7 +37,7 @@ export class NgxsConfig {
   compatibility: {
     /**
      * Support a strict Content Security Policy.
-     * This will cirumvent some optimisations that violate a strict CSP through the use of `new Function(...)`.
+     * This will circumvent some optimisations that violate a strict CSP through the use of `new Function(...)`.
      * (default: false)
      */
     strictContentSecurityPolicy: boolean;
@@ -48,9 +57,17 @@ export class NgxsConfig {
   /**
    * Defining the default state before module initialization
    * This is convenient if we need to create a define our own set of states.
+   * @deprecated will be removed after v4
    * (default: {})
    */
-  defaultsState: ObjectKeyMap<any> = {};
+  defaultsState: PlainObject = {};
+  /**
+   * Defining shared selector options
+   */
+  selectorOptions: SharedSelectorOptions = {
+    injectContainerState: true, // TODO: default is true in v3, will change in v4
+    suppressErrors: true // TODO: default is true in v3, will change in v4
+  };
 
   constructor() {
     this.compatibility = {
@@ -106,7 +123,7 @@ export interface StoreOptions<T> {
   /**
    * Name of the state. Required.
    */
-  name: string;
+  name: string | StateToken<T>;
 
   /**
    * Default values for the state. If not provided, uses empty object.
@@ -116,12 +133,19 @@ export interface StoreOptions<T> {
   /**
    * Sub states for the given state.
    */
-  children?: any[];
+  children?: StateClass[];
 }
 
-export const enum LifecycleHooks {
-  NgxsOnInit = 'ngxsOnInit',
-  NgxsAfterBootstrap = 'ngxsAfterBootstrap'
+/**
+ * Represents a basic change from a previous to a new value for a single state instance.
+ * Passed as a value in a NgxsSimpleChanges object to the ngxsOnChanges hook.
+ */
+export class NgxsSimpleChange<T = any> {
+  constructor(
+    public readonly previousValue: T,
+    public readonly currentValue: T,
+    public readonly firstChange: boolean
+  ) {}
 }
 
 /**
@@ -132,10 +156,17 @@ export interface NgxsOnInit {
 }
 
 /**
+ * On change interface
+ */
+export interface NgxsOnChanges {
+  ngxsOnChanges(change: NgxsSimpleChange): void;
+}
+
+/**
  * After bootstrap interface
  */
 export interface NgxsAfterBootstrap {
   ngxsAfterBootstrap(ctx?: StateContext<any>): void;
 }
 
-export type NgxsLifeCycle = Partial<NgxsOnInit> & Partial<NgxsAfterBootstrap>;
+export type NgxsModuleOptions = Partial<NgxsConfig>;

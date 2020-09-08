@@ -303,8 +303,8 @@ describe('patch', () => {
 
           // Act
           const newValue = patch<Model>({
-            b: patch({
-              hello: patch({
+            b: patch<Model['b']>({
+              hello: patch<Model['b']['hello']>({
                 enthusiastic: true,
                 person: patch({
                   name: 'Mark',

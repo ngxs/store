@@ -4,10 +4,12 @@ import { isStateOperator } from './utils';
 export type PatchSpec<T> = { [P in keyof T]?: T[P] | StateOperator<NonNullable<T[P]>> };
 
 type PatchValues<T> = {
-  readonly [P in keyof T]?: T[P] extends (...args: any[]) => infer R ? R : T[P]
+  readonly [P in keyof T]?: T[P] extends (...args: any[]) => infer R ? R : T[P];
 };
 
-export function patch<T>(patchObject: PatchSpec<T>) {
+type PatchOperator<T> = <U extends PatchValues<T>>(existing: Readonly<U>) => U;
+
+export function patch<T>(patchObject: PatchSpec<T>): PatchOperator<T> {
   return function patchStateOperator<U extends PatchValues<T>>(existing: Readonly<U>): U {
     let clone = null;
     for (const k in patchObject) {

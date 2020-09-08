@@ -1,12 +1,12 @@
-import { Injectable, Inject, Injector } from '@angular/core';
-import { NgxsPlugin, getActionTypeFromInstance, Store, NgxsNextPluginFn } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { getActionTypeFromInstance, NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
+import { tap, catchError } from 'rxjs/operators';
 
 import {
-  NgxsDevtoolsExtension,
-  NgxsDevtoolsOptions,
   NGXS_DEVTOOLS_OPTIONS,
-  NgxsDevtoolsAction
+  NgxsDevtoolsAction,
+  NgxsDevtoolsExtension,
+  NgxsDevtoolsOptions
 } from './symbols';
 
 /**
@@ -31,6 +31,13 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
   }
 
   /**
+   * Lazy get the store for circular dependency issues
+   */
+  private get store(): Store {
+    return this._injector.get<Store>(Store);
+  }
+
+  /**
    * Middleware handle function
    */
   handle(state: any, action: any, next: NgxsNextPluginFn) {
@@ -40,33 +47,39 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
     }
 
     return next(state, action).pipe(
+      catchError(error => {
+        const newState = this.store.snapshot();
+        this.sendToDevTools(state, action, newState);
+        throw error;
+      }),
       tap(newState => {
-        // if init action, send initial state to dev tools
-        const isInitAction = getActionTypeFromInstance(action) === '@@INIT';
-        if (isInitAction) {
-          this.devtoolsExtension!.init(state);
-        } else {
-          const type = getActionTypeFromInstance(action);
-
-          this.devtoolsExtension!.send({ ...action, type }, newState);
-        }
+        this.sendToDevTools(state, action, newState);
       })
     );
+  }
+
+  private sendToDevTools(state: any, action: any, newState: any) {
+    const type = getActionTypeFromInstance(action);
+    // if init action, send initial state to dev tools
+    const isInitAction = type === '@@INIT';
+    if (isInitAction) {
+      this.devtoolsExtension!.init(state);
+    } else {
+      this.devtoolsExtension!.send({ ...action, action: null, type }, newState);
+    }
   }
 
   /**
    * Handle the action from the dev tools subscription
    */
   dispatched(action: NgxsDevtoolsAction) {
-    // Lazy get the store for circular depedency issues
-    const store = this._injector.get(Store);
     if (action.type === 'DISPATCH') {
       if (
         action.payload.type === 'JUMP_TO_ACTION' ||
         action.payload.type === 'JUMP_TO_STATE'
       ) {
         const prevState = JSON.parse(action.state);
-        store.reset(prevState);
+        this.store.reset(prevState);
       } else if (action.payload.type === 'TOGGLE_ACTION') {
         console.warn('Skip is not supported at this time.');
       } else if (action.payload.type === 'IMPORT_STATE') {
@@ -81,11 +94,11 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
           .forEach(actionId =>
             this.devtoolsExtension!.send(actionsById[actionId], computedStates[actionId].state)
           );
-        store.reset(computedStates[currentStateIndex].state);
+        this.store.reset(computedStates[currentStateIndex].state);
       }
     } else if (action.type === 'ACTION') {
       const actionPayload = JSON.parse(action.payload);
-      store.dispatch(actionPayload);
+      this.store.dispatch(actionPayload);
     }
   }
 }

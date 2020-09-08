@@ -1,15 +1,17 @@
 // tslint:disable:unified-signatures
-import { Injectable, Type } from '@angular/core';
-import { Observable, of, Subscription } from 'rxjs';
+import { Inject, Injectable, Optional, Type } from '@angular/core';
+import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
+import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
 
-import { getSelectorFn } from './utils/selector-utils';
-import { InternalStateOperations } from './internal/state-operations';
-import { StateStream } from './internal/state-stream';
-import { NgxsConfig } from './symbols';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
+import { InternalStateOperations } from './internal/state-operations';
+import { getRootSelectorFactory } from './utils/selector-utils';
+import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
-import { ObjectKeyMap } from './internal/internals';
+import { NgxsConfig } from './symbols';
+import { StateToken } from './state-token/state-token';
+import { StateFactory } from './internal/state-factory';
 
 @Injectable()
 export class Store {
@@ -17,20 +19,20 @@ export class Store {
     private _stateStream: StateStream,
     private _internalStateOperations: InternalStateOperations,
     private _config: NgxsConfig,
-    private _internalExecutionStrategy: InternalNgxsExecutionStrategy
+    private _internalExecutionStrategy: InternalNgxsExecutionStrategy,
+    private _stateFactory: StateFactory,
+    @Optional()
+    @Inject(INITIAL_STATE_TOKEN)
+    initialStateValue: any
   ) {
-    const value: ObjectKeyMap<any> = this._stateStream.value;
-    const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
-    if (storeIsEmpty) {
-      this._stateStream.next(this._config.defaultsState);
-    }
+    this.initStateStream(initialStateValue);
   }
 
   /**
    * Dispatches event(s).
    */
-  dispatch(event: any | any[]): Observable<any> {
-    return this._internalStateOperations.getRootStateOperations().dispatch(event);
+  dispatch(actionOrActions: any | any[]): Observable<any> {
+    return this._internalStateOperations.getRootStateOperations().dispatch(actionOrActions);
   }
 
   /**
@@ -38,18 +40,21 @@ export class Store {
    */
   select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
   select<T = any>(selector: string | Type<any>): Observable<T>;
+  select<T>(selector: StateToken<T>): Observable<T>;
   select(selector: any): Observable<any> {
-    const selectorFn = getSelectorFn(selector);
+    const selectorFn = this.getStoreBoundSelectorFn(selector);
     return this._stateStream.pipe(
       map(selectorFn),
-      catchError(err => {
+      catchError((err: Error): Observable<never> | Observable<undefined> => {
         // if error is TypeError we swallow it to prevent usual errors with property access
-        if (err instanceof TypeError) {
+        const { suppressErrors } = this._config.selectorOptions;
+
+        if (err instanceof TypeError && suppressErrors) {
           return of(undefined);
         }
 
         // rethrow other errors
-        throw err;
+        return throwError(err);
       }),
       distinctUntilChanged(),
       leaveNgxs(this._internalExecutionStrategy)
@@ -62,6 +67,7 @@ export class Store {
 
   selectOnce<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
   selectOnce<T = any>(selector: string | Type<any>): Observable<T>;
+  selectOnce<T>(selector: StateToken<T>): Observable<T>;
   selectOnce(selector: any): Observable<any> {
     return this.select(selector).pipe(take(1));
   }
@@ -71,8 +77,9 @@ export class Store {
    */
   selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T;
   selectSnapshot<T = any>(selector: string | Type<any>): T;
+  selectSnapshot<T>(selector: StateToken<T>): T;
   selectSnapshot(selector: any): any {
-    const selectorFn = getSelectorFn(selector);
+    const selectorFn = this.getStoreBoundSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());
   }
 
@@ -96,5 +103,24 @@ export class Store {
    */
   reset(state: any) {
     return this._internalStateOperations.getRootStateOperations().setState(state);
+  }
+
+  private getStoreBoundSelectorFn(selector: any) {
+    const makeSelectorFn = getRootSelectorFactory(selector);
+    const runtimeContext = this._stateFactory.getRuntimeSelectorContext();
+    return makeSelectorFn(runtimeContext);
+  }
+
+  private initStateStream(initialStateValue: any): void {
+    const value: PlainObject = this._stateStream.value;
+    const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
+    if (storeIsEmpty) {
+      const defaultStateNotEmpty: boolean = Object.keys(this._config.defaultsState).length > 0;
+      const storeValues: PlainObject = defaultStateNotEmpty
+        ? { ...this._config.defaultsState, ...initialStateValue }
+        : initialStateValue;
+
+      this._stateStream.next(storeValues);
+    }
   }
 }

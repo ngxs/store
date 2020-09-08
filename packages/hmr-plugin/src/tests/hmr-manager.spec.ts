@@ -1,15 +1,26 @@
+import { InjectionToken, Injector, NgModuleRef, OnDestroy, Type } from '@angular/core';
 import { fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
-import { ofActionDispatched } from '@ngxs/store';
+import {
+  hmr,
+  NgxsHmrLifeCycle,
+  NgxsHmrSnapshot as Snapshot,
+  WebpackModule
+} from '@ngxs/hmr-plugin';
+import { ofActionDispatched, StateContext } from '@ngxs/store';
 
-import { NgxsHmrSnapshot } from '../symbols';
 import {
   AppMockModule,
+  AppMockModuleNoHmrLifeCycle,
   AppMockModuleNoHmrLifeCycle as AppMockNoHmrModule,
   MockState
 } from './hmr-mock';
 import { HmrInitAction } from '../actions/hmr-init.action';
 import { HmrBeforeDestroyAction } from '../actions/hmr-before-destroy.action';
+import { HmrStateContextFactory } from '../internal/hmr-state-context-factory';
 import { hmrTestBed, setup } from './hmr-helpers';
+import { NgxsHmrSnapshot } from '../symbols';
+import { hmrIsReloaded } from '../utils/externals';
+import { setHmrReloadedTo } from '../utils/internals';
 
 describe('HMR Plugin', () => {
   it('should initialize AppMockModule', async () => {
@@ -90,9 +101,13 @@ describe('HMR Plugin', () => {
       .pipe(ofActionDispatched(HmrBeforeDestroyAction))
       .subscribe(({ payload }) => (hmrSnapshot = payload));
 
+    expect(hmrIsReloaded()).toEqual(false);
+
     // Act
     await webpackModule.destroyModule();
     tick(1000);
+
+    expect(hmrIsReloaded()).toEqual(true);
 
     // Assert
     expect(hmrSnapshot).toEqual({
@@ -225,4 +240,190 @@ describe('HMR Plugin', () => {
     // Assert
     expect(MockState.destroy).toEqual(true);
   }));
+
+  it('check if the state is set correctly ', fakeAsync(async () => {
+    class AppV2MockModule extends AppMockModule implements NgxsHmrLifeCycle {
+      hmrNgxsStoreOnInit(ctx: StateContext<Snapshot>, snapshot: Partial<Snapshot>) {
+        ctx.setState((state: Snapshot) => ({ ...state, ...snapshot, custom: 456 }));
+      }
+    }
+
+    const { store } = await hmrTestBed(AppV2MockModule, {
+      storedValue: { value: 'hello world' }
+    });
+
+    expect(store.snapshot()).toEqual({
+      value: 'hello world',
+      mock_state: { value: 'test' }
+    });
+
+    tick(1000);
+
+    expect(store.snapshot()).toEqual({
+      value: 'hello world',
+      mock_state: { value: 'test' },
+      custom: 456
+    });
+  }));
+
+  it('should be correct handling errors', async () => {
+    console.error = () => {}; // silent errors in logs for test
+
+    try {
+      await hmr({} as WebpackModule, null as any);
+    } catch (e) {
+      expect(e.message).toEqual('HMR is not enabled for webpack-dev-server!');
+    }
+
+    try {
+      const mockNgModuleRef: NgModuleRef<any> = {
+        injector: {
+          get<T>(_: Type<T> | InjectionToken<T>): T {
+            return null as any;
+          }
+        } as Injector
+      } as NgModuleRef<any>;
+
+      new HmrStateContextFactory(mockNgModuleRef);
+    } catch (e) {
+      expect(e.message).toEqual('Store not found, maybe you forgot to import the NgxsModule');
+    }
+  });
+
+  it('should be correct destroy old module', async () => {
+    expect(hmrIsReloaded()).toEqual(false);
+    const { appModule, webpackModule } = await hmrTestBed(AppMockModule);
+    expect((appModule as any)['_destroyed']).toEqual(false);
+
+    webpackModule.destroyModule();
+    expect((appModule as any)['_destroyed']).toEqual(true);
+    expect(hmrIsReloaded()).toEqual(true);
+  });
+
+  it('state has to be provided before module is disposed', fakeAsync(async () => {
+    const { webpackModule, store } = await hmrTestBed(AppMockModuleNoHmrLifeCycle);
+    expect(store.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
+
+    webpackModule.destroyModule();
+
+    tick(1000);
+
+    const { store: newStore } = await hmrTestBed(AppMockModuleNoHmrLifeCycle);
+
+    expect(newStore.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
+  }));
+
+  it('state has to be provided before module is disposed with calling reset in ngOnDestroy', fakeAsync(async () => {
+    class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
+      ngOnDestroy(): void {
+        store.reset({});
+      }
+    }
+
+    const { webpackModule, store } = await hmrTestBed(AppMockWithDestroyModule);
+
+    expect(store.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
+
+    webpackModule.destroyModule();
+
+    tick(1000);
+
+    const { store: newStore } = await hmrTestBed(AppMockWithDestroyModule);
+
+    expect(newStore.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
+  }));
+
+  it('"isHrmReloaded" should return "true" if app is being destroyed', fakeAsync(async () => {
+    let count = 0;
+
+    class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
+      ngOnDestroy(): void {
+        if (hmrIsReloaded()) {
+          return;
+        }
+
+        count++;
+      }
+    }
+
+    const { webpackModule } = await hmrTestBed(AppMockWithDestroyModule);
+
+    expect(hmrIsReloaded()).toEqual(false);
+
+    webpackModule.destroyModule();
+
+    expect(hmrIsReloaded()).toEqual(true);
+    expect(count).toEqual(0);
+  }));
+
+  it('should be unique instance state after destroy', async () => {
+    const { appModule, webpackModule } = await hmrTestBed(AppMockModuleNoHmrLifeCycle);
+    const instance: MockState = appModule.injector.get<MockState>(MockState);
+
+    webpackModule.destroyModule();
+
+    const { appModule: newAppModule } = await hmrTestBed(AppMockModuleNoHmrLifeCycle);
+    const newInstance: MockState = newAppModule.injector.get<MockState>(MockState);
+
+    expect(instance !== newInstance).toBeTruthy();
+  });
+
+  it('mutate old state in ngOnDestroy', fakeAsync(async () => {
+    class AppMockWithDestroyModule extends AppMockModuleNoHmrLifeCycle implements OnDestroy {
+      ngOnDestroy(): void {
+        (store.snapshot() as any).mock_state.value = 'mutated value';
+        (store.snapshot() as any).mock_state.any_fields = 'mutated value';
+      }
+    }
+
+    const { webpackModule, store } = await hmrTestBed(AppMockWithDestroyModule);
+
+    expect(store.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
+
+    webpackModule.destroyModule();
+
+    expect(store.snapshot()).toEqual({
+      mock_state: { value: 'mutated value', any_fields: 'mutated value' }
+    });
+
+    const { store: newStore } = await hmrTestBed(AppMockWithDestroyModule);
+
+    expect(newStore.snapshot()).toEqual({
+      mock_state: { value: 'test' }
+    });
+  }));
+
+  it('should show error when using Angular Ivy with JIT mode', async () => {
+    class AppJitModule extends AppMockModuleNoHmrLifeCycle {}
+
+    // Note: emulate JIT mode
+    Object.defineProperty(AppJitModule, '__annotations__', { value: [] });
+
+    // Note: emulate Ivy mode
+    Object.defineProperty(AppJitModule, 'ɵmod', { value: {} });
+
+    let message: string | null = null;
+
+    try {
+      await hmrTestBed(AppJitModule);
+    } catch (e) {
+      message = e.message;
+    }
+
+    expect(message).toEqual(
+      `@ngxs/hmr-plugin doesn't work with JIT mode in Angular Ivy. Please use AOT mode.`
+    );
+  });
+
+  afterEach(() => setHmrReloadedTo(false));
 });

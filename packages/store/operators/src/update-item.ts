@@ -1,6 +1,6 @@
 import { StateOperator } from '@ngxs/store';
 
-import { isStateOperator, isPredicate, isNumber, invalidIndex } from './utils';
+import { isStateOperator, isPredicate, isNumber, invalidIndex, RepairType } from './utils';
 import { Predicate } from './internals';
 
 /**
@@ -12,8 +12,8 @@ import { Predicate } from './internals';
 export function updateItem<T>(
   selector: number | Predicate<T>,
   operatorOrValue: T | StateOperator<T>
-): StateOperator<T[]> {
-  return function updateItemOperator(existing: Readonly<T[]>) {
+): StateOperator<RepairType<T>[]> {
+  return function updateItemOperator(existing: Readonly<RepairType<T>[]>): RepairType<T>[] {
     let index = -1;
 
     if (isPredicate(selector)) {
@@ -23,14 +23,14 @@ export function updateItem<T>(
     }
 
     if (invalidIndex(index)) {
-      return existing;
+      return existing as RepairType<T>[];
     }
 
     let value: T = null!;
     // Need to check if the new item value will change the existing item value
     // then, only if it will change it then clone the array and set the item
     if (isStateOperator(operatorOrValue)) {
-      value = operatorOrValue(existing[index]);
+      value = operatorOrValue(existing[index] as Readonly<T>);
     } else {
       value = operatorOrValue;
     }
@@ -38,11 +38,11 @@ export function updateItem<T>(
     // If the value hasn't been mutated
     // then we just return `existing` array
     if (value === existing[index]) {
-      return existing;
+      return existing as RepairType<T>[];
     }
 
-    const clone = [...existing];
-    clone[index] = value;
+    const clone = existing.slice();
+    clone[index] = value as RepairType<T>;
     return clone;
   };
 }

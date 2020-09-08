@@ -3,6 +3,10 @@
 Hot Module Replacement (HMR) is a Webpack feature to update code in a running app without rebuilding it. This results in faster updates and less full page-reloads.
 In order to get HMR working with Angular CLI we first need to add a new environment and enable it.
 
+> As of Angular v10, HMR is no longer supported and will be deprecated.
+>
+> As a workaround to keep store's state on full-page reloads you can use [`@ngxs/storage-plugin`](https://www.ngxs.io/plugins/storage). Here's a [basic implementation example](https://stackblitz.com/edit/ngxs-hmr-workaround-using-storage-plugin)
+
 ### Add environment for HMR
 
 In this step we will configure the Angular CLI environments and define in which environment we enable HMR.
@@ -35,7 +39,7 @@ export const environment = {
 ```
 
 Update angular.json to include an hmr environment as explained here and add configurations within build and serve to enable hmr.
-Note that <project-name> here represents the name of the project you are adding this configuration to in angular.json.
+Note that \<project-name\> here represents the name of the project you are adding this configuration to in angular.json.
 
 ```text
   "build": {
@@ -94,32 +98,33 @@ Create a shortcut for this by updating package.json and adding an entry to the s
 
 In order to get HMR working we need to install the dependency and configure our app to use it.
 
-Install the `@angularclass/hmr`, `@ngxs/hmr-plugin` module as a dev-dependency
+Install the `@ngxs/hmr-plugin` package as a dev-dependency
 
 Update src/main.ts to use the file we just created:
 
 ```ts
-import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { BootstrapModuleFn as Bootstrap, hmr, WebpackModule } from '@ngxs/hmr-plugin';
+import { enableProdMode, NgModuleRef } from '@angular/core';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-
-declare const module: WebpackModule;
 
 if (environment.production) {
   enableProdMode();
 }
 
-const bootstrap: Bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
+const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
 if (environment.hmr) {
-  hmr(module, bootstrap).catch(err => console.error(err));
+  import('@ngxs/hmr-plugin').then(plugin => {
+    plugin.hmr(module, bootstrap).catch((err: Error) => console.error(err));
+  });
 } else {
-  bootstrap().catch(err => console.log(err));
+  bootstrap().catch((err: Error) => console.log(err));
 }
 ```
+
+The `@ngxs/hmr-plugin` should be loaded on demand using dynamic import thus this can benefit more readily from tree shaking.
 
 ### (OPTIONAL) Update src/app/app.module.ts to manage the state in HMR lifecycle:
 
@@ -167,6 +172,7 @@ If you want to do some modifications to the state during the hmr lifecycle you c
 import { HmrInitAction, HmrBeforeDestroyAction } from '@ngxs/hmr-plugin';
 
 @State({ ... })
+@Injectable()
 export class MyState {
   @Action(HmrInitAction)
   public hmrInit(ctx: StateContext, { payload }) {
@@ -176,6 +182,45 @@ export class MyState {
   @Action(HmrBeforeDestroyAction)
   public hrmBeforeDestroy(ctx: StateContext, { payload }) {
     ctx.setState({ ... })
+  }
+}
+```
+
+### HMR Options
+
+The following options are available:
+
+- `autoClearLogs` - Clear logs after each refresh (default value is `true`).
+- `deferTime` - Deferred time before loading the old state (default value is `100` ms);
+
+```ts
+import('@ngxs/hmr-plugin').then(plugin => {
+  plugin
+    .hmr(module, bootstrap, {
+      deferTime: 100,
+      autoClearLogs: true
+    })
+    .catch((err: Error) => console.error(err));
+});
+```
+
+### HMR Utils
+
+- `hmrIsReloaded` - returns `true` if the application was hot module replaced at least once or more.
+
+Examples:
+
+```ts
+import { hmrIsReloaded } from '@ngxs/hmr-plugin';
+
+@Component({})
+class SomeComponent implements OnDestroy {
+  ngOnDestroy(): void {
+    if (hmrIsReloaded()) {
+      return;
+    }
+
+    // heavy logic
   }
 }
 ```

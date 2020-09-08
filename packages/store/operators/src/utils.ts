@@ -25,3 +25,5 @@ export function invalidIndex(index: number): boolean {
 export function isNil<T>(value: T | null | undefined): value is null | undefined {
   return value === null || isUndefined(value);
 }
+
+export type RepairType<T> = T extends true ? boolean : (T extends false ? boolean : T);

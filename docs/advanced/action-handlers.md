@@ -1,7 +1,9 @@
 # Action Handlers
 
+Before reading this article - we advise you to begin to get acquainted with the [actions life cycle](./actions-life-cycle.md).
+
 Event sourcing involves modeling the state changes made by applications as an immutable sequence or “log” of events.
-Instead of focussing on current state, you focus on the changes that have occurred over time. It is the practice of
+Instead of focusing on current state, you focus on the changes that have occurred over time. It is the practice of
 modeling your system as a sequence of events. In NGXS, we called this Action Handlers.
 
 Typically actions directly correspond to state changes but it can be difficult to always make your component react
@@ -19,15 +21,16 @@ Actions in NGXS also have a lifecycle. Since any potential action can be async w
 
 Since it's an Observable, we can use the following pipes:
 
-* `ofAction`: triggers when any of the below lifecycle events happen
-* `ofActionDispatched`: triggers when an action has been dispatched
-* `ofActionSuccessful`: triggers when an action has been completed successfully
-* `ofActionCanceled`: triggers when an action has been canceled
-* `ofActionErrored`: triggers when an action has caused an error to be thrown
-* `ofActionCompleted`: triggers when an action has been completed whether it was successful or not (returns completion summary)
+- `ofAction`: triggers when any of the below lifecycle events happen
+- `ofActionDispatched`: triggers when an action has been dispatched
+- `ofActionSuccessful`: triggers when an action has been completed successfully
+- `ofActionCanceled`: triggers when an action has been canceled
+- `ofActionErrored`: triggers when an action has caused an error to be thrown
+- `ofActionCompleted`: triggers when an action has been completed whether it was successful or not (returns completion summary)
 
 All of the above pipes return the original `action` in the observable except for the `ofActionCompleted` pipe which returns some summary information for the completed action. This summary is an object with the following interface:
-```TS
+
+```ts
 interface ActionCompletion<T = any> {
   action: T;
   result: {
@@ -41,10 +44,11 @@ interface ActionCompletion<T = any> {
 Below is a action handler that filters for `RouteNavigate` actions and then tells the router to navigate to that
 route.
 
-```TS
+```ts
+import { Injectable } from '@angular/core';
 import { Actions, ofActionDispatched } from '@ngxs/store';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RouteHandler {
   constructor(private router: Router, private actions$: Actions) {
     this.actions$
@@ -57,11 +61,13 @@ export class RouteHandler {
 Remember you need to make sure to inject the `RouteHandler` somewhere in your application for DI to hook things up. If
 you want it to happen on application startup, Angular provides a method for doing this:
 
-```TS
+```ts
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 
 // Noop handler for factory function
-export function noop() { return function() {}; };
+export function noop() {
+  return function() {};
+}
 
 @NgModule({
   providers: [
@@ -78,13 +84,38 @@ export class AppModule {}
 
 Action handlers can be used in components too. Given the cart deletion example, we might construct something like:
 
-```TS
+```ts
 @Component({ ... })
 export class CartComponent {
   constructor(private actions$: Actions) {}
 
   ngOnInit() {
     this.actions$.pipe(ofActionSuccessful(CartDelete)).subscribe(() => alert('Item deleted'));
+  }
+}
+```
+
+Remember to unsubscribe from an action handler with something like this:
+
+```ts
+@Component({ ... })
+export class CartComponent implements OnInit, OnDestroy {
+  private ngUnsubscribe = new Subject();
+
+  constructor(private actions$: Actions) {}
+
+  ngOnInit() {
+    this.actions$
+      .pipe(
+        ofActionSuccessful(CartDelete),
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe(() => alert('Item deleted'));
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }
 ```

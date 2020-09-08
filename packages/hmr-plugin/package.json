@@ -5,15 +5,13 @@
   "license": "MIT",
   "sideEffects": true,
   "peerDependencies": {
-    "@angular/core": ">=6.0.0 <8.0.0",
-    "@angularclass/hmr": ">=2.1.3 <3.0.0"
+    "@angular/core": ">=6.1.0 <11.0.0"
   },
   "ngPackage": {
     "lib": {
       "flatModuleFile": "ngxs-hmr-plugin",
       "entryFile": "index.ts",
       "umdModuleIds": {
-        "@angularclass/hmr": "angularclass-hmr",
         "@ngxs/store/operators": "ngxs-store-operators",
         "@ngxs/store/internals": "ngxs-store-internals",
         "@ngxs/store": "ngxs-store"

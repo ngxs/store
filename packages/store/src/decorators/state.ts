@@ -1,10 +1,13 @@
-import { ensureStoreMetadata, MetaDataModel, StateClass } from '../internal/internals';
+import { StateClass } from '@ngxs/store/internals';
+
+import { ensureStoreMetadata, MetaDataModel, StateClassInternal } from '../internal/internals';
 import { META_KEY, META_OPTIONS_KEY, StoreOptions } from '../symbols';
 import { StoreValidators } from '../utils/store-validators';
+import { ensureStateClassIsInjectable } from '../ivy/ensure-state-class-is-injectable';
 
 interface MutateMetaOptions<T> {
   meta: MetaDataModel;
-  inheritedStateClass: StateClass;
+  inheritedStateClass: StateClassInternal;
   optionsWithInheritance: StoreOptions<T>;
 }
 
@@ -12,7 +15,7 @@ interface MutateMetaOptions<T> {
  * Decorates a class with ngxs state information.
  */
 export function State<T>(options: StoreOptions<T>) {
-  function getStateOptions(inheritedStateClass: StateClass): StoreOptions<T> {
+  function getStateOptions(inheritedStateClass: StateClassInternal): StoreOptions<T> {
     const inheritanceOptions: Partial<StoreOptions<T>> =
       inheritedStateClass[META_OPTIONS_KEY] || {};
     return { ...inheritanceOptions, ...options } as StoreOptions<T>;
@@ -21,7 +24,9 @@ export function State<T>(options: StoreOptions<T>) {
   function mutateMetaData(params: MutateMetaOptions<T>): void {
     const { meta, inheritedStateClass, optionsWithInheritance } = params;
     const { children, defaults, name } = optionsWithInheritance;
-    StoreValidators.checkCorrectStateName(name);
+    const stateName: string | null =
+      typeof name === 'string' ? name : (name && name.getName()) || null;
+    StoreValidators.checkCorrectStateName(stateName);
 
     if (inheritedStateClass.hasOwnProperty(META_KEY)) {
       const inheritedMeta: Partial<MetaDataModel> = inheritedStateClass[META_KEY] || {};
@@ -30,14 +35,16 @@ export function State<T>(options: StoreOptions<T>) {
 
     meta.children = children;
     meta.defaults = defaults;
-    meta.name = name;
+    meta.name = stateName;
   }
 
   return (target: StateClass): void => {
-    const meta: MetaDataModel = ensureStoreMetadata(target);
-    const inheritedStateClass: StateClass = Object.getPrototypeOf(target);
+    ensureStateClassIsInjectable(target);
+    const stateClass: StateClassInternal = target;
+    const meta: MetaDataModel = ensureStoreMetadata(stateClass);
+    const inheritedStateClass: StateClassInternal = Object.getPrototypeOf(stateClass);
     const optionsWithInheritance: StoreOptions<T> = getStateOptions(inheritedStateClass);
     mutateMetaData({ meta, inheritedStateClass, optionsWithInheritance });
-    target[META_OPTIONS_KEY] = optionsWithInheritance;
+    stateClass[META_OPTIONS_KEY] = optionsWithInheritance;
   };
 }

@@ -1,15 +1,14 @@
 # Lazy Loaded Stores
+
 Stores can be lazy-loaded easily by importing the `NgxsModule` using the
 `forFeature` method. All the other syntax for how you import
 and describe them are the same. For example:
 
-```TS
+```ts
 @NgModule({
-  imports: [
-    NgxsModule.forFeature([LazyState])
-  ]
+  imports: [NgxsModule.forFeature([LazyState])]
 })
-export class LazyModule{}
+export class LazyModule {}
 ```
 
 It's important to note when lazy-loading a store, it is registered in the global
@@ -17,18 +16,35 @@ state so this state object will now be persisted globally. Even though
 it's available globally, you should only use it within that feature module so you
 make sure not to create dependencies on things that could not be loaded yet.
 
-You probably defined a `AppState` interface that represents the global state
-graph but since we lazy loaded this we can't really include that in the definition.
-To handle this, let's extend the `AppState` and use that in our a component like:
+How are feature states added to the global state graph? Assume you've got a `ZoosState`:
 
-```TS
-export interface AppStateModel {
-  zoos: Zoo[];
-}
+```ts
+@State<Zoo[]>({
+  name: 'zoos',
+  defaults: []
+})
+@Injectable()
+export class ZoosState {}
+```
 
-export interface OfficesStateModel extends AppStateModel {
-  offices: Office[];
+And it's registered in the root module via `NgxsModule.forRoot([ZoosState])`. Assume you've got a feature `offices` state:
+
+```ts
+@State<Office[]>({
+  name: 'offices',
+  defaults: []
+})
+@Injectable()
+export class OfficesState {}
+```
+
+You register this state in some lazy-loaded module via `NgxsModule.forFeature([OfficesState])`. After the lazy module is loaded - the global state will have such signature:
+
+```ts
+{
+  zoos: [],
+  offices: []
 }
 ```
 
-Now when we use our `Select` in our lazy loaded feature module, we can use `OfficesState`.
+You can try it yourself by invoking `store.snapshot()` and printing the result to the console before and after the lazy module is loaded. .

@@ -1,5 +1,5 @@
 import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
-import { NgxsModule, NGXS_PLUGINS } from '@ngxs/store';
+import { NGXS_PLUGINS } from '@ngxs/store';
 
 import { NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS } from './symbols';
 import { NgxsReduxDevtoolsPlugin } from './devtools.plugin';
@@ -13,11 +13,11 @@ export function devtoolsOptionsFactory(options: NgxsDevtoolsOptions) {
 
 export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
 
-@NgModule({
-  imports: [NgxsModule]
-})
+@NgModule()
 export class NgxsReduxDevtoolsPluginModule {
-  static forRoot(options?: NgxsDevtoolsOptions): ModuleWithProviders {
+  static forRoot(
+    options?: NgxsDevtoolsOptions
+  ): ModuleWithProviders<NgxsReduxDevtoolsPluginModule> {
     return {
       ngModule: NgxsReduxDevtoolsPluginModule,
       providers: [

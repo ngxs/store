@@ -1,8 +1,9 @@
 # Form Plugin - Experimental Status
+
 Often when building Reactive Forms in Angular, you need to bind values from the
 store to the form and vice versa. The values from the store are observable and
 the reactive form accepts raw objects, as a result we end up monkey patching
-this back and forth. 
+this back and forth.
 
 In addition to these issues, there are workflows where you want
 to fill out a form and leave and then come back and resume your current status.
@@ -11,6 +12,7 @@ This is an excellent use case for stores and we can conquer that case with this 
 In a nutshell, this plugin helps to keep your forms and state in sync.
 
 ## Installation
+
 ```bash
 npm install @ngxs/form-plugin --save
 
@@ -19,81 +21,78 @@ yarn add @ngxs/form-plugin
 ```
 
 ## Usage
-In the root module of your application, import `NgxsFormPluginModule`
-and include it in the imports. 
 
-```TS
+In the root module of your application, import `NgxsFormPluginModule`
+and include it in the imports.
+
+```ts
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
-import { PizzaState } from './pizza.state';
+import { NovelsState } from './novels.state';
 
 @NgModule({
-  imports: [
-    NgxsModule.forRoot([PizzaState]),
-    NgxsFormPluginModule.forRoot(),
-  ]
+  imports: [NgxsModule.forRoot([NovelsState]), NgxsFormPluginModule.forRoot()]
 })
 export class AppModule {}
 ```
 
 If your form is used in a submodule, it must be imported there as well:
 
-```TS
+```ts
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 
 @NgModule({
-  imports: [
-    NgxsFormPluginModule,
-  ]
+  imports: [NgxsFormPluginModule]
 })
 export class SomeModule {}
 ```
 
-### Form State 
+### Form State
+
 Define your default form state as part of your application state.
 
-```TS
+```ts
+import { Injectable } from '@angular/core';
 import { State } from '@ngxs/store';
 
 @State({
-  name: "todos",
+  name: 'novels',
   defaults: {
-    pizzaForm: {
+    newNovelForm: {
       model: undefined,
       dirty: false,
-      status: "",
+      status: '',
       errors: {}
     }
   }
 })
-export class PizzaState {}
+@Injectable()
+export class NovelsState {}
 ```
 
 ### Form Setup
+
 In your component, you would implement the reactive form and
 decorate the form with the `ngxsForm` directive with the path
 of your state object. We are passing the _string_ path to `ngxsForm`.
 The directive uses this path to connect itself to the store and setup bindings.
 
-```TS
+```ts
 import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'pizza-form',
+  selector: 'new-novel-form',
   template: `
-    <form [formGroup]="pizzaForm" novalidate ngxsForm="todos.pizzaForm" (ngSubmit)="onSubmit()">
-      <input type="text" formControlName="toppings" />
-      <button type="submit">Order</button>
+    <form [formGroup]="newNovelForm" ngxsForm="novels.newNovelForm" (ngSubmit)="onSubmit()">
+      <input type="text" formControlName="novelName" />
+      <button type="submit">Create</button>
     </form>
   `
 })
-export class PizzaComponent {
-  pizzaForm = this.formBuilder.group({
-    toppings: ''
+export class NewNovelComponent {
+  newNovelForm = new FormGroup({
+    novelName: new FormControl()
   });
-
-  constructor(private formBuilder: FormBuilder) {
-  }
 
   onSubmit() {
     //
@@ -105,27 +104,115 @@ Now anytime your form updates, your state will also reflect the new state.
 
 The directive also has two inputs you can utilize as well:
 
-- `ngxsFormDebounce: number` - Debounce the value changes to the form. Default value: `100`.
+- `ngxsFormDebounce: number` - Debounce the value changes to the form. Default value: `100`. Ignored if `updateOn` is `blur` or `submit`.
 - `ngxsFormClearOnDestroy: boolean` - Clear the state on destroy of the form.
 
 ### Actions
+
 In addition to it automatically keeping track of the form, you can also
 manually dispatch actions for things like resetting the form state. For example:
 
-```TS
+```ts
 this.store.dispatch(
   new UpdateFormDirty({
     dirty: false,
-    path: 'todos.pizzaForm'
+    path: 'novels.newNovelForm'
   })
 );
 ```
 
 The form plugin comes with the following `actions` out of the box:
+
 - `UpdateFormStatus({ status, path })` - Update the form status
-- `UpdateFormValue({ value, path })` - Update the form value
+- `UpdateFormValue({ value, path, propertyPath? })` - Update the form value (or optionally an inner property value)
 - `UpdateFormDirty({ dirty, path })` - Update the form dirty status
 - `SetFormDisabled(path)` - Set the form to disabled
 - `SetFormEnabled(path)` - Set the form to enabled
 - `SetFormDirty(path)` - Set the form to dirty (shortcut for `UpdateFormDirty`)
 - `SetFormPristine(path)` - Set the form to pristine (shortcut for `UpdateFormDirty`)
+- `ResetForm({ path, value? })` - Reset the form with or without the form value.
+
+### Updating Specific Form Properties
+
+The form plugin exposes the `UpdateFormValue` action that provides the ability to update nested form properties by supplying a `propertyPath` parameter.
+
+```ts
+interface NovelsStateModel {
+  newNovelForm: {
+    model?: {
+      novelName: string;
+      authors: {
+        name: string;
+      }[];
+    };
+  };
+}
+
+@State<NovelsStateModel>({
+  name: 'novels',
+  defaults: {
+    newNovelForm: {
+      model: undefined
+    }
+  }
+})
+@Injectable()
+export class NovelsState {}
+```
+
+The state contains information about the new novel name and its authors. Let's create a component that will render the reactive form with bounded `ngxsForm` directive:
+
+```ts
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
+@Component({
+  selector: 'new-novel-form',
+  template: `
+    <form [formGroup]="newNovelForm" ngxsForm="novels.newNovelForm" (ngSubmit)="onSubmit()">
+      <input type="text" formControlName="novelName" />
+      <div
+        formArrayName="authors"
+        *ngFor="let author of newNovelForm.get('authors').controls; index as index"
+      >
+        <div [formGroupName]="index">
+          <input formControlName="name" />
+        </div>
+      </div>
+      <button type="submit">Create</button>
+    </form>
+  `
+})
+export class NewNovelComponent {
+  newNovelForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.newNovelForm = this.fb.group({
+      novelName: 'Zenith',
+      authors: this.fb.array([
+        this.fb.group({
+          name: 'Sasha Alsberg'
+        })
+      ])
+    });
+  }
+
+  onSubmit() {
+    //
+  }
+}
+```
+
+Let's look at the component above again. Assume we want to update the name of the first author in our form, from anywhere in our application. The code would look as follows:
+
+```ts
+store.dispatch(
+  new UpdateFormValue({
+    path: 'novels.newNovelForm',
+    value: {
+      name: 'Lindsay Cummings'
+    },
+    propertyPath: 'authors.0'
+  })
+);
+```

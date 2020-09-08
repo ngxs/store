@@ -1,18 +1,22 @@
 # State
+
 States are classes that define a state container.
 
 ## Defining a State
+
 States are classes along with decorators to describe metadata
 and action mappings. To define a state container, let's create an
 ES2015 class and decorate it with the `State` decorator.
 
-```TS
+```ts
+import { Injectable } from '@angular/core';
 import { State } from '@ngxs/store';
 
 @State<string[]>({
   name: 'animals',
   defaults: []
 })
+@Injectable()
 export class AnimalsState {}
 ```
 
@@ -20,33 +24,58 @@ In the state decorator, we define some metadata about the state. These options
 include:
 
 - `name`: The name of the state slice. Note: The name is a required parameter and must be unique for the entire application.
-Names must be object property safe, (e.g. no dashes, dots, etc).
+  Names must be object property safe, (e.g. no dashes, dots, etc).
 - `defaults`: Default set of object/array for this state slice.
 - `children`: Child sub state associations.
 
 Our states can also participate in dependency injection. This is hooked up automatically
 so all you need to do is inject your dependencies in the constructor.
 
-```TS
+```ts
 @State<ZooStateModel>({
   name: 'zoo',
   defaults: {
     feed: false
   }
 })
+@Injectable()
 export class ZooState {
   constructor(private zooService: ZooService) {}
 }
 ```
 
+## (Optional) Defining State Token
+
+Optionally, you can choose to replace the `name` of your state can be made with a state token:
+
+```ts
+const ZOO_STATE_TOKEN = new StateToken<ZooStateModel>('zoo');
+
+@State({
+  name: ZOO_STATE_TOKEN,
+  defaults: {
+    feed: false
+  }
+})
+@Injectable()
+export class ZooState {
+  constructor(private zooService: ZooService) {}
+}
+```
+
+This slightly more advanced approach has some benefits which you can read more about in the [State Token](../advanced/token.md) section.
+
 ## Defining Actions
+
 Our states listen to actions via an `@Action` decorator. The action decorator
 accepts an action class or an array of action classes.
 
 ### Simple Actions
+
 Let's define a state that will listen to a `FeedAnimals` action to toggle whether the animals have been fed:
 
-```TS
+```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 
 export class FeedAnimals {
@@ -63,6 +92,7 @@ export interface ZooStateModel {
     feed: false
   }
 })
+@Injectable()
 export class ZooState {
   @Action(FeedAnimals)
   feedAnimals(ctx: StateContext<ZooStateModel>) {
@@ -84,10 +114,12 @@ is always fresh. If you want a snapshot, you can always clone the state
 in the method.
 
 ### Actions with a payload
+
 Actions can also pass along metadata that has to do with the action.
 Say we want to pass along how much hay and carrots each zebra needs.
 
-```TS
+```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 
 // This is an interface that is part of your domain model
@@ -114,6 +146,7 @@ export interface ZooStateModel {
     zebraFood: []
   }
 })
+@Injectable()
 export class ZooState {
   @Action(FeedZebra)
   feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
@@ -123,7 +156,7 @@ export class ZooState {
       zebraFood: [
         ...state.zebraFood,
         // this is the new ZebraFood instance that we add to the state
-        action.zebraToFeed,
+        action.zebraToFeed
       ]
     });
   }
@@ -134,10 +167,10 @@ In this example, we have a second argument that represents the action and we des
 to pull out the name, hay, and carrots which we then update the state with.
 
 There is also a shortcut `patchState` function to make updating the state easier. In this case,
-you only pass it the properties you want to update on the state and it handles the rest. 
+you only pass it the properties you want to update on the state and it handles the rest.
 The above function could be reduced to this:
 
-```TS
+```ts
 @Action(FeedZebra)
 feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
   const state = ctx.getState();
@@ -151,31 +184,35 @@ feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
 ```
 
 The `setState` function can also be called with a function which will be given the
-existing state and should return the new state. 
+existing state and should return the new state.
 All immutability concerns need to be honoured by this function.
 
 For comparison, here are the two ways that you can invoke the `setState` function...  
 With a new constructed state value:
-```TS
+
+```ts
 @Action(MyAction)
 public addValue(ctx: StateContext, { payload }: MyAction) {
   ctx.setState({ ...ctx.getState(), value: payload  });
 }
 ```
+
 With a function that returns the new state value:
-```TS
+
+```ts
 @Action(MyAction)
 public addValue(ctx: StateContext, { payload }: MyAction) {
   ctx.setState((state) => ({ ...state, value: payload }));
 }
 ```
 
-You may ask _"How is this valuable?"_. Well, it opens the door for refactoring of your immutable updates into `state operators` so that your code can become more declarative as opposed to imperitive. We will be adding some standard `state operators` soon that you will be able to use to express your updates to the state. Follow the issue here for updates: https://github.com/ngxs/store/issues/545
+You may ask _"How is this valuable?"_. Well, it opens the door for refactoring of your immutable updates into `state operators` so that your code can become more declarative as opposed to imperative. We will be adding some standard `state operators` soon that you will be able to use to express your updates to the state. Follow the issue here for updates: https://github.com/ngxs/store/issues/545
 
-As another example you could use a library like [immer](https://github.com/mweststrate/immer) that can 
-handle the immutability updates for you and provide a different way of expressing your immutable update 
+As another example you could use a library like [immer](https://github.com/mweststrate/immer) that can
+handle the immutability updates for you and provide a different way of expressing your immutable update
 through direct mutation of a draft object. We can use this external library because it supports the same signature as out `state operators` through their curried `produce` function. Here is the example from above expressed in this way:
-```TS
+
+```ts
 import produce from 'immer';
 
 // in class ZooState ...
@@ -183,17 +220,19 @@ import produce from 'immer';
 feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
   ctx.setState(produce((draft) => {
     draft.zebraFood.push(action.zebraToFeed);
-  }));  
+  }));
 }
 ```
-Here the `produce` function from the `immer` library is called with just a single parameter 
-so that it returns its' [curried form](https://github.com/mweststrate/immer#currying) 
+
+Here the `produce` function from the `immer` library is called with just a single parameter
+so that it returns its' [curried form](https://github.com/mweststrate/immer#currying)
 that will take a value and return a new value with all the expressed changes applied.
 
-This approach can also allow for the creation of well named helper functions that can be shared 
-between handlers that require the same type of update. 
+This approach can also allow for the creation of well named helper functions that can be shared
+between handlers that require the same type of update.
 The above example could be refactored to this:
-```TS
+
+```ts
 // in class ZooState ...
 @Action(FeedZebra)
 feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
@@ -211,6 +250,7 @@ function addToZebraFood(itemToAdd) {
 ```
 
 ### Async Actions
+
 Actions can perform async operations and update the state after an operation.
 
 Typically in Redux your actions are pure functions and you have some other system like a saga or an effect to perform
@@ -220,7 +260,8 @@ we give you the flexibility to make that decision yourself based on your require
 
 Let's take a look at a simple async action:
 
-```TS
+```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 
@@ -239,21 +280,21 @@ export interface ZooStateModel {
     feedAnimals: []
   }
 })
+@Injectable()
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 
   @Action(FeedAnimals)
   feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
-    return this.animalService.feed(action.animalsToFeed).pipe(tap((animalsToFeedResult) => {
-      const state = ctx.getState();
-      ctx.setState({
-        ...state,
-        feedAnimals: [
-          ...state.feedAnimals,
-          animalsToFeedResult,
-        ]
-      });
-    }));
+    return this.animalService.feed(action.animalsToFeed).pipe(
+      tap(animalsToFeedResult => {
+        const state = ctx.getState();
+        ctx.setState({
+          ...state,
+          feedAnimals: [...state.feedAnimals, animalsToFeedResult]
+        });
+      })
+    );
   }
 }
 ```
@@ -271,7 +312,8 @@ we need to return that so it knows that.
 Observables are not a requirement, you can use promises too. We could swap
 that observable chain to look like this:
 
-```TS
+```ts
+import { Injectable } from '@angular/core';
 import { State, Action } from '@ngxs/store';
 
 export class FeedAnimals {
@@ -284,11 +326,12 @@ export interface ZooStateModel {
 }
 
 @State<ZooStateModel>({
-  name: 'zoo'
+  name: 'zoo',
   defaults: {
     feedAnimals: []
   }
 })
+@Injectable()
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 
@@ -298,21 +341,19 @@ export class ZooState {
     const state = ctx.getState();
     ctx.setState({
       ...state,
-      feedAnimals: [
-        ...state.feedAnimals,
-        result,
-      ]
+      feedAnimals: [...state.feedAnimals, result]
     });
   }
 }
 ```
 
 ### Dispatching Actions From Actions
+
 If you want your action to dispatch another action, you can use the `dispatch` function
 that is contained in the state context object.
 
-
-```TS
+```ts
+import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { map } from 'rxjs/operators';
 
@@ -326,21 +367,19 @@ export interface ZooStateModel {
     feedAnimals: []
   }
 })
+@Injectable()
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 
- /**
-  * Simple Example
-  */
+  /**
+   * Simple Example
+   */
   @Action(FeedAnimals)
   feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
     const state = ctx.getState();
     ctx.setState({
       ...state,
-      feedAnimals: [
-        ...state.feedAnimals,
-        action.animalsToFeed,
-      ]
+      feedAnimals: [...state.feedAnimals, action.animalsToFeed]
     });
 
     return ctx.dispatch(new TakeAnimalsOutside());
@@ -355,10 +394,7 @@ export class ZooState {
       tap(animalsToFeedResult => {
         const state = ctx.getState();
         ctx.patchState({
-          feedAnimals: [
-            ...state.feedAnimals,
-            animalsToFeedResult,
-          ]
+          feedAnimals: [...state.feedAnimals, animalsToFeedResult]
         });
       }),
       mergeMap(() => ctx.dispatch(new TakeAnimalsOutside()))

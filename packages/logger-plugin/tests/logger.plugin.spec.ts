@@ -1,12 +1,14 @@
-import { ErrorHandler } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { Injectable } from '@angular/core';
+import {
+  Action,
+  getActionTypeFromInstance,
+  InitState,
+  State,
+  StateContext
+} from '@ngxs/store';
 import { throwError } from 'rxjs';
 
-import { NgxsModule, Store, State, Action, StateContext, InitState } from '@ngxs/store';
-import { NoopErrorHandler } from '@ngxs/store/tests/helpers/utils';
-
-import { NgxsLoggerPluginModule, NgxsLoggerPluginOptions } from '../';
-import { LoggerSpy, formatActionCallStack } from './helpers';
+import { setupWithLogger, formatActionCallStack, LoggerSpy } from './helpers';
 
 describe('NgxsLoggerPlugin', () => {
   const thrownErrorMessage = 'Error';
@@ -34,6 +36,7 @@ describe('NgxsLoggerPlugin', () => {
     name: 'test',
     defaults: stateModelDefaults
   })
+  @Injectable()
   class TestState {
     @Action(UpdateBarAction)
     updateBar({ patchState }: StateContext<StateModel>, { bar }: UpdateBarAction) {
@@ -46,28 +49,8 @@ describe('NgxsLoggerPlugin', () => {
     }
   }
 
-  function setup(opts?: NgxsLoggerPluginOptions) {
-    const logger = new LoggerSpy();
-
-    TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([TestState]),
-        NgxsLoggerPluginModule.forRoot({
-          ...opts,
-          logger
-        })
-      ],
-      providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
-    });
-
-    return {
-      store: TestBed.get(Store),
-      logger
-    };
-  }
-
   it('should log success action', () => {
-    const { store, logger } = setup();
+    const { store, logger } = setupWithLogger([TestState]);
 
     store.dispatch(new UpdateBarAction());
 
@@ -85,7 +68,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should log success action with payload', () => {
-    const { store, logger } = setup();
+    const { store, logger } = setupWithLogger([TestState]);
     const payload = 'qux';
 
     store.dispatch(new UpdateBarAction(payload));
@@ -105,7 +88,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should log error action', () => {
-    const { store, logger } = setup();
+    const { store, logger } = setupWithLogger([TestState]);
 
     store.dispatch(new ErrorAction());
 
@@ -115,7 +98,8 @@ describe('NgxsLoggerPlugin', () => {
       ...formatActionCallStack({
         action: ErrorAction.type,
         prevState: stateModelDefaults,
-        error: thrownErrorMessage
+        error: thrownErrorMessage,
+        snapshot: store.snapshot()
       })
     ]);
 
@@ -123,7 +107,7 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should log collapsed success action', () => {
-    const { store, logger } = setup({ collapsed: true });
+    const { store, logger } = setupWithLogger([TestState], { collapsed: true });
 
     store.dispatch(new UpdateBarAction());
 
@@ -146,11 +130,45 @@ describe('NgxsLoggerPlugin', () => {
   });
 
   it('should not log while disabled', () => {
-    const { store, logger } = setup({ disabled: true });
+    const { store, logger } = setupWithLogger([TestState], { disabled: true });
 
     store.dispatch(new UpdateBarAction());
 
     const expectedCallStack = LoggerSpy.createCallStack([]);
+
+    expect(logger.callStack).toEqual(expectedCallStack);
+  });
+
+  it('should not log if predicate returns false for an action', () => {
+    const { store, logger } = setupWithLogger([TestState], {
+      filter: action => getActionTypeFromInstance(action) !== UpdateBarAction.type
+    });
+
+    const expectedCallStack = LoggerSpy.createCallStack([
+      ...formatActionCallStack({ action: InitState.type, prevState: stateModelDefaults })
+    ]);
+
+    store.dispatch(new UpdateBarAction());
+
+    expect(logger.callStack).toEqual(expectedCallStack);
+  });
+
+  it('should pass state snapshot to filter predicate', () => {
+    const { store, logger } = setupWithLogger([TestState], {
+      filter: (_, state) => state.test.bar
+    });
+
+    const expectedCallStack = LoggerSpy.createCallStack([
+      ...formatActionCallStack({
+        action: UpdateBarAction.type,
+        prevState: { bar: defaultBarValue },
+        payload: { bar: 'bar' },
+        nextState: { bar: 'bar' }
+      })
+    ]);
+
+    store.dispatch(new UpdateBarAction());
+    store.dispatch(new UpdateBarAction('bar'));
 
     expect(logger.callStack).toEqual(expectedCallStack);
   });
