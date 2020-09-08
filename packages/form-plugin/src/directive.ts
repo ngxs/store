@@ -21,7 +21,15 @@ export class FormDirective implements OnInit, OnDestroy {
   debounce = 100;
 
   @Input('ngxsFormClearOnDestroy')
-  clearDestroy = false;
+  set clearDestroy(val: boolean) {
+    this._clearDestroy = val != null && `${val}` !== 'false';
+  }
+
+  get clearDestroy(): boolean {
+    return this._clearDestroy;
+  }
+
+  _clearDestroy = false;
 
   private readonly _destroy$ = new Subject<void>();
   private _updating = false;
