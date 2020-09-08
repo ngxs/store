@@ -64,16 +64,3 @@ export const setValue = (obj: any, prop: string, val: any) => {
  */
 export const getValue = (obj: any, prop: string): any =>
   prop.split('.').reduce((acc: any, part: string) => acc && acc[part], obj);
-
-/**
- * Boolean conversion:
- *
- *    like '', 'false' to boolean
- *    ngxsFormClearOnDestroy, ngxsFormClearOnDestroy="true" should be treated as true
- *    ngxsFormClearOnDestroy='false' should be treated as false
- *
- * @ignore
- */
-export function coerceBoolean(val: any) {
-  return val != null && `${val}` !== 'false';
-}
