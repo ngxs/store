@@ -6,6 +6,10 @@
 $ npm install @ngxs/store@dev
 ```
 
+- ...
+
+# 3.7.0 2020-09-09
+
 - Feature: Throw an error when actions do not have a static type property [#1625](https://github.com/ngxs/store/pull/1625)
 - Feature: Storage Plugin - Add before and after serialize hooks [#1513](https://github.com/ngxs/store/pull/1513)
 - Feature: Logger Plugin - Add filter for Logger Plugin [#1571](https://github.com/ngxs/store/pull/1571)
