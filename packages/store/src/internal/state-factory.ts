@@ -57,14 +57,6 @@ export class StateFactory implements OnDestroy {
     private _initialState: any
   ) {}
 
-  ngOnDestroy(): void {
-    // I'm using non-null assertion here since `_actionsSubscrition` will
-    // be 100% defined. This is because `ngOnDestroy()` cannot be invoked
-    // on the `StateFactory` until its initialized :) An it's initialized
-    // for the first time along with the `NgxsRootModule`.
-    this._actionsSubscription!.unsubscribe();
-  }
-
   private _states: MappedStore[] = [];
 
   get states(): MappedStore[] {
@@ -121,6 +113,14 @@ export class StateFactory implements OnDestroy {
 
   private static checkStatesAreValid(stateClasses: StateClassInternal[]): void {
     stateClasses.forEach(StoreValidators.getValidStateMeta);
+  }
+
+  ngOnDestroy(): void {
+    // I'm using non-null assertion here since `_actionsSubscrition` will
+    // be 100% defined. This is because `ngOnDestroy()` cannot be invoked
+    // on the `StateFactory` until its initialized :) An it's initialized
+    // for the first time along with the `NgxsRootModule`.
+    this._actionsSubscription!.unsubscribe();
   }
 
   /**
