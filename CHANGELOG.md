@@ -6,7 +6,7 @@
 $ npm install @ngxs/store@dev
 ```
 
-- ...
+- Fix: Storage Plugin - Resolve state name correctly if the state class has been provided [#1670](https://github.com/ngxs/store/pull/1670)
 
 # 3.7.0 2020-09-09
 
