@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { State, NgxsModule } from '@ngxs/store';
+import { NgxsModule, State } from '@ngxs/store';
 
 describe('NGXS', () => {
   it('should not warn if state class is not decorated with @Injectable()', () => {
@@ -16,7 +16,7 @@ describe('NGXS', () => {
       imports: [NgxsModule.forRoot([CountriesState])]
     });
 
-    TestBed.inject(CountriesState);
+    TestBed.get(CountriesState);
 
     // Assert
     expect(spy).toHaveBeenCalledTimes(0);
