@@ -6,7 +6,7 @@
 $ npm install @ngxs/store@dev
 ```
 
-- ...
+- Fix: Release NGXS resources when the root module gets destroyed [#1669](https://github.com/ngxs/store/pull/1669)
 
 # 3.7.0 2020-09-09
 

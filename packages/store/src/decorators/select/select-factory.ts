@@ -19,6 +19,7 @@ export class SelectFactory implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    SelectFactory.store = SelectFactory.config = null;
+    SelectFactory.store = null;
+    SelectFactory.config = null;
   }
 }
