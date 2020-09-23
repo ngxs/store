@@ -137,9 +137,10 @@ If you have ideas for creating unique libraries, you can join us. Email us at `n
 
 #### Community
 
-| Project          | Package                                                            | Version                                                                                                             | Links                                                                                                                             |
-| ---------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Reset Plugin** | [`ngxs-reset-plugin`](https://npmjs.com/package/ngxs-reset-plugin) | [![latest](https://img.shields.io/npm/v/ngxs-reset-plugin/latest.svg)](https://npmjs.com/package/ngxs-reset-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ng-turkey/ngxs-reset-plugin/blob/master/README.md) |
+| Project                 | Package                                                                    | Version                                                                                                                     | Links                                                                                                                             |
+| ----------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Reset Plugin**        | [`ngxs-reset-plugin`](https://npmjs.com/package/ngxs-reset-plugin)         | [![latest](https://img.shields.io/npm/v/ngxs-reset-plugin/latest.svg)](https://npmjs.com/package/ngxs-reset-plugin)         | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ng-turkey/ngxs-reset-plugin/blob/master/README.md) |
+| **NGXS-Loading-plugin** | [`ngxs-loading-plugin`](https://www.npmjs.com/package/ngxs-loading-plugin) | [![latest](https://img.shields.io/npm/v/ngxs-loading-plugin/latest.svg)](https://www.npmjs.com/package/ngxs-loading-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/sa-bangash/ngxs-plugin/blob/master/README.md)      |
 
 # Contributors
 
