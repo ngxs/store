@@ -32,14 +32,14 @@ function transformKeyOption(key: StorageKey): string[] {
   }
 
   return key.map((token: string | StateClass | StateToken<any>) => {
-    if (typeof token === 'string') {
-      return token;
-    } else if (token instanceof StateToken) {
-      return token.getName();
+    // If it has the `NGXS_OPTIONS_META` key then it means the developer
+    // has provided state class like `key: [AuthState]`.
+    if (token.hasOwnProperty(META_OPTIONS_KEY)) {
+      // The `name` property will be an actual state name or a `StateToken`.
+      token = (token as any)[META_OPTIONS_KEY].name;
     }
 
-    const options = (token as any)[META_OPTIONS_KEY];
-    return options.name;
+    return token instanceof StateToken ? token.getName() : (token as string);
   });
 }
 

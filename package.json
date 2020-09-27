@@ -1,6 +1,6 @@
 {
   "name": "ngxs",
-  "version": "3.6.2",
+  "version": "3.7.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ngxs/store.git"
@@ -105,6 +105,7 @@
     "format": "prettier --write \"**/*.{js,ts,html,css,scss,md,json,yml}\"",
     "// - INTEGRATION": "Integration builds",
     "integration:ng6": "cd integrations/hello-world-ng6 && yarn test",
+    "integration:ng7": "cd integrations/hello-world-ng7 && yarn test:integration",
     "integration:ng8": "cd integrations/hello-world-ng8 && yarn test",
     "integration:ng9:ivy": "cd integrations/hello-world-ng9-ivy && yarn test:ivy",
     "integration:ng9:ivy:off": "cd integrations/hello-world-ng9-ivy-off && yarn test:ivy",
