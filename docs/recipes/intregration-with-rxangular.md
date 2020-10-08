@@ -3,7 +3,7 @@ There are use cases when is desired to have a transient component state has it's
 [RxAngular](https://github.com/rx-angular/rx-angular) provides a solution for this problem that is fully reactive and with focus on runtime performance and template rendering.
 
 In order to leverage this library and all the power of a global state management is possible to integrate RxAngular with NGXS.
-First let's bind a value provinient from NGXS state to RxAngular component state: 
+First, let's bind a value from NGXS state to RxAngular component state: 
 
 ```ts
 interface HeroesComponentState {
@@ -21,7 +21,7 @@ const initHeroesComponentState: Partial<HeroesComponentState> = {
   providers: [RxState] // <--- This binds RxState to the lifetime of the component
 })
 export class HeroesComponent {
-  @Select(getHeroes) SateHeroes$: Obersavable<Hero[]>; // <--- normal @Select use from NGXS
+  @Select(getHeroes) stateHeroes$: Observable<Hero[]>; // <--- normal @Select use from NGXS
 
   heroes: Hero[];
 
@@ -58,12 +58,12 @@ export class HeroesComponent {
   ) {
 
     this.state.hold( // <--- RxAngular hold will manage the subscription for us
-      this.add.pipe(switchMap(name => this.store.dispatch(new AddHero(name)))) <--- dispatch action to NGXS
+      this.add.pipe(switchMap(name => this.store.dispatch(new AddHero(name)))) // <--- dispatch action to NGXS
     );
 
     this.state.hold(
       this.delete.pipe(
-        switchMap(hero => this.stor(new DeleteHero(hero))e.dispatch)
+        switchMap(hero => this.store.dispatch(new DeleteHero(hero)))
       )
     );
   }
