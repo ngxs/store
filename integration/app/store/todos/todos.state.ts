@@ -29,6 +29,9 @@ export class TodosState {
 
   @Selector([ListState.hello])
   public static injected(state: TodoStateModel, hello: string): string {
+    if (state.todo == null || hello == null) {
+      return 'container injection failed or is disabled';
+    }
     return `${hello}! i have ${state.todo.length} todos`;
   }
 
