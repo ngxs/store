@@ -41,6 +41,7 @@ import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-o
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { HostEnvironment } from './host-environment/host-environment';
 import { ConfigValidator } from './internal/config-validator';
+import { mergeDeep } from './utils/utils';
 
 /**
  * Ngxs Module
@@ -152,7 +153,16 @@ export class NgxsModule {
   }
 
   private static ngxsConfigFactory(options: NgxsModuleOptions): NgxsConfig {
-    return Object.assign(new NgxsConfig(), options);
+    console.log('before');
+    console.log(options);
+
+    let merged = mergeDeep(new NgxsConfig(), options);
+    // let merged = Object.assign(new NgxsConfig(), options);
+
+    console.log('after');
+    console.log(merged);
+
+    return merged;
   }
 
   private static appBootstrapListenerFactory(bootstrapper: NgxsBootstrapper): Function {

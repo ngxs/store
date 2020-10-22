@@ -19,7 +19,7 @@ import { environment as env } from '../../environments/environment';
     NgxsRouterPluginModule.forRoot(),
     NgxsModule.forRoot([TodosState, TodoState], {
       developmentMode: !env.production,
-      selectorOptions: {}
+      selectorOptions: {} // empty object to test option merging
     })
   ],
   exports: [
