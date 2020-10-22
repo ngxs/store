@@ -63,31 +63,37 @@ export const getValue = (obj: any, prop: string): any =>
 
 /**
  * Simple object check.
- * @param item
+ *
+ *    isObject({a:1}) //=> true
+ *    isObject(1) //=> false
+ *
+ * @ignore
  */
-function isObject(item: any) {
+export const isObject = (item: any) => {
   return item && typeof item === 'object' && !Array.isArray(item);
-}
+};
 
 /**
  * Deep merge two objects.
- * @param target
- * @param ...sources
+ *
+ *    mergeDeep({a:1, b:{x: 1, y:2}}, {b:{x: 3}, c:4}) //=> {a:1, b:{x:3, y:2}, c:4}
+ *
+ * @param base base object onto which `sources` will be applied
  */
-export const mergeDeep = (target: any, ...sources: any): any => {
-  if (!sources.length) return target;
+export const mergeDeep = (base: any, ...sources: any): any => {
+  if (!sources.length) return base;
   const source = sources.shift();
 
-  if (isObject(target) && isObject(source)) {
+  if (isObject(base) && isObject(source)) {
     for (const key in source) {
       if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
-        mergeDeep(target[key], source[key]);
+        if (!base[key]) Object.assign(base, { [key]: {} });
+        mergeDeep(base[key], source[key]);
       } else {
-        Object.assign(target, { [key]: source[key] });
+        Object.assign(base, { [key]: source[key] });
       }
     }
   }
 
-  return mergeDeep(target, ...sources);
+  return mergeDeep(base, ...sources);
 };
