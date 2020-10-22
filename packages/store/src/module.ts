@@ -153,15 +153,8 @@ export class NgxsModule {
   }
 
   private static ngxsConfigFactory(options: NgxsModuleOptions): NgxsConfig {
-    console.log('before');
-    console.log(options);
-
     let merged = mergeDeep(new NgxsConfig(), options);
     // let merged = Object.assign(new NgxsConfig(), options);
-
-    console.log('after');
-    console.log(merged);
-
     return merged;
   }
 
