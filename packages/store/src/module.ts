@@ -153,8 +153,7 @@ export class NgxsModule {
   }
 
   private static ngxsConfigFactory(options: NgxsModuleOptions): NgxsConfig {
-    let merged = mergeDeep(new NgxsConfig(), options);
-    return merged;
+    return mergeDeep(new NgxsConfig(), options);
   }
 
   private static appBootstrapListenerFactory(bootstrapper: NgxsBootstrapper): Function {
