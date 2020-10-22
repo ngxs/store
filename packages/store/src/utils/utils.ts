@@ -80,7 +80,7 @@ export const isObject = (item: any) => {
  *
  * @param base base object onto which `sources` will be applied
  */
-export const mergeDeep = (base: any, ...sources: any): any => {
+export const mergeDeep = (base: any, ...sources: any[]): any => {
   if (!sources.length) return base;
   const source = sources.shift();
 
