@@ -154,7 +154,6 @@ export class NgxsModule {
 
   private static ngxsConfigFactory(options: NgxsModuleOptions): NgxsConfig {
     let merged = mergeDeep(new NgxsConfig(), options);
-    // let merged = Object.assign(new NgxsConfig(), options);
     return merged;
   }
 
