@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Select, Store } from '@ngxs/store';
+import { CounterState, Increment } from './store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +9,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'hello-world-ng11-ivy';
+  @Select(CounterState) counter$: Observable<number> | undefined;
+
+  constructor(private store: Store) {}
+
+  increment(): void {
+    this.store.dispatch(new Increment());
+  }
 }
