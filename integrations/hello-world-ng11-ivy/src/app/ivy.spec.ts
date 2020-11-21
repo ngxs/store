@@ -11,7 +11,7 @@ describe('NGXS with Ivy enabled', () => {
 
   it('should warn if state class is not decorated with @Injectable()', () => {
     // Arrange
-    const spy = spyOn(console, 'warn');
+    const spy = jest.spyOn(console, 'warn');
 
     @State({
       name: 'countries'
