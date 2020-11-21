@@ -198,6 +198,14 @@ jobs:
           name: Run integration tests for ng10 (Ivy) application
           command: yarn integration:ng10:ivy
 
+  integration_ng11_ivy_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng11 (Ivy) application
+          command: yarn integration:ng11:ivy
+
   integration_test_types:
     <<: *job_defaults
     steps:
@@ -307,6 +315,10 @@ workflows:
             - build
 
       - integration_ng10_ivy_tests:
+          requires:
+            - build
+
+      - integration_ng11_ivy_tests:
           requires:
             - build
 
