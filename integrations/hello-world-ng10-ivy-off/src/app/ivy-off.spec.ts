@@ -9,7 +9,7 @@ describe('NGXS with Ivy disabled', () => {
     expect(ivyEnabled).toBeFalsy();
   });
 
-  it('should warn if state class is not decorated with @Injectable()', () => {
+  it('should not warn if state class is not decorated with @Injectable()', () => {
     // Arrange
     const spy = jest.spyOn(console, 'warn');
 

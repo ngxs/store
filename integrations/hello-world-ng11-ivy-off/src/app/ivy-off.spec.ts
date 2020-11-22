@@ -2,14 +2,14 @@ import { ɵivyEnabled as ivyEnabled } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { State, NgxsModule } from '@ngxs/store';
 
-describe('NGXS with Ivy enabled', () => {
+describe('NGXS with Ivy disabled', () => {
   it('ivy has to be enabled', () => {
     // This assertion has to be performed as we have to
     // be sure that we're running these tests with the Ivy engine
-    expect(ivyEnabled).toBeTruthy();
+    expect(ivyEnabled).toBeFalsy();
   });
 
-  it('should warn if state class is not decorated with @Injectable()', () => {
+  it('should not warn if state class is not decorated with @Injectable()', () => {
     // Arrange
     const spy = jest.spyOn(console, 'warn');
 
@@ -26,9 +26,6 @@ describe('NGXS with Ivy enabled', () => {
     TestBed.inject(CountriesState);
 
     // Assert
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith(
-      `'CountriesState' class should be decorated with @Injectable() right after the @State() decorator`
-    );
+    expect(spy).not.toHaveBeenCalled();
   });
 });
