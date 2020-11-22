@@ -892,7 +892,7 @@ describe('Selector', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([ContactsState], {
-            selectorOptions: { suppressErrors: false }
+            selectorOptions: { suppressErrors: false, injectContainerState: false }
           })
         ]
       });

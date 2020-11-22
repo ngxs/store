@@ -1,6 +1,7 @@
 <div class="todo-list">
   <div>
     <h3>Reactive Form</h3>
+    <p>{{ injected$ | async }}</p>
     <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizza">
       Toppings: <input type="text" formControlName="toppings" /> <br />
       Crust <input type="text" formControlName="crust" /> <br />

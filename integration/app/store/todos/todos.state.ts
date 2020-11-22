@@ -8,6 +8,7 @@ import { TodoState } from '@integration/store/todos/todo/todo.state';
 import { Pizza, TodoStateModel } from '@integration/store/todos/todos.model';
 import { LoadData, SetPrefix } from '@integration/store/todos/todos.actions';
 import { Injectable } from '@angular/core';
+import { ListState } from '@integration/list/list.state';
 
 const TODOS_TOKEN: StateToken<TodoStateModel> = new StateToken('todos');
 
@@ -24,6 +25,14 @@ export class TodosState {
   @Selector()
   public static pizza(state: TodoStateModel): Pizza {
     return state.pizza;
+  }
+
+  @Selector([ListState.hello])
+  public static injected(state: TodoStateModel, hello: string): string {
+    if (state.todo == null || hello == null) {
+      return 'container injection failed or is disabled';
+    }
+    return `${hello}! i have ${state.todo.length} todos`;
   }
 
   @Action(SetPrefix)
