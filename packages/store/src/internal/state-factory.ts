@@ -77,12 +77,28 @@ export class StateFactory implements OnDestroy {
 
   getRuntimeSelectorContext = memoize(() => {
     const stateFactory = this;
+
+    function resolveGetter(key: string) {
+      const path = stateFactory.statePaths[key];
+      return path ? propGetter(path.split('.'), stateFactory._config) : null;
+    }
+
     const context: RuntimeSelectorContext = this._parentFactory
       ? this._parentFactory.getRuntimeSelectorContext()
       : {
           getStateGetter(key: string) {
-            const path = stateFactory.statePaths[key];
-            return path ? propGetter(path.split('.'), stateFactory._config) : () => undefined;
+            // Note to self: This change was done so that selectors that are connected before the state is available can lazy load
+            let getter = resolveGetter(key);
+            if (getter) {
+              return getter;
+            }
+            return (...args) => {
+              // Late loaded getter
+              if (!getter) {
+                getter = resolveGetter(key);
+              }
+              return getter ? getter(...args) : undefined;
+            };
           },
           getSelectorOptions(localOptions?: SharedSelectorOptions) {
             const globalSelectorOptions = stateFactory._config.selectorOptions;

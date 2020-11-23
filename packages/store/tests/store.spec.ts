@@ -191,6 +191,47 @@ describe('Store', () => {
           });
         });
     }));
+
+    it('should select state even when called before state added', async(() => {
+      // Arrange
+      @Injectable()
+      class CollectorService {
+        collected: string[] = [];
+        subscription: Subscription;
+        constructor(private store: Store) {}
+
+        startCollecting() {
+          this.subscription = this.store
+            .select(MyState)
+            .pipe(
+              tap((model: StateModel) => {
+                this.collected.push(model?.first);
+              })
+            )
+            .subscribe();
+        }
+
+        stop() {
+          this.subscription?.unsubscribe();
+        }
+      }
+
+      @NgModule({
+        providers: [CollectorService]
+      })
+      class CollectorModule {
+        constructor(service: CollectorService) {
+          service.startCollecting();
+        }
+      }
+
+      // Act
+      setup({ preImports: [CollectorModule] });
+      const collector = TestBed.inject(CollectorService);
+      collector.stop();
+      // Assert
+      expect(collector.collected).toEqual([undefined, 'Hello']);
+    }));
   });
 
   describe('[selectSnapshot]', () => {
