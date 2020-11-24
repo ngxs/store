@@ -87,7 +87,6 @@ export class StateFactory implements OnDestroy {
       ? this._parentFactory.getRuntimeSelectorContext()
       : {
           getStateGetter(key: string) {
-            // Note to self: This change was done so that selectors that are connected before the state is available can lazy load
             let getter = resolveGetter(key);
             if (getter) {
               return getter;
