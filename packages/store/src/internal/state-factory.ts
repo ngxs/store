@@ -77,12 +77,27 @@ export class StateFactory implements OnDestroy {
 
   getRuntimeSelectorContext = memoize(() => {
     const stateFactory = this;
+
+    function resolveGetter(key: string) {
+      const path = stateFactory.statePaths[key];
+      return path ? propGetter(path.split('.'), stateFactory._config) : null;
+    }
+
     const context: RuntimeSelectorContext = this._parentFactory
       ? this._parentFactory.getRuntimeSelectorContext()
       : {
           getStateGetter(key: string) {
-            const path = stateFactory.statePaths[key];
-            return path ? propGetter(path.split('.'), stateFactory._config) : () => undefined;
+            let getter = resolveGetter(key);
+            if (getter) {
+              return getter;
+            }
+            return (...args) => {
+              // Late loaded getter
+              if (!getter) {
+                getter = resolveGetter(key);
+              }
+              return getter ? getter(...args) : undefined;
+            };
           },
           getSelectorOptions(localOptions?: SharedSelectorOptions) {
             const globalSelectorOptions = stateFactory._config.selectorOptions;
