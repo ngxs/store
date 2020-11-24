@@ -6,6 +6,10 @@
 $ npm install @ngxs/store@dev
 ```
 
+- ...
+
+# 3.7.1 2020-11-24
+
 - Chore: Add official support for Angular 11 [#1697](https://github.com/ngxs/store/pull/1697)
 - Fix: Release NGXS resources when the root module gets destroyed [#1669](https://github.com/ngxs/store/pull/1669)
 - Fix: Resilient select if requested before state added [#1701](https://github.com/ngxs/store/pull/1701)
