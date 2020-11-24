@@ -6,8 +6,12 @@
 $ npm install @ngxs/store@dev
 ```
 
+- Chore: Add official support for Angular 11 [#1697](https://github.com/ngxs/store/pull/1697)
 - Fix: Release NGXS resources when the root module gets destroyed [#1669](https://github.com/ngxs/store/pull/1669)
+- Fix: Resilient select if requested before state added [#1701](https://github.com/ngxs/store/pull/1701)
+- Fix: Deep merge options with default options [#1686](https://github.com/ngxs/store/pull/1686)
 - Fix: Storage Plugin - Resolve state name correctly if the state class has been provided [#1670](https://github.com/ngxs/store/pull/1670)
+- CI: Add angular 11 ivy integration test with Ivy on [#1694](https://github.com/ngxs/store/pull/1694) and off [#1696](https://github.com/ngxs/store/pull/1696)
 
 # 3.7.0 2020-09-09
 
