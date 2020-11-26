@@ -22,9 +22,11 @@ import { Extras, Pizza, Todo } from '@integration/store/todos/todos.model';
 export class AppComponent implements OnInit {
   public allExtras: Extras[];
   public pizzaForm: FormGroup;
+  public greeting: string;
   @Select(TodoState) public todos$: Observable<Todo[]>;
   @Select(TodoState.pandas) public pandas$: Observable<Todo[]>;
   @Select(TodosState.pizza) public pizza$: Observable<Pizza>;
+  @Select(TodosState.injected) public injected$: Observable<string>;
 
   constructor(private store: Store, private formBuilder: FormBuilder) {}
 

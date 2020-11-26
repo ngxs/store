@@ -17,7 +17,10 @@ import { environment as env } from '../../environments/environment';
     NgxsLoggerPluginModule.forRoot({ logger: console, collapsed: false }),
     NgxsReduxDevtoolsPluginModule.forRoot({ disabled: env.production }),
     NgxsRouterPluginModule.forRoot(),
-    NgxsModule.forRoot([TodosState, TodoState], { developmentMode: !env.production })
+    NgxsModule.forRoot([TodosState, TodoState], {
+      developmentMode: !env.production,
+      selectorOptions: {} // empty object to test option merging
+    })
   ],
   exports: [
     NgxsFormPluginModule,
