@@ -6,7 +6,7 @@ export enum ArgvType {
   PACKAGE = '--package'
 }
 
-interface Package {
+export interface Package {
   name: string;
   packageName: string;
   buildPath: string;

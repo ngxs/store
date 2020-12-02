@@ -11,7 +11,7 @@ export function transform<T>(options: T | any) {
   return target;
 }
 
-function setOptionsValue(target, defaultSourceRoot: string) {
+function setOptionsValue(target: any, defaultSourceRoot: string) {
   target.path =
     target.path !== undefined
       ? join(normalize(defaultSourceRoot), target.path)
