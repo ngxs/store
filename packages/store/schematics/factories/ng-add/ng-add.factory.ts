@@ -36,16 +36,16 @@ function runNpmPackageInstall() {
   };
 }
 
-function setSchematicsAsDefault(): Rule {
-  return (host: Tree, context: SchematicContext) => {
-    context.logger.info('Adding @ngxs/schematics to angular.json');
-    const exec = require('child_process').exec;
-    exec('ng config cli.defaultCollection @ngxs/schematics', () => {
-      context.logger.log('info', `✅️ Setting NGXS Schematics as default`);
-    });
-    return host;
-  };
-}
+// function setSchematicsAsDefault(): Rule {
+//   return (host: Tree, context: SchematicContext) => {
+//     context.logger.info('Adding @ngxs/schematics to angular.json');
+//     const exec = require('child_process').exec;
+//     exec('ng config cli.defaultCollection @ngxs/schematics', () => {
+//       context.logger.log('info', `✅️ Setting NGXS Schematics as default`);
+//     });
+//     return host;
+//   };
+// }
 
 function finallyLog(): Rule {
   return (host: Tree, context: SchematicContext) => {

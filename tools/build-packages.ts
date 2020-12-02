@@ -1,5 +1,9 @@
-import { getPackages, ArgvType } from './utils';
+import { getPackages, ArgvType, Package } from './utils';
 import { join } from 'path';
+import * as childProcess from 'child_process';
+import { promisify } from 'util';
+
+const exec = promisify(childProcess.exec);
 
 type Options = {
   specificPackage?: string;
@@ -42,9 +46,22 @@ export async function buildPackages(options: Options, ngPackagr: () => NgPackagr
         .withOptions({ watch })
         .withTsConfig(join(__dirname, '../tsconfig.build.json'))
         .build();
+      if (hasSchematics(pack)) {
+        await buildPackageSchematics(pack);
+      }
     } catch (err) {
       console.error('ngPackagr build failed', err);
       throw err;
     }
   }
+}
+
+function hasSchematics(pkg: Package): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const packageJson = require(pkg.ngPackagrProjectPath);
+  return !!packageJson.schematics;
+}
+
+async function buildPackageSchematics(pkg: Package): Promise<void> {
+  await exec(`cd ${pkg.ngPackagrProjectPath.replace('/package.json', '')} && yarn build`);
 }

@@ -6,6 +6,10 @@ import { Parser } from './parser';
 
 export function generate({ options, factory }: Partial<GenerateFactoryInterface>): Source {
   const parser: Parser = new Parser();
+  if (!factory || !options || !options.spec || !options.path) {
+    throw new Error('Required arguments missing');
+  }
+
   return apply(url(join('../../templates' as Path, factory)), [
     parser.specParser(options.spec),
     template({

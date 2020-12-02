@@ -12,14 +12,18 @@
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "rootDir": "schematics",
-    "outDir": "../../dist/store/schematics",
+    "outDir": "../../@ngxs/store/schematics",
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "strictNullChecks": true,
     "target": "es6",
-    "types": ["jasmine", "node"]
+    "types": ["jest", "node"]
   },
   "include": ["schematics/**/*"],
-  "exclude": ["schematics/*/files/**/*"]
+  "exclude": [
+    "schematics/templates/**/*",
+    "schematics/**/*.test.ts",
+    "schematics/**/*.spec.ts"
+  ]
 }
