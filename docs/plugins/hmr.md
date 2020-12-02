@@ -3,6 +3,10 @@
 Hot Module Replacement (HMR) is a Webpack feature to update code in a running app without rebuilding it. This results in faster updates and less full page-reloads.
 In order to get HMR working with Angular CLI we first need to add a new environment and enable it.
 
+> As of Angular v10, HMR is no longer supported and will be deprecated.
+>
+> As a workaround to keep store's state on full-page reloads you can use [`@ngxs/storage-plugin`](https://www.ngxs.io/plugins/storage). Here's a [basic implementation example](https://stackblitz.com/edit/ngxs-hmr-workaround-using-storage-plugin)
+
 ### Add environment for HMR
 
 In this step we will configure the Angular CLI environments and define in which environment we enable HMR.

@@ -1,10 +1,8 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, Type } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-
 import { Actions, NgxsModule, ofActionDispatched, Selector, State, Store } from '@ngxs/store';
-
 import {
   NgxsFormPluginModule,
   ResetForm,
@@ -305,64 +303,224 @@ describe('NgxsFormPlugin', () => {
       expect(input.value).toBe('Buy some coffee');
     });
 
-    it('should update the state if "ngxsFormClearOnDestroy" option is provided', () => {
-      // Arrange
-      @State({
-        name: 'todos',
-        defaults: {
-          todosForm: {
-            model: undefined,
-            dirty: false,
-            status: '',
-            errors: {}
+    describe(`with ngxsFormClearOnDestroy`, () => {
+      function setup(ComponentType: Type<unknown>) {
+        @State({
+          name: 'todos',
+          defaults: {
+            todosForm: {
+              model: undefined,
+              dirty: false,
+              status: '',
+              errors: {}
+            }
           }
-        }
-      })
-      @Injectable()
-      class TodosState {}
+        })
+        class TodosState {}
 
-      @Component({
-        template: `
-          <form [formGroup]="form" ngxsForm="todos.todosForm" [ngxsFormClearOnDestroy]="true">
-            <input formControlName="text" /> <button type="submit">Add todo</button>
-          </form>
-        `
-      })
-      class MockComponent {
-        public form = new FormGroup({
-          text: new FormControl()
+        TestBed.configureTestingModule({
+          imports: [
+            ReactiveFormsModule,
+            NgxsModule.forRoot([TodosState]),
+            NgxsFormPluginModule.forRoot()
+          ],
+          declarations: [ComponentType]
         });
+        const store: Store = TestBed.get(Store);
+        const fixture = TestBed.createComponent(ComponentType);
+        const getTodosFormState = () => store.selectSnapshot(({ todos }) => todos.todosForm);
+        return { store, fixture, getTodosFormState };
       }
 
-      // Act
-      TestBed.configureTestingModule({
-        imports: [
-          ReactiveFormsModule,
-          NgxsModule.forRoot([TodosState]),
-          NgxsFormPluginModule.forRoot()
-        ],
-        declarations: [MockComponent]
+      it('should clear the state if ngxsFormClearOnDestroy option is provided', () => {
+        // Arrange
+        @Component({
+          template: `
+            <form [formGroup]="form" ngxsForm="todos.todosForm" ngxsFormClearOnDestroy>
+              <input type="text" formControlName="text" /><button type="submit">
+                Add todo
+              </button>
+            </form>
+          `
+        })
+        class MockComponent {
+          public form = new FormGroup({ text: new FormControl() });
+        }
+
+        const { fixture, getTodosFormState } = setup(MockComponent);
+        expect(getTodosFormState()).toEqual({
+          model: undefined,
+          dirty: false,
+          status: '',
+          errors: {}
+        });
+
+        fixture.detectChanges();
+
+        // Act
+        fixture.destroy();
+
+        // Assert
+        expect(getTodosFormState()).toEqual({
+          model: {},
+          dirty: null,
+          status: null,
+          errors: {}
+        });
       });
 
-      const store = getStore();
-      const fixture = TestBed.createComponent(MockComponent);
+      it('should not clear the state if ngxsFormClearOnDestroy="false" option is provided', () => {
+        // Arrange
+        @Component({
+          template: `
+            <form [formGroup]="form" ngxsForm="todos.todosForm" ngxsFormClearOnDestroy="false">
+              <input type="text" formControlName="text" /><button type="submit">
+                Add todo
+              </button>
+            </form>
+          `
+        })
+        class MockComponent {
+          public form = new FormGroup({ text: new FormControl() });
+        }
 
-      // Assert
-      expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
-        model: undefined,
-        dirty: false,
-        status: '',
-        errors: {}
+        const { fixture, getTodosFormState } = setup(MockComponent);
+        expect(getTodosFormState()).toEqual({
+          model: undefined,
+          dirty: false,
+          status: '',
+          errors: {}
+        });
+
+        fixture.detectChanges();
+
+        // Act
+        fixture.destroy();
+
+        // Assert
+        expect(getTodosFormState()).toEqual({
+          model: {
+            text: null
+          },
+          dirty: false,
+          status: 'VALID',
+          errors: {}
+        });
       });
 
-      fixture.detectChanges();
-      fixture.destroy();
+      it('should not clear the state if ngxsFormClearOnDestroy option is not provided', () => {
+        // Arrange
+        @Component({
+          template: `
+            <form [formGroup]="form" ngxsForm="todos.todosForm">
+              <input type="text" formControlName="text" /><button type="submit">
+                Add todo
+              </button>
+            </form>
+          `
+        })
+        class MockComponent {
+          public form = new FormGroup({ text: new FormControl() });
+        }
 
-      expect(store.selectSnapshot(({ todos }) => todos).todosForm).toEqual({
-        model: {},
-        dirty: null,
-        status: null,
-        errors: {}
+        const { fixture, getTodosFormState } = setup(MockComponent);
+        expect(getTodosFormState()).toEqual({
+          model: undefined,
+          dirty: false,
+          status: '',
+          errors: {}
+        });
+
+        fixture.detectChanges();
+
+        // Act
+        fixture.destroy();
+
+        // Assert
+        expect(getTodosFormState()).toEqual({
+          model: {
+            text: null
+          },
+          dirty: false,
+          status: 'VALID',
+          errors: {}
+        });
+      });
+
+      it('should clear the state if ngxsFormClearOnDestroy="true" option is provided', () => {
+        // Arrange
+        @Component({
+          template: `
+            <form [formGroup]="form" ngxsForm="todos.todosForm" ngxsFormClearOnDestroy="true">
+              <input formControlName="text" /> <button type="submit">Add todo</button>
+            </form>
+          `
+        })
+        class MockComponent {
+          public form = new FormGroup({ text: new FormControl() });
+        }
+
+        const { fixture, getTodosFormState } = setup(MockComponent);
+        expect(getTodosFormState()).toEqual({
+          model: undefined,
+          dirty: false,
+          status: '',
+          errors: {}
+        });
+
+        fixture.detectChanges();
+
+        // Act
+        fixture.destroy();
+
+        // Assert
+        expect(getTodosFormState()).toEqual({
+          model: {},
+          dirty: null,
+          status: null,
+          errors: {}
+        });
+      });
+
+      it('should clear the state if [ngxsFormClearOnDestroy]="true" option is provided', () => {
+        // Arrange
+        @Component({
+          template: `
+            <form
+              [formGroup]="form"
+              ngxsForm="todos.todosForm"
+              [ngxsFormClearOnDestroy]="true"
+            >
+              <input formControlName="text" /> <button type="submit">Add todo</button>
+            </form>
+          `
+        })
+        class MockComponent {
+          public form = new FormGroup({
+            text: new FormControl()
+          });
+        }
+
+        const { fixture, getTodosFormState } = setup(MockComponent);
+        expect(getTodosFormState()).toEqual({
+          model: undefined,
+          dirty: false,
+          status: '',
+          errors: {}
+        });
+
+        fixture.detectChanges();
+
+        // Act
+        fixture.destroy();
+
+        // Assert
+        expect(getTodosFormState()).toEqual({
+          model: {},
+          dirty: null,
+          status: null,
+          errors: {}
+        });
       });
     });
 

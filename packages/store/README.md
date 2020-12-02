@@ -4,7 +4,7 @@
   NGXS is a state management pattern + library for Angular
   <br />
   <br />
-  <a href="https://now-examples-slackin-eqzjxuxoem.now.sh/"><img src="https://now-examples-slackin-eqzjxuxoem.now.sh/badge.svg"></a> <a href="https://badge.fury.io/js/%40ngxs%2Fstore"><img src="https://badge.fury.io/js/%40ngxs%2Fstore.svg"></a> <a href="https://codeclimate.com/github/ngxs/store/maintainability"><img src="https://api.codeclimate.com/v1/badges/5b43106a1ddff7d76a04/maintainability" /></a> <a href="https://codeclimate.com/github/ngxs/store/test_coverage"><img src="https://api.codeclimate.com/v1/badges/5b43106a1ddff7d76a04/test_coverage" /></a> <a href="https://circleci.com/gh/ngxs/store"><img src="https://circleci.com/gh/ngxs/store/tree/master.svg?style=svg"></a>
+  <a href="https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q"><img src="https://img.shields.io/badge/slack-join%20us-blue.svg?style=flat&logo=slack"></a> <a href="https://badge.fury.io/js/%40ngxs%2Fstore"><img src="https://badge.fury.io/js/%40ngxs%2Fstore.svg"></a> <a href="https://codeclimate.com/github/ngxs/store/maintainability"><img src="https://api.codeclimate.com/v1/badges/5b43106a1ddff7d76a04/maintainability" /></a> <a href="https://codeclimate.com/github/ngxs/store/test_coverage"><img src="https://api.codeclimate.com/v1/badges/5b43106a1ddff7d76a04/test_coverage" /></a> <a href="https://circleci.com/gh/ngxs/store"><img src="https://circleci.com/gh/ngxs/store/tree/master.svg?style=svg"></a>
 </p>
 
 ---

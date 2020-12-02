@@ -1,5 +1,5 @@
-import { Injectable, Injector, Optional, SkipSelf, Inject } from '@angular/core';
-import { forkJoin, from, Observable, of, throwError } from 'rxjs';
+import { Injectable, Injector, Optional, SkipSelf, Inject, OnDestroy } from '@angular/core';
+import { forkJoin, from, Observable, of, throwError, Subscription } from 'rxjs';
 import {
   catchError,
   defaultIfEmpty,
@@ -40,8 +40,8 @@ import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/interna
  * @ignore
  */
 @Injectable()
-export class StateFactory {
-  private _connected = false;
+export class StateFactory implements OnDestroy {
+  private _actionsSubscription: Subscription | null = null;
 
   constructor(
     private _injector: Injector,
@@ -59,13 +59,13 @@ export class StateFactory {
 
   private _states: MappedStore[] = [];
 
-  public get states(): MappedStore[] {
+  get states(): MappedStore[] {
     return this._parentFactory ? this._parentFactory.states : this._states;
   }
 
   private _statesByName: StatesByName = {};
 
-  public get statesByName(): StatesByName {
+  get statesByName(): StatesByName {
     return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
   }
 
@@ -75,14 +75,29 @@ export class StateFactory {
     return this._parentFactory ? this._parentFactory.statePaths : this._statePaths;
   }
 
-  public getRuntimeSelectorContext = memoize(() => {
+  getRuntimeSelectorContext = memoize(() => {
     const stateFactory = this;
+
+    function resolveGetter(key: string) {
+      const path = stateFactory.statePaths[key];
+      return path ? propGetter(path.split('.'), stateFactory._config) : null;
+    }
+
     const context: RuntimeSelectorContext = this._parentFactory
       ? this._parentFactory.getRuntimeSelectorContext()
       : {
           getStateGetter(key: string) {
-            const path = stateFactory.statePaths[key];
-            return path ? propGetter(path.split('.'), stateFactory._config) : () => undefined;
+            let getter = resolveGetter(key);
+            if (getter) {
+              return getter;
+            }
+            return (...args) => {
+              // Late loaded getter
+              if (!getter) {
+                getter = resolveGetter(key);
+              }
+              return getter ? getter(...args) : undefined;
+            };
           },
           getSelectorOptions(localOptions?: SharedSelectorOptions) {
             const globalSelectorOptions = stateFactory._config.selectorOptions;
@@ -113,6 +128,14 @@ export class StateFactory {
 
   private static checkStatesAreValid(stateClasses: StateClassInternal[]): void {
     stateClasses.forEach(StoreValidators.getValidStateMeta);
+  }
+
+  ngOnDestroy(): void {
+    // I'm using non-null assertion here since `_actionsSubscrition` will
+    // be 100% defined. This is because `ngOnDestroy()` cannot be invoked
+    // on the `StateFactory` until its initialized :) An it's initialized
+    // for the first time along with the `NgxsRootModule`.
+    this._actionsSubscription!.unsubscribe();
   }
 
   /**
@@ -177,8 +200,8 @@ export class StateFactory {
    * Bind the actions to the handlers
    */
   connectActionHandlers() {
-    if (this._connected) return;
-    this._actions
+    if (this._actionsSubscription !== null) return;
+    this._actionsSubscription = this._actions
       .pipe(
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
         mergeMap(({ action }) =>
@@ -192,7 +215,6 @@ export class StateFactory {
         )
       )
       .subscribe(ctx => this._actionResults.next(ctx));
-    this._connected = true;
   }
 
   /**

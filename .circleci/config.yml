@@ -150,6 +150,14 @@ jobs:
           name: Run integration tests for the Angular 6 application
           command: yarn integration:ng6
 
+  integration_ng7_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for the Angular 7 application
+          command: yarn integration:ng7
+
   integration_ng8_tests:
     <<: *job_defaults
     steps:
@@ -158,13 +166,53 @@ jobs:
           name: Run integration tests for the Angular 8 application
           command: yarn integration:ng8
 
-  integration_ivy_tests:
+  integration_ng9_ivy_off_tests:
     <<: *job_defaults
     steps:
       - *attach_workspace
       - run:
-          name: Run integration tests for the Ivy application
-          command: yarn integration:ivy
+          name: Run integration tests for ng9 ivy off application
+          command: yarn integration:ng9:ivy:off
+
+  integration_ng9_ivy_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng9 (Ivy) application
+          command: yarn integration:ng9:ivy
+
+  integration_ng10_ivy_off_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng10 ivy off application
+          command: yarn integration:ng10:ivy:off
+
+  integration_ng10_ivy_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng10 (Ivy) application
+          command: yarn integration:ng10:ivy
+
+  integration_ng11_ivy_off_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng11 (Ivy off) application
+          command: yarn integration:ng11:ivy:off
+
+  integration_ng11_ivy_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng11 (Ivy) application
+          command: yarn integration:ng11:ivy
 
   integration_test_types:
     <<: *job_defaults
@@ -262,7 +310,27 @@ workflows:
           requires:
             - build
 
-      - integration_ivy_tests:
+      - integration_ng9_ivy_tests:
+          requires:
+            - build
+
+      - integration_ng9_ivy_off_tests:
+          requires:
+            - build
+
+      - integration_ng10_ivy_off_tests:
+          requires:
+            - build
+
+      - integration_ng10_ivy_tests:
+          requires:
+            - build
+
+      - integration_ng11_ivy_off_tests:
+          requires:
+            - build
+
+      - integration_ng11_ivy_tests:
           requires:
             - build
 

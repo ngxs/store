@@ -6,10 +6,24 @@
 $ npm install @ngxs/store@dev
 ```
 
+- ...
+
+# 3.7.1 2020-11-24
+
+- Chore: Add official support for Angular 11 [#1697](https://github.com/ngxs/store/pull/1697)
+- Fix: Release NGXS resources when the root module gets destroyed [#1669](https://github.com/ngxs/store/pull/1669)
+- Fix: Resilient select if requested before state added [#1701](https://github.com/ngxs/store/pull/1701)
+- Fix: Deep merge options with default options [#1686](https://github.com/ngxs/store/pull/1686)
+- Fix: Storage Plugin - Resolve state name correctly if the state class has been provided [#1670](https://github.com/ngxs/store/pull/1670)
+- CI: Add angular 11 ivy integration test with Ivy on [#1694](https://github.com/ngxs/store/pull/1694) and off [#1696](https://github.com/ngxs/store/pull/1696)
+
+# 3.7.0 2020-09-09
+
 - Feature: Throw an error when actions do not have a static type property [#1625](https://github.com/ngxs/store/pull/1625)
 - Feature: Storage Plugin - Add before and after serialize hooks [#1513](https://github.com/ngxs/store/pull/1513)
 - Feature: Logger Plugin - Add filter for Logger Plugin [#1571](https://github.com/ngxs/store/pull/1571)
 - Feature: Form Plugin - Add reset form action [#1604](https://github.com/ngxs/store/pull/1604)
+- Feature: Form Plugin - `ngxsFormClearOnDestroy` should allow the attribute with no value [#1662](https://github.com/ngxs/store/pull/1662)
 - Performance: Logger Plugin - Plugin should lazy inject the store once [#1550](https://github.com/ngxs/store/pull/1550)
 - Fix: `ofAction*` methods should prevent passing anything except of `ActionType` [#1616](https://github.com/ngxs/store/pull/1616)
 - Fix: Remove the recent `@Select` type safety check due to issues with private/protected properties [#1623](https://github.com/ngxs/store/pull/1623)
@@ -18,6 +32,8 @@ $ npm install @ngxs/store@dev
 - Fix: HMR Plugin - Show error when use Angular Ivy with JIT mode [#1607](https://github.com/ngxs/store/pull/1607)
 - Fix: Logger Plugin - Filter out only `undefined` payloads [#1617](https://github.com/ngxs/store/pull/1617)
 - Fix: Devtools Plugin - Actions with "action" property should not be logged as <UNDEFINED> [#1628](https://github.com/ngxs/store/pull/1628)
+- Test: Add integration tests for Angular 10 with Ivy [#1641](https://github.com/ngxs/store/pull/1641) and without Ivy [#1647](https://github.com/ngxs/store/pull/1647)
+- Test: Add integration tests for Angular 9 without Ivy [#1649](https://github.com/ngxs/store/pull/1649)
 - Build: Upgrade TS to 3.9.5 to ensure that no breaking changes get added [#1626](https://github.com/ngxs/store/pull/1626)
 - Build: Compile using Angular 9 [#1596](https://github.com/ngxs/store/pull/1596)
 

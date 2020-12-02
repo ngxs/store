@@ -32,14 +32,14 @@
       "path": "./@ngxs/store/fesm2015/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es2015",
-      "maxSize": "111.56KB",
+      "maxSize": "114.05KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es5",
-      "maxSize": "131.07KB",
+      "maxSize": "134.10KB",
       "compression": "none"
     },
     {
@@ -74,14 +74,14 @@
       "path": "./@ngxs/hmr-plugin/fesm2015/ngxs-hmr-plugin.js",
       "package": "@ngxs/hmr-plugin",
       "target": "es2015",
-      "maxSize": "16.550KB",
+      "maxSize": "16.640KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/hmr-plugin/fesm5/ngxs-hmr-plugin.js",
       "package": "@ngxs/hmr-plugin",
       "target": "es5",
-      "maxSize": "20.135KB",
+      "maxSize": "20.22KB",
       "compression": "none"
     },
     {

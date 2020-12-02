@@ -33,7 +33,9 @@ describe('Internal API', () => {
 
     const stateFactory: StateFactory = TestBed.inject(StateFactory);
     const stateContextFactory: StateContextFactory = TestBed.inject(StateContextFactory);
-    const myCustomPluginAccessor: MyCustomPluginAccessor = TestBed.inject(MyCustomPluginAccessor);
+    const myCustomPluginAccessor: MyCustomPluginAccessor = TestBed.inject(
+      MyCustomPluginAccessor
+    );
 
     expect(stateFactory).toEqual(myCustomPluginAccessor.factory);
     expect(stateContextFactory).toEqual(myCustomPluginAccessor.contextFactory);

@@ -32,6 +32,7 @@ script:
   # should start before building Angular 9,
   # because Angular 9 CLI mutates parent packages
   - yarn integration:ng6
+  - yarn integration:ng7
   - yarn integration:ng8
 
   - yarn build:integration
@@ -43,8 +44,17 @@ script:
   - yarn test:ci:e2e
   - yarn test:ci:integration:ssr
 
-  # Run integration test with Angular 9 Ivy
-  - yarn integration:ivy
+  # Run integration test with Angular 9 Ivy On, Off
+  - yarn integration:ng9:ivy
+  - yarn integration:ng9:ivy:off
+
+  # Run integration test with Angular 10 Ivy On,Off
+  - yarn integration:ng10:ivy
+  - yarn integration:ng10:ivy:off
+
+  # Run integration test with Angular 11 Ivy On,Off
+  - yarn integration:ng11:ivy
+  - yarn integration:ng11:ivy:off
 
   # Run declaration files linter
   - yarn test:types
