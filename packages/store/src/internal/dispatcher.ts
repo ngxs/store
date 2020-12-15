@@ -1,4 +1,4 @@
-import { ErrorHandler, Injectable } from '@angular/core';
+import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
 
@@ -21,8 +21,10 @@ export class InternalDispatchedActionResults extends Subject<ActionContext> {}
 
 @Injectable()
 export class InternalDispatcher {
+  private _errorHandler: ErrorHandler;
+
   constructor(
-    private _errorHandler: ErrorHandler,
+    private _injector: Injector,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
@@ -42,6 +44,8 @@ export class InternalDispatcher {
       error: error =>
         this._ngxsExecutionStrategy.leave(() => {
           try {
+            // Retrieve lazily to avoid cyclic dependency exception
+            this._errorHandler = this._errorHandler || this._injector.get(ErrorHandler);
             this._errorHandler.handleError(error);
           } catch {}
         })
