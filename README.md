@@ -49,6 +49,7 @@
 - ⚡️ Development of [NGXS Labs](https://github.com/ngxs-labs)
 - 📝 Learn about updates from the [changelog](CHANGELOG.md)
 - ❤️ Give back by becoming a [Contributor](docs/community/contributors.md) or a [Sponsor](/docs/community/sponsors.md)
+- 👂 We would love to hear about your experience with NGXS, you can [leave your feedback here](https://forms.gle/2Nf9tNyZnaD8AZL89)
 
 ---
 
