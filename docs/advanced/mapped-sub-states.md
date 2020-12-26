@@ -80,13 +80,13 @@ export class ZooState {
   }
 
   static pandas(zooName: string) {
-    return createSelector([ZooState.getAnimals(zooName)], (state: Animal[]) => {
+    return createSelector([ZooState.getZooAnimals(zooName)], (state: Animal[]) => {
       return state.filter(animal => animal.type === 'panda' && animal.age === 'young');
     });
   }
 
   static pandasWithoutMemoize(zooName: string) {
-    return createSelector([ZooState], (state: ZooStateModel) => {
+    return createSelector([ZooState], (state: ZooStateModel[]) => {
       return state[zooName].animals.filter(
         animal => animal.type === 'panda' && animal.age === 'young'
       );
