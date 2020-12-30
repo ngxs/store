@@ -86,7 +86,7 @@ export class ZooState {
   }
 
   static pandasWithoutMemoize(zooName: string) {
-    return createSelector([ZooState], (state: ZooStateModel[]) => {
+    return createSelector([ZooState], (state: ZooStateModel) => {
       return state[zooName].animals.filter(
         animal => animal.type === 'panda' && animal.age === 'young'
       );
