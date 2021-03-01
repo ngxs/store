@@ -3,7 +3,7 @@
 Actions can either be thought of as a command which should trigger something to happen,
 or as the resulting event of something that has already happened.
 
-Each action contains a `type` field which is their unique identifier.
+Each action contains a `type` field which is its unique identifier.
 
 ## Internal Actions
 
