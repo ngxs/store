@@ -7,7 +7,7 @@ Each action contains a `type` field which is their unique identifier.
 
 ## Internal Actions
 
-There are two actions that gets triggered in the internals of the library:
+There are two actions that get triggered in the internals of the library:
 
 1. @@INIT - store being initialized, before all the [ngxsOnInit Life-cycle](../advanced/life-cycle.md) events.
 1. @@UPDATE_STATE - a new [lazy-loaded state](../advanced/lazy.md) being added to the store.
