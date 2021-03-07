@@ -19,6 +19,12 @@ import {
 } from './symbols';
 import { DEFAULT_STATE_KEY } from './internals';
 
+/**
+ * @description Will be provided through Terser global definitions by Angular CLI
+ * during the production build. This is how Angular does tree-shaking internally.
+ */
+declare const ngDevMode: boolean;
+
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
   constructor(
@@ -44,14 +50,19 @@ export class NgxsStoragePlugin implements NgxsPlugin {
         const isMaster = key === DEFAULT_STATE_KEY;
         let val: any = this._engine.getItem(key!);
 
-        if (val !== 'undefined' && typeof val !== 'undefined' && val !== null) {
+        if (val !== 'undefined' && val != null) {
           try {
             const newVal = this._options.deserialize!(val);
             val = this._options.afterDeserialize!(newVal, key);
           } catch (e) {
-            console.error(
-              'Error ocurred while deserializing the store value, falling back to empty object.'
-            );
+            // Caretaker note: we have still left the `typeof` condition in order to avoid
+            // creating a breaking change for projects that still use the View Engine.
+            if (typeof ngDevMode === 'undefined' || ngDevMode) {
+              console.error(
+                `Error ocurred while deserializing the ${key} store value, falling back to empty object, the value obtained from the store: `,
+                val
+              );
+            }
             val = {};
           }
 
@@ -90,9 +101,14 @@ export class NgxsStoragePlugin implements NgxsPlugin {
               const newVal = this._options.beforeSerialize!(val, key);
               this._engine.setItem(key!, this._options.serialize!(newVal));
             } catch (e) {
-              console.error(
-                'Error ocurred while serializing the store value, value not updated.'
-              );
+              // Caretaker note: we have still left the `typeof` condition in order to avoid
+              // creating a breaking change for projects that still use the View Engine.
+              if (typeof ngDevMode === 'undefined' || ngDevMode) {
+                console.error(
+                  `Error ocurred while serializing the ${key} store value, value not updated, the value obtained from the store: `,
+                  val
+                );
+              }
             }
           }
         }
