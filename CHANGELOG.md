@@ -6,7 +6,9 @@
 $ npm install @ngxs/store@dev
 ```
 
-- ...
+- Fix: Allow to inject the `Store` into the custom error handler [#1708](https://github.com/ngxs/store/pull/1708)
+- Performance: Storage Plugin - Tree-shake `console.*` calls and expand error messages [#1727](https://github.com/ngxs/store/pull/1727)
+- CI: Add bundlesize check for the latest integration app [#1710](https://github.com/ngxs/store/pull/1710)
 
 # 3.7.1 2020-11-24
 
