@@ -26,8 +26,12 @@ export class NgxsRootModule {
     states: StateClassInternal[] = [],
     lifecycleStateManager: LifecycleStateManager
   ) {
-    // Validate states on having the `@Injectable()` decorator in Ivy
-    setIvyEnabledInDevMode();
+    // Caretaker note: we have still left the `typeof` condition in order to avoid
+    // creating a breaking change for projects that still use the View Engine.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      // Validate states on having the `@Injectable()` decorator in Ivy
+      setIvyEnabledInDevMode();
+    }
 
     // Add stores to the state graph and return their defaults
     const results: StatesAndDefaults = factory.addAndReturnDefaults(states);

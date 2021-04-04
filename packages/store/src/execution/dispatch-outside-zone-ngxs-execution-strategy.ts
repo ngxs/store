@@ -2,12 +2,16 @@ import { Inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 
 import { NgxsExecutionStrategy } from './symbols';
-import { CONFIG_MESSAGES, VALIDATION_CODE } from '../configs/messages.config';
+import { getZoneWarningMessage } from '../configs/messages.config';
 
 @Injectable()
 export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionStrategy {
   constructor(private _ngZone: NgZone, @Inject(PLATFORM_ID) private _platformId: string) {
-    this.verifyZoneIsNotNooped(this._ngZone);
+    // Caretaker note: we have still left the `typeof` condition in order to avoid
+    // creating a breaking change for projects that still use the View Engine.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      verifyZoneIsNotNooped(_ngZone);
+    }
   }
 
   enter<T>(func: () => T): T {
@@ -34,15 +38,17 @@ export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionSt
     }
     return func();
   }
+}
 
-  private verifyZoneIsNotNooped(ngZone: NgZone): void {
-    // `NoopNgZone` is not exposed publicly as it doesn't expect
-    // to be used outside of the core Angular code, thus we just have
-    // to check if the zone doesn't extend or instanceof `NgZone`
-    if (ngZone instanceof NgZone) {
-      return;
-    }
-
-    console.warn(CONFIG_MESSAGES[VALIDATION_CODE.ZONE_WARNING]());
+// Caretaker note: this should exist as a separate function and not a class method,
+// since class methods are not tree-shakable.
+function verifyZoneIsNotNooped(ngZone: NgZone): void {
+  // `NoopNgZone` is not exposed publicly as it doesn't expect
+  // to be used outside of the core Angular code, thus we just have
+  // to check if the zone doesn't extend or instanceof `NgZone`.
+  if (ngZone instanceof NgZone) {
+    return;
   }
+
+  console.warn(getZoneWarningMessage());
 }

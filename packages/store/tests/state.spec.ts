@@ -16,12 +16,7 @@ import {
 import { InitState, UpdateState } from '../src/actions/actions';
 import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../src/public_api';
 import { META_KEY, NgxsAfterBootstrap } from '../src/symbols';
-import { StoreValidators } from '../src/utils/store-validators';
 import { simplePatch } from '../src/internal/state-operators';
-import {
-  CONFIG_MESSAGES as MESSAGES,
-  VALIDATION_CODE as CODE
-} from '../src/configs/messages.config';
 
 describe('State', () => {
   it('describes correct name', () => {
@@ -83,7 +78,9 @@ describe('State', () => {
       message = err.message;
     }
 
-    expect(message).toBe(StoreValidators.stateNameErrorMessage('bar-foo'));
+    expect(message).toEqual(
+      'bar-foo is not a valid state name. It needs to be a valid object property name.'
+    );
   });
 
   it('should throw when state parameters are not passed', () => {
@@ -95,8 +92,8 @@ describe('State', () => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([MyOtherState])]
       });
-    } catch (err) {
-      expect(err.message).toEqual(MESSAGES[CODE.STATE_NAME_PROPERTY]());
+    } catch ({ message }) {
+      expect(message).toEqual(`States must register a 'name' property.`);
     }
   });
 

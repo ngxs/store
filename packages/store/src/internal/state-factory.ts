@@ -25,7 +25,8 @@ import {
   StatesByName,
   topologicalSort,
   RuntimeSelectorContext,
-  SharedSelectorOptions
+  SharedSelectorOptions,
+  getStoreMetadata
 } from './internals';
 import { getActionTypeFromInstance, getValue, setValue } from '../utils/utils';
 import { ofActionDispatched } from '../operators/of-action';
@@ -126,10 +127,6 @@ export class StateFactory implements OnDestroy {
     return value;
   }
 
-  private static checkStatesAreValid(stateClasses: StateClassInternal[]): void {
-    stateClasses.forEach(StoreValidators.getValidStateMeta);
-  }
-
   ngOnDestroy(): void {
     // I'm using non-null assertion here since `_actionsSubscrition` will
     // be 100% defined. This is because `ngOnDestroy()` cannot be invoked
@@ -142,7 +139,12 @@ export class StateFactory implements OnDestroy {
    * Add a new state to the global defs.
    */
   add(stateClasses: StateClassInternal[]): MappedStore[] {
-    StateFactory.checkStatesAreValid(stateClasses);
+    // Caretaker note: we have still left the `typeof` condition in order to avoid
+    // creating a breaking change for projects that still use the View Engine.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      StoreValidators.checkThatStateClassesHaveBeenDecorated(stateClasses);
+    }
+
     const { newStates } = this.addToStatesMap(stateClasses);
     if (!newStates.length) return [];
 
@@ -280,7 +282,12 @@ export class StateFactory implements OnDestroy {
     const statesMap: StatesByName = this.statesByName;
 
     for (const stateClass of stateClasses) {
-      const stateName: string = StoreValidators.checkStateNameIsUnique(stateClass, statesMap);
+      const stateName = getStoreMetadata(stateClass).name!;
+      // Caretaker note: we have still left the `typeof` condition in order to avoid
+      // creating a breaking change for projects that still use the View Engine.
+      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+        StoreValidators.checkThatStateNameIsUnique(stateName, stateClass, statesMap);
+      }
       const unmountedState = !statesMap[stateName];
       if (unmountedState) {
         newStates.push(stateClass);
