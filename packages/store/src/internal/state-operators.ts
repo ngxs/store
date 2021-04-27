@@ -1,15 +1,15 @@
 import {
-  CONFIG_MESSAGES as MESSAGES,
-  VALIDATION_CODE as CODE
+  throwPatchingArrayError,
+  throwPatchingPrimitiveError
 } from '../configs/messages.config';
 import { StateOperator } from '../symbols';
 
 export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
   return (existingState: Readonly<T>) => {
     if (Array.isArray(val)) {
-      throw new Error(MESSAGES[CODE.PATCHING_ARRAY]());
+      throwPatchingArrayError();
     } else if (typeof val !== 'object') {
-      throw new Error(MESSAGES[CODE.PATCHING_PRIMITIVE]());
+      throwPatchingPrimitiveError();
     }
 
     const newState: any = { ...(existingState as any) };

@@ -8,7 +8,8 @@ $ npm install @ngxs/store@dev
 
 - Fix: Allow to inject the `Store` into the custom error handler [#1708](https://github.com/ngxs/store/pull/1708)
 - Performance: Tree-shake errors and warnings [#1732](https://github.com/ngxs/store/pull/1732)
-- Performance: Router Plugin - Tree-shake `isAngularInTestMode()` [#1733](https://github.com/ngxs/store/pull/1733)
+- Performance: Router Plugin - Tree-shake `isAngularInTestMode()` [#1738](https://github.com/ngxs/store/pull/1738)
+- Performance: Tree-shake `isAngularInTestMode()` [#1739](https://github.com/ngxs/store/pull/1739)
 - Performance: Storage Plugin - Tree-shake `console.*` calls and expand error messages [#1727](https://github.com/ngxs/store/pull/1727)
 - CI: Add bundlesize check for the latest integration app [#1710](https://github.com/ngxs/store/pull/1710)
 
