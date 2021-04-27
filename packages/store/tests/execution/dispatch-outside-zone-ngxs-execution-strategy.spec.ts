@@ -15,7 +15,7 @@ import {
   Select,
   Actions
 } from '../../src/public_api';
-import { CONFIG_MESSAGES, VALIDATION_CODE } from '../..//src/configs/messages.config';
+import { getZoneWarningMessage } from '../../src/configs/messages.config';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from '../../src/execution/dispatch-outside-zone-ngxs-execution-strategy';
 
 describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
@@ -320,8 +320,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
 
       try {
         // Assert
-        const ZONE_WARNING = CONFIG_MESSAGES[VALIDATION_CODE.ZONE_WARNING]();
-        expect(spy).toHaveBeenCalledWith(ZONE_WARNING);
+        expect(spy).toHaveBeenCalledWith(getZoneWarningMessage());
       } finally {
         spy.mockRestore();
       }

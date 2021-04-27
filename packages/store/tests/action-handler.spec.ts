@@ -11,7 +11,6 @@ import { NgxsModule } from '../src/module';
 import { Store } from '../src/store';
 import { Actions } from '../src/actions-stream';
 import { NoopErrorHandler } from './helpers/utils';
-import { VALIDATION_CODE, CONFIG_MESSAGES } from '../src/configs/messages.config';
 
 describe('Action handlers', () => {
   class TestAction {
@@ -51,7 +50,7 @@ describe('Action handlers', () => {
 
         new CounterState();
       } catch ({ message }) {
-        expect(message).toEqual(CONFIG_MESSAGES[VALIDATION_CODE.ACTION_DECORATOR]());
+        expect(message).toEqual('@Action() decorator cannot be used with static methods.');
       }
     });
 

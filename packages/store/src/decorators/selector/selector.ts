@@ -1,4 +1,4 @@
-import { CONFIG_MESSAGES, VALIDATION_CODE } from '../../configs/messages.config';
+import { throwSelectorDecoratorError } from '../../configs/messages.config';
 import { createSelector } from '../../utils/selector-utils';
 import { SelectorSpec, SelectorType } from './symbols';
 
@@ -11,10 +11,14 @@ export function Selector<T>(selectors?: T[]): SelectorType<T> {
     key: string | symbol,
     descriptor: TypedPropertyDescriptor<SelectorSpec<T, U>>
   ): TypedPropertyDescriptor<SelectorSpec<T, U>> | void => {
-    const isNotMethod = !(descriptor && descriptor.value !== null);
+    // Caretaker note: we have still left the `typeof` condition in order to avoid
+    // creating a breaking change for projects that still use the View Engine.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      const isNotMethod = !(descriptor && descriptor.value !== null);
 
-    if (isNotMethod) {
-      throw new Error(CONFIG_MESSAGES[VALIDATION_CODE.SELECTOR_DECORATOR]());
+      if (isNotMethod) {
+        throwSelectorDecoratorError();
+      }
     }
 
     const originalFn = descriptor.value;

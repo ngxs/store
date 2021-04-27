@@ -4,9 +4,8 @@ import { Store } from '../../store';
 import { NgxsConfig } from '../../symbols';
 
 /**
- * Allows the select decorator to get access to the DI store.
- * @internal only use in @Select decorator
- * @ignore
+ * Allows the select decorator to get access to the DI store, this is used internally
+ * in `@Select` decorator.
  */
 @Injectable()
 export class SelectFactory implements OnDestroy {

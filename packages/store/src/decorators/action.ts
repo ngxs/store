@@ -1,6 +1,6 @@
 import { ensureStoreMetadata } from '../internal/internals';
 import { ActionType, ActionOptions } from '../actions/symbols';
-import { CONFIG_MESSAGES, VALIDATION_CODE } from '../configs/messages.config';
+import { throwActionDecoratorError } from '../configs/messages.config';
 
 /**
  * Decorates a method with a action information.
@@ -10,10 +10,14 @@ export function Action(
   options?: ActionOptions
 ): MethodDecorator {
   return (target: any, name: string | symbol): void => {
-    const isStaticMethod = target.hasOwnProperty('prototype');
+    // Caretaker note: we have still left the `typeof` condition in order to avoid
+    // creating a breaking change for projects that still use the View Engine.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      const isStaticMethod = target.hasOwnProperty('prototype');
 
-    if (isStaticMethod) {
-      throw new Error(CONFIG_MESSAGES[VALIDATION_CODE.ACTION_DECORATOR]());
+      if (isStaticMethod) {
+        throwActionDecoratorError();
+      }
     }
 
     const meta = ensureStoreMetadata(target.constructor);

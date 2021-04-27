@@ -170,3 +170,8 @@ export interface NgxsAfterBootstrap {
 }
 
 export type NgxsModuleOptions = Partial<NgxsConfig>;
+
+/** @internal */
+declare global {
+  const ngDevMode: boolean;
+}

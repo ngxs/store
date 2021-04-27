@@ -47,3 +47,5 @@ if (CI) {
     jest.spyOn(global.console, methodName as any).mockImplementation(() => jest.fn());
   });
 }
+
+((global as unknown) as { ngDevMode: boolean }).ngDevMode = true;

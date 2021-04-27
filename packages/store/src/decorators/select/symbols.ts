@@ -9,6 +9,7 @@ import { ExtractTokenType } from '../../state-token/symbols';
 const DOLLAR_CHAR_CODE = 36;
 
 export function createSelectObservable<T = any>(selector: any): Observable<T> {
+  // We're not adding `ngDevMode` guard since we have still to throw this error until we fix SSR issue.
   if (!SelectFactory.store) {
     throw new Error(CONFIG_MESSAGES[VALIDATION_CODE.SELECT_FACTORY_NOT_CONNECTED]());
   }
