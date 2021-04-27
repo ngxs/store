@@ -1,9 +1,6 @@
 export enum VALIDATION_CODE {
   INCORRECT_PRODUCTION = 'INCORRECT_PRODUCTION',
-  INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT',
-  SELECT_FACTORY_NOT_CONNECTED = 'SELECT_FACTORY_NOT_CONNECTED',
-  PATCHING_ARRAY = 'PATCHING_ARRAY',
-  PATCHING_PRIMITIVE = 'PATCHING_PRIMITIVE'
+  INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT'
 }
 
 // TODO: these messages might be tree-shaken away in the future.
@@ -14,12 +11,7 @@ export const CONFIG_MESSAGES = {
     'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
   [VALIDATION_CODE.INCORRECT_DEVELOPMENT]: () =>
     'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n' +
-    'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
-  [VALIDATION_CODE.SELECT_FACTORY_NOT_CONNECTED]: () =>
-    'You have forgotten to import the NGXS module!',
-  // This can be a breaking change if we don't throw these errors even in production mode.
-  [VALIDATION_CODE.PATCHING_ARRAY]: () => 'Patching arrays is not supported.',
-  [VALIDATION_CODE.PATCHING_PRIMITIVE]: () => 'Patching primitives is not supported.'
+    'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
 };
 
 // The below functions are decoupled from the `CONFIG_MESSAGES` object for now, since object properties
@@ -66,4 +58,16 @@ export function getZoneWarningMessage(): string {
 
 export function getUndecoratedStateInIvyWarningMessage(name: string): string {
   return `'${name}' class should be decorated with @Injectable() right after the @State() decorator`;
+}
+
+export function throwSelectFactoryNotConnectedError(): never {
+  throw new Error('You have forgotten to import the NGXS module!');
+}
+
+export function throwPatchingArrayError(): never {
+  throw new Error('Patching arrays is not supported.');
+}
+
+export function throwPatchingPrimitiveError(): never {
+  throw new Error('Patching primitives is not supported.');
 }
