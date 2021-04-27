@@ -33,6 +33,12 @@ export interface RouterStateModel<T = RouterStateSnapshot> {
 
 export type RouterTrigger = 'none' | 'router' | 'store';
 
+/**
+ * @description Will be provided through Terser global definitions by Angular CLI
+ * during the production build. This is how Angular does tree-shaking internally.
+ */
+declare const ngDevMode: boolean;
+
 @State<RouterStateModel>({
   name: 'router',
   defaults: {
@@ -233,7 +239,14 @@ export class RouterState {
    * is triggered
    */
   private checkInitialNavigationOnce(): void {
-    if (isAngularInTestMode()) {
+    // Caretaker note: we have still left the `typeof` condition in order to avoid
+    // creating a breaking change for projects that still use the View Engine.
+    if (
+      (typeof ngDevMode === 'undefined' || ngDevMode) &&
+      // Angular is running tests in development mode thus we can be sure that this method will be
+      // skipped in tests.
+      isAngularInTestMode()
+    ) {
       return;
     }
 
