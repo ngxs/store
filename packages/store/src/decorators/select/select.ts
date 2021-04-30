@@ -1,17 +1,14 @@
-import { ɵɵdirectiveInject, ɵivyEnabled } from '@angular/core';
+import {
+  Type,
+  Injector,
+  INJECTOR,
+  InjectionToken,
+  ɵivyEnabled,
+  ɵɵdirectiveInject
+} from '@angular/core';
 
 import { Store } from '../../store';
 import { createSelectObservable, createSelectorFn, PropertyType } from './symbols';
-
-/**
- * A `Symbol` which is used to save the `Store` onto the class instance.
- */
-const StoreInstance: unique symbol = Symbol('StoreInstance');
-
-/**
- * A `Symbol` which is used to determine if factory has been decorated previously or not.
- */
-const FactoryHasBeenDecorated: unique symbol = Symbol('FactoryHasBeenDecorated');
 
 /**
  * Decorator for selecting a slice of state from the store.
@@ -34,64 +31,107 @@ export function Select<T>(rawSelector?: T, ...paths: string[]): PropertyDecorato
         get(this: PrivateInstance): PropertyType<T> {
           return (
             this[selectorId] ||
-            (this[selectorId] = createSelectObservable(selector, this[StoreInstance]))
+            (this[selectorId] = createSelectObservable(selector, localInject(this, Store)))
           );
         }
       }
     });
 
-    if (!ɵivyEnabled || FactoryHasBeenDecorated in target.constructor.prototype) {
-      return;
-    }
-
-    target.constructor.prototype[FactoryHasBeenDecorated] = true;
-
-    const constructor: ConstructorWithDefinitionAndFactory = target.constructor;
-    // Means we're in AOT mode.
-    if (typeof constructor.ɵfac === 'function') {
-      decorateFactory(constructor);
-    } else {
-      // We're running in JIT mode and that means we're not able to get the compiled definition
-      // on the class inside the property decorator during the current message loop tick. We have
-      // to wait for the next message loop tick. Note that this is safe since this Promise will be
-      // resolved even before the `APP_INITIALIZER` is resolved.
-      Promise.resolve().then(() => {
-        decorateFactory(constructor);
-      });
+    // Keep this `if` guard here so the below stuff will be tree-shaken away in apps that still use the View Engine.
+    if (ɵivyEnabled) {
+      ensureLocalInjectorCaptured(target);
     }
   };
 }
 
-function decorateFactory({
-  ɵprov,
-  ɵɵpipe,
-  ɵcmp,
-  ɵdir,
-  ɵfac
-}: ConstructorWithDefinitionAndFactory): void {
-  // Let's try to get any definition.
-  const def = ɵprov || ɵɵpipe || ɵcmp || ɵdir;
+// Angular doesn't export `NG_FACTORY_DEF`.
+const NG_FACTORY_DEF = 'ɵfac';
 
-  // This means that `@Select()` decorator is used within some non-Angular class,
-  // e.g. some custom class which is not decorated with `@Injectable()` or any other Angular decorator.
-  if (!def) {
+// A `Symbol` which is used to save the `Injector` onto the class instance.
+const InjectorInstance: unique symbol = Symbol('InjectorInstance');
+
+// A `Symbol` which is used to determine if factory has been decorated previously or not.
+const FactoryHasBeenDecorated: unique symbol = Symbol('FactoryHasBeenDecorated');
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+function ensureLocalInjectorCaptured(target: Object): void {
+  if (FactoryHasBeenDecorated in target.constructor.prototype) {
     return;
   }
 
-  def.factory = () => {
-    const instance = ɵfac!();
-    // Note: `inject()` won't work here.
+  const constructor: ConstructorWithDefinitionAndFactory = target.constructor;
+  // Means we're in AOT mode.
+  if (typeof constructor[NG_FACTORY_DEF] === 'function') {
+    decorateFactory(constructor);
+  } else {
+    // We're running in JIT mode and that means we're not able to get the compiled definition
+    // on the class inside the property decorator during the current message loop tick. We have
+    // to wait for the next message loop tick. Note that this is safe since this Promise will be
+    // resolved even before the `APP_INITIALIZER` is resolved.
+    // The below code also will be executed only in development mode, since it's never recommended
+    // to use the JIT compiler in production mode (by setting "aot: false").
+    Promise.resolve().then(() => {
+      decorateFactory(constructor);
+    });
+  }
+
+  target.constructor.prototype[FactoryHasBeenDecorated] = true;
+}
+
+function localInject<T>(
+  instance: PrivateInstance,
+  token: InjectionToken<T> | Type<T>
+): T | null {
+  const injector: Injector | undefined = instance[InjectorInstance];
+  return injector ? injector.get(token) : null;
+}
+
+function decorateFactory(constructor: ConstructorWithDefinitionAndFactory): void {
+  const factory = constructor[NG_FACTORY_DEF];
+
+  if (typeof factory !== 'function') {
+    return;
+  }
+
+  // Let's try to get any definition.
+  // Caretaker note: this will be compatible only with Angular 9+, since Angular 9 is the first
+  // Ivy-stable version. Previously definition properties were named differently (e.g. `ngComponentDef`).
+  const def = constructor.ɵprov || constructor.ɵpipe || constructor.ɵcmp || constructor.ɵdir;
+
+  const decoratedFactory = () => {
+    const instance = factory();
+    // Caretaker note: `inject()` won't work here.
     // We can use the `directiveInject` only during the component
     // construction, since Angular captures the currently active injector.
     // We're not able to use this function inside the getter (when the `selectorId` property is
     // requested for the first time), since the currently active injector will be null.
-    instance[StoreInstance] = ɵɵdirectiveInject(Store);
+    instance[InjectorInstance] = ɵɵdirectiveInject(
+      // We're using `INJECTOR` token except of the `Injector` class since the compiler
+      // throws: `Cannot assign an abstract constructor type to a non-abstract constructor type.`.
+      // Caretaker note: that this is the same way of getting the injector.
+      INJECTOR
+    );
     return instance;
   };
+
+  // If we've found any definition then it's enough to override the `def.factory` since Angular
+  // code uses the `def.factory` and then fallbacks to `ɵfac`.
+  if (def) {
+    def.factory = decoratedFactory;
+  } else if (constructor.hasOwnProperty(NG_FACTORY_DEF)) {
+    // `@NgModule()` doesn't doesn't have definition factory.
+    Object.defineProperty(constructor, NG_FACTORY_DEF, {
+      get: () => decoratedFactory
+    });
+  }
 }
 
+// We could've used `ɵɵFactoryDef` but we try to be backward compatible,
+// since it's not exported in older Angular versions.
 type Factory = () => PrivateInstance;
 
+// We could've used `ɵɵInjectableDef`, `ɵɵPipeDef`, etc. We try to be backward
+// compatible since they're not exported in older Angular versions.
 interface Definition {
   factory: Factory | null;
 }
@@ -100,15 +140,15 @@ interface ConstructorWithDefinitionAndFactory extends Function {
   // Provider definition for the `@Injectable()` class.
   ɵprov?: Definition;
   // Pipe definition for the `@Pipe()` class.
-  ɵɵpipe?: Definition;
+  ɵpipe?: Definition;
   // Component definition for the `@Component()` class.
   ɵcmp?: Definition;
   // Directive definition for the `@Directive()` class.
   ɵdir?: Definition;
-  ɵfac?: Factory;
+  [NG_FACTORY_DEF]?: Factory;
 }
 
 interface PrivateInstance {
-  [StoreInstance]?: Store;
+  [InjectorInstance]?: Injector;
   [selectorId: string]: PropertyType<unknown>;
 }

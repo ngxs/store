@@ -11,7 +11,7 @@ const DOLLAR_CHAR_CODE = 36;
 
 export function createSelectObservable<T = any>(
   selector: any,
-  store: Store | undefined
+  store: Store | null
 ): Observable<T> {
   // Caretaker note: we have still left the `typeof` condition in order to avoid
   // creating a breaking change for projects that still use the View Engine.
