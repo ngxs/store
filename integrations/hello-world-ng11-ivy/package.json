@@ -13,7 +13,7 @@
     "test:integration": "yarn install:ivy && yarn test:ci && yarn build:ssr:prod && yarn bundlesize && yarn e2e:ci && yarn e2e:ci:ssr",
     "preinstall": "yarn --cwd ../../ cpx -v -C \"@ngxs/**/*\" integrations/hello-world-ng11-ivy/node_modules/@ngxs",
     "install:ivy": "yarn --frozen-lockfile --non-interactive --no-progress",
-    "postinstall": "yarn ngcc --async false",
+    "postinstall": "ngcc",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:run:ssr": "cypress run --config integrationFolder=cypress/integration-ssr",

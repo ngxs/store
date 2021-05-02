@@ -1,23 +1,3 @@
-export enum VALIDATION_CODE {
-  INCORRECT_PRODUCTION = 'INCORRECT_PRODUCTION',
-  INCORRECT_DEVELOPMENT = 'INCORRECT_DEVELOPMENT'
-}
-
-// TODO: these messages might be tree-shaken away in the future.
-export const CONFIG_MESSAGES = {
-  [VALIDATION_CODE.INCORRECT_PRODUCTION]: () =>
-    'Angular is running in production mode but NGXS is still running in the development mode!\n' +
-    'Please set developmentMode to false on the NgxsModule options when in production mode.\n' +
-    'NgxsModule.forRoot(states, { developmentMode: !environment.production })',
-  [VALIDATION_CODE.INCORRECT_DEVELOPMENT]: () =>
-    'RECOMMENDATION: Set developmentMode to true on the NgxsModule when Angular is running in development mode.\n' +
-    'NgxsModule.forRoot(states, { developmentMode: !environment.production })'
-};
-
-// The below functions are decoupled from the `CONFIG_MESSAGES` object for now, since object properties
-// are not tree-shakable. That means that if the error is thrown only in development mode it still will get
-// bundled into the final file. This is how Angular does error tree-shaking internally.
-
 export function throwStateNameError(name: string): never {
   throw new Error(
     `${name} is not a valid state name. It needs to be a valid object property name.`

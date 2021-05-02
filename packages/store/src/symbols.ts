@@ -2,7 +2,7 @@ import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { PlainObject, StateClass } from '@ngxs/store/internals';
-import { SharedSelectorOptions, Callback } from './internal/internals';
+import { SharedSelectorOptions } from './internal/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 import { StateToken } from './state-token/state-token';
@@ -10,8 +10,6 @@ import { StateToken } from './state-token/state-token';
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
-export const NG_TEST_MODE = new InjectionToken<Callback<boolean>>('NG_TEST_MODE');
-export const NG_DEV_MODE = new InjectionToken<Callback<boolean>>('NG_DEV_MODE');
 
 export const META_KEY = 'NGXS_META';
 export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';

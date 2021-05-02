@@ -1,7 +1,6 @@
 import {
   APP_BOOTSTRAP_LISTENER,
   InjectionToken,
-  isDevMode,
   ModuleWithProviders,
   NgModule,
   Provider
@@ -9,7 +8,6 @@ import {
 import {
   INITIAL_STATE_TOKEN,
   InitialState,
-  isAngularInTestMode,
   NGXS_STATE_CONTEXT_FACTORY,
   NGXS_STATE_FACTORY,
   NgxsBootstrapper,
@@ -18,8 +16,6 @@ import {
 
 import {
   FEATURE_STATE_TOKEN,
-  NG_DEV_MODE,
-  NG_TEST_MODE,
   NgxsConfig,
   NgxsModuleOptions,
   ROOT_STATE_TOKEN
@@ -39,8 +35,6 @@ import { NgxsRootModule } from './modules/ngxs-root.module';
 import { NgxsFeatureModule } from './modules/ngxs-feature.module';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
-import { HostEnvironment } from './host-environment/host-environment';
-import { ConfigValidator } from './internal/config-validator';
 import { mergeDeep } from './utils/utils';
 
 /**
@@ -65,8 +59,6 @@ export class NgxsModule {
         Actions,
         InternalActions,
         NgxsBootstrapper,
-        ConfigValidator,
-        HostEnvironment,
         LifecycleStateManager,
         InternalDispatcher,
         InternalDispatchedActionResults,
@@ -106,14 +98,6 @@ export class NgxsModule {
     options: NgxsModuleOptions
   ): Provider[] {
     return [
-      {
-        provide: NG_TEST_MODE,
-        useValue: isAngularInTestMode
-      },
-      {
-        provide: NG_DEV_MODE,
-        useValue: isDevMode
-      },
       {
         provide: NGXS_EXECUTION_STRATEGY,
         useClass: options.executionStrategy || DispatchOutsideZoneNgxsExecutionStrategy
