@@ -9,7 +9,7 @@
       "@ngxs/store": ["packages/store/index.ts"],
       "@ngxs/store/operators": ["packages/store/operators/src/index.ts"],
       "@ngxs/store/internals": ["packages/store/internals/src/index.ts"],
-      "@ngxs/store/internals/testing": ["packages/store/internals/testing/index.ts"],
+      "@ngxs/store/internals/testing": ["packages/store/internals/testing/src/index.ts"],
       "@ngxs/devtools-plugin": ["packages/devtools-plugin/index.ts"],
       "@ngxs/form-plugin": ["packages/form-plugin/index.ts"],
       "@ngxs/hmr-plugin": ["packages/hmr-plugin/index.ts"],
