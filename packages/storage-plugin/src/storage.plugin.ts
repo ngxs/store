@@ -47,6 +47,10 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
     if (isInitAction) {
       for (const key of keys) {
+        if (matches(UpdateState) && !(key in ((event as UpdateState).addedStates || {}))) {
+          continue;
+        }
+
         const isMaster = key === DEFAULT_STATE_KEY;
         let val: any = this._engine.getItem(key!);
 
