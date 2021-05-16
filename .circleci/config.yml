@@ -342,6 +342,10 @@ workflows:
           requires:
             - build
 
+      - integration_ng12_ivy_tests:
+          requires:
+            - build
+
       - integration_test_types:
           requires:
             - build

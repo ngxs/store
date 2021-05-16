@@ -56,6 +56,9 @@ script:
   - yarn integration:ng11:ivy
   - yarn integration:ng11:ivy:off
 
+  # Run integration test with Angular 12 Ivy On
+  - yarn integration:ng12:ivy
+
   # Run declaration files linter
   - yarn test:types
 
