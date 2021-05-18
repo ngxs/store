@@ -4,7 +4,7 @@ version: 2
 job_defaults_var: &job_defaults
   working_directory: ~/workspace/app
   docker:
-    - image: circleci/node:12.0.0-browsers
+    - image: circleci/node:14.16.1-browsers
 
 # Yarn cache key
 cache_var: &cache_key yarn-packages-v2-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -214,6 +214,14 @@ jobs:
           name: Run integration tests for ng11 (Ivy) application
           command: yarn integration:ng11:ivy
 
+  integration_ng12_ivy_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng12 (Ivy) application
+          command: yarn integration:ng12:ivy
+
   integration_test_types:
     <<: *job_defaults
     steps:
@@ -331,6 +339,10 @@ workflows:
             - build
 
       - integration_ng11_ivy_tests:
+          requires:
+            - build
+
+      - integration_ng12_ivy_tests:
           requires:
             - build
 
