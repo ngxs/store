@@ -35,6 +35,7 @@
   - [Immutability Helpers](recipes/immutability-helpers.md)
   - [Style Guide](recipes/style-guide.md)
   - [Unit Testing](recipes/unit-testing.md)
+  - [RxAngular Integration](recipes/intregration-with-rxangular.md)
 - Plugins
   - [Introduction](plugins/intro.md)
   - [CLI](plugins/cli.md)
