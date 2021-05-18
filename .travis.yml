@@ -1,7 +1,7 @@
 language: node_js
 sudo: false
 node_js:
-  - '12.0.0'
+  - '14.16.1'
 
 # Since Travis is running on the Ubuntu 16+
 # this library is necessary
@@ -55,6 +55,9 @@ script:
   # Run integration test with Angular 11 Ivy On,Off
   - yarn integration:ng11:ivy
   - yarn integration:ng11:ivy:off
+
+  # Run integration test with Angular 12 Ivy On
+  - yarn integration:ng12:ivy
 
   # Run declaration files linter
   - yarn test:types
