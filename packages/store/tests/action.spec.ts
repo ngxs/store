@@ -1,7 +1,7 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { delay, mapTo } from 'rxjs/operators';
-import { throwError, of, Observable, Subscriber } from 'rxjs';
+import { throwError, of, Subject } from 'rxjs';
 
 import { Action } from '../src/decorators/action';
 import { State } from '../src/decorators/state';
@@ -21,9 +21,6 @@ import {
 import { NoopErrorHandler } from './helpers/utils';
 
 describe('Action', () => {
-  let store: Store;
-  let actions: Actions;
-
   class Action1 {
     static type = 'ACTION 1';
   }
@@ -65,26 +62,34 @@ describe('Action', () => {
   }
 
   describe('', () => {
-    beforeEach(() => {
+    function setup() {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([BarStore])],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
-      store = TestBed.inject(Store);
-      actions = TestBed.inject(Actions);
-    });
+      const store = TestBed.inject(Store);
+      const actions = TestBed.inject(Actions);
+      return {
+        store,
+        actions
+      };
+    }
 
     it('supports multiple actions', () => {
+      // Arrange
+      setup();
+      // Act
       const meta = (<any>BarStore)[META_KEY];
-
+      // Assert
       expect(meta.actions[Action1.type]).toBeDefined();
       expect(meta.actions[Action2.type]).toBeDefined();
     });
 
     it('calls actions on dispatch and on complete', fakeAsync(() => {
+      // Arrange
+      const { store, actions } = setup();
       const callbacksCalled: string[] = [];
-
       actions.pipe(ofAction(Action1)).subscribe(() => {
         callbacksCalled.push('ofAction');
       });
@@ -112,6 +117,7 @@ describe('Action', () => {
         });
       });
 
+      // Act
       store.dispatch(new Action1()).subscribe(() => {
         expect(callbacksCalled).toEqual([
           'ofAction',
@@ -133,6 +139,8 @@ describe('Action', () => {
     }));
 
     it('calls only the dispatched and error action', fakeAsync(() => {
+      // Arrange
+      const { store, actions } = setup();
       const callbacksCalled: string[] = [];
 
       actions.pipe(ofAction(Action1)).subscribe(() => {
@@ -169,6 +177,7 @@ describe('Action', () => {
         });
       });
 
+      // Act
       store.dispatch(new ErrorAction()).subscribe({
         error: () =>
           expect(callbacksCalled).toEqual([
@@ -191,6 +200,8 @@ describe('Action', () => {
     }));
 
     it('calls only the dispatched and canceled action', fakeAsync(() => {
+      // Arrange
+      const { store, actions } = setup();
       const callbacksCalled: string[] = [];
 
       actions.pipe(ofAction(CancelingAction)).subscribe(() => {
@@ -231,6 +242,7 @@ describe('Action', () => {
         ]);
       });
 
+      // Act
       store.dispatch([new CancelingAction(), new CancelingAction()]).subscribe(() => {
         expect(callbacksCalled).toEqual([
           'ofAction',
@@ -241,6 +253,7 @@ describe('Action', () => {
       });
 
       tick(1);
+      // Assert
       expect(callbacksCalled).toEqual([
         'ofAction',
         'ofActionDispatched',
@@ -254,27 +267,22 @@ describe('Action', () => {
     }));
 
     it('should allow the user to dispatch an object literal', () => {
+      // Arrange
+      const { store, actions } = setup();
       const callbacksCalled: string[] = [];
 
       actions.pipe(ofActionCompleted({ type: 'OBJECT_LITERAL' })).subscribe(() => {
         callbacksCalled.push('onObjectLiteral');
       });
 
+      // Act
       store.dispatch({ type: 'OBJECT_LITERAL' });
-
+      // Assert
       expect(callbacksCalled).toEqual(['onObjectLiteral']);
     });
   });
 
   describe('Async Action Scenario', () => {
-    let observableSubscriber: Subscriber<any>;
-    const observable = new Observable(subscriber => {
-      observableSubscriber = subscriber;
-    });
-    let promiseResolveFn: () => void;
-    const promise = new Promise(resolve => {
-      promiseResolveFn = resolve;
-    });
     class PromiseThatReturnsObs {
       static type = 'PromiseThatReturnsObs';
     }
@@ -291,53 +299,72 @@ describe('Action', () => {
       static type = 'PromiseAction';
     }
 
-    @State({
-      name: 'async_state'
-    })
-    @Injectable()
-    class AsyncState {
-      @Action(PromiseThatReturnsObs)
-      async promiseThatReturnsObs(ctx: StateContext<any>) {
-        await promise;
-        return ctx.dispatch(ObservableAction);
+    function setup() {
+      const observable = new Subject();
+      const completeObservableFn = () => {
+        observable?.complete();
+      };
+
+      let resolveFn: (value: unknown) => void;
+      const promise = new Promise(resolve => {
+        resolveFn = resolve;
+      });
+      const promiseResolveFn = () => resolveFn?.(null);
+
+      @State({
+        name: 'async_state'
+      })
+      @Injectable()
+      class AsyncState {
+        @Action(PromiseThatReturnsObs)
+        async promiseThatReturnsObs(ctx: StateContext<any>) {
+          await promise;
+          return ctx.dispatch(ObservableAction);
+        }
+
+        @Action(ObsThatReturnsPromise)
+        obsThatReturnsPromise() {
+          return observable.pipe(mapTo(promise));
+        }
+
+        @Action(ObservableAction)
+        observableAction() {
+          return observable;
+        }
+
+        @Action(PromiseAction)
+        promiseAction() {
+          return promise;
+        }
       }
 
-      @Action(ObsThatReturnsPromise)
-      obsThatReturnsPromise() {
-        return observable.pipe(mapTo(promise));
-      }
-
-      @Action(ObservableAction)
-      observableAction() {
-        // return of({}).pipe(delay(0));
-        return observable;
-      }
-
-      @Action(PromiseAction)
-      promiseAction() {
-        // return Promise.resolve();
-        return promise;
-      }
-    }
-
-    beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([AsyncState])],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
-      store = TestBed.inject(Store);
-      actions = TestBed.inject(Actions);
-    });
+      const store = TestBed.inject(Store);
+      const actions = TestBed.inject(Actions);
+      return {
+        store,
+        actions,
+        completeObservableFn,
+        promiseResolveFn,
+        promise
+      };
+    }
 
     describe('Promise that returns an observable', () => {
       it('completes when promise is resolved - This documents a bug! - See: ISSUE #1660', fakeAsync(() => {
+        // Arrange
+        const { store, actions, promiseResolveFn, completeObservableFn } = setup();
         const events: string[] = [];
 
         actions.pipe(ofActionCompleted(ObservableAction)).subscribe(() => {
           events.push('ObservableAction - Completed');
         });
 
+        // Act
         store
           .dispatch(new PromiseThatReturnsObs())
           .subscribe(() => events.push('PromiseThatReturnsObs - Completed'));
@@ -345,9 +372,10 @@ describe('Action', () => {
         promiseResolveFn();
         tick();
 
+        // Assert
         expect(events).toEqual(['PromiseThatReturnsObs - Completed']);
 
-        observableSubscriber.complete();
+        completeObservableFn();
         tick();
 
         expect(events).toEqual([
@@ -359,18 +387,22 @@ describe('Action', () => {
 
     describe('Observable that returns a promise', () => {
       it('completes when observable is completed - This documents a bug! - See: ISSUE #1660', fakeAsync(() => {
+        // Arrange
+        const { store, promiseResolveFn, completeObservableFn, promise } = setup();
         const events: string[] = [];
 
         promise.then(() => {
           events.push('promise - resolved');
         });
 
+        // Act
         store
           .dispatch(new ObsThatReturnsPromise())
           .subscribe(() => events.push('ObsThatReturnsPromise - Completed'));
 
-        observableSubscriber.complete();
+        completeObservableFn();
 
+        // Assert
         expect(events).toEqual(['ObsThatReturnsPromise - Completed']);
 
         promiseResolveFn();
