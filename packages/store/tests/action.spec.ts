@@ -331,7 +331,7 @@ describe('Action', () => {
     });
 
     describe('Promise that returns an observable', () => {
-      it('completes when promise is resolved', fakeAsync(() => {
+      it('completes when promise is resolved - This documents a bug! - See: ISSUE #1660', fakeAsync(() => {
         const events: string[] = [];
 
         actions.pipe(ofActionCompleted(ObservableAction)).subscribe(() => {
@@ -358,7 +358,7 @@ describe('Action', () => {
     });
 
     describe('Observable that returns a promise', () => {
-      it('completes when observable is completed', fakeAsync(() => {
+      it('completes when observable is completed - This documents a bug! - See: ISSUE #1660', fakeAsync(() => {
         const events: string[] = [];
 
         promise.then(() => {
