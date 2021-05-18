@@ -8,6 +8,13 @@ $ npm install @ngxs/store@dev
 
 - ...
 
+# 3.7.2 2021-05-18
+
+- Chore: Add official support for Angular 12 [#1752](https://github.com/ngxs/store/pull/1752)
+- Fix: Allow to inject the `Store` into the custom error handler [#1708](https://github.com/ngxs/store/pull/1708)
+- CI: Add angular 12 ivy integration test [#1750](https://github.com/ngxs/store/pull/1750)
+- CI: Add bundlesize check for the latest integration app [#1710](https://github.com/ngxs/store/pull/1710)
+
 # 3.7.1 2020-11-24
 
 - Chore: Add official support for Angular 11 [#1697](https://github.com/ngxs/store/pull/1697)
