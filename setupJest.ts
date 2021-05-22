@@ -1,4 +1,5 @@
 // import 'jest-preset-angular'; // commented out due to issue in latest jest-preset-angular
+import { ɵglobal } from '@angular/core';
 
 const CI = process.env['CI'] === 'true';
 
@@ -48,6 +49,6 @@ if (CI) {
   });
 }
 
-// Most of our tests are not aware of the `ngDevMode` Ivy and still rely on the old
-// behavior (as it was in the View Engine).
-((global as unknown) as { ngDevMode: undefined }).ngDevMode = undefined;
+if (typeof ɵglobal.ngDevMode === 'undefined') {
+  ɵglobal.ngDevMode = true;
+}

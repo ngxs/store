@@ -4,14 +4,14 @@
       "path": "./@ngxs/store/fesm2015/ngxs-store-internals.js",
       "package": "@ngxs/store/internals",
       "target": "es2015",
-      "maxSize": "10.85KB",
+      "maxSize": "11.75KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store-internals.js",
       "package": "@ngxs/store/internals",
       "target": "es5",
-      "maxSize": "11.80KB",
+      "maxSize": "12.70KB",
       "compression": "none"
     },
     {
