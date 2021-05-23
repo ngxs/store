@@ -130,14 +130,14 @@
       "path": "./@ngxs/websocket-plugin/fesm2015/ngxs-websocket-plugin.js",
       "package": "@ngxs/websocket-plugin",
       "target": "es2015",
-      "maxSize": "14.325KB",
+      "maxSize": "14.35KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/websocket-plugin/fesm5/ngxs-websocket-plugin.js",
       "package": "@ngxs/websocket-plugin",
       "target": "es5",
-      "maxSize": "18.765KB",
+      "maxSize": "18.84KB",
       "compression": "none"
     }
   ]

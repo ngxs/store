@@ -30,11 +30,28 @@ function resetPlatformAfterBootstrapping() {
   createPlatform(TestBed);
 }
 
-export function freshPlatform(fn: Function): (...args: any[]) => any {
-  return async function testWithAFreshPlatform(this: any, ...args: any[]) {
+export function freshPlatform(fn: (done?: VoidFunction) => Promise<void>) {
+  let done: VoidFunction | null = null,
+    whenDoneIsCalledPromise: Promise<void> | null = null;
+
+  const hasDoneArgument = fn.length === 1;
+
+  if (hasDoneArgument) {
+    whenDoneIsCalledPromise = new Promise<void>(resolve => {
+      done = resolve;
+    });
+  }
+
+  return async function testWithAFreshPlatform() {
     try {
       destroyPlatformBeforeBootstrappingTheNewOne();
-      return await fn.apply(this, args);
+
+      if (done !== null) {
+        await fn(done);
+        await whenDoneIsCalledPromise!;
+      } else {
+        await fn();
+      }
     } finally {
       resetPlatformAfterBootstrapping();
     }
