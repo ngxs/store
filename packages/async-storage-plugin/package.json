@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "sideEffects": true,
   "peerDependencies": {
-    "@ngxs/store": "^0.0.0",
+    "@ngxs/store": ">=3.7.2",
     "@angular/core": ">=6.1.0 <13.0.0",
     "rxjs": ">=6.5.5",
     "localforage": ">=1.9.0"

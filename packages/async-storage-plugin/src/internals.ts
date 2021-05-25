@@ -1,5 +1,4 @@
 import { isPlatformServer } from '@angular/common';
-import { StateClass } from '@ngxs/store/internals';
 import { StateToken } from '@ngxs/store';
 import * as localForage from 'localforage';
 
@@ -9,6 +8,8 @@ import {
   NgxsAsyncStorageLocations,
   AsyncEngineOption
 } from './symbols';
+
+export type StateClass<T = any> = new (...args: any[]) => T;
 
 /**
  * If the `key` option is not provided then the below constant
@@ -53,42 +54,50 @@ export function storageOptionsFactory(
   if (isPlatformServer(platformId)) return emptyOptions;
 
   if (options && options.storages && options.storages.length > 0) {
-    const resolvedStorages: ResolvedPluginEngines[] = options.storages
-      .map(storage => {
-        const keysArray = Array.isArray(storage.keys) ? storage.keys : [storage.keys];
-        const keys = keysArray.map(key => getStateKey(key));
-        usedKeys.push(...keys);
+    const resolvedStorages: ResolvedPluginEngines[] = options.storages.map(storage => {
+      const keysArray = Array.isArray(storage.keys) ? storage.keys : [storage.keys];
+      const keys = keysArray.map(key => getStateKey(key));
+      usedKeys.push(...keys);
 
-        let method: AsyncStorageEngine;
-        if (storage.storage === AsyncEngineOption.LocalStorage) method = new BrowserStorage({ engine: 'local' });
-        else if (storage.storage === AsyncEngineOption.SessionStorage) method = new BrowserStorage({ engine: 'session' });
-        else if (storage.storage === AsyncEngineOption.IndexedDB) method = new IndexedDBStorage(storage.indexeddb || {});
-        else method = new storage.storage();
+      let method: AsyncStorageEngine;
+      if (storage.storage === AsyncEngineOption.LocalStorage)
+        method = new BrowserStorage({ engine: 'local' });
+      else if (storage.storage === AsyncEngineOption.SessionStorage)
+        method = new BrowserStorage({ engine: 'session' });
+      else if (storage.storage === AsyncEngineOption.IndexedDB)
+        method = new IndexedDBStorage(storage.indexeddb || {});
+      else method = new storage.storage();
 
-        const { serialize, deserialize, afterDeserialize, beforeSerialize } = storage;
+      const { serialize, deserialize, afterDeserialize, beforeSerialize } = storage;
 
-        const browserStorageSerializers: ResolvedPluginEngines['serializers'] = {
-          serialize: serialize || JSON.stringify,
-          deserialize: deserialize || JSON.parse,
-          afterDeserialize,
-          beforeSerialize
-        };
+      const browserStorageSerializers: ResolvedPluginEngines['serializers'] = {
+        serialize: serialize || JSON.stringify,
+        deserialize: deserialize || JSON.parse,
+        afterDeserialize,
+        beforeSerialize
+      };
 
-        return {
-          keys,
-          engine: method,
-          migrations: storage.migrations,
-          serializers: method instanceof BrowserStorage ? browserStorageSerializers : {
-            serialize,
-            deserialize,
-            afterDeserialize,
-            beforeSerialize
-          }
-        };
-      });
+      return {
+        keys,
+        engine: method,
+        migrations: storage.migrations,
+        serializers:
+          method instanceof BrowserStorage
+            ? browserStorageSerializers
+            : {
+                serialize,
+                deserialize,
+                afterDeserialize,
+                beforeSerialize
+              }
+      };
+    });
 
     const usedKeysSet = Array.from(new Set(usedKeys));
-    if (usedKeys.length > usedKeysSet.length) throw new Error('Must only specify a state key in one entry. Cannot store to multiple engines at the same time.');
+    if (usedKeys.length > usedKeysSet.length)
+      throw new Error(
+        'Must only specify a state key in one entry. Cannot store to multiple engines at the same time.'
+      );
 
     return {
       storages: resolvedStorages
@@ -99,6 +108,8 @@ export function storageOptionsFactory(
 }
 
 export type Serializers = 'afterDeserialize' | 'beforeSerialize' | 'deserialize' | 'serialize';
+
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 export interface ResolvedPluginEngines
   extends Omit<NgxsAsyncStorageLocations, 'keys' | 'indexeddb' | 'storage' | Serializers> {
