@@ -178,6 +178,7 @@ The following is the list of supported scopes:
 - **logger-plugin**
 - **router-plugin**
 - **storage-plugin**
+- **async-storage-plugin**
 - **websocket-plugin**
 - **store**
 - **cli**
