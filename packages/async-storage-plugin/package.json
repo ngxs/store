@@ -1,0 +1,23 @@
+{
+  "$schema": "../../node_modules/ng-packagr/package.schema.json",
+  "name": "@ngxs/async-storage-plugin",
+  "description": "extendable async storage plugin for @ngxs/store",
+  "version": "0.0.0",
+  "sideEffects": true,
+  "peerDependencies": {
+    "@ngxs/store": "^0.0.0",
+    "@angular/core": ">=6.1.0 <13.0.0",
+    "rxjs": ">=6.5.5",
+    "localforage": ">=1.9.0"
+  },
+  "ngPackage": {
+    "lib": {
+      "flatModuleFile": "ngxs-async-storage-plugin",
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@ngxs/store": "ngxs-store"
+      }
+    },
+    "dest": "../../@ngxs/async-storage-plugin"
+  }
+}
