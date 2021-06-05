@@ -1,6 +1,7 @@
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 import { StorageKey } from './internals';
+import 'localforage';
 
 export const enum AsyncEngineOption {
   LocalStorage,
@@ -80,7 +81,9 @@ export interface NgxsAsyncStoragePluginOptions {
   storages?: NgxsAsyncStorageLocations[];
 }
 
-export const NGXS_ASYNC_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_ASYNC_STORAGE_PLUGIN_OPTIONS');
+export const NGXS_ASYNC_STORAGE_PLUGIN_OPTIONS = new InjectionToken(
+  'NGXS_ASYNC_STORAGE_PLUGIN_OPTIONS'
+);
 
 export type MaybeAsyncOrObservable<T> = Observable<T> | Promise<T> | T;
 

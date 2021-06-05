@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/package.schema.json",
-  "name": "@ngxs/async-storage-plugin",
+  "name": "as-ngxs-async-plugin",
   "description": "extendable async storage plugin for @ngxs/store",
   "version": "0.0.0",
   "sideEffects": true,
