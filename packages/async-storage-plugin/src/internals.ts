@@ -49,9 +49,9 @@ export function storageOptionsFactory(
     storages: []
   };
 
-  const usedKeys: string[] = [];
-
   if (isPlatformServer(platformId)) return emptyOptions;
+
+  const usedKeys: string[] = [];
 
   if (options && options.storages && options.storages.length > 0) {
     const resolvedStorages: ResolvedPluginEngines[] = options.storages.map(storage => {
