@@ -21,7 +21,7 @@ describe('[TEST]: Devtools with custom settings', () => {
     }
   }
 
-  it('should be disable devtools', () => {
+  it('should disable devtools', () => {
     TestBed.configureTestingModule({
       imports: [
         NgxsModule.forRoot([CountState]),
@@ -34,7 +34,7 @@ describe('[TEST]: Devtools with custom settings', () => {
     expect(store.snapshot()).toEqual({ count: 1 });
   });
 
-  it('should be check custom name', () => {
+  it('should check custom name', () => {
     const devtools = new ReduxDevtoolsMockConnector();
     createReduxDevtoolsExtension(devtools);
 

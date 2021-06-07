@@ -60,14 +60,14 @@
       "path": "./@ngxs/devtools-plugin/fesm2015/ngxs-devtools-plugin.js",
       "package": "@ngxs/devtools-plugin",
       "target": "es2015",
-      "maxSize": "9.035KB",
+      "maxSize": "10.42KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/devtools-plugin/fesm5/ngxs-devtools-plugin.js",
       "package": "@ngxs/devtools-plugin",
       "target": "es5",
-      "maxSize": "10.525KB",
+      "maxSize": "12.05KB",
       "compression": "none"
     },
     {
