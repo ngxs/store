@@ -10,6 +10,7 @@ $ npm install @ngxs/store@dev
 - Fix: Do not run `Promise.then` within synchronous tests when decorating factory [#1753](https://github.com/ngxs/store/pull/1753)
 - Fix: Devtools Plugin - Do not connect to devtools when the plugin is disabled [#1761](https://github.com/ngxs/store/pull/1761)
 - Fix: Router Plugin - Cleanup subscriptions when the root view is destroyed [#1754](https://github.com/ngxs/store/pull/1754)
+- Fix: WebSocket Plugin - Cleanup subscriptions and close the connection when the root view is destroyed [#1755](https://github.com/ngxs/store/pull/1755)
 - Performance: Tree-shake errors and warnings [#1732](https://github.com/ngxs/store/pull/1732)
 - Performance: Router Plugin - Tree-shake `isAngularInTestMode()` [#1738](https://github.com/ngxs/store/pull/1738)
 - Performance: Tree-shake `isAngularInTestMode()` [#1739](https://github.com/ngxs/store/pull/1739)

@@ -3,7 +3,7 @@
     {
       "path": "./dist-integration/main.*.js",
       "target": "es2015",
-      "maxSize": "236 kB",
+      "maxSize": "236.34 kB",
       "compression": "none"
     }
   ]
