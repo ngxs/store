@@ -1,5 +1,4 @@
 import { InjectionToken } from '@angular/core';
-import { Subscription } from 'rxjs';
 
 /**
  * Interface for the redux-devtools-extension API.
@@ -7,7 +6,7 @@ import { Subscription } from 'rxjs';
 export interface NgxsDevtoolsExtension {
   init(state: any): void;
   send(action: any, state?: any): void;
-  subscribe(fn: (message: NgxsDevtoolsAction) => void): Subscription;
+  subscribe(fn: (message: NgxsDevtoolsAction) => void): VoidFunction;
 }
 
 export interface NgxsDevtoolsAction {
