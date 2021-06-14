@@ -1,5 +1,6 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, OnDestroy } from '@angular/core';
 import { Actions, Store, getValue, ofActionDispatched } from '@ngxs/store';
+import { Subscription } from 'rxjs';
 
 import { WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
 
@@ -17,7 +18,7 @@ import {
 } from './symbols';
 
 @Injectable()
-export class WebSocketHandler {
+export class WebSocketHandler implements OnDestroy {
   private socket: WebSocketSubject<any> | null = null;
 
   private config: WebSocketSubjectConfig<any> = {
@@ -43,6 +44,8 @@ export class WebSocketHandler {
 
   private typeKey = this.options.typeKey!;
 
+  private subscription = new Subscription();
+
   constructor(
     private store: Store,
     private actions$: Actions,
@@ -51,18 +54,29 @@ export class WebSocketHandler {
     this.setupActionsListeners();
   }
 
+  ngOnDestroy(): void {
+    this.closeConnection();
+    this.subscription.unsubscribe();
+  }
+
   private setupActionsListeners(): void {
-    this.actions$.pipe(ofActionDispatched(ConnectWebSocket)).subscribe(({ payload }) => {
-      this.connect(payload);
-    });
+    this.subscription.add(
+      this.actions$.pipe(ofActionDispatched(ConnectWebSocket)).subscribe(({ payload }) => {
+        this.connect(payload);
+      })
+    );
 
-    this.actions$.pipe(ofActionDispatched(DisconnectWebSocket)).subscribe(() => {
-      this.disconnect();
-    });
+    this.subscription.add(
+      this.actions$.pipe(ofActionDispatched(DisconnectWebSocket)).subscribe(() => {
+        this.disconnect();
+      })
+    );
 
-    this.actions$.pipe(ofActionDispatched(SendWebSocketMessage)).subscribe(({ payload }) => {
-      this.send(payload);
-    });
+    this.subscription.add(
+      this.actions$.pipe(ofActionDispatched(SendWebSocketMessage)).subscribe(({ payload }) => {
+        this.send(payload);
+      })
+    );
   }
 
   private connect(options?: NgxsWebsocketPluginOptions): void {
@@ -97,11 +111,7 @@ export class WebSocketHandler {
 
   private disconnect(): void {
     if (this.socket) {
-      // `socket.complete()` closes the connection
-      // also it doesn't invoke the `onComplete` callback that we passed
-      // into `socket.subscribe(...)`
-      this.socket.complete();
-      this.socket = null;
+      this.closeConnection();
       this.dispatchWebSocketDisconnected();
     }
   }
@@ -139,8 +149,7 @@ export class WebSocketHandler {
    */
   private updateConnection(): void {
     if (this.socket) {
-      this.socket.complete();
-      this.socket = null;
+      this.closeConnection();
       this.store.dispatch(new WebSocketConnectionUpdated());
     }
   }
@@ -150,5 +159,15 @@ export class WebSocketHandler {
    */
   private dispatchWebSocketDisconnected(): void {
     this.store.dispatch(new WebSocketDisconnected());
+  }
+
+  private closeConnection(): void {
+    // `socket.complete()` closes the connection
+    // also it doesn't invoke the `onComplete` callback that we passed
+    // into `socket.subscribe(...)`
+    if (this.socket !== null) {
+      this.socket.complete();
+      this.socket = null;
+    }
   }
 }

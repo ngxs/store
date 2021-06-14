@@ -1,4 +1,4 @@
-import { Inject, Injectable, Injector } from '@angular/core';
+import { Inject, Injectable, Injector, NgZone, OnDestroy, ɵglobal } from '@angular/core';
 import { getActionTypeFromInstance, NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
 import { tap, catchError } from 'rxjs/operators';
 
@@ -9,24 +9,44 @@ import {
   NgxsDevtoolsOptions
 } from './symbols';
 
+const enum ReduxDevtoolsActionType {
+  Dispatch = 'DISPATCH',
+  Action = 'ACTION'
+}
+
+const enum ReduxDevtoolsPayloadType {
+  JumpToAction = 'JUMP_TO_ACTION',
+  JumpToState = 'JUMP_TO_STATE',
+  ToggleAction = 'TOGGLE_ACTION',
+  ImportState = 'IMPORT_STATE'
+}
+
 /**
  * Adds support for the Redux Devtools extension:
  * http://extension.remotedev.io/
  */
 @Injectable()
-export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
-  private readonly devtoolsExtension: NgxsDevtoolsExtension | null = null;
-  private readonly windowObj: any = typeof window !== 'undefined' ? window : {};
+export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
+  private devtoolsExtension: NgxsDevtoolsExtension | null = null;
+  private readonly globalDevtools =
+    ɵglobal['__REDUX_DEVTOOLS_EXTENSION__'] || ɵglobal['devToolsExtension'];
+
+  private unsubscribe: VoidFunction | null = null;
 
   constructor(
     @Inject(NGXS_DEVTOOLS_OPTIONS) private _options: NgxsDevtoolsOptions,
-    private _injector: Injector
+    private _injector: Injector,
+    private _ngZone: NgZone
   ) {
-    const globalDevtools =
-      this.windowObj['__REDUX_DEVTOOLS_EXTENSION__'] || this.windowObj['devToolsExtension'];
-    if (globalDevtools) {
-      this.devtoolsExtension = globalDevtools.connect(_options) as NgxsDevtoolsExtension;
-      this.devtoolsExtension.subscribe(a => this.dispatched(a));
+    this.connect();
+  }
+
+  ngOnDestroy(): void {
+    if (this.unsubscribe !== null) {
+      this.unsubscribe();
+    }
+    if (this.globalDevtools) {
+      this.globalDevtools.disconnect();
     }
   }
 
@@ -41,8 +61,7 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
    * Middleware handle function
    */
   handle(state: any, action: any, next: NgxsNextPluginFn) {
-    const isDisabled = this._options && this._options.disabled;
-    if (!this.devtoolsExtension || isDisabled) {
+    if (!this.devtoolsExtension || this._options.disabled) {
       return next(state, action);
     }
 
@@ -73,16 +92,16 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
    * Handle the action from the dev tools subscription
    */
   dispatched(action: NgxsDevtoolsAction) {
-    if (action.type === 'DISPATCH') {
+    if (action.type === ReduxDevtoolsActionType.Dispatch) {
       if (
-        action.payload.type === 'JUMP_TO_ACTION' ||
-        action.payload.type === 'JUMP_TO_STATE'
+        action.payload.type === ReduxDevtoolsPayloadType.JumpToAction ||
+        action.payload.type === ReduxDevtoolsPayloadType.JumpToState
       ) {
         const prevState = JSON.parse(action.state);
         this.store.reset(prevState);
-      } else if (action.payload.type === 'TOGGLE_ACTION') {
+      } else if (action.payload.type === ReduxDevtoolsPayloadType.ToggleAction) {
         console.warn('Skip is not supported at this time.');
-      } else if (action.payload.type === 'IMPORT_STATE') {
+      } else if (action.payload.type === ReduxDevtoolsPayloadType.ImportState) {
         const {
           actionsById,
           computedStates,
@@ -96,9 +115,34 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
           );
         this.store.reset(computedStates[currentStateIndex].state);
       }
-    } else if (action.type === 'ACTION') {
+    } else if (action.type === ReduxDevtoolsActionType.Action) {
       const actionPayload = JSON.parse(action.payload);
       this.store.dispatch(actionPayload);
     }
+  }
+
+  private connect(): void {
+    if (!this.globalDevtools || this._options.disabled) {
+      return;
+    }
+
+    // The `connect` method adds `message` event listener since it communicates
+    // with an extension through `window.postMessage` and message events.
+    // We handle only 2 events; thus, we don't want to run many change detections
+    // because the extension sends events that we don't have to handle.
+    this.devtoolsExtension = this._ngZone.runOutsideAngular(
+      () => <NgxsDevtoolsExtension>this.globalDevtools.connect(this._options)
+    );
+
+    this.unsubscribe = this.devtoolsExtension.subscribe(action => {
+      if (
+        action.type === ReduxDevtoolsActionType.Dispatch ||
+        action.type === ReduxDevtoolsActionType.Action
+      ) {
+        this._ngZone.run(() => {
+          this.dispatched(action);
+        });
+      }
+    });
   }
 }

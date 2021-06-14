@@ -45,7 +45,7 @@ describe('[TEST]: Devtools', () => {
     store = TestBed.inject(Store);
   });
 
-  it('should be correct execution redux devtools with catching actions', () => {
+  it('should should catch actions correctly', () => {
     expect(devtools.options).toEqual({ name: 'NGXS' });
     expect(devtools.initialState).toEqual({ count: 0 });
     expect(devtools.devtoolsStack).toEqual([
@@ -110,7 +110,7 @@ describe('[TEST]: Devtools', () => {
     expect(store.snapshot()).toEqual({ count: 2 });
   });
 
-  it('should be correct jump to state', () => {
+  it('should jump to state', () => {
     expect(store.snapshot()).toEqual({ count: 0 });
 
     store.dispatch({ type: 'increment' }); // id - 1, count - 1
