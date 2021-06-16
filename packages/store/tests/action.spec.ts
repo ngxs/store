@@ -1,23 +1,21 @@
 import { ErrorHandler, Injectable } from '@angular/core';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { delay, mapTo, tap } from 'rxjs/operators';
-import { throwError, of, Subject } from 'rxjs';
-
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { of, Subject, throwError } from 'rxjs';
+import { delay, map, tap } from 'rxjs/operators';
+import { Actions } from '../src/actions-stream';
 import { Action } from '../src/decorators/action';
 import { State } from '../src/decorators/state';
-import { META_KEY, StateContext } from '../src/symbols';
-
 import { NgxsModule } from '../src/module';
-import { Store } from '../src/store';
-import { Actions } from '../src/actions-stream';
 import {
-  ofActionSuccessful,
-  ofActionDispatched,
   ofAction,
-  ofActionErrored,
   ofActionCanceled,
-  ofActionCompleted
+  ofActionCompleted,
+  ofActionDispatched,
+  ofActionErrored,
+  ofActionSuccessful
 } from '../src/operators/of-action';
+import { Store } from '../src/store';
+import { META_KEY, StateContext } from '../src/symbols';
 import { NoopErrorHandler } from './helpers/utils';
 
 describe('Action', () => {
@@ -341,7 +339,9 @@ describe('Action', () => {
           record('obsThatReturnsPromise - start');
           return observable.pipe(
             tap(() => record('obsThatReturnsPromise - observable tap')),
-            mapTo(promise)
+            map(async () => {
+              return await promise;
+            })
           );
         }
 
@@ -377,7 +377,7 @@ describe('Action', () => {
     }
 
     describe('Promise that returns an observable', () => {
-      it('completes when promise is resolved', fakeAsync(() => {
+      it('completes when observable is resolved', fakeAsync(() => {
         // Arrange
         const {
           store,
@@ -409,9 +409,7 @@ describe('Action', () => {
           '(promiseResolveFn) called',
           'promise resolved',
           'promiseThatReturnsObs - after promise',
-          'observableAction - start',
-          'PromiseThatReturnsObs [Completed]',
-          'dispatch(PromiseThatReturnsObs) - Completed'
+          'observableAction - start'
         ]);
 
         completeObservableFn();
@@ -423,19 +421,20 @@ describe('Action', () => {
           'promise resolved',
           'promiseThatReturnsObs - after promise',
           'observableAction - start',
-          'PromiseThatReturnsObs [Completed]',
-          'dispatch(PromiseThatReturnsObs) - Completed',
           '(completeObservableFn) - next',
           'observableAction - observable tap',
           '(completeObservableFn) - complete',
           'ObservableAction [Completed]',
+          'promiseThatReturnsObs - observable tap',
+          'PromiseThatReturnsObs [Completed]',
+          'dispatch(PromiseThatReturnsObs) - Completed',
           '(completeObservableFn) - end'
         ]);
       }));
     });
 
     describe('Observable that returns a promise', () => {
-      it('completes when observable is completed', fakeAsync(() => {
+      it('completes when promise is completed', fakeAsync(() => {
         // Arrange
         const {
           store,
@@ -467,8 +466,6 @@ describe('Action', () => {
           '(completeObservableFn) - next',
           'obsThatReturnsPromise - observable tap',
           '(completeObservableFn) - complete',
-          'ObsThatReturnsPromise [Completed]',
-          'dispatch(ObsThatReturnsPromise) - Completed',
           '(completeObservableFn) - end'
         ]);
 
@@ -480,12 +477,12 @@ describe('Action', () => {
           '(completeObservableFn) - next',
           'obsThatReturnsPromise - observable tap',
           '(completeObservableFn) - complete',
-          'ObsThatReturnsPromise [Completed]',
-          'dispatch(ObsThatReturnsPromise) - Completed',
           '(completeObservableFn) - end',
           '(promiseResolveFn) called',
           'promise resolved',
-          'promise [resolved]'
+          'promise [resolved]',
+          'ObsThatReturnsPromise [Completed]',
+          'dispatch(ObsThatReturnsPromise) - Completed'
         ]);
       }));
     });
