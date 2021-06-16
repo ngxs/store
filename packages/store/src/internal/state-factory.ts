@@ -248,7 +248,18 @@ export class StateFactory implements OnDestroy {
               // `handler(ctx) { return EMPTY; }`
               // then the action will be canceled.
               // See https://github.com/ngxs/store/issues/1568
-              result = result.pipe(defaultIfEmpty({}));
+              result = result.pipe(
+                mergeMap((value: any) => {
+                  if (value instanceof Promise) {
+                    return from(value);
+                  }
+                  if (value instanceof Observable) {
+                    return value;
+                  }
+                  return of(value);
+                }),
+                defaultIfEmpty({})
+              );
 
               if (actionMeta.options.cancelUncompleted) {
                 // todo: ofActionDispatched should be used with action class

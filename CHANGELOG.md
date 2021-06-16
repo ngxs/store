@@ -7,6 +7,7 @@ $ npm install @ngxs/store@dev
 ```
 
 - Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740)
+- Fix: Handle mixed async scenarios for action handlers [#1762](https://github.com/ngxs/store/pull/1762)
 - Fix: Do not run `Promise.then` within synchronous tests when decorating factory [#1753](https://github.com/ngxs/store/pull/1753)
 - Fix: Devtools Plugin - Do not connect to devtools when the plugin is disabled [#1761](https://github.com/ngxs/store/pull/1761)
 - Fix: Router Plugin - Cleanup subscriptions when the root view is destroyed [#1754](https://github.com/ngxs/store/pull/1754)
