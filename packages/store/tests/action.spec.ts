@@ -285,12 +285,20 @@ describe('Action', () => {
       static type = 'PromiseThatReturnsObs';
     }
 
+    class PromiseThatReturnsPromise {
+      static type = 'PromiseThatReturnsPromise';
+    }
+
     class ObservableAction {
       static type = 'ObservableAction';
     }
 
     class ObsThatReturnsPromise {
       static type = 'ObsThatReturnsPromise';
+    }
+
+    class ObsThatReturnsObservable {
+      static type = 'ObsThatReturnsObservable';
     }
 
     class PromiseAction {
@@ -334,6 +342,17 @@ describe('Action', () => {
             .pipe(tap(() => record('promiseThatReturnsObs - observable tap')));
         }
 
+        @Action(PromiseThatReturnsPromise)
+        async promiseThatReturnsPromise(ctx: StateContext<any>) {
+          record('promiseThatReturnsPromise - start');
+          await promise;
+          record('promiseThatReturnsPromise - after promise');
+          return ctx
+            .dispatch(ObservableAction)
+            .toPromise()
+            .then(() => record('promiseThatReturnsPromise - promise resolving'));
+        }
+
         @Action(ObsThatReturnsPromise)
         obsThatReturnsPromise() {
           record('obsThatReturnsPromise - start');
@@ -341,6 +360,19 @@ describe('Action', () => {
             tap(() => record('obsThatReturnsPromise - observable tap')),
             map(async () => {
               return await promise;
+            })
+          );
+        }
+
+        @Action(ObsThatReturnsObservable)
+        obsThatReturnsObservable(ctx: StateContext<any>) {
+          record('obsThatReturnsObservable - start');
+          return observable.pipe(
+            tap(() => record('obsThatReturnsObservable - observable tap')),
+            map(() => {
+              return ctx
+                .dispatch(new PromiseAction())
+                .pipe(tap(() => record('obsThatReturnsObservable - inner observable tap')));
             })
           );
         }
@@ -433,6 +465,63 @@ describe('Action', () => {
       }));
     });
 
+    describe('Promise that returns a promise', () => {
+      it('completes when inner promise is resolved', fakeAsync(() => {
+        // Arrange
+        const {
+          store,
+          actions,
+          promiseResolveFn,
+          completeObservableFn,
+          recorder,
+          record
+        } = setup();
+
+        actions.pipe(ofActionCompleted(ObservableAction)).subscribe(() => {
+          record('ObservableAction [Completed]');
+        });
+        actions.pipe(ofActionCompleted(PromiseThatReturnsPromise)).subscribe(() => {
+          record('PromiseThatReturnsPromise [Completed]');
+        });
+
+        // Act
+        store
+          .dispatch(new PromiseThatReturnsPromise())
+          .subscribe(() => record('dispatch(PromiseThatReturnsPromise) - Completed'));
+
+        promiseResolveFn();
+        tick();
+
+        // Assert
+        expect(recorder).toEqual([
+          'promiseThatReturnsPromise - start',
+          '(promiseResolveFn) called',
+          'promise resolved',
+          'promiseThatReturnsPromise - after promise',
+          'observableAction - start'
+        ]);
+
+        completeObservableFn();
+        tick();
+
+        expect(recorder).toEqual([
+          'promiseThatReturnsPromise - start',
+          '(promiseResolveFn) called',
+          'promise resolved',
+          'promiseThatReturnsPromise - after promise',
+          'observableAction - start',
+          '(completeObservableFn) - next',
+          'observableAction - observable tap',
+          '(completeObservableFn) - complete',
+          'ObservableAction [Completed]',
+          '(completeObservableFn) - end',
+          'promiseThatReturnsPromise - promise resolving',
+          'PromiseThatReturnsPromise [Completed]',
+          'dispatch(PromiseThatReturnsPromise) - Completed'
+        ]);
+      }));
+    });
+
     describe('Observable that returns a promise', () => {
       it('completes when promise is completed', fakeAsync(() => {
         // Arrange
@@ -483,6 +572,64 @@ describe('Action', () => {
           'promise [resolved]',
           'ObsThatReturnsPromise [Completed]',
           'dispatch(ObsThatReturnsPromise) - Completed'
+        ]);
+      }));
+    });
+
+    describe('Observable that returns an inner observable', () => {
+      it('completes when inner observable is completed', fakeAsync(() => {
+        // Arrange
+        const {
+          store,
+          actions,
+          promiseResolveFn,
+          completeObservableFn,
+          promise,
+          recorder,
+          record
+        } = setup();
+
+        promise.then(() => {
+          record('promise [resolved]');
+        });
+        actions.pipe(ofActionCompleted(ObsThatReturnsObservable)).subscribe(() => {
+          record('ObsThatReturnsObservable [Completed]');
+        });
+
+        // Act
+        store
+          .dispatch(new ObsThatReturnsObservable())
+          .subscribe(() => record('dispatch(ObsThatReturnsObservable) - Completed'));
+
+        completeObservableFn();
+
+        // Assert
+        expect(recorder).toEqual([
+          'obsThatReturnsObservable - start',
+          '(completeObservableFn) - next',
+          'obsThatReturnsObservable - observable tap',
+          'promiseAction - start',
+          '(completeObservableFn) - complete',
+          '(completeObservableFn) - end'
+        ]);
+
+        promiseResolveFn();
+        tick();
+
+        expect(recorder).toEqual([
+          'obsThatReturnsObservable - start',
+          '(completeObservableFn) - next',
+          'obsThatReturnsObservable - observable tap',
+          'promiseAction - start',
+          '(completeObservableFn) - complete',
+          '(completeObservableFn) - end',
+          '(promiseResolveFn) called',
+          'promise resolved',
+          'promise [resolved]',
+          'promiseAction - after promise',
+          'obsThatReturnsObservable - inner observable tap',
+          'ObsThatReturnsObservable [Completed]',
+          'dispatch(ObsThatReturnsObservable) - Completed'
         ]);
       }));
     });
