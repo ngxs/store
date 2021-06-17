@@ -749,9 +749,9 @@ describe('Action', () => {
         'cancellableAction(1) - start',
         'action1 obs - subscribe',
         'Action 2 - dispatching',
+        'action1 obs - unsubscribe',
         'cancellableAction(2) - start',
-        'action2 obs - subscribe',
-        'action1 obs - unsubscribe'
+        'action2 obs - subscribe'
       ]);
     }));
   });

@@ -750,7 +750,7 @@ describe('Dispatch', () => {
         resolvers[0]();
         resolvers[1]();
         tick(0);
-        expect(subscriptionsCalled).toEqual(['increment', 'increment', 'previous complete']);
+        expect(subscriptionsCalled).toEqual(['increment', 'previous complete', 'increment']);
       }));
 
       it('should trigger next and completion for latest but only completion for previous', fakeAsync(() => {
@@ -790,8 +790,8 @@ describe('Dispatch', () => {
         tick(0);
         expect(subscriptionsCalled).toEqual([
           'increment',
-          'increment',
           'previous complete',
+          'increment',
           'latest',
           'latest complete'
         ]);
