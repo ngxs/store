@@ -721,6 +721,7 @@ describe('Dispatch', () => {
     describe('when the action is canceled by a subsequent action', () => {
       it('should not trigger observer, but should complete observable stream', fakeAsync(() => {
         const resolvers: (() => void)[] = [];
+        const subscriptionsCalled: string[] = [];
 
         @State<number>({
           name: 'counter',
@@ -729,6 +730,7 @@ describe('Dispatch', () => {
         class MyState {
           @Action(Increment, { cancelUncompleted: true })
           increment() {
+            subscriptionsCalled.push('increment');
             return new Promise<void>(resolve => resolvers.push(resolve));
           }
         }
@@ -739,7 +741,6 @@ describe('Dispatch', () => {
 
         const store: Store = TestBed.inject(Store);
 
-        const subscriptionsCalled: string[] = [];
         store.dispatch(new Increment()).subscribe(
           () => subscriptionsCalled.push('previous'),
           () => subscriptionsCalled.push('previous error'),
@@ -749,11 +750,12 @@ describe('Dispatch', () => {
         resolvers[0]();
         resolvers[1]();
         tick(0);
-        expect(subscriptionsCalled).toEqual(['previous complete']);
+        expect(subscriptionsCalled).toEqual(['increment', 'increment', 'previous complete']);
       }));
 
       it('should trigger next and completion for latest but only completion for previous', fakeAsync(() => {
         const resolvers: (() => void)[] = [];
+        const subscriptionsCalled: string[] = [];
 
         @State<number>({
           name: 'counter',
@@ -762,6 +764,7 @@ describe('Dispatch', () => {
         class MyState {
           @Action(Increment, { cancelUncompleted: true })
           increment() {
+            subscriptionsCalled.push('increment');
             return new Promise<void>(resolve => resolvers.push(resolve));
           }
         }
@@ -772,7 +775,6 @@ describe('Dispatch', () => {
 
         const store: Store = TestBed.inject(Store);
 
-        const subscriptionsCalled: string[] = [];
         store.dispatch(new Increment()).subscribe(
           () => subscriptionsCalled.push('previous'),
           () => subscriptionsCalled.push('previous error'),
@@ -787,6 +789,8 @@ describe('Dispatch', () => {
         resolvers[1]();
         tick(0);
         expect(subscriptionsCalled).toEqual([
+          'increment',
+          'increment',
           'previous complete',
           'latest',
           'latest complete'
