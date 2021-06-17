@@ -1,5 +1,5 @@
 import { Injectable, Injector, Optional, SkipSelf, Inject, OnDestroy } from '@angular/core';
-import { forkJoin, from, Observable, of, throwError, Subscription } from 'rxjs';
+import { forkJoin, from, Observable, of, throwError, Subscription, Subject } from 'rxjs';
 import {
   catchError,
   defaultIfEmpty,
@@ -203,18 +203,21 @@ export class StateFactory implements OnDestroy {
    */
   connectActionHandlers() {
     if (this._actionsSubscription !== null) return;
+    const dispatched$ = new Subject<ActionContext>();
     this._actionsSubscription = this._actions
       .pipe(
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
-        mergeMap(({ action }) =>
-          this.invokeActions(this._actions, action!).pipe(
+        mergeMap(ctx => {
+          dispatched$.next(ctx);
+          const action = ctx.action;
+          return this.invokeActions(dispatched$, action!).pipe(
             map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
             catchError(error =>
               of(<ActionContext>{ action, status: ActionStatus.Errored, error })
             )
-          )
-        )
+          );
+        })
       )
       .subscribe(ctx => this._actionResults.next(ctx));
   }
@@ -222,7 +225,7 @@ export class StateFactory implements OnDestroy {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(actions$: InternalActions, action: any) {
+  invokeActions(dispatched$: Observable<ActionContext>, action: any) {
     const type = getActionTypeFromInstance(action)!;
     const results = [];
 
@@ -264,7 +267,7 @@ export class StateFactory implements OnDestroy {
               if (actionMeta.options.cancelUncompleted) {
                 // todo: ofActionDispatched should be used with action class
                 result = result.pipe(
-                  takeUntil(actions$.pipe(ofActionDispatched(action as any)))
+                  takeUntil(dispatched$.pipe(ofActionDispatched(action as any)))
                 );
               }
             } else {
