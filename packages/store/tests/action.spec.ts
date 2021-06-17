@@ -246,15 +246,17 @@ describe('Action', () => {
       });
 
       // Act
-      store.dispatch([new CancelingAction(1), new CancelingAction(2)]).subscribe(() => {
-        expect(callbacksCalled).toEqual([
-          'ofAction 1',
-          'ofActionDispatched 1',
-          'ofAction 2',
-          'ofActionDispatched 2',
-          'ofAction 1',
-          'ofActionCanceled 1'
-        ]);
+      store.dispatch([new CancelingAction(1), new CancelingAction(2)]).subscribe({
+        complete: () => {
+          expect(callbacksCalled).toEqual([
+            'ofAction 1',
+            'ofActionDispatched 1',
+            'ofAction 2',
+            'ofActionDispatched 2',
+            'ofAction 1',
+            'ofActionCanceled 1'
+          ]);
+        }
       });
 
       tick(1);
@@ -722,37 +724,173 @@ describe('Action', () => {
       );
     }
 
-    it('unsubscribes to first action observable before starting second action', fakeAsync(() => {
-      // Arrange
-      const { store, recorder, record } = setup();
+    describe('Sequential dispatch', () => {
+      it('unsubscribes to first action observable before starting second action', fakeAsync(() => {
+        // Arrange
+        const { store, recorder, record } = setup();
 
-      const observable1 = new Subject<string>();
-      const action1 = new CancellableAction(
-        1,
-        recordedObservable(observable1, 'action1 obs', record)
-      );
-      const observable2 = new Subject<string>();
-      const action2 = new CancellableAction(
-        2,
-        recordedObservable(observable2, 'action2 obs', record)
-      );
+        const observable1 = new Subject<string>();
+        const action1 = new CancellableAction(
+          1,
+          recordedObservable(observable1, 'action1 obs', record)
+        );
+        const observable2 = new Subject<string>();
+        const action2 = new CancellableAction(
+          2,
+          recordedObservable(observable2, 'action2 obs', record)
+        );
 
-      record('Action 1 - dispatching');
-      store.dispatch(action1).subscribe(() => record('Action 1 - dispatch complete'));
-      // Act
-      record('Action 2 - dispatching');
-      store.dispatch(action2).subscribe(() => record('Action 2 - dispatch complete'));
+        record('Action 1 - dispatching');
+        store.dispatch(action1).subscribe(() => record('Action 1 - dispatch complete'));
+        // Act
+        record('Action 2 - dispatching');
+        store.dispatch(action2).subscribe(() => record('Action 2 - dispatch complete'));
 
-      // Assert
-      expect(recorder).toEqual([
-        'Action 1 - dispatching',
-        'cancellableAction(1) - start',
-        'action1 obs - subscribe',
-        'Action 2 - dispatching',
-        'action1 obs - unsubscribe',
-        'cancellableAction(2) - start',
-        'action2 obs - subscribe'
-      ]);
-    }));
+        // Assert
+        expect(recorder).toEqual([
+          'Action 1 - dispatching',
+          'cancellableAction(1) - start',
+          'action1 obs - subscribe',
+          'Action 2 - dispatching',
+          'action1 obs - unsubscribe',
+          'cancellableAction(2) - start',
+          'action2 obs - subscribe'
+        ]);
+      }));
+
+      it('sequencing of completions should come back inline with zones strategy', fakeAsync(() => {
+        // Arrange
+        const { store, recorder, record } = setup();
+
+        const observable1 = new Subject<string>();
+        const action1 = new CancellableAction(
+          1,
+          recordedObservable(observable1, 'action1 obs', record)
+        );
+        const observable2 = new Subject<string>();
+        const action2 = new CancellableAction(
+          2,
+          recordedObservable(observable2, 'action2 obs', record)
+        );
+
+        // Act
+        record('Action 1 - dispatching');
+        store.dispatch(action1).subscribe({
+          next: () => record('Action 1 - dispatch next'),
+          complete: () => record('Action 1 - dispatch complete')
+        });
+        record('Action 2 - dispatching');
+        store.dispatch(action2).subscribe({
+          next: () => record('Action 2 - dispatch next'),
+          complete: () => record('Action 2 - dispatch complete')
+        });
+        observable1.next('Value1');
+        observable2.next('Value2');
+        record('complete 2');
+        observable2.complete();
+        record('complete 1');
+        observable1.complete();
+
+        // Assert
+        expect(recorder).toEqual([
+          'Action 1 - dispatching',
+          'cancellableAction(1) - start',
+          'action1 obs - subscribe',
+          'Action 2 - dispatching',
+          'Action 1 - dispatch complete',
+          'action1 obs - unsubscribe',
+          'cancellableAction(2) - start',
+          'action2 obs - subscribe',
+          'action2 obs - next Value2',
+          'cancellableAction(2) - observable tap',
+          'complete 2',
+          'action2 obs - complete',
+          'Action 2 - dispatch next',
+          'Action 2 - dispatch complete',
+          'action2 obs - unsubscribe',
+          'complete 1'
+        ]);
+      }));
+    });
+
+    describe('Dual dispatch', () => {
+      it('dual dispatch should unsubscribe first action and keep second action', fakeAsync(() => {
+        // Arrange
+        const { store, recorder, record } = setup();
+
+        const observable1 = new Subject<string>();
+        const action1 = new CancellableAction(
+          1,
+          recordedObservable(observable1, 'action1 obs', record)
+        );
+        const observable2 = new Subject<string>();
+        const action2 = new CancellableAction(
+          2,
+          recordedObservable(observable2, 'action2 obs', record)
+        );
+
+        // Act
+        record('Action 1 & 2 - dispatching');
+        store
+          .dispatch([action1, action2])
+          .subscribe(() => record('Action 1 & 2 - dispatch complete'));
+
+        // Assert
+        expect(recorder).toEqual([
+          'Action 1 & 2 - dispatching',
+          'cancellableAction(1) - start',
+          'action1 obs - subscribe',
+          'action1 obs - unsubscribe',
+          'cancellableAction(2) - start',
+          'action2 obs - subscribe'
+        ]);
+      }));
+
+      it('dual dispatch should complete when first action is cancelled - unclear requirement!! Bug maybe', fakeAsync(() => {
+        // Arrange
+        const { store, recorder, record } = setup();
+
+        const observable1 = new Subject<string>();
+        const action1 = new CancellableAction(
+          1,
+          recordedObservable(observable1, 'action1 obs', record)
+        );
+        const observable2 = new Subject<string>();
+        const action2 = new CancellableAction(
+          2,
+          recordedObservable(observable2, 'action2 obs', record)
+        );
+        record('Action 1 & 2 - dispatching');
+        store.dispatch([action1, action2]).subscribe({
+          next: () => record('Action 1 & 2 - dispatch next'),
+          complete: () => record('Action 1 & 2 - dispatch complete')
+        });
+
+        // Act
+        observable1.next('Value1');
+        observable2.next('Value2');
+        record('complete 2');
+        observable2.complete();
+        record('complete 1');
+        observable1.complete();
+
+        // Assert
+        expect(recorder).toEqual([
+          'Action 1 & 2 - dispatching',
+          'cancellableAction(1) - start',
+          'action1 obs - subscribe',
+          'action1 obs - unsubscribe',
+          'cancellableAction(2) - start',
+          'action2 obs - subscribe',
+          'Action 1 & 2 - dispatch complete',
+          'action2 obs - next Value2',
+          'cancellableAction(2) - observable tap',
+          'complete 2',
+          'action2 obs - complete',
+          'action2 obs - unsubscribe',
+          'complete 1'
+        ]);
+      }));
+    });
   });
 });
