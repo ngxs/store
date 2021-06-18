@@ -42,7 +42,9 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     // transformed by the `storageOptionsFactory` function that provided token
     const keys = this._options.key as string[];
     const matches = actionMatcher(event);
-    const isInitOrUpdateAction = matches(InitState) || matches(UpdateState);
+    const isInitAction = matches(InitState);
+    const isUpdateAction = matches(UpdateState);
+    const isInitOrUpdateAction = isInitAction || isUpdateAction;
     let hasMigration = false;
 
     if (isInitOrUpdateAction) {
@@ -50,11 +52,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
         // We're checking what states have been added by NGXS and if any of these states should be handled by
         // the storage plugin. For instance, we only want to deserialize the `auth` state, NGXS has added
         // the `user` state, the storage plugin will be rerun and will do redundant deserialization.
-        if (
-          matches(UpdateState) &&
-          event.addedStates &&
-          !event.addedStates.hasOwnProperty(key)
-        ) {
+        if (isUpdateAction && event.addedStates && !event.addedStates.hasOwnProperty(key)) {
           continue;
         }
 
