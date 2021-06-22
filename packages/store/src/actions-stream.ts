@@ -66,9 +66,7 @@ export class InternalActions extends OrderedSubject<ActionContext> {}
  * You can listen to this in services to react without stores.
  */
 @Injectable()
-export class Actions extends Observable<any> {
-  // This has to be `Observable<ActionContext>` in the v4. Because `InternalActions`
-  // is a `Subject<ActionContext>`. Leave it as `any` to avoid breaking changes
+export class Actions extends Observable<ActionContext> {
   constructor(
     internalActions$: InternalActions,
     internalExecutionStrategy: InternalNgxsExecutionStrategy
