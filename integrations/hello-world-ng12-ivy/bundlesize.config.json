@@ -1,0 +1,10 @@
+{
+  "files": [
+    {
+      "path": "./dist-integration/main.*.js",
+      "target": "es2015",
+      "maxSize": "236.65 kB",
+      "compression": "none"
+    }
+  ]
+}

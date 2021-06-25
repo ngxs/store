@@ -3,7 +3,7 @@ import { StateClass } from '@ngxs/store/internals';
 import { ensureStoreMetadata, MetaDataModel, StateClassInternal } from '../internal/internals';
 import { META_KEY, META_OPTIONS_KEY, StoreOptions } from '../symbols';
 import { StoreValidators } from '../utils/store-validators';
-import { ensureStateClassIsInjectable } from '../ivy/ensure-state-class-is-injectable';
+import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 
 interface MutateMetaOptions<T> {
   meta: MetaDataModel;
@@ -26,7 +26,12 @@ export function State<T>(options: StoreOptions<T>) {
     const { children, defaults, name } = optionsWithInheritance;
     const stateName: string | null =
       typeof name === 'string' ? name : (name && name.getName()) || null;
-    StoreValidators.checkCorrectStateName(stateName);
+
+    // Caretaker note: we have still left the `typeof` condition in order to avoid
+    // creating a breaking change for projects that still use the View Engine.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      StoreValidators.checkThatStateIsNamedCorrectly(stateName);
+    }
 
     if (inheritedStateClass.hasOwnProperty(META_KEY)) {
       const inheritedMeta: Partial<MetaDataModel> = inheritedStateClass[META_KEY] || {};
@@ -39,7 +44,11 @@ export function State<T>(options: StoreOptions<T>) {
   }
 
   return (target: StateClass): void => {
-    ensureStateClassIsInjectable(target);
+    // Caretaker note: we have still left the `typeof` condition in order to avoid
+    // creating a breaking change for projects that still use the View Engine.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      ensureStateClassIsInjectable(target);
+    }
     const stateClass: StateClassInternal = target;
     const meta: MetaDataModel = ensureStoreMetadata(stateClass);
     const inheritedStateClass: StateClassInternal = Object.getPrototypeOf(stateClass);

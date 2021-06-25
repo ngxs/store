@@ -36,7 +36,7 @@ describe('[TEST]: Devtools with errors', () => {
     }
   }
 
-  it('should be correct worked with errors', () => {
+  it('should correctly handle errors', () => {
     const devtools = new ReduxDevtoolsMockConnector();
     createReduxDevtoolsExtension(devtools);
 

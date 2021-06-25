@@ -32,7 +32,7 @@ describe('StoreValidator', () => {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(
-        `State name 'duplicate' from MyDuplicateState already exists in MyOtherState`
+        `State name 'duplicate' from MyDuplicateState already exists in MyOtherState.`
       );
     });
 
@@ -67,7 +67,7 @@ describe('StoreValidator', () => {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(
-        `State name 'duplicate' from MyDuplicateChildState already exists in MyOtherState`
+        `State name 'duplicate' from MyDuplicateChildState already exists in MyOtherState.`
       );
     });
 
@@ -98,7 +98,7 @@ describe('StoreValidator', () => {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(
-        `State name 'duplicate' from MyDuplicateState already exists in MyOtherState`
+        `State name 'duplicate' from MyDuplicateState already exists in MyOtherState.`
       );
     });
 
@@ -148,7 +148,9 @@ describe('StoreValidator', () => {
       } catch (e) {
         errorMessage = e.message;
       }
-      expect(errorMessage).toEqual('States must be decorated with @State() decorator');
+      expect(errorMessage).toEqual(
+        `States must be decorated with @State() decorator, but "TestState" isn't.`
+      );
     });
 
     it('should detect a missing decorator in child states', () => {
@@ -171,7 +173,9 @@ describe('StoreValidator', () => {
       } catch (e) {
         errorMessage = e.message;
       }
-      expect(errorMessage).toEqual('States must be decorated with @State() decorator');
+      expect(errorMessage).toEqual(
+        `States must be decorated with @State() decorator, but "ChildState" isn't.`
+      );
     });
   });
 });

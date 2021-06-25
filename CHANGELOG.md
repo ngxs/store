@@ -6,7 +6,28 @@
 $ npm install @ngxs/store@dev
 ```
 
-- ...
+- Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
+- Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740)
+- Fix: Handle mixed async scenarios for action handlers [#1762](https://github.com/ngxs/store/pull/1762)
+- Fix: An action with cancelUncompleted enabled should unsubscribe before the next action handler is called [#1763](https://github.com/ngxs/store/pull/1763)
+- Fix: Do not run `Promise.then` within synchronous tests when decorating factory [#1753](https://github.com/ngxs/store/pull/1753)
+- Fix: Devtools Plugin - Do not connect to devtools when the plugin is disabled [#1761](https://github.com/ngxs/store/pull/1761)
+- Fix: Router Plugin - Cleanup subscriptions when the root view is destroyed [#1754](https://github.com/ngxs/store/pull/1754)
+- Fix: WebSocket Plugin - Cleanup subscriptions and close the connection when the root view is destroyed [#1755](https://github.com/ngxs/store/pull/1755)
+- Fix: Storage Plugin - Only restore state if key matches `addedStates` [#1746](https://github.com/ngxs/store/pull/1746)
+- Performance: Tree-shake errors and warnings [#1732](https://github.com/ngxs/store/pull/1732)
+- Performance: Tree-shake `ConfigValidator`, `HostEnvironment` and `isAngularInTestMode` [#1741](https://github.com/ngxs/store/pull/1741)
+- Performance: Tree-shake `SelectFactory` [#1744](https://github.com/ngxs/store/pull/1744)
+- Performance: Router Plugin - Tree-shake `isAngularInTestMode()` [#1738](https://github.com/ngxs/store/pull/1738)
+- Performance: Tree-shake `isAngularInTestMode()` [#1739](https://github.com/ngxs/store/pull/1739)
+- Performance: Storage Plugin - Tree-shake `console.*` calls and expand error messages [#1727](https://github.com/ngxs/store/pull/1727)
+
+# 3.7.2 2021-05-18
+
+- Chore: Add official support for Angular 12 [#1752](https://github.com/ngxs/store/pull/1752)
+- Fix: Allow to inject the `Store` into the custom error handler [#1708](https://github.com/ngxs/store/pull/1708)
+- CI: Add angular 12 ivy integration test [#1750](https://github.com/ngxs/store/pull/1750)
+- CI: Add bundlesize check for the latest integration app [#1710](https://github.com/ngxs/store/pull/1710)
 
 # 3.7.1 2020-11-24
 

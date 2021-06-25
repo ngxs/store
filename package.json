@@ -1,6 +1,6 @@
 {
   "name": "ngxs",
-  "version": "3.7.1",
+  "version": "3.7.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ngxs/store.git"
@@ -78,6 +78,7 @@
     "build:integration:ssr": "yarn build:integration && ng run integration:server:production",
     "// - TESTING": "Test all modules #requires yarn build:packages",
     "test": "ng test",
+    "test:ngxs:watch": "ng test --watch --project ngxs",
     "test:integration": "ng run integration:test --colors --runInBand",
     "test:types": "dtslint packages/store/types --localTs node_modules/typescript/lib",
     "// - E2E": "E2E testing #requires yarn build:integration",
@@ -113,6 +114,7 @@
     "integration:ng10:ivy": "cd integrations/hello-world-ng10-ivy && yarn test:integration",
     "integration:ng11:ivy:off": "cd integrations/hello-world-ng11-ivy-off && yarn test:integration",
     "integration:ng11:ivy": "cd integrations/hello-world-ng11-ivy && yarn test:integration",
+    "integration:ng12:ivy": "cd integrations/hello-world-ng12-ivy && yarn test:integration",
     "// - INTEGRATION END -": "----------"
   },
   "private": true,

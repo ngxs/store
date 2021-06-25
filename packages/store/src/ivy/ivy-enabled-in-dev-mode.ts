@@ -1,30 +1,22 @@
-import { isDevMode } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { ɵivyEnabled } from '@angular/core';
 
-export const ivyEnabledInDevMode$ = new ReplaySubject<boolean>(1);
+import { getUndecoratedStateInIvyWarningMessage } from '../configs/messages.config';
 
 /**
- * Ivy exposes helper functions to the global `window.ng` object.
- * Those functions are `getComponent, getContext,
- * getListeners, getViewComponent, getHostElement, getInjector,
- * getRootComponents, getDirectives, getDebugNode`
- * Previously, old view engine exposed `window.ng.coreTokens` and
- * `window.ng.probe` if an application was in development/production.
- * Ivy doesn't expose these functions in production. Developers will be able
- * to see warnings in both JIT/AOT modes, but only if an application
- * is in development.
+ * All provided or injected tokens must have `@Injectable` decorator
+ * (previously, injected tokens without `@Injectable` were allowed
+ * if another decorator was used, e.g. pipes).
  */
-export function setIvyEnabledInDevMode(): void {
-  try {
-    // `try-catch` will also handle server-side rendering, as
-    // `window is not defined` will not be thrown.
-    const ng = (window as any).ng;
-    const _viewEngineEnabled = !!ng.probe && !!ng.coreTokens;
-    const _ivyEnabledInDevMode = !_viewEngineEnabled && isDevMode();
-    ivyEnabledInDevMode$.next(_ivyEnabledInDevMode);
-  } catch {
-    ivyEnabledInDevMode$.next(false);
-  } finally {
-    ivyEnabledInDevMode$.complete();
+export function ensureStateClassIsInjectable(target: any): void {
+  // `ɵprov` is a static property added by the NGCC compiler. It always exists in
+  // AOT mode because this property is added before runtime. If an application is running in
+  // JIT mode then this property can be added by the `@Injectable()` decorator. The `@Injectable()`
+  // decorator has to go after the `@State()` decorator, thus we prevent users from unwanted DI errors.
+  if (ɵivyEnabled) {
+    const ngInjectableDef = target.ɵprov;
+    if (!ngInjectableDef) {
+      // Don't warn if Ivy is disabled or `ɵprov` exists on the class
+      console.warn(getUndecoratedStateInIvyWarningMessage(target.name));
+    }
   }
 }

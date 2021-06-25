@@ -11,7 +11,6 @@ import { Selector } from '../src/decorators/selector/selector';
 import { Select } from '../src/decorators/select/select';
 import { StateContext } from '../src/symbols';
 import { removeDollarAtTheEnd } from '../src/decorators/select/symbols';
-import { CONFIG_MESSAGES, VALIDATION_CODE } from '../src/configs/messages.config';
 
 describe('Select', () => {
   interface SubSubStateModel {
@@ -79,10 +78,8 @@ describe('Select', () => {
       }
 
       new SelectComponent().state.subscribe();
-    } catch (e) {
-      expect(e.message).toEqual(
-        CONFIG_MESSAGES[VALIDATION_CODE.SELECT_FACTORY_NOT_CONNECTED]()
-      );
+    } catch ({ message }) {
+      expect(message).toEqual('You have forgotten to import the NGXS module!');
     }
   });
 

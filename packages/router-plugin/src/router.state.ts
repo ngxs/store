@@ -1,4 +1,4 @@
-import { NgZone, Injectable } from '@angular/core';
+import { NgZone, Injectable, OnDestroy } from '@angular/core';
 import {
   NavigationCancel,
   NavigationError,
@@ -13,6 +13,7 @@ import {
 import { LocationStrategy, Location } from '@angular/common';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { isAngularInTestMode } from '@ngxs/store/internals';
+import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 import {
@@ -33,6 +34,12 @@ export interface RouterStateModel<T = RouterStateSnapshot> {
 
 export type RouterTrigger = 'none' | 'router' | 'store';
 
+/**
+ * @description Will be provided through Terser global definitions by Angular CLI
+ * during the production build. This is how Angular does tree-shaking internally.
+ */
+declare const ngDevMode: boolean;
+
 @State<RouterStateModel>({
   name: 'router',
   defaults: {
@@ -42,7 +49,7 @@ export type RouterTrigger = 'none' | 'router' | 'store';
   }
 })
 @Injectable()
-export class RouterState {
+export class RouterState implements OnDestroy {
   /**
    * Determines how navigation was performed by the `RouterState` itself
    * or outside via `new Navigate(...)`
@@ -60,6 +67,8 @@ export class RouterState {
   private _storeState: RouterStateModel | null = null;
 
   private _lastRoutesRecognized: RoutesRecognized = null!;
+
+  private _subscription = new Subscription();
 
   @Selector()
   static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
@@ -83,6 +92,10 @@ export class RouterState {
     this.setUpStoreListener();
     this.setUpRouterEventsListener();
     this.checkInitialNavigationOnce();
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
   }
 
   @Action(Navigate)
@@ -109,13 +122,17 @@ export class RouterState {
   }
 
   private setUpStoreListener(): void {
-    this._store.select(RouterState).subscribe((state: RouterStateModel | undefined) => {
-      this.navigateIfNeeded(state);
-    });
+    const subscription = this._store
+      .select(RouterState)
+      .subscribe((state: RouterStateModel | undefined) => {
+        this.navigateIfNeeded(state);
+      });
+
+    this._subscription.add(subscription);
   }
 
   private setUpRouterEventsListener(): void {
-    this._router.events.subscribe(event => {
+    const subscription = this._router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.navigationStart();
       } else if (event instanceof RoutesRecognized) {
@@ -133,6 +150,8 @@ export class RouterState {
         this.reset();
       }
     });
+
+    this._subscription.add(subscription);
   }
 
   private navigationStart(): void {
@@ -233,11 +252,18 @@ export class RouterState {
    * is triggered
    */
   private checkInitialNavigationOnce(): void {
-    if (isAngularInTestMode()) {
+    // Caretaker note: we have still left the `typeof` condition in order to avoid
+    // creating a breaking change for projects that still use the View Engine.
+    if (
+      (typeof ngDevMode === 'undefined' || ngDevMode) &&
+      // Angular is running tests in development mode thus we can be sure that this method will be
+      // skipped in tests.
+      isAngularInTestMode()
+    ) {
       return;
     }
 
-    this._router.events
+    const subscription = this._router.events
       .pipe(first((event): event is RoutesRecognized => event instanceof RoutesRecognized))
       .subscribe(({ url }) => {
         // `location.pathname` always equals manually entered URL in the address bar
@@ -269,5 +295,7 @@ export class RouterState {
           this._router.navigateByUrl(currentUrl);
         }
       });
+
+    this._subscription.add(subscription);
   }
 }

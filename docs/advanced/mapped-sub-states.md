@@ -76,11 +76,11 @@ interface ZooStateModel {
 @Injectable()
 export class ZooState {
   static getZooAnimals(zooName: string) {
-    return createSelector([ZooState], (state: ZooStateModel[]) => state[zooName].animals);
+    return createSelector([ZooState], (state: ZooStateModel) => state[zooName].animals);
   }
 
   static pandas(zooName: string) {
-    return createSelector([ZooState.getAnimals(zooName)], (state: Animal[]) => {
+    return createSelector([ZooState.getZooAnimals(zooName)], (state: Animal[]) => {
       return state.filter(animal => animal.type === 'panda' && animal.age === 'young');
     });
   }

@@ -8,7 +8,6 @@ import { NgxsModule } from '../src/module';
 import { Selector } from '../src/decorators/selector/selector';
 import { NgxsConfig } from '../src/symbols';
 import { SelectorOptions } from '../src/decorators/selector-options';
-import { CONFIG_MESSAGES, VALIDATION_CODE } from '../src/configs/messages.config';
 import { Injectable } from '@angular/core';
 
 describe('Selector', () => {
@@ -843,8 +842,8 @@ describe('Selector', () => {
         }
 
         new MyComponent();
-      } catch (e) {
-        expect(e.message).toEqual(CONFIG_MESSAGES[VALIDATION_CODE.SELECTOR_DECORATOR]());
+      } catch ({ message }) {
+        expect(message).toEqual('Selectors only work on methods.');
       }
     });
   });
