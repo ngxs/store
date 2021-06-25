@@ -36,6 +36,8 @@
   - [Style Guide](recipes/style-guide.md)
   - [Unit Testing](recipes/unit-testing.md)
   - [RxAngular Integration](recipes/intregration-with-rxangular.md)
+- Snippets
+  - [State Operators](snippets/operators.md)
 - Plugins
   - [Introduction](plugins/intro.md)
   - [CLI](plugins/cli.md)
