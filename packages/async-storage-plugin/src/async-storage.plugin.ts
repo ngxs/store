@@ -53,16 +53,13 @@ export class NgxsAsyncStoragePlugin implements NgxsPlugin {
     let initAction: Observable<any> = of(state);
 
     if (isInitAction) {
-      console.log('Is init action');
       initAction = from(this.keys).pipe(
         mergeMap(key => {
           const result = this.storages[key].engine.get(key);
-          console.log('Concatmap result', result);
           let observable: Observable<any>;
           if (isObservable(result)) observable = result;
           else if (result instanceof Promise) observable = from(result);
           else observable = of(result);
-          console.log('Concatmap observable', observable);
 
           return observable.pipe(
             map<any, [string, any]>(val => [key, val])
@@ -74,24 +71,11 @@ export class NgxsAsyncStoragePlugin implements NgxsPlugin {
           const storage = this.storages[key];
 
           let newVal = val;
-          console.log({
-            isMaster,
-            nextState,
-            previousState,
-            storage,
-            newVal,
-            keyVal: [key, val]
-          });
 
           const doMigrations = (strategy: NgxsAsyncStorageMigrations) => {
             const versionMatch =
               strategy.version === getValue(newVal, strategy.versionKey || 'version');
             const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
-            console.log('doing migrations', {
-              versionMatch,
-              keyMatch,
-              strategy
-            });
 
             if (versionMatch && keyMatch) {
               newVal = strategy.migrate(newVal);
@@ -100,15 +84,11 @@ export class NgxsAsyncStoragePlugin implements NgxsPlugin {
           };
 
           if (val !== 'undefined' && typeof val !== 'undefined' && val !== null) {
-            console.log('Not falsy or undefined, val:', val);
             if (storage.serializers.deserialize) {
-              console.log('deserializing');
               try {
                 newVal = storage.serializers.deserialize(newVal);
-                console.log('Newval deserialize', newVal);
                 if (storage.serializers.afterDeserialize)
                   newVal = storage.serializers.afterDeserialize(newVal, key);
-                console.log('Newval afterDeserialize', newVal);
               } catch (err) {
                 if (typeof ngDevMode === 'undefined' || ngDevMode) {
                   console.error(
@@ -117,7 +97,6 @@ export class NgxsAsyncStoragePlugin implements NgxsPlugin {
                   );
                 }
                 newVal = {};
-                console.log('error deserializing, val:', val);
               }
             }
 
@@ -127,36 +106,23 @@ export class NgxsAsyncStoragePlugin implements NgxsPlugin {
 
             if (!isMaster) {
               nextState = setValue(previousState, key, newVal);
-              console.log('is not master, state: ', nextState);
             } else {
               nextState = { ...previousState, ...newVal };
-              console.log('is master, state: ', nextState);
             }
           } else {
-            console.log('IS falsy or undefined, val: ', val);
             if (storage.migrations && storage.migrations.length > 0) {
               if (isMaster) {
-                console.log('is master, state: ', previousState);
                 newVal = Object.assign({}, previousState);
               } else {
                 newVal = getValue(previousState, key);
-                console.log('is not master, state: ', state);
               }
 
               storage.migrations.forEach(doMigrations);
 
               if (!isMaster) {
-                console.log('is not master, nextState prevState: ', {
-                  nextState,
-                  previousState
-                });
                 nextState = setValue(previousState, key, newVal);
               } else {
                 nextState = { ...previousState, ...newVal };
-                console.log('is master, nextState prevState: ', {
-                  nextState,
-                  previousState
-                });
               }
             }
           }
@@ -170,29 +136,22 @@ export class NgxsAsyncStoragePlugin implements NgxsPlugin {
       concatMap(stateAfterInit => next(stateAfterInit, event)),
       tap((nextState: any) => {
         if (!isInitAction || (isInitAction && hasMigration)) {
-          console.log('is not an init action or has a migration');
           for (const key of this.keys) {
             const storage = this.storages[key];
             let val = nextState;
-            console.log({ key, storage, val });
 
             if (key !== DEFAULT_STATE_KEY) {
               val = getValue(nextState, key);
-              console.log('not default state key, val: ', val);
             }
 
             let serializedVal: any = val;
             let serializerError = false;
             if (storage.serializers.serialize) {
-              console.log('serializing');
               try {
                 if (storage.serializers.beforeSerialize)
                   serializedVal = storage.serializers.beforeSerialize(val, key);
-                console.log('val beforeSerialize', serializedVal);
                 serializedVal = storage.serializers.serialize(serializedVal);
-                console.log('val serialize', serializedVal);
               } catch (err) {
-                console.log('was an error serializing');
                 if (typeof ngDevMode === 'undefined' || ngDevMode) {
                   console.error(
                     'Error ocurred while serializing the store value, value not updated.',
@@ -206,7 +165,6 @@ export class NgxsAsyncStoragePlugin implements NgxsPlugin {
 
             if (serializerError === false) {
               storage.engine.set(key, serializedVal);
-              console.log('no error, setting', { key, serializedVal });
             }
           }
         }
