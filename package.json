@@ -79,6 +79,7 @@
     "build:integration:ssr": "yarn build:integration && ng run integration:server:production",
     "// - TESTING": "Test all modules #requires yarn build:packages",
     "test": "ng test",
+    "test:ngxs:watch": "ng test --watch --project ngxs",
     "test:integration": "ng run integration:test --colors --runInBand",
     "test:types": "dtslint packages/store/types --localTs node_modules/typescript/lib",
     "// - E2E": "E2E testing #requires yarn build:integration",

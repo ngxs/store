@@ -32,14 +32,14 @@
       "path": "./@ngxs/store/fesm2015/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es2015",
-      "maxSize": "112.22KB",
+      "maxSize": "113.00KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es5",
-      "maxSize": "131.06KB",
+      "maxSize": "131.85KB",
       "compression": "none"
     },
     {
@@ -116,14 +116,14 @@
       "path": "./@ngxs/storage-plugin/fesm2015/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
       "target": "es2015",
-      "maxSize": "12.000KB",
+      "maxSize": "12.65KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/storage-plugin/fesm5/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
       "target": "es5",
-      "maxSize": "13.630KB",
+      "maxSize": "14.29KB",
       "compression": "none"
     },
     {

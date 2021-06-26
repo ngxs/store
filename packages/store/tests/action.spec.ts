@@ -1,23 +1,21 @@
 import { ErrorHandler, Injectable } from '@angular/core';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { delay, mapTo } from 'rxjs/operators';
-import { throwError, of, Subject } from 'rxjs';
-
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Observable, of, Subject, throwError } from 'rxjs';
+import { delay, map, tap } from 'rxjs/operators';
+import { Actions } from '../src/actions-stream';
 import { Action } from '../src/decorators/action';
 import { State } from '../src/decorators/state';
-import { META_KEY, StateContext } from '../src/symbols';
-
 import { NgxsModule } from '../src/module';
-import { Store } from '../src/store';
-import { Actions } from '../src/actions-stream';
 import {
-  ofActionSuccessful,
-  ofActionDispatched,
   ofAction,
-  ofActionErrored,
   ofActionCanceled,
-  ofActionCompleted
+  ofActionCompleted,
+  ofActionDispatched,
+  ofActionErrored,
+  ofActionSuccessful
 } from '../src/operators/of-action';
+import { Store } from '../src/store';
+import { META_KEY, StateContext } from '../src/symbols';
 import { NoopErrorHandler } from './helpers/utils';
 
 describe('Action', () => {
@@ -35,6 +33,7 @@ describe('Action', () => {
 
   class CancelingAction {
     static type = 'CancelingAction';
+    constructor(public readonly id: number) {}
   }
 
   @State({
@@ -204,65 +203,73 @@ describe('Action', () => {
       const { store, actions } = setup();
       const callbacksCalled: string[] = [];
 
-      actions.pipe(ofAction(CancelingAction)).subscribe(() => {
-        callbacksCalled.push('ofAction');
+      actions.pipe(ofAction(CancelingAction)).subscribe(({ id }: CancelingAction) => {
+        callbacksCalled.push('ofAction ' + id);
       });
 
-      actions.pipe(ofActionDispatched(CancelingAction)).subscribe(() => {
-        callbacksCalled.push('ofActionDispatched');
+      actions
+        .pipe(ofActionDispatched(CancelingAction))
+        .subscribe(({ id }: CancelingAction) => {
+          callbacksCalled.push('ofActionDispatched ' + id);
+        });
+
+      actions.pipe(ofActionErrored(CancelingAction)).subscribe(({ id }: CancelingAction) => {
+        callbacksCalled.push('ofActionErrored ' + id);
       });
 
-      actions.pipe(ofActionErrored(CancelingAction)).subscribe(() => {
-        callbacksCalled.push('ofActionErrored');
-      });
+      actions
+        .pipe(ofActionSuccessful(CancelingAction))
+        .subscribe(({ id }: CancelingAction) => {
+          callbacksCalled.push('ofActionSuccessful ' + id);
+          expect(callbacksCalled).toEqual([
+            'ofAction 1',
+            'ofActionDispatched 1',
+            'ofAction 2',
+            'ofActionDispatched 2',
+            'ofAction 1',
+            'ofActionCanceled 1',
+            'ofAction 2',
+            'ofActionSuccessful 2'
+          ]);
+        });
 
-      actions.pipe(ofActionSuccessful(CancelingAction)).subscribe(() => {
-        callbacksCalled.push('ofActionSuccessful');
+      actions.pipe(ofActionCanceled(CancelingAction)).subscribe(({ id }: CancelingAction) => {
+        callbacksCalled.push('ofActionCanceled ' + id);
         expect(callbacksCalled).toEqual([
-          'ofAction',
-          'ofActionDispatched',
-          'ofAction',
-          'ofActionDispatched',
-          'ofAction',
-          'ofActionCanceled',
-          'ofAction',
-          'ofActionSuccessful'
-        ]);
-      });
-
-      actions.pipe(ofActionCanceled(CancelingAction)).subscribe(() => {
-        callbacksCalled.push('ofActionCanceled');
-        expect(callbacksCalled).toEqual([
-          'ofAction',
-          'ofActionDispatched',
-          'ofAction',
-          'ofActionDispatched',
-          'ofAction',
-          'ofActionCanceled'
+          'ofAction 1',
+          'ofActionDispatched 1',
+          'ofAction 2',
+          'ofActionDispatched 2',
+          'ofAction 1',
+          'ofActionCanceled 1'
         ]);
       });
 
       // Act
-      store.dispatch([new CancelingAction(), new CancelingAction()]).subscribe(() => {
-        expect(callbacksCalled).toEqual([
-          'ofAction',
-          'ofActionDispatched',
-          'ofAction',
-          'ofActionDispatched'
-        ]);
+      store.dispatch([new CancelingAction(1), new CancelingAction(2)]).subscribe({
+        complete: () => {
+          expect(callbacksCalled).toEqual([
+            'ofAction 1',
+            'ofActionDispatched 1',
+            'ofAction 2',
+            'ofActionDispatched 2',
+            'ofAction 1',
+            'ofActionCanceled 1'
+          ]);
+        }
       });
 
       tick(1);
       // Assert
       expect(callbacksCalled).toEqual([
-        'ofAction',
-        'ofActionDispatched',
-        'ofAction',
-        'ofActionDispatched',
-        'ofAction',
-        'ofActionCanceled',
-        'ofAction',
-        'ofActionSuccessful'
+        'ofAction 1',
+        'ofActionDispatched 1',
+        'ofAction 2',
+        'ofActionDispatched 2',
+        'ofAction 1',
+        'ofActionCanceled 1',
+        'ofAction 2',
+        'ofActionSuccessful 2'
       ]);
     }));
 
@@ -287,6 +294,10 @@ describe('Action', () => {
       static type = 'PromiseThatReturnsObs';
     }
 
+    class PromiseThatReturnsPromise {
+      static type = 'PromiseThatReturnsPromise';
+    }
+
     class ObservableAction {
       static type = 'ObservableAction';
     }
@@ -295,21 +306,35 @@ describe('Action', () => {
       static type = 'ObsThatReturnsPromise';
     }
 
+    class ObsThatReturnsObservable {
+      static type = 'ObsThatReturnsObservable';
+    }
+
     class PromiseAction {
       static type = 'PromiseAction';
     }
 
     function setup() {
+      const recorder: string[] = [];
+      const record = (message: string) => recorder.push(message);
       const observable = new Subject();
       const completeObservableFn = () => {
+        record('(completeObservableFn) - next');
+        observable?.next();
+        record('(completeObservableFn) - complete');
         observable?.complete();
+        record('(completeObservableFn) - end');
       };
 
       let resolveFn: (value: unknown) => void;
       const promise = new Promise(resolve => {
         resolveFn = resolve;
-      });
-      const promiseResolveFn = () => resolveFn?.(null);
+      }).then(() => record('promise resolved'));
+
+      const promiseResolveFn = () => {
+        record('(promiseResolveFn) called');
+        resolveFn?.(null);
+      };
 
       @State({
         name: 'async_state'
@@ -318,23 +343,59 @@ describe('Action', () => {
       class AsyncState {
         @Action(PromiseThatReturnsObs)
         async promiseThatReturnsObs(ctx: StateContext<any>) {
+          record('promiseThatReturnsObs - start');
           await promise;
-          return ctx.dispatch(ObservableAction);
+          record('promiseThatReturnsObs - after promise');
+          return ctx
+            .dispatch(ObservableAction)
+            .pipe(tap(() => record('promiseThatReturnsObs - observable tap')));
+        }
+
+        @Action(PromiseThatReturnsPromise)
+        async promiseThatReturnsPromise(ctx: StateContext<any>) {
+          record('promiseThatReturnsPromise - start');
+          await promise;
+          record('promiseThatReturnsPromise - after promise');
+          return ctx
+            .dispatch(ObservableAction)
+            .toPromise()
+            .then(() => record('promiseThatReturnsPromise - promise resolving'));
         }
 
         @Action(ObsThatReturnsPromise)
         obsThatReturnsPromise() {
-          return observable.pipe(mapTo(promise));
+          record('obsThatReturnsPromise - start');
+          return observable.pipe(
+            tap(() => record('obsThatReturnsPromise - observable tap')),
+            map(async () => {
+              return await promise;
+            })
+          );
+        }
+
+        @Action(ObsThatReturnsObservable)
+        obsThatReturnsObservable(ctx: StateContext<any>) {
+          record('obsThatReturnsObservable - start');
+          return observable.pipe(
+            tap(() => record('obsThatReturnsObservable - observable tap')),
+            map(() => {
+              return ctx
+                .dispatch(new PromiseAction())
+                .pipe(tap(() => record('obsThatReturnsObservable - inner observable tap')));
+            })
+          );
         }
 
         @Action(ObservableAction)
         observableAction() {
-          return observable;
+          record('observableAction - start');
+          return observable.pipe(tap(() => record('observableAction - observable tap')));
         }
 
         @Action(PromiseAction)
         promiseAction() {
-          return promise;
+          record('promiseAction - start');
+          return promise.then(() => record('promiseAction - after promise'));
         }
       }
 
@@ -350,65 +411,485 @@ describe('Action', () => {
         actions,
         completeObservableFn,
         promiseResolveFn,
-        promise
+        promise,
+        recorder,
+        record
       };
     }
 
     describe('Promise that returns an observable', () => {
-      it('completes when promise is resolved - This documents a bug! - See: ISSUE #1660', fakeAsync(() => {
+      it('completes when observable is resolved', fakeAsync(() => {
         // Arrange
-        const { store, actions, promiseResolveFn, completeObservableFn } = setup();
-        const events: string[] = [];
+        const {
+          store,
+          actions,
+          promiseResolveFn,
+          completeObservableFn,
+          recorder,
+          record
+        } = setup();
 
         actions.pipe(ofActionCompleted(ObservableAction)).subscribe(() => {
-          events.push('ObservableAction - Completed');
+          record('ObservableAction [Completed]');
+        });
+        actions.pipe(ofActionCompleted(PromiseThatReturnsObs)).subscribe(() => {
+          record('PromiseThatReturnsObs [Completed]');
         });
 
         // Act
         store
           .dispatch(new PromiseThatReturnsObs())
-          .subscribe(() => events.push('PromiseThatReturnsObs - Completed'));
+          .subscribe(() => record('dispatch(PromiseThatReturnsObs) - Completed'));
 
         promiseResolveFn();
         tick();
 
         // Assert
-        expect(events).toEqual(['PromiseThatReturnsObs - Completed']);
+        expect(recorder).toEqual([
+          'promiseThatReturnsObs - start',
+          '(promiseResolveFn) called',
+          'promise resolved',
+          'promiseThatReturnsObs - after promise',
+          'observableAction - start'
+        ]);
 
         completeObservableFn();
         tick();
 
-        expect(events).toEqual([
-          'PromiseThatReturnsObs - Completed',
-          'ObservableAction - Completed'
+        expect(recorder).toEqual([
+          'promiseThatReturnsObs - start',
+          '(promiseResolveFn) called',
+          'promise resolved',
+          'promiseThatReturnsObs - after promise',
+          'observableAction - start',
+          '(completeObservableFn) - next',
+          'observableAction - observable tap',
+          '(completeObservableFn) - complete',
+          'ObservableAction [Completed]',
+          'promiseThatReturnsObs - observable tap',
+          'PromiseThatReturnsObs [Completed]',
+          'dispatch(PromiseThatReturnsObs) - Completed',
+          '(completeObservableFn) - end'
+        ]);
+      }));
+    });
+
+    describe('Promise that returns a promise', () => {
+      it('completes when inner promise is resolved', fakeAsync(() => {
+        // Arrange
+        const {
+          store,
+          actions,
+          promiseResolveFn,
+          completeObservableFn,
+          recorder,
+          record
+        } = setup();
+
+        actions.pipe(ofActionCompleted(ObservableAction)).subscribe(() => {
+          record('ObservableAction [Completed]');
+        });
+        actions.pipe(ofActionCompleted(PromiseThatReturnsPromise)).subscribe(() => {
+          record('PromiseThatReturnsPromise [Completed]');
+        });
+
+        // Act
+        store
+          .dispatch(new PromiseThatReturnsPromise())
+          .subscribe(() => record('dispatch(PromiseThatReturnsPromise) - Completed'));
+
+        promiseResolveFn();
+        tick();
+
+        // Assert
+        expect(recorder).toEqual([
+          'promiseThatReturnsPromise - start',
+          '(promiseResolveFn) called',
+          'promise resolved',
+          'promiseThatReturnsPromise - after promise',
+          'observableAction - start'
+        ]);
+
+        completeObservableFn();
+        tick();
+
+        expect(recorder).toEqual([
+          'promiseThatReturnsPromise - start',
+          '(promiseResolveFn) called',
+          'promise resolved',
+          'promiseThatReturnsPromise - after promise',
+          'observableAction - start',
+          '(completeObservableFn) - next',
+          'observableAction - observable tap',
+          '(completeObservableFn) - complete',
+          'ObservableAction [Completed]',
+          '(completeObservableFn) - end',
+          'promiseThatReturnsPromise - promise resolving',
+          'PromiseThatReturnsPromise [Completed]',
+          'dispatch(PromiseThatReturnsPromise) - Completed'
         ]);
       }));
     });
 
     describe('Observable that returns a promise', () => {
-      it('completes when observable is completed - This documents a bug! - See: ISSUE #1660', fakeAsync(() => {
+      it('completes when promise is completed', fakeAsync(() => {
         // Arrange
-        const { store, promiseResolveFn, completeObservableFn, promise } = setup();
-        const events: string[] = [];
+        const {
+          store,
+          actions,
+          promiseResolveFn,
+          completeObservableFn,
+          promise,
+          recorder,
+          record
+        } = setup();
 
         promise.then(() => {
-          events.push('promise - resolved');
+          record('promise [resolved]');
+        });
+        actions.pipe(ofActionCompleted(ObsThatReturnsPromise)).subscribe(() => {
+          record('ObsThatReturnsPromise [Completed]');
         });
 
         // Act
         store
           .dispatch(new ObsThatReturnsPromise())
-          .subscribe(() => events.push('ObsThatReturnsPromise - Completed'));
+          .subscribe(() => record('dispatch(ObsThatReturnsPromise) - Completed'));
 
         completeObservableFn();
 
         // Assert
-        expect(events).toEqual(['ObsThatReturnsPromise - Completed']);
+        expect(recorder).toEqual([
+          'obsThatReturnsPromise - start',
+          '(completeObservableFn) - next',
+          'obsThatReturnsPromise - observable tap',
+          '(completeObservableFn) - complete',
+          '(completeObservableFn) - end'
+        ]);
 
         promiseResolveFn();
         tick();
 
-        expect(events).toEqual(['ObsThatReturnsPromise - Completed', 'promise - resolved']);
+        expect(recorder).toEqual([
+          'obsThatReturnsPromise - start',
+          '(completeObservableFn) - next',
+          'obsThatReturnsPromise - observable tap',
+          '(completeObservableFn) - complete',
+          '(completeObservableFn) - end',
+          '(promiseResolveFn) called',
+          'promise resolved',
+          'promise [resolved]',
+          'ObsThatReturnsPromise [Completed]',
+          'dispatch(ObsThatReturnsPromise) - Completed'
+        ]);
+      }));
+    });
+
+    describe('Observable that returns an inner observable', () => {
+      it('completes when inner observable is completed', fakeAsync(() => {
+        // Arrange
+        const {
+          store,
+          actions,
+          promiseResolveFn,
+          completeObservableFn,
+          promise,
+          recorder,
+          record
+        } = setup();
+
+        promise.then(() => {
+          record('promise [resolved]');
+        });
+        actions.pipe(ofActionCompleted(ObsThatReturnsObservable)).subscribe(() => {
+          record('ObsThatReturnsObservable [Completed]');
+        });
+
+        // Act
+        store
+          .dispatch(new ObsThatReturnsObservable())
+          .subscribe(() => record('dispatch(ObsThatReturnsObservable) - Completed'));
+
+        completeObservableFn();
+
+        // Assert
+        expect(recorder).toEqual([
+          'obsThatReturnsObservable - start',
+          '(completeObservableFn) - next',
+          'obsThatReturnsObservable - observable tap',
+          'promiseAction - start',
+          '(completeObservableFn) - complete',
+          '(completeObservableFn) - end'
+        ]);
+
+        promiseResolveFn();
+        tick();
+
+        expect(recorder).toEqual([
+          'obsThatReturnsObservable - start',
+          '(completeObservableFn) - next',
+          'obsThatReturnsObservable - observable tap',
+          'promiseAction - start',
+          '(completeObservableFn) - complete',
+          '(completeObservableFn) - end',
+          '(promiseResolveFn) called',
+          'promise resolved',
+          'promise [resolved]',
+          'promiseAction - after promise',
+          'obsThatReturnsObservable - inner observable tap',
+          'ObsThatReturnsObservable [Completed]',
+          'dispatch(ObsThatReturnsObservable) - Completed'
+        ]);
+      }));
+    });
+  });
+
+  describe('Cancellable Action Scenario', () => {
+    class CancellableAction {
+      static type = 'Cancellable';
+      constructor(
+        public readonly id: number,
+        public readonly observable: Observable<string>
+      ) {}
+    }
+
+    function setup() {
+      const recorder: string[] = [];
+      const record = (message: string) => recorder.push(message);
+
+      @State({
+        name: 'cancellable_action_state'
+      })
+      @Injectable()
+      class AsyncState {
+        @Action(CancellableAction, { cancelUncompleted: true })
+        cancellableAction(_: StateContext<any>, action: CancellableAction) {
+          record(`cancellableAction(${action.id}) - start`);
+          return action.observable.pipe(
+            tap(() => record(`cancellableAction(${action.id}) - observable tap`))
+          );
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([AsyncState])],
+        providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
+      });
+
+      const store = TestBed.inject(Store);
+      const actions = TestBed.inject(Actions);
+      return {
+        store,
+        actions,
+        recorder,
+        record
+      };
+    }
+
+    function recordStream<TValue>(record: (phase: string, value?: TValue) => void) {
+      return function(source: Observable<TValue>): Observable<TValue> {
+        return new Observable(subscriber => {
+          record('subscribe');
+          const subscription = source.subscribe({
+            next(value) {
+              record('next', value);
+              subscriber.next(value);
+            },
+            error(error) {
+              record('next', error);
+              subscriber.error(error);
+            },
+            complete() {
+              record('complete');
+              subscriber.complete();
+            }
+          });
+          return () => {
+            record('unsubscribe');
+            subscription.unsubscribe();
+          };
+        });
+      };
+    }
+
+    function recordedObservable(
+      observable1: Subject<string>,
+      prefix: string,
+      record: (message: string) => number
+    ): Observable<string> {
+      return observable1.pipe(
+        recordStream((phase, value) =>
+          record(prefix + ' - ' + phase + (value ? ' ' + value : ''))
+        )
+      );
+    }
+
+    describe('Sequential dispatch', () => {
+      it('unsubscribes to first action observable before starting second action', fakeAsync(() => {
+        // Arrange
+        const { store, recorder, record } = setup();
+
+        const observable1 = new Subject<string>();
+        const action1 = new CancellableAction(
+          1,
+          recordedObservable(observable1, 'action1 obs', record)
+        );
+        const observable2 = new Subject<string>();
+        const action2 = new CancellableAction(
+          2,
+          recordedObservable(observable2, 'action2 obs', record)
+        );
+
+        record('Action 1 - dispatching');
+        store.dispatch(action1).subscribe(() => record('Action 1 - dispatch complete'));
+        // Act
+        record('Action 2 - dispatching');
+        store.dispatch(action2).subscribe(() => record('Action 2 - dispatch complete'));
+
+        // Assert
+        expect(recorder).toEqual([
+          'Action 1 - dispatching',
+          'cancellableAction(1) - start',
+          'action1 obs - subscribe',
+          'Action 2 - dispatching',
+          'action1 obs - unsubscribe',
+          'cancellableAction(2) - start',
+          'action2 obs - subscribe'
+        ]);
+      }));
+
+      it('sequencing of completions should come back inline with zones strategy', fakeAsync(() => {
+        // Arrange
+        const { store, recorder, record } = setup();
+
+        const observable1 = new Subject<string>();
+        const action1 = new CancellableAction(
+          1,
+          recordedObservable(observable1, 'action1 obs', record)
+        );
+        const observable2 = new Subject<string>();
+        const action2 = new CancellableAction(
+          2,
+          recordedObservable(observable2, 'action2 obs', record)
+        );
+
+        // Act
+        record('Action 1 - dispatching');
+        store.dispatch(action1).subscribe({
+          next: () => record('Action 1 - dispatch next'),
+          complete: () => record('Action 1 - dispatch complete')
+        });
+        record('Action 2 - dispatching');
+        store.dispatch(action2).subscribe({
+          next: () => record('Action 2 - dispatch next'),
+          complete: () => record('Action 2 - dispatch complete')
+        });
+        observable1.next('Value1');
+        observable2.next('Value2');
+        record('complete 2');
+        observable2.complete();
+        record('complete 1');
+        observable1.complete();
+
+        // Assert
+        expect(recorder).toEqual([
+          'Action 1 - dispatching',
+          'cancellableAction(1) - start',
+          'action1 obs - subscribe',
+          'Action 2 - dispatching',
+          'Action 1 - dispatch complete',
+          'action1 obs - unsubscribe',
+          'cancellableAction(2) - start',
+          'action2 obs - subscribe',
+          'action2 obs - next Value2',
+          'cancellableAction(2) - observable tap',
+          'complete 2',
+          'action2 obs - complete',
+          'Action 2 - dispatch next',
+          'Action 2 - dispatch complete',
+          'action2 obs - unsubscribe',
+          'complete 1'
+        ]);
+      }));
+    });
+
+    describe('Dual dispatch', () => {
+      it('dual dispatch should unsubscribe first action and keep second action', fakeAsync(() => {
+        // Arrange
+        const { store, recorder, record } = setup();
+
+        const observable1 = new Subject<string>();
+        const action1 = new CancellableAction(
+          1,
+          recordedObservable(observable1, 'action1 obs', record)
+        );
+        const observable2 = new Subject<string>();
+        const action2 = new CancellableAction(
+          2,
+          recordedObservable(observable2, 'action2 obs', record)
+        );
+
+        // Act
+        record('Action 1 & 2 - dispatching');
+        store
+          .dispatch([action1, action2])
+          .subscribe(() => record('Action 1 & 2 - dispatch complete'));
+
+        // Assert
+        expect(recorder).toEqual([
+          'Action 1 & 2 - dispatching',
+          'cancellableAction(1) - start',
+          'action1 obs - subscribe',
+          'action1 obs - unsubscribe',
+          'cancellableAction(2) - start',
+          'action2 obs - subscribe'
+        ]);
+      }));
+
+      it('dual dispatch should complete when first action is cancelled - unclear requirement!! Bug maybe', fakeAsync(() => {
+        // Arrange
+        const { store, recorder, record } = setup();
+
+        const observable1 = new Subject<string>();
+        const action1 = new CancellableAction(
+          1,
+          recordedObservable(observable1, 'action1 obs', record)
+        );
+        const observable2 = new Subject<string>();
+        const action2 = new CancellableAction(
+          2,
+          recordedObservable(observable2, 'action2 obs', record)
+        );
+        record('Action 1 & 2 - dispatching');
+        store.dispatch([action1, action2]).subscribe({
+          next: () => record('Action 1 & 2 - dispatch next'),
+          complete: () => record('Action 1 & 2 - dispatch complete')
+        });
+
+        // Act
+        observable1.next('Value1');
+        observable2.next('Value2');
+        record('complete 2');
+        observable2.complete();
+        record('complete 1');
+        observable1.complete();
+
+        // Assert
+        expect(recorder).toEqual([
+          'Action 1 & 2 - dispatching',
+          'cancellableAction(1) - start',
+          'action1 obs - subscribe',
+          'action1 obs - unsubscribe',
+          'cancellableAction(2) - start',
+          'action2 obs - subscribe',
+          'Action 1 & 2 - dispatch complete',
+          'action2 obs - next Value2',
+          'cancellableAction(2) - observable tap',
+          'complete 2',
+          'action2 obs - complete',
+          'action2 obs - unsubscribe',
+          'complete 1'
+        ]);
       }));
     });
   });
