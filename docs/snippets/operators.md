@@ -45,7 +45,6 @@ export function upsertItem<T>(
   );
 }
 ```
-
 ### Collaborate with your awesome operator!
 
 Have you identified an use case for a new operator? If that's the case you can collaborate sharing it here! To learn more read this [issue](https://github.com/ngxs/store/issues/926) and submit your PR with your operator as part of the _Snippets_ section.
