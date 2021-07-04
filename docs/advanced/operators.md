@@ -226,7 +226,7 @@ As you can see, state operators are very powerful to start moving your immutable
 
 ## Snippets
 
-Check this [section]() for more operators that you can add to your application.
+Check this [section](./../snippets/operators.md) for more operators that you can add to your application.
 
 ## Relevant Articles
 
