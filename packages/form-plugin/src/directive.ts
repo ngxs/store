@@ -133,10 +133,6 @@ export class FormDirective implements OnInit, OnDestroy {
     const value = this._formGroupDirective.control.getRawValue();
 
     const actions: any[] = [
-      new UpdateFormValue({
-        path: this.path,
-        value
-      }),
       new UpdateFormDirty({
         path: this.path,
         dirty: this._formGroupDirective.dirty
@@ -157,7 +153,12 @@ export class FormDirective implements OnInit, OnDestroy {
     }
 
     this._updating = true;
-    this._store.dispatch(actions).subscribe({
+    this._store.dispatch(new UpdateFormValue({
+      path: this.path,
+      value
+    })).pipe(
+      switchMap(() => this._store.dispatch(actions))
+    ).subscribe({
       error: () => (this._updating = false),
       complete: () => (this._updating = false)
     });
