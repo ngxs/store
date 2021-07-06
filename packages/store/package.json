@@ -6,7 +6,7 @@
   "sideEffects": true,
   "peerDependencies": {
     "@angular/core": ">=6.1.0 <13.0.0",
-    "rxjs": ">=6.5.5"
+    "rxjs": ">=7.2.0"
   },
   "ngPackage": {
     "lib": {
