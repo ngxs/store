@@ -298,17 +298,17 @@ workflows:
           requires:
             - build
 
-      - integration_tests:
-          requires:
-            - build
-
-      - cypress:
-          requires:
-            - integration_tests
-
-      - integration_ssr_tests:
-          requires:
-            - build
+      ### - integration_tests:
+      ###     requires:
+      ###       - build
+      ###
+      ### - cypress:
+      ###     requires:
+      ###       - integration_tests
+      ###
+      ### - integration_ssr_tests:
+      ###     requires:
+      ###       - build
 
       - integration_ng6_tests:
           requires:
@@ -357,8 +357,8 @@ workflows:
       - upload_coverage:
           requires:
             - unit_tests
-            - integration_tests
-            - integration_ssr_tests
+            ### - integration_tests
+            ### - integration_ssr_tests
             - integration_ng6_tests
             - integration_ng8_tests
             - integration_test_types
@@ -374,8 +374,8 @@ workflows:
               ignore: /.*/
           requires:
             - unit_tests
-            - integration_tests
-            - integration_ssr_tests
+            ### - integration_tests
+            ### - integration_ssr_tests
             - integration_ng6_tests
             - integration_ng8_tests
             - integration_test_types
@@ -390,8 +390,8 @@ workflows:
               only: /^v.*/
           requires:
             - unit_tests
-            - integration_tests
-            - integration_ssr_tests
+            ### - integration_tests
+            ### - integration_ssr_tests
             - integration_ng6_tests
             - integration_ng8_tests
             - integration_test_types
