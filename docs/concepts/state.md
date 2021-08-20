@@ -206,7 +206,7 @@ public addValue(ctx: StateContext, { payload }: MyAction) {
 }
 ```
 
-You may ask _"How is this valuable?"_. Well, it opens the door for refactoring of your immutable updates into `state operators` so that your code can become more declarative as opposed to imperative. We will be adding some standard `state operators` soon that you will be able to use to express your updates to the state. Follow the issue here for updates: https://github.com/ngxs/store/issues/545
+You may ask _"How is this valuable?"_. Well, it opens the door for refactoring of your immutable updates into `state operators` so that your code can become more declarative as opposed to imperative. You can find more details in our [state operators](https://www.ngxs.io/advanced/operators) documentation.
 
 As another example you could use a library like [immer](https://github.com/mweststrate/immer) that can
 handle the immutability updates for you and provide a different way of expressing your immutable update
