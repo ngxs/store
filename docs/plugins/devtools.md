@@ -1,6 +1,6 @@
 # Redux Devtools
 
-Plugin with integration with the [Redux Devtools extension](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd.
+Plugin with integration with the [Redux Devtools extension](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd).
 
 ![Devtools Screenshot](../assets/devtools.png)
 
