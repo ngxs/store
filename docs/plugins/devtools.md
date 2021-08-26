@@ -1,5 +1,7 @@
 # Redux Devtools
 
+Reference: [Redux Devtools](https://github.com/reduxjs/redux-devtools/tree/master/extension)
+
 Plugin with integration:
 
 - [Chrome - Redux Devtools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
