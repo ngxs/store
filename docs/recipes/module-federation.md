@@ -1,14 +1,14 @@
 # Module Federation
 
-Module Federation with `webpack 5` enables angular for a seamless Microfrontend experience. Using NGXS in this context 
-is as simple as in any other angular application. But there are some things to keep in mind.
+Module Federation with `webpack 5` enables angular for a seamless Microfrontend experience. Using NGXS in this context is as simple as in any other angular application. But there are some things to keep in mind.
+
+This guide is based on `@angular/core@12.2.5` witch uses `webpack@5.50.0` and [@angular-architects/module-federation@12.4.0](https://www.npmjs.com/package/@angular-architects/module-federation).
 
 ## Sharing Dependencies
 
-In module federation with `webpack 5`, it is possible to share dependencies between the Microfrontends. This is useful 
-for dependencies like the angular runtime, which does not need to be reloaded and executed for each Microfrontend. For this purpose, each Microfrontend specifies which dependencies it has and is willing to share with others.
+In module federation with `webpack 5`, it is possible to share dependencies between the Microfrontends. This is useful for dependencies like the angular runtime, which does not need to be reloaded and executed for each Microfrontend. For this purpose, each Microfrontend specifies which dependencies it has and is willing to share with others.
 
-For this purpose, the dependencies are specified in the shared object in `webpack.config.js`. This also applies to NGXS libraries. It is important that `singleton: true` is specified. It is recommended to share `rxjs` as well
+For this purpose, the dependencies are specified in the shared object in `webpack.config.js`. This also applies to NGXS libraries. It is important that `singleton: true` is specified. It is recommended to share `rxjs` as well.
 
 > Module federation should work a LOT better with the @dev tagged version of NGXS. But it is also possible to use the latest stable version (3.7.2).
 
