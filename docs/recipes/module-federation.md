@@ -65,3 +65,7 @@ The standalone mode can be used for end-to-end tests. It is also a good idea to 
 If the application should not run in standalone mode, this is not needed.
 
 In the article [Using Module Federation with (Nx) Monorepos and Angular](https://www.angulararchitects.io/en/aktuelles/using-module-federation-with-monorepos-and-angular/) by Manfred Steyer, from the module federation article series, it goes a bit deeper into the details of sharing libraries.
+
+## Resources
+
+You can find an example application [here](https://github.com/adrian-goe/bachelorarbeit-demo).
