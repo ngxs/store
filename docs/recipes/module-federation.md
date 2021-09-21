@@ -2,7 +2,7 @@
 
 Module Federation with `webpack 5` enables angular for a seamless Microfrontend experience. Using NGXS in this context is as simple as in any other angular application. But there are some things to keep in mind.
 
-This guide is based on `@angular/core@12.2.5` witch uses `webpack@5.50.0` and [@angular-architects/module-federation@12.4.0](https://www.npmjs.com/package/@angular-architects/module-federation).
+This guide is based on `@angular/core@12.2.5` which uses `webpack@5.50.0` and [@angular-architects/module-federation@12.4.0](https://www.npmjs.com/package/@angular-architects/module-federation).
 
 ## Sharing Dependencies
 
