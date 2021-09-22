@@ -33,6 +33,7 @@
   - [Debouncing Actions](recipes/debouncing-actions.md)
   - [Dynamic Plugins](recipes/dynamic-plugins.md)
   - [Immutability Helpers](recipes/immutability-helpers.md)
+  - [Module Federation](recipes/module-federation.md)
   - [Style Guide](recipes/style-guide.md)
   - [Unit Testing](recipes/unit-testing.md)
   - [RxAngular Integration](recipes/intregration-with-rxangular.md)
