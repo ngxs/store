@@ -210,7 +210,7 @@ You may ask _"How is this valuable?"_. Well, it opens the door for refactoring o
 
 As another example you could use a library like [immer](https://github.com/mweststrate/immer) that can
 handle the immutability updates for you and provide a different way of expressing your immutable update
-through direct mutation of a draft object. We can use this external library because it supports the same signature as out `state operators` through their curried `produce` function. Here is the example from above expressed in this way:
+through direct mutation of a draft object. We can use this external library because it supports the same signature as our `state operators` through their curried `produce` function. Here is the example from above expressed in this way:
 
 ```ts
 import produce from 'immer';
