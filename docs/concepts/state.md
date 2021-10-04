@@ -403,5 +403,5 @@ export class ZooState {
 }
 ```
 
-Notice I returned the dispatch function, this goes back to our example above with async operations
+Notice we returned the dispatch function, this goes back to our example above with async operations
 and the dispatcher subscribing to the result. It is not required though.
