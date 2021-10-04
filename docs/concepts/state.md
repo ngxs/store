@@ -303,7 +303,7 @@ In this example, we reach out to the animal service and call `feed` and then
 call `setState` with the result. Remember that we can guarantee that the state
 is fresh since the state property is a getter back to the current state slice.
 
-You might notice I returned the Observable and just did a `tap`. If we return
+You might notice we returned the Observable and just did a `tap`. If we return
 the Observable, the framework will automatically subscribe to it for us, so
 we don't have to deal with that ourselves. Additionally, if we want the stores
 `dispatch` function to be able to complete only once the operation is completed,
