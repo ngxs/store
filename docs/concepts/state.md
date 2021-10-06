@@ -46,7 +46,7 @@ export class ZooState {
 
 ## (Optional) Defining State Token
 
-Optionally, you can choose to replace the `name` of your state can be made with a state token:
+Optionally, you can choose to replace the `name` of your state with a state token:
 
 ```ts
 const ZOO_STATE_TOKEN = new StateToken<ZooStateModel>('zoo');
@@ -210,7 +210,7 @@ You may ask _"How is this valuable?"_. Well, it opens the door for refactoring o
 
 As another example you could use a library like [immer](https://github.com/mweststrate/immer) that can
 handle the immutability updates for you and provide a different way of expressing your immutable update
-through direct mutation of a draft object. We can use this external library because it supports the same signature as out `state operators` through their curried `produce` function. Here is the example from above expressed in this way:
+through direct mutation of a draft object. We can use this external library because it supports the same signature as our `state operators` through their curried `produce` function. Here is the example from above expressed in this way:
 
 ```ts
 import produce from 'immer';
@@ -225,7 +225,7 @@ feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
 ```
 
 Here the `produce` function from the `immer` library is called with just a single parameter
-so that it returns its' [curried form](https://github.com/mweststrate/immer#currying)
+so that it returns its [curried form](https://github.com/mweststrate/immer#currying)
 that will take a value and return a new value with all the expressed changes applied.
 
 This approach can also allow for the creation of well named helper functions that can be shared
@@ -303,7 +303,7 @@ In this example, we reach out to the animal service and call `feed` and then
 call `setState` with the result. Remember that we can guarantee that the state
 is fresh since the state property is a getter back to the current state slice.
 
-You might notice I returned the Observable and just did a `tap`. If we return
+You might notice we returned the Observable and just did a `tap`. If we return
 the Observable, the framework will automatically subscribe to it for us, so
 we don't have to deal with that ourselves. Additionally, if we want the stores
 `dispatch` function to be able to complete only once the operation is completed,
@@ -403,5 +403,5 @@ export class ZooState {
 }
 ```
 
-Notice I returned the dispatch function, this goes back to our example above with async operations
+Notice we returned the dispatch function, this goes back to our example above with async operations
 and the dispatcher subscribing to the result. It is not required though.
