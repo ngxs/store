@@ -28,7 +28,8 @@ assignees: ''
 Please delete this note once you have read it.
 
 <!-- Please create and share minimal reproduction -->
-<!-- ✍️--> https://stackblitz.com/...
+<!-- This can be used as a starting point: https://stackblitz.com/edit/ngxs-repro -->
+<!-- Add a link to your repro ✍️--> https://stackblitz.com/...
 
 ## 🔥 Exception or Error
 <pre><code>

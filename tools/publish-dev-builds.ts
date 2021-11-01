@@ -24,4 +24,7 @@ async function main() {
   await publishAllPackagesToNpm(newVersion, 'dev');
 }
 
-main();
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});

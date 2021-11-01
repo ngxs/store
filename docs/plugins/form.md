@@ -173,7 +173,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
       <input type="text" formControlName="novelName" />
       <div
         formArrayName="authors"
-        *ngFor="let author of newNovelForm.get('authors').controls; index as index"
+        *ngFor="let author of newNovelForm.get('authors').value; index as index"
       >
         <div [formGroupName]="index">
           <input formControlName="name" />
