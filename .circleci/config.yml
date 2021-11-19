@@ -222,6 +222,14 @@ jobs:
           name: Run integration tests for ng12 (Ivy) application
           command: yarn integration:ng12:ivy
 
+  integration_ng13_ivy_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng13 (Ivy) application
+          command: yarn integration:ng13:ivy
+
   integration_test_types:
     <<: *job_defaults
     steps:
@@ -343,6 +351,10 @@ workflows:
             - build
 
       - integration_ng12_ivy_tests:
+          requires:
+            - build
+
+      - integration_ng13_ivy_tests:
           requires:
             - build
 
