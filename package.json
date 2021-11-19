@@ -115,6 +115,7 @@
     "integration:ng11:ivy:off": "cd integrations/hello-world-ng11-ivy-off && yarn test:integration",
     "integration:ng11:ivy": "cd integrations/hello-world-ng11-ivy && yarn test:integration",
     "integration:ng12:ivy": "cd integrations/hello-world-ng12-ivy && yarn test:integration",
+    "integration:ng13:ivy": "cd integrations/hello-world-ng13-ivy && yarn test:integration",
     "// - INTEGRATION END -": "----------"
   },
   "private": true,
