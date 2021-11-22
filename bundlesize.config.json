@@ -4,14 +4,14 @@
       "path": "./@ngxs/store/fesm2015/ngxs-store-internals.js",
       "package": "@ngxs/store/internals",
       "target": "es2015",
-      "maxSize": "11.75KB",
+      "maxSize": "13.1KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store-internals.js",
       "package": "@ngxs/store/internals",
       "target": "es5",
-      "maxSize": "12.70KB",
+      "maxSize": "14.1KB",
       "compression": "none"
     },
     {
@@ -32,14 +32,14 @@
       "path": "./@ngxs/store/fesm2015/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es2015",
-      "maxSize": "113.00KB",
+      "maxSize": "113.65KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es5",
-      "maxSize": "131.85KB",
+      "maxSize": "132.55KB",
       "compression": "none"
     },
     {
