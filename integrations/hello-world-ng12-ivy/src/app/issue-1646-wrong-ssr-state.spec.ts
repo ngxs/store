@@ -17,7 +17,7 @@ import { freshPlatform } from '@ngxs/store/internals/testing';
 import { Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-describe.skip('Select decorator returning state from the wrong store during SSR (https://github.com/ngxs/store/issues/1646)', () => {
+describe('Select decorator returning state from the wrong store during SSR (https://github.com/ngxs/store/issues/1646)', () => {
   if (!ɵivyEnabled) {
     throw new Error('This test requires Ivy to be enabled.');
   }
