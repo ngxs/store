@@ -21,7 +21,6 @@ $ npm install @ngxs/store@dev
 - Performance: Router Plugin - Tree-shake `isAngularInTestMode()` [#1738](https://github.com/ngxs/store/pull/1738)
 - Performance: Tree-shake `isAngularInTestMode()` [#1739](https://github.com/ngxs/store/pull/1739)
 - Performance: Storage Plugin - Tree-shake `console.*` calls and expand error messages [#1727](https://github.com/ngxs/store/pull/1727)
-- CI: Add angular 13 ivy integration test [#1798](https://github.com/ngxs/store/pull/1798)
 
 # 3.7.3 2021-12-02
 
