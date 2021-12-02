@@ -8,6 +8,11 @@ $ npm install @ngxs/store@dev
 
 - ...
 
+# 3.7.3 2021-12-02
+
+- Chore: Add official support for Angular 13 [#1798](https://github.com/ngxs/store/pull/1798)
+- CI: Add angular 13 ivy integration test [#1798](https://github.com/ngxs/store/pull/1798)
+
 # 3.7.2 2021-05-18
 
 - Chore: Add official support for Angular 12 [#1752](https://github.com/ngxs/store/pull/1752)
