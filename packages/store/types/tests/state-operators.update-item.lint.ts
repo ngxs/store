@@ -25,8 +25,6 @@ describe('[TEST]: the updateItem State Operator', () => {
     patch<Original>({ nums: updateItem<number>(0, 123) })(original); // $ExpectType Original
     patch<Original>({ nums: updateItem(0, 123) })(original); // $ExpectType Original
     patch<Original>({ nums: updateItem(0, 0) })(original); // $ExpectType Original
-    patch<Original>({ nums: updateItem(0, null!) })(original); // $ExpectType Original
-    patch<Original>({ nums: updateItem(0, undefined!) })(original); // $ExpectType Original
 
     patch<Original>({ strs: updateItem<string>(0, '123') })(original); // $ExpectType Original
     patch<Original>({ strs: updateItem(0, '123') })(original); // $ExpectType Original
@@ -34,8 +32,6 @@ describe('[TEST]: the updateItem State Operator', () => {
     patch<Original>({ strs: updateItem<string>(0, '123') })(original); // $ExpectType Original
     patch<Original>({ strs: updateItem(0, '123') })(original); // $ExpectType Original
     patch<Original>({ strs: updateItem(0, '') })(original); // $ExpectType Original
-    patch<Original>({ strs: updateItem(0, null!) })(original); // $ExpectType Original
-    patch<Original>({ strs: updateItem(0, undefined!) })(original); // $ExpectType Original
 
     patch<Original>({ bools: updateItem<boolean>(0, true) })(original); // $ExpectType Original
     patch<Original>({ bools: updateItem<boolean>(0, true) })(original); // $ExpectType Original
@@ -43,14 +39,6 @@ describe('[TEST]: the updateItem State Operator', () => {
     patch<Original>({ bools: updateItem(0, true) })(original); // $ExpectType Original
     patch<Original>({ bools: updateItem(0, false) })(original); // $ExpectType Original
     patch<Original>({ bools: updateItem(0, false) })(original); // $ExpectType Original
-    patch<Original>({ bools: updateItem(0, null!) })(original); // $ExpectType Original
-    patch<Original>({ bools: updateItem(0, undefined!) })(original); // $ExpectType Original
-
-    patch<Original>({ arrs: updateItem(0, null!) })(original); // $ExpectType Original
-    patch<Original>({ arrs: updateItem(0, undefined!) })(original); // $ExpectType Original
-
-    patch<Original>({ objs: updateItem(0, null!) })(original); // $ExpectType Original
-    patch<Original>({ objs: updateItem(0, undefined!) })(original); // $ExpectType Original
   });
 
   it('should have the following valid complex usage', () => {

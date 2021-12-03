@@ -3,16 +3,14 @@ import { isStateOperator, NoInfer } from './utils';
 
 export type PatchSpec<T> = { [P in keyof T]?: T[P] | StateOperator<NonNullable<T[P]>> };
 
-type PatchValues<T> = {
-  readonly [P in keyof T]?: T[P] extends (...args: any[]) => infer R ? R : T[P];
-};
-
-export function patch<T>(patchObject: NoInfer<PatchSpec<T>>): StateOperator<NonNullable<T>> {
-  return (function patchStateOperator(existing: Readonly<PatchValues<T>>): NonNullable<T> {
+export function patch<T extends Record<string, any>>(
+  patchObject: PatchSpec<NoInfer<T>>
+): StateOperator<T> {
+  return (function patchStateOperator(existing: Readonly<T>): T {
     let clone = null;
     for (const k in patchObject) {
       const newValue = patchObject[k];
-      const existingPropValue = existing[k as Extract<keyof T, string>];
+      const existingPropValue = existing[k];
       const newPropValue = isStateOperator(newValue)
         ? newValue(<any>existingPropValue)
         : newValue;

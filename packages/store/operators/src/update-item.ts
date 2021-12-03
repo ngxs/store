@@ -19,8 +19,8 @@ import { Predicate } from './internals';
 export function updateItem<T>(
   selector: number | NoInfer<Predicate<T>>,
   operatorOrValue: NoInfer<T> | NoInfer<StateOperator<T>>
-): StateOperator<RepairType<T>[]> {
-  return function updateItemOperator(existing: Readonly<RepairType<T>[]>): RepairType<T>[] {
+): StateOperator<T[]> {
+  return function updateItemOperator(existing: Readonly<T[]>): T[] {
     let index = -1;
 
     if (isPredicate(selector)) {
@@ -30,7 +30,7 @@ export function updateItem<T>(
     }
 
     if (invalidIndex(index)) {
-      return existing as RepairType<T>[];
+      return existing as T[];
     }
 
     let value: T = null!;
@@ -46,11 +46,11 @@ export function updateItem<T>(
     // If the value hasn't been mutated
     // then we just return `existing` array
     if (value === existing[index]) {
-      return existing as RepairType<T>[];
+      return existing as T[];
     }
 
     const clone = existing.slice();
-    clone[index] = value as RepairType<T>;
+    clone[index] = value as T;
     return clone;
   };
 }
