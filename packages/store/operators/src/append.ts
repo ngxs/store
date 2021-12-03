@@ -1,10 +1,10 @@
 import { StateOperator } from '@ngxs/store';
-import { RepairType } from './utils';
+import { RepairType, NoInfer } from './utils';
 
 /**
  * @param items - Specific items to append to the end of an array
  */
-export function append<T>(items: T[]): StateOperator<RepairType<T>[]> {
+export function append<T>(items: NoInfer<T>[]): StateOperator<RepairType<T>[]> {
   return function appendOperator(existing: Readonly<RepairType<T>[]>): RepairType<T>[] {
     // If `items` is `undefined` or `null` or `[]` but `existing` is provided
     // just return `existing`
