@@ -225,7 +225,7 @@ feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
 ```
 
 Here the `produce` function from the `immer` library is called with just a single parameter
-so that it returns its [curried form](https://github.com/mweststrate/immer#currying)
+so that it returns its [curried form](https://immerjs.github.io/immer/curried-produce)
 that will take a value and return a new value with all the expressed changes applied.
 
 This approach can also allow for the creation of well named helper functions that can be shared
