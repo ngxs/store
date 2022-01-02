@@ -213,6 +213,10 @@ jobs:
       - run:
           name: Run integration tests for ng11 (Ivy) application
           command: yarn integration:ng11:ivy
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - app/integrations/hello-world-ng11-ivy/dist-integration
 
   integration_ng12_ivy_tests:
     <<: *job_defaults
@@ -221,6 +225,10 @@ jobs:
       - run:
           name: Run integration tests for ng12 (Ivy) application
           command: yarn integration:ng12:ivy
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - app/integrations/hello-world-ng12-ivy/dist-integration
 
   integration_ng13_ivy_tests:
     <<: *job_defaults
@@ -229,6 +237,10 @@ jobs:
       - run:
           name: Run integration tests for ng13 (Ivy) application
           command: yarn integration:ng13:ivy
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - app/integrations/hello-world-ng13-ivy/dist-integration
 
   integration_test_types:
     <<: *job_defaults
