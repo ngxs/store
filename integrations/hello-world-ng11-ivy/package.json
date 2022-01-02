@@ -10,7 +10,7 @@
     "build:ssr:prod": "yarn build:prod && yarn ng run hello-world-ng11-ivy:server:production",
     "test": "ng test",
     "test:ci": "ng test --run-in-band --silent",
-    "test:integration": "yarn install:ivy && yarn test:ci && yarn build:ssr:prod && yarn bundlesize && yarn e2e:ci && yarn e2e:ci:ssr",
+    "test:integration": "yarn install:ivy && yarn test:ci && yarn build:ssr:prod && yarn e2e:ci && yarn e2e:ci:ssr",
     "preinstall": "yarn --cwd ../../ cpx -v -C \"@ngxs/**/*\" integrations/hello-world-ng11-ivy/node_modules/@ngxs",
     "install:ivy": "yarn --frozen-lockfile --non-interactive --no-progress",
     "postinstall": "ngcc",
@@ -21,8 +21,7 @@
     "serve:integration:ssr": "node dist-integration-server/main",
     "e2e": "start-test serve:integration:static 4200 cy:open",
     "e2e:ci": "start-test serve:integration:static 4200 cy:run",
-    "e2e:ci:ssr": "start-test serve:integration:ssr 4200 cy:run:ssr",
-    "bundlesize": "bundlesize --config bundlesize.config.json"
+    "e2e:ci:ssr": "start-test serve:integration:ssr 4200 cy:run:ssr"
   },
   "private": true,
   "dependencies": {
@@ -56,7 +55,6 @@
     "@types/jest": "26.0.15",
     "@types/node": "^12.11.1",
     "angular-http-server": "file:../../node_modules/angular-http-server",
-    "bundlesize": "file:../../node_modules/bundlesize",
     "cypress": "file:../../node_modules/cypress",
     "jest": "26.6.3",
     "start-server-and-test": "file:../../node_modules/start-server-and-test",
