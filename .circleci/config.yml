@@ -365,6 +365,9 @@ workflows:
       - bundlesize:
           requires:
             - build
+            - integration_ng11_ivy_tests
+            - integration_ng12_ivy_tests
+            - integration_ng13_ivy_tests
 
       - upload_coverage:
           requires:
