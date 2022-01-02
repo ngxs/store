@@ -18,7 +18,7 @@ export function insertItem<T>(
 
     // Property may be dynamic and might not existed before
     if (!Array.isArray(existing)) {
-      return [value as RepairType<T>];
+      return [(value as unknown) as RepairType<T>];
     }
 
     const clone = existing.slice();
@@ -32,7 +32,7 @@ export function insertItem<T>(
       index = beforePosition!;
     }
 
-    clone.splice(index, 0, value as RepairType<T>);
+    clone.splice(index, 0, (value as unknown) as RepairType<T>);
     return clone;
   };
 }

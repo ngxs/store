@@ -8,7 +8,7 @@ type PatchValues<T> = {
 };
 
 export function patch<T>(patchObject: NoInfer<PatchSpec<T>>): StateOperator<NonNullable<T>> {
-  return function patchStateOperator(existing: Readonly<PatchValues<T>>): NonNullable<T> {
+  return (function patchStateOperator(existing: Readonly<PatchValues<T>>): NonNullable<T> {
     let clone = null;
     for (const k in patchObject) {
       const newValue = patchObject[k];
@@ -24,5 +24,5 @@ export function patch<T>(patchObject: NoInfer<PatchSpec<T>>): StateOperator<NonN
       }
     }
     return clone || existing;
-  };
+  } as unknown) as StateOperator<NonNullable<T>>;
 }

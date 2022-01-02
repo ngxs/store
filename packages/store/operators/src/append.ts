@@ -14,11 +14,11 @@ export function append<T>(items: NoInfer<T>[]): StateOperator<RepairType<T>[]> {
     }
 
     if (Array.isArray(existing)) {
-      return existing.concat(items as RepairType<T>[]);
+      return existing.concat((items as unknown) as RepairType<T>[]);
     }
 
     // For example if some property is added dynamically
     // and didn't exist before thus it's not `ArrayLike`
-    return items as RepairType<T>[];
+    return (items as unknown) as RepairType<T>[];
   };
 }
