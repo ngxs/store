@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@Select() decorated property is used within a constructor (https://github.com/ngxs/store/issues/1801) should be possible to use @Select() decorated properties within constructors 1`] = `
+Array [
+  "ngModule:constructor:countries$",
+  "ngModule:constructor:lastCountry$",
+  "rootProvider:constructor:countries$",
+  "rootProvider:constructor:lastCountry$",
+  "componentProvider:constructor:countries$",
+  "componentProvider:constructor:lastCountry$",
+  "component:constructor:countries$",
+  "component:constructor:lastCountry$",
+  "directive:constructor:countries$",
+  "directive:constructor:lastCountry$",
+  "pipe:constructor:countries$",
+  "pipe:constructor:lastCountry$",
+  "component:ngOnInit:countries$",
+  "component:ngOnInit:lastCountry$",
+  "directive:ngOnInit:countries$",
+  "directive:ngOnInit:lastCountry$",
+]
+`;
