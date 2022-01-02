@@ -40,19 +40,20 @@ export function Select<T>(rawSelector?: T, ...paths: string[]): PropertyDecorato
           }
           // The `localInject` will be tree-shaken away in apps that
           // still use the View Engine.
-          else if (ɵivyEnabled) {
-            return (this[selectorId] = injectorNotifier$!.pipe(
+          if (ɵivyEnabled) {
+            this[selectorId] = injectorNotifier$!.pipe(
               mergeMap(() => {
                 const store = localInject(this, Store);
                 const config = localInject(this, NgxsConfig);
                 selector = selector || createSelectorFn(config, name, rawSelector, paths);
                 return createSelectObservable(selector, store);
               })
-            ));
+            );
           } else {
             selector = selector || createSelectorFn(null, name, rawSelector, paths);
-            return (this[selectorId] = createSelectObservable(selector, null));
+            this[selectorId] = createSelectObservable(selector, null);
           }
+          return this[selectorId];
         }
       }
     });
