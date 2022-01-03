@@ -5,7 +5,7 @@
   "license": "MIT",
   "sideEffects": true,
   "peerDependencies": {
-    "@angular/core": ">=6.1.0 <13.0.0"
+    "@angular/core": ">=6.1.0 <14.0.0"
   },
   "ngPackage": {
     "lib": {

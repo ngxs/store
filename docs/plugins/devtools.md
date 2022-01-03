@@ -1,6 +1,11 @@
 # Redux Devtools
 
-Plugin with integration with the [Redux Devtools extension](http://extension.remotedev.io/).
+Reference: [Redux Devtools](https://github.com/reduxjs/redux-devtools/tree/master/extension)
+
+Plugin with integration:
+
+- [Chrome - Redux Devtools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
+- [Firefox - Redux Devtools](https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/)
 
 ![Devtools Screenshot](../assets/devtools.png)
 

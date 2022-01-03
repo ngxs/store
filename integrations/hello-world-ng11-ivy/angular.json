@@ -126,5 +126,8 @@
       }
     }
   },
-  "defaultProject": "hello-world-ng11-ivy"
+  "defaultProject": "hello-world-ng11-ivy",
+  "cli": {
+    "analytics": false
+  }
 }

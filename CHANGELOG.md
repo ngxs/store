@@ -7,7 +7,8 @@ $ npm install @ngxs/store@dev
 ```
 
 - Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
-- Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740)
+- Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740) and [#1804](https://github.com/ngxs/store/pull/1804)
+- Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
 - Fix: Handle mixed async scenarios for action handlers [#1762](https://github.com/ngxs/store/pull/1762)
 - Fix: An action with cancelUncompleted enabled should unsubscribe before the next action handler is called [#1763](https://github.com/ngxs/store/pull/1763)
 - Fix: Do not run `Promise.then` within synchronous tests when decorating factory [#1753](https://github.com/ngxs/store/pull/1753)
@@ -21,6 +22,12 @@ $ npm install @ngxs/store@dev
 - Performance: Router Plugin - Tree-shake `isAngularInTestMode()` [#1738](https://github.com/ngxs/store/pull/1738)
 - Performance: Tree-shake `isAngularInTestMode()` [#1739](https://github.com/ngxs/store/pull/1739)
 - Performance: Storage Plugin - Tree-shake `console.*` calls and expand error messages [#1727](https://github.com/ngxs/store/pull/1727)
+- CI: Bundlesize checks should run reliably [#1812](https://github.com/ngxs/store/pull/1812)
+
+# 3.7.3 2021-12-02
+
+- Chore: Add official support for Angular 13 [#1798](https://github.com/ngxs/store/pull/1798)
+- CI: Add angular 13 ivy integration test [#1798](https://github.com/ngxs/store/pull/1798)
 
 # 3.7.2 2021-05-18
 
