@@ -32,14 +32,14 @@
       "path": "./@ngxs/store/fesm2015/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es2015",
-      "maxSize": "113.70KB",
+      "maxSize": "115.50KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es5",
-      "maxSize": "132.60KB",
+      "maxSize": "134.60KB",
       "compression": "none"
     },
     {
