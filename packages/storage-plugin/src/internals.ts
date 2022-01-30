@@ -70,10 +70,52 @@ export function engineFactory(
   }
 
   if (options.storage === StorageOption.LocalStorage) {
-    return localStorage;
+    try {
+      const verifyKey = `${DEFAULT_STATE_KEY}-VERIFY`;
+      localStorage.setItem(verifyKey, '1');
+      localStorage.removeItem(verifyKey);
+      return localStorage;
+    } catch (e) {
+      console.warn('LocalStorage is not available, using a fallback implementation!', e);
+      return fallbackStorage();
+    }
   } else if (options.storage === StorageOption.SessionStorage) {
-    return sessionStorage;
+    try {
+      const verifyKey = `${DEFAULT_STATE_KEY}-VERIFY`;
+      sessionStorage.setItem(verifyKey, '1');
+      sessionStorage.removeItem(verifyKey);
+      return sessionStorage;
+    } catch (e) {
+      console.warn('SessionStorage is not available, using a fallback implementation!', e);
+      return fallbackStorage();
+    }
   }
 
   return null;
+}
+
+export function fallbackStorage(): Storage {
+  let storage: { [x: string]: any } = {};
+
+  return {
+    setItem: (key, value) => {
+      storage[key] = value || '';
+    },
+    getItem: key => {
+      return key in storage ? storage[key] : null;
+    },
+    removeItem: key => {
+      delete storage[key];
+    },
+    get length() {
+      return Object.keys(storage).length;
+    },
+    key: i => {
+      const keys = Object.keys(storage);
+      return keys[i] || null;
+    },
+    clear: () => {
+      storage = {};
+    }
+  };
 }

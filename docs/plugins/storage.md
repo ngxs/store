@@ -248,3 +248,10 @@ In the migration strategy, we define:
 - `key`: The key for the item to migrate. If not specified, it takes the entire storage state.
 
 Note: Its important to specify the strategies in the order of which they should progress.
+
+### Fallback storage
+
+When default storage implementation is not available, we will default to a fallback implementation that will persist the state in memory until reload.
+This should avoid breaking apps upon loadingr or the need to create a custom storage engine to support this use case.
+
+`Block third-party cookies and site data` from chromium browsers and related settings from modern browsers will disable localstorage implementation. Some browsers do this in their incognito mode by default.
