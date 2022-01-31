@@ -30,6 +30,9 @@ export class NgxsConfig {
    * Run in development mode. This will add additional debugging features:
    * - Object.freeze on the state and actions to guarantee immutability
    * (default: false)
+   *
+   * @deprecated This property is no longer necessary when the Ivy compiler is used.
+   * We'll determine the development mode through the `ngDevMode`. It's still essential with View Engine.
    */
   developmentMode: boolean;
   compatibility: {
