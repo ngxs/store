@@ -155,7 +155,7 @@
     {
       "path": "./integrations/hello-world-ng13-ivy/dist-integration/main.*.js",
       "target": "es2015",
-      "maxSize": "237.75 kB",
+      "maxSize": "237.76 kB",
       "compression": "none"
     }
   ]
