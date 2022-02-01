@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 
 import { NgxsModule, State, Store, Action, StateContext } from '@ngxs/store';
 import { NgxsStoragePluginModule } from '..';
+import { DEFAULT_STATE_KEY, fallbackStorage } from '../src/internals';
 
 describe('NgxsStoragePlugin-StorageFallback', () => {
   class Increment {
@@ -79,6 +80,40 @@ describe('NgxsStoragePlugin-StorageFallback', () => {
     // Assert
     expect(spyWarn).toHaveBeenCalledTimes(1);
     expect(state.count).toBe(3);
+  });
+
+  it('should have basic functionality on the fallback storage', () => {
+    // Arrange
+    const storage = fallbackStorage();
+
+    // Act
+    storage.setItem(DEFAULT_STATE_KEY, '1');
+    storage.setItem(DEFAULT_STATE_KEY, '11');
+    storage.setItem(`${DEFAULT_STATE_KEY}1`, '30');
+    storage.setItem(`${DEFAULT_STATE_KEY}2`, '2');
+    storage.removeItem(`${DEFAULT_STATE_KEY}1`);
+
+    // Assert
+    expect(storage.length).toBe(2);
+    expect(storage.getItem(DEFAULT_STATE_KEY)).toBe('11');
+    expect(storage.getItem(`${DEFAULT_STATE_KEY}2`)).toBe('2');
+    expect(storage.key(0)).toBe(DEFAULT_STATE_KEY);
+  });
+
+  it('should not have any data after clear', () => {
+    // Arrange
+    const storage = fallbackStorage();
+    storage.setItem(DEFAULT_STATE_KEY, '1');
+    storage.setItem(DEFAULT_STATE_KEY, '11');
+    storage.setItem(`${DEFAULT_STATE_KEY}1`, '30');
+    storage.setItem(`${DEFAULT_STATE_KEY}2`, '2');
+    storage.removeItem(`${DEFAULT_STATE_KEY}1`);
+
+    // Act
+    storage.clear();
+
+    // Assert
+    expect(storage.length).toBe(0);
   });
 });
 
