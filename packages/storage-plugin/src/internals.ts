@@ -3,6 +3,7 @@ import { StateClass } from '@ngxs/store/internals';
 import { StateToken } from '@ngxs/store';
 
 import { StorageOption, StorageEngine, NgxsStoragePluginOptions } from './symbols';
+declare const ngDevMode: boolean;
 
 /**
  * If the `key` option is not provided then the below constant
