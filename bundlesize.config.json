@@ -116,14 +116,14 @@
       "path": "./@ngxs/storage-plugin/fesm2015/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
       "target": "es2015",
-      "maxSize": "12.70KB",
+      "maxSize": "14.44KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/storage-plugin/fesm5/ngxs-storage-plugin.js",
       "package": "@ngxs/storage-plugin",
       "target": "es5",
-      "maxSize": "14.30KB",
+      "maxSize": "16.11KB",
       "compression": "none"
     },
     {
@@ -143,19 +143,19 @@
     {
       "path": "./integrations/hello-world-ng11-ivy/dist-integration/main.*.js",
       "target": "es2015",
-      "maxSize": "251.30 kB",
+      "maxSize": "251.87 kB",
       "compression": "none"
     },
     {
       "path": "./integrations/hello-world-ng12-ivy/dist-integration/main.*.js",
       "target": "es2015",
-      "maxSize": "236.90 kB",
+      "maxSize": "237.47 kB",
       "compression": "none"
     },
     {
       "path": "./integrations/hello-world-ng13-ivy/dist-integration/main.*.js",
       "target": "es2015",
-      "maxSize": "237.20 kB",
+      "maxSize": "237.75 kB",
       "compression": "none"
     }
   ]
