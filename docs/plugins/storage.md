@@ -252,6 +252,6 @@ Note: Its important to specify the strategies in the order of which they should 
 ### Fallback storage
 
 When default storage implementation is not available, we will default to a fallback implementation that will persist the state in memory until reload.
-This should avoid breaking apps upon loadingr or the need to create a custom storage engine to support this use case.
+This should avoid breaking apps upon loading or creating a custom storage engine to support this use case.
 
-`Block third-party cookies and site data` from chromium browsers and related settings from modern browsers will disable localstorage implementation. Some browsers do this in their incognito mode by default.
+`Block third-party cookies and site data` from chromium browsers, and related settings from modern browsers will disable local storage implementation. Some browsers do this in their incognito mode by default.

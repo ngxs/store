@@ -69,29 +69,35 @@ export function engineFactory(
     return null;
   }
 
-  if (options.storage === StorageOption.LocalStorage) {
-    try {
-      const verifyKey = `${DEFAULT_STATE_KEY}-VERIFY`;
-      localStorage.setItem(verifyKey, '1');
-      localStorage.removeItem(verifyKey);
-      return localStorage;
-    } catch (e) {
-      console.warn('LocalStorage is not available, using a fallback implementation!', e);
-      return fallbackStorage();
-    }
-  } else if (options.storage === StorageOption.SessionStorage) {
-    try {
-      const verifyKey = `${DEFAULT_STATE_KEY}-VERIFY`;
-      sessionStorage.setItem(verifyKey, '1');
-      sessionStorage.removeItem(verifyKey);
-      return sessionStorage;
-    } catch (e) {
-      console.warn('SessionStorage is not available, using a fallback implementation!', e);
-      return fallbackStorage();
-    }
+  const storage =
+    options.storage === StorageOption.LocalStorage
+      ? localStorage
+      : options.storage === StorageOption.SessionStorage
+      ? sessionStorage
+      : null;
+
+  if (storage === null) {
+    return null;
   }
 
-  return null;
+  try {
+    const verifyKey = `${DEFAULT_STATE_KEY}-VERIFY`;
+    storage.setItem(verifyKey, '1');
+    storage.removeItem(verifyKey);
+    return storage;
+  } catch (error) {
+    // Caretaker note: we have still left the `typeof` condition in order to avoid
+    // creating a breaking change for projects that still use the View Engine.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      console.warn(
+        `${
+          options.storage === StorageOption.LocalStorage ? 'localStorage' : 'sessionStorage'
+        } is not available, using a fallback implementation!`,
+        error
+      );
+    }
+    return fallbackStorage();
+  }
 }
 
 export function fallbackStorage(): Storage {
