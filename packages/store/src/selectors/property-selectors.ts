@@ -13,7 +13,7 @@ export function createPropertySelectors<TModel>(
   return new Proxy<PropertySelectors<TModel>>(
     ({} as unknown) as PropertySelectors<TModel>,
     {
-      get(target: any, prop: keyof TModel) {
+      get(_target: any, prop: keyof TModel) {
         const selector =
           cache[prop] ||
           (createSelector([state], (s: TModel) => s?.[prop]) as PropertySelectors<
