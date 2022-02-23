@@ -1,7 +1,14 @@
 // tslint:disable:unified-signatures
 import { Inject, Injectable, Optional, Type } from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
-import { catchError, distinctUntilChanged, map, take } from 'rxjs/operators';
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  publishReplay,
+  refCount,
+  take
+} from 'rxjs/operators';
 import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
@@ -15,6 +22,17 @@ import { StateFactory } from './internal/state-factory';
 
 @Injectable()
 export class Store {
+  /**
+   * This is a derived state stream that leaves NGXS execution strategy to emit state changes within the Angular zone,
+   * because state is being changed actually within the `<root>` zone, see `InternalDispatcher#dispatchSingle`.
+   * All selects would use this stream, and it would call leave only once for any state change across all active selectors.
+   */
+  private _selectableStateStream = this._stateStream.pipe(
+    leaveNgxs(this._internalExecutionStrategy),
+    publishReplay(1),
+    refCount()
+  );
+
   constructor(
     private _stateStream: StateStream,
     private _internalStateOperations: InternalStateOperations,
@@ -43,7 +61,7 @@ export class Store {
   select<T>(selector: StateToken<T>): Observable<T>;
   select(selector: any): Observable<any> {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
-    return this._stateStream.pipe(
+    return this._selectableStateStream.pipe(
       map(selectorFn),
       catchError((err: Error): Observable<never> | Observable<undefined> => {
         // if error is TypeError we swallow it to prevent usual errors with property access
@@ -87,7 +105,9 @@ export class Store {
    * Allow the user to subscribe to the root of the state
    */
   subscribe(fn?: (value: any) => void): Subscription {
-    return this._stateStream.pipe(leaveNgxs(this._internalExecutionStrategy)).subscribe(fn);
+    return this._selectableStateStream
+      .pipe(leaveNgxs(this._internalExecutionStrategy))
+      .subscribe(fn);
   }
 
   /**
