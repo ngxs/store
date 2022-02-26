@@ -105,7 +105,7 @@ module.exports = {
    * project's root directory to prevent it from accidentally ignoring all of
    * your files in different environments that may have different root directories.
    */
-  testPathIgnorePatterns: ['/node_modules/', '/types/', '/helpers/'],
+  testPathIgnorePatterns: ['/node_modules/', '/types/', '/helpers/', '__name__'],
 
   /**
    * Indicates whether each individual test should be reported during the run.
