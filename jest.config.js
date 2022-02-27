@@ -23,8 +23,8 @@ module.exports = {
   globals: {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json',
-      allowSyntheticDefaultImports: true,
-    },
+      allowSyntheticDefaultImports: true
+    }
   },
 
   /**
@@ -52,7 +52,7 @@ module.exports = {
     '!packages/**/*.spec.ts',
     '!packages/**/*.spec.ts',
     '!packages/**/helpers/**',
-    '!packages/**/types/**',
+    '!packages/**/types/**'
   ],
 
   /**
@@ -105,7 +105,7 @@ module.exports = {
    * project's root directory to prevent it from accidentally ignoring all of
    * your files in different environments that may have different root directories.
    */
-  testPathIgnorePatterns: ['/node_modules/', '/types/', '/helpers/'],
+  testPathIgnorePatterns: ['/node_modules/', '/types/', '/helpers/', '__name__'],
 
   transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
 
@@ -141,5 +141,5 @@ module.exports = {
    * Equivalent to calling jest.clearAllMocks() between each test.
    * This does not remove any mock implementation that may have been provided.
    */
-  clearMocks: true,
+  clearMocks: true
 };
