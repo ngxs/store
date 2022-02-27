@@ -26,7 +26,14 @@
           "options": {
             "tsConfig": ["tsconfig.lib.json", "tsconfig.spec.json"],
             "tslintConfig": "tslint.json",
-            "exclude": ["**/node_modules/**", "./integrations/**", "./packages/store/types/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "./integrations/**",
+              "./packages/store/types/**",
+              "./packages/store/schematics/templates/actions/__name__*",
+              "./packages/store/schematics/templates/store/__name__*",
+              "./packages/store/schematics/templates/state/__name__*"
+            ]
           }
         }
       }
