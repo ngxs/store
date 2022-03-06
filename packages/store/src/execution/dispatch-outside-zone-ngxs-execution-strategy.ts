@@ -4,7 +4,7 @@ import { isPlatformServer } from '@angular/common';
 import { NgxsExecutionStrategy } from './symbols';
 import { getZoneWarningMessage } from '../configs/messages.config';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionStrategy {
   constructor(private _ngZone: NgZone, @Inject(PLATFORM_ID) private _platformId: string) {
     // Caretaker note: we have still left the `typeof` condition in order to avoid

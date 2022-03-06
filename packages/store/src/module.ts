@@ -20,7 +20,7 @@ import {
   NgxsModuleOptions,
   ROOT_STATE_TOKEN
 } from './symbols';
-import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
+import { USER_PROVIDED_NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 import { StateFactory } from './internal/state-factory';
 import { StateContextFactory } from './internal/state-context-factory';
 import { Actions, InternalActions } from './actions-stream';
@@ -32,7 +32,6 @@ import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
 import { NgxsRootModule } from './modules/ngxs-root.module';
 import { NgxsFeatureModule } from './modules/ngxs-feature.module';
-import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { mergeDeep } from './utils/utils';
 
@@ -97,8 +96,8 @@ export class NgxsModule {
   ): Provider[] {
     return [
       {
-        provide: NGXS_EXECUTION_STRATEGY,
-        useClass: options.executionStrategy || DispatchOutsideZoneNgxsExecutionStrategy
+        provide: USER_PROVIDED_NGXS_EXECUTION_STRATEGY,
+        useValue: options.executionStrategy
       },
       {
         provide: ROOT_STATE_TOKEN,
