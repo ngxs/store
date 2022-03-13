@@ -2,8 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Injectable } from '@angular/core';
 
 import { NgxsModule, State, Store, Action, StateContext } from '@ngxs/store';
-import { NgxsStoragePluginModule } from '..';
-import { DEFAULT_STATE_KEY, fallbackStorage } from '../src/internals';
+import { NgxsStoragePluginModule, StorageOption } from '..';
 
 describe('NgxsStoragePlugin-StorageFallback', () => {
   class Increment {
@@ -16,7 +15,7 @@ describe('NgxsStoragePlugin-StorageFallback', () => {
 
   @State<CounterStateModel>({
     name: 'counter',
-    defaults: { count: 0 }
+    defaults: { count: 1 }
   })
   @Injectable()
   class CounterState {
@@ -29,108 +28,104 @@ describe('NgxsStoragePlugin-StorageFallback', () => {
   }
 
   beforeEach(() => {
-    disableLocalStorage();
-    disableSessionStorage();
+    disableStorage('localStorage');
+    disableStorage('sessionStorage');
   });
 
-  it('storage engine should work with fallback implementation, when localStorage is not available', () => {
-    // Arrange
-    disableLocalStorage();
-    const spyWarn = jest.spyOn(console, 'warn');
-    TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([CounterState]),
-        NgxsStoragePluginModule.forRoot({
-          key: CounterState
-        })
-      ]
-    });
+  it('make sure we keep the default state value when localStorage is not available', () => {
+    const storage = window.localStorage;
+    try {
+      // Arrange
+      // disableStorage('localStorage');
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState]),
+          NgxsStoragePluginModule.forRoot({
+            key: CounterState
+          })
+        ]
+      });
 
-    // Act
-    const store: Store = TestBed.inject(Store);
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-    const state: CounterStateModel = store.selectSnapshot(CounterState);
+      // Act
+      const store: Store = TestBed.inject(Store);
+      const state: CounterStateModel = store.selectSnapshot(CounterState);
 
-    // Assert
-    expect(spyWarn).toHaveBeenCalledTimes(1);
-    expect(state.count).toBe(2);
+      // Assert
+      expect(state.count).toBe(1);
+    } finally {
+      restoreStorage('localStorage', storage);
+    }
   });
 
-  it('storage engine should work with fallback implementation, when sessionStorage is not available', () => {
-    // Arrange
-    disableSessionStorage();
-    const spyWarn = jest.spyOn(console, 'warn');
-    TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([CounterState]),
-        NgxsStoragePluginModule.forRoot({
-          key: CounterState
-        })
-      ]
-    });
+  it('storage engine should work when localStorage is not available', () => {
+    const storage = window.localStorage;
+    try {
+      // Arrange
+      disableStorage('localStorage');
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState]),
+          NgxsStoragePluginModule.forRoot({
+            key: CounterState
+          })
+        ]
+      });
 
-    // Act
-    const store: Store = TestBed.inject(Store);
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-    store.dispatch(new Increment());
-    const state: CounterStateModel = store.selectSnapshot(CounterState);
+      // Act
+      const store: Store = TestBed.inject(Store);
+      store.dispatch(new Increment());
+      store.dispatch(new Increment());
+      const state: CounterStateModel = store.selectSnapshot(CounterState);
 
-    // Assert
-    expect(spyWarn).toHaveBeenCalledTimes(1);
-    expect(state.count).toBe(3);
+      // Assert
+      expect(state.count).toBe(3);
+    } finally {
+      restoreStorage('localStorage', storage);
+    }
   });
 
-  it('should have basic functionality on the fallback storage', () => {
-    // Arrange
-    const storage = fallbackStorage();
+  it('storage engine should work when sessionStorage is not available', () => {
+    const storage = window.sessionStorage;
+    try {
+      // Arrange
+      disableStorage('sessionStorage');
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState]),
+          NgxsStoragePluginModule.forRoot({
+            key: CounterState,
+            storage: StorageOption.SessionStorage
+          })
+        ]
+      });
 
-    // Act
-    storage.setItem(DEFAULT_STATE_KEY, '1');
-    storage.setItem(DEFAULT_STATE_KEY, '11');
-    storage.setItem(`${DEFAULT_STATE_KEY}1`, '30');
-    storage.setItem(`${DEFAULT_STATE_KEY}2`, '2');
-    storage.removeItem(`${DEFAULT_STATE_KEY}1`);
+      // Act
+      const store: Store = TestBed.inject(Store);
+      store.dispatch(new Increment());
+      store.dispatch(new Increment());
+      store.dispatch(new Increment());
+      const state: CounterStateModel = store.selectSnapshot(CounterState);
 
-    // Assert
-    expect(storage.length).toBe(2);
-    expect(storage.getItem(DEFAULT_STATE_KEY)).toBe('11');
-    expect(storage.getItem(`${DEFAULT_STATE_KEY}2`)).toBe('2');
-    expect(storage.key(0)).toBe(DEFAULT_STATE_KEY);
-  });
-
-  it('should not have any data after clear', () => {
-    // Arrange
-    const storage = fallbackStorage();
-    storage.setItem(DEFAULT_STATE_KEY, '1');
-    storage.setItem(DEFAULT_STATE_KEY, '11');
-    storage.setItem(`${DEFAULT_STATE_KEY}1`, '30');
-    storage.setItem(`${DEFAULT_STATE_KEY}2`, '2');
-    storage.removeItem(`${DEFAULT_STATE_KEY}1`);
-
-    // Act
-    storage.clear();
-
-    // Assert
-    expect(storage.length).toBe(0);
+      // Assert
+      expect(state.count).toBe(4);
+    } finally {
+      restoreStorage('sessionStorage', storage);
+    }
   });
 });
 
-function disableLocalStorage() {
-  Object.defineProperty(window, 'localStorage', {
+function disableStorage(key: 'localStorage' | 'sessionStorage') {
+  Object.defineProperty(window, key, {
     value: () => {
-      throw new Error('localStorage is not available');
+      throw new Error(`${key} is not available`);
     },
     writable: true
   });
 }
 
-function disableSessionStorage() {
-  Object.defineProperty(window, 'sessionStorage', {
-    value: () => {
-      throw new Error('sessionStorage is not available');
-    },
+function restoreStorage(key: 'localStorage' | 'sessionStorage', storage: Storage) {
+  Object.defineProperty(window, key, {
+    value: () => storage,
     writable: true
   });
 }

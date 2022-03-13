@@ -1,5 +1,4 @@
-import { PLATFORM_ID, Inject, Injectable } from '@angular/core';
-import { isPlatformServer } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import {
   NgxsPlugin,
   setValue,
@@ -29,12 +28,11 @@ declare const ngDevMode: boolean;
 export class NgxsStoragePlugin implements NgxsPlugin {
   constructor(
     @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
-    @Inject(STORAGE_ENGINE) private _engine: StorageEngine,
-    @Inject(PLATFORM_ID) private _platformId: string
+    @Inject(STORAGE_ENGINE) private _engine: StorageEngine
   ) {}
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
-    if (isPlatformServer(this._platformId) && this._engine === null) {
+    if (this._engine === null) {
       return next(state, event);
     }
 
@@ -57,41 +55,42 @@ export class NgxsStoragePlugin implements NgxsPlugin {
         }
 
         const isMaster = key === DEFAULT_STATE_KEY;
-        let val: any = this._engine.getItem(key!);
+        let val: any;
+        try {
+          val = this._engine.getItem(key!);
+          if (val === 'undefined' || val == null) {
+            continue;
+          }
+          const newVal = this._options.deserialize!(val);
+          val = this._options.afterDeserialize!(newVal, key);
+        } catch (e) {
+          // Caretaker note: we have still left the `typeof` condition in order to avoid
+          // creating a breaking change for projects that still use the View Engine.
+          if (typeof ngDevMode === 'undefined' || ngDevMode) {
+            console.error(
+              `Error ocurred while deserializing the ${key} store value, falling back to default store value, the value obtained from the store: `,
+              val
+            );
+          }
+          continue;
+        }
 
-        if (val !== 'undefined' && val != null) {
-          try {
-            const newVal = this._options.deserialize!(val);
-            val = this._options.afterDeserialize!(newVal, key);
-          } catch (e) {
-            // Caretaker note: we have still left the `typeof` condition in order to avoid
-            // creating a breaking change for projects that still use the View Engine.
-            if (typeof ngDevMode === 'undefined' || ngDevMode) {
-              console.error(
-                `Error ocurred while deserializing the ${key} store value, falling back to empty object, the value obtained from the store: `,
-                val
-              );
+        if (this._options.migrations) {
+          this._options.migrations.forEach(strategy => {
+            const versionMatch =
+              strategy.version === getValue(val, strategy.versionKey || 'version');
+            const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
+            if (versionMatch && keyMatch) {
+              val = strategy.migrate(val);
+              hasMigration = true;
             }
-            val = {};
-          }
+          });
+        }
 
-          if (this._options.migrations) {
-            this._options.migrations.forEach(strategy => {
-              const versionMatch =
-                strategy.version === getValue(val, strategy.versionKey || 'version');
-              const keyMatch = (!strategy.key && isMaster) || strategy.key === key;
-              if (versionMatch && keyMatch) {
-                val = strategy.migrate(val);
-                hasMigration = true;
-              }
-            });
-          }
-
-          if (!isMaster) {
-            state = setValue(state, key!, val);
-          } else {
-            state = { ...state, ...val };
-          }
+        if (!isMaster) {
+          state = setValue(state, key!, val);
+        } else {
+          state = { ...state, ...val };
         }
       }
     }

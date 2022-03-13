@@ -3,6 +3,11 @@ import { StateClass } from '@ngxs/store/internals';
 import { StateToken } from '@ngxs/store';
 
 import { StorageOption, StorageEngine, NgxsStoragePluginOptions } from './symbols';
+
+/**
+ * @description Will be provided through Terser global definitions by Angular CLI
+ * during the production build. This is how Angular does tree-shaking internally.
+ */
 declare const ngDevMode: boolean;
 
 /**
@@ -70,22 +75,12 @@ export function engineFactory(
     return null;
   }
 
-  const storage =
-    options.storage === StorageOption.LocalStorage
-      ? localStorage
-      : options.storage === StorageOption.SessionStorage
-      ? sessionStorage
-      : null;
-
-  if (storage === null) {
-    return null;
-  }
-
   try {
-    const verifyKey = `${DEFAULT_STATE_KEY}-VERIFY`;
-    storage.setItem(verifyKey, '1');
-    storage.removeItem(verifyKey);
-    return storage;
+    if (options.storage === StorageOption.LocalStorage) {
+      return localStorage;
+    } else if (options.storage === StorageOption.SessionStorage) {
+      return sessionStorage;
+    }
   } catch (error) {
     // Caretaker note: we have still left the `typeof` condition in order to avoid
     // creating a breaking change for projects that still use the View Engine.
@@ -93,36 +88,11 @@ export function engineFactory(
       console.warn(
         `${
           options.storage === StorageOption.LocalStorage ? 'localStorage' : 'sessionStorage'
-        } is not available, using a fallback implementation!`,
+        } is not available!`,
         error
       );
     }
-    return fallbackStorage();
   }
-}
 
-export function fallbackStorage(): Storage {
-  let storage: { [x: string]: any } = {};
-
-  return {
-    setItem: (key, value) => {
-      storage[key] = value || '';
-    },
-    getItem: key => {
-      return key in storage ? storage[key] : null;
-    },
-    removeItem: key => {
-      delete storage[key];
-    },
-    get length() {
-      return Object.keys(storage).length;
-    },
-    key: i => {
-      const keys = Object.keys(storage);
-      return keys[i] || null;
-    },
-    clear: () => {
-      storage = {};
-    }
-  };
+  return null;
 }
