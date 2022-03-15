@@ -14,6 +14,7 @@ $ npm install @ngxs/store@dev
 - Fix: Do not run `Promise.then` within synchronous tests when decorating factory [#1753](https://github.com/ngxs/store/pull/1753)
 - Fix: Provide `NoopNgxsExecutionStrategy` explicitly when the zone is nooped [#1819](https://github.com/ngxs/store/pull/1819)
 - Fix: Complete the state stream once the root view is removed [#1830](https://github.com/ngxs/store/pull/1830)
+- Fix: Be more explicit when checking if Angular is in test mode [#1831](https://github.com/ngxs/store/pull/1831)
 - Fix: Devtools Plugin - Do not connect to devtools when the plugin is disabled [#1761](https://github.com/ngxs/store/pull/1761)
 - Fix: Router Plugin - Cleanup subscriptions when the root view is destroyed [#1754](https://github.com/ngxs/store/pull/1754)
 - Fix: WebSocket Plugin - Cleanup subscriptions and close the connection when the root view is destroyed [#1755](https://github.com/ngxs/store/pull/1755)
