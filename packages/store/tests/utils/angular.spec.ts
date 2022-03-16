@@ -2,7 +2,7 @@ import { ɵglobal } from '@angular/core';
 
 import { isAngularInTestMode } from '@ngxs/store/internals';
 
-describe('[utils/angular]', () => {
+xdescribe('[utils/angular]', () => {
   describe('isAngularInTestMode', () => {
     // Just an empty object so `typeof !== undefined` will be truthy.
     const nonUndefinedValue = {};
