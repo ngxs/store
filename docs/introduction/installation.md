@@ -17,7 +17,7 @@ import { NgxsModule } from '@ngxs/store';
 
 @NgModule({
   imports: [
-    NgxsModule.forRoot([ZooState], {
+    NgxsModule.forRoot([], {
       developmentMode: !environment.production
     })
   ]
