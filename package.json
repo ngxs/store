@@ -114,7 +114,13 @@
     "integration:ng10:ivy": "cd integrations/hello-world-ng10-ivy && yarn test:integration",
     "integration:ng11:ivy:off": "cd integrations/hello-world-ng11-ivy-off && yarn test:integration",
     "integration:ng11:ivy": "cd integrations/hello-world-ng11-ivy && yarn test:integration",
-    "// - INTEGRATION END -": "----------"
+    "// - INTEGRATION END -": "----------",
+    "schematics:list": "schematics './@ngxs/store/schematics/collection.json:' --list-schematics",
+    "schematics:run:ngxs-store": "schematics --allow-private=true ./@ngxs/store/schematics/collection.json:ngxs-store",
+    "schematics:run:ngxs-state": "schematics --allow-private=true ./@ngxs/store/schematics/collection.json:ngxs-state",
+    "schematics:run:ngxs-actions": "schematics --allow-private=true ./@ngxs/store/schematics/collection.json:ngxs-actions",
+    "schematics:run:ngxs-sk": "schematics --allow-private=true ./@ngxs/store/schematics/collection.json:ngxs-sk",
+    "schematics:run:ngxs-init": "schematics --allow-private=true ./@ngxs/store/schematics/collection.json:ngxs-init"
   },
   "private": true,
   "devDependencies": {
@@ -122,6 +128,7 @@
     "@angular-devkit/build-angular": "0.901.9",
     "@angular-devkit/core": "^9.1.0",
     "@angular-devkit/schematics": "^9.1.0",
+    "@angular-devkit/schematics-cli": "0.901.9",
     "@angular/animations": "9.1.9",
     "@angular/cli": "9.1.9",
     "@angular/common": "9.1.9",
