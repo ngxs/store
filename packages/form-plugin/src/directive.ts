@@ -14,22 +14,29 @@ import {
 
 @Directive({ selector: '[ngxsForm]' })
 export class FormDirective implements OnInit, OnDestroy {
-  @Input('ngxsForm')
-  path: string = null!;
+  @Input('ngxsForm') public path: string = null!;
 
-  @Input('ngxsFormDebounce')
-  debounce = 100;
+  @Input('ngxsFormDebounce') public debounce = 100;
 
-  @Input('ngxsFormClearOnDestroy')
-  set clearDestroy(val: boolean) {
+  @Input('ngxsFormPatchEmitEvent') public set patchEmitEvent(val: boolean) {
+    this._patchEmitEvent = val != null && `${val}` !== 'false';
+  }
+
+  public get patchEmitEvent(): boolean {
+    return this._patchEmitEvent;
+  }
+
+  private _patchEmitEvent = true;
+
+  @Input('ngxsFormClearOnDestroy') public set clearDestroy(val: boolean) {
     this._clearDestroy = val != null && `${val}` !== 'false';
   }
 
-  get clearDestroy(): boolean {
+  public get clearDestroy(): boolean {
     return this._clearDestroy;
   }
 
-  _clearDestroy = false;
+  private _clearDestroy = false;
 
   private readonly _destroy$ = new Subject<void>();
   private _updating = false;
@@ -41,7 +48,7 @@ export class FormDirective implements OnInit, OnDestroy {
     private _cd: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this._actions$
       .pipe(
         ofActionDispatched(ResetForm),
@@ -59,7 +66,7 @@ export class FormDirective implements OnInit, OnDestroy {
         return;
       }
 
-      this.form.patchValue(model);
+      this.form.patchValue(model, { emitEvent: this.patchEmitEvent });
       this._cd.markForCheck();
     });
 
@@ -127,7 +134,7 @@ export class FormDirective implements OnInit, OnDestroy {
       });
   }
 
-  updateFormStateWithRawValue(withFormStatus?: boolean) {
+  private updateFormStateWithRawValue(withFormStatus?: boolean) {
     if (this._updating) return;
 
     const value = this._formGroupDirective.control.getRawValue();
@@ -162,7 +169,8 @@ export class FormDirective implements OnInit, OnDestroy {
       complete: () => (this._updating = false)
     });
   }
-  ngOnDestroy() {
+
+  public ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
 

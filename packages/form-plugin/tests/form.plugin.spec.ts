@@ -326,7 +326,7 @@ describe('NgxsFormPlugin', () => {
           ],
           declarations: [ComponentType]
         });
-        const store: Store = TestBed.get(Store);
+        const store: Store = TestBed.inject(Store);
         const fixture = TestBed.createComponent(ComponentType);
         const getTodosFormState = () => store.selectSnapshot(({ todos }) => todos.todosForm);
         return { store, fixture, getTodosFormState };
@@ -520,6 +520,175 @@ describe('NgxsFormPlugin', () => {
           dirty: null,
           status: null,
           errors: {}
+        });
+      });
+    });
+
+    describe('form methods options: onlySelf, emitEvent', () => {
+      function setupTestBed<T>(ComponentType: Type<T>) {
+        @State({
+          name: 'todos',
+          defaults: {
+            todosForm: {
+              model: undefined,
+              dirty: false,
+              status: '',
+              errors: {}
+            }
+          }
+        })
+        class TodosState {}
+
+        TestBed.configureTestingModule({
+          imports: [
+            ReactiveFormsModule,
+            NgxsModule.forRoot([TodosState]),
+            NgxsFormPluginModule.forRoot()
+          ],
+          declarations: [ComponentType]
+        });
+        const store: Store = TestBed.inject(Store);
+        const fixture = TestBed.createComponent(ComponentType);
+        const componentInstance = fixture.componentInstance;
+        const getFormSpies = <T>(componentInstance: T & { form: FormGroup }) => ({
+          reset: jest.spyOn(componentInstance.form, 'reset'),
+          patchValue: jest.spyOn(componentInstance.form, 'patchValue'),
+          markAsDirty: jest.spyOn(componentInstance.form, 'markAsDirty'),
+          markAsPristine: jest.spyOn(componentInstance.form, 'markAsPristine'),
+          disable: jest.spyOn(componentInstance.form, 'disable'),
+          enable: jest.spyOn(componentInstance.form, 'enable')
+        });
+        return {
+          store,
+          fixture,
+          formSpies: getFormSpies(<T & { form: FormGroup }>componentInstance)
+        };
+      }
+
+      describe('with ngxsFormPatchEmitEvent', () => {
+        it('should pass emitEvent = true (default) if the ngxsFormPatchEmitEvent input is present but its value is not defined', () => {
+          @Component({
+            template: `
+              <form [formGroup]="form" ngxsForm="todos.todosForm" ngxsFormPatchEmitEvent>
+                <input type="text" formControlName="text" /><button type="submit">
+                  Add todo
+                </button>
+              </form>
+            `
+          })
+          class MockComponent {
+            public form = new FormGroup({ text: new FormControl() });
+          }
+
+          const { store, fixture, formSpies } = setupTestBed<MockComponent>(MockComponent);
+
+          fixture.detectChanges();
+
+          const resetValue = { text: 'reset' };
+          store.dispatch(new ResetForm({ path: 'todos.todosForm', value: resetValue }));
+          expect(formSpies.reset).toHaveBeenCalledWith(resetValue);
+
+          const updateValue = { text: 'update' };
+          store.dispatch(new UpdateFormValue({ path: 'todos.todosForm', value: updateValue }));
+          expect(formSpies.patchValue).toHaveBeenCalledWith(updateValue, { emitEvent: true });
+
+          store.dispatch(new UpdateFormDirty({ path: 'todos.todosForm', dirty: true }));
+          expect(formSpies.markAsDirty).toHaveBeenCalledWith();
+
+          store.dispatch(new UpdateFormDirty({ path: 'todos.todosForm', dirty: false }));
+          expect(formSpies.markAsPristine).toHaveBeenCalledWith();
+
+          store.dispatch(new SetFormDisabled('todos.todosForm'));
+          expect(formSpies.disable).toHaveBeenCalledWith();
+
+          store.dispatch(new SetFormEnabled('todos.todosForm'));
+          expect(formSpies.enable).toHaveBeenCalledWith();
+        });
+
+        it('should pass emitEvent = true if the ngxsFormPatchEmitEvent input is present but its value is set to true', () => {
+          @Component({
+            template: `
+              <form
+                [formGroup]="form"
+                ngxsForm="todos.todosForm"
+                ngxsFormPatchEmitEvent="true"
+              >
+                <input type="text" formControlName="text" /><button type="submit">
+                  Add todo
+                </button>
+              </form>
+            `
+          })
+          class MockComponent {
+            public form = new FormGroup({ text: new FormControl() });
+          }
+
+          const { store, fixture, formSpies } = setupTestBed<MockComponent>(MockComponent);
+
+          fixture.detectChanges();
+
+          const resetValue = { text: 'reset' };
+          store.dispatch(new ResetForm({ path: 'todos.todosForm', value: resetValue }));
+          expect(formSpies.reset).toHaveBeenCalledWith(resetValue);
+
+          const updateValue = { text: 'update' };
+          store.dispatch(new UpdateFormValue({ path: 'todos.todosForm', value: updateValue }));
+          expect(formSpies.patchValue).toHaveBeenCalledWith(updateValue, { emitEvent: true });
+
+          store.dispatch(new UpdateFormDirty({ path: 'todos.todosForm', dirty: true }));
+          expect(formSpies.markAsDirty).toHaveBeenCalledWith();
+
+          store.dispatch(new UpdateFormDirty({ path: 'todos.todosForm', dirty: false }));
+          expect(formSpies.markAsPristine).toHaveBeenCalledWith();
+
+          store.dispatch(new SetFormDisabled('todos.todosForm'));
+          expect(formSpies.disable).toHaveBeenCalledWith();
+
+          store.dispatch(new SetFormEnabled('todos.todosForm'));
+          expect(formSpies.enable).toHaveBeenCalledWith();
+        });
+
+        it('should pass emitEvent = false if the ngxsFormPatchEmitEvent input is present and its value is set to false', () => {
+          @Component({
+            template: `
+              <form
+                [formGroup]="form"
+                ngxsForm="todos.todosForm"
+                ngxsFormPatchEmitEvent="false"
+              >
+                <input type="text" formControlName="text" /><button type="submit">
+                  Add todo
+                </button>
+              </form>
+            `
+          })
+          class MockComponent {
+            public form = new FormGroup({ text: new FormControl() });
+          }
+
+          const { store, fixture, formSpies } = setupTestBed<MockComponent>(MockComponent);
+
+          fixture.detectChanges();
+
+          const resetValue = { text: 'reset' };
+          store.dispatch(new ResetForm({ path: 'todos.todosForm', value: resetValue }));
+          expect(formSpies.reset).toHaveBeenCalledWith(resetValue);
+
+          const updateValue = { text: 'update' };
+          store.dispatch(new UpdateFormValue({ path: 'todos.todosForm', value: updateValue }));
+          expect(formSpies.patchValue).toHaveBeenCalledWith(updateValue, { emitEvent: false });
+
+          store.dispatch(new UpdateFormDirty({ path: 'todos.todosForm', dirty: true }));
+          expect(formSpies.markAsDirty).toHaveBeenCalledWith();
+
+          store.dispatch(new UpdateFormDirty({ path: 'todos.todosForm', dirty: false }));
+          expect(formSpies.markAsPristine).toHaveBeenCalledWith();
+
+          store.dispatch(new SetFormDisabled('todos.todosForm'));
+          expect(formSpies.disable).toHaveBeenCalledWith();
+
+          store.dispatch(new SetFormEnabled('todos.todosForm'));
+          expect(formSpies.enable).toHaveBeenCalledWith();
         });
       });
     });

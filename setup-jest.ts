@@ -1,5 +1,4 @@
-// import 'jest-preset-angular'; // commented out due to issue in latest jest-preset-angular
-import { ɵglobal } from '@angular/core';
+// import 'jest-preset-angular/setup-jest'; // commented out due to issue in latest jest-preset-angular
 
 const CI = process.env['CI'] === 'true';
 
@@ -47,8 +46,4 @@ if (CI) {
   consoleMethods.forEach((methodName: string) => {
     jest.spyOn(global.console, methodName as any).mockImplementation(() => jest.fn());
   });
-}
-
-if (typeof ɵglobal.ngDevMode === 'undefined') {
-  ɵglobal.ngDevMode = true;
 }
