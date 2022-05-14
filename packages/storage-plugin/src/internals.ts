@@ -77,3 +77,9 @@ export function engineFactory(
 
   return null;
 }
+
+export function prefixNamespace(key: string, namespace: string | undefined): string {
+  // Prepends the `namespace` option to any key if it's been provided by a user.
+  // So `@@STATE` becomes `my-app:@@STATE`.
+  return namespace ? `${namespace}:${key}` : key;
+}
