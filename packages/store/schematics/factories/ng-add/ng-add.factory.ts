@@ -37,8 +37,8 @@ function addNgxsPackageToPackageJson(options: NgxsPackageSchema) {
     LIB_CONFIG.filter(
       lib => lib.name === LIBRARIES.STORE || options.packages?.includes(lib.name)
     ).forEach(({ type, version, name, overwrite }: NodeDependency) => {
-      const paclageExists = getPackageJsonDependency(host, name);
-      if (paclageExists === null) {
+      const packageExists = getPackageJsonDependency(host, name);
+      if (packageExists === null) {
         addPackageJsonDependency(host, { type, version, name, overwrite });
         context.logger.info(`✅️ Added "${name}" into ${type}`);
       } else {
