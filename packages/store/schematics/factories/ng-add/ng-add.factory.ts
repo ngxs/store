@@ -93,7 +93,7 @@ function addDeclarationToNgModule(options: NgxsPackageSchema): Rule {
     const importPath = '@ngxs/store';
 
     const moduleImport =
-      'NgxsModule.forRoot([], {developmentMode: !environment.production,selectorOptions: {suppressErrors: false,injectContainerState: false}})';
+      'NgxsModule.forRoot([], { developmentMode: !environment.production, selectorOptions: { suppressErrors: false, injectContainerState: false } })';
 
     const sourceBuffer = host.read(modulePath);
 
