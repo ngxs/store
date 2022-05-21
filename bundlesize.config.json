@@ -32,14 +32,14 @@
       "path": "./@ngxs/store/fesm2015/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es2015",
-      "maxSize": "116.40KB",
+      "maxSize": "117.40KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/store/fesm5/ngxs-store.js",
       "package": "@ngxs/store",
       "target": "es5",
-      "maxSize": "135.40KB",
+      "maxSize": "136.40KB",
       "compression": "none"
     },
     {
@@ -143,19 +143,19 @@
     {
       "path": "./integrations/hello-world-ng11-ivy/dist-integration/main.*.js",
       "target": "es2015",
-      "maxSize": "251.50 kB",
+      "maxSize": "251.90 kB",
       "compression": "none"
     },
     {
       "path": "./integrations/hello-world-ng12-ivy/dist-integration/main.*.js",
       "target": "es2015",
-      "maxSize": "237.00 kB",
+      "maxSize": "237.50 kB",
       "compression": "none"
     },
     {
       "path": "./integrations/hello-world-ng13-ivy/dist-integration/main.*.js",
       "target": "es2015",
-      "maxSize": "237.40 kB",
+      "maxSize": "237.60 kB",
       "compression": "none"
     }
   ]
