@@ -6,8 +6,68 @@
   "properties": {
     "skipInstall": {
       "type": "boolean",
-      "description": "The flag to skip packages installing.",
-      "default": false
+      "description": "The flag for skipping packages installation.",
+      "default": false,
+      "x-prompt": "Do you want to skip packages installation?"
+    },
+    "packages": {
+      "type": "array",
+      "description": "Additonal packages to be added to the workspace.",
+      "minItems": 0,
+      "maxItems": 7,
+      "items": {
+        "type": "string",
+        "enum": [
+          "@ngxs/devtools-plugin",
+          "@ngxs/form-plugin",
+          "@ngxs/hmr-plugin",
+          "@ngxs/logger-plugin",
+          "@ngxs/router-plugin",
+          "@ngxs/storage-plugin",
+          "@ngxs/websocket-plugin"
+        ]
+      },
+      "default": [],
+      "x-prompt": {
+        "message": "Choose any other @ngxs packages you would like to add to the workspace.",
+        "type": "list",
+        "items": [
+          {
+            "value": "@ngxs/devtools-plugin",
+            "label": "Ngxs developer tools plugin"
+          },
+          {
+            "value": "@ngxs/form-plugin",
+            "label": "Ngxs form plugin"
+          },
+          {
+            "value": "@ngxs/hmr-plugin",
+            "label": "Ngxs HMR plugin"
+          },
+          {
+            "value": "@ngxs/logger-plugin",
+            "label": "Ngxs logger plugin"
+          },
+          {
+            "value": "@ngxs/router-plugin",
+            "label": "Ngxs router plugin"
+          },
+          {
+            "value": "@ngxs/storage-plugin",
+            "label": "Ngxs storage plugin"
+          },
+          {
+            "value": "@ngxs/websocket-plugin",
+            "label": "Ngxs websockt plugin"
+          }
+        ]
+      }
+    },
+    "name": {
+      "type": "string",
+      "description": "The application project name to add the Ngxs module import to.",
+      "default": "",
+      "x-prompt": "Optionally, please specify the application project name to automatically add the Ngxs module import in the application module."
     }
   },
   "required": []
