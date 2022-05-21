@@ -11,53 +11,53 @@ export enum LIBRARIES {
   WEBSOCKET = '@ngxs/websocket-plugin'
 }
 
+/**
+ * Common library configuration options.
+ */
+const configOptions = {
+  version: '3.7.3',
+  overwrite: true
+};
+
 export const LIB_CONFIG: NodeDependency[] = [
   {
     type: NodeDependencyType.Default,
     name: LIBRARIES.DEVTOOLS,
-    version: '3.7.3',
-    overwrite: true
+    ...configOptions
   },
   {
     type: NodeDependencyType.Default,
     name: LIBRARIES.FORM,
-    version: '3.7.3',
-    overwrite: true
+    ...configOptions
   },
   {
     type: NodeDependencyType.Default,
     name: LIBRARIES.HMR,
-    version: '3.7.3',
-    overwrite: true
+    ...configOptions
   },
   {
     type: NodeDependencyType.Default,
     name: LIBRARIES.LOGGER,
-    version: '3.7.3',
-    overwrite: true
+    ...configOptions
   },
   {
     type: NodeDependencyType.Default,
     name: LIBRARIES.ROUTER,
-    version: '3.7.3',
-    overwrite: true
+    ...configOptions
   },
   {
     type: NodeDependencyType.Default,
     name: LIBRARIES.STORAGE,
-    version: '3.7.3',
-    overwrite: true
+    ...configOptions
   },
   {
     type: NodeDependencyType.Default,
     name: LIBRARIES.STORE,
-    version: '3.7.3',
-    overwrite: true
+    ...configOptions
   },
   {
     type: NodeDependencyType.Default,
     name: LIBRARIES.WEBSOCKET,
-    version: '3.7.3',
-    overwrite: true
+    ...configOptions
   }
 ];
