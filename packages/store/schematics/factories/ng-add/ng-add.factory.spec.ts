@@ -59,16 +59,18 @@ describe('Ngxs ng-add Schematic', () => {
   });
 
   it('should import Ngxs module into the application module if a project name is provided', async () => {
+    // Arrange
     const options: NgxsPackageSchema = { ...defaultOptions, name: 'foo' };
-
+    // Act
     const tree = await ngxsSchematicRunner
       .runSchematicAsync('ngxs-init', options, appTree)
       .toPromise();
+    // Assert
     const content = tree.readContent('/projects/foo/src/app/app.module.ts');
     expect(content).toMatch(/import { NgxsModule } from '@ngxs\/store'/);
     expect(content).toMatch(/imports: \[[^\]]*NgxsModule.forRoot\(\[\],[^\]]*\]/m);
     expect(content).toMatch(
-      /imports: \[[^\]]*NgxsModule.forRoot\(\[\], \{developmentMode\: \!environment\.production,selectorOptions\: \{suppressErrors\: false,injectContainerState\: false\}\}\)[^\]]*\]/m
+      /imports: \[[^\]]*NgxsModule.forRoot\(\[\], \{ developmentMode\: \!environment\.production, selectorOptions\: \{ suppressErrors\: false, injectContainerState\: false \} \}\)[^\]]*\]/m
     );
   });
 });
