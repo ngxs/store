@@ -7,6 +7,7 @@ $ npm install @ngxs/store@dev
 ```
 
 - Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
+- Feature: ofAction* methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740) and [#1804](https://github.com/ngxs/store/pull/1804)
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
 - Fix: Handle mixed async scenarios for action handlers [#1762](https://github.com/ngxs/store/pull/1762)
