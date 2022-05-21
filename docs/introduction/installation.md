@@ -15,6 +15,8 @@ then in `app.module.ts`, import the `NgxsModule`:
 import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
 
+import { ZooState } from './examples/zoo.state';
+
 @NgModule({
   imports: [
     NgxsModule.forRoot([ZooState], {
