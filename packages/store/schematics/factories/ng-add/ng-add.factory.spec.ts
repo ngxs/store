@@ -46,11 +46,13 @@ describe('Ngxs ng-add Schematic', () => {
   });
 
   it('should not import Ngxs module into the application module if a project name is not provided', async () => {
+    // Arrange
     const options: NgxsPackageSchema = { ...defaultOptions };
-
+    // Act
     const tree = await ngxsSchematicRunner
       .runSchematicAsync('ngxs-init', options, appTree)
       .toPromise();
+    // Assert
     const content = tree.readContent('/projects/foo/src/app/app.module.ts');
     expect(content).not.toMatch(/import { NgxsModule } from '@ngxs\/store'/);
     expect(content).not.toMatch(/imports: \[[^\]]*NgxsModule[^\]]*\]/m);
