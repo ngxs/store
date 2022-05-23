@@ -16,7 +16,7 @@ describe('NGXS', () => {
       imports: [NgxsModule.forRoot([CountriesState])]
     });
 
-    TestBed.get(CountriesState);
+    TestBed.inject(CountriesState);
 
     // Assert
     expect(spy).toHaveBeenCalledTimes(0);

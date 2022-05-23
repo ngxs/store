@@ -76,7 +76,7 @@ describe('UpdateFormValue.propertyPath', () => {
     }
   }
 
-  const getStore = (): Store => TestBed.get<Store>(Store);
+  const getStore = (): Store => TestBed.inject<Store>(Store);
   const createComponent = () => TestBed.createComponent(NewNovelFormComponent);
 
   beforeEach(() => {

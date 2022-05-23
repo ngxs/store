@@ -1,5 +1,5 @@
 import { NgxsModule, Select, Selector, State, StateToken, Store } from '@ngxs/store';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, async } from '@angular/core/testing';
 import { Component, Injectable } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -15,7 +15,7 @@ describe('[TEST]: StateToken', () => {
   });
 
   describe('Integration', () => {
-    it('should successfully create store', () => {
+    it('should successfully create store', async(() => {
       const TODO_LIST_TOKEN = new StateToken<string[]>('todoList');
 
       @State<string[]>({
@@ -76,6 +76,6 @@ describe('[TEST]: StateToken', () => {
         .selectOnce(TODO_LIST_TOKEN)
         .subscribe((value: string[]) => selectOnceResult.push(...value));
       expect(selectOnceResult).toEqual(['hello', 'world']);
-    });
+    }));
   });
 });

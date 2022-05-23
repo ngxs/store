@@ -90,7 +90,7 @@ module.exports = {
    * of running some code immediately after the test framework has been installed
    * in the environment.
    */
-  setupFilesAfterEnv: ['<rootDir>/setupJest.ts'],
+  setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
 
   /**
    * The glob patterns Jest uses to detect test files.
