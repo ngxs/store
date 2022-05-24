@@ -13,7 +13,7 @@ type TupleKeys<T extends any[]> = Exclude<keyof T, keyof []>;
  * This utility type exists due to the complexity of ActionType being either an ActionDef class or the plain
  * `{ type: string }` type (or similar compatible POJO types).
  */
-type Constructed<T> = T extends { new (...args: any[]): infer U } ? U : T;
+type Constructed<T> = T extends new (...args: any[]) => infer U ? U : T;
 
 export interface ActionCompletion<T = any, E = Error> {
   action: T;
