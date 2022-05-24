@@ -2,7 +2,7 @@ import { Component, Injectable, NgModule } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BrowserModule } from '@angular/platform-browser';
-import { Router, RouterModule, Resolve } from '@angular/router';
+import { Router, RouterModule, Resolve, RouterStateSnapshot } from '@angular/router';
 
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
@@ -168,8 +168,8 @@ describe('RouterDataResolved', () => {
       const speciallyPromisedData = actions$
         .pipe(ofActionSuccessful(RouterDataResolved), first())
         .toPromise()
-        .then(({ routerState }: RouterDataResolved) => {
-          return routerState!.root.firstChild!.data;
+        .then(({ routerState }) => {
+          return (<RouterStateSnapshot>routerState)!.root.firstChild!.data;
         });
 
       await store

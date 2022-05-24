@@ -142,14 +142,6 @@ jobs:
           name: Run integration tests for the SSR build application
           command: yarn test:ci:integration:ssr
 
-  integration_ng6_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for the Angular 6 application
-          command: yarn integration:ng6
-
   integration_ng7_tests:
     <<: *job_defaults
     steps:
@@ -330,10 +322,6 @@ workflows:
       ###     requires:
       ###       - build
 
-      - integration_ng6_tests:
-          requires:
-            - build
-
       - integration_ng8_tests:
           requires:
             - build
@@ -386,7 +374,6 @@ workflows:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng6_tests
             - integration_ng8_tests
             - integration_test_types
             - bundlesize
@@ -403,7 +390,6 @@ workflows:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng6_tests
             - integration_ng8_tests
             - integration_test_types
             - bundlesize
@@ -419,7 +405,6 @@ workflows:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng6_tests
             - integration_ng8_tests
             - integration_test_types
             - bundlesize
