@@ -46,14 +46,14 @@
       "path": "./@ngxs/form-plugin/fesm2015/ngxs-form-plugin.js",
       "package": "@ngxs/form-plugin",
       "target": "es2015",
-      "maxSize": "16.90KB",
+      "maxSize": "17.20KB",
       "compression": "none"
     },
     {
       "path": "./@ngxs/form-plugin/fesm5/ngxs-form-plugin.js",
       "package": "@ngxs/form-plugin",
       "target": "es5",
-      "maxSize": "20.30KB",
+      "maxSize": "20.50KB",
       "compression": "none"
     },
     {
