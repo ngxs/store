@@ -7,7 +7,7 @@ $ npm install @ngxs/store@dev
 ```
 
 - Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
-- Feature: ofAction* methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
+- Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Build: include support for Angular 14 [#1850](https://github.com/ngxs/store/pull/1850)
 - Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740) and [#1804](https://github.com/ngxs/store/pull/1804)
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
@@ -21,6 +21,7 @@ $ npm install @ngxs/store@dev
 - Fix: Router Plugin - Cleanup subscriptions when the root view is destroyed [#1754](https://github.com/ngxs/store/pull/1754)
 - Fix: WebSocket Plugin - Cleanup subscriptions and close the connection when the root view is destroyed [#1755](https://github.com/ngxs/store/pull/1755)
 - Fix: Storage Plugin - Only restore state if key matches `addedStates` [#1746](https://github.com/ngxs/store/pull/1746)
+- Fix: Forms Plugin - Do not destructure primitive types [#1845](https://github.com/ngxs/store/pull/1845)
 - Performance: Tree-shake errors and warnings [#1732](https://github.com/ngxs/store/pull/1732)
 - Performance: Tree-shake `ConfigValidator`, `HostEnvironment` and `isAngularInTestMode` [#1741](https://github.com/ngxs/store/pull/1741)
 - Performance: Tree-shake `SelectFactory` [#1744](https://github.com/ngxs/store/pull/1744)

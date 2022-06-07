@@ -28,7 +28,11 @@ export class NgxsFormPlugin implements NgxsPlugin {
 
     if (type === UpdateFormValue.type || type === UpdateForm.type || type === ResetForm.type) {
       const { value } = event.payload;
-      const payloadValue = Array.isArray(value) ? value.slice() : { ...value };
+      const payloadValue = Array.isArray(value)
+        ? value.slice()
+        : isObjectLike(value)
+        ? { ...value }
+        : value;
       const path = this.joinPathWithPropertyPath(event);
       nextState = setValue(nextState, path, payloadValue);
     }
@@ -80,4 +84,8 @@ export class NgxsFormPlugin implements NgxsPlugin {
 
     return path;
   }
+}
+
+function isObjectLike(target: unknown): target is object {
+  return target !== null && typeof target === 'object';
 }
