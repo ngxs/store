@@ -1,0 +1,146 @@
+# For more information see:
+# - https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# - https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
+
+name: build-dev
+
+on:
+  push:
+    branches: [master]
+    tags-ignore: ['*']
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.ref_name }}.${{ github.sha }}.build-dev
+  cancel-in-progress: true
+
+jobs:
+  test-build-deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Don't save Bash session history
+        run: unset HISTFILE
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          check-latest: true
+
+      - name: Configure kernel (increase watchers)
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+      - name: Get variables (branch name, commit hash, yarn cache directory,)
+        id: get-variables
+        run: |
+          echo "::set-output name=shortref::${GITHUB_REF#refs/*/}";
+          echo "::set-output name=commitsha::$(echo ${GITHUB_SHA})";
+          echo "::set-output name=yarncachedir::$(yarn cache dir)";
+
+      - name: Workspace cache
+        uses: actions/cache@v3
+        id: workspace-cache
+        env:
+          cache-name: workspace-cache
+        with:
+          path: |
+            ~/.cache
+            ./node_modules
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-${{ steps.get-variables.outputs.commitsha }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-
+            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
+            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-
+            ${{ runner.os }}-
+
+      # TODO: verify if this is needed at all
+      # - name: Set NPM global path
+      #   run: echo 'prefix = ~/.npm' > ~/.npmrc
+
+      - name: Install project dependencies
+        run: yarn install --frozen-lockfile --non-interactive
+
+      - name: Compile NGXS and create a pack
+        run: |
+          yarn build
+          yarn pack --filename ./dist/ngxs-core.tgz
+
+      - name: Lint - TSLint
+        run: yarn lint
+
+      - name: Lint - ESLint
+        run: yarn eslint
+
+      - name: Unit Tests
+        run: yarn test:ci
+
+      # - name: Integration Tests
+      #   run: yarn test:ci:integration
+
+      # - name: E2E Tests
+      #   run: yarn test:ci:e2e
+
+      # - name: Integration Tests - SSR
+      #   run: yarn test:ci:integration:ssr
+
+      - name: Integration Tests - ng7
+        run: yarn integration:ng7
+
+      - name: Integration Tests - ng8
+        run: yarn integration:ng8
+
+      - name: Integration Tests - ng9, Ivy off
+        run: yarn integration:ng9:ivy:off
+
+      - name: Integration Tests - ng9, Ivy
+        run: yarn integration:ng9:ivy
+
+      - name: Integration Tests - ng10, Ivy off
+        run: yarn integration:ng10:ivy:off
+
+      - name: Integration Tests - ng10, Ivy
+        run: yarn integration:ng10:ivy
+
+      - name: Integration Tests - ng11, Ivy off
+        run: yarn integration:ng11:ivy:off
+
+      - name: Integration Tests - ng11, Ivy
+        run: yarn integration:ng11:ivy
+
+      - name: Integration Tests - ng12, Ivy
+        run: yarn integration:ng12:ivy
+
+      - name: Integration Tests - ng13, Ivy
+        run: yarn integration:ng13:ivy
+
+      - name: Integration Tests - types
+        run: yarn test:types
+
+      - name: Check the size of NGXS bundle
+        run: yarn bundlesize
+
+      - name: Upload coverage results to Code Climate
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
+          chmod +x /tmp/cc-test-reporter
+          /tmp/cc-test-reporter after-build --coverage-input-type lcov --exit-code 0
+        env:
+          CC_TEST_REPORTER_ID: 3f4c9a9d57ded045e0f9ab5d23e5bbcbf709bb85637bea555f1233e72134b818 # TODO: better store it in secrets. Name the variable: CC_TEST_REPORTER_ID. Then delete this line and uncomment the nest one
+          # CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+
+      # TODO: uncommen after several test runs of the workflow
+      # - name: Publish development builds to all @ngxs packages
+      #   run: |
+      #     echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+      #     yarn publish:dev
