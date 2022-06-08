@@ -6,11 +6,15 @@
 - Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
 
-### To become next version
+### To become next patch version
 
 ```bash
 $ npm install @ngxs/store@dev
 ```
+
+- ...
+
+# 3.7.5 2022-08-08
 
 - Performance: Tree-shake no type on the action error [#1858](https://github.com/ngxs/store/pull/1858)
 - Fix: Give back control to `developmentMode` config property [#1878](https://github.com/ngxs/store/pull/1878)
