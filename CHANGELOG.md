@@ -6,7 +6,6 @@
 $ npm install @ngxs/store@dev
 ```
 
-- Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Build: include support for Angular 14 [#1850](https://github.com/ngxs/store/pull/1850)
 - Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740) and [#1804](https://github.com/ngxs/store/pull/1804)
 - Fix: Handle mixed async scenarios for action handlers [#1762](https://github.com/ngxs/store/pull/1762)
