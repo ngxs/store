@@ -19,38 +19,26 @@ describe('[TEST]: the updateItem State Operator', () => {
       objs: [{ name: '1' }, { name: '2' }, { name: '3' }]
     };
 
-    patch<Original>({ nums: updateItem<number>(0, 123) })(original); // $ExpectType Original
-    patch<Original>({ nums: updateItem(0, 123) })(original); // $ExpectType Original
-    patch<Original>({ nums: updateItem(0, 0) })(original); // $ExpectType Original
-    patch<Original>({ nums: updateItem<number>(0, 123) })(original); // $ExpectType Original
-    patch<Original>({ nums: updateItem(0, 123) })(original); // $ExpectType Original
-    patch<Original>({ nums: updateItem(0, 0) })(original); // $ExpectType Original
-    patch<Original>({ nums: updateItem(0, null!) })(original); // $ExpectType Original
-    patch<Original>({ nums: updateItem(0, undefined!) })(original); // $ExpectType Original
+    patch<Original>({ nums: updateItem<number>(0, 123) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ nums: updateItem(0, 123) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ nums: updateItem(0, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ nums: updateItem<number>(0, 123) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ nums: updateItem(0, 123) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ nums: updateItem(0, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
 
-    patch<Original>({ strs: updateItem<string>(0, '123') })(original); // $ExpectType Original
-    patch<Original>({ strs: updateItem(0, '123') })(original); // $ExpectType Original
-    patch<Original>({ strs: updateItem(0, '') })(original); // $ExpectType Original
-    patch<Original>({ strs: updateItem<string>(0, '123') })(original); // $ExpectType Original
-    patch<Original>({ strs: updateItem(0, '123') })(original); // $ExpectType Original
-    patch<Original>({ strs: updateItem(0, '') })(original); // $ExpectType Original
-    patch<Original>({ strs: updateItem(0, null!) })(original); // $ExpectType Original
-    patch<Original>({ strs: updateItem(0, undefined!) })(original); // $ExpectType Original
+    patch<Original>({ strs: updateItem<string>(0, '123') })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ strs: updateItem(0, '123') })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ strs: updateItem(0, '') })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ strs: updateItem<string>(0, '123') })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ strs: updateItem(0, '123') })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ strs: updateItem(0, '') })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
 
-    patch<Original>({ bools: updateItem<boolean>(0, true) })(original); // $ExpectType Original
-    patch<Original>({ bools: updateItem<boolean>(0, true) })(original); // $ExpectType Original
-    patch<Original>({ bools: updateItem(0, true) })(original); // $ExpectType Original
-    patch<Original>({ bools: updateItem(0, true) })(original); // $ExpectType Original
-    patch<Original>({ bools: updateItem(0, false) })(original); // $ExpectType Original
-    patch<Original>({ bools: updateItem(0, false) })(original); // $ExpectType Original
-    patch<Original>({ bools: updateItem(0, null!) })(original); // $ExpectType Original
-    patch<Original>({ bools: updateItem(0, undefined!) })(original); // $ExpectType Original
-
-    patch<Original>({ arrs: updateItem(0, null!) })(original); // $ExpectType Original
-    patch<Original>({ arrs: updateItem(0, undefined!) })(original); // $ExpectType Original
-
-    patch<Original>({ objs: updateItem(0, null!) })(original); // $ExpectType Original
-    patch<Original>({ objs: updateItem(0, undefined!) })(original); // $ExpectType Original
+    patch<Original>({ bools: updateItem<boolean>(0, true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ bools: updateItem<boolean>(0, true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ bools: updateItem(0, true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ bools: updateItem(0, true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ bools: updateItem(0, false) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
+    patch<Original>({ bools: updateItem(0, false) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; arrs: number[][]; objs: { name: string; }[]; }
   });
 
   it('should have the following valid complex usage', () => {
@@ -130,6 +118,8 @@ describe('[TEST]: the updateItem State Operator', () => {
       objs: [{ name: '1' }, { name: '2' }, { name: '3' }]
     };
 
+    patch<Original>({ nums: updateItem(0, null!) })(original); // $ExpectError
+    patch<Original>({ nums: updateItem(0, undefined!) })(original); // $ExpectError
     patch<Original>({ nums: updateItem(0, '1') })(original); // $ExpectError
     patch<Original>({ nums: updateItem(0, true) })(original); // $ExpectError
     patch<Original>({ nums: updateItem(0, []) })(original); // $ExpectError
@@ -139,6 +129,8 @@ describe('[TEST]: the updateItem State Operator', () => {
     patch<Original>({ nums: updateItem<number[]>(0, []) })(original); // $ExpectError
     patch<Original>({ nums: updateItem<object>(0, {}) })(original); // $ExpectError
 
+    patch<Original>({ strs: updateItem(0, null!) })(original); // $ExpectError
+    patch<Original>({ strs: updateItem(0, undefined!) })(original); // $ExpectError
     patch<Original>({ strs: updateItem(0, 1) })(original); // $ExpectError
     patch<Original>({ strs: updateItem(0, true) })(original); // $ExpectError
     patch<Original>({ strs: updateItem(0, []) })(original); // $ExpectError
@@ -148,6 +140,8 @@ describe('[TEST]: the updateItem State Operator', () => {
     patch<Original>({ strs: updateItem<number[]>(0, []) })(original); // $ExpectError
     patch<Original>({ strs: updateItem<object>(0, {}) })(original); // $ExpectError
 
+    patch<Original>({ bools: updateItem(0, null!) })(original); // $ExpectError
+    patch<Original>({ bools: updateItem(0, undefined!) })(original); // $ExpectError
     patch<Original>({ bools: updateItem(0, 1) })(original); // $ExpectError
     patch<Original>({ bools: updateItem(0, '1') })(original); // $ExpectError
     patch<Original>({ bools: updateItem(0, []) })(original); // $ExpectError
@@ -157,6 +151,8 @@ describe('[TEST]: the updateItem State Operator', () => {
     patch<Original>({ bools: updateItem<number[]>(0, []) })(original); // $ExpectError
     patch<Original>({ bools: updateItem<object>(0, {}) })(original); // $ExpectError
 
+    patch<Original>({ arrs: updateItem(0, null!) })(original); // $ExpectError
+    patch<Original>({ arrs: updateItem(0, undefined!) })(original); // $ExpectError
     patch<Original>({ arrs: updateItem(0, 1) })(original); // $ExpectError
     patch<Original>({ arrs: updateItem(0, '1') })(original); // $ExpectError
     patch<Original>({ arrs: updateItem(0, true) })(original); // $ExpectError
@@ -168,6 +164,8 @@ describe('[TEST]: the updateItem State Operator', () => {
     patch<Original>({ arrs: updateItem<string[]>(0, []) })(original); // $ExpectError
     patch<Original>({ arrs: updateItem<object>(0, {}) })(original); // $ExpectError
 
+    patch<Original>({ objs: updateItem(0, null!) })(original); // $ExpectError
+    patch<Original>({ objs: updateItem(0, undefined!) })(original); // $ExpectError
     patch<Original>({ objs: updateItem(0, 1) })(original); // $ExpectError
     patch<Original>({ objs: updateItem(0, '1') })(original); // $ExpectError
     patch<Original>({ objs: updateItem(0, true) })(original); // $ExpectError

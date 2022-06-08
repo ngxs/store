@@ -15,32 +15,26 @@ describe('[TEST]: the insertItem State Operator', () => {
       bools: [true, false]
     };
 
-    patch<Original>({ nums: insertItem<number>(123) })(original); // $ExpectType Original
-    patch<Original>({ nums: insertItem(123) })(original); // $ExpectType Original
-    patch<Original>({ nums: insertItem(0) })(original); // $ExpectType Original
-    patch<Original>({ nums: insertItem<number>(123, 0) })(original); // $ExpectType Original
-    patch<Original>({ nums: insertItem(123, 0) })(original); // $ExpectType Original
-    patch<Original>({ nums: insertItem(0, 0) })(original); // $ExpectType Original
-    patch<Original>({ nums: insertItem(null!) })(original); // $ExpectType Original
-    patch<Original>({ nums: insertItem(undefined!) })(original); // $ExpectType Original
+    patch<Original>({ nums: insertItem<number>(123) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ nums: insertItem(123) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ nums: insertItem(0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ nums: insertItem<number>(123, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ nums: insertItem(123, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ nums: insertItem(0, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
 
-    patch<Original>({ strs: insertItem<string>('123') })(original); // $ExpectType Original
-    patch<Original>({ strs: insertItem('123') })(original); // $ExpectType Original
-    patch<Original>({ strs: insertItem('') })(original); // $ExpectType Original
-    patch<Original>({ strs: insertItem<string>('123', 0) })(original); // $ExpectType Original
-    patch<Original>({ strs: insertItem('123', 0) })(original); // $ExpectType Original
-    patch<Original>({ strs: insertItem('', 0) })(original); // $ExpectType Original
-    patch<Original>({ strs: insertItem(null!) })(original); // $ExpectType Original
-    patch<Original>({ strs: insertItem(undefined!) })(original); // $ExpectType Original
+    patch<Original>({ strs: insertItem<string>('123') })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ strs: insertItem('123') })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ strs: insertItem('') })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ strs: insertItem<string>('123', 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ strs: insertItem('123', 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ strs: insertItem('', 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
 
-    patch<Original>({ bools: insertItem<boolean>(true) })(original); // $ExpectType Original
-    patch<Original>({ bools: insertItem<boolean>(true, 0) })(original); // $ExpectType Original
-    patch<Original>({ bools: insertItem(true) })(original); // $ExpectType Original
-    patch<Original>({ bools: insertItem(true, 0) })(original); // $ExpectType Original
-    patch<Original>({ bools: insertItem(false) })(original); // $ExpectType Original
-    patch<Original>({ bools: insertItem(false, 0) })(original); // $ExpectType Original
-    patch<Original>({ bools: insertItem(null!) })(original); // $ExpectType Original
-    patch<Original>({ bools: insertItem(undefined!) })(original); // $ExpectType Original
+    patch<Original>({ bools: insertItem<boolean>(true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ bools: insertItem<boolean>(true, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ bools: insertItem(true) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ bools: insertItem(true, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ bools: insertItem(false) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
+    patch<Original>({ bools: insertItem(false, 0) })(original); // $ExpectType { nums: number[]; strs: string[]; bools: boolean[]; }
   });
 
   it('should have the following valid complex usage', () => {
@@ -116,6 +110,8 @@ describe('[TEST]: the insertItem State Operator', () => {
       bools: [true, false]
     };
 
+    patch<Original>({ nums: insertItem(null!) })(original); // $ExpectError
+    patch<Original>({ nums: insertItem(undefined!) })(original); // $ExpectError
     patch<Original>({ nums: insertItem('1') })(original); // $ExpectError
     patch<Original>({ nums: insertItem(true) })(original); // $ExpectError
     patch<Original>({ nums: insertItem([]) })(original); // $ExpectError
@@ -125,6 +121,8 @@ describe('[TEST]: the insertItem State Operator', () => {
     patch<Original>({ nums: insertItem<number[]>([]) })(original); // $ExpectError
     patch<Original>({ nums: insertItem<object>({}) })(original); // $ExpectError
 
+    patch<Original>({ strs: insertItem(null!) })(original); // $ExpectError
+    patch<Original>({ strs: insertItem(undefined!) })(original); // $ExpectError
     patch<Original>({ strs: insertItem(1) })(original); // $ExpectError
     patch<Original>({ strs: insertItem(true) })(original); // $ExpectError
     patch<Original>({ strs: insertItem([]) })(original); // $ExpectError
@@ -134,6 +132,8 @@ describe('[TEST]: the insertItem State Operator', () => {
     patch<Original>({ strs: insertItem<number[]>([]) })(original); // $ExpectError
     patch<Original>({ strs: insertItem<object>({}) })(original); // $ExpectError
 
+    patch<Original>({ bools: insertItem(null!) })(original); // $ExpectError
+    patch<Original>({ bools: insertItem(undefined!) })(original); // $ExpectError
     patch<Original>({ bools: insertItem(1) })(original); // $ExpectError
     patch<Original>({ bools: insertItem('1') })(original); // $ExpectError
     patch<Original>({ bools: insertItem([]) })(original); // $ExpectError
