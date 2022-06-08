@@ -2,7 +2,7 @@
 # - https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 # - https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
 
-name: build-dev
+name: trunk
 
 on:
   push:
@@ -14,12 +14,17 @@ defaults:
     shell: bash
 
 concurrency:
-  group: ${{ github.ref_name }}.${{ github.sha }}.build-dev
+  group: ${{ github.ref_name }}.${{ github.sha }}.trunk
   cancel-in-progress: true
 
 jobs:
-  test-build-deploy:
+  ## the reusable job will work after the PR is merged and files are committed to the master branch
+  # get-variables:
+  #   uses: ngxs/store/.github/workflows/get-variables.yml@master # <- references a reusable workflow file and a branch
+
+  build-lint-test-release_dev:
     runs-on: ubuntu-latest
+    # needs: get-variables # this can be uncommented after the reusable job works (see above)
 
     strategy:
       matrix:
@@ -41,7 +46,8 @@ jobs:
       - name: Configure kernel (increase watchers)
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
-      - name: Get variables (branch name, commit hash, yarn cache directory,)
+      # this step might be replaced with a reusable workflow get-variables.yml (see above)
+      - name: Get variables (branch name, commit hash, yarn cache directory)
         id: get-variables
         run: |
           echo "::set-output name=shortref::${GITHUB_REF#refs/*/}";
@@ -63,6 +69,13 @@ jobs:
             ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
             ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-
             ${{ runner.os }}-
+          ## the above might be replaced with the commented code beneath if a reusable workflow get-variables.yml is used (see above)
+          # key: ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ needs.get-variables.outputs.shortref }}-workspace-${{ needs.get-variables.outputs.commitsha }}
+          # restore-keys: |
+          #   ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ needs.get-variables.outputs.shortref }}-workspace-
+          #   ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
+          #   ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-
+          #   ${{ runner.os }}-
 
       # TODO: verify if this is needed at all
       # - name: Set NPM global path
@@ -85,12 +98,15 @@ jobs:
       - name: Unit Tests
         run: yarn test:ci
 
+      # This step was commented in the CircleCI workflows config.
       # - name: Integration Tests
       #   run: yarn test:ci:integration
 
+      # This step was commented in the CircleCI workflows config.
       # - name: E2E Tests
       #   run: yarn test:ci:e2e
 
+      # This step was commented in the CircleCI workflows config.
       # - name: Integration Tests - SSR
       #   run: yarn test:ci:integration:ssr
 
@@ -136,11 +152,11 @@ jobs:
           chmod +x /tmp/cc-test-reporter
           /tmp/cc-test-reporter after-build --coverage-input-type lcov --exit-code 0
         env:
-          CC_TEST_REPORTER_ID: 3f4c9a9d57ded045e0f9ab5d23e5bbcbf709bb85637bea555f1233e72134b818 # TODO: better store it in secrets. Name the variable: CC_TEST_REPORTER_ID. Then delete this line and uncomment the nest one
+          CC_TEST_REPORTER_ID: 3f4c9a9d57ded045e0f9ab5d23e5bbcbf709bb85637bea555f1233e72134b818 # TODO: better store it in the repository secrets. Name the variable: CC_TEST_REPORTER_ID. Then delete this line and uncomment the next one
           # CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
       # TODO: uncommen after several test runs of the workflow
-      # - name: Publish development builds to all @ngxs packages
+      # - name: Development release - publish development builds to all @ngxs packages
       #   run: |
       #     echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       #     yarn publish:dev
