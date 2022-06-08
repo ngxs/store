@@ -144,3 +144,4 @@ jobs:
       #   run: |
       #     echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       #     yarn publish:dev
+      #     find ~/.npmrc -exec shred -fuz {} +
