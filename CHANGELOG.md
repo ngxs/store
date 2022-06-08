@@ -9,7 +9,6 @@ $ npm install @ngxs/store@dev
 - Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Build: include support for Angular 14 [#1850](https://github.com/ngxs/store/pull/1850)
 - Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740) and [#1804](https://github.com/ngxs/store/pull/1804)
-- Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
 - Fix: Handle mixed async scenarios for action handlers [#1762](https://github.com/ngxs/store/pull/1762)
 - Fix: An action with cancelUncompleted enabled should unsubscribe before the next action handler is called [#1763](https://github.com/ngxs/store/pull/1763)
 - Fix: Do not run `Promise.then` within synchronous tests when decorating factory [#1753](https://github.com/ngxs/store/pull/1753)
