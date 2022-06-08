@@ -105,7 +105,7 @@ describe('update item', () => {
         };
 
         // Act
-        const newValue = patch<typeof original>({
+        const newValue = patch({
           a: updateItem(item => item!.name === 'Artur', { name: 'Mark' })
         })(original);
 

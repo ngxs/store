@@ -1,13 +1,6 @@
 import { StateOperator } from '@ngxs/store';
 
-import {
-  isStateOperator,
-  isPredicate,
-  isNumber,
-  invalidIndex,
-  RepairType,
-  NoInfer
-} from './utils';
+import { isStateOperator, isPredicate, isNumber, invalidIndex, RepairType } from './utils';
 import { Predicate } from './internals';
 
 /**
@@ -17,14 +10,14 @@ import { Predicate } from './internals';
  * function that can be applied to an existing value
  */
 export function updateItem<T>(
-  selector: number | NoInfer<Predicate<T>>,
-  operatorOrValue: NoInfer<T> | NoInfer<StateOperator<T>>
+  selector: number | Predicate<T>,
+  operatorOrValue: T | StateOperator<T>
 ): StateOperator<RepairType<T>[]> {
   return function updateItemOperator(existing: Readonly<RepairType<T>[]>): RepairType<T>[] {
     let index = -1;
 
     if (isPredicate(selector)) {
-      index = existing.findIndex(selector as Predicate<T>);
+      index = existing.findIndex(selector);
     } else if (isNumber(selector)) {
       index = selector;
     }
@@ -36,11 +29,10 @@ export function updateItem<T>(
     let value: T = null!;
     // Need to check if the new item value will change the existing item value
     // then, only if it will change it then clone the array and set the item
-    const theOperatorOrValue = operatorOrValue as T | StateOperator<T>;
-    if (isStateOperator(theOperatorOrValue)) {
-      value = theOperatorOrValue(existing[index] as Readonly<T>);
+    if (isStateOperator(operatorOrValue)) {
+      value = operatorOrValue(existing[index] as Readonly<T>);
     } else {
-      value = theOperatorOrValue;
+      value = operatorOrValue;
     }
 
     // If the value hasn't been mutated

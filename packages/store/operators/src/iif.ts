@@ -1,6 +1,6 @@
 import { StateOperator } from '@ngxs/store';
 
-import { isStateOperator, isUndefined, isPredicate, RepairType, NoInfer } from './utils';
+import { isStateOperator, isUndefined, isPredicate, RepairType } from './utils';
 import { Predicate } from './internals';
 
 function retrieveValue<T>(
@@ -32,9 +32,9 @@ function retrieveValue<T>(
  * @param elseOperatorOrValue - Any value or a state operator
  */
 export function iif<T>(
-  condition: NoInfer<Predicate<T>> | boolean,
-  trueOperatorOrValue: NoInfer<StateOperator<T>> | T,
-  elseOperatorOrValue?: NoInfer<StateOperator<T>> | T
+  condition: Predicate<T> | boolean,
+  trueOperatorOrValue: StateOperator<T> | T,
+  elseOperatorOrValue?: StateOperator<T> | T
 ): StateOperator<RepairType<T>> {
   return function iifOperator(existing: Readonly<RepairType<T>>): RepairType<T> {
     // Convert the value to a boolean
