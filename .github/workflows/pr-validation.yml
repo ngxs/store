@@ -144,14 +144,11 @@ jobs:
       - name: Check the size of NGXS bundle
         run: yarn bundlesize
 
-      ## Actually, this is probably not needed during premerge checks.
-      ## It makes sense to store test results only after testing already code merged into the trunk.
-      ## It does not seem to make sense to upload test results after each push to the branch that has not need merged into the trunk, there will be a lot of useless artifacts on Code Climate.
-      # - name: Upload coverage results to Code Climate
-      #   run: |
-      #     curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
-      #     chmod +x /tmp/cc-test-reporter
-      #     /tmp/cc-test-reporter after-build --coverage-input-type lcov --exit-code 0
-      #   env:
-      #     CC_TEST_REPORTER_ID: 3f4c9a9d57ded045e0f9ab5d23e5bbcbf709bb85637bea555f1233e72134b818 # TODO: better store it in the repository secrets. Name the variable: CC_TEST_REPORTER_ID. Then delete this line and uncomment the next one
-      #     # CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      - name: Upload coverage results to Code Climate
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
+          chmod +x /tmp/cc-test-reporter
+          /tmp/cc-test-reporter after-build --coverage-input-type lcov --exit-code 0
+        env:
+          CC_TEST_REPORTER_ID: 3f4c9a9d57ded045e0f9ab5d23e5bbcbf709bb85637bea555f1233e72134b818 # TODO: better store it in the repository secrets. Name the variable: CC_TEST_REPORTER_ID. Then delete this line and uncomment the next one
+          # CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
