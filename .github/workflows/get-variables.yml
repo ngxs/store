@@ -4,7 +4,7 @@
 
 # Note:
 # This workflow might be used after code is merged into the master branch.
-# The workflow is references in other workflows like: ngxs/store/.github/workflows/get-variables.yml@master
+# The workflow is referenced in other workflows like: ngxs/store/.github/workflows/get-variables.yml@master
 
 name: get-variables
 
