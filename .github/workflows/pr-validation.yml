@@ -16,135 +16,45 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ## the reusable job will work after the PR is merged and files are committed to the master branch
-  # get-variables:
-  #   uses: ./.github/workflows/get-variables.yml
-
-  premerge:
+  premerge-build:
     runs-on: ubuntu-latest
-    # needs: get-variables # this can be uncommented after the reusable job works (see above)
 
     strategy:
       matrix:
         node-version: [16.x]
 
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v3
+      - name: Setup
+        uses: ./.github/workflows/_setup.yml
         with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
+          NODE_VERSION: ${{ matrix.node-version }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+          GITHUB_REF: ${{ github.ref }}
 
-      - name: Don't save Bash session history
-        run: unset HISTFILE
+      - name: Build NGXS
+        run: yarn build
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+  premerge-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        script: [lint, eslint, test:ci, test:types]
+
+    steps:
+      - name: Setup
+        uses: ./.github/workflows/_setup.yml
         with:
-          node-version: ${{ matrix.node-version }}
-          check-latest: true
+          NODE_VERSION: ${{ matrix.node-version }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+          GITHUB_REF: ${{ github.ref }}
 
-      - name: Configure kernel (increase watchers)
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-
-      # this step might be replaced with a reusable workflow get-variables.yml (see above)
-      - name: Get variables (branch name, commit hash, yarn cache directory)
-        id: get-variables
-        run: |
-          echo "::set-output name=shortref::${GITHUB_REF#refs/*/}";
-          echo "::set-output name=commitsha::$(echo ${GITHUB_SHA})";
-          echo "::set-output name=yarncachedir::$(yarn cache dir)";
-
-      - name: Workspace cache
-        uses: actions/cache@v3
-        id: workspace-cache
-        env:
-          cache-name: workspace-cache
-        with:
-          path: |
-            ~/.cache
-            ./node_modules
-          key: ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-${{ steps.get-variables.outputs.commitsha }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-
-            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
-            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-
-            ${{ runner.os }}-
-          ## the above might be replaced with the commented code beneath if a reusable workflow get-variables.yml is used (see above)
-          # key: ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ needs.get-variables.outputs.shortref }}-workspace-${{ needs.get-variables.outputs.commitsha }}
-          # restore-keys: |
-          #   ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ needs.get-variables.outputs.shortref }}-workspace-
-          #   ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
-          #   ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-
-          #   ${{ runner.os }}-
-
-      - name: Install project dependencies
-        run: yarn install --frozen-lockfile --non-interactive
-
-      # Is 'yarn pack --filename ./dist/ngxs-core.tgz' needed during premerge checks?
-      - name: Compile NGXS and create a pack
-        run: |
-          yarn build
-          yarn pack --filename ./dist/ngxs-core.tgz
-
-      - name: Lint - TSLint
-        run: yarn lint
-
-      - name: Lint - ESLint
-        run: yarn eslint
-
-      - name: Unit Tests
-        run: yarn test:ci
-
-      ## This step was commented in the CircleCI workflows config.
-      # - name: Integration Tests
-      #   run: yarn test:ci:integration
-
-      ## This step was commented in the CircleCI workflows config.
-      # - name: E2E Tests
-      #   run: yarn test:ci:e2e
-
-      ## This step was commented in the CircleCI workflows config.
-      # - name: Integration Tests - SSR
-      #   run: yarn test:ci:integration:ssr
-
-      - name: Integration Tests - ng7
-        run: yarn integration:ng7
-
-      - name: Integration Tests - ng8
-        run: yarn integration:ng8
-
-      - name: Integration Tests - ng9, Ivy off
-        run: yarn integration:ng9:ivy:off
-
-      - name: Integration Tests - ng9, Ivy
-        run: yarn integration:ng9:ivy
-
-      - name: Integration Tests - ng10, Ivy off
-        run: yarn integration:ng10:ivy:off
-
-      - name: Integration Tests - ng10, Ivy
-        run: yarn integration:ng10:ivy
-
-      - name: Integration Tests - ng11, Ivy off
-        run: yarn integration:ng11:ivy:off
-
-      - name: Integration Tests - ng11, Ivy
-        run: yarn integration:ng11:ivy
-
-      - name: Integration Tests - ng12, Ivy
-        run: yarn integration:ng12:ivy
-
-      - name: Integration Tests - ng13, Ivy
-        run: yarn integration:ng13:ivy
-
-      - name: Integration Tests - types
-        run: yarn test:types
-
-      - name: Check the size of NGXS bundle
-        run: yarn bundlesize
+      - name: Run ${{ matrix.script }}
+        run: yarn ${{ matrix.script }}
 
       - name: Upload coverage results to Code Climate
+        if: ${{ matrix.script == 'test:ci' }}
         run: |
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
           chmod +x /tmp/cc-test-reporter
@@ -152,3 +62,53 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: 3f4c9a9d57ded045e0f9ab5d23e5bbcbf709bb85637bea555f1233e72134b818 # TODO: better store it in the repository secrets. Name the variable: CC_TEST_REPORTER_ID. Then delete this line and uncomment the next one
           # CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+
+  premerge-integration-test:
+    runs-on: ubuntu-latest
+    needs: premerge-build
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        script:
+          - integration:ng7
+          - integration:ng8
+          - integration:ng9:ivy:off
+          - integration:ng9:ivy
+          - integration:ng10:ivy:off
+          - integration:ng10:ivy
+          - integration:ng11:ivy:off
+          - integration:ng11:ivy
+          - integration:ng12:ivy
+          - integration:ng13:ivy
+
+    steps:
+      - name: Setup
+        uses: ./.github/workflows/_setup.yml
+        with:
+          NODE_VERSION: ${{ matrix.node-version }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+          GITHUB_REF: ${{ github.ref }}
+
+      - name: Run ${{ matrix.script }}
+        run: yarn ${{ matrix.script }}
+
+  premerge-bundlesize:
+    runs-on: ubuntu-latest
+    needs: premerge-integration-test
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        script: [bundlesize]
+
+    steps:
+      - name: Setup
+        uses: ./.github/workflows/_setup.yml
+        with:
+          NODE_VERSION: ${{ matrix.node-version }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+          GITHUB_REF: ${{ github.ref }}
+
+      - name: Run ${{ matrix.script }}
+        run: yarn ${{ matrix.script }}
