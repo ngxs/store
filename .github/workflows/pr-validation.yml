@@ -18,7 +18,7 @@ concurrency:
 jobs:
   ## the reusable job will work after the PR is merged and files are committed to the master branch
   # get-variables:
-  #   uses: ngxs/store/.github/workflows/get-variables.yml@master # <- references a reusable workflow file and a branch
+  #   uses: ./.github/workflows/get-variables.yml
 
   premerge:
     runs-on: ubuntu-latest
