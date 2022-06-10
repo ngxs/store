@@ -55,7 +55,7 @@ export class AnimalsState {
   @Action(AddZebra)
   addZebra(ctx: StateContext<AnimalsStateModel>, { payload }: AddZebra) {
     ctx.setState(
-      // $ExpectType PatchOperator<{ zebras: string[] | StateOperator<string[]>; }>
+      // $ExpectType StateOperator<AnimalsStateModel>
       patch({
         // $ExpectType StateOperator<string[]>
         zebras: append([payload])
@@ -66,7 +66,7 @@ export class AnimalsState {
   @Action(RemovePanda)
   removePanda(ctx: StateContext<AnimalsStateModel>, { payload }: RemovePanda) {
     ctx.setState(
-      // $ExpectType PatchOperator<{ pandas: string[] | StateOperator<string[]>; }>
+      // $ExpectType StateOperator<AnimalsStateModel>
       patch({
         // $ExpectType StateOperator<string[]>
         pandas: removeItem<string>(name => name === payload)
@@ -77,7 +77,7 @@ export class AnimalsState {
   @Action(Test)
   test(ctx: StateContext<AnimalsStateModel>, { payload }: Test) {
     ctx.setState(
-      // $ExpectType PatchOperator<{ pandas: string[] | StateOperator<string[]>; }>
+      // $ExpectType StateOperator<AnimalsStateModel>
       patch({
         // $ExpectType StateOperator<string[]>
         pandas: insertItem<string>(payload)
@@ -88,7 +88,7 @@ export class AnimalsState {
   @Action(ChangePandaName)
   changePandaName(ctx: StateContext<AnimalsStateModel>, { payload }: ChangePandaName) {
     ctx.setState(
-      // $ExpectType PatchOperator<{ pandas: string[] | StateOperator<string[]>; zebras: string[] | StateOperator<string[]>; }>
+      // $ExpectType StateOperator<AnimalsStateModel>
       patch({
         // $ExpectType StateOperator<string[]>
         pandas: updateItem(name => name === payload.name, payload.newName),
@@ -104,7 +104,7 @@ export class AnimalsState {
     { payload: { zebras, pandas } }: ComposePanda
   ) {
     ctx.setState(
-      // $ExpectType PatchOperator<{ zebras: string[] | StateOperator<string[]>; pandas: string[] | StateOperator<string[]>; }>
+      // $ExpectType StateOperator<AnimalsStateModel>
       patch({
         // $ExpectType StateOperator<string[]>
         zebras: compose(append(zebras)),
@@ -117,7 +117,7 @@ export class AnimalsState {
   @Action({ type: 'patchExplicit' })
   patchExplicit(ctx: StateContext<AnimalsStateModel>) {
     ctx.setState(
-      // $ExpectType PatchOperator<AnimalsStateModel>
+      // $ExpectType StateOperator<AnimalsStateModel>
       patch<AnimalsStateModel>({ zebras: [] })
     );
   }
@@ -125,8 +125,8 @@ export class AnimalsState {
   @Action({ type: 'patchImplicit' })
   patchImplicit(ctx: StateContext<AnimalsStateModel>) {
     ctx.setState(
-      // $ExpectType PatchOperator<{ zebras: never[]; }>
-      patch({ zebras: [] }) // $ExpectError
+      // $ExpectType StateOperator<AnimalsStateModel>
+      patch({ zebras: [] })
     );
   }
 }
