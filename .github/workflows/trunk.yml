@@ -132,4 +132,5 @@ jobs:
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
           yarn publish:dev
+          echo "Security: remove ~/.npmrc from the runner overwriting it with zeros several times."
           find ~/.npmrc -exec shred -fuz {} +
