@@ -1,9 +1,8 @@
 # For more information see:
-# - https://docs.github.com/en/actions/using-workflows/reusing-workflows
-# - https://docs.github.com/en/actions/using-workflows/reusing-workflows#limitations
+# - https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+# - https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#outputsoutput_id
 
-# Note:
-# The workflow can be referenced in other workflows like:
+# The action can be referenced in workflows like:
 # - ngxs/store/.github/workflows/_setup.yml@master
 # - ./.github/workflows/_setup.yml
 
