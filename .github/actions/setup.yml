@@ -1,0 +1,73 @@
+# For more information see:
+# - https://docs.github.com/en/actions/using-workflows/reusing-workflows
+# - https://docs.github.com/en/actions/using-workflows/reusing-workflows#limitations
+
+# Note:
+# The workflow can be referenced in other workflows like:
+# - ngxs/store/.github/workflows/_setup.yml@master
+# - ./.github/workflows/_setup.yml
+
+name: setup
+
+inputs:
+  NODE_VERSION:
+    required: true
+    type: string
+  GITHUB_SHA:
+    required: true
+    type: string
+  GITHUB_REF:
+    required: true
+    type: string
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout sources
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        ref: ${{ inputs.GITHUB_SHA }}
+
+    - name: Don't save Bash session history
+      run: unset HISTFILE
+
+    - name: Use Node.js ${{ inputs.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.NODE_VERSION }}
+        check-latest: true
+
+    - name: Configure kernel (increase watchers)
+      run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+    - name: Get variables (branch name, commit hash, yarn cache directory)
+      id: get-variables
+      run: |
+        echo "::set-output name=shortref::${inputs.GITHUB_REF#refs/*/}";
+        echo "::set-output name=commitsha::$(echo ${inputs.GITHUB_SHA})";
+        echo "::set-output name=yarncachedir::$(yarn cache dir)";
+
+    - name: Workspace cache
+      uses: actions/cache@v3
+      id: workspace-cache
+      env:
+        cache-name: workspace-cache
+      with:
+        path: |
+          ~/.cache
+          ./node_modules
+          ./@ngxs
+          ./app/integrations/hello-world-ng11-ivy/dist-integration
+          ./app/integrations/hello-world-ng12-ivy/dist-integration
+          ./app/integrations/hello-world-ng13-ivy/dist-integration
+          ./app/integrations/hello-world-ng14-ivy/dist-integration
+        key: ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-${{ steps.get-variables.outputs.commitsha }}
+        restore-keys: |
+          ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-
+          ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
+          ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-
+          ${{ runner.os }}-
+
+    - name: Install project dependencies
+      run: yarn install --frozen-lockfile --non-interactive

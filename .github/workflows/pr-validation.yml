@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Setup
-        uses: ./.github/workflows/_setup.yml
+        uses: ./.github/actions/setup.yml
         with:
           NODE_VERSION: 16.x
           GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Setup
-        uses: ./.github/workflows/_setup.yml
+        uses: ./.github/actions/setup.yml
         with:
           NODE_VERSION: ${{ matrix.node-version }}
           GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
@@ -80,7 +80,7 @@ jobs:
 
     steps:
       - name: Setup
-        uses: ./.github/workflows/_setup.yml
+        uses: ./.github/actions/setup.yml
         with:
           NODE_VERSION: ${{ matrix.node-version }}
           GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
@@ -100,7 +100,7 @@ jobs:
 
     steps:
       - name: Setup
-        uses: ./.github/workflows/_setup.yml
+        uses: ./.github/actions/setup.yml
         with:
           NODE_VERSION: ${{ matrix.node-version }}
           GITHUB_SHA: ${{ github.event.pull_request.head.sha }}

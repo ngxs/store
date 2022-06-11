@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Setup
-        uses: ./.github/workflows/_setup.yml
+        uses: ./.github/actions/setup.yml
         with:
           NODE_VERSION: 16.x
           GITHUB_SHA: ${{ github.sha }}
@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: Setup
-        uses: ./.github/workflows/_setup.yml
+        uses: ./.github/actions/setup.yml
         with:
           NODE_VERSION: ${{ matrix.node-version }}
           GITHUB_SHA: ${{ github.sha }}
@@ -82,7 +82,7 @@ jobs:
 
     steps:
       - name: Setup
-        uses: ./.github/workflows/_setup.yml
+        uses: ./.github/actions/setup.yml
         with:
           NODE_VERSION: ${{ matrix.node-version }}
           GITHUB_SHA: ${{ github.sha }}
@@ -102,7 +102,7 @@ jobs:
 
     steps:
       - name: Setup
-        uses: ./.github/workflows/_setup.yml
+        uses: ./.github/actions/setup.yml
         with:
           NODE_VERSION: ${{ matrix.node-version }}
           GITHUB_SHA: ${{ github.sha }}
@@ -118,14 +118,14 @@ jobs:
 
     steps:
       - name: Setup
-        uses: ./.github/workflows/_setup.yml
+        uses: ./.github/actions/setup.yml
         with:
           NODE_VERSION: 16.x
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REF: ${{ github.ref }}
 
       - name: Check @ngxs build artifacts
-        uses: ./.github/workflows/_check-artifacts.yml
+        uses: ./.github/actions/check-artifacts.yml
 
       - name: Development release - publish development builds to all @ngxs packages
         run: |
