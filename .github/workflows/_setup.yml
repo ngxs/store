@@ -3,10 +3,9 @@
 # - https://docs.github.com/en/actions/using-workflows/reusing-workflows#limitations
 
 # Note:
-# This workflow might be used after code is merged into the master branch.
-# The workflow is referenced in other workflows like:
-# - ngxs/store/.github/workflows/setup.yml@master
-# - ./.github/workflows/setup.yml
+# The workflow can be referenced in other workflows like:
+# - ngxs/store/.github/workflows/_setup.yml@master
+# - ./.github/workflows/_setup.yml
 
 name: setup
 
@@ -62,6 +61,7 @@ jobs:
           path: |
             ~/.cache
             ./node_modules
+            ./@ngxs
           key: ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-${{ steps.get-variables.outputs.commitsha }}
           restore-keys: |
             ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-

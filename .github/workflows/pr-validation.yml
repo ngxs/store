@@ -19,15 +19,11 @@ jobs:
   premerge-build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
       - name: Setup
         uses: ./.github/workflows/_setup.yml
         with:
-          NODE_VERSION: ${{ matrix.node-version }}
+          NODE_VERSION: 16.x
           GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
           GITHUB_REF: ${{ github.ref }}
 
