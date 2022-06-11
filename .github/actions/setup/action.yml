@@ -8,17 +8,20 @@
 # - ./.github/workflows/_setup.yml
 
 name: setup
-
+description: Set up environment
 inputs:
   NODE_VERSION:
+    description: Node version
     required: true
-    type: string
+    default: 16.x
   GITHUB_SHA:
+    description: Branch name
     required: true
-    type: string
+    default: ${{ github.sha }}
   GITHUB_REF:
+    description: Commit hash
     required: true
-    type: string
+    default: ${{ github.ref }}
 
 runs:
   using: 'composite'
@@ -30,6 +33,7 @@ runs:
         ref: ${{ inputs.GITHUB_SHA }}
 
     - name: Don't save Bash session history
+      shell: bash
       run: unset HISTFILE
 
     - name: Use Node.js ${{ inputs.NODE_VERSION }}
@@ -39,14 +43,15 @@ runs:
         check-latest: true
 
     - name: Configure kernel (increase watchers)
+      shell: bash
       run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
-    - name: Get variables (branch name, commit hash, yarn cache directory)
+    - name: Get variables (branch name, commit hash)
+      shell: bash
       id: get-variables
       run: |
         echo "::set-output name=shortref::${inputs.GITHUB_REF#refs/*/}";
         echo "::set-output name=commitsha::$(echo ${inputs.GITHUB_SHA})";
-        echo "::set-output name=yarncachedir::$(yarn cache dir)";
 
     - name: Workspace cache
       uses: actions/cache@v3
@@ -70,4 +75,5 @@ runs:
           ${{ runner.os }}-
 
     - name: Install project dependencies
+      shell: bash
       run: yarn install --frozen-lockfile --non-interactive

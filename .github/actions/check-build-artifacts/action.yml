@@ -4,15 +4,16 @@
 
 # Note:
 # The workflow can be referenced in other workflows like:
-# - ngxs/store/.github/actions/check-build-artifacts.yml@master
-# - ./.github/actions/check-build-artifacts.yml
+# - ngxs/store/.github/actions/check-build-artifacts
+# - ./.github/actions/check-build-artifacts
 
 name: check-build-artifacts
-
+description: Ensure the build artifact directories exist
 runs:
   using: 'composite'
   steps:
     - name: Check @ngxs build artifacts
+      shell: bash
       run: |
         echo "Making sure the build artifact directories exist."
         [[ -d $DEVTOOLS_PLUG_ART ]] && echo "$DEVTOOLS_PLUG_ART $OK" || echo "$DEVTOOLS_PLUG_ART $FAILURE" exit 1
