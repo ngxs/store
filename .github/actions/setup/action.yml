@@ -3,8 +3,8 @@
 # - https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#outputsoutput_id
 
 # The action can be referenced in workflows like:
-# - ngxs/store/.github/workflows/_setup.yml@master
-# - ./.github/workflows/_setup.yml
+# - ngxs/store/.github/actions/setup@master
+# - ./.github/actions/setup
 
 name: setup
 description: Set up environment

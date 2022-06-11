@@ -3,7 +3,7 @@
 # - https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#outputsoutput_id
 
 # The action can be referenced in workflows like:
-# - ngxs/store/.github/actions/check-build-artifacts
+# - ngxs/store/.github/actions/check-build-artifacts@master
 # - ./.github/actions/check-build-artifacts
 
 name: check-build-artifacts
