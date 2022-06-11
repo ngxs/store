@@ -62,6 +62,10 @@ jobs:
             ~/.cache
             ./node_modules
             ./@ngxs
+            ./app/integrations/hello-world-ng11-ivy/dist-integration
+            ./app/integrations/hello-world-ng12-ivy/dist-integration
+            ./app/integrations/hello-world-ng13-ivy/dist-integration
+            ./app/integrations/hello-world-ng14-ivy/dist-integration
           key: ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-${{ steps.get-variables.outputs.commitsha }}
           restore-keys: |
             ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-
