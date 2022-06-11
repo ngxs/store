@@ -62,11 +62,11 @@ jobs:
             ~/.cache
             ./node_modules
             ./@ngxs
-          key: ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-${{ steps.get-variables.outputs.commitsha }}
+          key: ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-${{ steps.get-variables.outputs.commitsha }}
           restore-keys: |
-            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-
-            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
-            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-
+            ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-
+            ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
+            ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-
             ${{ runner.os }}-
 
       - name: Install project dependencies
