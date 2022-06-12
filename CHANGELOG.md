@@ -9,6 +9,7 @@ $ npm install @ngxs/store@dev
 - Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
 - Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
+- Feature: Tree-shake no type on the action error [#1858](https://github.com/ngxs/store/pull/1858)
 - Fix: Storage Plugin - Provide more meaningful error message when the storage quota exceeds [#1863](https://github.com/ngxs/store/pull/1863)
 - Fix: Do not try to decorate factory asynchronously [#1861](https://github.com/ngxs/store/pull/1861)
 
