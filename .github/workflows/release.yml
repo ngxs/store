@@ -22,6 +22,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -41,6 +44,9 @@ jobs:
         script: [lint, eslint, 'test:ci', 'test:types']
 
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -81,6 +87,9 @@ jobs:
           - 'integration:ng13:ivy'
 
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -101,6 +110,9 @@ jobs:
         script: [bundlesize]
 
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -117,6 +129,9 @@ jobs:
     needs: [release-build, release-test, release-integration-test, release-bundlesize]
 
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
       - name: Setup
         uses: ./.github/actions/setup
         with:

@@ -20,6 +20,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -39,6 +45,12 @@ jobs:
         script: [lint, eslint, 'test:ci', 'test:types']
 
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -79,6 +91,12 @@ jobs:
           - 'integration:ng13:ivy'
 
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -99,6 +117,12 @@ jobs:
         script: [bundlesize]
 
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
       - name: Setup
         uses: ./.github/actions/setup
         with:

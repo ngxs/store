@@ -25,11 +25,13 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout sources
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        ref: ${{ inputs.GITHUB_SHA }}
+    # This action should be called in the parent workflow before this composite action.
+    # Composite action, as well as any other files, can not be referenced by a relative path before the sources are checked out.
+    # - name: Checkout sources
+    #   uses: actions/checkout@v3
+    #   with:
+    #     fetch-depth: 0
+    #     ref: ${{ inputs.GITHUB_SHA }}
 
     - name: Don't save Bash session history
       shell: bash
