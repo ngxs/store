@@ -51,7 +51,7 @@ runs:
       shell: bash
       id: get-variables
       run: |
-        echo "::set-output name=shortref::${inputs.GITHUB_REF_NAME}";
+        echo "::set-output name=shortref::$(echo ${inputs.GITHUB_REF_NAME})";
         echo "::set-output name=commitsha::$(echo ${inputs.GITHUB_SHA})";
 
     - name: Workspace cache
