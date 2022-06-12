@@ -13,14 +13,14 @@ inputs:
     description: Node version
     required: true
     default: 16.x
-  GITHUB_SHA:
+  GITHUB_REF_NAME:
     description: Branch name
     required: true
-    default: ${{ github.sha }}
-  GITHUB_REF:
+    default: ${{ github.ref_name }}
+  GITHUB_SHA:
     description: Commit hash
     required: true
-    default: ${{ github.ref }}
+    default: ${{ github.sha }}
 
 runs:
   using: 'composite'
@@ -51,7 +51,7 @@ runs:
       shell: bash
       id: get-variables
       run: |
-        echo "::set-output name=shortref::${inputs.GITHUB_REF#refs/*/}";
+        echo "::set-output name=shortref::${inputs.GITHUB_REF_NAME}";
         echo "::set-output name=commitsha::$(echo ${inputs.GITHUB_SHA})";
 
     - name: Workspace cache

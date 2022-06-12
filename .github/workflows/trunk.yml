@@ -29,8 +29,8 @@ jobs:
         uses: ./.github/actions/setup
         with:
           NODE_VERSION: 16.x
+          GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_SHA: ${{ github.sha }}
-          GITHUB_REF: ${{ github.ref }}
 
       - name: Build NGXS
         run: yarn build
@@ -51,8 +51,8 @@ jobs:
         uses: ./.github/actions/setup
         with:
           NODE_VERSION: ${{ matrix.node-version }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_SHA: ${{ github.sha }}
-          GITHUB_REF: ${{ github.ref }}
 
       - name: Run ${{ matrix.script }}
         run: yarn ${{ matrix.script }}
@@ -94,8 +94,8 @@ jobs:
         uses: ./.github/actions/setup
         with:
           NODE_VERSION: ${{ matrix.node-version }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_SHA: ${{ github.sha }}
-          GITHUB_REF: ${{ github.ref }}
 
       - name: Run ${{ matrix.script }}
         run: yarn ${{ matrix.script }}
@@ -117,8 +117,8 @@ jobs:
         uses: ./.github/actions/setup
         with:
           NODE_VERSION: ${{ matrix.node-version }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_SHA: ${{ github.sha }}
-          GITHUB_REF: ${{ github.ref }}
 
       - name: Run ${{ matrix.script }}
         run: yarn ${{ matrix.script }}
@@ -136,8 +136,8 @@ jobs:
         uses: ./.github/actions/setup
         with:
           NODE_VERSION: 16.x
+          GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_SHA: ${{ github.sha }}
-          GITHUB_REF: ${{ github.ref }}
 
       - name: Check @ngxs build artifacts
         uses: ./.github/actions/check-build-artifacts
