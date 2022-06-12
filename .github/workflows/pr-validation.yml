@@ -42,7 +42,7 @@ jobs:
     strategy:
       matrix:
         node-version: [16.x]
-        script: [lint, eslint, 'test:ci', 'test:types']
+        script: [lint, eslint, 'test:ci']
 
     steps:
       - name: Checkout sources
@@ -89,6 +89,7 @@ jobs:
           - 'integration:ng11:ivy'
           - 'integration:ng12:ivy'
           - 'integration:ng13:ivy'
+          - 'test:types'
 
     steps:
       - name: Checkout sources
