@@ -9,15 +9,15 @@
 name: setup
 description: Set up environment
 inputs:
-  NODE_VERSION:
+  node-version:
     description: Node version
     required: true
     default: 16.x
-  GITHUB_REF_NAME:
+  github-ref-name:
     description: Branch name
     required: true
     default: ${{ github.ref_name }}
-  GITHUB_SHA:
+  github-sha:
     description: Commit hash
     required: true
     default: ${{ github.sha }}
@@ -29,10 +29,10 @@ runs:
       shell: bash
       run: unset HISTFILE
 
-    - name: Use Node.js ${{ inputs.NODE_VERSION }}
+    - name: Use Node.js ${{ inputs.node-version }}
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ inputs.NODE_VERSION }}
+        node-version: ${{ inputs.node-version }}
         check-latest: true
 
     - name: Configure kernel (increase watchers)
@@ -53,11 +53,11 @@ runs:
           ./integrations/hello-world-ng12-ivy/dist-integration
           ./integrations/hello-world-ng13-ivy/dist-integration
           ./integrations/hello-world-ng14-ivy/dist-integration
-        key: ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.GITHUB_REF_NAME }}-sha-${{ inputs.GITHUB_SHA }}
+        key: ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-${{ inputs.github-sha }}
         restore-keys: |
-          ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.GITHUB_REF_NAME }}-sha-
-          ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
-          ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-
+          ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-
+          ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
+          ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-
           ${{ runner.os }}-
 
     - name: Install project dependencies
