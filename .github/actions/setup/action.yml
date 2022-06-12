@@ -64,6 +64,7 @@ runs:
           ~/.cache
           ./node_modules
           ./@ngxs
+          !./integrations/**/node_modules
           ./integrations/hello-world-ng11-ivy/dist-integration
           ./integrations/hello-world-ng12-ivy/dist-integration
           ./integrations/hello-world-ng13-ivy/dist-integration
