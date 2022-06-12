@@ -25,14 +25,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    # This action should be called in the parent workflow before this composite action.
-    # Composite action, as well as any other files, can not be referenced by a relative path before the sources are checked out.
-    # - name: Checkout sources
-    #   uses: actions/checkout@v3
-    #   with:
-    #     fetch-depth: 0
-    #     ref: ${{ inputs.GITHUB_SHA }}
-
     - name: Don't save Bash session history
       shell: bash
       run: unset HISTFILE
@@ -47,13 +39,6 @@ runs:
       shell: bash
       run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
-    - name: Get variables (branch name, commit hash)
-      shell: bash
-      id: get-variables
-      run: |
-        echo "::set-output name=shortref::$(echo ${inputs.GITHUB_REF_NAME})";
-        echo "::set-output name=commitsha::$(echo ${inputs.GITHUB_SHA})";
-
     - name: Workspace cache
       uses: actions/cache@v3
       id: workspace-cache
@@ -64,14 +49,13 @@ runs:
           ~/.cache
           ./node_modules
           ./@ngxs
-          !./integrations/**/node_modules
           ./integrations/hello-world-ng11-ivy/dist-integration
           ./integrations/hello-world-ng12-ivy/dist-integration
           ./integrations/hello-world-ng13-ivy/dist-integration
           ./integrations/hello-world-ng14-ivy/dist-integration
-        key: ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-${{ steps.get-variables.outputs.commitsha }}
+        key: ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.GITHUB_REF_NAME }}-sha-${{ inputs.GITHUB_SHA }}
         restore-keys: |
-          ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ steps.get-variables.outputs.shortref }}-workspace-
+          ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.GITHUB_REF_NAME }}-sha-
           ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
           ${{ runner.os }}-node-${{ inputs.NODE_VERSION }}-yarn-
           ${{ runner.os }}-
