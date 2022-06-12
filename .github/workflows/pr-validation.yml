@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         node-version: [16.x]
-        script: [lint, eslint, test:ci, test:types]
+        script: [lint, eslint, 'test:ci', 'test:types']
 
     steps:
       - name: Setup
@@ -67,16 +67,16 @@ jobs:
       matrix:
         node-version: [16.x]
         script:
-          - integration:ng7
-          - integration:ng8
-          - integration:ng9:ivy:off
-          - integration:ng9:ivy
-          - integration:ng10:ivy:off
-          - integration:ng10:ivy
-          - integration:ng11:ivy:off
-          - integration:ng11:ivy
-          - integration:ng12:ivy
-          - integration:ng13:ivy
+          - 'integration:ng7'
+          - 'integration:ng8'
+          - 'integration:ng9:ivy:off'
+          - 'integration:ng9:ivy'
+          - 'integration:ng10:ivy:off'
+          - 'integration:ng10:ivy'
+          - 'integration:ng11:ivy:off'
+          - 'integration:ng11:ivy'
+          - 'integration:ng12:ivy'
+          - 'integration:ng13:ivy'
 
     steps:
       - name: Setup
