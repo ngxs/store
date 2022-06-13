@@ -8,6 +8,7 @@
 
 name: setup
 description: Set up environment
+
 inputs:
   node-version:
     description: Node version

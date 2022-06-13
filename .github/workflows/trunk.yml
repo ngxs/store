@@ -86,6 +86,7 @@ jobs:
           - 'integration:ng11:ivy'
           - 'integration:ng12:ivy'
           - 'integration:ng13:ivy'
+          - 'integration:ng14:ivy'
           - 'test:types'
 
     steps:
@@ -101,6 +102,12 @@ jobs:
 
       - name: Run ${{ matrix.script }}
         run: yarn ${{ matrix.script }}
+
+      - name: Upload an integration test artifact
+        if: ${{ matrix.script == 'integration:ng11:ivy' || matrix.script == 'integration:ng12:ivy' || matrix.script == 'integration:ng13:ivy' || matrix.script == 'integration:ng14:ivy' }}
+        uses: ./.github/actions/upload-integration-test-artifact
+        with:
+          script: ${{ matrix.script }}
 
   trunk-bundlesize:
     runs-on: ubuntu-latest
@@ -124,6 +131,9 @@ jobs:
 
       - name: Run ${{ matrix.script }}
         run: yarn ${{ matrix.script }}
+
+      - name: Download integration test artifacts
+        uses: ./.github/actions/download-integration-test-artifacts
 
   trunk-publish:
     runs-on: ubuntu-latest
@@ -150,3 +160,6 @@ jobs:
           yarn publish:dev
           echo "Security: remove ~/.npmrc from the runner overwriting it with zeros several times."
           find ~/.npmrc -exec shred -fuz {} +
+
+      - name: Run ${{ matrix.script }}
+        run: yarn ${{ matrix.script }}

@@ -8,6 +8,7 @@
 
 name: check-build-artifacts
 description: Ensure the build artifact directories exist
+
 runs:
   using: 'composite'
   steps:
