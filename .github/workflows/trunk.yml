@@ -129,11 +129,11 @@ jobs:
           github-ref-name: ${{ github.ref_name }}
           github-sha: ${{ github.sha }}
 
-      - name: Run ${{ matrix.script }}
-        run: yarn ${{ matrix.script }}
-
       - name: Download integration test artifacts
         uses: ./.github/actions/download-integration-test-artifacts
+
+      - name: Run ${{ matrix.script }}
+        run: yarn ${{ matrix.script }}
 
   trunk-publish:
     runs-on: ubuntu-latest
@@ -160,6 +160,3 @@ jobs:
           yarn publish:dev
           echo "Security: remove ~/.npmrc from the runner overwriting it with zeros several times."
           find ~/.npmrc -exec shred -fuz {} +
-
-      - name: Run ${{ matrix.script }}
-        run: yarn ${{ matrix.script }}

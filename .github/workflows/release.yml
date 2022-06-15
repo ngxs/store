@@ -129,11 +129,11 @@ jobs:
           github-ref-name: ${{ github.ref_name }}
           github-sha: ${{ github.sha }}
 
-      - name: Run ${{ matrix.script }}
-        run: yarn ${{ matrix.script }}
-
       - name: Download integration test artifacts
         uses: ./.github/actions/download-integration-test-artifacts
+
+      - name: Run ${{ matrix.script }}
+        run: yarn ${{ matrix.script }}
 
   release-publish:
     runs-on: ubuntu-latest
