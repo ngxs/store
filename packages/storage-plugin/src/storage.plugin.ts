@@ -109,14 +109,25 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             try {
               const newVal = this._options.beforeSerialize!(val, key);
               this._engine.setItem(key!, this._options.serialize!(newVal));
-            } catch (e) {
+            } catch (error) {
               // Caretaker note: we have still left the `typeof` condition in order to avoid
               // creating a breaking change for projects that still use the View Engine.
               if (typeof ngDevMode === 'undefined' || ngDevMode) {
-                console.error(
-                  `Error ocurred while serializing the ${key} store value, value not updated, the value obtained from the store: `,
-                  val
-                );
+                if (
+                  error &&
+                  (error.name === 'QuotaExceededError' ||
+                    error.name === 'NS_ERROR_DOM_QUOTA_REACHED')
+                ) {
+                  console.error(
+                    `The ${key} store value exceeds the browser storage quota: `,
+                    val
+                  );
+                } else {
+                  console.error(
+                    `Error ocurred while serializing the ${key} store value, value not updated, the value obtained from the store: `,
+                    val
+                  );
+                }
               }
             }
           }
