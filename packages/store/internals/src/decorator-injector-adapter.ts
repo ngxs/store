@@ -14,9 +14,6 @@ import { isAngularInTestMode } from './angular';
 // during the production build. This is how Angular does tree-shaking internally.
 declare const ngDevMode: boolean;
 
-// https://github.com/angular/angular/blob/3a60063a54d850c50ce962a8a39ce01cfee71398/packages/compiler-cli/private/tooling.ts#L30-L33
-declare const ngJitMode: boolean;
-
 // Angular doesn't export `NG_FACTORY_DEF`.
 const NG_FACTORY_DEF = 'ɵfac';
 
@@ -79,11 +76,12 @@ export function ensureLocalInjectorCaptured(target: Object): void {
   const isJitModeOrIsAngularInTestMode =
     isAngularInTestMode() || !!(ɵglobal.ng && ɵglobal.ng.ɵcompilerFacade);
 
-  // The `ngJitMode` is provided by Terser definitions when the `buildOptimizer` is enabled.
-  if (typeof ngJitMode !== 'undefined' && !ngJitMode) {
-    decorateFactory(constructor);
-  } else if (ngDevMode && isJitModeOrIsAngularInTestMode) {
+  // If we're in development mode AND we're running unit tests or there's a compiler facade exposed,
+  // then patch `Object.defineProperty`. The compiler facade is exposed in JIT mode.
+  if (ngDevMode && isJitModeOrIsAngularInTestMode) {
     patchObjectDefineProperty();
+  } else {
+    decorateFactory(constructor);
   }
 
   target.constructor.prototype[FactoryHasBeenDecorated] = true;
