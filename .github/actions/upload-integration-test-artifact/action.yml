@@ -1,0 +1,34 @@
+# For more information see:
+# - https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+# - https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#outputsoutput_id
+
+# The action can be referenced in workflows like:
+# - ngxs/store/.github/actions/upload-integration-test-artifact@master
+# - ./.github/actions/upload-integration-test-artifact
+
+name: upload-integration-test-artifact
+description: Upload an integration test artifact with a name such as 'hello-world-ng11-ivy'.
+
+inputs:
+  script:
+    description: A script with a name such as 'integration:ng11:ivy' that generates an integration test artifact.
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Generate an artifact name
+      id: artifact-name
+      shell: bash
+      run: |
+        echo "Replace colons with dashes, substring 'integration' with a substring 'hello-world'. Example result: hello-world-ng11-ivy"
+        echo "::set-output name=value::$(echo ${SCRIPT} | sed -r "s/:/-/g" | sed -r "s/integration/hello-world/g")"
+      env:
+        SCRIPT: ${{ inputs.script }}
+
+    - name: Upload ${{ inputs.script }} artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ steps.artifact-name.outputs.value }}
+        path: ./integrations/**/dist-integration/main.*.js
+        retention-days: 1
