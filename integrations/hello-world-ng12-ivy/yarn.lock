@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@angular-builders/jest@11.2.0":
-  version "11.2.0"
-  resolved "https://registry.npmjs.org/@angular-builders/jest/-/jest-11.2.0.tgz#1eeab8ba0b043ea6a7fdde7fad9f3836063b0a94"
-  integrity sha512-WTdRn6z+BeIXpM51Hr8p/riBlpN24nOuop5FAJYVF7HgsdGRCY+RqMhy6I7ZU8T39E4T1rgoRlqtmRscPnQ3qw==
+"@angular-builders/jest@12.0.0":
+  version "12.0.0"
+  resolved "https://registry.npmjs.org/@angular-builders/jest/-/jest-12.0.0.tgz#c9c590221f6d611cd18dfe3f3edc2aec6f78cce0"
+  integrity sha512-zQyXLrJnX/aCd/32vxUR2BGOYBkxdrqRpXz19MlrmEU+n2kw+/3bgVMnOw3DpqKtkpkYVXfGaXHkocKMwiVhJg==
   dependencies:
-    "@angular-devkit/architect" ">=0.1100.0 < 0.1200.0"
-    "@angular-devkit/core" "^11.0.0"
+    "@angular-devkit/architect" ">=0.1200.0 < 0.1300.0"
+    "@angular-devkit/core" "^12.0.0"
     jest-preset-angular "^8.4.0"
     lodash "^4.17.15"
 
@@ -20,13 +20,13 @@
     "@angular-devkit/core" "12.0.0"
     rxjs "6.6.7"
 
-"@angular-devkit/architect@>=0.1100.0 < 0.1200.0":
-  version "0.1102.13"
-  resolved "https://registry.npmjs.org/@angular-devkit/architect/-/architect-0.1102.13.tgz#0f6b9d38cb8cda928b24404278f227fe8f169fc1"
-  integrity sha512-v44YF54DQnxwggZKUVCB2WtgfqMW8VG5AtE+nO0RgEtgnOC3e4bB7dZ/n+2Am0LCauYx45ufQDlIespeX09XgA==
+"@angular-devkit/architect@>=0.1200.0 < 0.1300.0":
+  version "0.1202.17"
+  resolved "https://registry.npmjs.org/@angular-devkit/architect/-/architect-0.1202.17.tgz#c495b1cf5a695e73164149fca420dd5935ab258d"
+  integrity sha512-uUQcHcLbPvr9adALQSLU1MTDduVUR2kZAHi2e7SmL9ioel84pPVXBoD0WpSBeUMKwPiDs3TQDaxDB49hl0nBSQ==
   dependencies:
-    "@angular-devkit/core" "11.2.13"
-    rxjs "6.6.3"
+    "@angular-devkit/core" "12.2.17"
+    rxjs "6.6.7"
 
 "@angular-devkit/build-angular@12.0.0":
   version "12.0.0"
@@ -118,17 +118,6 @@
     "@angular-devkit/architect" "0.1200.0"
     rxjs "6.6.7"
 
-"@angular-devkit/core@11.2.13", "@angular-devkit/core@^11.0.0":
-  version "11.2.13"
-  resolved "https://registry.npmjs.org/@angular-devkit/core/-/core-11.2.13.tgz#7829862132555a52009d0af9671b06ffdf9200f1"
-  integrity sha512-GL97DZXeQCecqZmaIeMfG/XtHv6e7FM+uygMePNF9yn4cml32bSp4P5oRjDMgj7iFl6GIU81n8TstTMmFbt85w==
-  dependencies:
-    ajv "6.12.6"
-    fast-json-stable-stringify "2.1.0"
-    magic-string "0.25.7"
-    rxjs "6.6.3"
-    source-map "0.7.3"
-
 "@angular-devkit/core@12.0.0":
   version "12.0.0"
   resolved "https://registry.npmjs.org/@angular-devkit/core/-/core-12.0.0.tgz#e5f1dc4ba2e65a7aeb1fb14659e17a0f92dbae1b"
@@ -136,6 +125,18 @@
   dependencies:
     ajv "8.2.0"
     ajv-formats "2.0.2"
+    fast-json-stable-stringify "2.1.0"
+    magic-string "0.25.7"
+    rxjs "6.6.7"
+    source-map "0.7.3"
+
+"@angular-devkit/core@12.2.17", "@angular-devkit/core@^12.0.0":
+  version "12.2.17"
+  resolved "https://registry.npmjs.org/@angular-devkit/core/-/core-12.2.17.tgz#0bef00636efe624163486265e05c508587cb57f1"
+  integrity sha512-PyOY7LGUPPd6rakxUYbfQN6zAdOCMCouVp5tERY1WTdMdEiuULOtHsPee8kNbh75pD59KbJNU+fwozPRMuIm5g==
+  dependencies:
+    ajv "8.6.2"
+    ajv-formats "2.1.0"
     fast-json-stable-stringify "2.1.0"
     magic-string "0.25.7"
     rxjs "6.6.7"
@@ -1547,7 +1548,7 @@
     tslib "^1.9.0"
 
 "@ngxs/websocket-plugin@file:./node_modules/@ngxs/websocket-plugin":
-  version "3.7.3"
+  version "3.7.4"
   dependencies:
     tslib "^1.9.0"
 
@@ -2053,20 +2054,17 @@ ajv-formats@2.0.2:
   dependencies:
     ajv "^8.0.0"
 
+ajv-formats@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/ajv-formats/-/ajv-formats-2.1.0.tgz#96eaf83e38d32108b66d82a9cb0cfa24886cdfeb"
+  integrity sha512-USH2jBb+C/hIpwD2iRjp0pe0k+MvzG0mlSn/FIdCgQhUb9ALPRjt2KIQdfZDS9r0ZIeUAg7gOu9KL0PFqGqr5Q==
+  dependencies:
+    ajv "^8.0.0"
+
 ajv-keywords@^3.1.0, ajv-keywords@^3.5.2:
   version "3.5.2"
   resolved "https://registry.npmjs.org/ajv-keywords/-/ajv-keywords-3.5.2.tgz#31f29da5ab6e00d1c2d329acf7b5929614d5014d"
   integrity sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==
-
-ajv@6.12.6, ajv@^6.1.0, ajv@^6.12.3, ajv@^6.12.4, ajv@^6.12.5:
-  version "6.12.6"
-  resolved "https://registry.npmjs.org/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
-  integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
-  dependencies:
-    fast-deep-equal "^3.1.1"
-    fast-json-stable-stringify "^2.0.0"
-    json-schema-traverse "^0.4.1"
-    uri-js "^4.2.2"
 
 ajv@8.2.0:
   version "8.2.0"
@@ -2076,6 +2074,26 @@ ajv@8.2.0:
     fast-deep-equal "^3.1.1"
     json-schema-traverse "^1.0.0"
     require-from-string "^2.0.2"
+    uri-js "^4.2.2"
+
+ajv@8.6.2:
+  version "8.6.2"
+  resolved "https://registry.npmjs.org/ajv/-/ajv-8.6.2.tgz#2fb45e0e5fcbc0813326c1c3da535d1881bb0571"
+  integrity sha512-9807RlWAgT564wT+DjeyU5OFMPjmzxVobvDFmNAhY+5zD6A2ly3jDp6sgnfyDtlIQ+7H97oc/DGCzzfu9rjw9w==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
+    uri-js "^4.2.2"
+
+ajv@^6.1.0, ajv@^6.12.3, ajv@^6.12.4, ajv@^6.12.5:
+  version "6.12.6"
+  resolved "https://registry.npmjs.org/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
+  integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    fast-json-stable-stringify "^2.0.0"
+    json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
 ajv@^8.0.0:
@@ -8278,13 +8296,6 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
-rxjs@6.6.3:
-  version "6.6.3"
-  resolved "https://registry.npmjs.org/rxjs/-/rxjs-6.6.3.tgz#8ca84635c4daa900c0d3967a6ee7ac60271ee552"
-  integrity sha512-trsQc+xYYXZ3urjOiJOuCOa5N3jAZ3eiSpQB5hIT8zGlL2QfnHLJ2r7GMkBGuIausdJN1OneaI6gQlsqNHHmZQ==
-  dependencies:
-    tslib "^1.9.0"
-
 rxjs@6.6.7, rxjs@^6.3.3, rxjs@^6.5.4, rxjs@^6.6.6:
   version "6.6.7"
   resolved "https://registry.npmjs.org/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
@@ -9265,6 +9276,11 @@ tslib@2.2.0, tslib@^2.0.0, tslib@^2.1.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
   integrity sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
+
+tslib@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
+  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
 
 tslib@^1.10.0, tslib@^1.13.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.14.1"
