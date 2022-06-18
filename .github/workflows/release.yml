@@ -136,6 +136,7 @@ jobs:
         run: yarn ${{ matrix.script }}
 
   release-publish:
+    if: github.repository_owner == 'ngxs'
     runs-on: ubuntu-latest
     environment: npm-publish
     needs: [release-build, release-test, release-integration-test, release-bundlesize]

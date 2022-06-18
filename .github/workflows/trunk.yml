@@ -136,6 +136,7 @@ jobs:
         run: yarn ${{ matrix.script }}
 
   trunk-publish:
+    if: github.repository_owner == 'ngxs'
     runs-on: ubuntu-latest
     environment: npm-publish
     needs: [trunk-build, trunk-test, trunk-integration-test, trunk-bundlesize]
