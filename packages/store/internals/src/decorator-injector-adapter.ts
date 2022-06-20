@@ -3,10 +3,12 @@ import {
   Injector,
   INJECTOR,
   Type,
-  ɵɵdirectiveInject,
-  ɵglobal
+  ɵglobal,
+  ɵɵdirectiveInject
 } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
+
+import { isAngularInTestMode } from './angular';
 
 // Will be provided through Terser global definitions by Angular CLI
 // during the production build. This is how Angular does tree-shaking internally.
@@ -50,17 +52,36 @@ export function ensureLocalInjectorCaptured(target: Object): void {
   }
 
   const constructor: ConstructorWithDefinitionAndFactory = target.constructor;
-  // Means we're in AOT mode.
-  if (typeof constructor[NG_FACTORY_DEF] === 'function') {
+
+  // The factory is set later by the Angular compiler in JIT mode, and we're not able to patch the factory now.
+  // We can't use any asynchronous code like `Promise.resolve().then(...)` since this is not functional in unit
+  // tests that are being run in `SyncTestZoneSpec`.
+  // Given the following example:
+  // @Component()
+  // class BaseComponent {}
+  // @Component()
+  // class MainComponent extends BaseComponent {
+  //   @Select(AnimalsState) animals$: Observable<string[]>;
+  // }
+  // In this example, the factory will be defined for the `BaseComponent`, but will not be defined for the `MainComponent`.
+  // If we try to decorate the factory immediately, we'll get `Cannot redefine property` exception when Angular will try to define
+  // an original factory for the `MainComponent`.
+
+  // Note: the factory is defined statically in the code in AOT mode.
+  // AppComponent.ɵfac = function AppComponent_Factory(t) {
+  //   return new (t || AppComponent)();
+  // };
+  // __decorate([Select], AppComponent.prototype, 'animals$', void 0);
+
+  const isJitModeOrIsAngularInTestMode =
+    isAngularInTestMode() || !!(ɵglobal.ng && ɵglobal.ng.ɵcompilerFacade);
+
+  // If we're in development mode AND we're running unit tests or there's a compiler facade exposed,
+  // then patch `Object.defineProperty`. The compiler facade is exposed in JIT mode.
+  if (ngDevMode && isJitModeOrIsAngularInTestMode) {
+    patchObjectDefineProperty();
+  } else {
     decorateFactory(constructor);
-  } else if (ngDevMode) {
-    // We're running in JIT mode and that means we're not able to get the compiled definition
-    // on the class inside the property decorator during the current message loop tick. We have
-    // to wait for the next message loop tick. Note that this is safe since this Promise will be
-    // resolved even before the `APP_INITIALIZER` is resolved.
-    // The below code also will be executed only in development mode, since it's never recommended
-    // to use the JIT compiler in production mode (by setting "aot: false").
-    decorateFactoryLater(constructor);
   }
 
   target.constructor.prototype[FactoryHasBeenDecorated] = true;
@@ -123,25 +144,45 @@ function decorateFactory(constructor: ConstructorWithDefinitionAndFactory): void
   });
 }
 
-function decorateFactoryLater(constructor: ConstructorWithDefinitionAndFactory): void {
-  // This function actually will be tree-shaken away when building for production since it's guarded with `ngDevMode`.
-  // We're having the `try-catch` here because of the `SyncTestZoneSpec`, which throws
-  // an error when micro or macrotask is used within a synchronous test. E.g. `Cannot call
-  // Promise.then from within a sync test`.
-  try {
-    Promise.resolve().then(() => {
-      decorateFactory(constructor);
-    });
-  } catch {
-    // This is kind of a "hack", but we try to be backwards-compatible,
-    // tho this `catch` block will only be executed when tests are run with Jasmine or Jest.
-    ɵglobal.process &&
-      ɵglobal.process.nextTick &&
-      ɵglobal.process.nextTick(() => {
-        decorateFactory(constructor);
-      });
-  }
-}
+// Note: this function will be tree-shaken in production.
+const patchObjectDefineProperty = (() => {
+  let objectDefinePropertyPatched = false;
+  return () => {
+    if (objectDefinePropertyPatched) {
+      return;
+    }
+    const defineProperty = Object.defineProperty;
+    // We should not be patching globals, but there's no other way to know when it's appropriate
+    // to decorate the original factory. There're different edge cases, e.g., when the class extends
+    // another class, the factory will be defined for the base class but not for the child class.
+    // The patching will be done only during the development and in JIT mode.
+    Object.defineProperty = function<T>(
+      object: T,
+      propertyKey: PropertyKey,
+      attributes: PropertyDescriptor & ThisType<any>
+    ) {
+      // Angular calls `Object.defineProperty(target, 'ɵfac', { get: ..., configurable: true })` when defining a factory function.
+      // We only want to intercept `ɵfac` key.
+      // If the property is `ɵfac` AND `configurable` equals `true`, then let's call the original
+      // implementation and then decorate the factory.
+      // // https://github.com/angular/angular/blob/3a60063a54d850c50ce962a8a39ce01cfee71398/packages/core/src/render3/jit/pipe.ts#L21-L39
+      if (
+        propertyKey !== NG_FACTORY_DEF ||
+        // We also call `Object.defineProperty(target, 'ɵfac', ...)`, but we don't set `configurable` property.
+        (propertyKey === NG_FACTORY_DEF && !attributes.configurable)
+      ) {
+        return defineProperty.call(this, object, propertyKey, attributes) as T;
+      } else {
+        // If the property is `ɵfac` AND `configurable` equals `true`, then let's call the original
+        // implementation and then decorate the factory.
+        defineProperty.call(this, object, propertyKey, attributes);
+        decorateFactory((object as unknown) as ConstructorWithDefinitionAndFactory);
+        return object;
+      }
+    };
+    objectDefinePropertyPatched = true;
+  };
+})();
 
 // We could've used `ɵɵFactoryDef` but we try to be backwards-compatible,
 // since it's not exported in older Angular versions.
