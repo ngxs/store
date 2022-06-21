@@ -138,7 +138,7 @@ jobs:
   trunk-publish:
     if: github.repository_owner == 'ngxs'
     runs-on: ubuntu-latest
-    environment: npm-publish
+    environment: npm-publish-dev
     needs: [trunk-build, trunk-test, trunk-integration-test, trunk-bundlesize]
 
     steps:
@@ -157,7 +157,8 @@ jobs:
 
       - name: Development release - publish development builds to all @ngxs packages
         run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
           yarn publish:dev
           echo "Security: remove ~/.npmrc from the runner overwriting it with zeros several times."
           find ~/.npmrc -exec shred -fuz {} +
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

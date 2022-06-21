@@ -157,7 +157,8 @@ jobs:
 
       - name: Production release - publish tagged builds to all @ngxs packages
         run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
           yarn publish:tagged
           echo "Security: remove ~/.npmrc from the runner overwriting it with zeros several times."
           find ~/.npmrc -exec shred -fuz {} +
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

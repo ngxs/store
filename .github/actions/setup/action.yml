@@ -34,6 +34,7 @@ runs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
+        registry-url: https://registry.npmjs.org
         check-latest: true
 
     - name: Configure kernel (increase watchers)
