@@ -117,7 +117,6 @@ jobs:
     strategy:
       matrix:
         node-version: [16.x]
-        script: [bundlemon]
 
     steps:
       - name: Checkout sources
@@ -133,8 +132,8 @@ jobs:
       - name: Download integration test artifacts
         uses: ./.github/actions/download-integration-test-artifacts
 
-      - name: Run ${{ matrix.script }}
-        run: yarn ${{ matrix.script }}
+      - name: Run BundleMon
+        run: yarn bundlemon
         env:
           BUNDLEMON_PROJECT_ID: ${{ secrets.BUNDLEMON_PROJECT_ID }}
           CI_COMMIT_SHA: ${{ github.sha }}

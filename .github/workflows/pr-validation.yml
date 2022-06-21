@@ -124,7 +124,6 @@ jobs:
     strategy:
       matrix:
         node-version: [16.x]
-        script: [bundlemon]
 
     steps:
       - name: Checkout sources
@@ -143,17 +142,8 @@ jobs:
       - name: Download integration test artifacts
         uses: ./.github/actions/download-integration-test-artifacts
 
-      # TODOs 4 Mark:
-      # 1. create a bundlemon project https://app.bundlemon.dev/create-project
-      # and save both values that will be generated and printed in the UI in the repository secrets:
-      # BUNDLEMON_PROJECT_ID - this will be needed for reporting;
-      # BUNDLEMON_PROJECT_API_KEY - this one will not be used, but seems like it's work at least saving its value.
-      # Docs ref: https://github.com/LironEr/bundlemon-github-actions#create-bundlemon-project
-      # 2. install bundlemon GitHub App https://github.com/apps/bundlemon
-      # to add GitHub integration.
-      # Docs ref: https://github.com/LironEr/bundlemon-github-actions#add-github-integration
-      - name: Run ${{ matrix.script }}
-        run: yarn ${{ matrix.script }}
+      - name: Run BundleMon
+        run: yarn bundlemon
         env:
           BUNDLEMON_PROJECT_ID: ${{ secrets.BUNDLEMON_PROJECT_ID }}
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
