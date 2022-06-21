@@ -32,7 +32,12 @@ export interface RouterStateModel<T = RouterStateSnapshot> {
   trigger: RouterTrigger;
 }
 
-export type RouterTrigger = 'none' | 'router' | 'store';
+export type RouterTrigger =
+  | 'none'
+  | 'router'
+  | 'store'
+  // The `devtools` trigger means that the state change has been triggered by Redux DevTools (e.g. when the time-traveling is used).
+  | 'devtools';
 
 /**
  * @description Will be provided through Terser global definitions by Angular CLI
@@ -174,6 +179,10 @@ export class RouterState implements OnDestroy {
   }
 
   private navigateIfNeeded(state: RouterStateModel | undefined): void {
+    if (state && state.trigger === 'devtools') {
+      this._storeState = this._store.selectSnapshot(RouterState);
+    }
+
     const canSkipNavigation =
       !this._storeState ||
       !this._storeState.state ||
