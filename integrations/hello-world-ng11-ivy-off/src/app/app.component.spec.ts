@@ -5,19 +5,15 @@ import { StoreModule } from './store';
 
 describe('AppComponent', () => {
   const setup = async () => {
-    let fixture: ComponentFixture<AppComponent>;
-    let component: AppComponent;
-
-    return TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       imports: [RouterTestingModule, StoreModule],
       declarations: [AppComponent]
-    })
-      .compileComponents()
-      .then(() => {
-        fixture = TestBed.createComponent(AppComponent);
-        component = fixture.componentInstance;
-        return { fixture, component };
-      });
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    return { fixture, component };
   };
 
   it('should create the app', async () => {
