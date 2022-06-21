@@ -1,4 +1,3 @@
-import { Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule, State } from '@ngxs/store';
 
@@ -14,8 +13,7 @@ describe('NGXS', () => {
 
     // Act
     await TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([CountriesState])],
-      providers: [Injector]
+      imports: [NgxsModule.forRoot([CountriesState])]
     }).compileComponents();
 
     TestBed.get(CountriesState);
