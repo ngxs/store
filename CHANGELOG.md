@@ -5,6 +5,7 @@
 - Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
 - Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
+- Feature: Enable warning on unhandled actions [#1870](https://github.com/ngxs/store/pull/1870)
 - Feature: Router Plugin - Provide more actions and navigation timing option [#1932](https://github.com/ngxs/store/pull/1932)
 - Feature: Storage Plugin - Allow providing namespace for keys [#1841](https://github.com/ngxs/store/pull/1841)
 - Feature: Storage Plugin - Enable providing storage engine individually [#1935](https://github.com/ngxs/store/pull/1935)
