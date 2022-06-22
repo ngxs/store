@@ -1,15 +1,4 @@
-import {
-  InjectionToken,
-  Injector,
-  INJECTOR,
-  Type,
-  ɵɵdirectiveInject,
-  ɵglobal
-} from '@angular/core';
-
-// Will be provided through Terser global definitions by Angular CLI
-// during the production build. This is how Angular does tree-shaking internally.
-declare const ngDevMode: boolean;
+import { InjectionToken, Injector, INJECTOR, Type, ɵɵdirectiveInject } from '@angular/core';
 
 // Angular doesn't export `NG_FACTORY_DEF`.
 const NG_FACTORY_DEF = 'ɵfac';
@@ -30,14 +19,16 @@ export function ensureLocalInjectorCaptured(target: Object): void {
   // Means we're in AOT mode.
   if (typeof constructor[NG_FACTORY_DEF] === 'function') {
     decorateFactory(constructor);
-  } else if (ngDevMode) {
+  } else {
     // We're running in JIT mode and that means we're not able to get the compiled definition
     // on the class inside the property decorator during the current message loop tick. We have
     // to wait for the next message loop tick. Note that this is safe since this Promise will be
     // resolved even before the `APP_INITIALIZER` is resolved.
     // The below code also will be executed only in development mode, since it's never recommended
     // to use the JIT compiler in production mode (by setting "aot: false").
-    decorateFactoryLater(constructor);
+    Promise.resolve().then(() => {
+      decorateFactory(constructor);
+    });
   }
 
   target.constructor.prototype[FactoryHasBeenDecorated] = true;
@@ -92,32 +83,12 @@ function decorateFactory(constructor: ConstructorWithDefinitionAndFactory): void
   });
 }
 
-function decorateFactoryLater(constructor: ConstructorWithDefinitionAndFactory): void {
-  // This function actually will be tree-shaken away when building for production since it's guarded with `ngDevMode`.
-  // We're having the `try-catch` here because of the `SyncTestZoneSpec`, which throws
-  // an error when micro or macrotask is used within a synchronous test. E.g. `Cannot call
-  // Promise.then from within a sync test`.
-  try {
-    Promise.resolve().then(() => {
-      decorateFactory(constructor);
-    });
-  } catch {
-    // This is kind of a "hack", but we try to be backwards-compatible,
-    // tho this `catch` block will only be executed when tests are run with Jasmine or Jest.
-    ɵglobal.process &&
-      ɵglobal.process.nextTick &&
-      ɵglobal.process.nextTick(() => {
-        decorateFactory(constructor);
-      });
-  }
-}
-
-// We could've used `ɵɵFactoryDef` but we try to be backwards-compatible,
+// We could've used `ɵɵFactoryDef` but we try to be backward compatible,
 // since it's not exported in older Angular versions.
 type Factory = () => PrivateInstance;
 
-// We could've used `ɵɵInjectableDef`, `ɵɵPipeDef`, etc. We try to be backwards-compatible
-// since they're not exported in older Angular versions.
+// We could've used `ɵɵInjectableDef`, `ɵɵPipeDef`, etc. We try to be backward
+// compatible since they're not exported in older Angular versions.
 interface Definition {
   factory: Factory | null;
 }
