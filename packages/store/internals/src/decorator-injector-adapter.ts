@@ -74,13 +74,12 @@ function decorateFactory(constructor: ConstructorWithDefinitionAndFactory): void
   // code uses the `def.factory` and then fallbacks to `ɵfac`.
   if (def) {
     def.factory = decoratedFactory;
+  } else {
+    // `@NgModule()` doesn't doesn't have definition factory.
+    Object.defineProperty(constructor, NG_FACTORY_DEF, {
+      get: () => decoratedFactory
+    });
   }
-
-  // `@NgModule()` doesn't doesn't have definition factory, also providers have definitions but Angular
-  // still uses the `ɵfac`.
-  Object.defineProperty(constructor, NG_FACTORY_DEF, {
-    get: () => decoratedFactory
-  });
 }
 
 // We could've used `ɵɵFactoryDef` but we try to be backward compatible,

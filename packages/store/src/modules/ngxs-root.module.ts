@@ -1,4 +1,4 @@
-import { Inject, Injector, NgModule, Optional, ɵivyEnabled } from '@angular/core';
+import { Inject, NgModule, Optional } from '@angular/core';
 
 import { StateFactory } from '../internal/state-factory';
 import { InternalStateOperations } from '../internal/state-operations';
@@ -8,6 +8,7 @@ import { ROOT_STATE_TOKEN } from '../symbols';
 import { StateClassInternal, StatesAndDefaults } from '../internal/internals';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
 import { InitState } from '../actions/actions';
+import { setIvyEnabledInDevMode } from '../ivy/ivy-enabled-in-dev-mode';
 
 /**
  * Root module
@@ -19,15 +20,18 @@ export class NgxsRootModule {
     factory: StateFactory,
     internalStateOperations: InternalStateOperations,
     _store: Store,
-    injector: Injector,
+    _select: SelectFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
     states: StateClassInternal[] = [],
     lifecycleStateManager: LifecycleStateManager
   ) {
-    // If the user is running View Engine then we create the `SelectFactory` instance,
-    // otherwise it'll be tree-shaken away in Ivy.
-    !ɵivyEnabled && injector.get(SelectFactory);
+    // Caretaker note: we have still left the `typeof` condition in order to avoid
+    // creating a breaking change for projects that still use the View Engine.
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      // Validate states on having the `@Injectable()` decorator in Ivy
+      setIvyEnabledInDevMode();
+    }
 
     // Add stores to the state graph and return their defaults
     const results: StatesAndDefaults = factory.addAndReturnDefaults(states);
