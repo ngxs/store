@@ -1,15 +1,9 @@
 import { ɵivyEnabled } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
-import {
-  localInject,
-  ensureLocalInjectorCaptured,
-  ensureInjectorNotifierIsCaptured
-} from '@ngxs/store/internals';
+import { ensureLocalInjectorCaptured, localInject } from '@ngxs/store/internals';
 
 import { Store } from '../../store';
 import { NgxsConfig } from '../../symbols';
-import { createSelectObservable, createSelectorFn, SelectorFn } from './symbols';
+import { createSelectObservable, createSelectorFn, PropertyType, SelectorFn } from './symbols';
 
 /**
  * Decorator for selecting a slice of state from the store.
@@ -19,11 +13,6 @@ export function Select<T>(rawSelector?: T, ...paths: string[]): PropertyDecorato
     const name: string = key.toString();
     const selectorId = `__${name}__selector`;
     let selector: SelectorFn | null = null;
-    let injectorNotifier$: ReplaySubject<boolean> | null = null;
-
-    if (ɵivyEnabled) {
-      injectorNotifier$ = ensureInjectorNotifierIsCaptured(target);
-    }
 
     Object.defineProperties(target, {
       [selectorId]: {
@@ -34,26 +23,17 @@ export function Select<T>(rawSelector?: T, ...paths: string[]): PropertyDecorato
       [name]: {
         enumerable: true,
         configurable: true,
-        get() {
-          if (this[selectorId]) {
-            return this[selectorId];
-          }
+        get(): PropertyType<T> {
           // The `localInject` will be tree-shaken away in apps that
           // still use the View Engine.
-          if (ɵivyEnabled) {
-            this[selectorId] = injectorNotifier$!.pipe(
-              mergeMap(() => {
-                const store = localInject(this, Store);
-                const config = localInject(this, NgxsConfig);
-                selector = selector || createSelectorFn(config, name, rawSelector, paths);
-                return createSelectObservable(selector, store);
-              })
-            );
-          } else {
-            selector = selector || createSelectorFn(null, name, rawSelector, paths);
-            this[selectorId] = createSelectObservable(selector, null);
-          }
-          return this[selectorId];
+          const store = ɵivyEnabled ? localInject(this, Store) : null;
+          const config = ɵivyEnabled ? localInject(this, NgxsConfig) : null;
+
+          selector = selector || createSelectorFn(config, name, rawSelector, paths);
+
+          return (
+            this[selectorId] || (this[selectorId] = createSelectObservable(selector, store))
+          );
         }
       }
     });

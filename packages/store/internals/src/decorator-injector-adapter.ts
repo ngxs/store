@@ -6,7 +6,6 @@ import {
   ɵɵdirectiveInject,
   ɵglobal
 } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
 
 // Will be provided through Terser global definitions by Angular CLI
 // during the production build. This is how Angular does tree-shaking internally.
@@ -20,28 +19,6 @@ const InjectorInstance: unique symbol = Symbol('InjectorInstance');
 
 // A `Symbol` which is used to determine if factory has been decorated previously or not.
 const FactoryHasBeenDecorated: unique symbol = Symbol('FactoryHasBeenDecorated');
-
-// A `Symbol` which is used to save the notifier on the class instance. The `InjectorInstance` cannot
-// be retrieved within the `constructor` since it's set after the `factory()` is called.
-const InjectorNotifier: unique symbol = Symbol('InjectorNotifier');
-
-interface PrototypeWithInjectorNotifier extends Object {
-  [InjectorNotifier]?: ReplaySubject<boolean>;
-}
-
-export function ensureInjectorNotifierIsCaptured(
-  target: PrototypeWithInjectorNotifier | PrivateInstance
-): ReplaySubject<boolean> {
-  if (target[InjectorNotifier]) {
-    return target[InjectorNotifier]!;
-  } else {
-    const injectorNotifier$ = new ReplaySubject<boolean>(1);
-    Object.defineProperty(target, InjectorNotifier, {
-      get: () => injectorNotifier$
-    });
-    return injectorNotifier$;
-  }
-}
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function ensureLocalInjectorCaptured(target: Object): void {
@@ -99,14 +76,6 @@ function decorateFactory(constructor: ConstructorWithDefinitionAndFactory): void
       // Caretaker note: that this is the same way of getting the injector.
       INJECTOR
     );
-
-    // Caretaker note: the notifier will be available only if consumers call the `ensureInjectorNotifierIsCaptured()`.
-    const injectorNotifier$ = instance[InjectorNotifier];
-    if (injectorNotifier$) {
-      injectorNotifier$.next(true);
-      injectorNotifier$.complete();
-    }
-
     return instance;
   };
 
@@ -167,5 +136,4 @@ interface ConstructorWithDefinitionAndFactory extends Function {
 
 interface PrivateInstance {
   [InjectorInstance]?: Injector;
-  [InjectorNotifier]?: ReplaySubject<boolean>;
 }
