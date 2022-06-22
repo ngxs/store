@@ -140,6 +140,7 @@ jobs:
 
   trunk-publish:
     if: github.repository_owner == 'ngxs'
+    continue-on-error: true
     runs-on: ubuntu-latest
     environment: npm-publish-dev
     needs: [trunk-build, trunk-test, trunk-integration-test, trunk-bundlemon]
