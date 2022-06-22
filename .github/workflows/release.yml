@@ -109,14 +109,14 @@ jobs:
         with:
           script: ${{ matrix.script }}
 
-  release-bundlesize:
+  release-bundlemon:
+    if: github.repository_owner == 'ngxs'
     runs-on: ubuntu-latest
     needs: release-integration-test
 
     strategy:
       matrix:
         node-version: [16.x]
-        script: [bundlesize]
 
     steps:
       - name: Checkout sources
@@ -132,14 +132,17 @@ jobs:
       - name: Download integration test artifacts
         uses: ./.github/actions/download-integration-test-artifacts
 
-      - name: Run ${{ matrix.script }}
-        run: yarn ${{ matrix.script }}
+      - name: Run BundleMon
+        run: yarn bundlemon
+        env:
+          BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
+          CI_COMMIT_SHA: ${{ github.sha }}
 
   release-publish:
     if: github.repository_owner == 'ngxs'
     runs-on: ubuntu-latest
     environment: npm-publish
-    needs: [release-build, release-test, release-integration-test, release-bundlesize]
+    needs: [release-build, release-test, release-integration-test, release-bundlemon]
 
     steps:
       - name: Checkout sources

@@ -1,0 +1,107 @@
+{
+  "baseDir": "./@ngxs/store/",
+  "defaultCompression": "none",
+  "files": [
+    {
+      "path": "./fesm2015/ngxs-store.js",
+      "maxSize": "125kB",
+      "maxPercentIncrease": 0.5
+    },
+    {
+      "path": "./fesm5/ngxs-store.js",
+      "maxSize": "145kB",
+      "maxPercentIncrease": 0.5
+    },
+    {
+      "path": "./fesm2015/ngxs-store-operators.js",
+      "maxSize": "15kB",
+      "maxPercentIncrease": 0.5
+    },
+    {
+      "path": "./fesm5/ngxs-store-operators.js",
+      "maxSize": "15kB",
+      "maxPercentIncrease": 0.5
+    },
+    {
+      "path": "./fesm2015/ngxs-store-internals.js",
+      "maxSize": "20kB",
+      "maxPercentIncrease": 0.5
+    },
+    {
+      "path": "./fesm5/ngxs-store-internals.js",
+      "maxSize": "20kB",
+      "maxPercentIncrease": 0.5
+    }
+  ],
+  "groups": [
+    {
+      "friendlyName": "@ngxs/store(umd)",
+      "path": "./bundles/*.umd.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(umd.min)",
+      "path": "./bundles/*.umd.min.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(fesm2015)",
+      "path": "./fesm2015/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(fesm5)",
+      "path": "./fesm5/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(esm2015)",
+      "path": "./esm2015/**/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(esm5)",
+      "path": "./esm5/**/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(umd)[gzip]",
+      "path": "./bundles/*.umd.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "@ngxs/store(umd.min)[gzip]",
+      "path": "./bundles/*.umd.min.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "@ngxs/store(fesm2015)[gzip]",
+      "path": "./fesm2015/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "@ngxs/store(fesm5)[gzip]",
+      "path": "./fesm5/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "@ngxs/store(esm2015)[gzip]",
+      "path": "./esm2015/**/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "@ngxs/store(esm5)[gzip]",
+      "path": "./esm5/**/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    }
+  ],
+  "reportOutput": [
+    "github"
+  ]
+}
