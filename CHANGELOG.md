@@ -10,7 +10,6 @@ $ npm install @ngxs/store@dev
 - Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
 - Fix: Storage Plugin - Provide more meaningful error message when the storage quota exceeds [#1863](https://github.com/ngxs/store/pull/1863)
-- Fix: Do not try to decorate factory asynchronously [#1861](https://github.com/ngxs/store/pull/1861)
 - Fix: Do not check if the state class is injectable within the decorator since the `ɵprov` will not exist in JIT mode [#1867](https://github.com/ngxs/store/pull/1867)
 
 # 3.7.4 2022-06-09
