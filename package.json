@@ -97,6 +97,7 @@
     "test:ci:e2e": "yarn start-test serve:integration:static 4200 cy:run",
     "test:ci:integration": "cross-env CI=true ng run integration:test --colors --runInBand && yarn build:integration",
     "test:ci:integration:ssr": "cross-env CI=true yarn build:integration:ssr && yarn start-test serve:integration:ssr 4200 cy:run:ssr",
+    "bundlemon": "bundlemon --config .bundlemonrc.json &&  bundlemon --config .bundlemonrc.plugins.json &&  bundlemon --config .bundlemonrc.integration.json",
     "publish:dev": "ts-node tools/publish-dev-builds",
     "publish:tagged": "ts-node tools/publish-tagged-builds",
     "// - UTILS": "Utility Scripts",

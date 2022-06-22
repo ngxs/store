@@ -1,127 +1,107 @@
 {
-  "baseDir": "./",
+  "baseDir": "./@ngxs/store/",
   "defaultCompression": "none",
   "files": [
     {
-      "path": "./@ngxs/store/fesm2015/ngxs-store-internals.js",
-      "maxSize": "13.10kB",
+      "path": "./fesm2015/ngxs-store.js",
+      "maxSize": "125kB",
       "maxPercentIncrease": 0.5
     },
     {
-      "path": "./@ngxs/store/fesm5/ngxs-store-internals.js",
-      "maxSize": "14.10kB",
+      "path": "./fesm5/ngxs-store.js",
+      "maxSize": "145kB",
       "maxPercentIncrease": 0.5
     },
     {
-      "path": "./@ngxs/store/fesm2015/ngxs-store-operators.js",
-      "maxSize": "10.00kB",
+      "path": "./fesm2015/ngxs-store-operators.js",
+      "maxSize": "15kB",
       "maxPercentIncrease": 0.5
     },
     {
-      "path": "./@ngxs/store/fesm5/ngxs-store-operators.js",
-      "maxSize": "10.10kB",
+      "path": "./fesm5/ngxs-store-operators.js",
+      "maxSize": "15kB",
       "maxPercentIncrease": 0.5
     },
     {
-      "path": "./@ngxs/store/fesm2015/ngxs-store.js",
-      "maxSize": "117.60kB",
+      "path": "./fesm2015/ngxs-store-internals.js",
+      "maxSize": "20kB",
       "maxPercentIncrease": 0.5
     },
     {
-      "path": "./@ngxs/store/fesm5/ngxs-store.js",
-      "maxSize": "136.60kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/form-plugin/fesm2015/ngxs-form-plugin.js",
-      "maxSize": "17.20kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/form-plugin/fesm5/ngxs-form-plugin.js",
-      "maxSize": "20.50kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/devtools-plugin/fesm2015/ngxs-devtools-plugin.js",
-      "maxSize": "10.50kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/devtools-plugin/fesm5/ngxs-devtools-plugin.js",
-      "maxSize": "12.10kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/hmr-plugin/fesm2015/ngxs-hmr-plugin.js",
-      "maxSize": "16.70kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/hmr-plugin/fesm5/ngxs-hmr-plugin.js",
-      "maxSize": "20.30kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/logger-plugin/fesm2015/ngxs-logger-plugin.js",
-      "maxSize": "11.00kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/logger-plugin/fesm5/ngxs-logger-plugin.js",
-      "maxSize": "12.70kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/router-plugin/fesm2015/ngxs-router-plugin.js",
-      "maxSize": "21.60kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/router-plugin/fesm5/ngxs-router-plugin.js",
-      "maxSize": "26.00kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/storage-plugin/fesm2015/ngxs-storage-plugin.js",
-      "maxSize": "12.70kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/storage-plugin/fesm5/ngxs-storage-plugin.js",
-      "maxSize": "14.30kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/websocket-plugin/fesm2015/ngxs-websocket-plugin.js",
-      "maxSize": "14.40kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./@ngxs/websocket-plugin/fesm5/ngxs-websocket-plugin.js",
-      "maxSize": "18.90kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./integrations/hello-world-ng11-ivy/dist-integration/main.<hash>.js",
-      "maxSize": "251.90kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./integrations/hello-world-ng12-ivy/dist-integration/main.<hash>.js",
-      "maxSize": "237.50kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./integrations/hello-world-ng13-ivy/dist-integration/main.<hash>.js",
-      "maxSize": "237.65kB",
-      "maxPercentIncrease": 0.5
-    },
-    {
-      "path": "./integrations/hello-world-ng14-ivy/dist-integration/main.<hash>.js",
-      "maxSize": "218kB",
+      "path": "./fesm5/ngxs-store-internals.js",
+      "maxSize": "20kB",
       "maxPercentIncrease": 0.5
     }
   ],
-  "reportOutput": ["github"]
+  "groups": [
+    {
+      "friendlyName": "@ngxs/store(umd)",
+      "path": "./bundles/*.umd.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(umd.min)",
+      "path": "./bundles/*.umd.min.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(fesm2015)",
+      "path": "./fesm2015/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(fesm5)",
+      "path": "./fesm5/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(esm2015)",
+      "path": "./esm2015/**/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(esm5)",
+      "path": "./esm5/**/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "@ngxs/store(umd)[gzip]",
+      "path": "./bundles/*.umd.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "@ngxs/store(umd.min)[gzip]",
+      "path": "./bundles/*.umd.min.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "@ngxs/store(fesm2015)[gzip]",
+      "path": "./fesm2015/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "@ngxs/store(fesm5)[gzip]",
+      "path": "./fesm5/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "@ngxs/store(esm2015)[gzip]",
+      "path": "./esm2015/**/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "@ngxs/store(esm5)[gzip]",
+      "path": "./esm5/**/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    }
+  ],
+  "reportOutput": [
+    "github"
+  ]
 }

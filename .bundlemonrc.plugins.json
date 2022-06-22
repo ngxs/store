@@ -1,0 +1,122 @@
+{
+  "baseDir": "./@ngxs/",
+  "subProject": "NGXS Plugins",
+  "defaultCompression": "none",
+  "files": [
+    {
+      "friendlyName": "Plugins(umd)",
+      "path": "./*-plugin/bundles/*.umd.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "Plugins(umd.min)",
+      "path": "./*-plugin/bundles/*.umd.min.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "Plugins(fesm2015)",
+      "path": "./*-plugin/fesm2015/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "Plugins(fesm5)",
+      "path": "./*-plugin/fesm5/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "Plugins(umd)[gzip]",
+      "path": "./*-plugin/bundles/*.umd.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "Plugins(umd.min)[gzip]",
+      "path": "./*-plugin/bundles/*.umd.min.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "Plugins(fesm2015)[gzip]",
+      "path": "./*-plugin/fesm2015/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "Plugins(fesm5)[gzip]",
+      "path": "./*-plugin/fesm5/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    }
+  ],
+  "groups": [
+    {
+      "friendlyName": "All Plugins(umd)",
+      "path": "./*-plugin/bundles/*.umd.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "All Plugins(umd.min)",
+      "path": "./*-plugin/bundles/*.umd.min.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "All Plugins(fesm2015)",
+      "path": "./*-plugin/fesm2015/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "All Plugins(fesm5)",
+      "path": "./*-plugin/fesm5/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "All Plugins(esm2015)",
+      "path": "./*-plugin/esm2015/**/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "All Plugins(esm5)",
+      "path": "./*-plugin/esm5/**/*.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "All Plugins(umd)[gzip]",
+      "path": "./*-plugin/bundles/*.umd.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "All Plugins(umd.min)[gzip]",
+      "path": "./*-plugin/bundles/*.umd.min.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "All Plugins(fesm2015)[gzip]",
+      "path": "./*-plugin/fesm2015/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "All Plugins(fesm5)[gzip]",
+      "path": "./*-plugin/fesm5/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "All Plugins(esm2015)[gzip]",
+      "path": "./*-plugin/esm2015/**/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    },
+    {
+      "friendlyName": "All Plugins(esm5)[gzip]",
+      "path": "./*-plugin/esm5/**/*.js",
+      "maxPercentIncrease": 1,
+      "compression": "gzip"
+    }
+  ],
+  "reportOutput": [
+    "github"
+  ]
+}
