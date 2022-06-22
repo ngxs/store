@@ -135,7 +135,7 @@ jobs:
       - name: Run BundleMon
         run: yarn bundlemon
         env:
-          BUNDLEMON_PROJECT_ID: ${{ secrets.BUNDLEMON_PROJECT_ID }}
+          BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
           CI_COMMIT_SHA: ${{ github.sha }}
 
   release-publish:
