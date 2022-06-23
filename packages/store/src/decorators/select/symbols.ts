@@ -9,7 +9,6 @@ import { throwSelectFactoryNotConnectedError } from '../../configs/messages.conf
 const DOLLAR_CHAR_CODE = 36;
 
 export function createSelectObservable<T = any>(selector: any): Observable<T> {
-  // We're not adding `ngDevMode` guard since we have still to throw this error until we fix SSR issue.
   if (!SelectFactory.store) {
     throwSelectFactoryNotConnectedError();
   }
