@@ -9,7 +9,7 @@
     "build:prod": "ng build --prod",
     "test": "ng test",
     "test:ci": "ng test --run-in-band --silent",
-    "test:integration": "yarn install:ivy && yarn test:ci && yarn build:ssr:prod && yarn e2e:ci && yarn e2e:ci:ssr",
+    "test:integration": "yarn install:ivy && yarn test:ci && yarn e2e:ci",
     "preinstall": "yarn --cwd ../../ cpx -v -C \"@ngxs/**/*\" integrations/hello-world-ng11-ivy/node_modules/@ngxs",
     "install:ivy": "yarn --frozen-lockfile --non-interactive --no-progress",
     "postinstall": "ngcc",
@@ -18,8 +18,7 @@
     "cy:run:ssr": "cypress run --config integrationFolder=cypress/integration-ssr",
     "serve:integration:static": "angular-http-server --path dist-integration -p 4200 --silent",
     "e2e": "start-test serve:integration:static 4200 cy:open",
-    "e2e:ci": "start-test serve:integration:static 4200 cy:run",
-    "e2e:ci:ssr": "start-test serve:integration:ssr 4200 cy:run:ssr"
+    "e2e:ci": "start-test serve:integration:static 4200 cy:run"
   },
   "private": true,
   "dependencies": {

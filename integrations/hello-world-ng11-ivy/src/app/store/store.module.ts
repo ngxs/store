@@ -8,13 +8,14 @@ import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 
 import { CounterState } from './counter/counter.state';
+import { environment } from '../../environments/environment';
 
 @NgModule({
   imports: [
     NgxsModule.forRoot([CounterState]),
-    NgxsReduxDevtoolsPluginModule.forRoot(),
+    NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production }),
     NgxsFormPluginModule.forRoot(),
-    NgxsLoggerPluginModule.forRoot(),
+    NgxsLoggerPluginModule.forRoot({ disabled: environment.production }),
     NgxsStoragePluginModule.forRoot(),
     NgxsWebsocketPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot()
