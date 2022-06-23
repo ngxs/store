@@ -9,7 +9,7 @@
     "build:prod": "ng build --prod",
     "test": "ng test",
     "test:ci": "ng test --run-in-band --silent",
-    "test:integration": "yarn install:ivy && yarn test:ci && yarn e2e:ci",
+    "test:integration": "yarn install:ivy && yarn test:ci && yarn build:prod && yarn e2e:ci",
     "preinstall": "yarn --cwd ../../ cpx -v -C \"@ngxs/**/*\" integrations/hello-world-ng11-ivy/node_modules/@ngxs",
     "install:ivy": "yarn --frozen-lockfile --non-interactive --no-progress",
     "postinstall": "ngcc",
