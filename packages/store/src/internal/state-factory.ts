@@ -9,6 +9,7 @@ import {
   shareReplay,
   takeUntil
 } from 'rxjs/operators';
+import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
 
 import { META_KEY, NgxsConfig } from '../symbols';
 import {
@@ -34,7 +35,7 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
+import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 
 /**
  * State factory class
@@ -160,6 +161,14 @@ export class StateFactory implements OnDestroy {
       const meta: MetaDataModel = stateClass[META_KEY]!;
 
       this.addRuntimeInfoToMeta(meta, path);
+
+      // Note: previously we called `ensureStateClassIsInjectable` within the
+      // `State` decorator. This check is moved here because the `ɵprov` property
+      // will not exist on the class in JIT mode (because it's set asynchronously
+      // during JIT compilation through `Object.defineProperty`).
+      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+        ensureStateClassIsInjectable(stateClass);
+      }
 
       const stateMap: MappedStore = {
         name,
