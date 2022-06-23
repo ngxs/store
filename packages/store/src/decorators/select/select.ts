@@ -1,7 +1,3 @@
-import { ɵivyEnabled } from '@angular/core';
-import { ensureLocalInjectorCaptured, localInject } from '@ngxs/store/internals';
-
-import { Store } from '../../store';
 import { createSelectObservable, createSelectorFn, PropertyType } from './symbols';
 
 /**
@@ -23,17 +19,9 @@ export function Select<T>(rawSelector?: T, ...paths: string[]): PropertyDecorato
         enumerable: true,
         configurable: true,
         get(): PropertyType<T> {
-          return (
-            this[selectorId] ||
-            (this[selectorId] = createSelectObservable(selector, localInject(this, Store)))
-          );
+          return this[selectorId] || (this[selectorId] = createSelectObservable(selector));
         }
       }
     });
-
-    // Keep this `if` guard here so the below stuff will be tree-shaken away in apps that still use the View Engine.
-    if (ɵivyEnabled) {
-      ensureLocalInjectorCaptured(target);
-    }
   };
 }

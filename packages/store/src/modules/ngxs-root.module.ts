@@ -8,7 +8,6 @@ import { ROOT_STATE_TOKEN } from '../symbols';
 import { StateClassInternal, StatesAndDefaults } from '../internal/internals';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
 import { InitState } from '../actions/actions';
-import { setIvyEnabledInDevMode } from '../ivy/ivy-enabled-in-dev-mode';
 
 /**
  * Root module
@@ -26,13 +25,6 @@ export class NgxsRootModule {
     states: StateClassInternal[] = [],
     lifecycleStateManager: LifecycleStateManager
   ) {
-    // Caretaker note: we have still left the `typeof` condition in order to avoid
-    // creating a breaking change for projects that still use the View Engine.
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
-      // Validate states on having the `@Injectable()` decorator in Ivy
-      setIvyEnabledInDevMode();
-    }
-
     // Add stores to the state graph and return their defaults
     const results: StatesAndDefaults = factory.addAndReturnDefaults(states);
 

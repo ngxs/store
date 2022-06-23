@@ -6,14 +6,10 @@ import { AppComponent } from './app.component';
 import { StoreModule } from './store/store.module';
 
 const routes: Routes = [{ path: '', component: AppComponent }];
-
 @NgModule({
-  imports: [
-    BrowserModule.withServerTransition({ appId: 'hello-world-ng11-ivy' }),
-    RouterModule.forRoot(routes),
-    StoreModule
-  ],
   declarations: [AppComponent],
+  imports: [BrowserModule, RouterModule.forRoot(routes), StoreModule],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

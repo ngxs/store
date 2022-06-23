@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs';
 
-import { Store } from '../../store';
 import { propGetter } from '../../internal/internals';
 import { SelectFactory } from './select-factory';
 import { StateToken } from '../../state-token/state-token';
@@ -9,19 +8,12 @@ import { throwSelectFactoryNotConnectedError } from '../../configs/messages.conf
 
 const DOLLAR_CHAR_CODE = 36;
 
-export function createSelectObservable<T = any>(
-  selector: any,
-  store: Store | null
-): Observable<T> {
-  // Caretaker note: we have still left the `typeof` condition in order to avoid
-  // creating a breaking change for projects that still use the View Engine.
-  if (typeof ngDevMode === 'undefined' || ngDevMode) {
-    if (!SelectFactory.store && !store) {
-      throwSelectFactoryNotConnectedError();
-    }
+export function createSelectObservable<T = any>(selector: any): Observable<T> {
+  // We're not adding `ngDevMode` guard since we have still to throw this error until we fix SSR issue.
+  if (!SelectFactory.store) {
+    throwSelectFactoryNotConnectedError();
   }
-
-  return (store || SelectFactory.store)!.select(selector);
+  return SelectFactory.store!.select(selector);
 }
 
 export function createSelectorFn(name: string, rawSelector?: any, paths: string[] = []): any {

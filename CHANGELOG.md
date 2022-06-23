@@ -15,7 +15,6 @@ $ npm install @ngxs/store@dev
 # 3.7.4 2022-06-09
 
 - Build: include support for Angular 14 [#1850](https://github.com/ngxs/store/pull/1850)
-- Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740) and [#1804](https://github.com/ngxs/store/pull/1804)
 - Fix: Handle mixed async scenarios for action handlers [#1762](https://github.com/ngxs/store/pull/1762)
 - Fix: An action with cancelUncompleted enabled should unsubscribe before the next action handler is called [#1763](https://github.com/ngxs/store/pull/1763)
 - Fix: Provide `NoopNgxsExecutionStrategy` explicitly when the zone is nooped [#1819](https://github.com/ngxs/store/pull/1819)
@@ -27,6 +26,9 @@ $ npm install @ngxs/store@dev
 - Fix: Storage Plugin - Only restore state if key matches `addedStates` [#1746](https://github.com/ngxs/store/pull/1746)
 - Fix: Forms Plugin - Do not destructure primitive types [#1845](https://github.com/ngxs/store/pull/1845)
 - Performance: Tree-shake errors and warnings [#1732](https://github.com/ngxs/store/pull/1732)
+- Performance: Tree-shake `ConfigValidator`, `HostEnvironment` and `isAngularInTestMode` [#1741](https://github.com/ngxs/store/pull/1741)
+- Performance: Tree-shake `SelectFactory` [#1744](https://github.com/ngxs/store/pull/1744)
+- Performance: Tree-shake `deepFreeze` [#1819](https://github.com/ngxs/store/pull/1819)
 - Performance: Run change detection once for all selectors when asynchronous action has been completed [#1828](https://github.com/ngxs/store/pull/1828)
 - Performance: Router Plugin - Tree-shake `isAngularInTestMode()` [#1738](https://github.com/ngxs/store/pull/1738)
 - Performance: Tree-shake `isAngularInTestMode()` [#1739](https://github.com/ngxs/store/pull/1739)
