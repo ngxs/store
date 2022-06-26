@@ -160,9 +160,6 @@ jobs:
         uses: ./.github/actions/check-build-artifacts
 
       - name: Development release - publish development builds to all @ngxs packages
-        run: |
-          yarn publish:dev
-          echo "Security: remove ~/.npmrc from the runner overwriting it with zeros several times."
-          find ~/.npmrc -exec shred -fuz {} +
+        run: yarn publish:dev
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
