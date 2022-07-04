@@ -43,7 +43,7 @@
     "@ngxs/store": "file:./node_modules/@ngxs/store",
     "@ngxs/websocket-plugin": "file:./node_modules/@ngxs/websocket-plugin",
     "rxjs": "6.6.7",
-    "tslib": "2.4.0",
+    "tslib": "2.2.0",
     "zone.js": "0.11.4"
   },
   "devDependencies": {
