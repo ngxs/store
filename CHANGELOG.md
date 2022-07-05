@@ -11,16 +11,16 @@ $ npm install @ngxs/store@dev
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
 - Performance: Tree-shake no type on the action error [#1858](https://github.com/ngxs/store/pull/1858)
 - Fix: Storage Plugin - Provide more meaningful error message when the storage quota exceeds [#1863](https://github.com/ngxs/store/pull/1863)
-- Fix: Do not try to decorate factory asynchronously [#1861](https://github.com/ngxs/store/pull/1861)
 - Fix: Do not check if the state class is injectable within the decorator since the `ɵprov` will not exist in JIT mode [#1867](https://github.com/ngxs/store/pull/1867)
+- Revert: revert select decorator changes and add deprecation note [#1871](https://github.com/ngxs/store/pull/1871)
 
 # 3.7.4 2022-06-09
 
 - Build: include support for Angular 14 [#1850](https://github.com/ngxs/store/pull/1850)
-- Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740) and [#1804](https://github.com/ngxs/store/pull/1804)
+- Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740) and [#1804](https://github.com/ngxs/store/pull/1804) **(Note: reverted in v3.7.5)**
 - Fix: Handle mixed async scenarios for action handlers [#1762](https://github.com/ngxs/store/pull/1762)
 - Fix: An action with cancelUncompleted enabled should unsubscribe before the next action handler is called [#1763](https://github.com/ngxs/store/pull/1763)
-- Fix: Do not run `Promise.then` within synchronous tests when decorating factory [#1753](https://github.com/ngxs/store/pull/1753)
+- Fix: Do not run `Promise.then` within synchronous tests when decorating factory [#1753](https://github.com/ngxs/store/pull/1753) **(Note: reverted in v3.7.5)**
 - Fix: Provide `NoopNgxsExecutionStrategy` explicitly when the zone is nooped [#1819](https://github.com/ngxs/store/pull/1819)
 - Fix: Complete the state stream once the root view is removed [#1830](https://github.com/ngxs/store/pull/1830)
 - Fix: Be more explicit when checking if Angular is in test mode [#1831](https://github.com/ngxs/store/pull/1831), [#1832](https://github.com/ngxs/store/pull/1832)
