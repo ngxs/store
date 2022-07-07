@@ -1,19 +1,20 @@
 import { StateOperator } from '@ngxs/store';
 
-import { isStateOperator, isUndefined, isPredicate, NoInfer, RepairType } from './utils';
+import { isStateOperator, isUndefined, isPredicate, NoInfer } from './utils';
 import { Predicate } from './internals';
 
-type OperatorOrValue<T> = StateOperator<T> | T;
+// type OperatorOrValue<T> = StateOperator<T> | T;
+type OperatorOrValue<T> = T extends StateOperator<T> ? T : StateOperator<T> | T;
 
 function retrieveValue<T>(
   operatorOrValue: OperatorOrValue<NoInfer<T>>,
-  existing: Readonly<RepairType<T>>
-): RepairType<T> {
+  existing: Readonly<T>
+): T {
   // If operator or value was not provided
   // e.g. `elseOperatorOrValue` is `undefined`
   // then we just return an original value
   if (isUndefined(operatorOrValue)) {
-    return (<any>existing)! as RepairType<T>;
+    return (<any>existing)! as T;
   }
 
   // If state operator is a function
@@ -21,10 +22,10 @@ function retrieveValue<T>(
   const theOperatorOrValue = operatorOrValue;
   if (isStateOperator(theOperatorOrValue)) {
     const value = theOperatorOrValue((existing as unknown) as Readonly<NoInfer<T>>);
-    return (value as unknown) as RepairType<T>;
+    return (value as unknown) as T;
   }
 
-  return (operatorOrValue as unknown) as RepairType<T>;
+  return (operatorOrValue as unknown) as T;
 }
 
 /**
@@ -38,8 +39,8 @@ export function iif<T>(
   condition: Predicate<NoInfer<T>> | boolean,
   trueOperatorOrValue: OperatorOrValue<NoInfer<T>>,
   elseOperatorOrValue?: OperatorOrValue<NoInfer<T>>
-): StateOperator<RepairType<T>> {
-  return function iifOperator(existing: Readonly<RepairType<T>>): RepairType<T> {
+): StateOperator<T> {
+  return function iifOperator(existing: Readonly<T>): T {
     // Convert the value to a boolean
     let result = !!condition;
     // but if it is a function then run it to get the result

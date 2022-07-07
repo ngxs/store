@@ -1,13 +1,6 @@
 import { StateOperator } from '@ngxs/store';
 
-import {
-  isStateOperator,
-  isPredicate,
-  isNumber,
-  invalidIndex,
-  RepairType,
-  NoInfer
-} from './utils';
+import { isStateOperator, isPredicate, isNumber, invalidIndex, NoInfer } from './utils';
 import { Predicate } from './internals';
 
 /**
@@ -17,10 +10,10 @@ import { Predicate } from './internals';
  * function that can be applied to an existing value
  */
 export function updateItem<T>(
-  selector: number | NoInfer<Predicate<T>>,
-  operatorOrValue: NoInfer<T> | NoInfer<StateOperator<T>>
-): StateOperator<RepairType<T>[]> {
-  return function updateItemOperator(existing: Readonly<RepairType<T>[]>): RepairType<T>[] {
+  selector: number | Predicate<NoInfer<T>>,
+  operatorOrValue: NoInfer<T | StateOperator<T>>
+): StateOperator<T[]> {
+  return function updateItemOperator(existing: Readonly<T[]>): T[] {
     let index = -1;
 
     if (isPredicate(selector)) {
@@ -30,7 +23,7 @@ export function updateItem<T>(
     }
 
     if (invalidIndex(index)) {
-      return existing as RepairType<T>[];
+      return existing as T[];
     }
 
     let value: T = null!;
@@ -46,11 +39,11 @@ export function updateItem<T>(
     // If the value hasn't been mutated
     // then we just return `existing` array
     if (value === existing[index]) {
-      return existing as RepairType<T>[];
+      return existing as T[];
     }
 
     const clone = existing.slice();
-    clone[index] = value as RepairType<T>;
+    clone[index] = value as T;
     return clone;
   };
 }

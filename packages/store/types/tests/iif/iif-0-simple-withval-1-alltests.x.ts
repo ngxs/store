@@ -1,16 +1,78 @@
+import { StateOperator } from '@ngxs/store';
+// tslint:disable-next-line: no-relative-import-in-test
+import { Predicate, NoInfer } from './iif-shared';
+
+type NotAFunction<T, Then> = T extends (...args: any[]) => any ? never : Then;
+
+type AsOpOrVal<T> = T extends StateOperator<any> ? T : StateOperator<T>;
+
+/*type OperatorOrValue<T, V extends T> =
+  | (unknown extends T
+      ? StateOperator<NotAFunction<V, V>> | NotAFunction<V, V>
+      : StateOperator<T> | NotAFunction<V, V>)
+  ;*/
+type OperatorOrValue<T, V extends T> = StateOperator<T> | NotAFunction<V, V>; // | AsOpOrVal<V>;
+// type OperatorOrValue<T, V extends T> = StateOperator<T> | NotAFunction<V, V>;
+// type OperatorOrValue<T, V> = StateOperator<T> | NotAFunction<V, V>;
+// type OperatorOrValue<T, V> = StateOperator<T> | NotAFunction<V, V extends T ? V : never>;
+
+type Defined<T1, T2> = unknown extends T1 ? (unknown extends T2 ? never : T2) : T1;
+
+export declare function iif<T, V extends T = T>(
+  condition: Predicate<NoInfer<T>> | boolean,
+  trueOperatorOrValue: OperatorOrValue<NoInfer<T>, V>,
+  elseOperatorOrValue?: OperatorOrValue<NoInfer<T>, V>
+): StateOperator<T>;
+// ): StateOperator<Defined<T, V>>;
+// ): unknown extends T ? StateOperator<V> : StateOperator<T>;
+// ): StateOperator<T> | StateOperator<V>;
+
+export {};
+
+/* tslint:disable: no-consecutive-blank-lines
+
+
+
+
+interface X {
+  name: string;
+  lastName?: string;
+  nickname?: string;
+}
+
+const trueOperatorOrValue1: OperatorOrValue<unknown, X> = x => x.name;
+const trueOperatorOrValue2: OperatorOrValue<unknown, X> = x => x.lastName;
+interface Y {
+  firstName: string;
+  lastName?: string;
+}
+const trueOperatorOrValue3: OperatorOrValue<unknown, Y> = x => x.firstName;
+const trueOperatorOrValue4: OperatorOrValue<unknown, Y> = x => x.lastName;
+
+
+
+
+
+*/
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////      TESTS      //////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+
 /* tslint:disable:max-line-length */
 
-/// <reference types="@types/jest" />
-import { iif, patch } from '@ngxs/store/operators';
+import { patch } from '@ngxs/store/operators';
 
 describe('[TEST]: the iif State Operator', () => {
   it('should return the correct implied null or undefined type', () => {
     iif(true, null); // $ExpectType StateOperator<null>
     iif(true, undefined); // $ExpectType StateOperator<undefined>
-    iif(true, null, undefined); // $ExpectType StateOperator<null>
+    iif(true, null, undefined); // $ExpectType StateOperator<null | undefined>
     iif(() => true, null); // $ExpectType StateOperator<null>
     iif(() => true, undefined); // $ExpectType StateOperator<undefined>
-    iif(() => true, null, undefined); // $ExpectType StateOperator<null>
+    iif(() => true, null, undefined); // $ExpectType StateOperator<null | undefined>
   });
 
   it('should return the correct implied number type', () => {
@@ -23,22 +85,22 @@ describe('[TEST]: the iif State Operator', () => {
     iif(false, 10, 20); // $ExpectType StateOperator<number>
     iif(false, 10, null); // $ExpectType StateOperator<number | null>
     iif(false, null, 10); // $ExpectType StateOperator<number | null>
-    iif(false, 10, undefined); // $ExpectType StateOperator<number>
+    iif(false, 10, undefined); // $ExpectType StateOperator<number | undefined>
     iif(false, undefined, 10); // $ExpectType StateOperator<number | undefined>
 
     iif(() => true, 10); // $ExpectType StateOperator<number>
     iif(() => false, 10, 20); // $ExpectType StateOperator<number>
     iif(() => false, 10, null); // $ExpectType StateOperator<number | null>
-    iif(() => false, 10, undefined); // $ExpectType StateOperator<number>
+    iif(() => false, 10, undefined); // $ExpectType StateOperator<number | undefined>
 
     iif(val => val === 1, 10); // $ExpectType StateOperator<number>
     iif(val => val === 1, 10, 20); // $ExpectType StateOperator<number>
     iif(val => val === 1, 10, null); // $ExpectType StateOperator<number | null>
     iif(val => val === 1, null, 10); // $ExpectType StateOperator<number | null>
     iif(val => val === null, 10, null); // $ExpectType StateOperator<number | null>
-    iif(val => val === 1, 10, undefined); // $ExpectType StateOperator<number>
+    iif(val => val === 1, 10, undefined); // $ExpectType StateOperator<number | undefined>
     iif(val => val === 1, undefined, 10); // $ExpectType StateOperator<number | undefined>
-    iif(val => val === undefined, 10, undefined); // $ExpectType StateOperator<number>
+    iif(val => val === undefined, 10, undefined); // $ExpectType StateOperator<number | undefined>
   });
 
   it('should return the correct implied string type', () => {
@@ -51,22 +113,22 @@ describe('[TEST]: the iif State Operator', () => {
     iif(false, '10', '20'); // $ExpectType StateOperator<string>
     iif(false, '10', null); // $ExpectType StateOperator<string | null>
     iif(false, null, '10'); // $ExpectType StateOperator<string | null>
-    iif(false, '10', undefined); // $ExpectType StateOperator<string>
+    iif(false, '10', undefined); // $ExpectType StateOperator<string | undefined>
     iif(false, undefined, '10'); // $ExpectType StateOperator<string | undefined>
 
     iif(() => true, '10'); // $ExpectType StateOperator<string>
     iif(() => false, '10', '20'); // $ExpectType StateOperator<string>
     iif(() => false, '10', null); // $ExpectType StateOperator<string | null>
-    iif(() => false, '10', undefined); // $ExpectType StateOperator<string>
+    iif(() => false, '10', undefined); // $ExpectType StateOperator<string | undefined>
 
     iif(val => val === '1', '10'); // $ExpectType StateOperator<string>
     iif(val => val === '1', '10', '20'); // $ExpectType StateOperator<string>
     iif(val => val === '1', '10', null); // $ExpectType StateOperator<string | null>
     iif(val => val === '1', null, '10'); // $ExpectType StateOperator<string | null>
     iif(val => val === null, '10', null); // $ExpectType StateOperator<string | null>
-    iif(val => val === '1', '10', undefined); // $ExpectType StateOperator<string>
+    iif(val => val === '1', '10', undefined); // $ExpectType StateOperator<string | undefined>
     iif(val => val === '1', undefined, '10'); // $ExpectType StateOperator<string | undefined>
-    iif(val => val === undefined, '10', undefined); // $ExpectType StateOperator<string>
+    iif(val => val === undefined, '10', undefined); // $ExpectType StateOperator<string | undefined>
   });
 
   it('should return the correct implied boolean type', () => {
@@ -79,22 +141,22 @@ describe('[TEST]: the iif State Operator', () => {
     iif(false, true, false); // $ExpectType StateOperator<boolean>
     iif(false, true, null); // $ExpectType StateOperator<boolean | null>
     iif(false, null, true); // $ExpectType StateOperator<boolean | null>
-    iif(false, true, undefined); // $ExpectType StateOperator<boolean>
+    iif(false, true, undefined); // $ExpectType StateOperator<boolean | undefined>
     iif(false, undefined, true); // $ExpectType StateOperator<boolean | undefined>
 
     iif(() => true, true); // $ExpectType StateOperator<boolean>
     iif(() => false, true, false); // $ExpectType StateOperator<boolean>
     iif(() => false, true, null); // $ExpectType StateOperator<boolean | null>
-    iif(() => false, true, undefined); // $ExpectType StateOperator<boolean>
+    iif(() => false, true, undefined); // $ExpectType StateOperator<boolean | undefined>
 
     iif(val => val === true, true); // $ExpectType StateOperator<boolean>
     iif(val => val === true, true, false); // $ExpectType StateOperator<boolean>
     iif(val => val === true, true, null); // $ExpectType StateOperator<boolean | null>
     iif(val => val === true, null, true); // $ExpectType StateOperator<boolean | null>
     iif(val => val === null, true, null); // $ExpectType StateOperator<boolean | null>
-    iif(val => val === true, true, undefined); // $ExpectType StateOperator<boolean>
+    iif(val => val === true, true, undefined); // $ExpectType StateOperator<boolean | undefined>
     iif(val => val === true, undefined, true); // $ExpectType StateOperator<boolean | undefined>
-    iif(val => val === undefined, true, undefined); // $ExpectType StateOperator<boolean>
+    iif(val => val === undefined, true, undefined); // $ExpectType StateOperator<boolean | undefined>
   });
 
   it('should return the correct implied object type', () => {
@@ -107,22 +169,22 @@ describe('[TEST]: the iif State Operator', () => {
     iif(false, { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
     iif(false, { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
     iif(false, null, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | null>
-    iif(false, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
+    iif(false, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; } | undefined>
     iif(false, undefined, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | undefined>
 
     iif(() => true, { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
     iif(() => false, { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
     iif(() => false, { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
-    iif(() => false, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
+    iif(() => false, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; } | undefined>
 
     iif(obj => obj.val === '1', { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
     iif(obj => obj.val === '1', { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
     iif(obj => obj!.val === '1', { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
     iif(obj => obj!.val === '1', null, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | null>
     iif(obj => obj === null, { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
-    iif(obj => obj.val === '1', { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
+    iif(obj => obj!.val === '1', { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; } | undefined>
     iif(obj => obj!.val === '1', undefined, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | undefined>
-    iif(obj => obj === undefined, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
+    iif(obj => obj === undefined, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; } | undefined>
   });
 
   it('should return the corrrect implied array type', () => {
@@ -322,11 +384,11 @@ describe('[TEST]: the iif State Operator', () => {
 
     patch<MyType>({ obj: iif(() => true, { val: '10' }) })(original); // $ExpectType MyType
     patch<MyType>({ obj: iif(true, { val: '10' }) })(original); // $ExpectType MyType
-    patch<MyType>({ obj: iif(obj => obj!.val === '1', { val: '10' }) })(original); // $ExpectType MyType
+    patch<MyType>({ obj: iif(obj => obj.val === '1', { val: '10' }) })(original); // $ExpectType MyType
     patch<MyType>({ obj: iif(() => false, { val: '10' }, { val: '20' }) })(original); // $ExpectType MyType
     patch<MyType>({ obj: iif(false, { val: '10' }, { val: '20' }) })(original); // $ExpectType MyType
     patch<MyType>({
-      obj: iif(obj => obj!.val === '2', { val: '10' }, { val: '20' })
+      obj: iif(obj => obj.val === '2', { val: '10' }, { val: '20' })
     })(original); // $ExpectType MyType
 
     iif<MyObj | null>(() => true, null)({ val: '100' }); // $ExpectType MyObj | null
@@ -406,22 +468,31 @@ describe('[TEST]: the iif State Operator', () => {
             motivated: iif(
               motivated => motivated !== true,
               3, // $ExpectError
-              true,
-              ),
-            person: // $ExpectType StateOperator<Person>
-              iif(val => val.name === 'blah',
-                // $ExpectType StateOperator<Person>
-                patch({
-                  name: 'Artur',
-                  lastName: 'Androsovych'
-                }),
-                (x) => x.name
-              )
+              true
+            ),
+            // $ExpectType StateOperator<Person>
+            person: iif(
+              val => val.name === 'blah',
+              // $ExpectType StateOperator<Person>
+              patch({
+                name: 'Artur',
+                lastName: 'Androsovych'
+              }),
+              x => x.name // $ExpectError
+            )
           }),
           greeting: 'How are you?'
-        })
+        }),
+        x => {
+          x; // $ExpectType Readonly<InnerModel>
+          return x;
+        }
       ),
-      c: iif(c => c !== 100, () => 0 + 100, 10)
+      c: iif(
+        c => c !== 100,
+        () => 0 + 100,
+        10
+      )
     })(original); // $ExpectType Model
 
     patch<Model>({
@@ -436,7 +507,7 @@ describe('[TEST]: the iif State Operator', () => {
         greeting: iif(greeting => !greeting, 'How are you?')
       }),
       c: iif(c => !c, 100, 10)
-    })(original); // $/ExpectType Model
+    })(original); // $ExpectType Model
   });
 
   it('should not accept the following usages', () => {
@@ -482,7 +553,7 @@ describe('[TEST]: the iif State Operator', () => {
   });
 });
 
-/*
+/* tslint:disable: no-consecutive-blank-lines
 type Z<T> = (a: T) => T;
 type Y<R, P> = (a: P) => R;
 type IsSubtypeOf<S, P> = S extends P ? true : false;

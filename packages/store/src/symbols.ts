@@ -75,7 +75,8 @@ export class NgxsConfig {
   }
 }
 
-export type StateOperator<T> = (existing: Readonly<T>) => T;
+// export type StateOperator<T> = (existing: Readonly<T>) => T;
+export type StateOperator<T, P = T> = (existing: Readonly<P>) => T;
 
 /**
  * State context provided to the actions in the state.
