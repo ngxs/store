@@ -10,7 +10,9 @@ export function isUndefined(value: any): value is undefined {
   return typeof value === 'undefined';
 }
 
-export function isPredicate<T>(value: Predicate<T> | boolean | number): value is Predicate<T> {
+export function isPredicate<T>(
+  value: Predicate<NoInfer<T>> | Predicate<T> | boolean | number
+): value is Predicate<T> {
   return typeof value === 'function';
 }
 
@@ -28,4 +30,10 @@ export function isNil<T>(value: T | null | undefined): value is null | undefined
 
 export type RepairType<T> = T extends true ? boolean : T extends false ? boolean : T;
 
-export type NoInfer<T> = T extends infer S ? S : never;
+export type NoInfer<T> = T extends unknown
+  ? T
+  : T extends undefined
+  ? T
+  : T extends infer S
+  ? S
+  : never;
