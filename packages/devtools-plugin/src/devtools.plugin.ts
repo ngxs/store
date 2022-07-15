@@ -98,7 +98,7 @@ export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
         action.payload.type === ReduxDevtoolsPayloadType.JumpToState
       ) {
         const prevState = JSON.parse(action.state);
-        // This makes friends DevTools and Router plugins with each other.
+        // This makes the DevTools and Router plugins friends with each other.
         // We're checking for the `router` state to exist, and it also should
         // have the `trigger` property, so we're sure that this is our router
         // state (coming from `@ngxs/router-plugin`). This enables a time-traveling

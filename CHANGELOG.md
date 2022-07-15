@@ -9,9 +9,9 @@ $ npm install @ngxs/store@dev
 - Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
 - Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
-- Feature: Devtools Plugin - Enable time-traveling for navigation actions [#1868](https://github.com/ngxs/store/pull/1868)
 - Performance: Tree-shake no type on the action error [#1858](https://github.com/ngxs/store/pull/1858)
 - Fix: Storage Plugin - Provide more meaningful error message when the storage quota exceeds [#1863](https://github.com/ngxs/store/pull/1863)
+- Fix: Devtools Plugin - Enable time-traveling for navigation actions [#1868](https://github.com/ngxs/store/pull/1868)
 - Fix: Do not check if the state class is injectable within the decorator since the `ɵprov` will not exist in JIT mode [#1867](https://github.com/ngxs/store/pull/1867)
 - Revert: revert select decorator changes and add deprecation note [#1871](https://github.com/ngxs/store/pull/1871)
 
