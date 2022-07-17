@@ -31,8 +31,9 @@ export class NgxsConfig {
    * - Object.freeze on the state and actions to guarantee immutability
    * (default: false)
    *
-   * @deprecated This property is no longer necessary when the Ivy compiler is used.
-   * We'll determine the development mode through the `ngDevMode`. It's still essential with View Engine.
+   * Note: this property will be accounted only in development mode when using the Ivy compiler.
+   * It makes sense to use it only during development to ensure there're no state mutations.
+   * When building for production, the Object.freeze will be tree-shaken away.
    */
   developmentMode: boolean;
   compatibility: {
