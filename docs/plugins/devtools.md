@@ -39,7 +39,6 @@ The plugin supports the following options passed via the `forRoot` method:
 - `name`: Set the name by which this store instance is referenced in devtools (Default: 'NGXS')
 - `disabled`: Disable the devtools during production
 - `maxAge`: Max number of entries to keep.
-
 - `latency`: If more than one action is dispatched in the indicated interval, all new actions will be collected and sent at once. It is the joint between performance and speed. When set to 0, all actions will be sent instantly. Set it to a higher value when experiencing perf issues (also maxAge to a lower value). Default is 500 ms.
 - `actionsBlacklist`: string or array of strings as regex - actions types to be hidden in the monitors (while passed to the reducers). If actionsWhitelist specified, actionsBlacklist is ignored.
 - `actionsWhitelist`: string or array of strings as regex - actions types to be shown in the monitors (while passed to the reducers). If actionsWhitelist specified, actionsBlacklist is ignored.
