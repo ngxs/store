@@ -1,14 +1,7 @@
 // tslint:disable:unified-signatures
 import { Inject, Injectable, Optional, Type } from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
-import {
-  catchError,
-  distinctUntilChanged,
-  map,
-  publishReplay,
-  refCount,
-  take
-} from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
 import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
@@ -29,8 +22,7 @@ export class Store {
    */
   private _selectableStateStream = this._stateStream.pipe(
     leaveNgxs(this._internalExecutionStrategy),
-    publishReplay(1),
-    refCount()
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
   constructor(
