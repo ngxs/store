@@ -98,8 +98,8 @@ describe('zone', () => {
       store.dispatch(new Increment());
     });
 
-    // Angular has run change detection 5 times
-    expect(ticks).toBe(5);
+    // Angular has run change detection 6 times
+    expect(ticks).toBe(6);
     expect(selectCalls).toEqual(3);
     expect(selectCallsInAngularZone).toEqual(3);
   });
