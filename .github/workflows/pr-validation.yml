@@ -7,6 +7,9 @@ name: pr-validation
 on:
   pull_request:
 
+env:
+  NODE_VERSION: 16.x
+  
 defaults:
   run:
     shell: bash
@@ -29,7 +32,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: 16.x
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
@@ -42,7 +45,6 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
         script: [lint, eslint, 'test:ci']
 
     steps:
@@ -55,7 +57,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
@@ -78,7 +80,6 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
         script:
           - 'integration:ng7'
           - 'integration:ng8'
@@ -103,7 +104,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
@@ -118,12 +119,11 @@ jobs:
 
   premerge-bundlemon:
     if: github.repository_owner == 'ngxs'
+    continue-on-error: true
     runs-on: ubuntu-latest
     needs: premerge-integration-test
-
-    strategy:
-      matrix:
-        node-version: [16.x]
+    outputs:
+      bundlemon-outcome: ${{ steps.run-bundlemon.outcome }}
 
     steps:
       - name: Checkout sources
@@ -135,7 +135,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
@@ -143,7 +143,18 @@ jobs:
         uses: ./.github/actions/download-integration-test-artifacts
 
       - name: Run BundleMon
-        run: yarn bundlemon
+        id: run-bundlemon
+        run: yarn bundlemon        
         env:
           BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+
+  premerge-bundlemon-accept-change:
+    if: ${{ always() && needs.premerge-bundlemon.outputs.bundlemon-outcome == 'failure' }}
+    runs-on: ubuntu-latest
+    environment: approve-bundlesize-difference
+    needs: [ premerge-bundlemon ]
+    
+    steps:
+      - name: Reviewer Approved Bundlemon Difference
+        run: echo "Reviewer Approved Bundlemon Difference"
