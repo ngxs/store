@@ -147,7 +147,7 @@ jobs:
 
       - name: Run BundleMon
         id: run-bundlemon
-        run: yarn bundlemonaaaaa        
+        run: yarn bundlemon        
         env:
           BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
