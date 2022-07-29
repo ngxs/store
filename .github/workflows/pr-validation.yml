@@ -157,5 +157,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: approve-bundlesize-difference
     needs: [ premerge-bundlemon ]
+    
+    steps:
       - name: Reviewer Approved Bundlemon Difference
         run: echo "Reviewer Approved Bundlemon Difference"
