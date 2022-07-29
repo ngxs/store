@@ -120,6 +120,8 @@ jobs:
     if: github.repository_owner == 'ngxs'
     runs-on: ubuntu-latest
     needs: premerge-integration-test
+    outputs:
+      bundlemon-failed: ${{ steps.run-bundlemon.outcome == 'failure' }}
 
     strategy:
       matrix:
@@ -143,7 +145,17 @@ jobs:
         uses: ./.github/actions/download-integration-test-artifacts
 
       - name: Run BundleMon
-        run: yarn bundlemon
+        id: run-bundlemon
+        continue-on-error: true
+        run: yarn bundlemon        
         env:
           BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+
+  premerge-bundlemon-accept-change:
+    if: ${{ failure() && needs.premerge-bundlemon.outputs.bundlemon-failed }}
+    runs-on: ubuntu-latest
+    environment: approve-bundlesize-difference
+    needs: [ premerge-bundlemon ]
+      - name: Reviewer Approved Bundlemon Difference
+        run: echo "Reviewer Approved Bundlemon Difference"
