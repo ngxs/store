@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { isAngularInTestMode } from '@ngxs/store/internals';
 
 import { StateOperations, StatesAndDefaults } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
@@ -29,20 +28,12 @@ export class InternalStateOperations {
       dispatch: (actionOrActions: any | any[]) => this._dispatcher.dispatch(actionOrActions)
     };
 
-    // We have to have that duplication since this will allow us to tree-shake `ensureStateAndActionsAreImmutable`
-    // and `deepFreeze` in Ivy production build.
-    // The below `if` condition checks 2 things:
-    // 1) if we're in View Engine (`ngDevMode` is `undefined`)
-    // 2) if we're running tests, we should fallback to `config.developmentMode` to be backwards-compatible
-    if (typeof ngDevMode === 'undefined' || (ngDevMode && isAngularInTestMode())) {
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
       return this._config.developmentMode
         ? ensureStateAndActionsAreImmutable(rootStateOperations)
         : rootStateOperations;
     } else {
-      // If we're in Ivy and not running tests, then tree-shake `ensureStateAndActionsAreImmutable` and `deepFreeze`.
-      return ngDevMode
-        ? ensureStateAndActionsAreImmutable(rootStateOperations)
-        : rootStateOperations;
+      return rootStateOperations;
     }
   }
 
