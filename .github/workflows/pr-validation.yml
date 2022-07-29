@@ -7,6 +7,8 @@ name: pr-validation
 on:
   pull_request:
 
+env:
+  NODE_VERSION: 16.x
 defaults:
   run:
     shell: bash
@@ -29,7 +31,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: 16.x
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
@@ -42,7 +44,6 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
         script: [lint, eslint, 'test:ci']
 
     steps:
@@ -55,7 +56,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
@@ -78,7 +79,6 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
         script:
           - 'integration:ng7'
           - 'integration:ng8'
@@ -103,7 +103,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
@@ -124,10 +124,6 @@ jobs:
     outputs:
       bundlemon-outcome: ${{ steps.run-bundlemon.outcome }}
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
       - name: Checkout sources
         uses: actions/checkout@v3
@@ -138,7 +134,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
