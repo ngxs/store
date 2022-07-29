@@ -111,8 +111,11 @@ jobs:
 
   trunk-bundlemon:
     if: github.repository_owner == 'ngxs'
+    continue-on-error: true
     runs-on: ubuntu-latest
     needs: trunk-integration-test
+    outputs:
+      bundlemon-outcome: ${{ steps.run-bundlemon.outcome }}
 
     strategy:
       matrix:
@@ -133,10 +136,21 @@ jobs:
         uses: ./.github/actions/download-integration-test-artifacts
 
       - name: Run BundleMon
+        id: run-bundlemon
         run: yarn bundlemon
         env:
           BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
           CI_COMMIT_SHA: ${{ github.sha }}
+
+  trunk-bundlemon-accept-change:
+    if: ${{ always() && needs.trunk-bundlemon.outputs.bundlemon-outcome == 'failure' }}
+    runs-on: ubuntu-latest
+    environment: approve-bundlesize-difference
+    needs: [ trunk-bundlemon ]
+    
+    steps:
+      - name: Reviewer Approved Bundlemon Difference
+        run: echo "Reviewer Approved Bundlemon Difference"
 
   trunk-publish:
     if: github.repository_owner == 'ngxs'
