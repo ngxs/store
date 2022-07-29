@@ -118,10 +118,11 @@ jobs:
 
   premerge-bundlemon:
     if: github.repository_owner == 'ngxs'
+    continue-on-error: true
     runs-on: ubuntu-latest
     needs: premerge-integration-test
     outputs:
-      bundlemon-failed: ${{ steps.run-bundlemon.outcome == 'failure' }}
+      bundlemon-outcome: steps.run-bundlemon.outcome
 
     strategy:
       matrix:
@@ -146,14 +147,13 @@ jobs:
 
       - name: Run BundleMon
         id: run-bundlemon
-        continue-on-error: true
         run: yarn bundlemonaaaaa        
         env:
           BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
 
   premerge-bundlemon-accept-change:
-    if: ${{ failure() && needs.premerge-bundlemon.outputs.bundlemon-failed }}
+    if: ${{ needs.premerge-bundlemon.outputs.bundlemon-outcome == 'failure' }}
     runs-on: ubuntu-latest
     environment: approve-bundlesize-difference
     needs: [ premerge-bundlemon ]
