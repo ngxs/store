@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { Injectable } from '@angular/core';
 
+import { skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { NgxsModule, State, Store, Action, StateContext } from '@ngxs/store';
 
 import { DEFAULT_STATE_KEY } from '../src/internals';
 import { NgxsStoragePluginModule, StorageOption, StorageEngine, STORAGE_ENGINE } from '../';
-import { Injectable } from '@angular/core';
 
 describe('NgxsStoragePlugin', () => {
   class Increment {
@@ -120,7 +121,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
       });
 
-      const store: Store = TestBed.inject(Store);
+      const store: Store = skipConsoleLogging(() => TestBed.inject(Store));
       const state: CounterStateModel = store.selectSnapshot(TestState);
 
       // Assert
@@ -144,7 +145,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
       });
 
-      const store: Store = TestBed.inject(Store);
+      const store: Store = skipConsoleLogging(() => TestBed.inject(Store));
       const state: CounterStateModel = store.selectSnapshot(TestState);
 
       // Assert
