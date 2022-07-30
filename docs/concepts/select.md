@@ -8,7 +8,18 @@ When we want to read data out of our store, we use a select operator to retrieve
 In NGXS, there are two methods to select state, we can either call the `select` method on the
 `Store` service or use the `@Select` decorator. First let's look at the `@Select` decorator.
 
-## Select Decorators
+## Select Decorator
+
+📌 **Deprecation Notice**
+The `@Select` decorator is deprecated, consider using the [Store Select Function](#store-select-function). It's deprecated due to the following reasons:
+1) lack of type-safety
+2) not compatible with server-side rendering because it uses a global `Store` instance, which might change between renders
+3) not compatible with module federation
+If you're using VSCode you can replace @Select usages with the following RegExp.
+```
+Search: @Select\((.*)\)\n(.*): Observable<(.*)>;$
+Replace: $2 = this.store.select<$3>($1);
+```
 
 You can select slices of data from the store using the `@Select` decorator. It has a few
 different ways to get your data out, whether passing the state class, a function, a different state class
