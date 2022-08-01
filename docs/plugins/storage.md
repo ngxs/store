@@ -33,6 +33,7 @@ initial state can be picked up by those plugins.
 The plugin has the following optional values:
 
 - `key`: State name(s) to be persisted. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided, it defaults to all states using the `@@STATE` key.
+- `namespace`: The namespace is used to prefix the key for the state slice. This is necessary when running micro frontend applications which use storage plugin. The namespace will eliminate the conflict between keys that might overlap.
 - `storage`: Storage strategy to use. This defaults to LocalStorage but you can pass SessionStorage or anything that implements the StorageEngine API.
 - `deserialize`: Custom deserializer. Defaults to `JSON.parse`
 - `serialize`: Custom serializer. Defaults to `JSON.stringify`
@@ -137,6 +138,21 @@ export class AppModule {}
 ```
 
 This is very handy to avoid persisting runtime-only states that shouldn't be saved to any storage.
+
+### Namespace Option
+
+The namespace option should be provided when the storage plugin is used in micro frontend applications. The namespace may equal the app name and will prefix keys for state slices:
+
+```ts
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      namespace: 'auth'
+    })
+  ]
+})
+export class AppModule {}
+```
 
 ### Custom Storage Engine
 

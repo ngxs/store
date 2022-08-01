@@ -14,7 +14,9 @@ export interface NgxsStoragePluginOptions {
   key?: StorageKey;
 
   /**
-   *
+   * The namespace is used to prefix the key for the state slice. This is
+   * necessary when running micro frontend applications which use storage plugin.
+   * The namespace will eliminate the conflict between keys that might overlap.
    */
   namespace?: string;
 
