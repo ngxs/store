@@ -16,6 +16,7 @@ $ npm install @ngxs/store@dev
 - Fix: Storage Plugin - Ensure the deserialization is not skipped for master key [#1887](https://github.com/ngxs/store/pull/1887)
 - Fix: Storage Plugin - Do not re-hydrate the whole state when the feature state is added [#1887](https://github.com/ngxs/store/pull/1887)
 - Fix: Devtools Plugin - Enable time-traveling for navigation actions [#1868](https://github.com/ngxs/store/pull/1868)
+- Fix: Form Plugin - Prevent actions infinite loop with multiple `ngxsForm` directives [#1890](https://github.com/ngxs/store/pull/1890)
 - Fix: Do not check if the state class is injectable within the decorator since the `ɵprov` will not exist in JIT mode [#1867](https://github.com/ngxs/store/pull/1867)
 - Revert: revert select decorator changes and add deprecation note [#1871](https://github.com/ngxs/store/pull/1871)
 
