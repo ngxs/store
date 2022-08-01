@@ -18,7 +18,7 @@ import {
   STORAGE_ENGINE,
   NGXS_STORAGE_PLUGIN_OPTIONS
 } from './symbols';
-import { DEFAULT_STATE_KEY, prefixNamespace } from './internals';
+import { DEFAULT_STATE_KEY, getStorageKey } from './internals';
 
 /**
  * @description Will be provided through Terser global definitions by Angular CLI
@@ -73,8 +73,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           }
         }
 
-        const namespacedKey = prefixNamespace(key, this._options.namespace);
-        let storedValue: any = this._engine.getItem(namespacedKey);
+        const storageKey = getStorageKey(key, this._options);
+        let storedValue: any = this._engine.getItem(storageKey);
 
         if (storedValue !== 'undefined' && storedValue != null) {
           try {
@@ -85,7 +85,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             // creating a breaking change for projects that still use the View Engine.
             if (typeof ngDevMode === 'undefined' || ngDevMode) {
               console.error(
-                `Error ocurred while deserializing the ${namespacedKey} store value, falling back to empty object, the value obtained from the store: `,
+                `Error ocurred while deserializing the ${storageKey} store value, falling back to empty object, the value obtained from the store: `,
                 storedValue
               );
             }
@@ -145,7 +145,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           for (const key of this._keys) {
             let storedValue = nextState;
 
-            const namespacedKey = prefixNamespace(key, this._options.namespace);
+            const storageKey = getStorageKey(key, this._options);
 
             if (key !== DEFAULT_STATE_KEY) {
               storedValue = getValue(nextState, key);
@@ -153,7 +153,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
             try {
               const newStoredValue = this._options.beforeSerialize!(storedValue, key);
-              this._engine.setItem(namespacedKey, this._options.serialize!(newStoredValue));
+              this._engine.setItem(storageKey, this._options.serialize!(newStoredValue));
             } catch (error) {
               // Caretaker note: we have still left the `typeof` condition in order to avoid
               // creating a breaking change for projects that still use the View Engine.
@@ -164,12 +164,12 @@ export class NgxsStoragePlugin implements NgxsPlugin {
                     error.name === 'NS_ERROR_DOM_QUOTA_REACHED')
                 ) {
                   console.error(
-                    `The ${namespacedKey} store value exceeds the browser storage quota: `,
+                    `The ${storageKey} store value exceeds the browser storage quota: `,
                     storedValue
                   );
                 } else {
                   console.error(
-                    `Error ocurred while serializing the ${namespacedKey} store value, value not updated, the value obtained from the store: `,
+                    `Error ocurred while serializing the ${storageKey} store value, value not updated, the value obtained from the store: `,
                     storedValue
                   );
                 }
