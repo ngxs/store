@@ -64,39 +64,39 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           continue;
         }
 
-        let storageValue: any = this._engine.getItem(key!);
+        let storedValue: any = this._engine.getItem(key!);
 
-        if (storageValue !== 'undefined' && storageValue != null) {
+        if (storedValue !== 'undefined' && storedValue != null) {
           try {
-            const newVal = this._options.deserialize!(storageValue);
-            storageValue = this._options.afterDeserialize!(newVal, key);
+            const newVal = this._options.deserialize!(storedValue);
+            storedValue = this._options.afterDeserialize!(newVal, key);
           } catch {
             // Caretaker note: we have still left the `typeof` condition in order to avoid
             // creating a breaking change for projects that still use the View Engine.
             if (typeof ngDevMode === 'undefined' || ngDevMode) {
               console.error(
                 `Error ocurred while deserializing the ${key} store value, falling back to empty object, the value obtained from the store: `,
-                storageValue
+                storedValue
               );
             }
-            storageValue = {};
+            storedValue = {};
           }
 
           if (this._options.migrations) {
             this._options.migrations.forEach(strategy => {
               const versionMatch =
-                strategy.version === getValue(storageValue, strategy.versionKey || 'version');
+                strategy.version === getValue(storedValue, strategy.versionKey || 'version');
               const keyMatch =
                 (!strategy.key && this._usesDefaultStateKey) || strategy.key === key;
               if (versionMatch && keyMatch) {
-                storageValue = strategy.migrate(storageValue);
+                storedValue = strategy.migrate(storedValue);
                 hasMigration = true;
               }
             });
           }
 
           if (!this._usesDefaultStateKey) {
-            state = setValue(state, key!, storageValue);
+            state = setValue(state, key!, storedValue);
           } else {
             // The `UpdateState` action is dispatched whenever the feature state is added.
             // The below condition is met only when the `UpdateState` is dispatched.
@@ -107,23 +107,23 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             // The `CounterState` may implement the `ngxsOnInit` hook and call `ctx.setState(999)`.
             // The storage plugin will re-hydrate the whole state when the `RouterState` is registered,
             // and the `counter` state will again equal `10` (not `999`).
-            if (storageValue && addedStates && Object.keys(addedStates).length > 0) {
-              storageValue = Object.keys(addedStates).reduce((accumulator, addedState) => {
-                // The `storageValue` may equal the whole state (when the default state key is used).
+            if (storedValue && addedStates && Object.keys(addedStates).length > 0) {
+              storedValue = Object.keys(addedStates).reduce((accumulator, addedState) => {
+                // The `storedValue` may equal the whole state (when the default state key is used).
                 // If `addedStates` contains only `router` then we want to merge the state only
                 // with the `router` value.
-                // Let's assume that the `storageValue` is an object:
+                // Let's assume that the `storedValue` is an object:
                 // `{ counter: 10, router: {...} }`
-                // This will pick only the `router` object from the `storageValue` and `counter`
+                // This will pick only the `router` object from the `storedValue` and `counter`
                 // state will not be re-hydrated unnecessary.
-                if (storageValue.hasOwnProperty(addedState)) {
-                  accumulator[addedState] = storageValue[addedState];
+                if (storedValue.hasOwnProperty(addedState)) {
+                  accumulator[addedState] = storedValue[addedState];
                 }
                 return accumulator;
               }, <PlainObject>{});
             }
 
-            state = { ...state, ...storageValue };
+            state = { ...state, ...storedValue };
           }
         }
       }
