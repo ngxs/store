@@ -154,7 +154,7 @@ export class NgxsSimpleChange<T = any> {
  * On init interface
  */
 export interface NgxsOnInit {
-  ngxsOnInit(ctx?: StateContext<any>): void | any;
+  ngxsOnInit(ctx: StateContext<any>): void;
 }
 
 /**
@@ -168,7 +168,7 @@ export interface NgxsOnChanges {
  * After bootstrap interface
  */
 export interface NgxsAfterBootstrap {
-  ngxsAfterBootstrap(ctx?: StateContext<any>): void;
+  ngxsAfterBootstrap(ctx: StateContext<any>): void;
 }
 
 export type NgxsModuleOptions = Partial<NgxsConfig>;
