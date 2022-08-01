@@ -6,15 +6,9 @@ import { createSelectObservable, createSelectorFn, PropertyType } from './symbol
  */
 export function Select<T>(rawSelector?: T, ...paths: string[]): PropertyDecorator {
   return function(target, key): void {
-    console.warn(
-      `
-      The @Select decorator has been deprecated due to the following reasons:
-      1) Lack of type-safety (compare to 'store.select()')
-      2) Not compatible with server-side rendering because it uses a global 'Store' instance, which might change between renders
-      3) Not compatible with module federation
-      Consider replacing it the with store.select.
-      `
-    );
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      warnSelectDeprecation();
+    }
 
     const name: string = key.toString();
     const selectorId = `__${name}__selector`;
@@ -35,4 +29,26 @@ export function Select<T>(rawSelector?: T, ...paths: string[]): PropertyDecorato
       }
     });
   };
+}
+
+let selectDeprecatedHasBeenWarned = false;
+function warnSelectDeprecation(): void {
+  if (selectDeprecatedHasBeenWarned) {
+    return;
+  }
+
+  selectDeprecatedHasBeenWarned = true;
+
+  console.warn(
+    `
+    The @Select decorator is deprecated due to the following reasons:
+    1) lack of type-safety (compared to 'store.select()')
+    2) not compatible with server-side rendering because it uses a global 'Store' instance, which might change between renders
+    3) not compatible with module federation
+    Consider replacing it the with store.select.
+    If you're using VSCode you can replace @Select usages with the following RegExp.
+    Search: @Select\((.*)\)\n(.*): Observable<(.*)>;$
+    Replace: $2 = this.store.select<$3>($1);
+    `
+  );
 }
