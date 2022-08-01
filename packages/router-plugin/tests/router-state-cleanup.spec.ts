@@ -6,7 +6,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { Subject } from 'rxjs';
 import { NgxsModule } from '@ngxs/store';
-import { freshPlatform } from '@ngxs/store/internals/testing';
+import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import { NgxsRouterPluginModule, RouterState } from '../';
 
@@ -34,7 +34,9 @@ describe('RouterState cleanup', () => {
     'should cleanup subscriptions when the root view is destroyed',
     freshPlatform(async () => {
       // Arrange & act
-      const ngModuleRef = await platformBrowserDynamic().bootstrapModule(TestModule);
+      const ngModuleRef = await skipConsoleLogging(() =>
+        platformBrowserDynamic().bootstrapModule(TestModule)
+      );
 
       const router = ngModuleRef.injector.get(Router);
       const events = router.events as Subject<RouterEvent>;

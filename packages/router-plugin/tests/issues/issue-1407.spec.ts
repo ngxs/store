@@ -85,11 +85,11 @@ describe('#1407 issue', () => {
       }
 
       // Act
-      const { router, store, injector } = await createNgxsRouterPluginTestingPlatform(
+      const { router, store, injector, ngZone } = await createNgxsRouterPluginTestingPlatform(
         getTestModule([QueryParamsState])
       );
 
-      await router.navigateByUrl('/dialed-number?dialedNumber=5555555');
+      await ngZone.run(() => router.navigateByUrl('/dialed-number?dialedNumber=5555555'));
 
       const document = injector.get(DOCUMENT);
       const root = document.querySelector('app-root')!;

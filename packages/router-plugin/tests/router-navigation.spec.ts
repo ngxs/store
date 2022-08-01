@@ -8,7 +8,7 @@ import {
   NavigationError,
   NavigationEnd
 } from '@angular/router';
-import { freshPlatform } from '@ngxs/store/internals/testing';
+import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { filter } from 'rxjs/operators';
 
@@ -107,7 +107,9 @@ describe('RouterNavigation', () => {
       'should wait for `NavigationEnd` and then dispatch the `RouterNavigation` action',
       freshPlatform(async () => {
         // Arrange
-        const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
+        const { injector } = await skipConsoleLogging(() =>
+          platformBrowserDynamic().bootstrapModule(getTestModule())
+        );
         const actions$: Actions = injector.get(Actions);
         const router: Router = injector.get(Router);
         const store: Store = injector.get(Store);
@@ -141,7 +143,9 @@ describe('RouterNavigation', () => {
       'should persist previous state and NOT dispatch the `RouterNavigation` action',
       freshPlatform(async () => {
         // Arrange
-        const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
+        const { injector } = await skipConsoleLogging(() =>
+          platformBrowserDynamic().bootstrapModule(getTestModule())
+        );
         const actions$: Actions = injector.get(Actions);
         const store: Store = injector.get(Store);
         const router: Router = injector.get(Router);
