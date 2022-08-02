@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { NgxsModule, State, Store, Action, StateContext } from '@ngxs/store';
 
+import { clearKeys } from '../src/keys';
 import { DEFAULT_STATE_KEY } from '../src/internals';
 import { NgxsStoragePluginModule, StorageOption, StorageEngine, STORAGE_ENGINE } from '../';
 
@@ -47,6 +48,7 @@ describe('NgxsStoragePlugin', () => {
   class LazyLoadedState {}
 
   afterEach(() => {
+    clearKeys();
     localStorage.removeItem(DEFAULT_STATE_KEY);
     sessionStorage.removeItem(DEFAULT_STATE_KEY);
   });

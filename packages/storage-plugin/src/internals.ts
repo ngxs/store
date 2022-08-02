@@ -2,6 +2,7 @@ import { isPlatformServer } from '@angular/common';
 import { StateClass } from '@ngxs/store/internals';
 import { StateToken } from '@ngxs/store';
 
+import { addKeys } from './keys';
 import { StorageOption, StorageEngine, NgxsStoragePluginOptions } from './symbols';
 
 /**
@@ -20,37 +21,10 @@ export type StorageKey =
   | StateToken<any>
   | (string | StateClass | StateToken<any>)[];
 
-/**
- * This key is used to retrieve static metadatas on state classes.
- * This constant is taken from the core codebase
- */
-const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
-
-function transformKeyOption(key: StorageKey): string[] {
-  if (!Array.isArray(key)) {
-    key = [key];
-  }
-
-  return key.map((token: string | StateClass | StateToken<any>) => {
-    // If it has the `NGXS_OPTIONS_META` key then it means the developer
-    // has provided state class like `key: [AuthState]`.
-    if (token.hasOwnProperty(META_OPTIONS_KEY)) {
-      // The `name` property will be an actual state name or a `StateToken`.
-      token = (token as any)[META_OPTIONS_KEY].name;
-    }
-
-    return token instanceof StateToken ? token.getName() : (token as string);
-  });
-}
-
 export function storageOptionsFactory(
   options: NgxsStoragePluginOptions | undefined
 ): NgxsStoragePluginOptions {
-  if (options !== undefined && options.key) {
-    options.key = transformKeyOption(options.key);
-  }
-
-  return {
+  options = {
     key: [DEFAULT_STATE_KEY],
     storage: StorageOption.LocalStorage,
     serialize: JSON.stringify,
@@ -59,6 +33,10 @@ export function storageOptionsFactory(
     afterDeserialize: obj => obj,
     ...options
   };
+
+  addKeys(options.key as StorageKey[]);
+
+  return options;
 }
 
 export function engineFactory(

@@ -18,6 +18,7 @@ import {
   STORAGE_ENGINE,
   NGXS_STORAGE_PLUGIN_OPTIONS
 } from './symbols';
+import { getKeys } from './keys';
 import { DEFAULT_STATE_KEY } from './internals';
 
 /**
@@ -28,12 +29,8 @@ declare const ngDevMode: boolean;
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
-  // We cast to `string[]` here as we're sure that this option has been
-  // transformed by the `storageOptionsFactory` function that provided token.
-  private _keys = this._options.key as string[];
   // We default to `[DEFAULT_STATE_KEY]` if the user explicitly does not provide the `key` option.
-  private _usesDefaultStateKey =
-    this._keys.length === 1 && this._keys[0] === DEFAULT_STATE_KEY;
+  private _usesDefaultStateKey = getKeys().length === 1 && getKeys()[0] === DEFAULT_STATE_KEY;
 
   constructor(
     @Inject(NGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
@@ -46,6 +43,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
       return next(state, event);
     }
 
+    const keys = getKeys();
     const matches = actionMatcher(event);
     const isInitAction = matches(InitState);
     const isUpdateAction = matches(UpdateState);
@@ -55,7 +53,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     if (isInitOrUpdateAction) {
       const addedStates = isUpdateAction && event.addedStates;
 
-      for (const key of this._keys) {
+      for (const key of keys) {
         // We're checking what states have been added by NGXS and if any of these states should be handled by
         // the storage plugin. For instance, we only want to deserialize the `auth` state, NGXS has added
         // the `user` state, the storage plugin will be rerun and will do redundant deserialization.
@@ -132,7 +130,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     return next(state, event).pipe(
       tap(nextState => {
         if (!isInitOrUpdateAction || (isInitOrUpdateAction && hasMigration)) {
-          for (const key of this._keys) {
+          for (const key of keys) {
             let val = nextState;
 
             if (key !== DEFAULT_STATE_KEY) {

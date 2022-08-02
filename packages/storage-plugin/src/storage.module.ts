@@ -6,8 +6,9 @@ import {
   STORAGE_ENGINE,
   NGXS_STORAGE_PLUGIN_OPTIONS
 } from './symbols';
+import { addKeys } from './keys';
 import { NgxsStoragePlugin } from './storage.plugin';
-import { storageOptionsFactory, engineFactory } from './internals';
+import { storageOptionsFactory, engineFactory, StorageKey } from './internals';
 
 export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
 
@@ -40,5 +41,10 @@ export class NgxsStoragePluginModule {
         }
       ]
     };
+  }
+
+  static forFeature(keys: StorageKey[]): ModuleWithProviders<NgxsStoragePluginModule> {
+    addKeys(keys);
+    return { ngModule: NgxsStoragePluginModule };
   }
 }
