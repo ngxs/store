@@ -182,7 +182,7 @@ You will see that in each case above the state operators are wrapped within a ca
 
 ## Typing Operators
 
-Always specifying types for the `patch` operator when doing nested updates is necessary. You can face cases when the `patch` operator cannot infer the nested structure type. Let's look at the following state:
+Specifying types for the `patch` operator is always necessary when doing nested updates. You can face cases when the `patch` operator cannot infer the nested type structure. Let's look at the following state:
 
 ```ts
 export class UpdateLine1 {
@@ -231,7 +231,7 @@ export class AddressState {
 }
 ```
 
-If we don't specify the `patch` type explicitly, all objects are inferred as `unknown`, meaning the TypeScript cannot tell us that we're doing something wrong or using the wrong type. The correct way of specifying nested types looks as follows:
+If we don't specify the type explicitly for `patch`, all objects are inferred as `unknown`, meaning that TypeScript cannot tell us that we're doing something wrong or using the wrong type. The correct way of specifying nested types is shown below:
 
 ```ts
 export class UserState {
@@ -252,7 +252,9 @@ export class UserState {
 }
 ```
 
-If we change `country` to `Qcountry` (intentional mistake), the compiler will tell us `Object literal may only specify known properties, but 'Qcountry' does not exist`. The same technique may be used with other operators if they cannot infer the type, specify the state model and chain properties to get the desired type.
+If we change `country` to `Qcountry` (intentional mistake), the compiler will tell us `Object literal may only specify known properties, but 'Qcountry' does not exist`. The same technique may be used with other operators if they cannot infer the type.
+
+💡 Tip: we can specify the state model type and chain properties to get the desired type. Like in the example above.
 
 ## Custom Operators
 
