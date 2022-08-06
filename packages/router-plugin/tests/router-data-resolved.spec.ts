@@ -1,4 +1,4 @@
-import { Component, Injectable, NgModule } from '@angular/core';
+import { Component, Injectable, NgModule, NgZone } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BrowserModule } from '@angular/platform-browser';
@@ -15,10 +15,9 @@ import {
   State,
   Action,
   StateContext,
-  Select,
   Selector
 } from '@ngxs/store';
-import { freshPlatform } from '@ngxs/store/internals/testing';
+import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import {
   NgxsRouterPluginModule,
@@ -50,7 +49,13 @@ describe('RouterDataResolved', () => {
     template: '{{ router$ | async }}'
   })
   class TestComponent {
-    @Select(RouterState.state) router$: Observable<RouterStateModel>;
+    router$: Observable<RouterStateModel>;
+
+    constructor(store: Store) {
+      this.router$ = (store.select(RouterState.state) as unknown) as Observable<
+        RouterStateModel
+      >;
+    }
   }
 
   function getTestModule(states: any[] = []) {
@@ -88,7 +93,9 @@ describe('RouterDataResolved', () => {
     'should wait for resolvers to complete and dispatch the `RouterDataResolved` event',
     freshPlatform(async () => {
       // Arrange
-      const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
+      const { injector } = await skipConsoleLogging(() =>
+        platformBrowserDynamic().bootstrapModule(getTestModule())
+      );
 
       // Act
       const router: Router = injector.get(Router);
@@ -108,7 +115,9 @@ describe('RouterDataResolved', () => {
     'should keep resolved data if the navigation was performed between the same component but with params',
     freshPlatform(async () => {
       // Arrange
-      const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
+      const { injector } = await skipConsoleLogging(() =>
+        platformBrowserDynamic().bootstrapModule(getTestModule())
+      );
       const router: Router = injector.get(Router);
       const store: Store = injector.get(Store);
 
@@ -155,7 +164,9 @@ describe('RouterDataResolved', () => {
     'should dispatch `RouterDataResolved` action',
     freshPlatform(async () => {
       // Arrange
-      const { injector } = await platformBrowserDynamic().bootstrapModule(getTestModule());
+      const { injector } = await skipConsoleLogging(() =>
+        platformBrowserDynamic().bootstrapModule(getTestModule())
+      );
       const actions$: Actions = injector.get(Actions);
       const store: Store = injector.get(Store);
 
@@ -209,14 +220,17 @@ describe('RouterDataResolved', () => {
       }
 
       // Act
-      const { injector } = await platformBrowserDynamic().bootstrapModule(
-        getTestModule([CounterState])
+      const { injector } = await skipConsoleLogging(() =>
+        platformBrowserDynamic().bootstrapModule(getTestModule([CounterState]))
       );
+      const ngZone: NgZone = injector.get(NgZone);
       const store: Store = injector.get(Store);
       const router: Router = injector.get(Router);
 
-      await router.navigateByUrl('/a/b/c');
-      await router.navigateByUrl('/a/b');
+      await ngZone.run(async () => {
+        await router.navigateByUrl('/a/b/c');
+        await router.navigateByUrl('/a/b');
+      });
 
       // Assert
       const counter = store.selectSnapshot<number>(CounterState);
@@ -249,16 +263,19 @@ describe('RouterDataResolved', () => {
       }
 
       // Act
-      const { injector } = await platformBrowserDynamic().bootstrapModule(
-        getTestModule([CounterState])
+      const { injector } = await skipConsoleLogging(() =>
+        platformBrowserDynamic().bootstrapModule(getTestModule([CounterState]))
       );
+      const ngZone: NgZone = injector.get(NgZone);
       const store: Store = injector.get(Store);
       const router: Router = injector.get(Router);
 
       const subscription = store.select(CounterState.counter).subscribe();
 
-      await router.navigateByUrl('/a/b/c');
-      await router.navigateByUrl('/a/b');
+      await ngZone.run(async () => {
+        await router.navigateByUrl('/a/b/c');
+        await router.navigateByUrl('/a/b');
+      });
       subscription.unsubscribe();
 
       // Assert
