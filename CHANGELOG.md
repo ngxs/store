@@ -13,6 +13,7 @@ $ npm install @ngxs/store@dev
 - Fix: Give back control to `developmentMode` config property [#1878](https://github.com/ngxs/store/pull/1878)
 - Fix: Do not use `refCount()` since it makes selectable stream cold [#1883](https://github.com/ngxs/store/pull/1883)
 - Fix: Remove `?` from `ctx` parameter of lifecycle hooks since they are never undefined [#1889](https://github.com/ngxs/store/pull/1889)
+- Fix: Router Plugin - Prevent router overriding valid navigation [#1907](https://github.com/ngxs/store/pull/1907)
 - Fix: Storage Plugin - Provide more meaningful error message when the storage quota exceeds [#1863](https://github.com/ngxs/store/pull/1863)
 - Fix: Storage Plugin - Ensure the deserialization is not skipped for master key [#1887](https://github.com/ngxs/store/pull/1887)
 - Fix: Storage Plugin - Do not re-hydrate the whole state when the feature state is added [#1887](https://github.com/ngxs/store/pull/1887)
