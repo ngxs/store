@@ -135,28 +135,29 @@ jobs:
           BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
           CI_COMMIT_SHA: ${{ github.sha }}
 
-  trunk-publish:
-    if: github.repository_owner == 'ngxs'
-    continue-on-error: true
-    runs-on: ubuntu-latest
-    environment: npm-publish-dev
-    needs: [trunk-build, trunk-test, trunk-integration-test, trunk-bundlemon]
+  ## Skip this for now, because it is still handled by Circle CI
+  # trunk-publish:
+  #   if: github.repository_owner == 'ngxs'
+  #   continue-on-error: true
+  #   runs-on: ubuntu-latest
+  #   environment: npm-publish-dev
+  #   needs: [trunk-build, trunk-test, trunk-integration-test, trunk-bundlemon]
 
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout sources
+  #       uses: actions/checkout@v3
 
-      - name: Setup
-        uses: ./.github/actions/setup
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          github-ref-name: ${{ github.ref_name }}
-          github-sha: ${{ github.sha }}
+  #     - name: Setup
+  #       uses: ./.github/actions/setup
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         github-ref-name: ${{ github.ref_name }}
+  #         github-sha: ${{ github.sha }}
 
-      - name: Check @ngxs build artifacts
-        uses: ./.github/actions/check-build-artifacts
+  #     - name: Check @ngxs build artifacts
+  #       uses: ./.github/actions/check-build-artifacts
 
-      - name: Development release - publish development builds to all @ngxs packages
-        run: yarn publish:dev
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  #     - name: Development release - publish development builds to all @ngxs packages
+  #       run: yarn publish:dev
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
