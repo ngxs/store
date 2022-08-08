@@ -1,7 +1,14 @@
 // tslint:disable:unified-signatures
 import { Inject, Injectable, Optional, Type } from '@angular/core';
-import { Observable, of, Subscription, throwError } from 'rxjs';
-import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
+import { Observable, of, Subscription, throwError, queueScheduler } from 'rxjs';
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  take,
+  observeOn
+} from 'rxjs/operators';
 import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
@@ -21,6 +28,7 @@ export class Store {
    * All selects would use this stream, and it would call leave only once for any state change across all active selectors.
    */
   private _selectableStateStream = this._stateStream.pipe(
+    observeOn(queueScheduler),
     leaveNgxs(this._internalExecutionStrategy),
     shareReplay({ bufferSize: 1, refCount: true })
   );
