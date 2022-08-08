@@ -1500,32 +1500,32 @@
     enhanced-resolve "5.7.0"
 
 "@ngxs/devtools-plugin@file:./node_modules/@ngxs/devtools-plugin":
-  version "3.7.4"
+  version "3.7.5"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/form-plugin@file:./node_modules/@ngxs/form-plugin":
-  version "3.7.4"
+  version "3.7.5"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/logger-plugin@file:./node_modules/@ngxs/logger-plugin":
-  version "3.7.4"
+  version "3.7.5"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/router-plugin@file:./node_modules/@ngxs/router-plugin":
-  version "3.7.4"
+  version "3.7.5"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/storage-plugin@file:./node_modules/@ngxs/storage-plugin":
-  version "3.7.4"
+  version "3.7.5"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/store@file:./node_modules/@ngxs/store":
-  version "3.7.4"
+  version "3.7.5"
   dependencies:
     tslib "^1.9.0"
 
@@ -9604,7 +9604,7 @@ webpack-dev-middleware@4.1.0:
     schema-utils "^3.0.0"
 
 webpack-dev-middleware@^3.7.2:
-  version "3.7.3"
+  version "3.7.5"
   resolved "https://registry.npmjs.org/webpack-dev-middleware/-/webpack-dev-middleware-3.7.3.tgz#0639372b143262e2b84ab95d3b91a7597061c2c5"
   integrity sha512-djelc/zGiz9nZj/U7PTBi2ViorGJXEWo/3ltkPbDyxCXhhEXkW0ce99falaok4TPj+AsxLiXJR0EBOb0zh9fKQ==
   dependencies:
