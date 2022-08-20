@@ -27,11 +27,11 @@ and then explore the rich ecosystem of examples in the [community resources](com
 ## ❓ Need Help?
 
 For questions, please ask them on Stack Overflow with the `ngxs` tag:
-https://stackoverflow.com/questions/ask?tags=ngxs
+<https://stackoverflow.com/questions/ask?tags=ngxs>
 
-To chat with other users and contributors join us on Slack: https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q
+To chat with other users and contributors join us on Slack: <https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q>
 
-If you think there is a bug in this library, you can open an issue on GitHub (https://github.com/ngxs/store/issues/new). If possible a link to a http://stackblitz.com (or github) repo with a repro or a failing test would be great.
+If you think there is a bug in this library, you can open an issue on GitHub (<https://github.com/ngxs/store/issues/new>). If possible a link to a [http://stackblitz.com](https://stackblitz.com/edit/ngxs-repro) (or github) repo with a repro or a failing test would be great.
 
 ## ❤️ Giving Back
 
