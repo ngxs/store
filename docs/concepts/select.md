@@ -479,7 +479,7 @@ export class ZooState {
 ```
 
 As an alternative you can assign your result to a variable before you return it:  
-See https://github.com/ng-packagr/ng-packagr/issues/696#issuecomment-387114613
+See <https://github.com/ng-packagr/ng-packagr/issues/696#issuecomment-387114613>
 
 ```ts
 @State<string[]>({
