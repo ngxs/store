@@ -273,7 +273,6 @@ describe('[TEST]: the iif State Operator', () => {
     patch<MyType>({ bool: iif(() => false, true, false) })(original); // $ExpectType MyType
     patch<MyType>({ bool: iif(false, true, false) })(original); // $ExpectType MyType
     patch<MyType>({ bool: iif(val => val === false, true, false) })(original); // $ExpectType MyType
-    patch<MyType>({ bool: iif(val => val === false, true, true) })(original); // $ExpectType MyType
 
     iif<boolean | null>(() => true, null)(true); // $ExpectType boolean | null
     iif<boolean | null>(() => false, true)(true); // $ExpectType boolean | null
