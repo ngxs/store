@@ -1,5 +1,14 @@
 import { Injectable, Injector, Optional, SkipSelf, Inject, OnDestroy } from '@angular/core';
-import { forkJoin, from, Observable, of, throwError, Subscription, Subject } from 'rxjs';
+import {
+  forkJoin,
+  from,
+  Observable,
+  of,
+  throwError,
+  Subscription,
+  Subject,
+  isObservable
+} from 'rxjs';
 import {
   catchError,
   defaultIfEmpty,
@@ -251,7 +260,7 @@ export class StateFactory implements OnDestroy {
               result = from(result);
             }
 
-            if (result instanceof Observable) {
+            if (isObservable(result)) {
               // If this observable has been completed w/o emitting
               // any value then we wouldn't want to complete the whole chain
               // of actions. Since if any observable completes then
@@ -265,7 +274,7 @@ export class StateFactory implements OnDestroy {
                   if (value instanceof Promise) {
                     return from(value);
                   }
-                  if (value instanceof Observable) {
+                  if (isObservable(value)) {
                     return value;
                   }
                   return of(value);
