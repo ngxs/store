@@ -2,10 +2,10 @@ import {
   throwPatchingArrayError,
   throwPatchingPrimitiveError
 } from '../configs/messages.config';
-import { StateOperator } from '../symbols';
+import { StateOperator, ExistingState } from '../symbols';
 
 export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
-  return (existingState: Readonly<T>) => {
+  return (existingState: ExistingState<T>) => {
     if (Array.isArray(val)) {
       throwPatchingArrayError();
     } else if (typeof val !== 'object') {

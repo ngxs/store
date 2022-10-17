@@ -332,8 +332,8 @@ describe('[TEST]: the iif State Operator', () => {
     iif<MyObj | null>(() => false, { val: '1' })({ val: '100' }); // $ExpectType MyObj | null
     iif<MyObj | null>(() => false, { val: '1' }, null)({ val: '100' }); // $ExpectType MyObj | null
     // Commented out because they document an existing bug
-    // patch<MyType>({ _obj: iif(() => true, null) })(original); // $ExpectType MyType
-    // patch<MyType>({ _obj: iif(() => false, { val: '123' }, null) })(original); // $ExpectType MyType
+    patch<MyType>({ _obj: iif(() => true, null) })(original); // $ExpectType MyType
+    patch<MyType>({ _obj: iif(() => false, { val: '123' }, null) })(original); // $ExpectType MyType
 
     iif<MyObj | undefined>(() => true, undefined)({ val: '100' }); // $ExpectType MyObj | undefined
     iif<MyObj | undefined>(() => true, { val: '1' })({ val: '100' }); // $ExpectType MyObj | undefined

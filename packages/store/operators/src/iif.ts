@@ -30,8 +30,8 @@ function retrieveValue<T>(operatorOrValue: StateOperator<T> | T, existing?: Read
  */
 export function iif<T>(
   condition: NoInfer<Predicate<T>> | boolean,
-  trueOperatorOrValue: NoInfer<StateOperator<T>> | T,
-  elseOperatorOrValue?: NoInfer<StateOperator<T>> | T
+  trueOperatorOrValue: NoInfer<StateOperator<T>> | T, // TODO: Wrap everything with NoInfer
+  elseOperatorOrValue?: NoInfer<StateOperator<T>> | T // TODO: Wrap everything with NoInfer
 ): StateOperator<T> {
   return function iifOperator(existing: Readonly<T>): T {
     // Convert the value to a boolean

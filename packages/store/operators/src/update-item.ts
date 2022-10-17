@@ -1,13 +1,6 @@
 import { StateOperator } from '@ngxs/store';
 
-import {
-  isStateOperator,
-  isPredicate,
-  isNumber,
-  invalidIndex,
-  RepairType,
-  NoInfer
-} from './utils';
+import { isStateOperator, isPredicate, isNumber, invalidIndex, NoInfer } from './utils';
 import { Predicate } from './internals';
 
 /**
