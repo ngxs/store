@@ -60,8 +60,17 @@ export class NgxsStoragePlugin implements NgxsPlugin {
         // the storage plugin. For instance, we only want to deserialize the `auth` state, NGXS has added
         // the `user` state, the storage plugin will be rerun and will do redundant deserialization.
         // `usesDefaultStateKey` is necessary to check since `event.addedStates` never contains `@@STATE`.
-        if (!this._usesDefaultStateKey && addedStates && !addedStates.hasOwnProperty(key)) {
-          continue;
+        if (!this._usesDefaultStateKey && addedStates) {
+          // We support providing keys that can be deeply nested via dot notation, for instance,
+          // `keys: ['myState.myProperty']` is a valid key.
+          // The state name should always go first. The below code checks if the `key` includes dot
+          // notation and extracts the state name out of the key.
+          // Given the `key` is `myState.myProperty`, the `addedStates` will only contain `myState`.
+          const dotNotationIndex = key.indexOf(DOT);
+          const stateName = dotNotationIndex > -1 ? key.slice(0, dotNotationIndex) : key;
+          if (!addedStates.hasOwnProperty(stateName)) {
+            continue;
+          }
         }
 
         let storedValue: any = this._engine.getItem(key!);
@@ -169,3 +178,5 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     );
   }
 }
+
+const DOT = '.';
