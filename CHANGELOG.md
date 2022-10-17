@@ -5,7 +5,6 @@
 - Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
 - Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
-- Fix: Storage Plugin - Do not skip deserialization for keys with dot notation [#1924](https://github.com/ngxs/store/pull/1924)
 
 ### To become next patch version
 
@@ -13,7 +12,8 @@
 $ npm install @ngxs/store@dev
 ```
 
-- ...
+- Fix: Storage Plugin - Do not skip deserialization for keys with dot notation [#1924](https://github.com/ngxs/store/pull/1924)
+- Fix: Use `isObservable` to test whether actions return an observable [#1925](https://github.com/ngxs/store/pull/1925)
 
 # 3.7.5 2022-08-08
 
