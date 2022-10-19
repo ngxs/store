@@ -12,8 +12,9 @@
 $ npm install @ngxs/store@dev
 ```
 
-- Fix: Storage Plugin - Do not skip deserialization for keys with dot notation [#1924](https://github.com/ngxs/store/pull/1924)
 - Fix: Use `isObservable` to test whether actions return an observable [#1925](https://github.com/ngxs/store/pull/1925)
+- Fix: Call `ngxsOnChanges` whenever state changes (even through plugins) [#1926](https://github.com/ngxs/store/pull/1926)
+- Fix: Storage Plugin - Do not skip deserialization for keys with dot notation [#1924](https://github.com/ngxs/store/pull/1924)
 
 # 3.7.5 2022-08-08
 
