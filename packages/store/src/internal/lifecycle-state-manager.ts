@@ -47,14 +47,9 @@ export class LifecycleStateManager implements OnDestroy {
       const instance: NgxsLifeCycle = mappedStore.instance;
 
       if (instance.ngxsOnChanges) {
-        const initialValue = getValue(
-          this._internalStateOperations.getRootStateOperations().getState(),
-          mappedStore.path
-        );
-
         this._store
           .select(state => getValue(state, mappedStore.path))
-          .pipe(startWith(initialValue), pairwise(), takeUntil(this._destroy$))
+          .pipe(startWith(undefined), pairwise(), takeUntil(this._destroy$))
           .subscribe(([previousValue, currentValue]) => {
             const change = new NgxsSimpleChange(
               previousValue,
