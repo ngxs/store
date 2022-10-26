@@ -1,4 +1,4 @@
-import { Component, Provider, Type, NgModule, Injectable } from '@angular/core';
+import { Component, Provider, Type, NgModule, Injectable, NgZone } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router, Params, RouterStateSnapshot } from '@angular/router';
@@ -27,11 +27,12 @@ describe('NgxsRouterPlugin', () => {
   it('should select router state', async () => {
     // Arrange
     createTestModule();
+    const ngZone: NgZone = TestBed.inject(NgZone);
     const router: Router = TestBed.inject(Router);
     const store: Store = TestBed.inject(Store);
 
     // Act
-    await router.navigateByUrl('/testpath');
+    await ngZone.run(() => router.navigateByUrl('/testpath'));
 
     // Assert
     const routerState = store.selectSnapshot(RouterState.state)!;
@@ -155,10 +156,11 @@ describe('NgxsRouterPlugin', () => {
       states: [TestState]
     });
 
+    const ngZone: NgZone = TestBed.inject(NgZone);
     const router: Router = TestBed.inject(Router);
 
     // Act
-    await router.navigateByUrl('/testpath');
+    await ngZone.run(() => router.navigateByUrl('/testpath'));
 
     // Assert
     const state = TestBed.inject(Store).selectSnapshot(TestState);

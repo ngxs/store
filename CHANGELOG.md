@@ -1,24 +1,56 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev)
 
-### To become next version
+### For next major version
+
+- Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
+- Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
+- Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
+
+### To become next patch version
 
 ```bash
 $ npm install @ngxs/store@dev
 ```
 
-- Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
-- Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740) and [#1804](https://github.com/ngxs/store/pull/1804)
-- Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
+- Fix: Storage Plugin - Do not skip deserialization for keys with dot notation [#1924](https://github.com/ngxs/store/pull/1924)
+- Fix: Use `isObservable` to test whether actions return an observable [#1925](https://github.com/ngxs/store/pull/1925)
+
+# 3.7.5 2022-08-08
+
+- Performance: Tree-shake no type on the action error [#1858](https://github.com/ngxs/store/pull/1858)
+- Fix: Give back control to `developmentMode` config property [#1878](https://github.com/ngxs/store/pull/1878)
+- Fix: Do not use `refCount()` since it makes selectable stream cold [#1883](https://github.com/ngxs/store/pull/1883)
+- Fix: Remove `?` from `ctx` parameter of lifecycle hooks since they are never undefined [#1889](https://github.com/ngxs/store/pull/1889)
+- Fix: Avoid incorrectly ordered state observable events [#1908](https://github.com/ngxs/store/pull/1908)
+- Fix: Router Plugin - Prevent router overriding valid navigation [#1907](https://github.com/ngxs/store/pull/1907)
+- Fix: Storage Plugin - Provide more meaningful error message when the storage quota exceeds [#1863](https://github.com/ngxs/store/pull/1863)
+- Fix: Storage Plugin - Ensure the deserialization is not skipped for master key [#1887](https://github.com/ngxs/store/pull/1887)
+- Fix: Storage Plugin - Do not re-hydrate the whole state when the feature state is added [#1887](https://github.com/ngxs/store/pull/1887)
+- Fix: Devtools Plugin - Enable time-traveling for navigation actions [#1868](https://github.com/ngxs/store/pull/1868)
+- Fix: Form Plugin - Prevent actions infinite loop with multiple `ngxsForm` directives [#1890](https://github.com/ngxs/store/pull/1890)
+- Fix: Do not check if the state class is injectable within the decorator since the `ɵprov` will not exist in JIT mode [#1867](https://github.com/ngxs/store/pull/1867)
+- Revert: revert select decorator changes and add deprecation note [#1871](https://github.com/ngxs/store/pull/1871)
+
+# 3.7.4 2022-06-09
+
+- Build: include support for Angular 14 [#1850](https://github.com/ngxs/store/pull/1850)
+- Fix: Do not re-use the global `Store` instance between different apps [#1740](https://github.com/ngxs/store/pull/1740) and [#1804](https://github.com/ngxs/store/pull/1804) **(Note: reverted in v3.7.5)**
 - Fix: Handle mixed async scenarios for action handlers [#1762](https://github.com/ngxs/store/pull/1762)
 - Fix: An action with cancelUncompleted enabled should unsubscribe before the next action handler is called [#1763](https://github.com/ngxs/store/pull/1763)
-- Fix: Do not run `Promise.then` within synchronous tests when decorating factory [#1753](https://github.com/ngxs/store/pull/1753)
+- Fix: Do not run `Promise.then` within synchronous tests when decorating factory [#1753](https://github.com/ngxs/store/pull/1753) **(Note: reverted in v3.7.5)**
+- Fix: Provide `NoopNgxsExecutionStrategy` explicitly when the zone is nooped [#1819](https://github.com/ngxs/store/pull/1819)
+- Fix: Complete the state stream once the root view is removed [#1830](https://github.com/ngxs/store/pull/1830)
+- Fix: Be more explicit when checking if Angular is in test mode [#1831](https://github.com/ngxs/store/pull/1831), [#1832](https://github.com/ngxs/store/pull/1832)
 - Fix: Devtools Plugin - Do not connect to devtools when the plugin is disabled [#1761](https://github.com/ngxs/store/pull/1761)
 - Fix: Router Plugin - Cleanup subscriptions when the root view is destroyed [#1754](https://github.com/ngxs/store/pull/1754)
 - Fix: WebSocket Plugin - Cleanup subscriptions and close the connection when the root view is destroyed [#1755](https://github.com/ngxs/store/pull/1755)
 - Fix: Storage Plugin - Only restore state if key matches `addedStates` [#1746](https://github.com/ngxs/store/pull/1746)
+- Fix: Forms Plugin - Do not destructure primitive types [#1845](https://github.com/ngxs/store/pull/1845)
 - Performance: Tree-shake errors and warnings [#1732](https://github.com/ngxs/store/pull/1732)
 - Performance: Tree-shake `ConfigValidator`, `HostEnvironment` and `isAngularInTestMode` [#1741](https://github.com/ngxs/store/pull/1741)
 - Performance: Tree-shake `SelectFactory` [#1744](https://github.com/ngxs/store/pull/1744)
+- Performance: Tree-shake `deepFreeze` [#1819](https://github.com/ngxs/store/pull/1819)
+- Performance: Run change detection once for all selectors when asynchronous action has been completed [#1828](https://github.com/ngxs/store/pull/1828)
 - Performance: Router Plugin - Tree-shake `isAngularInTestMode()` [#1738](https://github.com/ngxs/store/pull/1738)
 - Performance: Tree-shake `isAngularInTestMode()` [#1739](https://github.com/ngxs/store/pull/1739)
 - Performance: Storage Plugin - Tree-shake `console.*` calls and expand error messages [#1727](https://github.com/ngxs/store/pull/1727)

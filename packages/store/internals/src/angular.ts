@@ -1,30 +1,19 @@
-import { getPlatform, COMPILER_OPTIONS, CompilerOptions, PlatformRef } from '@angular/core';
-import { memoize } from './memoize';
+declare const __karma__: unknown;
+declare const jasmine: unknown;
+declare const jest: unknown;
+declare const Mocha: unknown;
 
-/**
- * @description Will be provided through Terser global definitions by Angular CLI
- * during the production build. This is how Angular does tree-shaking internally.
- */
-declare const ngDevMode: boolean;
-
-function _isAngularInTestMode(): boolean {
-  const platformRef: PlatformRef | null = getPlatform();
-  if (!platformRef) return false;
-  const compilerOptions = platformRef.injector.get(COMPILER_OPTIONS, null);
-  if (!compilerOptions) return false;
-  const isInTestMode = compilerOptions.some((item: CompilerOptions) => {
-    const providers = (item && item.providers) || [];
-    return providers.some((provider: any) => {
-      return (
-        (provider && provider.provide && provider.provide.name === 'MockNgModuleResolver') ||
-        false
-      );
-    });
-  });
-  return isInTestMode;
+export function isAngularInTestMode(): boolean {
+  // This is safe to check for these properties in the following way since `typeof` does not
+  // throw an exception if the value does not exist in the scope.
+  // We should not try to read these values from the global scope (e.g. `ɵglobal` from the `@angular/core`).
+  // This is related to how these frameworks compile and execute modules. E.g. Jest wraps the module into
+  // its internal code where `jest` variable exists in the scope. It cannot be read from the global scope, e.g.
+  // this will return undefined `global.jest`, but `jest` will not equal undefined.
+  return (
+    typeof __karma__ !== 'undefined' ||
+    typeof jasmine !== 'undefined' ||
+    typeof jest !== 'undefined' ||
+    typeof Mocha !== 'undefined'
+  );
 }
-
-export const isAngularInTestMode =
-  // Caretaker note: we have still left the `typeof` condition in order to avoid
-  // creating a breaking change for projects that still use the View Engine.
-  typeof ngDevMode === 'undefined' || ngDevMode ? memoize(_isAngularInTestMode) : () => false;

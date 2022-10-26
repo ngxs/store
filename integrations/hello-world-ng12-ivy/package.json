@@ -7,10 +7,9 @@
     "start": "ng serve",
     "build": "ng build",
     "build:prod": "ng build --configuration production",
-    "build:ssr:prod": "yarn build:prod && yarn ng run hello-world-ng12-ivy:server:production",
     "test": "ng test",
     "test:ci": "ng test --run-in-band --silent",
-    "test:integration": "yarn install:ivy && yarn test:ci && yarn build:ssr:prod && yarn e2e:ci && yarn e2e:ci:ssr",
+    "test:integration": "yarn install:ivy && yarn test:ci && yarn build:prod && yarn e2e:ci",
     "preinstall": "yarn --cwd ../../ cpx -v -C \"@ngxs/**/*\" integrations/hello-world-ng12-ivy/node_modules/@ngxs",
     "install:ivy": "yarn --frozen-lockfile --non-interactive --no-progress",
     "postinstall": "ngcc",
@@ -18,10 +17,8 @@
     "cy:run": "cypress run",
     "cy:run:ssr": "cypress run --config integrationFolder=cypress/integration-ssr",
     "serve:integration:static": "angular-http-server --path dist-integration -p 4200 --silent",
-    "serve:integration:ssr": "node dist-integration-server/main",
     "e2e": "start-test serve:integration:static 4200 cy:open",
-    "e2e:ci": "start-test serve:integration:static 4200 cy:run",
-    "e2e:ci:ssr": "start-test serve:integration:ssr 4200 cy:run:ssr"
+    "e2e:ci": "start-test serve:integration:static 4200 cy:run"
   },
   "private": true,
   "dependencies": {
@@ -34,7 +31,6 @@
     "@angular/platform-browser-dynamic": "12.0.0",
     "@angular/platform-server": "12.0.0",
     "@angular/router": "12.0.0",
-    "@nguniversal/express-engine": "12.0.0",
     "@ngxs/devtools-plugin": "file:./node_modules/@ngxs/devtools-plugin",
     "@ngxs/form-plugin": "file:./node_modules/@ngxs/form-plugin",
     "@ngxs/logger-plugin": "file:./node_modules/@ngxs/logger-plugin",

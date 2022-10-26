@@ -142,14 +142,6 @@ jobs:
           name: Run integration tests for the SSR build application
           command: yarn test:ci:integration:ssr
 
-  integration_ng6_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for the Angular 6 application
-          command: yarn integration:ng6
-
   integration_ng7_tests:
     <<: *job_defaults
     steps:
@@ -242,6 +234,18 @@ jobs:
           paths:
             - app/integrations/hello-world-ng13-ivy/dist-integration
 
+  integration_ng14_ivy_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng14 (Ivy) application
+          command: yarn integration:ng14:ivy
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - app/integrations/hello-world-ng14-ivy/dist-integration
+
   integration_test_types:
     <<: *job_defaults
     steps:
@@ -249,14 +253,6 @@ jobs:
       - run:
           name: Test types
           command: yarn test:types
-
-  bundlesize:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Check the size of NGXS bundle
-          command: yarn bundlesize
 
   upload_coverage:
     <<: *job_defaults
@@ -330,10 +326,6 @@ workflows:
       ###     requires:
       ###       - build
 
-      - integration_ng6_tests:
-          requires:
-            - build
-
       - integration_ng8_tests:
           requires:
             - build
@@ -370,26 +362,21 @@ workflows:
           requires:
             - build
 
-      - integration_test_types:
+      - integration_ng14_ivy_tests:
           requires:
             - build
 
-      - bundlesize:
+      - integration_test_types:
           requires:
             - build
-            - integration_ng11_ivy_tests
-            - integration_ng12_ivy_tests
-            - integration_ng13_ivy_tests
 
       - upload_coverage:
           requires:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng6_tests
             - integration_ng8_tests
             - integration_test_types
-            - bundlesize
 
       # Publish @dev builds if no tag is specified
       - publish_dev_build_to_npm:
@@ -403,10 +390,8 @@ workflows:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng6_tests
             - integration_ng8_tests
             - integration_test_types
-            - bundlesize
 
       # Publish package.version @latest when a v.* git tag is present
       - publish_tagged_build_to_npm:
@@ -419,7 +404,5 @@ workflows:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng6_tests
             - integration_ng8_tests
             - integration_test_types
-            - bundlesize

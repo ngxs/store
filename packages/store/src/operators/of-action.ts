@@ -5,6 +5,16 @@ import { ActionType } from '../actions/symbols';
 import { getActionTypeFromInstance } from '../utils/utils';
 import { ActionContext, ActionStatus } from '../actions-stream';
 
+type TupleKeys<T extends any[]> = Exclude<keyof T, keyof []>;
+
+/**
+ * Given a POJO, returns the POJO type, given a class constructor object, returns the type of the class.
+ *
+ * This utility type exists due to the complexity of ActionType being either an ActionDef class or the plain
+ * `{ type: string }` type (or similar compatible POJO types).
+ */
+type Constructed<T> = T extends new (...args: any[]) => infer U ? U : T;
+
 export interface ActionCompletion<T = any, E = Error> {
   action: T;
   result: {
@@ -14,17 +24,17 @@ export interface ActionCompletion<T = any, E = Error> {
   };
 }
 
-export function ofAction<T = any>(allowedType: ActionType): OperatorFunction<ActionContext, T>;
-export function ofAction<T = any>(
-  ...allowedTypes: ActionType[]
-): OperatorFunction<ActionContext, T>;
-
 /**
  * RxJS operator for selecting out specific actions.
  *
  * This will grab actions that have just been dispatched as well as actions that have completed
  */
-export function ofAction(...allowedTypes: ActionType[]): OperatorFunction<ActionContext, any> {
+export function ofAction<T extends ActionType[]>(
+  ...allowedTypes: T
+): OperatorFunction<
+  ActionContext<Constructed<T[TupleKeys<T>]>>,
+  Constructed<T[TupleKeys<T>]>
+> {
   return ofActionOperator(allowedTypes);
 }
 
@@ -33,9 +43,12 @@ export function ofAction(...allowedTypes: ActionType[]): OperatorFunction<Action
  *
  * This will ONLY grab actions that have just been dispatched
  */
-export function ofActionDispatched(
-  ...allowedTypes: ActionType[]
-): OperatorFunction<ActionContext, any> {
+export function ofActionDispatched<T extends ActionType[]>(
+  ...allowedTypes: T
+): OperatorFunction<
+  ActionContext<Constructed<T[TupleKeys<T>]>>,
+  Constructed<T[TupleKeys<T>]>
+> {
   return ofActionOperator(allowedTypes, [ActionStatus.Dispatched]);
 }
 
@@ -44,9 +57,12 @@ export function ofActionDispatched(
  *
  * This will ONLY grab actions that have just been successfully completed
  */
-export function ofActionSuccessful(
-  ...allowedTypes: ActionType[]
-): OperatorFunction<ActionContext, any> {
+export function ofActionSuccessful<T extends ActionType[]>(
+  ...allowedTypes: T
+): OperatorFunction<
+  ActionContext<Constructed<T[TupleKeys<T>]>>,
+  Constructed<T[TupleKeys<T>]>
+> {
   return ofActionOperator(allowedTypes, [ActionStatus.Successful]);
 }
 
@@ -55,9 +71,12 @@ export function ofActionSuccessful(
  *
  * This will ONLY grab actions that have just been canceled
  */
-export function ofActionCanceled(
-  ...allowedTypes: ActionType[]
-): OperatorFunction<ActionContext, any> {
+export function ofActionCanceled<T extends ActionType[]>(
+  ...allowedTypes: T
+): OperatorFunction<
+  ActionContext<Constructed<T[TupleKeys<T>]>>,
+  Constructed<T[TupleKeys<T>]>
+> {
   return ofActionOperator(allowedTypes, [ActionStatus.Canceled]);
 }
 
@@ -66,9 +85,12 @@ export function ofActionCanceled(
  *
  * This will ONLY grab actions that have just been completed
  */
-export function ofActionCompleted(
-  ...allowedTypes: ActionType[]
-): OperatorFunction<ActionContext, ActionCompletion> {
+export function ofActionCompleted<T extends ActionType[]>(
+  ...allowedTypes: T
+): OperatorFunction<
+  ActionContext<Constructed<T[TupleKeys<T>]>>,
+  ActionCompletion<Constructed<T[TupleKeys<T>]>>
+> {
   const allowedStatuses = [
     ActionStatus.Successful,
     ActionStatus.Canceled,
@@ -82,9 +104,12 @@ export function ofActionCompleted(
  *
  * This will ONLY grab actions that have just thrown an error
  */
-export function ofActionErrored(
-  ...allowedTypes: ActionType[]
-): OperatorFunction<ActionContext, any> {
+export function ofActionErrored<T extends ActionType[]>(
+  ...allowedTypes: T
+): OperatorFunction<
+  ActionContext<Constructed<T[TupleKeys<T>]>>,
+  Constructed<T[TupleKeys<T>]>
+> {
   return ofActionOperator(allowedTypes, [ActionStatus.Errored]);
 }
 

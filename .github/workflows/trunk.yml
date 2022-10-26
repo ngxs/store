@@ -1,0 +1,163 @@
+# For more information see:
+# - https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# - https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
+
+name: trunk
+
+on:
+  push:
+    branches: [master]
+    tags-ignore: ['*']
+
+env:
+  NODE_VERSION: 16.x
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.ref_name }}.${{ github.sha }}.trunk
+  cancel-in-progress: true
+
+jobs:
+  trunk-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          github-ref-name: ${{ github.ref_name }}
+          github-sha: ${{ github.sha }}
+
+      - name: Build NGXS
+        run: yarn build
+
+  trunk-test:
+    runs-on: ubuntu-latest
+    needs: trunk-build
+
+    strategy:
+      matrix:
+        script: [lint, eslint, 'test:ci']
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          github-ref-name: ${{ github.ref_name }}
+          github-sha: ${{ github.sha }}
+
+      - name: Run ${{ matrix.script }}
+        run: yarn ${{ matrix.script }}
+
+      - name: Upload coverage results to Code Climate
+        if: ${{ matrix.script == 'test:ci' }}
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
+          chmod +x /tmp/cc-test-reporter
+          /tmp/cc-test-reporter after-build --coverage-input-type lcov --exit-code 0
+        env:
+          CC_TEST_REPORTER_ID: 3f4c9a9d57ded045e0f9ab5d23e5bbcbf709bb85637bea555f1233e72134b818 # TODO: better store it in the repository secrets. Name the variable: CC_TEST_REPORTER_ID. Then delete this line and uncomment the next one
+          # CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+
+  trunk-integration-test:
+    runs-on: ubuntu-latest
+    needs: trunk-build
+
+    strategy:
+      matrix:
+        script:
+          - 'integration:ng7'
+          - 'integration:ng8'
+          - 'integration:ng9:ivy:off'
+          - 'integration:ng9:ivy'
+          - 'integration:ng10:ivy:off'
+          - 'integration:ng10:ivy'
+          - 'integration:ng11:ivy:off'
+          - 'integration:ng11:ivy'
+          - 'integration:ng12:ivy'
+          - 'integration:ng13:ivy'
+          - 'integration:ng14:ivy'
+          - 'test:types'
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          github-ref-name: ${{ github.ref_name }}
+          github-sha: ${{ github.sha }}
+
+      - name: Run ${{ matrix.script }}
+        run: yarn ${{ matrix.script }}
+
+      - name: Upload an integration test artifact
+        if: ${{ matrix.script == 'integration:ng11:ivy' || matrix.script == 'integration:ng12:ivy' || matrix.script == 'integration:ng13:ivy' || matrix.script == 'integration:ng14:ivy' }}
+        uses: ./.github/actions/upload-integration-test-artifact
+        with:
+          script: ${{ matrix.script }}
+
+  trunk-bundlemon:
+    if: github.repository_owner == 'ngxs'
+    runs-on: ubuntu-latest
+    needs: trunk-integration-test
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          github-ref-name: ${{ github.ref_name }}
+          github-sha: ${{ github.sha }}
+
+      - name: Download integration test artifacts
+        uses: ./.github/actions/download-integration-test-artifacts
+
+      - name: Run BundleMon
+        run: yarn bundlemon
+        env:
+          BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
+          CI_COMMIT_SHA: ${{ github.sha }}
+
+  ## Skip this for now, because it is still handled by Circle CI
+  # trunk-publish:
+  #   if: github.repository_owner == 'ngxs'
+  #   continue-on-error: true
+  #   runs-on: ubuntu-latest
+  #   environment: npm-publish-dev
+  #   needs: [trunk-build, trunk-test, trunk-integration-test, trunk-bundlemon]
+
+  #   steps:
+  #     - name: Checkout sources
+  #       uses: actions/checkout@v3
+
+  #     - name: Setup
+  #       uses: ./.github/actions/setup
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+  #         github-ref-name: ${{ github.ref_name }}
+  #         github-sha: ${{ github.sha }}
+
+  #     - name: Check @ngxs build artifacts
+  #       uses: ./.github/actions/check-build-artifacts
+
+  #     - name: Development release - publish development builds to all @ngxs packages
+  #       run: yarn publish:dev
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

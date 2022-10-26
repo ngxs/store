@@ -1,0 +1,21 @@
+{
+  "baseDir": "./integrations/",
+  "subProject": "Integration Projects",
+  "defaultCompression": "none",
+  "files": [
+    {
+      "friendlyName": "Main bundles",
+      "path": "./**/dist-integration/main.<hash>.js",
+      "maxPercentIncrease": 1
+    },
+    {
+      "friendlyName": "Main bundles(Gzip)",
+      "path": "./**/dist-integration/main.<hash>.js",
+      "compression": "gzip",
+      "maxPercentIncrease": 1
+    }
+  ],
+  "reportOutput": [
+    "github"
+  ]
+}

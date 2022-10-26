@@ -30,6 +30,10 @@ export class NgxsConfig {
    * Run in development mode. This will add additional debugging features:
    * - Object.freeze on the state and actions to guarantee immutability
    * (default: false)
+   *
+   * Note: this property will be accounted only in development mode when using the Ivy compiler.
+   * It makes sense to use it only during development to ensure there're no state mutations.
+   * When building for production, the Object.freeze will be tree-shaken away.
    */
   developmentMode: boolean;
   compatibility: {
@@ -150,7 +154,7 @@ export class NgxsSimpleChange<T = any> {
  * On init interface
  */
 export interface NgxsOnInit {
-  ngxsOnInit(ctx?: StateContext<any>): void | any;
+  ngxsOnInit(ctx: StateContext<any>): void;
 }
 
 /**
@@ -164,7 +168,7 @@ export interface NgxsOnChanges {
  * After bootstrap interface
  */
 export interface NgxsAfterBootstrap {
-  ngxsAfterBootstrap(ctx?: StateContext<any>): void;
+  ngxsAfterBootstrap(ctx: StateContext<any>): void;
 }
 
 export type NgxsModuleOptions = Partial<NgxsConfig>;

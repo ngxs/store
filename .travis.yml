@@ -31,7 +31,6 @@ script:
   # Angular 6 ... Angular 8
   # should start before building Angular 9,
   # because Angular 9 CLI mutates parent packages
-  - yarn integration:ng6
   - yarn integration:ng7
   - yarn integration:ng8
 

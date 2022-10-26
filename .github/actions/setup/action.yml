@@ -1,0 +1,67 @@
+# For more information see:
+# - https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+# - https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#outputsoutput_id
+
+# The action can be referenced in workflows like:
+# - ngxs/store/.github/actions/setup@master
+# - ./.github/actions/setup
+
+name: setup
+description: Set up environment
+
+inputs:
+  node-version:
+    description: Node version
+    required: true
+    default: 16.x
+  github-ref-name:
+    description: Branch name
+    required: true
+    default: ${{ github.ref_name }}
+  github-sha:
+    description: Commit hash
+    required: true
+    default: ${{ github.sha }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Don't save Bash session history
+      shell: bash
+      run: unset HISTFILE
+
+    - name: Use Node.js ${{ inputs.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: https://registry.npmjs.org
+        check-latest: true
+
+    - name: Configure kernel (increase watchers)
+      shell: bash
+      run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+    - name: Workspace cache
+      uses: actions/cache@v3
+      id: workspace-cache
+      env:
+        cache-name: workspace-cache
+      with:
+        path: |
+          ~/.cache
+          ./node_modules
+          ./@ngxs
+          ./integrations/hello-world-ng11-ivy/dist-integration
+          ./integrations/hello-world-ng12-ivy/dist-integration
+          ./integrations/hello-world-ng13-ivy/dist-integration
+          ./integrations/hello-world-ng14-ivy/dist-integration
+        key: ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-${{ inputs.github-sha }}
+        restore-keys: |
+          ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-
+          ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
+          ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-
+          ${{ runner.os }}-
+
+    - name: Install project dependencies
+      shell: bash
+      run: yarn install --frozen-lockfile --non-interactive

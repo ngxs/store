@@ -94,12 +94,12 @@ describe('#1293 issue', () => {
     'should not infinitely redirect because of reverted snapshot',
     freshPlatform(async () => {
       // Assert
-      const { router, injector } = await createNgxsRouterPluginTestingPlatform(
+      const { router, injector, ngZone } = await createNgxsRouterPluginTestingPlatform(
         getTestModule()
       );
 
       // Act
-      await router.navigateByUrl('/');
+      await ngZone.run(() => router.navigateByUrl('/'));
 
       const url = router.url;
       const document = injector.get(DOCUMENT);

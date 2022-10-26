@@ -73,7 +73,7 @@ describe('Dispatch', () => {
       }
     }
 
-    @Injectable()
+    @Injectable({ providedIn: 'root' })
     class FakeExecutionStrategy implements NgxsExecutionStrategy {
       enter<T>(func: () => T): T {
         return func();

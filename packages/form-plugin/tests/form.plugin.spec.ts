@@ -226,7 +226,7 @@ describe('NgxsFormPlugin', () => {
     const form = store.selectSnapshot(StudentState.getStudentForm);
 
     // Assert
-    expect(form).toEqual({ model: {} });
+    expect(form).toEqual({ model: undefined });
   });
 
   it('should reset form with value', async () => {
@@ -362,7 +362,7 @@ describe('NgxsFormPlugin', () => {
 
         // Assert
         expect(getTodosFormState()).toEqual({
-          model: {},
+          model: null,
           dirty: null,
           status: null,
           errors: {}
@@ -475,7 +475,7 @@ describe('NgxsFormPlugin', () => {
 
         // Assert
         expect(getTodosFormState()).toEqual({
-          model: {},
+          model: null,
           dirty: null,
           status: null,
           errors: {}
@@ -516,7 +516,7 @@ describe('NgxsFormPlugin', () => {
 
         // Assert
         expect(getTodosFormState()).toEqual({
-          model: {},
+          model: null,
           dirty: null,
           status: null,
           errors: {}

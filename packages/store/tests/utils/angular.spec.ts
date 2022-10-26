@@ -1,82 +1,59 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { getPlatform, platformCore } from '@angular/core';
-import { platformBrowser } from '@angular/platform-browser';
-import {
-  platformBrowserDynamicTesting,
-  BrowserDynamicTestingModule
-} from '@angular/platform-browser-dynamic/testing';
-import { getTestBed } from '@angular/core/testing';
+import { ɵglobal } from '@angular/core';
+
 import { isAngularInTestMode } from '@ngxs/store/internals';
 
-describe('[utils/angular]', () => {
+xdescribe('[utils/angular]', () => {
   describe('isAngularInTestMode', () => {
-    function resetEnv() {
-      const fn = <any>isAngularInTestMode;
-      // Reset the memoization
-      fn && fn.reset && fn.reset();
+    // Just an empty object so `typeof !== undefined` will be truthy.
+    const nonUndefinedValue = {};
 
-      // Reset the angular platform
-      const p = <any>getPlatform();
-      p && p.destroy && p.destroy();
-    }
-
-    beforeEach(() => {
-      resetEnv();
+    it('should return true if `__karma__` is available', () => {
+      // Arrange & act & assert
+      const __karma__ = ɵglobal.__karma__;
+      ɵglobal.__karma__ = nonUndefinedValue;
+      expect(isAngularInTestMode()).toEqual(true);
+      ɵglobal.__karma__ = __karma__;
     });
 
-    afterEach(() => {
-      resetEnv();
-
-      getTestBed().resetTestEnvironment();
-      getTestBed().initTestEnvironment(
-        BrowserDynamicTestingModule,
-        platformBrowserDynamicTesting()
-      );
+    it('should return true if `jasmine` is available', () => {
+      // Arrange & act & assert
+      const jasmine = ɵglobal.jasmine;
+      ɵglobal.jasmine = nonUndefinedValue;
+      expect(isAngularInTestMode()).toEqual(true);
+      ɵglobal.jasmine = jasmine;
     });
 
-    it(`should return true if the Angular Test Module has been bootstrapped`, () => {
-      // Arrange
-      platformBrowserDynamicTesting();
-      // Act
-      const result = isAngularInTestMode();
-      // Assert
-      expect(result).toEqual(true);
+    it('should return true if `jest` is available', () => {
+      // Arrange & act & assert
+      const jest = ɵglobal.jest;
+      ɵglobal.jest = nonUndefinedValue;
+      expect(isAngularInTestMode()).toEqual(true);
+      ɵglobal.jest = jest;
     });
 
-    it(`should return false if Angular has not been bootstrapped`, () => {
-      // Arrange
-
-      // Act
-      const result = isAngularInTestMode();
-      // Assert
-      expect(result).toEqual(false);
+    it('should return true if `Mocha` is available', () => {
+      // Arrange & act & assert
+      const Mocha = ɵglobal.Mocha;
+      ɵglobal.Mocha = nonUndefinedValue;
+      expect(isAngularInTestMode()).toEqual(true);
+      ɵglobal.Mocha = Mocha;
     });
 
-    it(`should return false if the Angular platformBrowserDynamic has been bootstrapped`, async () => {
-      // Arrange
-      platformBrowserDynamic();
-      // Act
-      const result = isAngularInTestMode();
-      // Assert
-      expect(result).toEqual(false);
-    });
-
-    it(`should return false if the Angular platformBrowser has been bootstrapped`, async () => {
-      // Arrange
-      platformBrowser();
-      // Act
-      const result = isAngularInTestMode();
-      // Assert
-      expect(result).toEqual(false);
-    });
-
-    it(`should return false if the Angular platformCore has been bootstrapped`, async () => {
-      // Arrange
-      platformCore();
-      // Act
-      const result = isAngularInTestMode();
-      // Assert
-      expect(result).toEqual(false);
+    it('should return false if any of the values are globally available', () => {
+      // Arrange & act & assert
+      const __karma__ = ɵglobal.__karma__;
+      const jasmine = ɵglobal.jasmine;
+      const jest = ɵglobal.jest;
+      const Mocha = ɵglobal.Mocha;
+      delete ɵglobal.__karma__;
+      delete ɵglobal.jasmine;
+      delete ɵglobal.jest;
+      delete ɵglobal.Mocha;
+      expect(isAngularInTestMode()).toEqual(false);
+      ɵglobal.__karma__ = __karma__;
+      ɵglobal.jasmine = jasmine;
+      ɵglobal.jest = jest;
+      ɵglobal.Mocha = Mocha;
     });
   });
 });

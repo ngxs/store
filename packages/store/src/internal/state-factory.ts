@@ -1,5 +1,14 @@
 import { Injectable, Injector, Optional, SkipSelf, Inject, OnDestroy } from '@angular/core';
-import { forkJoin, from, Observable, of, throwError, Subscription, Subject } from 'rxjs';
+import {
+  forkJoin,
+  from,
+  Observable,
+  of,
+  throwError,
+  Subscription,
+  Subject,
+  isObservable
+} from 'rxjs';
 import {
   catchError,
   defaultIfEmpty,
@@ -9,6 +18,7 @@ import {
   shareReplay,
   takeUntil
 } from 'rxjs/operators';
+import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
 
 import { META_KEY, NgxsConfig } from '../symbols';
 import {
@@ -34,7 +44,7 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
+import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 
 /**
  * State factory class
@@ -161,6 +171,14 @@ export class StateFactory implements OnDestroy {
 
       this.addRuntimeInfoToMeta(meta, path);
 
+      // Note: previously we called `ensureStateClassIsInjectable` within the
+      // `State` decorator. This check is moved here because the `ɵprov` property
+      // will not exist on the class in JIT mode (because it's set asynchronously
+      // during JIT compilation through `Object.defineProperty`).
+      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+        ensureStateClassIsInjectable(stateClass);
+      }
+
       const stateMap: MappedStore = {
         name,
         path,
@@ -242,7 +260,7 @@ export class StateFactory implements OnDestroy {
               result = from(result);
             }
 
-            if (result instanceof Observable) {
+            if (isObservable(result)) {
               // If this observable has been completed w/o emitting
               // any value then we wouldn't want to complete the whole chain
               // of actions. Since if any observable completes then
@@ -256,7 +274,7 @@ export class StateFactory implements OnDestroy {
                   if (value instanceof Promise) {
                     return from(value);
                   }
-                  if (value instanceof Observable) {
+                  if (isObservable(value)) {
                     return value;
                   }
                   return of(value);
