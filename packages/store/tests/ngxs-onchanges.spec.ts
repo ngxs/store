@@ -11,270 +11,234 @@ import { TestBed } from '@angular/core/testing';
 import { Injectable } from '@angular/core';
 
 describe('ngxsOnChanges', () => {
-  it('should be instanceof NgxsSimpleChange', () => {
-    const change: NgxsSimpleChange = new NgxsSimpleChange(1, 2, false);
-    expect(change.previousValue).toEqual(1);
-    expect(change.currentValue).toEqual(2);
-    expect(change.firstChange).toEqual(false);
-  });
-
-  it('should correct state preservation with simple state', () => {
+  fit('should call ngxsOnChanges correctly with a simple state', () => {
+    // Arrange
     class Increment {
-      static type = 'INCREMENT';
+      static readonly type = 'Increment';
     }
 
     class Decrement {
-      static type = 'DECREMENT';
+      static readonly type = 'Decrement';
     }
 
-    @Injectable()
-    class OnlineCloudService {
-      public readonly db: NgxsSimpleChange[] = [];
-    }
+    const recorder: NgxsSimpleChange[] = [];
 
-    @State<number>({
+    @State({
       name: 'counter',
       defaults: 0
     })
     @Injectable()
     class CounterState implements NgxsOnChanges {
-      constructor(private apiCloud: OnlineCloudService) {}
-
-      public ngxsOnChanges(change: NgxsSimpleChange): void {
-        this.apiCloud.db.push(change);
+      ngxsOnChanges(change: NgxsSimpleChange): void {
+        recorder.push(change);
       }
 
       @Action(Increment)
-      increment({ setState }: StateContext<number>) {
-        setState((state: number) => ++state);
+      increment(ctx: StateContext<number>) {
+        ctx.setState(state => ++state);
       }
 
       @Action(Decrement)
-      decrement({ setState }: StateContext<number>) {
-        setState((state: number) => --state);
+      decrement(ctx: StateContext<number>) {
+        ctx.setState(state => --state);
       }
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([CounterState])],
-      providers: [OnlineCloudService]
+      imports: [NgxsModule.forRoot([CounterState])]
     });
 
-    const store: Store = TestBed.inject(Store);
+    const store = TestBed.inject(Store);
 
+    // Act
     store.dispatch(new Increment());
     store.dispatch(new Increment());
     store.dispatch(new Increment());
     store.dispatch(new Decrement());
     store.dispatch(new Increment());
 
-    const cloud: OnlineCloudService = TestBed.inject(OnlineCloudService);
-
-    expect(cloud.db).toEqual([
+    // Assert
+    expect(recorder).toEqual([
+      // Initialization
       { previousValue: undefined, currentValue: 0, firstChange: true },
+      // Increment
       { previousValue: 0, currentValue: 1, firstChange: false },
+      // Increment
       { previousValue: 1, currentValue: 2, firstChange: false },
+      // Increment
       { previousValue: 2, currentValue: 3, firstChange: false },
+      // Decrement
       { previousValue: 3, currentValue: 2, firstChange: false },
+      // Increment
       { previousValue: 2, currentValue: 3, firstChange: false }
     ]);
   });
 
-  it('should correct state preservation with deep states', () => {
-    const allChangesQueue: NgxsSimpleChange[] = [];
-    const parentStateChangesQueue: NgxsSimpleChange[] = [];
-    const childStateChangesQueue: NgxsSimpleChange[] = [];
+  fit('should call ngxsOnChanges correctly with child states', () => {
+    // Arrange
+    const parentStateRecorder: NgxsSimpleChange[] = [];
+    const childStateRecorder: NgxsSimpleChange[] = [];
 
-    class PushValue {
-      static type = 'Pusher';
+    class IncrementParent {
+      static readonly type = 'Increment Parent';
+    }
 
-      constructor(public payload: string) {}
+    class DecrementParent {
+      static readonly type = 'Decrement Parent';
+    }
+
+    class IncrementChild {
+      static readonly type = 'Increment Child';
+    }
+
+    class DecrementChild {
+      static readonly type = 'Decrement Child';
     }
 
     @State({
-      name: 'b',
-      defaults: {
-        values: []
-      }
+      name: 'childCounter',
+      defaults: 0
     })
     @Injectable()
-    class MyChildState implements NgxsOnChanges {
-      public ngxsOnChanges(change: NgxsSimpleChange): void {
-        allChangesQueue.push(change);
-        childStateChangesQueue.push(change);
+    class ChildCounterState implements NgxsOnChanges {
+      ngxsOnChanges(change: NgxsSimpleChange<any>): void {
+        childStateRecorder.push(change);
       }
 
-      @Action(PushValue)
-      push({ setState }: StateContext<any>, { payload }: PushValue) {
-        setState((state: any) => ({ values: state.values.concat(payload) }));
+      @Action(IncrementChild)
+      increment(ctx: StateContext<number>) {
+        ctx.setState(state => ++state);
+      }
+
+      @Action(DecrementChild)
+      decrement(ctx: StateContext<number>) {
+        ctx.setState(state => --state);
       }
     }
 
-    class Append {
-      static type = 'Appender';
-
-      constructor(public payload: string) {}
-    }
-
-    @State({
-      name: 'a',
+    @State<{ counter: number }>({
+      name: 'parentCounter',
       defaults: {
-        hello: 'world'
+        counter: 0
       },
-      children: [MyChildState]
+      children: [ChildCounterState]
     })
     @Injectable()
-    class MyState implements NgxsOnChanges {
-      public ngxsOnChanges(change: NgxsSimpleChange): void {
-        allChangesQueue.push(change);
-        parentStateChangesQueue.push(change);
+    class ParentCounterState implements NgxsOnChanges {
+      ngxsOnChanges(change: NgxsSimpleChange<any>): void {
+        parentStateRecorder.push(change);
       }
 
-      @Action(Append)
-      append({ setState }: StateContext<any>, { payload }: Append) {
-        setState((state: any) => ({ ...state, hello: state.hello + payload }));
+      @Action(IncrementParent)
+      increment(ctx: StateContext<{ counter: number }>) {
+        ctx.patchState({
+          counter: ctx.getState().counter + 1
+        });
+      }
+
+      @Action(DecrementParent)
+      decrement(ctx: StateContext<{ counter: number }>) {
+        ctx.patchState({
+          counter: ctx.getState().counter - 1
+        });
       }
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState, MyChildState])]
+      imports: [NgxsModule.forRoot([ParentCounterState, ChildCounterState])]
     });
 
-    const store: Store = TestBed.inject(Store);
-    expect(store.snapshot()).toEqual({ a: { hello: 'world', b: { values: [] } } });
+    const store = TestBed.inject(Store);
 
-    store.dispatch(new Append(' 2019'));
-    expect(store.snapshot()).toEqual({ a: { hello: 'world 2019', b: { values: [] } } });
-
-    store.dispatch(new PushValue('Mark'));
-    store.dispatch(new PushValue('Artur'));
-    store.dispatch(new PushValue('Max'));
-
+    // Assert
     expect(store.snapshot()).toEqual({
-      a: { hello: 'world 2019', b: { values: ['Mark', 'Artur', 'Max'] } }
+      parentCounter: {
+        counter: 0,
+        childCounter: 0
+      }
     });
 
-    store.dispatch(new Append('!!!'));
-
-    expect(store.snapshot()).toEqual({
-      a: { hello: 'world 2019!!!', b: { values: ['Mark', 'Artur', 'Max'] } }
-    });
-
-    expect(parentStateChangesQueue).toEqual([
+    expect(parentStateRecorder).toEqual([
       {
         previousValue: undefined,
         currentValue: {
-          hello: 'world',
-          b: {
-            values: []
-          }
+          counter: 0,
+          childCounter: 0
+        },
+        firstChange: true
+      }
+    ]);
+
+    expect(childStateRecorder).toEqual([
+      { previousValue: undefined, currentValue: 0, firstChange: true }
+    ]);
+
+    // Act
+    store.dispatch(new IncrementChild());
+
+    // Assert
+    expect(parentStateRecorder).toEqual([
+      {
+        previousValue: undefined,
+        currentValue: {
+          counter: 0,
+          childCounter: 0
         },
         firstChange: true
       },
       {
-        previousValue: { hello: 'world', b: { values: [] } },
-        currentValue: { hello: 'world 2019', b: { values: [] } },
-        firstChange: false
-      },
-      {
-        previousValue: { hello: 'world 2019', b: { values: ['Mark', 'Artur', 'Max'] } },
-        currentValue: { hello: 'world 2019!!!', b: { values: ['Mark', 'Artur', 'Max'] } },
-        firstChange: false
-      }
-    ]);
-
-    expect(childStateChangesQueue).toEqual([
-      {
-        previousValue: undefined,
-        currentValue: { values: [] },
-        firstChange: true
-      },
-      {
-        previousValue: { values: [] },
-        currentValue: { values: ['Mark'] },
-        firstChange: false
-      },
-      {
-        previousValue: { values: ['Mark'] },
-        currentValue: { values: ['Mark', 'Artur'] },
-        firstChange: false
-      },
-      {
-        previousValue: { values: ['Mark', 'Artur'] },
-        currentValue: { values: ['Mark', 'Artur', 'Max'] },
+        previousValue: {
+          counter: 0,
+          childCounter: 0
+        },
+        currentValue: {
+          counter: 0,
+          childCounter: 1
+        },
         firstChange: false
       }
     ]);
 
-    expect(allChangesQueue).toEqual([
+    expect(childStateRecorder.length).toEqual(2);
+    expect(childStateRecorder).toEqual([
+      { previousValue: undefined, currentValue: 0, firstChange: true },
+      { previousValue: 0, currentValue: 1, firstChange: false }
+    ]);
+
+    // Act
+    store.dispatch(new IncrementParent());
+
+    // Assert
+    expect(childStateRecorder.length).toEqual(2); // Not changed
+    expect(parentStateRecorder).toEqual([
       {
         previousValue: undefined,
         currentValue: {
-          hello: 'world',
-          b: {
-            values: []
-          }
+          counter: 0,
+          childCounter: 0
         },
         firstChange: true
       },
       {
-        previousValue: undefined,
-        currentValue: {
-          values: []
+        previousValue: {
+          counter: 0,
+          childCounter: 0
         },
-        firstChange: true
-      },
-      {
-        previousValue: { hello: 'world', b: { values: [] } },
-        currentValue: { hello: 'world 2019', b: { values: [] } },
-        firstChange: false
-      },
-      {
-        previousValue: { values: [] },
-        currentValue: { values: ['Mark'] },
-        firstChange: false
-      },
-      {
-        previousValue: { values: ['Mark'] },
-        currentValue: { values: ['Mark', 'Artur'] },
-        firstChange: false
-      },
-      {
-        previousValue: { values: ['Mark', 'Artur'] },
-        currentValue: { values: ['Mark', 'Artur', 'Max'] },
-        firstChange: false
-      },
-      {
-        previousValue: { hello: 'world 2019', b: { values: ['Mark', 'Artur', 'Max'] } },
-        currentValue: { hello: 'world 2019!!!', b: { values: ['Mark', 'Artur', 'Max'] } },
-        firstChange: false
-      }
-    ]);
-
-    store.dispatch([new PushValue('<NG'), new Append('-'), new PushValue('XS>')]);
-
-    const lastThreeEvents: NgxsSimpleChange[] = allChangesQueue.slice().slice(-3);
-
-    expect(lastThreeEvents).toEqual([
-      {
-        previousValue: { values: ['Mark', 'Artur', 'Max'] },
-        currentValue: { values: ['Mark', 'Artur', 'Max', '<NG'] },
+        currentValue: {
+          counter: 0,
+          childCounter: 1
+        },
         firstChange: false
       },
       {
         previousValue: {
-          hello: 'world 2019!!!',
-          b: { values: ['Mark', 'Artur', 'Max', '<NG'] }
+          counter: 0,
+          childCounter: 1
         },
         currentValue: {
-          hello: 'world 2019!!!-',
-          b: { values: ['Mark', 'Artur', 'Max', '<NG'] }
+          counter: 1,
+          childCounter: 1
         },
-        firstChange: false
-      },
-      {
-        previousValue: { values: ['Mark', 'Artur', 'Max', '<NG'] },
-        currentValue: { values: ['Mark', 'Artur', 'Max', '<NG', 'XS>'] },
         firstChange: false
       }
     ]);
