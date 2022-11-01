@@ -1,13 +1,13 @@
-import { ErrorHandler, Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
 
 import { compose } from '../utils/compose';
+import { InternalErrorReporter, ngxsErrorHandler } from './error-handler';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
-import { leaveNgxs } from '../operators/leave-ngxs';
 import { getActionTypeFromInstance } from '../utils/utils';
 
 /**
@@ -21,15 +21,13 @@ export class InternalDispatchedActionResults extends Subject<ActionContext> {}
 
 @Injectable()
 export class InternalDispatcher {
-  private _errorHandler: ErrorHandler;
-
   constructor(
-    private _injector: Injector,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
     private _stateStream: StateStream,
-    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy
+    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy,
+    private _internalErrorReporter: InternalErrorReporter
   ) {}
 
   /**
@@ -40,18 +38,9 @@ export class InternalDispatcher {
       this.dispatchByEvents(actionOrActions)
     );
 
-    result.subscribe({
-      error: error =>
-        this._ngxsExecutionStrategy.leave(() => {
-          try {
-            // Retrieve lazily to avoid cyclic dependency exception
-            this._errorHandler = this._errorHandler || this._injector.get(ErrorHandler);
-            this._errorHandler.handleError(error);
-          } catch {}
-        })
-    });
-
-    return result.pipe(leaveNgxs(this._ngxsExecutionStrategy));
+    return result.pipe(
+      ngxsErrorHandler(this._internalErrorReporter, this._ngxsExecutionStrategy)
+    );
   }
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {

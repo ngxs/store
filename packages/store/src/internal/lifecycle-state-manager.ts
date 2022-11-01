@@ -1,10 +1,19 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { NgxsBootstrapper } from '@ngxs/store/internals';
-import { Subject } from 'rxjs';
-import { filter, mergeMap, pairwise, startWith, takeUntil, tap } from 'rxjs/operators';
+import { EMPTY, Subject } from 'rxjs';
+import {
+  catchError,
+  filter,
+  mergeMap,
+  pairwise,
+  startWith,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 
 import { Store } from '../store';
 import { getValue } from '../utils/utils';
+import { InternalErrorReporter } from './error-handler';
 import { StateContextFactory } from './state-context-factory';
 import { InternalStateOperations } from './state-operations';
 import { MappedStore, StatesAndDefaults } from './internals';
@@ -16,6 +25,7 @@ export class LifecycleStateManager implements OnDestroy {
 
   constructor(
     private _store: Store,
+    private _internalErrorReporter: InternalErrorReporter,
     private _internalStateOperations: InternalStateOperations,
     private _stateContextFactory: StateContextFactory,
     private _bootstrapper: NgxsBootstrapper
@@ -31,18 +41,23 @@ export class LifecycleStateManager implements OnDestroy {
       .dispatch(action)
       .pipe(
         filter(() => !!results),
-        tap(() => this._invokeInit(results!.states)),
+        tap(() => this._invokeInitOnStates(results!.states)),
         mergeMap(() => this._bootstrapper.appBootstrapped$),
         filter(appBootstrapped => !!appBootstrapped),
+        catchError(error => {
+          // The `SafeSubscriber` (which is used by most RxJS operators) re-throws
+          // errors asynchronously (`setTimeout(() => { throw error })`). This might
+          // break existing user's code or unit tests. We catch the error manually to
+          // be backward compatible with the old behavior.
+          this._internalErrorReporter.reportErrorSafely(error);
+          return EMPTY;
+        }),
         takeUntil(this._destroy$)
       )
-      .subscribe(() => this._invokeBootstrap(results!.states));
+      .subscribe(() => this._invokeBootstrapOnStates(results!.states));
   }
 
-  /**
-   * Invoke the init function on the states.
-   */
-  private _invokeInit(mappedStores: MappedStore[]): void {
+  private _invokeInitOnStates(mappedStores: MappedStore[]): void {
     for (const mappedStore of mappedStores) {
       const instance: NgxsLifeCycle = mappedStore.instance;
 
@@ -68,10 +83,7 @@ export class LifecycleStateManager implements OnDestroy {
     }
   }
 
-  /**
-   * Invoke the bootstrap function on the states.
-   */
-  private _invokeBootstrap(mappedStores: MappedStore[]) {
+  private _invokeBootstrapOnStates(mappedStores: MappedStore[]) {
     for (const mappedStore of mappedStores) {
       const instance: NgxsLifeCycle = mappedStore.instance;
       if (instance.ngxsAfterBootstrap) {
