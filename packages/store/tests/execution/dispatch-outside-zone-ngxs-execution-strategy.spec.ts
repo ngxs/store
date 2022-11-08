@@ -110,7 +110,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       });
 
       // Assert
-      expect(ticks.count).toEqual(4);
+      expect(ticks.count).toEqual(3);
       zoneCounter.assert({
         inside: 3,
         outside: 0
@@ -178,7 +178,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       });
       // Assert
       cleanup();
-      expect(ticks.count).toEqual(5);
+      expect(ticks.count).toEqual(4);
       zoneCounter.assert({
         inside: 3,
         outside: 0
@@ -195,7 +195,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
       });
       // Assert
       cleanup();
-      expect(ticks.count).toEqual(4);
+      expect(ticks.count).toEqual(3);
       zoneCounter.assert({
         inside: 3,
         outside: 0
