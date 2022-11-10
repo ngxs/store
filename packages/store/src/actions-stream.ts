@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 
 import { leaveNgxs } from './operators/leave-ngxs';
@@ -58,7 +58,11 @@ export class OrderedSubject<T> extends Subject<T> {
  * Internal Action stream that is emitted anytime an action is dispatched.
  */
 @Injectable()
-export class InternalActions extends OrderedSubject<ActionContext> {}
+export class InternalActions extends OrderedSubject<ActionContext> implements OnDestroy {
+  ngOnDestroy(): void {
+    this.complete();
+  }
+}
 
 /**
  * Action stream that is emitted anytime an action is dispatched.
