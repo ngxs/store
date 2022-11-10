@@ -1,4 +1,10 @@
-import { NgModule, ModuleWithProviders, PLATFORM_ID, InjectionToken } from '@angular/core';
+import {
+  NgModule,
+  ModuleWithProviders,
+  PLATFORM_ID,
+  InjectionToken,
+  Injector
+} from '@angular/core';
 import { NGXS_PLUGINS } from '@ngxs/store';
 
 import {
@@ -7,7 +13,11 @@ import {
   NGXS_STORAGE_PLUGIN_OPTIONS
 } from './symbols';
 import { NgxsStoragePlugin } from './storage.plugin';
-import { storageOptionsFactory, engineFactory } from './internals';
+import { engineFactory, storageOptionsFactory } from './internals';
+import {
+  createFinalStoragePluginOptions,
+  FINAL_NGXS_STORAGE_PLUGIN_OPTIONS
+} from './internals/final-options';
 
 export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
 
@@ -37,6 +47,11 @@ export class NgxsStoragePluginModule {
           provide: STORAGE_ENGINE,
           useFactory: engineFactory,
           deps: [NGXS_STORAGE_PLUGIN_OPTIONS, PLATFORM_ID]
+        },
+        {
+          provide: FINAL_NGXS_STORAGE_PLUGIN_OPTIONS,
+          useFactory: createFinalStoragePluginOptions,
+          deps: [Injector, NGXS_STORAGE_PLUGIN_OPTIONS]
         }
       ]
     };

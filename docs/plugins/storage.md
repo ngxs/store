@@ -139,6 +139,55 @@ export class AppModule {}
 
 This is very handy to avoid persisting runtime-only states that shouldn't be saved to any storage.
 
+This is also possible to provide storage engines per individual key. Suppose we want to persist `NovelsState` into the local storage and `DetectivesState` into the session storage. The `key` signature will look as follows:
+
+```ts
+import { LOCAL_STORAGE_ENGINE, SESSION_STORAGE_ENGINE } from '@ngxs/storage-plugin';
+
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: [
+        {
+          key: 'novels', // or `NovelsState`
+          engine: LOCAL_STORAGE_ENGINE
+        },
+        {
+          key: DetectivesState, // or `detectives`
+          engine: SESSION_STORAGE_ENGINE
+        }
+      ]
+    })
+  ]
+})
+export class AppModule {}
+```
+
+`LOCAL_STORAGE_ENGINE` and `SESSION_STORAGE_ENGINE` are injection tokens that resolve to `localStorage` and `sessionStorage`. They shouldn't be used in apps with server-side rendering because it will throw an exception that those symbols are not defined on the global scope. Instead, we should provide a custom storage engine. The `engine` property may also refer to classes that implement the `StorageEngine` interface:
+
+```ts
+import { StorageEngine } from '@ngxs/storage-plugin';
+
+@Injectable({ providedIn: 'root' })
+export class MyCustomStorageEngine implements StorageEngine {
+  // ...
+}
+
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: [
+        {
+          key: 'novels',
+          engine: MyCustomStorageEngine
+        }
+      ]
+    })
+  ]
+})
+export class AppModule {}
+```
+
 ### Namespace Option
 
 The namespace option should be provided when the storage plugin is used in micro frontend applications. The namespace may equal the app name and will prefix keys for state slices:
