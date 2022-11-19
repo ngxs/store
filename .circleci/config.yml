@@ -4,7 +4,7 @@ version: 2
 job_defaults_var: &job_defaults
   working_directory: ~/workspace/app
   docker:
-    - image: circleci/node:14.16.1-browsers
+    - image: circleci/node:16.13.0-browsers
 
 # Yarn cache key
 cache_var: &cache_key yarn-packages-v2-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -246,6 +246,18 @@ jobs:
           paths:
             - app/integrations/hello-world-ng14-ivy/dist-integration
 
+  integration_ng15_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng15 application
+          command: yarn integration:ng15
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - app/integrations/hello-world-ng15/dist-integration
+
   integration_test_types:
     <<: *job_defaults
     steps:
@@ -363,6 +375,10 @@ workflows:
             - build
 
       - integration_ng14_ivy_tests:
+          requires:
+            - build
+
+      - integration_ng15_tests:
           requires:
             - build
 
