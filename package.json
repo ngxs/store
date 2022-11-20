@@ -162,7 +162,7 @@
     "mock-socket": "^8.1.0",
     "ng-packagr": "^9.1.5",
     "prettier": "1.19.1",
-    "rxjs": "^6.5.5",
+    "rxjs": "6.6.7",
     "start-server-and-test": "^1.11.0",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.10.2",
