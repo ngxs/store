@@ -57,7 +57,7 @@ describe('Actions stream causing ticks', () => {
   class TestModule {}
 
   it(
-    'should run many change detections when the Actions stream is subscribed',
+    'should NOT run change detection whenever `Actions` stream emits',
     freshPlatform(async () => {
       // Arrange
       const { injector } = await skipConsoleLogging(() =>
@@ -72,7 +72,7 @@ describe('Actions stream causing ticks', () => {
       await actions$.pipe(ofActionSuccessful(SetCountries), take(1)).toPromise();
 
       // Assert
-      expect(appRef.tick).toHaveBeenCalledTimes(12);
+      expect(appRef.tick).toHaveBeenCalledTimes(2);
     })
   );
 });
