@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
+import { share } from 'rxjs/operators';
 
 import { leaveNgxs } from './operators/leave-ngxs';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
@@ -58,7 +59,11 @@ export class OrderedSubject<T> extends Subject<T> {
  * Internal Action stream that is emitted anytime an action is dispatched.
  */
 @Injectable()
-export class InternalActions extends OrderedSubject<ActionContext> {}
+export class InternalActions extends OrderedSubject<ActionContext> implements OnDestroy {
+  ngOnDestroy(): void {
+    this.complete();
+  }
+}
 
 /**
  * Action stream that is emitted anytime an action is dispatched.
@@ -73,14 +78,21 @@ export class Actions extends Observable<any> {
     internalActions$: InternalActions,
     internalExecutionStrategy: InternalNgxsExecutionStrategy
   ) {
+    const sharedInternalActions$ = internalActions$.pipe(
+      leaveNgxs(internalExecutionStrategy),
+      // The `InternalActions` subject emits outside of the Angular zone.
+      // We have to re-enter the Angular zone for any incoming consumer.
+      // The `share()` operator reduces the number of change detections.
+      // This would call leave only once for any stream emission across all active subscribers.
+      share()
+    );
+
     super(observer => {
-      const childSubscription = internalActions$
-        .pipe(leaveNgxs(internalExecutionStrategy))
-        .subscribe({
-          next: ctx => observer.next(ctx),
-          error: error => observer.error(error),
-          complete: () => observer.complete()
-        });
+      const childSubscription = sharedInternalActions$.subscribe({
+        next: ctx => observer.next(ctx),
+        error: error => observer.error(error),
+        complete: () => observer.complete()
+      });
 
       observer.add(childSubscription);
     });

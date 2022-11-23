@@ -92,6 +92,7 @@ jobs:
           - 'integration:ng12:ivy'
           - 'integration:ng13:ivy'
           - 'integration:ng14:ivy'
+          - 'integration:ng15'
           - 'test:types'
 
     steps:
