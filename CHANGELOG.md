@@ -12,6 +12,8 @@
 $ npm install @ngxs/store@dev
 ```
 
+# 3.7.6 2022-11-23
+
 - Performance: Run change detection once for all `Actions` subscribers once the stream emits [#1939](https://github.com/ngxs/store/pull/1939)
 - Fix: Use `isObservable` to test whether actions return an observable [#1925](https://github.com/ngxs/store/pull/1925)
 - Fix: Call `ngxsOnChanges` whenever state changes (even through plugins) [#1926](https://github.com/ngxs/store/pull/1926)
