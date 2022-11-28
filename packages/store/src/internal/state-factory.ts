@@ -88,6 +88,7 @@ export class StateFactory implements OnDestroy {
   }
 
   getRuntimeSelectorContext = memoize(() => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const stateFactory = this;
 
     function resolveGetter(key: string) {

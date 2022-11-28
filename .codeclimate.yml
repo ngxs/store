@@ -1,8 +1,5 @@
 version: '2'
 plugins:
-  tslint:
-    enabled: true
-    config: tslint.json
   nodesecurity:
     enabled: true
 checks:

@@ -76,14 +76,6 @@ jobs:
           path: ngxs-core.tgz
           destination: dist/ngxs-core.tgz
 
-  tslint:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run TSLint analyzer
-          command: yarn lint
-
   eslint:
     <<: *job_defaults
     steps:
@@ -141,74 +133,6 @@ jobs:
       - run:
           name: Run integration tests for the SSR build application
           command: yarn test:ci:integration:ssr
-
-  integration_ng7_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for the Angular 7 application
-          command: yarn integration:ng7
-
-  integration_ng8_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for the Angular 8 application
-          command: yarn integration:ng8
-
-  integration_ng9_ivy_off_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng9 ivy off application
-          command: yarn integration:ng9:ivy:off
-
-  integration_ng9_ivy_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng9 (Ivy) application
-          command: yarn integration:ng9:ivy
-
-  integration_ng10_ivy_off_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng10 ivy off application
-          command: yarn integration:ng10:ivy:off
-
-  integration_ng10_ivy_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng10 (Ivy) application
-          command: yarn integration:ng10:ivy
-
-  integration_ng11_ivy_off_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng11 (Ivy off) application
-          command: yarn integration:ng11:ivy:off
-
-  integration_ng11_ivy_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng11 (Ivy) application
-          command: yarn integration:ng11:ivy
-      - persist_to_workspace:
-          root: ~/workspace
-          paths:
-            - app/integrations/hello-world-ng11-ivy/dist-integration
 
   integration_ng12_ivy_tests:
     <<: *job_defaults
@@ -314,10 +238,6 @@ workflows:
             tags:
               only: /.*/
 
-      - tslint:
-          requires:
-            - build
-
       - eslint:
           requires:
             - build
@@ -337,34 +257,6 @@ workflows:
       ### - integration_ssr_tests:
       ###     requires:
       ###       - build
-
-      - integration_ng8_tests:
-          requires:
-            - build
-
-      - integration_ng9_ivy_tests:
-          requires:
-            - build
-
-      - integration_ng9_ivy_off_tests:
-          requires:
-            - build
-
-      - integration_ng10_ivy_off_tests:
-          requires:
-            - build
-
-      - integration_ng10_ivy_tests:
-          requires:
-            - build
-
-      - integration_ng11_ivy_off_tests:
-          requires:
-            - build
-
-      - integration_ng11_ivy_tests:
-          requires:
-            - build
 
       - integration_ng12_ivy_tests:
           requires:
