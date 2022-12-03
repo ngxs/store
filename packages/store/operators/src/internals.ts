@@ -1,1 +1,1 @@
-export type Predicate<T = any> = (value?: T | Readonly<T>) => boolean;
+export type Predicate<T = any> = (value: T | Readonly<T>) => boolean;

@@ -115,13 +115,13 @@ describe('[TEST]: the iif State Operator', () => {
 //    iif(() => false, { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
 //    iif(() => false, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
 
-//    iif(obj => obj!.val === '1', { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
-//    iif(obj => obj!.val === '1', { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
-//    iif(obj => obj!.val === '1', { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
-//    iif(obj => obj!.val === '1', null, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | null>
+//    iif(obj => obj.val === '1', { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(obj => obj.val === '1', { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(obj => obj.val === '1', { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
+//    iif(obj => obj.val === '1', null, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | null>
 //    iif(obj => obj === null, { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
-//    iif(obj => obj!.val === '1', { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
-//    iif(obj => obj!.val === '1', undefined, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | undefined>
+//    iif(obj => obj.val === '1', { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
+//    iif(obj => obj.val === '1', undefined, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | undefined>
 //    iif(obj => obj === undefined, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
   });
 
@@ -190,10 +190,10 @@ describe('[TEST]: the iif State Operator', () => {
 
     patch<MyType>({ nums: iif(() => true, [10]) })(original); // $ExpectType MyType
     patch<MyType>({ nums: iif(true, [10]) })(original); // $ExpectType MyType
-    patch<MyType>({ nums: iif(val => val!.includes(1), [10]) })(original); // $ExpectType MyType
+    patch<MyType>({ nums: iif(val => val.includes(1), [10]) })(original); // $ExpectType MyType
     patch<MyType>({ nums: iif(() => false, [10], [20]) })(original); // $ExpectType MyType
     patch<MyType>({ nums: iif(false, [10], [20]) })(original); // $ExpectType MyType
-    patch<MyType>({ nums: iif(val => val!.includes(2), [10], [20]) })(original); // $ExpectType MyType
+    patch<MyType>({ nums: iif(val => val.includes(2), [10], [20]) })(original); // $ExpectType MyType
 
     iif<number[] | null>(() => true, null)([100]); // $ExpectType number[] | null
     iif<number[] | null>(() => false, [1])([100]); // $ExpectType number[] | null
@@ -293,10 +293,10 @@ describe('[TEST]: the iif State Operator', () => {
 
     patch<MyType>({ strs: iif(() => true, ['10']) })(original); // $ExpectType MyType
     patch<MyType>({ strs: iif(true, ['10']) })(original); // $ExpectType MyType
-    patch<MyType>({ strs: iif(val => val!.includes('1'), ['10']) })(original); // $ExpectType MyType
+    patch<MyType>({ strs: iif(val => val.includes('1'), ['10']) })(original); // $ExpectType MyType
     patch<MyType>({ strs: iif(() => false, ['10'], ['20']) })(original); // $ExpectType MyType
     patch<MyType>({ strs: iif(false, ['10'], ['20']) })(original); // $ExpectType MyType
-    patch<MyType>({ strs: iif(val => val!.includes('2'), ['10'], ['20']) })(original); // $ExpectType MyType
+    patch<MyType>({ strs: iif(val => val.includes('2'), ['10'], ['20']) })(original); // $ExpectType MyType
 
     iif<string[] | null>(() => true, null)(['100']); // $ExpectType string[] | null
     iif<string[] | null>(() => false, ['1'])(['100']); // $ExpectType string[] | null
@@ -395,10 +395,10 @@ describe('[TEST]: the iif State Operator', () => {
 
     patch<MyType>({ bools: iif(() => true, [true]) })(original); // $ExpectType MyType
     patch<MyType>({ bools: iif(true, [true]) })(original); // $ExpectType MyType
-    patch<MyType>({ bools: iif(val => val!.includes(true), [true]) })(original); // $ExpectType MyType
+    patch<MyType>({ bools: iif(val => val.includes(true), [true]) })(original); // $ExpectType MyType
     patch<MyType>({ bools: iif(() => false, [true], [false]) })(original); // $ExpectType MyType
     patch<MyType>({ bools: iif(false, [true], [false]) })(original); // $ExpectType MyType
-    patch<MyType>({ bools: iif(val => val!.includes(false), [true], [false]) })(original); // $ExpectType MyType
+    patch<MyType>({ bools: iif(val => val.includes(false), [true], [false]) })(original); // $ExpectType MyType
 
     iif<boolean[] | null>(() => true, null)([true]); // $ExpectType boolean[] | null
     iif<boolean[] | null>(() => false, [true])([true]); // $ExpectType boolean[] | null
@@ -452,11 +452,11 @@ describe('[TEST]: the iif State Operator', () => {
 
     patch<MyType>({ obj: iif(() => true, { val: '10' }) })(original); // $ExpectType MyType
     patch<MyType>({ obj: iif(true, { val: '10' }) })(original); // $ExpectType MyType
-    patch<MyType>({ obj: iif(obj => obj!.val === '1', { val: '10' }) })(original); // $ExpectType MyType
+    patch<MyType>({ obj: iif(obj => obj.val === '1', { val: '10' }) })(original); // $ExpectType MyType
     patch<MyType>({ obj: iif(() => false, { val: '10' }, { val: '20' }) })(original); // $ExpectType MyType
     patch<MyType>({ obj: iif(false, { val: '10' }, { val: '20' }) })(original); // $ExpectType MyType
     patch<MyType>({
-      obj: iif(obj => obj!.val === '2', { val: '10' }, { val: '20' })
+      obj: iif(obj => obj.val === '2', { val: '10' }, { val: '20' })
     })(original); // $ExpectType MyType
 
     iif<MyObj | null>(() => true, null)({ val: '100' }); // $ExpectType MyObj | null
@@ -505,11 +505,11 @@ describe('[TEST]: the iif State Operator', () => {
 
     patch<MyType>({ obj: iif(() => true, [{ val: '10' }]) })(original); // $ExpectType MyType
     patch<MyType>({ obj: iif(true, [{ val: '10' }]) })(original); // $ExpectType MyType
-    patch<MyType>({ obj: iif(obj => obj!.some(o => o.val === '1'), [{ val: '10' }]) })(original); // $ExpectType MyType
+    patch<MyType>({ obj: iif(obj => obj.some(o => o.val === '1'), [{ val: '10' }]) })(original); // $ExpectType MyType
     patch<MyType>({ obj: iif(() => false, [{ val: '10' }], [{ val: '20' }]) })(original); // $ExpectType MyType
     patch<MyType>({ obj: iif(false, [{ val: '10' }], [{ val: '20' }]) })(original); // $ExpectType MyType
     patch<MyType>({
-      obj: iif(obj => obj!.some(o => o.val === '2'), [{ val: '10' }], [{ val: '20' }])
+      obj: iif(obj => obj.some(o => o.val === '2'), [{ val: '10' }], [{ val: '20' }])
     })(original); // $ExpectType MyType
 
     iif<MyObj[] | null>(() => true, null)([{ val: '100' }]); // $ExpectType MyObj[] | null
@@ -553,9 +553,9 @@ describe('[TEST]: the iif State Operator', () => {
       const original: MyType = { a: 1, b: 2, c: 3 };
 
       patch<MyType>({
-        a: iif(a => a! < 10, 10, 5), // $ExpectType StateOperator<number>
-        b: iif(b => b! > 0, 10, 5), // $ExpectType StateOperator<number>
-        c: iif(c => c! === 3, 10, 5) // $ExpectType StateOperator<number>
+        a: iif(a => a < 10, 10, 5), // $ExpectType StateOperator<number>
+        b: iif(b => b > 0, 10, 5), // $ExpectType StateOperator<number>
+        c: iif(c => c === 3, 10, 5) // $ExpectType StateOperator<number>
       })(original); // $ExpectType MyType
     }
   });
@@ -602,7 +602,7 @@ describe('[TEST]: the iif State Operator', () => {
 
     patch<Model>({
       b: iif(
-        b => typeof b!.hello === 'object',
+        b => typeof b.hello === 'object',
         // $ExpectType StateOperator<InnerModel>
         patch({
           hello: // $ExpectType StateOperator<Greeting>
