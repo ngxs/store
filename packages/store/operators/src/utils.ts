@@ -26,4 +26,5 @@ export function isNil<T>(value: T | null | undefined): value is null | undefined
   return value === null || isUndefined(value);
 }
 
-export type NoInfer<T> = T extends infer S ? S : never;
+type _NoInfer<T> = T extends infer S ? S : never;
+export type NoInfer<T> = T extends (infer O)[] ? _NoInfer<O>[] : _NoInfer<T>;

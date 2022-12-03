@@ -5,153 +5,153 @@ import { iif, patch } from '@ngxs/store/operators';
 
 describe('[TEST]: the iif State Operator', () => {
   it('should return the correct implied null or undefined type', () => {
-    iif(true, null); // $ExpectType StateOperator<null>
-    iif(true, undefined); // $ExpectType StateOperator<undefined>
-    iif(true, null, undefined); // $ExpectType StateOperator<null>
-    iif(() => true, null); // $ExpectType StateOperator<null>
-    iif(() => true, undefined); // $ExpectType StateOperator<undefined>
-    iif(() => true, null, undefined); // $ExpectType StateOperator<null>
+//    iif(true, null); // $ExpectType StateOperator<null>
+//    iif(true, undefined); // $ExpectType StateOperator<undefined>
+//    iif(true, null, undefined); // $ExpectType StateOperator<null>
+//    iif(() => true, null); // $ExpectType StateOperator<null>
+//    iif(() => true, undefined); // $ExpectType StateOperator<undefined>
+//    iif(() => true, null, undefined); // $ExpectType StateOperator<null>
   });
 
   it('should return the correct implied number type', () => {
-    iif(null!, 10); // $ExpectType StateOperator<number>
-    iif(null!, 10, 20); // $ExpectType StateOperator<number>
-    iif(undefined!, 10); // $ExpectType StateOperator<number>
-    iif(undefined!, 10, 20); // $ExpectType StateOperator<number>
+//    iif(null!, 10); // $ExpectType StateOperator<number>
+//    iif(null!, 10, 20); // $ExpectType StateOperator<number>
+//    iif(undefined!, 10); // $ExpectType StateOperator<number>
+//    iif(undefined!, 10, 20); // $ExpectType StateOperator<number>
 
-    iif(true, 10); // $ExpectType StateOperator<number>
-    iif(false, 10, 20); // $ExpectType StateOperator<number>
-    iif(false, 10, null); // $ExpectType StateOperator<number | null>
-    iif(false, null, 10); // $ExpectType StateOperator<number | null>
-    iif(false, 10, undefined); // $ExpectType StateOperator<number>
-    iif(false, undefined, 10); // $ExpectType StateOperator<number | undefined>
+//    iif(true, 10); // $ExpectType StateOperator<number>
+//    iif(false, 10, 20); // $ExpectType StateOperator<number>
+//    iif(false, 10, null); // $ExpectType StateOperator<number | null>
+//    iif(false, null, 10); // $ExpectType StateOperator<number | null>
+//    iif(false, 10, undefined); // $ExpectType StateOperator<number>
+//    iif(false, undefined, 10); // $ExpectType StateOperator<number | undefined>
 
-    iif(() => true, 10); // $ExpectType StateOperator<number>
-    iif(() => false, 10, 20); // $ExpectType StateOperator<number>
-    iif(() => false, 10, null); // $ExpectType StateOperator<number | null>
-    iif(() => false, 10, undefined); // $ExpectType StateOperator<number>
+//    iif(() => true, 10); // $ExpectType StateOperator<number>
+//    iif(() => false, 10, 20); // $ExpectType StateOperator<number>
+//    iif(() => false, 10, null); // $ExpectType StateOperator<number | null>
+//    iif(() => false, 10, undefined); // $ExpectType StateOperator<number>
 
-    iif(val => val === 1, 10); // $ExpectType StateOperator<number>
-    iif(val => val === 1, 10, 20); // $ExpectType StateOperator<number>
-    iif(val => val === 1, 10, null); // $ExpectType StateOperator<number | null>
-    iif(val => val === 1, null, 10); // $ExpectType StateOperator<number | null>
-    iif(val => val === null, 10, null); // $ExpectType StateOperator<number | null>
-    iif(val => val === 1, 10, undefined); // $ExpectType StateOperator<number>
-    iif(val => val === 1, undefined, 10); // $ExpectType StateOperator<number | undefined>
-    iif(val => val === undefined, 10, undefined); // $ExpectType StateOperator<number>
+//    iif(val => val === 1, 10); // $ExpectType StateOperator<number>
+//    iif(val => val === 1, 10, 20); // $ExpectType StateOperator<number>
+//    iif(val => val === 1, 10, null); // $ExpectType StateOperator<number | null>
+//    iif(val => val === 1, null, 10); // $ExpectType StateOperator<number | null>
+//    iif(val => val === null, 10, null); // $ExpectType StateOperator<number | null>
+//    iif(val => val === 1, 10, undefined); // $ExpectType StateOperator<number>
+//    iif(val => val === 1, undefined, 10); // $ExpectType StateOperator<number | undefined>
+//    iif(val => val === undefined, 10, undefined); // $ExpectType StateOperator<number>
   });
 
   it('should return the correct implied string type', () => {
-    iif(null!, '10'); // $ExpectType StateOperator<string>
-    iif(null!, '10', '20'); // $ExpectType StateOperator<string>
-    iif(undefined!, '10'); // $ExpectType StateOperator<string>
-    iif(undefined!, '10', '20'); // $ExpectType StateOperator<string>
+//    iif(null!, '10'); // $ExpectType StateOperator<string>
+//    iif(null!, '10', '20'); // $ExpectType StateOperator<string>
+//    iif(undefined!, '10'); // $ExpectType StateOperator<string>
+//    iif(undefined!, '10', '20'); // $ExpectType StateOperator<string>
 
-    iif(true, '10'); // $ExpectType StateOperator<string>
-    iif(false, '10', '20'); // $ExpectType StateOperator<string>
-    iif(false, '10', null); // $ExpectType StateOperator<string | null>
-    iif(false, null, '10'); // $ExpectType StateOperator<string | null>
-    iif(false, '10', undefined); // $ExpectType StateOperator<string>
-    iif(false, undefined, '10'); // $ExpectType StateOperator<string | undefined>
+//    iif(true, '10'); // $ExpectType StateOperator<string>
+//    iif(false, '10', '20'); // $ExpectType StateOperator<string>
+//    iif(false, '10', null); // $ExpectType StateOperator<string | null>
+//    iif(false, null, '10'); // $ExpectType StateOperator<string | null>
+//    iif(false, '10', undefined); // $ExpectType StateOperator<string>
+//    iif(false, undefined, '10'); // $ExpectType StateOperator<string | undefined>
 
-    iif(() => true, '10'); // $ExpectType StateOperator<string>
-    iif(() => false, '10', '20'); // $ExpectType StateOperator<string>
-    iif(() => false, '10', null); // $ExpectType StateOperator<string | null>
-    iif(() => false, '10', undefined); // $ExpectType StateOperator<string>
+//    iif(() => true, '10'); // $ExpectType StateOperator<string>
+//    iif(() => false, '10', '20'); // $ExpectType StateOperator<string>
+//    iif(() => false, '10', null); // $ExpectType StateOperator<string | null>
+//    iif(() => false, '10', undefined); // $ExpectType StateOperator<string>
 
-    iif(val => val === '1', '10'); // $ExpectType StateOperator<string>
-    iif(val => val === '1', '10', '20'); // $ExpectType StateOperator<string>
-    iif(val => val === '1', '10', null); // $ExpectType StateOperator<string | null>
-    iif(val => val === '1', null, '10'); // $ExpectType StateOperator<string | null>
-    iif(val => val === null, '10', null); // $ExpectType StateOperator<string | null>
-    iif(val => val === '1', '10', undefined); // $ExpectType StateOperator<string>
-    iif(val => val === '1', undefined, '10'); // $ExpectType StateOperator<string | undefined>
-    iif(val => val === undefined, '10', undefined); // $ExpectType StateOperator<string>
+//    iif(val => val === '1', '10'); // $ExpectType StateOperator<string>
+//    iif(val => val === '1', '10', '20'); // $ExpectType StateOperator<string>
+//    iif(val => val === '1', '10', null); // $ExpectType StateOperator<string | null>
+//    iif(val => val === '1', null, '10'); // $ExpectType StateOperator<string | null>
+//    iif(val => val === null, '10', null); // $ExpectType StateOperator<string | null>
+//    iif(val => val === '1', '10', undefined); // $ExpectType StateOperator<string>
+//    iif(val => val === '1', undefined, '10'); // $ExpectType StateOperator<string | undefined>
+//    iif(val => val === undefined, '10', undefined); // $ExpectType StateOperator<string>
   });
 
   it('should return the correct implied boolean type', () => {
-    iif(null!, true); // $ExpectType StateOperator<boolean>
-    iif(null!, true, false); // $ExpectType StateOperator<boolean>
-    iif(undefined!, true); // $ExpectType StateOperator<boolean>
-    iif(undefined!, true, false); // $ExpectType StateOperator<boolean>
+//    iif(null!, true); // $ExpectType StateOperator<boolean>
+//    iif(null!, true, false); // $ExpectType StateOperator<boolean>
+//    iif(undefined!, true); // $ExpectType StateOperator<boolean>
+//    iif(undefined!, true, false); // $ExpectType StateOperator<boolean>
 
-    iif(true, true); // $ExpectType StateOperator<boolean>
-    iif(false, true, false); // $ExpectType StateOperator<boolean>
-    iif(false, true, null); // $ExpectType StateOperator<boolean | null>
-    iif(false, null, true); // $ExpectType StateOperator<boolean | null>
-    iif(false, true, undefined); // $ExpectType StateOperator<boolean>
-    iif(false, undefined, true); // $ExpectType StateOperator<boolean | undefined>
+//    iif(true, true); // $ExpectType StateOperator<boolean>
+//    iif(false, true, false); // $ExpectType StateOperator<boolean>
+//    iif(false, true, null); // $ExpectType StateOperator<boolean | null>
+//    iif(false, null, true); // $ExpectType StateOperator<boolean | null>
+//    iif(false, true, undefined); // $ExpectType StateOperator<boolean>
+//    iif(false, undefined, true); // $ExpectType StateOperator<boolean | undefined>
 
-    iif(() => true, true); // $ExpectType StateOperator<boolean>
-    iif(() => false, true, false); // $ExpectType StateOperator<boolean>
-    iif(() => false, true, null); // $ExpectType StateOperator<boolean | null>
-    iif(() => false, true, undefined); // $ExpectType StateOperator<boolean>
+//    iif(() => true, true); // $ExpectType StateOperator<boolean>
+//    iif(() => false, true, false); // $ExpectType StateOperator<boolean>
+//    iif(() => false, true, null); // $ExpectType StateOperator<boolean | null>
+//    iif(() => false, true, undefined); // $ExpectType StateOperator<boolean>
 
-    iif(val => val === true, true); // $ExpectType StateOperator<boolean>
-    iif(val => val === true, true, false); // $ExpectType StateOperator<boolean>
-    iif(val => val === true, true, null); // $ExpectType StateOperator<boolean | null>
-    iif(val => val === true, null, true); // $ExpectType StateOperator<boolean | null>
-    iif(val => val === null, true, null); // $ExpectType StateOperator<boolean | null>
-    iif(val => val === true, true, undefined); // $ExpectType StateOperator<boolean>
-    iif(val => val === true, undefined, true); // $ExpectType StateOperator<boolean | undefined>
-    iif(val => val === undefined, true, undefined); // $ExpectType StateOperator<boolean>
+//    iif(val => val === true, true); // $ExpectType StateOperator<boolean>
+//    iif(val => val === true, true, false); // $ExpectType StateOperator<boolean>
+//    iif(val => val === true, true, null); // $ExpectType StateOperator<boolean | null>
+//    iif(val => val === true, null, true); // $ExpectType StateOperator<boolean | null>
+//    iif(val => val === null, true, null); // $ExpectType StateOperator<boolean | null>
+//    iif(val => val === true, true, undefined); // $ExpectType StateOperator<boolean>
+//    iif(val => val === true, undefined, true); // $ExpectType StateOperator<boolean | undefined>
+//    iif(val => val === undefined, true, undefined); // $ExpectType StateOperator<boolean>
   });
 
   it('should return the correct implied object type', () => {
-    iif(null!, { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
-    iif(null!, { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
-    iif(undefined!, { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
-    iif(undefined!, { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(null!, { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(null!, { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(undefined!, { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(undefined!, { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
 
-    iif(true, { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
-    iif(false, { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
-    iif(false, { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
-    iif(false, null, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | null>
-    iif(false, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
-    iif(false, undefined, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | undefined>
+//    iif(true, { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(false, { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(false, { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
+//    iif(false, null, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | null>
+//    iif(false, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
+//    iif(false, undefined, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | undefined>
 
-    iif(() => true, { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
-    iif(() => false, { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
-    iif(() => false, { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
-    iif(() => false, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
+//    iif(() => true, { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(() => false, { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(() => false, { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
+//    iif(() => false, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
 
-    iif(obj => obj!.val === '1', { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
-    iif(obj => obj!.val === '1', { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
-    iif(obj => obj!.val === '1', { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
-    iif(obj => obj!.val === '1', null, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | null>
-    iif(obj => obj === null, { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
-    iif(obj => obj!.val === '1', { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
-    iif(obj => obj!.val === '1', undefined, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | undefined>
-    iif(obj => obj === undefined, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
+//    iif(obj => obj!.val === '1', { val: '10' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(obj => obj!.val === '1', { val: '10' }, { val: '20' }); // $ExpectType StateOperator<{ val: string; }>
+//    iif(obj => obj!.val === '1', { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
+//    iif(obj => obj!.val === '1', null, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | null>
+//    iif(obj => obj === null, { val: '10' }, null); // $ExpectType StateOperator<{ val: string; } | null>
+//    iif(obj => obj!.val === '1', { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
+//    iif(obj => obj!.val === '1', undefined, { val: '10' }); // $ExpectType StateOperator<{ val: string; } | undefined>
+//    iif(obj => obj === undefined, { val: '10' }, undefined); // $ExpectType StateOperator<{ val: string; }>
   });
 
   it('should return the corrrect implied array type', () => {
     /* TODO: readonly array improvement with TS3.4
-    iif(null!, ['10']); // $/ExpectType (existing: string[]) => string[]
-    iif(null!, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
-    iif(undefined!, ['10']); // $/ExpectType (existing: string[]) => string[]
-    iif(undefined!, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
+//    iif(null!, ['10']); // $/ExpectType (existing: string[]) => string[]
+//    iif(null!, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
+//    iif(undefined!, ['10']); // $/ExpectType (existing: string[]) => string[]
+//    iif(undefined!, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
 
-    iif(true, ['10']); // $/ExpectType (existing: string[]) => string[]
-    iif(false, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
-    iif(false, ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
-    iif(false, null, ['10']); // $/ExpectType (existing: string[] | null) => string[] | null
-    iif(false, ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
-    iif(false, undefined, ['10']); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+//    iif(true, ['10']); // $/ExpectType (existing: string[]) => string[]
+//    iif(false, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
+//    iif(false, ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
+//    iif(false, null, ['10']); // $/ExpectType (existing: string[] | null) => string[] | null
+//    iif(false, ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+//    iif(false, undefined, ['10']); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
 
-    iif(() => true, ['10']); // $/ExpectType (existing: string[]) => string[]
-    iif(() => false, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
-    iif(() => false, ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
-    iif(() => false, ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+//    iif(() => true, ['10']); // $/ExpectType (existing: string[]) => string[]
+//    iif(() => false, ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
+//    iif(() => false, ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
+//    iif(() => false, ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
 
-    iif(arr => arr!.includes('1'), ['10']); // $/ExpectType (existing: string[]) => string[]
-    iif(arr => arr!.includes('1'), ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
-    iif(arr => arr!.includes('1'), ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
-    iif(arr => arr!.includes('1'), null, ['10']); // $/ExpectType (existing: string[] | null) => string[] | null
-    iif(arr => arr === null, ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
-    iif(arr => arr!.includes('1'), ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
-    iif(arr => arr!.includes('1'), undefined, ['10']); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
-    iif(arr => arr === undefined, ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+//    iif(arr => arr!.includes('1'), ['10']); // $/ExpectType (existing: string[]) => string[]
+//    iif(arr => arr!.includes('1'), ['10'], ['20']); // $/ExpectType (existing: string[]) => string[]
+//    iif(arr => arr!.includes('1'), ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
+//    iif(arr => arr!.includes('1'), null, ['10']); // $/ExpectType (existing: string[] | null) => string[] | null
+//    iif(arr => arr === null, ['10'], null); // $/ExpectType (existing: string[] | null) => string[] | null
+//    iif(arr => arr!.includes('1'), ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+//    iif(arr => arr!.includes('1'), undefined, ['10']); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
+//    iif(arr => arr === undefined, ['10'], undefined); // $/ExpectType (existing: string[] | undefined) => string[] | undefined
     */
   });
 
@@ -179,9 +179,8 @@ describe('[TEST]: the iif State Operator', () => {
     iif<number | null>(() => true, null)(100); // $ExpectType number | null
     iif<number | null>(() => false, 1)(100); // $ExpectType number | null
     iif<number | null>(() => false, 1, null)(100); // $ExpectType number | null
-    // Commented out because they document an existing bug
-    // patch<MyType>({ _num: iif(() => true, null) })(original); // $ExpectType MyType
-    // patch<MyType>({ _num: iif(() => false, 123, null) })(original); // $ExpectType MyType
+    patch<MyType>({ _num: iif(() => true, null) })(original); // $ExpectType MyType
+    patch<MyType>({ _num: iif(() => false, 123, null) })(original); // $ExpectType MyType
 
     iif<number | undefined>(() => true, undefined)(100); // $ExpectType number | undefined
     iif<number | undefined>(() => true, 1)(100); // $ExpectType number | undefined
@@ -228,9 +227,8 @@ describe('[TEST]: the iif State Operator', () => {
     iif<string | null>(() => true, null)('100'); // $ExpectType string | null
     iif<string | null>(() => false, '1')('100'); // $ExpectType string | null
     iif<string | null>(() => false, '1', null)('100'); // $ExpectType string | null
-    // Commented out because they document an existing bug
-    // patch<MyType>({ _str: iif(() => true, null) })(original); // $ExpectType MyType
-    // patch<MyType>({ _str: iif(() => false, '123', null) })(original); // $ExpectType MyType
+    patch<MyType>({ _str: iif(() => true, null) })(original); // $ExpectType MyType
+    patch<MyType>({ _str: iif(() => false, '123', null) })(original); // $ExpectType MyType
 
     iif<string | undefined>(() => true, undefined)('100'); // $ExpectType string | undefined
     iif<string | undefined>(() => true, '1')('100'); // $ExpectType string | undefined
@@ -277,9 +275,8 @@ describe('[TEST]: the iif State Operator', () => {
     iif<boolean | null>(() => true, null)(true); // $ExpectType boolean | null
     iif<boolean | null>(() => false, true)(true); // $ExpectType boolean | null
     iif<boolean | null>(() => false, true, null)(true); // $ExpectType boolean | null
-    // Commented out because they document an existing bug
-    // patch<MyType>({ _bool: iif(() => true, null) })(original); // $ExpectType MyType
-    // patch<MyType>({ _bool: iif(() => false, true, null) })(original); // $ExpectType MyType
+    patch<MyType>({ _bool: iif(() => true, null) })(original); // $ExpectType MyType
+    patch<MyType>({ _bool: iif(() => false, true, null) })(original); // $ExpectType MyType
 
     iif<boolean | undefined>(() => true, undefined)(true); // $ExpectType boolean | undefined
     iif<boolean | undefined>(() => true, true)(true); // $ExpectType boolean | undefined
@@ -331,7 +328,6 @@ describe('[TEST]: the iif State Operator', () => {
     iif<MyObj | null>(() => true, null)({ val: '100' }); // $ExpectType MyObj | null
     iif<MyObj | null>(() => false, { val: '1' })({ val: '100' }); // $ExpectType MyObj | null
     iif<MyObj | null>(() => false, { val: '1' }, null)({ val: '100' }); // $ExpectType MyObj | null
-    // Commented out because they document an existing bug
     patch<MyType>({ _obj: iif(() => true, null) })(original); // $ExpectType MyType
     patch<MyType>({ _obj: iif(() => false, { val: '123' }, null) })(original); // $ExpectType MyType
 
@@ -401,32 +397,37 @@ describe('[TEST]: the iif State Operator', () => {
         b => typeof b!.hello === 'object',
         // $ExpectType StateOperator<InnerModel>
         patch({
-          hello: patch({
-            motivated: iif(motivated => motivated !== true, true),
-            person: patch({
-              name: 'Artur',
-              lastName: 'Androsovych'
-            })
-          }),
-          greeting: 'How are you?'
+          hello: // $ExpectType StateOperator<Greeting>
+            patch({
+              motivated: iif(motivated => motivated !== true, true), // $ExpectType StateOperator<boolean>
+              person: // $ExpectType StateOperator<Person>
+                patch({
+                  name: 'Artur', // $ExpectType string
+                  lastName: 'Androsovych' // $ExpectType string
+                }),
+            }),
+          greeting: 'How are you?' // $ExpectType string
         })
       ),
       c: iif(c => c !== 100, () => 0 + 100, 10)
     })(original); // $ExpectType Model
 
     patch<Model>({
-      b: patch<Model['b']>({
-        hello: patch<Greeting>({
-          motivated: iif(motivated => motivated !== true, true),
-          person: patch({
-            name: iif(name => name !== 'Mark', 'Artur'),
-            lastName: iif(lastName => lastName !== 'Whitfeld', 'Androsovych')
-          })
+      b: // $ExpectType StateOperator<InnerModel>
+        patch({
+          hello: // $ExpectType StateOperator<Greeting>
+            patch({
+              motivated: iif(motivated => motivated !== true, true), // $ExpectType StateOperator<boolean>
+              person: // $ExpectType StateOperator<Person>
+                patch({
+                  name: iif(name => name !== 'Mark', 'Artur'), // $ExpectType StateOperator<string>
+                  lastName: iif(lastName => lastName !== 'Whitfeld', 'Androsovych') // $ExpectType StateOperator<string>
+                })
+            }),
+          greeting: iif(greeting => !greeting, 'How are you?')  // $ExpectType StateOperator<string>
         }),
-        greeting: iif(greeting => !greeting, 'How are you?')
-      }),
-      c: iif(c => !c, 100, 10)
-    })(original); // $/ExpectType Model
+      c: iif(c => !c, 100, 10) // $ExpectType StateOperator<number>
+    })(original); // $ExpectType Model
   });
 
   it('should not accept the following usages', () => {

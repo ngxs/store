@@ -1,7 +1,9 @@
 import { ExistingState, StateOperator } from '@ngxs/store';
 import { isStateOperator, NoInfer } from './utils';
 
-export type PatchSpec<T> = { [P in keyof T]?: T[P] | StateOperator<NonNullable<T[P]>> };
+type NotUndefined<T> = T extends undefined ? never : T;
+
+export type PatchSpec<T> = { [P in keyof T]?: T[P] | StateOperator<NotUndefined<T[P]>> };
 
 export function patch<T extends Record<string, any>>(
   patchObject: PatchSpec<NoInfer<T>>
