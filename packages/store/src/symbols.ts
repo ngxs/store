@@ -79,8 +79,8 @@ export class NgxsConfig {
   }
 }
 
-export declare type _NoInfer<T> = T extends infer S ? S : never;
-export declare type NoInfer<T> = T extends (infer O)[] ? _NoInfer<O>[] : _NoInfer<T>;
+type _NoInfer<T> = T extends infer S ? S : never;
+export type NoInfer<T> = T extends (infer O)[] ? _NoInfer<O>[] : _NoInfer<T>;
 
 /* AsReadonly works as follows:
  It is best explained by its 3 result types.
@@ -95,7 +95,7 @@ export declare type NoInfer<T> = T extends (infer O)[] ? _NoInfer<O>[] : _NoInfe
  Therefore it is just result type 3 that is wrapped with the Readonly<...> type in the AsReadonly type.
  */
 export type AsReadonly<T> = T extends Readonly<infer O> ? (O extends T ? Readonly<T> : T) : T;
-export type ExistingState<T> = NoInfer<AsReadonly<T>>;
+export type ExistingState<T> = AsReadonly<T>;
 export type StateOperator<T> = (existing: ExistingState<T>) => T;
 
 /**
