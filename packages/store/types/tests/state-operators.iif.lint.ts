@@ -130,10 +130,9 @@ describe('[TEST]: the iif State Operator', () => {
       num: number;
       _num: number | null;
       __num?: number;
-      numArr: number[];
     }
 
-    const original: MyType = { num: 1, _num: null, numArr: [] };
+    const original: MyType = { num: 1, _num: null };
 
     patch<MyType>({ num: iif(null!, 1) })(original); // $ExpectType MyType
     patch<MyType>({ num: iif(null!, 2, 3) })(original); // $ExpectType MyType
@@ -233,10 +232,9 @@ describe('[TEST]: the iif State Operator', () => {
       str: string;
       _str: string | null;
       __str?: string;
-      strArr: string[];
     }
 
-    const original: MyType = { str: '1', _str: null, strArr: [] };
+    const original: MyType = { str: '1', _str: null };
 
     patch<MyType>({ str: iif(null!, '1') })(original); // $ExpectType MyType
     patch<MyType>({ str: iif(null!, '2', '3') })(original); // $ExpectType MyType
@@ -351,6 +349,7 @@ describe('[TEST]: the iif State Operator', () => {
     patch<MyType>({ bool: iif(() => false, true, false) })(original); // $ExpectType MyType
     patch<MyType>({ bool: iif(false, true, false) })(original); // $ExpectType MyType
     patch<MyType>({ bool: iif(val => val === false, true, false) })(original); // $ExpectType MyType
+    patch<MyType>({ bool: iif(val => val === false, true, true) })(original); // $ExpectType MyType
 
     iif<boolean | null>(() => true, null)(true); // $ExpectType boolean | null
     iif<boolean | null>(() => false, true)(true); // $ExpectType boolean | null

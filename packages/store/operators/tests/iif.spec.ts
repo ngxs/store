@@ -150,9 +150,9 @@ describe('iif', () => {
 
       // Act
       const newValue = patch<typeof original>({
-        a: iif(a => a! < 10, 10, 5),
-        b: iif(b => b! > 0, 10, 5),
-        c: iif(c => c! === 3, 10, 5)
+        a: iif(a => a < 10, 10, 5),
+        b: iif(b => b > 0, 10, 5),
+        c: iif(c => c === 3, 10, 5)
       })(original);
 
       // Assert
