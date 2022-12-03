@@ -79,8 +79,8 @@ export class NgxsConfig {
   }
 }
 
-type NoInfer<T> = T extends infer S ? S : never;
-type AsReadonly<T> = T extends Readonly<infer O> ? (O extends T ? Readonly<T> : T) : T;
+export type NoInfer<T> = T extends infer S ? S : never;
+export type AsReadonly<T> = T extends Readonly<infer O> ? (O extends T ? Readonly<T> : T) : T;
 export type ExistingState<T> = NoInfer<AsReadonly<T>>;
 export type StateOperator<T> = (existing: ExistingState<T>) => T;
 

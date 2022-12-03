@@ -1,13 +1,16 @@
-import { StateOperator } from '@ngxs/store';
+import { ExistingState, StateOperator } from '@ngxs/store';
 
 import { isStateOperator, isUndefined, isPredicate, NoInfer } from './utils';
 import { Predicate } from './internals';
 
-function retrieveValue<T>(operatorOrValue: StateOperator<T> | T, existing?: Readonly<T>): T {
+function retrieveValue<T>(
+  operatorOrValue: StateOperator<T> | T,
+  existing: ExistingState<T>
+): T {
   // If state operator is a function
   // then call it with an original value
   if (isStateOperator(operatorOrValue)) {
-    const value = operatorOrValue(existing! as Readonly<T>);
+    const value = operatorOrValue(existing);
     return value as T;
   }
 
@@ -15,7 +18,7 @@ function retrieveValue<T>(operatorOrValue: StateOperator<T> | T, existing?: Read
   // e.g. `elseOperatorOrValue` is `undefined`
   // then we just return an original value
   if (isUndefined(operatorOrValue)) {
-    return (<any>existing)! as T;
+    return existing as T;
   }
 
   return operatorOrValue as T;
@@ -33,18 +36,18 @@ export function iif<T>(
   trueOperatorOrValue: NoInfer<StateOperator<T>> | T, // TODO: Wrap everything with NoInfer
   elseOperatorOrValue?: NoInfer<StateOperator<T>> | T // TODO: Wrap everything with NoInfer
 ): StateOperator<T> {
-  return function iifOperator(existing: Readonly<T>): T {
+  return function iifOperator(existing: ExistingState<T>): T {
     // Convert the value to a boolean
     let result = !!condition;
     // but if it is a function then run it to get the result
     if (isPredicate(condition)) {
-      result = condition(existing);
+      result = condition(existing as T);
     }
 
     if (result) {
-      return retrieveValue<T>(trueOperatorOrValue, existing as T);
+      return retrieveValue<T>(trueOperatorOrValue, existing);
     }
 
-    return retrieveValue<T>(elseOperatorOrValue!, existing as T);
+    return retrieveValue<T>(elseOperatorOrValue!, existing);
   };
 }

@@ -1,4 +1,4 @@
-import { StateOperator } from '@ngxs/store';
+import { ExistingState, StateOperator } from '@ngxs/store';
 
 import { isStateOperator, isPredicate, isNumber, invalidIndex, NoInfer } from './utils';
 import { Predicate } from './internals';
@@ -13,7 +13,7 @@ export function updateItem<T>(
   selector: number | NoInfer<Predicate<T>>,
   operatorOrValue: NoInfer<T> | NoInfer<StateOperator<T>>
 ): StateOperator<T[]> {
-  return function updateItemOperator(existing: Readonly<T[]>): T[] {
+  return function updateItemOperator(existing: ExistingState<T[]>): T[] {
     let index = -1;
 
     if (isPredicate(selector)) {
@@ -31,7 +31,7 @@ export function updateItem<T>(
     // then, only if it will change it then clone the array and set the item
     const theOperatorOrValue = operatorOrValue as T | StateOperator<T>;
     if (isStateOperator(theOperatorOrValue)) {
-      value = theOperatorOrValue(existing[index] as Readonly<T>);
+      value = theOperatorOrValue(existing[index] as ExistingState<T>);
     } else {
       value = theOperatorOrValue;
     }
