@@ -1,7 +1,6 @@
-import { ExistingState, StateOperator } from '@ngxs/store';
+import { ExistingState, NoInfer, StateOperator } from './types';
 
-import { isStateOperator, isPredicate, isNumber, invalidIndex, NoInfer } from './utils';
-import { Predicate } from './internals';
+import { isStateOperator, isPredicate, isNumber, invalidIndex, Predicate } from './utils';
 
 /**
  * @param selector - Index of item in the array or a predicate function

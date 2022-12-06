@@ -1,5 +1,5 @@
-import { ExistingState, StateOperator } from '@ngxs/store';
-import { isStateOperator, NoInfer } from './utils';
+import { ExistingState, NoInfer, StateOperator } from './types';
+import { isStateOperator } from './utils';
 
 type NotUndefined<T> = T extends undefined ? never : T;
 

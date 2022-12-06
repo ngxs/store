@@ -1,7 +1,6 @@
-import { ExistingState, StateOperator } from '@ngxs/store';
+import { ExistingState, NoInfer, StateOperator } from './types';
 
-import { isStateOperator, isUndefined, isPredicate, NoInfer } from './utils';
-import { Predicate } from './internals';
+import { isStateOperator, isUndefined, isPredicate, Predicate } from './utils';
 
 function retrieveValue<T>(
   operatorOrValue: StateOperator<T> | T,

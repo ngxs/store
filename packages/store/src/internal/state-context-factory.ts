@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ExistingState, StateContext, StateOperator } from '../symbols';
+import { ExistingState, StateOperator } from '@ngxs/store/operators';
+
+import { StateContext } from '../symbols';
 import { MappedStore } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
 import { InternalStateOperations } from '../internal/state-operations';

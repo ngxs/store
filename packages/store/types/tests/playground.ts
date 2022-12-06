@@ -1,4 +1,4 @@
-import { NoInfer } from '../../operators/src/utils';
+import { NoInfer } from '../../operators/src/types';
 
 type CheckRO_<T> = T extends Readonly<infer O> ? (Readonly<O> extends T ? 1 : 2) : 3;
 type CheckRO<T> = T extends Readonly<infer O> ? (O extends T ? 1 : 2) : 3;

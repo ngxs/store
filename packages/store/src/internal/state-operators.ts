@@ -2,7 +2,7 @@ import {
   throwPatchingArrayError,
   throwPatchingPrimitiveError
 } from '../configs/messages.config';
-import { StateOperator, ExistingState } from '../symbols';
+import { ExistingState, StateOperator } from '@ngxs/store/operators';
 
 export function simplePatch<T>(val: Partial<T>): StateOperator<T> {
   return (existingState: ExistingState<T>) => {

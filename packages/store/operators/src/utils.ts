@@ -1,6 +1,6 @@
-import { StateOperator } from '@ngxs/store';
+import { StateOperator } from './types';
 
-import { Predicate } from './internals';
+export type Predicate<T = any> = (value: T | Readonly<T>) => boolean;
 
 export function isStateOperator<T>(value: T | StateOperator<T>): value is StateOperator<T> {
   return typeof value === 'function';
@@ -25,6 +25,3 @@ export function invalidIndex(index: number): boolean {
 export function isNil<T>(value: T | null | undefined): value is null | undefined {
   return value === null || isUndefined(value);
 }
-
-type _NoInfer<T> = T extends infer S ? S : never;
-export type NoInfer<T> = T extends (infer O)[] ? _NoInfer<O>[] : _NoInfer<T>;

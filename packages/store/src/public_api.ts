@@ -33,9 +33,6 @@ export {
 export {
   StateContext,
   StateOperator,
-  ExistingState,
-  AsReadonly, // Should we expose this?
-  NoInfer, // Should we expose this?
   NgxsOnInit,
   NgxsAfterBootstrap,
   NgxsOnChanges,

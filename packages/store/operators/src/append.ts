@@ -1,5 +1,4 @@
-import { ExistingState, StateOperator } from '@ngxs/store';
-import { NoInfer } from './utils';
+import { ExistingState, NoInfer, StateOperator } from './types';
 
 /**
  * @param items - Specific items to append to the end of an array

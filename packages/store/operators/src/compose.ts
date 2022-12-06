@@ -1,5 +1,4 @@
-import { StateOperator, ExistingState } from '@ngxs/store';
-import { NoInfer } from './utils';
+import { ExistingState, NoInfer, StateOperator } from './types';
 
 export function compose<T>(...operators: NoInfer<StateOperator<T>[]>): StateOperator<T> {
   return function composeOperator(existing: ExistingState<T>): T {
