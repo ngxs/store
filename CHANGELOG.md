@@ -6,6 +6,7 @@
 - Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
 - Feature: Storage Plugin - Allow providing namespace for keys [#1841](https://github.com/ngxs/store/pull/1841)
+- Feature: Storage Plugin - Enable providing storage engine individually [#1935](https://github.com/ngxs/store/pull/1935)
 - Feature: Devtools Plugin - Add new options to the `NgxsDevtoolsOptions` interface [#1879](https://github.com/ngxs/store/pull/1879)
 
 ### To become next patch version
