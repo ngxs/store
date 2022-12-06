@@ -18,7 +18,7 @@ import {
   STORAGE_ENGINE,
   NGXS_STORAGE_PLUGIN_OPTIONS
 } from './symbols';
-import { DEFAULT_STATE_KEY } from './internals';
+import { DEFAULT_STATE_KEY, getStorageKey } from './internals';
 
 /**
  * @description Will be provided through Terser global definitions by Angular CLI
@@ -73,7 +73,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           }
         }
 
-        let storedValue: any = this._engine.getItem(key!);
+        const storageKey = getStorageKey(key, this._options);
+        let storedValue: any = this._engine.getItem(storageKey);
 
         if (storedValue !== 'undefined' && storedValue != null) {
           try {
@@ -84,7 +85,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             // creating a breaking change for projects that still use the View Engine.
             if (typeof ngDevMode === 'undefined' || ngDevMode) {
               console.error(
-                `Error ocurred while deserializing the ${key} store value, falling back to empty object, the value obtained from the store: `,
+                `Error ocurred while deserializing the ${storageKey} store value, falling back to empty object, the value obtained from the store: `,
                 storedValue
               );
             }
@@ -105,7 +106,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           }
 
           if (!this._usesDefaultStateKey) {
-            state = setValue(state, key!, storedValue);
+            state = setValue(state, key, storedValue);
           } else {
             // The `UpdateState` action is dispatched whenever the feature state is added.
             // The below condition is met only when the `UpdateState` is dispatched.
@@ -142,15 +143,17 @@ export class NgxsStoragePlugin implements NgxsPlugin {
       tap(nextState => {
         if (!isInitOrUpdateAction || (isInitOrUpdateAction && hasMigration)) {
           for (const key of this._keys) {
-            let val = nextState;
+            let storedValue = nextState;
+
+            const storageKey = getStorageKey(key, this._options);
 
             if (key !== DEFAULT_STATE_KEY) {
-              val = getValue(nextState, key!);
+              storedValue = getValue(nextState, key);
             }
 
             try {
-              const newVal = this._options.beforeSerialize!(val, key);
-              this._engine.setItem(key!, this._options.serialize!(newVal));
+              const newStoredValue = this._options.beforeSerialize!(storedValue, key);
+              this._engine.setItem(storageKey, this._options.serialize!(newStoredValue));
             } catch (error) {
               // Caretaker note: we have still left the `typeof` condition in order to avoid
               // creating a breaking change for projects that still use the View Engine.
@@ -161,13 +164,13 @@ export class NgxsStoragePlugin implements NgxsPlugin {
                     error.name === 'NS_ERROR_DOM_QUOTA_REACHED')
                 ) {
                   console.error(
-                    `The ${key} store value exceeds the browser storage quota: `,
-                    val
+                    `The ${storageKey} store value exceeds the browser storage quota: `,
+                    storedValue
                   );
                 } else {
                   console.error(
-                    `Error ocurred while serializing the ${key} store value, value not updated, the value obtained from the store: `,
-                    val
+                    `Error ocurred while serializing the ${storageKey} store value, value not updated, the value obtained from the store: `,
+                    storedValue
                   );
                 }
               }

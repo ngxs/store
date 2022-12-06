@@ -77,3 +77,9 @@ export function engineFactory(
 
   return null;
 }
+
+export function getStorageKey(key: string, options?: NgxsStoragePluginOptions): string {
+  // Prepends the `namespace` option to any key if it's been provided by a user.
+  // So `@@STATE` becomes `my-app:@@STATE`.
+  return options && options.namespace ? `${options.namespace}:${key}` : key;
+}
