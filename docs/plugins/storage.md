@@ -33,6 +33,7 @@ initial state can be picked up by those plugins.
 The plugin has the following optional values:
 
 - `key`: State name(s) to be persisted. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided, it defaults to all states using the `@@STATE` key.
+- `namespace`: The namespace is used to prefix the key for the state slice. This is necessary when running micro frontend applications which use storage plugin. The namespace will eliminate the conflict between keys that might overlap.
 - `storage`: Storage strategy to use. This defaults to LocalStorage but you can pass SessionStorage or anything that implements the StorageEngine API.
 - `deserialize`: Custom deserializer. Defaults to `JSON.parse`
 - `serialize`: Custom serializer. Defaults to `JSON.stringify`
@@ -137,6 +138,70 @@ export class AppModule {}
 ```
 
 This is very handy to avoid persisting runtime-only states that shouldn't be saved to any storage.
+
+This is also possible to provide storage engines per individual key. Suppose we want to persist `NovelsState` into the local storage and `DetectivesState` into the session storage. The `key` signature will look as follows:
+
+```ts
+import { LOCAL_STORAGE_ENGINE, SESSION_STORAGE_ENGINE } from '@ngxs/storage-plugin';
+
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: [
+        {
+          key: 'novels', // or `NovelsState`
+          engine: LOCAL_STORAGE_ENGINE
+        },
+        {
+          key: DetectivesState, // or `detectives`
+          engine: SESSION_STORAGE_ENGINE
+        }
+      ]
+    })
+  ]
+})
+export class AppModule {}
+```
+
+`LOCAL_STORAGE_ENGINE` and `SESSION_STORAGE_ENGINE` are injection tokens that resolve to `localStorage` and `sessionStorage`. They shouldn't be used in apps with server-side rendering because it will throw an exception that those symbols are not defined on the global scope. Instead, we should provide a custom storage engine. The `engine` property may also refer to classes that implement the `StorageEngine` interface:
+
+```ts
+import { StorageEngine } from '@ngxs/storage-plugin';
+
+@Injectable({ providedIn: 'root' })
+export class MyCustomStorageEngine implements StorageEngine {
+  // ...
+}
+
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      key: [
+        {
+          key: 'novels',
+          engine: MyCustomStorageEngine
+        }
+      ]
+    })
+  ]
+})
+export class AppModule {}
+```
+
+### Namespace Option
+
+The namespace option should be provided when the storage plugin is used in micro frontend applications. The namespace may equal the app name and will prefix keys for state slices:
+
+```ts
+@NgModule({
+  imports: [
+    NgxsStoragePluginModule.forRoot({
+      namespace: 'auth'
+    })
+  ]
+})
+export class AppModule {}
+```
 
 ### Custom Storage Engine
 
