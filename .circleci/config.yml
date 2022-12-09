@@ -283,7 +283,6 @@ workflows:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng8_tests
             - integration_test_types
 
       # Publish @dev builds if no tag is specified
@@ -298,7 +297,6 @@ workflows:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng8_tests
             - integration_test_types
 
       # Publish package.version @latest when a v.* git tag is present
@@ -312,5 +310,4 @@ workflows:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng8_tests
             - integration_test_types
