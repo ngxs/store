@@ -9,7 +9,7 @@ const routes: Routes = [{ path: '', component: AppComponent }];
 
 @NgModule({
   imports: [
-    BrowserModule.withServerTransition({ appId: 'hello-world-ng11-ivy' }),
+    BrowserModule.withServerTransition({ appId: 'hello-world-ng13-ivy' }),
     RouterModule.forRoot(routes),
     StoreModule
   ],

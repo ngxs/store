@@ -9,7 +9,7 @@
       "projectType": "library",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "tsconfig.lib.json"
           }
@@ -19,14 +19,6 @@
           "options": {
             "configPath": "../jest.config.js",
             "no-cache": false
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["tsconfig.lib.json", "tsconfig.spec.json"],
-            "tslintConfig": "tslint.json",
-            "exclude": ["**/node_modules/**", "./integrations/**", "./packages/store/types/**"]
           }
         }
       }
@@ -51,14 +43,20 @@
                 "output": "./"
               }
             ],
-            "styles": ["./integration/styles.scss"]
+            "styles": ["./integration/styles.scss"],
+            "aot": false,
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -79,14 +77,17 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "dist-integration-server",
             "main": "./integration/server.ts",
-            "tsConfig": "./integration/tsconfig.server.json"
+            "tsConfig": "./integration/tsconfig.server.json",
+            "sourceMap": true,
+            "optimization": false
           },
           "configurations": {
             "production": {
@@ -95,7 +96,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
               "fileReplacements": [
                 {
                   "replace": "/integration/environments/environment.ts",
@@ -103,7 +103,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -131,14 +132,6 @@
           "options": {
             "configPath": "./jest.integration.config.js",
             "no-cache": false
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["integration/tsconfig.app.json", "integration/tsconfig.spec.json"],
-            "tslintConfig": "tslint.json",
-            "exclude": ["**/node_modules/**"]
           }
         }
       }

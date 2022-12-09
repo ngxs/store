@@ -36,11 +36,13 @@ export function memoize<T extends (...args: any[]) => any>(
   let lastResult: any = null;
   // we reference arguments instead of spreading them for performance reasons
   function memoized() {
+    // eslint-disable-next-line prefer-rest-params
     if (!areArgumentsShallowlyEqual(equalityCheck, lastArgs, arguments)) {
       // apply arguments instead of spreading for performance.
+      // eslint-disable-next-line prefer-rest-params, prefer-spread
       lastResult = (<Function>func).apply(null, arguments);
     }
-
+    // eslint-disable-next-line prefer-rest-params
     lastArgs = arguments;
     return lastResult;
   }

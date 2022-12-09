@@ -37,7 +37,7 @@ class DataState {
   @Action(SetDataState)
   getData(ctx: StateContext<DataStateModel>, { dataRequest }: SetDataState) {
     const fixedData = dataRequest === 'TAKE BROKEN DATA' ? 'BAD-DATA' : 'GOOD-DATA';
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       setTimeout(() => {
         ctx.setState({ data: fixedData });
         resolve();
