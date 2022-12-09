@@ -1,18 +1,18 @@
-import { StateOperator } from '@ngxs/store';
-import { isStateOperator, NoInfer } from './utils';
+import { ExistingState, NoInfer, StateOperator } from './types';
+import { isStateOperator } from './utils';
 
-export type PatchSpec<T> = { [P in keyof T]?: T[P] | StateOperator<NonNullable<T[P]>> };
+type NotUndefined<T> = T extends undefined ? never : T;
 
-type PatchValues<T> = {
-  readonly [P in keyof T]?: T[P] extends (...args: any[]) => infer R ? R : T[P];
-};
+export type PatchSpec<T> = { [P in keyof T]?: T[P] | StateOperator<NotUndefined<T[P]>> };
 
-export function patch<T>(patchObject: NoInfer<PatchSpec<T>>): StateOperator<NonNullable<T>> {
-  return (function patchStateOperator(existing: Readonly<PatchValues<T>>): NonNullable<T> {
+export function patch<T extends Record<string, any>>(
+  patchObject: NoInfer<PatchSpec<T>>
+): StateOperator<T> {
+  return function patchStateOperator(existing: ExistingState<T>): T {
     let clone = null;
     for (const k in patchObject) {
       const newValue = patchObject[k];
-      const existingPropValue = existing[k as Extract<keyof T, string>];
+      const existingPropValue = existing[k];
       const newPropValue = isStateOperator(newValue)
         ? newValue(<any>existingPropValue)
         : newValue;
@@ -24,5 +24,5 @@ export function patch<T>(patchObject: NoInfer<PatchSpec<T>>): StateOperator<NonN
       }
     }
     return clone || existing;
-  } as unknown) as StateOperator<NonNullable<T>>;
+  };
 }

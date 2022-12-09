@@ -93,7 +93,7 @@ export class AnimalsState {
         // $ExpectType StateOperator<string[]>
         pandas: updateItem(name => name === payload.name, payload.newName),
         // $ExpectType StateOperator<string[]>
-        zebras: iif(arr => arr!.length > 0, ['hello'], ['world'])
+        zebras: iif(arr => arr.length > 0, ['hello'], ['world'])
       })
     );
   }

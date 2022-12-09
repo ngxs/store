@@ -36,11 +36,11 @@ describe('[TEST]: the removeItem State Operator', () => {
 
     patch<Original>({ arrs: removeItem<number[]>(1) })(original); // $ExpectType Original
     patch<Original>({ arrs: removeItem(1) })(original); // $ExpectType Original
-    patch<Original>({ arrs: removeItem(item => item === []) })(original); // $ExpectType Original
+    patch<Original>({ arrs: removeItem(item => item.length === 0) })(original); // $ExpectType Original
 
     patch<Original>({ objs: removeItem<Original['objs'][0]>(1) })(original); // $ExpectType Original
     patch<Original>({ objs: removeItem(1) })(original); // $ExpectType Original
-    patch<Original>({ objs: removeItem(item => item!.name === '') })(original); // $ExpectType Original
+    patch<Original>({ objs: removeItem(item => item.name === '') })(original); // $ExpectType Original
   });
 
   it('should have the following valid complex usage', () => {
@@ -98,7 +98,7 @@ describe('[TEST]: the removeItem State Operator', () => {
       nestedStock: patch({
         wine: removeItem(1),
         nestedStock: patch({
-          whiskey: removeItem<Whiskey>(item => item!.name === 'Chivas')
+          whiskey: removeItem<Whiskey>(item => item.name === 'Chivas')
         })
       })
     })(original); // $ExpectType Stock

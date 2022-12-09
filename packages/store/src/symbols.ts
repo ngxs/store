@@ -2,9 +2,11 @@ import { Injectable, InjectionToken, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { PlainObject, StateClass } from '@ngxs/store/internals';
-import { SharedSelectorOptions } from './internal/internals';
-import { NgxsExecutionStrategy } from './execution/symbols';
+import { StateOperator } from '@ngxs/store/operators';
+
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
+import { NgxsExecutionStrategy } from './execution/symbols';
+import { SharedSelectorOptions } from './internal/internals';
 import { StateToken } from './state-token/state-token';
 
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
@@ -79,7 +81,7 @@ export class NgxsConfig {
   }
 }
 
-export type StateOperator<T> = (existing: Readonly<T>) => T;
+export { StateOperator };
 
 /**
  * State context provided to the actions in the state.
