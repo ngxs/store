@@ -48,6 +48,7 @@ testem.log
 .test-results.json
 /dist-lib
 /dist-integration
+**/_ignore
 
 # testing
 /junit/
