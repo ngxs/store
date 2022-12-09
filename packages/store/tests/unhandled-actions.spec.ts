@@ -1,6 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Store, NgxsModule, NgxsDevelopmentModule, NgxsUnhandledActionsLogger } from '..';
+import {
+  Store,
+  NgxsModule,
+  NgxsDevelopmentModule,
+  NgxsUnhandledActionsLogger,
+  NgxsDevelopmentOptions
+} from '..';
 
 describe('Unhandled actions warnings', () => {
   class FireAndForget {
@@ -9,16 +15,11 @@ describe('Unhandled actions warnings', () => {
 
   const plainObjectAction = { type: 'Fire & Forget' };
 
-  const testSetup = (warnOnUnhandledActions = true) => {
+  const testSetup = (
+    options: NgxsDevelopmentOptions | null = { warnOnUnhandledActions: true }
+  ) => {
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([]),
-        warnOnUnhandledActions
-          ? NgxsDevelopmentModule.forRoot({
-              warnOnUnhandledActions: { ignore: [] }
-            })
-          : []
-      ]
+      imports: [NgxsModule.forRoot([]), options ? NgxsDevelopmentModule.forRoot(options) : []]
     });
 
     const store = TestBed.inject(Store);
@@ -29,7 +30,7 @@ describe('Unhandled actions warnings', () => {
 
   it('should not warn on unhandled actions if the module is not provided', () => {
     // Arrange
-    const { store, warnSpy } = testSetup(/* warnOnUnhandledActions */ false);
+    const { store, warnSpy } = testSetup(/* options */ null);
     // Act
     store.dispatch(new FireAndForget());
     // Assert
@@ -74,7 +75,25 @@ describe('Unhandled actions warnings', () => {
       }
     });
 
-    it('should be possible to add custom actions which should be ignored', () => {
+    it('should be possible to add custom actions which should be ignored through the module options', () => {
+      // Arrange
+      const { store, warnSpy } = testSetup({
+        warnOnUnhandledActions: {
+          ignore: [FireAndForget, plainObjectAction]
+        }
+      });
+      // Act
+      store.dispatch(new FireAndForget());
+      store.dispatch(plainObjectAction);
+      // Assert
+      try {
+        expect(warnSpy).not.toHaveBeenCalled();
+      } finally {
+        warnSpy.mockRestore();
+      }
+    });
+
+    it('should be possible to add custom actions which should be ignored through the logger', () => {
       // Arrange
       const { store, warnSpy, unhandledActionsLogger } = testSetup();
       unhandledActionsLogger!.ignoreActions(FireAndForget, plainObjectAction);

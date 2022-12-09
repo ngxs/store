@@ -14,7 +14,9 @@ export class NgxsUnhandledActionsLogger {
   private _ignoredActions = new Set<string>([InitState.type, UpdateState.type]);
 
   constructor(@Inject(NGXS_DEVELOPMENT_OPTIONS) options: NgxsDevelopmentOptions) {
-    this.ignoreActions(...options.warnOnUnhandledActions.ignore);
+    if (typeof options.warnOnUnhandledActions === 'object') {
+      this.ignoreActions(...options.warnOnUnhandledActions.ignore);
+    }
   }
 
   /**
