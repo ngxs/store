@@ -45,17 +45,29 @@ export type NoInfer<T> = T extends (infer O)[] ? _NoInfer<O>[] : _NoInfer<T>;
  Therefore it is just result type 3 that is wrapped with the Readonly<...> type in the AsReadonly type.
  */
 /**
+ * IMPORTANT NOTE: This should not be used externally to the library, rather
+ * the exported type `ExistingState<T>` should be used instead.
+ *
  * Used to convert a type to its readonly form. This can be given any type, from
  * primitives to objects or arrays that could already be readonly or not.
- * This does not apply the readonly construct to nested objects, but only to the top level type
+ * This does not apply the readonly construct to nested objects, but only to the top level type.
  */
-export type AsReadonly<T> = T extends Readonly<infer O> ? (O extends T ? Readonly<T> : T) : T;
+type ɵAsReadonly<T> = T extends Readonly<infer O> ? (O extends T ? Readonly<T> : T) : T;
 
 /**
  * Represents the existing state that is passed into a `StateOperator` which should
  * not be modified but will be used to build the new state returned by the `StateOperator`.
  */
-export type ExistingState<T> = AsReadonly<T>;
+/* Maintainer Note:
+The `ExistingState` type below is equivalent to the `ɵAsReadonly` type above.
+The `T extends any ? X<T> : never` technique is used so that typescript doesn't inline this type
+and show error messages referring to an internal type.
+The conceptual declaration is equivalent to the following:
+  `export type ExistingState<T> = ɵAsReadonly<T>;`
+It is possible that in future this workaround will not work for typescript, the we will be forced
+ to inline the `ɵAsReadonly<T>` type declaration into the `ExistingState<T>` type.
+*/
+export type ExistingState<T> = T extends any ? ɵAsReadonly<T> : never;
 
 /**
  * This is a monotype unary function that is used to create a new state from an existing state.
