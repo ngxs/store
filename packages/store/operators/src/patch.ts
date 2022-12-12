@@ -3,10 +3,10 @@ import { isStateOperator } from './utils';
 
 type NotUndefined<T> = T extends undefined ? never : T;
 
-export type PatchSpec<T> = { [P in keyof T]?: T[P] | StateOperator<NotUndefined<T[P]>> };
+export type ɵPatchSpec<T> = { [P in keyof T]?: T[P] | StateOperator<NotUndefined<T[P]>> };
 
 export function patch<T extends Record<string, any>>(
-  patchObject: NoInfer<PatchSpec<T>>
+  patchObject: NoInfer<ɵPatchSpec<T>>
 ): StateOperator<T> {
   return function patchStateOperator(existing: ExistingState<T>): T {
     let clone = null;
