@@ -7,6 +7,9 @@ name: pr-validation
 on:
   pull_request:
 
+env:
+  NODE_VERSION: 16.x
+  
 defaults:
   run:
     shell: bash
@@ -29,7 +32,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: 16.x
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
@@ -42,8 +45,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
-        script: [lint, eslint, 'test:ci']
+        script: [eslint, 'test:ci']
 
     steps:
       - name: Checkout sources
@@ -55,7 +57,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
@@ -78,19 +80,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
         script:
-          - 'integration:ng7'
-          - 'integration:ng8'
-          - 'integration:ng9:ivy:off'
-          - 'integration:ng9:ivy'
-          - 'integration:ng10:ivy:off'
-          - 'integration:ng10:ivy'
-          - 'integration:ng11:ivy:off'
-          - 'integration:ng11:ivy'
           - 'integration:ng12:ivy'
           - 'integration:ng13:ivy'
           - 'integration:ng14:ivy'
+          - 'integration:ng15'
           - 'test:types'
 
     steps:
@@ -103,7 +97,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
@@ -111,7 +105,7 @@ jobs:
         run: yarn ${{ matrix.script }}
 
       - name: Upload an integration test artifact
-        if: ${{ matrix.script == 'integration:ng11:ivy' || matrix.script == 'integration:ng12:ivy' || matrix.script == 'integration:ng13:ivy' || matrix.script == 'integration:ng14:ivy' }}
+        if: ${{ matrix.script == 'integration:ng12:ivy' || matrix.script == 'integration:ng13:ivy' || matrix.script == 'integration:ng14:ivy' }}
         uses: ./.github/actions/upload-integration-test-artifact
         with:
           script: ${{ matrix.script }}
@@ -120,10 +114,6 @@ jobs:
     if: github.repository_owner == 'ngxs'
     runs-on: ubuntu-latest
     needs: premerge-integration-test
-
-    strategy:
-      matrix:
-        node-version: [16.x]
 
     steps:
       - name: Checkout sources
@@ -135,7 +125,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.head_ref }}
           github-sha: ${{ github.event.pull_request.head.sha }}
 
@@ -143,7 +133,7 @@ jobs:
         uses: ./.github/actions/download-integration-test-artifacts
 
       - name: Run BundleMon
-        run: yarn bundlemon
+        run: yarn bundlemon        
         env:
           BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}

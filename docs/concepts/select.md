@@ -8,7 +8,7 @@ When we want to read data out of our store, we use a select operator to retrieve
 In NGXS, there are two methods to select state, we can either call the `select` method on the
 `Store` service or use the `@Select` decorator. First let's look at the `@Select` decorator.
 
-## Select Decorators
+## Select Decorator
 
 You can select slices of data from the store using the `@Select` decorator. It has a few
 different ways to get your data out, whether passing the state class, a function, a different state class
@@ -479,7 +479,7 @@ export class ZooState {
 ```
 
 As an alternative you can assign your result to a variable before you return it:  
-See https://github.com/ng-packagr/ng-packagr/issues/696#issuecomment-387114613
+See <https://github.com/ng-packagr/ng-packagr/issues/696#issuecomment-387114613>
 
 ```ts
 @State<string[]>({

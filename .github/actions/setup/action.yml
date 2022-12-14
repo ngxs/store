@@ -51,10 +51,10 @@ runs:
           ~/.cache
           ./node_modules
           ./@ngxs
-          ./integrations/hello-world-ng11-ivy/dist-integration
           ./integrations/hello-world-ng12-ivy/dist-integration
           ./integrations/hello-world-ng13-ivy/dist-integration
           ./integrations/hello-world-ng14-ivy/dist-integration
+          ./integrations/hello-world-ng15/dist-integration
         key: ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-${{ inputs.github-sha }}
         restore-keys: |
           ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-

@@ -9,6 +9,9 @@ on:
     types:
       - created
 
+env:
+  NODE_VERSION: 16.x
+
 defaults:
   run:
     shell: bash
@@ -28,7 +31,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: 16.x
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.ref_name }}
           github-sha: ${{ github.sha }}
 
@@ -41,8 +44,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
-        script: [lint, eslint, 'test:ci']
+        script: [eslint, 'test:ci']
 
     steps:
       - name: Checkout sources
@@ -51,7 +53,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.ref_name }}
           github-sha: ${{ github.sha }}
 
@@ -74,16 +76,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
         script:
-          - 'integration:ng7'
-          - 'integration:ng8'
-          - 'integration:ng9:ivy:off'
-          - 'integration:ng9:ivy'
-          - 'integration:ng10:ivy:off'
-          - 'integration:ng10:ivy'
-          - 'integration:ng11:ivy:off'
-          - 'integration:ng11:ivy'
           - 'integration:ng12:ivy'
           - 'integration:ng13:ivy'
           - 'integration:ng14:ivy'
@@ -96,7 +89,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.ref_name }}
           github-sha: ${{ github.sha }}
 
@@ -104,7 +97,7 @@ jobs:
         run: yarn ${{ matrix.script }}
 
       - name: Upload an integration test artifact
-        if: ${{ matrix.script == 'integration:ng11:ivy' || matrix.script == 'integration:ng12:ivy' || matrix.script == 'integration:ng13:ivy' || matrix.script == 'integration:ng14:ivy' }}
+        if: ${{ matrix.script == 'integration:ng12:ivy' || matrix.script == 'integration:ng13:ivy' || matrix.script == 'integration:ng14:ivy' }}
         uses: ./.github/actions/upload-integration-test-artifact
         with:
           script: ${{ matrix.script }}
@@ -114,10 +107,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: release-integration-test
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
       - name: Checkout sources
         uses: actions/checkout@v3
@@ -125,7 +114,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.ref_name }}
           github-sha: ${{ github.sha }}
 
@@ -151,7 +140,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          node-version: 16.x
+          node-version: ${{ env.NODE_VERSION }}
           github-ref-name: ${{ github.ref_name }}
           github-sha: ${{ github.sha }}
 

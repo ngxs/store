@@ -111,9 +111,14 @@ export class FormDirective implements OnInit, OnDestroy {
       this._cd.markForCheck();
     });
 
-    this._formGroupDirective.valueChanges!.pipe(this.debounceChange()).subscribe(() => {
-      this.updateFormStateWithRawValue();
-    });
+    this._formGroupDirective
+      .valueChanges!.pipe(
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+        this.debounceChange()
+      )
+      .subscribe(() => {
+        this.updateFormStateWithRawValue();
+      });
 
     this._formGroupDirective
       .statusChanges!.pipe(distinctUntilChanged(), this.debounceChange())

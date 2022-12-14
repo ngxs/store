@@ -20,6 +20,7 @@
   - [Life-cycle](advanced/life-cycle.md)
   - [Mapped Sub States](advanced/mapped-sub-states.md)
   - [Meta Reducers](advanced/meta-reducer.md)
+  - [Monitoring Unhandled Actions](advanced/monitoring-unhandled-actions.md)
   - [Optimizing Selectors](advanced/optimizing-selectors.md)
   - [Options](advanced/options.md)
   - [Shared State](advanced/shared-state.md)

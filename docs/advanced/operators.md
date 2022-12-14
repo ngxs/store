@@ -39,7 +39,7 @@ export class AnimalsState {
   @Action(CreateMonkeys)
   createMonkeys(ctx: StateContext<AnimalsStateModel>) {
     ctx.setState(
-      patch({
+      patch<AnimalsStateModel>({
         monkeys: []
       })
     );
@@ -147,34 +147,114 @@ export class ChangePandaName {
 @Injectable()
 export class AnimalsState {
   @Action(AddZebra)
-  addZebra(ctx: StateContext<AnimalsStateModel>, { payload }: AddZebra) {
+  addZebra(ctx: StateContext<AnimalsStateModel>, action: AddZebra) {
     ctx.setState(
-      patch({
-        zebras: append([payload])
+      patch<AnimalsStateModel>({
+        zebras: append<string>([action.payload])
       })
     );
   }
 
   @Action(RemovePanda)
-  removePanda(ctx: StateContext<AnimalsStateModel>, { payload }: RemovePanda) {
+  removePanda(ctx: StateContext<AnimalsStateModel>, action: RemovePanda) {
     ctx.setState(
-      patch({
-        pandas: removeItem<string>(name => name === payload)
+      patch<AnimalsStateModel>({
+        pandas: removeItem<string>(name => name === action.payload)
       })
     );
   }
 
   @Action(ChangePandaName)
-  changePandaName(ctx: StateContext<AnimalsStateModel>, { payload }: ChangePandaName) {
+  changePandaName(ctx: StateContext<AnimalsStateModel>, action: ChangePandaName) {
     ctx.setState(
-      patch({
-        pandas: updateItem<string>(name => name === payload.name, payload.newName)
+      patch<AnimalsStateModel>({
+        pandas: updateItem<string>(
+          name => name === action.payload.name,
+          action.payload.newName
+        )
       })
     );
   }
+}
 ```
 
 You will see that in each case above the state operators are wrapped within a call to the `patch` operator. This is only done because of the convenience that the `patch` state operator provides for targeting a nested property of the state.
+
+## Typing Operators
+
+Specifying types for the `patch` operator is always necessary when doing nested updates. You can face cases when the `patch` operator cannot infer the nested type structure. Let's look at the following state:
+
+```ts
+export class UpdateLine1 {
+  static readonly type = '[Address] Update line1';
+  constructor(readonly line1: string) {}
+}
+
+export interface AddressStateModel {
+  country: {
+    city: {
+      address: {
+        line1: string;
+      };
+    };
+  };
+}
+
+@State<AddressStateModel>({
+  name: 'address',
+  defaults: {
+    country: {
+      city: {
+        address: {
+          line1: ''
+        }
+      }
+    }
+  }
+})
+@Injectable()
+export class AddressState {
+  @Action(UpdateLine1)
+  updateLine1(ctx: StateContext<AddressStateModel>, action: UpdateLine1) {
+    ctx.setState(
+      patch({
+        country: patch({
+          city: patch({
+            address: patch({
+              line1: action.line1
+            })
+          })
+        })
+      })
+    );
+  }
+}
+```
+
+If we don't specify the type explicitly for `patch`, all objects are inferred as `unknown`, meaning that TypeScript cannot tell us that we're doing something wrong or using the wrong type. The correct way of specifying nested types is shown below:
+
+```ts
+export class UserState {
+  @Action(UpdateLine1)
+  updateLine1(ctx: StateContext<AddressStateModel>, action: UpdateLine1) {
+    ctx.setState(
+      patch<AddressStateModel>({
+        country: patch<AddressStateModel['country']>({
+          city: patch<AddressStateModel['country']['city']>({
+            address: patch<AddressStateModel['country']['city']['address']>({
+              line1: action.line1
+            })
+          })
+        })
+      })
+    );
+  }
+}
+```
+
+If we change `country` to `Qcountry` (intentional mistake), the compiler will tell us `Object literal may only specify known properties, but 'Qcountry' does not exist`. The same technique may be used with other operators if they cannot infer the type.
+
+💡 Tip: we can specify the state model type and chain properties to get the desired type. Like in the example above.
 
 ## Custom Operators
 
@@ -182,7 +262,7 @@ You can also define your own operators for updates that are common to your domai
 
 ```ts
 function addEntity(entity: Entity): StateOperator<EntitiesStateModel> {
-  return (state: ReadOnly<EntitiesStateModel>) => {
+  return (state: Readonly<EntitiesStateModel>) => {
     return {
       ...state,
       entities: { ...state.entities, [entity.id]: entity },
@@ -205,8 +285,8 @@ interface CitiesStateModel {
 @Injectable()
 export class CitiesState {
   @Action(AddCity)
-  addCity(ctx: StateContext<CitiesStateModel>, { payload }: AddCity) {
-    ctx.setState(addEntity(payload.city));
+  addCity(ctx: StateContext<CitiesStateModel>, action: AddCity) {
+    ctx.setState(addEntity<CitiesStateModel>(action.payload.city));
   }
 }
 ```

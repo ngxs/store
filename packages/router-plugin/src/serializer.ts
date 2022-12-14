@@ -24,7 +24,7 @@ export class DefaultRouterStateSerializer
       url: route.url,
       params: route.params,
       queryParams: route.queryParams,
-      fragment: route.fragment,
+      fragment: route.fragment!,
       data: route.data,
       outlet: route.outlet,
       component: null,

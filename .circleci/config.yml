@@ -4,7 +4,7 @@ version: 2
 job_defaults_var: &job_defaults
   working_directory: ~/workspace/app
   docker:
-    - image: circleci/node:14.16.1-browsers
+    - image: circleci/node:16.13.0-browsers
 
 # Yarn cache key
 cache_var: &cache_key yarn-packages-v2-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -76,14 +76,6 @@ jobs:
           path: ngxs-core.tgz
           destination: dist/ngxs-core.tgz
 
-  tslint:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run TSLint analyzer
-          command: yarn lint
-
   eslint:
     <<: *job_defaults
     steps:
@@ -142,74 +134,6 @@ jobs:
           name: Run integration tests for the SSR build application
           command: yarn test:ci:integration:ssr
 
-  integration_ng7_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for the Angular 7 application
-          command: yarn integration:ng7
-
-  integration_ng8_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for the Angular 8 application
-          command: yarn integration:ng8
-
-  integration_ng9_ivy_off_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng9 ivy off application
-          command: yarn integration:ng9:ivy:off
-
-  integration_ng9_ivy_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng9 (Ivy) application
-          command: yarn integration:ng9:ivy
-
-  integration_ng10_ivy_off_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng10 ivy off application
-          command: yarn integration:ng10:ivy:off
-
-  integration_ng10_ivy_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng10 (Ivy) application
-          command: yarn integration:ng10:ivy
-
-  integration_ng11_ivy_off_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng11 (Ivy off) application
-          command: yarn integration:ng11:ivy:off
-
-  integration_ng11_ivy_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng11 (Ivy) application
-          command: yarn integration:ng11:ivy
-      - persist_to_workspace:
-          root: ~/workspace
-          paths:
-            - app/integrations/hello-world-ng11-ivy/dist-integration
-
   integration_ng12_ivy_tests:
     <<: *job_defaults
     steps:
@@ -245,6 +169,18 @@ jobs:
           root: ~/workspace
           paths:
             - app/integrations/hello-world-ng14-ivy/dist-integration
+
+  integration_ng15_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run integration tests for ng15 application
+          command: yarn integration:ng15
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - app/integrations/hello-world-ng15/dist-integration
 
   integration_test_types:
     <<: *job_defaults
@@ -302,10 +238,6 @@ workflows:
             tags:
               only: /.*/
 
-      - tslint:
-          requires:
-            - build
-
       - eslint:
           requires:
             - build
@@ -326,34 +258,6 @@ workflows:
       ###     requires:
       ###       - build
 
-      - integration_ng8_tests:
-          requires:
-            - build
-
-      - integration_ng9_ivy_tests:
-          requires:
-            - build
-
-      - integration_ng9_ivy_off_tests:
-          requires:
-            - build
-
-      - integration_ng10_ivy_off_tests:
-          requires:
-            - build
-
-      - integration_ng10_ivy_tests:
-          requires:
-            - build
-
-      - integration_ng11_ivy_off_tests:
-          requires:
-            - build
-
-      - integration_ng11_ivy_tests:
-          requires:
-            - build
-
       - integration_ng12_ivy_tests:
           requires:
             - build
@@ -366,6 +270,10 @@ workflows:
           requires:
             - build
 
+      - integration_ng15_tests:
+          requires:
+            - build
+
       - integration_test_types:
           requires:
             - build
@@ -375,7 +283,6 @@ workflows:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng8_tests
             - integration_test_types
 
       # Publish @dev builds if no tag is specified
@@ -390,7 +297,6 @@ workflows:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng8_tests
             - integration_test_types
 
       # Publish package.version @latest when a v.* git tag is present
@@ -404,5 +310,4 @@ workflows:
             - unit_tests
             ### - integration_tests
             ### - integration_ssr_tests
-            - integration_ng8_tests
             - integration_test_types

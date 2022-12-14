@@ -5,7 +5,9 @@ import {
   Params,
   RouterStateSnapshot,
   RoutesRecognized,
-  ResolveEnd
+  ResolveEnd,
+  NavigationStart,
+  NavigationEnd
 } from '@angular/router';
 
 import { RouterTrigger } from './router.state';
@@ -30,6 +32,21 @@ export class Navigate {
  * Angular Routers internal state events
  *
  */
+
+/**
+ * An action dispatched when the router starts the navigation.
+ */
+export class RouterRequest<T = RouterStateSnapshot> {
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Router] RouterRequest';
+  }
+  constructor(
+    public routerState: T,
+    public event: NavigationStart,
+    public trigger: RouterTrigger = 'none'
+  ) {}
+}
 
 /**
  * An action dispatched when the router navigates.
@@ -94,10 +111,27 @@ export class RouterDataResolved<T = RouterStateSnapshot> {
 }
 
 /**
+ * An action dispatched when the router navigation has been finished successfully.
+ */
+export class RouterNavigated<T = RouterStateSnapshot> {
+  static get type() {
+    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
+    return '[Router] RouterNavigated';
+  }
+  constructor(
+    public routerState: T,
+    public event: NavigationEnd,
+    public trigger: RouterTrigger = 'none'
+  ) {}
+}
+
+/**
  * An union type of router actions.
  */
 export type RouterAction<T, V = RouterStateSnapshot> =
+  | RouterRequest<V>
   | RouterNavigation<V>
   | RouterCancel<T, V>
   | RouterError<T, V>
-  | RouterDataResolved<V>;
+  | RouterDataResolved<V>
+  | RouterNavigated<V>;

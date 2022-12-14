@@ -7,7 +7,7 @@
       "@integration/*": ["./app/*"]
     },
     "outDir": "./out-tsc/app",
-    "module": "esnext",
+    "module": "es2020",
     "target": "es2015",
     "types": ["node"]
   },

@@ -255,15 +255,6 @@
   dependencies:
     tslib "^2.0.0"
 
-"@angular/platform-server@~11.2.4":
-  version "11.2.12"
-  resolved "https://registry.npmjs.org/@angular/platform-server/-/platform-server-11.2.12.tgz#b33a56378bcc1590818782513f77c8742525bf65"
-  integrity sha512-M/eARAjt9fiUaqWqdHMTSwuGY2y7mm47olOR8o88J10IpZQaar5n9WFeTtH47ht1RGdmHqX4rM7pzk8pHWv0xg==
-  dependencies:
-    domino "^2.1.2"
-    tslib "^2.0.0"
-    xhr2 "^0.2.0"
-
 "@angular/router@~11.2.4":
   version "11.2.4"
   resolved "https://registry.npmjs.org/@angular/router/-/router-11.2.4.tgz#92712cf4c36f009ac9b04f0ec9b3116c1b048310"
@@ -1549,54 +1540,38 @@
     enhanced-resolve "5.7.0"
     webpack-sources "2.2.0"
 
-"@nguniversal/common@11.2.1":
-  version "11.2.1"
-  resolved "https://registry.npmjs.org/@nguniversal/common/-/common-11.2.1.tgz#c2f6a6ee9fee43121bf3cb5da43b76a45ce9f8eb"
-  integrity sha512-2PYo38yBCIE5GdURFj9s5b18bY/SwX3WHmNRoMaR6Aj8uE0j2kVpmyqQgdHTyvf93pgpIbRyo7x1J6MFFXPQAA==
-  dependencies:
-    critters "0.0.7"
-    tslib "^2.0.0"
-
-"@nguniversal/express-engine@~11.2.1":
-  version "11.2.1"
-  resolved "https://registry.npmjs.org/@nguniversal/express-engine/-/express-engine-11.2.1.tgz#015b2bc0b87b947195ee880221fb9789b5674f76"
-  integrity sha512-Y2t4qkyeI5xaegZeI1fJDcMUvQ4AZbKxvEibahapEX5ixN7dxq+iB6xKnSIOG+WYaP3l4c6sExhlKo/oxNXMqA==
-  dependencies:
-    "@nguniversal/common" "11.2.1"
-    tslib "^2.0.0"
-
 "@ngxs/devtools-plugin@file:./node_modules/@ngxs/devtools-plugin":
-  version "3.7.4"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/form-plugin@file:./node_modules/@ngxs/form-plugin":
-  version "3.7.4"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/logger-plugin@file:./node_modules/@ngxs/logger-plugin":
-  version "3.7.4"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/router-plugin@file:./node_modules/@ngxs/router-plugin":
-  version "3.7.4"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/storage-plugin@file:./node_modules/@ngxs/storage-plugin":
-  version "3.7.4"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/store@file:./node_modules/@ngxs/store":
-  version "3.7.4"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/websocket-plugin@file:./node_modules/@ngxs/websocket-plugin":
-  version "3.7.4"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
@@ -4077,11 +4052,6 @@ domexception@^2.0.1:
   integrity sha512-yxJ2mFy/sibVQlu5qHjOkf9J3K6zgmCxgJ94u2EdvDOV09H+32LtRswEcUsmUWN72pVLOEnTSRaIVVzVQgS0dg==
   dependencies:
     webidl-conversions "^5.0.0"
-
-domino@^2.1.2:
-  version "2.1.6"
-  resolved "https://registry.npmjs.org/domino/-/domino-2.1.6.tgz#fe4ace4310526e5e7b9d12c7de01b7f485a57ffe"
-  integrity sha512-3VdM/SXBZX2omc9JF9nOPCtDaYQ67BGp5CoLpIQlO2KCAPETs8TcDHacF26jXadGbvUteZzRTeos2fhID5+ucQ==
 
 domutils@^1.7.0:
   version "1.7.0"
@@ -10800,11 +10770,6 @@ ws@^7.2.3:
   version "7.4.0"
   resolved "https://registry.npmjs.org/ws/-/ws-7.4.0.tgz#a5dd76a24197940d4a8bb9e0e152bb4503764da7"
   integrity sha512-kyFwXuV/5ymf+IXhS6f0+eAFvydbaBW3zjpT6hUdAh/hbVjTIB5EHBGi0bPoCLSK2wcuz3BrEkB9LrYv1Nm4NQ==
-
-xhr2@^0.2.0:
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/xhr2/-/xhr2-0.2.1.tgz#4e73adc4f9cfec9cbd2157f73efdce3a5f108a93"
-  integrity sha512-sID0rrVCqkVNUn8t6xuv9+6FViXjUVXq8H5rWOH2rz9fDNQEd4g0EA2XlcEdJXRz5BMEn4O1pJFdT+z4YHhoWw==
 
 xml-name-validator@^3.0.0:
   version "3.0.0"

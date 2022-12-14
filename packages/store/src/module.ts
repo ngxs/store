@@ -8,8 +8,8 @@ import {
 import {
   INITIAL_STATE_TOKEN,
   InitialState,
-  NGXS_STATE_CONTEXT_FACTORY,
-  NGXS_STATE_FACTORY,
+  ɵNGXS_STATE_FACTORY,
+  ɵNGXS_STATE_CONTEXT_FACTORY,
   NgxsBootstrapper,
   StateClass
 } from '@ngxs/store/internals';
@@ -28,6 +28,7 @@ import { LifecycleStateManager } from './internal/lifecycle-state-manager';
 import { InternalDispatchedActionResults, InternalDispatcher } from './internal/dispatcher';
 import { InternalStateOperations } from './internal/state-operations';
 import { Store } from './store';
+import { SelectFactory } from './decorators/select/select-factory';
 import { StateStream } from './internal/state-stream';
 import { PluginManager } from './plugin-manager';
 import { NgxsRootModule } from './modules/ngxs-root.module';
@@ -64,6 +65,7 @@ export class NgxsModule {
         InternalNgxsExecutionStrategy,
         Store,
         StateStream,
+        SelectFactory,
         PluginManager,
         ...states,
         ...NgxsModule.ngxsTokenProviders(states, options)
@@ -123,11 +125,11 @@ export class NgxsModule {
         useFactory: NgxsModule.getInitialState
       },
       {
-        provide: NGXS_STATE_CONTEXT_FACTORY,
+        provide: ɵNGXS_STATE_CONTEXT_FACTORY,
         useExisting: StateContextFactory
       },
       {
-        provide: NGXS_STATE_FACTORY,
+        provide: ɵNGXS_STATE_FACTORY,
         useExisting: StateFactory
       }
     ];
