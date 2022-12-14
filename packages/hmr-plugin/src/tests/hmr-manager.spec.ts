@@ -272,7 +272,7 @@ describe('HMR Plugin', () => {
     try {
       await hmr({} as WebpackModule, null as any);
     } catch (e) {
-      expect(e.message).toEqual('HMR is not enabled for webpack-dev-server!');
+      expect((<Error>e).message).toEqual('HMR is not enabled for webpack-dev-server!');
     }
 
     try {
@@ -286,7 +286,9 @@ describe('HMR Plugin', () => {
 
       new HmrStateContextFactory(mockNgModuleRef);
     } catch (e) {
-      expect(e.message).toEqual('Store not found, maybe you forgot to import the NgxsModule');
+      expect((<Error>e).message).toEqual(
+        'Store not found, maybe you forgot to import the NgxsModule'
+      );
     }
   });
 
@@ -417,7 +419,7 @@ describe('HMR Plugin', () => {
     try {
       await hmrTestBed(AppJitModule);
     } catch (e) {
-      message = e.message;
+      message = (<Error>e).message;
     }
 
     expect(message).toEqual(

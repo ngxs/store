@@ -326,7 +326,7 @@ describe('NgxsFormPlugin', () => {
           ],
           declarations: [ComponentType]
         });
-        const store: Store = TestBed.get(Store);
+        const store: Store = TestBed.inject(Store);
         const fixture = TestBed.createComponent(ComponentType);
         const getTodosFormState = () => store.selectSnapshot(({ todos }) => todos.todosForm);
         return { store, fixture, getTodosFormState };
