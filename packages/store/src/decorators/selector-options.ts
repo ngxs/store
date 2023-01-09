@@ -12,6 +12,7 @@ export function SelectorOptions(options: SharedSelectorOptions) {
       descriptor: TypedPropertyDescriptor<T>
     ) {
       if (methodName) {
+        descriptor ||= Object.getOwnPropertyDescriptor(target, methodName)!;
         // Method Decorator
         const originalFn = descriptor.value || (<any>descriptor).originalFn;
         if (originalFn) {

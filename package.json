@@ -152,7 +152,7 @@
     "lint-staged": "^9.5.0",
     "mock-socket": "^8.1.0",
     "ng-packagr": "^12.2.7",
-    "prettier": "1.19.1",
+    "prettier": "2.8.2",
     "rxjs": "6.6.7",
     "start-server-and-test": "^1.11.0",
     "ts-loader": "^6.2.1",
