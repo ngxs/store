@@ -12,6 +12,7 @@
 - Feature: Storage Plugin - Enable providing storage engine individually [#1935](https://github.com/ngxs/store/pull/1935)
 - Feature: Devtools Plugin - Add new options to the `NgxsDevtoolsOptions` interface [#1879](https://github.com/ngxs/store/pull/1879)
 - Performance: Tree-shake patch errors [#1955](https://github.com/ngxs/store/pull/1955)
+- Fix: Get descriptor explicitly when it's considered as a class property [#1961](https://github.com/ngxs/store/pull/1961)
 
 ### To become next patch version
 
