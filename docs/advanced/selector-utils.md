@@ -85,18 +85,18 @@ export class MyZooComponent {
 
 Here we see how the `createPropertySelectors` is used to create a map of selectors for each property of the state. The `createPropertySelectors` takes a state class and returns a map of selectors for each property of the state. The `createPropertySelectors` is very useful when we need to create a selector for each property of the state.
 
-## Create Mapped Selector
+## Create Model Selector
 
-Sometimes we need to create a selector simply groups other selectors. For example, we might want to create a selector that maps the state to a map of pandas and zoos. We can use the `createMappedSelector` to create such a selector. See the snippet below:
+Sometimes we need to create a selector simply groups other selectors. For example, we might want to create a selector that maps the state to a map of pandas and zoos. We can use the `createModelSelector` to create such a selector. See the snippet below:
 
 ```ts
 import { Selector } from '@ngxs/store';
-import { createMappedSelector } from '@ngxs/selector-utils';
+import { createModelSelector } from '@ngxs/selector-utils';
 
 export class AnimalsSelectors {
   static slices = createPropertySelectors<AnimalStateModel>(AnimalSate);
 
-  static pandasAndZoos = createMappedSelector({
+  static pandasAndZoos = createModelSelector({
     pandas: AnimalsSelectors.slices.pandas,
     zoos: ZoosSelectors.slices.zoos
   });
@@ -119,7 +119,7 @@ export class MyZooComponent {
 }
 ```
 
-Here we see how the `createMappedSelector` is used to create a selector that maps the state to a map of pandas and zoos. The `createMappedSelector` takes a map of selectors and returns a selector that maps the state to a map of the values returned by the selectors. The `createMappedSelector` is very useful when we need to create a selector that groups other selectors.
+Here we see how the `createModelSelector` is used to create a selector that maps the state to a map of pandas and zoos. The `createModelSelector` takes a map of selectors and returns a selector that maps the state to a map of the values returned by the selectors. The `createModelSelector` is very useful when we need to create a selector that groups other selectors.
 
 ## Create Pick Selector
 
