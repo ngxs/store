@@ -11,13 +11,13 @@ describe('[TEST]: Devtools with custom settings', () => {
 
   @State({
     name: 'count',
-    defaults: 0
+    defaults: 0,
   })
   @Injectable()
   class CountState {
     @Action({ type: 'increment' })
     increment(ctx: StateContext<number>) {
-      ctx.setState(state => state + 1);
+      ctx.setState((state) => state + 1);
     }
   }
 
@@ -25,8 +25,8 @@ describe('[TEST]: Devtools with custom settings', () => {
     TestBed.configureTestingModule({
       imports: [
         NgxsModule.forRoot([CountState]),
-        NgxsReduxDevtoolsPluginModule.forRoot({ disabled: true })
-      ]
+        NgxsReduxDevtoolsPluginModule.forRoot({ disabled: true }),
+      ],
     });
 
     store = TestBed.inject(Store);
@@ -41,12 +41,28 @@ describe('[TEST]: Devtools with custom settings', () => {
     TestBed.configureTestingModule({
       imports: [
         NgxsModule.forRoot([CountState]),
-        NgxsReduxDevtoolsPluginModule.forRoot({ name: 'custom', maxAge: 1000 })
-      ]
+        NgxsReduxDevtoolsPluginModule.forRoot({ name: 'custom', maxAge: 1000 }),
+      ],
     });
 
     store = TestBed.inject(Store);
 
     expect(devtools.options).toEqual({ name: 'custom', maxAge: 1000 });
+  });
+
+  it('should trace actions calls', () => {
+    const devtools = new ReduxDevtoolsMockConnector();
+    createReduxDevtoolsExtension(devtools);
+
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([CountState]),
+        NgxsReduxDevtoolsPluginModule.forRoot({ trace: true, traceLimit: 10 }),
+      ],
+    });
+
+    store = TestBed.inject(Store);
+
+    expect(devtools.options).toEqual({ name: 'NGXS', trace: true, traceLimit: 10 });
   });
 });
