@@ -53,7 +53,6 @@ export interface NgxsDevtoolsOptions {
    */
   actionsWhitelist?: string | string[];
 
-
   /**
    * called for every action before sending, takes state and action object, and returns true in case it allows
    * sending the current data to the monitor. Use it as a more advanced version of
@@ -70,6 +69,16 @@ export interface NgxsDevtoolsOptions {
    * Reformat state before sending to devtools
    */
   stateSanitizer?: (state: any) => void;
+
+  /**
+   * If set to true, will include stack trace for every dispatched action
+   */
+  trace?: boolean | (() => string);
+
+  /**
+   * Maximum stack trace frames to be stored (in case trace option was provided as true)
+   */
+  traceLimit?: number;
 }
 
 export const NGXS_DEVTOOLS_OPTIONS = new InjectionToken('NGXS_DEVTOOLS_OPTIONS');
