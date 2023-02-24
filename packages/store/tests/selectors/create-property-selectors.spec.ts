@@ -165,6 +165,16 @@ describe('createPropertySelectors', () => {
     expect(slices1.emptyProperty(myState) === slices2.emptyProperty(myState)).toBeTruthy();
   });
 
+  it('should return the same selectors from slice object on each call', () => {
+    // Arrange
+    // Act
+    const slice = createPropertySelectors<MyStateModel>(MyState);
+    // Assert
+    expect(slice.property1).toBe(slice.property1);
+    expect(slice.property2).toBe(slice.property2);
+    expect(slice.emptyProperty).toBe(slice.emptyProperty);
+  });
+
   it('should return a different slices object on each call', () => {
     // Arrange
     // Act
