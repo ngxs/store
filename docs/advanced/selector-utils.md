@@ -12,7 +12,6 @@ Let's start with a common example. Here we have a small state containing animals
 ```ts
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
-import { createPropertySelectors } from '@ngxs/selector-utils';
 
 export interface AnimalsStateModel {
   zebras: string[];
@@ -24,8 +23,8 @@ export interface AnimalsStateModel {
   name: 'animals',
   defaults: {
     zebras: [],
-    pandas: []
-  }
+    pandas: [],
+  },
 })
 @Injectable()
 export class AnimalsState {}
@@ -51,8 +50,7 @@ export class AnimalsSelectors {
 Here we see how verbose the split of a state into selectors can look. We can use the `createPropertySelectors` to cleanup this code a bit. See the snippet below:
 
 ```ts
-import { Selector } from '@ngxs/store';
-import { createPropertySelectors } from '@ngxs/selector-utils';
+import { Selector, createPropertySelectors } from '@ngxs/store';
 
 export class AnimalsSelectors {
   // creates map of selectors for each state property
@@ -90,8 +88,7 @@ Here we see how the `createPropertySelectors` is used to create a map of selecto
 Sometimes we need to create a selector simply groups other selectors. For example, we might want to create a selector that maps the state to a map of pandas and zoos. We can use the `createModelSelector` to create such a selector. See the snippet below:
 
 ```ts
-import { Selector } from '@ngxs/store';
-import { createModelSelector } from '@ngxs/selector-utils';
+import { Selector, createModelSelector } from '@ngxs/store';
 
 export class AnimalsSelectors {
   static slices = createPropertySelectors<AnimalStateModel>(AnimalSate);
@@ -106,8 +103,9 @@ export class AnimalsSelectors {
   selector: 'my-zoo'
   template: `
     <h1> Pandas and Zoos </h1>
-    <ol>
-      <li *ngFor="panda in pandasAndZoos$ | async"> {{ panda }} </li>
+    <ol *ngIf="pandasAndZoos$ | async as model">
+      <li> Panda Count: {{ model.pandas?.length || 0 }} </li>
+      <li> Zoos Count: {{ model.zoos?.length || 0 }} </li>
     </ol>
   `,
   style: ''
@@ -126,13 +124,10 @@ Here we see how the `createModelSelector` is used to create a selector that maps
 Sometimes we need to create a selector that picks a subset of properties from the state. For example, we might want to create a selector that picks the `zebras` and `pandas` properties from the state. We can use the `createPickSelector` to create such a selector. See the snippet below:
 
 ```ts
-import { Selector } from '@ngxs/store';
-import { createPickSelector } from '@ngxs/selector-utils';
+import { Selector, createPickSelector } from '@ngxs/store';
 
 export class AnimalsSelectors {
-  static slices = createPropertySelectors<AnimalStateModel>(AnimalSate);
-
-  static zebrasAndPandas = createPickSelector(AnimalsSelectors.slices, [
+  static zebrasAndPandas = createPickSelector(AnimalStateModel, [
     'zebras',
     'pandas'
   ]);
@@ -142,8 +137,10 @@ export class AnimalsSelectors {
   selector: 'my-zoo'
   template: `
     <h1> Zebras and Pandas </h1>
-    <ol>
-      <li *ngFor="zebra in zebrasAndPandas$ | async"> {{ zebra }} </li>
+    <h1> Pandas and Zoos </h1>
+    <ol *ngIf="zebrasAndPandas$ | async as zebrasAndPandas">
+      <li> Panda Count: {{ zebrasAndPandas.pandas?.length || 0 }} </li>
+      <li> Zoos Count: {{ zebrasAndPandas.zoos?.length || 0 }} </li>
     </ol>
   `,
   style: ''
