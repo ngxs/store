@@ -154,6 +154,10 @@ export class MyZooComponent {
 
 Here we see how the `createPickSelector` is used to create a selector that picks a subset of properties from the state, or from any other selector that returns an object for that matter. The `createPickSelector` takes a selector which returns an object and an array of property names and returns a selector that returns a copy of the object, with only the properties that have been picked. The `createPickSelector` is very useful when we need to create a selector that picks a subset of properties from the state.
 
+### Performance win!
+
+One of the most useful things about this selector (versus rolling your own that creates a trimmed object from the provided selector), is that the pick selector will only emit a new value when a picked property changes, and will not emit a new value if any of the other properties change. Angular change detection performance optimization enthusiasts will love this!
+
 ## Relevant Articles
 
 [NGXS State Operators](https://medium.com/ngxs/ngxs-state-operators-8b339641b220)
