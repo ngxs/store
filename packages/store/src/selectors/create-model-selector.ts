@@ -1,13 +1,16 @@
-import { createSelector } from '../..';
+import { createSelector } from '../utils/selector-utils';
 import { TypedSelector } from './selector-types.util';
 
 interface SelectorMap {
   [key: string]: TypedSelector<any>;
 }
+
 type ModelSelector<T extends SelectorMap> = (...args: any[]) => MappedResult<T>;
+
 type MappedResult<TSelectorMap> = {
   [P in keyof TSelectorMap]: TSelectorMap[P] extends TypedSelector<infer R> ? R : never;
 };
+
 export function createModelSelector<T extends SelectorMap>(selectorMap: T): ModelSelector<T> {
   const selectors = Object.values(selectorMap);
   const selectorKeys = Object.keys(selectorMap);

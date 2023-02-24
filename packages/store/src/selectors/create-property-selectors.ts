@@ -1,4 +1,4 @@
-import { createSelector } from '../..';
+import { createSelector } from '../utils/selector-utils';
 import { SelectorDef } from './selector-types.util';
 
 export type PropertySelectors<TModel> = {
@@ -6,6 +6,7 @@ export type PropertySelectors<TModel> = {
     model: TModel
   ) => TModel extends null | undefined ? undefined : NonNullable<TModel>[P];
 };
+
 export function createPropertySelectors<TModel>(
   state: SelectorDef<TModel>
 ): PropertySelectors<TModel> {
