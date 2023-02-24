@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
-import { NgxsModule, State, Store } from '..';
-// import { createPickSelector } from '../src/selectors/pick-selector';
-import { createPropertySelectors } from '../src/selectors/create-property-selectors';
+import { NgxsModule, State, Store, createPropertySelectors } from '../../src/public_api';
 
 describe.only('getPropertySelectors', () => {
   interface MyStateModel {
