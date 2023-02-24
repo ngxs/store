@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { NgxsModule, State, Store } from '..';
 // import { createPickSelector } from '../src/selectors/pick-selector';
-import { createPropertySelectors } from '../src/selectors/property-selectors';
+import { createPropertySelectors } from '../src/selectors/create-property-selectors';
 
 describe.only('getPropertySelectors', () => {
   interface MyStateModel {
@@ -18,8 +18,8 @@ describe.only('getPropertySelectors', () => {
     defaults: {
       property1: 'testValue',
       property2: [1, 2, 3],
-      emptyProperty: {}
-    }
+      emptyProperty: {},
+    },
   })
   @Injectable()
   class MyState {}
@@ -41,7 +41,7 @@ describe.only('getPropertySelectors', () => {
 
   it('Passing a selector that returns a empty object', () => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [NgxsModule.forRoot([MyState])],
     });
 
     const store: Store = TestBed.inject(Store);
@@ -56,8 +56,8 @@ describe.only('getPropertySelectors', () => {
       property1: 'testValue',
       property2: [1, 2, 3],
       emptyProperty: {
-        loading: true
-      }
+        loading: true,
+      },
     });
 
     expect(store.selectSnapshot(slicesOnEmptyProperty.loading)).toBe(true);
@@ -65,7 +65,7 @@ describe.only('getPropertySelectors', () => {
 
   it('Should create a selector for each property of state', () => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [NgxsModule.forRoot([MyState])],
     });
 
     // const store: Store = TestBed.inject(Store);
@@ -81,7 +81,7 @@ describe.only('getPropertySelectors', () => {
 
   it('The create selectors should return value of the state', async(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [NgxsModule.forRoot([MyState])],
     });
 
     const store: Store = TestBed.inject(Store);
@@ -94,7 +94,7 @@ describe.only('getPropertySelectors', () => {
 
   it('Should memoise each internal selector', () => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [NgxsModule.forRoot([MyState])],
     });
 
     const store: Store = TestBed.inject(Store);
@@ -108,7 +108,7 @@ describe.only('getPropertySelectors', () => {
 
   it('Should memoise each internal selector', () => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [NgxsModule.forRoot([MyState])],
     });
 
     const store: Store = TestBed.inject(Store);
