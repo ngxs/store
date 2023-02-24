@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { NgxsModule, State, Store, createPropertySelectors } from '../../src/public_api';
 
-describe.only('getPropertySelectors', () => {
+describe.only('createPropertySelectors', () => {
   interface MyStateModel {
     property1: string;
     property2: number[];
@@ -22,35 +22,126 @@ describe.only('getPropertySelectors', () => {
   @Injectable()
   class MyState {}
 
-  it('Passing null', () => {
-    const slices = createPropertySelectors(null as any);
-    expect(slices).toThrowError();
-  });
-
-  it('Passing undefined', () => {
-    const slices = createPropertySelectors(undefined as any);
-    expect(slices).toThrowError();
-  });
-
-  // it('Passing empty object', () => {
-  //   const slices = createPropertySelectors({});
-  //   expect(slices).toBe(null);
-  // });
-
-  it('Passing a selector that returns a empty object', () => {
+  function setupFixture() {
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([MyState])],
     });
-
     const store: Store = TestBed.inject(Store);
+    const setState = (newState: MyStateModel) => store.reset({ myState: newState });
+    return { store, MyState, setState };
+  }
+
+  describe('[failures]', () => {
+    it('should fail if a null selector is provided', () => {
+      // Arrange
+      let error: Error | null = null;
+      // Act
+      try {
+        createPropertySelectors(null as any);
+      } catch (err) {
+        error = err as Error;
+      }
+      // Assert
+      expect(error).not.toBeNull();
+      expect(error?.message).toMatchInlineSnapshot(
+        `"A parent selector must be provided to create property selectors."`
+      );
+    });
+
+    it('should fail if a undefined selector is provided', () => {
+      // Arrange
+      let error: Error | null = null;
+      // Act
+      try {
+        createPropertySelectors(null as any);
+      } catch (err) {
+        error = err as Error;
+      }
+      // Assert
+      expect(error).not.toBeNull();
+      expect(error?.message).toMatchInlineSnapshot(
+        `"A parent selector must be provided to create property selectors."`
+      );
+    });
+
+    it('should fail if a class that is not a selector is provided', () => {
+      // Arrange
+      let error: Error | null = null;
+      // Act
+      try {
+        class NotAState {}
+        createPropertySelectors(NotAState);
+      } catch (err) {
+        error = err as Error;
+      }
+      // Assert
+      expect(error).not.toBeNull();
+      expect(error?.message).toMatchInlineSnapshot(
+        `"The value provided as the parent selector is not a valid selector."`
+      );
+    });
+
+    it('should fail if a function that is not a selector is provided', () => {
+      // Arrange
+      let error: Error | null = null;
+      function NotASelector() {}
+      // Act
+      try {
+        createPropertySelectors(NotASelector);
+      } catch (err) {
+        error = err as Error;
+      }
+      // Assert
+      expect(error).not.toBeNull();
+      expect(error?.message).toMatchInlineSnapshot(
+        `"The value provided as the parent selector is not a valid selector."`
+      );
+    });
+  });
+
+  it('should create a selector for each property of state', () => {
+    // Arrange
+    // Act
     const slices = createPropertySelectors<MyStateModel>(MyState);
+    // Assert
+    expect(slices).toHaveProperty('property1');
+    expect(slices).toHaveProperty('property2');
+    expect(slices).toHaveProperty('emptyProperty');
+  });
+
+  it('should return selectors returning the correct value of the state', async(() => {
+    // Arrange
+    const exampleState: MyStateModel = {
+      property1: 'foo',
+      property2: [5, 4, 3],
+      emptyProperty: {
+        loading: true,
+      },
+    };
+    // Act
+    const slices = createPropertySelectors<MyStateModel>(MyState);
+    // Assert
+
+    expect(slices.property1(exampleState)).toBe('foo');
+    expect(slices.property2(exampleState)).toStrictEqual([5, 4, 3]);
+  }));
+
+  it('should handle missing properties in the state as undefined', () => {
+    // Arrange
+    const { store, MyState, setState } = setupFixture();
+
+    const slices = createPropertySelectors<MyStateModel>(MyState);
+
+    // Act
     const slicesOnEmptyProperty = createPropertySelectors<MyStateModel['emptyProperty']>(
       slices.emptyProperty
     );
 
+    // Assert
+    expect(store.selectSnapshot(slices.emptyProperty)).toEqual({});
     expect(store.selectSnapshot(slicesOnEmptyProperty.loading)).toBe(undefined);
 
-    store.reset({
+    setState({
       property1: 'testValue',
       property2: [1, 2, 3],
       emptyProperty: {
@@ -61,60 +152,28 @@ describe.only('getPropertySelectors', () => {
     expect(store.selectSnapshot(slicesOnEmptyProperty.loading)).toBe(true);
   });
 
-  it('Should create a selector for each property of state', () => {
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])],
-    });
-
-    // const store: Store = TestBed.inject(Store);
-    // const myState = store.selectSnapshot<MyStateModel>(MyState);
-    const slices = createPropertySelectors<MyStateModel>(MyState);
-
-    console.log({ slices });
-
-    expect(slices).toHaveProperty('property1');
-    expect(slices).toHaveProperty('property2');
-    expect(slices).not.toHaveProperty('emptyProperty');
-  });
-
-  it('The create selectors should return value of the state', async(() => {
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])],
-    });
-
-    const store: Store = TestBed.inject(Store);
+  it('should memoise each internal selector', () => {
+    // Arrange
+    const { store, MyState } = setupFixture();
     const myState = store.selectSnapshot<MyStateModel>(MyState);
-    const slices = createPropertySelectors<MyStateModel>(MyState);
-
-    expect(slices.property1(myState)).toBe('testValue');
-    expect(slices.property2(myState)).toStrictEqual([1, 2, 3]);
-  }));
-
-  it('Should memoise each internal selector', () => {
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])],
-    });
-
-    const store: Store = TestBed.inject(Store);
-    const myState = store.selectSnapshot<MyStateModel>(MyState);
+    // Act
     const slices1 = createPropertySelectors<MyStateModel>(MyState);
     const slices2 = createPropertySelectors<MyStateModel>(MyState);
-
+    // Assert
     expect(slices1.property1(myState) === slices2.property1(myState)).toBeTruthy();
     expect(slices1.property2(myState) === slices2.property2(myState)).toBeTruthy();
+    expect(slices1.emptyProperty(myState) === slices2.emptyProperty(myState)).toBeTruthy();
   });
 
-  it('Should memoise each internal selector', () => {
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])],
-    });
-
-    const store: Store = TestBed.inject(Store);
-    const myState = store.selectSnapshot<MyStateModel>(MyState);
+  it('should return a different slices object on each call', () => {
+    // Arrange
+    // Act
     const slices1 = createPropertySelectors<MyStateModel>(MyState);
     const slices2 = createPropertySelectors<MyStateModel>(MyState);
-
-    expect(slices1.property1(myState) === slices2.property1(myState)).toBeTruthy();
-    expect(slices1.property2(myState) === slices2.property2(myState)).toBeTruthy();
+    // Assert
+    expect(slices1).not.toBe(slices2);
+    expect(slices1.property1).not.toBe(slices2.property1);
+    expect(slices1.property2).not.toBe(slices2.property2);
+    expect(slices1.emptyProperty).not.toBe(slices2.emptyProperty);
   });
 });
