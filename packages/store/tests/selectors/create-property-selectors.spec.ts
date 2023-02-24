@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { NgxsModule, State, Store, createPropertySelectors } from '../../src/public_api';
 
 describe('createPropertySelectors', () => {
@@ -109,7 +109,7 @@ describe('createPropertySelectors', () => {
     expect(slices).toHaveProperty('emptyProperty');
   });
 
-  it('should return selectors returning the correct value of the state', async(() => {
+  it('should return selectors returning the correct value of the state', () => {
     // Arrange
     const exampleState: MyStateModel = {
       property1: 'foo',
@@ -124,7 +124,7 @@ describe('createPropertySelectors', () => {
 
     expect(slices.property1(exampleState)).toBe('foo');
     expect(slices.property2(exampleState)).toStrictEqual([5, 4, 3]);
-  }));
+  });
 
   it('should handle missing properties in the state as undefined', () => {
     // Arrange
