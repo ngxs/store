@@ -5,6 +5,12 @@
 Selectors are one of the most powerful features in `NGXS`. When used in a correct way they are very performant due to the built-in memoization. However, in order to use selectors correctly we usually need to break down the state into smaller selectors that, in turn, will be used by other selectors. This approach is important to guarantee that selectors are only run when a change of interest has happened.
 The process of breaking down your state into simple selectors for each property of the state model can be tedious and usually comes with a lot of boilerplate. The objective the selector utils is to make it easy to generate these selectors, combine selectors from multiple states, and create a selector based on a subset of properties of your state.
 
+These are the provided utils:
+
+- [createPropertySelectors](#create-property-selectors)
+- [createModelSelector](#create-model-selector)
+- [createPickSelector](#create-pick-selector)
+
 ## Create Property Selectors
 
 Let's start with a common example. Here we have a small state containing animals. Check the snippet below:
