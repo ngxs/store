@@ -28,7 +28,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",
-    "lib": ["es2017", "dom"],
+    "lib": ["es2017", "dom", "es2018.promise"],
     "typeRoots": ["node_modules/@types"]
   },
   "exclude": ["@ngxs/**", "integrations/**", "cypress"]

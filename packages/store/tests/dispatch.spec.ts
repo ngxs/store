@@ -15,48 +15,6 @@ describe('Dispatch', () => {
     static type = 'DECREMENT';
   }
 
-  it('should throw error', async(() => {
-    const observedCalls: string[] = [];
-
-    @State<number>({
-      name: 'counter',
-      defaults: 0
-    })
-    @Injectable()
-    class MyState {
-      @Action(Increment)
-      increment() {
-        throw new Error();
-      }
-    }
-
-    @Injectable()
-    class CustomErrorHandler implements ErrorHandler {
-      handleError() {
-        observedCalls.push('handleError(...)');
-      }
-    }
-
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])],
-      providers: [
-        {
-          provide: ErrorHandler,
-          useClass: CustomErrorHandler
-        }
-      ]
-    });
-
-    const store: Store = TestBed.inject(Store);
-
-    store.dispatch(new Increment()).subscribe(
-      () => {},
-      () => observedCalls.push('observer.error(...)')
-    );
-
-    expect(observedCalls).toEqual(['handleError(...)', 'observer.error(...)']);
-  }));
-
   it('should not propagate an unhandled exception', () => {
     // Arrange
     const message = 'This is an eval error...';
@@ -73,7 +31,7 @@ describe('Dispatch', () => {
       }
     }
 
-    @Injectable()
+    @Injectable({ providedIn: 'root' })
     class FakeExecutionStrategy implements NgxsExecutionStrategy {
       enter<T>(func: () => T): T {
         return func();

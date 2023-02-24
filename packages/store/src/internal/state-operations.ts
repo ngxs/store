@@ -28,9 +28,13 @@ export class InternalStateOperations {
       dispatch: (actionOrActions: any | any[]) => this._dispatcher.dispatch(actionOrActions)
     };
 
-    return this._config.developmentMode
-      ? ensureStateAndActionsAreImmutable(rootStateOperations)
-      : rootStateOperations;
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      return this._config.developmentMode
+        ? ensureStateAndActionsAreImmutable(rootStateOperations)
+        : rootStateOperations;
+    } else {
+      return rootStateOperations;
+    }
   }
 
   setStateToTheCurrentWithNew(results: StatesAndDefaults): void {
@@ -43,7 +47,6 @@ export class InternalStateOperations {
   }
 }
 
-// We make it as a separate function and not the class method to tree-shake it in the future.
 function ensureStateAndActionsAreImmutable(root: StateOperations<any>): StateOperations<any> {
   return {
     getState: () => root.getState(),

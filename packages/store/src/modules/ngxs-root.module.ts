@@ -1,4 +1,4 @@
-import { Inject, Injector, NgModule, Optional, ɵivyEnabled } from '@angular/core';
+import { Inject, NgModule, Optional } from '@angular/core';
 
 import { StateFactory } from '../internal/state-factory';
 import { InternalStateOperations } from '../internal/state-operations';
@@ -19,16 +19,12 @@ export class NgxsRootModule {
     factory: StateFactory,
     internalStateOperations: InternalStateOperations,
     _store: Store,
-    injector: Injector,
+    _select: SelectFactory,
     @Optional()
     @Inject(ROOT_STATE_TOKEN)
     states: StateClassInternal[] = [],
     lifecycleStateManager: LifecycleStateManager
   ) {
-    // If the user is running View Engine then we create the `SelectFactory` instance,
-    // otherwise it'll be tree-shaken away in Ivy.
-    !ɵivyEnabled && injector.get(SelectFactory);
-
     // Add stores to the state graph and return their defaults
     const results: StatesAndDefaults = factory.addAndReturnDefaults(states);
 

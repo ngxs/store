@@ -1,7 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { first, last } from 'rxjs/operators';
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { skipConsoleLogging, freshPlatform } from '@ngxs/store/internals/testing';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
@@ -429,4 +432,46 @@ describe('Select', () => {
     expect(subscription.closed).toEqual(true);
     expect(countTriggeredSelection).toEqual(3);
   }));
+
+  it(
+    'should complete the state stream once the root view is removed',
+    freshPlatform(async () => {
+      // Arrange
+      @State<string[]>({
+        name: 'countries',
+        defaults: []
+      })
+      class CountriesState {}
+
+      @Component({
+        selector: 'app-root',
+        template: ''
+      })
+      class TestComponent {}
+
+      @NgModule({
+        imports: [BrowserModule, NgxsModule.forRoot([CountriesState])],
+        declarations: [TestComponent],
+        bootstrap: [TestComponent]
+      })
+      class TestModule {}
+
+      const completeSpy = jest.fn();
+
+      // Act
+      const ngModuleRef = await skipConsoleLogging(() =>
+        platformBrowserDynamic().bootstrapModule(TestModule)
+      );
+      const store = ngModuleRef.injector.get(Store);
+
+      store.select(CountriesState).subscribe({
+        complete: completeSpy
+      });
+
+      ngModuleRef.destroy();
+
+      // Assert
+      expect(completeSpy).toHaveBeenCalled();
+    })
+  );
 });

@@ -1,0 +1,37 @@
+# For more information see:
+# - https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+# - https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#outputsoutput_id
+
+# The action can be referenced in workflows like:
+# - ngxs/store/.github/actions/download-integration-test-artifacts@master
+# - ./.github/actions/download-integration-test-artifacts
+
+name: download-integration-test-artifact
+description: Downloads all integration test artifacts with names such as 'hello-world-ng12-ivy'.
+
+inputs:
+  path:
+    description: A path to download the artifacts.
+    required: true
+    default: './integrations'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Download hello-world-ng12-ivy artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: hello-world-ng12-ivy
+        path: ${{ inputs.path }}
+
+    - name: Download hello-world-ng13-ivy artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: hello-world-ng13-ivy
+        path: ${{ inputs.path }}
+
+    - name: Download hello-world-ng14-ivy artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: hello-world-ng14-ivy
+        path: ${{ inputs.path }}

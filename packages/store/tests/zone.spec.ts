@@ -2,7 +2,7 @@ import { ApplicationRef, Component, Injectable, NgModule, NgZone } from '@angula
 import { TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { freshPlatform } from '@ngxs/store/internals/testing';
+import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { take } from 'rxjs/operators';
 
 import { Action, NgxsModule, State, StateContext, Store } from '../src/public_api';
@@ -25,53 +25,40 @@ describe('zone', () => {
     }
   }
 
-  describe('[store.select]', () => {
-    it('should be performed inside Angular zone', () => {
-      let ticks = 0;
+  // =============================================================
+  it('"store.subscribe" should be performed inside Angular zone', () => {
+    let nextCalls = 0;
+    let nextCallsInAngularZone = 0;
 
-      class MockApplicationRef extends ApplicationRef {
-        public tick(): void {
-          ticks++;
-        }
-      }
-
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([CounterState])],
-        providers: [
-          {
-            provide: ApplicationRef,
-            useClass: MockApplicationRef
-          }
-        ]
-      });
-
-      const store: Store = TestBed.inject(Store);
-      const zone: NgZone = TestBed.inject(NgZone);
-
-      // NGXS performes initializions inside Angular zone
-      // thus it causes app to tick
-      expect(ticks).toBeGreaterThan(0);
-
-      zone.runOutsideAngular(() => {
-        store
-          .select<number>(({ counter }) => counter)
-          .pipe(take(3))
-          .subscribe(() => {
-            expect(NgZone.isInAngularZone()).toBeTruthy();
-          });
-
-        store.dispatch(new Increment());
-        store.dispatch(new Increment());
-      });
-
-      // Angular has run change detection 5 times
-      expect(ticks).toBe(5);
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([CounterState])]
     });
+
+    const store: Store = TestBed.inject(Store);
+    const ngZone: NgZone = TestBed.inject(NgZone);
+
+    ngZone.runOutsideAngular(() => {
+      store.subscribe(() => {
+        nextCalls++;
+        if (NgZone.isInAngularZone()) {
+          nextCallsInAngularZone++;
+        }
+      });
+
+      store.dispatch(new Increment());
+      store.dispatch(new Increment());
+    });
+
+    expect(nextCalls).toEqual(3);
+    expect(nextCallsInAngularZone).toEqual(3);
   });
+  // =============================================================
 
   // =============================================================
   it('"select" should be performed inside Angular zone', () => {
     let ticks = 0;
+    let selectCalls = 0;
+    let selectCallsInAngularZone = 0;
 
     class MockApplicationRef extends ApplicationRef {
       public tick(): void {
@@ -94,14 +81,17 @@ describe('zone', () => {
 
     // NGXS performes initializions inside Angular zone
     // thus it causes app to tick
-    expect(ticks).toBeGreaterThan(0);
+    expect(ticks).toEqual(2);
 
     zone.runOutsideAngular(() => {
       store
         .select<number>(({ counter }) => counter)
         .pipe(take(3))
         .subscribe(() => {
-          expect(NgZone.isInAngularZone()).toBeTruthy();
+          selectCalls++;
+          if (NgZone.isInAngularZone()) {
+            selectCallsInAngularZone++;
+          }
         });
 
       store.dispatch(new Increment());
@@ -110,6 +100,8 @@ describe('zone', () => {
 
     // Angular has run change detection 5 times
     expect(ticks).toBe(5);
+    expect(selectCalls).toEqual(3);
+    expect(selectCallsInAngularZone).toEqual(3);
   });
 
   it('"select" should be performed outside Angular zone', () => {
@@ -154,6 +146,7 @@ describe('zone', () => {
     // Angular hasn't run any change detection
     expect(ticks).toBe(0);
   });
+  // =============================================================
 
   it('action should be handled inside zone if NoopNgxsExecutionStrategy is used', () => {
     class FooAction {
@@ -246,9 +239,9 @@ describe('zone', () => {
       })
       class MockModule {}
 
-      const { injector } = await platformBrowserDynamic().bootstrapModule(MockModule, {
-        ngZone: 'noop'
-      });
+      const { injector } = await skipConsoleLogging(() =>
+        platformBrowserDynamic().bootstrapModule(MockModule, { ngZone: 'noop' })
+      );
       const store = injector.get<Store>(Store);
       store.dispatch(new FooAction());
     })

@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
-import { StorageKey } from './internals';
+import { StorageKey } from './internals/storage-key';
 
 export const enum StorageOption {
   LocalStorage,
@@ -11,7 +11,14 @@ export interface NgxsStoragePluginOptions {
   /**
    * Key for the state slice to store in the storage engine.
    */
-  key?: undefined | StorageKey;
+  key?: undefined | StorageKey | StorageKey[];
+
+  /**
+   * The namespace is used to prefix the key for the state slice. This is
+   * necessary when running micro frontend applications which use storage plugin.
+   * The namespace will eliminate the conflict between keys that might overlap.
+   */
+  namespace?: string;
 
   /**
    * Storage engine to use. Deaults to localStorage but can provide
@@ -66,9 +73,9 @@ export interface NgxsStoragePluginOptions {
   afterDeserialize?(obj: any, key: string): any;
 }
 
-export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_STORAGE_PLUGIN_OPTION');
+export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_STORAGE_PLUGIN_OPTIONS');
 
-export const STORAGE_ENGINE = new InjectionToken('STORAGE_ENGINE');
+export const STORAGE_ENGINE = new InjectionToken<StorageEngine>('STORAGE_ENGINE');
 
 export interface StorageEngine {
   readonly length: number;

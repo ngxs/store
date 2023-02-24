@@ -5,7 +5,9 @@
     "baseUrl": "./",
     "module": "commonjs",
     "types": ["jest", "node"],
-    "importHelpers": true
+    "importHelpers": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   },
   "exclude": ["@ngxs/**", "./packages/store/types/**"],
   "include": ["packages/**/*.ts", "packages/**/*.spec.ts"]

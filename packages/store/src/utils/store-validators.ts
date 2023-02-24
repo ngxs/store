@@ -7,7 +7,7 @@ import {
 } from '../configs/messages.config';
 
 export abstract class StoreValidators {
-  private static stateNameRegex: RegExp = new RegExp('^[a-zA-Z0-9_]+$');
+  private static stateNameRegex = new RegExp('^[a-zA-Z0-9_]+$');
 
   static checkThatStateIsNamedCorrectly(name: string | null): void | never {
     if (!name) {

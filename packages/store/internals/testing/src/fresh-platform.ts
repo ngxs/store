@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { DOCUMENT } from '@angular/common';
 import { ɵgetDOM as getDOM } from '@angular/platform-browser';
-import { destroyPlatform, createPlatform } from '@angular/core';
+import { VERSION, destroyPlatform, createPlatform } from '@angular/core';
 
 function createRootElement() {
   const document = TestBed.inject(DOCUMENT);
@@ -27,18 +27,24 @@ function destroyPlatformBeforeBootstrappingTheNewOne() {
 function resetPlatformAfterBootstrapping() {
   removeRootElement();
   destroyPlatform();
-  createPlatform(TestBed);
+  const version = +VERSION.major;
+  // https://github.com/angular/angular/commit/e250db4f261741b04ee4cbad4dec41a8908a12aa
+  if (version < 14) {
+    createPlatform(TestBed);
+  }
 }
 
 export function freshPlatform(fn: (done?: VoidFunction) => Promise<void>) {
-  let done: VoidFunction | null = null,
-    whenDoneIsCalledPromise: Promise<void> | null = null;
+  let resolve: VoidFunction | null = null;
+  let reject: ((error: Error) => void) | null = null;
+  let whenDoneIsCalledPromise: Promise<void> | null = null;
 
   const hasDoneArgument = fn.length === 1;
 
   if (hasDoneArgument) {
-    whenDoneIsCalledPromise = new Promise<void>(resolve => {
-      done = resolve;
+    whenDoneIsCalledPromise = new Promise<void>((_resolve, _reject) => {
+      resolve = _resolve;
+      reject = _reject;
     });
   }
 
@@ -46,8 +52,14 @@ export function freshPlatform(fn: (done?: VoidFunction) => Promise<void>) {
     try {
       destroyPlatformBeforeBootstrappingTheNewOne();
 
-      if (done !== null) {
-        await fn(done);
+      if (hasDoneArgument) {
+        await fn((error?: Error) => {
+          if (error) {
+            reject!(error);
+          } else {
+            resolve!();
+          }
+        });
         await whenDoneIsCalledPromise!;
       } else {
         await fn();

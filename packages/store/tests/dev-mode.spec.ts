@@ -1,5 +1,8 @@
-import { Injectable, ErrorHandler } from '@angular/core';
+import { Injectable, ErrorHandler, NgModule, DoBootstrap } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { BrowserModule } from '@angular/platform-browser';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import { Action } from '../src/decorators/action';
 import { State } from '../src/decorators/state';
@@ -118,87 +121,111 @@ describe('Development Mode', () => {
       expect(observedCallbacks).toEqual(['next', 'complete']);
     });
 
-    it('should give an error if the default state is mutated by the InitState action', () => {
-      @State<StateModel>({
-        name: 'counter',
-        defaults: { count: 0 }
-      })
-      @Injectable()
-      class MyStore {
-        @Action(InitState)
-        init({ getState, setState }: StateContext<StateModel>) {
-          const state = getState();
-          state.count = Number(getState().count) + 1;
-          setState(state);
-        }
-      }
-
-      const observedErrors: string[] = [];
-      @Injectable()
-      class CustomErrorHandler implements ErrorHandler {
-        handleError(error: any) {
-          observedErrors.push('error: ' + error);
-        }
-      }
-
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyStore], { developmentMode: true })],
-        providers: [
-          {
-            provide: ErrorHandler,
-            useClass: CustomErrorHandler
+    it(
+      'should give an error if the default state is mutated by the InitState action',
+      freshPlatform(async () => {
+        // Arrange
+        @State<StateModel>({
+          name: 'counter',
+          defaults: { count: 0 }
+        })
+        @Injectable()
+        class MyStore {
+          @Action(InitState)
+          init(ctx: StateContext<StateModel>) {
+            const state = ctx.getState();
+            state.count = Number(state.count) + 1;
+            ctx.setState(state);
           }
-        ]
-      });
-      TestBed.inject(Store);
-
-      expect(observedErrors).toEqual([
-        `error: TypeError: Cannot assign to read only property 'count' of object '[object Object]'`
-      ]);
-    });
-
-    it('should give an error if the default state is mutated by the UpdateState action', () => {
-      @State<StateModel>({
-        name: 'counter',
-        defaults: { count: 0 }
-      })
-      @Injectable()
-      class MyStore {
-        @Action(UpdateState)
-        updateState({ getState, setState }: StateContext<StateModel>) {
-          const state = getState();
-          state.count = Number(getState().count) + 1;
-          console.log('blah');
-          setState(state);
         }
-      }
 
-      const observedErrors: string[] = [];
-      @Injectable()
-      class CustomErrorHandler implements ErrorHandler {
-        handleError(error: any) {
-          observedErrors.push('error: ' + error);
-        }
-      }
-
-      TestBed.configureTestingModule({
-        imports: [
-          NgxsModule.forRoot([], { developmentMode: true }),
-          NgxsModule.forFeature([MyStore])
-        ],
-        providers: [
-          {
-            provide: ErrorHandler,
-            useClass: CustomErrorHandler
+        const observedErrors: string[] = [];
+        @Injectable()
+        class CustomErrorHandler implements ErrorHandler {
+          handleError(error: any) {
+            observedErrors.push('error: ' + error);
           }
-        ]
-      });
-      TestBed.inject(Store);
+        }
 
-      expect(observedErrors).toEqual([
-        `error: TypeError: Cannot assign to read only property 'count' of object '[object Object]'`
-      ]);
-    });
+        @NgModule({
+          imports: [BrowserModule, NgxsModule.forRoot([MyStore], { developmentMode: true })],
+          providers: [
+            {
+              provide: ErrorHandler,
+              useClass: CustomErrorHandler
+            }
+          ]
+        })
+        class TestModule implements DoBootstrap {
+          ngDoBootstrap(): void {
+            // Do not do anything.
+          }
+        }
+
+        // Act
+        await skipConsoleLogging(() => platformBrowserDynamic().bootstrapModule(TestModule));
+
+        // Assert
+        expect(observedErrors).toEqual([
+          `error: TypeError: Cannot assign to read only property 'count' of object '[object Object]'`
+        ]);
+      })
+    );
+
+    it(
+      'should give an error if the default state is mutated by the UpdateState action',
+      freshPlatform(async () => {
+        // Arrange
+        @State<StateModel>({
+          name: 'counter',
+          defaults: { count: 0 }
+        })
+        @Injectable()
+        class MyStore {
+          @Action(UpdateState)
+          updateState(ctx: StateContext<StateModel>) {
+            const state = ctx.getState();
+            state.count = Number(state.count) + 1;
+            ctx.setState(state);
+          }
+        }
+
+        const observedErrors: string[] = [];
+        @Injectable()
+        class CustomErrorHandler implements ErrorHandler {
+          handleError(error: any) {
+            observedErrors.push('error: ' + error);
+          }
+        }
+
+        @NgModule({
+          imports: [
+            BrowserModule,
+            NgxsModule.forRoot([], { developmentMode: true }),
+            NgxsModule.forFeature([MyStore])
+          ],
+          providers: [
+            {
+              provide: ErrorHandler,
+              useClass: CustomErrorHandler
+            }
+          ]
+        })
+        class TestModule implements DoBootstrap {
+          ngDoBootstrap(): void {
+            // Do not do anything.
+          }
+        }
+
+        // Act
+        await skipConsoleLogging(() => platformBrowserDynamic().bootstrapModule(TestModule));
+
+        // Assert
+        expect(observedErrors).toEqual([
+          `error: TypeError: Cannot assign to read only property 'count' of object '[object Object]'`
+        ]);
+      })
+    );
 
     it('should give an error if the default state is mutated by a handler', () => {
       @State<StateModel>({

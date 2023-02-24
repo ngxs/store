@@ -1500,37 +1500,37 @@
     webpack-sources "2.0.1"
 
 "@ngxs/devtools-plugin@file:./node_modules/@ngxs/devtools-plugin":
-  version "3.7.3"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/form-plugin@file:./node_modules/@ngxs/form-plugin":
-  version "3.7.3"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/logger-plugin@file:./node_modules/@ngxs/logger-plugin":
-  version "3.7.3"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/router-plugin@file:./node_modules/@ngxs/router-plugin":
-  version "3.7.3"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/storage-plugin@file:./node_modules/@ngxs/storage-plugin":
-  version "3.7.3"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/store@file:./node_modules/@ngxs/store":
-  version "3.7.3"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
 "@ngxs/websocket-plugin@file:./node_modules/@ngxs/websocket-plugin":
-  version "3.7.3"
+  version "3.7.6"
   dependencies:
     tslib "^1.9.0"
 
@@ -10483,7 +10483,7 @@ typescript@4.0.5, typescript@~4.0.2:
   integrity sha512-ywmr/VrTVCmNTJ6iV2LwIrfG1P+lv6luD8sUJs+2eI9NLGigaN+nUQc13iHqisq7bra9lnmUSYqbJvegraBOPQ==
 
 typescript@~3.7.2:
-  version "3.7.5"
+  version "3.7.6"
   resolved "https://registry.npmjs.org/typescript/-/typescript-3.7.5.tgz#0692e21f65fd4108b9330238aac11dd2e177a1ae"
   integrity sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
 

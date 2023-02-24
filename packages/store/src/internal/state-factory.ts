@@ -1,5 +1,14 @@
 import { Injectable, Injector, Optional, SkipSelf, Inject, OnDestroy } from '@angular/core';
-import { forkJoin, from, Observable, of, throwError, Subscription, Subject } from 'rxjs';
+import {
+  forkJoin,
+  from,
+  Observable,
+  of,
+  throwError,
+  Subscription,
+  Subject,
+  isObservable
+} from 'rxjs';
 import {
   catchError,
   defaultIfEmpty,
@@ -9,6 +18,7 @@ import {
   shareReplay,
   takeUntil
 } from 'rxjs/operators';
+import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
 
 import { META_KEY, NgxsConfig } from '../symbols';
 import {
@@ -34,7 +44,8 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
-import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
+import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
+import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
 
 /**
  * State factory class
@@ -77,6 +88,7 @@ export class StateFactory implements OnDestroy {
   }
 
   getRuntimeSelectorContext = memoize(() => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const stateFactory = this;
 
     function resolveGetter(key: string) {
@@ -128,10 +140,8 @@ export class StateFactory implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // I'm using non-null assertion here since `_actionsSubscrition` will
-    // be 100% defined. This is because `ngOnDestroy()` cannot be invoked
-    // on the `StateFactory` until its initialized :) An it's initialized
-    // for the first time along with the `NgxsRootModule`.
+    // This is being non-null asserted since `_actionsSubscrition` is
+    // initialized within the constructor.
     this._actionsSubscription!.unsubscribe();
   }
 
@@ -160,6 +170,14 @@ export class StateFactory implements OnDestroy {
       const meta: MetaDataModel = stateClass[META_KEY]!;
 
       this.addRuntimeInfoToMeta(meta, path);
+
+      // Note: previously we called `ensureStateClassIsInjectable` within the
+      // `State` decorator. This check is moved here because the `ɵprov` property
+      // will not exist on the class in JIT mode (because it's set asynchronously
+      // during JIT compilation through `Object.defineProperty`).
+      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+        ensureStateClassIsInjectable(stateClass);
+      }
 
       const stateMap: MappedStore = {
         name,
@@ -229,6 +247,10 @@ export class StateFactory implements OnDestroy {
     const type = getActionTypeFromInstance(action)!;
     const results = [];
 
+    // Determines whether the dispatched action has been handled, this is assigned
+    // to `true` within the below `for` loop if any `actionMetas` has been found.
+    let actionHasBeenHandled = false;
+
     for (const metadata of this.states) {
       const actionMetas = metadata.actions[type];
 
@@ -242,7 +264,7 @@ export class StateFactory implements OnDestroy {
               result = from(result);
             }
 
-            if (result instanceof Observable) {
+            if (isObservable(result)) {
               // If this observable has been completed w/o emitting
               // any value then we wouldn't want to complete the whole chain
               // of actions. Since if any observable completes then
@@ -256,7 +278,7 @@ export class StateFactory implements OnDestroy {
                   if (value instanceof Promise) {
                     return from(value);
                   }
-                  if (value instanceof Observable) {
+                  if (isObservable(value)) {
                     return value;
                   }
                   return of(value);
@@ -278,7 +300,21 @@ export class StateFactory implements OnDestroy {
           } catch (e) {
             results.push(throwError(e));
           }
+
+          actionHasBeenHandled = true;
         }
+      }
+    }
+
+    // The `NgxsUnhandledActionsLogger` is a tree-shakable class which functions
+    // only during development.
+    if ((typeof ngDevMode === 'undefined' || ngDevMode) && !actionHasBeenHandled) {
+      const unhandledActionsLogger = this._injector.get(NgxsUnhandledActionsLogger, null);
+      // The `NgxsUnhandledActionsLogger` will not be resolved by the injector if the
+      // `NgxsDevelopmentModule` is not provided. It's enough to check whether the `injector.get`
+      // didn't return `null` so we may ensure the module has been imported.
+      if (unhandledActionsLogger) {
+        unhandledActionsLogger.warn(action);
       }
     }
 
