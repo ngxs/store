@@ -152,7 +152,7 @@ export class MyZooComponent {
 }
 ```
 
-Here we see how the `createPickSelector` is used to create a selector that picks a subset of properties from the state. The `createPickSelector` takes a map of selectors and an array of property names and returns a selector that picks the properties from the state. The `createPickSelector` is very useful when we need to create a selector that picks a subset of properties from the state.
+Here we see how the `createPickSelector` is used to create a selector that picks a subset of properties from the state, or from any other selector that returns an object for that matter. The `createPickSelector` takes a selector which returns an object and an array of property names and returns a selector that returns a copy of the object, with only the properties that have been picked. The `createPickSelector` is very useful when we need to create a selector that picks a subset of properties from the state.
 
 ## Relevant Articles
 
