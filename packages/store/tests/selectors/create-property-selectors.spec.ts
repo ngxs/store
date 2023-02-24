@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { NgxsModule, State, Store, createPropertySelectors } from '../../src/public_api';
 
-describe.only('createPropertySelectors', () => {
+describe('createPropertySelectors', () => {
   interface MyStateModel {
     property1: string;
     property2: number[];
