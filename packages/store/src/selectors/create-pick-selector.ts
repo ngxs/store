@@ -1,12 +1,12 @@
 import { createSelector } from '../utils/selector-utils';
-import { SelectorDef } from './selector-types.util';
+import { TypedSelector } from './selector-types.util';
 
 type KeysToValues<T, Keys extends (keyof T)[]> = {
   [Index in keyof Keys]: Keys[Index] extends keyof T ? T[Keys[Index]] : never;
 };
 
 export function createPickSelector<TModel, Keys extends (keyof TModel)[]>(
-  state: SelectorDef<TModel>,
+  state: TypedSelector<TModel>,
   keys: [...Keys]
 ) {
   const selectors = keys.map((key) => createSelector([state], (s: TModel) => s[key]));
