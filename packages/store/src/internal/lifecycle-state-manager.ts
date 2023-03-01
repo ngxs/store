@@ -74,7 +74,7 @@ export class LifecycleStateManager implements OnDestroy {
           // errors asynchronously (`setTimeout(() => { throw error })`). This might
           // break existing user's code or unit tests. We catch the error manually to
           // be backward compatible with the old behavior.
-          this._internalErrorReporter.reportErrorSafely(error);
+          this._internalErrorReporter.report(error);
           return EMPTY;
         }),
         takeUntil(this._destroy$)

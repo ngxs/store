@@ -95,6 +95,16 @@ export class NgxsConfig {
     suppressErrors: true // TODO: default is true in v3, will change in v4
   };
 
+  /**
+   * When the `enableDualErrorHandling` flag is set to `true` and the action throws an error,
+   * both the framework's internal error handler and the user's error handler will be called.
+   * This allows the user to handle the error externally while the framework also performs its
+   * internal error handling. However, when the flag is set to `false` and the action throws an error,
+   * the framework checks if the user has implemented an `error` observer. If an `error` observer is implemented,
+   * the framework will propagate the error to the user. Otherwise, it will handle the error internally.
+   */
+  enableDualErrorHandling = true;
+
   constructor() {
     this.compatibility = {
       strictContentSecurityPolicy: false

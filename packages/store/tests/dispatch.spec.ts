@@ -1,13 +1,6 @@
 import { ErrorHandler, Injectable, NgZone } from '@angular/core';
 import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import {
-  State,
-  Action,
-  Store,
-  NgxsModule,
-  StateContext,
-  NgxsExecutionStrategy
-} from '@ngxs/store';
+import { State, Action, Store, NgxsModule, StateContext } from '@ngxs/store';
 import { of, throwError, timer } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
 
@@ -21,76 +14,6 @@ describe('Dispatch', () => {
   class Decrement {
     static type = 'DECREMENT';
   }
-
-  it('should not propagate an unhandled exception', () => {
-    // Arrange
-    const message = 'This is an eval error...';
-
-    @State<number>({
-      name: 'counter',
-      defaults: 0
-    })
-    @Injectable()
-    class CounterState {
-      @Action(Increment)
-      increment() {
-        throw new EvalError(message);
-      }
-    }
-
-    @Injectable({ providedIn: 'root' })
-    class FakeExecutionStrategy implements NgxsExecutionStrategy {
-      enter<T>(func: () => T): T {
-        return func();
-      }
-
-      leave<T>(func: () => T): T {
-        return func();
-      }
-    }
-
-    @Injectable()
-    class CustomErrorHandler implements ErrorHandler {
-      handleError(error: Error): void {
-        throw error;
-      }
-    }
-
-    // Act
-    TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([CounterState], {
-          executionStrategy: FakeExecutionStrategy
-        })
-      ],
-      providers: [
-        {
-          provide: ErrorHandler,
-          useClass: CustomErrorHandler
-        }
-      ]
-    });
-
-    const store = TestBed.inject(Store);
-
-    // `typeof message | null` as we don't know will be assigned or not.
-    // Let's test it out at the end
-    let thrownMessage: typeof message | null = null;
-
-    // Start spying after module is initialized, not before
-    jest.spyOn(FakeExecutionStrategy.prototype, 'leave').mockImplementationOnce(func => {
-      try {
-        return func();
-      } catch (e: any) {
-        thrownMessage = e.message;
-      }
-    });
-
-    store.dispatch(new Increment());
-
-    // Assert
-    expect(thrownMessage).toBeNull();
-  });
 
   it('should run outside zone and return back in zone', () => {
     // Arrange

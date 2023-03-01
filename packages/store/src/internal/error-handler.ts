@@ -1,4 +1,4 @@
-import { ErrorHandler, Injectable, Injector } from '@angular/core';
+import { ErrorHandler, Injectable, Injector, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { leaveNgxs } from '../operators/leave-ngxs';
@@ -17,6 +17,8 @@ import { NgxsExecutionStrategy } from '../execution/symbols';
  * 5) `toPromise()` with `catch` -> don't `handleError()`
  */
 export function ngxsErrorHandler<T>(
+  enableDualErrorHandling: boolean,
+  ngZone: NgZone,
   internalErrorReporter: InternalErrorReporter,
   ngxsExecutionStrategy: NgxsExecutionStrategy
 ) {
@@ -25,18 +27,21 @@ export function ngxsErrorHandler<T>(
 
     source.subscribe({
       error: error => {
-        // Do not trigger change detection for a microtask. This depends on the execution
-        // strategy being used, but the default `DispatchOutsideZoneNgxsExecutionStrategy`
-        // leaves the Angular zone.
-        ngxsExecutionStrategy.enter(() =>
-          Promise.resolve().then(() => {
+        // When `enableDualErrorHandling` is truthy (which is the default setting),
+        // we always invoke the `ErrorHandler`. In addition, if the `error` observer is
+        // provided, the error may also be propagated to the user. This is why it is
+        // referred to as "dual" error handling.
+        if (enableDualErrorHandling) {
+          internalErrorReporter.report(error);
+        } else {
+          // To prevent redundant change detection, it is necessary to leave
+          // the Angular zone regardless of the NGXS execution strategy being used.
+          scheduleMicrotask(ngZone, () => {
             if (!subscribed) {
-              ngxsExecutionStrategy.leave(() =>
-                internalErrorReporter.reportErrorSafely(error)
-              );
+              internalErrorReporter.report(error);
             }
-          })
-        );
+          });
+        }
       }
     });
 
@@ -49,21 +54,24 @@ export function ngxsErrorHandler<T>(
 
 @Injectable({ providedIn: 'root' })
 export class InternalErrorReporter {
-  /** Will be set lazily to be backward compatible. */
   private _errorHandler: ErrorHandler = null!;
 
-  constructor(private _injector: Injector) {}
+  constructor(private _ngZone: NgZone, private _injector: Injector) {}
 
-  reportErrorSafely(error: any): void {
-    if (this._errorHandler === null) {
-      this._errorHandler = this._injector.get(ErrorHandler);
-    }
-    // The `try-catch` is used to avoid handling the error twice. Suppose we call
-    // `handleError` which re-throws the error internally. The re-thrown error will
-    // be caught by zone.js which will then get to the `zone.onError.emit()` and the
-    // `onError` subscriber will call `handleError` again.
-    try {
-      this._errorHandler.handleError(error);
-    } catch {}
+  report(error: any): void {
+    // Retrieve lazily to avoid cyclic dependency exception.
+    this._errorHandler ||= this._injector.get(ErrorHandler);
+    // In order to avoid duplicate error handling, it is necessary to leave
+    // the Angular zone to ensure that errors are not caught twice. The `handleError`
+    // method may contain a `throw error` statement, which is used to re-throw the error.
+    // If the error is re-thrown within the Angular zone, it will be caught again by the
+    // Angular zone. By default, `@angular/core` leaves the Angular zone when invoking
+    // `handleError` (see `_callAndReportToErrorHandler`).
+    this._ngZone.runOutsideAngular(() => this._errorHandler.handleError(error));
   }
+}
+
+const promise = Promise.resolve();
+function scheduleMicrotask(ngZone: NgZone, cb: VoidFunction) {
+  return ngZone.runOutsideAngular(() => promise.then(cb));
 }

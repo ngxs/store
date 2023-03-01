@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
 
+import { NgxsConfig } from '../symbols';
 import { compose } from '../utils/compose';
 import { InternalErrorReporter, ngxsErrorHandler } from './error-handler';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
@@ -22,12 +23,14 @@ export class InternalDispatchedActionResults extends Subject<ActionContext> {}
 @Injectable({ providedIn: 'root' })
 export class InternalDispatcher {
   constructor(
+    private _ngZone: NgZone,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
     private _stateStream: StateStream,
     private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy,
-    private _internalErrorReporter: InternalErrorReporter
+    private _internalErrorReporter: InternalErrorReporter,
+    private _config: NgxsConfig
   ) {}
 
   /**
@@ -39,7 +42,12 @@ export class InternalDispatcher {
     );
 
     return result.pipe(
-      ngxsErrorHandler(this._internalErrorReporter, this._ngxsExecutionStrategy)
+      ngxsErrorHandler(
+        this._config.enableDualErrorHandling,
+        this._ngZone,
+        this._internalErrorReporter,
+        this._ngxsExecutionStrategy
+      )
     );
   }
 

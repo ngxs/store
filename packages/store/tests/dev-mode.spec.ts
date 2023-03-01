@@ -149,7 +149,13 @@ describe('Development Mode', () => {
         }
 
         @NgModule({
-          imports: [BrowserModule, NgxsModule.forRoot([MyStore], { developmentMode: true })],
+          imports: [
+            BrowserModule,
+            NgxsModule.forRoot([MyStore], {
+              developmentMode: true,
+              enableDualErrorHandling: false
+            })
+          ],
           providers: [
             {
               provide: ErrorHandler,
@@ -202,7 +208,10 @@ describe('Development Mode', () => {
         @NgModule({
           imports: [
             BrowserModule,
-            NgxsModule.forRoot([], { developmentMode: true }),
+            NgxsModule.forRoot([], {
+              developmentMode: true,
+              enableDualErrorHandling: false
+            }),
             NgxsModule.forFeature([MyStore])
           ],
           providers: [

@@ -11,6 +11,7 @@ $ npm install @ngxs/store@dev
 ### To become next patch version
 
 - Feat: Schematics support a project option and standalone detection [#2089](https://github.com/ngxs/store/pull/2089)
+- Fix: Add setting that allows disabling dual error handling [#1971](https://github.com/ngxs/store/pull/1971)
 - Fix: Ensure features are initialized after root state [#2083](https://github.com/ngxs/store/pull/2083)
 - Fix: Log feature states added before store is initialized [#2067](https://github.com/ngxs/store/pull/2067)
 - Fix: Show error when state initialization order is invalid [#2066](https://github.com/ngxs/store/pull/2066), [#2067](https://github.com/ngxs/store/pull/2067)

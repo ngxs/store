@@ -56,7 +56,10 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
   }
 
   @NgModule({
-    imports: [BrowserModule, NgxsModule.forRoot([AppState])],
+    imports: [
+      BrowserModule,
+      NgxsModule.forRoot([AppState], { enableDualErrorHandling: false })
+    ],
     providers: [CustomErrorHandler, { provide: ErrorHandler, useExisting: CustomErrorHandler }]
   })
   class TestModule implements DoBootstrap {
