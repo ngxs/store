@@ -1,5 +1,5 @@
-import { getSelectorMetadata, getStoreMetadata } from '../internal/internals';
 import { createSelector } from '../utils/selector-utils';
+import { ensureValidSelector } from './selector-checks.util';
 import { SelectorDef } from './selector-types.util';
 
 export type PropertySelectors<TModel> = {
@@ -11,15 +11,11 @@ export type PropertySelectors<TModel> = {
 export function createPropertySelectors<TModel>(
   parentSelector: SelectorDef<TModel>
 ): PropertySelectors<TModel> {
+  ensureValidSelector(parentSelector, {
+    prefix: '[createPropertySelectors]',
+    noun: 'parent selector',
+  });
   const cache: Partial<PropertySelectors<TModel>> = {};
-  if (!parentSelector) {
-    throw new Error('A parent selector must be provided to create property selectors.');
-  }
-  const metadata =
-    getSelectorMetadata(parentSelector) || getStoreMetadata(parentSelector as any);
-  if (!metadata) {
-    throw new Error('The value provided as the parent selector is not a valid selector.');
-  }
   return new Proxy<PropertySelectors<TModel>>(
     {} as unknown as PropertySelectors<TModel>,
     {

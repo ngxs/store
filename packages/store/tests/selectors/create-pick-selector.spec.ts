@@ -40,32 +40,77 @@ describe('createPickSelector', () => {
     return { store, MockState, setState, patchState, stateSelector };
   }
 
-  // it('Passing null', () => {
-  //   const pickSelector = createPickSelector(null, ['property1', 'property2']);
+  describe('[failures]', () => {
+    it('should fail if a null selector is provided', () => {
+      // Arrange
+      const { stateSelector } = setupFixture();
+      let error: Error | null = null;
+      // Act
+      try {
+        createPickSelector(null as unknown as typeof stateSelector, ['property1']);
+      } catch (err) {
+        error = err as Error;
+      }
+      // Assert
+      expect(error).not.toBeNull();
+      expect(error?.message).toMatchInlineSnapshot(
+        `"[createPickSelector]: A selector must be provided."`
+      );
+    });
 
-  //   expect(pickSelector).toBe(null)
-  // })
+    it('should fail if a undefined selector is provided', () => {
+      // Arrange
+      const { stateSelector } = setupFixture();
+      let error: Error | null = null;
+      // Act
+      try {
+        createPickSelector(undefined as unknown as typeof stateSelector, ['property1']);
+      } catch (err) {
+        error = err as Error;
+      }
+      // Assert
+      expect(error).not.toBeNull();
+      expect(error?.message).toMatchInlineSnapshot(
+        `"[createPickSelector]: A selector must be provided."`
+      );
+    });
 
-  // it('Passing undefined', () => {
-  //   const pickSelector = createPickSelector(undefined, ['property1', 'property2']);
+    it('should fail if a class that is not a selector is provided', () => {
+      // Arrange
+      const { stateSelector } = setupFixture();
+      let error: Error | null = null;
+      class NotAState {}
+      // Act
+      try {
+        createPickSelector(NotAState as unknown as typeof stateSelector, ['property1']);
+      } catch (err) {
+        error = err as Error;
+      }
+      // Assert
+      expect(error).not.toBeNull();
+      expect(error?.message).toMatchInlineSnapshot(
+        `"[createPickSelector]: The value provided as the selector is not a valid selector."`
+      );
+    });
 
-  //   expect(pickSelector).toBe(undefined)
-  // })
-
-  // it('Passing undefined on keys should ignore', () => {
-  //   TestBed.configureTestingModule({
-  //     imports: [NgxsModule.forRoot([MockState])],
-  //   });
-
-  //   const stateSelector = createSelector([MockState], (state: MockStateModel) => state)
-
-  //   const pickSelector = createPickSelector(stateSelector, [
-  //     undefined as any,
-  //     'property2',
-  //   ]);
-
-  //   expect(pickSelector).toBe(undefined);
-  // });
+    it('should fail if a function that is not a selector is provided', () => {
+      // Arrange
+      const { stateSelector } = setupFixture();
+      let error: Error | null = null;
+      function NotASelector() {}
+      // Act
+      try {
+        createPickSelector(NotASelector as unknown as typeof stateSelector, ['property1']);
+      } catch (err) {
+        error = err as Error;
+      }
+      // Assert
+      expect(error).not.toBeNull();
+      expect(error?.message).toMatchInlineSnapshot(
+        `"[createPickSelector]: The value provided as the selector is not a valid selector."`
+      );
+    });
+  });
 
   it('should select only the specified properties', () => {
     // Arrange
@@ -75,45 +120,83 @@ describe('createPickSelector', () => {
     const pickSelector = createPickSelector(stateSelector, ['property1', 'property2']);
     // Assert
     expect(pickSelector).toBeDefined();
-    expect(store.selectSnapshot(pickSelector)).toEqual({
+    expect(store.selectSnapshot(pickSelector)).toStrictEqual({
       property1: 'Tada',
       property2: [1, 3, 5],
     });
   });
 
-  it('should change if a specified property changes', () => {
+  it('should ignore an undefined key in the specified properties', () => {
     // Arrange
-    const { store, stateSelector, setState, patchState } = setupFixture();
+    const { store, stateSelector, setState } = setupFixture();
     setState({ property1: 'Tada', property2: [1, 3, 5], property3: { hello: 'there' } });
     // Act
-    const pickSelector = createPickSelector(stateSelector, ['property1', 'property2']);
+    const pickSelector = createPickSelector(stateSelector, [
+      'property1',
+      undefined as any,
+      'property2',
+    ]);
     // Assert
     expect(pickSelector).toBeDefined();
-    const snapshot1 = store.selectSnapshot(pickSelector);
-    expect(snapshot1).toEqual({ property1: 'Tada', property2: [1, 3, 5] });
-    patchState({ property1: 'Hi' });
-    const snapshot2 = store.selectSnapshot(pickSelector);
-    expect(snapshot2).not.toBe(snapshot1);
-    expect(snapshot2).toEqual({ property1: 'Hi', property2: [1, 3, 5] });
-    patchState({ property2: [2, 4] });
-    const snapshot3 = store.selectSnapshot(pickSelector);
-    expect(snapshot3).not.toBe(snapshot1);
-    expect(snapshot3).not.toBe(snapshot2);
-    expect(snapshot3).toEqual({ property1: 'Hi', property2: [2, 4] });
+    expect(store.selectSnapshot(pickSelector)).toStrictEqual({
+      property1: 'Tada',
+      property2: [1, 3, 5],
+    });
   });
 
-  it('should not change if a unspecified property changes', () => {
+  it('should ignore a null key in the specified properties', () => {
     // Arrange
-    const { store, stateSelector, setState, patchState } = setupFixture();
+    const { store, stateSelector, setState } = setupFixture();
     setState({ property1: 'Tada', property2: [1, 3, 5], property3: { hello: 'there' } });
     // Act
-    const pickSelector = createPickSelector(stateSelector, ['property1', 'property2']);
+    const pickSelector = createPickSelector(stateSelector, [
+      'property1',
+      null as any,
+      'property2',
+    ]);
     // Assert
     expect(pickSelector).toBeDefined();
-    const snapshot1 = store.selectSnapshot(pickSelector);
-    expect(snapshot1).toEqual({ property1: 'Tada', property2: [1, 3, 5] });
-    patchState({ property3: { hello: 'you' } });
-    const snapshot2 = store.selectSnapshot(pickSelector);
-    expect(snapshot2).toBe(snapshot1);
+    expect(store.selectSnapshot(pickSelector)).toStrictEqual({
+      property1: 'Tada',
+      property2: [1, 3, 5],
+    });
+  });
+
+  describe('[memoization]', () => {
+    it('should change if a specified property changes', () => {
+      // Arrange
+      const { store, stateSelector, setState, patchState } = setupFixture();
+      setState({ property1: 'Tada', property2: [1, 3, 5], property3: { hello: 'there' } });
+      // Act
+      const pickSelector = createPickSelector(stateSelector, ['property1', 'property2']);
+      // Assert
+      expect(pickSelector).toBeDefined();
+      const snapshot1 = store.selectSnapshot(pickSelector);
+      expect(snapshot1).toStrictEqual({ property1: 'Tada', property2: [1, 3, 5] });
+      patchState({ property1: 'Hi' });
+      const snapshot2 = store.selectSnapshot(pickSelector);
+      expect(snapshot2).not.toBe(snapshot1);
+      expect(snapshot2).toStrictEqual({ property1: 'Hi', property2: [1, 3, 5] });
+      patchState({ property2: [2, 4] });
+      const snapshot3 = store.selectSnapshot(pickSelector);
+      expect(snapshot3).not.toBe(snapshot1);
+      expect(snapshot3).not.toBe(snapshot2);
+      expect(snapshot3).toStrictEqual({ property1: 'Hi', property2: [2, 4] });
+    });
+
+    it('should not change if a unspecified property changes', () => {
+      // Arrange
+      const { store, stateSelector, setState, patchState } = setupFixture();
+      setState({ property1: 'Tada', property2: [1, 3, 5], property3: { hello: 'there' } });
+      // Act
+      const pickSelector = createPickSelector(stateSelector, ['property1', 'property2']);
+      // Assert
+      expect(pickSelector).toBeDefined();
+      const snapshot1 = store.selectSnapshot(pickSelector);
+      expect(snapshot1).toStrictEqual({ property1: 'Tada', property2: [1, 3, 5] });
+      patchState({ property3: { hello: 'you' } });
+      const snapshot2 = store.selectSnapshot(pickSelector);
+      expect(snapshot2).toBe(snapshot1);
+    });
   });
 });

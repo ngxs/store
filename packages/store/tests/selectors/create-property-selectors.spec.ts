@@ -53,7 +53,7 @@ describe('createPropertySelectors', () => {
       let error: Error | null = null;
       // Act
       try {
-        createPropertySelectors(null as any);
+        createPropertySelectors(undefined as any);
       } catch (err) {
         error = err as Error;
       }
