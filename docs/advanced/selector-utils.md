@@ -7,9 +7,9 @@ The process of breaking down your state into simple selectors for each property 
 
 These are the provided utils:
 
-- [createPropertySelectors](#create-property-selectors)
-- [createModelSelector](#create-model-selector)
-- [createPickSelector](#create-pick-selector)
+- [createPropertySelectors](#create-property-selectors) - create a selector for each property of an object returned by a selector.
+- [createModelSelector](#create-model-selector) - create a selector that returns an object which is composed from values returned by multiple selectors.
+- [createPickSelector](#create-pick-selector) - create a selector that returns a subset of an object's properties, and changes only when those properties change.
 
 ## Create Property Selectors
 
@@ -30,6 +30,7 @@ export interface AnimalsStateModel {
   defaults: {
     zebras: [],
     pandas: [],
+    monkeys: [],
   },
 })
 @Injectable()
@@ -89,6 +90,8 @@ export class MyZooComponent {
 
 Here we see how the `createPropertySelectors` is used to create a map of selectors for each property of the state. The `createPropertySelectors` takes a state class and returns a map of selectors for each property of the state. The `createPropertySelectors` is very useful when we need to create a selector for each property of the state.
 
+> **TYPE SAFETY:** Note that, in the `createPropertySelectors` call above, the model type was provided to the function as a type parameter. This was only necessary because the state class (`AnimalSate`) was provided and the class does not include model information. The `createPropertySelectors` function will not require a type parameter if a typed selector or a `StateToken` that includes the type of the model is provided to the function.
+
 ## Create Model Selector
 
 Sometimes we need to create a selector simply groups other selectors. For example, we might want to create a selector that maps the state to a map of pandas and zoos. We can use the `createModelSelector` to create such a selector. See the snippet below:
@@ -127,13 +130,15 @@ Here we see how the `createModelSelector` is used to create a selector that maps
 
 ## Create Pick Selector
 
-Sometimes we need to create a selector that picks a subset of properties from the state. For example, we might want to create a selector that picks the `zebras` and `pandas` properties from the state. We can use the `createPickSelector` to create such a selector. See the snippet below:
+Sometimes we need to create a selector that picks a subset of properties from the state. For example, we might want to create a selector that picks only the `zebras` and `pandas` properties from the state. We can use the `createPickSelector` to create such a selector. See the snippet below:
 
 ```ts
 import { Selector, createPickSelector } from '@ngxs/store';
 
 export class AnimalsSelectors {
-  static zebrasAndPandas = createPickSelector(AnimalStateModel, [
+  static fullAnimalsState = createSelector([AnimalState], (state: AnimalStateModel) => state);
+
+  static zebrasAndPandas = createPickSelector(fullAnimalsState, [
     'zebras',
     'pandas'
   ]);
@@ -158,12 +163,12 @@ export class MyZooComponent {
 }
 ```
 
+The `zebrasAndPandas` object above would only contain the `zebras` and `pandas` properties, and not have the `monkeys` property.
+
 Here we see how the `createPickSelector` is used to create a selector that picks a subset of properties from the state, or from any other selector that returns an object for that matter. The `createPickSelector` takes a selector which returns an object and an array of property names and returns a selector that returns a copy of the object, with only the properties that have been picked. The `createPickSelector` is very useful when we need to create a selector that picks a subset of properties from the state.
 
-### Performance win!
+> **TYPE SAFETY:** The `createPickSelector` function should only be provided a strongly typed selector or a `StateToken` that includes the type of the model. This is so that type safety is maintained for the picked properties.
 
-One of the most useful things about this selector (versus rolling your own that creates a trimmed object from the provided selector), is that the pick selector will only emit a new value when a picked property changes, and will not emit a new value if any of the other properties change. Angular change detection performance optimization enthusiasts will love this!
+**Noteable Performance win!**
 
-## Relevant Articles
-
-[NGXS State Operators](https://medium.com/ngxs/ngxs-state-operators-8b339641b220)
+One of the most useful things about the `createPickSelector` selector (versus rolling your own that creates a trimmed object from the provided selector), is that it will only emit a new value when a picked property changes, and will not emit a new value if any of the other properties change. An Angular change detection performance enthusiasts dream!
