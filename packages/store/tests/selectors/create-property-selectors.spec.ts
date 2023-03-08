@@ -44,7 +44,7 @@ describe('createPropertySelectors', () => {
       // Assert
       expect(error).not.toBeNull();
       expect(error?.message).toMatchInlineSnapshot(
-        `"A parent selector must be provided to create property selectors."`
+        `"[createPropertySelectors]: A parent selector must be provided."`
       );
     });
 
@@ -60,7 +60,7 @@ describe('createPropertySelectors', () => {
       // Assert
       expect(error).not.toBeNull();
       expect(error?.message).toMatchInlineSnapshot(
-        `"A parent selector must be provided to create property selectors."`
+        `"[createPropertySelectors]: A parent selector must be provided."`
       );
     });
 
@@ -77,7 +77,7 @@ describe('createPropertySelectors', () => {
       // Assert
       expect(error).not.toBeNull();
       expect(error?.message).toMatchInlineSnapshot(
-        `"The value provided as the parent selector is not a valid selector."`
+        `"[createPropertySelectors]: The value provided as the parent selector is not a valid selector."`
       );
     });
 
@@ -94,7 +94,7 @@ describe('createPropertySelectors', () => {
       // Assert
       expect(error).not.toBeNull();
       expect(error?.message).toMatchInlineSnapshot(
-        `"The value provided as the parent selector is not a valid selector."`
+        `"[createPropertySelectors]: The value provided as the parent selector is not a valid selector."`
       );
     });
   });
