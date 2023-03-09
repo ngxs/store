@@ -128,6 +128,8 @@ export class MyZooComponent {
 
 Here we see how the `createModelSelector` is used to create a selector that maps the state to a map of pandas and zoos. The `createModelSelector` takes a map of selectors and returns a selector that maps the state to a map of the values returned by the selectors. The `createModelSelector` is very useful when we need to create a selector that groups other selectors.
 
+> **TYPE SAFETY:** Note that it is always best to use typed selectors in the selector map provided to the `createModelSelector` function. The output model is inferred from the selector map. A state class (eg. `AnimalSate`) does not include model information and this causes issues with the type inference. It is also questionable why an entire state would be included in a model, because this breaks encapsulation and would also cause change detection to trigger more often.
+
 ## Create Pick Selector
 
 Sometimes we need to create a selector that picks a subset of properties from the state. For example, we might want to create a selector that picks only the `zebras` and `pandas` properties from the state. We can use the `createPickSelector` to create such a selector. See the snippet below:
