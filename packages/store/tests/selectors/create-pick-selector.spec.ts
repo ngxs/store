@@ -184,7 +184,7 @@ describe('createPickSelector', () => {
       expect(snapshot3).toStrictEqual({ property1: 'Hi', property2: [2, 4] });
     });
 
-    it('should not change if a unspecified property changes', () => {
+    it('should not change if an unspecified property changes', () => {
       // Arrange
       const { store, stateSelector, setState, patchState } = setupFixture();
       setState({ property1: 'Tada', property2: [1, 3, 5], property3: { hello: 'there' } });

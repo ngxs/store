@@ -1,4 +1,5 @@
 import { createSelector } from '../utils/selector-utils';
+import { ensureValidSelector, ensureValueProvided } from './selector-checks.util';
 import { TypedSelector } from './selector-types.util';
 
 interface SelectorMap {
@@ -12,8 +13,19 @@ type MappedResult<TSelectorMap> = {
 };
 
 export function createModelSelector<T extends SelectorMap>(selectorMap: T): ModelSelector<T> {
-  const selectors = Object.values(selectorMap);
+  const prefix = '[createModelSelector]';
   const selectorKeys = Object.keys(selectorMap);
+  ensureValueProvided(selectorMap, { prefix, noun: 'selector map' });
+  ensureValueProvided(typeof selectorMap === 'object', { prefix, noun: 'valid selector map' });
+  ensureValueProvided(selectorKeys.length, { prefix, noun: 'non-empty selector map' });
+  const selectors = Object.values(selectorMap);
+  selectors.forEach((selector, index) =>
+    ensureValidSelector(selector, {
+      prefix,
+      noun: `selector for the '${selectorKeys[index]}' property`,
+    })
+  );
+
   return createSelector(selectors, (...args) => {
     return selectorKeys.reduce((obj, key, index) => {
       (obj as any)[key] = args[index];
