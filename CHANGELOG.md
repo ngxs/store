@@ -3,6 +3,7 @@
 ### For next major version
 
 - Feature: Build packages in Ivy format [#1945](https://github.com/ngxs/store/pull/1945)
+- Feature: add advanced selector utilities [#1824](https://github.com/ngxs/store/pull/1824)
 - Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
 - Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806) [#1947](https://github.com/ngxs/store/pull/1947)
