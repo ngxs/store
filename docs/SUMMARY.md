@@ -23,6 +23,7 @@
   - [Monitoring Unhandled Actions](advanced/monitoring-unhandled-actions.md)
   - [Optimizing Selectors](advanced/optimizing-selectors.md)
   - [Options](advanced/options.md)
+  - [Selector Utils](advanced/selector-utils.md)
   - [Shared State](advanced/shared-state.md)
   - [State Token](advanced/token.md)
   - [State Operators](advanced/operators.md)

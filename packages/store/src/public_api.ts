@@ -19,7 +19,7 @@ export {
   getSelectorMetadata,
   getStoreMetadata,
   ensureStoreMetadata,
-  ensureSelectorMetadata
+  ensureSelectorMetadata,
 } from './public_to_deprecate';
 export {
   ofAction,
@@ -28,7 +28,7 @@ export {
   ofActionCanceled,
   ofActionErrored,
   ofActionCompleted,
-  ActionCompletion
+  ActionCompletion,
 } from './operators/of-action';
 export {
   StateContext,
@@ -37,7 +37,7 @@ export {
   NgxsAfterBootstrap,
   NgxsOnChanges,
   NgxsModuleOptions,
-  NgxsSimpleChange
+  NgxsSimpleChange,
 } from './symbols';
 export { Selector } from './decorators/selector/selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
@@ -50,3 +50,11 @@ export { StateToken } from './state-token/state-token';
 export { NgxsDevelopmentOptions } from './dev-features/symbols';
 export { NgxsDevelopmentModule } from './dev-features/ngxs-development.module';
 export { NgxsUnhandledActionsLogger } from './dev-features/ngxs-unhandled-actions-logger';
+
+export {
+  createModelSelector,
+  createPickSelector,
+  createPropertySelectors,
+  PropertySelectors,
+  TypedSelector,
+} from './selectors';
