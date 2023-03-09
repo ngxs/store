@@ -13,18 +13,14 @@ type MappedResult<TSelectorMap> = {
 };
 
 export function createModelSelector<T extends SelectorMap>(selectorMap: T): ModelSelector<T> {
-  const prefix = '[createModelSelector]';
   const selectorKeys = Object.keys(selectorMap);
-  ensureValueProvided(selectorMap, { prefix, noun: 'selector map' });
-  ensureValueProvided(typeof selectorMap === 'object', { prefix, noun: 'valid selector map' });
-  ensureValueProvided(selectorKeys.length, { prefix, noun: 'non-empty selector map' });
   const selectors = Object.values(selectorMap);
-  selectors.forEach((selector, index) =>
-    ensureValidSelector(selector, {
-      prefix,
-      noun: `selector for the '${selectorKeys[index]}' property`,
-    })
-  );
+  ensureValidSelectorMap<T>({
+    prefix: '[createModelSelector]',
+    selectorMap,
+    selectorKeys,
+    selectors,
+  });
 
   return createSelector(selectors, (...args) => {
     return selectorKeys.reduce((obj, key, index) => {
@@ -32,4 +28,26 @@ export function createModelSelector<T extends SelectorMap>(selectorMap: T): Mode
       return obj;
     }, {} as MappedResult<T>);
   }) as ModelSelector<T>;
+}
+
+function ensureValidSelectorMap<T extends SelectorMap>({
+  prefix,
+  selectorMap,
+  selectorKeys,
+  selectors,
+}: {
+  prefix: string;
+  selectorMap: T;
+  selectorKeys: string[];
+  selectors: TypedSelector<any>[];
+}) {
+  ensureValueProvided(selectorMap, { prefix, noun: 'selector map' });
+  ensureValueProvided(typeof selectorMap === 'object', { prefix, noun: 'valid selector map' });
+  ensureValueProvided(selectorKeys.length, { prefix, noun: 'non-empty selector map' });
+  selectors.forEach((selector, index) =>
+    ensureValidSelector(selector, {
+      prefix,
+      noun: `selector for the '${selectorKeys[index]}' property`,
+    })
+  );
 }
