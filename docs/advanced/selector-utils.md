@@ -150,10 +150,9 @@ export class AnimalsSelectors {
   selector: 'my-zoo'
   template: `
     <h1> Zebras and Pandas </h1>
-    <h1> Pandas and Zoos </h1>
     <ol *ngIf="zebrasAndPandas$ | async as zebrasAndPandas">
+      <li> Zerba Count: {{ zebrasAndPandas.zebras?.length || 0 }} </li>
       <li> Panda Count: {{ zebrasAndPandas.pandas?.length || 0 }} </li>
-      <li> Zoos Count: {{ zebrasAndPandas.zoos?.length || 0 }} </li>
     </ol>
   `,
   style: ''
