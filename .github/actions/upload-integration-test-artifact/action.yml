@@ -22,7 +22,7 @@ runs:
       shell: bash
       run: |
         echo "Replace colons with dashes, substring 'integration' with a substring 'hello-world'. Example result: hello-world-ng12-ivy"
-        echo "::set-output name=value::$(echo ${SCRIPT} | sed -r "s/:/-/g" | sed -r "s/integration/hello-world/g")"
+        echo "value=$(echo ${SCRIPT} | sed -r "s/:/-/g" | sed -r "s/integration/hello-world/g")" >> $GITHUB_OUTPUT
       env:
         SCRIPT: ${{ inputs.script }}
 
