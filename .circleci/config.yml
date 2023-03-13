@@ -7,7 +7,7 @@ job_defaults_var: &job_defaults
     - image: circleci/node:16.13.0-browsers
 
 # Yarn cache key
-cache_var: &cache_key yarn-packages-v2-{{ .Branch }}-{{ checksum "yarn.lock" }}
+cache_var: &cache_key yarn-packages-v3-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
 # Install yarn packages
 yarn_install_var: &yarn_install
@@ -31,8 +31,8 @@ restore_cache_var: &restore_cache
     name: Restore Yarn Package Cache
     keys:
       - *cache_key
-      - yarn-packages-v2-master
-      - yarn-packages-v2
+      - yarn-packages-v3-master
+      - yarn-packages-v3
 
 # Persist the whole working space so we can share it between jobs
 persist_workspace_var: &persist_workspace

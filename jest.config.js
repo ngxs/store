@@ -23,8 +23,8 @@ module.exports = {
   globals: {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json',
-      allowSyntheticDefaultImports: true
-    }
+      allowSyntheticDefaultImports: true,
+    },
   },
 
   /**
@@ -52,7 +52,7 @@ module.exports = {
     '!packages/**/*.spec.ts',
     '!packages/**/*.spec.ts',
     '!packages/**/helpers/**',
-    '!packages/**/types/**'
+    '!packages/**/types/**',
   ],
 
   /**
@@ -107,6 +107,8 @@ module.exports = {
    */
   testPathIgnorePatterns: ['/node_modules/', '/types/', '/helpers/'],
 
+  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
+
   /**
    * Indicates whether each individual test should be reported during the run.
    * All errors will also still be shown on the bottom after execution.
@@ -139,5 +141,5 @@ module.exports = {
    * Equivalent to calling jest.clearAllMocks() between each test.
    * This does not remove any mock implementation that may have been provided.
    */
-  clearMocks: true
+  clearMocks: true,
 };
