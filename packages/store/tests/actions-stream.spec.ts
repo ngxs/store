@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 
 import { NgxsModule } from '../src/module';
-import { InternalActions, OrderedSubject, ActionStatus, Actions } from '../src/actions-stream';
+import { OrderedSubject } from '../src/internal/custom-rxjs-subjects';
+import { InternalActions, ActionStatus, Actions } from '../src/actions-stream';
 
 describe('The Actions stream', () => {
   it('should not use Subject because of the following issue (note that 3rd subscriber receives the events out of order)', () => {

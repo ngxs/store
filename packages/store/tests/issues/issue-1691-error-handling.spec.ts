@@ -24,6 +24,7 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
   @State({
     name: 'app'
   })
+  @Injectable()
   class AppState {
     @Action(ProduceErrorSynchronously)
     produceErrorSynchronously() {

@@ -18,6 +18,7 @@ describe('Allow to inject the Store class into the ErrorHandler (https://github.
       name: 'animals',
       defaults: []
     })
+    @Injectable()
     class AnimalsState {
       @Action(ProduceError)
       produceError() {

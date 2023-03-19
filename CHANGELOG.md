@@ -15,6 +15,7 @@
 - Feature: Devtools Plugin - Add trace options to `NgxsDevtoolsOptions` [#1968](https://github.com/ngxs/store/pull/1968)
 - Performance: Tree-shake patch errors [#1955](https://github.com/ngxs/store/pull/1955)
 - Fix: Get descriptor explicitly when it's considered as a class property [#1961](https://github.com/ngxs/store/pull/1961)
+- Fix: Avoid incorrectly ordered events from main state stream [#1981](https://github.com/ngxs/store/pull/1981)
 
 ### To become next patch version
 
