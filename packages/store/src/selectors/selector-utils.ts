@@ -22,21 +22,25 @@ export function createSelector<T extends (...args: any[]) => any>(
   originalFn: T,
   creationMetadata?: CreationMetadata
 ) {
-  const containerClass = creationMetadata && creationMetadata.containerClass;
-  const wrappedFn = function wrappedSelectorFn(...args: any[]) {
-    const returnValue = originalFn.apply(containerClass, args);
-    if (returnValue instanceof Function) {
-      const innerMemoizedFn = memoize.apply(null, [returnValue]);
-      return innerMemoizedFn;
-    }
-    return returnValue;
-  } as T;
-  const memoizedFn = memoize(wrappedFn);
-  Object.setPrototypeOf(memoizedFn, originalFn);
+  const memoizedFn = createMemoizedSelectorFn<T>(originalFn, creationMetadata);
 
   const selectorMetaData = setupSelectorMetadata<T>(originalFn, creationMetadata);
 
-  const makeRootSelector: SelectorFactory = (context: RuntimeSelectorContext) => {
+  selectorMetaData.makeRootSelector = createRootSelectorFactory<T>(
+    selectorMetaData,
+    selectors,
+    memoizedFn
+  );
+
+  return memoizedFn;
+}
+
+function createRootSelectorFactory<T extends (...args: any[]) => any>(
+  selectorMetaData: SelectorMetaDataModel,
+  selectors: any[] | undefined,
+  memoizedSelectorFn: T
+): SelectorFactory {
+  return (context: RuntimeSelectorContext) => {
     const { argumentSelectorFunctions, selectorOptions } = getRuntimeSelectorInfo(
       context,
       selectorMetaData,
@@ -51,7 +55,7 @@ export function createSelector<T extends (...args: any[]) => any>(
       // state that doesn't exist, it will throw a TypeError.
       // since this is quite usual behaviour, we simply return undefined if so.
       try {
-        return memoizedFn(...results);
+        return memoizedSelectorFn(...results);
       } catch (ex) {
         if (ex instanceof TypeError && selectorOptions.suppressErrors) {
           return undefined;
@@ -61,9 +65,23 @@ export function createSelector<T extends (...args: any[]) => any>(
       }
     };
   };
+}
 
-  selectorMetaData.makeRootSelector = makeRootSelector;
-
+function createMemoizedSelectorFn<T extends (...args: any[]) => any>(
+  originalFn: T,
+  creationMetadata: CreationMetadata | undefined
+) {
+  const containerClass = creationMetadata && creationMetadata.containerClass;
+  const wrappedFn = function wrappedSelectorFn(...args: any[]) {
+    const returnValue = originalFn.apply(containerClass, args);
+    if (returnValue instanceof Function) {
+      const innerMemoizedFn = memoize.apply(null, [returnValue]);
+      return innerMemoizedFn;
+    }
+    return returnValue;
+  } as T;
+  const memoizedFn = memoize(wrappedFn);
+  Object.setPrototypeOf(memoizedFn, originalFn);
   return memoizedFn;
 }
 
