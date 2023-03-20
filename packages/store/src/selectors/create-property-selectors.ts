@@ -1,4 +1,4 @@
-import { createSelector } from './selector-utils';
+import { createSelector } from './create-selector';
 import { ensureValidSelector } from './selector-checks.util';
 import { SelectorDef } from './selector-types.util';
 

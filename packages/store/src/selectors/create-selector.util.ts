@@ -1,4 +1,4 @@
-import { createSelector as createSelectorOrig } from './selector-utils';
+import { createSelector as createSelectorOrig } from './create-selector';
 import { SelectorDef, SelectorReturnType } from './selector-types.util';
 
 type SelectorArg = SelectorDef<any>;

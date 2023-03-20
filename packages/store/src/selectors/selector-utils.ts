@@ -9,33 +9,8 @@ import {
   SelectorFactory,
 } from '../internal/internals';
 import { CreationMetadata, RuntimeSelectorInfo } from './selector-models';
-import { setupSelectorMetadata } from './selector-metadata';
 
-/**
- * Function for creating a selector
- * @param selectors The selectors to use to create the arguments of this function
- * @param originalFn The original function being made into a selector
- * @param creationMetadata
- */
-export function createSelector<T extends (...args: any[]) => any>(
-  selectors: any[] | undefined,
-  originalFn: T,
-  creationMetadata?: CreationMetadata
-) {
-  const memoizedFn = createMemoizedSelectorFn<T>(originalFn, creationMetadata);
-
-  const selectorMetaData = setupSelectorMetadata<T>(originalFn, creationMetadata);
-
-  selectorMetaData.makeRootSelector = createRootSelectorFactory<T>(
-    selectorMetaData,
-    selectors,
-    memoizedFn
-  );
-
-  return memoizedFn;
-}
-
-function createRootSelectorFactory<T extends (...args: any[]) => any>(
+export function createRootSelectorFactory<T extends (...args: any[]) => any>(
   selectorMetaData: SelectorMetaDataModel,
   selectors: any[] | undefined,
   memoizedSelectorFn: T
@@ -67,7 +42,7 @@ function createRootSelectorFactory<T extends (...args: any[]) => any>(
   };
 }
 
-function createMemoizedSelectorFn<T extends (...args: any[]) => any>(
+export function createMemoizedSelectorFn<T extends (...args: any[]) => any>(
   originalFn: T,
   creationMetadata: CreationMetadata | undefined
 ) {
