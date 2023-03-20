@@ -35,18 +35,16 @@ describe('[TEST]: createSelector', () => {
         return createSelector([TodoState]); // $ExpectError
       }
 
-      // $ExpectType () => (args: number) => string
       static todoC() {
         return createSelector<(args: number) => string>(
-          [1, null, 'Hello world'],
+          [1, null, 'Hello world'], // $ExpectError
           (state: number) => state.toString()
         );
       }
 
-      // $ExpectType () => (state: Observable<number>) => Observable<number>
       static todoD() {
         return createSelector(
-          [() => {}, [], {}, Infinity, NaN],
+          [() => {}, [], {}, Infinity, NaN], // $ExpectError
           (state: Observable<number>) => state,
           {
             containerClass: Infinity,
@@ -61,8 +59,8 @@ describe('[TEST]: createSelector', () => {
     assertType(() => store.selectSnapshot(TodoState.todoA)); // $ExpectType (state: string[]) => string[]
     assertType(() => store.selectSnapshot(TodoState.todoB())); // $ExpectType any
     assertType(() => store.selectSnapshot(TodoState.todoB)); // $ExpectType (s1: any) => any
-    assertType(() => store.selectSnapshot(TodoState.todoC())); // $ExpectType string
-    assertType(() => store.selectSnapshot(TodoState.todoC)); // $ExpectType (args: number) => string
+    assertType(() => store.selectSnapshot(TodoState.todoC())); // $ExpectType any
+    assertType(() => store.selectSnapshot(TodoState.todoC)); // $ExpectType (s1: SelectorReturnType<S1>) => any
     assertType(() => store.selectSnapshot(TodoState.todoD())); // $ExpectType Observable<number>
     assertType(() => store.selectSnapshot(TodoState.todoD)); // $ExpectType (state: Observable<number>) => Observable<number>
   });
@@ -131,6 +129,7 @@ describe('[TEST]: createSelector', () => {
     const f = () => ['f'] as const;
     const g = () => ['g'] as const;
     const h = () => ['h'] as const;
+    const i = () => ['i'] as const;
 
     function assertReturnType<T extends (...args: any) => any>(fn: T): ReturnType<T> {
       return null as unknown as ReturnType<T>;
@@ -139,10 +138,12 @@ describe('[TEST]: createSelector', () => {
     assertReturnType(createSelector([a],(a) => [...a] as const)); // $ExpectType readonly ["a"]
     assertReturnType(createSelector([a, b],(a, b) => [...a, ...b] as const)); // $ExpectType readonly ["a", "b"]
     assertReturnType(createSelector([a, b, c],(a, b, c) => [...a, ...b, ...c] as const)); // $ExpectType readonly ["a", "b", "c"]
-    assertReturnType(createSelector([a, b, c, d],(a, b, c, d) => [...a, ...b, ...c, ...d] as const )); // $ExpectType readonly ["a", "b", "c", "d"]
+    assertReturnType(createSelector([a, b, c, d],(a, b, c, d) => [...a, ...b, ...c, ...d] as const)); // $ExpectType readonly ["a", "b", "c", "d"]
     assertReturnType(createSelector([a, b, c, d, e],(a, b, c, d, e) => [...a, ...b, ...c, ...d, ...e] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e"]
     assertReturnType(createSelector([a, b, c, d, e, f],(a, b, c, d, e, f) => [...a, ...b, ...c, ...d, ...e, ...f] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f"]
     assertReturnType(createSelector([a, b, c, d, e, f, g],(a, b, c, d, e, f, g) => [...a, ...b, ...c, ...d, ...e, ...f, ...g] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f", "g"]
     assertReturnType(createSelector([a, b, c, d, e, f, g, h],(a, b, c, d, e, f, g, h) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f", "g", "h"]
+    // tslint:disable:no-unnecessary-type-assertion
+    assertReturnType(createSelector([a, b, c, d, e, f, g, h, i],(a, b, c, d, e, f, g, h, i) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h, ...i] as const)); // $ExpectType readonly any[]
   });
 });

@@ -152,13 +152,13 @@ export function createSelector<
 ): TProjector;
 
 export function createSelector<T extends (...args: any[]) => any>(
-  selectors: any[] | undefined,
+  selectors: SelectorArg[] | undefined,
   projector: T,
   creationMetadata?: Partial<CreationMetadata>
 ): T;
 
 export function createSelector<T extends (...args: any[]) => any>(
-  selectors: any[] | undefined,
+  selectors: SelectorArg[] | undefined,
   projector: T,
   creationMetadata?: Partial<CreationMetadata>
 ) {
