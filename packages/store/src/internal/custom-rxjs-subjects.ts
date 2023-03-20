@@ -57,6 +57,21 @@ export class OrderedSubject<T> extends Subject<T> {
   next = orderedQueueOperation((value?: T) => super.next(value));
 }
 
+/**
+ * Custom BehaviorSubject that ensures that subscribers are notified of values in the order that they arrived.
+ * A standard BehaviorSubject does not have this guarantee.
+ * For example, given the following code:
+ * ```typescript
+ *   const subject = new BehaviorSubject<string>();
+     subject.subscribe(value => {
+       if (value === 'start') subject.next('end');
+     });
+     subject.subscribe(value => { });
+     subject.next('start');
+ * ```
+ * When `subject` is a standard `BehaviorSubject<T>` the second subscriber would recieve `end` and then `start`.
+ * When `subject` is a `OrderedBehaviorSubject<T>` the second subscriber would recieve `start` and then `end`.
+ */
 export class OrderedBehaviorSubject<T> extends BehaviorSubject<T> {
   next = orderedQueueOperation((value: T) => super.next(value));
 }
