@@ -8,7 +8,7 @@ import {
   SharedSelectorOptions,
   RuntimeSelectorContext,
   SelectorFactory,
-  SelectFromRootState
+  SelectFromRootState,
 } from '../internal/internals';
 
 const SELECTOR_OPTIONS_META_KEY = 'NGXS_SELECTOR_OPTIONS_META';
@@ -20,7 +20,7 @@ export const selectorOptionsMetaAccessor = {
   defineOptions: (target: any, options: SharedSelectorOptions) => {
     if (!target) return;
     (<any>target)[SELECTOR_OPTIONS_META_KEY] = options;
-  }
+  },
 };
 
 interface CreationMetadata {
@@ -68,7 +68,7 @@ export function createSelector<T extends (...args: any[]) => any>(
 
     return function selectFromRoot(rootState: any) {
       // Determine arguments from the app state using the selectors
-      const results = argumentSelectorFunctions.map(argFn => argFn(rootState));
+      const results = argumentSelectorFunctions.map((argFn) => argFn(rootState));
 
       // if the lambda tries to access a something on the
       // state that doesn't exist, it will throw a TypeError.
@@ -122,13 +122,13 @@ function getRuntimeSelectorInfo(
     selectorMetaData.containerClass
   );
 
-  const argumentSelectorFunctions = selectorsToApply.map(selector => {
+  const argumentSelectorFunctions = selectorsToApply.map((selector) => {
     const factory = getRootSelectorFactory(selector);
     return factory(context);
   });
   return {
     selectorOptions,
-    argumentSelectorFunctions
+    argumentSelectorFunctions,
   };
 }
 
@@ -140,7 +140,7 @@ function getLocalSelectorOptions(
     ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.containerClass) || {}),
     ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.originalFn) || {}),
     ...(selectorMetaData.getSelectorOptions() || {}),
-    ...explicitOptions
+    ...explicitOptions,
   };
 }
 

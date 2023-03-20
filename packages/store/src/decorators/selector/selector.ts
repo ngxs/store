@@ -1,5 +1,5 @@
 import { throwSelectorDecoratorError } from '../../configs/messages.config';
-import { createSelector } from '../../utils/selector-utils';
+import { createSelector } from '../../selectors/selector-utils';
 import { SelectorSpec, SelectorType } from './symbols';
 
 /**
