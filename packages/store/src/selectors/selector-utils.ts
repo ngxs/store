@@ -1,38 +1,15 @@
 import { memoize } from '@ngxs/store/internals';
 
 import {
-  ensureSelectorMetadata,
   getSelectorMetadata,
   getStoreMetadata,
   SelectorMetaDataModel,
   SharedSelectorOptions,
   RuntimeSelectorContext,
   SelectorFactory,
-  SelectFromRootState,
 } from '../internal/internals';
-
-const SELECTOR_OPTIONS_META_KEY = 'NGXS_SELECTOR_OPTIONS_META';
-
-export const selectorOptionsMetaAccessor = {
-  getOptions: (target: any): SharedSelectorOptions => {
-    return (target && (<any>target)[SELECTOR_OPTIONS_META_KEY]) || {};
-  },
-  defineOptions: (target: any, options: SharedSelectorOptions) => {
-    if (!target) return;
-    (<any>target)[SELECTOR_OPTIONS_META_KEY] = options;
-  },
-};
-
-interface CreationMetadata {
-  containerClass: any;
-  selectorName: string;
-  getSelectorOptions?: () => SharedSelectorOptions;
-}
-
-interface RuntimeSelectorInfo {
-  selectorOptions: SharedSelectorOptions;
-  argumentSelectorFunctions: SelectFromRootState[];
-}
+import { CreationMetadata, RuntimeSelectorInfo } from './selector-models';
+import { setupSelectorMetadata } from './selector-metadata';
 
 /**
  * Function for creating a selector
@@ -90,25 +67,6 @@ export function createSelector<T extends (...args: any[]) => any>(
   return memoizedFn;
 }
 
-function setupSelectorMetadata<T extends (...args: any[]) => any>(
-  originalFn: T,
-  creationMetadata: CreationMetadata | undefined
-) {
-  const selectorMetaData = ensureSelectorMetadata(originalFn);
-  selectorMetaData.originalFn = originalFn;
-  let getExplicitSelectorOptions = () => ({});
-  if (creationMetadata) {
-    selectorMetaData.containerClass = creationMetadata.containerClass;
-    selectorMetaData.selectorName = creationMetadata.selectorName;
-    getExplicitSelectorOptions =
-      creationMetadata.getSelectorOptions || getExplicitSelectorOptions;
-  }
-  const selectorMetaDataClone = { ...selectorMetaData };
-  selectorMetaData.getSelectorOptions = () =>
-    getLocalSelectorOptions(selectorMetaDataClone, getExplicitSelectorOptions());
-  return selectorMetaData;
-}
-
 function getRuntimeSelectorInfo(
   context: RuntimeSelectorContext,
   selectorMetaData: SelectorMetaDataModel,
@@ -129,18 +87,6 @@ function getRuntimeSelectorInfo(
   return {
     selectorOptions,
     argumentSelectorFunctions,
-  };
-}
-
-function getLocalSelectorOptions(
-  selectorMetaData: SelectorMetaDataModel,
-  explicitOptions: SharedSelectorOptions
-): SharedSelectorOptions {
-  return {
-    ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.containerClass) || {}),
-    ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.originalFn) || {}),
-    ...(selectorMetaData.getSelectorOptions() || {}),
-    ...explicitOptions,
   };
 }
 

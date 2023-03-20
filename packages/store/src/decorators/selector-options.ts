@@ -1,5 +1,5 @@
 import { SharedSelectorOptions } from '../internal/internals';
-import { selectorOptionsMetaAccessor } from '../selectors/selector-utils';
+import { selectorOptionsMetaAccessor } from '../selectors/selector-metadata';
 
 /**
  * Decorator for setting selector options at a method or class level.
