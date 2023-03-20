@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule, State, Action, Store, Actions, ofActionDispatched } from '@ngxs/store';
 
@@ -12,6 +13,7 @@ describe('Throw error when actions do not have a type property (https://github.c
     name: 'myState',
     defaults: 'STATE_VALUE'
   })
+  @Injectable()
   class MyState {
     @Action(MyAction)
     handleAction(): void {}
