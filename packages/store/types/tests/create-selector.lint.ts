@@ -178,5 +178,21 @@ describe('[TEST]: createSelector', () => {
       // tslint:disable:no-unnecessary-type-assertion
       assertReturnType(createSelector([a, b, c, d, e, f, g, h, i],(a: readonly ["a"], b, c, d, e, f, g, h, i) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h, ...i] as const)); // $ExpectType readonly ["a", ...any[]]
     });
+
+    it('allows overridden projector parameter types (we may want to prevent an invlid override in future)', () => {
+      // Let's change the type definition of this selector
+      const a = () => 1 as const;
+
+      assertReturnType(createSelector([a],(a: readonly ["a"]) => [...a] as const)); // $ExpectType readonly ["a"]
+      assertReturnType(createSelector([a, b],(a: readonly ["a"], b) => [...a, ...b] as const)); // $ExpectType readonly ["a", "b"]
+      assertReturnType(createSelector([a, b, c],(a: readonly ["a"], b, c) => [...a, ...b, ...c] as const)); // $ExpectType readonly ["a", "b", "c"]
+      assertReturnType(createSelector([a, b, c, d],(a: readonly ["a"], b, c, d) => [...a, ...b, ...c, ...d] as const)); // $ExpectType readonly ["a", "b", "c", "d"]
+      assertReturnType(createSelector([a, b, c, d, e],(a: readonly ["a"], b, c, d, e) => [...a, ...b, ...c, ...d, ...e] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e"]
+      assertReturnType(createSelector([a, b, c, d, e, f],(a: readonly ["a"], b, c, d, e, f) => [...a, ...b, ...c, ...d, ...e, ...f] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f"]
+      assertReturnType(createSelector([a, b, c, d, e, f, g],(a: readonly ["a"], b, c, d, e, f, g) => [...a, ...b, ...c, ...d, ...e, ...f, ...g] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f", "g"]
+      assertReturnType(createSelector([a, b, c, d, e, f, g, h],(a: readonly ["a"], b, c, d, e, f, g, h) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f", "g", "h"]
+      // tslint:disable:no-unnecessary-type-assertion
+      assertReturnType(createSelector([a, b, c, d, e, f, g, h, i],(a: readonly ["a"], b, c, d, e, f, g, h, i) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h, ...i] as const)); // $ExpectType readonly ["a", ...any[]]
+    });
   });
 });
