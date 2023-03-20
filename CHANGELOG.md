@@ -13,6 +13,7 @@
 - Feature: Storage Plugin - Enable providing storage engine individually [#1935](https://github.com/ngxs/store/pull/1935)
 - Feature: Devtools Plugin - Add new options to the `NgxsDevtoolsOptions` interface [#1879](https://github.com/ngxs/store/pull/1879)
 - Feature: Devtools Plugin - Add trace options to `NgxsDevtoolsOptions` [#1968](https://github.com/ngxs/store/pull/1968)
+- Feature: Form Plugin - Allow `ngxsFormDebounce` to be string [#1972](https://github.com/ngxs/store/pull/1972)
 - Performance: Tree-shake patch errors [#1955](https://github.com/ngxs/store/pull/1955)
 - Fix: Get descriptor explicitly when it's considered as a class property [#1961](https://github.com/ngxs/store/pull/1961)
 - Fix: Avoid delayed updates from state stream [#1981](https://github.com/ngxs/store/pull/1981)

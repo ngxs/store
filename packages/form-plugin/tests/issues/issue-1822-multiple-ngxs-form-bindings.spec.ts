@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NgxsModule, State, Actions, ofActionDispatched, Store, Selector } from '@ngxs/store';
 
@@ -26,6 +26,7 @@ describe('Multiple `ngxsForm` bindings (https://github.com/ngxs/store/issues/182
       }
     }
   })
+  @Injectable()
   class UserState {
     @Selector()
     static getModel(state: UserStateModel) {
