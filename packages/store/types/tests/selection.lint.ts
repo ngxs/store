@@ -27,7 +27,7 @@ describe('[TEST]: Action Types', () => {
     class Any {}
 
     Selector(); // $ExpectType SelectorType<unknown>
-    assertType(() => Selector([{ foo: 'bar' }])); // $ExpectType SelectorType<{ foo: string; }>
+    assertType(() => Selector([{ foo: 'bar' }])); // $ExpectError
     assertType(() => Selector({})); // $ExpectError
 
     Select(); // $ExpectType PropertyDecorator
@@ -128,7 +128,7 @@ describe('[TEST]: Action Types', () => {
         return state;
       }
 
-      @Selector(['Hello', 'World']) // $ExpectType (state: string[]) => string[]
+      @Selector(['Hello', 'World']) // $ExpectError
       static pandas3(state: string[]): string[] {
         return state;
       }
@@ -138,7 +138,7 @@ describe('[TEST]: Action Types', () => {
         return [...zoos, ...themeParks];
       }
 
-      @Selector([() => {}, function custom() {}, { a: 1, b: 2 }]) // $ExpectType (state: string[]) => string[]
+      @Selector([() => {}, function custom() {}, { a: 1, b: 2 }]) // $ExpectError
       static pandas5(state: string[]): string[] {
         return state;
       }

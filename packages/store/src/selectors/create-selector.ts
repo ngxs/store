@@ -1,14 +1,18 @@
-import { createSelector as createSelectorOrig } from '../utils/selector-utils';
+import { CreationMetadata } from './selector-models';
+import { setupSelectorMetadata } from './selector-metadata';
+import { createMemoizedSelectorFn, createRootSelectorFactory } from './selector-utils';
+
 import { SelectorDef, SelectorReturnType } from './selector-types.util';
 
 type SelectorArg = SelectorDef<any>;
 
-type CreationMetadata = Parameters<typeof createSelectorOrig>[2];
-
-// NOTE: This is temporarily named differently to `createSelector`, and
-//  will be renamed when the types interface is finalised and publically exported.
-//  Adding this here so that other dependent types can leverage this in the interim.
-export function createSelectorX<
+/**
+ * Function for creating a selector
+ * @param selectors The selectors to use to create the arguments of this function
+ * @param originalFn The original function being made into a selector
+ * @param creationMetadata
+ */
+export function createSelector<
   S1 extends SelectorArg,
   TProjector extends (s1: SelectorReturnType<S1>) => any
 >(
@@ -17,7 +21,7 @@ export function createSelectorX<
   creationMetadata?: Partial<CreationMetadata>
 ): TProjector;
 
-export function createSelectorX<
+export function createSelector<
   S1 extends SelectorArg,
   S2 extends SelectorArg,
   TProjector extends (s1: SelectorReturnType<S1>, s2: SelectorReturnType<S2>) => any
@@ -27,7 +31,7 @@ export function createSelectorX<
   creationMetadata?: Partial<CreationMetadata>
 ): TProjector;
 
-export function createSelectorX<
+export function createSelector<
   S1 extends SelectorArg,
   S2 extends SelectorArg,
   S3 extends SelectorArg,
@@ -42,7 +46,7 @@ export function createSelectorX<
   creationMetadata?: Partial<CreationMetadata>
 ): TProjector;
 
-export function createSelectorX<
+export function createSelector<
   S1 extends SelectorArg,
   S2 extends SelectorArg,
   S3 extends SelectorArg,
@@ -59,7 +63,7 @@ export function createSelectorX<
   creationMetadata?: Partial<CreationMetadata>
 ): TProjector;
 
-export function createSelectorX<
+export function createSelector<
   S1 extends SelectorArg,
   S2 extends SelectorArg,
   S3 extends SelectorArg,
@@ -78,7 +82,7 @@ export function createSelectorX<
   creationMetadata?: Partial<CreationMetadata>
 ): TProjector;
 
-export function createSelectorX<
+export function createSelector<
   S1 extends SelectorArg,
   S2 extends SelectorArg,
   S3 extends SelectorArg,
@@ -99,7 +103,7 @@ export function createSelectorX<
   creationMetadata?: Partial<CreationMetadata>
 ): TProjector;
 
-export function createSelectorX<
+export function createSelector<
   S1 extends SelectorArg,
   S2 extends SelectorArg,
   S3 extends SelectorArg,
@@ -122,7 +126,7 @@ export function createSelectorX<
   creationMetadata?: Partial<CreationMetadata>
 ): TProjector;
 
-export function createSelectorX<
+export function createSelector<
   S1 extends SelectorArg,
   S2 extends SelectorArg,
   S3 extends SelectorArg,
@@ -147,10 +151,26 @@ export function createSelectorX<
   creationMetadata?: Partial<CreationMetadata>
 ): TProjector;
 
-export function createSelectorX<T extends (...args: any[]) => any>(
-  selectors: any[],
+export function createSelector<T extends (...args: any[]) => any>(
+  selectors: SelectorArg[] | undefined,
   projector: T,
   creationMetadata?: Partial<CreationMetadata>
-): T {
-  return createSelectorOrig<T>(selectors, projector, <CreationMetadata>creationMetadata);
+): T;
+
+export function createSelector<T extends (...args: any[]) => any>(
+  selectors: SelectorArg[] | undefined,
+  projector: T,
+  creationMetadata?: Partial<CreationMetadata>
+) {
+  const memoizedFn = createMemoizedSelectorFn<T>(projector, creationMetadata);
+
+  const selectorMetaData = setupSelectorMetadata<T>(projector, creationMetadata);
+
+  selectorMetaData.makeRootSelector = createRootSelectorFactory<T>(
+    selectorMetaData,
+    selectors,
+    memoizedFn
+  );
+
+  return memoizedFn;
 }

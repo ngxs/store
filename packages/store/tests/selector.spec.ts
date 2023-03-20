@@ -2,7 +2,7 @@ import { async, TestBed } from '@angular/core/testing';
 import { StateClass } from '@ngxs/store/internals';
 
 import { State } from '../src/decorators/state';
-import { createSelector } from '../src/utils/selector-utils';
+import { createSelector } from '../src/selectors/create-selector';
 import { Store } from '../src/store';
 import { NgxsModule } from '../src/module';
 import { Selector } from '../src/decorators/selector/selector';
@@ -312,7 +312,7 @@ describe('Selector', () => {
         try {
           store.selectSnapshot(MyStateV4_2.invalid);
         } catch (e) {
-          exception = e;
+          exception = e as Error;
         }
         // Assert
         expect(exception).not.toBeNull();
@@ -403,7 +403,7 @@ describe('Selector', () => {
         try {
           store.selectSnapshot(MyStateV4.invalid);
         } catch (e) {
-          exception = e;
+          exception = e as Error;
         }
         // Assert
         expect(exception).not.toBeNull();
@@ -478,7 +478,7 @@ describe('Selector', () => {
         try {
           store.selectSnapshot(MyStateV4Queries.invalid);
         } catch (e) {
-          exception = e;
+          exception = e as Error;
         }
         // Assert
         expect(exception).not.toBeNull();
@@ -564,7 +564,7 @@ describe('Selector', () => {
         try {
           store.selectSnapshot(MyStateV3.invalid);
         } catch (e) {
-          exception = e;
+          exception = e as Error;
         }
         // Assert
         expect(exception).not.toBeNull();
@@ -785,7 +785,9 @@ describe('Selector', () => {
       try {
         store.selectSnapshot(TasksState.reverse);
       } catch (e) {
-        expect(e.message.includes('Cannot assign to read only property')).toBe(true);
+        expect((e as Error).message.includes('Cannot assign to read only property')).toBe(
+          true
+        );
       }
     });
   });
@@ -846,7 +848,7 @@ describe('Selector', () => {
 
         new MyComponent();
       } catch (error) {
-        message = error.message;
+        message = (error as Error).message;
       }
       // Assert
       expect(message).toEqual('Object prototype may only be an Object or null: undefined');
