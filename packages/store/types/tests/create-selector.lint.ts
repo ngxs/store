@@ -119,8 +119,7 @@ describe('[TEST]: createSelector', () => {
     assertType(() => mixinSelector); // $ExpectType (a: TestStateModel, b: string, c: { state: any; someOtherData: string; }) => { a: TestStateModel; b: string; c: { state: any; someOtherData: string; }; }
   });
 
-  it('should infer projector parameter types from selectors', () => {
-    const val = 'x' as const;
+  describe('[projector parameter types]', () => {
     const a = () => ['a'] as const;
     const b = () => ['b'] as const;
     const c = () => ['c'] as const;
@@ -135,15 +134,49 @@ describe('[TEST]: createSelector', () => {
       return null as unknown as ReturnType<T>;
     }
 
-    assertReturnType(createSelector([a],(a) => [...a] as const)); // $ExpectType readonly ["a"]
-    assertReturnType(createSelector([a, b],(a, b) => [...a, ...b] as const)); // $ExpectType readonly ["a", "b"]
-    assertReturnType(createSelector([a, b, c],(a, b, c) => [...a, ...b, ...c] as const)); // $ExpectType readonly ["a", "b", "c"]
-    assertReturnType(createSelector([a, b, c, d],(a, b, c, d) => [...a, ...b, ...c, ...d] as const)); // $ExpectType readonly ["a", "b", "c", "d"]
-    assertReturnType(createSelector([a, b, c, d, e],(a, b, c, d, e) => [...a, ...b, ...c, ...d, ...e] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e"]
-    assertReturnType(createSelector([a, b, c, d, e, f],(a, b, c, d, e, f) => [...a, ...b, ...c, ...d, ...e, ...f] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f"]
-    assertReturnType(createSelector([a, b, c, d, e, f, g],(a, b, c, d, e, f, g) => [...a, ...b, ...c, ...d, ...e, ...f, ...g] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f", "g"]
-    assertReturnType(createSelector([a, b, c, d, e, f, g, h],(a, b, c, d, e, f, g, h) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f", "g", "h"]
-    // tslint:disable:no-unnecessary-type-assertion
-    assertReturnType(createSelector([a, b, c, d, e, f, g, h, i],(a, b, c, d, e, f, g, h, i) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h, ...i] as const)); // $ExpectType readonly any[]
+    it('should infer projector parameter types from selectors', () => {
+      assertReturnType(createSelector([a],(a) => [...a] as const)); // $ExpectType readonly ["a"]
+      assertReturnType(createSelector([a, b],(a, b) => [...a, ...b] as const)); // $ExpectType readonly ["a", "b"]
+      assertReturnType(createSelector([a, b, c],(a, b, c) => [...a, ...b, ...c] as const)); // $ExpectType readonly ["a", "b", "c"]
+      assertReturnType(createSelector([a, b, c, d],(a, b, c, d) => [...a, ...b, ...c, ...d] as const)); // $ExpectType readonly ["a", "b", "c", "d"]
+      assertReturnType(createSelector([a, b, c, d, e],(a, b, c, d, e) => [...a, ...b, ...c, ...d, ...e] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e"]
+      assertReturnType(createSelector([a, b, c, d, e, f],(a, b, c, d, e, f) => [...a, ...b, ...c, ...d, ...e, ...f] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f"]
+      assertReturnType(createSelector([a, b, c, d, e, f, g],(a, b, c, d, e, f, g) => [...a, ...b, ...c, ...d, ...e, ...f, ...g] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f", "g"]
+      assertReturnType(createSelector([a, b, c, d, e, f, g, h],(a, b, c, d, e, f, g, h) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f", "g", "h"]
+      // tslint:disable:no-unnecessary-type-assertion
+      assertReturnType(createSelector([a, b, c, d, e, f, g, h, i],(a, b, c, d, e, f, g, h, i) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h, ...i] as const)); // $ExpectType readonly any[]
+    });
+
+    it('should infer projector parameter types from mixed selectors', () => {
+      // Lets say that this was a state with no model type information
+      class a {}
+
+      assertReturnType(createSelector([a],(a) => [...a] as const)); // $ExpectType readonly any[]
+      assertReturnType(createSelector([a, b],(a, b) => [...a, ...b] as const)); // $ExpectType readonly [...any[], "b"]
+      assertReturnType(createSelector([a, b, c],(a, b, c) => [...a, ...b, ...c] as const)); // $ExpectType readonly [...any[], "b", "c"]
+      assertReturnType(createSelector([a, b, c, d],(a, b, c, d) => [...a, ...b, ...c, ...d] as const)); // $ExpectType readonly [...any[], "b", "c", "d"]
+      assertReturnType(createSelector([a, b, c, d, e],(a, b, c, d, e) => [...a, ...b, ...c, ...d, ...e] as const)); // $ExpectType readonly [...any[], "b", "c", "d", "e"]
+      assertReturnType(createSelector([a, b, c, d, e, f],(a, b, c, d, e, f) => [...a, ...b, ...c, ...d, ...e, ...f] as const)); // $ExpectType readonly [...any[], "b", "c", "d", "e", "f"]
+      assertReturnType(createSelector([a, b, c, d, e, f, g],(a, b, c, d, e, f, g) => [...a, ...b, ...c, ...d, ...e, ...f, ...g] as const)); // $ExpectType readonly [...any[], "b", "c", "d", "e", "f", "g"]
+      assertReturnType(createSelector([a, b, c, d, e, f, g, h],(a, b, c, d, e, f, g, h) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h] as const)); // $ExpectType readonly [...any[], "b", "c", "d", "e", "f", "g", "h"]
+      // tslint:disable:no-unnecessary-type-assertion
+      assertReturnType(createSelector([a, b, c, d, e, f, g, h, i],(a, b, c, d, e, f, g, h, i) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h, ...i] as const)); // $ExpectType readonly any[]
+    });
+
+    it('should infer projector parameter types from mixed selectors (explicit typing where needed)', () => {
+      // Lets say that this was a state with no model type information
+      class a {}
+
+      assertReturnType(createSelector([a],(a: readonly ["a"]) => [...a] as const)); // $ExpectType readonly ["a"]
+      assertReturnType(createSelector([a, b],(a: readonly ["a"], b) => [...a, ...b] as const)); // $ExpectType readonly ["a", "b"]
+      assertReturnType(createSelector([a, b, c],(a: readonly ["a"], b, c) => [...a, ...b, ...c] as const)); // $ExpectType readonly ["a", "b", "c"]
+      assertReturnType(createSelector([a, b, c, d],(a: readonly ["a"], b, c, d) => [...a, ...b, ...c, ...d] as const)); // $ExpectType readonly ["a", "b", "c", "d"]
+      assertReturnType(createSelector([a, b, c, d, e],(a: readonly ["a"], b, c, d, e) => [...a, ...b, ...c, ...d, ...e] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e"]
+      assertReturnType(createSelector([a, b, c, d, e, f],(a: readonly ["a"], b, c, d, e, f) => [...a, ...b, ...c, ...d, ...e, ...f] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f"]
+      assertReturnType(createSelector([a, b, c, d, e, f, g],(a: readonly ["a"], b, c, d, e, f, g) => [...a, ...b, ...c, ...d, ...e, ...f, ...g] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f", "g"]
+      assertReturnType(createSelector([a, b, c, d, e, f, g, h],(a: readonly ["a"], b, c, d, e, f, g, h) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h] as const)); // $ExpectType readonly ["a", "b", "c", "d", "e", "f", "g", "h"]
+      // tslint:disable:no-unnecessary-type-assertion
+      assertReturnType(createSelector([a, b, c, d, e, f, g, h, i],(a: readonly ["a"], b, c, d, e, f, g, h, i) => [...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h, ...i] as const)); // $ExpectType readonly ["a", ...any[]]
+    });
   });
 });
