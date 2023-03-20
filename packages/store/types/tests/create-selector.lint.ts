@@ -31,7 +31,7 @@ describe('[TEST]: createSelector', () => {
         );
       }
 
-      // $ExpectType () => (...args: any[]) => any
+      // $ExpectType () => (s1: any) => any
       static todoB() {
         return createSelector([TodoState]); // $ExpectError
       }
@@ -61,7 +61,7 @@ describe('[TEST]: createSelector', () => {
     assertType(() => store.selectSnapshot(TodoState.todoA())); // $ExpectType string[]
     assertType(() => store.selectSnapshot(TodoState.todoA)); // $ExpectType (state: string[]) => string[]
     assertType(() => store.selectSnapshot(TodoState.todoB())); // $ExpectType any
-    assertType(() => store.selectSnapshot(TodoState.todoB)); // $ExpectType (...args: any[]) => any
+    assertType(() => store.selectSnapshot(TodoState.todoB)); // $ExpectType (s1: any) => any
     assertType(() => store.selectSnapshot(TodoState.todoC())); // $ExpectType string
     assertType(() => store.selectSnapshot(TodoState.todoC)); // $ExpectType (args: number) => string
     assertType(() => store.selectSnapshot(TodoState.todoD())); // $ExpectType Observable<number>
@@ -95,30 +95,30 @@ describe('[TEST]: createSelector', () => {
 
     const selectStateModelProp = createSelector(
       [selectTestStateModel],
-      model => model.prop // $ExpectType (model: any) => any
+      model => model.prop // $ExpectType (model: TestStateModel) => string
     );
 
-    assertType(() => selectStateModelProp); // $ExpectType (model: any) => any
+    assertType(() => selectStateModelProp); // $ExpectType (model: TestStateModel) => string
 
     const selectStateModelPropBySelector = createSelector(
       [TestState.foo],
-      state => state // $ExpectType (state: any) => any
+      state => state // $ExpectType (state: string) => string
     );
 
-    assertType(() => selectStateModelPropBySelector); // $ExpectType (state: any) => any
+    assertType(() => selectStateModelPropBySelector); // $ExpectType (state: string) => string
 
     const selectTestStateModelWithSomeOther = createSelector(
       [TestState, TestState.foo],
-      (state, someOtherData) => ({ state, someOtherData }) // $ExpectType (state: any, someOtherData: any) => { state: any; someOtherData: any; }
+      (state, someOtherData) => ({ state, someOtherData }) // $ExpectType (state: any, someOtherData: string) => { state: any; someOtherData: string; }
     );
 
-    assertType(() => selectTestStateModelWithSomeOther); // $ExpectType (state: any, someOtherData: any) => { state: any; someOtherData: any; }
+    assertType(() => selectTestStateModelWithSomeOther); // $ExpectType (state: any, someOtherData: string) => { state: any; someOtherData: string; }
 
     const mixinSelector = createSelector(
       [selectTestStateModel, TestState.foo, selectTestStateModelWithSomeOther],
-      (a, b, c) => ({ a, b, c }) // $ExpectType (a: any, b: any, c: any) => { a: any; b: any; c: any; }
+      (a, b, c) => ({ a, b, c }) // $ExpectType (a: TestStateModel, b: string, c: { state: any; someOtherData: string; }) => { a: TestStateModel; b: string; c: { state: any; someOtherData: string; }; }
     );
 
-    assertType(() => mixinSelector); // $ExpectType (a: any, b: any, c: any) => { a: any; b: any; c: any; }
+    assertType(() => mixinSelector); // $ExpectType (a: TestStateModel, b: string, c: { state: any; someOtherData: string; }) => { a: TestStateModel; b: string; c: { state: any; someOtherData: string; }; }
   });
 });
