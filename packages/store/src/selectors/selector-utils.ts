@@ -44,7 +44,7 @@ export function createRootSelectorFactory<T extends (...args: any[]) => any>(
 
 export function createMemoizedSelectorFn<T extends (...args: any[]) => any>(
   originalFn: T,
-  creationMetadata: CreationMetadata | undefined
+  creationMetadata: Partial<CreationMetadata> | undefined
 ) {
   const containerClass = creationMetadata && creationMetadata.containerClass;
   const wrappedFn = function wrappedSelectorFn(...args: any[]) {

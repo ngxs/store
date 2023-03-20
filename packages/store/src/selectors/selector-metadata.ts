@@ -19,14 +19,14 @@ export const selectorOptionsMetaAccessor = {
 
 export function setupSelectorMetadata<T extends (...args: any[]) => any>(
   originalFn: T,
-  creationMetadata: CreationMetadata | undefined
+  creationMetadata: Partial<CreationMetadata> | undefined
 ) {
   const selectorMetaData = ensureSelectorMetadata(originalFn);
   selectorMetaData.originalFn = originalFn;
   let getExplicitSelectorOptions = () => ({});
   if (creationMetadata) {
     selectorMetaData.containerClass = creationMetadata.containerClass;
-    selectorMetaData.selectorName = creationMetadata.selectorName;
+    selectorMetaData.selectorName = creationMetadata.selectorName || null;
     getExplicitSelectorOptions =
       creationMetadata.getSelectorOptions || getExplicitSelectorOptions;
   }

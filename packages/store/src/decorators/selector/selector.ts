@@ -1,11 +1,17 @@
 import { throwSelectorDecoratorError } from '../../configs/messages.config';
+import { SelectorDef } from '../../selectors';
 import { createSelector } from '../../selectors/create-selector';
 import { SelectorSpec, SelectorType } from './symbols';
 
 /**
  * Decorator for memoizing a state selector.
  */
-export function Selector<T>(selectors?: T[]): SelectorType<T> {
+
+export function Selector(): SelectorType<never>;
+
+export function Selector<T extends SelectorDef<any>>(selectors: T[]): SelectorType<T>;
+
+export function Selector<T extends SelectorDef<any>>(selectors?: T[]): SelectorType<T> {
   return <U>(
     target: any,
     key: string | symbol,
