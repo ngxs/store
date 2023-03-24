@@ -4,58 +4,57 @@ import { Action, NgxsModule, Selector, State, StateContext, Store } from '@ngxs/
 import { switchMap, tap } from 'rxjs/operators';
 
 describe('Select once after dispatch (https://github.com/ngxs/store/issues/1976)', () => {
-  class Add {
-    static readonly type = 'Add';
-  }
-
-  @State<number>({
-    name: 'counter',
-    defaults: 0
-  })
-  @Injectable()
-  class CounterState {
-    @Selector()
-    static magicNumber(): number {
-      return 42;
+  function setupFixture() {
+    class Add {
+      static readonly type = 'Add';
     }
 
-    @Action(Add)
-    add(ctx: StateContext<number>) {
-      const state = ctx.getState();
-      ctx.setState(state + 1);
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    @Injectable()
+    class CounterState {
+      @Selector()
+      static magicNumber(): number {
+        return 42;
+      }
+
+      @Action(Add)
+      add(ctx: StateContext<number>) {
+        const state = ctx.getState();
+        ctx.setState(state + 1);
+      }
     }
-  }
 
-  @Component({
-    template: `
-      <h1>{{ counter$ | async }}</h1>
-      <button (click)="dispatch()">Click me</button>
-    `
-  })
-  class TestComponent {
-    selectSnapshotValue: number | null = null;
-    selectOnceValue: number | null = null;
+    @Component({
+      template: `
+        <h1>{{ counter$ | async }}</h1>
+        <button (click)="dispatch()">Click me</button>
+      `
+    })
+    class TestComponent {
+      selectSnapshotValue: number | null = null;
+      selectOnceValue: number | null = null;
 
-    constructor(private store: Store) {}
+      constructor(private store: Store) {}
 
-    dispatch(): void {
-      this.store
-        .selectOnce(CounterState.magicNumber)
-        .pipe(
-          switchMap(() => this.store.dispatch(new Add())),
-          tap(() => {
-            this.selectSnapshotValue = this.store.selectSnapshot(CounterState);
-          }),
-          switchMap(() => this.store.selectOnce(CounterState))
-        )
-        .subscribe(selectOnceValue => {
-          this.selectOnceValue = selectOnceValue;
-        });
+      dispatch(): void {
+        this.store
+          .selectOnce(CounterState.magicNumber)
+          .pipe(
+            switchMap(() => this.store.dispatch(new Add())),
+            tap(() => {
+              this.selectSnapshotValue = this.store.selectSnapshot(CounterState);
+            }),
+            switchMap(() => this.store.selectOnce(CounterState))
+          )
+          .subscribe(selectOnceValue => {
+            this.selectOnceValue = selectOnceValue;
+          });
+      }
     }
-  }
 
-  it('should receive the latest value (previously it was a bug because of refCount() which made observable cold)', async () => {
-    // Arrange
     TestBed.configureTestingModule({
       declarations: [TestComponent],
       imports: [NgxsModule.forRoot([CounterState])]
@@ -64,6 +63,14 @@ describe('Select once after dispatch (https://github.com/ngxs/store/issues/1976)
     const fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
 
+    return {
+      fixture
+    };
+  }
+
+  it('should receive the latest value (previously it was a bug because of refCount() which made observable cold)', async () => {
+    // Arrange
+    const { fixture } = setupFixture();
     // Act
     document.querySelector('button')!.click();
 
