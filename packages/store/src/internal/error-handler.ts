@@ -1,8 +1,9 @@
-import { ErrorHandler, Injectable, Injector } from '@angular/core';
-import { Observable } from 'rxjs';
+import { ErrorHandler, Injectable, Injector, NgZone } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
 
 import { leaveNgxs } from '../operators/leave-ngxs';
 import { NgxsExecutionStrategy } from '../execution/symbols';
+import { tap } from 'rxjs/operators';
 
 /**
  * This operator is used for piping the observable result
@@ -42,7 +43,27 @@ export function ngxsErrorHandler<T>(
 
     return new Observable(subscriber => {
       subscribed = true;
-      return source.pipe(leaveNgxs(ngxsExecutionStrategy)).subscribe(subscriber);
+      // console.log('Closed', subscriber.closed);
+      // if (subscriber.closed) {
+      //   subscriber.error = error => internalErrorReporter.reportErrorSafely(error);
+      // }
+      return source.pipe(leaveNgxs(ngxsExecutionStrategy)).subscribe({
+        next() {
+          subscriber.next();
+        },
+        error(error) {
+          if (!subscriber.closed) {
+            console.error(`Unhandled error: ${error}`);
+            internalErrorReporter.reportErrorSafely(error);
+          } else {
+            // subscriber.error(error);
+            throwError(error).subscribe(); // re-throw error for the subscriber to handle
+          }
+        },
+        complete() {
+          subscriber.complete();
+        }
+      });
     });
   };
 }
