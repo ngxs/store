@@ -1,8 +1,8 @@
-import { Component, NgModule } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
+import { Component, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { Router, RouterModule } from '@angular/router';
-import { APP_BASE_HREF } from '@angular/common';
 import { Observable } from 'rxjs';
 
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
@@ -25,6 +25,7 @@ describe('Invalid state re-hydration (https://github.com/ngxs/store/issues/1146)
     name: 'counter',
     defaults: 0
   })
+  @Injectable()
   class CounterState implements NgxsOnInit {
     ngxsOnInit(ctx: StateContext<number>) {
       ctx.setState(999);

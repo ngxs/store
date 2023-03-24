@@ -163,6 +163,7 @@ describe('StoreValidator', () => {
           defaults: {},
           children: [ChildState]
         })
+        @Injectable()
         class MyState {}
 
         TestBed.configureTestingModule({

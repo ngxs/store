@@ -1,5 +1,6 @@
 /* tslint:disable:max-line-length no-unnecessary-callback-wrapper */
 /// <reference types="@types/jest" />
+import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Action, InitState, UpdateState, NgxsModule, State, Store } from '@ngxs/store';
 
@@ -76,6 +77,7 @@ describe('[TEST]: Action Types', () => {
       name: 'counter',
       defaults: 0
     })
+    @Injectable()
     class MyState {
       @Action(Increment) increment1() {} // $ExpectType () => void
       @Action({ type: 'INCREMENT' }) increment2() {} // $ExpectType () => void

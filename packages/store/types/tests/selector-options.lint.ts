@@ -1,5 +1,6 @@
 /* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
+import { Injectable } from '@angular/core';
 import { Selector, State, SelectorOptions } from '@ngxs/store';
 import { assertType } from './utils/assert-type';
 
@@ -7,11 +8,13 @@ describe('[TEST]: The SelectorOptions decorator', () => {
   it('should be valid on on State classes', () => {
     @State<string>({ name: 'my-state' })
     @SelectorOptions({ injectContainerState: false })
+    @Injectable()
     class MyState { }
   });
 
   it('should be valid on on State class selectors', () => {
     @State<string>({ name: 'my-state' })
+    @Injectable()
     class MyState {
       @Selector([MyState])
       @SelectorOptions({ injectContainerState: false })
@@ -23,6 +26,7 @@ describe('[TEST]: The SelectorOptions decorator', () => {
 
   it('should be valid on on query classes', () => {
     @State<string>({ name: 'my-state' })
+    @Injectable()
     class MyState { }
 
     @SelectorOptions({ suppressErrors: false })
@@ -36,6 +40,7 @@ describe('[TEST]: The SelectorOptions decorator', () => {
 
   it('should be valid on on query class selectors', () => {
     @State<string>({ name: 'my-state' })
+    @Injectable()
     class MyState { }
 
     class MyStateQueries {
@@ -49,6 +54,7 @@ describe('[TEST]: The SelectorOptions decorator', () => {
 
   it('should not be a valid parameter decorator', () => {
     @State<string>({ name: 'my-state' })
+    @Injectable()
     class MyState {
       @Selector([MyState])
       getMyState(
@@ -62,6 +68,7 @@ describe('[TEST]: The SelectorOptions decorator', () => {
 
   it('should not be a valid property decorator', () => {
     @State<string>({ name: 'my-state' })
+    @Injectable()
     class MyState {
       @SelectorOptions({ injectContainerState: false }) // $ExpectError
       getMyState = () => 'test';

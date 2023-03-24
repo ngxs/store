@@ -30,6 +30,7 @@ describe('NgxsStoragePlugin', () => {
     name: 'counter',
     defaults: { count: 0 }
   })
+  @Injectable()
   class CounterState {
     @Action(Increment)
     increment({ getState, setState }: StateContext<CounterStateModel>) {
