@@ -42,12 +42,8 @@ export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
   }
 
   ngOnDestroy(): void {
-    if (this.unsubscribe !== null) {
-      this.unsubscribe();
-    }
-    if (this.globalDevtools) {
-      this.globalDevtools.disconnect();
-    }
+    this.unsubscribe?.();
+    this.globalDevtools?.disconnect();
   }
 
   /**
@@ -111,11 +107,8 @@ export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
       } else if (action.payload.type === ReduxDevtoolsPayloadType.ToggleAction) {
         console.warn('Skip is not supported at this time.');
       } else if (action.payload.type === ReduxDevtoolsPayloadType.ImportState) {
-        const {
-          actionsById,
-          computedStates,
-          currentStateIndex
-        } = action.payload.nextLiftedState;
+        const { actionsById, computedStates, currentStateIndex } =
+          action.payload.nextLiftedState;
         this.devtoolsExtension!.init(computedStates[0].state);
         Object.keys(actionsById)
           .filter(actionId => actionId !== '0')

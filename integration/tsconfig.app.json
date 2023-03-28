@@ -8,7 +8,6 @@
     },
     "outDir": "./out-tsc/app",
     "module": "es2020",
-    "target": "es2015",
     "types": ["node"]
   },
   "files": ["main.browser.ts", "polyfills.ts"],

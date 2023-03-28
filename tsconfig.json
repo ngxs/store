@@ -27,9 +27,10 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "ES2022",
     "lib": ["es2017", "dom", "es2018.promise"],
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["node_modules/@types"],
+    "useDefineForClassFields": false
   },
   "exclude": ["@ngxs/**", "integrations/**", "cypress"]
 }

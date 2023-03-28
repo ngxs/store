@@ -22,7 +22,13 @@ export function getPackages(): Package[] {
     const name = path[path.length - 1];
     const packageName = `${json.packageScope}/${name}`;
     const buildPath = resolve(__dirname, '../', '@ngxs', name);
-    const ngPackagrProjectPath = resolve(__dirname, '../', 'packages', name, 'package.json');
+    const ngPackagrProjectPath = resolve(
+      __dirname,
+      '../',
+      'packages',
+      name,
+      'ng-package.json'
+    );
     return {
       name,
       packageName,
