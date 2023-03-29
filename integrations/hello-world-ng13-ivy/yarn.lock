@@ -1783,37 +1783,37 @@
   integrity sha512-ZWsuwgwNZp0cmlvGNcWChltbY8BxfwifscLteSXIC2x7RvPaXhdUhmzvRDeQJa1KUmXd/xUuHZqgiAQsWRT7IA==
 
 "@ngxs/devtools-plugin@file:./node_modules/@ngxs/devtools-plugin":
-  version "3.7.6"
+  version "3.8.0"
   dependencies:
     tslib "^2.2.0"
 
 "@ngxs/form-plugin@file:./node_modules/@ngxs/form-plugin":
-  version "3.7.6"
+  version "3.8.0"
   dependencies:
     tslib "^2.2.0"
 
 "@ngxs/logger-plugin@file:./node_modules/@ngxs/logger-plugin":
-  version "3.7.6"
+  version "3.8.0"
   dependencies:
     tslib "^2.2.0"
 
 "@ngxs/router-plugin@file:./node_modules/@ngxs/router-plugin":
-  version "3.7.6"
+  version "3.8.0"
   dependencies:
     tslib "^2.2.0"
 
 "@ngxs/storage-plugin@file:./node_modules/@ngxs/storage-plugin":
-  version "3.7.6"
+  version "3.8.0"
   dependencies:
     tslib "^2.2.0"
 
 "@ngxs/store@file:./node_modules/@ngxs/store":
-  version "3.7.6"
+  version "3.8.0"
   dependencies:
     tslib "^2.2.0"
 
 "@ngxs/websocket-plugin@file:./node_modules/@ngxs/websocket-plugin":
-  version "3.7.6"
+  version "3.8.0"
   dependencies:
     tslib "^2.2.0"
 
