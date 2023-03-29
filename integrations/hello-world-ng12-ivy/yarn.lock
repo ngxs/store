@@ -9682,7 +9682,7 @@ webpack-dev-middleware@4.1.0:
     schema-utils "^3.0.0"
 
 webpack-dev-middleware@^3.7.2:
-  version "3.7.3"
+  version "3.7.6"
   resolved "https://registry.npmjs.org/webpack-dev-middleware/-/webpack-dev-middleware-3.7.3.tgz#0639372b143262e2b84ab95d3b91a7597061c2c5"
   integrity sha512-djelc/zGiz9nZj/U7PTBi2ViorGJXEWo/3ltkPbDyxCXhhEXkW0ce99falaok4TPj+AsxLiXJR0EBOb0zh9fKQ==
   dependencies:
