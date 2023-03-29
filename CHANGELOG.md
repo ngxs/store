@@ -1,6 +1,18 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev)
 
+```bash
+$ npm install @ngxs/store@dev
+```
+
 ### For next major version
+
+- ...
+
+### To become next patch version
+
+- ...
+
+# 3.8.0 2023-03-29
 
 - Feature: Build packages in Ivy format [#1945](https://github.com/ngxs/store/pull/1945)
 - Feature: Add advanced selector utilities [#1824](https://github.com/ngxs/store/pull/1824)
@@ -17,12 +29,6 @@
 - Performance: Tree-shake patch errors [#1955](https://github.com/ngxs/store/pull/1955)
 - Fix: Get descriptor explicitly when it's considered as a class property [#1961](https://github.com/ngxs/store/pull/1961)
 - Fix: Avoid delayed updates from state stream [#1981](https://github.com/ngxs/store/pull/1981)
-
-### To become next patch version
-
-```bash
-$ npm install @ngxs/store@dev
-```
 
 # 3.7.6 2022-11-23
 
