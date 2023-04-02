@@ -1,5 +1,5 @@
 import { ErrorHandler, Injectable, NgZone } from '@angular/core';
-import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import {
   State,
   Action,
@@ -9,7 +9,7 @@ import {
   NgxsExecutionStrategy
 } from '@ngxs/store';
 import { of, throwError, timer } from 'rxjs';
-import { delay, skip, tap } from 'rxjs/operators';
+import { delay, map, tap } from 'rxjs/operators';
 
 import { NoopErrorHandler } from './helpers/utils';
 
@@ -71,7 +71,7 @@ describe('Dispatch', () => {
       ]
     });
 
-    const store: Store = TestBed.inject(Store);
+    const store = TestBed.inject(Store);
 
     // `typeof message | null` as we don't know will be assigned or not.
     // Let's test it out at the end
@@ -92,7 +92,8 @@ describe('Dispatch', () => {
     expect(thrownMessage).toBeNull();
   });
 
-  it('should run outside zone and return back in zone', async(() => {
+  it('should run outside zone and return back in zone', () => {
+    // Arrange
     @State<number>({
       name: 'counter',
       defaults: 0
@@ -109,17 +110,20 @@ describe('Dispatch', () => {
       imports: [NgxsModule.forRoot([MyState]), NgxsModule.forFeature([])]
     });
 
-    const store: Store = TestBed.inject(Store);
-    const zone: NgZone = TestBed.inject(NgZone);
+    const store = TestBed.inject(Store);
+    const zone = TestBed.inject(NgZone);
+
+    // Act
     zone.run(() => {
       expect(NgZone.isInAngularZone()).toBe(true);
       store.dispatch(new Increment()).subscribe(() => {
         expect(NgZone.isInAngularZone()).toBe(true);
       });
     });
-  }));
+  });
 
-  it('should only call action once', async(() => {
+  it('should only call action once', () => {
+    // Arrange
     let actionInvoked = 0;
     let subscibeInvoked = 0;
     let selectInvoked = 0;
@@ -142,20 +146,23 @@ describe('Dispatch', () => {
       imports: [NgxsModule.forRoot([MyState]), NgxsModule.forFeature([])]
     });
 
-    const store: Store = TestBed.inject(Store);
-    store.dispatch(new Increment()).subscribe(() => subscibeInvoked++);
+    const store = TestBed.inject(Store);
 
+    // Act
+    store.dispatch(new Increment()).subscribe(() => subscibeInvoked++);
     store.select(MyState).subscribe(res => {
       expect(res).toBe(1);
       selectInvoked++;
     });
 
+    // Assert
     expect(actionInvoked).toEqual(1);
     expect(subscibeInvoked).toEqual(1);
     expect(selectInvoked).toEqual(1);
-  }));
+  });
 
-  it('should correctly dispatch the action', async(() => {
+  it('should correctly dispatch the action', async () => {
+    // Arrange
     @State<number>({
       name: 'counter',
       defaults: 0
@@ -177,20 +184,21 @@ describe('Dispatch', () => {
       imports: [NgxsModule.forRoot([MyState])]
     });
 
-    const store: Store = TestBed.inject(Store);
+    const store = TestBed.inject(Store);
 
+    // Act
     store.dispatch(new Increment());
     store.dispatch(new Increment());
     store.dispatch(new Increment());
     store.dispatch(new Increment());
     store.dispatch(new Decrement());
 
-    store.selectOnce(MyState).subscribe(res => {
-      expect(res).toBe(3);
-    });
-  }));
+    // Assert
+    expect(await store.selectOnce(MyState).toPromise()).toEqual(3);
+  });
 
-  it('should correctly dispatch an async event', async(() => {
+  it('should correctly dispatch an async event', async () => {
+    // Arrange
     @State<number>({
       name: 'counter',
       defaults: 0
@@ -216,12 +224,13 @@ describe('Dispatch', () => {
       imports: [NgxsModule.forRoot([MyState])]
     });
 
-    const store: Store = TestBed.inject(Store);
+    const store = TestBed.inject(Store);
 
+    // Act
     store.dispatch(new Increment());
     store.dispatch(new Increment());
 
-    store
+    await store
       .dispatch([
         new Increment(),
         new Increment(),
@@ -229,14 +238,14 @@ describe('Dispatch', () => {
         new Increment(),
         new Decrement()
       ])
-      .subscribe(() => {
-        store.select(MyState).subscribe(res => {
-          expect(res).toBe(5);
-        });
-      });
-  }));
+      .toPromise();
 
-  it('should correctly dispatch events from other events', async(() => {
+    // Assert
+    expect(await store.selectOnce(MyState).toPromise()).toEqual(5);
+  });
+
+  it('should correctly dispatch events from other events', async () => {
+    // Arrange
     @State<number>({
       name: 'counter',
       defaults: 0
@@ -259,16 +268,19 @@ describe('Dispatch', () => {
       imports: [NgxsModule.forRoot([MyState])]
     });
 
-    const store: Store = TestBed.inject(Store);
+    const store = TestBed.inject(Store);
 
-    store.dispatch([new Increment()]).subscribe(() => {
-      store.selectOnce(MyState).subscribe(res => {
-        expect(res).toBe(10);
-      });
-    });
-  }));
+    // Act
+    store.dispatch([new Increment()]);
 
-  it('should correctly dispatch events from other async actions', async(() => {
+    // Assert
+    expect(await store.selectOnce(MyState).toPromise()).toEqual(10);
+  });
+
+  it('should correctly dispatch events from other async actions', fakeAsync(async () => {
+    // Arrange
+    const iterations = 10;
+
     @State<number>({
       name: 'counter',
       defaults: 0
@@ -278,13 +290,13 @@ describe('Dispatch', () => {
       @Action(Increment)
       increment({ getState, setState, dispatch }: StateContext<number>) {
         return timer(0).pipe(
-          tap(() => {
+          map(() => {
             const state = getState();
 
-            if (state < 10) {
+            if (state < iterations) {
               setState(state + 1);
 
-              dispatch(new Increment());
+              return dispatch(new Increment());
             }
           })
         );
@@ -295,19 +307,22 @@ describe('Dispatch', () => {
       imports: [NgxsModule.forRoot([MyState])]
     });
 
-    const store: Store = TestBed.inject(Store);
+    const store = TestBed.inject(Store);
 
-    store
-      .select(MyState)
-      .pipe(skip(10))
-      .subscribe(res => {
-        expect(res).toBe(10);
-      });
-
+    // Act
     store.dispatch([new Increment()]);
+
+    // Flush all of the timers equal to number of iterations.
+    Array.from({ length: iterations }).forEach(() => tick(0));
+
+    // Assert
+    expect(await store.selectOnce(MyState).toPromise()).toEqual(10);
   }));
 
-  it('should correctly cancel previous actions', async(() => {
+  it('should correctly cancel previous actions', fakeAsync(async () => {
+    // Arrange
+    let actionInvokedTimes = 0;
+
     @State<number>({
       name: 'counter',
       defaults: 0
@@ -316,6 +331,7 @@ describe('Dispatch', () => {
     class MyState {
       @Action(Increment, { cancelUncompleted: true })
       increment({ getState, setState }: StateContext<number>) {
+        actionInvokedTimes++;
         return timer(0).pipe(
           tap(() => {
             const state = getState();
@@ -330,8 +346,9 @@ describe('Dispatch', () => {
       imports: [NgxsModule.forRoot([MyState])]
     });
 
-    const store: Store = TestBed.inject(Store);
+    const store = TestBed.inject(Store);
 
+    // Act
     store.dispatch([
       new Increment(),
       new Increment(),
@@ -343,17 +360,17 @@ describe('Dispatch', () => {
 
     store.dispatch([new Increment()]);
 
-    store
-      .select(MyState)
-      .pipe(skip(1))
-      .subscribe(res => {
-        expect(res).toBe(1);
-      });
+    tick(0);
+
+    // Assert
+    expect(actionInvokedTimes).toEqual(7);
+    expect(await store.selectOnce(MyState).toPromise()).toEqual(1);
   }));
 
   describe('returns an observable that', () => {
     describe('when the action handler is synchronous', () => {
-      it('should notify of the completion of the action handler', async(() => {
+      it('should notify of the completion of the action handler', () => {
+        // Arrange
         let actionsHandled = 0;
 
         @State<number>({
@@ -372,14 +389,17 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
-        store.dispatch(new Increment()).subscribe(() => {
-          expect(actionsHandled).toEqual(1);
-        });
-      }));
+        // Act
+        store.dispatch(new Increment());
 
-      it('should notify of the completion of multiple action handlers', async(() => {
+        // Assert
+        expect(actionsHandled).toEqual(1);
+      });
+
+      it('should notify of the completion of multiple action handlers', () => {
+        // Arrange
         let actionsHandled = 0;
 
         @State<number>({
@@ -403,16 +423,19 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
-        store.dispatch(new Increment()).subscribe(() => {
-          expect(actionsHandled).toEqual(2);
-        });
-      }));
+        // Act
+        store.dispatch(new Increment());
+
+        // Assert
+        expect(actionsHandled).toEqual(2);
+      });
     });
 
     describe('when the action handler returns a promise', () => {
-      it('should notify of the completion of the promise', async(() => {
+      it('should notify of the completion of the promise', fakeAsync(() => {
+        // Arrange
         let actionsHandled = 0;
 
         @State<number>({
@@ -433,14 +456,18 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
-        store.dispatch(new Increment()).subscribe(() => {
-          expect(actionsHandled).toEqual(1);
-        });
+        // Act
+        store.dispatch(new Increment());
+        flush();
+
+        // Assert
+        expect(actionsHandled).toEqual(1);
       }));
 
-      it('should notify of the completion of many action handlers returning promises', async(() => {
+      it('should notify of the completion of many action handlers returning promises', fakeAsync(() => {
+        // Arrange
         let actionsHandled = 0;
 
         @State<number>({
@@ -468,16 +495,21 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
-        store.dispatch(new Increment()).subscribe(() => {
-          expect(actionsHandled).toEqual(2);
-        });
+        // Act
+        store.dispatch(new Increment());
+        // 10 should be enough to flush both.
+        tick(10);
+
+        // Assert
+        expect(actionsHandled).toEqual(2);
       }));
     });
 
     describe('when the action handler returns an observable', () => {
-      it('should notify of the completion of the observable', async(() => {
+      it('should notify of the completion of the observable', fakeAsync(() => {
+        // Arrange
         let actionsHandled = 0;
 
         @State<number>({
@@ -499,14 +531,18 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
-        store.dispatch(new Increment()).subscribe(() => {
-          expect(actionsHandled).toEqual(1);
-        });
+        // Act
+        store.dispatch(new Increment());
+        tick(10);
+
+        // Assert
+        expect(actionsHandled).toEqual(1);
       }));
 
-      it('should notify of the completion of many action handlers returning observables', async(() => {
+      it('should notify of the completion of many action handlers returning observables', fakeAsync(() => {
+        // Arrange
         let actionsHandled = 0;
 
         @State<number>({
@@ -536,16 +572,20 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
-        store.dispatch(new Increment()).subscribe(() => {
-          expect(actionsHandled).toEqual(2);
-        });
+        // Act
+        store.dispatch(new Increment());
+        tick(10);
+
+        // Assert
+        expect(actionsHandled).toEqual(2);
       }));
     });
 
     describe('when the multiple action handlers for the action return a mix of synchronous, async, and observable', () => {
-      it('should notify of the completion of all action handlers', async(() => {
+      it('should notify of the completion of all action handlers', fakeAsync(() => {
+        // Arrange
         let actionsHandled = 0;
 
         @State<number>({
@@ -579,16 +619,20 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
-        store.dispatch(new Increment()).subscribe(() => {
-          expect(actionsHandled).toEqual(3);
-        });
+        // Act
+        store.dispatch(new Increment());
+        tick(10);
+
+        // Assert
+        expect(actionsHandled).toEqual(3);
       }));
     });
 
     describe('when the action handler synchronously returns a primitive', () => {
-      it('should notify of the completion immediately', async(() => {
+      it('should notify of the completion immediately', () => {
+        // Arrange
         @State<number>({
           name: 'counter',
           defaults: 0
@@ -605,19 +649,22 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
         let subscriptionCalled = false;
+        // Act
         store.dispatch(new Increment()).subscribe(() => {
           subscriptionCalled = true;
         });
 
+        // Assert
         expect(subscriptionCalled).toBeTruthy();
-      }));
+      });
     });
 
     describe('when there are no action handlers', () => {
-      it('should notify of the completion immediately', async(() => {
+      it('should notify of the completion immediately', () => {
+        // Arrange
         @State<number>({
           name: 'counter',
           defaults: 0
@@ -629,16 +676,19 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
         let subscriptionCalled = false;
+        // Act
         store.dispatch(new Increment()).subscribe(() => (subscriptionCalled = true));
 
+        // Assert
         expect(subscriptionCalled).toBeTruthy();
-      }));
+      });
     });
 
     describe('when an empty action array is provided', () => {
-      it('should notify of the completion immediately', async(() => {
+      it('should notify of the completion immediately', () => {
+        // Arrange
         @State<number>({
           name: 'counter',
           defaults: 0
@@ -650,16 +700,19 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
         let completionCalled = false;
+        // Act
         store.dispatch([]).subscribe({
           complete: () => (completionCalled = true)
         });
 
+        // Assert
         expect(completionCalled).toBeTruthy();
-      }));
+      });
 
-      it('should have a next value', async(() => {
+      it('should have a next value', () => {
+        // Arrange
         @State<number>({
           name: 'counter',
           defaults: 0
@@ -671,16 +724,19 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
         let nextCalled = false;
+        // Act
         store.dispatch([]).subscribe({
           next: () => (nextCalled = true)
         });
 
+        // Assert
         expect(nextCalled).toBeTruthy();
-      }));
+      });
 
-      it('should not have an error value', async(() => {
+      it('should not have an error value', () => {
+        // Arrange
         @State<number>({
           name: 'counter',
           defaults: 0
@@ -692,18 +748,21 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
         let errorCalled = false;
+        // Act
         store.dispatch([]).subscribe({
           error: () => (errorCalled = true)
         });
 
+        // Assert
         expect(errorCalled).toBeFalsy();
-      }));
+      });
     });
 
     describe('when the action is canceled by a subsequent action', () => {
       it('should not trigger observer, but should complete observable stream', fakeAsync(() => {
+        // Arrange
         const resolvers: (() => void)[] = [];
         const subscriptionsCalled: string[] = [];
 
@@ -724,8 +783,9 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
+        // Act
         store.dispatch(new Increment()).subscribe(
           () => subscriptionsCalled.push('previous'),
           () => subscriptionsCalled.push('previous error'),
@@ -735,10 +795,13 @@ describe('Dispatch', () => {
         resolvers[0]();
         resolvers[1]();
         tick(0);
+
+        // Assert
         expect(subscriptionsCalled).toEqual(['increment', 'previous complete', 'increment']);
       }));
 
       it('should trigger next and completion for latest but only completion for previous', fakeAsync(() => {
+        // Arrange
         const resolvers: (() => void)[] = [];
         const subscriptionsCalled: string[] = [];
 
@@ -759,8 +822,9 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
+        // Act
         store.dispatch(new Increment()).subscribe(
           () => subscriptionsCalled.push('previous'),
           () => subscriptionsCalled.push('previous error'),
@@ -774,6 +838,8 @@ describe('Dispatch', () => {
         resolvers[0]();
         resolvers[1]();
         tick(0);
+
+        // Assert
         expect(subscriptionsCalled).toEqual([
           'increment',
           'previous complete',
@@ -785,7 +851,8 @@ describe('Dispatch', () => {
     });
 
     describe('when the action returns an observable error', () => {
-      it('should not trigger observer, but should error the observable stream', async(() => {
+      it('should not trigger observer, but should error the observable stream', () => {
+        // Arrange
         @State<number>({
           name: 'counter',
           defaults: 0
@@ -803,20 +870,24 @@ describe('Dispatch', () => {
           providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
         const subscriptionsCalled: string[] = [];
+        // Act
         store.dispatch(new Increment()).subscribe(
           () => subscriptionsCalled.push('next'),
           error => subscriptionsCalled.push('error: ' + error),
           () => subscriptionsCalled.push('complete')
         );
+
+        // Assert
         expect(subscriptionsCalled).toEqual(['error: This is my error message!']);
-      }));
+      });
     });
 
     describe('when the action throws an error', () => {
-      it('should not trigger observer, but should error the observable stream', async(() => {
+      it('should not trigger observer, but should error the observable stream', () => {
+        // Arrange
         @State<number>({
           name: 'counter',
           defaults: 0
@@ -834,20 +905,24 @@ describe('Dispatch', () => {
           providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
         });
 
-        const store: Store = TestBed.inject(Store);
-
+        const store = TestBed.inject(Store);
         const subscriptionsCalled: string[] = [];
+
+        // Act
         store.dispatch(new Increment()).subscribe(
           () => subscriptionsCalled.push('next'),
           (error: Error) => subscriptionsCalled.push('error: ' + error.message),
           () => subscriptionsCalled.push('complete')
         );
+
+        // Assert
         expect(subscriptionsCalled).toEqual(['error: This is my error message!']);
-      }));
+      });
     });
 
     describe('when many separate actions dispatched return out of order', () => {
-      it('should notify of the completion of the relative observable', async(() => {
+      it('should notify of the completion of the relative observable', fakeAsync(() => {
+        // Arrange
         class Append {
           static type = 'Test';
 
@@ -873,8 +948,9 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
+        // Act & assert
         store
           .dispatch(new Append('dddd'))
           .subscribe(state => expect(state.text).toEqual('abbcccdddd'));
@@ -883,11 +959,14 @@ describe('Dispatch', () => {
           .dispatch(new Append('ccc'))
           .subscribe(state => expect(state.text).toEqual('abbccc'));
         store.dispatch(new Append('bb')).subscribe(state => expect(state.text).toEqual('abb'));
+
+        tick(100);
       }));
     });
 
     describe('when many actions dispatched together', () => {
-      it('should notify once all completed', async(() => {
+      it('should notify once all completed', fakeAsync(() => {
+        // Arrange
         class Append {
           static type = 'Test';
 
@@ -913,8 +992,9 @@ describe('Dispatch', () => {
           imports: [NgxsModule.forRoot([MyState])]
         });
 
-        const store: Store = TestBed.inject(Store);
+        const store = TestBed.inject(Store);
 
+        // Act & assert
         store
           .dispatch([new Append('dddd'), new Append('a'), new Append('ccc'), new Append('bb')])
           .subscribe(results => {
@@ -925,6 +1005,8 @@ describe('Dispatch', () => {
               'abb'
             ]);
           });
+
+        tick(100);
       }));
     });
   });
