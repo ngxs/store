@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { Store } from '../src/store';
 import { State } from '../src/decorators/state';
 import { NgxsModule } from '../src/module';
+import { Action, StateContext } from '../src/public_api';
 
 describe('Inheritance @State', () => {
   interface MyStateModel {
@@ -99,6 +100,64 @@ describe('Inheritance @State', () => {
       },
       third: {
         value: 'shared_value'
+      }
+    });
+  });
+
+  it("should create a new action handler for child and change it's value when the scope refers to this state", async () => {
+    class ChangeValue {
+      static type = 'Change Value';
+    }
+
+    const newValue = 'new value';
+    @Injectable()
+    class AbstractState {
+      @Action(ChangeValue, { newActionHandlerForChild: true })
+      changeValue(context: StateContext<MyStateModel>) {
+        return context.patchState({ value: newValue });
+      }
+    }
+
+    const child1 = {
+      name: 'child1',
+      value: 'child value 1'
+    };
+    @State<MyStateModel>({
+      name: child1.name,
+      defaults: {
+        value: child1.value
+      }
+    })
+    @Injectable()
+    class Child1State extends AbstractState {}
+
+    const child2 = {
+      name: 'child2',
+      value: 'child value 2'
+    };
+    @State<MyStateModel>({
+      name: child2.name,
+      defaults: {
+        value: child2.value
+      }
+    })
+    @Injectable()
+    class Child2State extends AbstractState {}
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([Child1State, Child2State])]
+    });
+
+    const store = TestBed.inject(Store);
+
+    await store.dispatch(ChangeValue, { scope: Child1State });
+
+    expect(store.snapshot()).toEqual({
+      [child1.name]: {
+        value: newValue
+      },
+      [child2.name]: {
+        value: child2.value
       }
     });
   });

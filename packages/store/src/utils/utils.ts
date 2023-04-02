@@ -1,13 +1,29 @@
+import { DispatchOptions } from '../symbols';
+import { getStoreMetadata } from '../internal/internals';
+
 /**
  * Returns the type from an action instance/class.
  * @ignore
  */
-export function getActionTypeFromInstance(action: any): string | undefined {
+export function getActionTypeFromInstance(
+  action: any,
+  dispatchOptions?: DispatchOptions
+): string | undefined {
+  let type;
+
   if (action.constructor && action.constructor.type) {
-    return action.constructor.type;
+    type = action.constructor.type;
   } else {
-    return action.type;
+    type = action.type;
   }
+
+  if (dispatchOptions?.scope) {
+    const meta = getStoreMetadata(dispatchOptions.scope);
+
+    type = `[${meta.name}] ${type}`;
+  }
+
+  return type;
 }
 
 /**
@@ -17,7 +33,7 @@ export function getActionTypeFromInstance(action: any): string | undefined {
 export function actionMatcher(action1: any) {
   const type1 = getActionTypeFromInstance(action1);
 
-  return function(action2: any) {
+  return function (action2: any) {
     return type1 === getActionTypeFromInstance(action2);
   };
 }

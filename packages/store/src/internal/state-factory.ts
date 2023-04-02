@@ -20,7 +20,7 @@ import {
 } from 'rxjs/operators';
 import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
 
-import { META_KEY, NgxsConfig } from '../symbols';
+import { META_KEY, NgxsConfig, DispatchOptions } from '../symbols';
 import {
   buildGraph,
   findFullParentPath,
@@ -228,7 +228,8 @@ export class StateFactory implements OnDestroy {
         mergeMap(ctx => {
           dispatched$.next(ctx);
           const action = ctx.action;
-          return this.invokeActions(dispatched$, action!).pipe(
+          const dispatchOptions = ctx.dispatchOptions ?? undefined;
+          return this.invokeActions(dispatched$, action!, dispatchOptions).pipe(
             map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
             catchError(error =>
@@ -243,8 +244,12 @@ export class StateFactory implements OnDestroy {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(dispatched$: Observable<ActionContext>, action: any) {
-    const type = getActionTypeFromInstance(action)!;
+  invokeActions(
+    dispatched$: Observable<ActionContext>,
+    action: any,
+    dispatchOptions?: DispatchOptions
+  ) {
+    const type = getActionTypeFromInstance(action, dispatchOptions)!;
     const results = [];
 
     // Determines whether the dispatched action has been handled, this is assigned
@@ -325,9 +330,9 @@ export class StateFactory implements OnDestroy {
     return forkJoin(results);
   }
 
-  private addToStatesMap(
-    stateClasses: StateClassInternal[]
-  ): { newStates: StateClassInternal[] } {
+  private addToStatesMap(stateClasses: StateClassInternal[]): {
+    newStates: StateClassInternal[];
+  } {
     const newStates: StateClassInternal[] = [];
     const statesMap: StatesByName = this.statesByName;
 

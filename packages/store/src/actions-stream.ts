@@ -5,6 +5,7 @@ import { share } from 'rxjs/operators';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { OrderedSubject } from './internal/custom-rxjs-subjects';
+import { DispatchOptions } from './symbols';
 
 /**
  * Status of a dispatched action
@@ -19,6 +20,7 @@ export const enum ActionStatus {
 export interface ActionContext<T = any> {
   status: ActionStatus;
   action: T;
+  dispatchOptions?: DispatchOptions;
   error?: Error;
 }
 

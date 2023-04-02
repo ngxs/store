@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { ExistingState, StateOperator } from '@ngxs/store/operators';
 
-import { StateContext } from '../symbols';
+import { DispatchOptions, StateContext } from '../symbols';
 import { MappedStore } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
 import { InternalStateOperations } from '../internal/state-operations';
@@ -65,8 +65,8 @@ export class StateContextFactory {
           ? setStateFromOperator(currentAppState, val)
           : setStateValue(currentAppState, val);
       },
-      dispatch(actions: any | any[]): Observable<void> {
-        return root.dispatch(actions);
+      dispatch(actions: any | any[], dispatchOptions?: DispatchOptions): Observable<void> {
+        return root.dispatch(actions, dispatchOptions);
       }
     };
   }
