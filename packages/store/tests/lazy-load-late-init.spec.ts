@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -18,6 +18,7 @@ describe('Lazy loading with duplicate bootstrap states', () => {
     name: 'counter',
     defaults: 0
   })
+  @Injectable()
   class CounterValueState {
     @Action(CounterAction)
     openAlert({ setState }: StateContext<number>): void {

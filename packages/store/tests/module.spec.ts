@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 
 import { NgxsModule } from '../src/module';
@@ -15,6 +15,7 @@ interface RootStateModel {
     foo: 'Hello'
   }
 })
+@Injectable()
 class RootState {}
 
 interface FeatureStateModel {
@@ -26,6 +27,7 @@ interface FeatureStateModel {
     bar: 'World'
   }
 })
+@Injectable()
 class FeatureState {
   @Selector()
   static getBar(state: FeatureStateModel) {
@@ -42,6 +44,7 @@ interface FeatureStateModel2 {
     baz: '!'
   }
 })
+@Injectable()
 class FeatureState2 {
   @Selector()
   static getBaz(state: FeatureStateModel2) {

@@ -43,7 +43,7 @@ describe('Dispatching an empty array with errors (https://github.com/ngxs/store/
     }
   }
 
-  beforeAll(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([AppState])]
     });

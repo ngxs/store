@@ -43,12 +43,14 @@ describe('StoreValidator', () => {
           name: 'duplicate',
           defaults: 'first'
         })
+        @Injectable()
         class MyOtherState {}
 
         @State<string>({
           name: 'duplicate',
           defaults: 'third'
         })
+        @Injectable()
         class MyDuplicateChildState {}
 
         @State<string>({
@@ -56,6 +58,7 @@ describe('StoreValidator', () => {
           defaults: 'second',
           children: [MyDuplicateChildState]
         })
+        @Injectable()
         class MyAnotherState {}
 
         TestBed.configureTestingModule({
@@ -78,12 +81,14 @@ describe('StoreValidator', () => {
           name: 'duplicate',
           defaults: 'first'
         })
+        @Injectable()
         class MyOtherState {}
 
         @State<string>({
           name: 'duplicate',
           defaults: 'second'
         })
+        @Injectable()
         class MyDuplicateState {}
 
         TestBed.configureTestingModule({
@@ -109,12 +114,14 @@ describe('StoreValidator', () => {
           name: 'main',
           defaults: 'first'
         })
+        @Injectable()
         class MyMainState {}
 
         @State<string>({
           name: 'feature',
           defaults: 'second'
         })
+        @Injectable()
         class MyFeatureState {}
 
         TestBed.configureTestingModule({
@@ -163,6 +170,7 @@ describe('StoreValidator', () => {
           defaults: {},
           children: [ChildState]
         })
+        @Injectable()
         class MyState {}
 
         TestBed.configureTestingModule({

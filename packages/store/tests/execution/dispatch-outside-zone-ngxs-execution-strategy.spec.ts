@@ -44,6 +44,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
     name: 'counter',
     defaults: 0
   })
+  @Injectable()
   class CounterState {
     public zoneCounter = new ZoneCounter();
 

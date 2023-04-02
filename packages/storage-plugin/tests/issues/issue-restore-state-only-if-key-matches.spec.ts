@@ -1,7 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { Component, NgModule, NgZone } from '@angular/core';
+import { Component, NgModule, NgZone, Injectable } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { State, NgxsModule, Store, StateToken } from '@ngxs/store';
@@ -40,12 +40,14 @@ describe('Restore state only if key matches', () => {
         name: AUTH_STATE_TOKEN,
         defaults: null
       })
+      @Injectable()
       class AuthState {}
 
       @State({
         name: 'user',
         defaults: {}
       })
+      @Injectable()
       class UserState {}
 
       @Component({ template: '' })

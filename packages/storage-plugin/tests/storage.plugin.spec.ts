@@ -30,6 +30,7 @@ describe('NgxsStoragePlugin', () => {
     name: 'counter',
     defaults: { count: 0 }
   })
+  @Injectable()
   class CounterState {
     @Action(Increment)
     increment({ getState, setState }: StateContext<CounterStateModel>) {
@@ -50,6 +51,7 @@ describe('NgxsStoragePlugin', () => {
     name: 'lazyLoaded',
     defaults: { count: 0 }
   })
+  @Injectable()
   class LazyLoadedState {}
 
   afterEach(() => {
@@ -65,6 +67,7 @@ describe('NgxsStoragePlugin', () => {
     name: 'counterInfo',
     defaults: { count: 0 }
   })
+  @Injectable()
   class CounterInfoState {}
 
   it('should get initial data from localstorage', () => {
@@ -120,6 +123,7 @@ describe('NgxsStoragePlugin', () => {
           count: 123
         }
       })
+      @Injectable()
       class TestState {}
 
       // Act
@@ -144,6 +148,7 @@ describe('NgxsStoragePlugin', () => {
           count: 123
         }
       })
+      @Injectable()
       class TestState {}
 
       // Act
@@ -168,6 +173,7 @@ describe('NgxsStoragePlugin', () => {
           count: 123
         }
       })
+      @Injectable()
       class TestState {}
 
       // Act

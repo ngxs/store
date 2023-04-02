@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { Store } from '../src/store';
@@ -14,12 +15,14 @@ describe('Inheritance @State', () => {
       name: 'child_a',
       defaults: 'child_a'
     })
+    @Injectable()
     class MyChildAState {}
 
     @State<string>({
       name: 'child_b',
       defaults: 'child_b'
     })
+    @Injectable()
     class MyChildBState {}
 
     @State<MyStateModel>({
@@ -27,12 +30,14 @@ describe('Inheritance @State', () => {
       defaults: { value: 'a' },
       children: [MyChildAState]
     })
+    @Injectable()
     class MyState {}
 
     @State<MyStateModel>({
       name: 'b',
       children: [MyChildBState]
     })
+    @Injectable()
     class MyOtherState extends MyState {}
 
     TestBed.configureTestingModule({
@@ -52,6 +57,7 @@ describe('Inheritance @State', () => {
       name: 'child',
       defaults: { value: 'child_value' }
     })
+    @Injectable()
     class MyChildState {}
 
     @State<MyStateModel>({
@@ -59,18 +65,22 @@ describe('Inheritance @State', () => {
       defaults: { value: 'shared_value' },
       children: [MyChildState]
     })
+    @Injectable()
     class SharedState {}
 
     @State<MyStateModel>({
       name: 'first',
       children: [MyChildState]
     })
+    @Injectable()
     class FirstState extends SharedState {}
 
     @State<MyStateModel>({ name: 'second' })
+    @Injectable()
     class SecondState extends SharedState {}
 
     @State<MyStateModel>({ name: 'third' })
+    @Injectable()
     class ThirdState extends SharedState {}
 
     TestBed.configureTestingModule({

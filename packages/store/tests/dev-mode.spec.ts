@@ -404,6 +404,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { count: 0 }
       })
+      @Injectable()
       class MyStore {
         @Action(Increment)
         mutatingIncrement(
@@ -443,6 +444,7 @@ describe('Development Mode', () => {
         name: 'counter',
         defaults: { count: 0 }
       })
+      @Injectable()
       class MyStore {
         @Action(Start)
         start({ dispatch }: StateContext<StateModel>) {

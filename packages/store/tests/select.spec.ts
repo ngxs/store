@@ -255,8 +255,8 @@ describe('Select', () => {
     });
 
     let error: Error = null!;
-    const component: StoreSelectComponent = TestBed.createComponent(StoreSelectComponent)
-      .componentInstance;
+    const component: StoreSelectComponent =
+      TestBed.createComponent(StoreSelectComponent).componentInstance;
 
     try {
       component.mySelect.subscribe();
@@ -441,6 +441,7 @@ describe('Select', () => {
         name: 'countries',
         defaults: []
       })
+      @Injectable()
       class CountriesState {}
 
       @Component({

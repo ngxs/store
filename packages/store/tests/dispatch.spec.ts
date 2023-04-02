@@ -90,6 +90,7 @@ describe('Dispatch', () => {
       name: 'counter',
       defaults: 0
     })
+    @Injectable()
     class MyState {
       @Action(Increment)
       increment() {
@@ -120,6 +121,7 @@ describe('Dispatch', () => {
       name: 'counter',
       defaults: 0
     })
+    @Injectable()
     class MyState {
       @Action(Increment)
       increment({ getState, setState }: StateContext<number>) {
@@ -151,6 +153,7 @@ describe('Dispatch', () => {
       name: 'counter',
       defaults: 0
     })
+    @Injectable()
     class MyState {
       @Action(Increment)
       increment({ getState, setState }: StateContext<number>) {
@@ -185,6 +188,7 @@ describe('Dispatch', () => {
       name: 'counter',
       defaults: 0
     })
+    @Injectable()
     class MyState {
       @Action(Increment)
       increment({ getState, setState }: StateContext<number>) {
@@ -230,6 +234,7 @@ describe('Dispatch', () => {
       name: 'counter',
       defaults: 0
     })
+    @Injectable()
     class MyState {
       @Action(Increment)
       increment({ getState, setState, dispatch }: StateContext<number>) {
@@ -261,6 +266,7 @@ describe('Dispatch', () => {
       name: 'counter',
       defaults: 0
     })
+    @Injectable()
     class MyState {
       @Action(Increment)
       increment({ getState, setState, dispatch }: StateContext<number>) {
@@ -299,6 +305,7 @@ describe('Dispatch', () => {
       name: 'counter',
       defaults: 0
     })
+    @Injectable()
     class MyState {
       @Action(Increment, { cancelUncompleted: true })
       increment({ getState, setState }: StateContext<number>) {
@@ -346,6 +353,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment)
           increment() {
@@ -371,6 +379,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment)
           increment() {
@@ -403,6 +412,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment)
           increment() {
@@ -430,6 +440,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment)
           async increment() {
@@ -466,6 +477,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment)
           increment() {
@@ -494,6 +506,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment)
           increment() {
@@ -532,6 +545,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment)
           incrementSync() {
@@ -572,6 +586,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment)
           increment() {
@@ -600,6 +615,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {}
 
         TestBed.configureTestingModule({
@@ -620,6 +636,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {}
 
         TestBed.configureTestingModule({
@@ -640,6 +657,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {}
 
         TestBed.configureTestingModule({
@@ -660,6 +678,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {}
 
         TestBed.configureTestingModule({
@@ -685,6 +704,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment, { cancelUncompleted: true })
           increment() {
@@ -719,6 +739,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment, { cancelUncompleted: true })
           increment() {
@@ -762,6 +783,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment)
           increment() {
@@ -792,6 +814,7 @@ describe('Dispatch', () => {
           name: 'counter',
           defaults: 0
         })
+        @Injectable()
         class MyState {
           @Action(Increment)
           increment() {
@@ -828,6 +851,7 @@ describe('Dispatch', () => {
           name: 'text',
           defaults: ''
         })
+        @Injectable()
         class MyState {
           @Action(Append)
           append({ getState, setState }: StateContext<string>, { payload }: Append) {
@@ -867,6 +891,7 @@ describe('Dispatch', () => {
           name: 'text',
           defaults: ''
         })
+        @Injectable()
         class MyState {
           @Action(Append)
           append({ getState, setState }: StateContext<string>, { payload }: Append) {
