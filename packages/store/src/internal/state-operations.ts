@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { StateOperations, StatesAndDefaults } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
 import { StateStream } from './state-stream';
-import { NgxsConfig } from '../symbols';
+import { NgxsConfig, DispatchOptions } from '../symbols';
 import { deepFreeze } from '../utils/freeze';
 
 /**
@@ -25,7 +25,8 @@ export class InternalStateOperations {
     const rootStateOperations = {
       getState: () => this._stateStream.getValue(),
       setState: (newState: any) => this._stateStream.next(newState),
-      dispatch: (actionOrActions: any | any[]) => this._dispatcher.dispatch(actionOrActions)
+      dispatch: (actionOrActions: any | any[], dispatchOptions?: DispatchOptions) =>
+        this._dispatcher.dispatch(actionOrActions, dispatchOptions)
     };
 
     if (typeof ngDevMode === 'undefined' || ngDevMode) {
@@ -54,8 +55,8 @@ function ensureStateAndActionsAreImmutable(root: StateOperations<any>): StateOpe
       const frozenValue = deepFreeze(value);
       return root.setState(frozenValue);
     },
-    dispatch: actions => {
-      return root.dispatch(actions);
+    dispatch: (actions, dispatchOptions) => {
+      return root.dispatch(actions, dispatchOptions);
     }
   };
 }

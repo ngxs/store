@@ -34,7 +34,29 @@ export function State<T>(options: StoreOptions<T>) {
 
     if (inheritedStateClass.hasOwnProperty(META_KEY)) {
       const inheritedMeta: Partial<MetaDataModel> = inheritedStateClass[META_KEY] || {};
-      meta.actions = { ...meta.actions, ...inheritedMeta.actions };
+
+      const inheritedActions = { ...inheritedMeta.actions };
+      for (const actions in inheritedActions) {
+        for (const action of inheritedActions[actions]) {
+          const clonedAction = { ...action };
+
+          if (action.options.newActionHandlerForChild) {
+            const clonedActionType = `[${name}] ${action.type}`;
+            clonedAction.type = clonedActionType;
+
+            if (!inheritedActions[clonedActionType]) {
+              if (inheritedActions[action.type]) {
+                delete inheritedActions[action.type];
+              }
+              inheritedActions[clonedActionType] = [];
+            }
+
+            inheritedActions[clonedActionType].push(clonedAction);
+          }
+        }
+      }
+
+      meta.actions = { ...meta.actions, ...inheritedActions };
     }
 
     meta.children = children;

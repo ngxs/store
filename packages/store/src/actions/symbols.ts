@@ -14,6 +14,10 @@ export interface ActionOptions {
    * Cancel the previous uncompleted observable(s).
    */
   cancelUncompleted?: boolean;
+  /**
+   * Create new identifier for child child
+   */
+  newActionHandlerForChild?: boolean;
 }
 
 export interface ActionHandlerMetaData {

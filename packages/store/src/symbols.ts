@@ -179,3 +179,7 @@ export type NgxsModuleOptions = Partial<NgxsConfig>;
 declare global {
   const ngDevMode: boolean;
 }
+
+export interface DispatchOptions {
+  scope: StateClass;
+}

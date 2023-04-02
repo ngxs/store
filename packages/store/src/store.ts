@@ -9,7 +9,7 @@ import { InternalStateOperations } from './internal/state-operations';
 import { getRootSelectorFactory } from './selectors/selector-utils';
 import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
-import { NgxsConfig } from './symbols';
+import { NgxsConfig, DispatchOptions } from './symbols';
 import { StateToken } from './state-token/state-token';
 import { StateFactory } from './internal/state-factory';
 
@@ -41,8 +41,10 @@ export class Store {
   /**
    * Dispatches event(s).
    */
-  dispatch(actionOrActions: any | any[]): Observable<any> {
-    return this._internalStateOperations.getRootStateOperations().dispatch(actionOrActions);
+  dispatch(actionOrActions: any | any[], dispatchOptions?: DispatchOptions): Observable<any> {
+    return this._internalStateOperations
+      .getRootStateOperations()
+      .dispatch(actionOrActions, dispatchOptions);
   }
 
   /**

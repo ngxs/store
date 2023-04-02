@@ -9,6 +9,7 @@ import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { getActionTypeFromInstance } from '../utils/utils';
+import { DispatchOptions } from '../symbols';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -33,9 +34,9 @@ export class InternalDispatcher {
   /**
    * Dispatches event(s).
    */
-  dispatch(actionOrActions: any | any[]): Observable<any> {
+  dispatch(actionOrActions: any | any[], dispatchOptions?: DispatchOptions): Observable<any> {
     const result = this._ngxsExecutionStrategy.enter(() =>
-      this.dispatchByEvents(actionOrActions)
+      this.dispatchByEvents(actionOrActions, dispatchOptions)
     );
 
     return result.pipe(
@@ -43,18 +44,23 @@ export class InternalDispatcher {
     );
   }
 
-  private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
+  private dispatchByEvents(
+    actionOrActions: any | any[],
+    dispatchOptions?: DispatchOptions
+  ): Observable<any> {
     if (Array.isArray(actionOrActions)) {
       if (actionOrActions.length === 0) return of(this._stateStream.getValue());
-      return forkJoin(actionOrActions.map(action => this.dispatchSingle(action)));
+      return forkJoin(
+        actionOrActions.map(action => this.dispatchSingle(action, dispatchOptions))
+      );
     } else {
-      return this.dispatchSingle(actionOrActions);
+      return this.dispatchSingle(actionOrActions, dispatchOptions);
     }
   }
 
-  private dispatchSingle(action: any): Observable<any> {
+  private dispatchSingle(action: any, dispatchOptions?: DispatchOptions): Observable<any> {
     if (typeof ngDevMode === 'undefined' || ngDevMode) {
-      const type: string | undefined = getActionTypeFromInstance(action);
+      const type: string | undefined = getActionTypeFromInstance(action, dispatchOptions);
       if (!type) {
         const error = new Error(
           `This action doesn't have a type property: ${action.constructor.name}`
@@ -66,18 +72,24 @@ export class InternalDispatcher {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return (compose([
-      ...plugins,
-      (nextState: any, nextAction: any) => {
-        if (nextState !== prevState) {
-          this._stateStream.next(nextState);
+    return (
+      compose([
+        ...plugins,
+        (nextState: any, nextAction: any) => {
+          if (nextState !== prevState) {
+            this._stateStream.next(nextState);
+          }
+          const actionResult$ = this.getActionResultStream(nextAction);
+          actionResult$.subscribe(ctx => this._actions.next(ctx));
+          this._actions.next({
+            action: nextAction,
+            dispatchOptions: dispatchOptions,
+            status: ActionStatus.Dispatched
+          });
+          return this.createDispatchObservable(actionResult$);
         }
-        const actionResult$ = this.getActionResultStream(nextAction);
-        actionResult$.subscribe(ctx => this._actions.next(ctx));
-        this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
-        return this.createDispatchObservable(actionResult$);
-      }
-    ])(prevState, action) as Observable<any>).pipe(shareReplay());
+      ])(prevState, action) as Observable<any>
+    ).pipe(shareReplay());
   }
 
   private getActionResultStream(action: any): Observable<ActionContext> {

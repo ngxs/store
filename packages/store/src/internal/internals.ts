@@ -6,7 +6,8 @@ import {
   META_OPTIONS_KEY,
   NgxsConfig,
   SELECTOR_META_KEY,
-  StoreOptions
+  StoreOptions,
+  DispatchOptions
 } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
 
@@ -24,7 +25,7 @@ export interface StateOperations<T> {
 
   setState(val: T): T;
 
-  dispatch(actionOrActions: any | any[]): Observable<void>;
+  dispatch(actionOrActions: any | any[], dispatchOptions?: DispatchOptions): Observable<void>;
 }
 
 export interface MetaDataModel {
