@@ -18,7 +18,7 @@ describe('Invalid state re-hydration (https://github.com/ngxs/store/issues/1146)
   beforeEach(() => {
     // Caretaker note: it somehow sets `/@angular-cli-builders` as a default URL, thus when running `initialNavigation()`
     // it errors that there's no route definition for the `/@angular-cli-builders`.
-    spyOn(Router.prototype, 'initialNavigation').and.returnValue(undefined);
+    jest.spyOn(Router.prototype, 'initialNavigation').mockReturnValue(undefined);
   });
 
   @State({
