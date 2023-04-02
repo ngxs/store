@@ -1,5 +1,5 @@
 import { Injectable, ModuleWithProviders, NgModule, Type } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { Store, NgxsModule, State, Action, StateContext } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -97,97 +97,83 @@ describe('Store', () => {
     };
   }
 
-  it('should subscribe to the root state', async(() => {
+  it('should subscribe to the root state', async () => {
     // Arrange
     const { store } = setup();
-    // Act
-    store.subscribe((state: any) => {
-      // Assert
-      expect(state).toEqual({
-        foo: {
-          first: 'Hello',
-          second: 'World',
-          bar: {
-            hello: true,
-            world: true,
-            baz: {
-              name: 'Danny'
-            }
-          }
-        },
-        under_: {
-          under: 'score'
-        }
-      });
-    });
-  }));
-
-  it('should select the correct state use a function', async(() => {
-    // Arrange
-    const { store } = setup();
-    // Act
-    store
-      .select((state: { foo: StateModel }) => state.foo.first)
-      .subscribe(state => {
-        // Assert
-        expect(state).toBe('Hello');
-      });
-  }));
-
-  describe('[select]', () => {
-    it('should select the correct state use a state class: Root State', async(() => {
-      // Arrange
-      const { store } = setup();
-      // Act
-      store.select(MyState).subscribe(state => {
-        // Assert
-        expect(state).toEqual({
-          first: 'Hello',
-          second: 'World',
-          bar: {
-            hello: true,
-            world: true,
-            baz: {
-              name: 'Danny'
-            }
-          }
-        });
-      });
-    }));
-
-    it('should select the correct state use a state class: Sub State', async(() => {
-      // Arrange
-      const { store } = setup();
-      // Act
-      // todo: remove any
-      store.select<SubStateModel>(<any>MySubState).subscribe((state: SubStateModel) => {
-        // Assert
-        expect(state).toEqual({
+    // Assert
+    const state = await new Promise(resolve => store.subscribe(resolve));
+    expect(state).toEqual({
+      foo: {
+        first: 'Hello',
+        second: 'World',
+        bar: {
           hello: true,
           world: true,
           baz: {
             name: 'Danny'
           }
-        });
-      });
-    }));
+        }
+      },
+      under_: {
+        under: 'score'
+      }
+    });
+  });
 
-    it('should select the correct state use a state class: Sub Sub State', async(() => {
+  it('should select the correct state use a function', async () => {
+    // Arrange
+    const { store } = setup();
+    // Assert
+    const state = await store
+      .selectOnce((state: { foo: StateModel }) => state.foo.first)
+      .toPromise();
+    expect(state).toBe('Hello');
+  });
+
+  describe('[select]', () => {
+    it('should select the correct state use a state class: Root State', async () => {
       // Arrange
       const { store } = setup();
-      // Act
-      // todo: remove any
-      store
-        .select<SubSubStateModel>(<any>MySubSubState)
-        .subscribe((state: SubSubStateModel) => {
-          // Assert
-          expect(state).toEqual({
+      // Assert
+      const state = await store.selectOnce(MyState).toPromise();
+      expect(state).toEqual({
+        first: 'Hello',
+        second: 'World',
+        bar: {
+          hello: true,
+          world: true,
+          baz: {
             name: 'Danny'
-          });
-        });
-    }));
+          }
+        }
+      });
+    });
 
-    it('should select state even when called before state added', async(() => {
+    it('should select the correct state use a state class: Sub State', async () => {
+      // Arrange
+      const { store } = setup();
+      // Assert
+      const state = await store.selectOnce<SubStateModel>(MySubState).toPromise();
+      expect(state).toEqual({
+        hello: true,
+        world: true,
+        baz: {
+          name: 'Danny'
+        }
+      });
+    });
+
+    it('should select the correct state use a state class: Sub Sub State', async () => {
+      // Arrange
+      const { store } = setup();
+      // Assert
+      const state = await store.selectOnce<SubSubStateModel>(MySubSubState).toPromise();
+      expect(state).toEqual({
+        name: 'Danny'
+      });
+    });
+
+    it('should select state even when called before state added', () => {
       // Arrange
       @Injectable()
       class CollectorService {
@@ -226,11 +212,11 @@ describe('Store', () => {
       collector.stop();
       // Assert
       expect(collector.collected).toEqual([undefined, 'Hello']);
-    }));
+    });
   });
 
   describe('[selectSnapshot]', () => {
-    it('should select snapshot state use a state class', async(() => {
+    it('should select snapshot state use a state class', () => {
       // Arrange
       const { store } = setup();
       // Act
@@ -247,9 +233,9 @@ describe('Store', () => {
           }
         }
       });
-    }));
+    });
 
-    it('should select state with an underscore in name', async(() => {
+    it('should select state with an underscore in name', () => {
       // Arrange
       const { store } = setup();
       // Act
@@ -258,8 +244,6 @@ describe('Store', () => {
       expect(state).toEqual({
         under: 'score'
       });
-    }));
+    });
   });
-
-  // it('should not require you to subscrube in order to dispatch', () => {});
 });
