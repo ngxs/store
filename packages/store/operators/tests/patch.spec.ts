@@ -1,4 +1,4 @@
-import { patch } from '../src/patch';
+import { patch } from '@ngxs/store/operators';
 
 describe('patch', () => {
   describe('when no properties provided', () => {

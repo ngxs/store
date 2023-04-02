@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-
-import { Action, NgxsModule, State, StateContext, Store } from '../src/public_api';
+import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
 
 describe('Lazy loading with duplicate bootstrap states', () => {
   let store: Store;

@@ -1,10 +1,17 @@
 import { ErrorHandler, Injectable, NgZone } from '@angular/core';
 import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import {
+  State,
+  Action,
+  Store,
+  NgxsModule,
+  StateContext,
+  NgxsExecutionStrategy
+} from '@ngxs/store';
 import { of, throwError, timer } from 'rxjs';
 import { delay, skip, tap } from 'rxjs/operators';
 
 import { NoopErrorHandler } from './helpers/utils';
-import { State, Action, Store, NgxsModule, StateContext, NgxsExecutionStrategy } from '..';
 
 describe('Dispatch', () => {
   class Increment {

@@ -3,16 +3,10 @@ import { combineLatest, Observable, Subscription } from 'rxjs';
 import { first, last } from 'rxjs/operators';
 import { Component, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { Store, NgxsModule, State, Action, Selector, Select, StateContext } from '@ngxs/store';
 import { skipConsoleLogging, freshPlatform } from '@ngxs/store/internals/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-import { Store } from '../src/store';
-import { NgxsModule } from '../src/module';
-import { State } from '../src/decorators/state';
-import { Action } from '../src/decorators/action';
-import { Selector } from '../src/decorators/selector/selector';
-import { Select } from '../src/decorators/select/select';
-import { StateContext } from '../src/symbols';
 import { removeDollarAtTheEnd } from '../src/decorators/select/symbols';
 
 describe('Select', () => {

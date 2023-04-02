@@ -1,4 +1,5 @@
 import { PlainObject } from '@ngxs/store/internals';
+
 import { propGetter } from '../../src/internal/internals';
 import { setValue, isObject, mergeDeep } from '../../src/utils/utils';
 import { NgxsConfig } from '../../src/symbols';

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { APP_INITIALIZER, Injectable, NgModule } from '@angular/core';
+import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
 
-import { Action, NgxsModule, State, StateContext, Store } from '../src/public_api';
 import { StateStream } from '../src/internal/state-stream';
 
 describe('Reusable States', () => {

@@ -1,8 +1,6 @@
-import { TestBed } from '@angular/core/testing';
-import { NgxsModule } from '../src/module';
-import { State } from '../src/decorators/state';
-import { Store } from '../src/store';
 import { Injectable } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { NgxsModule, State, Store } from '@ngxs/store';
 
 describe('StoreValidator', () => {
   describe('duplicate state name check', () => {

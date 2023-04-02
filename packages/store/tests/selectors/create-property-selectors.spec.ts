@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule, State, Store, createPropertySelectors } from '../../src/public_api';
+import { NgxsModule, State, Store, createPropertySelectors } from '@ngxs/store';
 
 describe('createPropertySelectors', () => {
   interface MyStateModel {
@@ -16,15 +16,15 @@ describe('createPropertySelectors', () => {
     defaults: {
       property1: 'testValue',
       property2: [1, 2, 3],
-      emptyProperty: {},
-    },
+      emptyProperty: {}
+    }
   })
   @Injectable()
   class MyState {}
 
   function setupFixture() {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])],
+      imports: [NgxsModule.forRoot([MyState])]
     });
     const store: Store = TestBed.inject(Store);
     const setState = (newState: MyStateModel) => store.reset({ myState: newState });
@@ -115,8 +115,8 @@ describe('createPropertySelectors', () => {
       property1: 'foo',
       property2: [5, 4, 3],
       emptyProperty: {
-        loading: true,
-      },
+        loading: true
+      }
     };
     // Act
     const slices = createPropertySelectors<MyStateModel>(MyState);
@@ -145,8 +145,8 @@ describe('createPropertySelectors', () => {
       property1: 'testValue',
       property2: [1, 2, 3],
       emptyProperty: {
-        loading: true,
-      },
+        loading: true
+      }
     });
 
     expect(store.selectSnapshot(slicesOnEmptyProperty.loading)).toBe(true);

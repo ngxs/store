@@ -1,14 +1,16 @@
+import { Injectable } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
+import {
+  State,
+  createSelector,
+  Store,
+  NgxsModule,
+  Selector,
+  SelectorOptions
+} from '@ngxs/store';
 import { StateClass } from '@ngxs/store/internals';
 
-import { State } from '../src/decorators/state';
-import { createSelector } from '../src/selectors/create-selector';
-import { Store } from '../src/store';
-import { NgxsModule } from '../src/module';
-import { Selector } from '../src/decorators/selector/selector';
 import { NgxsConfig } from '../src/symbols';
-import { SelectorOptions } from '../src/decorators/selector-options';
-import { Injectable } from '@angular/core';
 
 describe('Selector', () => {
   interface MyStateModel {
@@ -20,8 +22,8 @@ describe('Selector', () => {
     name: 'counter',
     defaults: {
       foo: 'Hello',
-      bar: 'World',
-    },
+      bar: 'World'
+    }
   })
   @Injectable()
   class MyState {
@@ -35,8 +37,8 @@ describe('Selector', () => {
     name: 'zoo',
     defaults: {
       foo: 'Hello',
-      bar: 'World',
-    },
+      bar: 'World'
+    }
   })
   @Injectable()
   class MyState2 {
@@ -61,7 +63,7 @@ describe('Selector', () => {
   describe('(Decorator)', () => {
     it('should select the state', async(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])],
+        imports: [NgxsModule.forRoot([MyState])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -71,7 +73,7 @@ describe('Selector', () => {
 
     it('should select using the meta selector', async(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])],
+        imports: [NgxsModule.forRoot([MyState])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -81,7 +83,7 @@ describe('Selector', () => {
 
     it('should still be usable as a function', async(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])],
+        imports: [NgxsModule.forRoot([MyState])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -92,7 +94,7 @@ describe('Selector', () => {
 
     it('should select multiples', async(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState, MyState2])],
+        imports: [NgxsModule.forRoot([MyState, MyState2])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -102,7 +104,7 @@ describe('Selector', () => {
 
     it('should select multiples from self and others', async(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState, MyState2])],
+        imports: [NgxsModule.forRoot([MyState, MyState2])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -114,8 +116,8 @@ describe('Selector', () => {
       @State<any>({
         name: 'counter',
         defaults: {
-          value: 0,
-        },
+          value: 0
+        }
       })
       @Injectable()
       class TestState {
@@ -133,7 +135,7 @@ describe('Selector', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TestState])],
+        imports: [NgxsModule.forRoot([TestState])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -148,8 +150,8 @@ describe('Selector', () => {
           name: 'counter',
           defaults: {
             foo: 'Hello',
-            bar: 'World',
-          },
+            bar: 'World'
+          }
         })
         @Injectable()
         class TestState {
@@ -167,7 +169,7 @@ describe('Selector', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])],
+          imports: [NgxsModule.forRoot([TestState])]
         });
 
         const store: Store = TestBed.inject(Store);
@@ -186,8 +188,8 @@ describe('Selector', () => {
           name: 'counter',
           defaults: {
             foo: 'Hello',
-            bar: 'World',
-          },
+            bar: 'World'
+          }
         })
         @Injectable()
         class TestState {
@@ -202,7 +204,7 @@ describe('Selector', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])],
+          imports: [NgxsModule.forRoot([TestState])]
         });
 
         const store: Store = TestBed.inject(Store);
@@ -220,7 +222,7 @@ describe('Selector', () => {
   describe('(Selector Options)', () => {
     function setupStore(states: StateClass[], extendedOptions?: Partial<NgxsConfig>) {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states, extendedOptions)],
+        imports: [NgxsModule.forRoot(states, extendedOptions)]
       });
       const store: Store = TestBed.inject(Store);
       return store;
@@ -231,8 +233,8 @@ describe('Selector', () => {
         name: 'zoo_1',
         defaults: {
           foo: 'Foo1',
-          bar: 'Bar1',
-        },
+          bar: 'Bar1'
+        }
       })
       @Injectable()
       // tslint:disable-next-line: class-name
@@ -257,8 +259,8 @@ describe('Selector', () => {
         name: 'zoo_2',
         defaults: {
           foo: 'Foo2',
-          bar: 'Bar2',
-        },
+          bar: 'Bar2'
+        }
       })
       @Injectable()
       // tslint:disable-next-line: class-name
@@ -288,8 +290,8 @@ describe('Selector', () => {
         // Arrange
         const store = setupStore([MyStateV4_1, MyStateV4_2], {
           selectorOptions: {
-            injectContainerState: false,
-          },
+            injectContainerState: false
+          }
         });
         // Act & Assert
         expect(store.selectSnapshot(MyStateV4_1.foo)).toBe('Foo1');
@@ -304,8 +306,8 @@ describe('Selector', () => {
         // Arrange
         const store = setupStore([MyStateV4_1, MyStateV4_2], {
           selectorOptions: {
-            suppressErrors: false,
-          },
+            suppressErrors: false
+          }
         });
         // Act
         let exception: Error | null = null;
@@ -324,12 +326,12 @@ describe('Selector', () => {
         name: 'zoo',
         defaults: {
           foo: 'Foo',
-          bar: 'Bar',
-        },
+          bar: 'Bar'
+        }
       })
       @SelectorOptions({
         injectContainerState: false,
-        suppressErrors: false,
+        suppressErrors: false
       })
       @Injectable()
       class MyStateV4 {
@@ -415,8 +417,8 @@ describe('Selector', () => {
         name: 'zoo',
         defaults: {
           foo: 'Foo',
-          bar: 'Bar',
-        },
+          bar: 'Bar'
+        }
       })
       @Injectable()
       class MyStateV4 {
@@ -433,7 +435,7 @@ describe('Selector', () => {
 
       @SelectorOptions({
         injectContainerState: false,
-        suppressErrors: false,
+        suppressErrors: false
       })
       class MyStateV4Queries {
         @Selector([MyStateV4, MyStateV4.foo])
@@ -490,8 +492,8 @@ describe('Selector', () => {
         name: 'zoo',
         defaults: {
           foo: 'Foo',
-          bar: 'Bar',
-        },
+          bar: 'Bar'
+        }
       })
       @Injectable()
       class MyStateV3 {
@@ -575,7 +577,7 @@ describe('Selector', () => {
   describe('(from createSelector)', () => {
     it('should select the state', async(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])],
+        imports: [NgxsModule.forRoot([MyState])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -586,7 +588,7 @@ describe('Selector', () => {
 
     it('should allow for null in the returned value [regression fix]', async(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])],
+        imports: [NgxsModule.forRoot([MyState])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -600,7 +602,7 @@ describe('Selector', () => {
 
     it('should allow for undefined in the returned value [regression fix]', async(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])],
+        imports: [NgxsModule.forRoot([MyState])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -614,7 +616,7 @@ describe('Selector', () => {
 
     it('should select using the meta selector', async(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])],
+        imports: [NgxsModule.forRoot([MyState])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -625,7 +627,7 @@ describe('Selector', () => {
 
     it('should still be usable as a function', async(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])],
+        imports: [NgxsModule.forRoot([MyState])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -637,7 +639,7 @@ describe('Selector', () => {
 
     it('should select multiples', async(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState, MyState2])],
+        imports: [NgxsModule.forRoot([MyState, MyState2])]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -657,14 +659,14 @@ describe('Selector', () => {
           name: 'counter',
           defaults: {
             foo: 'Hello',
-            bar: 'World',
-          },
+            bar: 'World'
+          }
         })
         @Injectable()
         class TestState {}
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])],
+          imports: [NgxsModule.forRoot([TestState])]
         });
 
         const store: Store = TestBed.inject(Store);
@@ -692,14 +694,14 @@ describe('Selector', () => {
           name: 'counter',
           defaults: {
             foo: 'Hello',
-            bar: 'World',
-          },
+            bar: 'World'
+          }
         })
         @Injectable()
         class TestState {}
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])],
+          imports: [NgxsModule.forRoot([TestState])]
         });
 
         const store: Store = TestBed.inject(Store);
@@ -724,7 +726,7 @@ describe('Selector', () => {
   describe('Errors in selectSnapshot', () => {
     @State<number[]>({
       name: 'tasks',
-      defaults: [1, 2, 3, 4],
+      defaults: [1, 2, 3, 4]
     })
     @Injectable()
     class TasksState {
@@ -740,7 +742,7 @@ describe('Selector', () => {
 
     it('should be a wrong mutation', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TasksState])],
+        imports: [NgxsModule.forRoot([TasksState])]
       });
 
       const store = TestBed.inject(Store);
@@ -754,7 +756,7 @@ describe('Selector', () => {
 
     it('should be incorrect mutation', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TasksState], { developmentMode: true })],
+        imports: [NgxsModule.forRoot([TasksState], { developmentMode: true })]
       });
 
       const store = TestBed.inject(Store);
@@ -771,9 +773,9 @@ describe('Selector', () => {
         imports: [
           NgxsModule.forRoot([TasksState], {
             developmentMode: true,
-            selectorOptions: { suppressErrors: false },
-          }),
-        ],
+            selectorOptions: { suppressErrors: false }
+          })
+        ]
       });
 
       const store = TestBed.inject(Store);
@@ -795,7 +797,7 @@ describe('Selector', () => {
   describe('Select errors', () => {
     @State<number[]>({
       name: 'tasks',
-      defaults: [1, 2, 3, 4],
+      defaults: [1, 2, 3, 4]
     })
     @Injectable()
     class NumberListState {
@@ -812,9 +814,9 @@ describe('Selector', () => {
         imports: [
           NgxsModule.forRoot([NumberListState], {
             developmentMode: true,
-            selectorOptions: { suppressErrors: false },
-          }),
-        ],
+            selectorOptions: { suppressErrors: false }
+          })
+        ]
       });
 
       const store = TestBed.inject(Store);
@@ -873,14 +875,14 @@ describe('Selector', () => {
       name: 'contacts',
       defaults: {
         entities: {},
-        ids: [],
-      },
+        ids: []
+      }
     })
     @Injectable()
     class ContactsState {
       @Selector([ContactsState.ids, ContactsState.entityMap])
       static orderedContactNames(ids: number[], map: EntityMap<Contact>) {
-        return ids.map((id) => map[id].name);
+        return ids.map(id => map[id].name);
       }
 
       @Selector()
@@ -898,9 +900,9 @@ describe('Selector', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([ContactsState], {
-            selectorOptions: { suppressErrors: false, injectContainerState: false },
-          }),
-        ],
+            selectorOptions: { suppressErrors: false, injectContainerState: false }
+          })
+        ]
       });
 
       const store = TestBed.inject(Store);
@@ -917,10 +919,10 @@ describe('Selector', () => {
           entities: {
             456: { name: 'Artur' },
             234: { name: 'Mark' },
-            123: { name: 'Max' },
+            123: { name: 'Max' }
           },
-          ids: [234, 123, 456],
-        },
+          ids: [234, 123, 456]
+        }
       });
       // Act
       const result = store.selectSnapshot(ContactsState.orderedContactNames);

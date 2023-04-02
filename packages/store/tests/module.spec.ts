@@ -1,10 +1,6 @@
 import { Injectable, NgModule } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
-
-import { NgxsModule } from '../src/module';
-import { State } from '../src/decorators/state';
-import { Store } from '../src/store';
-import { Selector } from '../src/decorators/selector/selector';
+import { NgxsModule, State, Store, Selector } from '@ngxs/store';
 
 interface RootStateModel {
   foo: string;

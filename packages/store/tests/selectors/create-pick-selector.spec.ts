@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  NgxsModule,
-  State,
-  Store,
-  createPickSelector,
-  createSelector,
-} from '../../src/public_api';
+import { NgxsModule, State, Store, createPickSelector, createSelector } from '@ngxs/store';
 
 describe('createPickSelector', () => {
   interface MockStateModel {
@@ -20,15 +14,15 @@ describe('createPickSelector', () => {
     defaults: {
       property1: '',
       property2: [],
-      property3: { hello: 'world' },
-    },
+      property3: { hello: 'world' }
+    }
   })
   @Injectable()
   class MockState {}
 
   function setupFixture() {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MockState])],
+      imports: [NgxsModule.forRoot([MockState])]
     });
     const store: Store = TestBed.inject(Store);
     const setState = (newState: MockStateModel) => store.reset({ mockstate: newState });
@@ -122,7 +116,7 @@ describe('createPickSelector', () => {
     expect(pickSelector).toBeDefined();
     expect(store.selectSnapshot(pickSelector)).toStrictEqual({
       property1: 'Tada',
-      property2: [1, 3, 5],
+      property2: [1, 3, 5]
     });
   });
 
@@ -134,13 +128,13 @@ describe('createPickSelector', () => {
     const pickSelector = createPickSelector(stateSelector, [
       'property1',
       undefined as any,
-      'property2',
+      'property2'
     ]);
     // Assert
     expect(pickSelector).toBeDefined();
     expect(store.selectSnapshot(pickSelector)).toStrictEqual({
       property1: 'Tada',
-      property2: [1, 3, 5],
+      property2: [1, 3, 5]
     });
   });
 
@@ -152,13 +146,13 @@ describe('createPickSelector', () => {
     const pickSelector = createPickSelector(stateSelector, [
       'property1',
       null as any,
-      'property2',
+      'property2'
     ]);
     // Assert
     expect(pickSelector).toBeDefined();
     expect(store.selectSnapshot(pickSelector)).toStrictEqual({
       property1: 'Tada',
-      property2: [1, 3, 5],
+      property2: [1, 3, 5]
     });
   });
 

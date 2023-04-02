@@ -2,16 +2,17 @@ import { Injectable, ErrorHandler, NgModule, DoBootstrap } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import {
+  Action,
+  State,
+  InitState,
+  UpdateState,
+  NgxsModule,
+  Store,
+  StateContext,
+  Selector
+} from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
-
-import { Action } from '../src/decorators/action';
-import { State } from '../src/decorators/state';
-import { InitState, UpdateState } from '../src/actions/actions';
-
-import { NgxsModule } from '../src/module';
-import { Store } from '../src/store';
-import { StateContext } from '../src/symbols';
-import { Selector } from '../src/decorators/selector/selector';
 
 import { NoopErrorHandler } from './helpers/utils';
 

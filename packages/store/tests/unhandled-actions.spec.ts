@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-
 import {
   Store,
   NgxsModule,
   NgxsDevelopmentModule,
   NgxsUnhandledActionsLogger,
   NgxsDevelopmentOptions
-} from '..';
+} from '@ngxs/store';
 
 describe('Unhandled actions warnings', () => {
   class FireAndForget {

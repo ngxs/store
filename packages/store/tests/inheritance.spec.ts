@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-
-import { Store } from '../src/store';
-import { State } from '../src/decorators/state';
-import { NgxsModule } from '../src/module';
+import { Store, State, NgxsModule } from '@ngxs/store';
 
 describe('Inheritance @State', () => {
   interface MyStateModel {

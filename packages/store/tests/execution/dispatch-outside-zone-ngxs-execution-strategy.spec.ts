@@ -2,19 +2,10 @@ import { ApplicationRef, NgZone, Component, Type, NgModule, Injectable } from '@
 import { TestBed, TestModuleMetadata } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { State, Action, StateContext, NgxsModule, Store, Select, Actions } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
-
 import { Observable } from 'rxjs';
 
-import {
-  State,
-  Action,
-  StateContext,
-  NgxsModule,
-  Store,
-  Select,
-  Actions
-} from '../../src/public_api';
 import { getZoneWarningMessage } from '../../src/configs/messages.config';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from '../../src/execution/dispatch-outside-zone-ngxs-execution-strategy';
 

@@ -1,12 +1,7 @@
-import { async, TestBed } from '@angular/core/testing';
-import { Observable, Subscription } from 'rxjs';
-
-import { Store } from '../src/store';
-import { NgxsModule } from '../src/module';
-import { State } from '../src/decorators/state';
-import { Action } from '../src/decorators/action';
-import { StateContext } from '../src/symbols';
 import { Injectable, ModuleWithProviders, NgModule, Type } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { Store, NgxsModule, State, Action, StateContext } from '@ngxs/store';
+import { Observable, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 describe('Store', () => {
