@@ -38,12 +38,14 @@ export function State<T>(options: StoreOptions<T>) {
 
       const inheritedActions = { ...inheritedMeta.actions };
       for (const actionKey in inheritedActions) {
-        // Initialize key with empty handlers
-        inheritedActions[`[${name}] ${actionKey}`] = [];
-
         const actionsWithNewHandlers = inheritedActions[actionKey].filter(
           action => action.options.newActionHandlerForChild
         );
+
+        if (actionsWithNewHandlers.length > 0) {
+          // Initialize key with empty handlers
+          inheritedActions[`[${name}] ${actionKey}`] = [];
+        }
 
         // Add new handlers
         actionsWithNewHandlers.forEach((action, i) => {
@@ -54,6 +56,10 @@ export function State<T>(options: StoreOptions<T>) {
 
           inheritedActions[clonedActionType].push(clonedAction);
         });
+
+        if (inheritedActions[actionKey].length === 0) {
+          delete inheritedActions[actionKey];
+        }
       }
 
       meta.actions = { ...meta.actions, ...inheritedActions };
