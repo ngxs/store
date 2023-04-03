@@ -116,6 +116,11 @@ describe('Inheritance @State', () => {
       changeValue(context: StateContext<MyStateModel>) {
         return context.patchState({ value: newValue });
       }
+
+      @Action(ChangeValue)
+      changeValue2(context: StateContext<MyStateModel>) {
+        return context.patchState({ value: newValue });
+      }
     }
 
     const child1 = {
@@ -158,6 +163,80 @@ describe('Inheritance @State', () => {
       },
       [child2.name]: {
         value: child2.value
+      }
+    });
+  });
+
+  it('should run to both of the children state', async () => {
+    interface AbstractStateModel extends MyStateModel {
+      value2: string;
+    }
+
+    class ChangeValue {
+      static type = 'Change Value';
+    }
+
+    const newValue1 = 'new value from handler 1';
+    const newValue2 = 'new value from handler 2';
+    @Injectable()
+    class AbstractState {
+      @Action(ChangeValue, { newActionHandlerForChild: true })
+      changeValue(context: StateContext<AbstractStateModel>) {
+        return context.patchState({ value: newValue1 });
+      }
+
+      @Action(ChangeValue)
+      changeValue2(context: StateContext<AbstractStateModel>) {
+        return context.patchState({ value2: newValue2 });
+      }
+    }
+
+    const child1 = {
+      name: 'child1',
+      value: 'child1 value1',
+      value2: 'child1 value2'
+    };
+    @State<AbstractStateModel>({
+      name: child1.name,
+      defaults: {
+        value: child1.value,
+        value2: child1.value2
+      }
+    })
+    @Injectable()
+    class Child1State extends AbstractState {}
+
+    const child2 = {
+      name: 'child2',
+      value: 'child2 value1',
+      value2: 'child2 value2'
+    };
+    @State<AbstractStateModel>({
+      name: child2.name,
+      defaults: {
+        value: child2.value,
+        value2: child2.value2
+      }
+    })
+    @Injectable()
+    class Child2State extends AbstractState {}
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([Child1State, Child2State])]
+    });
+
+    const store = TestBed.inject(Store);
+
+    await store.dispatch(ChangeValue);
+
+    expect(store.snapshot()).toEqual({
+      [child1.name]: {
+        value: child1.value,
+        value2: newValue2
+      },
+      [child2.name]: {
+        value: child2.value,
+        value2: newValue2
       }
     });
   });

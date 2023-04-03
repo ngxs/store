@@ -3,6 +3,7 @@ import { StateClass } from '@ngxs/store/internals';
 import { ensureStoreMetadata, MetaDataModel, StateClassInternal } from '../internal/internals';
 import { META_KEY, META_OPTIONS_KEY, StoreOptions } from '../symbols';
 import { StoreValidators } from '../utils/store-validators';
+import { ActionHandlerMetaData } from '../actions/symbols';
 
 interface MutateMetaOptions<T> {
   meta: MetaDataModel;
@@ -36,24 +37,23 @@ export function State<T>(options: StoreOptions<T>) {
       const inheritedMeta: Partial<MetaDataModel> = inheritedStateClass[META_KEY] || {};
 
       const inheritedActions = { ...inheritedMeta.actions };
-      for (const actions in inheritedActions) {
-        for (const action of inheritedActions[actions]) {
-          const clonedAction = { ...action };
+      for (const actionKey in inheritedActions) {
+        // Initialize key with empty handlers
+        inheritedActions[`[${name}] ${actionKey}`] = [];
 
-          if (action.options.newActionHandlerForChild) {
-            const clonedActionType = `[${name}] ${action.type}`;
-            clonedAction.type = clonedActionType;
+        const actionsWithNewHandlers = inheritedActions[actionKey].filter(
+          action => action.options.newActionHandlerForChild
+        );
 
-            if (!inheritedActions[clonedActionType]) {
-              if (inheritedActions[action.type]) {
-                delete inheritedActions[action.type];
-              }
-              inheritedActions[clonedActionType] = [];
-            }
+        // Add new handlers
+        actionsWithNewHandlers.forEach((action, i) => {
+          const clonedActionType = `[${name}] ${action.type}`;
+          const clonedAction: ActionHandlerMetaData = { ...action, type: clonedActionType };
 
-            inheritedActions[clonedActionType].push(clonedAction);
-          }
-        }
+          delete inheritedActions[actionKey][i];
+
+          inheritedActions[clonedActionType].push(clonedAction);
+        });
       }
 
       meta.actions = { ...meta.actions, ...inheritedActions };
