@@ -276,7 +276,7 @@ The ngxsFormDebounce is a static binding for now which means we're not watching 
 
 ### Devtools Plugin
 
-- Feature: New options added to `NgxsDevtoolsOptions` [#1879](https://github.com/ngxs/store/pull/1879)[#1968](https://github.com/ngxs/store/pull/1968)
+- Feature: New options added to `NgxsDevtoolsOptions` [#1879](https://github.com/ngxs/store/pull/1879),[#1968](https://github.com/ngxs/store/pull/1968)
 
 The devtools plugin now allows you to provide the following options:
 
