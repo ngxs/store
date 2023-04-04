@@ -1,7 +1,25 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+<<<<<<< HEAD
   "lib": {
     "entryFile": "index.ts"
   },
   "dest": "../../@ngxs/storage-plugin"
+=======
+<<<<<<< HEAD
+  "dest": "../../@ngxs/storage-plugin",
+  "lib": {
+    "flatModuleFile": "ngxs-storage-plugin",
+    "entryFile": "index.ts",
+    "umdModuleIds": {
+      "@ngxs/store": "ngxs-store"
+    }
+  }
+=======
+  "lib": {
+    "entryFile": "index.ts"
+  },
+  "dest": "../../@ngxs/storage-plugin"
+>>>>>>> build: upgrade to Angular 15 (#1983)
+>>>>>>> build: upgrade to Angular 15 (#1983)
 }
