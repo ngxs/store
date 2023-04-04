@@ -1,9 +1,8 @@
 {
-  "$schema": "../../node_modules/ng-packagr/package.schema.json",
   "name": "@ngxs/devtools-plugin",
   "description": "redux devtools plugin for @ngxs/store",
   "version": "0.0.0",
-  "sideEffects": true,
+  "sideEffects": false,
   "peerDependencies": {
     "@ngxs/store": "^0.0.0",
     "@angular/core": ">=6.1.0 <16.0.0",

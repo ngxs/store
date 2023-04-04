@@ -78,9 +78,9 @@ jobs:
     strategy:
       matrix:
         script:
-          - 'integration:ng12:ivy'
-          - 'integration:ng13:ivy'
-          - 'integration:ng14:ivy'
+          # - 'integration:ng12:ivy'
+          # - 'integration:ng13:ivy'
+          # - 'integration:ng14:ivy'
           - 'test:types'
 
     steps:

@@ -5,8 +5,7 @@ import { NgxsTestComponent } from './ngxs-test.component';
 
 @NgModule({
   imports: [BrowserModule],
-  declarations: [NgxsTestComponent],
-  entryComponents: [NgxsTestComponent]
+  declarations: [NgxsTestComponent]
 })
 export class NgxsTestModule {
   public static ngDoBootstrap(app: ApplicationRef): void {

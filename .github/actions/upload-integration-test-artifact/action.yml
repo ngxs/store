@@ -7,11 +7,11 @@
 # - ./.github/actions/upload-integration-test-artifact
 
 name: upload-integration-test-artifact
-description: Upload an integration test artifact with a name such as 'hello-world-ng12-ivy'.
+description: Upload an integration test artifact with a name such as 'hello-world-ng15-ivy'.
 
 inputs:
   script:
-    description: A script with a name such as 'integration:ng12:ivy' that generates an integration test artifact.
+    description: A script with a name such as 'integration:ng15:ivy' that generates an integration test artifact.
     required: true
 
 runs:

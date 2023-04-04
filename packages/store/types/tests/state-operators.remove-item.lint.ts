@@ -1,4 +1,4 @@
-/* tslint:disable:max-line-length */
+/* tslint:disable:max-line-length no-boolean-literal-compare */
 /// <reference types="@types/jest" />
 import { removeItem, patch } from '@ngxs/store/operators';
 

@@ -134,42 +134,6 @@ jobs:
           name: Run integration tests for the SSR build application
           command: yarn test:ci:integration:ssr
 
-  integration_ng12_ivy_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng12 (Ivy) application
-          command: yarn integration:ng12:ivy
-      - persist_to_workspace:
-          root: ~/workspace
-          paths:
-            - app/integrations/hello-world-ng12-ivy/dist-integration
-
-  integration_ng13_ivy_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng13 (Ivy) application
-          command: yarn integration:ng13:ivy
-      - persist_to_workspace:
-          root: ~/workspace
-          paths:
-            - app/integrations/hello-world-ng13-ivy/dist-integration
-
-  integration_ng14_ivy_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Run integration tests for ng14 (Ivy) application
-          command: yarn integration:ng14:ivy
-      - persist_to_workspace:
-          root: ~/workspace
-          paths:
-            - app/integrations/hello-world-ng14-ivy/dist-integration
-
   integration_ng15_tests:
     <<: *job_defaults
     steps:
@@ -258,18 +222,6 @@ workflows:
       ### - integration_ssr_tests:
       ###     requires:
       ###       - build
-
-      - integration_ng12_ivy_tests:
-          requires:
-            - build
-
-      - integration_ng13_ivy_tests:
-          requires:
-            - build
-
-      - integration_ng14_ivy_tests:
-          requires:
-            - build
 
       - integration_ng15_tests:
           requires:

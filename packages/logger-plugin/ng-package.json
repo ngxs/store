@@ -1,11 +1,7 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../@ngxs/logger-plugin",
   "lib": {
-    "flatModuleFile": "ngxs-logger-plugin",
-    "entryFile": "index.ts",
-    "umdModuleIds": {
-      "@ngxs/store": "ngxs-store"
-    }
-  }
+    "entryFile": "index.ts"
+  },
+  "dest": "../../@ngxs/logger-plugin"
 }

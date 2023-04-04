@@ -1,9 +1,8 @@
 {
-  "$schema": "../../node_modules/ng-packagr/package.schema.json",
   "name": "@ngxs/store",
   "version": "0.0.0",
   "license": "MIT",
-  "sideEffects": true,
+  "sideEffects": false,
   "peerDependencies": {
     "@angular/core": ">=6.1.0 <16.0.0",
     "rxjs": ">=6.5.5"
