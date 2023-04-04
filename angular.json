@@ -17,8 +17,7 @@
         "test": {
           "builder": "@angular-builders/jest:run",
           "options": {
-            "configPath": "../jest.config.js",
-            "no-cache": false
+            "configPath": "../jest.config.js"
           }
         }
       }
@@ -130,14 +129,12 @@
         "test": {
           "builder": "@angular-builders/jest:run",
           "options": {
-            "configPath": "./jest.integration.config.js",
-            "no-cache": false
+            "configPath": "./jest.integration.config.js"
           }
         }
       }
     }
   },
-  "defaultProject": "ngxs",
   "schematics": {
     "@schematics/angular:component": {},
     "@schematics/angular:directive": {}

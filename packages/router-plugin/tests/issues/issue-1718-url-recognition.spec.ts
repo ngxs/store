@@ -79,7 +79,7 @@ describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)'
   @NgModule({
     imports: [
       BrowserModule,
-      RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
+      RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' }),
       NgxsModule.forRoot(),
       NgxsRouterPluginModule.forRoot()
     ],

@@ -1,4 +1,5 @@
-import { writeFile } from 'fs';
+import { writeFile } from 'fs/promises';
+
 import { getPackages } from './utils';
 
 export async function setMetadata() {
@@ -35,11 +36,11 @@ export async function setMetadata() {
     }
 
     // save the package file after we have updated the keys and peerDependencies
-    await writeFile(packPath, JSON.stringify(packPackage, null, 2), err => {
-      if (err) {
-        console.error('Write failed!');
-      }
-    });
+    try {
+      await writeFile(packPath, JSON.stringify(packPackage, null, 2));
+    } catch {
+      console.error('Write failed!');
+    }
   }
 
   console.log(`package version set to ${ngxsJson.version}`);

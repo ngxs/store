@@ -1,9 +1,9 @@
 import {
   AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup
 } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
@@ -21,20 +21,20 @@ import { Extras, Pizza, Todo } from '@integration/store/todos/todos.model';
 })
 export class AppComponent implements OnInit {
   public allExtras: Extras[];
-  public pizzaForm: FormGroup;
+  public pizzaForm: UntypedFormGroup;
   public greeting: string;
   @Select(TodoState) public todos$: Observable<Todo[]>;
   @Select(TodoState.pandas) public pandas$: Observable<Todo[]>;
   @Select(TodosState.pizza) public pizza$: Observable<Pizza>;
   @Select(TodosState.injected) public injected$: Observable<string>;
 
-  constructor(private store: Store, private formBuilder: FormBuilder) {}
+  constructor(private store: Store, private formBuilder: UntypedFormBuilder) {}
 
   public get extras(): AbstractControl[] {
-    return (<FormArray>this.pizzaForm.get('extras')).controls;
+    return (<UntypedFormArray>this.pizzaForm.get('extras')).controls;
   }
 
-  private get extrasControls(): FormControl[] {
+  private get extrasControls(): UntypedFormControl[] {
     return this.allExtras.map((extra: Extras) => this.formBuilder.control(extra.selected));
   }
 
@@ -74,7 +74,7 @@ export class AppComponent implements OnInit {
     this.store.dispatch(new LoadData());
   }
 
-  private createPizzaForm(): FormGroup {
+  private createPizzaForm(): UntypedFormGroup {
     return this.formBuilder.group({
       toppings: [''],
       crust: [{ value: 'thin', disabled: true }],

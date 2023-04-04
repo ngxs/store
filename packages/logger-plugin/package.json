@@ -1,22 +1,11 @@
 {
-  "$schema": "../../node_modules/ng-packagr/package.schema.json",
   "name": "@ngxs/logger-plugin",
   "description": "logger plugin for @ngxs/store",
   "version": "0.0.0",
-  "sideEffects": true,
+  "sideEffects": false,
   "peerDependencies": {
     "@ngxs/store": "^0.0.0",
     "@angular/core": ">=6.1.0 <16.0.0",
     "rxjs": ">=6.5.5"
-  },
-  "ngPackage": {
-    "lib": {
-      "flatModuleFile": "ngxs-logger-plugin",
-      "entryFile": "index.ts",
-      "umdModuleIds": {
-        "@ngxs/store": "ngxs-store"
-      }
-    },
-    "dest": "../../@ngxs/logger-plugin"
   }
 }

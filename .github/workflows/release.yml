@@ -77,9 +77,7 @@ jobs:
     strategy:
       matrix:
         script:
-          - 'integration:ng12:ivy'
-          - 'integration:ng13:ivy'
-          - 'integration:ng14:ivy'
+          - 'integration:ng15'
           - 'test:types'
 
     steps:
@@ -97,7 +95,7 @@ jobs:
         run: yarn ${{ matrix.script }}
 
       - name: Upload an integration test artifact
-        if: ${{ matrix.script == 'integration:ng12:ivy' || matrix.script == 'integration:ng13:ivy' || matrix.script == 'integration:ng14:ivy' }}
+        if: ${{ matrix.script == 'integration:ng15' }}
         uses: ./.github/actions/upload-integration-test-artifact
         with:
           script: ${{ matrix.script }}

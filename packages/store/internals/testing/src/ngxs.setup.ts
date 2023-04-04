@@ -46,7 +46,9 @@ export class NgxsTestBed {
 
   private static resetTestBed(): void {
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting(), {
+      teardown: { destroyAfterEach: true }
+    });
   }
 
   private static createRootNode(selector = 'app-root'): void {

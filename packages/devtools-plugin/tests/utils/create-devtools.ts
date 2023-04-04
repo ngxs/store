@@ -9,7 +9,8 @@ export function createReduxDevtoolsExtension(connector: ReduxDevtoolsMockConnect
       connect(options: NgxsDevtoolsOptions): ReduxDevtoolsMockConnector {
         connector.options = options;
         return connector;
-      }
+      },
+      disconnect() {}
     }
   });
 }

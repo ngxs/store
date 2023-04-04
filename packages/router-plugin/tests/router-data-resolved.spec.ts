@@ -52,9 +52,9 @@ describe('RouterDataResolved', () => {
     router$: Observable<RouterStateModel>;
 
     constructor(store: Store) {
-      this.router$ = (store.select(RouterState.state) as unknown) as Observable<
-        RouterStateModel
-      >;
+      this.router$ = store.select(
+        RouterState.state
+      ) as unknown as Observable<RouterStateModel>;
     }
   }
 
@@ -75,7 +75,7 @@ describe('RouterDataResolved', () => {
               }
             }
           ],
-          { initialNavigation: 'enabled' }
+          { initialNavigation: 'enabledBlocking' }
         ),
         NgxsModule.forRoot(states),
         NgxsRouterPluginModule.forRoot()

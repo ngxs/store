@@ -53,7 +53,7 @@ function getTestModule() {
   @NgModule({
     imports: [
       BrowserModule,
-      RouterTestingModule.withRoutes(routes, { initialNavigation: 'enabled' }),
+      RouterTestingModule.withRoutes(routes, { initialNavigation: 'enabledBlocking' }),
       NgxsModule.forRoot(),
       NgxsRouterPluginModule.forRoot()
     ],

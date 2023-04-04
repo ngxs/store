@@ -24,6 +24,8 @@ import {
  */
 declare const ngDevMode: boolean;
 
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
   private _keysWithEngines = this._options.keysWithEngines;
@@ -78,12 +80,12 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           } catch {
             // Caretaker note: we have still left the `typeof` condition in order to avoid
             // creating a breaking change for projects that still use the View Engine.
-            if (typeof ngDevMode === 'undefined' || ngDevMode) {
+            NG_DEV_MODE &&
               console.error(
                 `Error ocurred while deserializing the ${storageKey} store value, falling back to empty object, the value obtained from the store: `,
                 storedValue
               );
-            }
+
             storedValue = {};
           }
 
@@ -152,9 +154,9 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             } catch (error) {
               // Caretaker note: we have still left the `typeof` condition in order to avoid
               // creating a breaking change for projects that still use the View Engine.
-              if (typeof ngDevMode === 'undefined' || ngDevMode) {
+              if (NG_DEV_MODE) {
                 if (
-                  error &&
+                  error instanceof Error &&
                   (error.name === 'QuotaExceededError' ||
                     error.name === 'NS_ERROR_DOM_QUOTA_REACHED')
                 ) {

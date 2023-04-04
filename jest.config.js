@@ -1,7 +1,7 @@
 // https://jestjs.io/docs/en/configuration
 // Configuring Jest
 const path = require('path');
-const { pathsToModuleNameMapper: resolver } = require('ts-jest/utils');
+const { pathsToModuleNameMapper: resolver } = require('ts-jest');
 const { compilerOptions } = require('./tsconfig');
 
 const moduleNameMapper = resolver(compilerOptions.paths, { prefix: '<rootDir>/' });
@@ -11,6 +11,10 @@ if (!CI) {
   console.log('[DEBUG]: moduleNameMapper');
   console.log(JSON.stringify(moduleNameMapper, null, 4));
 }
+
+globalThis.ngJest = {
+  skipNgcc: true
+};
 
 module.exports = {
   displayName: 'ngxs',
@@ -22,9 +26,28 @@ module.exports = {
    */
   globals: {
     'ts-jest': {
-      tsConfig: '<rootDir>/tsconfig.spec.json',
-      allowSyntheticDefaultImports: true,
-    },
+      tsconfig: path.join(__dirname, 'tsconfig.spec.json'),
+      allowSyntheticDefaultImports: true
+    }
+  },
+
+  /**
+   * See https://github.com/nrwl/nx/blob/master/packages/jest/preset/jest-preset.ts#L6.
+   */
+  moduleFileExtensions: ['ts', 'js', 'mjs'],
+
+  /**
+   * See https://github.com/nrwl/nx/blob/master/packages/jest/preset/jest-preset.ts#L8-L13.
+   */
+  transform: {
+    '^.+.ts$': 'jest-preset-angular'
+  },
+
+  /**
+   * See https://github.com/nrwl/nx/blob/master/packages/jest/preset/jest-preset.ts#L15-L30.
+   */
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'require', 'default']
   },
 
   /**
@@ -52,7 +75,7 @@ module.exports = {
     '!packages/**/*.spec.ts',
     '!packages/**/*.spec.ts',
     '!packages/**/helpers/**',
-    '!packages/**/types/**',
+    '!packages/**/types/**'
   ],
 
   /**
@@ -79,11 +102,6 @@ module.exports = {
   modulePathIgnorePatterns: ['<rootDir>/@ngxs/'],
 
   /**
-   * A preset that is used as a base for Jest's configuration.
-   */
-  preset: 'jest-preset-angular',
-
-  /**
    * A list of paths to modules that run some code to configure or set up the testing
    * framework before each test. Since setupFiles executes before the test framework
    * is installed in the environment, this script file presents you the opportunity
@@ -95,7 +113,7 @@ module.exports = {
   /**
    * The glob patterns Jest uses to detect test files.
    */
-  testMatch: ['<rootDir>/packages/**/**/*.spec.ts'],
+  testMatch: [path.join(__dirname, 'packages/**/**/*.spec.ts')],
 
   /**
    * An array of regexp pattern strings that are matched against all
@@ -105,7 +123,12 @@ module.exports = {
    * project's root directory to prevent it from accidentally ignoring all of
    * your files in different environments that may have different root directories.
    */
-  testPathIgnorePatterns: ['/node_modules/', '/types/', '/helpers/'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/types/',
+    '/helpers/',
+    path.join(__dirname, 'packages/hmr-plugin')
+  ],
 
   transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
 
@@ -141,5 +164,5 @@ module.exports = {
    * Equivalent to calling jest.clearAllMocks() between each test.
    * This does not remove any mock implementation that may have been provided.
    */
-  clearMocks: true,
+  clearMocks: true
 };
