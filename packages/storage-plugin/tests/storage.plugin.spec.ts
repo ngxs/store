@@ -536,6 +536,7 @@ describe('NgxsStoragePlugin', () => {
               if (key === 'counterInfo') {
                 return new CounterInfoStateModel(obj.count);
               }
+              return obj;
             }
           })
         ]

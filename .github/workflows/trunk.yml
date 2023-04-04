@@ -44,7 +44,7 @@ jobs:
 
     strategy:
       matrix:
-        script: [eslint, 'test:ci']
+        script: [lint, 'test']
 
     steps:
       - name: Checkout sources
@@ -58,10 +58,10 @@ jobs:
           github-sha: ${{ github.sha }}
 
       - name: Run ${{ matrix.script }}
-        run: yarn ${{ matrix.script }}
+        run: yarn nx run-many --target=${{ matrix.script }} --configuration=ci --all
 
       - name: Upload coverage results to Code Climate
-        if: ${{ matrix.script == 'test:ci' }}
+        if: ${{ matrix.script == 'test' }}
         run: |
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
           chmod +x /tmp/cc-test-reporter

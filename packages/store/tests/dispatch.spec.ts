@@ -298,6 +298,7 @@ describe('Dispatch', () => {
 
               return dispatch(new Increment());
             }
+            return;
           })
         );
       }

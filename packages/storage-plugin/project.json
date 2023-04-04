@@ -1,0 +1,40 @@
+{
+  "name": "storage-plugin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/storage-plugin",
+  "sourceRoot": "packages/storage-plugin",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "outputs": ["@ngxs/storage-plugin"],
+      "options": {
+        "tsConfig": "tsconfig.build.json",
+        "project": "packages/storage-plugin/ng-package.json"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/storage-plugin/jest.config.js",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "packages/storage-plugin/**/*.ts",
+          "packages/storage-plugin/**/*.html"
+        ]
+      }
+    }
+  }
+}

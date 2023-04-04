@@ -6,17 +6,5 @@
   "sideEffects": true,
   "peerDependencies": {
     "@angular/core": ">=6.1.0 <16.0.0"
-  },
-  "ngPackage": {
-    "lib": {
-      "flatModuleFile": "ngxs-hmr-plugin",
-      "entryFile": "index.ts",
-      "umdModuleIds": {
-        "@ngxs/store/operators": "ngxs-store-operators",
-        "@ngxs/store/internals": "ngxs-store-internals",
-        "@ngxs/store": "ngxs-store"
-      }
-    },
-    "dest": "../../@ngxs/hmr-plugin"
   }
 }
