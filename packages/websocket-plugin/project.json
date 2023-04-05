@@ -7,7 +7,7 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:ng-packagr",
-      "outputs": ["@ngrx/websocket-plugin"],
+      "outputs": ["@ngxs/websocket-plugin"],
       "options": {
         "tsConfig": "tsconfig.build.json",
         "project": "packages/websocket-plugin/ng-package.json"
