@@ -1,4 +1,4 @@
-import { patch } from '../src/patch';
+import { patch } from '@ngxs/store/operators';
 
 describe('patch', () => {
   describe('when no properties provided', () => {
@@ -304,7 +304,7 @@ describe('patch', () => {
           // Act
           const newValue = patch<Model>({
             b: patch<Model['b']>({
-              hello: patch<Model['b']['hello']>({
+              hello: patch<Greeting>({
                 enthusiastic: true,
                 person: patch({
                   name: 'Mark',

@@ -15,7 +15,7 @@ describe('[TEST]: StateToken', () => {
   });
 
   describe('Integration', () => {
-    it('should successfully create store', () => {
+    async function setup() {
       const TODO_LIST_TOKEN = new StateToken<string[]>('todoList');
 
       @State<string[]>({
@@ -46,14 +46,22 @@ describe('[TEST]: StateToken', () => {
         constructor(public storeApp: Store) {}
       }
 
-      TestBed.configureTestingModule({
+      await TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([TodoListState])],
         declarations: [MyComponent]
-      });
+      }).compileComponents();
 
       const fixture = TestBed.createComponent(MyComponent);
       fixture.autoDetectChanges();
 
+      return { fixture, TODO_LIST_TOKEN, TodoListState };
+    }
+
+    it('should successfully create store', async () => {
+      // Arrange
+      const { fixture, TODO_LIST_TOKEN, TodoListState } = await setup();
+
+      // Assert
       const store: Store = fixture.componentInstance.storeApp;
       expect(store.selectSnapshot(TodoListState.todos)).toEqual(['hello', 'world']);
       expect(store.selectSnapshot(TodoListState.first)).toEqual('hello');
@@ -64,17 +72,17 @@ describe('[TEST]: StateToken', () => {
 
       expect(store.selectSnapshot(TODO_LIST_TOKEN)).toEqual(['hello', 'world']);
 
-      const selectResult: string[] = [];
-      store
+      // Act
+      const selectResult: string[] = await store
         .select(TODO_LIST_TOKEN)
         .pipe(take(1))
-        .subscribe((value: string[]) => selectResult.push(...value));
+        .toPromise();
+      // Assert
       expect(selectResult).toEqual(['hello', 'world']);
 
-      const selectOnceResult: string[] = [];
-      store
-        .selectOnce(TODO_LIST_TOKEN)
-        .subscribe((value: string[]) => selectOnceResult.push(...value));
+      // Act
+      const selectOnceResult: string[] = await store.selectOnce(TODO_LIST_TOKEN).toPromise();
+      // Assert
       expect(selectOnceResult).toEqual(['hello', 'world']);
     });
   });

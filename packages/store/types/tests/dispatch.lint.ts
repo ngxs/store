@@ -1,4 +1,4 @@
-/* tslint:disable:max-line-length */
+/* tslint:disable:max-line-length no-unnecessary-callback-wrapper */
 /// <reference types="@types/jest" />
 import { TestBed } from '@angular/core/testing';
 import { Action, InitState, UpdateState, NgxsModule, State, Store } from '@ngxs/store';

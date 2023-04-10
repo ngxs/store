@@ -5,12 +5,10 @@ import {
   META_KEY,
   META_OPTIONS_KEY,
   NgxsConfig,
-  NgxsSimpleChange,
   SELECTOR_META_KEY,
   StoreOptions
 } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
-import { getValue } from '../utils/utils';
 
 // inspired from https://stackoverflow.com/a/43674389
 export interface StateClassInternal<T = any, U = any> extends StateClass<T> {
@@ -71,11 +69,6 @@ export interface MappedStore {
 export interface StatesAndDefaults {
   defaults: any;
   states: MappedStore[];
-}
-
-export interface RootStateDiff<T> {
-  currentAppState: T;
-  newAppState: T;
 }
 
 /**
@@ -365,13 +358,4 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
  */
 export function isObject(obj: any) {
   return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';
-}
-
-export function getStateDiffChanges<T>(
-  mappedStore: MappedStore,
-  diff: RootStateDiff<T>
-): NgxsSimpleChange {
-  const previousValue: T = getValue(diff.currentAppState, mappedStore.path);
-  const currentValue: T = getValue(diff.newAppState, mappedStore.path);
-  return new NgxsSimpleChange(previousValue, currentValue, !mappedStore.isInitialised);
 }

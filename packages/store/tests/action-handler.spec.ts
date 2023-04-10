@@ -1,15 +1,10 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Action, State, StateContext, NgxsModule, Store, Actions } from '@ngxs/store';
 import { StateClass } from '@ngxs/store/internals';
 import { timer } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { Action } from '../src/decorators/action';
-import { State } from '../src/decorators/state';
-import { StateContext } from '../src/symbols';
-import { NgxsModule } from '../src/module';
-import { Store } from '../src/store';
-import { Actions } from '../src/actions-stream';
 import { NoopErrorHandler } from './helpers/utils';
 
 describe('Action handlers', () => {

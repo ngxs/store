@@ -1,5 +1,5 @@
 import { SharedSelectorOptions } from '../internal/internals';
-import { selectorOptionsMetaAccessor } from '../utils/selector-utils';
+import { selectorOptionsMetaAccessor } from '../selectors/selector-metadata';
 
 /**
  * Decorator for setting selector options at a method or class level.
@@ -12,6 +12,7 @@ export function SelectorOptions(options: SharedSelectorOptions) {
       descriptor: TypedPropertyDescriptor<T>
     ) {
       if (methodName) {
+        descriptor ||= Object.getOwnPropertyDescriptor(target, methodName)!;
         // Method Decorator
         const originalFn = descriptor.value || (<any>descriptor).originalFn;
         if (originalFn) {

@@ -1,5 +1,6 @@
-import { StateToken } from '@ngxs/store';
 import { StateClass } from '@ngxs/store/internals';
+
+import { StateToken } from '../state-token/state-token';
 
 export type SelectorFunc<TModel> = (...arg: any[]) => TModel;
 

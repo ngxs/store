@@ -1,16 +1,10 @@
-import { TestBed } from '@angular/core/testing';
-
-import { Store } from '../src/store';
-import { NgxsModule } from '../src/module';
-import { State } from '../src/decorators/state';
-import { Selector } from '../src/decorators/selector/selector';
-import { SelectorOptions } from '../src/decorators/selector-options';
 import { Injectable, NgModule } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { StateToken } from '../src/public_api';
-import { StateClass } from '../internals/src/index';
+import { TestBed } from '@angular/core/testing';
+import { Store, NgxsModule, State, Selector, SelectorOptions, StateToken } from '@ngxs/store';
+import { StateClass } from '@ngxs/store/internals';
 
 describe('Store (isolation)', () => {
   describe('when selecting a child state', () => {

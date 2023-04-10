@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { FormGroup, FormControl, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { State, NgxsModule, Store, Selector } from '@ngxs/store';
@@ -29,6 +29,7 @@ describe('UpdateFormValue.propertyPath', () => {
       }
     }
   })
+  @Injectable()
   class NovelsState {
     @Selector()
     static model(state: NovelsStateModel) {
@@ -76,7 +77,7 @@ describe('UpdateFormValue.propertyPath', () => {
     }
   }
 
-  const getStore = (): Store => TestBed.get<Store>(Store);
+  const getStore = (): Store => TestBed.inject<Store>(Store);
   const createComponent = () => TestBed.createComponent(NewNovelFormComponent);
 
   beforeEach(() => {

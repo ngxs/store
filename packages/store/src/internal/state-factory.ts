@@ -45,6 +45,7 @@ import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
 import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
+import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
 
 /**
  * State factory class
@@ -87,6 +88,7 @@ export class StateFactory implements OnDestroy {
   }
 
   getRuntimeSelectorContext = memoize(() => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const stateFactory = this;
 
     function resolveGetter(key: string) {
@@ -138,10 +140,8 @@ export class StateFactory implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // I'm using non-null assertion here since `_actionsSubscrition` will
-    // be 100% defined. This is because `ngOnDestroy()` cannot be invoked
-    // on the `StateFactory` until its initialized :) An it's initialized
-    // for the first time along with the `NgxsRootModule`.
+    // This is being non-null asserted since `_actionsSubscrition` is
+    // initialized within the constructor.
     this._actionsSubscription!.unsubscribe();
   }
 
@@ -247,6 +247,10 @@ export class StateFactory implements OnDestroy {
     const type = getActionTypeFromInstance(action)!;
     const results = [];
 
+    // Determines whether the dispatched action has been handled, this is assigned
+    // to `true` within the below `for` loop if any `actionMetas` has been found.
+    let actionHasBeenHandled = false;
+
     for (const metadata of this.states) {
       const actionMetas = metadata.actions[type];
 
@@ -296,7 +300,21 @@ export class StateFactory implements OnDestroy {
           } catch (e) {
             results.push(throwError(e));
           }
+
+          actionHasBeenHandled = true;
         }
+      }
+    }
+
+    // The `NgxsUnhandledActionsLogger` is a tree-shakable class which functions
+    // only during development.
+    if ((typeof ngDevMode === 'undefined' || ngDevMode) && !actionHasBeenHandled) {
+      const unhandledActionsLogger = this._injector.get(NgxsUnhandledActionsLogger, null);
+      // The `NgxsUnhandledActionsLogger` will not be resolved by the injector if the
+      // `NgxsDevelopmentModule` is not provided. It's enough to check whether the `injector.get`
+      // didn't return `null` so we may ensure the module has been imported.
+      if (unhandledActionsLogger) {
+        unhandledActionsLogger.warn(action);
       }
     }
 

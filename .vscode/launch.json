@@ -26,7 +26,7 @@
         "--project",
         "ngxs",
         "--colors",
-        "--runInBand"
+        "--run-in-band"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -46,7 +46,7 @@
         "ngxs",
         "--testPathPattern=${fileBasenameNoExtension}",
         "--colors",
-        "--runInBand"
+        "--run-in-band"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",

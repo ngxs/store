@@ -2,11 +2,16 @@ import { ApplicationRef, Component, Injectable, NgModule, NgZone } from '@angula
 import { TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import {
+  Action,
+  NgxsModule,
+  State,
+  StateContext,
+  Store,
+  NoopNgxsExecutionStrategy
+} from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { take } from 'rxjs/operators';
-
-import { Action, NgxsModule, State, StateContext, Store } from '../src/public_api';
-import { NoopNgxsExecutionStrategy } from '../src/execution/noop-ngxs-execution-strategy';
 
 describe('zone', () => {
   class Increment {
@@ -98,8 +103,8 @@ describe('zone', () => {
       store.dispatch(new Increment());
     });
 
-    // Angular has run change detection 6 times
-    expect(ticks).toBe(6);
+    // Angular has run change detection 5 times
+    expect(ticks).toBe(5);
     expect(selectCalls).toEqual(3);
     expect(selectCallsInAngularZone).toEqual(3);
   });

@@ -1,19 +1,45 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev)
 
-### For next major version
-
-- Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
-- Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
-- Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806)
-
-### To become next patch version
-
 ```bash
 $ npm install @ngxs/store@dev
 ```
 
-- Fix: Storage Plugin - Do not skip deserialization for keys with dot notation [#1924](https://github.com/ngxs/store/pull/1924)
+### For next major version
+
+- ...
+
+### To become next patch version
+
+- Fix: Check if state is injectable in JIT [#1988](https://github.com/ngxs/store/pull/1988)
+
+- ...
+
+# 3.8.0 2023-03-29
+
+- Feature: Build packages in Ivy format [#1945](https://github.com/ngxs/store/pull/1945)
+- Feature: Add advanced selector utilities [#1824](https://github.com/ngxs/store/pull/1824)
+- Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
+- Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
+- Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806) [#1947](https://github.com/ngxs/store/pull/1947)
+- Feature: Enable warning on unhandled actions [#1870](https://github.com/ngxs/store/pull/1870) [#1951](https://github.com/ngxs/store/pull/1951)
+- Feature: Router Plugin - Provide more actions and navigation timing option [#1932](https://github.com/ngxs/store/pull/1932)
+- Feature: Storage Plugin - Allow providing namespace for keys [#1841](https://github.com/ngxs/store/pull/1841)
+- Feature: Storage Plugin - Enable providing storage engine individually [#1935](https://github.com/ngxs/store/pull/1935)
+- Feature: Devtools Plugin - Add new options to the `NgxsDevtoolsOptions` interface [#1879](https://github.com/ngxs/store/pull/1879)
+- Feature: Devtools Plugin - Add trace options to `NgxsDevtoolsOptions` [#1968](https://github.com/ngxs/store/pull/1968)
+- Feature: Form Plugin - Allow `ngxsFormDebounce` to be string [#1972](https://github.com/ngxs/store/pull/1972)
+- Performance: Tree-shake patch errors [#1955](https://github.com/ngxs/store/pull/1955)
+- Fix: Get descriptor explicitly when it's considered as a class property [#1961](https://github.com/ngxs/store/pull/1961)
+- Fix: Avoid delayed updates from state stream [#1981](https://github.com/ngxs/store/pull/1981)
+
+# 3.7.6 2022-11-23
+
+- Performance: Run change detection once for all `Actions` subscribers once the stream emits [#1939](https://github.com/ngxs/store/pull/1939)
 - Fix: Use `isObservable` to test whether actions return an observable [#1925](https://github.com/ngxs/store/pull/1925)
+- Fix: Call `ngxsOnChanges` whenever state changes (even through plugins) [#1926](https://github.com/ngxs/store/pull/1926)
+- Fix: Do not delegate errors to `ErrorHandler` if users catch them manually [#1927](https://github.com/ngxs/store/pull/1927)
+- Fix: Complete `Actions` stream once root view is removed [#1933](https://github.com/ngxs/store/pull/1933)
+- Fix: Storage Plugin - Do not skip deserialization for keys with dot notation [#1924](https://github.com/ngxs/store/pull/1924)
 
 # 3.7.5 2022-08-08
 

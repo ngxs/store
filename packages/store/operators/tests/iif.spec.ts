@@ -1,5 +1,4 @@
-import { iif } from '../src/iif';
-import { patch } from '../src/patch';
+import { iif, patch } from '@ngxs/store/operators';
 
 describe('iif', () => {
   describe('when null condition provided', () => {
@@ -149,10 +148,10 @@ describe('iif', () => {
       const original = { a: 1, b: 2, c: 3 };
 
       // Act
-      const newValue = patch({
-        a: iif(a => a! < 10, 10, 5),
-        b: iif(b => b! > 0, 10, 5),
-        c: iif(c => c! === 3, 10, 5)
+      const newValue = patch<typeof original>({
+        a: iif(a => a < 10, 10, 5),
+        b: iif(b => b > 0, 10, 5),
+        c: iif(c => c === 3, 10, 5)
       })(original);
 
       // Assert
@@ -334,7 +333,11 @@ describe('iif', () => {
               greeting: 'How are you?'
             })
           ),
-          c: iif(c => c !== 100, () => 0 + 100, 10)
+          c: iif(
+            c => c !== 100,
+            () => 0 + 100,
+            10
+          )
         })(original);
 
         const newValue2 = patch<Model>({

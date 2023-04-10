@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, Injectable, NgModule } from '@angular/core';
+import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
 
-import { Action, NgxsModule, State, StateContext, Store } from '../src/public_api';
 import { StateStream } from '../src/internal/state-stream';
 
 describe('Reusable States', () => {
@@ -14,6 +14,7 @@ describe('Reusable States', () => {
     name: 'foo',
     defaults: [1, 2, 3]
   })
+  @Injectable()
   class FooState {
     @Action(UpdateFoo)
     public update(ctx: StateContext<number[]>, { payload }: UpdateFoo) {

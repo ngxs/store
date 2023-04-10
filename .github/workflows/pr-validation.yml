@@ -45,7 +45,7 @@ jobs:
 
     strategy:
       matrix:
-        script: [lint, eslint, 'test:ci']
+        script: [eslint, 'test:ci']
 
     steps:
       - name: Checkout sources
@@ -81,17 +81,10 @@ jobs:
     strategy:
       matrix:
         script:
-          - 'integration:ng7'
-          - 'integration:ng8'
-          - 'integration:ng9:ivy:off'
-          - 'integration:ng9:ivy'
-          - 'integration:ng10:ivy:off'
-          - 'integration:ng10:ivy'
-          - 'integration:ng11:ivy:off'
-          - 'integration:ng11:ivy'
           - 'integration:ng12:ivy'
           - 'integration:ng13:ivy'
           - 'integration:ng14:ivy'
+          - 'integration:ng15'
           - 'test:types'
 
     steps:
@@ -112,7 +105,7 @@ jobs:
         run: yarn ${{ matrix.script }}
 
       - name: Upload an integration test artifact
-        if: ${{ matrix.script == 'integration:ng11:ivy' || matrix.script == 'integration:ng12:ivy' || matrix.script == 'integration:ng13:ivy' || matrix.script == 'integration:ng14:ivy' }}
+        if: ${{ matrix.script == 'integration:ng12:ivy' || matrix.script == 'integration:ng13:ivy' || matrix.script == 'integration:ng14:ivy' }}
         uses: ./.github/actions/upload-integration-test-artifact
         with:
           script: ${{ matrix.script }}

@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { NgxsLifeCycle, NgxsSimpleChange, StateContext, StateOperator } from '../symbols';
-import { getStateDiffChanges, MappedStore } from '../internal/internals';
+import { ExistingState, StateOperator } from '@ngxs/store/operators';
+
+import { StateContext } from '../symbols';
+import { MappedStore } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
 import { InternalStateOperations } from '../internal/state-operations';
 import { simplePatch } from './state-operators';
@@ -27,17 +29,6 @@ export class StateContextFactory {
 
     function setStateValue(currentAppState: any, newValue: T): any {
       const newAppState = setValue(currentAppState, mappedStore.path, newValue);
-      const instance: NgxsLifeCycle = mappedStore.instance;
-
-      if (instance.ngxsOnChanges) {
-        const change: NgxsSimpleChange = getStateDiffChanges<T>(mappedStore, {
-          currentAppState,
-          newAppState
-        });
-
-        instance.ngxsOnChanges(change);
-      }
-
       root.setState(newAppState);
       return newAppState;
       // In doing this refactoring I noticed that there is a 'bug' where the
@@ -50,7 +41,7 @@ export class StateContextFactory {
 
     function setStateFromOperator(currentAppState: any, stateOperator: StateOperator<T>) {
       const local = getState(currentAppState);
-      const newValue = stateOperator(local);
+      const newValue = stateOperator(local as ExistingState<T>);
       return setStateValue(currentAppState, newValue);
     }
 

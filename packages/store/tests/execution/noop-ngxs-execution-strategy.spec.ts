@@ -1,4 +1,12 @@
-import { ApplicationRef, NgZone, Component, Type, NgModule, ɵglobal } from '@angular/core';
+import {
+  ApplicationRef,
+  NgZone,
+  Component,
+  Type,
+  NgModule,
+  ɵglobal,
+  Injectable
+} from '@angular/core';
 import { TestBed, TestModuleMetadata } from '@angular/core/testing';
 import { Observable } from 'rxjs';
 import {
@@ -43,6 +51,7 @@ describe('NoopNgxsExecutionStrategy', () => {
     name: 'counter',
     defaults: 0
   })
+  @Injectable()
   class CounterState {
     public zoneCounter = new ZoneCounter();
 

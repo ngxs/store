@@ -12,9 +12,17 @@ import {
   BrowserModule,
   ɵBrowserDomAdapter as BrowserDomAdapter
 } from '@angular/platform-browser';
+import {
+  InitState,
+  UpdateState,
+  Action,
+  NgxsModule,
+  NgxsOnInit,
+  State,
+  StateContext,
+  Store
+} from '@ngxs/store';
 
-import { InitState, UpdateState } from '../src/actions/actions';
-import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../src/public_api';
 import { META_KEY, NgxsAfterBootstrap } from '../src/symbols';
 import { simplePatch } from '../src/internal/state-operators';
 

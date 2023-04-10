@@ -4,7 +4,7 @@ import { NgxsModule, State, Action, Store, Actions, ofActionDispatched } from '@
 import { throwError } from 'rxjs';
 
 describe('Allow to inject the Store class into the ErrorHandler (https://github.com/ngxs/store/issues/1687)', () => {
-  it('should allow to inject the Store', () => {
+  it('should allow to inject the Store', async () => {
     // Arrange
     class ProduceError {
       static type = '[Animals] Produce error';
@@ -18,6 +18,7 @@ describe('Allow to inject the Store class into the ErrorHandler (https://github.
       name: 'animals',
       defaults: []
     })
+    @Injectable()
     class AnimalsState {
       @Action(ProduceError)
       produceError() {
@@ -49,6 +50,7 @@ describe('Allow to inject the Store class into the ErrorHandler (https://github.
     });
 
     TestBed.inject(Store).dispatch(new ProduceError());
+    await Promise.resolve();
 
     // Assert
     expect(handleErrorHasBeenDispatched).toBe(true);

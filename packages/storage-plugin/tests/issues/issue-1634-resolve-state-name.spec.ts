@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { State, StateToken, NgxsModule, Action, StateContext, Store } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 
@@ -17,6 +18,7 @@ describe('Resolve state name if the state class has been provided (https://githu
       name: COUNTRIES_STATE_TOKEN,
       defaults: ['Mexico', 'USA', 'Canada']
     })
+    @Injectable()
     class CountriesState {
       @Action(AddCountry)
       addCountry(ctx: StateContext<string[]>, action: AddCountry) {

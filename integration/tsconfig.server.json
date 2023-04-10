@@ -6,7 +6,6 @@
       "@ngxs/*": ["../@ngxs/*"],
       "@integration/*": ["./app/*"]
     },
-    "module": "commonjs",
     "target": "es2016",
     "types": ["node"],
     "typeRoots": ["../node_modules/@types"]

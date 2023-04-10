@@ -1,55 +1,16 @@
 import { isPlatformServer } from '@angular/common';
-import { StateClass } from '@ngxs/store/internals';
-import { StateToken } from '@ngxs/store';
 
 import { StorageOption, StorageEngine, NgxsStoragePluginOptions } from './symbols';
 
 /**
- * If the `key` option is not provided then the below constant
- * will be used as a default key
+ * The following key is used to store the entire serialized
+ * state when there's no specific state provided.
  */
 export const DEFAULT_STATE_KEY = '@@STATE';
-
-/**
- * Internal type definition for the `key` option provided
- * in the `forRoot` method when importing module
- */
-export type StorageKey =
-  | string
-  | StateClass
-  | StateToken<any>
-  | (string | StateClass | StateToken<any>)[];
-
-/**
- * This key is used to retrieve static metadatas on state classes.
- * This constant is taken from the core codebase
- */
-const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
-
-function transformKeyOption(key: StorageKey): string[] {
-  if (!Array.isArray(key)) {
-    key = [key];
-  }
-
-  return key.map((token: string | StateClass | StateToken<any>) => {
-    // If it has the `NGXS_OPTIONS_META` key then it means the developer
-    // has provided state class like `key: [AuthState]`.
-    if (token.hasOwnProperty(META_OPTIONS_KEY)) {
-      // The `name` property will be an actual state name or a `StateToken`.
-      token = (token as any)[META_OPTIONS_KEY].name;
-    }
-
-    return token instanceof StateToken ? token.getName() : (token as string);
-  });
-}
 
 export function storageOptionsFactory(
   options: NgxsStoragePluginOptions | undefined
 ): NgxsStoragePluginOptions {
-  if (options !== undefined && options.key) {
-    options.key = transformKeyOption(options.key);
-  }
-
   return {
     key: [DEFAULT_STATE_KEY],
     storage: StorageOption.LocalStorage,
@@ -76,4 +37,10 @@ export function engineFactory(
   }
 
   return null;
+}
+
+export function getStorageKey(key: string, options?: NgxsStoragePluginOptions): string {
+  // Prepends the `namespace` option to any key if it's been provided by a user.
+  // So `@@STATE` becomes `my-app:@@STATE`.
+  return options && options.namespace ? `${options.namespace}:${key}` : key;
 }
