@@ -13,14 +13,14 @@ import {
   NodeDependency
 } from '@schematics/angular/utility/dependencies';
 import { addImportToModule } from '@schematics/angular/utility/ast-utils';
-import { getProject } from '@schematics/angular/utility/project';
 import { getAppModulePath } from '@schematics/angular/utility/ng-ast-utils';
 
 import { LIBRARIES, LIB_CONFIG } from '../../utils/common/lib.config';
 
 import { NgxsPackageSchema } from './ng-add.schema';
 import { InsertChange } from '@schematics/angular/utility/change';
-import * as ts from '@schematics/angular/node_modules/typescript';
+import * as ts from '../../../../../node_modules/@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
+import { getProject } from '../../utils/project';
 
 export function ngAdd(options: NgxsPackageSchema): Rule {
   return chain([
@@ -72,7 +72,7 @@ function addDeclarationToNgModule(options: NgxsPackageSchema): Rule {
       return host;
     }
 
-    const project = getProject(host, options.name);
+    const project = getProject(host, { project: options.name });
 
     context.logger.info(JSON.stringify(project));
 
