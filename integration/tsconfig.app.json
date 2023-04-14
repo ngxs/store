@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
@@ -8,7 +8,7 @@
     },
     "outDir": "./out-tsc/app",
     "module": "es2020",
-    "target": "es2015",
+    "target": "es5",
     "types": ["node"]
   },
   "files": ["main.browser.ts", "polyfills.ts"],

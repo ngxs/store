@@ -1,4 +1,4 @@
-// import 'jest-preset-angular'; // commented out due to issue in latest jest-preset-angular
+import 'jest-preset-angular/setup-jest';
 
 const CI = process.env['CI'] === 'true';
 

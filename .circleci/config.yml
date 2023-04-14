@@ -82,7 +82,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Run ESLint analyzer
-          command: yarn eslint
+          command: yarn nx run-many --target=lint --all
 
   unit_tests:
     <<: *job_defaults
@@ -93,7 +93,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Unit Tests
-          command: yarn test:ci
+          command: yarn nx run-many --target=test --all --configuration=ci
       - store_test_results:
           path: coverage/junit
       - store_artifacts:
@@ -198,9 +198,10 @@ jobs:
       - *attach_workspace
       - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
       - run: chmod +x /tmp/cc-test-reporter
+      - run: node tools/merge-reports.js --coverageDir=coverage/packages --reporterBinaryPath=/tmp/cc-test-reporter 
       - deploy:
           name: Upload coverage results to Code Climate
-          command: /tmp/cc-test-reporter after-build --coverage-input-type lcov --exit-code 0
+          command: /tmp/cc-test-reporter upload-coverage -i tmp/codeclimate-final.json
 
   # Publish latest build to npm under the @next tag
   publish_dev_build_to_npm:

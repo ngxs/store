@@ -81,6 +81,7 @@ describe('#1407 issue', () => {
             const [url] = action.routerState.url.split('?');
             return ctx.dispatch(new Navigate([url]));
           }
+          return;
         }
       }
 

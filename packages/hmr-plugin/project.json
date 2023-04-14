@@ -1,0 +1,37 @@
+{
+  "name": "hmr-plugin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/hmr-plugin",
+  "sourceRoot": "packages/hmr-plugin",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "outputs": ["@ngxs/hmr-plugin"],
+      "options": {
+        "tsConfig": "tsconfig.build.json",
+        "project": "packages/hmr-plugin/ng-package.json"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/hmr-plugin/jest.config.js",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["packages/hmr-plugin/**/*.ts", "packages/hmr-plugin/**/*.html"]
+      }
+    }
+  }
+}
