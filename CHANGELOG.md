@@ -10,6 +10,8 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+- Fix: Check if state is injectable in JIT [#1988](https://github.com/ngxs/store/pull/1988)
+
 - ...
 
 # 3.8.0 2023-03-29

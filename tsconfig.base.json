@@ -1,0 +1,36 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "baseUrl": ".",
+    "downlevelIteration": true,
+    "outDir": "out-tsc/lib",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictPropertyInitialization": false,
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "target": "ES2022",
+    "lib": ["es2017", "dom", "es2018.promise"],
+    "typeRoots": ["node_modules/@types"],
+    "paths": {
+      "@integration/*": ["integration/app/*"],
+      "@ngxs/devtools-plugin": ["packages/devtools-plugin/index.ts"],
+      "@ngxs/form-plugin": ["packages/form-plugin/index.ts"],
+      "@ngxs/hmr-plugin": ["packages/hmr-plugin/index.ts"],
+      "@ngxs/logger-plugin": ["packages/logger-plugin/index.ts"],
+      "@ngxs/router-plugin": ["packages/router-plugin/index.ts"],
+      "@ngxs/storage-plugin": ["packages/storage-plugin/index.ts"],
+      "@ngxs/store": ["packages/store/index.ts"],
+      "@ngxs/store/internals": ["packages/store/internals/src/index.ts"],
+      "@ngxs/store/internals/testing": ["packages/store/internals/testing/src/index.ts"],
+      "@ngxs/store/operators": ["packages/store/operators/src/index.ts"],
+      "@ngxs/websocket-plugin": ["packages/websocket-plugin/index.ts"]
+    }
+  }
+}

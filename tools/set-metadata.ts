@@ -2,7 +2,7 @@ import { writeFile } from 'fs/promises';
 
 import { getPackages } from './utils';
 
-export async function setMetadata() {
+async function setMetadata() {
   const ngxsJson = require('../package.json');
   const keysToCopy = [
     'version',
@@ -45,3 +45,5 @@ export async function setMetadata() {
 
   console.log(`package version set to ${ngxsJson.version}`);
 }
+
+setMetadata();
