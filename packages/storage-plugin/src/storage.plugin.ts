@@ -147,7 +147,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           try {
             const newStoredValue = this._options.beforeSerialize!(storedValue, key);
             engine.setItem(storageKey, this._options.serialize!(newStoredValue));
-          } catch (error) {
+          } catch (error: any) {
             if (NG_DEV_MODE) {
               if (
                 error &&

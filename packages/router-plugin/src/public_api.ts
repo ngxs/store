@@ -1,4 +1,4 @@
-export { NgxsRouterPluginModule } from './router.module';
+export { NgxsRouterPluginModule, withNgxsRouterPlugin } from './router.module';
 export { RouterState, RouterStateModel } from './router.state';
 export {
   RouterStateSerializer,

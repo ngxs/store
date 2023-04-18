@@ -8,24 +8,24 @@ import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 import {
-  NgxsModule,
   Store,
   Actions,
   ofActionSuccessful,
   State,
   Action,
   StateContext,
-  Selector
+  Selector,
+  provideStore
 } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import {
-  NgxsRouterPluginModule,
   RouterState,
   Navigate,
   RouterNavigation,
   RouterStateModel,
-  RouterDataResolved
+  RouterDataResolved,
+  withNgxsRouterPlugin
 } from '../';
 
 describe('RouterDataResolved', () => {
@@ -76,13 +76,15 @@ describe('RouterDataResolved', () => {
             }
           ],
           { initialNavigation: 'enabledBlocking' }
-        ),
-        NgxsModule.forRoot(states),
-        NgxsRouterPluginModule.forRoot()
+        )
       ],
       declarations: [RootComponent, TestComponent],
       bootstrap: [RootComponent],
-      providers: [TestResolver, { provide: APP_BASE_HREF, useValue: '/' }]
+      providers: [
+        provideStore(states, withNgxsRouterPlugin()),
+        TestResolver,
+        { provide: APP_BASE_HREF, useValue: '/' }
+      ]
     })
     class TestModule {}
 

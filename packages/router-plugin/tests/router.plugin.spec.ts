@@ -7,21 +7,21 @@ import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing
 import { take } from 'rxjs/operators';
 
 import {
-  NgxsModule,
   Store,
   Actions,
   ofActionSuccessful,
   State,
   Action,
-  StateContext
+  StateContext,
+  provideStore
 } from '@ngxs/store';
 
 import {
-  NgxsRouterPluginModule,
   RouterState,
   RouterStateSerializer,
   Navigate,
-  RouterNavigation
+  RouterNavigation,
+  withNgxsRouterPlugin
 } from '../';
 
 describe('NgxsRouterPlugin', () => {
@@ -240,11 +240,10 @@ async function createTestModule(
         {
           paramsInheritanceStrategy: 'always'
         }
-      ),
-      NgxsModule.forRoot(opts.states),
-      NgxsRouterPluginModule.forRoot()
+      )
     ],
     providers: [
+      provideStore(opts.states, withNgxsRouterPlugin()),
       {
         provide: 'CanActivateNext',
         useValue: opts.canActivate || (() => true)
