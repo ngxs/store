@@ -52,6 +52,8 @@ describe('State stream order of updates', () => {
     }
   }
 
+  // Note: do not convert this unit test to `async-await` style, this explictly must have
+  //       nested callbacks and the `done` call after all subscribers emit values.
   it('should not get the latest stream value when the patchState is called (because it is queued up)', done => {
     // Arrange
     TestBed.configureTestingModule({
@@ -65,13 +67,20 @@ describe('State stream order of updates', () => {
       .pipe(first(Boolean))
       .subscribe(() => {
         store.dispatch(new GetProduct(222)).subscribe(() => {
-          // Assert
-          expect(recorder).toEqual([
-            ['after patchState', { currentId: 0, products: {} }],
-            ['after microtask', { currentId: 222, products: {} }]
-          ]);
+          // Wrap in `try-catch` since `expect` throws errors synchronously and we
+          // don't observe `Exceeded timeout of 5000 ms for a test` at the end, but
+          // the actual error from expectation call.
+          try {
+            // Assert
+            expect(recorder).toEqual([
+              ['after patchState', { currentId: 222, products: {} }],
+              ['after microtask', { currentId: 222, products: {} }]
+            ]);
 
-          done();
+            done();
+          } catch (error) {
+            done(error);
+          }
         });
       });
 
