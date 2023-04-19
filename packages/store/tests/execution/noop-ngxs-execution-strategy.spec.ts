@@ -78,6 +78,7 @@ describe('NoopNgxsExecutionStrategy', () => {
     };
 
     const ticks = { count: 0 };
+    @Injectable()
     class MockApplicationRef extends ApplicationRef {
       public tick(): void {
         ticks.count += 1;
