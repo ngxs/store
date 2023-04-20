@@ -58,7 +58,7 @@
           ]
         }
       },
-      "defaultConfiguration": "",
+      "defaultConfiguration": "production",
       "dependsOn": ["^build"]
     },
     "server": {
@@ -85,7 +85,8 @@
           ]
         }
       },
-      "defaultConfiguration": ""
+      "defaultConfiguration": "production",
+      "dependsOn": ["^build"]
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
@@ -100,7 +101,8 @@
           "hmr": true,
           "browserTarget": "integration:build:hmr"
         }
-      }
+      },
+      "dependsOn": ["^build"]
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
