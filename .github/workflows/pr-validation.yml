@@ -63,7 +63,7 @@ jobs:
           github-sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Run ${{ matrix.script }}
-        run: yarn nx affected --target=${{ matrix.script }} --configuration=ci --base=${{ env.BASE_REF}} --head=HEAD
+        run: yarn nx run-many --target=${{ matrix.script }} --all --configuration=ci --base=${{ env.BASE_REF}} --head=HEAD
 
       - name: Upload coverage results to Code Climate
         if: ${{ matrix.script == 'test' }}
