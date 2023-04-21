@@ -1,12 +1,6 @@
-import {
-  AbstractControl,
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { Select, Store } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
 import { TodoState } from '@integration/store/todos/todo/todo.state';
@@ -20,73 +14,60 @@ import { Extras, Pizza, Todo } from '@integration/store/todos/todos.model';
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  public allExtras: Extras[];
-  public pizzaForm: UntypedFormGroup;
-  public greeting: string;
-  @Select(TodoState) public todos$: Observable<Todo[]>;
-  @Select(TodoState.pandas) public pandas$: Observable<Todo[]>;
-  @Select(TodosState.pizza) public pizza$: Observable<Pizza>;
-  @Select(TodosState.injected) public injected$: Observable<string>;
+  allExtras: Extras[] = [
+    { name: 'cheese', selected: false },
+    { name: 'mushrooms', selected: false },
+    { name: 'olives', selected: false }
+  ];
 
-  constructor(private store: Store, private formBuilder: UntypedFormBuilder) {}
+  pizzaForm = this._fb.group({
+    toppings: [''],
+    crust: [{ value: 'thin', disabled: true }],
+    extras: this._fb.array(
+      this.allExtras.map((extra: Extras) => this._fb.control(extra.selected))
+    )
+  });
 
-  public get extras(): AbstractControl[] {
-    return (<UntypedFormArray>this.pizzaForm.get('extras')).controls;
+  greeting: string;
+
+  todos$: Observable<Todo[]> = this._store.select(TodoState);
+  pandas$: Observable<Todo[]> = this._store.select(TodoState.pandas);
+  pizza$: Observable<Pizza> = this._store.select(TodosState.pizza);
+  injected$: Observable<string> = this._store.select(TodosState.injected);
+
+  constructor(private _store: Store, private _fb: FormBuilder) {}
+
+  get extras() {
+    return (this.pizzaForm.get('extras') as FormArray).controls as FormControl[];
   }
 
-  private get extrasControls(): UntypedFormControl[] {
-    return this.allExtras.map((extra: Extras) => this.formBuilder.control(extra.selected));
+  ngOnInit(): void {
+    const payload: Todo = 'ngOnInit todo';
+    const state: Todo[] = this._store.selectSnapshot(TodoState);
+    if (!state.includes(payload)) {
+      this._store.dispatch(new AddTodo(payload));
+    }
   }
 
-  private static getAllExtras(): Extras[] {
-    return [
-      { name: 'cheese', selected: false },
-      { name: 'mushrooms', selected: false },
-      { name: 'olives', selected: false }
-    ];
+  addTodo(todo: Todo) {
+    this._store.dispatch(new AddTodo(todo));
   }
 
-  public ngOnInit(): void {
-    this.allExtras = AppComponent.getAllExtras();
-    this.pizzaForm = this.createPizzaForm();
-    this.addTodoByOnInit();
-  }
-
-  public addTodo(todo: Todo) {
-    this.store.dispatch(new AddTodo(todo));
-  }
-
-  public removeTodo(index: number) {
-    this.store.dispatch(new RemoveTodo(index)).subscribe(() => {
+  removeTodo(index: number) {
+    this._store.dispatch(new RemoveTodo(index)).subscribe(() => {
       console.log('Removed!');
     });
   }
 
-  public onSubmit() {
+  onSubmit() {
     this.pizzaForm.patchValue({ toppings: 'olives' });
   }
 
-  public onPrefix() {
-    this.store.dispatch(new SetPrefix());
+  onPrefix() {
+    this._store.dispatch(new SetPrefix());
   }
 
-  public onLoadData() {
-    this.store.dispatch(new LoadData());
-  }
-
-  private createPizzaForm(): UntypedFormGroup {
-    return this.formBuilder.group({
-      toppings: [''],
-      crust: [{ value: 'thin', disabled: true }],
-      extras: this.formBuilder.array(this.extrasControls)
-    });
-  }
-
-  private addTodoByOnInit() {
-    const payload: Todo = 'ngOnInit todo';
-    const state: Todo[] = this.store.selectSnapshot(TodoState);
-    if (!state.includes(payload)) {
-      this.store.dispatch(new AddTodo(payload));
-    }
+  onLoadData() {
+    this._store.dispatch(new LoadData());
   }
 }
