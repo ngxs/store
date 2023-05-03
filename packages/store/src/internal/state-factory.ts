@@ -140,9 +140,7 @@ export class StateFactory implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // This is being non-null asserted since `_actionsSubscrition` is
-    // initialized within the constructor.
-    this._actionsSubscription!.unsubscribe();
+    this._actionsSubscription?.unsubscribe();
   }
 
   /**
