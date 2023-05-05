@@ -6,7 +6,10 @@
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "noEmit": true,
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -16,13 +19,24 @@
     "target": "es5",
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "typeRoots": ["node_modules/@types"],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@angular/core": ["../../../node_modules/@angular/core/core.d.ts"],
-      "@ngxs/store/operators": ["../../../@ngxs/store/operators/index.d.ts"],
-      "@ngxs/store/internals": ["../../../@ngxs/store/internals/index.d.ts"],
-      "@ngxs/*": ["../../../@ngxs/*/index.d.ts"]
+      "@angular/core": [
+        "../../../node_modules/@angular/core/core.d.ts"
+      ],
+      "@ngxs/store/operators": [
+        "../../../@ngxs/store/operators/index.d.ts"
+      ],
+      "@ngxs/store/internals": [
+        "../../../@ngxs/store/internals/index.d.ts"
+      ],
+      "@ngxs/*": [
+        "../../../@ngxs/*/index.d.ts"
+      ]
     }
   }
 }
