@@ -10,7 +10,7 @@ on:
 env:
   NODE_VERSION: 16.x
   BASE_REF: ${{ format('remotes/origin/{0}', github.base_ref) }}
-  
+
 defaults:
   run:
     shell: bash
@@ -70,7 +70,7 @@ jobs:
         run: |
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
           chmod +x /tmp/cc-test-reporter
-          node tools/merge-reports.js --coverageDir=coverage/packages --reporterBinaryPath=/tmp/cc-test-reporter 
+          node tools/merge-reports.js --coverageDir=coverage/packages --reporterBinaryPath=/tmp/cc-test-reporter
           /tmp/cc-test-reporter upload-coverage -i tmp/codeclimate-final.json
         env:
           CC_TEST_REPORTER_ID: 3f4c9a9d57ded045e0f9ab5d23e5bbcbf709bb85637bea555f1233e72134b818 # TODO: better store it in the repository secrets. Name the variable: CC_TEST_REPORTER_ID. Then delete this line and uncomment the next one
@@ -87,6 +87,7 @@ jobs:
           - 'integration:ng13:ivy'
           - 'integration:ng14:ivy'
           - 'integration:ng15'
+          - 'integration:ng16'
           - 'test:types'
 
     steps:
@@ -135,7 +136,7 @@ jobs:
         uses: ./.github/actions/download-integration-test-artifacts
 
       - name: Run BundleMon
-        run: yarn bundlemon        
+        run: yarn bundlemon
         env:
           BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
