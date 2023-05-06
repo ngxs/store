@@ -1,6 +1,6 @@
 /* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
-import { append, patch } from '@ngxs/store/operators';
+import { append, patch, StateOperator } from '@ngxs/store/operators';
 
 describe('[TEST]: the append State Operator', () => {
   it('should have the following valid usages', () => {
@@ -42,7 +42,7 @@ describe('[TEST]: the append State Operator', () => {
       controller: string[];
       nestedStock?: {
         wine: Wine[];
-        nestedStock?: {
+        nestedStock: {
           whiskey: Whiskey[];
         };
       };
@@ -86,6 +86,16 @@ describe('[TEST]: the append State Operator', () => {
         }
       }
     })(original); // $ExpectType Stock
+
+
+    type RRR<T> = T extends Readonly<infer O> ? (O extends T ? Readonly<T> : T) : T;
+
+    type a = StateOperator<{
+      wine: Wine[];
+      nestedStock?: {
+        whiskey: Whiskey[];
+      };
+    } | undefined >
 
     patch<Stock>({
       nestedStock: patch({
