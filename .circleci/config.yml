@@ -92,8 +92,11 @@ jobs:
     steps:
       - *attach_workspace
       - run:
+          name: Store Unit Tests
+          command: yarn nx test store --configuration=ci --verbose
+      - run:
           name: Unit Tests
-          command: yarn nx run-many --target=test --all --configuration=ci --parallel=1
+          command: yarn nx run-many --target=test --all --configuration=ci --verbose
       - store_test_results:
           path: coverage/junit
       - store_artifacts:
