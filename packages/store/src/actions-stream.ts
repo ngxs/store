@@ -25,7 +25,7 @@ export interface ActionContext<T = any> {
 /**
  * Internal Action stream that is emitted anytime an action is dispatched.
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class InternalActions extends OrderedSubject<ActionContext> implements OnDestroy {
   ngOnDestroy(): void {
     this.complete();
@@ -37,7 +37,7 @@ export class InternalActions extends OrderedSubject<ActionContext> implements On
  *
  * You can listen to this in services to react without stores.
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class Actions extends Observable<ActionContext> {
   constructor(
     internalActions$: InternalActions,

@@ -10,7 +10,7 @@ import { deepFreeze } from '../utils/freeze';
  * State Context factory class
  * @ignore
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class InternalStateOperations {
   constructor(
     private _stateStream: StateStream,

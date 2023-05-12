@@ -8,7 +8,7 @@ import { OrderedBehaviorSubject } from './custom-rxjs-subjects';
  * BehaviorSubject of the entire state.
  * @ignore
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class StateStream extends OrderedBehaviorSubject<PlainObject> implements OnDestroy {
   constructor() {
     super({});

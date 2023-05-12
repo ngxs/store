@@ -12,6 +12,7 @@ $ npm install @ngxs/store@dev
 
 - Fix: Check if state is injectable in JIT [#1988](https://github.com/ngxs/store/pull/1988)
 - Fix: State stream should always return latest value even if update is queued up [#1995](https://github.com/ngxs/store/pull/1995)
+- Fix: Ensure `StateFactory` does not connect actions multiple times [#2010](https://github.com/ngxs/store/pull/2010)
 
 - ...
 
