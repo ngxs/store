@@ -96,7 +96,7 @@ jobs:
           command: yarn nx test store --configuration=ci --verbose
       - run:
           name: Unit Tests
-          command: yarn nx run-many --target=test --all --configuration=ci --verbose
+          command: yarn nx run-many --target=test --all --configuration=ci --maxWorkers=4
       - store_test_results:
           path: coverage/junit
       - store_artifacts:
