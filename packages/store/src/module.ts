@@ -1,13 +1,10 @@
 import {
   APP_BOOTSTRAP_LISTENER,
-  InjectionToken,
   ModuleWithProviders,
   NgModule,
   Provider
 } from '@angular/core';
 import {
-  INITIAL_STATE_TOKEN,
-  InitialState,
   ɵNGXS_STATE_FACTORY,
   ɵNGXS_STATE_CONTEXT_FACTORY,
   NgxsBootstrapper,
@@ -16,8 +13,8 @@ import {
 
 import {
   FEATURE_STATE_TOKEN,
-  NgxsConfig,
   NgxsModuleOptions,
+  ROOT_OPTIONS,
   ROOT_STATE_TOKEN
 } from './symbols';
 import { USER_PROVIDED_NGXS_EXECUTION_STRATEGY } from './execution/symbols';
@@ -26,15 +23,12 @@ import { StateContextFactory } from './internal/state-context-factory';
 import { PluginManager } from './plugin-manager';
 import { NgxsRootModule } from './modules/ngxs-root.module';
 import { NgxsFeatureModule } from './modules/ngxs-feature.module';
-import { mergeDeep } from './utils/utils';
 
 /**
  * Ngxs Module
  */
 @NgModule()
 export class NgxsModule {
-  private static readonly ROOT_OPTIONS = new InjectionToken<NgxsModuleOptions>('ROOT_OPTIONS');
-
   /**
    * Root module factory
    */
@@ -87,23 +81,14 @@ export class NgxsModule {
         useValue: states
       },
       {
-        provide: NgxsModule.ROOT_OPTIONS,
+        provide: ROOT_OPTIONS,
         useValue: options
-      },
-      {
-        provide: NgxsConfig,
-        useFactory: NgxsModule.ngxsConfigFactory,
-        deps: [NgxsModule.ROOT_OPTIONS]
       },
       {
         provide: APP_BOOTSTRAP_LISTENER,
         useFactory: NgxsModule.appBootstrapListenerFactory,
         multi: true,
         deps: [NgxsBootstrapper]
-      },
-      {
-        provide: INITIAL_STATE_TOKEN,
-        useFactory: NgxsModule.getInitialState
       },
       {
         provide: ɵNGXS_STATE_CONTEXT_FACTORY,
@@ -116,15 +101,7 @@ export class NgxsModule {
     ];
   }
 
-  private static ngxsConfigFactory(options: NgxsModuleOptions): NgxsConfig {
-    return mergeDeep(new NgxsConfig(), options);
-  }
-
   private static appBootstrapListenerFactory(bootstrapper: NgxsBootstrapper): Function {
     return () => bootstrapper.bootstrap();
-  }
-
-  private static getInitialState() {
-    return InitialState.pop();
   }
 }

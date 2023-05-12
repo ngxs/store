@@ -7,7 +7,6 @@ import { NgxsConfig } from '../symbols';
 import { deepFreeze } from '../utils/freeze';
 
 /**
- * State Context factory class
  * @ignore
  */
 @Injectable({ providedIn: 'root' })
