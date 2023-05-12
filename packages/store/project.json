@@ -23,8 +23,7 @@
       "configurations": {
         "ci": {
           "ci": true,
-          "codeCoverage": true,
-          "verbose": true
+          "codeCoverage": true
         }
       }
     },
