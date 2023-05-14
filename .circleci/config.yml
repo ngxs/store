@@ -1,10 +1,13 @@
-version: 2
+version: 2.1
+
+orbs:
+  browser-tools: circleci/browser-tools@1.1.0
 
 # Configuration
 job_defaults_var: &job_defaults
   working_directory: ~/workspace/app
   docker:
-    - image: circleci/node:16.13.0-browsers
+    - image: cimg/node:16.14.0-browsers
 
 # Yarn cache key
 cache_var: &cache_key yarn-packages-v3-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -162,6 +165,8 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run:
           name: Run integration tests for ng14 (Ivy) application
           command: yarn integration:ng14:ivy
@@ -174,6 +179,8 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run:
           name: Run integration tests for ng15 application
           command: yarn integration:ng15
@@ -186,6 +193,8 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run:
           name: Run integration tests for ng16 application
           command: yarn integration:ng16
