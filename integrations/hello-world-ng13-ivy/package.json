@@ -47,7 +47,6 @@
     "@angular-devkit/build-angular": "13.0.1",
     "@angular/cli": "13.0.1",
     "@angular/compiler-cli": "13.0.0",
-    "@cypress/webpack-preprocessor": "file:../../node_modules/@cypress/webpack-preprocessor",
     "@types/jest": "26.0.23",
     "@types/node": "15.3.0",
     "angular-http-server": "file:../../node_modules/angular-http-server",

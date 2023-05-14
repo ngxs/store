@@ -54,7 +54,6 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
-    "@cypress/webpack-preprocessor": "file:../../node_modules/@cypress/webpack-preprocessor",
     "angular-http-server": "file:../../node_modules/angular-http-server",
     "cypress": "file:../../node_modules/cypress",
     "start-server-and-test": "file:../../node_modules/start-server-and-test",
