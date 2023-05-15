@@ -1,9 +1,5 @@
-import { ListPo } from '../support/list.po';
-
 describe('List page', () => {
-  const list = new ListPo();
-
-  beforeEach(() => list.navigateTo());
+  beforeEach(() => cy.visit('/list'));
 
   it('should contain form with "h3" title', () => {
     cy.get('.todo-list h3')
