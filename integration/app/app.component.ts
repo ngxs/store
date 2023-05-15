@@ -1,12 +1,6 @@
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { Select, Store } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
 import { TodoState } from '@integration/store/todos/todo/todo.state';
@@ -20,73 +14,62 @@ import { Extras, Pizza, Todo } from '@integration/store/todos/todos.model';
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  public allExtras: Extras[];
-  public pizzaForm: FormGroup;
-  public greeting: string;
-  @Select(TodoState) public todos$: Observable<Todo[]>;
-  @Select(TodoState.pandas) public pandas$: Observable<Todo[]>;
-  @Select(TodosState.pizza) public pizza$: Observable<Pizza>;
-  @Select(TodosState.injected) public injected$: Observable<string>;
+  readonly allExtras: Extras[] = [
+    { name: 'cheese', selected: false },
+    { name: 'mushrooms', selected: false },
+    { name: 'olives', selected: false }
+  ];
 
-  constructor(private store: Store, private formBuilder: FormBuilder) {}
+  pizzaForm = this._fb.group({
+    toppings: [''],
+    crust: [{ value: 'thin', disabled: true }],
+    extras: this._fb.array(this._extrasControls)
+  });
 
-  public get extras(): AbstractControl[] {
-    return (<FormArray>this.pizzaForm.get('extras')).controls;
+  greeting: string;
+  todos$: Observable<Todo[]> = this._store.select(TodoState);
+  pandas$: Observable<Todo[]> = this._store.select(TodoState.getPandas);
+  pizza$: Observable<Pizza> = this._store.select(TodosState.getPizza);
+  injected$: Observable<string> = this._store.select(TodosState.getInjected);
+
+  constructor(private _store: Store, private _fb: FormBuilder) {}
+
+  get extras(): FormControl[] {
+    const extras = this.pizzaForm.get('extras') as FormArray;
+    return extras.controls as FormControl[];
   }
 
-  private get extrasControls(): FormControl[] {
-    return this.allExtras.map((extra: Extras) => this.formBuilder.control(extra.selected));
+  private get _extrasControls(): FormControl[] {
+    return this.allExtras.map((extra: Extras) => this._fb.control(extra.selected));
   }
 
-  private static getAllExtras(): Extras[] {
-    return [
-      { name: 'cheese', selected: false },
-      { name: 'mushrooms', selected: false },
-      { name: 'olives', selected: false }
-    ];
+  ngOnInit(): void {
+    const payload: Todo = 'ngOnInit todo';
+    const state: Todo[] = this._store.selectSnapshot(TodoState);
+    if (!state.includes(payload)) {
+      this._store.dispatch(new AddTodo(payload));
+    }
   }
 
-  public ngOnInit(): void {
-    this.allExtras = AppComponent.getAllExtras();
-    this.pizzaForm = this.createPizzaForm();
-    this.addTodoByOnInit();
+  addTodo(todo: Todo) {
+    this._store.dispatch(new AddTodo(todo));
   }
 
-  public addTodo(todo: Todo) {
-    this.store.dispatch(new AddTodo(todo));
-  }
-
-  public removeTodo(index: number) {
-    this.store.dispatch(new RemoveTodo(index)).subscribe(() => {
+  removeTodo(index: number) {
+    this._store.dispatch(new RemoveTodo(index)).subscribe(() => {
       console.log('Removed!');
     });
   }
 
-  public onSubmit() {
+  onSubmit() {
     this.pizzaForm.patchValue({ toppings: 'olives' });
   }
 
-  public onPrefix() {
-    this.store.dispatch(new SetPrefix());
+  onPrefix() {
+    this._store.dispatch(new SetPrefix());
   }
 
-  public onLoadData() {
-    this.store.dispatch(new LoadData());
-  }
-
-  private createPizzaForm(): FormGroup {
-    return this.formBuilder.group({
-      toppings: [''],
-      crust: [{ value: 'thin', disabled: true }],
-      extras: this.formBuilder.array(this.extrasControls)
-    });
-  }
-
-  private addTodoByOnInit() {
-    const payload: Todo = 'ngOnInit todo';
-    const state: Todo[] = this.store.selectSnapshot(TodoState);
-    if (!state.includes(payload)) {
-      this.store.dispatch(new AddTodo(payload));
-    }
+  onLoadData() {
+    this._store.dispatch(new LoadData());
   }
 }

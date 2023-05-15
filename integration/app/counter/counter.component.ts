@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Select, Store } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 import { CounterStateChangeAction } from '@integration/counter/counter.actions';
 import { CounterState, CounterStateModel } from '@integration/counter/counter.state';
 import { Observable } from 'rxjs';
@@ -9,11 +9,11 @@ import { Observable } from 'rxjs';
   templateUrl: './counter.component.html'
 })
 export class CounterComponent implements OnInit {
-  @Select(CounterState) public counter$: Observable<CounterStateModel>;
+  counter$: Observable<CounterStateModel> = this._store.select(CounterState);
 
-  constructor(private store: Store) {}
+  constructor(private _store: Store) {}
 
-  public ngOnInit() {
-    this.store.dispatch(new CounterStateChangeAction());
+  ngOnInit() {
+    this._store.dispatch(new CounterStateChangeAction());
   }
 }

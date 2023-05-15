@@ -1,5 +1,3 @@
-/// <reference types="cypress" />
-
 describe('Server side rendering', () => {
   const listUrl = 'http://localhost:4200/list';
   const faviconUrl = 'http://localhost:4200/favicon.ico';
@@ -25,25 +23,19 @@ describe('Server side rendering', () => {
 
   it('should serve statics and favicon.ico', () => {
     // Arrange & act & assert
-    cy.request(faviconUrl)
-      .its('status')
-      .should('equal', 200);
+    cy.request(faviconUrl).its('status').should('equal', 200);
   });
 
   it('"ngOnInit todo" should exist', () => {
     // Arrange & act & assert
-    cy.request(listUrl)
-      .its('body')
-      .should('include', 'ngOnInit todo');
+    cy.request(listUrl).its('body').should('include', 'ngOnInit todo');
   });
 
   getOrderedLifecycleHooks().forEach(hook => {
     it(`should have '${hook}' lifecycle hook output visible`, () => {
       // Arrange
       // Act
-      cy.request(listUrl)
-        .its('body')
-        .should('include', hook);
+      cy.request(listUrl).its('body').should('include', hook);
     });
   });
 

@@ -1,5 +1,7 @@
 import { defineConfig } from 'cypress';
 
+const isSsr = process.env.SSR === 'true';
+
 export default defineConfig({
   video: false,
   screenshotOnRunFailure: false,
@@ -13,6 +15,7 @@ export default defineConfig({
       return require('./cypress/plugins/index.js')(on, config);
     },
     baseUrl: 'http://localhost:4200',
-    excludeSpecPattern: ['**/plugins/**.js', '**/tsconfig.json']
+    excludeSpecPattern: ['**/plugins/**.js', '**/tsconfig.json'],
+    specPattern: isSsr ? './cypress/ssr/*.ts' : './cypress/e2e/*.ts'
   }
 });
