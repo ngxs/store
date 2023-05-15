@@ -1,5 +1,4 @@
-import { patch } from '../src/patch';
-import { append } from '../src/append';
+import { patch, append } from '@ngxs/store/operators';
 
 describe('append', () => {
   describe('when an empty array provided', () => {

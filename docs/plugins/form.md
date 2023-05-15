@@ -14,7 +14,7 @@ In a nutshell, this plugin helps to keep your forms and state in sync.
 ## Installation
 
 ```bash
-npm install @ngxs/form-plugin --save
+npm install @ngxs/form-plugin
 
 # or if you are using yarn
 yarn add @ngxs/form-plugin
@@ -104,7 +104,9 @@ Now anytime your form updates, your state will also reflect the new state.
 
 The directive also has two inputs you can utilize as well:
 
-- `ngxsFormDebounce: number` - Debounce the value changes to the form. Default value: `100`. Ignored if `updateOn` is `blur` or `submit`.
+- `ngxsFormDebounce: number | string` - Debounce the value changes from the form. Default value: `100`. Ignored if:
+  - the provided value is less than `0` (for instance, `ngxsFormDebounce="-1"` is valid)
+  - `updateOn` is `blur` or `submit`
 - `ngxsFormClearOnDestroy: boolean` - Clear the state on destroy of the form.
 
 ### Actions
@@ -164,7 +166,7 @@ The state contains information about the new novel name and its authors. Let's c
 
 ```ts
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'new-novel-form',
@@ -184,18 +186,16 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   `
 })
 export class NewNovelComponent {
-  newNovelForm: FormGroup;
+  newNovelForm = this.fb.group({
+    novelName: 'Zenith',
+    authors: this.fb.array([
+      this.fb.group({
+        name: 'Sasha Alsberg'
+      })
+    ])
+  });
 
-  constructor(private fb: FormBuilder) {
-    this.newNovelForm = this.fb.group({
-      novelName: 'Zenith',
-      authors: this.fb.array([
-        this.fb.group({
-          name: 'Sasha Alsberg'
-        })
-      ])
-    });
-  }
+  constructor(private fb: FormBuilder) {}
 
   onSubmit() {
     //
@@ -216,3 +216,51 @@ store.dispatch(
   })
 );
 ```
+
+### Debouncing
+
+The `ngxsFormDebounce` is used alongside `debounceTime` and pipes form's `valueChanges` and `statusChanges`. This implies that state updates are asynchronous by default. Suppose you dispatch the `UpdateFormValue`, which should patch the form value. In that case, you won't get the updated state immediately because the `debounceTime` is set to `100` by default. Given the following example:
+
+```ts
+interface NovelsStateModel {
+  newNovelForm: {
+    model?: {
+      novelName: string;
+      paperBound: boolean;
+    };
+  };
+}
+
+export class NovelsState {
+  @Action(SubmitNovelsForm)
+  submitNovelsForm(ctx: StateContext<NovelsStateModel>) {
+    console.log(ctx.getState().newNovelForm.model);
+
+    ctx.dispatch(
+      new UpdateFormValue({
+        value: { paperBound: true },
+        path: 'novels.newNovelForm'
+      })
+    );
+
+    console.log(ctx.getState().newNovelForm.model);
+  }
+}
+```
+
+You may expect to see `{ paperBound: true, novelName: null }` being logged. Still, the second `console.log` will log `{ paperBound: true }`, pretending the `novelName` value is lost. You'll see the final update state if you wrap the second `console.log` into a `setTimeout`:
+
+```ts
+ctx.dispatch(
+  new UpdateFormValue({
+    value: { paperBound: true },
+    path: 'novels.newNovelForm'
+  })
+);
+
+setTimeout(() => {
+  console.log(ctx.getState().newNovelForm.model);
+}, 100);
+```
+
+If you need to get state updates synchronously, you may want to set the `ngxsFormDebounce` to `-1`; this won't pipe value changes with `debounceTime`.

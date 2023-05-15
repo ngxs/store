@@ -45,9 +45,21 @@ import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
 import { StoreValidators } from '../utils/store-validators';
 import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
+import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
+
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
 
 /**
- * State factory class
+ * The `StateFactory` class adds root and feature states to the graph.
+ * This extracts state names from state classes, checks if they already
+ * exist in the global graph, throws errors if their names are invalid, etc.
+ * See its constructor, state factories inject state factories that are
+ * parent-level providers. This is required to get feature states from the
+ * injector on the same level.
+ *
+ * The `NgxsModule.forFeature(...)` returns `providers: [StateFactory, ...states]`.
+ * The `StateFactory` is initialized on the feature level and goes through `...states`
+ * to get them from the injector through `injector.get(state)`.
  * @ignore
  */
 @Injectable()
@@ -87,6 +99,7 @@ export class StateFactory implements OnDestroy {
   }
 
   getRuntimeSelectorContext = memoize(() => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const stateFactory = this;
 
     function resolveGetter(key: string) {
@@ -138,20 +151,14 @@ export class StateFactory implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // I'm using non-null assertion here since `_actionsSubscrition` will
-    // be 100% defined. This is because `ngOnDestroy()` cannot be invoked
-    // on the `StateFactory` until its initialized :) An it's initialized
-    // for the first time along with the `NgxsRootModule`.
-    this._actionsSubscription!.unsubscribe();
+    this._actionsSubscription?.unsubscribe();
   }
 
   /**
    * Add a new state to the global defs.
    */
   add(stateClasses: StateClassInternal[]): MappedStore[] {
-    // Caretaker note: we have still left the `typeof` condition in order to avoid
-    // creating a breaking change for projects that still use the View Engine.
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (NG_DEV_MODE) {
       StoreValidators.checkThatStateClassesHaveBeenDecorated(stateClasses);
     }
 
@@ -216,11 +223,14 @@ export class StateFactory implements OnDestroy {
     return { defaults, states: mappedStores };
   }
 
-  /**
-   * Bind the actions to the handlers
-   */
-  connectActionHandlers() {
-    if (this._actionsSubscription !== null) return;
+  connectActionHandlers(): void {
+    // Note: We have to connect actions only once when the `StateFactory`
+    //       is being created for the first time. This checks if we're in
+    //       a child state factory and the parent state factory already exists.
+    if (this._parentFactory || this._actionsSubscription !== null) {
+      return;
+    }
+
     const dispatched$ = new Subject<ActionContext>();
     this._actionsSubscription = this._actions
       .pipe(
@@ -246,6 +256,10 @@ export class StateFactory implements OnDestroy {
   invokeActions(dispatched$: Observable<ActionContext>, action: any) {
     const type = getActionTypeFromInstance(action)!;
     const results = [];
+
+    // Determines whether the dispatched action has been handled, this is assigned
+    // to `true` within the below `for` loop if any `actionMetas` has been found.
+    let actionHasBeenHandled = false;
 
     for (const metadata of this.states) {
       const actionMetas = metadata.actions[type];
@@ -296,7 +310,21 @@ export class StateFactory implements OnDestroy {
           } catch (e) {
             results.push(throwError(e));
           }
+
+          actionHasBeenHandled = true;
         }
+      }
+    }
+
+    // The `NgxsUnhandledActionsLogger` is a tree-shakable class which functions
+    // only during development.
+    if (NG_DEV_MODE && !actionHasBeenHandled) {
+      const unhandledActionsLogger = this._injector.get(NgxsUnhandledActionsLogger, null);
+      // The `NgxsUnhandledActionsLogger` will not be resolved by the injector if the
+      // `NgxsDevelopmentModule` is not provided. It's enough to check whether the `injector.get`
+      // didn't return `null` so we may ensure the module has been imported.
+      if (unhandledActionsLogger) {
+        unhandledActionsLogger.warn(action);
       }
     }
 
@@ -307,17 +335,15 @@ export class StateFactory implements OnDestroy {
     return forkJoin(results);
   }
 
-  private addToStatesMap(
-    stateClasses: StateClassInternal[]
-  ): { newStates: StateClassInternal[] } {
+  private addToStatesMap(stateClasses: StateClassInternal[]): {
+    newStates: StateClassInternal[];
+  } {
     const newStates: StateClassInternal[] = [];
     const statesMap: StatesByName = this.statesByName;
 
     for (const stateClass of stateClasses) {
       const stateName = getStoreMetadata(stateClass).name!;
-      // Caretaker note: we have still left the `typeof` condition in order to avoid
-      // creating a breaking change for projects that still use the View Engine.
-      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (NG_DEV_MODE) {
         StoreValidators.checkThatStateNameIsUnique(stateName, stateClass, statesMap);
       }
       const unmountedState = !statesMap[stateName];
@@ -338,16 +364,11 @@ export class StateFactory implements OnDestroy {
     meta.path = path;
   }
 
-  /**
-   * @description
-   * the method checks if the state has already been added to the tree
-   * and completed the life cycle
-   * @param name
-   * @param path
-   */
   private hasBeenMountedAndBootstrapped(name: string, path: string): boolean {
     const valueIsBootstrappedInInitialState: boolean =
       getValue(this._initialState, path) !== undefined;
+    // This checks whether a state has been already added to the global graph and
+    // its lifecycle is in 'bootstrapped' state.
     return this.statesByName[name] && valueIsBootstrappedInInitialState;
   }
 }

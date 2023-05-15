@@ -1,14 +1,11 @@
-import { StateOperator } from '@ngxs/store';
-import { Predicate } from './internals';
-import { isPredicate, isNumber, invalidIndex, RepairType } from './utils';
+import { ExistingState, NoInfer, StateOperator } from './types';
+import { isPredicate, isNumber, invalidIndex, Predicate } from './utils';
 
 /**
  * @param selector - index or predicate to remove an item from an array by
  */
-export function removeItem<T>(
-  selector: number | Predicate<T>
-): StateOperator<RepairType<T>[]> {
-  return function removeItemOperator(existing: Readonly<RepairType<T>[]>): RepairType<T>[] {
+export function removeItem<T>(selector: number | NoInfer<Predicate<T>>): StateOperator<T[]> {
+  return function removeItemOperator(existing: ExistingState<T[]>): T[] {
     let index = -1;
 
     if (isPredicate(selector)) {
@@ -18,7 +15,7 @@ export function removeItem<T>(
     }
 
     if (invalidIndex(index)) {
-      return existing as RepairType<T>[];
+      return existing as T[];
     }
 
     const clone = existing.slice();

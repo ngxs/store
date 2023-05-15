@@ -1,7 +1,6 @@
-import { StateOperator } from '@ngxs/store';
+import { ExistingState, NoInfer, StateOperator } from './types';
 
-import { isStateOperator, isPredicate, isNumber, invalidIndex, RepairType } from './utils';
-import { Predicate } from './internals';
+import { isStateOperator, isPredicate, isNumber, invalidIndex, Predicate } from './utils';
 
 /**
  * @param selector - Index of item in the array or a predicate function
@@ -10,39 +9,40 @@ import { Predicate } from './internals';
  * function that can be applied to an existing value
  */
 export function updateItem<T>(
-  selector: number | Predicate<T>,
-  operatorOrValue: T | StateOperator<T>
-): StateOperator<RepairType<T>[]> {
-  return function updateItemOperator(existing: Readonly<RepairType<T>[]>): RepairType<T>[] {
+  selector: number | NoInfer<Predicate<T>>,
+  operatorOrValue: NoInfer<T> | NoInfer<StateOperator<T>>
+): StateOperator<T[]> {
+  return function updateItemOperator(existing: ExistingState<T[]>): T[] {
     let index = -1;
 
     if (isPredicate(selector)) {
-      index = existing.findIndex(selector);
+      index = existing.findIndex(selector as Predicate<T>);
     } else if (isNumber(selector)) {
       index = selector;
     }
 
     if (invalidIndex(index)) {
-      return existing as RepairType<T>[];
+      return existing as T[];
     }
 
     let value: T = null!;
     // Need to check if the new item value will change the existing item value
     // then, only if it will change it then clone the array and set the item
-    if (isStateOperator(operatorOrValue)) {
-      value = operatorOrValue(existing[index] as Readonly<T>);
+    const theOperatorOrValue = operatorOrValue as T | StateOperator<T>;
+    if (isStateOperator(theOperatorOrValue)) {
+      value = theOperatorOrValue(existing[index] as ExistingState<T>);
     } else {
-      value = operatorOrValue;
+      value = theOperatorOrValue;
     }
 
     // If the value hasn't been mutated
     // then we just return `existing` array
     if (value === existing[index]) {
-      return existing as RepairType<T>[];
+      return existing as T[];
     }
 
     const clone = existing.slice();
-    clone[index] = value as RepairType<T>;
+    clone[index] = value as T;
     return clone;
   };
 }

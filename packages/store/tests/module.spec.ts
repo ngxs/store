@@ -1,10 +1,6 @@
-import { NgModule } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
-
-import { NgxsModule } from '../src/module';
-import { State } from '../src/decorators/state';
-import { Store } from '../src/store';
-import { Selector } from '../src/decorators/selector/selector';
+import { Injectable, NgModule } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { NgxsModule, State, Store, Selector } from '@ngxs/store';
 
 interface RootStateModel {
   foo: string;
@@ -15,6 +11,7 @@ interface RootStateModel {
     foo: 'Hello'
   }
 })
+@Injectable()
 class RootState {}
 
 interface FeatureStateModel {
@@ -26,6 +23,7 @@ interface FeatureStateModel {
     bar: 'World'
   }
 })
+@Injectable()
 class FeatureState {
   @Selector()
   static getBar(state: FeatureStateModel) {
@@ -42,6 +40,7 @@ interface FeatureStateModel2 {
     baz: '!'
   }
 })
+@Injectable()
 class FeatureState2 {
   @Selector()
   static getBaz(state: FeatureStateModel2) {
@@ -66,59 +65,71 @@ class FeatureModule2 {}
 
 describe('module', () => {
   it('should configure and run with no states', () => {
+    // Arrange
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot()]
     });
 
+    // Assert
     expect(TestBed.inject(Store)).toBeTruthy();
   });
 
   it('should configure and return `RootState`', () => {
+    // Arrange
     TestBed.configureTestingModule({
       imports: [RootModule]
     });
 
+    // Assert
     expect(TestBed.inject(Store)).toBeTruthy();
     expect(TestBed.inject(RootState)).toBeTruthy();
   });
 
   it('should configure feature module and return `RootState` and `FeatureState`', () => {
+    // Arrange
     TestBed.configureTestingModule({
       imports: [RootModule, FeatureModule]
     });
 
+    // Assert
     expect(TestBed.inject(Store)).toBeTruthy();
     expect(TestBed.inject(RootState)).toBeTruthy();
     expect(TestBed.inject(FeatureModule)).toBeTruthy();
   });
 
   it('should configure feature modules and return them', () => {
+    // Arrange
     TestBed.configureTestingModule({
       imports: [RootModule, FeatureModule, FeatureModule2]
     });
 
+    // Assert
     expect(TestBed.inject(Store)).toBeTruthy();
     expect(TestBed.inject(RootState)).toBeTruthy();
     expect(TestBed.inject(FeatureModule, FeatureState2)).toBeTruthy();
   });
 
   it('should allow empty root module and a feature module', () => {
+    // Arrange
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot(), FeatureModule]
     });
 
+    // Assert
     expect(TestBed.inject(Store)).toBeTruthy();
     expect(TestBed.inject(FeatureModule)).toBeTruthy();
   });
 
-  it('should initialize all feature modules state', async(() => {
+  it('should initialize all feature modules state', async () => {
+    // Arrange
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot(), FeatureModule, FeatureModule2]
     });
 
-    const store: Store = TestBed.inject(Store);
-    expect(store).toBeTruthy();
-    store.select(FeatureState.getBar).subscribe((bar: string) => expect(bar).toEqual('World'));
-    store.select(FeatureState2.getBaz).subscribe((baz: string) => expect(baz).toEqual('!'));
-  }));
+    const store = TestBed.inject(Store);
+
+    // Assert
+    expect(await store.selectOnce(FeatureState.getBar).toPromise()).toEqual('World');
+    expect(await store.selectOnce(FeatureState2.getBaz).toPromise()).toEqual('!');
+  });
 });

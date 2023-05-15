@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule, Selector, State, Store } from '@ngxs/store';
 
@@ -21,6 +22,7 @@ describe('UpdateFormValue with primitives (https://github.com/ngxs/store/issues/
       }
     }
   })
+  @Injectable()
   class PizzaState {
     @Selector()
     static getModel(state: PizzaStateModel) {

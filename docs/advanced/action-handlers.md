@@ -66,7 +66,7 @@ import { NgModule, APP_INITIALIZER } from '@angular/core';
 
 // Noop handler for factory function
 export function noop() {
-  return function() {};
+  return function () {};
 }
 
 @NgModule({

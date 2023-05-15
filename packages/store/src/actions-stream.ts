@@ -1,9 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { leaveNgxs } from './operators/leave-ngxs';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
+import { OrderedSubject } from './internal/custom-rxjs-subjects';
 
 /**
  * Status of a dispatched action
@@ -22,43 +23,9 @@ export interface ActionContext<T = any> {
 }
 
 /**
- * Custom Subject that ensures that subscribers are notified of values in the order that they arrived.
- * A standard Subject does not have this guarantee.
- * For example, given the following code:
- * ```typescript
- *   const subject = new Subject<string>();
-     subject.subscribe(value => {
-       if (value === 'start') subject.next('end');
-     });
-     subject.subscribe(value => { });
-     subject.next('start');
- * ```
- * When `subject` is a standard `Subject<T>` the second subscriber would recieve `end` and then `start`.
- * When `subject` is a `OrderedSubject<T>` the second subscriber would recieve `start` and then `end`.
- */
-export class OrderedSubject<T> extends Subject<T> {
-  private _itemQueue: T[] = [];
-  private _busyPushingNext = false;
-
-  next(value?: T): void {
-    if (this._busyPushingNext) {
-      this._itemQueue.unshift(value!);
-      return;
-    }
-    this._busyPushingNext = true;
-    super.next(value);
-    while (this._itemQueue.length > 0) {
-      const nextValue = this._itemQueue.pop();
-      super.next(nextValue);
-    }
-    this._busyPushingNext = false;
-  }
-}
-
-/**
  * Internal Action stream that is emitted anytime an action is dispatched.
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class InternalActions extends OrderedSubject<ActionContext> implements OnDestroy {
   ngOnDestroy(): void {
     this.complete();
@@ -70,10 +37,8 @@ export class InternalActions extends OrderedSubject<ActionContext> implements On
  *
  * You can listen to this in services to react without stores.
  */
-@Injectable()
-export class Actions extends Observable<any> {
-  // This has to be `Observable<ActionContext>` in the v4. Because `InternalActions`
-  // is a `Subject<ActionContext>`. Leave it as `any` to avoid breaking changes
+@Injectable({ providedIn: 'root' })
+export class Actions extends Observable<ActionContext> {
   constructor(
     internalActions$: InternalActions,
     internalExecutionStrategy: InternalNgxsExecutionStrategy

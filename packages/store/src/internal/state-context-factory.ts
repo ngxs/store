@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { StateContext, StateOperator } from '../symbols';
+import { ExistingState, StateOperator } from '@ngxs/store/operators';
+
+import { StateContext } from '../symbols';
 import { MappedStore } from '../internal/internals';
 import { setValue, getValue } from '../utils/utils';
 import { InternalStateOperations } from '../internal/state-operations';
@@ -11,7 +13,7 @@ import { simplePatch } from './state-operators';
  * State Context factory class
  * @ignore
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class StateContextFactory {
   constructor(private _internalStateOperations: InternalStateOperations) {}
 
@@ -39,7 +41,7 @@ export class StateContextFactory {
 
     function setStateFromOperator(currentAppState: any, stateOperator: StateOperator<T>) {
       const local = getState(currentAppState);
-      const newValue = stateOperator(local);
+      const newValue = stateOperator(local as ExistingState<T>);
       return setStateValue(currentAppState, newValue);
     }
 

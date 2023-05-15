@@ -1,5 +1,4 @@
-import { patch } from '../src/patch';
-import { insertItem } from '../src/insert-item';
+import { patch, insertItem } from '@ngxs/store/operators';
 
 describe('insert item', () => {
   describe('when null provided', () => {

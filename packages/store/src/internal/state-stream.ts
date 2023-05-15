@@ -1,14 +1,15 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 
 import { PlainObject } from '@ngxs/store/internals';
+
+import { OrderedBehaviorSubject } from './custom-rxjs-subjects';
 
 /**
  * BehaviorSubject of the entire state.
  * @ignore
  */
-@Injectable()
-export class StateStream extends BehaviorSubject<PlainObject> implements OnDestroy {
+@Injectable({ providedIn: 'root' })
+export class StateStream extends OrderedBehaviorSubject<PlainObject> implements OnDestroy {
   constructor() {
     super({});
   }

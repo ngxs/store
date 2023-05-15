@@ -8,12 +8,20 @@ import {
   NavigationError,
   NavigationEnd
 } from '@angular/router';
+import { NgxsModule, ofActionDispatched, Actions, Store } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { filter } from 'rxjs/operators';
 
-import { NgxsModule, ofActionDispatched, Actions, Store } from '@ngxs/store';
-import { NgxsRouterPluginModule, RouterNavigation, RouterState, Navigate } from '../';
+import { createNgxsRouterPluginTestingPlatform } from './helpers';
+import {
+  NgxsRouterPluginModule,
+  RouterNavigation,
+  RouterState,
+  Navigate,
+  NavigationActionTiming,
+  NgxsRouterPluginOptions
+} from '../';
 
 describe('RouterNavigation', () => {
   class ErrorSupressor implements ErrorHandler {
@@ -56,7 +64,7 @@ describe('RouterNavigation', () => {
   })
   class SuccessComponent {}
 
-  function getTestModule() {
+  function getTestModule(options?: NgxsRouterPluginOptions) {
     @NgModule({
       imports: [
         BrowserModule,
@@ -84,7 +92,7 @@ describe('RouterNavigation', () => {
           }
         ]),
         NgxsModule.forRoot([]),
-        NgxsRouterPluginModule.forRoot()
+        NgxsRouterPluginModule.forRoot(options)
       ],
       declarations: [RootComponent, HomeComponent, ErrorComponent, SuccessComponent],
       bootstrap: [RootComponent],
@@ -140,21 +148,51 @@ describe('RouterNavigation', () => {
 
   describe('when route guard succeeds and route resolver fails', () => {
     it(
-      'should persist previous state and NOT dispatch the `RouterNavigation` action',
+      'should persist the previous state and dispatch the `RouterNavigation` action if the timing is PreActivation',
       freshPlatform(async () => {
         // Arrange
-        const { injector } = await skipConsoleLogging(() =>
-          platformBrowserDynamic().bootstrapModule(getTestModule())
+        const { router, store, actions$ } = await createNgxsRouterPluginTestingPlatform(
+          getTestModule({ navigationActionTiming: NavigationActionTiming.PreActivation })
         );
-        const actions$: Actions = injector.get(Actions);
-        const store: Store = injector.get(Store);
-        const router: Router = injector.get(Router);
+        const initialUrl = store.selectSnapshot(RouterState.url);
+        let navigationErrorEmittedTimes = 0;
+        let routerNavigationDispatchedTimes = 0;
+        router.events
+          .pipe(filter((event): event is NavigationError => event instanceof NavigationError))
+          .subscribe(() => {
+            navigationErrorEmittedTimes++;
+          });
+        actions$.pipe(ofActionDispatched(RouterNavigation)).subscribe(() => {
+          routerNavigationDispatchedTimes++;
+        });
+        // Act
+        try {
+          await store.dispatch(new Navigate(['/error'])).toPromise();
+        } catch {
+        } finally {
+          // Assert
+          const url = store.selectSnapshot(RouterState.url);
+          expect(url).not.toBe('/error');
+          expect(url).toBe(initialUrl);
+          expect(routerNavigationDispatchedTimes).toBe(1);
+          expect(navigationErrorEmittedTimes).toBe(1);
+        }
+      })
+    );
+
+    it(
+      'should persist the previous state and NOT dispatch the `RouterNavigation` action if the timing is PostActivation',
+      freshPlatform(async () => {
+        // Arrange
+        const { router, store, actions$ } = await createNgxsRouterPluginTestingPlatform(
+          getTestModule({ navigationActionTiming: NavigationActionTiming.PostActivation })
+        );
         const initialUrl = store.selectSnapshot(RouterState.url);
 
         let navigationErrorEmittedTimes = 0;
         let routerNavigationDispatchedTimes = 0;
 
-        const subscription = router.events
+        router.events
           .pipe(filter((event): event is NavigationError => event instanceof NavigationError))
           .subscribe(() => {
             navigationErrorEmittedTimes++;
@@ -169,8 +207,6 @@ describe('RouterNavigation', () => {
           await store.dispatch(new Navigate(['/error'])).toPromise();
         } catch {
         } finally {
-          subscription.unsubscribe();
-
           // Assert
           const url = store.selectSnapshot(RouterState.url);
           expect(url).not.toBe('/error');

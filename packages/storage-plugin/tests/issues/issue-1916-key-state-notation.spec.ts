@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { Component, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { NgxsModule, State, Store } from '@ngxs/store';
@@ -15,6 +15,7 @@ describe('State deserialization for keys with dot notation (https://github.com/n
       name: null
     }
   })
+  @Injectable()
   class BlogState {}
 
   @State({
@@ -23,6 +24,7 @@ describe('State deserialization for keys with dot notation (https://github.com/n
       name: null
     }
   })
+  @Injectable()
   class HomeState {}
 
   @State({
@@ -31,6 +33,7 @@ describe('State deserialization for keys with dot notation (https://github.com/n
       description: null
     }
   })
+  @Injectable()
   class AboutState {}
 
   @Component({ selector: 'app-root', template: '' })

@@ -1,15 +1,9 @@
 import { InjectionToken } from '@angular/core';
 
-/**
- * @see StateContextFactory as it's referenced by this token to be accessed by plugins internally
- */
-export const NGXS_STATE_CONTEXT_FACTORY: InjectionToken<any> = new InjectionToken(
-  'Internals.StateContextFactory'
-);
+// These tokens are internal and can change at any point.
 
-/**
- * @see StateFactory as it's referenced by this token to be accessed by plugins internally
- */
-export const NGXS_STATE_FACTORY: InjectionToken<any> = new InjectionToken(
-  'Internals.StateFactory'
+export const ɵNGXS_STATE_FACTORY = new InjectionToken<any>('ɵNGXS_STATE_FACTORY');
+
+export const ɵNGXS_STATE_CONTEXT_FACTORY = new InjectionToken<any>(
+  'ɵNGXS_STATE_CONTEXT_FACTORY'
 );

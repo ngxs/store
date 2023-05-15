@@ -1,26 +1,19 @@
 // tslint:disable:unified-signatures
 import { Inject, Injectable, Optional, Type } from '@angular/core';
-import { Observable, of, Subscription, throwError, queueScheduler } from 'rxjs';
-import {
-  catchError,
-  distinctUntilChanged,
-  map,
-  shareReplay,
-  take,
-  observeOn
-} from 'rxjs/operators';
+import { Observable, of, Subscription, throwError } from 'rxjs';
+import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
 import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
-import { getRootSelectorFactory } from './utils/selector-utils';
+import { getRootSelectorFactory } from './selectors/selector-utils';
 import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
 import { StateToken } from './state-token/state-token';
 import { StateFactory } from './internal/state-factory';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class Store {
   /**
    * This is a derived state stream that leaves NGXS execution strategy to emit state changes within the Angular zone,
@@ -28,7 +21,6 @@ export class Store {
    * All selects would use this stream, and it would call leave only once for any state change across all active selectors.
    */
   private _selectableStateStream = this._stateStream.pipe(
-    observeOn(queueScheduler),
     leaveNgxs(this._internalExecutionStrategy),
     shareReplay({ bufferSize: 1, refCount: true })
   );

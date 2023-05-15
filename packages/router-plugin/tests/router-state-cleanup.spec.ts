@@ -20,7 +20,7 @@ describe('RouterState cleanup', () => {
   @NgModule({
     imports: [
       BrowserModule,
-      RouterModule.forRoot([], { initialNavigation: false }),
+      RouterModule.forRoot([], { initialNavigation: 'disabled' }),
       NgxsModule.forRoot([]),
       NgxsRouterPluginModule.forRoot()
     ],

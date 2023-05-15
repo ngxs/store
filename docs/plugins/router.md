@@ -9,7 +9,7 @@ global window object. They are accessible via:
 - `window.location` ([Location API](https://developer.mozilla.org/en-US/docs/Web/API/Location))
 - `window.history` ([History API](https://developer.mozilla.org/en-US/docs/Web/API/History))
 
-Our location data is a dynamic and important part of application state-the kind
+Our location data is a dynamic and essential part of the application state-the kind
 of state that belongs in a store. Holding it in the store enables devtools luxuries like
 time-travel debugging, and easy access from any store-connected component.
 
@@ -38,12 +38,9 @@ import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 export class AppModule {}
 ```
 
-Now the route will be reflected in your store under the `router` state name. The
-state is represented as a `RouterStateSnapshot` object.
+Now the route will be reflected in your store under the `router` state name. The state is represented as a `RouterStateSnapshot` object.
 
-You can also navigate using the store's dispatch method. It accepts the following
-arguments: `new Navigate(path: any[], queryParams?: Params, extras?: NavigationExtras)`.
-A simple example would be navigating to the admin page like this:
+You can also navigate using the store's dispatch method. It accepts the following arguments: `new Navigate(path: any[], queryParams?: Params, extras?: NavigationExtras)`. A simple example would be navigating to the admin page like this:
 
 ```ts
 import { Store } from '@ngxs/store';
@@ -51,19 +48,15 @@ import { Navigate } from '@ngxs/router-plugin';
 
 @Component({ ... })
 export class MyApp {
-
   constructor(private store: Store) {}
 
   onClick() {
     this.store.dispatch(new Navigate(['/admin']))
   }
-
 }
 ```
 
-You can use action handlers to listen to state changes in your components
-and services by subscribing to the `RouterNavigation`, `RouterCancel`, `RouterError` or `RouterDataResolved`
-action classes.
+You can use action handlers to listen to state changes in your components and services by subscribing to the `RouterNavigation`, `RouterCancel`, `RouterError` or `RouterDataResolved` action classes.
 
 ## Listening to the data resolution event
 
@@ -78,7 +71,6 @@ import { takeUntil } from 'rxjs/operators';
 
 @Component({ ... })
 export class AppComponent {
-
   private destroy$ = new Subject<void>();
 
   constructor(actions$: Actions) {
@@ -92,9 +84,7 @@ export class AppComponent {
 
   ngOnDestroy(): void {
     this.destroy$.next();
-    this.destroy$.complete();
   }
-
 }
 ```
 
@@ -123,7 +113,7 @@ export class AppComponent {
 
 ## Custom Router State Serializer
 
-You can implement your own router state serializer to serialize the router snapshot.
+You can implement your own router state serializer to serialize the router snapshot:
 
 ```ts
 import { Params, RouterStateSnapshot } from '@angular/router';
@@ -159,6 +149,25 @@ export class CustomRouterStateSerializer implements RouterStateSerializer<Router
 @NgModule({
   imports: [NgxsModule.forRoot([]), NgxsRouterPluginModule.forRoot()],
   providers: [{ provide: RouterStateSerializer, useClass: CustomRouterStateSerializer }]
+})
+export class AppModule {}
+```
+
+## Configuration
+
+The `RouterNavigation` action is dispatched before guards and resolvers are run by default. Therefore the action handler may run too soon due to a navigation cancel by any guard or resolver. The `RouterNavigation` action may be run after all guards and resolvers by providing the `navigationActionTiming` configuration property:
+
+```ts
+import { NgxsModule } from '@ngxs/store';
+import { NgxsRouterPluginModule, NavigationActionTiming } from '@ngxs/router-plugin';
+
+@NgModule({
+  imports: [
+    NgxsModule.forRoot([]),
+    NgxsRouterPluginModule.forRoot({
+      navigationActionTiming: NavigationActionTiming.PostActivation
+    })
+  ]
 })
 export class AppModule {}
 ```

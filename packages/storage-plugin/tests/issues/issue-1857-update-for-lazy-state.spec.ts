@@ -31,6 +31,7 @@ describe('Update for lazy state (https://github.com/ngxs/store/issues/1857)', ()
   @State({
     name: 'feature'
   })
+  @Injectable()
   class FeatureState {}
 
   @NgModule({

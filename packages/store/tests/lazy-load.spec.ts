@@ -2,13 +2,13 @@ import { Component, NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RouterModule, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Store, NgxsModule, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
+import { skip } from 'rxjs/operators';
 
-import { Store, NgxsModule, Select } from '../src/public_api';
 import { CounterState, MathService, Increment } from './helpers/counter.state';
 import { TodoState, AddTodo } from './helpers/todo.state';
 import { SimpleState, UpdateValue } from './helpers/simple.state';
-import { skip } from 'rxjs/operators';
 
 describe('Lazy Loading', () => {
   @Component({ template: '' })

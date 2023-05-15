@@ -4,7 +4,7 @@ export { Store } from './store';
 export { State } from './decorators/state';
 export { Select } from './decorators/select/select';
 export { SelectorOptions } from './decorators/selector-options';
-export { Actions } from './actions-stream';
+export { Actions, ActionContext, ActionStatus } from './actions-stream';
 
 // TODO: v4 - We need to come up with an alternative api to exposing this metadata
 //   because it is currently used by the following (after a github search):
@@ -19,7 +19,7 @@ export {
   getSelectorMetadata,
   getStoreMetadata,
   ensureStoreMetadata,
-  ensureSelectorMetadata
+  ensureSelectorMetadata,
 } from './public_to_deprecate';
 export {
   ofAction,
@@ -28,7 +28,7 @@ export {
   ofActionCanceled,
   ofActionErrored,
   ofActionCompleted,
-  ActionCompletion
+  ActionCompletion,
 } from './operators/of-action';
 export {
   StateContext,
@@ -37,12 +37,24 @@ export {
   NgxsAfterBootstrap,
   NgxsOnChanges,
   NgxsModuleOptions,
-  NgxsSimpleChange
+  NgxsSimpleChange,
 } from './symbols';
 export { Selector } from './decorators/selector/selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
-export { createSelector } from './utils/selector-utils';
 export { NgxsExecutionStrategy } from './execution/symbols';
 export { ActionType, ActionOptions } from './actions/symbols';
 export { NoopNgxsExecutionStrategy } from './execution/noop-ngxs-execution-strategy';
 export { StateToken } from './state-token/state-token';
+
+export { NgxsDevelopmentOptions } from './dev-features/symbols';
+export { NgxsDevelopmentModule } from './dev-features/ngxs-development.module';
+export { NgxsUnhandledActionsLogger } from './dev-features/ngxs-unhandled-actions-logger';
+
+export {
+  createModelSelector,
+  createPickSelector,
+  createPropertySelectors,
+  createSelector,
+  PropertySelectors,
+  TypedSelector,
+} from './selectors';

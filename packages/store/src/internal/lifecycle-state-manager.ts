@@ -19,7 +19,7 @@ import { InternalStateOperations } from './state-operations';
 import { MappedStore, StatesAndDefaults } from './internals';
 import { NgxsLifeCycle, NgxsSimpleChange, StateContext } from '../symbols';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class LifecycleStateManager implements OnDestroy {
   private readonly _destroy$ = new Subject<void>();
 

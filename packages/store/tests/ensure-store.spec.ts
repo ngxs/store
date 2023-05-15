@@ -7,11 +7,11 @@ import {
   NgxsModule,
   SelectorOptions
 } from '@ngxs/store';
+import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { SelectorMetaDataModel } from '../src/internal/internals';
-import { getRootSelectorFactory } from '../src/utils/selector-utils';
-import { Injectable } from '@angular/core';
+import { getRootSelectorFactory } from '../src/selectors/selector-utils';
 
 describe('Ensure metadata', () => {
   it('should return undefined if not a state class', () => {
@@ -172,10 +172,7 @@ describe('Ensure metadata', () => {
     });
 
     function flatString(str: string): string {
-      return str
-        .toString()
-        .replace(/\n/g, '')
-        .replace(/\s\s+/g, ' ');
+      return str.toString().replace(/\n/g, '').replace(/\s\s+/g, ' ');
     }
   });
 });

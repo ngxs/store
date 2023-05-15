@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 import { Subscription, throwError } from 'rxjs';
@@ -24,6 +25,7 @@ describe('Dispatching an empty array with errors (https://github.com/ngxs/store/
     name: 'app',
     defaults: {}
   })
+  @Injectable()
   class AppState {
     @Action(ActionError)
     actionError() {
@@ -41,7 +43,7 @@ describe('Dispatching an empty array with errors (https://github.com/ngxs/store/
     }
   }
 
-  beforeAll(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([AppState])]
     });
