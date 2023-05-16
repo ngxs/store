@@ -14,7 +14,7 @@ import { Extras, Pizza, Todo } from '@integration/store/todos/todos.model';
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  allExtras: Extras[] = [
+  readonly allExtras: Extras[] = [
     { name: 'cheese', selected: false },
     { name: 'mushrooms', selected: false },
     { name: 'olives', selected: false }
@@ -23,22 +23,24 @@ export class AppComponent implements OnInit {
   pizzaForm = this._fb.group({
     toppings: [''],
     crust: [{ value: 'thin', disabled: true }],
-    extras: this._fb.array(
-      this.allExtras.map((extra: Extras) => this._fb.control(extra.selected))
-    )
+    extras: this._fb.array(this._extrasControls)
   });
 
   greeting: string;
-
   todos$: Observable<Todo[]> = this._store.select(TodoState);
-  pandas$: Observable<Todo[]> = this._store.select(TodoState.pandas);
-  pizza$: Observable<Pizza> = this._store.select(TodosState.pizza);
-  injected$: Observable<string> = this._store.select(TodosState.injected);
+  pandas$: Observable<Todo[]> = this._store.select(TodoState.getPandas);
+  pizza$: Observable<Pizza> = this._store.select(TodosState.getPizza);
+  injected$: Observable<string> = this._store.select(TodosState.getInjected);
 
   constructor(private _store: Store, private _fb: FormBuilder) {}
 
-  get extras() {
-    return (this.pizzaForm.get('extras') as FormArray).controls as FormControl[];
+  get extras(): FormControl[] {
+    const extras = this.pizzaForm.get('extras') as FormArray;
+    return extras.controls as FormControl[];
+  }
+
+  private get _extrasControls(): FormControl[] {
+    return this.allExtras.map((extra: Extras) => this._fb.control(extra.selected));
   }
 
   ngOnInit(): void {

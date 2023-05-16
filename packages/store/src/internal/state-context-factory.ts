@@ -13,7 +13,7 @@ import { simplePatch } from './state-operators';
  * State Context factory class
  * @ignore
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class StateContextFactory {
   constructor(private _internalStateOperations: InternalStateOperations) {}
 

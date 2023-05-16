@@ -1,6 +1,6 @@
 {
   "name": "integration",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
   "root": "integration/",
   "sourceRoot": "integration",
   "projectType": "application",
@@ -56,7 +56,7 @@
           ]
         }
       },
-      "defaultConfiguration": "development",
+      "defaultConfiguration": "production",
       "dependsOn": ["^build"]
     },
     "server": {
@@ -83,28 +83,21 @@
           ]
         }
       },
-      "defaultConfiguration": ""
+      "defaultConfiguration": "production",
+      "dependsOn": ["^build"]
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
-      "options": {
-        "browserTarget": "integration:build"
-      },
       "configurations": {
-        "production": {
-          "browserTarget": "integration:build:production"
+        "development": {
+          "browserTarget": "integration:build-app:development"
         },
-        "hmr": {
-          "hmr": true,
-          "browserTarget": "integration:build:hmr"
+        "production": {
+          "browserTarget": "integration:build-app:production"
         }
-      }
-    },
-    "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
-      "options": {
-        "browserTarget": "integration:build"
-      }
+      },
+      "defaultConfiguration": "development",
+      "dependsOn": ["^build"]
     },
     "test": {
       "executor": "@nrwl/jest:jest",

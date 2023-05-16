@@ -15,7 +15,7 @@ if (!reportSources) {
   throw new Error(`Provided directory "${coverageDir}" does not contain any reports.`);
 }
 
-if (existsSync('tmp')) {
+if (!existsSync('tmp')) {
   mkdirSync('tmp');
 }
 

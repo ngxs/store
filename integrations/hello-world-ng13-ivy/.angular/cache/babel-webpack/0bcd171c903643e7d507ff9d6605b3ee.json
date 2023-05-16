@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "export * from './counter/counter.state';\nexport * from './counter/counter.actions';\nexport * from './store.module';",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

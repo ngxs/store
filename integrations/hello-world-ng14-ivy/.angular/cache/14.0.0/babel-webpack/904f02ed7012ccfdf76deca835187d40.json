@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "export { webSocket } from '../internal/observable/dom/webSocket';\nexport { WebSocketSubject } from '../internal/observable/dom/WebSocketSubject'; //# sourceMappingURL=index.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

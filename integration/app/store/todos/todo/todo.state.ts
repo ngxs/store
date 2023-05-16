@@ -18,11 +18,11 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class TodoState implements NgxsOnInit, NgxsAfterBootstrap {
   @Selector()
-  public static pandas(state: Todo[]): Todo[] {
+  static getPandas(state: Todo[]): Todo[] {
     return state.filter(s => s.indexOf('panda') > -1);
   }
 
-  public ngxsOnInit({ getState, setState }: StateContext<Todo[]>) {
+  ngxsOnInit({ getState, setState }: StateContext<Todo[]>) {
     const state: Todo[] = getState();
     const payload: Todo = 'NgxsOnInit todo';
     if (!state.includes(payload)) {
@@ -30,7 +30,7 @@ export class TodoState implements NgxsOnInit, NgxsAfterBootstrap {
     }
   }
 
-  public ngxsAfterBootstrap({ getState, setState }: StateContext<Todo[]>): void {
+  ngxsAfterBootstrap({ getState, setState }: StateContext<Todo[]>): void {
     const state: Todo[] = getState();
     const payload: Todo = 'NgxsAfterBootstrap todo';
     if (!state.includes(payload)) {
@@ -39,12 +39,12 @@ export class TodoState implements NgxsOnInit, NgxsAfterBootstrap {
   }
 
   @Action(AddTodo)
-  public addTodo({ setState }: StateContext<Todo[]>, { payload }: AddTodo) {
+  addTodo({ setState }: StateContext<Todo[]>, { payload }: AddTodo) {
     setState(state => [...state, payload]);
   }
 
   @Action(RemoveTodo)
-  public removeTodo({ setState }: StateContext<Todo[]>, { payload }: RemoveTodo) {
+  removeTodo({ setState }: StateContext<Todo[]>, { payload }: RemoveTodo) {
     setState(state => state.filter((_, i) => i !== payload));
   }
 }

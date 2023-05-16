@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { mergeMap } from './mergeMap';\nexport const flatMap = mergeMap; //# sourceMappingURL=flatMap.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

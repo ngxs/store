@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "export const environment = {\n  production: true\n};",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { __decorate } from \"tslib\";\nimport { State, Action } from '@ngxs/store';\nimport { Increment } from './counter.actions';\nimport * as i0 from \"@angular/core\";\nlet CounterState = class CounterState {\n  increment(ctx) {\n    ctx.setState(counter => counter += 1);\n  }\n\n};\n\nCounterState.ɵfac = function CounterState_Factory(t) {\n  return new (t || CounterState)();\n};\n\nCounterState.ɵprov = /*@__PURE__*/i0.ɵɵdefineInjectable({\n  token: CounterState,\n  factory: CounterState.ɵfac\n});\n\n__decorate([Action(Increment)], CounterState.prototype, \"increment\", null);\n\nCounterState = __decorate([State({\n  name: 'counter',\n  defaults: 0\n})], CounterState);\nexport { CounterState };",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

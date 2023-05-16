@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { map } from './map';\nexport function mapTo(value) {\n  return map(() => value);\n} //# sourceMappingURL=mapTo.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}
