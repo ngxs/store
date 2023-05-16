@@ -11,10 +11,12 @@ export type PropertySelectors<TModel> = {
 export function createPropertySelectors<TModel>(
   parentSelector: SelectorDef<TModel>
 ): PropertySelectors<TModel> {
-  ensureValidSelector(parentSelector, {
-    prefix: '[createPropertySelectors]',
-    noun: 'parent selector',
-  });
+  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    ensureValidSelector(parentSelector, {
+      prefix: '[createPropertySelectors]',
+      noun: 'parent selector'
+    });
+  }
   const cache: Partial<PropertySelectors<TModel>> = {};
   return new Proxy<PropertySelectors<TModel>>(
     {} as unknown as PropertySelectors<TModel>,
@@ -28,7 +30,7 @@ export function createPropertySelectors<TModel>(
           ) as PropertySelectors<TModel>[typeof prop]);
         cache[prop] = selector;
         return selector;
-      },
+      }
     } as ProxyHandler<PropertySelectors<TModel>>
   );
 }
