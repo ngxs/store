@@ -18,6 +18,7 @@ $ npm install @ngxs/store@dev
 - Fix: State stream should always return latest value even if update is queued up [#1995](https://github.com/ngxs/store/pull/1995)
 - Fix: Ensure `StateFactory` does not connect actions multiple times [#2010](https://github.com/ngxs/store/pull/2010)
 - Build: Add Angular 16 support [#2008](https://github.com/ngxs/store/pull/2008)
+- Refactor: Set singletons as "providedIn: root" [#2015](https://github.com/ngxs/store/pull/2015)
 
 # 3.8.0 2023-03-29
 
