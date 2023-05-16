@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { BrowserModule } from '@angular/platform-browser';\nimport { RouterModule } from '@angular/router';\nimport { AppComponent } from './app.component';\nimport { StoreModule } from './store/store.module';\nimport * as i0 from \"@angular/core\";\nimport * as i1 from \"@angular/platform-browser\";\nimport * as i2 from \"@angular/router\";\nconst routes = [{\n  path: '',\n  component: AppComponent\n}];\nexport let AppModule = /*#__PURE__*/(() => {\n  class AppModule {}\n\n  AppModule.ɵfac = function AppModule_Factory(t) {\n    return new (t || AppModule)();\n  };\n\n  AppModule.ɵmod = /*@__PURE__*/i0.ɵɵdefineNgModule({\n    type: AppModule,\n    bootstrap: [AppComponent]\n  });\n  AppModule.ɵinj = /*@__PURE__*/i0.ɵɵdefineInjector({\n    imports: [[BrowserModule.withServerTransition({\n      appId: 'hello-world-ng13-ivy'\n    }), RouterModule.forRoot(routes), StoreModule]]\n  });\n  return AppModule;\n})();",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

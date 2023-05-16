@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { WebSocketSubject } from './WebSocketSubject';\nexport function webSocket(urlConfigOrSource) {\n  return new WebSocketSubject(urlConfigOrSource);\n} //# sourceMappingURL=webSocket.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

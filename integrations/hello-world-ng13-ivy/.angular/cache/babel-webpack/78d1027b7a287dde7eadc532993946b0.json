@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "export let Increment = /*#__PURE__*/(() => {\n  class Increment {}\n\n  Increment.type = '[Counter] Increment';\n  return Increment;\n})();",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}
