@@ -43,7 +43,7 @@ import { ofActionDispatched } from '../operators/of-action';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
-import { StoreValidators } from '../utils/store-validators';
+import { ensureStateNameIsUnique, ensureStatesAreDecorated } from '../utils/store-validators';
 import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
 
@@ -134,8 +134,8 @@ export class StateFactory implements OnDestroy {
     return context;
   });
 
-  private static cloneDefaults(defaults: any): any {
-    let value = {};
+  private static _cloneDefaults(defaults: any): any {
+    let value = defaults;
 
     if (Array.isArray(defaults)) {
       value = defaults.slice();
@@ -143,8 +143,6 @@ export class StateFactory implements OnDestroy {
       value = { ...defaults };
     } else if (defaults === undefined) {
       value = {};
-    } else {
-      value = defaults;
     }
 
     return value;
@@ -159,7 +157,7 @@ export class StateFactory implements OnDestroy {
    */
   add(stateClasses: StateClassInternal[]): MappedStore[] {
     if (NG_DEV_MODE) {
-      StoreValidators.checkThatStateClassesHaveBeenDecorated(stateClasses);
+      ensureStatesAreDecorated(stateClasses);
     }
 
     const { newStates } = this.addToStatesMap(stateClasses);
@@ -182,7 +180,7 @@ export class StateFactory implements OnDestroy {
       // `State` decorator. This check is moved here because the `ɵprov` property
       // will not exist on the class in JIT mode (because it's set asynchronously
       // during JIT compilation through `Object.defineProperty`).
-      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (NG_DEV_MODE) {
         ensureStateClassIsInjectable(stateClass);
       }
 
@@ -192,7 +190,7 @@ export class StateFactory implements OnDestroy {
         isInitialised: false,
         actions: meta.actions,
         instance: this._injector.get(stateClass),
-        defaults: StateFactory.cloneDefaults(meta.defaults)
+        defaults: StateFactory._cloneDefaults(meta.defaults)
       };
 
       // ensure our store hasn't already been added
@@ -344,7 +342,7 @@ export class StateFactory implements OnDestroy {
     for (const stateClass of stateClasses) {
       const stateName = getStoreMetadata(stateClass).name!;
       if (NG_DEV_MODE) {
-        StoreValidators.checkThatStateNameIsUnique(stateName, stateClass, statesMap);
+        ensureStateNameIsUnique(stateName, stateClass, statesMap);
       }
       const unmountedState = !statesMap[stateName];
       if (unmountedState) {
