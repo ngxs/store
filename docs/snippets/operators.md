@@ -19,13 +19,12 @@ ctx.setState(
 ### State Operator Code
 
 ```ts
-import { Predicate } from '@ngxs/store/operators/internals';
 import { StateOperator } from '@ngxs/store';
-import { compose, updateItem, iif, insertItem, patch } from '@ngxs/store/operators';
+import { compose, iif, insertItem, NoInfer, patch, Predicate, updateItem } from '@ngxs/store/operators';
 
 export function upsertItem<T>(
   selector: number | Predicate<T>,
-  upsertValue: T
+  upsertValue: NoInfer<T>
 ): StateOperator<T[]> {
   return compose<T[]>(
     items => <T[]>(items || []),
@@ -33,13 +32,13 @@ export function upsertItem<T>(
       items => Number(selector) === selector,
       iif<T[]>(
         items => selector < items.length,
-        <StateOperator<T[]>>updateItem(selector, patch(upsertValue)),
-        <StateOperator<T[]>>insertItem(upsertValue, <number>selector)
+        updateItem(selector, patch(upsertValue)),
+        insertItem(upsertValue, <number>selector)
       ),
       iif<T[]>(
-        items => items.some(<any>selector),
-        <StateOperator<T[]>>updateItem(selector, patch(upsertValue)),
-        <StateOperator<T[]>>insertItem(upsertValue)
+        items => items.some(<Predicate<T>>selector),
+        updateItem(selector, patch(upsertValue)),
+        insertItem(upsertValue)
       )
     )
   );
