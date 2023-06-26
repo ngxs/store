@@ -10,9 +10,11 @@ export function createPickSelector<TModel, Keys extends (keyof TModel)[]>(
   selector: TypedSelector<TModel>,
   keys: [...Keys]
 ) {
-  ensureValidSelector(selector, { prefix: '[createPickSelector]' });
+  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    ensureValidSelector(selector, { prefix: '[createPickSelector]' });
+  }
   const validKeys = keys.filter(Boolean);
-  const selectors = validKeys.map((key) => createSelector([selector], (s: TModel) => s[key]));
+  const selectors = validKeys.map(key => createSelector([selector], (s: TModel) => s[key]));
   return createSelector([...selectors], (...props: KeysToValues<TModel, Keys>) => {
     return validKeys.reduce((acc, key, index) => {
       acc[key] = props[index];
