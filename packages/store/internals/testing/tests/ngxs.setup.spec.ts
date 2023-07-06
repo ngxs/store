@@ -1,6 +1,5 @@
 import { NgxsAfterBootstrap, NgxsOnInit, State, StateContext } from '@ngxs/store';
 import { NgxsTestBed } from '@ngxs/store/internals/testing';
-import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { InitialState } from '@ngxs/store/internals';
 import { Injectable } from '@angular/core';
 
@@ -50,7 +49,6 @@ describe('Full testing NGXS States with NgxsTestBed', () => {
   it('should be correct testing persistence mode', () => {
     const { store } = NgxsTestBed.configureTestingStates({
       states: [AppState],
-      imports: [NgxsStoragePluginModule.forRoot({ key: '@@STATE' })],
       ngxsOptions: {
         defaultsState: { app: { count: 0 }, foo: 'bar' }
       },
@@ -68,7 +66,6 @@ describe('Full testing NGXS States with NgxsTestBed', () => {
   it('should be correct testing default disable persistence mode', () => {
     const { store } = NgxsTestBed.configureTestingStates({
       states: [AppState],
-      imports: [NgxsStoragePluginModule.forRoot({ key: '@@STATE' })],
       ngxsOptions: {
         defaultsState: {
           app: {

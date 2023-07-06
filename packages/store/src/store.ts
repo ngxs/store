@@ -13,7 +13,7 @@ import { NgxsConfig } from './symbols';
 import { StateToken } from './state-token/state-token';
 import { StateFactory } from './internal/state-factory';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class Store {
   /**
    * This is a derived state stream that leaves NGXS execution strategy to emit state changes within the Angular zone,

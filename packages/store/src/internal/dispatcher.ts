@@ -16,10 +16,10 @@ import { getActionTypeFromInstance } from '../utils/utils';
  * for the observable returned by the dispatch(...) call.
  * The dispatcher then asynchronously pushes the result from this stream onto the main action stream as a result.
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class InternalDispatchedActionResults extends Subject<ActionContext> {}
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class InternalDispatcher {
   constructor(
     private _actions: InternalActions,
@@ -66,18 +66,20 @@ export class InternalDispatcher {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return (compose([
-      ...plugins,
-      (nextState: any, nextAction: any) => {
-        if (nextState !== prevState) {
-          this._stateStream.next(nextState);
+    return (
+      compose([
+        ...plugins,
+        (nextState: any, nextAction: any) => {
+          if (nextState !== prevState) {
+            this._stateStream.next(nextState);
+          }
+          const actionResult$ = this.getActionResultStream(nextAction);
+          actionResult$.subscribe(ctx => this._actions.next(ctx));
+          this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
+          return this.createDispatchObservable(actionResult$);
         }
-        const actionResult$ = this.getActionResultStream(nextAction);
-        actionResult$.subscribe(ctx => this._actions.next(ctx));
-        this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
-        return this.createDispatchObservable(actionResult$);
-      }
-    ])(prevState, action) as Observable<any>).pipe(shareReplay());
+      ])(prevState, action) as Observable<any>
+    ).pipe(shareReplay());
   }
 
   private getActionResultStream(action: any): Observable<ActionContext> {

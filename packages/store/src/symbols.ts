@@ -4,11 +4,13 @@ import { Observable } from 'rxjs';
 import { PlainObject, StateClass } from '@ngxs/store/internals';
 import { StateOperator } from '@ngxs/store/operators';
 
+import { mergeDeep } from './utils/utils';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { SharedSelectorOptions } from './internal/internals';
 import { StateToken } from './state-token/state-token';
 
+export const ROOT_OPTIONS = new InjectionToken<NgxsModuleOptions>('ROOT_OPTIONS');
 export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
 export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
 export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
@@ -26,7 +28,11 @@ export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) =
 /**
  * The NGXS config settings.
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+  useFactory: (options: NgxsModuleOptions) => mergeDeep(new NgxsConfig(), options),
+  deps: [ROOT_OPTIONS]
+})
 export class NgxsConfig {
   /**
    * Run in development mode. This will add additional debugging features:

@@ -1,0 +1,11 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../@ngxs/storage-plugin",
+  "lib": {
+    "flatModuleFile": "ngxs-storage-plugin",
+    "entryFile": "index.ts",
+    "umdModuleIds": {
+      "@ngxs/store": "ngxs-store"
+    }
+  }
+}
