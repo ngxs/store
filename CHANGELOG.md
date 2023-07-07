@@ -10,11 +10,15 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+- - Performance: Tree-shake selectors validation errors [#2020](https://github.com/ngxs/store/pull/2020)
+
+# 3.8.1 2023-05-16
+
 - Fix: Check if state is injectable in JIT [#1988](https://github.com/ngxs/store/pull/1988)
 - Fix: State stream should always return latest value even if update is queued up [#1995](https://github.com/ngxs/store/pull/1995)
 - Fix: Ensure `StateFactory` does not connect actions multiple times [#2010](https://github.com/ngxs/store/pull/2010)
-
-- ...
+- Build: Add Angular 16 support [#2008](https://github.com/ngxs/store/pull/2008)
+- Refactor: Set singletons as "providedIn: root" [#2015](https://github.com/ngxs/store/pull/2015)
 
 # 3.8.0 2023-03-29
 
