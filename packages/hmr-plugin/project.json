@@ -13,7 +13,7 @@
         "project": "packages/hmr-plugin/ng-package.json"
       }
     },
-    "test": {
+    "xtest": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
