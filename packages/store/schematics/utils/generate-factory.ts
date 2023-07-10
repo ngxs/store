@@ -13,6 +13,7 @@ export function generate({ options, factory }: Partial<GenerateFactoryInterface>
   return apply(url(join('../../templates' as Path, factory)), [
     parser.specParser(options.spec),
     template({
+      template: '',
       ...strings,
       ...options
     }),

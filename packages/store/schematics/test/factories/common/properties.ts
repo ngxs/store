@@ -7,16 +7,16 @@ import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
  * @param factory Name of the factory being tested.
  * @param property Property name being tested.
  */
-export function propertyNotEmpty(
+export async function propertyNotEmpty(
   runner: SchematicTestRunner,
   factory: string,
   property: string
 ) {
-  expect(() => runner.runSchematic(factory, { [property]: '' })).toThrow(
-    `Invalid options, "${property}" is required.`
-  );
+  await expect(() =>
+    runner.runSchematicAsync(factory, { [property]: '' }).toPromise()
+  ).rejects.toThrow(`Invalid options, "${property}" is required.`);
 
-  expect(() => runner.runSchematic(factory, { [property]: ' ' })).toThrow(
-    `Invalid options, "${property}" is required.`
-  );
+  await expect(() =>
+    runner.runSchematicAsync(factory, { [property]: ' ' }).toPromise()
+  ).rejects.toThrow(`Invalid options, "${property}" is required.`);
 }

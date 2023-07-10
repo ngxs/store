@@ -22,8 +22,8 @@ describe('ng-add package in package.json', () => {
     );
   });
 
-  it('should add ngxs store with plugins in package.json', () => {
-    testTree = runner.runSchematic('ng-add', {}, inputTree);
+  it('should add ngxs store with plugins in package.json', async () => {
+    testTree = await runner.runSchematicAsync('ng-add', {}, inputTree).toPromise();
     const packageJsonText = testTree.readContent('/package.json');
     const packageJson = JSON.parse(packageJsonText);
     expect(Object.keys(packageJson.dependencies)).toEqual(

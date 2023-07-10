@@ -1,5 +1,5 @@
-import { Parser } from '../../src/utils';
-import { Location, ParseOptions } from '../../src/utils/interfaces/parser.interface';
+import { Parser } from '../../utils';
+import { Location, ParseOptions } from '../../utils/interfaces/parser.interface';
 
 describe('Name Parser', () => {
   let parser: Parser;

@@ -1,18 +1,20 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import * as path from 'path';
-import { FACTORIES } from '../../../src/utils';
-import { StarterKitSchema } from '../../../src/factories/starter-kit/starter-kit.schema';
+import { FACTORIES } from '../../../utils';
+import { StarterKitSchema } from '../../../factories/starter-kit/starter-kit.schema';
 
 describe('Generate ngxs starter kit', () => {
   const runner: SchematicTestRunner = new SchematicTestRunner(
     '.',
     path.join(process.cwd(), 'src/collection.json')
   );
-  it('should generate store in default root folder', () => {
+  it('should generate store in default root folder', async () => {
     const options: StarterKitSchema = {
       spec: true
     };
-    const tree: UnitTestTree = runner.runSchematic(FACTORIES.STARTER_KIT, options);
+    const tree: UnitTestTree = await runner
+      .runSchematicAsync(FACTORIES.STARTER_KIT, options)
+      .toPromise();
     const files: string[] = tree.files;
     expect(files).toEqual([
       '/src/store/store.config.ts',
@@ -30,11 +32,13 @@ describe('Generate ngxs starter kit', () => {
     ]);
   });
 
-  it('should generate store in default root folder with spec false', () => {
+  it('should generate store in default root folder with spec false', async () => {
     const options: StarterKitSchema = {
       spec: false
     };
-    const tree: UnitTestTree = runner.runSchematic(FACTORIES.STARTER_KIT, options);
+    const tree: UnitTestTree = await runner
+      .runSchematicAsync(FACTORIES.STARTER_KIT, options)
+      .toPromise();
     const files: string[] = tree.files;
     expect(files).toEqual([
       '/src/store/store.config.ts',

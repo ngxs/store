@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsNgxsStarterKit",
+  "$id": "SchematicsNgxsStarterKit",
   "title": "Ngxs Starter Kit Options Schema",
   "type": "object",
   "properties": {

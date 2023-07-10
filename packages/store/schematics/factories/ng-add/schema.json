@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsNgxsNgAdd",
+  "$id": "SchematicsNgxsNgAdd",
   "title": "Ngxs NgAdd Options Schema",
   "type": "object",
   "properties": {
