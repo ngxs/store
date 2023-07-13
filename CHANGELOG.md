@@ -10,7 +10,8 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-- - Performance: Tree-shake selectors validation errors [#2020](https://github.com/ngxs/store/pull/2020)
+- Fix: Storage Plugin - Access local and session storages globals only in browser [#2034](https://github.com/ngxs/store/pull/2034)
+- Performance: Tree-shake selectors validation errors [#2020](https://github.com/ngxs/store/pull/2020)
 
 # 3.8.1 2023-05-16
 
