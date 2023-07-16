@@ -11,6 +11,7 @@ $ npm install @ngxs/store@dev
 ### To become next patch version
 
 - Fix: Storage Plugin - Access local and session storages globals only in browser [#2034](https://github.com/ngxs/store/pull/2034)
+- Fix: Storage Plugin - Require only `getItem` and `setItem` on engines [#2036](https://github.com/ngxs/store/pull/2036)
 - Performance: Tree-shake selectors validation errors [#2020](https://github.com/ngxs/store/pull/2020)
 
 # 3.8.1 2023-05-16

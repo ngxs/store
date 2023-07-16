@@ -10,9 +10,14 @@ export interface FinalNgxsStoragePluginOptions extends NgxsStoragePluginOptions 
   }[];
 }
 
-export const FINAL_NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken<
-  FinalNgxsStoragePluginOptions
->('FINAL_NGXS_STORAGE_PLUGIN_OPTIONS');
+declare const ngDevMode: boolean;
+
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+
+export const FINAL_NGXS_STORAGE_PLUGIN_OPTIONS =
+  new InjectionToken<FinalNgxsStoragePluginOptions>(
+    NG_DEV_MODE ? 'FINAL_NGXS_STORAGE_PLUGIN_OPTIONS' : ''
+  );
 
 export function createFinalStoragePluginOptions(
   injector: Injector,
