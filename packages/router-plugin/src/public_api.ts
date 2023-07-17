@@ -5,5 +5,8 @@ export {
   DefaultRouterStateSerializer,
   SerializedRouterStateSnapshot
 } from './serializer';
-export { NavigationActionTiming, NgxsRouterPluginOptions } from './symbols';
 export * from './router.actions';
+export {
+  NavigationActionTiming,
+  NgxsRouterPluginOptions
+} from '@ngxs/router-plugin/internals';
