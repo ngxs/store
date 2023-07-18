@@ -19,7 +19,11 @@ import {
   FINAL_NGXS_STORAGE_PLUGIN_OPTIONS
 } from './internals/final-options';
 
-export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
+declare const ngDevMode: boolean;
+
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+
+export const USER_OPTIONS = new InjectionToken(NG_DEV_MODE ? 'USER_OPTIONS' : '');
 
 @NgModule()
 export class NgxsStoragePluginModule {
