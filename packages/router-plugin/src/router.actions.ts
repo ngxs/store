@@ -16,10 +16,8 @@ import { RouterTrigger } from './router.state';
  * Public event api of the router
  */
 export class Navigate {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Router] Navigate';
-  }
+  static readonly type = '[Router] Navigate';
+
   constructor(
     public path: any[],
     public queryParams?: Params,
@@ -37,10 +35,8 @@ export class Navigate {
  * An action dispatched when the router starts the navigation.
  */
 export class RouterRequest<T = RouterStateSnapshot> {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Router] RouterRequest';
-  }
+  static readonly type = '[Router] RouterRequest';
+
   constructor(
     public routerState: T,
     public event: NavigationStart,
@@ -52,10 +48,8 @@ export class RouterRequest<T = RouterStateSnapshot> {
  * An action dispatched when the router navigates.
  */
 export class RouterNavigation<T = RouterStateSnapshot> {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Router] RouterNavigation';
-  }
+  static readonly type = '[Router] RouterNavigation';
+
   constructor(
     public routerState: T,
     public event: RoutesRecognized,
@@ -67,10 +61,8 @@ export class RouterNavigation<T = RouterStateSnapshot> {
  * An action dispatched when the router cancel navigation.
  */
 export class RouterCancel<T, V = RouterStateSnapshot> {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Router] RouterCancel';
-  }
+  static readonly type = '[Router] RouterCancel';
+
   constructor(
     public routerState: V,
     public storeState: T,
@@ -83,10 +75,8 @@ export class RouterCancel<T, V = RouterStateSnapshot> {
  * An action dispatched when the router errors.
  */
 export class RouterError<T, V = RouterStateSnapshot> {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Router] RouterError';
-  }
+  static readonly type = '[Router] RouterError';
+
   constructor(
     public routerState: V,
     public storeState: T,
@@ -99,10 +89,8 @@ export class RouterError<T, V = RouterStateSnapshot> {
  * An action dispatched when the `ResolveEnd` event is triggered.
  */
 export class RouterDataResolved<T = RouterStateSnapshot> {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Router] RouterDataResolved';
-  }
+  static readonly type = '[Router] RouterDataResolved';
+
   constructor(
     public routerState: T,
     public event: ResolveEnd,
@@ -114,10 +102,8 @@ export class RouterDataResolved<T = RouterStateSnapshot> {
  * An action dispatched when the router navigation has been finished successfully.
  */
 export class RouterNavigated<T = RouterStateSnapshot> {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[Router] RouterNavigated';
-  }
+  static readonly type = '[Router] RouterNavigated';
+
   constructor(
     public routerState: T,
     public event: NavigationEnd,
