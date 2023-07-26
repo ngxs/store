@@ -65,7 +65,7 @@ describe('Storage engine per individual key (https://github.com/ngxs/store/issue
           },
           {
             key: 'encrypted',
-            engine: <any>EncryptedStorageEngine
+            engine: EncryptedStorageEngine
           }
         ]
       })

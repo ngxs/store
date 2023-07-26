@@ -18,10 +18,6 @@ import {
   FINAL_NGXS_STORAGE_PLUGIN_OPTIONS
 } from './internals/final-options';
 
-/**
- * @description Will be provided through Terser global definitions by Angular CLI
- * during the production build. This is how Angular does tree-shaking internally.
- */
 declare const ngDevMode: boolean;
 
 const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
@@ -78,8 +74,6 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             const newVal = this._options.deserialize!(storedValue);
             storedValue = this._options.afterDeserialize!(newVal, key);
           } catch {
-            // Caretaker note: we have still left the `typeof` condition in order to avoid
-            // creating a breaking change for projects that still use the View Engine.
             NG_DEV_MODE &&
               console.error(
                 `Error ocurred while deserializing the ${storageKey} store value, falling back to empty object, the value obtained from the store: `,
@@ -89,40 +83,39 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             storedValue = {};
           }
 
-          if (this._options.migrations) {
-            this._options.migrations.forEach(strategy => {
-              const versionMatch =
-                strategy.version === getValue(storedValue, strategy.versionKey || 'version');
-              const keyMatch =
-                (!strategy.key && this._usesDefaultStateKey) || strategy.key === key;
-              if (versionMatch && keyMatch) {
-                storedValue = strategy.migrate(storedValue);
-                hasMigration = true;
-              }
-            });
-          }
+          this._options.migrations?.forEach(strategy => {
+            const versionMatch =
+              strategy.version === getValue(storedValue, strategy.versionKey || 'version');
+            const keyMatch =
+              (!strategy.key && this._usesDefaultStateKey) || strategy.key === key;
+            if (versionMatch && keyMatch) {
+              storedValue = strategy.migrate(storedValue);
+              hasMigration = true;
+            }
+          });
 
           if (!this._usesDefaultStateKey) {
             state = setValue(state, key, storedValue);
           } else {
-            // The `UpdateState` action is dispatched whenever the feature state is added.
-            // The below condition is met only when the `UpdateState` is dispatched.
-            // Let's assume that we have 2 states `counter` and `@ngxs/router-plugin` state.
-            // `CounterState` is provided on the root level when calling `NgxsModule.forRoot()`
-            // and `@ngxs/router-plugin` is provided as a feature state.
-            // The storage plugin may save the `counter` state value as `10` before.
-            // The `CounterState` may implement the `ngxsOnInit` hook and call `ctx.setState(999)`.
-            // The storage plugin will re-hydrate the whole state when the `RouterState` is registered,
-            // and the `counter` state will again equal `10` (not `999`).
+            // The `UpdateState` action is dispatched whenever the feature
+            // state is added. The condition below is satisfied only when
+            // the `UpdateState` action is dispatched. Let's consider two states:
+            // `counter` and `@ngxs/router-plugin` state. When we call `NgxsModule.forRoot()`,
+            // `CounterState` is provided at the root level, while `@ngxs/router-plugin`
+            // is provided as a feature state. Beforehand, the storage plugin may have
+            // stored the value of the counter state as `10`. If `CounterState` implements
+            // the `ngxsOnInit` hook and calls `ctx.setState(999)`, the storage plugin
+            // will rehydrate the entire state when the `RouterState` is registered.
+            // Consequently, the `counter` state will revert back to `10` instead of `999`.
             if (storedValue && addedStates && Object.keys(addedStates).length > 0) {
               storedValue = Object.keys(addedStates).reduce((accumulator, addedState) => {
-                // The `storedValue` may equal the whole state (when the default state key is used).
-                // If `addedStates` contains only `router` then we want to merge the state only
-                // with the `router` value.
+                // The `storedValue` can be equal to the entire state when the default
+                // state key is used. However, if `addedStates` only contains the `router` value,
+                // we only want to merge the state with the `router` value.
                 // Let's assume that the `storedValue` is an object:
                 // `{ counter: 10, router: {...} }`
                 // This will pick only the `router` object from the `storedValue` and `counter`
-                // state will not be re-hydrated unnecessary.
+                // state will not be rehydrated unnecessary.
                 if (storedValue.hasOwnProperty(addedState)) {
                   accumulator[addedState] = storedValue[addedState];
                 }
@@ -138,38 +131,38 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
     return next(state, event).pipe(
       tap(nextState => {
-        if (!isInitOrUpdateAction || (isInitOrUpdateAction && hasMigration)) {
-          for (const { key, engine } of this._keysWithEngines) {
-            let storedValue = nextState;
+        if (isInitOrUpdateAction && !hasMigration) {
+          return;
+        }
 
-            const storageKey = getStorageKey(key, this._options);
+        for (const { key, engine } of this._keysWithEngines) {
+          let storedValue = nextState;
 
-            if (key !== DEFAULT_STATE_KEY) {
-              storedValue = getValue(nextState, key);
-            }
+          const storageKey = getStorageKey(key, this._options);
 
-            try {
-              const newStoredValue = this._options.beforeSerialize!(storedValue, key);
-              engine.setItem(storageKey, this._options.serialize!(newStoredValue));
-            } catch (error) {
-              // Caretaker note: we have still left the `typeof` condition in order to avoid
-              // creating a breaking change for projects that still use the View Engine.
-              if (NG_DEV_MODE) {
-                if (
-                  error instanceof Error &&
-                  (error.name === 'QuotaExceededError' ||
-                    error.name === 'NS_ERROR_DOM_QUOTA_REACHED')
-                ) {
-                  console.error(
-                    `The ${storageKey} store value exceeds the browser storage quota: `,
-                    storedValue
-                  );
-                } else {
-                  console.error(
-                    `Error ocurred while serializing the ${storageKey} store value, value not updated, the value obtained from the store: `,
-                    storedValue
-                  );
-                }
+          if (key !== DEFAULT_STATE_KEY) {
+            storedValue = getValue(nextState, key);
+          }
+
+          try {
+            const newStoredValue = this._options.beforeSerialize!(storedValue, key);
+            engine.setItem(storageKey, this._options.serialize!(newStoredValue));
+          } catch (error) {
+            if (NG_DEV_MODE) {
+              if (
+                error &&
+                (error.name === 'QuotaExceededError' ||
+                  error.name === 'NS_ERROR_DOM_QUOTA_REACHED')
+              ) {
+                console.error(
+                  `The ${storageKey} store value exceeds the browser storage quota: `,
+                  storedValue
+                );
+              } else {
+                console.error(
+                  `Error ocurred while serializing the ${storageKey} store value, value not updated, the value obtained from the store: `,
+                  storedValue
+                );
               }
             }
           }

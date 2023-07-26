@@ -25,6 +25,7 @@
       "@ngxs/hmr-plugin": ["packages/hmr-plugin/index.ts"],
       "@ngxs/logger-plugin": ["packages/logger-plugin/index.ts"],
       "@ngxs/router-plugin": ["packages/router-plugin/index.ts"],
+      "@ngxs/router-plugin/internals": ["packages/router-plugin/internals/src/index.ts"],
       "@ngxs/storage-plugin": ["packages/storage-plugin/index.ts"],
       "@ngxs/store": ["packages/store/index.ts"],
       "@ngxs/store/internals": ["packages/store/internals/src/index.ts"],
