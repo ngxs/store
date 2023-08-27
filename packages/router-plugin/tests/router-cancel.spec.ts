@@ -3,12 +3,12 @@ import { APP_BASE_HREF } from '@angular/common';
 import { Component, NgModule, Injectable } from '@angular/core';
 import { Routes, CanDeactivate, NavigationCancel } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgxsModule } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
 import { filter } from 'rxjs/operators';
 
-import { RouterState, NgxsRouterPluginModule } from '../';
+import { RouterState, withNgxsRouterPlugin } from '../';
 
 import { createNgxsRouterPluginTestingPlatform } from './helpers';
 
@@ -53,13 +53,15 @@ function getTestModule() {
   @NgModule({
     imports: [
       BrowserModule,
-      RouterTestingModule.withRoutes(routes, { initialNavigation: 'enabledBlocking' }),
-      NgxsModule.forRoot(),
-      NgxsRouterPluginModule.forRoot()
+      RouterTestingModule.withRoutes(routes, { initialNavigation: 'enabledBlocking' })
     ],
     declarations: [RootComponent, HomeComponent, BlogComponent],
     bootstrap: [RootComponent],
-    providers: [HomeGuard, { provide: APP_BASE_HREF, useValue: '/' }]
+    providers: [
+      provideStore([], withNgxsRouterPlugin()),
+      HomeGuard,
+      { provide: APP_BASE_HREF, useValue: '/' }
+    ]
   })
   class TestModule {}
 

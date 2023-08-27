@@ -1,4 +1,4 @@
-import { Injectable, InjectionToken, Type } from '@angular/core';
+import { Injectable, InjectionToken, Type, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { PlainObject, StateClass } from '@ngxs/store/internals';
@@ -10,10 +10,31 @@ import { NgxsExecutionStrategy } from './execution/symbols';
 import { SharedSelectorOptions } from './internal/internals';
 import { StateToken } from './state-token/state-token';
 
-export const ROOT_OPTIONS = new InjectionToken<NgxsModuleOptions>('ROOT_OPTIONS');
-export const ROOT_STATE_TOKEN = new InjectionToken<any>('ROOT_STATE_TOKEN');
-export const FEATURE_STATE_TOKEN = new InjectionToken<any>('FEATURE_STATE_TOKEN');
-export const NGXS_PLUGINS = new InjectionToken('NGXS_PLUGINS');
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+
+// The injection token is used to resolve a list of states provided at
+// the root level through either `NgxsModule.forRoot` or `provideStore`.
+export const ROOT_STATE_TOKEN = new InjectionToken<Array<StateClass>>(
+  NG_DEV_MODE ? 'ROOT_STATE_TOKEN' : ''
+);
+
+// The injection token is used to resolve a list of states provided at
+// the feature level through either `NgxsModule.forFeature` or `provideStates`.
+// The Array<Array> is used to overload the resolved value of the token because
+// it is a multi-provider token.
+export const FEATURE_STATE_TOKEN = new InjectionToken<Array<Array<StateClass>>>(
+  NG_DEV_MODE ? 'FEATURE_STATE_TOKEN' : ''
+);
+
+// The injection token is used to resolve to custom NGXS plugins provided
+// at the root level through either `{provide}` scheme or `withNgxsPlugin`.
+export const NGXS_PLUGINS = new InjectionToken(NG_DEV_MODE ? 'NGXS_PLUGINS' : '');
+
+// The injection token is used to resolve to options provided at the root
+// level through either `NgxsModule.forRoot` or `provideStore`.
+export const NGXS_OPTIONS = new InjectionToken<NgxsModuleOptions>(
+  NG_DEV_MODE ? 'NGXS_OPTIONS' : ''
+);
 
 export const META_KEY = 'NGXS_META';
 export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
@@ -30,8 +51,7 @@ export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) =
  */
 @Injectable({
   providedIn: 'root',
-  useFactory: (options: NgxsModuleOptions) => mergeDeep(new NgxsConfig(), options),
-  deps: [ROOT_OPTIONS]
+  useFactory: () => mergeDeep(new NgxsConfig(), inject(NGXS_OPTIONS))
 })
 export class NgxsConfig {
   /**
