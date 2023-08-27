@@ -3,10 +3,10 @@ import { APP_BASE_HREF, DOCUMENT } from '@angular/common';
 import { Component, NgModule, Injectable } from '@angular/core';
 import { Routes, CanActivate } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgxsModule, Store } from '@ngxs/store';
+import { Store, provideStore } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
-import { NgxsRouterPluginModule, Navigate } from '../..';
+import { Navigate, withNgxsRouterPlugin } from '../..';
 
 import { createNgxsRouterPluginTestingPlatform } from '../helpers';
 
@@ -73,15 +73,14 @@ const routes: Routes = [
 
 function getTestModule() {
   @NgModule({
-    imports: [
-      BrowserModule,
-      RouterTestingModule.withRoutes(routes),
-      NgxsModule.forRoot(),
-      NgxsRouterPluginModule.forRoot()
-    ],
+    imports: [BrowserModule, RouterTestingModule.withRoutes(routes)],
     declarations: [RootComponent, HomeComponent, BlogComponent, LoginComponent],
     bootstrap: [RootComponent],
-    providers: [AuthGuard, { provide: APP_BASE_HREF, useValue: '/' }]
+    providers: [
+      provideStore([], withNgxsRouterPlugin()),
+      AuthGuard,
+      { provide: APP_BASE_HREF, useValue: '/' }
+    ]
   })
   class TestModule {}
 

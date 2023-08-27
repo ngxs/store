@@ -74,12 +74,12 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             const newVal = this._options.deserialize!(storedValue);
             storedValue = this._options.afterDeserialize!(newVal, key);
           } catch {
-            if (NG_DEV_MODE) {
+            NG_DEV_MODE &&
               console.error(
                 `Error ocurred while deserializing the ${storageKey} store value, falling back to empty object, the value obtained from the store: `,
                 storedValue
               );
-            }
+
             storedValue = {};
           }
 
@@ -147,7 +147,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           try {
             const newStoredValue = this._options.beforeSerialize!(storedValue, key);
             engine.setItem(storageKey, this._options.serialize!(newStoredValue));
-          } catch (error) {
+          } catch (error: any) {
             if (NG_DEV_MODE) {
               if (
                 error &&

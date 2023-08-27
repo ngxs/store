@@ -1,6 +1,15 @@
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Store } from '@ngxs/store';
+import { NgxsFormDirective } from '@ngxs/form-plugin';
 import { Observable } from 'rxjs';
 
 import { TodoState } from '@integration/store/todos/todo/todo.state';
@@ -11,7 +20,10 @@ import { Extras, Pizza, Todo } from '@integration/store/todos/todos.model';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, NgxsFormDirective]
 })
 export class AppComponent implements OnInit {
   readonly allExtras: Extras[] = [

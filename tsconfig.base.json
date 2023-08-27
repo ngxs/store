@@ -14,7 +14,8 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "useDefineForClassFields": false,
+    "target": "ES2022",
     "lib": ["es2017", "dom", "es2018.promise"],
     "typeRoots": ["node_modules/@types"],
     "paths": {

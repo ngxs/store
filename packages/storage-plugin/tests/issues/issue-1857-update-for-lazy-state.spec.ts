@@ -1,14 +1,7 @@
 import { APP_INITIALIZER, Component, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import {
-  Actions,
-  NgxsModule,
-  State,
-  ofActionCompleted,
-  UpdateState,
-  Store
-} from '@ngxs/store';
+import { NgxsModule, State, Store } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import { NgxsStoragePluginModule } from '../../';
@@ -21,10 +14,8 @@ describe('Update for lazy state (https://github.com/ngxs/store/issues/1857)', ()
   class ActionsListener {
     snapshot: any;
 
-    constructor(store: Store, actions: Actions) {
-      actions
-        .pipe(ofActionCompleted(UpdateState))
-        .subscribe(() => (this.snapshot = store.snapshot()));
+    constructor(store: Store) {
+      this.snapshot = store.snapshot();
     }
   }
 

@@ -48,12 +48,8 @@ export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
   }
 
   ngOnDestroy(): void {
-    if (this.unsubscribe !== null) {
-      this.unsubscribe();
-    }
-    if (this.globalDevtools) {
-      this.globalDevtools.disconnect();
-    }
+    this.unsubscribe?.();
+    this.globalDevtools?.disconnect();
   }
 
   /**

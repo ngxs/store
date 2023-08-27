@@ -12,8 +12,8 @@ import {
   UpdateFormValue
 } from './actions';
 
-@Directive({ selector: '[ngxsForm]' })
-export class FormDirective implements OnInit, OnDestroy {
+@Directive({ selector: '[ngxsForm]', standalone: true })
+export class NgxsFormDirective implements OnInit, OnDestroy {
   @Input('ngxsForm')
   path: string = null!;
 

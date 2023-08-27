@@ -8,24 +8,24 @@ import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 import {
-  NgxsModule,
   Store,
   Actions,
   ofActionSuccessful,
   State,
   Action,
   StateContext,
-  Selector
+  Selector,
+  provideStore
 } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import {
-  NgxsRouterPluginModule,
   RouterState,
   Navigate,
   RouterNavigation,
   RouterStateModel,
-  RouterDataResolved
+  RouterDataResolved,
+  withNgxsRouterPlugin
 } from '../';
 
 describe('RouterDataResolved', () => {
@@ -52,9 +52,9 @@ describe('RouterDataResolved', () => {
     router$: Observable<RouterStateModel>;
 
     constructor(store: Store) {
-      this.router$ = (store.select(RouterState.state) as unknown) as Observable<
-        RouterStateModel
-      >;
+      this.router$ = store.select(
+        RouterState.state
+      ) as unknown as Observable<RouterStateModel>;
     }
   }
 
@@ -75,14 +75,16 @@ describe('RouterDataResolved', () => {
               }
             }
           ],
-          { initialNavigation: 'enabled' }
-        ),
-        NgxsModule.forRoot(states),
-        NgxsRouterPluginModule.forRoot()
+          { initialNavigation: 'enabledBlocking' }
+        )
       ],
       declarations: [RootComponent, TestComponent],
       bootstrap: [RootComponent],
-      providers: [TestResolver, { provide: APP_BASE_HREF, useValue: '/' }]
+      providers: [
+        provideStore(states, withNgxsRouterPlugin()),
+        TestResolver,
+        { provide: APP_BASE_HREF, useValue: '/' }
+      ]
     })
     class TestModule {}
 

@@ -1,13 +1,7 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../@ngxs/hmr-plugin",
   "lib": {
-    "flatModuleFile": "ngxs-hmr-plugin",
-    "entryFile": "index.ts",
-    "umdModuleIds": {
-      "@ngxs/store/operators": "ngxs-store-operators",
-      "@ngxs/store/internals": "ngxs-store-internals",
-      "@ngxs/store": "ngxs-store"
-    }
-  }
+    "entryFile": "index.ts"
+  },
+  "dest": "../../@ngxs/hmr-plugin"
 }

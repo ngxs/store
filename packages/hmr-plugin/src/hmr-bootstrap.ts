@@ -29,7 +29,7 @@ export async function hmr<T>(
   const dataTransfer: HmrDataTransfer = webpackModule.hot.data || {};
 
   const storage = new HmrStorage<any>(dataTransfer.snapshot || {});
-  const manager = new HmrManager<T>(options, storage);
+  const manager = new HmrManager<any>(options, storage);
 
   return await manager.hmrModule(bootstrapFn, () => {
     manager.beforeModuleBootstrap();
