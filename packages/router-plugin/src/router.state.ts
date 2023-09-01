@@ -11,6 +11,11 @@ import {
   Event
 } from '@angular/router';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
+import {
+  NavigationActionTiming,
+  NgxsRouterPluginOptions,
+  ɵNGXS_ROUTER_PLUGIN_OPTIONS
+} from '@ngxs/router-plugin/internals';
 import { Subscription } from 'rxjs';
 
 import {
@@ -24,11 +29,6 @@ import {
   RouterNavigated
 } from './router.actions';
 import { RouterStateSerializer } from './serializer';
-import {
-  NavigationActionTiming,
-  NgxsRouterPluginOptions,
-  NGXS_ROUTER_PLUGIN_OPTIONS
-} from './symbols';
 
 export interface RouterStateModel<T = RouterStateSnapshot> {
   state?: T;
@@ -94,7 +94,7 @@ export class RouterState implements OnDestroy {
   ) {
     // Note: do not use `@Inject` since it fails on lower versions of Angular with Jest
     // integration, it cannot resolve the token provider.
-    this._options = injector.get(NGXS_ROUTER_PLUGIN_OPTIONS, null);
+    this._options = injector.get(ɵNGXS_ROUTER_PLUGIN_OPTIONS, null);
     this._setUpStoreListener();
     this._setUpRouterEventsListener();
   }

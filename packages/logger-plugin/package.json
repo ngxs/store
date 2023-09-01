@@ -1,9 +1,8 @@
 {
-  "$schema": "../../node_modules/ng-packagr/package.schema.json",
   "name": "@ngxs/logger-plugin",
   "description": "logger plugin for @ngxs/store",
   "version": "0.0.0",
-  "sideEffects": true,
+  "sideEffects": false,
   "peerDependencies": {
     "@ngxs/store": "^0.0.0",
     "@angular/core": ">=12.0.0 <17.0.0",

@@ -141,38 +141,23 @@ describe('Ensure metadata', () => {
     });
 
     it('should get the selector meta data from the SuperCountState.canInheritSelectFn', () => {
-      let error: Error | null = null;
-
-      try {
-        @State({
-          name: 'superCount',
-          defaults: 0
-        })
-        @Injectable()
-        class SuperCountState extends MyCounterState {
-          @Selector()
-          public static canInheritSelectFn(state: number): number {
-            return super.canInheritSelectFn(state) + 1;
-          }
+      @State({
+        name: 'superCount',
+        defaults: 0
+      })
+      @Injectable()
+      class SuperCountState extends MyCounterState {
+        @Selector()
+        static canInheritSelectFn(state: number): number {
+          return super.canInheritSelectFn(state) + 1;
         }
-
-        const metadata = <SelectorMetaDataModel>(
-          getSelectorMetadata(SuperCountState.canInheritSelectFn)
-        );
-
-        expect(metadata.containerClass).toEqual(SuperCountState);
-      } catch (e) {
-        error = e;
       }
 
-      // TODO(splincode): is normal for SuperCountState?
-      expect(flatString(error!.message)).toEqual(
-        'Cannot set property canInheritSelectFn of function MyCounterState() { } which has only a getter'
+      const metadata = <SelectorMetaDataModel>(
+        getSelectorMetadata(SuperCountState.canInheritSelectFn)
       );
-    });
 
-    function flatString(str: string): string {
-      return str.toString().replace(/\n/g, '').replace(/\s\s+/g, ' ');
-    }
+      expect(metadata.containerClass).toEqual(SuperCountState);
+    });
   });
 });

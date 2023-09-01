@@ -1,3 +1,2 @@
 **/*.spec.ts
-**/__name__*.ts
 **/*.lint.ts

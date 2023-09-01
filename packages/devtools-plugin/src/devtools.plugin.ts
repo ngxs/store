@@ -1,5 +1,11 @@
 import { Inject, Injectable, Injector, NgZone, OnDestroy, ɵglobal } from '@angular/core';
-import { getActionTypeFromInstance, NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
+import {
+  InitState,
+  getActionTypeFromInstance,
+  NgxsNextPluginFn,
+  NgxsPlugin,
+  Store
+} from '@ngxs/store';
 import { tap, catchError } from 'rxjs/operators';
 
 import {
@@ -42,12 +48,8 @@ export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
   }
 
   ngOnDestroy(): void {
-    if (this.unsubscribe !== null) {
-      this.unsubscribe();
-    }
-    if (this.globalDevtools) {
-      this.globalDevtools.disconnect();
-    }
+    this.unsubscribe?.();
+    this.globalDevtools?.disconnect();
   }
 
   /**
@@ -80,7 +82,7 @@ export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
   private sendToDevTools(state: any, action: any, newState: any) {
     const type = getActionTypeFromInstance(action);
     // if init action, send initial state to dev tools
-    const isInitAction = type === '@@INIT';
+    const isInitAction = type === InitState.type;
     if (isInitAction) {
       this.devtoolsExtension!.init(state);
     } else {
@@ -98,12 +100,11 @@ export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
         action.payload.type === ReduxDevtoolsPayloadType.JumpToState
       ) {
         const prevState = JSON.parse(action.state);
-        // This makes the DevTools and Router plugins friends with each other.
-        // We're checking for the `router` state to exist, and it also should
-        // have the `trigger` property, so we're sure that this is our router
-        // state (coming from `@ngxs/router-plugin`). This enables a time-traveling
-        // feature since it doesn't only restore the state but also allows the `RouterState`
-        // to navigate back when the action is jumped.
+        // This makes the DevTools and Router plugins compatible with each other.
+        // We check for the existence of the `router` state and ensure it has the
+        // `trigger` property, confirming that it is our router state (coming from `@ngxs/router-plugin`).
+        // This enables a time-traveling feature, as it not only restores the state but
+        // also allows the `RouterState` to navigate back when the action is jumped.
         if (prevState.router && prevState.router.trigger) {
           prevState.router.trigger = 'devtools';
         }
@@ -111,11 +112,8 @@ export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
       } else if (action.payload.type === ReduxDevtoolsPayloadType.ToggleAction) {
         console.warn('Skip is not supported at this time.');
       } else if (action.payload.type === ReduxDevtoolsPayloadType.ImportState) {
-        const {
-          actionsById,
-          computedStates,
-          currentStateIndex
-        } = action.payload.nextLiftedState;
+        const { actionsById, computedStates, currentStateIndex } =
+          action.payload.nextLiftedState;
         this.devtoolsExtension!.init(computedStates[0].state);
         Object.keys(actionsById)
           .filter(actionId => actionId !== '0')
@@ -135,10 +133,10 @@ export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
       return;
     }
 
-    // The `connect` method adds `message` event listener since it communicates
-    // with an extension through `window.postMessage` and message events.
-    // We handle only 2 events; thus, we don't want to run many change detections
-    // because the extension sends events that we don't have to handle.
+    // The `connect` method adds a `message` event listener to communicate
+    // with an extension through `window.postMessage` and handle message events.
+    // Since we only handle two specific events, we aim to avoid unnecessary change
+    // detections triggered by events that the extension sends, but we don't need to handle.
     this.devtoolsExtension = this._ngZone.runOutsideAngular(
       () => <NgxsDevtoolsExtension>this.globalDevtools.connect(this._options)
     );
@@ -148,9 +146,7 @@ export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
         action.type === ReduxDevtoolsActionType.Dispatch ||
         action.type === ReduxDevtoolsActionType.Action
       ) {
-        this._ngZone.run(() => {
-          this.dispatched(action);
-        });
+        this.dispatched(action);
       }
     });
   }

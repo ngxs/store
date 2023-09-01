@@ -79,7 +79,7 @@ describe('Select', () => {
       }
 
       new SelectComponent().state.subscribe();
-    } catch (error) {
+    } catch (error: any) {
       message = error.message;
     }
 
@@ -116,7 +116,7 @@ describe('Select', () => {
 
       const comp = TestBed.createComponent(MySelectComponent);
       comp.componentInstance.state.subscribe();
-    } catch (error) {
+    } catch (error: any) {
       message = error.message;
     }
 
@@ -272,7 +272,7 @@ describe('Select', () => {
 
     try {
       component.mySelect.subscribe();
-    } catch (e) {
+    } catch (e: any) {
       error = e;
     }
 

@@ -19,7 +19,7 @@ export {
   getSelectorMetadata,
   getStoreMetadata,
   ensureStoreMetadata,
-  ensureSelectorMetadata,
+  ensureSelectorMetadata
 } from './public_to_deprecate';
 export {
   ofAction,
@@ -28,7 +28,7 @@ export {
   ofActionCanceled,
   ofActionErrored,
   ofActionCompleted,
-  ActionCompletion,
+  ActionCompletion
 } from './operators/of-action';
 export {
   StateContext,
@@ -37,7 +37,7 @@ export {
   NgxsAfterBootstrap,
   NgxsOnChanges,
   NgxsModuleOptions,
-  NgxsSimpleChange,
+  NgxsSimpleChange
 } from './symbols';
 export { Selector } from './decorators/selector/selector';
 export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
@@ -56,5 +56,7 @@ export {
   createPropertySelectors,
   createSelector,
   PropertySelectors,
-  TypedSelector,
+  TypedSelector
 } from './selectors';
+
+export * from './standalone-features';

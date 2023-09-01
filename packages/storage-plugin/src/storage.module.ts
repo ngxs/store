@@ -3,9 +3,11 @@ import {
   ModuleWithProviders,
   PLATFORM_ID,
   InjectionToken,
-  Injector
+  Injector,
+  EnvironmentProviders,
+  makeEnvironmentProviders
 } from '@angular/core';
-import { NGXS_PLUGINS } from '@ngxs/store';
+import { NGXS_PLUGINS, withNgxsPlugin } from '@ngxs/store';
 
 import {
   NgxsStoragePluginOptions,
@@ -19,7 +21,11 @@ import {
   FINAL_NGXS_STORAGE_PLUGIN_OPTIONS
 } from './internals/final-options';
 
-export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
+declare const ngDevMode: boolean;
+
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+
+export const USER_OPTIONS = new InjectionToken(NG_DEV_MODE ? 'USER_OPTIONS' : '');
 
 @NgModule()
 export class NgxsStoragePluginModule {
@@ -56,4 +62,31 @@ export class NgxsStoragePluginModule {
       ]
     };
   }
+}
+
+export function withNgxsStoragePlugin(
+  options?: NgxsStoragePluginOptions
+): EnvironmentProviders {
+  return makeEnvironmentProviders([
+    withNgxsPlugin(NgxsStoragePlugin),
+    {
+      provide: USER_OPTIONS,
+      useValue: options
+    },
+    {
+      provide: NGXS_STORAGE_PLUGIN_OPTIONS,
+      useFactory: storageOptionsFactory,
+      deps: [USER_OPTIONS]
+    },
+    {
+      provide: STORAGE_ENGINE,
+      useFactory: engineFactory,
+      deps: [NGXS_STORAGE_PLUGIN_OPTIONS, PLATFORM_ID]
+    },
+    {
+      provide: FINAL_NGXS_STORAGE_PLUGIN_OPTIONS,
+      useFactory: createFinalStoragePluginOptions,
+      deps: [Injector, NGXS_STORAGE_PLUGIN_OPTIONS]
+    }
+  ]);
 }

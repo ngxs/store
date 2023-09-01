@@ -2,8 +2,8 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "outDir": "out-tsc/lib",
-    "target": "es2015",
-    "module": "es2015",
+    "target": "es2022",
+    "module": "es2022",
     "declaration": true,
     "inlineSources": true,
     "importHelpers": true,

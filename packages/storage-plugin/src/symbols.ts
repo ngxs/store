@@ -73,14 +73,19 @@ export interface NgxsStoragePluginOptions {
   afterDeserialize?(obj: any, key: string): any;
 }
 
-export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken('NGXS_STORAGE_PLUGIN_OPTIONS');
+declare const ngDevMode: boolean;
 
-export const STORAGE_ENGINE = new InjectionToken<StorageEngine>('STORAGE_ENGINE');
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+
+export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken(
+  NG_DEV_MODE ? 'NGXS_STORAGE_PLUGIN_OPTIONS' : ''
+);
+
+export const STORAGE_ENGINE = new InjectionToken<StorageEngine>(
+  NG_DEV_MODE ? 'STORAGE_ENGINE' : ''
+);
 
 export interface StorageEngine {
-  readonly length: number;
   getItem(key: string): any;
-  setItem(key: string, val: any): void;
-  removeItem(key: string): void;
-  clear(): void;
+  setItem(key: string, value: any): void;
 }

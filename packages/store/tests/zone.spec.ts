@@ -65,6 +65,7 @@ describe('zone', () => {
     let selectCalls = 0;
     let selectCallsInAngularZone = 0;
 
+    @Injectable()
     class MockApplicationRef extends ApplicationRef {
       public tick(): void {
         ticks++;

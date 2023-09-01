@@ -111,14 +111,16 @@ export class StateFactory implements OnDestroy {
       ? this._parentFactory.getRuntimeSelectorContext()
       : {
           getStateGetter(key: string) {
-            let getter = resolveGetter(key);
+            // Use `@__INLINE__` annotation to forcely inline `resolveGetter`.
+            // This is a Terser annotation, which will function only in the production mode.
+            let getter = /*@__INLINE__*/ resolveGetter(key);
             if (getter) {
               return getter;
             }
             return (...args) => {
               // Late loaded getter
               if (!getter) {
-                getter = resolveGetter(key);
+                getter = /*@__INLINE__*/ resolveGetter(key);
               }
               return getter ? getter(...args) : undefined;
             };
