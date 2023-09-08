@@ -3,6 +3,7 @@
 - Getting Started
   - [Why](introduction/why.md)
   - [Installation](introduction/installation.md)
+  - [Starter Kit](introduction/starter-kit.md)
 - Concepts
   - [Introduction](concepts/intro.md)
   - [Store](concepts/store.md)

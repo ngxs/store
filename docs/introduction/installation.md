@@ -1,5 +1,54 @@
 ## Installation
 
+## Installing with schematics
+
+You can install the `ngxs/store` using `ng-add` schematic
+
+```bash
+ng add @ngxs/store
+```
+
+Note: This command will prompt you to choose the **plugins** you want to install and the name of the **project** you want to use NGXS with.
+
+You have the option to enter the options yourself
+
+```bash
+ng add @ngxs/store --plugins DEVTOOLS,FORM --project angular-ngxs-project
+```
+
+| Option    | Description                                               | Default Value               |
+| :-------- | :-------------------------------------------------------- | :-------------------------- |
+| --project | Name of the project as it is defined in your angular.json | Workspace's default project |
+| --plugins | Comma separate the plugins as appear below                |                             |
+
+### Plugins to optionally install using the schematics
+
+- DEVTOOLS
+- FORM
+- HMR
+- LOGGER
+- ROUTER
+- STORAGE
+- STORE
+- WEBSOCKET
+
+You can find more information about plugins on the [plugins page](https://www.ngxs.io/plugins).
+
+🪄 **This command will**:
+
+- Update `package.json` dependencies with `@ngxs/store`
+- Install dependencies by executing `npm install`
+
+If your project is standalone one:
+
+- Update the `providers` array of your selected project array with `provideStore()`
+
+If your application is module based:
+
+- Update the `imports` array of your `app.module.ts` with `NgxsModule.forRoot([])`
+
+## Manual Installation
+
 To get started, install the package from npm. The latest version (3.x) supports Angular/RxJS 6+, if you want support for Angular 5, use version 2.x.
 
 ```bash

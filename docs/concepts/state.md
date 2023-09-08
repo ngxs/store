@@ -2,6 +2,31 @@
 
 States are classes that define a state container.
 
+## Installing with schematics
+
+```bash
+ng generate state
+```
+
+Note: Running this command will prompt you to create a "State". The options available for the "State" are listed in the table below.
+
+You have the option to enter the options yourself
+
+```bash
+ng generate state --name NAME_OF_YOUR_STATE
+```
+
+| Option | Description                                            | Required |
+| :----- | :----------------------------------------------------- | :------: |
+| --name | The name of the state                                  |   Yes    |
+| --path | The path to create the state                           |    No    |
+| --spec | Flag to indicate if a unit test file should be created |    No    |
+| --flat | Flag to indicate if a dir is created                   |    No    |
+
+🪄 **This command will**:
+
+- Create a state with the given options
+
 ## Defining a State
 
 States are classes along with decorators to describe metadata

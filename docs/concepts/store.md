@@ -4,6 +4,31 @@ The store is a global state manager that dispatches actions your state
 containers listen to and provides a way to select data slices out from
 the global state.
 
+## Installing with schematics
+
+```bash
+ng generate store
+```
+
+Note: Running this command will prompt you to create a "Store". The options available for the "Store" are listed in the table below.
+
+You have the option to enter the options yourself
+
+```bash
+ng generate store --name NAME_OF_YOUR_STORE
+```
+
+| Option | Description                                            | Required |
+| :----- | :----------------------------------------------------- | :------: |
+| --name | The name of the store                                  |   Yes    |
+| --path | The path to create the store                           |    No    |
+| --spec | Flag to indicate if a unit test file should be created |    No    |
+| --flat | Flag to indicate if a dir is created                   |    No    |
+
+🪄 **This command will**:
+
+- Create a store with the given options
+
 ### Creating actions
 
 An action example in `animal.actions.ts`.
