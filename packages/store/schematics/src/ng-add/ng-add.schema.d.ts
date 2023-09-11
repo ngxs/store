@@ -6,7 +6,7 @@ export interface NgxsPackageSchema {
   /**
    * Additonal packages to be added to the workspace.
    */
-  packages?: string[];
+  plugins?: string[];
   /**
    * The application project name to add the Ngxs module import to.
    */

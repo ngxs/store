@@ -10,9 +10,9 @@
       "default": false,
       "x-prompt": "Do you want to skip packages installation?"
     },
-    "packages": {
+    "plugins": {
       "type": "array",
-      "description": "Additonal packages to be added to the workspace.",
+      "description": "Additional plugins to be added to the workspace.",
       "minItems": 0,
       "maxItems": 7,
       "items": {
@@ -29,7 +29,7 @@
       },
       "default": [],
       "x-prompt": {
-        "message": "Choose any other @ngxs packages you would like to add to the workspace.",
+        "message": "Choose any other @ngxs plugins you would like to add to the workspace.",
         "type": "list",
         "items": [
           {

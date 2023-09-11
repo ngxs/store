@@ -40,7 +40,7 @@ function addNgxsPackageToPackageJson(options: NgxsPackageSchema): Rule {
     }
 
     Object.values(LIBRARIES)
-      .filter(lib => options.packages?.includes(lib))
+      .filter(lib => options.plugins?.includes(lib))
       .forEach(name => {
         const packageExists = getPackageJsonDependency(host, name);
         if (packageExists === null) {
