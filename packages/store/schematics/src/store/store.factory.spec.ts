@@ -9,9 +9,12 @@ describe('NGXS Store', () => {
     '.',
     path.join(workspaceRoot, 'packages/store/schematics/collection.json')
   );
+  const defaultOptions: StoreSchema = {
+    name: 'todos'
+  };
   it('should manage name only', async () => {
     const options: StoreSchema = {
-      name: 'todos'
+      ...defaultOptions
     };
     const tree: UnitTestTree = await runner.runSchematicAsync('store', options).toPromise();
     const files: string[] = tree.files;
@@ -23,7 +26,7 @@ describe('NGXS Store', () => {
   });
   it('should not create a separate folder if "flat" is set to "true"', async () => {
     const options: StoreSchema = {
-      name: 'todos',
+      ...defaultOptions,
       flat: true
     };
     const tree: UnitTestTree = await runner.runSchematicAsync('store', options).toPromise();
@@ -33,25 +36,25 @@ describe('NGXS Store', () => {
 
   it('should manage name with spec false', async () => {
     const options: StoreSchema = {
-      name: 'auth',
+      ...defaultOptions,
       spec: false
     };
     const tree: UnitTestTree = await runner.runSchematicAsync('store', options).toPromise();
     const files: string[] = tree.files;
-    expect(files).toEqual(['/auth/auth.actions.ts', '/auth/auth.state.ts']);
+    expect(files).toEqual(['/todos/todos.actions.ts', '/todos/todos.state.ts']);
   });
 
   it('should manage name with spec true', async () => {
     const options: StoreSchema = {
-      name: 'users',
+      ...defaultOptions,
       spec: true
     };
     const tree: UnitTestTree = await runner.runSchematicAsync('store', options).toPromise();
     const files: string[] = tree.files;
     expect(files).toEqual([
-      '/users/users.actions.ts',
-      '/users/users.state.spec.ts',
-      '/users/users.state.ts'
+      '/todos/todos.actions.ts',
+      '/todos/todos.state.spec.ts',
+      '/todos/todos.state.ts'
     ]);
   });
 });
