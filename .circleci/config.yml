@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  browser-tools: circleci/browser-tools@1.4.3
+  browser-tools: circleci/browser-tools@1.4.4
 
 # Configuration
 job_defaults_var: &job_defaults
@@ -141,8 +141,10 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
+      # https://github.com/CircleCI-Public/browser-tools-orb/issues/75
+      - browser-tools/install-browser-tools:
+          chrome-version: '116.0.5845.96'
+          replace-existing-chrome: true
       - run:
           name: Run integration tests for ng15 application
           command: yarn integration:ng15
@@ -155,8 +157,10 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
+      # https://github.com/CircleCI-Public/browser-tools-orb/issues/75
+      - browser-tools/install-browser-tools:
+          chrome-version: '116.0.5845.96'
+          replace-existing-chrome: true
       - run:
           name: Run integration tests for ng16 application
           command: yarn integration:ng16
