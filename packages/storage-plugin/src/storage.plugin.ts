@@ -10,13 +10,14 @@ import {
   actionMatcher,
   NgxsNextPluginFn
 } from '@ngxs/store';
+import {
+  ɵDEFAULT_STATE_KEY,
+  ɵFinalNgxsStoragePluginOptions,
+  ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS
+} from '@ngxs/storage-plugin/internals';
 import { tap } from 'rxjs/operators';
 
-import { DEFAULT_STATE_KEY, getStorageKey } from './internals';
-import {
-  FinalNgxsStoragePluginOptions,
-  FINAL_NGXS_STORAGE_PLUGIN_OPTIONS
-} from './internals/final-options';
+import { getStorageKey } from './internals';
 
 declare const ngDevMode: boolean;
 
@@ -25,12 +26,13 @@ const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
   private _keysWithEngines = this._options.keysWithEngines;
-  // We default to `[DEFAULT_STATE_KEY]` if the user explicitly does not provide the `key` option.
+  // We default to `[ɵDEFAULT_STATE_KEY]` if the user explicitly does not provide the `key` option.
   private _usesDefaultStateKey =
-    this._keysWithEngines.length === 1 && this._keysWithEngines[0].key === DEFAULT_STATE_KEY;
+    this._keysWithEngines.length === 1 && this._keysWithEngines[0].key === ɵDEFAULT_STATE_KEY;
 
   constructor(
-    @Inject(FINAL_NGXS_STORAGE_PLUGIN_OPTIONS) private _options: FinalNgxsStoragePluginOptions,
+    @Inject(ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS)
+    private _options: ɵFinalNgxsStoragePluginOptions,
     @Inject(PLATFORM_ID) private _platformId: string
   ) {}
 
@@ -140,7 +142,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
           const storageKey = getStorageKey(key, this._options);
 
-          if (key !== DEFAULT_STATE_KEY) {
+          if (key !== ɵDEFAULT_STATE_KEY) {
             storedValue = getValue(nextState, key);
           }
 

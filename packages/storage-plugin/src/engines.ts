@@ -1,7 +1,6 @@
 import { InjectionToken, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-
-import { StorageEngine } from './symbols';
+import { StorageEngine } from '@ngxs/storage-plugin/internals';
 
 declare const ngDevMode: boolean;
 

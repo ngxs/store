@@ -1,6 +1,16 @@
 import { InjectionToken } from '@angular/core';
 
-import { StorageKey } from './internals/storage-key';
+import { StorageKey } from './storage-key';
+
+/**
+ * The following key is used to store the entire serialized
+ * state when no specific state is provided.
+ */
+export const ɵDEFAULT_STATE_KEY = '@@STATE';
+
+declare const ngDevMode: boolean;
+
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
 
 export const enum StorageOption {
   LocalStorage,
@@ -73,11 +83,7 @@ export interface NgxsStoragePluginOptions {
   afterDeserialize?(obj: any, key: string): any;
 }
 
-declare const ngDevMode: boolean;
-
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
-
-export const NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken(
+export const ɵNGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken(
   NG_DEV_MODE ? 'NGXS_STORAGE_PLUGIN_OPTIONS' : ''
 );
 

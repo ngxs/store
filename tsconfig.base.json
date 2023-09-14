@@ -27,6 +27,7 @@
       "@ngxs/router-plugin": ["packages/router-plugin/index.ts"],
       "@ngxs/router-plugin/internals": ["packages/router-plugin/internals/src/index.ts"],
       "@ngxs/storage-plugin": ["packages/storage-plugin/index.ts"],
+      "@ngxs/storage-plugin/internals": ["packages/storage-plugin/internals/src/index.ts"],
       "@ngxs/store": ["packages/store/index.ts"],
       "@ngxs/store/internals": ["packages/store/internals/src/index.ts"],
       "@ngxs/store/internals/testing": ["packages/store/internals/testing/src/index.ts"],

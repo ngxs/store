@@ -2,7 +2,7 @@ import { InjectionToken, Type } from '@angular/core';
 import { StateToken } from '@ngxs/store';
 import { StateClass } from '@ngxs/store/internals';
 
-import { StorageEngine } from '../symbols';
+import { StorageEngine } from './symbols';
 
 /** This enables the user to provide a storage engine per individual key. */
 export interface KeyWithExplicitEngine {
@@ -11,7 +11,7 @@ export interface KeyWithExplicitEngine {
 }
 
 /** Determines whether the provided key has the following structure. */
-export function isKeyWithExplicitEngine(key: any): key is KeyWithExplicitEngine {
+export function ɵisKeyWithExplicitEngine(key: any): key is KeyWithExplicitEngine {
   return key != null && !!key.engine;
 }
 
@@ -23,9 +23,9 @@ export type StorageKey = string | StateClass | StateToken<any> | KeyWithExplicit
 
 /** This symbol is used to store the metadata on state classes. */
 const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
-export function exctractStringKey(storageKey: StorageKey): string {
+export function ɵexctractStringKey(storageKey: StorageKey): string {
   // Extract the actual key out of the `{ key, engine }` structure.
-  if (isKeyWithExplicitEngine(storageKey)) {
+  if (ɵisKeyWithExplicitEngine(storageKey)) {
     storageKey = storageKey.key;
   }
 
