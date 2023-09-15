@@ -5,13 +5,21 @@
   "sourceRoot": "packages/store",
   "projectType": "library",
   "targets": {
-    "build": {
+    "build-package": {
       "executor": "@angular-devkit/build-angular:ng-packagr",
       "outputs": ["@ngxs/store"],
       "options": {
         "tsConfig": "tsconfig.build.json",
         "project": "packages/store/ng-package.json"
       }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/build-schematics.mjs --projectRoot=packages/store --distPath=@ngxs/store",
+        "outputPath": "@ngxs/store"
+      },
+      "dependsOn": ["build-package"]
     },
     "test": {
       "executor": "@nrwl/jest:jest",

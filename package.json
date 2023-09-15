@@ -109,6 +109,9 @@
   "devDependencies": {
     "@angular-builders/jest": "15.0.0",
     "@angular-devkit/build-angular": "15.2.4",
+    "@angular-devkit/core": "15.2.4",
+    "@angular-devkit/schematics": "15.2.4",
+    "@angular-devkit/schematics-cli": "15.2.4",
     "@angular/animations": "15.2.4",
     "@angular/cli": "15.2.4",
     "@angular/common": "15.2.4",
@@ -137,6 +140,7 @@
     "@types/semver": "^7.2.0",
     "@typescript-eslint/eslint-plugin": "5.38.1",
     "@typescript-eslint/parser": "5.38.1",
+    "@schematics/angular": "15.2.4",
     "bundlemon": "1.4.0",
     "core-js": "^3.6.5",
     "cpx": "^1.5.0",

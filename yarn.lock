@@ -148,6 +148,18 @@
     rxjs "6.6.7"
     source-map "0.7.4"
 
+"@angular-devkit/schematics-cli@15.2.4":
+  version "15.2.4"
+  resolved "https://registry.npmjs.org/@angular-devkit/schematics-cli/-/schematics-cli-15.2.4.tgz#c3a4c162779773d312d36cb23f3dd44d741d7225"
+  integrity sha512-QTTKEH5HOkxvQtCxb2Lna2wubehkaIzA6DKUBISijPQliLomw74tzc7lXCywmMqRTbQPVRLG3kBK97hR4x67nA==
+  dependencies:
+    "@angular-devkit/core" "15.2.4"
+    "@angular-devkit/schematics" "15.2.4"
+    ansi-colors "4.1.3"
+    inquirer "8.2.4"
+    symbol-observable "4.0.0"
+    yargs-parser "21.1.1"
+
 "@angular-devkit/schematics@15.2.4":
   version "15.2.4"
   resolved "https://registry.npmjs.org/@angular-devkit/schematics/-/schematics-15.2.4.tgz#85129ebabcdb362f4b65a6e290bb2ae846f3d64c"
