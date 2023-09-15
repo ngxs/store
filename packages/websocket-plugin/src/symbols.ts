@@ -1,6 +1,14 @@
 import { InjectionToken } from '@angular/core';
 
-export const NGXS_WEBSOCKET_OPTIONS = new InjectionToken('NGXS_WEBSOCKET_OPTIONS');
+declare const ngDevMode: boolean;
+
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+
+export const NGXS_WEBSOCKET_OPTIONS = new InjectionToken<NgxsWebsocketPluginOptions>(
+  NG_DEV_MODE ? 'NGXS_WEBSOCKET_OPTIONS' : ''
+);
+
+export const USER_OPTIONS = new InjectionToken(NG_DEV_MODE ? 'USER_OPTIONS' : '');
 
 export interface NgxsWebsocketPluginOptions {
   /**
@@ -50,10 +58,6 @@ export interface NgxsWebsocketPluginOptions {
    * Deseralizer before publishing the message.
    */
   deserializer?: (e: MessageEvent) => any;
-}
-
-export function noop(..._args: any[]) {
-  return function () {};
 }
 
 /**

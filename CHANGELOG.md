@@ -16,6 +16,7 @@ $ npm install @ngxs/store@dev
 - Fix: Devtools Plugin - Do not re-enter Angular zone when resetting state [#2038](https://github.com/ngxs/store/pull/2038)
 - Performance: Tree-shake selectors validation errors [#2020](https://github.com/ngxs/store/pull/2020)
 - Refactor: Replace `get type()` with `type =` in actions [#2035](https://github.com/ngxs/store/pull/2035)
+- Refactor: WebSocket Plugin - Get rid off `rxjs/webSocket` and use `WebSocket` directly [#2033](https://github.com/ngxs/store/pull/2033)
 
 # 3.8.1 2023-05-16
 
