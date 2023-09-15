@@ -3,9 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { NgxsModule, State, Store } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
+import { ɵDEFAULT_STATE_KEY } from '@ngxs/storage-plugin/internals';
 
 import { NgxsStoragePluginModule } from '../../';
-import { DEFAULT_STATE_KEY } from '../../src/internals';
 
 describe('Update for lazy state (https://github.com/ngxs/store/issues/1857)', () => {
   afterEach(() => localStorage.clear());
@@ -57,7 +57,7 @@ describe('Update for lazy state (https://github.com/ngxs/store/issues/1857)', ()
     'should deserialize the feature state if the key is a master key (@@STATE)',
     freshPlatform(async () => {
       // Arrange & act
-      localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ feature: { name: 'NGXS' } }));
+      localStorage.setItem(ɵDEFAULT_STATE_KEY, JSON.stringify({ feature: { name: 'NGXS' } }));
       const { injector } = await skipConsoleLogging(() =>
         platformBrowserDynamic().bootstrapModule(TestModule)
       );

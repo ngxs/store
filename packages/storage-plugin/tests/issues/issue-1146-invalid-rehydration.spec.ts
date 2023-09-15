@@ -8,9 +8,9 @@ import { Observable } from 'rxjs';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 import { NgxsModule, NgxsOnInit, State, StateContext, Store } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
+import { ɵDEFAULT_STATE_KEY } from '@ngxs/storage-plugin/internals';
 
 import { NgxsStoragePluginModule } from '../../';
-import { DEFAULT_STATE_KEY } from '../../src/internals';
 
 describe('Invalid state re-hydration (https://github.com/ngxs/store/issues/1146)', () => {
   afterEach(() => localStorage.clear());
@@ -63,7 +63,7 @@ describe('Invalid state re-hydration (https://github.com/ngxs/store/issues/1146)
     freshPlatform(async () => {
       // Arrange & act
       localStorage.setItem(
-        DEFAULT_STATE_KEY,
+        ɵDEFAULT_STATE_KEY,
         JSON.stringify({
           counter: -1,
           router: {
