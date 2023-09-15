@@ -23,7 +23,7 @@ export type StorageKey = string | StateClass | StateToken<any> | KeyWithExplicit
 
 /** This symbol is used to store the metadata on state classes. */
 const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
-export function ɵexctractStringKey(storageKey: StorageKey): string {
+export function ɵextractStringKey(storageKey: StorageKey): string {
   // Extract the actual key out of the `{ key, engine }` structure.
   if (ɵisKeyWithExplicitEngine(storageKey)) {
     storageKey = storageKey.key;
