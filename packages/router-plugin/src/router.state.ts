@@ -16,7 +16,8 @@ import {
   NgxsRouterPluginOptions,
   ɵNGXS_ROUTER_PLUGIN_OPTIONS
 } from '@ngxs/router-plugin/internals';
-import { Subscription } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import {
   Navigate,
@@ -71,9 +72,9 @@ export class RouterState implements OnDestroy {
 
   private _lastEvent: Event | null = null;
 
-  private _subscription = new Subscription();
-
   private _options: NgxsRouterPluginOptions | null = null;
+
+  private _destroy$ = new ReplaySubject<void>(1);
 
   @Selector()
   static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
@@ -100,7 +101,7 @@ export class RouterState implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+    this._destroy$.next();
   }
 
   @Action(Navigate)
@@ -133,13 +134,10 @@ export class RouterState implements OnDestroy {
   }
 
   private _setUpStoreListener(): void {
-    const subscription = this._store
-      .select(RouterState)
-      .subscribe((state: RouterStateModel | undefined) => {
-        this._navigateIfNeeded(state);
-      });
-
-    this._subscription.add(subscription);
+    const routerState$ = this._store.select(RouterState).pipe(takeUntil(this._destroy$));
+    routerState$.subscribe((state: RouterStateModel | undefined) => {
+      this._navigateIfNeeded(state);
+    });
   }
 
   private _navigateIfNeeded(routerState: RouterStateModel | undefined): void {
@@ -171,7 +169,8 @@ export class RouterState implements OnDestroy {
 
     let lastRoutesRecognized: RoutesRecognized;
 
-    const subscription = this._router.events.subscribe(event => {
+    const events$ = this._router.events.pipe(takeUntil(this._destroy$));
+    events$.subscribe(event => {
       this._lastEvent = event;
 
       if (event instanceof NavigationStart) {
@@ -199,8 +198,6 @@ export class RouterState implements OnDestroy {
         this._reset();
       }
     });
-
-    this._subscription.add(subscription);
   }
 
   /** Reacts to `NavigationStart`. */

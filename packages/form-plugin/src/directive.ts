@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { Actions, getValue, ofActionDispatched, Store } from '@ngxs/store';
-import { Observable, Subject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import {
   ResetForm,
@@ -37,7 +37,7 @@ export class NgxsFormDirective implements OnInit, OnDestroy {
 
   private _updating = false;
 
-  private readonly _destroy$ = new Subject<void>();
+  private readonly _destroy$ = new ReplaySubject<void>(1);
 
   constructor(
     private _actions$: Actions,
