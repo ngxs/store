@@ -1,5 +1,5 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
-import { StateClass } from '@ngxs/store/internals';
+import { ɵStateClass } from '@ngxs/store/internals';
 
 import { getFeatureProviders } from './feature-providers';
 import { NGXS_FEATURE_ENVIRONMENT_INITIALIZER } from './initializers';
@@ -20,7 +20,7 @@ import { NGXS_FEATURE_ENVIRONMENT_INITIALIZER } from './initializers';
  * ```
  */
 export function provideStates(
-  states: StateClass[],
+  states: ɵStateClass[],
   ...features: EnvironmentProviders[]
 ): EnvironmentProviders {
   return makeEnvironmentProviders([

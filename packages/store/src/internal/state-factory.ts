@@ -18,9 +18,9 @@ import {
   shareReplay,
   takeUntil
 } from 'rxjs/operators';
-import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize, ɵMETA_KEY } from '@ngxs/store/internals';
 
-import { META_KEY, NgxsConfig } from '../symbols';
+import { NgxsConfig } from '../symbols';
 import {
   buildGraph,
   findFullParentPath,
@@ -174,7 +174,7 @@ export class StateFactory implements OnDestroy {
     for (const name of sortedStates) {
       const stateClass: StateClassInternal = nameGraph[name];
       const path: string = paths[name];
-      const meta: MetaDataModel = stateClass[META_KEY]!;
+      const meta: MetaDataModel = stateClass[ɵMETA_KEY]!;
 
       this.addRuntimeInfoToMeta(meta, path);
 

@@ -22,8 +22,9 @@ import {
   StateContext,
   Store
 } from '@ngxs/store';
+import { ɵMETA_KEY } from '@ngxs/store/internals';
 
-import { META_KEY, NgxsAfterBootstrap } from '../src/symbols';
+import { NgxsAfterBootstrap } from '../src/symbols';
 import { simplePatch } from '../src/internal/state-operators';
 
 describe('State', () => {
@@ -34,7 +35,7 @@ describe('State', () => {
     @Injectable()
     class BarState {}
 
-    const meta = (<any>BarState)[META_KEY];
+    const meta = (<any>BarState)[ɵMETA_KEY];
 
     expect(meta.name).toBe('moo');
   });
@@ -66,7 +67,7 @@ describe('State', () => {
       drink() {}
     }
 
-    const meta = (<any>Bar2State)[META_KEY];
+    const meta = (<any>Bar2State)[ɵMETA_KEY];
     expect(meta.actions[Eat.type]).toBeDefined();
     expect(meta.actions[Drink.type]).toBeDefined();
   });

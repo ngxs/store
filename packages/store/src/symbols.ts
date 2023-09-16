@@ -1,7 +1,7 @@
 import { Injectable, InjectionToken, Type, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { PlainObject, StateClass } from '@ngxs/store/internals';
+import { PlainObject, ɵStateClass } from '@ngxs/store/internals';
 import { StateOperator } from '@ngxs/store/operators';
 
 import { mergeDeep } from './utils/utils';
@@ -14,7 +14,7 @@ const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
 
 // The injection token is used to resolve a list of states provided at
 // the root level through either `NgxsModule.forRoot` or `provideStore`.
-export const ROOT_STATE_TOKEN = new InjectionToken<Array<StateClass>>(
+export const ROOT_STATE_TOKEN = new InjectionToken<Array<ɵStateClass>>(
   NG_DEV_MODE ? 'ROOT_STATE_TOKEN' : ''
 );
 
@@ -22,7 +22,7 @@ export const ROOT_STATE_TOKEN = new InjectionToken<Array<StateClass>>(
 // the feature level through either `NgxsModule.forFeature` or `provideStates`.
 // The Array<Array> is used to overload the resolved value of the token because
 // it is a multi-provider token.
-export const FEATURE_STATE_TOKEN = new InjectionToken<Array<Array<StateClass>>>(
+export const FEATURE_STATE_TOKEN = new InjectionToken<Array<Array<ɵStateClass>>>(
   NG_DEV_MODE ? 'FEATURE_STATE_TOKEN' : ''
 );
 
@@ -35,10 +35,6 @@ export const NGXS_PLUGINS = new InjectionToken(NG_DEV_MODE ? 'NGXS_PLUGINS' : ''
 export const NGXS_OPTIONS = new InjectionToken<NgxsModuleOptions>(
   NG_DEV_MODE ? 'NGXS_OPTIONS' : ''
 );
-
-export const META_KEY = 'NGXS_META';
-export const META_OPTIONS_KEY = 'NGXS_OPTIONS_META';
-export const SELECTOR_META_KEY = 'NGXS_SELECTOR_META';
 
 export type NgxsLifeCycle = Partial<NgxsOnChanges> &
   Partial<NgxsOnInit> &
@@ -163,7 +159,7 @@ export interface StoreOptions<T> {
   /**
    * Sub states for the given state.
    */
-  children?: StateClass[];
+  children?: ɵStateClass[];
 }
 
 /**
