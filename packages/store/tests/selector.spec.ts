@@ -8,7 +8,7 @@ import {
   Selector,
   SelectorOptions
 } from '@ngxs/store';
-import { StateClass } from '@ngxs/store/internals';
+import { ɵStateClass } from '@ngxs/store/internals';
 
 import { NgxsConfig } from '../src/symbols';
 
@@ -220,7 +220,7 @@ describe('Selector', () => {
   });
 
   describe('(Selector Options)', () => {
-    function setupStore(states: StateClass[], extendedOptions?: Partial<NgxsConfig>) {
+    function setupStore(states: ɵStateClass[], extendedOptions?: Partial<NgxsConfig>) {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot(states, extendedOptions)]
       });

@@ -1,5 +1,5 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
-import { StateClass } from '@ngxs/store/internals';
+import { ɵStateClass } from '@ngxs/store/internals';
 
 import { NgxsModuleOptions } from '../symbols';
 import { getRootProviders } from './root-providers';
@@ -23,18 +23,18 @@ import { NGXS_ROOT_ENVIRONMENT_INITIALIZER } from './initializers';
  * ```
  */
 export function provideStore(
-  states?: StateClass[],
+  states?: ɵStateClass[],
   ...features: EnvironmentProviders[]
 ): EnvironmentProviders;
 
 export function provideStore(
-  states?: StateClass[],
+  states?: ɵStateClass[],
   options?: NgxsModuleOptions,
   ...features: EnvironmentProviders[]
 ): EnvironmentProviders;
 
 export function provideStore(
-  states: StateClass[] = [],
+  states: ɵStateClass[] = [],
   ...optionsAndFeatures: any[]
 ): EnvironmentProviders {
   const features: EnvironmentProviders[] = [];

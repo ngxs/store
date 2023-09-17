@@ -14,10 +14,10 @@ import {
   ofActionErrored,
   ofActionSuccessful
 } from '@ngxs/store';
+import { ɵMETA_KEY } from '@ngxs/store/internals';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
 
-import { META_KEY } from '../src/symbols';
 import { NoopErrorHandler } from './helpers/utils';
 
 describe('Action', () => {
@@ -81,7 +81,7 @@ describe('Action', () => {
       // Arrange
       setup();
       // Act
-      const meta = (<any>BarStore)[META_KEY];
+      const meta = (<any>BarStore)[ɵMETA_KEY];
       // Assert
       expect(meta.actions[Action1.type]).toBeDefined();
       expect(meta.actions[Action2.type]).toBeDefined();

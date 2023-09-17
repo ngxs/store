@@ -1,7 +1,7 @@
 import { APP_BOOTSTRAP_LISTENER, Provider, inject } from '@angular/core';
 import {
   NgxsBootstrapper,
-  StateClass,
+  ɵStateClass,
   ɵNGXS_STATE_CONTEXT_FACTORY,
   ɵNGXS_STATE_FACTORY
 } from '@ngxs/store/internals';
@@ -17,7 +17,7 @@ import { NgxsModuleOptions, ROOT_STATE_TOKEN, NGXS_OPTIONS } from '../symbols';
  * or `provideStore`. It is shared between the NgModule and standalone APIs.
  */
 export function getRootProviders(
-  states: StateClass[],
+  states: ɵStateClass[],
   options: NgxsModuleOptions
 ): Provider[] {
   return [

@@ -1,7 +1,7 @@
-import { StateClass } from '@ngxs/store/internals';
+import { ɵStateClass, ɵMETA_KEY, ɵMETA_OPTIONS_KEY } from '@ngxs/store/internals';
 
+import { StoreOptions } from '../symbols';
 import { ensureStateNameIsValid } from '../utils/store-validators';
-import { META_KEY, META_OPTIONS_KEY, StoreOptions } from '../symbols';
 import { ensureStoreMetadata, MetaDataModel, StateClassInternal } from '../internal/internals';
 
 interface MutateMetaOptions<T> {
@@ -14,7 +14,7 @@ interface MutateMetaOptions<T> {
  * Decorates a class with ngxs state information.
  */
 export function State<T>(options: StoreOptions<T>) {
-  return (target: StateClass): void => {
+  return (target: ɵStateClass): void => {
     const stateClass: StateClassInternal = target;
     const meta: MetaDataModel = ensureStoreMetadata(stateClass);
     const inheritedStateClass: StateClassInternal = Object.getPrototypeOf(stateClass);
@@ -23,7 +23,7 @@ export function State<T>(options: StoreOptions<T>) {
       options
     );
     mutateMetaData<T>({ meta, inheritedStateClass, optionsWithInheritance });
-    stateClass[META_OPTIONS_KEY] = optionsWithInheritance;
+    stateClass[ɵMETA_OPTIONS_KEY] = optionsWithInheritance;
   };
 }
 
@@ -32,7 +32,7 @@ function getStateOptions<T>(
   options: StoreOptions<T>
 ): StoreOptions<T> {
   const inheritanceOptions: Partial<StoreOptions<T>> =
-    inheritedStateClass[META_OPTIONS_KEY] || {};
+    inheritedStateClass[ɵMETA_OPTIONS_KEY] || {};
   return { ...inheritanceOptions, ...options } as StoreOptions<T>;
 }
 
@@ -46,8 +46,8 @@ function mutateMetaData<T>(params: MutateMetaOptions<T>): void {
     ensureStateNameIsValid(stateName);
   }
 
-  if (inheritedStateClass.hasOwnProperty(META_KEY)) {
-    const inheritedMeta: Partial<MetaDataModel> = inheritedStateClass[META_KEY] || {};
+  if (inheritedStateClass.hasOwnProperty(ɵMETA_KEY)) {
+    const inheritedMeta: Partial<MetaDataModel> = inheritedStateClass[ɵMETA_KEY] || {};
     meta.actions = { ...meta.actions, ...inheritedMeta.actions };
   }
 

@@ -1,5 +1,5 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { StateClass } from '@ngxs/store/internals';
+import { ɵStateClass } from '@ngxs/store/internals';
 
 import { NgxsModuleOptions } from './symbols';
 import { NgxsRootModule } from './modules/ngxs-root.module';
@@ -10,7 +10,7 @@ import { getFeatureProviders } from './standalone-features/feature-providers';
 @NgModule()
 export class NgxsModule {
   static forRoot(
-    states: StateClass[] = [],
+    states: ɵStateClass[] = [],
     options: NgxsModuleOptions = {}
   ): ModuleWithProviders<NgxsRootModule> {
     return {
@@ -19,7 +19,7 @@ export class NgxsModule {
     };
   }
 
-  static forFeature(states: StateClass[] = []): ModuleWithProviders<NgxsFeatureModule> {
+  static forFeature(states: ɵStateClass[] = []): ModuleWithProviders<NgxsFeatureModule> {
     return {
       ngModule: NgxsFeatureModule,
       providers: getFeatureProviders(states)

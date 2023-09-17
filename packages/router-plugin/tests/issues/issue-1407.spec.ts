@@ -4,7 +4,7 @@ import { Component, Injectable, NgModule } from '@angular/core';
 import { Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { State, Action, StateContext, provideStore, provideStates } from '@ngxs/store';
-import { StateClass } from '@ngxs/store/internals';
+import { ɵStateClass } from '@ngxs/store/internals';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
 import { Navigate, RouterNavigation, RouterState, withNgxsRouterPlugin } from '../..';
@@ -40,7 +40,7 @@ const routes: Routes = [
   }
 ];
 
-function getTestModule(states: StateClass[] = []) {
+function getTestModule(states: ɵStateClass[] = []) {
   @NgModule({
     imports: [BrowserModule, RouterTestingModule.withRoutes(routes, { enableTracing: true })],
     declarations: [RootComponent, HomeComponent, DialedNumberComponent],
