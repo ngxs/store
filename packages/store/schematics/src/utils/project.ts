@@ -1,31 +1,43 @@
+import { TargetDefinition } from '@schematics/angular/utility/workspace';
 import { getWorkspace } from './config';
 import { Tree } from '@angular-devkit/schematics';
 
 export interface WorkspaceProject {
+  name: string;
   root: string;
   projectType: string;
+  architect: {
+    [key: string]: TargetDefinition;
+  };
 }
 
-export function getProject(
-  host: Tree,
-  options: { project?: string | undefined; path?: string | undefined }
-): WorkspaceProject {
+export function getProject(host: Tree, project?: string): WorkspaceProject | null {
   const workspace = getWorkspace(host);
 
-  if (!options.project) {
+  if (!project) {
     const defaultProject = (workspace as { defaultProject?: string }).defaultProject;
-    options.project =
+    project =
       defaultProject !== undefined ? defaultProject : Object.keys(workspace.projects)[0];
   }
 
-  return workspace.projects[options.project];
+  const resolvedProject = workspace.projects[project];
+  if (resolvedProject) {
+    resolvedProject.name = project;
+
+    return resolvedProject;
+  }
+  return null;
 }
 
 export function getProjectPath(
   host: Tree,
   options: { project?: string | undefined; path?: string | undefined }
-) {
-  const project = getProject(host, options);
+): string | null {
+  const project = getProject(host, options.project);
+
+  if (!project) {
+    return null;
+  }
 
   if (project.root.slice(-1) === '/') {
     project.root = project.root.substring(0, project.root.length - 1);
@@ -40,11 +52,8 @@ export function getProjectPath(
   return options.path;
 }
 
-export function isLib(
-  host: Tree,
-  options: { project?: string | undefined; path?: string | undefined }
-) {
-  const project = getProject(host, options);
+export function isLib(host: Tree, project?: string) {
+  const resolvedProject = getProject(host, project);
 
-  return project.projectType === 'library';
+  return resolvedProject?.projectType === 'library';
 }

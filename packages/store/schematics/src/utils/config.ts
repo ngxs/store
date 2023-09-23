@@ -128,16 +128,16 @@ export interface AppConfig {
   };
 }
 
-export function getWorkspacePath(host: Tree): string {
+export function getWorkspacePath(host: Tree): string | undefined {
   const possibleFiles = ['/angular.json', '/.angular.json', '/workspace.json'];
-  const path = possibleFiles.filter(path => host.exists(path))[0];
+  const path = possibleFiles.find(path => host.exists(path));
 
   return path;
 }
 
 export function getWorkspace(host: Tree) {
   const path = getWorkspacePath(host);
-  const configBuffer = host.read(path);
+  const configBuffer = path ? host.read(path) : null;
   if (configBuffer === null) {
     throw new SchematicsException(`Could not find (${path})`);
   }
