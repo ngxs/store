@@ -1,4 +1,4 @@
-import { PlainObject } from '@ngxs/store/internals';
+import { ɵPlainObject } from '@ngxs/store/internals';
 
 /**
  * Init action
@@ -13,5 +13,5 @@ export class InitState {
 export class UpdateState {
   static readonly type = '@@UPDATE_STATE';
 
-  constructor(public addedStates?: PlainObject) {}
+  constructor(readonly addedStates?: ɵPlainObject) {}
 }

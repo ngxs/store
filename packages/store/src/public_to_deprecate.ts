@@ -1,45 +1,57 @@
 import {
-  getSelectorMetadata as getSelectorMetadataInternal,
-  getStoreMetadata as getStoreMetadataInternal,
-  ensureStoreMetadata as ensureStoreMetadataInternal,
-  ensureSelectorMetadata as ensureSelectorMetadataInternal,
-  StateClassInternal,
-  SharedSelectorOptions
-} from './internal/internals';
-import { PlainObjectOf } from '../internals/src/symbols';
-import { ActionHandlerMetaData } from './actions/symbols';
+  ɵActionHandlerMetaData,
+  ɵMetaDataModel,
+  ɵPlainObjectOf,
+  ɵSelectorMetaDataModel,
+  ɵStateClassInternal,
+  ɵSharedSelectorOptions,
+  ɵgetSelectorMetadata,
+  ɵgetStoreMetadata,
+  ɵensureStoreMetadata,
+  ɵensureSelectorMetadata
+} from '@ngxs/store/internals';
 
-interface MetaDataModel {
-  name: string | null;
-  actions: PlainObjectOf<ActionHandlerMetaData[]>;
-  defaults: any;
-  path: string | null;
-  // selectFromAppState: SelectFromState | null;
-  // makeRootSelector: SelectorFactory | null; // Don't expose new stuff
-  children?: StateClassInternal[];
+/**
+ * @deprecated will be removed after v4
+ */
+export type StateClassInternal = ɵStateClassInternal;
+/**
+ * @deprecated will be removed after v4
+ */
+export type PlainObjectOf<T> = ɵPlainObjectOf<T>;
+/**
+ * @deprecated will be removed after v4
+ */
+export type ActionHandlerMetaData = ɵActionHandlerMetaData;
+/**
+ * @deprecated will be removed after v4
+ */
+export type SharedSelectorOptions = ɵSharedSelectorOptions;
+
+/**
+ * @deprecated will be removed after v4
+ */
+export function ensureStoreMetadata(target: ɵStateClassInternal<any, any>): ɵMetaDataModel {
+  return ɵensureStoreMetadata(target);
 }
 
-interface SelectorMetaDataModel {
-  // selectFromAppState: SelectFromState | null;
-  // makeRootSelector: SelectorFactory | null; // Don't expose new stuff
-  originalFn: Function | null;
-  containerClass: any;
-  selectorName: string | null;
-  getSelectorOptions: () => SharedSelectorOptions;
+/**
+ * @deprecated will be removed after v4
+ */
+export function getStoreMetadata(target: ɵStateClassInternal<any, any>): ɵMetaDataModel {
+  return ɵgetStoreMetadata(target);
 }
 
-export function ensureStoreMetadata(target: StateClassInternal<any, any>): MetaDataModel {
-  return ensureStoreMetadataInternal(target);
+/**
+ * @deprecated will be removed after v4
+ */
+export function ensureSelectorMetadata(target: Function): ɵSelectorMetaDataModel {
+  return ɵensureSelectorMetadata(target);
 }
 
-export function getStoreMetadata(target: StateClassInternal<any, any>): MetaDataModel {
-  return getStoreMetadataInternal(target);
-}
-
-export function ensureSelectorMetadata(target: Function): SelectorMetaDataModel {
-  return ensureSelectorMetadataInternal(target);
-}
-
-export function getSelectorMetadata(target: any): SelectorMetaDataModel {
-  return getSelectorMetadataInternal(target);
+/**
+ * @deprecated will be removed after v4
+ */
+export function getSelectorMetadata(target: any): ɵSelectorMetaDataModel {
+  return ɵgetSelectorMetadata(target);
 }

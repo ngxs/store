@@ -1,31 +1,8 @@
-import { Injectable, OnDestroy, Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-
-import { PlainObject } from '@ngxs/store/internals';
-
-import { OrderedBehaviorSubject } from './custom-rxjs-subjects';
+import { Injectable } from '@angular/core';
+import { ɵStateStream } from '@ngxs/store/internals';
 
 /**
- * BehaviorSubject of the entire state.
- * @ignore
+ * @deprecated use `ɵStateStream` from `@ngxs/store/internals`.
  */
 @Injectable({ providedIn: 'root' })
-export class StateStream extends OrderedBehaviorSubject<PlainObject> implements OnDestroy {
-  readonly state: Signal<PlainObject> = toSignal(this, {
-    manualCleanup: true,
-    requireSync: true
-  });
-
-  constructor() {
-    super({});
-  }
-
-  ngOnDestroy(): void {
-    // The StateStream should never emit values once the root view is removed,
-    // such as when the `NgModuleRef.destroy()` method is called. This is crucial
-    // for preventing memory leaks in server-side rendered apps, where a new StateStream
-    // is created for each HTTP request. If users forget to unsubscribe from `store.select`
-    // or `store.subscribe`, it can result in significant memory leaks in SSR apps.
-    this.complete();
-  }
-}
+export class StateStream extends ɵStateStream {}

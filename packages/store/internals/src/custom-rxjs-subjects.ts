@@ -53,7 +53,7 @@ function orderedQueueOperation<TArgs extends any[]>(operation: (...args: TArgs) 
  * When `subject` is a standard `Subject<T>` the second subscriber would recieve `end` and then `start`.
  * When `subject` is a `OrderedSubject<T>` the second subscriber would recieve `start` and then `end`.
  */
-export class OrderedSubject<T> extends Subject<T> {
+export class ɵOrderedSubject<T> extends Subject<T> {
   private _orderedNext = orderedQueueOperation((value?: T) => super.next(<T>value));
 
   next(value?: T): void {
@@ -76,7 +76,7 @@ export class OrderedSubject<T> extends Subject<T> {
  * When `subject` is a standard `BehaviorSubject<T>` the second subscriber would recieve `end` and then `start`.
  * When `subject` is a `OrderedBehaviorSubject<T>` the second subscriber would recieve `start` and then `end`.
  */
-export class OrderedBehaviorSubject<T> extends BehaviorSubject<T> {
+export class ɵOrderedBehaviorSubject<T> extends BehaviorSubject<T> {
   private _orderedNext = orderedQueueOperation((value: T) => super.next(value));
   private _currentValue: T;
 

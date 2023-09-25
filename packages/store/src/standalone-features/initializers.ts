@@ -1,10 +1,11 @@
 import { ENVIRONMENT_INITIALIZER, InjectionToken, Provider, inject } from '@angular/core';
+import { ɵStateClassInternal } from '@ngxs/store/internals';
 
 import { Store } from '../store';
 import { InitState, UpdateState } from '../plugin_api';
 import { FEATURE_STATE_TOKEN, ROOT_STATE_TOKEN } from '../symbols';
 import { StateFactory } from '../internal/state-factory';
-import { StateClassInternal, StatesAndDefaults } from '../internal/internals';
+import { StatesAndDefaults } from '../internal/internals';
 import { SelectFactory } from '../decorators/select/select-factory';
 import { InternalStateOperations } from '../internal/state-operations';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
@@ -53,8 +54,8 @@ export function featureStatesInitializer(): void {
 
   // Since FEATURE_STATE_TOKEN is a multi token, we need to
   // flatten it [[Feature1State, Feature2State], [Feature3State]].
-  const flattenedStates: StateClassInternal[] = states.reduce(
-    (total: StateClassInternal[], values: StateClassInternal[]) => total.concat(values),
+  const flattenedStates: ɵStateClassInternal[] = states.reduce(
+    (total: ɵStateClassInternal[], values: ɵStateClassInternal[]) => total.concat(values),
     []
   );
 

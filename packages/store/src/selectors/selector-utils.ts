@@ -1,21 +1,21 @@
-import { memoize } from '@ngxs/store/internals';
-
 import {
-  getSelectorMetadata,
-  getStoreMetadata,
-  SelectorMetaDataModel,
-  SharedSelectorOptions,
-  RuntimeSelectorContext,
-  SelectorFactory
-} from '../internal/internals';
+  ɵmemoize,
+  ɵRuntimeSelectorContext,
+  ɵSelectorFactory,
+  ɵgetStoreMetadata,
+  ɵgetSelectorMetadata,
+  ɵSelectorMetaDataModel,
+  ɵSharedSelectorOptions
+} from '@ngxs/store/internals';
+
 import { CreationMetadata, RuntimeSelectorInfo } from './selector-models';
 
 export function createRootSelectorFactory<T extends (...args: any[]) => any>(
-  selectorMetaData: SelectorMetaDataModel,
+  selectorMetaData: ɵSelectorMetaDataModel,
   selectors: any[] | undefined,
   memoizedSelectorFn: T
-): SelectorFactory {
-  return (context: RuntimeSelectorContext) => {
+): ɵSelectorFactory {
+  return (context: ɵRuntimeSelectorContext) => {
     const { argumentSelectorFunctions, selectorOptions } = getRuntimeSelectorInfo(
       context,
       selectorMetaData,
@@ -50,19 +50,19 @@ export function createMemoizedSelectorFn<T extends (...args: any[]) => any>(
   const wrappedFn = function wrappedSelectorFn(...args: any[]) {
     const returnValue = originalFn.apply(containerClass, args);
     if (returnValue instanceof Function) {
-      const innerMemoizedFn = memoize.apply(null, [returnValue]);
+      const innerMemoizedFn = ɵmemoize.apply(null, [returnValue]);
       return innerMemoizedFn;
     }
     return returnValue;
   } as T;
-  const memoizedFn = memoize(wrappedFn);
+  const memoizedFn = ɵmemoize(wrappedFn);
   Object.setPrototypeOf(memoizedFn, originalFn);
   return memoizedFn;
 }
 
 function getRuntimeSelectorInfo(
-  context: RuntimeSelectorContext,
-  selectorMetaData: SelectorMetaDataModel,
+  context: ɵRuntimeSelectorContext,
+  selectorMetaData: ɵSelectorMetaDataModel,
   selectors: any[] | undefined = []
 ): RuntimeSelectorInfo {
   const localSelectorOptions = selectorMetaData.getSelectorOptions();
@@ -85,7 +85,7 @@ function getRuntimeSelectorInfo(
 
 function getSelectorsToApply(
   selectors: any[] | undefined = [],
-  selectorOptions: SharedSelectorOptions,
+  selectorOptions: ɵSharedSelectorOptions,
   containerClass: any
 ) {
   const selectorsToApply = [];
@@ -93,7 +93,7 @@ function getSelectorsToApply(
     selectors.length === 0 || selectorOptions.injectContainerState;
   if (containerClass && canInjectContainerState) {
     // If we are on a state class, add it as the first selector parameter
-    const metadata = getStoreMetadata(containerClass);
+    const metadata = ɵgetStoreMetadata(containerClass);
     if (metadata) {
       selectorsToApply.push(containerClass);
     }
@@ -108,7 +108,7 @@ function getSelectorsToApply(
  * This function gets the factory function to create the selector to get the selected slice from the app state
  * @ignore
  */
-export function getRootSelectorFactory(selector: any): SelectorFactory {
-  const metadata = getSelectorMetadata(selector) || getStoreMetadata(selector);
+export function getRootSelectorFactory(selector: any): ɵSelectorFactory {
+  const metadata = ɵgetSelectorMetadata(selector) || ɵgetStoreMetadata(selector);
   return (metadata && metadata.makeRootSelector) || (() => selector);
 }

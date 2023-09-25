@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
-import { Actions, getValue, ofActionDispatched, Store } from '@ngxs/store';
+import { Actions, ofActionDispatched, Store } from '@ngxs/store';
+import { getValue } from '@ngxs/store/plugins';
 import { Observable, ReplaySubject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import {

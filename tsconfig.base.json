@@ -32,6 +32,7 @@
       "@ngxs/store/internals": ["packages/store/internals/src/index.ts"],
       "@ngxs/store/internals/testing": ["packages/store/internals/testing/src/index.ts"],
       "@ngxs/store/operators": ["packages/store/operators/src/index.ts"],
+      "@ngxs/store/plugins": ["packages/store/plugins/src/index.ts"],
       "@ngxs/websocket-plugin": ["packages/websocket-plugin/index.ts"]
     }
   }
