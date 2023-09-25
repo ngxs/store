@@ -40,6 +40,32 @@ describe('patch', () => {
     });
   });
 
+  describe('when null provided for existing', () => {
+    it('returns a new root with changed property set', () => {
+      // Arrange
+      const original = { a: 1, b: 2, c: 3 };
+
+      // Act
+      const newValue = patch(original)(<any>null);
+
+      // Assert
+      expect(newValue).toEqual(original);
+    });
+  });
+
+  describe('when undefined provided for existing', () => {
+    it('returns a new root with changed property set', () => {
+      // Arrange
+      const original = { a: 1, b: 2, c: 3 };
+
+      // Act
+      const newValue = patch(original)(<any>undefined);
+
+      // Assert
+      expect(newValue).toEqual(original);
+    });
+  });
+
   describe('when object with primitive property values provided', () => {
     describe('with same values', () => {
       it('returns the same root', () => {
@@ -382,6 +408,79 @@ describe('patch', () => {
 
           // Assert
           expect<any>(newValue.b.hello).toEqual(patchTooDeep);
+        });
+
+        it(`creates deeply nested objects that don't exist`, () => {
+          // Arrange
+          interface Document {
+            name: string;
+          }
+
+          interface Group {
+            documents: Record<string, Document>;
+          }
+
+          interface Model {
+            groups: Record<string, Group>;
+          }
+
+          const original: Model = {
+            groups: {
+              group1: {
+                documents: {
+                  doc1: {
+                    name: 'Hello'
+                  }
+                }
+              }
+            }
+          };
+
+          // Act
+          const result = patch<Model>({
+            groups: patch<Record<string, Group>>({
+              group1: patch<Group>({
+                documents: patch<Record<string, Document>>({
+                  doc1: patch<Document>({
+                    name: 'Hello Updated'
+                  }),
+                  doc12: patch<Document>({
+                    name: 'Hello12'
+                  })
+                })
+              }),
+              group2: patch<Group>({
+                documents: patch<Record<string, Document>>({
+                  doc2: patch<Document>({
+                    name: 'Hello2'
+                  })
+                })
+              })
+            })
+          })(original);
+
+          // Assert
+          expect(result).toEqual({
+            groups: {
+              group1: {
+                documents: {
+                  doc1: {
+                    name: 'Hello Updated'
+                  },
+                  doc12: {
+                    name: 'Hello12'
+                  }
+                }
+              },
+              group2: {
+                documents: {
+                  doc2: {
+                    name: 'Hello2'
+                  }
+                }
+              }
+            }
+          });
         });
       });
     });
