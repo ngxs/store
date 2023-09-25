@@ -7,11 +7,11 @@
 # - ./.github/actions/upload-integration-test-artifact
 
 name: upload-integration-test-artifact
-description: Upload an integration test artifact with a name such as 'hello-world-ng12-ivy'.
+description: Upload an integration test artifact with a name such as 'hello-world-ng15'.
 
 inputs:
   script:
-    description: A script with a name such as 'integration:ng12:ivy' that generates an integration test artifact.
+    description: A script with a name such as 'integration:ng15' that generates an integration test artifact.
     required: true
 
 runs:
@@ -21,7 +21,7 @@ runs:
       id: artifact-name
       shell: bash
       run: |
-        echo "Replace colons with dashes, substring 'integration' with a substring 'hello-world'. Example result: hello-world-ng12-ivy"
+        echo "Replace colons with dashes, substring 'integration' with a substring 'hello-world'. Example result: hello-world-ng15"
         echo "value=$(echo ${SCRIPT} | sed -r "s/:/-/g" | sed -r "s/integration/hello-world/g")" >> $GITHUB_OUTPUT
       env:
         SCRIPT: ${{ inputs.script }}

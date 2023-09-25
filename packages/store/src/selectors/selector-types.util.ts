@@ -1,4 +1,4 @@
-import { StateClass } from '@ngxs/store/internals';
+import { ɵStateClass } from '@ngxs/store/internals';
 
 import { StateToken } from '../state-token/state-token';
 
@@ -6,7 +6,7 @@ export type SelectorFunc<TModel> = (...arg: any[]) => TModel;
 
 export type TypedSelector<TModel> = StateToken<TModel> | SelectorFunc<TModel>;
 
-export type StateSelector = StateClass<any>;
+export type StateSelector = ɵStateClass<any>;
 
 export type SelectorDef<TModel> = StateSelector | TypedSelector<TModel>;
 
@@ -14,7 +14,7 @@ export type SelectorReturnType<T extends SelectorDef<any>> = T extends StateToke
   ? R1
   : T extends SelectorFunc<infer R2>
   ? R2
-  : T extends StateClass<any>
+  : T extends ɵStateClass<any>
   ? any /* (Block comment to stop prettier breaking the comment below)
   // If the state selector is a class then we should infer its return type to `any`, and not to `unknown`.
   // Since we'll get an error that `Type 'unknown' is not assignable to type 'AuthStateModel'.`

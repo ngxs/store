@@ -81,7 +81,7 @@ describe('Dispatch', () => {
     jest.spyOn(FakeExecutionStrategy.prototype, 'leave').mockImplementationOnce(func => {
       try {
         return func();
-      } catch (e) {
+      } catch (e: any) {
         thrownMessage = e.message;
       }
     });

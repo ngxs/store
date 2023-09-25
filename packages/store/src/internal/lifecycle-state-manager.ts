@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { NgxsBootstrapper } from '@ngxs/store/internals';
-import { EMPTY, Subject } from 'rxjs';
+import { EMPTY, ReplaySubject } from 'rxjs';
 import {
   catchError,
   filter,
@@ -21,7 +21,7 @@ import { NgxsLifeCycle, NgxsSimpleChange, StateContext } from '../symbols';
 
 @Injectable({ providedIn: 'root' })
 export class LifecycleStateManager implements OnDestroy {
-  private readonly _destroy$ = new Subject<void>();
+  private readonly _destroy$ = new ReplaySubject<void>(1);
 
   constructor(
     private _store: Store,

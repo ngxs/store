@@ -18,9 +18,9 @@ import {
   shareReplay,
   takeUntil
 } from 'rxjs/operators';
-import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize } from '@ngxs/store/internals';
+import { INITIAL_STATE_TOKEN, PlainObjectOf, memoize, ɵMETA_KEY } from '@ngxs/store/internals';
 
-import { META_KEY, NgxsConfig } from '../symbols';
+import { NgxsConfig } from '../symbols';
 import {
   buildGraph,
   findFullParentPath,
@@ -43,7 +43,7 @@ import { ofActionDispatched } from '../operators/of-action';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
-import { StoreValidators } from '../utils/store-validators';
+import { ensureStateNameIsUnique, ensureStatesAreDecorated } from '../utils/store-validators';
 import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
 
@@ -111,14 +111,16 @@ export class StateFactory implements OnDestroy {
       ? this._parentFactory.getRuntimeSelectorContext()
       : {
           getStateGetter(key: string) {
-            let getter = resolveGetter(key);
+            // Use `@__INLINE__` annotation to forcely inline `resolveGetter`.
+            // This is a Terser annotation, which will function only in the production mode.
+            let getter = /*@__INLINE__*/ resolveGetter(key);
             if (getter) {
               return getter;
             }
             return (...args) => {
               // Late loaded getter
               if (!getter) {
-                getter = resolveGetter(key);
+                getter = /*@__INLINE__*/ resolveGetter(key);
               }
               return getter ? getter(...args) : undefined;
             };
@@ -134,8 +136,8 @@ export class StateFactory implements OnDestroy {
     return context;
   });
 
-  private static cloneDefaults(defaults: any): any {
-    let value = {};
+  private static _cloneDefaults(defaults: any): any {
+    let value = defaults;
 
     if (Array.isArray(defaults)) {
       value = defaults.slice();
@@ -143,8 +145,6 @@ export class StateFactory implements OnDestroy {
       value = { ...defaults };
     } else if (defaults === undefined) {
       value = {};
-    } else {
-      value = defaults;
     }
 
     return value;
@@ -159,7 +159,7 @@ export class StateFactory implements OnDestroy {
    */
   add(stateClasses: StateClassInternal[]): MappedStore[] {
     if (NG_DEV_MODE) {
-      StoreValidators.checkThatStateClassesHaveBeenDecorated(stateClasses);
+      ensureStatesAreDecorated(stateClasses);
     }
 
     const { newStates } = this.addToStatesMap(stateClasses);
@@ -174,7 +174,7 @@ export class StateFactory implements OnDestroy {
     for (const name of sortedStates) {
       const stateClass: StateClassInternal = nameGraph[name];
       const path: string = paths[name];
-      const meta: MetaDataModel = stateClass[META_KEY]!;
+      const meta: MetaDataModel = stateClass[ɵMETA_KEY]!;
 
       this.addRuntimeInfoToMeta(meta, path);
 
@@ -182,7 +182,7 @@ export class StateFactory implements OnDestroy {
       // `State` decorator. This check is moved here because the `ɵprov` property
       // will not exist on the class in JIT mode (because it's set asynchronously
       // during JIT compilation through `Object.defineProperty`).
-      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (NG_DEV_MODE) {
         ensureStateClassIsInjectable(stateClass);
       }
 
@@ -192,7 +192,7 @@ export class StateFactory implements OnDestroy {
         isInitialised: false,
         actions: meta.actions,
         instance: this._injector.get(stateClass),
-        defaults: StateFactory.cloneDefaults(meta.defaults)
+        defaults: StateFactory._cloneDefaults(meta.defaults)
       };
 
       // ensure our store hasn't already been added
@@ -344,7 +344,7 @@ export class StateFactory implements OnDestroy {
     for (const stateClass of stateClasses) {
       const stateName = getStoreMetadata(stateClass).name!;
       if (NG_DEV_MODE) {
-        StoreValidators.checkThatStateNameIsUnique(stateName, stateClass, statesMap);
+        ensureStateNameIsUnique(stateName, stateClass, statesMap);
       }
       const unmountedState = !statesMap[stateName];
       if (unmountedState) {

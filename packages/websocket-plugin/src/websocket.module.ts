@@ -1,24 +1,12 @@
-import { NgModule, ModuleWithProviders, APP_INITIALIZER, InjectionToken } from '@angular/core';
+import {
+  NgModule,
+  ModuleWithProviders,
+  EnvironmentProviders,
+  makeEnvironmentProviders
+} from '@angular/core';
 
-import { WebSocketHandler } from './websocket-handler';
-import { NgxsWebsocketPluginOptions, NGXS_WEBSOCKET_OPTIONS, noop } from './symbols';
-
-export function websocketOptionsFactory(options: NgxsWebsocketPluginOptions) {
-  return {
-    reconnectInterval: 5000,
-    reconnectAttempts: 10,
-    typeKey: 'type',
-    deserializer(e: MessageEvent) {
-      return JSON.parse(e.data);
-    },
-    serializer(value: any) {
-      return JSON.stringify(value);
-    },
-    ...options
-  };
-}
-
-export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
+import { ɵgetProviders } from './providers';
+import { NgxsWebsocketPluginOptions } from './symbols';
 
 @NgModule()
 export class NgxsWebsocketPluginModule {
@@ -27,24 +15,13 @@ export class NgxsWebsocketPluginModule {
   ): ModuleWithProviders<NgxsWebsocketPluginModule> {
     return {
       ngModule: NgxsWebsocketPluginModule,
-      providers: [
-        WebSocketHandler,
-        {
-          provide: USER_OPTIONS,
-          useValue: options
-        },
-        {
-          provide: NGXS_WEBSOCKET_OPTIONS,
-          useFactory: websocketOptionsFactory,
-          deps: [USER_OPTIONS]
-        },
-        {
-          provide: APP_INITIALIZER,
-          useFactory: noop,
-          deps: [WebSocketHandler],
-          multi: true
-        }
-      ]
+      providers: ɵgetProviders(options)
     };
   }
+}
+
+export function withNgxsWebSocketPlugin(
+  options?: NgxsWebsocketPluginOptions
+): EnvironmentProviders {
+  return makeEnvironmentProviders(ɵgetProviders(options));
 }

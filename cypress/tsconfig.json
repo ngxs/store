@@ -7,5 +7,5 @@
     "typeRoots": ["../node_modules/@types"],
     "lib": ["es2017", "dom"]
   },
-  "include": ["e2e/*.ts", "support/*.ts", "../node_modules/cypress"]
+  "include": ["e2e/*.ts", "ssr/*.ts", "support/*.ts", "../node_modules/cypress"]
 }

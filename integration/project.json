@@ -1,19 +1,19 @@
 {
   "name": "integration",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
   "root": "integration/",
   "sourceRoot": "integration",
   "projectType": "application",
   "prefix": "app",
   "implicitDependencies": ["*-plugin", "store"],
   "targets": {
-    "build-app": {
+    "build": {
       "executor": "@angular-devkit/build-angular:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist-integration/",
         "index": "./integration/index.html",
-        "main": "./integration/main.browser.ts",
+        "main": "./integration/main.ts",
         "tsConfig": "./integration/tsconfig.app.json",
         "polyfills": "./integration/polyfills.ts",
         "assets": [
@@ -24,7 +24,6 @@
           }
         ],
         "styles": ["./integration/styles.scss"],
-        "aot": false,
         "vendorChunk": true,
         "extractLicenses": false,
         "buildOptimizer": false,
@@ -33,12 +32,19 @@
         "namedChunks": true
       },
       "configurations": {
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        },
         "production": {
           "optimization": true,
           "outputHashing": "all",
           "sourceMap": false,
           "namedChunks": false,
-          "aot": true,
           "extractLicenses": true,
           "vendorChunk": false,
           "buildOptimizer": true,
@@ -46,14 +52,6 @@
             {
               "replace": "/integration/environments/environment.ts",
               "with": "/integration/environments/environment.prod.ts"
-            }
-          ]
-        },
-        "hmr": {
-          "fileReplacements": [
-            {
-              "replace": "/integration/environments/environment.ts",
-              "with": "/integration/environments/environment.hmr.ts"
             }
           ]
         }
@@ -90,25 +88,16 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
-      "options": {
-        "browserTarget": "integration:build"
-      },
       "configurations": {
-        "production": {
-          "browserTarget": "integration:build:production"
+        "development": {
+          "browserTarget": "integration:build-app:development"
         },
-        "hmr": {
-          "hmr": true,
-          "browserTarget": "integration:build:hmr"
+        "production": {
+          "browserTarget": "integration:build-app:production"
         }
       },
+      "defaultConfiguration": "development",
       "dependsOn": ["^build"]
-    },
-    "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
-      "options": {
-        "browserTarget": "integration:build"
-      }
     },
     "test": {
       "executor": "@nrwl/jest:jest",

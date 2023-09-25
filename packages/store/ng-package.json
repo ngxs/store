@@ -1,12 +1,7 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../@ngxs/store",
   "lib": {
-    "flatModuleFile": "ngxs-store",
-    "entryFile": "index.ts",
-    "umdModuleIds": {
-      "@ngxs/store/internals": "ngxs-store-internals",
-      "@ngxs/store/operators": "ngxs-store-operators"
-    }
-  }
+    "entryFile": "index.ts"
+  },
+  "dest": "../../@ngxs/store"
 }
