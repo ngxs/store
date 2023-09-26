@@ -8,7 +8,7 @@ Each action contains a `type` field which is its unique identifier.
 ## Installing with schematics
 
 ```bash
-ng generate actions
+ng generate @ngxs/store:actions
 ```
 
 Note: Running this command will prompt you to create an "Action". The options available for the "Action" are listed in the table below.
@@ -16,7 +16,7 @@ Note: Running this command will prompt you to create an "Action". The options av
 You have the option to enter the options yourself
 
 ```bash
-ng generate actions --name NAME_OF_YOUR_ACTION
+ng generate @ngxs/store:actions --name NAME_OF_YOUR_ACTION
 ```
 
 | Option | Description                          | Required |

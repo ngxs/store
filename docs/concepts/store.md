@@ -7,7 +7,7 @@ the global state.
 ## Installing with schematics
 
 ```bash
-ng generate store
+ng generate @ngxs/store:store
 ```
 
 Note: Running this command will prompt you to create a "Store". The options available for the "Store" are listed in the table below.
@@ -15,7 +15,7 @@ Note: Running this command will prompt you to create a "Store". The options avai
 You have the option to enter the options yourself
 
 ```bash
-ng generate store --name NAME_OF_YOUR_STORE
+ng generate @ngxs/store:store --name NAME_OF_YOUR_STORE
 ```
 
 | Option | Description                                            | Required |

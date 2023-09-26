@@ -5,7 +5,7 @@ States are classes that define a state container.
 ## Installing with schematics
 
 ```bash
-ng generate state
+ng generate @ngxs/store:state
 ```
 
 Note: Running this command will prompt you to create a "State". The options available for the "State" are listed in the table below.
@@ -13,7 +13,7 @@ Note: Running this command will prompt you to create a "State". The options avai
 You have the option to enter the options yourself
 
 ```bash
-ng generate state --name NAME_OF_YOUR_STATE
+ng generate @ngxs/store:state --name NAME_OF_YOUR_STATE
 ```
 
 | Option | Description                                            | Required |

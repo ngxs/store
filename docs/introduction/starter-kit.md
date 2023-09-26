@@ -5,7 +5,7 @@ The Starter Kit provides a pre-configured NGXS setup that includes a Store, Stat
 ## Installing with schematics
 
 ```bash
-ng generate starter-kit
+ng generate @ngxs/store:starter-kit
 ```
 
 Note: Running this command will prompt you to create a "Starter-Kit". The options available for the "Starter-Kit" are listed in the table below.
@@ -13,7 +13,7 @@ Note: Running this command will prompt you to create a "Starter-Kit". The option
 You have the option to enter the options yourself
 
 ```bash
-ng generate starter-kit --path YOUR_PATH
+ng generate @ngxs/store:starter-kit --path YOUR_PATH
 ```
 
 | Option | Description                                            | Required |
