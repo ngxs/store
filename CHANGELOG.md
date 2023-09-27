@@ -10,7 +10,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-- Fix: Show error when state initialization order is invalid [#2066](https://github.com/ngxs/store/pull/2066)
+- Fix: Show error when state initialization order is invalid [#2066](https://github.com/ngxs/store/pull/2066), [#2067](https://github.com/ngxs/store/pull/2067)
 - Fix: Storage Plugin - Access local and session storages globals only in browser [#2034](https://github.com/ngxs/store/pull/2034)
 - Fix: Storage Plugin - Require only `getItem` and `setItem` on engines [#2036](https://github.com/ngxs/store/pull/2036)
 - Fix: Router Plugin - Expose `NGXS_ROUTER_PLUGIN_OPTIONS` privately [#2037](https://github.com/ngxs/store/pull/2037)
