@@ -40,6 +40,14 @@ export function getUndecoratedStateInIvyWarningMessage(name: string): string {
   return `'${name}' class should be decorated with @Injectable() right after the @State() decorator`;
 }
 
+export function getInvalidInitializationOrderMessage() {
+  return (
+    'You have an invalid state initialization order. This typically occurs when `NgxsModule.forFeature`\n' +
+    'or `provideStates` is called before `NgxsModule.forRoot` or `provideStore`.\n' +
+    'One example is when `NgxsRouterPluginModule.forRoot` is called before `NgxsModule.forRoot`.'
+  );
+}
+
 export function throwSelectFactoryNotConnectedError(): never {
   throw new Error('You have forgotten to import the NGXS module!');
 }
