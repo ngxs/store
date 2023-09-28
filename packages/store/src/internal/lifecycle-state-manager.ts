@@ -57,7 +57,7 @@ export class LifecycleStateManager implements OnDestroy {
         action instanceof UpdateState &&
         !this._initStateHasBeenDispatched
       ) {
-        console.error(getInvalidInitializationOrderMessage());
+        console.error(getInvalidInitializationOrderMessage(action.addedStates));
       }
     }
 

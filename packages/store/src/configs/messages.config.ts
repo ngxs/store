@@ -1,3 +1,5 @@
+import { PlainObject } from '@ngxs/store/internals';
+
 export function throwStateNameError(name: string): never {
   throw new Error(
     `${name} is not a valid state name. It needs to be a valid object property name.`
@@ -40,12 +42,21 @@ export function getUndecoratedStateInIvyWarningMessage(name: string): string {
   return `'${name}' class should be decorated with @Injectable() right after the @State() decorator`;
 }
 
-export function getInvalidInitializationOrderMessage() {
-  return (
+export function getInvalidInitializationOrderMessage(addedStates?: PlainObject) {
+  let message =
     'You have an invalid state initialization order. This typically occurs when `NgxsModule.forFeature`\n' +
     'or `provideStates` is called before `NgxsModule.forRoot` or `provideStore`.\n' +
-    'One example is when `NgxsRouterPluginModule.forRoot` is called before `NgxsModule.forRoot`.'
-  );
+    'One example is when `NgxsRouterPluginModule.forRoot` is called before `NgxsModule.forRoot`.';
+
+  if (addedStates) {
+    const stateNames = Object.keys(addedStates).map(stateName => `"${stateName}"`);
+
+    message +=
+      '\nFeature states added before the store initialization is complete: ' +
+      `${stateNames.join(', ')}.`;
+  }
+
+  return message;
 }
 
 export function throwSelectFactoryNotConnectedError(): never {
