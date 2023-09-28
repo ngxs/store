@@ -10,6 +10,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+- Fix: Log feature states added before store is initialized [#2067](https://github.com/ngxs/store/pull/2067)
 - Fix: Show error when state initialization order is invalid [#2066](https://github.com/ngxs/store/pull/2066), [#2067](https://github.com/ngxs/store/pull/2067)
 - Fix: Storage Plugin - Access local and session storages globals only in browser [#2034](https://github.com/ngxs/store/pull/2034)
 - Fix: Storage Plugin - Require only `getItem` and `setItem` on engines [#2036](https://github.com/ngxs/store/pull/2036)
