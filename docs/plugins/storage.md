@@ -304,3 +304,35 @@ In the migration strategy, we define:
 - `key`: The key for the item to migrate. If not specified, it takes the entire storage state.
 
 Note: Its important to specify the strategies in the order of which they should progress.
+
+### Feature States
+
+We can also add states at the feature level when invoking `provideStates`, such as within `Route` providers. This is useful when we want to avoid the root level, responsible for providing the store, from being aware of any feature states. If we do not specify any states to be persisted at the root level, we should specify an empty list:
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([], withNgxsStoragePlugin({ keys: [] }))]
+};
+```
+
+If `keys` is an empty list, it indicates that the plugin should not persist any state until it's explicitly added at the feature level.
+
+After registering the `AnimalsState` at the feature level, we also want to persist this state in storage:
+
+```ts
+import { provideStates } from '@ngxs/store';
+import { withStorageFeature } from '@ngxs/storage-plugin';
+
+export const routes: Routes = [
+  {
+    path: 'animals',
+    loadComponent: () => import('./animals'),
+    providers: [provideStates([AnimalsState], withStorageFeature([AnimalsState]))]
+  }
+];
+```
+
+Please note that at the root level, `keys` should not be set to `*` because `*` indicates persisting everything.
