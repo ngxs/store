@@ -43,26 +43,28 @@ describe('patch', () => {
   describe('when null provided for existing', () => {
     it('returns a new root with changed property set', () => {
       // Arrange
-      const original = { a: 1, b: 2, c: 3 };
+      const patchSpec = { a: 1, b: 2, c: 3 };
+      const existing = <any>null;
 
       // Act
-      const newValue = patch(original)(<any>null);
+      const newValue = patch(patchSpec)(existing);
 
       // Assert
-      expect(newValue).toEqual(original);
+      expect(newValue).toEqual(patchSpec);
     });
   });
 
   describe('when undefined provided for existing', () => {
     it('returns a new root with changed property set', () => {
       // Arrange
-      const original = { a: 1, b: 2, c: 3 };
+      const patchSpec = { a: 1, b: 2, c: 3 };
+      const existing = <any>undefined;
 
       // Act
-      const newValue = patch(original)(<any>undefined);
+      const newValue = patch(patchSpec)(existing);
 
       // Assert
-      expect(newValue).toEqual(original);
+      expect(newValue).toEqual(patchSpec);
     });
   });
 
