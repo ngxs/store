@@ -27,7 +27,11 @@ ng generate @ngxs/store:store --name NAME_OF_YOUR_STORE
 
 🪄 **This command will**:
 
-- Create a store with the given options
+- Generate a `{name}.actions.ts`
+- Generate a `{name}.state.spec.ts`
+- Generate a `{name}.state.ts`. The state file also includes an action handler for the generated action.
+
+> Note: The generated files will be placed in the selected `path`, or the root of your application if no `path` is selected
 
 ### Creating actions
 
