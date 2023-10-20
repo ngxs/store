@@ -23,25 +23,25 @@ ng add @ngxs/store --plugins DEVTOOLS,FORM --project angular-ngxs-project
 
 ### Plugins to optionally install using the schematics
 
-- DEVTOOLS
-- FORM
-- HMR
-- LOGGER
-- ROUTER
-- STORAGE
-- STORE
-- WEBSOCKET
+- Ngxs developer tools plugin
+- Ngxs form plugin
+- Ngxs HMR plugin
+- Ngxs logger plugin
+- Ngxs router plugin
+- Ngxs storage plugin
+- Ngxs websocket plugin
 
 You can find more information about plugins on the [plugins page](https://www.ngxs.io/plugins).
 
 🪄 **This command will**:
 
 - Update `package.json` dependencies with `@ngxs/store`
+- Update `package.json` dependencies with the selected plugins
 - Install dependencies by executing `npm install`
 
 If your project is standalone one:
 
-- Update the `providers` array of your selected project array with `provideStore()`
+- Update the `providers` array of your selected project with `provideStore([])`
 
 If your application is module based:
 
