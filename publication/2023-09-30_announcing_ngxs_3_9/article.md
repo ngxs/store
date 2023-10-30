@@ -74,7 +74,7 @@ To auto-configure NGXS to your application, all you have to do is to execute the
 ng add @ngxs/store
 ```
 
-Multiple projects in your workspace? No problem! You'll be prompted to select the project you want to add NGXS to.
+Does your workspace have multiple projects? No problem! You'll be prompted to select the project you want to add NGXS to.
 
 NGXS plugins: We couldn't resist adding [plugins](https://www.ngxs.io/plugins) to the schematics. Now you can choose which plugins you want to use, and we'll install the necessary packages and configure them for you automatically!
 
@@ -136,6 +136,28 @@ Let's see some examples:
 (Introduction, details and usage)
 
 ## Plugin Improvements
+
+**Router Plugin**
+
+The router plugin exposes some of its internal API implementations to allow library authors to experiment with potential extensions. However, keep in mind that these API implementations are not part of the official API, but rather an internals API. This means that they could be changed at any time in the future.
+
+The exposed tokens and function are:
+
+- `ɵNGXS_ROUTER_PLUGIN_OPTIONS`
+- `ɵUSER_OPTIONS`
+- `ɵcreateRouterPluginOptions`
+
+> _Please note the `barred O` symbol which denotes it's not part of the official API_
+
+You can import them using this path `@ngxs/router-plugin/internals` as seen below:
+
+```ts
+import {
+  ɵcreateRouterPluginOptions,
+  ɵNGXS_ROUTER_PLUGIN_OPTIONS,
+  ɵUSER_OPTIONS
+} from '@ngxs/router-plugin/internals';
+```
 
 ...
 
