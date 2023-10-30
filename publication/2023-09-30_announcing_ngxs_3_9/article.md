@@ -6,6 +6,7 @@ NGXS v3.9 is the result of months of hard work by the team, who have been dedica
 
 - 🎨 Standalone API
 - 🚀 Schematics
+- 🔌 Plugin Improvements
 
 ---
 
@@ -137,9 +138,11 @@ Let's see some examples:
 
 ## Plugin Improvements
 
-**Router Plugin**
+The plugins exposes some of its internal API implementations to allow library authors to experiment with potential extensions. However, keep in mind that these API implementations are not part of the official API, but rather an internals API. This means that they could be changed at any time in the future. Let's see some of their details:
 
-The router plugin exposes some of its internal API implementations to allow library authors to experiment with potential extensions. However, keep in mind that these API implementations are not part of the official API, but rather an internals API. This means that they could be changed at any time in the future.
+> _Please note the `barred O` symbol which denotes it's not part of the official API_
+
+**Router Plugin**
 
 The exposed tokens and function are:
 
@@ -147,17 +150,28 @@ The exposed tokens and function are:
 - `ɵUSER_OPTIONS`
 - `ɵcreateRouterPluginOptions`
 
-> _Please note the `barred O` symbol which denotes it's not part of the official API_
-
 You can import them using this path `@ngxs/router-plugin/internals` as seen below:
 
-```ts
-import {
-  ɵcreateRouterPluginOptions,
-  ɵNGXS_ROUTER_PLUGIN_OPTIONS,
-  ɵUSER_OPTIONS
-} from '@ngxs/router-plugin/internals';
-```
+---
+
+**Storage Plugin**
+
+The exposed tokens and function are:
+
+- `ɵDEFAULT_STATE_KEY`
+
+  The storage plugin's key [option](https://www.ngxs.io/plugins/storage#options) allows you to specify which state slices should be persisted in storage. If you don't provide any state names, the plugin will persist all states using the `@@STATE` key. You can now use the `ɵDEFAULT_STATE_KEY` token to provide an alternative to `@@STATE`.
+
+- `ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS`,
+- `ɵNGXS_STORAGE_PLUGIN_OPTIONS`,
+- `ɵextractStringKey`,
+- `ɵisKeyWithExplicitEngine`,
+- `ɵcreateFinalStoragePluginOptions`
+
+  As of today, SSR apps can use custom storage engine implementations instead of relying on `localStorage` or `sessionStorage`.
+  This new internal API gives you the flexibility to further customize your storage solution.
+
+You can import them using this path `@ngxs/storage-plugin/internals`.
 
 ...
 
