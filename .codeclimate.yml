@@ -14,6 +14,7 @@ exclude_paths:
   - 'assets/'
   - 'docs/'
   - 'packages/**/tests/'
+  - 'packages/store/schematics/src/utils/ng-utils/'
   - 'integrations/'
   - 'integration/'
   - 'tools/'
