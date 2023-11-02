@@ -1,0 +1,10 @@
+{
+  "name": "store-types",
+  "version": "0.0.0",
+  "scripts": {
+    "test:types": "tsd ./tests/*.d.ts"
+  },
+  "devDependencies": {
+    "tsd": "^0.30.4"
+  }
+}

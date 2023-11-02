@@ -11,9 +11,11 @@ export function getProjectMainFile(host: Tree, project?: string) {
   }
   const projectOptions = resolvedProject.architect['build'].options;
 
-  if (!projectOptions?.main) {
-    throw new SchematicsException(`Could not find the main file`);
+  if (projectOptions?.main) {
+    return projectOptions.main as string;
+  } else if (projectOptions?.browser) {
+    return projectOptions.browser as string;
   }
 
-  return projectOptions.main as string;
+  throw new SchematicsException('No `main` or `browser` files have been found.');
 }

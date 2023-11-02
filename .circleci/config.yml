@@ -137,22 +137,6 @@ jobs:
           name: Run integration tests for the SSR build application
           command: yarn test:ci:integration:ssr
 
-  integration_ng15_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      # https://github.com/CircleCI-Public/browser-tools-orb/issues/75
-      - browser-tools/install-browser-tools:
-          chrome-version: '116.0.5845.96'
-          replace-existing-chrome: true
-      - run:
-          name: Run integration tests for ng15 application
-          command: yarn integration:ng15
-      - persist_to_workspace:
-          root: ~/workspace
-          paths:
-            - app/integrations/hello-world-ng15/dist-integration
-
   integration_ng16_tests:
     <<: *job_defaults
     steps:

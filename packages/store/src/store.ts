@@ -1,5 +1,13 @@
 // tslint:disable:unified-signatures
-import { Inject, Injectable, Optional, Type } from '@angular/core';
+import {
+  CreateComputedOptions,
+  Inject,
+  Injectable,
+  Optional,
+  Signal,
+  Type,
+  computed
+} from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
 import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
@@ -91,6 +99,23 @@ export class Store {
   selectSnapshot(selector: any): any {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());
+  }
+
+  /**
+   * Select a signal from the state.
+   */
+  selectSignal<T>(
+    selector: (state: any, ...states: any[]) => T,
+    options?: CreateComputedOptions<T>
+  ): Signal<T>;
+  selectSignal<T = any>(
+    selector: string | Type<any>,
+    options?: CreateComputedOptions<T>
+  ): Signal<T>;
+  selectSignal<T>(selector: StateToken<T>, options?: CreateComputedOptions<T>): Signal<T>;
+  selectSignal<T>(selector: any, options?: CreateComputedOptions<T>): Signal<T> {
+    const selectorFn = this.getStoreBoundSelectorFn(selector);
+    return computed<T>(() => selectorFn(this._stateStream.state()), options);
   }
 
   /**

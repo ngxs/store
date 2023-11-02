@@ -1,6 +1,5 @@
-import { APP_ID } from '@angular/core';
+import { APP_ID, ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { ApplicationConfig } from '@angular/platform-browser';
 import { provideStore } from '@ngxs/store';
 import { withNgxsFormPlugin } from '@ngxs/form-plugin';
 import { withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
@@ -42,7 +41,7 @@ export const appConfig: ApplicationConfig = {
       [TodosState, TodoState],
       { developmentMode: !environment.production, selectorOptions: {} },
       withNgxsFormPlugin(),
-      withNgxsLoggerPlugin({ logger: console, collapsed: false, disabled: true }),
+      withNgxsLoggerPlugin({ logger: console, collapsed: false, disabled: false }),
       withNgxsReduxDevtoolsPlugin({ disabled: environment.production }),
       withNgxsRouterPlugin(),
       withNgxsStoragePlugin({ key: [TODOS_STORAGE_KEY] })

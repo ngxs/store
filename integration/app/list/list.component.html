@@ -1,8 +1,8 @@
 <div>
-  {{ list$ | async }},
-  {{ hello$ | async }}
+  {{ list() }},
+  {{ hello() }}
 </div>
 
-<div *ngIf="router$ | async as router">
+<div *ngIf="router() as router">
   animals were resolved {{ router.root!.firstChild!.firstChild!.data.list }}
 </div>

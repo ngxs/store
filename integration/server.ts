@@ -1,73 +1,49 @@
 import 'zone.js/node';
 
-import { readFile } from 'fs/promises';
-import { join } from 'path';
+import * as path from 'node:path';
+import * as url from 'node:url';
 import * as express from 'express';
-import { Provider } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
-import { renderApplication } from '@angular/platform-server';
-import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 
-import { APP_ID_VALUE, AppComponent, appServerConfig } from './main.server';
+import { CommonEngine } from '@angular/ssr';
 
-interface RenderOptions {
-  req: express.Request;
-  providers: Provider[];
-}
+import bootstrap from './main.server';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app() {
   const server = express();
-  const distFolder = join(process.cwd(), 'dist-integration');
-  let indexHtmlContent: string | null = null;
-
-  // TODO: use `ngExpressEngine({bootstrap})` in v16.
-  server.engine(
-    'html',
-    async (
-      path: string,
-      options: object,
-      callback: (error: Error | null, content: string) => void
-    ) => {
-      const { req, providers } = options as RenderOptions;
-
-      indexHtmlContent ||= await readFile(path, { encoding: 'utf-8' });
-
-      const html = await renderApplication(AppComponent, {
-        providers,
-        appId: APP_ID_VALUE,
-        document: indexHtmlContent,
-        url: `${req.baseUrl}${req.url}`
-      });
-
-      callback(null, html);
-    }
-  );
+  const serverDistFolder = path.dirname(url.fileURLToPath(import.meta.url));
+  const browserDistFolder = path.join(process.cwd(), 'dist-integration');
+  const indexHtml = path.join(serverDistFolder, 'index.server.html');
+  const commonEngine = new CommonEngine();
 
   server.set('view engine', 'html');
-  server.set('views', distFolder);
+  server.set('views', browserDistFolder);
 
   // Example Express Rest API endpoints
   // app.get('/api/**', (req, res) => { });
   // Serve static files from /browser
   server.get(
     '*.*',
-    express.static(distFolder, {
+    express.static(browserDistFolder, {
       maxAge: '1y'
     })
   );
 
   // All regular routes use the Universal engine
-  server.get('*', (req, res) => {
-    res.render('index', {
-      req,
-      providers: [
-        ...appServerConfig.providers,
-        { provide: APP_BASE_HREF, useValue: req.baseUrl },
-        { provide: REQUEST, useValue: req },
-        { provide: RESPONSE, useValue: res }
-      ]
-    });
+  server.get('*', (req, res, next) => {
+    const { protocol, originalUrl, baseUrl, headers } = req;
+
+    commonEngine
+      .render({
+        bootstrap,
+        documentFilePath: indexHtml,
+        url: `${protocol}://${headers.host}${originalUrl}`,
+        publicPath: browserDistFolder,
+        providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }]
+      })
+      .then(html => res.send(html))
+      .catch(next);
   });
 
   return server;
