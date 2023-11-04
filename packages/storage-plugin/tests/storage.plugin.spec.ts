@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 
 import { skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { NgxsModule, State, Store, Action, StateContext } from '@ngxs/store';
+import { ɵDEFAULT_STATE_KEY } from '@ngxs/storage-plugin/internals';
 
 import {
   NgxsStoragePluginModule,
@@ -11,7 +12,6 @@ import {
   STORAGE_ENGINE,
   NgxsStoragePluginOptions
 } from '../';
-import { DEFAULT_STATE_KEY } from '../src/internals';
 
 describe('NgxsStoragePlugin', () => {
   class Increment {
@@ -30,6 +30,7 @@ describe('NgxsStoragePlugin', () => {
     name: 'counter',
     defaults: { count: 0 }
   })
+  @Injectable()
   class CounterState {
     @Action(Increment)
     increment({ getState, setState }: StateContext<CounterStateModel>) {
@@ -50,11 +51,12 @@ describe('NgxsStoragePlugin', () => {
     name: 'lazyLoaded',
     defaults: { count: 0 }
   })
+  @Injectable()
   class LazyLoadedState {}
 
   afterEach(() => {
-    localStorage.removeItem(DEFAULT_STATE_KEY);
-    sessionStorage.removeItem(DEFAULT_STATE_KEY);
+    localStorage.removeItem(ɵDEFAULT_STATE_KEY);
+    sessionStorage.removeItem(ɵDEFAULT_STATE_KEY);
   });
 
   class CounterInfoStateModel {
@@ -65,11 +67,12 @@ describe('NgxsStoragePlugin', () => {
     name: 'counterInfo',
     defaults: { count: 0 }
   })
+  @Injectable()
   class CounterInfoState {}
 
   it('should get initial data from localstorage', () => {
     // Arrange
-    localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
+    localStorage.setItem(ɵDEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
 
     // Act
     TestBed.configureTestingModule({
@@ -85,7 +88,7 @@ describe('NgxsStoragePlugin', () => {
 
   it('should save data to localstorage', () => {
     // Arrange
-    localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
+    localStorage.setItem(ɵDEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
 
     // Act
     TestBed.configureTestingModule({
@@ -104,7 +107,7 @@ describe('NgxsStoragePlugin', () => {
 
     // Assert
     expect(state.count).toBe(105);
-    expect(localStorage.getItem(DEFAULT_STATE_KEY)).toBe(
+    expect(localStorage.getItem(ɵDEFAULT_STATE_KEY)).toBe(
       JSON.stringify({ counter: { count: 105 } })
     );
   });
@@ -112,7 +115,7 @@ describe('NgxsStoragePlugin', () => {
   describe('when blank values are returned from localstorage', () => {
     it('should use default data if null retrieved from localstorage', () => {
       // Arrange
-      localStorage.setItem(DEFAULT_STATE_KEY, <any>null);
+      localStorage.setItem(ɵDEFAULT_STATE_KEY, <any>null);
 
       @State<CounterStateModel>({
         name: 'counter',
@@ -120,6 +123,7 @@ describe('NgxsStoragePlugin', () => {
           count: 123
         }
       })
+      @Injectable()
       class TestState {}
 
       // Act
@@ -136,7 +140,7 @@ describe('NgxsStoragePlugin', () => {
 
     it('should use default data if undefined retrieved from localstorage', () => {
       // Arrange
-      localStorage.setItem(DEFAULT_STATE_KEY, <any>undefined);
+      localStorage.setItem(ɵDEFAULT_STATE_KEY, <any>undefined);
 
       @State<CounterStateModel>({
         name: 'counter',
@@ -144,6 +148,7 @@ describe('NgxsStoragePlugin', () => {
           count: 123
         }
       })
+      @Injectable()
       class TestState {}
 
       // Act
@@ -160,7 +165,7 @@ describe('NgxsStoragePlugin', () => {
 
     it(`should use default data if the string 'undefined' retrieved from localstorage`, () => {
       // Arrange
-      localStorage.setItem(DEFAULT_STATE_KEY, 'undefined');
+      localStorage.setItem(ɵDEFAULT_STATE_KEY, 'undefined');
 
       @State<CounterStateModel>({
         name: 'counter',
@@ -168,6 +173,7 @@ describe('NgxsStoragePlugin', () => {
           count: 123
         }
       })
+      @Injectable()
       class TestState {}
 
       // Act
@@ -186,7 +192,7 @@ describe('NgxsStoragePlugin', () => {
   it('should migrate global localstorage', () => {
     // Arrange
     const data = JSON.stringify({ counter: { count: 100, version: 1 } });
-    localStorage.setItem(DEFAULT_STATE_KEY, data);
+    localStorage.setItem(ɵDEFAULT_STATE_KEY, data);
 
     // Act
     TestBed.configureTestingModule({
@@ -216,7 +222,7 @@ describe('NgxsStoragePlugin', () => {
     store.selectSnapshot(CounterState);
 
     // Assert
-    expect(localStorage.getItem(DEFAULT_STATE_KEY)).toBe(
+    expect(localStorage.getItem(ɵDEFAULT_STATE_KEY)).toBe(
       JSON.stringify({ counter: { counts: 100, version: 2 } })
     );
   });
@@ -261,7 +267,7 @@ describe('NgxsStoragePlugin', () => {
 
   it('should correct get data from session storage', () => {
     // Arrange
-    sessionStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
+    sessionStorage.setItem(ɵDEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
 
     // Act
     TestBed.configureTestingModule({
@@ -281,7 +287,7 @@ describe('NgxsStoragePlugin', () => {
   });
 
   it('should save data to sessionStorage', () => {
-    sessionStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
+    sessionStorage.setItem(ɵDEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
 
     TestBed.configureTestingModule({
       imports: [
@@ -304,7 +310,7 @@ describe('NgxsStoragePlugin', () => {
 
     // Assert
     expect(state.count).toBe(105);
-    expect(sessionStorage.getItem(DEFAULT_STATE_KEY)).toBe(
+    expect(sessionStorage.getItem(ɵDEFAULT_STATE_KEY)).toBe(
       JSON.stringify({ counter: { count: 105 } })
     );
   });
@@ -313,7 +319,7 @@ describe('NgxsStoragePlugin', () => {
     // Arrange
     class CustomStorage implements StorageEngine {
       static Storage: any = {
-        [DEFAULT_STATE_KEY]: {
+        [ɵDEFAULT_STATE_KEY]: {
           counter: {
             count: 100
           }
@@ -374,12 +380,12 @@ describe('NgxsStoragePlugin', () => {
 
     // Assert
     expect(state.count).toBe(105);
-    expect(CustomStorage.Storage[DEFAULT_STATE_KEY]).toEqual({ counter: { count: 105 } });
+    expect(CustomStorage.Storage[ɵDEFAULT_STATE_KEY]).toEqual({ counter: { count: 105 } });
   });
 
   it('should merge unloaded data from feature with local storage', () => {
     // Arrange
-    localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
+    localStorage.setItem(ɵDEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
 
     // Act
     TestBed.configureTestingModule({
@@ -485,7 +491,7 @@ describe('NgxsStoragePlugin', () => {
   describe('Custom serialization', () => {
     it('should alter object before serialization.', () => {
       // Arrange
-      localStorage.setItem(DEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
+      localStorage.setItem(ɵDEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
 
       // Act
       TestBed.configureTestingModule({
@@ -511,7 +517,7 @@ describe('NgxsStoragePlugin', () => {
 
       // Assert
       expect(state.count).toBe(101);
-      expect(localStorage.getItem(DEFAULT_STATE_KEY)).toBe(
+      expect(localStorage.getItem(ɵDEFAULT_STATE_KEY)).toBe(
         JSON.stringify({ counter: { count: 202 } })
       );
     });
@@ -530,6 +536,7 @@ describe('NgxsStoragePlugin', () => {
               if (key === 'counterInfo') {
                 return new CounterInfoStateModel(obj.count);
               }
+              return obj;
             }
           })
         ]
@@ -567,7 +574,7 @@ describe('NgxsStoragePlugin', () => {
         const namespace = 'navbar_app';
         localStorage.setItem(
           // `navbar_app:@@STATE`.
-          `${namespace}:${DEFAULT_STATE_KEY}`,
+          `${namespace}:${ɵDEFAULT_STATE_KEY}`,
           JSON.stringify({ counter: { count: 100 } })
         );
         const { store } = testSetup({ namespace });

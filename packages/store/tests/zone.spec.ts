@@ -2,11 +2,16 @@ import { ApplicationRef, Component, Injectable, NgModule, NgZone } from '@angula
 import { TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import {
+  Action,
+  NgxsModule,
+  State,
+  StateContext,
+  Store,
+  NoopNgxsExecutionStrategy
+} from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { take } from 'rxjs/operators';
-
-import { Action, NgxsModule, State, StateContext, Store } from '../src/public_api';
-import { NoopNgxsExecutionStrategy } from '../src/execution/noop-ngxs-execution-strategy';
 
 describe('zone', () => {
   class Increment {
@@ -60,6 +65,7 @@ describe('zone', () => {
     let selectCalls = 0;
     let selectCallsInAngularZone = 0;
 
+    @Injectable()
     class MockApplicationRef extends ApplicationRef {
       public tick(): void {
         ticks++;

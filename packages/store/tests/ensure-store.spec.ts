@@ -5,13 +5,13 @@ import {
   getSelectorMetadata,
   Selector,
   NgxsModule,
-  SelectorOptions,
+  SelectorOptions
 } from '@ngxs/store';
+import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { SelectorMetaDataModel } from '../src/internal/internals';
 import { getRootSelectorFactory } from '../src/selectors/selector-utils';
-import { Injectable } from '@angular/core';
 
 describe('Ensure metadata', () => {
   it('should return undefined if not a state class', () => {
@@ -23,7 +23,7 @@ describe('Ensure metadata', () => {
   describe('Ensure store for plugins', () => {
     @State({
       name: 'myCounter',
-      defaults: 1,
+      defaults: 1
     })
     @Injectable()
     class MyCounterState {
@@ -40,7 +40,7 @@ describe('Ensure metadata', () => {
     @State({
       name: 'count',
       defaults: 0,
-      children: [MyCounterState],
+      children: [MyCounterState]
     })
     @Injectable()
     class CountState extends MyCounterState {
@@ -58,7 +58,7 @@ describe('Ensure metadata', () => {
 
     beforeAll(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([CountState, MyCounterState])],
+        imports: [NgxsModule.forRoot([CountState, MyCounterState])]
       });
     });
 
@@ -68,14 +68,14 @@ describe('Ensure metadata', () => {
         actions: {
           increment: [
             { fn: 'addOne', options: {}, type: 'increment' },
-            { fn: 'addTwo', options: {}, type: 'increment' },
+            { fn: 'addTwo', options: {}, type: 'increment' }
           ],
-          decrement: [{ fn: 'decrement', options: {}, type: 'decrement' }],
+          decrement: [{ fn: 'decrement', options: {}, type: 'decrement' }]
         },
         defaults: 0,
         path: null,
         makeRootSelector: expect.any(Function),
-        children: [MyCounterState],
+        children: [MyCounterState]
       });
     });
 
@@ -86,7 +86,7 @@ describe('Ensure metadata', () => {
         defaults: 1,
         path: null,
         makeRootSelector: expect.any(Function),
-        children: undefined,
+        children: undefined
       });
     });
 
@@ -141,38 +141,23 @@ describe('Ensure metadata', () => {
     });
 
     it('should get the selector meta data from the SuperCountState.canInheritSelectFn', () => {
-      let error: Error | null = null;
-
-      try {
-        @State({
-          name: 'superCount',
-          defaults: 0,
-        })
-        @Injectable()
-        class SuperCountState extends MyCounterState {
-          @Selector()
-          public static canInheritSelectFn(state: number): number {
-            return super.canInheritSelectFn(state) + 1;
-          }
+      @State({
+        name: 'superCount',
+        defaults: 0
+      })
+      @Injectable()
+      class SuperCountState extends MyCounterState {
+        @Selector()
+        static canInheritSelectFn(state: number): number {
+          return super.canInheritSelectFn(state) + 1;
         }
-
-        const metadata = <SelectorMetaDataModel>(
-          getSelectorMetadata(SuperCountState.canInheritSelectFn)
-        );
-
-        expect(metadata.containerClass).toEqual(SuperCountState);
-      } catch (e) {
-        error = e;
       }
 
-      // TODO(splincode): is normal for SuperCountState?
-      expect(flatString(error!.message)).toEqual(
-        'Cannot set property canInheritSelectFn of function MyCounterState() { } which has only a getter'
+      const metadata = <SelectorMetaDataModel>(
+        getSelectorMetadata(SuperCountState.canInheritSelectFn)
       );
-    });
 
-    function flatString(str: string): string {
-      return str.toString().replace(/\n/g, '').replace(/\s\s+/g, ' ');
-    }
+      expect(metadata.containerClass).toEqual(SuperCountState);
+    });
   });
 });

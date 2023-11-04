@@ -23,12 +23,12 @@ const TODOS_TOKEN: StateToken<TodoStateModel> = new StateToken('todos');
 @Injectable()
 export class TodosState {
   @Selector()
-  public static pizza(state: TodoStateModel): Pizza {
+  static getPizza(state: TodoStateModel): Pizza {
     return state.pizza;
   }
 
-  @Selector([ListState.hello])
-  public static injected(state: TodoStateModel, hello: string): string {
+  @Selector([ListState.getHello])
+  static getInjected(state: TodoStateModel, hello: string): string {
     if (state.todo == null || hello == null) {
       return 'container injection failed or is disabled';
     }
@@ -36,7 +36,7 @@ export class TodosState {
   }
 
   @Action(SetPrefix)
-  public setPrefix({ setState }: StateContext<TodoStateModel>) {
+  setPrefix({ setState }: StateContext<TodoStateModel>) {
     setState(
       patch({
         pizza: patch({
@@ -49,7 +49,7 @@ export class TodosState {
   }
 
   @Action(LoadData)
-  public loadData({ patchState }: StateContext<TodoStateModel>) {
+  loadData({ patchState }: StateContext<TodoStateModel>) {
     const data = { toppings: 'pineapple', crust: 'medium', extras: [false, false, true] };
     return of(data).pipe(tap(values => patchState({ pizza: { model: { ...values } } })));
   }

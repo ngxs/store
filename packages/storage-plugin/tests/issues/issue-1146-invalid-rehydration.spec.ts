@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { Component, NgModule, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { Router, RouterModule } from '@angular/router';
@@ -8,9 +8,9 @@ import { Observable } from 'rxjs';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 import { NgxsModule, NgxsOnInit, State, StateContext, Store } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
+import { ɵDEFAULT_STATE_KEY } from '@ngxs/storage-plugin/internals';
 
 import { NgxsStoragePluginModule } from '../../';
-import { DEFAULT_STATE_KEY } from '../../src/internals';
 
 describe('Invalid state re-hydration (https://github.com/ngxs/store/issues/1146)', () => {
   afterEach(() => localStorage.clear());
@@ -18,13 +18,14 @@ describe('Invalid state re-hydration (https://github.com/ngxs/store/issues/1146)
   beforeEach(() => {
     // Caretaker note: it somehow sets `/@angular-cli-builders` as a default URL, thus when running `initialNavigation()`
     // it errors that there's no route definition for the `/@angular-cli-builders`.
-    spyOn(Router.prototype, 'initialNavigation').and.returnValue(undefined);
+    jest.spyOn(Router.prototype, 'initialNavigation').mockReturnValue(undefined);
   });
 
   @State({
     name: 'counter',
     defaults: 0
   })
+  @Injectable()
   class CounterState implements NgxsOnInit {
     ngxsOnInit(ctx: StateContext<number>) {
       ctx.setState(999);
@@ -62,7 +63,7 @@ describe('Invalid state re-hydration (https://github.com/ngxs/store/issues/1146)
     freshPlatform(async () => {
       // Arrange & act
       localStorage.setItem(
-        DEFAULT_STATE_KEY,
+        ɵDEFAULT_STATE_KEY,
         JSON.stringify({
           counter: -1,
           router: {

@@ -1,6 +1,14 @@
 import { InjectionToken } from '@angular/core';
 
-export const NGXS_WEBSOCKET_OPTIONS = new InjectionToken('NGXS_WEBSOCKET_OPTIONS');
+declare const ngDevMode: boolean;
+
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+
+export const NGXS_WEBSOCKET_OPTIONS = new InjectionToken<NgxsWebsocketPluginOptions>(
+  NG_DEV_MODE ? 'NGXS_WEBSOCKET_OPTIONS' : ''
+);
+
+export const USER_OPTIONS = new InjectionToken(NG_DEV_MODE ? 'USER_OPTIONS' : '');
 
 export interface NgxsWebsocketPluginOptions {
   /**
@@ -52,18 +60,12 @@ export interface NgxsWebsocketPluginOptions {
   deserializer?: (e: MessageEvent) => any;
 }
 
-export function noop(..._args: any[]) {
-  return function() {};
-}
-
 /**
  * Action to connect to the websocket. Optionally pass a URL.
  */
 export class ConnectWebSocket {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[WebSocket] Connect';
-  }
+  static readonly type = '[WebSocket] Connect';
+
   constructor(public payload?: NgxsWebsocketPluginOptions) {}
 }
 
@@ -71,10 +73,8 @@ export class ConnectWebSocket {
  * Action triggered when a error ocurrs
  */
 export class WebsocketMessageError {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[WebSocket] Message Error';
-  }
+  static readonly type = '[WebSocket] Message Error';
+
   constructor(public payload: any) {}
 }
 
@@ -82,39 +82,29 @@ export class WebsocketMessageError {
  * Action to disconnect the websocket.
  */
 export class DisconnectWebSocket {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[WebSocket] Disconnect';
-  }
+  static readonly type = '[WebSocket] Disconnect';
 }
 
 /**
  * Action triggered when websocket is connected
  */
 export class WebSocketConnected {
-  static get type() {
-    return '[WebSocket] Connected';
-  }
+  static readonly type = '[WebSocket] Connected';
 }
 
 /**
  * Action triggered when websocket is disconnected
  */
 export class WebSocketDisconnected {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[WebSocket] Disconnected';
-  }
+  static readonly type = '[WebSocket] Disconnected';
 }
 
 /**
  * Action to send to the server.
  */
 export class SendWebSocketMessage {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[WebSocket] Send Message';
-  }
+  static readonly type = '[WebSocket] Send Message';
+
   constructor(public payload: any) {}
 }
 
@@ -122,10 +112,7 @@ export class SendWebSocketMessage {
  * Action dispatched when the user tries to connect if the connection already exists.
  */
 export class WebSocketConnectionUpdated {
-  static get type() {
-    // NOTE: Not necessary to declare the type in this way in your code. See https://github.com/ngxs/store/pull/644#issuecomment-436003138
-    return '[WebSocket] Connection Updated';
-  }
+  static readonly type = '[WebSocket] Connection Updated';
 }
 
 /**

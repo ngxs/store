@@ -137,9 +137,9 @@ You can even combine state classes and strings:
 export class AppModule {}
 ```
 
-This is very handy to avoid persisting runtime-only states that shouldn't be saved to any storage.
+This is very useful for avoiding the persistence of runtime-only states that should not be saved to any storage.
 
-This is also possible to provide storage engines per individual key. Suppose we want to persist `NovelsState` into the local storage and `DetectivesState` into the session storage. The `key` signature will look as follows:
+It is also possible to provide storage engines for individual keys. For example, if we want to persist `NovelsState` in the local storage and `DetectivesState` in the session storage, the signature for the key will appear as follows:
 
 ```ts
 import { LOCAL_STORAGE_ENGINE, SESSION_STORAGE_ENGINE } from '@ngxs/storage-plugin';
@@ -163,7 +163,7 @@ import { LOCAL_STORAGE_ENGINE, SESSION_STORAGE_ENGINE } from '@ngxs/storage-plug
 export class AppModule {}
 ```
 
-`LOCAL_STORAGE_ENGINE` and `SESSION_STORAGE_ENGINE` are injection tokens that resolve to `localStorage` and `sessionStorage`. They shouldn't be used in apps with server-side rendering because it will throw an exception that those symbols are not defined on the global scope. Instead, we should provide a custom storage engine. The `engine` property may also refer to classes that implement the `StorageEngine` interface:
+`LOCAL_STORAGE_ENGINE` and `SESSION_STORAGE_ENGINE` are injection tokens that resolve to `localStorage` and `sessionStorage`, respectively. These tokens should not be used in apps with server-side rendering as it will throw an exception stating that these symbols are not defined in the global scope. Instead, it is recommended to provide a custom storage engine. The `engine` property can also refer to classes that implement the `StorageEngine` interface:
 
 ```ts
 import { StorageEngine } from '@ngxs/storage-plugin';
@@ -205,29 +205,18 @@ export class AppModule {}
 
 ### Custom Storage Engine
 
-You can add your own storage engine by implementing the `StorageEngine` interface.
+You can add your own storage engine by implementing the `StorageEngine` interface:
 
 ```ts
 import { NgxsStoragePluginModule, StorageEngine, STORAGE_ENGINE } from '@ngxs/storage-plugin';
 
+@Injectable()
 export class MyStorageEngine implements StorageEngine {
-  get length(): number {
-    // Your logic here
-  }
-
   getItem(key: string): any {
     // Your logic here
   }
 
-  setItem(key: string, val: any): void {
-    // Your logic here
-  }
-
-  removeItem(key: string): void {
-    // Your logic here
-  }
-
-  clear(): void {
+  setItem(key: string, value: any): void {
     // Your logic here
   }
 }
@@ -248,8 +237,8 @@ export class MyModule {}
 
 You can define your own logic before or after the state get serialized or deserialized.
 
-- beforeSerialize: Use this option to alter the state before it gets serialized.
-- afterSerialize: Use this option to alter the state after it gets deserialized. For instance, you can use it to instantiate a concrete class.
+- `beforeSerialize`: Use this option to alter the state before it gets serialized.
+- `afterSerialize`: Use this option to alter the state after it gets deserialized. For instance, you can use it to instantiate a concrete class.
 
 ```ts
 @NgModule({

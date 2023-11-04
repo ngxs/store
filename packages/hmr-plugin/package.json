@@ -1,22 +1,9 @@
 {
-  "$schema": "../../node_modules/ng-packagr/package.schema.json",
   "name": "@ngxs/hmr-plugin",
   "version": "0.0.0",
   "license": "MIT",
   "sideEffects": true,
   "peerDependencies": {
-    "@angular/core": ">=6.1.0 <16.0.0"
-  },
-  "ngPackage": {
-    "lib": {
-      "flatModuleFile": "ngxs-hmr-plugin",
-      "entryFile": "index.ts",
-      "umdModuleIds": {
-        "@ngxs/store/operators": "ngxs-store-operators",
-        "@ngxs/store/internals": "ngxs-store-internals",
-        "@ngxs/store": "ngxs-store"
-      }
-    },
-    "dest": "../../@ngxs/hmr-plugin"
+    "@angular/core": ">=12.0.0 <17.0.0"
   }
 }

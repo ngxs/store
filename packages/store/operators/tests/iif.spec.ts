@@ -1,5 +1,4 @@
-import { iif } from '../src/iif';
-import { patch } from '../src/patch';
+import { iif, patch } from '@ngxs/store/operators';
 
 describe('iif', () => {
   describe('when null condition provided', () => {

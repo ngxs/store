@@ -1,4 +1,4 @@
-import { Component, NgModule, ApplicationRef } from '@angular/core';
+import { Component, NgModule, ApplicationRef, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { take } from 'rxjs/operators';
@@ -24,6 +24,7 @@ describe('Actions stream causing ticks', () => {
     name: 'countries',
     defaults: []
   })
+  @Injectable()
   class CountriesState {
     @Action(SetCountries)
     async setCountries(ctx: StateContext<string[]>, action: SetCountries) {

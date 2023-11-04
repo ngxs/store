@@ -4,6 +4,35 @@ The store is a global state manager that dispatches actions your state
 containers listen to and provides a way to select data slices out from
 the global state.
 
+## Installing with schematics
+
+```bash
+ng generate @ngxs/store:store
+```
+
+Note: Running this command will prompt you to create a "Store". The options available for the "Store" are listed in the table below.
+
+You have the option to enter the options yourself
+
+```bash
+ng generate @ngxs/store:store --name NAME_OF_YOUR_STORE
+```
+
+| Option | Description                                            | Required |
+| :----- | :----------------------------------------------------- | :------: |
+| --name | The name of the store                                  |   Yes    |
+| --path | The path to create the store                           |    No    |
+| --spec | Flag to indicate if a unit test file should be created |    No    |
+| --flat | Flag to indicate if a dir is created                   |    No    |
+
+🪄 **This command will**:
+
+- Generate a `{name}.actions.ts`
+- Generate a `{name}.state.spec.ts`
+- Generate a `{name}.state.ts`. The state file also includes an action handler for the generated action.
+
+> Note: The generated files will be placed in the selected `path`, or the root of your application if no `path` is selected
+
 ### Creating actions
 
 An action example in `animal.actions.ts`.

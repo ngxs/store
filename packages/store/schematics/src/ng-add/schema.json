@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsNgxsNgAdd",
+  "title": "Ngxs NgAdd Options Schema",
+  "type": "object",
+  "properties": {
+    "skipInstall": {
+      "type": "boolean",
+      "description": "The flag for skipping packages installation.",
+      "default": false,
+      "x-prompt": "Do you want to skip packages installation?"
+    },
+    "plugins": {
+      "type": "array",
+      "description": "Additional plugins to be added to the workspace.",
+      "minItems": 0,
+      "maxItems": 7,
+      "items": {
+        "type": "string",
+        "enum": [
+          "@ngxs/devtools-plugin",
+          "@ngxs/form-plugin",
+          "@ngxs/hmr-plugin",
+          "@ngxs/logger-plugin",
+          "@ngxs/router-plugin",
+          "@ngxs/storage-plugin",
+          "@ngxs/websocket-plugin"
+        ]
+      },
+      "default": [],
+      "x-prompt": {
+        "message": "Choose any other @ngxs plugins you would like to add to the workspace.",
+        "type": "list",
+        "items": [
+          {
+            "value": "@ngxs/devtools-plugin",
+            "label": "Ngxs developer tools plugin"
+          },
+          {
+            "value": "@ngxs/form-plugin",
+            "label": "Ngxs form plugin"
+          },
+          {
+            "value": "@ngxs/hmr-plugin",
+            "label": "Ngxs HMR plugin"
+          },
+          {
+            "value": "@ngxs/logger-plugin",
+            "label": "Ngxs logger plugin"
+          },
+          {
+            "value": "@ngxs/router-plugin",
+            "label": "Ngxs router plugin"
+          },
+          {
+            "value": "@ngxs/storage-plugin",
+            "label": "Ngxs storage plugin"
+          },
+          {
+            "value": "@ngxs/websocket-plugin",
+            "label": "Ngxs websocket plugin"
+          }
+        ]
+      }
+    },
+    "project": {
+      "type": "string",
+      "description": "The name of the project."
+    }
+  },
+  "required": []
+}

@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { NgxsBootstrapper } from '@ngxs/store/internals';
-import { EMPTY, Subject } from 'rxjs';
+import { EMPTY, ReplaySubject } from 'rxjs';
 import {
   catchError,
   filter,
@@ -14,14 +14,20 @@ import {
 import { Store } from '../store';
 import { getValue } from '../utils/utils';
 import { InternalErrorReporter } from './error-handler';
+import { InitState, UpdateState } from '../actions/actions';
 import { StateContextFactory } from './state-context-factory';
 import { InternalStateOperations } from './state-operations';
 import { MappedStore, StatesAndDefaults } from './internals';
 import { NgxsLifeCycle, NgxsSimpleChange, StateContext } from '../symbols';
+import { getInvalidInitializationOrderMessage } from '../configs/messages.config';
 
-@Injectable()
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+
+@Injectable({ providedIn: 'root' })
 export class LifecycleStateManager implements OnDestroy {
-  private readonly _destroy$ = new Subject<void>();
+  private readonly _destroy$ = new ReplaySubject<void>(1);
+
+  private _initStateHasBeenDispatched?: boolean;
 
   constructor(
     private _store: Store,
@@ -35,7 +41,26 @@ export class LifecycleStateManager implements OnDestroy {
     this._destroy$.next();
   }
 
-  ngxsBootstrap<T>(action: T, results: StatesAndDefaults | undefined): void {
+  ngxsBootstrap(
+    action: InitState | UpdateState,
+    results: StatesAndDefaults | undefined
+  ): void {
+    if (NG_DEV_MODE) {
+      if (action instanceof InitState) {
+        this._initStateHasBeenDispatched = true;
+      } else if (
+        // This is a dev mode-only check that ensures the correct order of
+        // state initialization. The `NgxsModule.forRoot` or `provideStore` should
+        // always come first, followed by `forFeature` and `provideStates`. If the
+        // `UpdateState` is dispatched before the `InitState` is dispatched, it indicates
+        // that modules or providers are in an invalid order.
+        action instanceof UpdateState &&
+        !this._initStateHasBeenDispatched
+      ) {
+        console.error(getInvalidInitializationOrderMessage(action.addedStates));
+      }
+    }
+
     this._internalStateOperations
       .getRootStateOperations()
       .dispatch(action)

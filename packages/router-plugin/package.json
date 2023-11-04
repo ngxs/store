@@ -1,24 +1,12 @@
 {
-  "$schema": "../../node_modules/ng-packagr/package.schema.json",
   "name": "@ngxs/router-plugin",
   "description": "router plugin for @ngxs/store",
   "version": "0.0.0",
-  "sideEffects": true,
+  "sideEffects": false,
   "peerDependencies": {
     "@ngxs/store": "^0.0.0",
-    "@angular/core": ">=6.1.0 <16.0.0",
-    "@angular/router": ">=6.1.0 <16.0.0",
+    "@angular/core": ">=12.0.0 <17.0.0",
+    "@angular/router": ">=12.0.0 <17.0.0",
     "rxjs": ">=6.5.5"
-  },
-  "ngPackage": {
-    "lib": {
-      "flatModuleFile": "ngxs-router-plugin",
-      "entryFile": "index.ts",
-      "umdModuleIds": {
-        "@ngxs/store": "ngxs-store",
-        "@ngxs/store/internals": "ngxs-store-internals"
-      }
-    },
-    "dest": "../../@ngxs/router-plugin"
   }
 }

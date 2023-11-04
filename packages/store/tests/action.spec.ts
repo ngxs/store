@@ -1,21 +1,23 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Observable, of, Subject, throwError } from 'rxjs';
-import { delay, map, tap } from 'rxjs/operators';
-import { Actions } from '../src/actions-stream';
-import { Action } from '../src/decorators/action';
-import { State } from '../src/decorators/state';
-import { NgxsModule } from '../src/module';
 import {
+  Actions,
+  Action,
+  State,
+  NgxsModule,
+  Store,
+  StateContext,
   ofAction,
   ofActionCanceled,
   ofActionCompleted,
   ofActionDispatched,
   ofActionErrored,
   ofActionSuccessful
-} from '../src/operators/of-action';
-import { Store } from '../src/store';
-import { META_KEY, StateContext } from '../src/symbols';
+} from '@ngxs/store';
+import { ɵMETA_KEY } from '@ngxs/store/internals';
+import { Observable, of, Subject, throwError } from 'rxjs';
+import { delay, map, tap } from 'rxjs/operators';
+
 import { NoopErrorHandler } from './helpers/utils';
 
 describe('Action', () => {
@@ -79,7 +81,7 @@ describe('Action', () => {
       // Arrange
       setup();
       // Act
-      const meta = (<any>BarStore)[META_KEY];
+      const meta = (<any>BarStore)[ɵMETA_KEY];
       // Assert
       expect(meta.actions[Action1.type]).toBeDefined();
       expect(meta.actions[Action2.type]).toBeDefined();
@@ -420,14 +422,8 @@ describe('Action', () => {
     describe('Promise that returns an observable', () => {
       it('completes when observable is resolved', fakeAsync(() => {
         // Arrange
-        const {
-          store,
-          actions,
-          promiseResolveFn,
-          completeObservableFn,
-          recorder,
-          record
-        } = setup();
+        const { store, actions, promiseResolveFn, completeObservableFn, recorder, record } =
+          setup();
 
         actions.pipe(ofActionCompleted(ObservableAction)).subscribe(() => {
           record('ObservableAction [Completed]');
@@ -477,14 +473,8 @@ describe('Action', () => {
     describe('Promise that returns a promise', () => {
       it('completes when inner promise is resolved', fakeAsync(() => {
         // Arrange
-        const {
-          store,
-          actions,
-          promiseResolveFn,
-          completeObservableFn,
-          recorder,
-          record
-        } = setup();
+        const { store, actions, promiseResolveFn, completeObservableFn, recorder, record } =
+          setup();
 
         actions.pipe(ofActionCompleted(ObservableAction)).subscribe(() => {
           record('ObservableAction [Completed]');
@@ -687,7 +677,7 @@ describe('Action', () => {
     }
 
     function recordStream<TValue>(record: (phase: string, value?: TValue) => void) {
-      return function(source: Observable<TValue>): Observable<TValue> {
+      return function (source: Observable<TValue>): Observable<TValue> {
         return new Observable(subscriber => {
           record('subscribe');
           const subscription = source.subscribe({

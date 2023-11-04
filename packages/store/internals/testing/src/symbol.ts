@@ -1,10 +1,10 @@
 import { NgxsModuleOptions, Store } from '@ngxs/store';
 import { ModuleWithProviders } from '@angular/core';
 import { TestBedStatic } from '@angular/core/testing';
-import { StateClass } from '@ngxs/store/internals';
+import { ɵStateClass } from '@ngxs/store/internals';
 
 export interface NgxsOptionsTesting {
-  states?: StateClass[];
+  states?: ɵStateClass[];
   ngxsOptions?: NgxsModuleOptions;
   imports?: ModuleWithProviders<any>[];
   before?: () => void;

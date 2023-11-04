@@ -1,0 +1,25 @@
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "cacheableOperations": ["build", "build-package", "test", "lint"],
+        "accessToken": "MWFlODQ3YjEtZGIzOC00OTJmLWE1NTYtMDcyZmNhYjU0NmU4fHJlYWQtd3JpdGU=",
+        "parallel": 1
+      }
+    }
+  },
+  "defaultBase": "master",
+  "targetDefaults": {
+    "test": {
+      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
+    },
+    "build": {
+      "dependsOn": ["^build"]
+    }
+  },
+  "workspaceLayout": {
+    "libsDir": "packages",
+    "appsDir": "packages"
+  }
+}

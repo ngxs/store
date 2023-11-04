@@ -10,7 +10,23 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-- ...
+- Fix: Log feature states added before store is initialized [#2067](https://github.com/ngxs/store/pull/2067)
+- Fix: Show error when state initialization order is invalid [#2066](https://github.com/ngxs/store/pull/2066), [#2067](https://github.com/ngxs/store/pull/2067)
+- Fix: Storage Plugin - Access local and session storages globals only in browser [#2034](https://github.com/ngxs/store/pull/2034)
+- Fix: Storage Plugin - Require only `getItem` and `setItem` on engines [#2036](https://github.com/ngxs/store/pull/2036)
+- Fix: Router Plugin - Expose `NGXS_ROUTER_PLUGIN_OPTIONS` privately [#2037](https://github.com/ngxs/store/pull/2037)
+- Fix: Devtools Plugin - Do not re-enter Angular zone when resetting state [#2038](https://github.com/ngxs/store/pull/2038)
+- Performance: Tree-shake selectors validation errors [#2020](https://github.com/ngxs/store/pull/2020)
+- Refactor: Replace `get type()` with `type =` in actions [#2035](https://github.com/ngxs/store/pull/2035)
+- Refactor: WebSocket Plugin - Get rid off `rxjs/webSocket` and use `WebSocket` directly [#2033](https://github.com/ngxs/store/pull/2033)
+
+# 3.8.1 2023-05-16
+
+- Fix: Check if state is injectable in JIT [#1988](https://github.com/ngxs/store/pull/1988)
+- Fix: State stream should always return latest value even if update is queued up [#1995](https://github.com/ngxs/store/pull/1995)
+- Fix: Ensure `StateFactory` does not connect actions multiple times [#2010](https://github.com/ngxs/store/pull/2010)
+- Build: Add Angular 16 support [#2008](https://github.com/ngxs/store/pull/2008)
+- Refactor: Set singletons as "providedIn: root" [#2015](https://github.com/ngxs/store/pull/2015)
 
 # 3.8.0 2023-03-29
 

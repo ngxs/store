@@ -1,6 +1,6 @@
 # Action Handlers
 
-Before reading this article - we advise you to begin to get acquainted with the [actions life cycle](./actions-life-cycle.md).
+Before reading this article, we advise you to become acquainted with the [actions life cycle](./actions-life-cycle.md).
 
 Event sourcing involves modeling the state changes made by applications as an immutable sequence or “log” of events.
 Instead of focusing on current state, you focus on the changes that have occurred over time. It is the practice of
@@ -58,31 +58,41 @@ export class RouteHandler {
 }
 ```
 
-Remember you need to make sure to inject the `RouteHandler` somewhere in your application for DI to hook things up. If
-you want it to happen on application startup, Angular provides a method for doing this:
+Remember to ensure that you inject the `RouteHandler` somewhere in your application for DI to set things up. If you want this to occur during application startup, Angular provides a method to do so:
 
 ```ts
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-
-// Noop handler for factory function
-export function noop() {
-  return function () {};
-}
 
 @NgModule({
   providers: [
     {
       provide: APP_INITIALIZER,
-      useFactory: noop,
-      deps: [RouteHandler],
-      multi: true
+      multi: true,
+      useFactory: () => () => {},
+      deps: [RouteHandler]
     }
   ]
 })
 export class AppModule {}
 ```
 
-Action handlers can be used in components too. Given the cart deletion example, we might construct something like:
+This can also be accomplished using the new `ENVIRONMENT_INITIALIZER` token introduced in Angular 15. You will need to update the application configuration to provide it:
+
+```ts
+import { ApplicationConfig, ENVIRONMENT_INITIALIZER, inject } from '@angular/core';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    {
+      provide: ENVIRONMENT_INITIALIZER,
+      multi: true,
+      useValue: () => inject(RouteHandler)
+    }
+  ]
+};
+```
+
+Action handlers can also be utilized in components. For example, considering the cart deletion scenario, we could use the following code:
 
 ```ts
 @Component({ ... })
@@ -95,12 +105,12 @@ export class CartComponent {
 }
 ```
 
-Remember to unsubscribe from an action handler with something like this:
+Also, remember to unsubscribe from the actions stream at the end:
 
 ```ts
 @Component({ ... })
 export class CartComponent implements OnInit, OnDestroy {
-  private ngUnsubscribe = new Subject();
+  private destroy$ = new ReplaySubject(1);
 
   constructor(private actions$: Actions) {}
 
@@ -108,14 +118,13 @@ export class CartComponent implements OnInit, OnDestroy {
     this.actions$
       .pipe(
         ofActionSuccessful(CartDelete),
-        takeUntil(this.ngUnsubscribe)
+        takeUntil(this.destroy$)
       )
       .subscribe(() => alert('Item deleted'));
   }
 
   ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
+    this.destroy$.next();
   }
 }
 ```

@@ -15,12 +15,15 @@ type MappedResult<TSelectorMap> = {
 export function createModelSelector<T extends SelectorMap>(selectorMap: T): ModelSelector<T> {
   const selectorKeys = Object.keys(selectorMap);
   const selectors = Object.values(selectorMap);
-  ensureValidSelectorMap<T>({
-    prefix: '[createModelSelector]',
-    selectorMap,
-    selectorKeys,
-    selectors,
-  });
+
+  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    ensureValidSelectorMap<T>({
+      prefix: '[createModelSelector]',
+      selectorMap,
+      selectorKeys,
+      selectors
+    });
+  }
 
   return createSelector(selectors, (...args) => {
     return selectorKeys.reduce((obj, key, index) => {
@@ -34,7 +37,7 @@ function ensureValidSelectorMap<T extends SelectorMap>({
   prefix,
   selectorMap,
   selectorKeys,
-  selectors,
+  selectors
 }: {
   prefix: string;
   selectorMap: T;
@@ -47,7 +50,7 @@ function ensureValidSelectorMap<T extends SelectorMap>({
   selectors.forEach((selector, index) =>
     ensureValidSelector(selector, {
       prefix,
-      noun: `selector for the '${selectorKeys[index]}' property`,
+      noun: `selector for the '${selectorKeys[index]}' property`
     })
   );
 }

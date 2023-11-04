@@ -6,8 +6,8 @@ import {
   Store,
   createModelSelector,
   createSelector,
-  createPropertySelectors,
-} from '../../src/public_api';
+  createPropertySelectors
+} from '@ngxs/store';
 
 describe('createModelSelector', () => {
   interface MockStateModel {
@@ -21,15 +21,15 @@ describe('createModelSelector', () => {
     defaults: {
       property1: '',
       property2: [],
-      property3: { hello: 'world' },
-    },
+      property3: { hello: 'world' }
+    }
   })
   @Injectable()
   class MockState {}
 
   function setupFixture() {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MockState])],
+      imports: [NgxsModule.forRoot([MockState])]
     });
     const store: Store = TestBed.inject(Store);
     const setState = (newState: MockStateModel) => store.reset({ mockstate: newState });
@@ -114,7 +114,7 @@ describe('createModelSelector', () => {
       try {
         createModelSelector({
           prop: null as unknown as typeof stateSelector,
-          everything: stateSelector,
+          everything: stateSelector
         });
       } catch (err) {
         error = err as Error;
@@ -134,7 +134,7 @@ describe('createModelSelector', () => {
       try {
         createModelSelector({
           everything: stateSelector,
-          test: undefined as unknown as typeof stateSelector,
+          test: undefined as unknown as typeof stateSelector
         });
       } catch (err) {
         error = err as Error;
@@ -155,7 +155,7 @@ describe('createModelSelector', () => {
       try {
         createModelSelector({
           everything: stateSelector,
-          test: NotAState as unknown as typeof stateSelector,
+          test: NotAState as unknown as typeof stateSelector
         });
       } catch (err) {
         error = err as Error;
@@ -176,7 +176,7 @@ describe('createModelSelector', () => {
       try {
         createModelSelector({
           everything: stateSelector,
-          test: NotASelector as unknown as typeof stateSelector,
+          test: NotASelector as unknown as typeof stateSelector
         });
       } catch (err) {
         error = err as Error;
@@ -199,14 +199,14 @@ describe('createModelSelector', () => {
     const modelSelector = createModelSelector({
       foo: props.property2,
       bar: props.property1,
-      hello: prop3.hello,
+      hello: prop3.hello
     });
     // Assert
     expect(modelSelector).toBeDefined();
     expect(store.selectSnapshot(modelSelector)).toStrictEqual({
       foo: [1, 3, 5],
       bar: 'Tada',
-      hello: 'there',
+      hello: 'there'
     });
   });
 
@@ -221,7 +221,7 @@ describe('createModelSelector', () => {
       const modelSelector = createModelSelector({
         foo: props.property2,
         bar: props.property1,
-        hello: prop3.hello,
+        hello: prop3.hello
       });
       // Assert
       expect(modelSelector).toBeDefined();
@@ -247,7 +247,7 @@ describe('createModelSelector', () => {
       // Act
       const modelSelector = createModelSelector({
         bar: props.property1,
-        hello: prop3.hello,
+        hello: prop3.hello
       });
       // Assert
       expect(modelSelector).toBeDefined();

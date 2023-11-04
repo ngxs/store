@@ -7,7 +7,7 @@
 # - ./.github/actions/download-integration-test-artifacts
 
 name: download-integration-test-artifact
-description: Downloads all integration test artifacts with names such as 'hello-world-ng12-ivy'.
+description: Downloads all integration test artifacts with names such as 'hello-world-ng15'.
 
 inputs:
   path:
@@ -18,20 +18,8 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Download hello-world-ng12-ivy artifacts
+    - name: Download hello-world-ng15 artifacts
       uses: actions/download-artifact@v3
       with:
-        name: hello-world-ng12-ivy
-        path: ${{ inputs.path }}
-
-    - name: Download hello-world-ng13-ivy artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: hello-world-ng13-ivy
-        path: ${{ inputs.path }}
-
-    - name: Download hello-world-ng14-ivy artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: hello-world-ng14-ivy
+        name: hello-world-ng15
         path: ${{ inputs.path }}
