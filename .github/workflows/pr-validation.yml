@@ -85,6 +85,7 @@ jobs:
         script:
           - 'integration:ng15'
           - 'integration:ng16'
+          - 'integration:ng17'
           - 'test:types'
 
     steps:
