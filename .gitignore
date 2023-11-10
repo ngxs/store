@@ -38,6 +38,8 @@ dist-integration
 !.vscode/extensions.json
 
 # misc
+.yarn
+/.angular/cache
 /.sass-cache
 /connect.lock
 /coverage
