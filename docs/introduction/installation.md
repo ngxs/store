@@ -96,10 +96,12 @@ This means that if you want the bleeding edge of `@ngxs/store` or any of the plu
 ```bash
 npm install @ngxs/store@dev --save
 npm install @ngxs/logger-plugin@dev --save
+npm install @ngxs/devtools-plugin@dev --save
 
 # or if you are using yarn
 yarn add @ngxs/store@dev
 yarn add @ngxs/logger-plugin@dev
+yarn add @ngxs/devtools-plugin@dev
 
 # of if you want to update multiple things at the same time
 yarn add @ngxs/{store,logger-plugin,devtools-plugin}@dev

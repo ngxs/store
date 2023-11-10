@@ -17,7 +17,7 @@ Let's start with a common example. Here we have a small state containing animals
 
 ```ts
 import { Injectable } from '@angular/core';
-import { State, Action, StateContext } from '@ngxs/store';
+import { Selector,State } from '@ngxs/store';
 
 export interface AnimalsStateModel {
   zebras: string[];
@@ -37,18 +37,18 @@ export interface AnimalsStateModel {
 export class AnimalsState {}
 
 export class AnimalsSelectors {
-  @Selector(AnimalsState)
-  static zebras(state: AnimalStateModel) {
+  @Selector([AnimalsState])
+  static zebras(state: AnimalsStateModel): string[] {
     return state.zebras;
   }
 
-  @Selector(AnimalsState)
-  static pandas(state: AnimalStateModel) {
+  @Selector([AnimalsState])
+  static pandas(state: AnimalsStateModel): string[] {
     return state.pandas;
   }
 
-  @Selector(AnimalsState)
-  static monkeys(state: AnimalStateModel) {
+  @Selector([AnimalsState])
+  static monkeys(state: AnimalsStateModel): string[] {
     return state.monkeys;
   }
 }
