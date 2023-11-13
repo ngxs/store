@@ -9,6 +9,10 @@ module.exports = {
     }
   },
   coverageDirectory: '../../coverage/packages/store',
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "<rootDir>/schematics/src/utils/ng-utils/"
+  ],
   transform: {
     '^.+\\.(ts|js|html)$': 'jest-preset-angular'
   },

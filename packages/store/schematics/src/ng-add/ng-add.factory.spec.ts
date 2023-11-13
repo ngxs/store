@@ -40,12 +40,8 @@ describe('Ngxs ng-add Schematic', () => {
 
   let appTree: UnitTestTree;
   beforeEach(async () => {
-    appTree = await angularSchematicRunner
-      .runSchematicAsync('workspace', workspaceOptions)
-      .toPromise();
-    appTree = await angularSchematicRunner
-      .runSchematicAsync('application', appOptions, appTree)
-      .toPromise();
+    appTree = await angularSchematicRunner.runSchematic('workspace', workspaceOptions);
+    appTree = await angularSchematicRunner.runSchematic('application', appOptions, appTree);
   });
 
   describe('importing the Ngxs module', () => {
@@ -57,9 +53,8 @@ describe('Ngxs ng-add Schematic', () => {
       // Arrange
       const options: NgxsPackageSchema = { ...defaultOptions, project };
       // Act
-      const tree = await ngxsSchematicRunner
-        .runSchematicAsync('ngxs-init', options, appTree)
-        .toPromise();
+      const tree = await ngxsSchematicRunner.runSchematic('ngxs-init', options, appTree);
+
       // Assert
       const content = tree.readContent('/projects/foo/src/app/app.module.ts');
       expect(content).toMatch(/import { NgxsModule } from '@ngxs\/store'/);
@@ -72,7 +67,7 @@ describe('Ngxs ng-add Schematic', () => {
       // Arrange
       const options: NgxsPackageSchema = { ...defaultOptions, project: 'hello' };
       await expect(
-        ngxsSchematicRunner.runSchematicAsync('ng-add', options, appTree).toPromise()
+        ngxsSchematicRunner.runSchematic('ng-add', options, appTree)
       ).rejects.toThrow(`Project "${options.project}" does not exist.`);
     });
   });
@@ -81,9 +76,8 @@ describe('Ngxs ng-add Schematic', () => {
     it('should add ngxs store with provided plugins in package.json', async () => {
       const plugins = [LIBRARIES.DEVTOOLS, LIBRARIES.LOGGER];
       const options: NgxsPackageSchema = { plugins };
-      appTree = await ngxsSchematicRunner
-        .runSchematicAsync('ng-add', options, appTree)
-        .toPromise();
+      appTree = await ngxsSchematicRunner.runSchematic('ng-add', options, appTree);
+
       const packageJsonText = appTree.readContent('/package.json');
       const packageJson = JSON.parse(packageJsonText);
       expect(plugins.every(p => !!packageJson.dependencies[p])).toBeTruthy();
@@ -92,9 +86,8 @@ describe('Ngxs ng-add Schematic', () => {
     it('should add ngxs store with all plugins in package.json', async () => {
       const packages = Object.values(LIBRARIES).filter(v => v !== LIBRARIES.STORE);
       const options: NgxsPackageSchema = { plugins: packages };
-      appTree = await ngxsSchematicRunner
-        .runSchematicAsync('ng-add', options, appTree)
-        .toPromise();
+      appTree = await ngxsSchematicRunner.runSchematic('ng-add', options, appTree);
+
       const packageJsonText = appTree.readContent('/package.json');
       const packageJson = JSON.parse(packageJsonText);
       expect(packages.every(p => !!packageJson.dependencies[p])).toBeTruthy();
@@ -104,7 +97,7 @@ describe('Ngxs ng-add Schematic', () => {
       const packages = ['who-am-i'];
       const options: NgxsPackageSchema = { plugins: packages };
       await expect(
-        ngxsSchematicRunner.runSchematicAsync('ng-add', options, appTree).toPromise()
+        ngxsSchematicRunner.runSchematic('ng-add', options, appTree)
       ).rejects.toThrow();
     });
   });
