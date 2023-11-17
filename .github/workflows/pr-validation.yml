@@ -8,7 +8,7 @@ on:
   pull_request:
 
 env:
-  NODE_VERSION: 16.x
+  NODE_VERSION: 18.x
   BASE_REF: ${{ format('remotes/origin/{0}', github.base_ref) }}
 
 defaults:
