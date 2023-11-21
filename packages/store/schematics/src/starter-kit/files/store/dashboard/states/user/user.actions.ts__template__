@@ -1,6 +1,6 @@
-import { PersonStateModel } from './user.state';
+import { UserStateModel } from './user.state';
 
 export class SetUser {
   public static readonly type = '[SetUser] action';
-  constructor(public payload: PersonStateModel) {}
+  constructor(public payload: UserStateModel) {}
 }

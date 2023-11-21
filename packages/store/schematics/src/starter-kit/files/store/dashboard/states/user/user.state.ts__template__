@@ -1,7 +1,7 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { SetUser } from './user.actions';
 
-export interface PersonStateModel {
+export interface UserStateModel {
   userId: string;
   email: string;
   firstName: string;
@@ -13,7 +13,7 @@ export interface PersonStateModel {
   departmentName: string;
 }
 
-@State<PersonStateModel>({
+@State<UserStateModel>({
   name: 'user',
   defaults: {
     userId: '',
@@ -29,12 +29,12 @@ export interface PersonStateModel {
 })
 export class UserState {
   @Selector()
-  public static getUser(state: PersonStateModel): PersonStateModel {
+  public static getUser(state: UserStateModel): UserStateModel {
     return state;
   }
 
   @Action(SetUser)
-  public setUser(ctx: StateContext<PersonStateModel>, { payload }: SetUser) {
+  public setUser(ctx: StateContext<UserStateModel>, { payload }: SetUser) {
     ctx.setState(payload);
   }
 }

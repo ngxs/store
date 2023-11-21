@@ -1,6 +1,6 @@
 import { NgxsModule, Store } from '@ngxs/store';
 import { async, TestBed } from '@angular/core/testing';
-import { AuthenticationStateModel, AuthStateModule } from './auth.state';
+import { AuthenticationStateModel, AuthState } from './auth.state';
 import { SetAuthData } from './auth.actions';
 
 describe('[TEST]: AuthStore', () => {
@@ -8,7 +8,7 @@ describe('[TEST]: AuthStore', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([AuthStateModule])]
+      imports: [NgxsModule.forRoot([AuthState])]
     })
       .compileComponents()
       .then();
@@ -25,7 +25,7 @@ describe('[TEST]: AuthStore', () => {
       roles: []
     };
     store.dispatch(new SetAuthData(Authentication));
-    const actual = store.selectSnapshot<AuthenticationStateModel>(AuthStateModule.getAuthData);
+    const actual = store.selectSnapshot<AuthenticationStateModel>(AuthState.getAuthData);
     expect(actual).toEqual(Authentication);
   });
 
@@ -40,7 +40,7 @@ describe('[TEST]: AuthStore', () => {
     };
 
     store.dispatch(new SetAuthData(authentication));
-    const actual = store.selectSnapshot<AuthenticationStateModel>(AuthStateModule.getAuthData);
+    const actual = store.selectSnapshot<AuthenticationStateModel>(AuthState.getAuthData);
     expect(actual).toEqual(authentication);
   });
 });

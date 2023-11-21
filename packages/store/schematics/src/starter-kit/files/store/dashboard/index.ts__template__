@@ -5,7 +5,7 @@ import { UserState } from './states/user/user.state';
 export const DashboardStates = [DictionaryState, UserState];
 
 @State({
-  name: 'dashboardStateModule',
+  name: 'dashboardState',
   children: DashboardStates
 })
-export class DashboardStateModule {}
+export class DashboardState {}

@@ -1,6 +1,6 @@
 import { NgxsModule, Store } from '@ngxs/store';
 import { async, TestBed } from '@angular/core/testing';
-import { PersonStateModel, UserState } from './user.state';
+import { UserStateModel, UserState } from './user.state';
 import { SetUser } from './user.actions';
 
 describe('[TEST]: User state', () => {
@@ -15,8 +15,8 @@ describe('[TEST]: User state', () => {
     store = TestBed.get(Store);
   }));
 
-  it('Should be state is PersonStateModel', () => {
-    const person: PersonStateModel = {
+  it('Should be state is UserStateModel', () => {
+    const user: UserStateModel = {
       userId: '',
       departmentCode: '',
       departmentName: '',
@@ -27,14 +27,14 @@ describe('[TEST]: User state', () => {
       positionId: '',
       positionName: ''
     };
-    store.dispatch(new SetUser(person));
+    store.dispatch(new SetUser(user));
     const actual = store.selectSnapshot(({ user }) => user);
 
-    expect(actual).toEqual(person);
+    expect(actual).toEqual(user);
   });
 
-  it('Should be state is filled PersonStateModel', () => {
-    const person: PersonStateModel = {
+  it('Should be state is filled UserStateModel', () => {
+    const user: UserStateModel = {
       userId: '12',
       departmentCode: '2392',
       departmentName: 'Main office',
@@ -46,9 +46,9 @@ describe('[TEST]: User state', () => {
       positionName: 'admin'
     };
 
-    store.dispatch(new SetUser(person));
-    const actual = store.selectSnapshot<PersonStateModel>(({ user }) => user);
+    store.dispatch(new SetUser(user));
+    const actual = store.selectSnapshot<UserStateModel>(({ user }) => user);
 
-    expect(actual).toEqual(person);
+    expect(actual).toEqual(user);
   });
 });
