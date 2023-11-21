@@ -18,12 +18,12 @@ You have the option to enter the options yourself
 ng generate @ngxs/store:store --name NAME_OF_YOUR_STORE
 ```
 
-| Option | Description                                            | Required |
-| :----- | :----------------------------------------------------- | :------: |
-| --name | The name of the store                                  |   Yes    |
-| --path | The path to create the store                           |    No    |
-| --spec | Flag to indicate if a unit test file should be created |    No    |
-| --flat | Flag to indicate if a dir is created                   |    No    |
+| Option | Description                                                    | Required | Default Value        |
+| :----- | :------------------------------------------------------------- | :------: | :------------------- |
+| --name | The name of the store                                          |   Yes    |                      |
+| --path | The path to create the store                                   |    No    | App's root directory |
+| --spec | Boolean flag to indicate if a unit test file should be created |    No    | `true`               |
+| --flat | Boolean flag to indicate if a dir is created                   |    No    | `false`              |
 
 🪄 **This command will**:
 
@@ -31,7 +31,7 @@ ng generate @ngxs/store:store --name NAME_OF_YOUR_STORE
 - Generate a `{name}.state.spec.ts`
 - Generate a `{name}.state.ts`. The state file also includes an action handler for the generated action.
 
-> Note: The generated files will be placed in the selected `path`, or the root of your application if no `path` is selected
+> Note: If the --flat option is false, the generated files will be organized into a directory named using the kebab case of the --name option. For instance, 'MyStore' will be transformed into 'my-store'.
 
 ### Creating actions
 

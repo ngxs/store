@@ -16,16 +16,18 @@ You have the option to enter the options yourself
 ng generate @ngxs/store:state --name NAME_OF_YOUR_STATE
 ```
 
-| Option | Description                                            | Required |
-| :----- | :----------------------------------------------------- | :------: |
-| --name | The name of the state                                  |   Yes    |
-| --path | The path to create the state                           |    No    |
-| --spec | Flag to indicate if a unit test file should be created |    No    |
-| --flat | Flag to indicate if a dir is created                   |    No    |
+| Option | Description                                                    | Required | Default Value        |
+| :----- | :------------------------------------------------------------- | :------: | :------------------- |
+| --name | The name of the state                                          |   Yes    |                      |
+| --path | The path to create the state                                   |    No    | App's root directory |
+| --spec | Boolean flag to indicate if a unit test file should be created |    No    | `true`               |
+| --flat | Boolean flag to indicate if a dir is created                   |    No    | `false`              |
 
 🪄 **This command will**:
 
 - Create a state with the given options
+
+> Note: If the --flat option is false, the generated files will be organized into a directory named using the kebab case of the --name option. For instance, 'MyState' will be transformed into 'my-state'.
 
 ## Defining a State
 
