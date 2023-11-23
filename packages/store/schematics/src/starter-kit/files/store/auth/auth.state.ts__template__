@@ -11,7 +11,7 @@ export interface AuthenticationStateModel {
 }
 
 @State<AuthenticationStateModel>({
-  name: 'authStateModule',
+  name: 'authState',
   defaults: {
     id: '',
     firstName: '',
@@ -21,10 +21,10 @@ export interface AuthenticationStateModel {
     roles: []
   }
 })
-export class AuthStateModule {
+export class AuthState {
   @Selector()
   public static getAuthData(state: AuthenticationStateModel): AuthenticationStateModel {
-    return AuthStateModule.getInstanceState(state);
+    return AuthState.getInstanceState(state);
   }
 
   private static setInstanceState(state: AuthenticationStateModel): AuthenticationStateModel {
@@ -40,6 +40,6 @@ export class AuthStateModule {
     { setState }: StateContext<AuthenticationStateModel>,
     { payload }: SetAuthData
   ) {
-    setState(AuthStateModule.setInstanceState(payload));
+    setState(AuthState.setInstanceState(payload));
   }
 }
