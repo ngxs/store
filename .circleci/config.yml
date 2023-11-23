@@ -209,6 +209,22 @@ jobs:
           paths:
             - app/integrations/hello-world-ng16/dist-integration
 
+  integration_ng17_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      # https://github.com/CircleCI-Public/browser-tools-orb/issues/75
+      - browser-tools/install-browser-tools:
+          chrome-version: '116.0.5845.96'
+          replace-existing-chrome: true
+      - run:
+          name: Run integration tests for ng17 application
+          command: yarn integration:ng17
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - app/integrations/hello-world-ng17/dist-integration
+
   integration_test_types:
     <<: *job_defaults
     steps:
