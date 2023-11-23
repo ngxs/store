@@ -16,14 +16,16 @@ You have the option to enter the options yourself
 ng generate @ngxs/store:starter-kit --path YOUR_PATH
 ```
 
-| Option | Description                                            | Required |
-| :----- | :----------------------------------------------------- | :------: |
-| --path | The path to create the starter kit                     |   Yes    |
-| --spec | Flag to indicate if a unit test file should be created |    No    |
+| Option | Description                                                    | Required | Default Value |
+| :----- | :------------------------------------------------------------- | :------: | :------------ |
+| --path | The path to create the starter kit                             |   Yes    |               |
+| --spec | Boolean flag to indicate if a unit test file should be created |    No    | `true`        |
 
 🪄 **This command will**:
 
-- Create Auth State, Actions and Selectors
-- Create Dictionary State, Actions and Selectors
-- Create User State, Actions and Selectors
+- Create Auth State, Actions, Selectors and Unit Tests, organized into an 'auth' directory
+- Create Dictionary State, Actions, Selectors and Unit Tests, organized into a 'dashboard/states/dictionary' directory
+- Create User State, Actions, Selectors and Unit Tests, organized into a 'dashboard/states/user' directory
 - Create a Store and Configure the Auth, Dictionary and User states
+
+> Note: The generated files will be organized into a 'store' directory.
