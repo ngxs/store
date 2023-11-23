@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "sourceMap": false,
+    "declaration": false,
+    "moduleResolution": "node",
+    "types": ["node", "cypress"],
+    "typeRoots": ["../node_modules/@types"],
+    "lib": ["es2017", "dom"]
+  },
+  "include": ["e2e/*.ts", "support/*.ts", "../node_modules/cypress"]
+}
