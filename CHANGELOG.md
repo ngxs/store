@@ -10,6 +10,11 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+- ...
+
+# 3.8.2 2023-11-30
+
+- Fix: `patch` state operator must handle existing nulls [#2064](https://github.com/ngxs/store/pull/2064)
 - Fix: Storage Plugin - Access local and session storages globals only in browser [#2034](https://github.com/ngxs/store/pull/2034)
 - Fix: Storage Plugin - Require only `getItem` and `setItem` on engines [#2036](https://github.com/ngxs/store/pull/2036)
 - Fix: Devtools Plugin - Do not re-enter Angular zone when resetting state [#2038](https://github.com/ngxs/store/pull/2038)
