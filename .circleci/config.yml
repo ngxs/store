@@ -167,8 +167,10 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
+      # https://github.com/CircleCI-Public/browser-tools-orb/issues/75
+      - browser-tools/install-browser-tools:
+          chrome-version: '116.0.5845.96'
+          replace-existing-chrome: true
       - run:
           name: Run integration tests for ng14 (Ivy) application
           command: yarn integration:ng14:ivy
