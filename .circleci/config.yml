@@ -10,7 +10,7 @@ job_defaults_var: &job_defaults
     - image: cimg/node:18.16.0-browsers
 
 # Yarn cache key
-cache_var: &cache_key yarn-packages-v3-{{ .Branch }}-{{ checksum "yarn.lock" }}
+cache_var: &cache_key yarn-packages-v4-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
 # Install yarn packages
 yarn_install_var: &yarn_install
@@ -34,8 +34,8 @@ restore_cache_var: &restore_cache
     name: Restore Yarn Package Cache
     keys:
       - *cache_key
-      - yarn-packages-v3-master
-      - yarn-packages-v3
+      - yarn-packages-v4-master
+      - yarn-packages-v4
 
 # Persist the whole working space so we can share it between jobs
 persist_workspace_var: &persist_workspace
