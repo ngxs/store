@@ -14,6 +14,7 @@ $ npm install @ngxs/store@dev
 - Fix: Storage Plugin - Require only `getItem` and `setItem` on engines [#2036](https://github.com/ngxs/store/pull/2036)
 - Fix: Devtools Plugin - Do not re-enter Angular zone when resetting state [#2038](https://github.com/ngxs/store/pull/2038)
 - Performance: Tree-shake selectors validation errors [#2020](https://github.com/ngxs/store/pull/2020)
+- Build: Add Angular 17 support [#2079](https://github.com/ngxs/store/pull/2079)
 - Refactor: Replace `get type()` with `type =` in actions [#2035](https://github.com/ngxs/store/pull/2035)
 
 # 3.8.1 2023-05-16
