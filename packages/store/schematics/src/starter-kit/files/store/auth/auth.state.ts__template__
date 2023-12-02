@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { SetAuthData } from './auth.actions';
 
@@ -21,6 +22,7 @@ export interface AuthenticationStateModel {
     roles: []
   }
 })
+@Injectable()
 export class AuthState {
   @Selector()
   public static getAuthData(state: AuthenticationStateModel): AuthenticationStateModel {
