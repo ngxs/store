@@ -1,21 +1,21 @@
 import { NgxsModule, Store } from '@ngxs/store';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { AuthenticationStateModel, AuthState } from './auth.state';
 import { SetAuthData } from './auth.actions';
 
 describe('[TEST]: AuthStore', () => {
   let store: Store;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([AuthState])]
-    })
-      .compileComponents()
-      .then();
-    store = TestBed.get(Store);
-  }));
+      imports: [NgxsModule.forRoot([AuthState])],
+    });
+
+    store = TestBed.inject(Store);
+  });
 
   it('Should be correct dispatch and value is empty', () => {
+    // Arrange
     const Authentication: AuthenticationStateModel = {
       id: '',
       firstName: '',
@@ -24,12 +24,17 @@ describe('[TEST]: AuthStore', () => {
       email: '',
       roles: []
     };
+
+    // Act
     store.dispatch(new SetAuthData(Authentication));
     const actual = store.selectSnapshot<AuthenticationStateModel>(AuthState.getAuthData);
+
+    // Assert
     expect(actual).toEqual(Authentication);
   });
 
   it('Should be correct dispatch and next value is correct completed', () => {
+    // Arrange
     const authentication: AuthenticationStateModel = {
       id: '12',
       firstName: 'Adam',
@@ -39,8 +44,11 @@ describe('[TEST]: AuthStore', () => {
       roles: ['ADMIN']
     };
 
+    // Act
     store.dispatch(new SetAuthData(authentication));
     const actual = store.selectSnapshot<AuthenticationStateModel>(AuthState.getAuthData);
+
+    // Assert
     expect(actual).toEqual(authentication);
   });
 });
