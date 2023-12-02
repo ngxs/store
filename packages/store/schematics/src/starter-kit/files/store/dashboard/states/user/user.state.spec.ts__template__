@@ -6,10 +6,10 @@ import { SetUser } from './user.actions';
 describe('[TEST]: User state', () => {
   let store: Store;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([UserState])],
-    }).compileComponents();
+    });
 
     store = TestBed.inject(Store);
   });

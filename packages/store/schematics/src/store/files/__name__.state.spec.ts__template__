@@ -5,10 +5,10 @@ import { <%= classify(name) %>Action } from './<%= dasherize(name) %>.actions';
 
 describe('<%= classify(name) %> store', () => {
   let store: Store;
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([<%= classify(name) %>State])]
-    }).compileComponents();
+    });
 
     store = TestBed.inject(Store);
   });

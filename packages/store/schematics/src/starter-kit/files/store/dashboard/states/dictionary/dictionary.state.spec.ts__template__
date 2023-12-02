@@ -27,10 +27,10 @@ const data = [
 describe('[TEST]: Dictionary state', () => {
   let store: Store;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([DictionaryState])],
-    }).compileComponents();
+    });
 
     store = TestBed.inject(Store);
   });

@@ -5,12 +5,12 @@ import { <%= classify(name) %>State, <%= classify(name) %>StateModel } from './<
 describe('<%= classify(name) %> state', () => {
     let store: Store;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: [NgxsModule.forRoot([<%= classify(name) %>State])]
-        }).compileComponents();
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([<%= classify(name) %>State])]
+      });
 
-        store = TestBed.inject(Store);
+      store = TestBed.inject(Store);
     });
 
     it('should create an empty state', () => {

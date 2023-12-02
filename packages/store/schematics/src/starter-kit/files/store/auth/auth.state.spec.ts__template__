@@ -6,10 +6,10 @@ import { SetAuthData } from './auth.actions';
 describe('[TEST]: AuthStore', () => {
   let store: Store;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot([AuthState])],
-    }).compileComponents();
+    });
 
     store = TestBed.inject(Store);
   });
