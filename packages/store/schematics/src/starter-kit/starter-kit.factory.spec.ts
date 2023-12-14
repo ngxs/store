@@ -1,48 +1,33 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
+import { createWorkspace } from '@ngxs/store/internals/testing';
 import { workspaceRoot } from '@nrwl/devkit';
-import { Schema as ApplicationOptions } from '@schematics/angular/application/schema';
-import { Schema as WorkspaceOptions } from '@schematics/angular/workspace/schema';
 import * as path from 'path';
 import { StarterKitSchema } from './starter-kit.schema';
-describe('Generate ngxs starter kit', () => {
-  const angularSchematicRunner = new SchematicTestRunner(
-    '@schematics/angular',
-    path.join(workspaceRoot, 'node_modules/@schematics/angular/collection.json')
-  );
 
+describe('Generate ngxs starter kit', () => {
   const runner: SchematicTestRunner = new SchematicTestRunner(
     '.',
     path.join(workspaceRoot, 'packages/store/schematics/collection.json')
   );
-  const workspaceOptions: WorkspaceOptions = {
-    name: 'workspace',
-    newProjectRoot: 'projects',
-    version: '1.0.0'
-  };
-
-  const appOptions: ApplicationOptions = {
-    name: 'foo',
-    inlineStyle: false,
-    inlineTemplate: false,
-    routing: true,
-    skipTests: false,
-    skipPackageJson: false
-  };
 
   let appTree: UnitTestTree;
-  beforeEach(async () => {
-    appTree = await angularSchematicRunner.runSchematic('workspace', workspaceOptions);
-    appTree = await angularSchematicRunner.runSchematic('application', appOptions, appTree);
-  });
+  const testSetup = async (options?: { isStandalone?: boolean }) => {
+    appTree = await createWorkspace(options?.isStandalone);
+  };
 
   it('should generate store in default root folder', async () => {
+    // Arrange
+    await testSetup();
     const options: StarterKitSchema = {
       spec: true,
       path: './src'
     };
-    const tree: UnitTestTree = await runner.runSchematic('starter-kit', options, appTree);
 
+    // Act
+    const tree: UnitTestTree = await runner.runSchematic('starter-kit', options, appTree);
     const files: string[] = tree.files;
+
+    // Assert
     expect(files).toEqual(
       expect.arrayContaining([
         '/src/store/store.config.ts',
@@ -62,14 +47,18 @@ describe('Generate ngxs starter kit', () => {
   });
 
   it('should generate store in default root folder with spec false', async () => {
+    // Arrange
+    await testSetup();
     const options: StarterKitSchema = {
       spec: false,
       path: './src'
     };
 
+    // Act
     const tree: UnitTestTree = await runner.runSchematic('starter-kit', options, appTree);
-
     const files: string[] = tree.files;
+
+    // Assert
     expect(files).toEqual(
       expect.arrayContaining([
         '/src/store/store.config.ts',
@@ -83,5 +72,45 @@ describe('Generate ngxs starter kit', () => {
         '/src/store/dashboard/states/user/user.state.ts'
       ])
     );
+  });
+
+  it('should provideStore if the application is standalone', async () => {
+    // Arrange
+    await testSetup({
+      isStandalone: true
+    });
+    const options: StarterKitSchema = {
+      spec: true,
+      path: './src'
+    };
+
+    // Act
+    const tree: UnitTestTree = await runner.runSchematic('starter-kit', options, appTree);
+    const content = tree.readContent(
+      '/src/store/dashboard/states/dictionary/dictionary.state.spec.ts'
+    );
+
+    // Assert
+    expect(content).toMatch(/provideStore\(\[DictionaryState\]\)/);
+  });
+
+  it('should import the module if the application is non standalone', async () => {
+    // Arrange
+    await testSetup({
+      isStandalone: false
+    });
+    const options: StarterKitSchema = {
+      spec: true,
+      path: './src'
+    };
+
+    // Act
+    const tree: UnitTestTree = await runner.runSchematic('starter-kit', options, appTree);
+    const content = tree.readContent(
+      '/src/store/dashboard/states/dictionary/dictionary.state.spec.ts'
+    );
+
+    // Assert
+    expect(content).toMatch(/NgxsModule.forRoot\(\[DictionaryState\]\)/);
   });
 });

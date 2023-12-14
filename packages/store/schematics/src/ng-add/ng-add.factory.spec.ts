@@ -1,18 +1,12 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { workspaceRoot } from '@nrwl/devkit';
 import { join } from 'path';
-import { Schema as ApplicationOptions } from '@schematics/angular/application/schema';
-import { Schema as WorkspaceOptions } from '@schematics/angular/workspace/schema';
 
+import { createWorkspace } from '@ngxs/store/internals/testing';
 import { LIBRARIES } from '../utils/common/lib.config';
 import { NgxsPackageSchema } from './ng-add.schema';
 
 describe('Ngxs ng-add Schematic', () => {
-  const angularSchematicRunner = new SchematicTestRunner(
-    '@schematics/angular',
-    join(workspaceRoot, 'node_modules/@schematics/angular/collection.json')
-  );
-
   const ngxsSchematicRunner = new SchematicTestRunner(
     '@ngxs/store/schematics',
     join(workspaceRoot, 'packages/store/schematics/collection.json')
@@ -23,34 +17,19 @@ describe('Ngxs ng-add Schematic', () => {
     plugins: []
   };
 
-  const workspaceOptions: WorkspaceOptions = {
-    name: 'workspace',
-    newProjectRoot: 'projects',
-    version: '1.0.0'
-  };
-
-  const appOptions: ApplicationOptions = {
-    name: 'foo',
-    inlineStyle: false,
-    inlineTemplate: false,
-    routing: true,
-    skipTests: false,
-    skipPackageJson: false
-  };
-
   let appTree: UnitTestTree;
-  beforeEach(async () => {
-    appTree = await angularSchematicRunner.runSchematic('workspace', workspaceOptions);
-    appTree = await angularSchematicRunner.runSchematic('application', appOptions, appTree);
-  });
+  const testSetup = async (options?: { isStandalone?: boolean }) => {
+    appTree = await createWorkspace(options?.isStandalone);
+  };
 
-  describe('importing the Ngxs module', () => {
+  describe('importing the Ngxs module in a non standalone app', () => {
     test.each`
       project
       ${undefined}
       ${'foo'}
     `('should import the module when project is $project ', async ({ project }) => {
       // Arrange
+      await testSetup({ isStandalone: false });
       const options: NgxsPackageSchema = { ...defaultOptions, project };
       // Act
       const tree = await ngxsSchematicRunner.runSchematic('ngxs-init', options, appTree);
@@ -65,10 +44,34 @@ describe('Ngxs ng-add Schematic', () => {
     });
     it('should throw if invalid project is specified', async () => {
       // Arrange
+      await testSetup();
       const options: NgxsPackageSchema = { ...defaultOptions, project: 'hello' };
+
+      // Assert
       await expect(
         ngxsSchematicRunner.runSchematic('ng-add', options, appTree)
       ).rejects.toThrow(`Project "${options.project}" does not exist.`);
+    });
+  });
+
+  describe('should have the provideStore provider in a standalone app', () => {
+    test.each`
+      project
+      ${undefined}
+      ${'foo'}
+    `('should import the module when project is $project ', async ({ project }) => {
+      // Arrange
+      await testSetup({ isStandalone: true });
+      const options: NgxsPackageSchema = { ...defaultOptions, project };
+
+      // Act
+      const tree = await ngxsSchematicRunner.runSchematic('ngxs-init', options, appTree);
+
+      const content = tree.readContent('/projects/foo/src/main.ts');
+
+      // Assert
+      expect(content).toMatch(/provideStore\(/);
+      expect(tree.files).not.toContain('/projects/foo/src/app/app.module.ts');
     });
   });
 

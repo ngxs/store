@@ -1,16 +1,10 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
+import { createWorkspace } from '@ngxs/store/internals/testing';
 import { workspaceRoot } from '@nrwl/devkit';
-import { Schema as ApplicationOptions } from '@schematics/angular/application/schema';
-import { Schema as WorkspaceOptions } from '@schematics/angular/workspace/schema';
 import * as path from 'path';
 import { StoreSchema } from './store.schema';
 
 describe('NGXS Store', () => {
-  const angularSchematicRunner = new SchematicTestRunner(
-    '@schematics/angular',
-    path.join(workspaceRoot, 'node_modules/@schematics/angular/collection.json')
-  );
-
   const runner: SchematicTestRunner = new SchematicTestRunner(
     '.',
     path.join(workspaceRoot, 'packages/store/schematics/collection.json')
@@ -19,33 +13,23 @@ describe('NGXS Store', () => {
     name: 'todos'
   };
 
-  const workspaceOptions: WorkspaceOptions = {
-    name: 'workspace',
-    newProjectRoot: 'projects',
-    version: '1.0.0'
-  };
-
-  const appOptions: ApplicationOptions = {
-    name: 'foo',
-    inlineStyle: false,
-    inlineTemplate: false,
-    routing: true,
-    skipTests: false,
-    skipPackageJson: false
-  };
-
   let appTree: UnitTestTree;
-  beforeEach(async () => {
-    appTree = await angularSchematicRunner.runSchematic('workspace', workspaceOptions);
-    appTree = await angularSchematicRunner.runSchematic('application', appOptions, appTree);
-  });
+  const testSetup = async (options?: { isStandalone?: boolean }) => {
+    appTree = await createWorkspace(options?.isStandalone);
+  };
 
   it('should manage name only', async () => {
+    // Arrange
+    await testSetup();
     const options: StoreSchema = {
       ...defaultOptions
     };
+
+    // Act
     const tree: UnitTestTree = await runner.runSchematic('store', options, appTree);
     const files: string[] = tree.files;
+
+    // Assert
     expect(files).toEqual(
       expect.arrayContaining([
         '/todos/todos.actions.ts',
@@ -56,36 +40,54 @@ describe('NGXS Store', () => {
   });
 
   it('should not create a separate folder if "flat" is set to "true"', async () => {
+    // Arrange
+    await testSetup();
     const options: StoreSchema = {
       ...defaultOptions,
       flat: true
     };
+
+    // Act
     const tree: UnitTestTree = await runner.runSchematic('store', options, appTree);
     const files: string[] = tree.files;
+
+    // Assert
     expect(files).toEqual(
       expect.arrayContaining(['/todos.actions.ts', '/todos.state.spec.ts', '/todos.state.ts'])
     );
   });
 
   it('should manage name with spec false', async () => {
+    // Arrange
+    await testSetup();
     const options: StoreSchema = {
       ...defaultOptions,
       spec: false
     };
+
+    // Act
     const tree: UnitTestTree = await runner.runSchematic('store', options, appTree);
     const files: string[] = tree.files;
+
+    // Assert
     expect(files).toEqual(
       expect.arrayContaining(['/todos/todos.actions.ts', '/todos/todos.state.ts'])
     );
   });
 
   it('should manage name with spec true', async () => {
+    // Arrange
+    await testSetup();
     const options: StoreSchema = {
       ...defaultOptions,
       spec: true
     };
+
+    // Act
     const tree: UnitTestTree = await runner.runSchematic('store', options, appTree);
     const files: string[] = tree.files;
+
+    // Assert
     expect(files).toEqual(
       expect.arrayContaining([
         '/todos/todos.actions.ts',
