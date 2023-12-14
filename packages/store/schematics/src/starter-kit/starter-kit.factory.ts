@@ -1,10 +1,22 @@
-import { Rule, url } from '@angular-devkit/schematics';
-import { StarterKitSchema } from './starter-kit.schema';
-import { normalizePath } from '../utils/normalize-options';
+import { Rule, Tree, url } from '@angular-devkit/schematics';
 import { generateFiles } from '../utils/generate-utils';
+import { isStandaloneApp } from '../utils/ng-utils/ng-ast-utils';
+import { getProjectMainFile } from '../utils/ng-utils/project';
+import { normalizePath } from '../utils/normalize-options';
+import { StarterKitSchema } from './starter-kit.schema';
 
 export function starterKit(options: StarterKitSchema): Rule {
-  const normalizedPath = normalizePath(options.path);
+  return (host: Tree) => {
+    const mainFile = getProjectMainFile(host, options.project);
+    const isStandalone = isStandaloneApp(host, mainFile);
 
-  return generateFiles(url('./files'), normalizedPath, options, options.spec);
+    const normalizedPath = normalizePath(options.path);
+
+    return generateFiles(
+      url('./files'),
+      normalizedPath,
+      { ...options, isStandalone },
+      options.spec
+    );
+  };
 }

@@ -7,4 +7,8 @@ export interface StarterKitSchema {
    * The spec flag
    */
   spec?: boolean;
+  /**
+   * The application project name to add the Ngxs module/provider.
+   */
+  project?: string;
 }
