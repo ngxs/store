@@ -1,7 +1,7 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
-import { createWorkspace } from '@ngxs/store/internals/testing';
 import { workspaceRoot } from '@nrwl/devkit';
 import * as path from 'path';
+import { createWorkspace } from '../_testing';
 import { StarterKitSchema } from './starter-kit.schema';
 
 describe('Generate ngxs starter kit', () => {
