@@ -16,10 +16,13 @@ You have the option to enter the options yourself
 ng generate @ngxs/store:starter-kit --path YOUR_PATH
 ```
 
-| Option | Description                                                    | Required | Default Value |
-| :----- | :------------------------------------------------------------- | :------: | :------------ |
-| --path | The path to create the starter kit                             |   Yes    |               |
-| --spec | Boolean flag to indicate if a unit test file should be created |    No    | `true`        |
+| Option    | Description                                                    | Required | Default Value               |
+| :-------- | :------------------------------------------------------------- | :------: | :-------------------------- |
+| --path    | The path to create the starter kit                             |   Yes    |                             |
+| --spec    | Boolean flag to indicate if a unit test file should be created |    No    | `true`                      |
+| --project | Name of the project as it is defined in your angular.json      |    No    | Workspace's default project |
+
+> When working with multiple projects within a workspace, you can explicitly specify the `project` where you want to install the **starter kit**. The schematic will automatically detect whether the provided project is a standalone or not, and it will generate the necessary files accordingly.
 
 🪄 **This command will**:
 

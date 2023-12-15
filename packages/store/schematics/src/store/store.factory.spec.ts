@@ -1,7 +1,7 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { workspaceRoot } from '@nrwl/devkit';
-
 import * as path from 'path';
+import { createWorkspace } from '../_testing';
 import { StoreSchema } from './store.schema';
 
 describe('NGXS Store', () => {
@@ -12,49 +12,91 @@ describe('NGXS Store', () => {
   const defaultOptions: StoreSchema = {
     name: 'todos'
   };
+
+  const testSetup = async (options?: {
+    isStandalone?: boolean;
+    storeSchema?: StoreSchema;
+  }) => {
+    const appTree = await createWorkspace(options?.isStandalone);
+
+    const storeSchemaOptions: StoreSchema = options?.storeSchema || defaultOptions;
+    const tree: UnitTestTree = await runner.runSchematic('store', storeSchemaOptions, appTree);
+
+    return { appTree, tree };
+  };
+
   it('should manage name only', async () => {
-    const options: StoreSchema = {
-      ...defaultOptions
-    };
-    const tree: UnitTestTree = await runner.runSchematicAsync('store', options).toPromise();
+    // Arrange
+    const { tree } = await testSetup();
+
+    // Act
     const files: string[] = tree.files;
-    expect(files).toEqual([
-      '/todos/todos.actions.ts',
-      '/todos/todos.state.spec.ts',
-      '/todos/todos.state.ts'
-    ]);
+
+    // Assert
+    expect(files).toEqual(
+      expect.arrayContaining([
+        '/todos/todos.actions.ts',
+        '/todos/todos.state.spec.ts',
+        '/todos/todos.state.ts'
+      ])
+    );
   });
+
   it('should not create a separate folder if "flat" is set to "true"', async () => {
-    const options: StoreSchema = {
-      ...defaultOptions,
-      flat: true
-    };
-    const tree: UnitTestTree = await runner.runSchematicAsync('store', options).toPromise();
+    // Arrange
+    const { tree } = await testSetup({
+      storeSchema: {
+        ...defaultOptions,
+        flat: true
+      }
+    });
+
+    // Act
     const files: string[] = tree.files;
-    expect(files).toEqual(['/todos.actions.ts', '/todos.state.spec.ts', '/todos.state.ts']);
+
+    // Assert
+    expect(files).toEqual(
+      expect.arrayContaining(['/todos.actions.ts', '/todos.state.spec.ts', '/todos.state.ts'])
+    );
   });
 
   it('should manage name with spec false', async () => {
-    const options: StoreSchema = {
-      ...defaultOptions,
-      spec: false
-    };
-    const tree: UnitTestTree = await runner.runSchematicAsync('store', options).toPromise();
+    // Arrange
+    const { tree } = await testSetup({
+      storeSchema: {
+        ...defaultOptions,
+        spec: false
+      }
+    });
+
+    // Act
     const files: string[] = tree.files;
-    expect(files).toEqual(['/todos/todos.actions.ts', '/todos/todos.state.ts']);
+
+    // Assert
+    expect(files).toEqual(
+      expect.arrayContaining(['/todos/todos.actions.ts', '/todos/todos.state.ts'])
+    );
   });
 
   it('should manage name with spec true', async () => {
-    const options: StoreSchema = {
-      ...defaultOptions,
-      spec: true
-    };
-    const tree: UnitTestTree = await runner.runSchematicAsync('store', options).toPromise();
+    // Arrange
+    const { tree } = await testSetup({
+      storeSchema: {
+        ...defaultOptions,
+        spec: true
+      }
+    });
+
+    // Act
     const files: string[] = tree.files;
-    expect(files).toEqual([
-      '/todos/todos.actions.ts',
-      '/todos/todos.state.spec.ts',
-      '/todos/todos.state.ts'
-    ]);
+
+    // Assert
+    expect(files).toEqual(
+      expect.arrayContaining([
+        '/todos/todos.actions.ts',
+        '/todos/todos.state.spec.ts',
+        '/todos/todos.state.ts'
+      ])
+    );
   });
 });

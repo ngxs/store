@@ -10,6 +10,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+- Feat: schematics support a project option and standalone detection [#2089](https://github.com/ngxs/store/pull/2089)
 - Fix: Log feature states added before store is initialized [#2067](https://github.com/ngxs/store/pull/2067)
 - Fix: Show error when state initialization order is invalid [#2066](https://github.com/ngxs/store/pull/2066), [#2067](https://github.com/ngxs/store/pull/2067)
 - Fix: Router Plugin - Expose `NGXS_ROUTER_PLUGIN_OPTIONS` privately [#2037](https://github.com/ngxs/store/pull/2037)

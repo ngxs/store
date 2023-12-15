@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { SetUser } from './user.actions';
 
@@ -27,6 +28,7 @@ export interface UserStateModel {
     departmentName: ''
   }
 })
+@Injectable()
 export class UserState {
   @Selector()
   public static getUser(state: UserStateModel): UserStateModel {
