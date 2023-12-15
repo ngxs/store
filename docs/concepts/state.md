@@ -16,12 +16,15 @@ You have the option to enter the options yourself
 ng generate @ngxs/store:state --name NAME_OF_YOUR_STATE
 ```
 
-| Option | Description                                                    | Required | Default Value        |
-| :----- | :------------------------------------------------------------- | :------: | :------------------- |
-| --name | The name of the state                                          |   Yes    |                      |
-| --path | The path to create the state                                   |    No    | App's root directory |
-| --spec | Boolean flag to indicate if a unit test file should be created |    No    | `true`               |
-| --flat | Boolean flag to indicate if a dir is created                   |    No    | `false`              |
+| Option    | Description                                                    | Required | Default Value               |
+| :-------- | :------------------------------------------------------------- | :------: | :-------------------------- |
+| --name    | The name of the state                                          |   Yes    |                             |
+| --path    | The path to create the state                                   |    No    | App's root directory        |
+| --spec    | Boolean flag to indicate if a unit test file should be created |    No    | `true`                      |
+| --flat    | Boolean flag to indicate if a dir is created                   |    No    | `false`                     |
+| --project | Name of the project as it is defined in your angular.json      |    No    | Workspace's default project |
+
+> When working with multiple projects within a workspace, you can explicitly specify the `project` where you want to install the **state**. The schematic will automatically detect whether the provided project is a standalone or not, and it will generate the necessary files accordingly.
 
 🪄 **This command will**:
 

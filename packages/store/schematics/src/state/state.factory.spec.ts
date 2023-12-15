@@ -2,6 +2,7 @@ import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/te
 import { workspaceRoot } from '@nrwl/devkit';
 
 import * as path from 'path';
+import { createWorkspace } from '../_testing';
 import { StateSchema } from './state.schema';
 
 describe('Generate ngxs state', () => {
@@ -12,42 +13,113 @@ describe('Generate ngxs state', () => {
   const defaultOptions: StateSchema = {
     name: 'todos'
   };
+
+  const testSetup = async (options?: {
+    isStandalone?: boolean;
+    stateSchema?: StateSchema;
+  }) => {
+    const appTree = await createWorkspace(options?.isStandalone);
+
+    const stateSchemaOptions: StateSchema = options?.stateSchema || defaultOptions;
+    const tree: UnitTestTree = await runner.runSchematic('state', stateSchemaOptions, appTree);
+
+    return { appTree, tree };
+  };
+
   it('should manage name only', async () => {
-    const options: StateSchema = {
-      ...defaultOptions
-    };
-    const tree: UnitTestTree = await runner.runSchematicAsync('state', options).toPromise();
+    // Arrange
+    const { tree } = await testSetup();
+
+    // Act
     const files: string[] = tree.files;
-    expect(files).toEqual(['/todos/todos.state.spec.ts', '/todos/todos.state.ts']);
+
+    // Assert
+    expect(files).toEqual(
+      expect.arrayContaining(['/todos/todos.state.spec.ts', '/todos/todos.state.ts'])
+    );
   });
 
   it('should not create a separate folder if "flat" is set to "true"', async () => {
-    const options: StateSchema = {
-      ...defaultOptions,
-      flat: true
-    };
-    const tree: UnitTestTree = await runner.runSchematicAsync('state', options).toPromise();
+    // Arrange
+    const { tree } = await testSetup({
+      stateSchema: {
+        ...defaultOptions,
+        flat: true
+      }
+    });
+
+    // Act
     const files: string[] = tree.files;
-    expect(files).toEqual(['/todos.state.spec.ts', '/todos.state.ts']);
+
+    // Assert
+    expect(files).toEqual(expect.arrayContaining(['/todos.state.spec.ts', '/todos.state.ts']));
   });
 
   it('should manage name with spec true', async () => {
-    const options: StateSchema = {
-      ...defaultOptions,
-      spec: true
-    };
-    const tree: UnitTestTree = await runner.runSchematicAsync('state', options).toPromise();
+    // Arrange
+    const { tree } = await testSetup({
+      stateSchema: {
+        ...defaultOptions,
+        spec: true
+      }
+    });
+
+    // Act
     const files: string[] = tree.files;
-    expect(files).toEqual(['/todos/todos.state.spec.ts', '/todos/todos.state.ts']);
+
+    // Assert
+    expect(files).toEqual(
+      expect.arrayContaining(['/todos/todos.state.spec.ts', '/todos/todos.state.ts'])
+    );
   });
 
   it('should manage name with spec false', async () => {
-    const options: StateSchema = {
-      ...defaultOptions,
-      spec: false
-    };
-    const tree: UnitTestTree = await runner.runSchematicAsync('state', options).toPromise();
+    // Arrange
+    const { tree } = await testSetup({
+      stateSchema: {
+        ...defaultOptions,
+        spec: false
+      }
+    });
+
+    // Act
     const files: string[] = tree.files;
-    expect(files).toEqual(['/todos/todos.state.ts']);
+
+    // Assert
+    expect(files).toEqual(expect.arrayContaining(['/todos/todos.state.ts']));
+  });
+
+  it('should provideStore if the application is standalone', async () => {
+    // Arrange
+    const { tree } = await testSetup({
+      isStandalone: true,
+      stateSchema: {
+        ...defaultOptions,
+        spec: true
+      }
+    });
+
+    // Act
+    const content = tree.readContent('/todos/todos.state.spec.ts');
+
+    // Assert
+    expect(content).toMatch(/provideStore\(\[TodosState\]\)/);
+  });
+
+  it('should import the module if the application is non standalone', async () => {
+    // Arrange
+    const { tree } = await testSetup({
+      isStandalone: false,
+      stateSchema: {
+        ...defaultOptions,
+        spec: true
+      }
+    });
+
+    // Act
+    const content = tree.readContent('/todos/todos.state.spec.ts');
+
+    // Assert
+    expect(content).toMatch(/NgxsModule.forRoot\(\[TodosState\]\)/);
   });
 });

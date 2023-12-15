@@ -1,4 +1,4 @@
-import { NgxsModule, Store } from '@ngxs/store';
+import { <% if (isStandalone) { %> provideStore, <% } else { %> NgxsModule, <% } %> Store } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 import { AuthenticationStateModel, AuthState } from './auth.state';
 import { SetAuthData } from './auth.actions';
@@ -8,7 +8,8 @@ describe('[TEST]: AuthStore', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([AuthState])],
+      <% if (isStandalone) { %> providers: [provideStore([AuthState])]
+      <% } else { %> imports: [NgxsModule.forRoot([AuthState])] <% } %>
     });
 
     store = TestBed.inject(Store);
