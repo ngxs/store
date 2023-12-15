@@ -10,21 +10,35 @@ describe('Generate ngxs starter kit', () => {
     path.join(workspaceRoot, 'packages/store/schematics/collection.json')
   );
 
-  let appTree: UnitTestTree;
-  const testSetup = async (options?: { isStandalone?: boolean }) => {
-    appTree = await createWorkspace(options?.isStandalone);
+  const defaultOptions: StarterKitSchema = {
+    path: './src'
+  };
+
+  const testSetup = async (options?: {
+    isStandalone?: boolean;
+    starterKitSchema?: StarterKitSchema;
+  }) => {
+    const appTree = await createWorkspace(options?.isStandalone);
+    const starterKitSchemaOptions: StarterKitSchema =
+      options?.starterKitSchema || defaultOptions;
+    const tree: UnitTestTree = await runner.runSchematic(
+      'starter-kit',
+      starterKitSchemaOptions,
+      appTree
+    );
+    return { appTree, tree };
   };
 
   it('should generate store in default root folder', async () => {
     // Arrange
-    await testSetup();
-    const options: StarterKitSchema = {
-      spec: true,
-      path: './src'
-    };
+    const { tree } = await testSetup({
+      starterKitSchema: {
+        ...defaultOptions,
+        spec: true
+      }
+    });
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('starter-kit', options, appTree);
     const files: string[] = tree.files;
 
     // Assert
@@ -48,14 +62,14 @@ describe('Generate ngxs starter kit', () => {
 
   it('should generate store in default root folder with spec false', async () => {
     // Arrange
-    await testSetup();
-    const options: StarterKitSchema = {
-      spec: false,
-      path: './src'
-    };
+    const { tree } = await testSetup({
+      starterKitSchema: {
+        ...defaultOptions,
+        spec: false
+      }
+    });
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('starter-kit', options, appTree);
     const files: string[] = tree.files;
 
     // Assert
@@ -76,16 +90,15 @@ describe('Generate ngxs starter kit', () => {
 
   it('should provideStore if the application is standalone', async () => {
     // Arrange
-    await testSetup({
-      isStandalone: true
+    const { tree } = await testSetup({
+      isStandalone: true,
+      starterKitSchema: {
+        ...defaultOptions,
+        spec: true
+      }
     });
-    const options: StarterKitSchema = {
-      spec: true,
-      path: './src'
-    };
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('starter-kit', options, appTree);
     const content = tree.readContent(
       '/src/store/dashboard/states/dictionary/dictionary.state.spec.ts'
     );
@@ -96,16 +109,15 @@ describe('Generate ngxs starter kit', () => {
 
   it('should import the module if the application is non standalone', async () => {
     // Arrange
-    await testSetup({
-      isStandalone: false
+    const { tree } = await testSetup({
+      isStandalone: false,
+      starterKitSchema: {
+        ...defaultOptions,
+        spec: true
+      }
     });
-    const options: StarterKitSchema = {
-      spec: true,
-      path: './src'
-    };
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('starter-kit', options, appTree);
     const content = tree.readContent(
       '/src/store/dashboard/states/dictionary/dictionary.state.spec.ts'
     );

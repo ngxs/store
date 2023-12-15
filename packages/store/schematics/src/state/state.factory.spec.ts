@@ -14,20 +14,23 @@ describe('Generate ngxs state', () => {
     name: 'todos'
   };
 
-  let appTree: UnitTestTree;
-  const testSetup = async (options?: { isStandalone?: boolean }) => {
-    appTree = await createWorkspace(options?.isStandalone);
+  const testSetup = async (options?: {
+    isStandalone?: boolean;
+    stateSchema?: StateSchema;
+  }) => {
+    const appTree = await createWorkspace(options?.isStandalone);
+
+    const stateSchemaOptions: StateSchema = options?.stateSchema || defaultOptions;
+    const tree: UnitTestTree = await runner.runSchematic('state', stateSchemaOptions, appTree);
+
+    return { appTree, tree };
   };
 
   it('should manage name only', async () => {
     // Arrange
-    await testSetup();
-    const options: StateSchema = {
-      ...defaultOptions
-    };
+    const { tree } = await testSetup();
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('state', options, appTree);
     const files: string[] = tree.files;
 
     // Assert
@@ -38,14 +41,14 @@ describe('Generate ngxs state', () => {
 
   it('should not create a separate folder if "flat" is set to "true"', async () => {
     // Arrange
-    await testSetup();
-    const options: StateSchema = {
-      ...defaultOptions,
-      flat: true
-    };
+    const { tree } = await testSetup({
+      stateSchema: {
+        ...defaultOptions,
+        flat: true
+      }
+    });
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('state', options, appTree);
     const files: string[] = tree.files;
 
     // Assert
@@ -54,14 +57,14 @@ describe('Generate ngxs state', () => {
 
   it('should manage name with spec true', async () => {
     // Arrange
-    await testSetup();
-    const options: StateSchema = {
-      ...defaultOptions,
-      spec: true
-    };
+    const { tree } = await testSetup({
+      stateSchema: {
+        ...defaultOptions,
+        spec: true
+      }
+    });
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('state', options, appTree);
     const files: string[] = tree.files;
 
     // Assert
@@ -72,14 +75,14 @@ describe('Generate ngxs state', () => {
 
   it('should manage name with spec false', async () => {
     // Arrange
-    await testSetup();
-    const options: StateSchema = {
-      ...defaultOptions,
-      spec: false
-    };
+    const { tree } = await testSetup({
+      stateSchema: {
+        ...defaultOptions,
+        spec: false
+      }
+    });
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('state', options, appTree);
     const files: string[] = tree.files;
 
     // Assert
@@ -88,16 +91,15 @@ describe('Generate ngxs state', () => {
 
   it('should provideStore if the application is standalone', async () => {
     // Arrange
-    await testSetup({
-      isStandalone: true
+    const { tree } = await testSetup({
+      isStandalone: true,
+      stateSchema: {
+        ...defaultOptions,
+        spec: true
+      }
     });
-    const options: StateSchema = {
-      ...defaultOptions,
-      spec: true
-    };
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('state', options, appTree);
     const content = tree.readContent('/todos/todos.state.spec.ts');
 
     // Assert
@@ -106,17 +108,15 @@ describe('Generate ngxs state', () => {
 
   it('should import the module if the application is non standalone', async () => {
     // Arrange
-    await testSetup({
-      isStandalone: false
+    const { tree } = await testSetup({
+      isStandalone: false,
+      stateSchema: {
+        ...defaultOptions,
+        spec: true
+      }
     });
 
-    const options: StateSchema = {
-      ...defaultOptions,
-      spec: true
-    };
-
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('state', options, appTree);
     const content = tree.readContent('/todos/todos.state.spec.ts');
 
     // Assert

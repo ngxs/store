@@ -13,20 +13,23 @@ describe('NGXS Store', () => {
     name: 'todos'
   };
 
-  let appTree: UnitTestTree;
-  const testSetup = async (options?: { isStandalone?: boolean }) => {
-    appTree = await createWorkspace(options?.isStandalone);
+  const testSetup = async (options?: {
+    isStandalone?: boolean;
+    storeSchema?: StoreSchema;
+  }) => {
+    const appTree = await createWorkspace(options?.isStandalone);
+
+    const storeSchemaOptions: StoreSchema = options?.storeSchema || defaultOptions;
+    const tree: UnitTestTree = await runner.runSchematic('store', storeSchemaOptions, appTree);
+
+    return { appTree, tree };
   };
 
   it('should manage name only', async () => {
     // Arrange
-    await testSetup();
-    const options: StoreSchema = {
-      ...defaultOptions
-    };
+    const { tree } = await testSetup();
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('store', options, appTree);
     const files: string[] = tree.files;
 
     // Assert
@@ -41,14 +44,14 @@ describe('NGXS Store', () => {
 
   it('should not create a separate folder if "flat" is set to "true"', async () => {
     // Arrange
-    await testSetup();
-    const options: StoreSchema = {
-      ...defaultOptions,
-      flat: true
-    };
+    const { tree } = await testSetup({
+      storeSchema: {
+        ...defaultOptions,
+        flat: true
+      }
+    });
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('store', options, appTree);
     const files: string[] = tree.files;
 
     // Assert
@@ -59,14 +62,14 @@ describe('NGXS Store', () => {
 
   it('should manage name with spec false', async () => {
     // Arrange
-    await testSetup();
-    const options: StoreSchema = {
-      ...defaultOptions,
-      spec: false
-    };
+    const { tree } = await testSetup({
+      storeSchema: {
+        ...defaultOptions,
+        spec: false
+      }
+    });
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('store', options, appTree);
     const files: string[] = tree.files;
 
     // Assert
@@ -77,14 +80,14 @@ describe('NGXS Store', () => {
 
   it('should manage name with spec true', async () => {
     // Arrange
-    await testSetup();
-    const options: StoreSchema = {
-      ...defaultOptions,
-      spec: true
-    };
+    const { tree } = await testSetup({
+      storeSchema: {
+        ...defaultOptions,
+        spec: true
+      }
+    });
 
     // Act
-    const tree: UnitTestTree = await runner.runSchematic('store', options, appTree);
     const files: string[] = tree.files;
 
     // Assert
