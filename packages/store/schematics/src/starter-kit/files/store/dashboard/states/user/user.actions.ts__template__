@@ -1,6 +1,6 @@
 import { UserStateModel } from './user.state';
 
 export class SetUser {
-  public static readonly type = '[SetUser] action';
-  constructor(public payload: UserStateModel) {}
+  static readonly type = '[SetUser] action';
+  constructor(readonly payload: UserStateModel) {}
 }

@@ -16,12 +16,12 @@ export interface <%= classify(name) %>StateModel {
 export class <%= classify(name) %>State {
 
   @Selector()
-  public static getState(state: <%= classify(name) %>StateModel) {
+  static getState(state: <%= classify(name) %>StateModel) {
     return state;
   }
 
   @Action(<%= classify(name) %>Action)
-  public add(ctx: StateContext<<%= classify(name) %>StateModel>, { payload }: <%= classify(name) %>Action) {
+  add(ctx: StateContext<<%= classify(name) %>StateModel>, { payload }: <%= classify(name) %>Action) {
     const stateModel = ctx.getState();
     stateModel.items = [...stateModel.items, payload];
     ctx.setState(stateModel);

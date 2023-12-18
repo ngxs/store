@@ -31,12 +31,12 @@ export interface UserStateModel {
 @Injectable()
 export class UserState {
   @Selector()
-  public static getUser(state: UserStateModel): UserStateModel {
+  static getUser(state: UserStateModel): UserStateModel {
     return state;
   }
 
   @Action(SetUser)
-  public setUser(ctx: StateContext<UserStateModel>, { payload }: SetUser) {
+  setUser(ctx: StateContext<UserStateModel>, { payload }: SetUser) {
     ctx.setState(payload);
   }
 }

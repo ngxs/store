@@ -25,7 +25,7 @@ export interface AuthenticationStateModel {
 @Injectable()
 export class AuthState {
   @Selector()
-  public static getAuthData(state: AuthenticationStateModel): AuthenticationStateModel {
+  static getAuthData(state: AuthenticationStateModel): AuthenticationStateModel {
     return AuthState.getInstanceState(state);
   }
 
@@ -38,7 +38,7 @@ export class AuthState {
   }
 
   @Action(SetAuthData)
-  public setAuthData(
+  setAuthData(
     { setState }: StateContext<AuthenticationStateModel>,
     { payload }: SetAuthData
   ) {

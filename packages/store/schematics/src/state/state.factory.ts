@@ -21,6 +21,11 @@ export function state(options: StateSchema): Rule {
       ? normalizedOptions.path
       : join(normalizedOptions.path, normalizedOptions.name);
 
-    return generateFiles(url('./files'), path, { ...options, isStandalone }, options.spec);
+    return generateFiles(
+      url('./files'),
+      path,
+      { ...normalizedOptions, isStandalone },
+      options.spec
+    );
   };
 }
