@@ -115,6 +115,10 @@ describe('[TEST]: Action Types', () => {
     @State<object[]>({ name: 'themePark' })
     class ThemePark {}
 
+    const numberSelector = (): number => 3;
+    const stringSelector = (): string => 'a';
+    const nullableStringSelector = (): string | null => null;
+
     class MyPandaState {
       @Selector() static pandas0 = (state: string[]): string[] => state; // $ExpectError
 
@@ -141,6 +145,66 @@ describe('[TEST]: Action Types', () => {
       @Selector([() => {}, function custom() {}, { a: 1, b: 2 }]) // $ExpectError
       static pandas5(state: string[]): string[] {
         return state;
+      }
+
+      // Injected state - selector with no matching argument
+      @Selector([numberSelector]) // $ExpectError
+      static pandas6(state: string[]): number {
+        return state.length;
+      }
+
+      // Injected state - argument with no matching selector
+      @Selector([numberSelector]) // $ExpectError
+      static pandas7(state: string[], other: number, other2: string): number {
+        return state.length + other + other2.length;
+      }
+
+      // Injected state - type mismatch (swapped string/number)
+      @Selector([numberSelector, stringSelector]) // $ExpectError
+      static pandas8(state: string[], other: string, other2: number): number {
+        return state.length + other.length + other2;
+      }
+
+      // Injected state - unhandled nullability
+      @Selector([numberSelector, nullableStringSelector]) // $ExpectError
+      static pandas9(state: string[], other: number, other2: string): number {
+        return state.length + other + other2.length;
+      }
+
+      // Injected state - correct arguments
+      @Selector([numberSelector, stringSelector]) // $ExpectType (state: string[], other: number, other2: string) => number
+      static pandas10(state: string[], other: number, other2: string): number {
+        return state.length + other + other2.length;
+      }
+
+      // No injected state - selector with no matching argument
+      @Selector([numberSelector]) // $ExpectError
+      static pandas11(): number {
+        return 0;
+      }
+
+      // No injected state - argument with no matching selector
+      @Selector([numberSelector]) // $ExpectError
+      static pandas12(other: number, other2: string): number {
+        return other + other2.length;
+      }
+
+      // No injected state - type mismatch (swapped string/number)
+      @Selector([numberSelector, stringSelector]) // $ExpectError
+      static pandas13(other: string, other2: number): number {
+        return other.length + other2;
+      }
+
+      // No injected state - unhandled nullability
+      @Selector([numberSelector, nullableStringSelector]) // $ExpectError
+      static pandas14(other: number, other2: string): number {
+        return other + other2.length;
+      }
+
+      // No injected state - correct arguments
+      @Selector([numberSelector, stringSelector]) // $ExpectType (other: number, other2: string) => number
+      static pandas15(other: number, other2: string): number {
+        return other + other2.length;
       }
     }
   });

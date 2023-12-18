@@ -356,7 +356,7 @@ describe('Selector', () => {
         }
 
         @Selector([MyStateV4])
-        static invalid() {
+        static invalid(_: MyStateModel) {
           throw new Error('This is a forced error');
         }
       }
@@ -449,7 +449,7 @@ describe('Selector', () => {
         }
 
         @Selector([MyStateV4])
-        static invalid() {
+        static invalid(_: MyStateModel) {
           throw new Error('This is a forced error');
         }
       }
@@ -526,7 +526,7 @@ describe('Selector', () => {
 
         @Selector([MyStateV3])
         @SelectorOptions({ suppressErrors: false })
-        static invalid() {
+        static invalid(_: MyStateModel) {
           throw new Error('This is a forced error');
         }
       }
