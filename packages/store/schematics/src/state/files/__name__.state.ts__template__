@@ -15,7 +15,7 @@ export interface <%= classify(name) %>StateModel {
 export class <%= classify(name) %>State {
 
     @Selector()
-    public static getState(state: <%= classify(name) %>StateModel) {
+    static getState(state: <%= classify(name) %>StateModel) {
         return state;
     }
 
