@@ -52,8 +52,8 @@ export function provideStore(
 
   return makeEnvironmentProviders([
     ...getRootProviders(states, options),
-    features,
-    NGXS_ROOT_ENVIRONMENT_INITIALIZER
+    NGXS_ROOT_ENVIRONMENT_INITIALIZER,
+    features
   ]);
 }
 
