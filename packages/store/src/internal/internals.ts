@@ -1,19 +1,19 @@
-import { PlainObjectOf, StateClass } from '@ngxs/store/internals';
+import {
+  PlainObjectOf,
+  ɵStateClass,
+  ɵMETA_KEY,
+  ɵMETA_OPTIONS_KEY,
+  ɵSELECTOR_META_KEY
+} from '@ngxs/store/internals';
 import { Observable } from 'rxjs';
 
-import {
-  META_KEY,
-  META_OPTIONS_KEY,
-  NgxsConfig,
-  SELECTOR_META_KEY,
-  StoreOptions
-} from '../symbols';
+import { NgxsConfig, StoreOptions } from '../symbols';
 import { ActionHandlerMetaData } from '../actions/symbols';
 
 // inspired from https://stackoverflow.com/a/43674389
-export interface StateClassInternal<T = any, U = any> extends StateClass<T> {
-  [META_KEY]?: MetaDataModel;
-  [META_OPTIONS_KEY]?: StoreOptions<U>;
+export interface StateClassInternal<T = any, U = any> extends ɵStateClass<T> {
+  [ɵMETA_KEY]?: MetaDataModel;
+  [ɵMETA_OPTIONS_KEY]?: StoreOptions<U>;
 }
 
 export type StateKeyGraph = PlainObjectOf<string[]>;
@@ -77,7 +77,7 @@ export interface StatesAndDefaults {
  * @ignore
  */
 export function ensureStoreMetadata(target: StateClassInternal): MetaDataModel {
-  if (!target.hasOwnProperty(META_KEY)) {
+  if (!target.hasOwnProperty(ɵMETA_KEY)) {
     const defaultMetadata: MetaDataModel = {
       name: null,
       actions: {},
@@ -89,7 +89,7 @@ export function ensureStoreMetadata(target: StateClassInternal): MetaDataModel {
       children: []
     };
 
-    Object.defineProperty(target, META_KEY, { value: defaultMetadata });
+    Object.defineProperty(target, ɵMETA_KEY, { value: defaultMetadata });
   }
   return getStoreMetadata(target);
 }
@@ -100,7 +100,7 @@ export function ensureStoreMetadata(target: StateClassInternal): MetaDataModel {
  * @ignore
  */
 export function getStoreMetadata(target: StateClassInternal): MetaDataModel {
-  return target[META_KEY]!;
+  return target[ɵMETA_KEY]!;
 }
 
 /**
@@ -109,7 +109,7 @@ export function getStoreMetadata(target: StateClassInternal): MetaDataModel {
  * @ignore
  */
 export function ensureSelectorMetadata(target: Function): SelectorMetaDataModel {
-  if (!target.hasOwnProperty(SELECTOR_META_KEY)) {
+  if (!target.hasOwnProperty(ɵSELECTOR_META_KEY)) {
     const defaultMetadata: SelectorMetaDataModel = {
       makeRootSelector: null,
       originalFn: null,
@@ -118,7 +118,7 @@ export function ensureSelectorMetadata(target: Function): SelectorMetaDataModel 
       getSelectorOptions: () => ({})
     };
 
-    Object.defineProperty(target, SELECTOR_META_KEY, { value: defaultMetadata });
+    Object.defineProperty(target, ɵSELECTOR_META_KEY, { value: defaultMetadata });
   }
 
   return getSelectorMetadata(target);
@@ -130,7 +130,7 @@ export function ensureSelectorMetadata(target: Function): SelectorMetaDataModel 
  * @ignore
  */
 export function getSelectorMetadata(target: any): SelectorMetaDataModel {
-  return target[SELECTOR_META_KEY];
+  return target[ɵSELECTOR_META_KEY];
 }
 
 /**
@@ -216,12 +216,12 @@ export function buildGraph(stateClasses: StateClassInternal[]): StateKeyGraph {
       );
     }
 
-    return meta![META_KEY]!.name!;
+    return meta![ɵMETA_KEY]!.name!;
   };
 
   return stateClasses.reduce<StateKeyGraph>(
     (result: StateKeyGraph, stateClass: StateClassInternal) => {
-      const { name, children } = stateClass[META_KEY]!;
+      const { name, children } = stateClass[ɵMETA_KEY]!;
       result[name!] = (children || []).map(findName);
       return result;
     },
@@ -242,7 +242,7 @@ export function buildGraph(stateClasses: StateClassInternal[]): StateKeyGraph {
 export function nameToState(states: StateClassInternal[]): PlainObjectOf<StateClassInternal> {
   return states.reduce<PlainObjectOf<StateClassInternal>>(
     (result: PlainObjectOf<StateClassInternal>, stateClass: StateClassInternal) => {
-      const meta = stateClass[META_KEY]!;
+      const meta = stateClass[ɵMETA_KEY]!;
       result[meta.name!] = stateClass;
       return result;
     },

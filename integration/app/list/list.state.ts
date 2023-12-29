@@ -8,15 +8,15 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class ListState implements NgxsOnInit, NgxsAfterBootstrap {
   @Selector()
-  public static hello(): string {
+  static getHello(): string {
     return 'hello';
   }
 
-  public ngxsOnInit({ setState, getState }: StateContext<string[]>): void {
+  ngxsOnInit({ setState, getState }: StateContext<string[]>): void {
     setState([...getState(), 'NgxsOnInit lazy']);
   }
 
-  public ngxsAfterBootstrap({ setState, getState }: StateContext<string[]>): void {
+  ngxsAfterBootstrap({ setState, getState }: StateContext<string[]>): void {
     setState([...getState(), 'NgxsAfterBootstrap lazy']);
   }
 }

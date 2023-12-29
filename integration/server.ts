@@ -1,28 +1,47 @@
 import 'zone.js/node';
 
-import { APP_BASE_HREF } from '@angular/common';
-import { ngExpressEngine } from '@nguniversal/express-engine';
-import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
-import * as express from 'express';
-import { existsSync } from 'fs';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
+import * as express from 'express';
+import { Provider } from '@angular/core';
+import { APP_BASE_HREF } from '@angular/common';
+import { renderApplication } from '@angular/platform-server';
+import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
 
-import { AppServerModule } from './main.server';
+import { APP_ID_VALUE, AppComponent, appServerConfig } from './main.server';
+
+interface RenderOptions {
+  req: express.Request;
+  providers: Provider[];
+}
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app() {
   const server = express();
   const distFolder = join(process.cwd(), 'dist-integration');
-  const indexHtml = existsSync(join(distFolder, 'index.original.html'))
-    ? 'index.original.html'
-    : 'index';
+  let indexHtmlContent: string | null = null;
 
-  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
+  // TODO: use `ngExpressEngine({bootstrap})` in v16.
   server.engine(
     'html',
-    ngExpressEngine({
-      bootstrap: AppServerModule
-    }) as any
+    async (
+      path: string,
+      options: object,
+      callback: (error: Error | null, content: string) => void
+    ) => {
+      const { req, providers } = options as RenderOptions;
+
+      indexHtmlContent ||= await readFile(path, { encoding: 'utf-8' });
+
+      const html = await renderApplication(AppComponent, {
+        providers,
+        appId: APP_ID_VALUE,
+        document: indexHtmlContent,
+        url: `${req.baseUrl}${req.url}`
+      });
+
+      callback(null, html);
+    }
   );
 
   server.set('view engine', 'html');
@@ -40,9 +59,10 @@ export function app() {
 
   // All regular routes use the Universal engine
   server.get('*', (req, res) => {
-    res.render(indexHtml, {
+    res.render('index', {
       req,
       providers: [
+        ...appServerConfig.providers,
         { provide: APP_BASE_HREF, useValue: req.baseUrl },
         { provide: REQUEST, useValue: req },
         { provide: RESPONSE, useValue: res }

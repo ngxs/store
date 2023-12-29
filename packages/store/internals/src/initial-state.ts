@@ -1,18 +1,29 @@
 import { InjectionToken } from '@angular/core';
+
 import { PlainObject } from './symbols';
 
-export const INITIAL_STATE_TOKEN = new InjectionToken<any>('INITIAL_STATE_TOKEN');
+declare const ngDevMode: boolean;
+
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
 
 export class InitialState {
-  private static value: PlainObject = {};
+  private static _value: PlainObject = {};
 
-  public static set(state: PlainObject) {
-    this.value = state;
+  static set(state: PlainObject) {
+    this._value = state;
   }
 
-  public static pop(): PlainObject {
-    const state: PlainObject = this.value;
-    this.value = {};
+  static pop(): PlainObject {
+    const state = this._value;
+    this._value = {};
     return state;
   }
 }
+
+export const INITIAL_STATE_TOKEN = new InjectionToken<PlainObject>(
+  NG_DEV_MODE ? 'INITIAL_STATE_TOKEN' : '',
+  {
+    providedIn: 'root',
+    factory: () => InitialState.pop()
+  }
+);

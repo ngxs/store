@@ -1,0 +1,45 @@
+{
+  "name": "store",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/store",
+  "sourceRoot": "packages/store",
+  "projectType": "library",
+  "targets": {
+    "build-package": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "outputs": ["@ngxs/store"],
+      "options": {
+        "tsConfig": "tsconfig.build.json",
+        "project": "packages/store/ng-package.json"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/build-schematics.mjs --projectRoot=packages/store --distPath=@ngxs/store",
+        "outputPath": "@ngxs/store"
+      },
+      "dependsOn": ["build-package"]
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/store/jest.config.js",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["packages/store/**/*.ts", "packages/store/**/*.html"]
+      }
+    }
+  }
+}

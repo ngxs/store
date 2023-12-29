@@ -1,0 +1,22 @@
+import { Injectable } from '@angular/core';
+import { State, Selector } from '@ngxs/store';
+
+export interface <%= classify(name) %>StateModel {
+    items: string[];
+}
+
+@State<<%= classify(name) %>StateModel>({
+    name: '<%= camelize(name) %>',
+    defaults: {
+        items: []
+    }
+})
+@Injectable()
+export class <%= classify(name) %>State {
+
+    @Selector()
+    static getState(state: <%= classify(name) %>StateModel) {
+        return state;
+    }
+
+}

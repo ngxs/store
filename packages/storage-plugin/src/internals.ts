@@ -1,18 +1,16 @@
 import { isPlatformServer } from '@angular/common';
-
-import { StorageOption, StorageEngine, NgxsStoragePluginOptions } from './symbols';
-
-/**
- * The following key is used to store the entire serialized
- * state when there's no specific state provided.
- */
-export const DEFAULT_STATE_KEY = '@@STATE';
+import {
+  ɵDEFAULT_STATE_KEY,
+  StorageOption,
+  StorageEngine,
+  NgxsStoragePluginOptions
+} from '@ngxs/storage-plugin/internals';
 
 export function storageOptionsFactory(
   options: NgxsStoragePluginOptions | undefined
 ): NgxsStoragePluginOptions {
   return {
-    key: [DEFAULT_STATE_KEY],
+    key: [ɵDEFAULT_STATE_KEY],
     storage: StorageOption.LocalStorage,
     serialize: JSON.stringify,
     deserialize: JSON.parse,

@@ -5,6 +5,32 @@ or as the resulting event of something that has already happened.
 
 Each action contains a `type` field which is its unique identifier.
 
+## Installing with schematics
+
+```bash
+ng generate @ngxs/store:actions
+```
+
+Note: Running this command will prompt you to create an "Action". The options available for the "Action" are listed in the table below.
+
+You have the option to enter the options yourself
+
+```bash
+ng generate @ngxs/store:actions --name NAME_OF_YOUR_ACTION
+```
+
+| Option | Description                                  | Required | Default Value        |
+| :----- | :------------------------------------------- | :------: | :------------------- |
+| --name | The name of the actions                      |   Yes    |                      |
+| --path | The path to create the actions               |    No    | App's root directory |
+| --flat | Boolean flag to indicate if a dir is created |    No    | `false`              |
+
+🪄 **This command will**:
+
+- Create an action with the given options
+
+> Note: If the --flat option is false, the generated files will be organized into a directory named using the kebab case of the --name option. For instance, 'MyActions' will be transformed into 'my-actions'.
+
 ## Internal Actions
 
 There are two actions that get triggered in the internals of the library:

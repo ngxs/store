@@ -9,11 +9,12 @@ checks:
   method-lines:
     config:
       threshold: 50
-exclude_paths:
+exclude_patterns:
   - '.github/'
   - 'assets/'
   - 'docs/'
   - 'packages/**/tests/'
+  - 'packages/store/schematics/src/utils/ng-utils/'
   - 'integrations/'
   - 'integration/'
   - 'tools/'

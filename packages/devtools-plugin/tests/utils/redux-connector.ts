@@ -1,5 +1,5 @@
 import { NgxsDevtoolsAction, NgxsDevtoolsOptions } from '@ngxs/devtools-plugin';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { InitState } from '@ngxs/store';
 
 import { DevtoolsCallStack, MockState } from './symbols';
@@ -11,8 +11,11 @@ export class ReduxDevtoolsMockConnector {
   private dispatcher: Subject<NgxsDevtoolsAction> = new Subject<NgxsDevtoolsAction>();
   private countId = 0;
 
-  public subscribe(fn: Function): Subscription {
-    return this.dispatcher.subscribe(e => fn(e));
+  public subscribe(fn: Function): VoidFunction {
+    const subscription = this.dispatcher.subscribe(e => fn(e));
+    return () => {
+      return subscription.unsubscribe();
+    };
   }
 
   public init(state: MockState): void {

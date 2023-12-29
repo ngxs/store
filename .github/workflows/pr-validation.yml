@@ -8,8 +8,9 @@ on:
   pull_request:
 
 env:
-  NODE_VERSION: 16.x
-  
+  NODE_VERSION: 18.x
+  BASE_REF: ${{ format('remotes/origin/{0}', github.base_ref) }}
+
 defaults:
   run:
     shell: bash
@@ -45,7 +46,7 @@ jobs:
 
     strategy:
       matrix:
-        script: [eslint, 'test:ci']
+        script: [lint, 'test']
 
     steps:
       - name: Checkout sources
@@ -62,14 +63,15 @@ jobs:
           github-sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Run ${{ matrix.script }}
-        run: yarn ${{ matrix.script }}
+        run: yarn nx run-many --target=${{ matrix.script }} --all --configuration=ci --base=${{ env.BASE_REF}} --head=HEAD
 
       - name: Upload coverage results to Code Climate
-        if: ${{ matrix.script == 'test:ci' }}
+        if: ${{ matrix.script == 'test' }}
         run: |
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
           chmod +x /tmp/cc-test-reporter
-          /tmp/cc-test-reporter after-build --coverage-input-type lcov --exit-code 0
+          node tools/merge-reports.js --coverageDir=coverage/packages --reporterBinaryPath=/tmp/cc-test-reporter
+          /tmp/cc-test-reporter upload-coverage -i tmp/codeclimate-final.json
         env:
           CC_TEST_REPORTER_ID: 3f4c9a9d57ded045e0f9ab5d23e5bbcbf709bb85637bea555f1233e72134b818 # TODO: better store it in the repository secrets. Name the variable: CC_TEST_REPORTER_ID. Then delete this line and uncomment the next one
           # CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
@@ -81,10 +83,9 @@ jobs:
     strategy:
       matrix:
         script:
-          - 'integration:ng12:ivy'
-          - 'integration:ng13:ivy'
-          - 'integration:ng14:ivy'
           - 'integration:ng15'
+          - 'integration:ng16'
+          - 'integration:ng17'
           - 'test:types'
 
     steps:
@@ -105,7 +106,7 @@ jobs:
         run: yarn ${{ matrix.script }}
 
       - name: Upload an integration test artifact
-        if: ${{ matrix.script == 'integration:ng12:ivy' || matrix.script == 'integration:ng13:ivy' || matrix.script == 'integration:ng14:ivy' }}
+        if: ${{ matrix.script == 'integration:ng15' }}
         uses: ./.github/actions/upload-integration-test-artifact
         with:
           script: ${{ matrix.script }}
@@ -133,7 +134,7 @@ jobs:
         uses: ./.github/actions/download-integration-test-artifacts
 
       - name: Run BundleMon
-        run: yarn bundlemon        
+        run: yarn bundlemon
         env:
           BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}

@@ -1,7 +1,7 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Action, State, StateContext, NgxsModule, Store, Actions } from '@ngxs/store';
-import { StateClass } from '@ngxs/store/internals';
+import { ɵStateClass } from '@ngxs/store/internals';
 import { timer } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -16,7 +16,7 @@ describe('Action handlers', () => {
 
   type IFooStateModel = { name: string; age?: number; updated?: boolean };
 
-  function setup(config: { stores: StateClass[] }) {
+  function setup(config: { stores: ɵStateClass[] }) {
     config = config || {
       stores: []
     };

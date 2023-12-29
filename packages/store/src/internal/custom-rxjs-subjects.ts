@@ -1,4 +1,4 @@
-import { Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 /**
  * This wraps the provided function, and will enforce the following:
@@ -54,7 +54,11 @@ function orderedQueueOperation<TArgs extends any[]>(operation: (...args: TArgs) 
  * When `subject` is a `OrderedSubject<T>` the second subscriber would recieve `start` and then `end`.
  */
 export class OrderedSubject<T> extends Subject<T> {
-  next = orderedQueueOperation((value?: T) => super.next(value));
+  private _orderedNext = orderedQueueOperation((value?: T) => super.next(<T>value));
+
+  next(value?: T): void {
+    this._orderedNext(value);
+  }
 }
 
 /**
@@ -73,5 +77,20 @@ export class OrderedSubject<T> extends Subject<T> {
  * When `subject` is a `OrderedBehaviorSubject<T>` the second subscriber would recieve `start` and then `end`.
  */
 export class OrderedBehaviorSubject<T> extends BehaviorSubject<T> {
-  next = orderedQueueOperation((value: T) => super.next(value));
+  private _orderedNext = orderedQueueOperation((value: T) => super.next(value));
+  private _currentValue: T;
+
+  constructor(value: T) {
+    super(value);
+    this._currentValue = value;
+  }
+
+  getValue(): T {
+    return this._currentValue;
+  }
+
+  next(value: T): void {
+    this._currentValue = value;
+    this._orderedNext(value);
+  }
 }

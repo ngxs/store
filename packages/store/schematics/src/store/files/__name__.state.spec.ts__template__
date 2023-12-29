@@ -1,0 +1,26 @@
+import { TestBed } from '@angular/core/testing';
+import { <% if (isStandalone) { %> provideStore, <% } else { %> NgxsModule, <% } %> Store } from '@ngxs/store';
+import { <%= classify(name) %>State, <%= classify(name) %>StateModel } from './<%= dasherize(name) %>.state';
+import { <%= classify(name) %>Action } from './<%= dasherize(name) %>.actions';
+
+describe('<%= classify(name) %> store', () => {
+  let store: Store;
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      <% if (isStandalone) { %> providers: [provideStore([<%= classify(name) %>State])]
+      <% } else { %> imports: [NgxsModule.forRoot([<%= classify(name) %>State])] <% } %>
+    });
+
+    store = TestBed.inject(Store);
+  });
+
+  it('should create an action and add an item', () => {
+    const expected: <%= classify(name) %>StateModel = {
+      items: ['item-1']
+    };
+    store.dispatch(new <%= classify(name) %>Action('item-1'));
+    const actual = store.selectSnapshot(<%= classify(name) %>State.getState);
+    expect(actual).toEqual(expected);
+  });
+
+});

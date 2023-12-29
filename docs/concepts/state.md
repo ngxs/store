@@ -2,6 +2,36 @@
 
 States are classes that define a state container.
 
+## Installing with schematics
+
+```bash
+ng generate @ngxs/store:state
+```
+
+Note: Running this command will prompt you to create a "State". The options available for the "State" are listed in the table below.
+
+You have the option to enter the options yourself
+
+```bash
+ng generate @ngxs/store:state --name NAME_OF_YOUR_STATE
+```
+
+| Option    | Description                                                    | Required | Default Value               |
+| :-------- | :------------------------------------------------------------- | :------: | :-------------------------- |
+| --name    | The name of the state                                          |   Yes    |                             |
+| --path    | The path to create the state                                   |    No    | App's root directory        |
+| --spec    | Boolean flag to indicate if a unit test file should be created |    No    | `true`                      |
+| --flat    | Boolean flag to indicate if a dir is created                   |    No    | `false`                     |
+| --project | Name of the project as it is defined in your angular.json      |    No    | Workspace's default project |
+
+> When working with multiple projects within a workspace, you can explicitly specify the `project` where you want to install the **state**. The schematic will automatically detect whether the provided project is a standalone or not, and it will generate the necessary files accordingly.
+
+🪄 **This command will**:
+
+- Create a state with the given options
+
+> Note: If the --flat option is false, the generated files will be organized into a directory named using the kebab case of the --name option. For instance, 'MyState' will be transformed into 'my-state'.
+
 ## Defining a State
 
 States are classes along with decorators to describe metadata

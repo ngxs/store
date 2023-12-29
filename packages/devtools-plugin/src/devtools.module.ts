@@ -1,5 +1,11 @@
-import { NgModule, ModuleWithProviders, InjectionToken } from '@angular/core';
-import { NGXS_PLUGINS } from '@ngxs/store';
+import {
+  NgModule,
+  ModuleWithProviders,
+  InjectionToken,
+  EnvironmentProviders,
+  makeEnvironmentProviders
+} from '@angular/core';
+import { NGXS_PLUGINS, withNgxsPlugin } from '@ngxs/store';
 
 import { NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS } from './symbols';
 import { NgxsReduxDevtoolsPlugin } from './devtools.plugin';
@@ -38,4 +44,21 @@ export class NgxsReduxDevtoolsPluginModule {
       ]
     };
   }
+}
+
+export function withNgxsReduxDevtoolsPlugin(
+  options?: NgxsDevtoolsOptions
+): EnvironmentProviders {
+  return makeEnvironmentProviders([
+    withNgxsPlugin(NgxsReduxDevtoolsPlugin),
+    {
+      provide: USER_OPTIONS,
+      useValue: options
+    },
+    {
+      provide: NGXS_DEVTOOLS_OPTIONS,
+      useFactory: devtoolsOptionsFactory,
+      deps: [USER_OPTIONS]
+    }
+  ]);
 }

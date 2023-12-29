@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
 import { Store, NgxsModule, State, Selector, SelectorOptions, StateToken } from '@ngxs/store';
-import { StateClass } from '@ngxs/store/internals';
+import { ɵStateClass } from '@ngxs/store/internals';
 
 describe('Store (isolation)', () => {
   describe('when selecting a child state', () => {
@@ -170,7 +170,7 @@ describe('Store (isolation)', () => {
       store.reset({ parent: { path: 'parent', child: 'parent.child' }, child: 'child' });
     }
 
-    function setup(states: StateClass<any>[]) {
+    function setup(states: ɵStateClass<any>[]) {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot(states, {
