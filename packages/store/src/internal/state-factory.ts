@@ -278,6 +278,12 @@ export class StateFactory implements OnDestroy {
           try {
             let result = metadata.instance[actionMeta.fn](stateContext, action);
 
+            // We need to use `isPromise` instead of checking whether
+            // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
+            // is the `ZoneAwarePromise`. Some APIs, which are likely not patched by zone.js
+            // for certain reasons, might not work with `instanceof`. For instance, the `fetch`
+            // response `json()` was returning a native promise (not a `ZoneAwarePromise`),
+            // causing this check to be falsy.
             if (ɵisPromise(result)) {
               result = from(result);
             }
