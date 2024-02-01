@@ -23,3 +23,10 @@ runs:
       with:
         name: hello-world-ng16
         path: ${{ inputs.path }}
+
+    - name: Download hello-world-ng17 artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: hello-world-ng17
+        path: ${{ inputs.path }}
+
