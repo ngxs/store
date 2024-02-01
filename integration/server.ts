@@ -12,9 +12,8 @@ import bootstrap from './main.server';
 // The Express app is exported so that it can be used by serverless Functions.
 export function app() {
   const server = express();
-  const serverDistFolder = path.dirname(url.fileURLToPath(import.meta.url));
   const browserDistFolder = path.join(process.cwd(), 'dist-integration');
-  const indexHtml = path.join(serverDistFolder, 'index.server.html');
+  const indexHtml = path.join(browserDistFolder, 'index.html');
   const commonEngine = new CommonEngine();
 
   server.set('view engine', 'html');
