@@ -79,6 +79,7 @@ jobs:
       matrix:
         script:
           - 'integration:ng16'
+          - 'integration:ng17'
           - 'test:types'
 
     steps:
@@ -96,7 +97,7 @@ jobs:
         run: yarn ${{ matrix.script }}
 
       - name: Upload an integration test artifact
-        if: ${{ matrix.script == 'integration:ng16' }}
+        if: ${{ startsWith( matrix.script, 'integration:' ) }}
         uses: ./.github/actions/upload-integration-test-artifact
         with:
           script: ${{ matrix.script }}
