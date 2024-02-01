@@ -1,5 +1,6 @@
 import { TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { take } from 'rxjs/operators';
 import { Store, provideStore } from '@ngxs/store';
 import { withNgxsFormPlugin } from '@ngxs/form-plugin';
 
@@ -37,8 +38,9 @@ describe('AppComponent', () => {
     component.addTodo('Get Milk');
     component.addTodo('Clean Bathroom');
 
-    const state: Todo[] = component.todos();
-    expect(state.length).toBe(2);
+    component.todos$.subscribe((state: Todo[]) => {
+      expect(state.length).toBe(2);
+    });
   });
 
   it('should remove a todo', () => {
@@ -46,29 +48,39 @@ describe('AppComponent', () => {
     component.addTodo('Clean Bathroom');
     component.removeTodo(1);
 
-    const state: Todo[] = component.todos();
-    expect(state.length).toBe(1);
-    expect(state[0]).toBe('Get Milk');
+    component.todos$.subscribe((state: Todo[]) => {
+      expect(state.length).toBe(1);
+      expect(state[0]).toBe('Get Milk');
+    });
   });
 
   it('should set toppings using form control', fakeAsync(async () => {
-    const ngxsFormDebounce = 100;
-    const { pizza } = component;
-
     fixture.detectChanges();
     await fixture.whenStable();
 
     component.pizzaForm.patchValue({ toppings: 'oli' });
-    tick(ngxsFormDebounce);
+    tick(200);
+    let flag = false;
 
-    expect(pizza().model.toppings).toBe('oli');
-    expect(pizza().model.crust).toBe('thin');
+    component.pizza$.pipe(take(1)).subscribe((pizza: Pizza) => {
+      flag = true;
+      expect(pizza.model.toppings).toBe('oli');
+      expect(pizza.model.crust).toBe('thin');
+    });
+
+    expect(flag).toBe(true);
 
     component.pizzaForm.patchValue({ toppings: 'olives', crust: 'thick' });
-    tick(ngxsFormDebounce);
+    tick(200);
+    flag = false;
 
-    expect(pizza().model.toppings).toBe('olives');
-    expect(pizza().model.crust).toBe('thick');
+    component.pizza$.pipe(take(1)).subscribe((pizza: Pizza) => {
+      flag = true;
+      expect(pizza.model.toppings).toBe('olives');
+      expect(pizza.model.crust).toBe('thick');
+    });
+
+    expect(flag).toBe(true);
   }));
 
   it('should set toppings prefix', fakeAsync(async () => {
@@ -78,20 +90,30 @@ describe('AppComponent', () => {
     component.pizzaForm.patchValue({ toppings: 'cheese' });
     tick(100);
     component.onPrefix();
+    let flag = false;
     tick(100);
 
-    const pizza: Pizza = component.pizza();
-    expect(pizza.model).toBeDefined();
-    expect(pizza.model.toppings).toBe('Mr. cheese');
-    expect(pizza.model.crust).toBe('thin');
+    component.pizza$.pipe(take(1)).subscribe((pizza: Pizza) => {
+      flag = true;
+      expect(pizza.model).toBeDefined();
+      expect(pizza.model.toppings).toBe('Mr. cheese');
+      expect(pizza.model.crust).toBe('thin');
+    });
+
+    expect(flag).toBe(true);
   }));
 
   it('should load data in pizza form', () => {
     component.onLoadData();
+    let flag = false;
 
-    const pizza: Pizza = component.pizza();
-    expect(pizza.model.toppings).toBe('pineapple');
-    expect(pizza.model.crust).toBe('medium');
-    expect(pizza.model.extras).toEqual([false, false, true]);
+    component.pizza$.pipe(take(1)).subscribe((pizza: Pizza) => {
+      flag = true;
+      expect(pizza.model.toppings).toBe('pineapple');
+      expect(pizza.model.crust).toBe('medium');
+      expect(pizza.model.extras).toEqual([false, false, true]);
+    });
+
+    expect(flag).toBe(true);
   });
 });

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
 
 import { DetailState } from '@integration/detail/detail.state';
 
@@ -8,7 +9,7 @@ import { DetailState } from '@integration/detail/detail.state';
   templateUrl: './detail.component.html'
 })
 export class DetailComponent {
-  detail = this._store.selectSignal(DetailState);
+  detail$: Observable<boolean> = this._store.select(DetailState);
 
   constructor(private _store: Store) {}
 }

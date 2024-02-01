@@ -5,7 +5,7 @@ import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 describe('[TEST]: StateToken', () => {
-  describe('Simple use', function () {
+  describe('Simple use', function() {
     it('should successfully create a simple token', () => {
       const TODO_TOKEN = new StateToken<string>('todo');
       expect(TODO_TOKEN).toBeInstanceOf(StateToken);
