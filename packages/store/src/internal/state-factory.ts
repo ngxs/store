@@ -1,4 +1,12 @@
-import { Injectable, Injector, Optional, SkipSelf, Inject, OnDestroy } from '@angular/core';
+import {
+  Injectable,
+  Injector,
+  Optional,
+  SkipSelf,
+  Inject,
+  OnDestroy,
+  ɵisPromise
+} from '@angular/core';
 import {
   forkJoin,
   from,
@@ -270,7 +278,13 @@ export class StateFactory implements OnDestroy {
           try {
             let result = metadata.instance[actionMeta.fn](stateContext, action);
 
-            if (result instanceof Promise) {
+            // We need to use `isPromise` instead of checking whether
+            // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
+            // is the `ZoneAwarePromise`. Some APIs, which are likely not patched by zone.js
+            // for certain reasons, might not work with `instanceof`. For instance, the dynamic
+            // import returns a native promise (not a `ZoneAwarePromise`), causing this check to
+            // be falsy.
+            if (ɵisPromise(result)) {
               result = from(result);
             }
 
@@ -285,7 +299,7 @@ export class StateFactory implements OnDestroy {
               // See https://github.com/ngxs/store/issues/1568
               result = result.pipe(
                 mergeMap((value: any) => {
-                  if (value instanceof Promise) {
+                  if (ɵisPromise(value)) {
                     return from(value);
                   }
                   if (isObservable(value)) {
