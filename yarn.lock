@@ -1835,7 +1835,7 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@definitelytyped/header-parser@0.0.163", "@definitelytyped/header-parser@latest":
+"@definitelytyped/header-parser@latest":
   version "0.0.163"
   resolved "https://registry.npmjs.org/@definitelytyped/header-parser/-/header-parser-0.0.163.tgz#fdf5589a048e89b2a2adbd33d5d3d78ecd2a2ec6"
   integrity sha512-Jr+/q+ESfc7uWldz/j11BfpjIN/gB4WmwhFENhWaMwM0W/9p0ShF+OiUqGhk2Q3Iz8v/oyWzSsxyxgasg9kCxQ==
@@ -1844,12 +1844,12 @@
     "@types/parsimmon" "^1.10.1"
     parsimmon "^1.13.0"
 
-"@definitelytyped/typescript-versions@0.0.163", "@definitelytyped/typescript-versions@^0.0.163", "@definitelytyped/typescript-versions@latest":
+"@definitelytyped/typescript-versions@^0.0.163", "@definitelytyped/typescript-versions@latest":
   version "0.0.163"
   resolved "https://registry.npmjs.org/@definitelytyped/typescript-versions/-/typescript-versions-0.0.163.tgz#b3e018057a0437740102850de2c093c8cddd9e6f"
   integrity sha512-+GWtJhC+7UaCUnJ+ZkA7bfGuPd6ZbJKEjbHqh76/gOXsqAUOMEa49ufsLlIPUbkEeQlnDNoTHCegE5X/Q+u+/A==
 
-"@definitelytyped/utils@0.0.163", "@definitelytyped/utils@latest":
+"@definitelytyped/utils@latest":
   version "0.0.163"
   resolved "https://registry.npmjs.org/@definitelytyped/utils/-/utils-0.0.163.tgz#1fb26bf5cf22a00c16924fcb115fe76a46817972"
   integrity sha512-6MX5TxaQbG/j2RkCWbcbLvv+YNipKqY0eQJafDhwC/RprUocpg+uYVNlH8XzdKRWOGJ0pq7SZOsJD4C3A01ZXg==
