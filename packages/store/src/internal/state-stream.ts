@@ -1,4 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { PlainObject } from '@ngxs/store/internals';
 
@@ -10,6 +11,11 @@ import { OrderedBehaviorSubject } from './custom-rxjs-subjects';
  */
 @Injectable({ providedIn: 'root' })
 export class StateStream extends OrderedBehaviorSubject<PlainObject> implements OnDestroy {
+  readonly state: Signal<PlainObject> = toSignal(this, {
+    manualCleanup: true,
+    requireSync: true
+  });
+
   constructor() {
     super({});
   }
