@@ -14,29 +14,36 @@ For this purpose, the dependencies are specified in the shared object in `webpac
 
 ```js
 plugins: [
-    new ModuleFederationPlugin({
+  new ModuleFederationPlugin({
+    name: 'mfOne',
+    filename: 'remoteEntry.js',
+    exposes: {
+      './mfModuleX': './apps/mfOne/src/app/x/x.module.ts',
+      './mfModuleY': './apps/mfOne/src/app/y/y.module.ts'
+    },
 
-      name: "mfOne",
-      filename: "remoteEntry.js",
-      exposes: {
-        './mfModuleX': './apps/mfOne/src/app/x/x.module.ts',
-        './mfModuleY': './apps/mfOne/src/app/y/y.module.ts',
+    shared: share({
+      '@angular/core': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+      '@angular/common': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+      '@angular/common/http': {
+        singleton: true,
+        strictVersion: true,
+        requiredVersion: 'auto'
       },
+      '@angular/router': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+      '@ngxs/devtools-plugin': {
+        singleton: true,
+        strictVersion: true,
+        requiredVersion: '3.7.2'
+      },
+      '@ngxs/store': { singleton: true, strictVersion: true, requiredVersion: '3.7.2' },
+      rxjs: { singleton: true, strictVersion: true, requiredVersion: '6.6.7' },
 
-      shared: share({
-        "@angular/core": {singleton: true, strictVersion: true, requiredVersion: 'auto'},
-        "@angular/common": {singleton: true, strictVersion: true, requiredVersion: 'auto'},
-        "@angular/common/http": {singleton: true, strictVersion: true, requiredVersion: 'auto'},
-        "@angular/router": {singleton: true, strictVersion: true, requiredVersion: 'auto'},
-        "@ngxs/devtools-plugin": {singleton: true, strictVersion: true, requiredVersion: '3.7.2'},
-        "@ngxs/store": {singleton: true, strictVersion: true, requiredVersion: '3.7.2'},
-        "rxjs": {singleton: true, strictVersion: true, requiredVersion: '6.6.7'},
-        
-        ...sharedMappings.getDescriptors()
-      })
-    }),
-    sharedMappings.getPlugin()
-  ]
+      ...sharedMappings.getDescriptors()
+    })
+  }),
+  sharedMappings.getPlugin()
+];
 ```
 
 ## Into libraries
