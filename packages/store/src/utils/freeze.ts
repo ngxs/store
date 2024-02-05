@@ -8,7 +8,7 @@ export const deepFreeze = (o: any) => {
   const oIsFunction = typeof o === 'function';
   const hasOwnProp = Object.prototype.hasOwnProperty;
 
-  Object.getOwnPropertyNames(o).forEach(function(prop) {
+  Object.getOwnPropertyNames(o).forEach(function (prop) {
     if (
       hasOwnProp.call(o, prop) &&
       (oIsFunction ? prop !== 'caller' && prop !== 'callee' && prop !== 'arguments' : true) &&

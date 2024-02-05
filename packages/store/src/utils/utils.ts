@@ -17,7 +17,7 @@ export function getActionTypeFromInstance(action: any): string | undefined {
 export function actionMatcher(action1: any) {
   const type1 = getActionTypeFromInstance(action1);
 
-  return function(action2: any) {
+  return function (action2: any) {
     return type1 === getActionTypeFromInstance(action2);
   };
 }

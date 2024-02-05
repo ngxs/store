@@ -17,7 +17,7 @@ Let's start with a common example. Here we have a small state containing animals
 
 ```ts
 import { Injectable } from '@angular/core';
-import { Selector,State } from '@ngxs/store';
+import { Selector, State } from '@ngxs/store';
 
 export interface AnimalsStateModel {
   zebras: string[];
@@ -30,8 +30,8 @@ export interface AnimalsStateModel {
   defaults: {
     zebras: [],
     pandas: [],
-    monkeys: [],
-  },
+    monkeys: []
+  }
 })
 @Injectable()
 export class AnimalsState {}

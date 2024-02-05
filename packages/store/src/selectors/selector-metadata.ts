@@ -1,7 +1,7 @@
 import {
   ensureSelectorMetadata,
   SelectorMetaDataModel,
-  SharedSelectorOptions,
+  SharedSelectorOptions
 } from '../internal/internals';
 import { CreationMetadata } from './selector-models';
 
@@ -14,7 +14,7 @@ export const selectorOptionsMetaAccessor = {
   defineOptions: (target: any, options: SharedSelectorOptions) => {
     if (!target) return;
     (<any>target)[SELECTOR_OPTIONS_META_KEY] = options;
-  },
+  }
 };
 
 export function setupSelectorMetadata<T extends (...args: any[]) => any>(
@@ -44,6 +44,6 @@ function getLocalSelectorOptions(
     ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.containerClass) || {}),
     ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.originalFn) || {}),
     ...(selectorMetaData.getSelectorOptions() || {}),
-    ...explicitOptions,
+    ...explicitOptions
   };
 }

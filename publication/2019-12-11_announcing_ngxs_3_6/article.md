@@ -749,13 +749,9 @@ What started as a UI concern has now littered our state with extra code. We will
 @Component({
   selector: 'app',
   template: `
-    <button [disabled]="(books$ | async).pending" (click)="addBook()">
-      Add book
-    </button>
+    <button [disabled]="(books$ | async).pending" (click)="addBook()">Add book</button>
 
-    <span *ngIf="(books$ | async).pending">
-      Loading...
-    </span>
+    <span *ngIf="(books$ | async).pending"> Loading... </span>
   `
 })
 export class AppComponent {
@@ -825,13 +821,9 @@ import { actionsExecuting, ActionsExecuting } from '@ngxs-labs/actions-executing
 @Component({
   selector: 'app',
   template: `
-    <button [disabled]="addBookIsExecuting$ | async" (click)="addBook()">
-      Add book
-    </button>
+    <button [disabled]="addBookIsExecuting$ | async" (click)="addBook()">Add book</button>
 
-    <span *ngIf="addBookIsExecuting$ | async">
-      Loading...
-    </span>
+    <span *ngIf="addBookIsExecuting$ | async"> Loading... </span>
   `
 })
 export class AppComponent {

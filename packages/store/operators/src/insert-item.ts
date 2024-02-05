@@ -15,7 +15,7 @@ export function insertItem<T>(value: NoInfer<T>, beforePosition?: number): State
 
     // Property may be dynamic and might not existed before
     if (!Array.isArray(existing)) {
-      return [(value as unknown) as T];
+      return [value as unknown as T];
     }
 
     const clone = existing.slice();
@@ -29,7 +29,7 @@ export function insertItem<T>(value: NoInfer<T>, beforePosition?: number): State
       index = beforePosition!;
     }
 
-    clone.splice(index, 0, (value as unknown) as T);
+    clone.splice(index, 0, value as unknown as T);
     return clone;
   };
 }

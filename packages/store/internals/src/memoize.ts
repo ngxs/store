@@ -46,7 +46,7 @@ export function memoize<T extends (...args: any[]) => any>(
     lastArgs = arguments;
     return lastResult;
   }
-  (<any>memoized).reset = function() {
+  (<any>memoized).reset = function () {
     // The hidden (for now) ability to reset the memoization
     lastArgs = null;
     lastResult = null;
