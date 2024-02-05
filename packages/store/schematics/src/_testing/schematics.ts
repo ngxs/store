@@ -25,7 +25,7 @@ const defaultAppOptions: ApplicationOptions = {
 };
 
 export async function createWorkspace(
-  isStandalone = false,
+  standalone = false,
   schematicRunner = angularSchematicRunner,
   workspaceOptions = defaultWorkspaceOptions,
   appOptions = defaultAppOptions
@@ -34,9 +34,17 @@ export async function createWorkspace(
     'workspace',
     workspaceOptions
   );
-  appTree = await schematicRunner.runSchematic('application', appOptions, appTree);
+  appTree = await schematicRunner.runSchematic(
+    'application',
+    {
+      ...appOptions,
+      // Specify explicitly because it's truthy by default since Angular 17.
+      standalone
+    },
+    appTree
+  );
 
-  isStandalone && updateToStandalone(appTree, workspaceOptions, appOptions);
+  standalone && updateToStandalone(appTree, workspaceOptions, appOptions);
 
   return appTree;
 }
@@ -73,5 +81,7 @@ function updateToStandalone(
   const projectPath = `/${workspaceOptions.newProjectRoot}/${appOptions.name}`;
   appTree.overwrite(`${projectPath}/src/main.ts`, mainTsContent);
   appTree.overwrite(`${projectPath}/src/app/app.component.ts`, appComponentContent);
-  appTree.delete(`${projectPath}/src/app/app.module.ts`);
+  if (appTree.files.includes(`${projectPath}/src/app/app.module.ts`)) {
+    appTree.delete(`${projectPath}/src/app/app.module.ts`);
+  }
 }

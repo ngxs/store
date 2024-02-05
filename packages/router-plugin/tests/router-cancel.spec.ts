@@ -86,10 +86,8 @@ describe('RouterCancel', () => {
           navigationCancelEmittedTimes++;
         });
 
-      await ngZone.run(async () => {
-        await router.navigateByUrl('/');
-        await router.navigateByUrl('/blog');
-      });
+      await ngZone.run(() => router.navigateByUrl('/'));
+      await ngZone.run(() => router.navigateByUrl('/blog'));
 
       const url = store.selectSnapshot(RouterState.url);
 

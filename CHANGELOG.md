@@ -16,6 +16,7 @@ $ npm install @ngxs/store@dev
 - Fix: Show error when state initialization order is invalid [#2066](https://github.com/ngxs/store/pull/2066), [#2067](https://github.com/ngxs/store/pull/2067)
 - Fix: Change `instanceof Promise` to `isPromise` to allow any promisable object [#2093](https://github.com/ngxs/store/pull/2093)
 - Fix: Router Plugin - Expose `NGXS_ROUTER_PLUGIN_OPTIONS` privately [#2037](https://github.com/ngxs/store/pull/2037)
+- Build: Upgrade to NX 17 [#2087](https://github.com/ngxs/store/pull/2087)
 
 # 3.8.2 2023-11-30
 

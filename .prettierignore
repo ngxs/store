@@ -10,3 +10,5 @@ build/**
 coverage/**
 @ngxs/**
 **/dist/**
+
+/.nx/cache

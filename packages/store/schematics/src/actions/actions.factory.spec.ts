@@ -14,7 +14,7 @@ describe('NGXS Actions', () => {
     const options: ActionsSchema = {
       name: 'todos'
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync('actions', options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic('actions', options);
     const files: string[] = tree.files;
     expect(files).toEqual(['/todos/todos.actions.ts']);
   });
@@ -23,7 +23,7 @@ describe('NGXS Actions', () => {
       name: 'todos',
       flat: true
     };
-    const tree: UnitTestTree = await runner.runSchematicAsync('actions', options).toPromise();
+    const tree: UnitTestTree = await runner.runSchematic('actions', options);
     const files: string[] = tree.files;
     expect(files).toEqual(['/todos.actions.ts']);
   });

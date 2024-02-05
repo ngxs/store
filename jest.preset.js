@@ -1,4 +1,4 @@
-const nxPreset = require('@nrwl/jest/preset').default;
+const nxPreset = require('@nx/jest/preset').default;
 const { pathsToModuleNameMapper } = require('ts-jest');
 
 const { compilerOptions } = require('./tsconfig.base.json');
@@ -11,7 +11,7 @@ module.exports = {
   },
   testPathIgnorePatterns: ['/node_modules/', '/types/', '/helpers/'],
   transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
-  resolver: '@nrwl/jest/plugins/resolver',
+  resolver: '@nx/jest/plugins/resolver',
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageReporters: ['json', 'lcovonly', 'lcov', 'text', 'html'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {

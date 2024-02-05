@@ -229,10 +229,8 @@ describe('RouterDataResolved', () => {
       const store: Store = injector.get(Store);
       const router: Router = injector.get(Router);
 
-      await ngZone.run(async () => {
-        await router.navigateByUrl('/a/b/c');
-        await router.navigateByUrl('/a/b');
-      });
+      await ngZone.run(() => router.navigateByUrl('/a/b/c'));
+      await ngZone.run(() => router.navigateByUrl('/a/b'));
 
       // Assert
       const counter = store.selectSnapshot<number>(CounterState);
