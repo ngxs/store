@@ -9,15 +9,15 @@ export function append<T>(items: NoInfer<T[]>): StateOperator<T[]> {
     // just return `existing`
     const itemsNotProvidedButExistingIs = (!items || !items.length) && existing;
     if (itemsNotProvidedButExistingIs) {
-      return (existing as unknown) as T[];
+      return existing as unknown as T[];
     }
 
     if (Array.isArray(existing)) {
-      return existing.concat((items as unknown) as ExistingState<T[]>);
+      return existing.concat(items as unknown as ExistingState<T[]>);
     }
 
     // For example if some property is added dynamically
     // and didn't exist before thus it's not `ArrayLike`
-    return (items as unknown) as T[];
+    return items as unknown as T[];
   };
 }

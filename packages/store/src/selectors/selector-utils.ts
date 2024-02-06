@@ -6,7 +6,7 @@ import {
   SelectorMetaDataModel,
   SharedSelectorOptions,
   RuntimeSelectorContext,
-  SelectorFactory,
+  SelectorFactory
 } from '../internal/internals';
 import { CreationMetadata, RuntimeSelectorInfo } from './selector-models';
 
@@ -24,7 +24,7 @@ export function createRootSelectorFactory<T extends (...args: any[]) => any>(
 
     return function selectFromRoot(rootState: any) {
       // Determine arguments from the app state using the selectors
-      const results = argumentSelectorFunctions.map((argFn) => argFn(rootState));
+      const results = argumentSelectorFunctions.map(argFn => argFn(rootState));
 
       // if the lambda tries to access a something on the
       // state that doesn't exist, it will throw a TypeError.
@@ -73,13 +73,13 @@ function getRuntimeSelectorInfo(
     selectorMetaData.containerClass
   );
 
-  const argumentSelectorFunctions = selectorsToApply.map((selector) => {
+  const argumentSelectorFunctions = selectorsToApply.map(selector => {
     const factory = getRootSelectorFactory(selector);
     return factory(context);
   });
   return {
     selectorOptions,
-    argumentSelectorFunctions,
+    argumentSelectorFunctions
   };
 }
 

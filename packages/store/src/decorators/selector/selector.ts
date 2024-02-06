@@ -36,13 +36,13 @@ export function Selector<T extends SelectorDef<any>>(selectors?: T[]): SelectorT
       selectorName: key.toString(),
       getSelectorOptions() {
         return {};
-      },
+      }
     });
     const newDescriptor = {
       configurable: true,
       get() {
         return memoizedFn;
-      },
+      }
     };
     // Add hidden property to descriptor
     (<any>newDescriptor)['originalFn'] = originalFn;

@@ -123,7 +123,7 @@ function ofActionOperator(
 ): OperatorFunction<ActionContext, any> {
   const allowedMap = createAllowedActionTypesMap(allowedTypes);
   const allowedStatusMap = statuses && createAllowedStatusesMap(statuses);
-  return function(o: Observable<ActionContext>) {
+  return function (o: Observable<ActionContext>) {
     return o.pipe(filterStatus(allowedMap, allowedStatusMap), mapOperator());
   };
 }

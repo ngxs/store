@@ -97,9 +97,7 @@ import { RouterDataResolved } from '@ngxs/router-plugin';
 import { map } from 'rxjs/operators';
 
 @Component({
-  template: `
-    <app-some-component [data]="data$ | async"></app-some-component>
-  `
+  template: ` <app-some-component [data]="data$ | async"></app-some-component> `
 })
 export class AppComponent {
   data$ = this.actions$.pipe(
