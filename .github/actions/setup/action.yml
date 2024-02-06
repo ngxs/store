@@ -13,7 +13,7 @@ inputs:
   node-version:
     description: Node version
     required: true
-    default: 16.x
+    default: 18.x
   github-ref-name:
     description: Branch name
     required: true
