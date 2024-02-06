@@ -246,10 +246,6 @@ workflows:
       ###     requires:
       ###       - build
 
-      - integration_ng15_tests:
-          requires:
-            - build
-
       - integration_ng16_tests:
           requires:
             - build
