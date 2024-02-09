@@ -1,13 +1,5 @@
 // tslint:disable:unified-signatures
-import {
-  CreateComputedOptions,
-  Inject,
-  Injectable,
-  Optional,
-  Signal,
-  Type,
-  computed
-} from '@angular/core';
+import { Inject, Injectable, Optional, Signal, Type, computed } from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
 import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
@@ -20,6 +12,7 @@ import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
 import { StateToken } from './state-token/state-token';
 import { StateFactory } from './internal/state-factory';
+import { TypedSelector } from './selectors';
 
 @Injectable({ providedIn: 'root' })
 export class Store {
@@ -104,18 +97,9 @@ export class Store {
   /**
    * Select a signal from the state.
    */
-  selectSignal<T>(
-    selector: (state: any, ...states: any[]) => T,
-    options?: CreateComputedOptions<T>
-  ): Signal<T>;
-  selectSignal<T = any>(
-    selector: string | Type<any>,
-    options?: CreateComputedOptions<T>
-  ): Signal<T>;
-  selectSignal<T>(selector: StateToken<T>, options?: CreateComputedOptions<T>): Signal<T>;
-  selectSignal<T>(selector: any, options?: CreateComputedOptions<T>): Signal<T> {
+  selectSignal<T>(selector: TypedSelector<T>): Signal<T> {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
-    return computed<T>(() => selectorFn(this._stateStream.state()), options);
+    return computed<T>(() => selectorFn(this._stateStream.state()));
   }
 
   /**

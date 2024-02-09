@@ -18,6 +18,11 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class TodoState implements NgxsOnInit, NgxsAfterBootstrap {
   @Selector()
+  static getTodoState(state: Todo[]) {
+    return state;
+  }
+
+  @Selector()
   static getPandas(state: Todo[]): Todo[] {
     return state.filter(s => s.indexOf('panda') > -1);
   }
