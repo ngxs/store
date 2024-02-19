@@ -81,7 +81,7 @@ describe('Restore state only if key matches', () => {
           ]),
           NgxsModule.forRoot([AuthState]),
           NgxsStoragePluginModule.forRoot({
-            key: [AuthState]
+            keys: [AuthState]
           })
         ],
         declarations: [TestComponent],

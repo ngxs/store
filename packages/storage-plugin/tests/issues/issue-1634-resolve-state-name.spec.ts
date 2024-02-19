@@ -30,7 +30,7 @@ describe('Resolve state name if the state class has been provided (https://githu
       imports: [
         NgxsModule.forRoot([CountriesState]),
         NgxsStoragePluginModule.forRoot({
-          key: [CountriesState]
+          keys: [CountriesState]
         })
       ]
     });

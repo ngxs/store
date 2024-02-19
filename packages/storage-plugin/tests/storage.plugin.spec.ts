@@ -76,7 +76,10 @@ describe('NgxsStoragePlugin', () => {
 
     // Act
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([CounterState]), NgxsStoragePluginModule.forRoot()]
+      imports: [
+        NgxsModule.forRoot([CounterState]),
+        NgxsStoragePluginModule.forRoot({ keys: '*' })
+      ]
     });
 
     const store: Store = TestBed.inject(Store);
@@ -92,7 +95,10 @@ describe('NgxsStoragePlugin', () => {
 
     // Act
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([CounterState]), NgxsStoragePluginModule.forRoot()]
+      imports: [
+        NgxsModule.forRoot([CounterState]),
+        NgxsStoragePluginModule.forRoot({ keys: '*' })
+      ]
     });
 
     const store: Store = TestBed.inject(Store);
@@ -128,7 +134,10 @@ describe('NgxsStoragePlugin', () => {
 
       // Act
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
+        imports: [
+          NgxsModule.forRoot([TestState]),
+          NgxsStoragePluginModule.forRoot({ keys: '*' })
+        ]
       });
 
       const store: Store = skipConsoleLogging(() => TestBed.inject(Store));
@@ -153,7 +162,10 @@ describe('NgxsStoragePlugin', () => {
 
       // Act
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
+        imports: [
+          NgxsModule.forRoot([TestState]),
+          NgxsStoragePluginModule.forRoot({ keys: '*' })
+        ]
       });
 
       const store: Store = skipConsoleLogging(() => TestBed.inject(Store));
@@ -178,7 +190,10 @@ describe('NgxsStoragePlugin', () => {
 
       // Act
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TestState]), NgxsStoragePluginModule.forRoot()]
+        imports: [
+          NgxsModule.forRoot([TestState]),
+          NgxsStoragePluginModule.forRoot({ keys: '*' })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -199,6 +214,7 @@ describe('NgxsStoragePlugin', () => {
       imports: [
         NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot({
+          keys: '*',
           migrations: [
             {
               version: 1,
@@ -237,7 +253,7 @@ describe('NgxsStoragePlugin', () => {
       imports: [
         NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot({
-          key: 'counter',
+          keys: ['counter'],
           migrations: [
             {
               version: 1,
@@ -274,6 +290,7 @@ describe('NgxsStoragePlugin', () => {
       imports: [
         NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot({
+          keys: '*',
           storage: StorageOption.SessionStorage
         })
       ]
@@ -293,6 +310,7 @@ describe('NgxsStoragePlugin', () => {
       imports: [
         NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot({
+          keys: '*',
           storage: StorageOption.SessionStorage
         })
       ]
@@ -352,6 +370,7 @@ describe('NgxsStoragePlugin', () => {
       imports: [
         NgxsModule.forRoot([CounterState]),
         NgxsStoragePluginModule.forRoot({
+          keys: '*',
           serialize(val) {
             return val;
           },
@@ -391,7 +410,7 @@ describe('NgxsStoragePlugin', () => {
     TestBed.configureTestingModule({
       imports: [
         NgxsModule.forRoot([CounterState]),
-        NgxsStoragePluginModule.forRoot(),
+        NgxsStoragePluginModule.forRoot({ keys: '*' }),
         NgxsModule.forFeature([LazyLoadedState])
       ]
     });
@@ -423,7 +442,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [
           NgxsModule.forRoot([CounterState]),
           NgxsStoragePluginModule.forRoot({
-            key: CounterState
+            keys: [CounterState]
           })
         ]
       });
@@ -445,7 +464,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [
           NgxsModule.forRoot([CounterState, NamesState]),
           NgxsStoragePluginModule.forRoot({
-            key: [CounterState, NamesState]
+            keys: [CounterState, NamesState]
           })
         ]
       });
@@ -471,7 +490,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [
           NgxsModule.forRoot([CounterState, NamesState]),
           NgxsStoragePluginModule.forRoot({
-            key: [CounterState, 'names']
+            keys: [CounterState, 'names']
           })
         ]
       });
@@ -498,6 +517,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [
           NgxsModule.forRoot([CounterState]),
           NgxsStoragePluginModule.forRoot({
+            keys: '*',
             beforeSerialize: obj => {
               return {
                 counter: {
@@ -531,7 +551,7 @@ describe('NgxsStoragePlugin', () => {
         imports: [
           NgxsModule.forRoot([CounterInfoState]),
           NgxsStoragePluginModule.forRoot({
-            key: 'counterInfo',
+            keys: ['counterInfo'],
             afterDeserialize: (obj, key) => {
               if (key === 'counterInfo') {
                 return new CounterInfoStateModel(obj.count);
@@ -562,7 +582,7 @@ describe('NgxsStoragePlugin', () => {
         TestBed.configureTestingModule({
           imports: [
             NgxsModule.forRoot([CounterState, NamesState], { developmentMode: true }),
-            NgxsStoragePluginModule.forRoot(options)
+            NgxsStoragePluginModule.forRoot(options as any)
           ]
         });
 
@@ -577,7 +597,7 @@ describe('NgxsStoragePlugin', () => {
           `${namespace}:${ɵDEFAULT_STATE_KEY}`,
           JSON.stringify({ counter: { count: 100 } })
         );
-        const { store } = testSetup({ namespace });
+        const { store } = testSetup({ keys: '*', namespace });
         const state: CounterStateModel = store.selectSnapshot(CounterState);
         // Assert
         expect(state.count).toBe(100);
@@ -591,7 +611,7 @@ describe('NgxsStoragePlugin', () => {
           `${namespace}:names`,
           JSON.stringify(['Mark', 'Artur', 'Max'])
         );
-        const { store } = testSetup({ namespace, key: [NamesState] });
+        const { store } = testSetup({ namespace, keys: [NamesState] });
         const names = store.selectSnapshot<string[]>(NamesState);
         const { count } = store.selectSnapshot<CounterStateModel>(CounterState);
         // Assert
@@ -609,7 +629,7 @@ describe('NgxsStoragePlugin', () => {
           `undefined+null+something_else`
         );
         const spy = jest.spyOn(console, 'error').mockImplementation();
-        testSetup({ namespace, key: [NamesState] });
+        testSetup({ namespace, keys: [NamesState] });
         // Assert
         try {
           expect(spy).toHaveBeenCalledWith(

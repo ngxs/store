@@ -48,7 +48,7 @@ describe('Invalid state re-hydration (https://github.com/ngxs/store/issues/1146)
     imports: [
       BrowserModule,
       NgxsModule.forRoot([CounterState]),
-      NgxsStoragePluginModule.forRoot(),
+      NgxsStoragePluginModule.forRoot({ keys: '*' }),
       NgxsRouterPluginModule.forRoot(),
       RouterModule.forRoot([])
     ],
