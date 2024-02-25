@@ -17,7 +17,7 @@ ng add @ngxs/store --plugins DEVTOOLS,FORM --project angular-ngxs-project
 ```
 
 | Option    | Description                                               | Default Value               |
-| :-------- | :-------------------------------------------------------- | :-------------------------- |
+| --------- | --------------------------------------------------------- | --------------------------- |
 | --project | Name of the project as it is defined in your angular.json | Workspace's default project |
 | --plugins | Comma separate the plugins as appear below                |                             |
 
@@ -71,7 +71,7 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-When you provide the store at the root level, you can pass root states along with [options](../advanced/options.md).
+When you provide the store at the root level, you can pass root states along with [options](../concepts/store/options.md).
 If you are lazy loading, you can use the `provideStates` option with the same arguments.
 
 Options such as `developmentMode` can be passed to the module as the second argument in the `provideStore` function.
@@ -106,8 +106,7 @@ pnpm install @ngxs/logger-plugin@dev
 pnpm install @ngxs/devtools-plugin@dev
 ```
 
-This will install the version currently tagged as `@dev`.
-Your package.json file will be locked to that specific version.
+This will install the version currently tagged as `@dev`. Your package.json file will be locked to that specific version.
 
 ```json
 {

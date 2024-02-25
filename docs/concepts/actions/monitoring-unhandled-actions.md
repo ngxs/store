@@ -57,7 +57,7 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-> 💡 It's best to import this module only in development mode. This may be achieved using environment imports. See [dynamic plugins](../recipes/dynamic-plugins.md).
+> 💡 It's best to import this module only in development mode. This may be achieved using environment imports. See [dynamic plugins](../../recipes/dynamic-plugins.md).
 
 Ignored actions can be also expanded in lazy modules. The `@ngxs/store` exposes the `NgxsUnhandledActionsLogger` for these purposes:
 

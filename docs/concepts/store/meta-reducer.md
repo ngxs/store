@@ -1,12 +1,8 @@
-# Meta Reducer
+# Meta Reducers
 
-A meta reducer is a higher order reducer that allows you to
-take action on the global state rather than a state slice.
-In NGXS, we don't have this concept but you can accomplish
-this with [plugins](../plugins/intro.md).
+A meta reducer is a higher-order reducer that allows you to take action on the global state rather than a state slice. In NGXS, we don't have this concept but you can accomplish this with [plugins](../../plugins/).
 
-An example of a meta reducer might be to clear the entire
-state when a user logs out. An example implementation would be:
+An example of a meta reducer might be to clear the entire state when a user logs out. An example implementation would be:
 
 ```ts
 import { getActionTypeFromInstance } from '@ngxs/store';
@@ -41,5 +37,4 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-Now when we dispatch the logout action it will use our new
-plugin and erase the state.
+Now when we dispatch the logout action it will use our new plugin and erase the state.

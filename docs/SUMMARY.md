@@ -1,51 +1,47 @@
-# Summary
+# Table of contents
 
-- Getting Started
-  - [Why](introduction/why.md)
-  - [Installation](introduction/installation.md)
-  - [Starter Kit](introduction/starter-kit.md)
-  - [Schematics](introduction/schematics.md)
-- Concepts
-  - [Introduction](concepts/intro.md)
-  - [Store](concepts/store.md)
-  - [Actions](concepts/actions.md)
-  - [State](concepts/state.md)
-  - [Select](concepts/select.md)
-- Advanced
-  - [Action Handlers](advanced/action-handlers.md)
-  - [Actions Life Cycle](advanced/actions-life-cycle.md)
-  - [Cancellation](advanced/cancellation.md)
-  - [Composition](advanced/composition.md)
-  - [Error Handling](advanced/errors.md)
-  - [Ivy Migration Guide](advanced/ivy-migration-guide.md)
-  - [Lazy Loading](advanced/lazy.md)
-  - [Life-cycle](advanced/life-cycle.md)
-  - [Mapped Sub States](advanced/mapped-sub-states.md)
-  - [Meta Reducers](advanced/meta-reducer.md)
-  - [Monitoring Unhandled Actions](advanced/monitoring-unhandled-actions.md)
-  - [Optimizing Selectors](advanced/optimizing-selectors.md)
-  - [Options](advanced/options.md)
-  - [Selector Utils](advanced/selector-utils.md)
-  - [Shared State](advanced/shared-state.md)
-  - [State Token](advanced/token.md)
-  - [State Operators](advanced/operators.md)
-  - [Sub States](advanced/sub-states.md)
-- Recipes
-  - [Authentication](recipes/authentication.md)
-  - [Caching](recipes/cache.md)
-  - [Component Events from NGXS](recipes/component-events-from-ngxs.md)
-  - [Debouncing Actions](recipes/debouncing-actions.md)
-  - [Dynamic Plugins](recipes/dynamic-plugins.md)
-  - [Immutability Helpers](recipes/immutability-helpers.md)
-  - [Module Federation](recipes/module-federation.md)
-  - [Style Guide](recipes/style-guide.md)
-  - [Unit Testing](recipes/unit-testing.md)
-  - [RxAngular Integration](recipes/intregration-with-rxangular.md)
-  - [Select Decorator Deprecation](recipes/select-decorator-deprecation.md)
-- Snippets
-  - [State Operators](snippets/operators.md)
-- Plugins
-  - [Introduction](plugins/intro.md)
+- [NGXS](README.md)
+  - [Overview](ngxs/intro.md)
+
+## Introduction
+
+- [Why](introduction/why.md)
+- [Installation](introduction/installation.md)
+- [Starter Kit](introduction/starter-kit.md)
+- [Schematics](introduction/schematics.md)
+
+## Concepts
+
+- [Store](concepts/store/README.md)
+  - [Store Options](concepts/store/options.md)
+  - [Error Handling](concepts/store/error-handling.md)
+  - [Meta Reducers](concepts/store/meta-reducer.md)
+- [Actions](concepts/actions/README.md)
+  - [Actions Life Cycle](concepts/actions/actions-life-cycle.md)
+  - [Action Handlers](concepts/actions/action-handlers.md)
+  - [Cancellation](concepts/actions/cancellation.md)
+  - [Monitoring Unhandled Actions](concepts/actions/monitoring-unhandled-actions.md)
+- [State](concepts/state/README.md)
+  - [Life-cycle](concepts/state/life-cycle.md)
+  - [Composition](concepts/state/composition.md)
+  - [Lazy Loading](concepts/state/lazy.md)
+  - [State Operators](concepts/state/operators.md)
+  - [Custom State Operators](concepts/state/operators-1.md)
+  - [Shared State](concepts/state/shared-state.md)
+  - [State Token](concepts/state/token.md)
+  - [Sub States](concepts/state/sub-states.md)
+  - [Immutability Helpers](concepts/state/immutability-helpers.md)
+  - [Error Handling](concepts/state/error-handling.md)
+- [Select](concepts/select/README.md)
+  - [Mapped Sub States](concepts/select/mapped-sub-states.md)
+  - [Optimizing Selectors](concepts/select/optimizing-selectors.md)
+  - [Selector Utils](concepts/select/selector-utils.md)
+  - [Error Handling](concepts/select/error-handling.md)
+
+---
+
+- [Style Guide](style-guide.md)
+- [Plugins](plugins/README.md)
   - [CLI](plugins/cli.md)
   - [Logger](plugins/logger.md)
   - [Devtools](plugins/devtools.md)
@@ -54,12 +50,29 @@
   - [Web Socket](plugins/websocket.md)
   - [Router](plugins/router.md)
   - [HMR](plugins/hmr.md)
-- NGXS Labs
-  - [Introduction](ngxs-labs/intro.md)
-- Community
-  - [FAQ](advanced/faq.md)
-  - [Resources](community/projects.md)
-  - [Contributors](community/contributors.md)
-  - [Contributing](community/contributing.md)
-  - [Sponsors](community/sponsors.md)
+- [Recipes](recipes/README.md)
+  - [Authentication](recipes/authentication.md)
+  - [Caching](recipes/cache.md)
+  - [Component Events from NGXS](recipes/component-events-from-ngxs.md)
+  - [Debouncing Actions](recipes/debouncing-actions.md)
+  - [Dynamic Plugins](recipes/dynamic-plugins.md)
+  - [Module Federation](recipes/module-federation.md)
+  - [Unit Testing](recipes/unit-testing.md)
+  - [RxAngular Integration](recipes/intregration-with-rxangular.md)
+  - [Ivy Migration Guide](recipes/ivy-migration-guide.md)
+  - [Select Decorator Deprecation](recipes/select-decorator-deprecation.md)
+
+## Community & Labs
+
+- [NGXS Labs](community-and-labs/ngxs-labs/README.md)
+  - [Introduction](community-and-labs/ngxs-labs/intro.md)
+- [Community](community-and-labs/community/README.md)
+  - [FAQ](community-and-labs/community/faq.md)
+  - [Resources](community-and-labs/community/projects.md)
+  - [Contributors](community-and-labs/community/contributors.md)
+  - [Contributing](community-and-labs/community/contributing.md)
+  - [Sponsors](community-and-labs/community/sponsors.md)
+
+---
+
 - [Changelog](https://github.com/ngxs/store/blob/master/CHANGELOG.md)

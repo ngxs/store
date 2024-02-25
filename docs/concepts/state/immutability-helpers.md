@@ -74,7 +74,7 @@ There are different ways to improve this code. Let us look at a few different pa
 
 ### State Operators
 
-[State operators](../advanced/operators.md) are first-class immutability helpers that NGXS provides out of the box. The `patch` operator will become your best friend in case of choosing state operators as your immutability helpers. Let's see how we could re-write the above code with the help of the `patch` state operator:
+[State operators](operators.md) are first-class immutability helpers that NGXS provides out of the box. The `patch` operator will become your best friend in case of choosing state operators as your immutability helpers. Let's see how we could re-write the above code with the help of the `patch` state operator:
 
 ```ts
 import { patch } from '@ngxs/store/operators';

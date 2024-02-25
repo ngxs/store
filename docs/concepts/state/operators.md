@@ -1,14 +1,16 @@
 # State Operators
 
-## Why?
+## State Operators
+
+### Why?
 
 The NGXS `patchState` method is used to do [immutable object](https://en.wikipedia.org/wiki/Immutable_object) updates to the container state slice without the typical long-handed syntax. This is very neat and convenient because you do not have to use the `getState` and `setState` as well as the `Object.assign(...)`or the spread operator to update the state. The `patchState` method only offers a shallow patch and as a result is left wanting in more advanced scenarios. This is where state operators come in. The `setState` method can be passed a state operator which will be used to determine the new state.
 
-## Basic
+### Basic
 
 The basic idea of operators is that we could describe the modifications to the state using curried functions that are given any inputs that they need to describe the change and are finalized using the state slice that they are assigned to.
 
-# Example
+## Example
 
 From theory to practice - let's take the following example:
 
@@ -47,8 +49,7 @@ export class AnimalsState {
 }
 ```
 
-The `patch` operator expresses the intended modification quite nicely and returns a function that will apply these modifications as a new object based on the provided state.
-In order to understand what this is doing let's express this in a long handed form:
+The `patch` operator expresses the intended modification quite nicely and returns a function that will apply these modifications as a new object based on the provided state. In order to understand what this is doing let's express this in a long handed form:
 
 ```ts
   // For demonstration purposes! This long handed form is not needed from NGXS v3.4 onwards.
@@ -62,7 +63,7 @@ In order to understand what this is doing let's express this in a long handed fo
   }
 ```
 
-## Supplied State Operators
+### Supplied State Operators
 
 This is not the only operator, we introduce much more that can be used along with or in place of `patch`.
 
@@ -108,7 +109,7 @@ compose<T>(...operators: StateOperator<T>[]): StateOperator<T>
 
 These operators introduce a new way of declarative state mutation.
 
-## Advanced Example
+### Advanced Example
 
 Let's look at more advanced examples:
 
@@ -180,7 +181,7 @@ export class AnimalsState {
 
 You will see that in each case above the state operators are wrapped within a call to the `patch` operator. This is only done because of the convenience that the `patch` state operator provides for targeting a nested property of the state.
 
-## Typing Operators
+### Typing Operators
 
 Specifying types for the `patch` operator is always necessary when doing nested updates. You can face cases when the `patch` operator cannot infer the nested type structure. Let's look at the following state:
 
@@ -256,7 +257,7 @@ If we change `country` to `Qcountry` (intentional mistake), the compiler will te
 
 💡 Tip: we can specify the state model type and chain properties to get the desired type. Like in the example above.
 
-## Custom Operators
+### Custom Operators
 
 You can also define your own operators for updates that are common to your domain. For example:
 
@@ -304,10 +305,10 @@ function addEntity(entity: Entity): StateOperator<EntitiesStateModel> {
 
 As you can see, state operators are very powerful to start moving your immutable state updates to be more declarative and expressive. Enhancing the overall maintainability and readability of your state class code.
 
-## Snippets
+### Snippets
 
-Check this [section](./../snippets/operators.md) for more operators that you can add to your application.
+Check this [section](operators-1.md) for more operators that you can add to your application.
 
-## Relevant Articles
+### Relevant Articles
 
 [NGXS State Operators](https://medium.com/ngxs/ngxs-state-operators-8b339641b220)
