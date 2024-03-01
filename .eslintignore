@@ -1,2 +1,2 @@
 **/*.spec.ts
-**/*.lint.ts
+packages/store/types/.eslintrc.js
