@@ -19,9 +19,9 @@ export const enum StorageOption {
 
 export interface NgxsStoragePluginOptions {
   /**
-   * Key for the state slice to store in the storage engine.
+   * Keys for the state slice to store in the storage engine.
    */
-  key?: undefined | StorageKey | StorageKey[];
+  keys: '*' | StorageKey[];
 
   /**
    * The namespace is used to prefix the key for the state slice. This is
@@ -83,9 +83,14 @@ export interface NgxsStoragePluginOptions {
   afterDeserialize?(obj: any, key: string): any;
 }
 
-export const ɵNGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken(
-  NG_DEV_MODE ? 'NGXS_STORAGE_PLUGIN_OPTIONS' : ''
-);
+export interface ɵNgxsTransformedStoragePluginOptions extends NgxsStoragePluginOptions {
+  keys: StorageKey[];
+}
+
+export const ɵNGXS_STORAGE_PLUGIN_OPTIONS =
+  new InjectionToken<ɵNgxsTransformedStoragePluginOptions>(
+    NG_DEV_MODE ? 'NGXS_STORAGE_PLUGIN_OPTIONS' : ''
+  );
 
 export const STORAGE_ENGINE = new InjectionToken<StorageEngine>(
   NG_DEV_MODE ? 'STORAGE_ENGINE' : ''

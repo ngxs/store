@@ -28,7 +28,7 @@ export const USER_OPTIONS = new InjectionToken(NG_DEV_MODE ? 'USER_OPTIONS' : ''
 @NgModule()
 export class NgxsStoragePluginModule {
   static forRoot(
-    options?: NgxsStoragePluginOptions
+    options: NgxsStoragePluginOptions
   ): ModuleWithProviders<NgxsStoragePluginModule> {
     return {
       ngModule: NgxsStoragePluginModule,
@@ -63,7 +63,7 @@ export class NgxsStoragePluginModule {
 }
 
 export function withNgxsStoragePlugin(
-  options?: NgxsStoragePluginOptions
+  options: NgxsStoragePluginOptions
 ): EnvironmentProviders {
   return makeEnvironmentProviders([
     withNgxsPlugin(NgxsStoragePlugin),

@@ -20,7 +20,7 @@ import { NgxsModule } from '@ngxs/store';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 
 @NgModule({
-  imports: [NgxsModule.forRoot([]), NgxsStoragePluginModule.forRoot()]
+  imports: [NgxsModule.forRoot([]), NgxsStoragePluginModule.forRoot({ keys: '*' })]
 })
 export class AppModule {}
 ```
@@ -32,7 +32,7 @@ initial state can be picked up by those plugins.
 
 The plugin has the following optional values:
 
-- `key`: State name(s) to be persisted. You can pass a string or array of strings that can be deeply nested via dot notation. If not provided, it defaults to all states using the `@@STATE` key.
+- `keys`: State name(s) to be persisted. You can pass an array of strings that can be deeply nested via dot notation. If not provided, you must explicitly specify the `*` option.
 - `namespace`: The namespace is used to prefix the key for the state slice. This is necessary when running micro frontend applications which use storage plugin. The namespace will eliminate the conflict between keys that might overlap.
 - `storage`: Storage strategy to use. This defaults to LocalStorage but you can pass SessionStorage or anything that implements the StorageEngine API.
 - `deserialize`: Custom deserializer. Defaults to `JSON.parse`
@@ -41,9 +41,9 @@ The plugin has the following optional values:
 - `beforeSerialize`: Interceptor executed before serialization
 - `afterDeserialize`: Interceptor executed after deserialization
 
-### Key option
+### Keys option
 
-The `key` option is used to determine what states should be persisted in the storage. `key` shouldn't be a random string, it has to coincide with your state names. Let's look at the below example:
+The `keys` option is used to determine what states should be persisted in the storage. `keys` shouldn't be a random string, it has to coincide with your state names. Let's look at the below example:
 
 ```ts
 // novels.state.ts
@@ -63,22 +63,22 @@ export class NovelsState {}
 export class DetectivesState {}
 ```
 
-In order to persist all states there is no need to provide the `key` option, so it's enough just to write:
+In order to persist all states, you have to provide `*` as the `keys` option:
 
 ```ts
 @NgModule({
-  imports: [NgxsStoragePluginModule.forRoot()]
+  imports: [NgxsStoragePluginModule.forRoot({ keys: '*' })]
 })
 export class AppModule {}
 ```
 
-But what if we wanted to persist only `NovelsState`? Then we would have needed to pass its name to the `key` option:
+But what if we wanted to persist only `NovelsState`? Then we would have needed to pass its name to the `keys` option:
 
 ```ts
 @NgModule({
   imports: [
     NgxsStoragePluginModule.forRoot({
-      key: 'novels'
+      keys: ['novels']
     })
   ]
 })
@@ -91,7 +91,7 @@ It's also possible to provide a state class as opposed to its name:
 @NgModule({
   imports: [
     NgxsStoragePluginModule.forRoot({
-      key: NovelsState
+      keys: [NovelsState]
     })
   ]
 })
@@ -104,7 +104,7 @@ And if we wanted to persist `NovelsState` and `DetectivesState`:
 @NgModule({
   imports: [
     NgxsStoragePluginModule.forRoot({
-      key: ['novels', 'detectives']
+      keys: ['novels', 'detectives']
     })
   ]
 })
@@ -147,7 +147,7 @@ import { LOCAL_STORAGE_ENGINE, SESSION_STORAGE_ENGINE } from '@ngxs/storage-plug
 @NgModule({
   imports: [
     NgxsStoragePluginModule.forRoot({
-      key: [
+      keys: [
         {
           key: 'novels', // or `NovelsState`
           engine: LOCAL_STORAGE_ENGINE
@@ -176,7 +176,7 @@ export class MyCustomStorageEngine implements StorageEngine {
 @NgModule({
   imports: [
     NgxsStoragePluginModule.forRoot({
-      key: [
+      keys: [
         {
           key: 'novels',
           engine: MyCustomStorageEngine
@@ -196,6 +196,7 @@ The namespace option should be provided when the storage plugin is used in micro
 @NgModule({
   imports: [
     NgxsStoragePluginModule.forRoot({
+      keys: '*',
       namespace: 'auth'
     })
   ]
@@ -222,7 +223,7 @@ export class MyStorageEngine implements StorageEngine {
 }
 
 @NgModule({
-  imports: [NgxsModule.forRoot([]), NgxsStoragePluginModule.forRoot()],
+  imports: [NgxsModule.forRoot([]), NgxsStoragePluginModule.forRoot({ keys: '*' })],
   providers: [
     {
       provide: STORAGE_ENGINE,
@@ -244,7 +245,7 @@ You can define your own logic before or after the state get serialized or deseri
 @NgModule({
   imports: [
     NgxsStoragePluginModule.forRoot({
-      key: 'counter',
+      keys: ['counter'],
       beforeSerialize: (obj, key) => {
         if (key === 'counter') {
           return {
@@ -275,6 +276,7 @@ is a strategy to migrate my state from `animals` to `newAnimals`.
   imports: [
     NgxsModule.forRoot([]),
     NgxsStoragePluginModule.forRoot({
+      keys: '*',
       migrations: [
         {
           version: 1,
