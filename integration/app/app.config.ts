@@ -45,7 +45,7 @@ export const appConfig: ApplicationConfig = {
       withNgxsLoggerPlugin({ logger: console, collapsed: false, disabled: true }),
       withNgxsReduxDevtoolsPlugin({ disabled: environment.production }),
       withNgxsRouterPlugin(),
-      withNgxsStoragePlugin({ key: [TODOS_STORAGE_KEY] })
+      withNgxsStoragePlugin({ keys: [TODOS_STORAGE_KEY] })
     )
   ]
 };

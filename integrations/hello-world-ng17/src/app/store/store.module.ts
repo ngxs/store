@@ -16,7 +16,7 @@ import { environment } from '../../environments/environment';
     NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production }),
     NgxsFormPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot({ disabled: environment.production }),
-    NgxsStoragePluginModule.forRoot(),
+    NgxsStoragePluginModule.forRoot({ keys: '*' }),
     NgxsWebsocketPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot()
   ]

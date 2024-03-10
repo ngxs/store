@@ -45,7 +45,7 @@ describe('Update for lazy state (https://github.com/ngxs/store/issues/1857)', ()
     imports: [
       BrowserModule,
       NgxsModule.forRoot([]),
-      NgxsStoragePluginModule.forRoot(),
+      NgxsStoragePluginModule.forRoot({ keys: '*' }),
       FeatureStateModule
     ],
     declarations: [TestComponent],
