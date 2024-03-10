@@ -8,6 +8,11 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class ListState implements NgxsOnInit, NgxsAfterBootstrap {
   @Selector()
+  static getListState(state: string[]) {
+    return state;
+  }
+
+  @Selector()
   static getHello(): string {
     return 'hello';
   }

@@ -1,5 +1,5 @@
 // tslint:disable:unified-signatures
-import { Inject, Injectable, Optional, Type } from '@angular/core';
+import { Inject, Injectable, Optional, Signal, Type, computed } from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
 import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
@@ -12,6 +12,7 @@ import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
 import { StateToken } from './state-token/state-token';
 import { StateFactory } from './internal/state-factory';
+import { TypedSelector } from './selectors';
 
 @Injectable({ providedIn: 'root' })
 export class Store {
@@ -91,6 +92,14 @@ export class Store {
   selectSnapshot(selector: any): any {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());
+  }
+
+  /**
+   * Select a signal from the state.
+   */
+  selectSignal<T>(selector: TypedSelector<T>): Signal<T> {
+    const selectorFn = this.getStoreBoundSelectorFn(selector);
+    return computed<T>(() => selectorFn(this._stateStream.state()));
   }
 
   /**
