@@ -60,6 +60,32 @@ you automatically as a shortcut method.
 This can be useful in route guards where you only want to check the current state and not continue
 watching the stream. It can also be useful for unit testing.
 
+## Store Select Signal Function
+
+The `Store` can return a signal instead of an observable:
+
+```ts
+import { Store } from '@ngxs/store';
+
+@Component({
+  selector: 'app-zoo',
+  template: `
+    @for (panda of pandas(); track $index) {
+      <p>{{ panda }}</p>
+    }
+  `
+})
+export class ZooComponent {
+  readonly pandas = this.store.selectSignal(ZooState.pandas);
+
+  constructor(private store: Store) {}
+}
+```
+
+The `selectSignal` function only accepts a 'typed' selector function (a function that carries type information) and a state token. There is no option to provide an anonymous function as demonstrated in the previous example with `this.store.select(state => state.zoo.animals)`.
+
+We don't allow any options to be provided to the internal `computed` function, such as an equality function, because immutability is a fundamental premise for the existence of data in our state. Users should never have a reason to specify the equality comparison function.
+
 ## Snapshot Selects
 
 On the store, there is a `selectSnapshot` function that allows you to pull out the
