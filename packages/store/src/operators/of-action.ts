@@ -159,15 +159,21 @@ interface FilterMap {
 }
 
 function createAllowedActionTypesMap(types: ActionType[]): FilterMap {
-  return types.reduce((filterMap: FilterMap, klass: any) => {
-    filterMap[getActionTypeFromInstance(klass)!] = true;
-    return filterMap;
-  }, <FilterMap>{});
+  return types.reduce(
+    (filterMap: FilterMap, klass: any) => {
+      filterMap[getActionTypeFromInstance(klass)!] = true;
+      return filterMap;
+    },
+    <FilterMap>{}
+  );
 }
 
 function createAllowedStatusesMap(statuses: ActionStatus[]): FilterMap {
-  return statuses.reduce((filterMap: FilterMap, status: ActionStatus) => {
-    filterMap[status] = true;
-    return filterMap;
-  }, <FilterMap>{});
+  return statuses.reduce(
+    (filterMap: FilterMap, status: ActionStatus) => {
+      filterMap[status] = true;
+      return filterMap;
+    },
+    <FilterMap>{}
+  );
 }

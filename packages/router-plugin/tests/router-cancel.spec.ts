@@ -73,9 +73,8 @@ describe('RouterCancel', () => {
     'should persist the previous state if the "RouterCancel" action is dispatched',
     freshPlatform(async () => {
       // Arrange
-      const { router, store, ngZone } = await createNgxsRouterPluginTestingPlatform(
-        getTestModule()
-      );
+      const { router, store, ngZone } =
+        await createNgxsRouterPluginTestingPlatform(getTestModule());
 
       let navigationCancelEmittedTimes = 0;
 

@@ -93,9 +93,8 @@ describe('#1293 issue', () => {
     'should not infinitely redirect because of reverted snapshot',
     freshPlatform(async () => {
       // Assert
-      const { router, injector, ngZone } = await createNgxsRouterPluginTestingPlatform(
-        getTestModule()
-      );
+      const { router, injector, ngZone } =
+        await createNgxsRouterPluginTestingPlatform(getTestModule());
 
       // Act
       await ngZone.run(() => router.navigateByUrl('/'));

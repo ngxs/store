@@ -37,8 +37,9 @@ export function removeDollarAtTheEnd(name: string): string {
   return dollarAtTheEnd ? name.slice(0, lastCharIndex) : name;
 }
 
-export type PropertyType<T> = T extends StateToken<any>
-  ? Observable<ExtractTokenType<T>>
-  : T extends (...args: any[]) => any
-  ? Observable<ReturnType<T>>
-  : any;
+export type PropertyType<T> =
+  T extends StateToken<any>
+    ? Observable<ExtractTokenType<T>>
+    : T extends (...args: any[]) => any
+      ? Observable<ReturnType<T>>
+      : any;

@@ -51,7 +51,10 @@ export class HeroesComponent {
   readonly add = new Subject<string>();
   readonly delete = new Subject<Hero>();
 
-  constructor(private state: RxState<HeroesComponentState>, private store: Store) {
+  constructor(
+    private state: RxState<HeroesComponentState>,
+    private store: Store
+  ) {
     this.state.hold(
       // <--- RxAngular hold will manage the subscription for us
       this.add.pipe(switchMap(name => this.store.dispatch(new AddHero(name)))) // <--- dispatch action to NGXS

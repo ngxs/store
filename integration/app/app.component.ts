@@ -52,7 +52,10 @@ export class AppComponent implements OnInit {
   injected$: Observable<string> = this._store.select(TodosState.getInjected);
   injected: Signal<string> = this._store.selectSignal(TodosState.getInjected);
 
-  constructor(private _store: Store, private _fb: FormBuilder) {}
+  constructor(
+    private _store: Store,
+    private _fb: FormBuilder
+  ) {}
 
   get extras(): FormControl[] {
     const extras = this.pizzaForm.get('extras') as FormArray;

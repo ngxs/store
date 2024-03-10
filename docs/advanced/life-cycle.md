@@ -258,7 +258,10 @@ export class VersionState {
 
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
-  constructor(private http: HttpClient, private store: Store) {}
+  constructor(
+    private http: HttpClient,
+    private store: Store
+  ) {}
 
   loadVersion() {
     return this.http.get<string>('/api/version').pipe(

@@ -94,7 +94,10 @@ export class BooksComponent {
     map((action: LoadBooks) => this.store.selectSnapshot(BooksState.getBooks(action.genre)))
   );
 
-  constructor(private store: Store, private actions$: Actions) {}
+  constructor(
+    private store: Store,
+    private actions$: Actions
+  ) {}
 }
 ```
 

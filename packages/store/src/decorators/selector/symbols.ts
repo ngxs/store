@@ -4,8 +4,8 @@ import { ExtractTokenType } from '../../state-token/symbols';
 export type SelectorSpec<T, U> = [T] extends [never]
   ? (...states: any[]) => any
   : T extends StateToken<any>
-  ? (state: ExtractTokenType<T>) => U
-  : (...states: any[]) => any;
+    ? (state: ExtractTokenType<T>) => U
+    : (...states: any[]) => any;
 
 export type SelectorType<T> = <U>(
   target: any,

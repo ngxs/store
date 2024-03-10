@@ -56,7 +56,10 @@ This also applies to the usage of data collections such as Set, Map, WeakMap, We
 
 ```ts
 export class Todo {
-  constructor(public title: string, public isCompleted = false) {}
+  constructor(
+    public title: string,
+    public isCompleted = false
+  ) {}
 }
 
 @State<Todo[]>({
