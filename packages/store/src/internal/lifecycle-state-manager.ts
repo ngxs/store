@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { NgxsBootstrapper } from '@ngxs/store/internals';
+import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
+import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
 import { EMPTY, ReplaySubject } from 'rxjs';
 import {
   catchError,
@@ -12,9 +13,7 @@ import {
 } from 'rxjs/operators';
 
 import { Store } from '../store';
-import { getValue } from '../utils/utils';
 import { InternalErrorReporter } from './error-handler';
-import { InitState, UpdateState } from '../actions/actions';
 import { StateContextFactory } from './state-context-factory';
 import { InternalStateOperations } from './state-operations';
 import { MappedStore, StatesAndDefaults } from './internals';
@@ -34,7 +33,7 @@ export class LifecycleStateManager implements OnDestroy {
     private _internalErrorReporter: InternalErrorReporter,
     private _internalStateOperations: InternalStateOperations,
     private _stateContextFactory: StateContextFactory,
-    private _bootstrapper: NgxsBootstrapper
+    private _appBootstrappedState: ɵNgxsAppBootstrappedState
   ) {}
 
   ngOnDestroy(): void {
@@ -67,7 +66,7 @@ export class LifecycleStateManager implements OnDestroy {
       .pipe(
         filter(() => !!results),
         tap(() => this._invokeInitOnStates(results!.states)),
-        mergeMap(() => this._bootstrapper.appBootstrapped$),
+        mergeMap(() => this._appBootstrappedState),
         filter(appBootstrapped => !!appBootstrapped),
         catchError(error => {
           // The `SafeSubscriber` (which is used by most RxJS operators) re-throws

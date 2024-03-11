@@ -5,7 +5,7 @@ import {
   NgxsNextPluginFn,
   NgxsPlugin,
   setValue
-} from '@ngxs/store';
+} from '@ngxs/store/plugins';
 import {
   ResetForm,
   SetFormDirty,

@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { ModuleWithProviders, NgModule, makeEnvironmentProviders } from '@angular/core';
 
 import { NgxsDevelopmentOptions, NGXS_DEVELOPMENT_OPTIONS } from './symbols';
 import { NgxsUnhandledActionsLogger } from './ngxs-unhandled-actions-logger';
@@ -14,4 +14,11 @@ export class NgxsDevelopmentModule {
       ]
     };
   }
+}
+
+export function provideNgxsDevelopmentOptions(options: NgxsDevelopmentOptions) {
+  return makeEnvironmentProviders([
+    NgxsUnhandledActionsLogger,
+    { provide: NGXS_DEVELOPMENT_OPTIONS, useValue: options }
+  ]);
 }

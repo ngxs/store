@@ -1,17 +1,18 @@
 import {
-  ensureSelectorMetadata,
-  SelectorMetaDataModel,
-  SharedSelectorOptions
-} from '../internal/internals';
+  ɵSelectorMetaDataModel,
+  ɵSharedSelectorOptions,
+  ɵensureSelectorMetadata
+} from '@ngxs/store/internals';
+
 import { CreationMetadata } from './selector-models';
 
 const SELECTOR_OPTIONS_META_KEY = 'NGXS_SELECTOR_OPTIONS_META';
 
 export const selectorOptionsMetaAccessor = {
-  getOptions: (target: any): SharedSelectorOptions => {
+  getOptions: (target: any): ɵSharedSelectorOptions => {
     return (target && (<any>target)[SELECTOR_OPTIONS_META_KEY]) || {};
   },
-  defineOptions: (target: any, options: SharedSelectorOptions) => {
+  defineOptions: (target: any, options: ɵSharedSelectorOptions) => {
     if (!target) return;
     (<any>target)[SELECTOR_OPTIONS_META_KEY] = options;
   }
@@ -21,7 +22,7 @@ export function setupSelectorMetadata<T extends (...args: any[]) => any>(
   originalFn: T,
   creationMetadata: Partial<CreationMetadata> | undefined
 ) {
-  const selectorMetaData = ensureSelectorMetadata(originalFn);
+  const selectorMetaData = ɵensureSelectorMetadata(originalFn);
   selectorMetaData.originalFn = originalFn;
   let getExplicitSelectorOptions = () => ({});
   if (creationMetadata) {
@@ -37,9 +38,9 @@ export function setupSelectorMetadata<T extends (...args: any[]) => any>(
 }
 
 function getLocalSelectorOptions(
-  selectorMetaData: SelectorMetaDataModel,
-  explicitOptions: SharedSelectorOptions
-): SharedSelectorOptions {
+  selectorMetaData: ɵSelectorMetaDataModel,
+  explicitOptions: ɵSharedSelectorOptions
+): ɵSharedSelectorOptions {
   return {
     ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.containerClass) || {}),
     ...(selectorOptionsMetaAccessor.getOptions(selectorMetaData.originalFn) || {}),

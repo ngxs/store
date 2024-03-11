@@ -5,7 +5,9 @@ import {
   NgModule,
   makeEnvironmentProviders
 } from '@angular/core';
-import { NGXS_PLUGINS, withNgxsPlugin } from '@ngxs/store';
+import { withNgxsPlugin } from '@ngxs/store';
+import { NGXS_PLUGINS } from '@ngxs/store/plugins';
+
 import { NgxsLoggerPlugin } from './logger.plugin';
 import { NgxsLoggerPluginOptions, NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';
 

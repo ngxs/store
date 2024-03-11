@@ -1,23 +1,15 @@
-import {
-  PlainObjectOf,
-  ɵStateClass,
-  ɵMETA_KEY,
-  ɵMETA_OPTIONS_KEY,
-  ɵSELECTOR_META_KEY
-} from '@ngxs/store/internals';
 import { Observable } from 'rxjs';
+import {
+  ɵMETA_KEY,
+  ɵPlainObjectOf,
+  ɵStateClassInternal,
+  ɵActionHandlerMetaData
+} from '@ngxs/store/internals';
 
-import { NgxsConfig, StoreOptions } from '../symbols';
-import { ActionHandlerMetaData } from '../actions/symbols';
+import { NgxsConfig } from '../symbols';
 
-// inspired from https://stackoverflow.com/a/43674389
-export interface StateClassInternal<T = any, U = any> extends ɵStateClass<T> {
-  [ɵMETA_KEY]?: MetaDataModel;
-  [ɵMETA_OPTIONS_KEY]?: StoreOptions<U>;
-}
-
-export type StateKeyGraph = PlainObjectOf<string[]>;
-export type StatesByName = PlainObjectOf<StateClassInternal>;
+export type StateKeyGraph = ɵPlainObjectOf<string[]>;
+export type StatesByName = ɵPlainObjectOf<ɵStateClassInternal>;
 
 export interface StateOperations<T> {
   getState(): T;
@@ -27,40 +19,10 @@ export interface StateOperations<T> {
   dispatch(actionOrActions: any | any[]): Observable<void>;
 }
 
-export interface MetaDataModel {
-  name: string | null;
-  actions: PlainObjectOf<ActionHandlerMetaData[]>;
-  defaults: any;
-  path: string | null;
-  makeRootSelector: SelectorFactory | null;
-  children?: StateClassInternal[];
-}
-
-export interface RuntimeSelectorContext {
-  getStateGetter(key: any): (state: any) => any;
-  getSelectorOptions(localOptions?: SharedSelectorOptions): SharedSelectorOptions;
-}
-
-export type SelectFromRootState = (rootState: any) => any;
-export type SelectorFactory = (runtimeContext: RuntimeSelectorContext) => SelectFromRootState;
-
-export interface SharedSelectorOptions {
-  injectContainerState?: boolean;
-  suppressErrors?: boolean;
-}
-
-export interface SelectorMetaDataModel {
-  makeRootSelector: SelectorFactory | null;
-  originalFn: Function | null;
-  containerClass: any;
-  selectorName: string | null;
-  getSelectorOptions: () => SharedSelectorOptions;
-}
-
 export interface MappedStore {
   name: string;
   isInitialised: boolean;
-  actions: PlainObjectOf<ActionHandlerMetaData[]>;
+  actions: ɵPlainObjectOf<ɵActionHandlerMetaData[]>;
   defaults: any;
   instance: any;
   path: string;
@@ -69,68 +31,6 @@ export interface MappedStore {
 export interface StatesAndDefaults {
   defaults: any;
   states: MappedStore[];
-}
-
-/**
- * Ensures metadata is attached to the class and returns it.
- *
- * @ignore
- */
-export function ensureStoreMetadata(target: StateClassInternal): MetaDataModel {
-  if (!target.hasOwnProperty(ɵMETA_KEY)) {
-    const defaultMetadata: MetaDataModel = {
-      name: null,
-      actions: {},
-      defaults: {},
-      path: null,
-      makeRootSelector(context: RuntimeSelectorContext) {
-        return context.getStateGetter(defaultMetadata.name);
-      },
-      children: []
-    };
-
-    Object.defineProperty(target, ɵMETA_KEY, { value: defaultMetadata });
-  }
-  return getStoreMetadata(target);
-}
-
-/**
- * Get the metadata attached to the state class if it exists.
- *
- * @ignore
- */
-export function getStoreMetadata(target: StateClassInternal): MetaDataModel {
-  return target[ɵMETA_KEY]!;
-}
-
-/**
- * Ensures metadata is attached to the selector and returns it.
- *
- * @ignore
- */
-export function ensureSelectorMetadata(target: Function): SelectorMetaDataModel {
-  if (!target.hasOwnProperty(ɵSELECTOR_META_KEY)) {
-    const defaultMetadata: SelectorMetaDataModel = {
-      makeRootSelector: null,
-      originalFn: null,
-      containerClass: null,
-      selectorName: null,
-      getSelectorOptions: () => ({})
-    };
-
-    Object.defineProperty(target, ɵSELECTOR_META_KEY, { value: defaultMetadata });
-  }
-
-  return getSelectorMetadata(target);
-}
-
-/**
- * Get the metadata attached to the selector if it exists.
- *
- * @ignore
- */
-export function getSelectorMetadata(target: any): SelectorMetaDataModel {
-  return target[ɵSELECTOR_META_KEY];
 }
 
 /**
@@ -179,7 +79,7 @@ function fastPropGetter(paths: string[]): (x: any) => any {
  * @ignore
  */
 export function propGetter(paths: string[], config: NgxsConfig) {
-  if (config && config.compatibility && config.compatibility.strictContentSecurityPolicy) {
+  if (config?.compatibility?.strictContentSecurityPolicy) {
     return compliantPropGetter(paths);
   } else {
     return fastPropGetter(paths);
@@ -204,8 +104,8 @@ export function propGetter(paths: string[], config: NgxsConfig) {
  *
  * @ignore
  */
-export function buildGraph(stateClasses: StateClassInternal[]): StateKeyGraph {
-  const findName = (stateClass: StateClassInternal) => {
+export function buildGraph(stateClasses: ɵStateClassInternal[]): StateKeyGraph {
+  const findName = (stateClass: ɵStateClassInternal) => {
     const meta = stateClasses.find(g => g === stateClass);
 
     // Caretaker note: we have still left the `typeof` condition in order to avoid
@@ -220,7 +120,7 @@ export function buildGraph(stateClasses: StateClassInternal[]): StateKeyGraph {
   };
 
   return stateClasses.reduce<StateKeyGraph>(
-    (result: StateKeyGraph, stateClass: StateClassInternal) => {
+    (result: StateKeyGraph, stateClass: ɵStateClassInternal) => {
       const { name, children } = stateClass[ɵMETA_KEY]!;
       result[name!] = (children || []).map(findName);
       return result;
@@ -239,9 +139,11 @@ export function buildGraph(stateClasses: StateClassInternal[]): StateKeyGraph {
  *
  * @ignore
  */
-export function nameToState(states: StateClassInternal[]): PlainObjectOf<StateClassInternal> {
-  return states.reduce<PlainObjectOf<StateClassInternal>>(
-    (result: PlainObjectOf<StateClassInternal>, stateClass: StateClassInternal) => {
+export function nameToState(
+  states: ɵStateClassInternal[]
+): ɵPlainObjectOf<ɵStateClassInternal> {
+  return states.reduce<ɵPlainObjectOf<ɵStateClassInternal>>(
+    (result: ɵPlainObjectOf<ɵStateClassInternal>, stateClass: ɵStateClassInternal) => {
       const meta = stateClass[ɵMETA_KEY]!;
       result[meta.name!] = stateClass;
       return result;
@@ -272,8 +174,8 @@ export function nameToState(states: StateClassInternal[]): PlainObjectOf<StateCl
  */
 export function findFullParentPath(
   obj: StateKeyGraph,
-  newObj: PlainObjectOf<string> = {}
-): PlainObjectOf<string> {
+  newObj: ɵPlainObjectOf<string> = {}
+): ɵPlainObjectOf<string> {
   const visit = (child: StateKeyGraph, keyToFind: string): string | null => {
     for (const key in child) {
       if (child.hasOwnProperty(key) && child[key].indexOf(keyToFind) >= 0) {
@@ -315,7 +217,7 @@ export function findFullParentPath(
  */
 export function topologicalSort(graph: StateKeyGraph): string[] {
   const sorted: string[] = [];
-  const visited: PlainObjectOf<boolean> = {};
+  const visited: ɵPlainObjectOf<boolean> = {};
 
   const visit = (name: string, ancestors: string[] = []) => {
     if (!Array.isArray(ancestors)) {
@@ -349,13 +251,4 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
   Object.keys(graph).forEach(k => visit(k));
 
   return sorted.reverse();
-}
-
-/**
- * Returns if the parameter is a object or not.
- *
- * @ignore
- */
-export function isObject(obj: any) {
-  return (typeof obj === 'object' && obj !== null) || typeof obj === 'function';
 }

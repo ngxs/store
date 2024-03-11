@@ -1,10 +1,9 @@
-import { StateToken } from '../../state-token/state-token';
-import { ExtractTokenType } from '../../state-token/symbols';
+import { StateToken, ɵExtractTokenType } from '@ngxs/store/internals';
 
 export type SelectorSpec<T, U> = [T] extends [never]
   ? (...states: any[]) => any
   : T extends StateToken<any>
-    ? (state: ExtractTokenType<T>) => U
+    ? (state: ɵExtractTokenType<T>) => U
     : (...states: any[]) => any;
 
 export type SelectorType<T> = <U>(

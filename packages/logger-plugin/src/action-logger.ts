@@ -1,4 +1,5 @@
-import { getActionTypeFromInstance, Store } from '@ngxs/store';
+import { Store } from '@ngxs/store';
+import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 
 import { formatTime } from './internals';
 import { LogWriter } from './log-writer';

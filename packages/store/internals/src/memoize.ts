@@ -28,7 +28,7 @@ function areArgumentsShallowlyEqual(
  *
  * @ignore
  */
-export function memoize<T extends (...args: any[]) => any>(
+export function ɵmemoize<T extends (...args: any[]) => any>(
   func: T,
   equalityCheck = defaultEqualityCheck
 ): T {

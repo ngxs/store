@@ -1,5 +1,6 @@
 import { Injectable, Inject, OnDestroy, NgZone } from '@angular/core';
-import { Actions, Store, getValue, ofActionDispatched } from '@ngxs/store';
+import { Actions, Store, ofActionDispatched } from '@ngxs/store';
+import { getValue } from '@ngxs/store/plugins';
 import { ReplaySubject, Subject, fromEvent } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
