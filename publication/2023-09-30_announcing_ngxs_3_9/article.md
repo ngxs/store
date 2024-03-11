@@ -5,6 +5,7 @@ NGXS v3.9 is the result of months of hard work by the team, who have been dedica
 ## Overview
 
 - 🎨 Standalone API
+- (emoji here?) Signals
 - 🚀 Schematics
 - 🔌 Plugin Improvements
 
@@ -16,35 +17,35 @@ We have introduced a new, standalone API that is backward compatible with the ol
 
 _Before_
 
-```ts=
+```ts
 import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 
 @NgModule({
-    imports: [
-        NgxsModule.forRoot([TodosState], {
-            developmentMode: !environment.production
-        }),
-        NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production })
-  ],
+  imports: [
+    NgxsModule.forRoot([TodosState], {
+      developmentMode: !environment.production
+    }),
+    NgxsReduxDevtoolsPluginModule.forRoot({ disabled: environment.production })
+  ]
 })
 export class AppModule {}
 ```
 
 _After_
 
-```ts=
+```ts
 import { provideStore } from '@ngxs/store';
 import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
 
 export const appConfig: ApplicationConfig = {
-    providers: [
-        provideStore(
-            [TodosState],
-            { developmentMode: !environment.production },
-            withNgxsReduxDevtoolsPlugin({ disabled: environment.production })
-        )
-    ]
+  providers: [
+    provideStore(
+      [TodosState],
+      { developmentMode: !environment.production },
+      withNgxsReduxDevtoolsPlugin({ disabled: environment.production })
+    )
+  ]
 };
 ```
 
@@ -62,6 +63,36 @@ Let's explore a comprehensive list of all the plugins and how to use them using 
 | Forms      | `NgxsFormPluginModule.forRoot()`                                  | `withNgxsFormPlugin()`                                  |
 | Router     | `NgxsRouterPluginModule.forRoot()`                                | `withNgxsRouterPlugin()`                                |
 | Web Socket | `NgxsWebsocketPluginModule.forRoot({url: 'ws://localhost:4200'})` | `withNgxsWebSocketPlugin({url: 'ws://localhost:4200'})` |
+
+## Signals
+
+We have also introduced the `selectSignal` function, which functions similarly to `select`, but instead of returning an observable, it returns a [signal](https://angular.io/guide/signals):
+
+```ts
+import { Store } from '@ngxs/store';
+
+@Component({
+  selector: 'app-zoo',
+  template: `
+    @for (panda of pandas(); track $index) {
+    <p>{{ panda }}</p>
+    }
+  `
+})
+export class ZooComponent {
+  readonly pandas = this.store.selectSignal(ZooState.pandas);
+
+  constructor(private store: Store) {}
+}
+```
+
+The `selectSignal` function only accepts a 'typed' selector function (a function that carries type information) and a state token. For instance, providing an anonymous function like this wouldn't work:
+
+```ts
+store.selectSignal(state => state.animals.pandas);
+```
+
+We don't allow any options to be provided to the internal `computed` function, such as an equality function, because immutability is a fundamental premise for the existence of data in our state. Users should never have a reason to specify the equality comparison function.
 
 ## Schematics
 
@@ -89,16 +120,11 @@ Let's see some examples:
   ng generate @ngxs/store:store
   ```
 
-  ```ts=
+  ```ts
   import { provideStore } from '@ngxs/store';
 
   export const appConfig: ApplicationConfig = {
-      providers: [
-          provideStore(
-              [],
-              { developmentMode: !environment.production }
-          )
-      ]
+    providers: [provideStore([], { developmentMode: !environment.production })]
   };
   ```
 
@@ -108,17 +134,17 @@ Let's see some examples:
   ng generate @ngxs/store:state --name TodosState
   ```
 
-  ```ts=
+  ```ts
   import { provideStore } from '@ngxs/store';
-  import { TodosState } from 'your/path'
+  import { TodosState } from 'your/path';
 
   export const appConfig: ApplicationConfig = {
-      providers: [
-          provideStore(
-              [TodosState], // <--
-              { developmentMode: !environment.production }
-          )
-      ]
+    providers: [
+      provideStore(
+        [TodosState], // <--
+        { developmentMode: !environment.production }
+      )
+    ]
   };
   ```
 
