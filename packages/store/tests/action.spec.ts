@@ -420,7 +420,9 @@ describe('Action', () => {
     }
 
     describe('Promise that returns an observable', () => {
-      it('completes when observable is resolved', fakeAsync(() => {
+      it('completes when observable is resolved', async () => {
+        // Do not use `fakeAsync` for this test to mimic the real execution environment.
+
         // Arrange
         const { store, actions, promiseResolveFn, completeObservableFn, recorder, record } =
           setup();
@@ -438,7 +440,9 @@ describe('Action', () => {
           .subscribe(() => record('dispatch(PromiseThatReturnsObs) - Completed'));
 
         promiseResolveFn();
-        tick();
+        // Wait for anynomous promise to resolve because we record 'promise resolved'
+        // in a microtask which is resolved earlier before the following promise.
+        await Promise.resolve();
 
         // Assert
         expect(recorder).toEqual([
@@ -450,7 +454,7 @@ describe('Action', () => {
         ]);
 
         completeObservableFn();
-        tick();
+        await Promise.resolve();
 
         expect(recorder).toEqual([
           'promiseThatReturnsObs - start',
@@ -462,16 +466,18 @@ describe('Action', () => {
           'observableAction - observable tap',
           '(completeObservableFn) - complete',
           'ObservableAction [Completed]',
+          '(completeObservableFn) - end',
           'promiseThatReturnsObs - observable tap',
           'PromiseThatReturnsObs [Completed]',
-          'dispatch(PromiseThatReturnsObs) - Completed',
-          '(completeObservableFn) - end'
+          'dispatch(PromiseThatReturnsObs) - Completed'
         ]);
-      }));
+      });
     });
 
     describe('Promise that returns a promise', () => {
-      it('completes when inner promise is resolved', fakeAsync(() => {
+      it('completes when inner promise is resolved', async () => {
+        // Do not use `fakeAsync` for this test to mimic the real execution environment.
+
         // Arrange
         const { store, actions, promiseResolveFn, completeObservableFn, recorder, record } =
           setup();
@@ -489,7 +495,9 @@ describe('Action', () => {
           .subscribe(() => record('dispatch(PromiseThatReturnsPromise) - Completed'));
 
         promiseResolveFn();
-        tick();
+        // Wait for anynomous promise to resolve because we record 'promise resolved'
+        // in a microtask which is resolved earlier before the following promise.
+        await Promise.resolve();
 
         // Assert
         expect(recorder).toEqual([
@@ -501,7 +509,7 @@ describe('Action', () => {
         ]);
 
         completeObservableFn();
-        tick();
+        await Promise.resolve();
 
         expect(recorder).toEqual([
           'promiseThatReturnsPromise - start',
@@ -518,11 +526,13 @@ describe('Action', () => {
           'PromiseThatReturnsPromise [Completed]',
           'dispatch(PromiseThatReturnsPromise) - Completed'
         ]);
-      }));
+      });
     });
 
     describe('Observable that returns a promise', () => {
-      it('completes when promise is completed', fakeAsync(() => {
+      it('completes when promise is completed', async () => {
+        // Do not use `fakeAsync` for this test to mimic the real execution environment.
+
         // Arrange
         const {
           store,
@@ -547,6 +557,7 @@ describe('Action', () => {
           .subscribe(() => record('dispatch(ObsThatReturnsPromise) - Completed'));
 
         completeObservableFn();
+        await Promise.resolve();
 
         // Assert
         expect(recorder).toEqual([
@@ -558,7 +569,10 @@ describe('Action', () => {
         ]);
 
         promiseResolveFn();
-        tick();
+
+        // The below expectation is run earlier before the `ObsThatReturnsPromise`
+        // action completes.
+        await new Promise(resolve => setTimeout(resolve));
 
         expect(recorder).toEqual([
           'obsThatReturnsPromise - start',
@@ -572,7 +586,7 @@ describe('Action', () => {
           'ObsThatReturnsPromise [Completed]',
           'dispatch(ObsThatReturnsPromise) - Completed'
         ]);
-      }));
+      });
     });
 
     describe('Observable that returns an inner observable', () => {

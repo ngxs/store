@@ -40,11 +40,9 @@ export {
   NgxsSimpleChange
 } from './symbols';
 export { Selector } from './decorators/selector/selector';
-export { getActionTypeFromInstance, actionMatcher } from './utils/utils';
 export { NgxsExecutionStrategy } from './execution/symbols';
-export { ActionType, ActionOptions } from './actions/symbols';
+export { ActionType } from './actions/symbols';
 export { NoopNgxsExecutionStrategy } from './execution/noop-ngxs-execution-strategy';
-export { StateToken } from './state-token/state-token';
 
 export { NgxsDevelopmentOptions } from './dev-features/symbols';
 export { NgxsDevelopmentModule } from './dev-features/ngxs-development.module';
@@ -60,3 +58,8 @@ export {
 } from './selectors';
 
 export * from './standalone-features';
+
+export { StateToken } from '@ngxs/store/internals';
+export { ɵActionOptions as ActionOptions } from '@ngxs/store/internals';
+
+export { getActionTypeFromInstance, actionMatcher } from '@ngxs/store/plugins';

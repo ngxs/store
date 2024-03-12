@@ -60,7 +60,10 @@ Here we have an action that should trigger feeding a zebra with hay.
 ```ts
 export class FeedZebra {
   static readonly type = '[Zoo] Feed Zebra';
-  constructor(public name: string, public hayAmount: number) {}
+  constructor(
+    public name: string,
+    public hayAmount: number
+  ) {}
 }
 ```
 

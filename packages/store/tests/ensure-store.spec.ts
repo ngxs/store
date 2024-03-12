@@ -1,23 +1,19 @@
+import { State, Action, Selector, NgxsModule, SelectorOptions } from '@ngxs/store';
 import {
-  State,
-  Action,
-  getStoreMetadata,
-  getSelectorMetadata,
-  Selector,
-  NgxsModule,
-  SelectorOptions
-} from '@ngxs/store';
+  ɵSelectorMetaDataModel,
+  ɵgetSelectorMetadata,
+  ɵgetStoreMetadata
+} from '@ngxs/store/internals';
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { SelectorMetaDataModel } from '../src/internal/internals';
 import { getRootSelectorFactory } from '../src/selectors/selector-utils';
 
 describe('Ensure metadata', () => {
   it('should return undefined if not a state class', () => {
     class MyState {}
-    expect(getStoreMetadata(MyState)).toBeUndefined();
-    expect(getSelectorMetadata(MyState)).toBeUndefined();
+    expect(ɵgetStoreMetadata(MyState)).toBeUndefined();
+    expect(ɵgetSelectorMetadata(MyState)).toBeUndefined();
   });
 
   describe('Ensure store for plugins', () => {
@@ -63,7 +59,7 @@ describe('Ensure metadata', () => {
     });
 
     it('should get the meta data from the CountState', () => {
-      expect(getStoreMetadata(CountState)).toEqual({
+      expect(ɵgetStoreMetadata(CountState)).toEqual({
         name: 'count',
         actions: {
           increment: [
@@ -80,7 +76,7 @@ describe('Ensure metadata', () => {
     });
 
     it('should get the meta data from the MyCounterState', () => {
-      expect(getStoreMetadata(MyCounterState)).toEqual({
+      expect(ɵgetStoreMetadata(MyCounterState)).toEqual({
         name: 'myCounter',
         actions: { decrement: [{ fn: 'decrement', options: {}, type: 'decrement' }] },
         defaults: 1,
@@ -91,12 +87,12 @@ describe('Ensure metadata', () => {
     });
 
     it('should get the selector meta data from the CountState, MyCounterState', () => {
-      expect(getSelectorMetadata(CountState)).toBeUndefined();
-      expect(getSelectorMetadata(MyCounterState)).toBeUndefined();
+      expect(ɵgetSelectorMetadata(CountState)).toBeUndefined();
+      expect(ɵgetSelectorMetadata(MyCounterState)).toBeUndefined();
     });
 
     it('should get the selector meta data from the CountState.selectFn', () => {
-      const metadata = <SelectorMetaDataModel>getSelectorMetadata(CountState.selectFn);
+      const metadata = <ɵSelectorMetaDataModel>ɵgetSelectorMetadata(CountState.selectFn);
 
       expect(metadata.selectorName).toEqual('selectFn');
       expect(metadata.containerClass).toEqual(CountState);
@@ -109,12 +105,12 @@ describe('Ensure metadata', () => {
     });
 
     it('should get the selector meta data from the CountState.canInheritSelectFn, MyCounterState.canInheritSelectFn', () => {
-      const countMetadata = <SelectorMetaDataModel>(
-        getSelectorMetadata(CountState.canInheritSelectFn)
+      const countMetadata = <ɵSelectorMetaDataModel>(
+        ɵgetSelectorMetadata(CountState.canInheritSelectFn)
       );
 
-      const myCounterMetadata = <SelectorMetaDataModel>(
-        getSelectorMetadata(MyCounterState.canInheritSelectFn)
+      const myCounterMetadata = <ɵSelectorMetaDataModel>(
+        ɵgetSelectorMetadata(MyCounterState.canInheritSelectFn)
       );
 
       expect(countMetadata.selectorName).toEqual('canInheritSelectFn');
@@ -153,8 +149,8 @@ describe('Ensure metadata', () => {
         }
       }
 
-      const metadata = <SelectorMetaDataModel>(
-        getSelectorMetadata(SuperCountState.canInheritSelectFn)
+      const metadata = <ɵSelectorMetaDataModel>(
+        ɵgetSelectorMetadata(SuperCountState.canInheritSelectFn)
       );
 
       expect(metadata.containerClass).toEqual(SuperCountState);

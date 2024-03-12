@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule, ActionStatus, Actions } from '@ngxs/store';
+import { ɵOrderedSubject } from '@ngxs/store/internals';
 import { Subject } from 'rxjs';
 
-import { OrderedSubject } from '../src/internal/custom-rxjs-subjects';
 import { InternalActions } from '../src/actions-stream';
 
 describe('The Actions stream', () => {
@@ -34,7 +34,7 @@ describe('The Actions stream', () => {
 
   it('should rather use OrderedSubject because it preserves the order of dispatch for subscribers', () => {
     // Arrange
-    const statuses$ = new OrderedSubject<string>();
+    const statuses$ = new ɵOrderedSubject<string>();
     const callsRecorded = <string[]>[];
 
     // Act

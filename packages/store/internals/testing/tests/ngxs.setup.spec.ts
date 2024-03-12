@@ -1,6 +1,6 @@
 import { NgxsAfterBootstrap, NgxsOnInit, State, StateContext } from '@ngxs/store';
 import { NgxsTestBed } from '@ngxs/store/internals/testing';
-import { InitialState } from '@ngxs/store/internals';
+import { ɵInitialState } from '@ngxs/store/internals';
 import { Injectable } from '@angular/core';
 
 describe('Full testing NGXS States with NgxsTestBed', () => {
@@ -53,7 +53,7 @@ describe('Full testing NGXS States with NgxsTestBed', () => {
         defaultsState: { app: { count: 0 }, foo: 'bar' }
       },
       before: () => {
-        InitialState.set({ app: { count: 1 } });
+        ɵInitialState.set({ app: { count: 1 } });
       }
     });
 
@@ -119,7 +119,7 @@ describe('Full testing NGXS States with NgxsTestBed', () => {
     });
 
     it('with initial state', () => {
-      InitialState.set({ defaultValue: 2 });
+      ɵInitialState.set({ defaultValue: 2 });
 
       const { store } = NgxsTestBed.configureTestingStates({
         states: [MyState]

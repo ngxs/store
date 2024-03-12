@@ -141,7 +141,10 @@ the login page.
   template: '..'
 })
 export class AppComponent implements OnInit {
-  constructor(private actions: Actions, private router: Router) {}
+  constructor(
+    private actions: Actions,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.actions.pipe(ofActionDispatched(Logout)).subscribe(() => {

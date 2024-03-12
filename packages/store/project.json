@@ -1,13 +1,12 @@
 {
   "name": "store",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/store",
   "sourceRoot": "packages/store",
   "projectType": "library",
   "targets": {
     "build-package": {
       "executor": "@angular-devkit/build-angular:ng-packagr",
-      "outputs": ["@ngxs/store"],
+      "outputs": ["{workspaceRoot}/@ngxs/store"],
       "options": {
         "tsConfig": "tsconfig.build.json",
         "project": "packages/store/ng-package.json"
@@ -16,29 +15,33 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node tools/build-schematics.mjs --projectRoot=packages/store --distPath=@ngxs/store",
-        "outputPath": "@ngxs/store"
+        "command": "node tools/build-schematics.mjs --projectRoot=packages/store --distPath=@ngxs/store"
       },
-      "dependsOn": ["build-package"]
+      "dependsOn": ["build-package"],
+      "outputs": ["{workspaceRoot}/@ngxs/store"]
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/store/jest.config.js",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "packages/store/jest.config.js"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
-        "lintFilePatterns": ["packages/store/**/*.ts", "packages/store/**/*.html"]
+        "lintFilePatterns": [
+          "!packages/store/types",
+          "packages/store/**/*.ts",
+          "packages/store/**/*.html"
+        ]
+      }
+    },
+    "lint-types": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "eslintConfig": "packages/store/types/.eslintrc.js",
+        "lintFilePatterns": ["packages/store/types/**/*.lint.ts"]
       }
     }
   }

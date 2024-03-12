@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { State, Action } from '../../src/public_api';
 
 export class UpdateValue {
@@ -10,6 +11,7 @@ export class UpdateValue {
   name: 'simple',
   defaults: ''
 })
+@Injectable()
 export class SimpleState {
   @Action(UpdateValue)
   updateValue(_: string, action: UpdateValue) {

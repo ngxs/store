@@ -104,8 +104,10 @@ describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)'
       expect(document.body.innerHTML).toContain('app-home');
 
       // Act
+      const waitForNavigationToCompletePromise =
+        waitForNavigationToComplete(router).toPromise();
       document.body.querySelector<HTMLAnchorElement>('.navigate-to-details')!.click();
-      await waitForNavigationToComplete(router).toPromise();
+      await waitForNavigationToCompletePromise;
 
       // Assert
       expect(guard.detectedRouteUrl).toEqual('details');

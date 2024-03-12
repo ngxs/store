@@ -1,10 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { ɵOrderedSubject } from '@ngxs/store/internals';
 import { Observable } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { leaveNgxs } from './operators/leave-ngxs';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
-import { OrderedSubject } from './internal/custom-rxjs-subjects';
 
 /**
  * Status of a dispatched action
@@ -26,7 +26,7 @@ export interface ActionContext<T = any> {
  * Internal Action stream that is emitted anytime an action is dispatched.
  */
 @Injectable({ providedIn: 'root' })
-export class InternalActions extends OrderedSubject<ActionContext> implements OnDestroy {
+export class InternalActions extends ɵOrderedSubject<ActionContext> implements OnDestroy {
   ngOnDestroy(): void {
     this.complete();
   }

@@ -37,7 +37,10 @@ Let's imagine that we're faced with the task of changing the `dueDate` property:
 ```ts
 export class UpdateDueDate {
   static readonly type = '[Trello] Update due date';
-  constructor(public taskId: string, public dueDate: string) {}
+  constructor(
+    public taskId: string,
+    public dueDate: string
+  ) {}
 }
 ```
 

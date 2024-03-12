@@ -26,7 +26,10 @@ export class NewsPortalComponent implements OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private store: Store, actions$: Actions) {
+  constructor(
+    private store: Store,
+    actions$: Actions
+  ) {
     actions$
       .pipe(
         ofActionDispatched(SearchNews),

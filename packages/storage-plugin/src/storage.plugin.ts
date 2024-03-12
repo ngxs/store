@@ -1,6 +1,6 @@
 import { PLATFORM_ID, Inject, Injectable } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
-import { PlainObject } from '@ngxs/store/internals';
+import { ɵPlainObject } from '@ngxs/store/internals';
 import {
   NgxsPlugin,
   setValue,
@@ -9,7 +9,7 @@ import {
   UpdateState,
   actionMatcher,
   NgxsNextPluginFn
-} from '@ngxs/store';
+} from '@ngxs/store/plugins';
 import {
   ɵDEFAULT_STATE_KEY,
   ɵFinalNgxsStoragePluginOptions,
@@ -110,19 +110,22 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             // will rehydrate the entire state when the `RouterState` is registered.
             // Consequently, the `counter` state will revert back to `10` instead of `999`.
             if (storedValue && addedStates && Object.keys(addedStates).length > 0) {
-              storedValue = Object.keys(addedStates).reduce((accumulator, addedState) => {
-                // The `storedValue` can be equal to the entire state when the default
-                // state key is used. However, if `addedStates` only contains the `router` value,
-                // we only want to merge the state with the `router` value.
-                // Let's assume that the `storedValue` is an object:
-                // `{ counter: 10, router: {...} }`
-                // This will pick only the `router` object from the `storedValue` and `counter`
-                // state will not be rehydrated unnecessary.
-                if (storedValue.hasOwnProperty(addedState)) {
-                  accumulator[addedState] = storedValue[addedState];
-                }
-                return accumulator;
-              }, <PlainObject>{});
+              storedValue = Object.keys(addedStates).reduce(
+                (accumulator, addedState) => {
+                  // The `storedValue` can be equal to the entire state when the default
+                  // state key is used. However, if `addedStates` only contains the `router` value,
+                  // we only want to merge the state with the `router` value.
+                  // Let's assume that the `storedValue` is an object:
+                  // `{ counter: 10, router: {...} }`
+                  // This will pick only the `router` object from the `storedValue` and `counter`
+                  // state will not be rehydrated unnecessary.
+                  if (storedValue.hasOwnProperty(addedState)) {
+                    accumulator[addedState] = storedValue[addedState];
+                  }
+                  return accumulator;
+                },
+                <ɵPlainObject>{}
+              );
             }
 
             state = { ...state, ...storedValue };

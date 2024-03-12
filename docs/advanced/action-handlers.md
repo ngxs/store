@@ -50,7 +50,10 @@ import { Actions, ofActionDispatched } from '@ngxs/store';
 
 @Injectable({ providedIn: 'root' })
 export class RouteHandler {
-  constructor(private router: Router, private actions$: Actions) {
+  constructor(
+    private router: Router,
+    private actions$: Actions
+  ) {
     this.actions$
       .pipe(ofActionDispatched(RouteNavigate))
       .subscribe(({ payload }) => this.router.navigate([payload]));

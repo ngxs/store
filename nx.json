@@ -1,25 +1,36 @@
 {
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "@nrwl/nx-cloud",
-      "options": {
-        "cacheableOperations": ["build", "build-package", "test", "lint"],
-        "accessToken": "MWFlODQ3YjEtZGIzOC00OTJmLWE1NTYtMDcyZmNhYjU0NmU4fHJlYWQtd3JpdGU=",
-        "parallel": 1
-      }
-    }
+  "affected": {
+    "defaultBase": "master"
   },
-  "defaultBase": "master",
   "targetDefaults": {
-    "test": {
-      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
-    },
     "build": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+    "build-package": {
+      "cache": true
+    },
+    "lint": {
+      "cache": true
+    },
+    "@nx/jest:jest": {
+      "cache": true,
+      "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
+      "options": {
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
     }
   },
   "workspaceLayout": {
     "libsDir": "packages",
     "appsDir": "packages"
-  }
+  },
+  "nxCloudAccessToken": "MWFlODQ3YjEtZGIzOC00OTJmLWE1NTYtMDcyZmNhYjU0NmU4fHJlYWQtd3JpdGU=",
+  "parallel": 1
 }

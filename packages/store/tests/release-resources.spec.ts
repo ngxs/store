@@ -4,7 +4,6 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { NgxsModule, Store } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
-import { NgxsConfig } from '../src/symbols';
 import { NoopErrorHandler } from './helpers/utils';
 import { SelectFactory } from '../src/decorators/select/select-factory';
 
@@ -29,7 +28,9 @@ describe('Release NGXS resources', () => {
 
       // Assert
       expect(SelectFactory.store).toBeInstanceOf(Store);
-      expect(SelectFactory.config).toBeInstanceOf(NgxsConfig);
+      expect(SelectFactory.config!.compatibility).toEqual({
+        strictContentSecurityPolicy: false
+      });
 
       ngModuleRef.destroy();
 

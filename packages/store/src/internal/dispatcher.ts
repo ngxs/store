@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
 
@@ -8,7 +9,6 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
-import { getActionTypeFromInstance } from '../utils/utils';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.

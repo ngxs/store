@@ -5,7 +5,7 @@ import {
   FormsModule,
   ReactiveFormsModule
 } from '@angular/forms';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngxs/store';
@@ -39,12 +39,23 @@ export class AppComponent implements OnInit {
   });
 
   greeting: string;
-  todos$: Observable<Todo[]> = this._store.select(TodoState);
-  pandas$: Observable<Todo[]> = this._store.select(TodoState.getPandas);
-  pizza$: Observable<Pizza> = this._store.select(TodosState.getPizza);
-  injected$: Observable<string> = this._store.select(TodosState.getInjected);
 
-  constructor(private _store: Store, private _fb: FormBuilder) {}
+  todos$: Observable<Todo[]> = this._store.select(TodoState.getTodoState);
+  todos: Signal<Todo[]> = this._store.selectSignal(TodoState.getTodoState);
+
+  pandas$: Observable<Todo[]> = this._store.select(TodoState.getPandas);
+  pandas: Signal<Todo[]> = this._store.selectSignal(TodoState.getPandas);
+
+  pizza$: Observable<Pizza> = this._store.select(TodosState.getPizza);
+  pizza: Signal<Pizza> = this._store.selectSignal(TodosState.getPizza);
+
+  injected$: Observable<string> = this._store.select(TodosState.getInjected);
+  injected: Signal<string> = this._store.selectSignal(TodosState.getInjected);
+
+  constructor(
+    private _store: Store,
+    private _fb: FormBuilder
+  ) {}
 
   get extras(): FormControl[] {
     const extras = this.pizzaForm.get('extras') as FormArray;

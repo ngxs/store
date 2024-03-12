@@ -1,11 +1,11 @@
 import { Inject, Injectable, Injector, NgZone, OnDestroy, ɵglobal } from '@angular/core';
+import { Store } from '@ngxs/store';
 import {
   InitState,
   getActionTypeFromInstance,
   NgxsNextPluginFn,
-  NgxsPlugin,
-  Store
-} from '@ngxs/store';
+  NgxsPlugin
+} from '@ngxs/store/plugins';
 import { tap, catchError } from 'rxjs/operators';
 
 import {

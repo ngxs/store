@@ -201,7 +201,10 @@ describe('NgxsWebsocketPlugin', () => {
   describe('WebSocketHandler', () => {
     class AddMessage {
       static type = '[Chat] Add message';
-      constructor(public from: string, public message: string) {}
+      constructor(
+        public from: string,
+        public message: string
+      ) {}
     }
 
     interface Message {

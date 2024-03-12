@@ -1,24 +1,30 @@
-import { ɵStateClass, ɵMETA_KEY, ɵMETA_OPTIONS_KEY } from '@ngxs/store/internals';
+import {
+  ɵStateClass,
+  ɵMETA_KEY,
+  ɵMETA_OPTIONS_KEY,
+  ɵMetaDataModel,
+  ɵStateClassInternal,
+  ɵStoreOptions,
+  ɵensureStoreMetadata
+} from '@ngxs/store/internals';
 
-import { StoreOptions } from '../symbols';
 import { ensureStateNameIsValid } from '../utils/store-validators';
-import { ensureStoreMetadata, MetaDataModel, StateClassInternal } from '../internal/internals';
 
 interface MutateMetaOptions<T> {
-  meta: MetaDataModel;
-  inheritedStateClass: StateClassInternal;
-  optionsWithInheritance: StoreOptions<T>;
+  meta: ɵMetaDataModel;
+  inheritedStateClass: ɵStateClassInternal;
+  optionsWithInheritance: ɵStoreOptions<T>;
 }
 
 /**
  * Decorates a class with ngxs state information.
  */
-export function State<T>(options: StoreOptions<T>) {
+export function State<T>(options: ɵStoreOptions<T>) {
   return (target: ɵStateClass): void => {
-    const stateClass: StateClassInternal = target;
-    const meta: MetaDataModel = ensureStoreMetadata(stateClass);
-    const inheritedStateClass: StateClassInternal = Object.getPrototypeOf(stateClass);
-    const optionsWithInheritance: StoreOptions<T> = getStateOptions(
+    const stateClass: ɵStateClassInternal = target;
+    const meta: ɵMetaDataModel = ɵensureStoreMetadata(stateClass);
+    const inheritedStateClass: ɵStateClassInternal = Object.getPrototypeOf(stateClass);
+    const optionsWithInheritance: ɵStoreOptions<T> = getStateOptions(
       inheritedStateClass,
       options
     );
@@ -28,12 +34,12 @@ export function State<T>(options: StoreOptions<T>) {
 }
 
 function getStateOptions<T>(
-  inheritedStateClass: StateClassInternal,
-  options: StoreOptions<T>
-): StoreOptions<T> {
-  const inheritanceOptions: Partial<StoreOptions<T>> =
+  inheritedStateClass: ɵStateClassInternal,
+  options: ɵStoreOptions<T>
+): ɵStoreOptions<T> {
+  const inheritanceOptions: Partial<ɵStoreOptions<T>> =
     inheritedStateClass[ɵMETA_OPTIONS_KEY] || {};
-  return { ...inheritanceOptions, ...options } as StoreOptions<T>;
+  return { ...inheritanceOptions, ...options } as ɵStoreOptions<T>;
 }
 
 function mutateMetaData<T>(params: MutateMetaOptions<T>): void {
@@ -47,7 +53,7 @@ function mutateMetaData<T>(params: MutateMetaOptions<T>): void {
   }
 
   if (inheritedStateClass.hasOwnProperty(ɵMETA_KEY)) {
-    const inheritedMeta: Partial<MetaDataModel> = inheritedStateClass[ɵMETA_KEY] || {};
+    const inheritedMeta: Partial<ɵMetaDataModel> = inheritedStateClass[ɵMETA_KEY] || {};
     meta.actions = { ...meta.actions, ...inheritedMeta.actions };
   }
 

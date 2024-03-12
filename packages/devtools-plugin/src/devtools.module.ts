@@ -5,7 +5,8 @@ import {
   EnvironmentProviders,
   makeEnvironmentProviders
 } from '@angular/core';
-import { NGXS_PLUGINS, withNgxsPlugin } from '@ngxs/store';
+import { withNgxsPlugin } from '@ngxs/store';
+import { NGXS_PLUGINS } from '@ngxs/store/plugins';
 
 import { NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS } from './symbols';
 import { NgxsReduxDevtoolsPlugin } from './devtools.plugin';

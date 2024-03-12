@@ -1,14 +1,11 @@
 import { Injectable, InjectionToken, Type, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { PlainObject, ɵStateClass } from '@ngxs/store/internals';
 import { StateOperator } from '@ngxs/store/operators';
+import { ɵPlainObject, ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
 
-import { mergeDeep } from './utils/utils';
-import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 import { NgxsExecutionStrategy } from './execution/symbols';
-import { SharedSelectorOptions } from './internal/internals';
-import { StateToken } from './state-token/state-token';
+import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 
 const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
 
@@ -26,10 +23,6 @@ export const FEATURE_STATE_TOKEN = new InjectionToken<Array<Array<ɵStateClass>>
   NG_DEV_MODE ? 'FEATURE_STATE_TOKEN' : ''
 );
 
-// The injection token is used to resolve to custom NGXS plugins provided
-// at the root level through either `{provide}` scheme or `withNgxsPlugin`.
-export const NGXS_PLUGINS = new InjectionToken(NG_DEV_MODE ? 'NGXS_PLUGINS' : '');
-
 // The injection token is used to resolve to options provided at the root
 // level through either `NgxsModule.forRoot` or `provideStore`.
 export const NGXS_OPTIONS = new InjectionToken<NgxsModuleOptions>(
@@ -40,14 +33,23 @@ export type NgxsLifeCycle = Partial<NgxsOnChanges> &
   Partial<NgxsOnInit> &
   Partial<NgxsAfterBootstrap>;
 
-export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
-
 /**
  * The NGXS config settings.
  */
 @Injectable({
   providedIn: 'root',
-  useFactory: () => mergeDeep(new NgxsConfig(), inject(NGXS_OPTIONS))
+  useFactory: (): NgxsConfig => {
+    const defaultConfig = new NgxsConfig();
+    const config = inject(NGXS_OPTIONS);
+    return {
+      ...defaultConfig,
+      ...config,
+      selectorOptions: {
+        ...defaultConfig.selectorOptions,
+        ...config.selectorOptions
+      }
+    };
+  }
 })
 export class NgxsConfig {
   /**
@@ -67,6 +69,8 @@ export class NgxsConfig {
      * (default: false)
      */
     strictContentSecurityPolicy: boolean;
+  } = {
+    strictContentSecurityPolicy: false
   };
   /**
    * Determines the execution context to perform async operations inside. An implementation can be
@@ -79,28 +83,21 @@ export class NgxsConfig {
    * `NoopNgxsExecutionStrategy` that doesn't interact with zones.
    * (default: null)
    */
-  executionStrategy: Type<NgxsExecutionStrategy>;
+  executionStrategy: Type<NgxsExecutionStrategy> = DispatchOutsideZoneNgxsExecutionStrategy;
   /**
    * Defining the default state before module initialization
    * This is convenient if we need to create a define our own set of states.
    * @deprecated will be removed after v4
    * (default: {})
    */
-  defaultsState: PlainObject = {};
+  defaultsState: ɵPlainObject = {};
   /**
    * Defining shared selector options
    */
-  selectorOptions: SharedSelectorOptions = {
+  selectorOptions: ɵSharedSelectorOptions = {
     injectContainerState: true, // TODO: default is true in v3, will change in v4
     suppressErrors: true // TODO: default is true in v3, will change in v4
   };
-
-  constructor() {
-    this.compatibility = {
-      strictContentSecurityPolicy: false
-    };
-    this.executionStrategy = DispatchOutsideZoneNgxsExecutionStrategy;
-  }
 }
 
 export { StateOperator };
@@ -128,38 +125,6 @@ export interface StateContext<T> {
    * Dispatch a new action and return the dispatched observable.
    */
   dispatch(actions: any | any[]): Observable<void>;
-}
-
-export type NgxsNextPluginFn = (state: any, mutation: any) => any;
-
-/**
- * Plugin interface
- */
-export interface NgxsPlugin {
-  /**
-   * Handle the state/action before its submitted to the state handlers.
-   */
-  handle(state: any, action: any, next: NgxsNextPluginFn): any;
-}
-
-/**
- * Options that can be provided to the store.
- */
-export interface StoreOptions<T> {
-  /**
-   * Name of the state. Required.
-   */
-  name: string | StateToken<T>;
-
-  /**
-   * Default values for the state. If not provided, uses empty object.
-   */
-  defaults?: T;
-
-  /**
-   * Sub states for the given state.
-   */
-  children?: ɵStateClass[];
 }
 
 /**

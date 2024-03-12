@@ -1,8 +1,17 @@
 <div>
-  {{ list$ | async }},
-  {{ hello$ | async }}
+  <p>(list$) {{ list$ | async }}</p>
+  <p>(list() signal) {{ list() }}</p>
+</div>
+
+<div>
+  <p>(hello$) {{ hello$ | async }}</p>
+  <p>(hello() signal) {{ hello() }}</p>
 </div>
 
 <div *ngIf="router$ | async as router">
-  animals were resolved {{ router.root!.firstChild!.firstChild!.data.list }}
+  (router$) animals were resolved {{ router.root!.firstChild!.firstChild!.data.list }}
+</div>
+
+<div *ngIf="router() as router">
+  (router() signal) animals were resolved {{ router.root!.firstChild!.firstChild!.data.list }}
 </div>

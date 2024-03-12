@@ -1,9 +1,13 @@
 import { InjectionToken, Injector } from '@angular/core';
 
-import { NgxsStoragePluginOptions, STORAGE_ENGINE, StorageEngine } from './symbols';
+import {
+  STORAGE_ENGINE,
+  StorageEngine,
+  ɵNgxsTransformedStoragePluginOptions
+} from './symbols';
 import { StorageKey, ɵextractStringKey, ɵisKeyWithExplicitEngine } from './storage-key';
 
-export interface ɵFinalNgxsStoragePluginOptions extends NgxsStoragePluginOptions {
+export interface ɵFinalNgxsStoragePluginOptions extends ɵNgxsTransformedStoragePluginOptions {
   keysWithEngines: {
     key: string;
     engine: StorageEngine;
@@ -14,15 +18,16 @@ declare const ngDevMode: boolean;
 
 const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
 
-export const ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS = new InjectionToken<unknown>(
-  NG_DEV_MODE ? 'FINAL_NGXS_STORAGE_PLUGIN_OPTIONS' : ''
-);
+export const ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS =
+  new InjectionToken<ɵFinalNgxsStoragePluginOptions>(
+    NG_DEV_MODE ? 'FINAL_NGXS_STORAGE_PLUGIN_OPTIONS' : ''
+  );
 
 export function ɵcreateFinalStoragePluginOptions(
   injector: Injector,
-  options: NgxsStoragePluginOptions
+  options: ɵNgxsTransformedStoragePluginOptions
 ): ɵFinalNgxsStoragePluginOptions {
-  const storageKeys: StorageKey[] = Array.isArray(options.key) ? options.key : [options.key!];
+  const storageKeys = options.keys;
 
   const keysWithEngines = storageKeys.map((storageKey: StorageKey) => {
     const key = ɵextractStringKey(storageKey);

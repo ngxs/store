@@ -118,7 +118,10 @@ export interface CartStateModel {
 
 export class SetCheckedoutAndItems {
   static type = '[Cart] Set checkedout and items';
-  constructor(public checkedout: boolean, public items: CartItem[]) {}
+  constructor(
+    public checkedout: boolean,
+    public items: CartItem[]
+  ) {}
 }
 
 @State<CartStateModel>({

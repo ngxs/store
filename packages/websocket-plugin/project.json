@@ -1,34 +1,26 @@
 {
   "name": "websocket-plugin",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/websocket-plugin",
   "sourceRoot": "packages/websocket-plugin",
   "projectType": "library",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:ng-packagr",
-      "outputs": ["@ngxs/websocket-plugin"],
+      "outputs": ["{workspaceRoot}/@ngxs/websocket-plugin"],
       "options": {
         "tsConfig": "tsconfig.build.json",
         "project": "packages/websocket-plugin/ng-package.json"
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/websocket-plugin/jest.config.js",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "packages/websocket-plugin/jest.config.js"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": [
           "packages/websocket-plugin/**/*.ts",

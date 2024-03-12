@@ -5,7 +5,7 @@ import {
   NgxsNextPluginFn,
   NgxsPlugin,
   setValue
-} from '@ngxs/store';
+} from '@ngxs/store/plugins';
 import {
   ResetForm,
   SetFormDirty,
@@ -31,8 +31,8 @@ export class NgxsFormPlugin implements NgxsPlugin {
       const payloadValue = Array.isArray(value)
         ? value.slice()
         : isObjectLike(value)
-        ? { ...value }
-        : value;
+          ? { ...value }
+          : value;
       const path = this.joinPathWithPropertyPath(event);
       nextState = setValue(nextState, path, payloadValue);
     }

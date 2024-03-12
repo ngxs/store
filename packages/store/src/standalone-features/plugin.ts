@@ -1,6 +1,5 @@
 import { EnvironmentProviders, Type, makeEnvironmentProviders } from '@angular/core';
-
-import { NGXS_PLUGINS, NgxsPlugin } from '../symbols';
+import { NGXS_PLUGINS, NgxsPlugin } from '@ngxs/store/plugins';
 
 /**
  * This function registers a custom global plugin for the state.

@@ -1,4 +1,4 @@
-import { NgxsBootstrapper } from '@ngxs/store/internals';
+import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 import { Observable, Subscription } from 'rxjs';
 import { StateContext } from '@ngxs/store';
 
@@ -11,7 +11,7 @@ import { HmrStorage } from './hmr-storage';
 export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   constructor(
     private ngAppModule: T,
-    private bootstrap: NgxsBootstrapper,
+    private appBootstrappedState: ɵNgxsAppBootstrappedState,
     private storage: HmrStorage<S>,
     private context: HmrStateContextFactory<T, S>,
     private options: HmrOptionBuilder
@@ -52,10 +52,9 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   private stateEventLoop(callback: HmrCallback<S>): void {
     if (!this.storage.hasData()) return;
 
-    const appBootstrapped$: Observable<boolean> = this.bootstrap.appBootstrapped$;
     const state$: Observable<any> = this.context.store.select(state => state);
 
-    appBootstrapped$.subscribe(() => {
+    this.appBootstrappedState.subscribe(() => {
       let eventId: number;
       const storeEventId: Subscription = state$.subscribe(() => {
         // setTimeout used for zone detection after set hmr state

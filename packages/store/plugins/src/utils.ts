@@ -3,11 +3,7 @@
  * @ignore
  */
 export function getActionTypeFromInstance(action: any): string | undefined {
-  if (action.constructor && action.constructor.type) {
-    return action.constructor.type;
-  } else {
-    return action.type;
-  }
+  return action.constructor?.type || action.type;
 }
 
 /**
@@ -17,7 +13,7 @@ export function getActionTypeFromInstance(action: any): string | undefined {
 export function actionMatcher(action1: any) {
   const type1 = getActionTypeFromInstance(action1);
 
-  return function(action2: any) {
+  return function (action2: any) {
     return type1 === getActionTypeFromInstance(action2);
   };
 }
@@ -60,40 +56,3 @@ export const setValue = (obj: any, prop: string, val: any) => {
  */
 export const getValue = (obj: any, prop: string): any =>
   prop.split('.').reduce((acc: any, part: string) => acc && acc[part], obj);
-
-/**
- * Simple object check.
- *
- *    isObject({a:1}) //=> true
- *    isObject(1) //=> false
- *
- * @ignore
- */
-export const isObject = (item: any) => {
-  return item && typeof item === 'object' && !Array.isArray(item);
-};
-
-/**
- * Deep merge two objects.
- *
- *    mergeDeep({a:1, b:{x: 1, y:2}}, {b:{x: 3}, c:4}) //=> {a:1, b:{x:3, y:2}, c:4}
- *
- * @param base base object onto which `sources` will be applied
- */
-export const mergeDeep = (base: any, ...sources: any[]): any => {
-  if (!sources.length) return base;
-  const source = sources.shift();
-
-  if (isObject(base) && isObject(source)) {
-    for (const key in source) {
-      if (isObject(source[key])) {
-        if (!base[key]) Object.assign(base, { [key]: {} });
-        mergeDeep(base[key], source[key]);
-      } else {
-        Object.assign(base, { [key]: source[key] });
-      }
-    }
-  }
-
-  return mergeDeep(base, ...sources);
-};

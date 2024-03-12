@@ -1,4 +1,5 @@
-import { getSelectorMetadata, getStoreMetadata } from '../internal/internals';
+import { ɵgetSelectorMetadata, ɵgetStoreMetadata } from '@ngxs/store/internals';
+
 import { SelectorDef } from './selector-types.util';
 
 export function ensureValidSelector(
@@ -8,7 +9,7 @@ export function ensureValidSelector(
   const noun = context.noun || 'selector';
   const prefix = context.prefix ? context.prefix + ': ' : '';
   ensureValueProvided(selector, { noun, prefix: context.prefix });
-  const metadata = getSelectorMetadata(selector) || getStoreMetadata(selector as any);
+  const metadata = ɵgetSelectorMetadata(selector) || ɵgetStoreMetadata(selector as any);
   if (!metadata) {
     throw new Error(`${prefix}The value provided as the ${noun} is not a valid selector.`);
   }

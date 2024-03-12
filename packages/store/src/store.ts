@@ -1,8 +1,8 @@
 // tslint:disable:unified-signatures
-import { Inject, Injectable, Optional, Type } from '@angular/core';
+import { Inject, Injectable, Optional, Signal, Type, computed } from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
-import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
+import { ɵINITIAL_STATE_TOKEN, ɵPlainObject, StateToken } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
@@ -10,8 +10,8 @@ import { getRootSelectorFactory } from './selectors/selector-utils';
 import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
-import { StateToken } from './state-token/state-token';
 import { StateFactory } from './internal/state-factory';
+import { TypedSelector } from './selectors';
 
 @Injectable({ providedIn: 'root' })
 export class Store {
@@ -32,7 +32,7 @@ export class Store {
     private _internalExecutionStrategy: InternalNgxsExecutionStrategy,
     private _stateFactory: StateFactory,
     @Optional()
-    @Inject(INITIAL_STATE_TOKEN)
+    @Inject(ɵINITIAL_STATE_TOKEN)
     initialStateValue: any
   ) {
     this.initStateStream(initialStateValue);
@@ -94,6 +94,14 @@ export class Store {
   }
 
   /**
+   * Select a signal from the state.
+   */
+  selectSignal<T>(selector: TypedSelector<T>): Signal<T> {
+    const selectorFn = this.getStoreBoundSelectorFn(selector);
+    return computed<T>(() => selectorFn(this._stateStream.state()));
+  }
+
+  /**
    * Allow the user to subscribe to the root of the state
    */
   subscribe(fn?: (value: any) => void): Subscription {
@@ -124,11 +132,11 @@ export class Store {
   }
 
   private initStateStream(initialStateValue: any): void {
-    const value: PlainObject = this._stateStream.value;
+    const value: ɵPlainObject = this._stateStream.value;
     const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
     if (storeIsEmpty) {
       const defaultStateNotEmpty: boolean = Object.keys(this._config.defaultsState).length > 0;
-      const storeValues: PlainObject = defaultStateNotEmpty
+      const storeValues: ɵPlainObject = defaultStateNotEmpty
         ? { ...this._config.defaultsState, ...initialStateValue }
         : initialStateValue;
 
