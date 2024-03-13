@@ -1,4 +1,6 @@
+import { InjectionToken, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+
 import {
   ɵMETA_KEY,
   ɵPlainObjectOf,
@@ -7,6 +9,10 @@ import {
 } from '@ngxs/store/internals';
 
 import { NgxsConfig } from '../symbols';
+
+declare const ngDevMode: boolean;
+
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
 
 export type StateKeyGraph = ɵPlainObjectOf<string[]>;
 export type StatesByName = ɵPlainObjectOf<ɵStateClassInternal>;
@@ -82,6 +88,8 @@ function fastPropGetter(paths: string[]): (x: any) => any {
  *    getValue({ foo: bar: [] }, 'foo.bar') //=> []
  *
  * @ignore
+ *
+ * Marked for removal. It's only used within `createSelectorFn`.
  */
 export function propGetter(paths: string[], config: NgxsConfig) {
   if (config?.compatibility?.strictContentSecurityPolicy) {
@@ -90,6 +98,25 @@ export function propGetter(paths: string[], config: NgxsConfig) {
     return fastPropGetter(paths);
   }
 }
+
+// This injection token selects the prop getter implementation once the app is
+// bootstrapped, as the `propGetter` function's behavior determines the implementation
+// each time it's called. It accepts the config as the second argument. We no longer
+// need to check for the `strictContentSecurityPolicy` every time the prop getter
+// implementation is selected. Now, the `propGetter` function is only used within
+// `createSelectorFn`, which, in turn, is solely used by the `Select` decorator.
+// We've been trying to deprecate the `Select` decorator because it's unstable with
+// server-side rendering and micro-frontend applications.
+export const ɵPROP_GETTER = new InjectionToken<(paths: string[]) => (x: any) => any>(
+  NG_DEV_MODE ? 'PROP_GETTER' : '',
+  {
+    providedIn: 'root',
+    factory: () =>
+      inject(NgxsConfig).compatibility?.strictContentSecurityPolicy
+        ? compliantPropGetter
+        : fastPropGetter
+  }
+);
 
 /**
  * Given an array of states, it will return a object graph. Example:
