@@ -1,4 +1,4 @@
-import { PLATFORM_ID, Inject, Injectable } from '@angular/core';
+import { PLATFORM_ID, Inject, Injectable, inject } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { ɵPlainObject } from '@ngxs/store/internals';
 import {
@@ -12,12 +12,14 @@ import {
 } from '@ngxs/store/plugins';
 import {
   ɵDEFAULT_STATE_KEY,
-  ɵFinalNgxsStoragePluginOptions,
-  ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS
+  ɵALL_STATES_PERSISTED,
+  NgxsStoragePluginOptions,
+  ɵNGXS_STORAGE_PLUGIN_OPTIONS
 } from '@ngxs/storage-plugin/internals';
 import { tap } from 'rxjs/operators';
 
 import { getStorageKey } from './internals';
+import { ɵNgxsStoragePluginKeysManager } from './keys-manager';
 
 declare const ngDevMode: boolean;
 
@@ -25,14 +27,11 @@ const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
-  private _keysWithEngines = this._options.keysWithEngines;
-  // We default to `[ɵDEFAULT_STATE_KEY]` if the user explicitly does not provide the `key` option.
-  private _usesDefaultStateKey =
-    this._keysWithEngines.length === 1 && this._keysWithEngines[0].key === ɵDEFAULT_STATE_KEY;
+  private _allStatesPersisted = inject(ɵALL_STATES_PERSISTED);
 
   constructor(
-    @Inject(ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS)
-    private _options: ɵFinalNgxsStoragePluginOptions,
+    private _keysManager: ɵNgxsStoragePluginKeysManager,
+    @Inject(ɵNGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
     @Inject(PLATFORM_ID) private _platformId: string
   ) {}
 
@@ -48,14 +47,14 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     let hasMigration = false;
 
     if (isInitOrUpdateAction) {
-      const addedStates = isUpdateAction && event.addedStates;
+      const addedStates: ɵPlainObject = isUpdateAction && event.addedStates;
 
-      for (const { key, engine } of this._keysWithEngines) {
+      for (const { key, engine } of this._keysManager.getKeysWithEngines()) {
         // We're checking what states have been added by NGXS and if any of these states should be handled by
         // the storage plugin. For instance, we only want to deserialize the `auth` state, NGXS has added
         // the `user` state, the storage plugin will be rerun and will do redundant deserialization.
         // `usesDefaultStateKey` is necessary to check since `event.addedStates` never contains `@@STATE`.
-        if (!this._usesDefaultStateKey && addedStates) {
+        if (!this._allStatesPersisted && addedStates) {
           // We support providing keys that can be deeply nested via dot notation, for instance,
           // `keys: ['myState.myProperty']` is a valid key.
           // The state name should always go first. The below code checks if the `key` includes dot
@@ -89,46 +88,18 @@ export class NgxsStoragePlugin implements NgxsPlugin {
             const versionMatch =
               strategy.version === getValue(storedValue, strategy.versionKey || 'version');
             const keyMatch =
-              (!strategy.key && this._usesDefaultStateKey) || strategy.key === key;
+              (!strategy.key && this._allStatesPersisted) || strategy.key === key;
             if (versionMatch && keyMatch) {
               storedValue = strategy.migrate(storedValue);
               hasMigration = true;
             }
           });
 
-          if (!this._usesDefaultStateKey) {
-            state = setValue(state, key, storedValue);
-          } else {
-            // The `UpdateState` action is dispatched whenever the feature
-            // state is added. The condition below is satisfied only when
-            // the `UpdateState` action is dispatched. Let's consider two states:
-            // `counter` and `@ngxs/router-plugin` state. When we call `NgxsModule.forRoot()`,
-            // `CounterState` is provided at the root level, while `@ngxs/router-plugin`
-            // is provided as a feature state. Beforehand, the storage plugin may have
-            // stored the value of the counter state as `10`. If `CounterState` implements
-            // the `ngxsOnInit` hook and calls `ctx.setState(999)`, the storage plugin
-            // will rehydrate the entire state when the `RouterState` is registered.
-            // Consequently, the `counter` state will revert back to `10` instead of `999`.
-            if (storedValue && addedStates && Object.keys(addedStates).length > 0) {
-              storedValue = Object.keys(addedStates).reduce(
-                (accumulator, addedState) => {
-                  // The `storedValue` can be equal to the entire state when the default
-                  // state key is used. However, if `addedStates` only contains the `router` value,
-                  // we only want to merge the state with the `router` value.
-                  // Let's assume that the `storedValue` is an object:
-                  // `{ counter: 10, router: {...} }`
-                  // This will pick only the `router` object from the `storedValue` and `counter`
-                  // state will not be rehydrated unnecessary.
-                  if (storedValue.hasOwnProperty(addedState)) {
-                    accumulator[addedState] = storedValue[addedState];
-                  }
-                  return accumulator;
-                },
-                <ɵPlainObject>{}
-              );
-            }
-
+          if (this._allStatesPersisted) {
+            storedValue = this._hydrateSelectivelyOnUpdate(storedValue, addedStates);
             state = { ...state, ...storedValue };
+          } else {
+            state = setValue(state, key, storedValue);
           }
         }
       }
@@ -140,7 +111,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           return;
         }
 
-        for (const { key, engine } of this._keysWithEngines) {
+        for (const { key, engine } of this._keysManager.getKeysWithEngines()) {
           let storedValue = nextState;
 
           const storageKey = getStorageKey(key, this._options);
@@ -173,6 +144,40 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           }
         }
       })
+    );
+  }
+
+  private _hydrateSelectivelyOnUpdate(storedValue: any, addedStates: ɵPlainObject) {
+    // The `UpdateState` action is triggered whenever a feature state is added.
+    // The condition below is only satisfied when this action is triggered.
+    // Let's consider two states: `counter` and `@ngxs/router-plugin` state.
+    // When `provideStore` is called, `CounterState` is provided at the root level,
+    // while `@ngxs/router-plugin` is provided as a feature state. Previously, the storage
+    // plugin might have stored the value of the counter state as `10`. If `CounterState`
+    // implements the `ngxsOnInit` hook and sets the state to `999`, the storage plugin will
+    // reset the entire state when the `RouterState` is registered.
+    // Consequently, the `counter` state will revert back to `10` instead of `999`.
+
+    if (!storedValue || !addedStates || Object.keys(addedStates).length === 0) {
+      // Nothing to update if `addedStates` object is empty.
+      return storedValue;
+    }
+
+    // The `storedValue` can be the entire state when the default state key
+    // is used. However, if `addedStates` only contains the `router` value,
+    // we only want to merge the state with that `router` value.
+    // Given the `storedValue` is an object:
+    // `{ counter: 10, router: {...} }`
+    // This will only select the `router` object from the `storedValue`,
+    // avoiding unnecessary rehydration of the `counter` state.
+    return Object.keys(addedStates).reduce(
+      (accumulator, addedState) => {
+        if (storedValue.hasOwnProperty(addedState)) {
+          accumulator[addedState] = storedValue[addedState];
+        }
+        return accumulator;
+      },
+      <ɵPlainObject>{}
     );
   }
 }

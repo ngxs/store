@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, inject } from '@angular/core';
 
 import { StorageKey } from './storage-key';
 
@@ -86,6 +86,19 @@ export interface NgxsStoragePluginOptions {
 export interface ɵNgxsTransformedStoragePluginOptions extends NgxsStoragePluginOptions {
   keys: StorageKey[];
 }
+
+export const ɵUSER_OPTIONS = new InjectionToken<NgxsStoragePluginOptions>(
+  NG_DEV_MODE ? 'USER_OPTIONS' : ''
+);
+
+// Determines whether all states in the NGXS registry should be persisted or not.
+export const ɵALL_STATES_PERSISTED = new InjectionToken<boolean>(
+  NG_DEV_MODE ? 'ALL_STATES_PERSISTED' : '',
+  {
+    providedIn: 'root',
+    factory: () => inject(ɵUSER_OPTIONS).keys === '*'
+  }
+);
 
 export const ɵNGXS_STORAGE_PLUGIN_OPTIONS =
   new InjectionToken<ɵNgxsTransformedStoragePluginOptions>(
