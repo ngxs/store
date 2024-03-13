@@ -44,8 +44,13 @@ export interface StatesAndDefaults {
  * @ignore
  */
 function compliantPropGetter(paths: string[]): (x: any) => any {
-  const copyOfPaths = paths.slice();
-  return obj => copyOfPaths.reduce((acc: any, part: string) => acc && acc[part], obj);
+  return obj => {
+    for (let i = 0; i < paths.length; i++) {
+      if (!obj) return undefined;
+      obj = obj[paths[i]];
+    }
+    return obj;
+  };
 }
 
 /**
