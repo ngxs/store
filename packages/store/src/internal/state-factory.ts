@@ -5,7 +5,8 @@ import {
   SkipSelf,
   Inject,
   OnDestroy,
-  ɵisPromise
+  ɵisPromise,
+  inject
 } from '@angular/core';
 import {
   ɵmemoize,
@@ -45,7 +46,7 @@ import {
   findFullParentPath,
   MappedStore,
   nameToState,
-  propGetter,
+  ɵPROP_GETTER,
   StateKeyGraph,
   StatesAndDefaults,
   StatesByName,
@@ -92,6 +93,8 @@ function cloneDefaults(defaults: any): any {
 export class StateFactory implements OnDestroy {
   private _actionsSubscription: Subscription | null = null;
 
+  private _propGetter = inject(ɵPROP_GETTER);
+
   constructor(
     private _injector: Injector,
     private _config: NgxsConfig,
@@ -127,10 +130,11 @@ export class StateFactory implements OnDestroy {
   getRuntimeSelectorContext = ɵmemoize(() => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const stateFactory = this;
+    const propGetter = stateFactory._propGetter;
 
     function resolveGetter(key: string) {
       const path = stateFactory.statePaths[key];
-      return path ? propGetter(path.split('.'), stateFactory._config) : null;
+      return path ? propGetter(path.split('.')) : null;
     }
 
     const context: ɵRuntimeSelectorContext = this._parentFactory
