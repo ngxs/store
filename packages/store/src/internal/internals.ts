@@ -1,4 +1,5 @@
 import { InjectionToken, inject } from '@angular/core';
+import type { ReadonlyDeep } from 'type-fest';
 import { Observable } from 'rxjs';
 
 import {
@@ -18,7 +19,7 @@ export type StateKeyGraph = ɵPlainObjectOf<string[]>;
 export type StatesByName = ɵPlainObjectOf<ɵStateClassInternal>;
 
 export interface StateOperations<T> {
-  getState(): T;
+  getState(): ReadonlyDeep<T>;
 
   setState(val: T): T;
 

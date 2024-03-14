@@ -27,19 +27,19 @@ export class TodoState implements NgxsOnInit, NgxsAfterBootstrap {
     return state.filter(s => s.indexOf('panda') > -1);
   }
 
-  ngxsOnInit({ getState, setState }: StateContext<Todo[]>) {
-    const state: Todo[] = getState();
+  ngxsOnInit(ctx: StateContext<Todo[]>) {
+    const state = ctx.getState();
     const payload: Todo = 'NgxsOnInit todo';
     if (!state.includes(payload)) {
-      setState([...state, payload]);
+      ctx.setState([...state, payload]);
     }
   }
 
-  ngxsAfterBootstrap({ getState, setState }: StateContext<Todo[]>): void {
-    const state: Todo[] = getState();
+  ngxsAfterBootstrap(ctx: StateContext<Todo[]>): void {
+    const state = ctx.getState();
     const payload: Todo = 'NgxsAfterBootstrap todo';
     if (!state.includes(payload)) {
-      setState([...state, payload]);
+      ctx.setState([...state, payload]);
     }
   }
 
