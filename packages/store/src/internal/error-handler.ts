@@ -16,11 +16,11 @@ import { NgxsExecutionStrategy } from '../execution/symbols';
  * 4) `toPromise()` without `catch` -> do `handleError()`
  * 5) `toPromise()` with `catch` -> don't `handleError()`
  */
-export function ngxsErrorHandler<T>(
+export function ngxsErrorHandler(
   internalErrorReporter: InternalErrorReporter,
   ngxsExecutionStrategy: NgxsExecutionStrategy
 ) {
-  return (source: Observable<T>) => {
+  return (source: Observable<void>) => {
     let subscribed = false;
 
     source.subscribe({
@@ -40,7 +40,7 @@ export function ngxsErrorHandler<T>(
       }
     });
 
-    return new Observable(subscriber => {
+    return new Observable<void>(subscriber => {
       subscribed = true;
       return source.pipe(leaveNgxs(ngxsExecutionStrategy)).subscribe(subscriber);
     });
