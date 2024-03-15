@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
-import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
+import { exhaustMap, filter, map, shareReplay, take } from 'rxjs/operators';
+
+import { ɵPlainObject } from '@ngxs/store/internals';
+import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 
 import { compose } from '../utils/compose';
 import { InternalErrorReporter, ngxsErrorHandler } from './error-handler';
@@ -33,7 +35,7 @@ export class InternalDispatcher {
   /**
    * Dispatches event(s).
    */
-  dispatch(actionOrActions: any | any[]): Observable<any> {
+  dispatch(actionOrActions: any | any[]): Observable<void> {
     const result = this._ngxsExecutionStrategy.enter(() =>
       this.dispatchByEvents(actionOrActions)
     );
@@ -43,16 +45,19 @@ export class InternalDispatcher {
     );
   }
 
-  private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
+  private dispatchByEvents(actionOrActions: any | any[]): Observable<void> {
     if (Array.isArray(actionOrActions)) {
-      if (actionOrActions.length === 0) return of(this._stateStream.getValue());
-      return forkJoin(actionOrActions.map(action => this.dispatchSingle(action)));
+      if (actionOrActions.length === 0) return of(undefined);
+
+      return forkJoin(actionOrActions.map(action => this.dispatchSingle(action))).pipe(
+        map(() => undefined)
+      );
     } else {
       return this.dispatchSingle(actionOrActions);
     }
   }
 
-  private dispatchSingle(action: any): Observable<any> {
+  private dispatchSingle(action: any): Observable<void> {
     if (typeof ngDevMode === 'undefined' || ngDevMode) {
       const type: string | undefined = getActionTypeFromInstance(action);
       if (!type) {
@@ -66,20 +71,18 @@ export class InternalDispatcher {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return (
-      compose([
-        ...plugins,
-        (nextState: any, nextAction: any) => {
-          if (nextState !== prevState) {
-            this._stateStream.next(nextState);
-          }
-          const actionResult$ = this.getActionResultStream(nextAction);
-          actionResult$.subscribe(ctx => this._actions.next(ctx));
-          this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
-          return this.createDispatchObservable(actionResult$);
+    return compose([
+      ...plugins,
+      (nextState: any, nextAction: any) => {
+        if (nextState !== prevState) {
+          this._stateStream.next(nextState);
         }
-      ])(prevState, action) as Observable<any>
-    ).pipe(shareReplay());
+        const actionResult$ = this.getActionResultStream(nextAction);
+        actionResult$.subscribe(ctx => this._actions.next(ctx));
+        this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
+        return this.createDispatchObservable(actionResult$);
+      }
+    ])(prevState, action).pipe(shareReplay());
   }
 
   private getActionResultStream(action: any): Observable<ActionContext> {
@@ -92,12 +95,16 @@ export class InternalDispatcher {
     );
   }
 
-  private createDispatchObservable(actionResult$: Observable<ActionContext>): Observable<any> {
+  private createDispatchObservable(
+    actionResult$: Observable<ActionContext>
+  ): Observable<ɵPlainObject> {
     return actionResult$
       .pipe(
         exhaustMap((ctx: ActionContext) => {
           switch (ctx.status) {
             case ActionStatus.Successful:
+              // The `createDispatchObservable` function should return the
+              // state, as its result is utilized by plugins.
               return of(this._stateStream.getValue());
             case ActionStatus.Errored:
               return throwError(ctx.error);

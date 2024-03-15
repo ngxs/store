@@ -1,4 +1,3 @@
-// tslint:disable:unified-signatures
 import { Inject, Injectable, Optional, Signal, Type, computed } from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
@@ -41,7 +40,7 @@ export class Store {
   /**
    * Dispatches event(s).
    */
-  dispatch(actionOrActions: any | any[]): Observable<any> {
+  dispatch(actionOrActions: any | any[]): Observable<void> {
     return this._internalStateOperations.getRootStateOperations().dispatch(actionOrActions);
   }
 

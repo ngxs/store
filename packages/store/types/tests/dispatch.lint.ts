@@ -60,11 +60,11 @@ describe('[TEST]: Action Types', () => {
   });
 
   it('should be correct type in dispatch', () => {
-    assertType(() => store.dispatch([])); // $ExpectType Observable<any>
-    assertType(() => store.dispatch(new FooAction('payload'))); // $ExpectType Observable<any>
-    assertType(() => store.dispatch(new BarAction('foo'))); // $ExpectType Observable<any>
+    assertType(() => store.dispatch([])); // $ExpectType Observable<void>
+    assertType(() => store.dispatch(new FooAction('payload'))); // $ExpectType Observable<void>
+    assertType(() => store.dispatch(new BarAction('foo'))); // $ExpectType Observable<void>
     assertType(() => store.dispatch()); // $ExpectError
-    assertType(() => store.dispatch({})); // $ExpectType Observable<any>
+    assertType(() => store.dispatch({})); // $ExpectType Observable<void>
   });
 
   it('should prevent invalid types passed through', () => {
@@ -83,10 +83,10 @@ describe('[TEST]: Action Types', () => {
       @Action({ foo: 123 }) increment4() {} // $ExpectError
     }
 
-    assertType(() => store.dispatch(new Increment())); // $ExpectType Observable<any>
-    assertType(() => store.dispatch({ type: 'INCREMENT' })); // $ExpectType Observable<any>
-    assertType(() => store.dispatch(Increment)); // $ExpectType Observable<any>
-    assertType(() => store.dispatch({ foo: 123 })); // $ExpectType Observable<any>
+    assertType(() => store.dispatch(new Increment())); // $ExpectType Observable<void>
+    assertType(() => store.dispatch({ type: 'INCREMENT' })); // $ExpectType Observable<void>
+    assertType(() => store.dispatch(Increment)); // $ExpectType Observable<void>
+    assertType(() => store.dispatch({ foo: 123 })); // $ExpectType Observable<void>
   });
 
   it('should be correct type base API', () => {

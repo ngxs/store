@@ -924,23 +924,23 @@ describe('Dispatch', () => {
     describe('when many separate actions dispatched return out of order', () => {
       it('should notify of the completion of the relative observable', fakeAsync(() => {
         // Arrange
-        class Append {
-          static type = 'Test';
+        class Add {
+          static type = 'Increment';
 
-          constructor(public payload: string) {}
+          constructor(readonly payload: number) {}
         }
 
-        @State<string>({
-          name: 'text',
-          defaults: ''
+        @State<number>({
+          name: 'number',
+          defaults: 0
         })
         @Injectable()
         class MyState {
-          @Action(Append)
-          append({ getState, setState }: StateContext<string>, { payload }: Append) {
+          @Action(Add)
+          add(ctx: StateContext<string>, { payload }: Add) {
             return of({}).pipe(
-              delay(payload.length * 10),
-              tap(() => setState(getState() + payload))
+              delay(payload),
+              tap(() => ctx.setState(ctx.getState() + payload))
             );
           }
         }
@@ -952,14 +952,29 @@ describe('Dispatch', () => {
         const store = TestBed.inject(Store);
 
         // Act & assert
-        store
-          .dispatch(new Append('dddd'))
-          .subscribe(state => expect(state.text).toEqual('abbcccdddd'));
-        store.dispatch(new Append('a')).subscribe(state => expect(state.text).toEqual('a'));
-        store
-          .dispatch(new Append('ccc'))
-          .subscribe(state => expect(state.text).toEqual('abbccc'));
-        store.dispatch(new Append('bb')).subscribe(state => expect(state.text).toEqual('abb'));
+        store.dispatch(new Add(10)).subscribe(() => {
+          expect(store.snapshot()).toEqual({
+            number: 10
+          });
+        });
+
+        store.dispatch(new Add(20)).subscribe(() => {
+          expect(store.snapshot()).toEqual({
+            number: 30
+          });
+        });
+
+        store.dispatch(new Add(30)).subscribe(() => {
+          expect(store.snapshot()).toEqual({
+            number: 60
+          });
+        });
+
+        store.dispatch(new Add(40)).subscribe(() => {
+          expect(store.snapshot()).toEqual({
+            number: 100
+          });
+        });
 
         tick(100);
       }));
@@ -968,23 +983,23 @@ describe('Dispatch', () => {
     describe('when many actions dispatched together', () => {
       it('should notify once all completed', fakeAsync(() => {
         // Arrange
-        class Append {
-          static type = 'Test';
+        class Add {
+          static type = 'Increment';
 
-          constructor(public payload: string) {}
+          constructor(readonly payload: number) {}
         }
 
-        @State<string>({
-          name: 'text',
-          defaults: ''
+        @State<number>({
+          name: 'number',
+          defaults: 0
         })
         @Injectable()
         class MyState {
-          @Action(Append)
-          append({ getState, setState }: StateContext<string>, { payload }: Append) {
+          @Action(Add)
+          add(ctx: StateContext<string>, { payload }: Add) {
             return of({}).pipe(
-              delay(payload.length * 10),
-              tap(() => setState(getState() + payload))
+              delay(payload),
+              tap(() => ctx.setState(ctx.getState() + payload))
             );
           }
         }
@@ -995,19 +1010,16 @@ describe('Dispatch', () => {
 
         const store = TestBed.inject(Store);
 
-        // Act & assert
-        store
-          .dispatch([new Append('dddd'), new Append('a'), new Append('ccc'), new Append('bb')])
-          .subscribe(results => {
-            expect(results.map((r: any) => r.text)).toEqual([
-              'abbcccdddd',
-              'a',
-              'abbccc',
-              'abb'
-            ]);
-          });
+        const finalNumber = 100; // 10 + 20 + 30 + 40
 
-        tick(100);
+        // Act & assert
+        store.dispatch([new Add(10), new Add(20), new Add(30), new Add(40)]).subscribe(() => {
+          expect(store.snapshot()).toEqual({
+            number: finalNumber
+          });
+        });
+
+        tick(finalNumber);
       }));
     });
   });
