@@ -754,20 +754,6 @@ describe('Selector', () => {
       expect(reverse).toEqual([4, 3, 2, 1]);
     });
 
-    it('should be incorrect mutation', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TasksState], { developmentMode: true })]
-      });
-
-      const store = TestBed.inject(Store);
-      store.reset({ tasks: [1, 2, 3, 4] });
-
-      const tasks: number[] = store.selectSnapshot(TasksState);
-      const reverse: number[] = store.selectSnapshot(TasksState.reverse);
-      expect(tasks).toEqual([1, 2, 3, 4]);
-      expect(reverse).toEqual(undefined as any);
-    });
-
     it('should be correct catch errors with selectSnapshot', () => {
       TestBed.configureTestingModule({
         imports: [

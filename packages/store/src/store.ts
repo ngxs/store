@@ -54,16 +54,14 @@ export class Store {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
     return this._selectableStateStream.pipe(
       map(selectorFn),
-      catchError((err: Error): Observable<never> | Observable<undefined> => {
+      catchError((error: Error): Observable<never> | Observable<undefined> => {
         // if error is TypeError we swallow it to prevent usual errors with property access
-        const { suppressErrors } = this._config.selectorOptions;
-
-        if (err instanceof TypeError && suppressErrors) {
+        if (this._config.selectorOptions.suppressErrors && error instanceof TypeError) {
           return of(undefined);
         }
 
         // rethrow other errors
-        return throwError(err);
+        return throwError(error);
       }),
       distinctUntilChanged(),
       leaveNgxs(this._internalExecutionStrategy)
