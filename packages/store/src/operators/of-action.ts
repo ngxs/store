@@ -108,17 +108,19 @@ export function ofActionErrored<T extends ActionType[]>(
   ...allowedTypes: T
 ): OperatorFunction<
   ActionContext<Constructed<T[TupleKeys<T>]>>,
-  Constructed<T[TupleKeys<T>]>
+  ActionCompletion<Constructed<T[TupleKeys<T>]>>
 > {
-  return ofActionOperator(allowedTypes, [ActionStatus.Errored]);
+  return ofActionOperator(allowedTypes, [ActionStatus.Errored], mapActionResult);
 }
 
 function ofActionOperator(
   allowedTypes: ActionType[],
   statuses?: ActionStatus[],
-  // This actually could've been `OperatorFunction<ActionContext, ActionCompletion | any>`,
-  // since it maps either to `ctx.action` OR to `ActionCompletion`. But `ActionCompleteion | any`
-  // defaults to `any`, thus there is no sense from union type.
+  // This could have been written as
+  // `OperatorFunction<ActionContext, ActionCompletion | any>`, as it maps
+  // either to `ctx.action` or to `ActionCompletion`. However,
+  // `ActionCompletion | any` defaults to `any`, rendering the union
+  // type meaningless.
   mapOperator: () => OperatorFunction<ActionContext, any> = mapAction
 ): OperatorFunction<ActionContext, any> {
   const allowedMap = createAllowedActionTypesMap(allowedTypes);

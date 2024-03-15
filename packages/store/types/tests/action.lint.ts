@@ -162,19 +162,19 @@ describe('[TEST]: Action Operator Types', () => {
   it('ofActionErrored()', () => {
     // Arrange & act & assert
     actions$.pipe(
-      ofActionErrored(ActionOne) // $ExpectType OperatorFunction<ActionContext<ActionOne>, ActionOne>
+      ofActionErrored(ActionOne) // $ExpectType OperatorFunction<ActionContext<ActionOne>, ActionCompletion<ActionOne, Error>>
     );
 
     actions$.pipe(
-      ofActionErrored(ActionOne, ActionTwo) // $ExpectType OperatorFunction<ActionContext<ActionOne | ActionTwo>, ActionOne | ActionTwo>
+      ofActionErrored(ActionOne, ActionTwo) // $ExpectType OperatorFunction<ActionContext<ActionOne | ActionTwo>, ActionCompletion<ActionOne | ActionTwo, Error>>
     );
 
     actions$.pipe(
-      ofActionErrored(actionThree) // $ExpectType OperatorFunction<ActionContext<{ type: "Action three"; }>, { type: "Action three"; }>
+      ofActionErrored(actionThree) // $ExpectType OperatorFunction<ActionContext<{ type: "Action three"; }>, ActionCompletion<{ type: "Action three"; }, Error>>
     );
 
     actions$.pipe(
-      ofActionErrored(actionFour) // $ExpectType OperatorFunction<ActionContext<{ type: string; }>, { type: string; }>
+      ofActionErrored(actionFour) // $ExpectType OperatorFunction<ActionContext<{ type: string; }>, ActionCompletion<{ type: string; }, Error>>
     );
 
     actions$.pipe(
