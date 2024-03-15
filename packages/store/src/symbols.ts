@@ -96,7 +96,7 @@ export class NgxsConfig {
    */
   selectorOptions: ɵSharedSelectorOptions = {
     injectContainerState: true, // TODO: default is true in v3, will change in v4
-    suppressErrors: true // TODO: default is true in v3, will change in v4
+    suppressErrors: false
   };
 }
 
