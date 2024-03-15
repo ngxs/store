@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import type { ReadonlyDeep } from 'type-fest';
+import { Observable } from 'rxjs';
+
 import { getValue, setValue } from '@ngxs/store/plugins';
 import { ExistingState, StateOperator, isStateOperator } from '@ngxs/store/operators';
-import { Observable } from 'rxjs';
 
 import { StateContext } from '../symbols';
 import { MappedStore, StateOperations } from '../internal/internals';
@@ -23,7 +25,7 @@ export class StateContextFactory {
     const root = this._internalStateOperations.getRootStateOperations();
 
     return {
-      getState(): T {
+      getState(): ReadonlyDeep<T> {
         const currentAppState = root.getState();
         return getState(currentAppState, mappedStore.path);
       },

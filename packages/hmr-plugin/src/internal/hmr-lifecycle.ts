@@ -42,7 +42,7 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
     if (typeof this.ngAppModule.hmrNgxsStoreBeforeOnDestroy === 'function') {
       state = this.ngAppModule.hmrNgxsStoreBeforeOnDestroy(ctx);
     } else {
-      state = ctx.getState();
+      state = ctx.getState() as Partial<S>;
     }
 
     ctx.dispatch(new HmrBeforeDestroyAction(state));
