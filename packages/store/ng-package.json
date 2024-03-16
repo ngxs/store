@@ -3,6 +3,5 @@
   "lib": {
     "entryFile": "index.ts"
   },
-  "dest": "../../@ngxs/store",
-  "allowedNonPeerDependencies": ["type-fest"]
+  "dest": "../../@ngxs/store"
 }

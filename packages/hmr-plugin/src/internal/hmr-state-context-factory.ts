@@ -22,7 +22,7 @@ export class HmrStateContextFactory<T, S> {
   public createStateContext(): StateContext<S> {
     return {
       dispatch: actions => this.store!.dispatch(actions),
-      getState: () => this.store!.snapshot(),
+      getState: () => <S>this.store!.snapshot(),
       setState: val => {
         if (isStateOperator(val)) {
           const currentState = this.store!.snapshot();
