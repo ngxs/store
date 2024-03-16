@@ -1,9 +1,8 @@
 import { Injectable, InjectionToken, Type, inject } from '@angular/core';
-import type { ReadonlyDeep } from 'type-fest';
 import { Observable } from 'rxjs';
 
 import { StateOperator } from '@ngxs/store/operators';
-import { ɵStateClass, ɵPlainObject, ɵSharedSelectorOptions } from '@ngxs/store/internals';
+import { ɵPlainObject, ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
 
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
@@ -110,7 +109,7 @@ export interface StateContext<T> {
   /**
    * Get the current state.
    */
-  getState(): ReadonlyDeep<T>;
+  getState(): T;
 
   /**
    * Reset the state to a new value.
