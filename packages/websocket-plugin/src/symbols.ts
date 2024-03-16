@@ -4,13 +4,13 @@ declare const ngDevMode: boolean;
 
 const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
 
-export const NGXS_WEBSOCKET_OPTIONS = new InjectionToken<NgxsWebsocketPluginOptions>(
+export const NGXS_WEBSOCKET_OPTIONS = new InjectionToken<NgxsWebSocketPluginOptions>(
   NG_DEV_MODE ? 'NGXS_WEBSOCKET_OPTIONS' : ''
 );
 
 export const USER_OPTIONS = new InjectionToken(NG_DEV_MODE ? 'USER_OPTIONS' : '');
 
-export interface NgxsWebsocketPluginOptions {
+export interface NgxsWebSocketPluginOptions {
   /**
    * URL of the websocket.
    */
@@ -66,13 +66,13 @@ export interface NgxsWebsocketPluginOptions {
 export class ConnectWebSocket {
   static readonly type = '[WebSocket] Connect';
 
-  constructor(public payload?: NgxsWebsocketPluginOptions) {}
+  constructor(public payload?: NgxsWebSocketPluginOptions) {}
 }
 
 /**
  * Action triggered when a error ocurrs
  */
-export class WebsocketMessageError {
+export class WebSocketMessageError {
   static readonly type = '[WebSocket] Message Error';
 
   constructor(public payload: any) {}

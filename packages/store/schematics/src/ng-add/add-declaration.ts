@@ -117,7 +117,7 @@ const pluginData: ReadonlyMap<LIBRARIES, { module?: string; standalone: string }
   [
     LIBRARIES.WEBSOCKET,
     {
-      module: 'NgxsWebsocketPluginModule',
+      module: 'NgxsWebSocketPluginModule',
       standalone: 'withNgxsWebSocketPlugin'
     }
   ]
