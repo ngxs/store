@@ -1,13 +1,8 @@
-import {
-  Tree,
-  convertNxGenerator,
-  getProjects,
-  logger,
-  readJson,
-  visitNotIgnoredFiles
-} from '@nx/devkit';
 import { exit } from 'node:process';
 import * as ts from 'ts-morph';
+
+import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import { visitTsFiles } from '../utils/visit-files';
 
 function migrateEmptyForRoot(callExpression: ts.CallExpression<ts.ts.CallExpression>) {
   callExpression.addArgument(`{ keys: '*' }`);
@@ -45,29 +40,26 @@ function isStoragePluginProvided(callExpression: ts.CallExpression) {
   );
 }
 
-export async function migrateKeys(tree: Tree) {
-  const projects = getProjects(tree);
-  const tsProject = new ts.Project({ useInMemoryFileSystem: true });
-  const packageJson = readJson(tree, 'package.json');
-  const storePackage = packageJson['dependencies']['@ngxs/store'];
+export function migrateKeys(): Rule {
+  return (tree: Tree, _context: SchematicContext) => {
+    const tsProject = new ts.Project({ useInMemoryFileSystem: true });
+    const packageJson = tree.readJson('package.json') as any;
+    const storePackage = packageJson['dependencies']['@ngxs/store'];
 
-  if (!storePackage) {
-    logger.error(`No @ngxs/store found`);
-    return exit(1);
-  }
+    if (!storePackage) {
+      _context.logger.error(`No @ngxs/store found`);
+      return exit(1);
+    }
 
-  for (const { root } of projects.values()) {
-    logger.info(`Migrating keys for '${root}...'`);
-
-    visitNotIgnoredFiles(tree, root, async path => {
-      const fileContent = tree.read(path, 'utf8');
+    visitTsFiles(tree, tree.root, async path => {
+      const fileContent = tree.readText(path);
       const sourceFile = tsProject.createSourceFile(path, fileContent!);
       const hasStoragePluginImported = sourceFile.getImportDeclaration(
         importDecl => importDecl.getModuleSpecifierValue() === '@ngxs/storage-plugin'
       );
 
       // do not try migrating if the storage plugin is not imported
-      if (path.endsWith('.ts') && hasStoragePluginImported) {
+      if (hasStoragePluginImported) {
         sourceFile.forEachDescendant(node => {
           if (
             ts.Node.isCallExpression(node) &&
@@ -83,19 +75,17 @@ export async function migrateKeys(tree: Tree) {
             const args = callExpression.getArguments();
             // If there are no arguments in the forRoot(), then add the `keys` property
             if (!args.length) {
-              logger.info(`Migrating empty forRoot in ${path}`);
+              _context.logger.info(`Migrating empty forRoot in ${path}`);
               migrateEmptyForRoot(callExpression);
             } else if (ts.Node.isObjectLiteralExpression(args[0])) {
-              logger.info(`Migrating forRoot with args in ${path}`);
+              _context.logger.info(`Migrating forRoot with args in ${path}`);
               migrateForRootWithArgs(args[0]);
             }
           }
         });
 
-        tree.write(path, sourceFile.getFullText());
+        tree.overwrite(path, sourceFile.getFullText());
       }
     });
-  }
+  };
 }
-
-export const migrateKeysAngularSchematic = convertNxGenerator(migrateKeys);

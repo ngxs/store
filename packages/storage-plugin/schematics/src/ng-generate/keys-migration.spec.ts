@@ -1,24 +1,23 @@
-import { addProjectConfiguration } from '@nx/devkit';
-import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
-import { migrateKeys } from './index';
+import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
+import { workspaceRoot } from '@nx/devkit';
+import { join } from 'path';
+import { createWorkspace } from '../_testing';
 
 describe('Storage Plugin Migration', () => {
+  const ngxsSchematicRunner = new SchematicTestRunner(
+    '@ngxs/storage-plugin/schematics',
+    join(workspaceRoot, 'packages/storage-plugin/schematics/collection.json')
+  );
+
   const testSetup = async () => {
-    const tree = createTreeWithEmptyWorkspace();
-    tree.write('package.json', `{"dependencies": {"@ngxs/store": "3.8.2"}}`);
+    const appTree = await createWorkspace();
+    appTree.overwrite('package.json', `{"dependencies": {"@ngxs/store": "3.8.2"}}`);
 
-    addProjectConfiguration(tree, 'lib-one', {
-      name: 'test-app',
-      root: 'projects/foo',
-      sourceRoot: 'projects/foo/src',
-      projectType: 'application'
-    });
-
-    return { tree };
+    return { appTree };
   };
 
   it('migrate empty forRoot', async () => {
-    const { tree } = await testSetup();
+    const { appTree } = await testSetup();
 
     const newContent = `
     import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
@@ -42,16 +41,16 @@ describe('Storage Plugin Migration', () => {
       export class AppModule { }
     `;
 
-    tree.write('/projects/foo/src/app/app.module.ts', newContent);
+    appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
 
-    await migrateKeys(tree);
+    const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
 
-    const contentUpdate = tree!.read('/projects/foo/src/app/app.module.ts', 'utf8');
+    const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
     expect(contentUpdate).toContain(`keys: '*'`);
   });
 
   it('migrate forRoot that is missing the "key" property', async () => {
-    const { tree } = await testSetup();
+    const { appTree } = await testSetup();
 
     const newContent = `
     import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
@@ -75,18 +74,19 @@ describe('Storage Plugin Migration', () => {
       export class AppModule { }
     `;
 
-    tree.write('/projects/foo/src/app/app.module.ts', newContent);
+    appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
 
-    await migrateKeys(tree);
+    const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
 
-    const contentUpdate = tree!.read('/projects/foo/src/app/app.module.ts', 'utf8');
+    const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
+
     expect(contentUpdate).toContain(`proa: 'valuea'`);
     expect(contentUpdate).toContain(`prob: 'valueb'`);
     expect(contentUpdate).toContain(`keys: '*'`);
   });
 
   it('migrate forRoot that has the "key" property', async () => {
-    const { tree } = await testSetup();
+    const { appTree } = await testSetup();
 
     const newContent = `
     import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
@@ -110,11 +110,11 @@ describe('Storage Plugin Migration', () => {
       export class AppModule { }
     `;
 
-    tree.write('/projects/foo/src/app/app.module.ts', newContent);
+    appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
 
-    await migrateKeys(tree);
+    const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
 
-    const contentUpdate = tree!.read('/projects/foo/src/app/app.module.ts', 'utf8');
+    const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
     expect(contentUpdate).toContain(`proa: 'valuea'`);
     expect(contentUpdate).toContain(`prob: 'valueb'`);
     expect(contentUpdate).toContain(`keys: 'keep this value'`);

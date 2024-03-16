@@ -3,15 +3,9 @@
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
     "keys-migration": {
-      "factory": "./src/ng-generate/index#migrateKeysAngularSchematic",
+      "factory": "./src/ng-generate/index#migrateKeys",
       "description": "Migrates from key to keys",
       "aliases": ["ngxs-keys-migration"],
-      "schema": "./src/ng-generate/schema.json"
-    }
-  },
-  "generators": {
-    "init": {
-      "factory": "./src/ng-generate/index#migrateKeys",
       "schema": "./src/ng-generate/schema.json"
     }
   }

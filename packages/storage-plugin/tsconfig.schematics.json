@@ -21,5 +21,9 @@
     "types": ["jest", "node"]
   },
   "include": ["schematics/**/*"],
-  "exclude": ["schematics/**/*.test.ts", "schematics/**/*.spec.ts"]
+  "exclude": [
+    "schematics/src/_testing/**/*",
+    "schematics/**/*.test.ts",
+    "schematics/**/*.spec.ts"
+  ]
 }
