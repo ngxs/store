@@ -1,7 +1,7 @@
-import { Inject, Injectable, Optional, Signal, Type, computed } from '@angular/core';
+import { Inject, Injectable, Optional, Signal, computed } from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
-import { ɵINITIAL_STATE_TOKEN, ɵPlainObject, StateToken } from '@ngxs/store/internals';
+import { ɵINITIAL_STATE_TOKEN, ɵPlainObject } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
@@ -47,10 +47,7 @@ export class Store {
   /**
    * Selects a slice of data from the store.
    */
-  select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
-  select<T = any>(selector: string | Type<any>): Observable<T>;
-  select<T>(selector: StateToken<T>): Observable<T>;
-  select(selector: any): Observable<any> {
+  select<T>(selector: TypedSelector<T>): Observable<T> {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
     return this._selectableStateStream.pipe(
       map(selectorFn),
@@ -71,21 +68,14 @@ export class Store {
   /**
    * Select one slice of data from the store.
    */
-
-  selectOnce<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
-  selectOnce<T = any>(selector: string | Type<any>): Observable<T>;
-  selectOnce<T>(selector: StateToken<T>): Observable<T>;
-  selectOnce(selector: any): Observable<any> {
+  selectOnce<T>(selector: TypedSelector<T>): Observable<T> {
     return this.select(selector).pipe(take(1));
   }
 
   /**
    * Select a snapshot from the state.
    */
-  selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T;
-  selectSnapshot<T = any>(selector: string | Type<any>): T;
-  selectSnapshot<T>(selector: StateToken<T>): T;
-  selectSnapshot(selector: any): any {
+  selectSnapshot<T>(selector: TypedSelector<T>): T {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());
   }
