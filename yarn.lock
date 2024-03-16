@@ -2580,13 +2580,6 @@
   dependencies:
     "@nx/devkit" "17.1.3"
 
-"@nrwl/devkit@18.0.8":
-  version "18.0.8"
-  resolved "https://registry.npmjs.org/@nrwl/devkit/-/devkit-18.0.8.tgz#9f412c9793615e18f49565a0e58a28207c6d9c21"
-  integrity sha512-cKtXq2I/3y/t1I+jMn8XVfhtSjGxJHKGSmxStMdRPMcUim8iaS2V3fDUdF2CGrXrtbmDtYwBC8413YY+nVh0Gw==
-  dependencies:
-    "@nx/devkit" "18.0.8"
-
 "@nrwl/jest@17.1.3":
   version "17.1.3"
   resolved "https://registry.npmjs.org/@nrwl/jest/-/jest-17.1.3.tgz#451835b6f6eaa3aaf186949754a7cd2f141c86ca"
@@ -2628,20 +2621,6 @@
     semver "7.5.3"
     tmp "~0.2.1"
     tslib "^2.3.0"
-
-"@nx/devkit@18.0.8", "@nx/devkit@^18.0.8":
-  version "18.0.8"
-  resolved "https://registry.npmjs.org/@nx/devkit/-/devkit-18.0.8.tgz#4d7ce2f31984a9e61bd18e364f85d5f45779c8ac"
-  integrity sha512-df56bzmhF8yhVCCChe0ATjCsc9r9SNcpks5/bABGqR91vHVGfsz0H33RYO7P2jrPwFBRYnf+aWWFY1d6NpEdxw==
-  dependencies:
-    "@nrwl/devkit" "18.0.8"
-    ejs "^3.1.7"
-    enquirer "~2.3.6"
-    ignore "^5.0.4"
-    semver "^7.5.3"
-    tmp "~0.2.1"
-    tslib "^2.3.0"
-    yargs-parser "21.1.1"
 
 "@nx/eslint@17.1.3":
   version "17.1.3"

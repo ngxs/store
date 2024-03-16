@@ -128,7 +128,6 @@
     "@commitlint/cli": "^17.6.0",
     "@commitlint/config-conventional": "^17.6.0",
     "@nrwl/tao": "17.1.3",
-    "@nx/devkit": "^18.0.8",
     "@nx/eslint": "17.1.3",
     "@nx/jest": "17.1.3",
     "@nx/js": "17.1.3",
