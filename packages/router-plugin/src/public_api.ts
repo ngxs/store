@@ -1,5 +1,5 @@
 export { NgxsRouterPluginModule, withNgxsRouterPlugin } from './router.module';
-export { RouterState, RouterStateModel } from './router.state';
+export { ROUTER_STATE_TOKEN, RouterState, RouterStateModel } from './router.state';
 export {
   RouterStateSerializer,
   DefaultRouterStateSerializer,

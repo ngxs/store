@@ -107,8 +107,9 @@ describe('RouterDataResolved', () => {
       const dataFromTheOriginalRouter = router.routerState.snapshot.root.firstChild!.data;
       expect(dataFromTheOriginalRouter).toEqual({ test });
 
-      const dataFromTheRouterState = store.selectSnapshot(RouterState.state)!.root.firstChild!
-        .data;
+      const dataFromTheRouterState = store.selectSnapshot<RouterStateSnapshot | undefined>(
+        RouterState.state
+      )!.root.firstChild!.data;
       expect(dataFromTheOriginalRouter).toEqual(dataFromTheRouterState);
     })
   );
@@ -156,8 +157,9 @@ describe('RouterDataResolved', () => {
       const dataFromTheOriginalRouter = router.routerState.snapshot.root.firstChild!.data;
       expect(dataFromTheOriginalRouter).toEqual({ test });
 
-      const dataFromTheRouterState = store.selectSnapshot(RouterState.state)!.root.firstChild!
-        .data;
+      const dataFromTheRouterState = store.selectSnapshot<RouterStateSnapshot | undefined>(
+        RouterState.state
+      )!.root.firstChild!.data;
       expect(dataFromTheOriginalRouter).toEqual(dataFromTheRouterState);
     })
   );
@@ -215,6 +217,11 @@ describe('RouterDataResolved', () => {
       })
       @Injectable()
       class CounterState {
+        @Selector()
+        static getState(state: number) {
+          return state;
+        }
+
         @Action(RouterNavigation)
         routerNavigation(ctx: StateContext<number>): void {
           ctx.setState(ctx.getState() + 1);
@@ -233,7 +240,7 @@ describe('RouterDataResolved', () => {
       await ngZone.run(() => router.navigateByUrl('/a/b'));
 
       // Assert
-      const counter = store.selectSnapshot<number>(CounterState);
+      const counter = store.selectSnapshot<number>(CounterState.getState);
       expect(counter).toEqual(3);
     })
   );
@@ -272,10 +279,8 @@ describe('RouterDataResolved', () => {
 
       const subscription = store.select(CounterState.counter).subscribe();
 
-      await ngZone.run(async () => {
-        await router.navigateByUrl('/a/b/c');
-        await router.navigateByUrl('/a/b');
-      });
+      await ngZone.run(() => router.navigateByUrl('/a/b/c'));
+      await ngZone.run(() => router.navigateByUrl('/a/b'));
       subscription.unsubscribe();
 
       // Assert

@@ -10,7 +10,7 @@ import {
   NavigationEnd,
   Event
 } from '@angular/router';
-import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
+import { Action, Selector, State, StateContext, StateToken, Store } from '@ngxs/store';
 import {
   NavigationActionTiming,
   NgxsRouterPluginOptions,
@@ -44,8 +44,13 @@ export type RouterTrigger =
   // The `devtools` trigger means that the state change has been triggered by Redux DevTools (e.g. when the time-traveling is used).
   | 'devtools';
 
+// NGXS doesn't permit untyped selectors, such as `select(RouterState)`,
+// as the `RouterState` class itself lacks type information. Therefore,
+// the following state token must replace `RouterState`.
+export const ROUTER_STATE_TOKEN = new StateToken<RouterStateModel>('router');
+
 @State<RouterStateModel>({
-  name: 'router',
+  name: ROUTER_STATE_TOKEN,
   defaults: {
     state: undefined,
     navigationId: undefined,
@@ -78,12 +83,14 @@ export class RouterState implements OnDestroy {
 
   @Selector()
   static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
-    return state && state.state;
+    // The `state` is optional if the selector is invoked before the router
+    // state is registered in NGXS.
+    return state?.state;
   }
 
   @Selector()
   static url(state: RouterStateModel): string | undefined {
-    return state && state.state && state.state.url;
+    return state?.state?.url;
   }
 
   constructor(
@@ -134,7 +141,9 @@ export class RouterState implements OnDestroy {
   }
 
   private _setUpStoreListener(): void {
-    const routerState$ = this._store.select(RouterState).pipe(takeUntil(this._destroy$));
+    const routerState$ = this._store
+      .select(ROUTER_STATE_TOKEN)
+      .pipe(takeUntil(this._destroy$));
     routerState$.subscribe((state: RouterStateModel | undefined) => {
       this._navigateIfNeeded(state);
     });
@@ -142,7 +151,7 @@ export class RouterState implements OnDestroy {
 
   private _navigateIfNeeded(routerState: RouterStateModel | undefined): void {
     if (routerState && routerState.trigger === 'devtools') {
-      this._storeState = this._store.selectSnapshot(RouterState);
+      this._storeState = this._store.selectSnapshot(ROUTER_STATE_TOKEN);
     }
 
     const canSkipNavigation =
@@ -157,7 +166,7 @@ export class RouterState implements OnDestroy {
       return;
     }
 
-    this._storeState = this._store.selectSnapshot(RouterState);
+    this._storeState = this._store.selectSnapshot(ROUTER_STATE_TOKEN);
     this._trigger = 'store';
     this._ngZone.run(() => this._router.navigateByUrl(this._storeState!.state!.url));
   }
@@ -205,7 +214,7 @@ export class RouterState implements OnDestroy {
     this._routerState = this._serializer.serialize(this._router.routerState.snapshot);
 
     if (this._trigger !== 'none') {
-      this._storeState = this._store.selectSnapshot(RouterState);
+      this._storeState = this._store.selectSnapshot(ROUTER_STATE_TOKEN);
       this._dispatchRouterAction(new RouterRequest(this._routerState, event, this._trigger));
     }
   }
