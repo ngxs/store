@@ -119,7 +119,7 @@ export class Store {
    * for plugin's who need to modify the state directly or unit testing.
    */
   reset(state: any) {
-    return this._internalStateOperations.getRootStateOperations().setState(state);
+    this._internalStateOperations.getRootStateOperations().setState(state);
   }
 
   private getStoreBoundSelectorFn(selector: any) {

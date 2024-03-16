@@ -20,7 +20,7 @@ export type StatesByName = ɵPlainObjectOf<ɵStateClassInternal>;
 export interface StateOperations<T> {
   getState(): T;
 
-  setState(val: T): T;
+  setState(val: T): void;
 
   dispatch(actionOrActions: any | any[]): Observable<void>;
 }
