@@ -27,16 +27,18 @@ export class StateContextFactory {
         const currentAppState = root.getState();
         return getState(currentAppState, mappedStore.path);
       },
-      patchState(val: Partial<T>): T {
+      patchState(val: Partial<T>): void {
         const currentAppState = root.getState();
         const patchOperator = simplePatch<T>(val);
-        return setStateFromOperator(root, currentAppState, patchOperator, mappedStore.path);
+        setStateFromOperator(root, currentAppState, patchOperator, mappedStore.path);
       },
-      setState(val: T | StateOperator<T>): T {
+      setState(val: T | StateOperator<T>): void {
         const currentAppState = root.getState();
-        return isStateOperator(val)
-          ? setStateFromOperator(root, currentAppState, val, mappedStore.path)
-          : setStateValue(root, currentAppState, val, mappedStore.path);
+        if (isStateOperator(val)) {
+          setStateFromOperator(root, currentAppState, val, mappedStore.path);
+        } else {
+          setStateValue(root, currentAppState, val, mappedStore.path);
+        }
       },
       dispatch(actions: any | any[]): Observable<void> {
         return root.dispatch(actions);
