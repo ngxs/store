@@ -12,11 +12,12 @@ import {
   ofActionCompleted,
   ofActionDispatched,
   ofActionErrored,
-  ofActionSuccessful
+  ofActionSuccessful,
+  ActionCompletion
 } from '@ngxs/store';
 import { ɵMETA_KEY } from '@ngxs/store/internals';
 import { Observable, of, Subject, throwError } from 'rxjs';
-import { delay, map, tap } from 'rxjs/operators';
+import { delay, map, take, tap } from 'rxjs/operators';
 
 import { NoopErrorHandler } from './helpers/utils';
 
@@ -200,6 +201,29 @@ describe('Action', () => {
       ]);
     }));
 
+    it('ofActionErrored should return an action completion result', async () => {
+      // Arrange
+      const { store, actions } = setup();
+
+      // Act
+      const action = new ErrorAction();
+      const promise = actions.pipe(ofActionErrored(ErrorAction), take(1)).toPromise();
+      store.dispatch(action);
+      const completion = await promise;
+
+      // Assert
+      expect(completion).toEqual({
+        action,
+        result: {
+          successful: false,
+          canceled: false,
+          error: expect.objectContaining({
+            message: expect.stringMatching(/this is a test error/)
+          })
+        }
+      });
+    });
+
     it('calls only the dispatched and canceled action', fakeAsync(() => {
       // Arrange
       const { store, actions } = setup();
@@ -215,9 +239,11 @@ describe('Action', () => {
           callbacksCalled.push('ofActionDispatched ' + id);
         });
 
-      actions.pipe(ofActionErrored(CancelingAction)).subscribe(({ id }: CancelingAction) => {
-        callbacksCalled.push('ofActionErrored ' + id);
-      });
+      actions
+        .pipe(ofActionErrored(CancelingAction))
+        .subscribe((completion: ActionCompletion<CancelingAction>) => {
+          callbacksCalled.push('ofActionErrored ' + completion.action.id);
+        });
 
       actions
         .pipe(ofActionSuccessful(CancelingAction))
