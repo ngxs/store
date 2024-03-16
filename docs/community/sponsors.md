@@ -22,5 +22,5 @@ Thank you to all our backers! [Become a backer](https://opencollective.com/ngxs#
 
 ## Other Contributions
 
-- [DataFrameworks](https://dataframeworks.com/) - Websocket Plugin
+- [DataFrameworks](https://dataframeworks.com/) - WebSocket Plugin
 - [Marian Stoica](https://twitter.com/MarianStoica19) - NGXS.io domain name

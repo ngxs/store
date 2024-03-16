@@ -13,16 +13,16 @@ yarn add @ngxs/websocket-plugin
 
 ## Configuration
 
-Add the `NgxsWebsocketPluginModule` plugin to your root app module:
+Add the `NgxsWebSocketPluginModule` plugin to your root app module:
 
 ```ts
 import { NgxsModule } from '@ngxs/store';
-import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
+import { NgxsWebSocketPluginModule } from '@ngxs/websocket-plugin';
 
 @NgModule({
   imports: [
     NgxsModule.forRoot([]),
-    NgxsWebsocketPluginModule.forRoot({
+    NgxsWebSocketPluginModule.forRoot({
       url: 'ws://localhost:4200'
     })
   ]
@@ -32,7 +32,7 @@ export class AppModule {}
 
 The plugin has a variety of options that can be passed:
 
-- `url`: Url of the web socket connection. Can be passed here or by the `ConnectWebsocket` action.
+- `url`: Url of the web socket connection. Can be passed here or by the `ConnectWebSocket` action.
 - `typeKey`: Object property that maps the web socket message to a action type. Default: `type`
 - `serializer`: Serializer used before sending objects to the web socket. Default: `JSON.stringify`
 - `deserializer`: Deserializer used for messages arriving from the web socket. Default: `JSON.parse`
@@ -148,7 +148,7 @@ ws.on('connection', socket => {
 Notice that you have to specify `type` property on server side, otherwise you will get an error - `Type ... not found on message`. If you don't want to use a property called `type` as the key then you can specify your own property name when calling `forRoot`:
 
 ```ts
-NgxsWebsocketPluginModule.forRoot({
+NgxsWebSocketPluginModule.forRoot({
   url: 'ws://localhost:4200',
   typeKey: 'myAwesomeTypeKey'
 });
@@ -182,7 +182,7 @@ Here is a list of all the available actions you have:
 - `WebSocketConnected`: Action dispatched when a web socket is connected.
 - `WebSocketDisconnected`: Action dispatched when a web socket is disconnected. Use its handler for reconnecting.
 - `SendWebSocketMessage`: Send a message to the server.
-- `WebsocketMessageError`: Action dispatched by this plugin when an error ocurrs upon receiving a message.
+- `WebSocketMessageError`: Action dispatched by this plugin when an error ocurrs upon receiving a message.
 - `WebSocketConnectionUpdated`: Action dispatched by this plugin when a new connection is created on top of an existing one. Existing connection is closing.
 
 In summary - your server-side sockets should send objects that have a `type` property (or another key that you can provide in the `typeKey` property when calling `forRoot`). This plugin will receive a message from the server and dispatch the message as an action with the corresponding `type` value. If the `type` property doesn't match any client-side `@Action` methods (with an Action with the corresponding `static type` property value) then no State will respond to the message.

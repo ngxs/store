@@ -1,6 +1,6 @@
 {
   "name": "@ngxs/websocket-plugin",
-  "description": "Websocket plugin for @ngxs/store",
+  "description": "WebSocket plugin for @ngxs/store",
   "version": "0.0.0",
   "sideEffects": true,
   "peerDependencies": {
