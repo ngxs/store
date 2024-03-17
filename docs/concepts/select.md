@@ -159,8 +159,6 @@ These options can also be provided through the `@SelectorOptions` decorator at a
 
 - `true` will cause any error within a selector to result in the selector returning `undefined`.
 - `false` results in these errors propagating through the stack that triggered the evaluation of the selector that caused the error.
-- **NOTE:** _The default for this setting will be changing to `false` in NGXS v4.  
-  The default value in NGXS v3.x is `true`._
 
 #### `injectContainerState`
 
@@ -176,8 +174,6 @@ We recommend using the following global settings for new projects in order to mi
 
 ```ts
 {
-  // These Selector Settings are recommended in preparation for NGXS v4
-  // (See above for their effects)
   suppressErrors: false,
   injectContainerState: false
 }

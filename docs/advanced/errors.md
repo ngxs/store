@@ -27,12 +27,15 @@ export class MyErrorHandler implements ErrorHandler {
 export class AppModule {}
 ```
 
-## Handling errors within an `@Select`
+## Handling errors within selectors
 
 ```ts
-@Component({ ... })
-class AppComponent {
-  @Select(state => state.count.number.value) count$: Observable<number>;
+@State({ ... })
+class AppState {
+  @Selector()
+  static getCount(state: StateModel) {
+    return state.count.number.value;
+  }
 }
 ```
 
@@ -63,7 +66,7 @@ You have to disable suppressing errors using the `suppressErrors` option:
   imports: [
     NgxsModule.forRoot([CountState], {
       selectorOptions: {
-        suppressErrors: false // `true` by default
+        suppressErrors: false
       }
     })
   ]
@@ -74,9 +77,10 @@ export class AppModule {}
 This option allows to track errors and handle them.
 
 ```ts
-@Component({ ... })
-class AppComponent {
-  @Select(state => {
+@State({ ... })
+class AppState {
+  @Selector()
+  static getCount(state: StateModel) {
     try {
       return state.count.number.value;
     } catch (error) {
@@ -84,8 +88,7 @@ class AppComponent {
       // throw error;
       // Automatic unsubscription will occur if you use the `throw` statement here. Skip it if you don't want the stream to be completed on error.
     }
-  })
-  count$: Observable<number>;
+  }
 }
 ```
 
@@ -98,14 +101,18 @@ RxJS [design guidelines](https://github.com/ReactiveX/rxjs/blob/master/docs_app/
 When you define an @Action you can handle error within the action and if you do so, the error will not propagate to Angular's global `ErrorHandler`, nor the `dispatch` Observable. This applies to both sync and async types of Actions.
 
 ```ts
+class AppState {
   @Action(HandledError)
   handledError(ctx: StateContext<StateModel>) {
     try {
       // error is thrown
     } catch (err) {
-      console.log('error catched inside @Action wont propagate to ErrorHandler or dispatch subscription')
+      console.log(
+        'error catched inside @Action wont propagate to ErrorHandler or dispatch subscription'
+      );
     }
   }
+}
 ```
 
 ## Handling errors after dispatching an action
@@ -113,21 +120,28 @@ When you define an @Action you can handle error within the action and if you do 
 If an unhandled exception is thrown inside an action, the error will be propagated to the `ErrorHandler` and you can also catch it subscribing to the `dispatch` Observable. If you subscribe to the `dispatch` Observable the error will be caught twice, once in the ErrorHandler and on your `dispatch` handle.
 
 ```ts
+class AppState {
   @Action(UnhandledError)
   unhandledError(ctx: StateContext<StateModel>) {
     // error is thrown
   }
+}
 ```
 
 ```ts
+class AppComponent {
   unhandled() {
-    this.store.dispatch(new UnhandledError()).pipe(
-      catchError(err => {
-        console.log('unhandled error on dispatch subscription')
-        return of('')
-      })
-    ).subscribe();
+    this.store
+      .dispatch(new UnhandledError())
+      .pipe(
+        catchError(err => {
+          console.log('unhandled error on dispatch subscription');
+          return of('');
+        })
+      )
+      .subscribe();
   }
+}
 ```
 
 It is recommended to handle errors within `@Action` and update state to reflect the error, which you can later select to display where required.
