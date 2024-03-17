@@ -113,6 +113,7 @@ describe('zone', () => {
   it('"select" should be performed outside Angular zone', () => {
     let ticks = 0;
 
+    @Injectable()
     class MockApplicationRef extends ApplicationRef {
       public tick(): void {
         ticks++;

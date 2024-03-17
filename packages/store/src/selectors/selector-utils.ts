@@ -110,8 +110,19 @@ function getSelectorsToApply(
   containerClass: any
 ) {
   const selectorsToApply = [];
+  // The container state refers to the state class that includes the
+  // definition of the selector function, for example:
+  // @State()
+  // class AnimalsState {
+  //   @Selector()
+  //   static getAnimals(state: AnimalsStateModel) {}
+  // }
+  // The `AnimalsState` serves as the container state. Additionally, the
+  // selector may reside within a namespace or another class lacking the
+  // `@State` decorator, thus not being treated as the container state.
   const canInjectContainerState =
-    selectors.length === 0 || selectorOptions.injectContainerState;
+    selectorOptions.injectContainerState || selectors.length === 0;
+
   if (containerClass && canInjectContainerState) {
     // If we are on a state class, add it as the first selector parameter
     const metadata = ɵgetStoreMetadata(containerClass);
@@ -119,9 +130,7 @@ function getSelectorsToApply(
       selectorsToApply.push(containerClass);
     }
   }
-  if (selectors) {
-    selectorsToApply.push(...selectors);
-  }
+  selectorsToApply.push(...selectors);
   return selectorsToApply;
 }
 
