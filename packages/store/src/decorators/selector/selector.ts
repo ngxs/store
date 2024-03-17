@@ -42,10 +42,9 @@ export function Selector<T extends SelectorDef<any>>(selectors?: T[]): SelectorT
       configurable: true,
       get() {
         return memoizedFn;
-      }
+      },
+      originalFn
     };
-    // Add hidden property to descriptor
-    (<any>newDescriptor)['originalFn'] = originalFn;
     return newDescriptor;
   };
 }

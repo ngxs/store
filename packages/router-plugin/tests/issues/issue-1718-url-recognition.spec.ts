@@ -36,8 +36,6 @@ describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)'
   })
   class DetailsComponent {}
 
-  interface AppStateModel {}
-
   @State({
     name: 'app',
     defaults: {}
@@ -45,10 +43,7 @@ describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)'
   @Injectable()
   class AppState {
     @Selector([RouterState.state])
-    static getActiveRoute(
-      _stateModel: AppStateModel,
-      route: RouterStateSnapshot
-    ): ActivatedRouteSnapshot {
+    static getActiveRoute(route: RouterStateSnapshot): ActivatedRouteSnapshot {
       let state: ActivatedRouteSnapshot = route.root;
       while (state.firstChild) {
         state = state.firstChild;

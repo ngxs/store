@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 
 describe('Full testing NGXS States with NgxsTestBed', () => {
   @State<any>({ name: 'app', defaults: { count: 0 } })
+  @Injectable()
   class AppState implements NgxsOnInit, NgxsAfterBootstrap {
     public ngxsOnInit(ctx: StateContext<any>): void {
       this.triggerLifecycle(ctx, 'AppState.ngxsOnInit');

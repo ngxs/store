@@ -86,26 +86,6 @@ describe('Selector', () => {
       expect(slice()).toBe('Hello');
     });
 
-    it('should select multiples', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState, MyState2])]
-      });
-
-      const store = TestBed.inject(Store);
-      const slice = store.selectSignal(MyState2.foo);
-      expect(slice()).toBe('HelloHello');
-    });
-
-    it('should select multiples from self and others', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState, MyState2])]
-      });
-
-      const store = TestBed.inject(Store);
-      const slice = store.selectSignal(MyState2.fooBar);
-      expect(slice()).toBe('HelloHelloWorld');
-    });
-
     it('context should be defined inside selector', () => {
       @State<any>({
         name: 'counter',
@@ -501,11 +481,6 @@ describe('Selector', () => {
           return state.bar;
         }
 
-        @Selector([MyStateV3.bar])
-        static v3StyleSelector_FooAndBar(state: MyStateModel, bar: string) {
-          return state.foo + bar;
-        }
-
         @Selector([MyStateV3.foo, MyStateV3.bar])
         @SelectorOptions({ injectContainerState: false })
         static v4StyleSelector_FooAndBar(foo: string, bar: string) {
@@ -524,15 +499,6 @@ describe('Selector', () => {
           throw new Error('This is a forced error');
         }
       }
-
-      it('should select from a v3 selector', () => {
-        // Arrange
-        const store = setupStore([MyStateV3]);
-        // Act
-        const slice = store.selectSignal(MyStateV3.v3StyleSelector_FooAndBar);
-        // Assert
-        expect(slice()).toBe('FooBar');
-      });
 
       it('should select from a v4 selector', () => {
         // Arrange

@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { State, Action } from '../../src/public_api';
 
 export class AddTodo {
@@ -15,6 +16,7 @@ export class RemoveTodo {
   name: 'todos',
   defaults: []
 })
+@Injectable()
 export class TodoState {
   @Action(AddTodo)
   addTodo(state: string[], action: AddTodo) {
