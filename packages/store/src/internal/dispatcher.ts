@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { exhaustMap, filter, map, shareReplay, take } from 'rxjs/operators';
 
-import { ɵPlainObject } from '@ngxs/store/internals';
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
+import { ɵPlainObject, ɵStateStream } from '@ngxs/store/internals';
 
 import { compose } from '../utils/compose';
 import { InternalErrorReporter, ngxsErrorHandler } from './error-handler';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
-import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 
@@ -27,7 +26,7 @@ export class InternalDispatcher {
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
-    private _stateStream: StateStream,
+    private _stateStream: ɵStateStream,
     private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy,
     private _internalErrorReporter: InternalErrorReporter
   ) {}
