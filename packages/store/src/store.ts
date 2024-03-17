@@ -1,7 +1,7 @@
 import { Inject, Injectable, Optional, Signal, computed } from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
-import { ɵINITIAL_STATE_TOKEN, ɵPlainObject } from '@ngxs/store/internals';
+import { ɵINITIAL_STATE_TOKEN } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
@@ -119,15 +119,11 @@ export class Store {
   }
 
   private initStateStream(initialStateValue: any): void {
-    const value: ɵPlainObject = this._stateStream.value;
-    const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
-    if (storeIsEmpty) {
-      const defaultStateNotEmpty: boolean = Object.keys(this._config.defaultsState).length > 0;
-      const storeValues: ɵPlainObject = defaultStateNotEmpty
-        ? { ...this._config.defaultsState, ...initialStateValue }
-        : initialStateValue;
+    const value = this._stateStream.value;
+    const storeIsEmpty = !value || Object.keys(value).length === 0;
 
-      this._stateStream.next(storeValues);
+    if (storeIsEmpty) {
+      this._stateStream.next(initialStateValue);
     }
   }
 }

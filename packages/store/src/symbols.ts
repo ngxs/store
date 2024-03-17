@@ -2,7 +2,7 @@ import { Injectable, InjectionToken, Type, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { StateOperator } from '@ngxs/store/operators';
-import { ɵPlainObject, ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
+import { ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
 
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
@@ -84,13 +84,6 @@ export class NgxsConfig {
    * (default: null)
    */
   executionStrategy: Type<NgxsExecutionStrategy> = DispatchOutsideZoneNgxsExecutionStrategy;
-  /**
-   * Defining the default state before module initialization
-   * This is convenient if we need to create a define our own set of states.
-   * @deprecated will be removed after v4
-   * (default: {})
-   */
-  defaultsState: ɵPlainObject = {};
   /**
    * Defining shared selector options
    */

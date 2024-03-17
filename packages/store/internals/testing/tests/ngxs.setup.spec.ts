@@ -31,60 +31,6 @@ describe('Full testing NGXS States with NgxsTestBed', () => {
     });
   });
 
-  it('should be correct testing lifecycle with NgxsTestBed + defaults', () => {
-    const { store } = NgxsTestBed.configureTestingStates({
-      states: [AppState],
-      ngxsOptions: { defaultsState: { app: { fiz: 'baz' }, foo: 'baz' } }
-    });
-
-    expect(store.snapshot()).toEqual({
-      app: {
-        'AppState.ngxsOnInit': true,
-        'AppState.ngxsAfterBootstrap': true,
-        count: 2
-      },
-      foo: 'baz'
-    });
-  });
-
-  it('should be correct testing persistence mode', () => {
-    const { store } = NgxsTestBed.configureTestingStates({
-      states: [AppState],
-      ngxsOptions: {
-        defaultsState: { app: { count: 0 }, foo: 'bar' }
-      },
-      before: () => {
-        ɵInitialState.set({ app: { count: 1 } });
-      }
-    });
-
-    expect(store.snapshot()).toEqual({
-      app: { count: 1 },
-      foo: 'bar'
-    });
-  });
-
-  it('should be correct testing default disable persistence mode', () => {
-    const { store } = NgxsTestBed.configureTestingStates({
-      states: [AppState],
-      ngxsOptions: {
-        defaultsState: {
-          app: {
-            anyValue: 0
-          }
-        }
-      }
-    });
-
-    expect(store.snapshot()).toEqual({
-      app: {
-        'AppState.ngxsOnInit': true,
-        'AppState.ngxsAfterBootstrap': true,
-        count: 2
-      }
-    });
-  });
-
   describe('should correct restore state', () => {
     class InitialMyState {
       public a: number = null!;
@@ -101,20 +47,6 @@ describe('Full testing NGXS States with NgxsTestBed', () => {
     it('without initial/default state', () => {
       const { store } = NgxsTestBed.configureTestingStates({ states: [MyState] });
       expect(store.snapshot()).toEqual({
-        myState: { a: null, b: null }
-      });
-    });
-
-    it('with default state', () => {
-      const { store } = NgxsTestBed.configureTestingStates({
-        states: [MyState],
-        ngxsOptions: {
-          defaultsState: { defaultValue: 1 }
-        }
-      });
-
-      expect(store.snapshot()).toEqual({
-        defaultValue: 1,
         myState: { a: null, b: null }
       });
     });
