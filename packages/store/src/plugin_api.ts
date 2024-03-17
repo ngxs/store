@@ -1,4 +1,3 @@
-export { StateStream } from './internal/state-stream';
 export {
   InitState,
   UpdateState,

@@ -1,12 +1,11 @@
 import { Inject, Injectable, Optional, Signal, computed } from '@angular/core';
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
-import { ɵINITIAL_STATE_TOKEN } from '@ngxs/store/internals';
+import { ɵINITIAL_STATE_TOKEN, ɵStateStream } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
 import { getRootSelectorFactory } from './selectors/selector-utils';
-import { StateStream } from './internal/state-stream';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
@@ -25,7 +24,7 @@ export class Store {
   );
 
   constructor(
-    private _stateStream: StateStream,
+    private _stateStream: ɵStateStream,
     private _internalStateOperations: InternalStateOperations,
     private _config: NgxsConfig,
     private _internalExecutionStrategy: InternalNgxsExecutionStrategy,

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import { ɵStateStream } from '@ngxs/store/internals';
 
 import { StateOperations, StatesAndDefaults } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
-import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
 import { deepFreeze } from '../utils/freeze';
 
@@ -12,7 +12,7 @@ import { deepFreeze } from '../utils/freeze';
 @Injectable({ providedIn: 'root' })
 export class InternalStateOperations {
   constructor(
-    private _stateStream: StateStream,
+    private _stateStream: ɵStateStream,
     private _dispatcher: InternalDispatcher,
     private _config: NgxsConfig
   ) {}
