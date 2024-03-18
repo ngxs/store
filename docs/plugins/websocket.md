@@ -5,15 +5,36 @@ Bind server web socket events to Ngxs store actions.
 ## Installation
 
 ```bash
-npm install @ngxs/websocket-plugin --save
+npm i @ngxs/websocket-plugin
 
 # or if you are using yarn
 yarn add @ngxs/websocket-plugin
+
+# or if you are using pnpm
+pnpm i @ngxs/websocket-plugin
 ```
 
 ## Configuration
 
-Add the `NgxsWebSocketPluginModule` plugin to your root app module:
+When calling `provideStore`, include `withNgxsWebSocketPlugin` in your app config:
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withNgxsWebSocketPlugin } from '@ngxs/websocket-plugin';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideStore(
+      [],
+      withNgxsWebSocketPlugin({
+        url: 'ws://localhost:4200'
+      })
+    )
+  ]
+};
+```
+
+If you are still using modules, include the `NgxsWebSocketPluginModule` plugin in your root app module:
 
 ```ts
 import { NgxsModule } from '@ngxs/store';
@@ -56,10 +77,11 @@ look like:
 
 ```ts
 export class AddMessage {
-  static type = '[Chat] Add message';
+  static readonly type = '[Chat] Add message';
+
   constructor(
-    public from: string,
-    public message: string
+    readonly from: string,
+    readonly message: string
   ) {}
 }
 ```
@@ -145,7 +167,19 @@ ws.on('connection', socket => {
 });
 ```
 
-Notice that you have to specify `type` property on server side, otherwise you will get an error - `Type ... not found on message`. If you don't want to use a property called `type` as the key then you can specify your own property name when calling `forRoot`:
+Notice that you have to specify `type` property on server side, otherwise you will get an error - `Type ... not found on message`. If you don't want to use a property called `type` as the key then you can specify your own property name:
+
+```ts
+provideStore(
+  [],
+  withNgxsWebSocketPlugin({
+    url: 'ws://localhost:4200',
+    typeKey: 'myAwesomeTypeKey'
+  })
+);
+```
+
+Or with the module approach:
 
 ```ts
 NgxsWebSocketPluginModule.forRoot({
