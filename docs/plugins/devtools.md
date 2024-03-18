@@ -12,15 +12,29 @@ Plugin with integration:
 ## Installation
 
 ```bash
-npm install @ngxs/devtools-plugin --save-dev
+npm i @ngxs/devtools-plugin
 
 # or if you are using yarn
-yarn add @ngxs/devtools-plugin --dev
+yarn add @ngxs/devtools-plugin
+
+# or if you are using pnpm
+pnpm i @ngxs/devtools-plugin
 ```
 
 ## Usage
 
-Add the `NgxsReduxDevtoolsPluginModule` plugin to your root app module:
+When calling `provideStore`, include `withNgxsReduxDevtoolsPlugin` in your app config:
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([], withNgxsReduxDevtoolsPlugin())]
+};
+```
+
+If you are still using modules, include the `NgxsReduxDevtoolsPluginModule` plugin in your root app module:
 
 ```ts
 import { NgxsModule } from '@ngxs/store';
