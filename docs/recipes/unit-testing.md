@@ -136,8 +136,7 @@ It's also very easy to test asynchronous actions using Jasmine or Jest. The grea
 The below example is not really complex, but it clearly shows how to test asynchronous code using `async/await`:
 
 ```ts
-import { timer } from 'rxjs';
-import { tap, mergeMap } from 'rxjs/operators';
+import { timer, tap, mergeMap } from 'rxjs';
 
 it('should wait for completion of the asynchronous action', async () => {
   class IncrementAsync {

@@ -17,7 +17,8 @@ state were called `ZooState`, we would call my state interface `ZooStateModel`.
 
 ### Select Suffix
 
-Selects should have a `$` suffix. Prefer: `animals$` Avoid: `animals`
+Selects returning an observable should be suffixed with `$`. Prefer: `animals$`.
+Selects returning a signal should not have a suffix. Prefer: `animals`.
 
 ### Plugin Suffix
 
@@ -57,8 +58,8 @@ This also applies to the usage of data collections such as Set, Map, WeakMap, We
 ```ts
 export class Todo {
   constructor(
-    public title: string,
-    public isCompleted = false
+    readonly title: string,
+    readonly isCompleted = false
   ) {}
 }
 
@@ -68,6 +69,11 @@ export class Todo {
 })
 @Injectable()
 class TodosState {
+  @Selector()
+  static getTodos(state: Todo[]) {
+    return state;
+  }
+
   @Action(AddTodo)
   add(ctx: StateContext<Todo[]>, action: AddTodo): void {
     // Avoid new Todo(title)
@@ -78,13 +84,13 @@ class TodosState {
 @Component({
   selector: 'app',
   template: `
-    <ng-container *ngFor="let todo of todos$ | async">
+    @for (todo of todos(); track todo) {
       {{ todo.isCompleted }}
-    </ng-container>
+    }
   `
 })
 class AppComponent {
-  @Select(TodosState) todos$: Observable<Todo[]>;
+  todos = inject(Store).selectSignal(TodosState.getTodos);
 }
 ```
 
@@ -104,6 +110,11 @@ export interface TodoModel {
 })
 @Injectable()
 class TodosState {
+  @Selector()
+  static getTodos(state: Todo[]) {
+    return state;
+  }
+
   @Action(AddTodo)
   add(ctx: StateContext<TodoModel[]>, action: AddTodo): void {
     ctx.setState((state: TodoModel[]) =>
@@ -115,13 +126,13 @@ class TodosState {
 @Component({
   selector: 'app',
   template: `
-    <ng-container *ngFor="let todo of todos$ | async">
+    @for (todo of todos(); track todo) {
       {{ todo.isCompleted }}
-    </ng-container>
+    }
   `
 })
 class AppComponent {
-  @Select(TodosState) todos$: Observable<Todo[]>;
+  todos = inject(Store).selectSignal(TodosState.getTodos);
 }
 ```
 

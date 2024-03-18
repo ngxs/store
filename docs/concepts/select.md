@@ -211,7 +211,7 @@ then you can use `store.select` and evaluate the lazy function using the `rxjs` 
 
 ```ts
 import { Store } from '@ngxs/store';
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs';
 
 @Component({ ... })
 export class ZooComponent {
@@ -250,7 +250,7 @@ then you can use `@Select` to call this function with the parameter provided.
 
 ```ts
 import { Store } from '@ngxs/store';
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs';
 
 @Component({ ... })
 export class ZooComponent {

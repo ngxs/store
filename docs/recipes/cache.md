@@ -10,7 +10,7 @@ service.
 ```ts
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 
 export class GetNovels {
   static readonly type = '[Novels] Get novels';
@@ -39,7 +39,7 @@ the object whose keys are the identifiers of the novels:
 ```ts
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, createSelector } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 
 export interface NovelsInfoStateModel {
   [key: string]: Novel;

@@ -86,11 +86,10 @@ isDataSelected(state: SelectedDataStateModel) {
 The above selector is an example of a [lazy selector](../concepts/select#lazy-selectors). This selector returns a function, which accepts an `id` as an argument and returns a boolean indicating whether or not this `id` is selected. The lazy selector returned by `isDataSelected` uses [Array.includes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes) and has `O(n)` time complexity. In this example, we want to render a list of checkboxes:
 
 ```html
-<ng-container *ngIf="isDataSelected$ | async as isDataSelected">
-  <data-check-box
-    *ngFor="data of data$ | async"
-    [checked]="isDataSelected(d.id)"
-  ></data-check-box>
+<ng-container *ngIf="isDataSelected() as isDataSelected">
+  @for (data of data(); track data) {
+  <data-check-box [checked]="isDataSelected(d.id)" />
+  }
 </ng-container>
 ```
 

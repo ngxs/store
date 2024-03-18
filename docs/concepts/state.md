@@ -293,7 +293,7 @@ Let's take a look at a simple async action:
 ```ts
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 
 export class FeedAnimals {
   static readonly type = '[Zoo] FeedAnimals';
@@ -385,7 +385,7 @@ that is contained in the state context object.
 ```ts
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs';
 
 export interface ZooStateModel {
   feedAnimals: string[];
