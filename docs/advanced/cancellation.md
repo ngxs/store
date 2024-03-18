@@ -36,7 +36,7 @@ For more advanced cases, we can use normal Rx operators.
 ```ts
 import { Injectable } from '@angular/core';
 import { State, Action, Actions, ofAction } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 
 @State<ZooStateModel>({
   defaults: {

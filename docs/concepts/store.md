@@ -103,7 +103,7 @@ If you need to get the state after this, simply use a
 ```ts
 import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { withLatestFrom } from 'rxjs/operators';
+import { withLatestFrom } from 'rxjs';
 import { AddAnimal } from './animal.actions';
 
 @Component({ ... })

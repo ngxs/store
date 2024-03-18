@@ -75,14 +75,17 @@ export class AnimalsSelectors {
   template: `
     <h1> Zebras </h1>
     <ol>
-      <li *ngFor="zebra in zebras$ | async"> {{ zebra }} </li>
+      @for (zebra of zebras(); track zebra) {
+        <li>{{ zebra }}</li>
+      }
+
     </ol>
   `,
   style: ''
 })
 export class MyZooComponent {
   // slices can be use directly in the components
-  zebras$ = this.store.select(AnimalsSelectors.slices.zebras);
+  zebras = this.store.selectSignal(AnimalsSelectors.slices.zebras);
 
   constructor(private store: Store) {}
 }
@@ -112,15 +115,16 @@ export class AnimalsSelectors {
   selector: 'my-zoo'
   template: `
     <h1> Pandas and Zoos </h1>
-    <ol *ngIf="pandasAndZoos$ | async as model">
-      <li> Panda Count: {{ model.pandas?.length || 0 }} </li>
-      <li> Zoos Count: {{ model.zoos?.length || 0 }} </li>
-    </ol>
+    @if (pandasAndZoos(); as model) {
+      <ol>
+        <li>Panda Count: {{ model.pandas?.length || 0 }}</li>
+        <li>Zoos Count: {{ model.zoos?.length || 0 }}</li>
+      </ol>
+    }
   `,
-  style: ''
 })
 export class MyZooComponent {
-  pandasAndZoos$ = this.store.select(AnimalsSelectors.pandasAndZoos);
+  pandasAndZoos = this.store.selectSignal(AnimalsSelectors.pandasAndZoos);
 
   constructor(private store: Store) {}
 }
@@ -150,15 +154,17 @@ export class AnimalsSelectors {
   selector: 'my-zoo'
   template: `
     <h1> Zebras and Pandas </h1>
-    <ol *ngIf="zebrasAndPandas$ | async as zebrasAndPandas">
-      <li> Zerba Count: {{ zebrasAndPandas.zebras?.length || 0 }} </li>
-      <li> Panda Count: {{ zebrasAndPandas.pandas?.length || 0 }} </li>
-    </ol>
+    @if (zebrasAndPandas(); as zebrasAndPandas) {
+      <ol>
+        <li>Zerba Count: {{ zebrasAndPandas.zebras?.length || 0 }}</li>
+        <li>Panda Count: {{ zebrasAndPandas.pandas?.length || 0 }}</li>
+      </ol>
+    }
   `,
   style: ''
 })
 export class MyZooComponent {
-  zebrasAndPandas$ = this.store.select(AnimalsSelectors.zebrasAndPandas);
+  zebrasAndPandas = this.store.selectSignal(AnimalsSelectors.zebrasAndPandas);
 
   constructor(private store: Store) {}
 }

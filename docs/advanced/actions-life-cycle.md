@@ -58,6 +58,11 @@ What about the `CANCELED` status? Only asynchronous actions can be canceled, thi
 
 ```ts
 export class NovelsState {
+  @Selector()
+  static getNovels(state: Novel[]) {
+    return state;
+  }
+
   constructor(private novelsService: NovelsService) {}
 
   @Action(GetNovels, { cancelUncompleted: true })
@@ -77,12 +82,17 @@ Imagine a component where you've got a button that dispatches the `GetNovels` ac
 @Component({
   selector: 'app-novels',
   template: `
-    <app-novel *ngFor="let novel of novels$ | async" [novel]="novel"></app-novel>
+    @for (novel of novels(); track novel) {
+      <app-novel [novel]="novel" />
+    }
+
     <button (click)="getNovels()">Get novels</button>
-  `
+  `,
+  standalone: true,
+  imports: [NovelComponent]
 })
 export class NovelsComponent {
-  @Select(NovelsState) novels$: Observable<Novel[]>;
+  novels = this.store.selectSignal(NovelsState.getNovels);
 
   constructor(private store: Store) {}
 
@@ -98,22 +108,25 @@ If you click the button twice - two actions will be dispatched and the previous 
 @Component({
   selector: 'app-novels',
   template: `
-    <app-novel *ngFor="let novel of novels" [novel]="novel"></app-novel>
+    @for (novel of novels(); track novel) {
+      <app-novel [novel]="novel" />
+    }
+
     <button #button>Get novels</button>
   `
 })
 export class NovelsComponent implements OnInit {
-  @ViewChild('button', { static: true }) button: ElementRef<HTMLButtonElement>;
+  button = viewChild.required('button');
 
-  novels: Novel[] = [];
+  novels = signal<Novel[]>([]);
 
   constructor(private novelsService: NovelsService) {}
 
   ngOnInit() {
-    fromEvent(this.button.nativeElement, 'click')
+    fromEvent(this.button().nativeElement, 'click')
       .pipe(switchMap(() => this.novelsService.getNovels()))
       .subscribe(novels => {
-        this.novels = novels;
+        this.novels.set(novels);
       });
   }
 }

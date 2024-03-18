@@ -45,18 +45,18 @@ Below is a action handler that filters for `RouteNavigate` actions and then tell
 route.
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, ofActionDispatched } from '@ngxs/store';
 
 @Injectable({ providedIn: 'root' })
 export class RouteHandler {
-  constructor(
-    private router: Router,
-    private actions$: Actions
-  ) {
-    this.actions$
+  constructor() {
+    const actions$ = inject(Actions);
+    const router = inject(Router);
+
+    actions$
       .pipe(ofActionDispatched(RouteNavigate))
-      .subscribe(({ payload }) => this.router.navigate([payload]));
+      .subscribe(({ payload }) => router.navigate([payload]));
   }
 }
 ```
@@ -100,9 +100,9 @@ Action handlers can also be utilized in components. For example, considering the
 ```ts
 @Component({ ... })
 export class CartComponent {
-  constructor(private actions$: Actions) {}
+  constructor() {
+    const actions$ = inject(Actions);
 
-  ngOnInit() {
     this.actions$.pipe(ofActionSuccessful(CartDelete)).subscribe(() => alert('Item deleted'));
   }
 }
@@ -112,22 +112,13 @@ Also, remember to unsubscribe from the actions stream at the end:
 
 ```ts
 @Component({ ... })
-export class CartComponent implements OnInit, OnDestroy {
-  private destroy$ = new ReplaySubject(1);
+export class CartComponent {
+  constructor() {
+    const actions$ = inject(Actions);
 
-  constructor(private actions$: Actions) {}
-
-  ngOnInit() {
-    this.actions$
-      .pipe(
-        ofActionSuccessful(CartDelete),
-        takeUntil(this.destroy$)
-      )
+    actions$
+      .pipe(ofActionSuccessful(CartDelete), takeUntilDestroyed())
       .subscribe(() => alert('Item deleted'));
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
   }
 }
 ```
