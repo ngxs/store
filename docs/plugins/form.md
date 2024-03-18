@@ -14,19 +14,35 @@ In a nutshell, this plugin helps to keep your forms and state in sync.
 ## Installation
 
 ```bash
-npm install @ngxs/form-plugin
+npm i @ngxs/form-plugin
 
 # or if you are using yarn
 yarn add @ngxs/form-plugin
+
+# or if you are using pnpm
+pnpm i @ngxs/form-plugin
 ```
 
 ## Usage
 
-In the root module of your application, import `NgxsFormPluginModule`
-and include it in the imports.
+When calling `provideStore`, include `withNgxsFormPlugin` in your app config:
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withNgxsFormPlugin } from '@ngxs/form-plugin';
+
+import { NovelsState } from './novels.state';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([NovelsState], withNgxsFormPlugin())]
+};
+```
+
+If you are still using modules, include the `NgxsFormPluginModule` plugin in your root app module:
 
 ```ts
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
+
 import { NovelsState } from './novels.state';
 
 @NgModule({
@@ -35,15 +51,17 @@ import { NovelsState } from './novels.state';
 export class AppModule {}
 ```
 
-If your form is used in a submodule, it must be imported there as well:
+If your form is used in a standalone component, it must be imported there as well:
 
 ```ts
-import { NgxsFormPluginModule } from '@ngxs/form-plugin';
+import { NgxsFormDirective } from '@ngxs/form-plugin';
 
-@NgModule({
-  imports: [NgxsFormPluginModule]
+@Component({
+  ...,
+  standalone: true,
+  imports: [ReactiveFormsModule, NgxsFormDirective]
 })
-export class SomeModule {}
+export class AppComponent {}
 ```
 
 ### Form State
@@ -79,6 +97,7 @@ The directive uses this path to connect itself to the store and setup bindings.
 ```ts
 import { Component } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { NgxsFormDirective } from '@ngxs/form-plugin';
 
 @Component({
   selector: 'new-novel-form',
@@ -87,7 +106,9 @@ import { FormGroup, FormControl } from '@angular/forms';
       <input type="text" formControlName="novelName" />
       <button type="submit">Create</button>
     </form>
-  `
+  `,
+  standalone: true,
+  imports: [ReactiveFormsModule, NgxsFormDirective]
 })
 export class NewNovelComponent {
   newNovelForm = new FormGroup({
@@ -167,23 +188,27 @@ The state contains information about the new novel name and its authors. Let's c
 ```ts
 import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { NgxsFormDirective } from '@ngxs/form-plugin';
 
 @Component({
   selector: 'new-novel-form',
   template: `
     <form [formGroup]="newNovelForm" ngxsForm="novels.newNovelForm" (ngSubmit)="onSubmit()">
       <input type="text" formControlName="novelName" />
-      <div
-        formArrayName="authors"
-        *ngFor="let author of newNovelForm.get('authors').value; index as index"
-      >
-        <div [formGroupName]="index">
-          <input formControlName="name" />
+
+      @for (author of newNovelForm.get('authors').value; let index = $index; track author) {
+        <div formArrayName="authors">
+          <div [formGroupName]="index">
+            <input formControlName="name" />
+          </div>
         </div>
-      </div>
+      }
+
       <button type="submit">Create</button>
     </form>
-  `
+  `,
+  standalone: true,
+  imports: [ReactiveFormsModule, NgxsFormDirective]
 })
 export class NewNovelComponent {
   newNovelForm = this.fb.group({
