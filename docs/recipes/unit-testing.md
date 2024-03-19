@@ -11,7 +11,7 @@ describe('Zoo', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([ZooState])]
+      providers: [provideStore([ZooState])]
     });
 
     store = TestBed.inject(Store);
@@ -62,7 +62,7 @@ describe('Zoo', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([ZooState])]
+      providers: [provideStore([ZooState])]
     });
 
     store = TestBed.inject(Store);
@@ -101,7 +101,7 @@ In your application you may have selectors created dynamically using the `create
 
 ```ts
 export class ZooSelectors {
-  static animalNames = (type: string) => {
+  static getAnimalNames = (type: string) => {
     return createSelector([ZooState], (state: ZooStateModel) =>
       state.animals.filter(animal => animal.type === type).map(animal => animal.name)
     );
@@ -123,7 +123,7 @@ it('should select requested animal names from state', () => {
     ]
   };
 
-  const value = ZooSelectors.animalNames('zebra')(zooState);
+  const value = ZooSelectors.getAnimalNames('zebra')(zooState);
 
   expect(value).toEqual(['Andy', 'Crystal']);
 });
@@ -131,7 +131,7 @@ it('should select requested animal names from state', () => {
 
 ## Testing Asynchronous Actions
 
-It's also very easy to test asynchronous actions using Jasmine or Jest. The greatest features of these testing frameworks is a support of `async/await`. No one prevents you of using `async/await` + RxJS `toPromise` method that "converts" `Observable` to `Promise`. As an alternative you could have a `done` callback, Jasmine or Jest will wait until the `done` callback is called before finishing the test.
+It's also very easy to test asynchronous actions using Jasmine or Jest. The greatest features of these testing frameworks is a support of `async/await`. No one prevents you of using `async/await` + RxJS `firstValueFrom` method that "converts" `Observable` to `Promise`. As an alternative you could have a `done` callback, Jasmine or Jest will wait until the `done` callback is called before finishing the test.
 
 The below example is not really complex, but it clearly shows how to test asynchronous code using `async/await`:
 
@@ -190,7 +190,7 @@ it('should wait for completion of the asynchronous action', async () => {
 
   const store: Store = TestBed.inject(Store);
 
-  await store.dispatch(new IncrementAsync()).toPromise();
+  await firstValueFrom(store.dispatch(new IncrementAsync()));
 
   const counter = store.selectSnapshot(CounterState);
   expect(counter).toBe(0);

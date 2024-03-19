@@ -5,26 +5,23 @@ There are situations when there is a need to debounce dispatched actions and red
 ```ts
 class SearchNews {
   static readonly type = '[News] Search news';
+
   constructor(public title: string) {}
 }
 
 @Component({
   selector: 'app-news-portal',
   template: `
-    <app-news-search
-      (search)="search($event)"
-      [lastSearchedTitle]="lastSearchedTitle$ | async"
-    ></app-news-search>
-
-    <app-news [news]="news$ | async"></app-news>
-  `
+    <app-news-search [lastSearchedTitle]="lastSearchedTitle()" (search)="search($event)" />
+    <app-news [news]="news()" />
+  `,
+  standalone: true,
+  imports: [NewsSearchComponent, NewsComponents]
 })
-export class NewsPortalComponent implements OnDestroy {
-  @Select(NewsState.getNews) news$: Observable<News[]>;
+export class NewsPortalComponent {
+  news: Signal<News[]> = this.store.selectSignal(NewsState.getNews);
 
-  lastSearchedTitle$ = this.store.selectOnce(NewsState.getLastSearchedTitle);
-
-  private destroy$ = new Subject<void>();
+  lastSearchedTitle = this.store.selectSignal(NewsState.getLastSearchedTitle);
 
   constructor(
     private store: Store,
@@ -35,16 +32,11 @@ export class NewsPortalComponent implements OnDestroy {
         ofActionDispatched(SearchNews),
         map((action: SearchNews) => action.title),
         debounceTime(2000),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed()
       )
       .subscribe(title => {
         store.dispatch(new GetNews(title));
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   search(title: string): void {
