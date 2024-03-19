@@ -60,6 +60,7 @@ Here we have an action that should trigger feeding a zebra with hay.
 ```ts
 export class FeedZebra {
   static readonly type = '[Zoo] Feed Zebra';
+
   constructor(
     public name: string,
     public hayAmount: number
@@ -121,11 +122,13 @@ Don't suffix your actions:
 ```ts
 export class AddTodo {
   static readonly type = '[Todo] Add';
+
   constructor(public payload: any) {}
 }
 
 export class EditTodo {
   static readonly type = '[Todo] Edit';
+
   constructor(public payload: any) {}
 }
 
@@ -135,6 +138,7 @@ export class FetchAllTodos {
 
 export class DeleteTodo {
   static readonly type = '[Todo] Delete';
+
   constructor(public id: number) {}
 }
 ```
@@ -143,23 +147,28 @@ here we group similar actions into the `Todo` namespace.
 In this case just import namespace instead of multiple action classes in same file.
 
 ```ts
-export namespace Todo {
+const ACTION_SCOPE = '[Todo]';
+
+export namespace TodoActions {
   export class Add {
-    static readonly type = '[Todo] Add';
+    static readonly type = `${ACTION_SCOPE} Add`;
+
     constructor(public payload: any) {}
   }
 
   export class Edit {
-    static readonly type = '[Todo] Edit';
+    static readonly type = `${ACTION_SCOPE} Edit`;
+
     constructor(public payload: any) {}
   }
 
   export class FetchAll {
-    static readonly type = '[Todo] Fetch All';
+    static readonly type = `${ACTION_SCOPE} Fetch All`;
   }
 
   export class Delete {
-    static readonly type = '[Todo] Delete';
+    static readonly type = `${ACTION_SCOPE} Delete`;
+
     constructor(public id: number) {}
   }
 }
