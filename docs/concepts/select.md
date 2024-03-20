@@ -268,14 +268,14 @@ export class PreferencesState { ... }
 @Injectable()
 export class ZooState {
   @Selector([ZooState, PreferencesState])
-  static firstLocalPanda(state: string[], preferencesState: PreferencesStateModel) {
+  static getFirstLocalPanda(state: string[], preferencesState: PreferencesStateModel) {
     return state.find(
       s => s.indexOf('panda') > -1 && s.indexOf(preferencesState.location)
     );
   }
 
-  @Selector([ZooState.firstLocalPanda])
-  static happyLocalPanda(panda: string) {
+  @Selector([ZooState.getFirstLocalPanda])
+  static getHappyLocalPanda(panda: string) {
     return 'happy ' + panda;
   }
 

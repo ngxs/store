@@ -38,17 +38,17 @@ export class AnimalsState {}
 
 export class AnimalsSelectors {
   @Selector([AnimalsState])
-  static zebras(state: AnimalsStateModel): string[] {
+  static getZebras(state: AnimalsStateModel): string[] {
     return state.zebras;
   }
 
   @Selector([AnimalsState])
-  static pandas(state: AnimalsStateModel): string[] {
+  static getPandas(state: AnimalsStateModel): string[] {
     return state.pandas;
   }
 
   @Selector([AnimalsState])
-  static monkeys(state: AnimalsStateModel): string[] {
+  static getMonkeys(state: AnimalsStateModel): string[] {
     return state.monkeys;
   }
 }
@@ -61,11 +61,11 @@ import { Selector, createPropertySelectors } from '@ngxs/store';
 
 export class AnimalsSelectors {
   // creates map of selectors for each state property
-  static slices = createPropertySelectors<AnimalStateModel>(AnimalSate);
+  static getSlices = createPropertySelectors<AnimalStateModel>(AnimalsState);
 
   // slices can be used in other selectors
-  @Selector([AnimalsSelectors.slices.zebras, AnimalsSelectors.slices.pandas])
-  static countZebrasAndPandas(zebras: string[], pandas: string[]) {
+  @Selector([AnimalsSelectors.getSlices.zebras, AnimalsSelectors.getSlices.pandas])
+  static getCountZebrasAndPandas(zebras: string[], pandas: string[]) {
     return zebras.length + pandas.length;
   }
 }
@@ -85,7 +85,7 @@ export class AnimalsSelectors {
 })
 export class MyZooComponent {
   // slices can be use directly in the components
-  zebras = this.store.selectSignal(AnimalsSelectors.slices.zebras);
+  zebras = this.store.selectSignal(AnimalsSelectors.getSlices.zebras);
 
   constructor(private store: Store) {}
 }
@@ -93,7 +93,7 @@ export class MyZooComponent {
 
 Here we see how the `createPropertySelectors` is used to create a map of selectors for each property of the state. The `createPropertySelectors` takes a state class and returns a map of selectors for each property of the state. The `createPropertySelectors` is very useful when we need to create a selector for each property of the state.
 
-> **TYPE SAFETY:** Note that, in the `createPropertySelectors` call above, the model type was provided to the function as a type parameter. This was only necessary because the state class (`AnimalSate`) was provided and the class does not include model information. The `createPropertySelectors` function will not require a type parameter if a typed selector or a `StateToken` that includes the type of the model is provided to the function.
+> **TYPE SAFETY:** Note that, in the `createPropertySelectors` call above, the model type was provided to the function as a type parameter. This was only necessary because the state class (`AnimalsSate`) was provided and the class does not include model information. The `createPropertySelectors` function will not require a type parameter if a typed selector or a `StateToken` that includes the type of the model is provided to the function.
 
 ## Create Model Selector
 
@@ -103,11 +103,11 @@ Sometimes we need to create a selector simply groups other selectors. For exampl
 import { Selector, createModelSelector } from '@ngxs/store';
 
 export class AnimalsSelectors {
-  static slices = createPropertySelectors<AnimalStateModel>(AnimalSate);
+  static getSlices = createPropertySelectors<AnimalStateModel>(AnimalsSate);
 
-  static pandasAndZoos = createModelSelector({
-    pandas: AnimalsSelectors.slices.pandas,
-    zoos: ZoosSelectors.slices.zoos
+  static getPandasAndZoos = createModelSelector({
+    pandas: AnimalsSelectors.getSlices.pandas,
+    zoos: ZoosSelectors.getSlices.zoos
   });
 }
 
@@ -124,7 +124,7 @@ export class AnimalsSelectors {
   `,
 })
 export class MyZooComponent {
-  pandasAndZoos = this.store.selectSignal(AnimalsSelectors.pandasAndZoos);
+  pandasAndZoos = this.store.selectSignal(AnimalsSelectors.getPandasAndZoos);
 
   constructor(private store: Store) {}
 }
@@ -142,9 +142,9 @@ Sometimes we need to create a selector that picks a subset of properties from th
 import { Selector, createPickSelector } from '@ngxs/store';
 
 export class AnimalsSelectors {
-  static fullAnimalsState = createSelector([AnimalState], (state: AnimalStateModel) => state);
+  static getFullAnimalsState = createSelector([AnimalsState], (state: AnimalStateModel) => state);
 
-  static zebrasAndPandas = createPickSelector(fullAnimalsState, [
+  static getZebrasAndPandas = createPickSelector(getFullAnimalsState, [
     'zebras',
     'pandas'
   ]);
@@ -164,7 +164,7 @@ export class AnimalsSelectors {
   style: ''
 })
 export class MyZooComponent {
-  zebrasAndPandas = this.store.selectSignal(AnimalsSelectors.zebrasAndPandas);
+  zebrasAndPandas = this.store.selectSignal(AnimalsSelectors.getZebrasAndPandas);
 
   constructor(private store: Store) {}
 }
