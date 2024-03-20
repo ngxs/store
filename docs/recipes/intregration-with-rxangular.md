@@ -22,15 +22,18 @@ const initHeroesComponentState: Partial<HeroesComponentState> = {
   providers: [RxState] // <--- This binds RxState to the lifetime of the component
 })
 export class HeroesComponent {
-  @Select(getHeroes) stateHeroes$: Observable<Hero[]>; // <--- normal @Select use from NGXS
-
   heroes: Hero[];
 
   readonly heroes$: Observable<Hero[]> = this.state.select('heroes');
 
-  constructor(private state: RxState<HeroesComponentState>) {
+  constructor(
+    store: Store,
+    private state: RxState<HeroesComponentState>
+  ) {
+    const stateHeroes$ = store.select(getHeroes);
+
     this.state.set(initHeroesComponentState);
-    this.state.connect('heroes', this.stateHeroes$); // <--- Here we connect NGXS with RxAngular
+    this.state.connect('heroes', stateHeroes$); // <--- Here we connect NGXS with RxAngular
   }
 }
 ```

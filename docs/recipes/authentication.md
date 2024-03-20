@@ -13,6 +13,7 @@ export interface AuthStateModel {
 
 export class Login {
   static readonly type = '[Auth] Login';
+
   constructor(public payload: { username: string; password: string }) {}
 }
 
@@ -38,12 +39,12 @@ service.
 @Injectable()
 export class AuthState {
   @Selector()
-  static token(state: AuthStateModel): string | null {
+  static getToken(state: AuthStateModel): string | null {
     return state.token;
   }
 
   @Selector()
-  static isAuthenticated(state: AuthStateModel): boolean {
+  static getIsAuthenticated(state: AuthStateModel): boolean {
     return !!state.token;
   }
 
@@ -85,15 +86,16 @@ In this state class, we have:
 Now let's wire up the state in our module.
 
 ```ts
-@NgModule({
-  imports: [
-    NgxsModule.forRoot([AuthState]),
-    NgxsStoragePluginModule.forRoot({
-      key: 'auth.token'
-    })
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideStore(
+      [AuthState],
+      withNgxsStoragePlugin({
+        keys: ['auth.token']
+      })
+    )
   ]
-})
-export class AppModule {}
+};
 ```
 
 In a typical JWT setup, you want to store your token in the `localstorage`. To do this
@@ -109,7 +111,7 @@ export class AuthGuard implements CanActivate {
   constructor(private store: Store) {}
 
   canActivate() {
-    const isAuthenticated = this.store.selectSnapshot(AuthState.isAuthenticated);
+    const isAuthenticated = this.store.selectSnapshot(AuthState.getIsAuthenticated);
     return isAuthenticated;
   }
 }
@@ -124,7 +126,7 @@ in the `canActivate` definition.
 export const routes: Routes = [
   {
     path: 'admin',
-    loadChildren: './admin/admin.module#AdminModule',
+    loadComponent: () => import('./admin').then(m => m.AdminComponent),
     canActivate: [AuthGuard]
   }
 ];
@@ -142,12 +144,12 @@ the login page.
 })
 export class AppComponent implements OnInit {
   constructor(
-    private actions: Actions,
+    private actions$: Actions,
     private router: Router
   ) {}
 
   ngOnInit() {
-    this.actions.pipe(ofActionDispatched(Logout)).subscribe(() => {
+    this.actions$.pipe(ofActionDispatched(Logout)).subscribe(() => {
       this.router.navigate(['/login']);
     });
   }

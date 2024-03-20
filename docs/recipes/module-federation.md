@@ -54,13 +54,16 @@ To solve the problem, the state can be moved to a library. This is particularly 
 
 ```js
 plugins: [
-    new ModuleFederationPlugin({
+  new ModuleFederationPlugin({
+    // ...
+    shared: share({
       // ...
-      shared: share({
-        // ...
-        "@project/shared/utils": {singleton: true, import: "libs/shared/utils/src/index"},
-        "@project/usecase/domain": {singleton: true, import: "libs/usecase/domain/src/index"},
-        // ...
+      '@project/shared/utils': { singleton: true, import: 'libs/shared/utils/src/index' },
+      '@project/usecase/domain': { singleton: true, import: 'libs/usecase/domain/src/index' }
+      // ...
+    })
+  })
+];
 ```
 
 ## Stand alone
