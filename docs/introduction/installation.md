@@ -49,43 +49,43 @@ If your application is module based:
 
 ## Manual Installation
 
-To get started, install the package from npm. The latest version (3.x) supports Angular/RxJS 6+, if you want support for Angular 5, use version 2.x.
+To get started, install the package from npm. The latest version (3.x) supports Angular/RxJS 6+.
 
 ```bash
-npm install @ngxs/store --save
+npm i @ngxs/store
 
 # or if you are using yarn
 yarn add @ngxs/store
+
+# or if you are using pnpm
+pnpm i @ngxs/store
 ```
 
-then in `app.module.ts`, import the `NgxsModule`:
+Then, in your `app.config.ts`, add the `provideStore` to the list of providers:
 
 ```ts
-import { NgModule } from '@angular/core';
-import { NgxsModule } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
 
 import { ZooState } from './examples/zoo.state';
 
-@NgModule({
-  imports: [
-    NgxsModule.forRoot([ZooState], {
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideStore([ZooState], {
       developmentMode: !environment.production
     })
   ]
-})
-export class AppModule {}
+};
 ```
 
-When you include the module in the import, you can pass root stores along with [options](../advanced/options.md).
-If you are lazy loading, you can use the `forFeature` option with the same arguments.
+When you include provide the store at the root level, you can pass root states along with [options](../advanced/options.md).
+If you are lazy loading, you can use the `provideStates` option with the same arguments.
 
-Options such as `developmentMode` can be passed to the module as the second argument in the `forRoot` method.
+Options such as `developmentMode` can be passed to the module as the second argument in the `provideStore` function.
 In development mode, plugin authors can add additional runtime checks/etc to enhance the developer experience. Switching
 to development mode will also freeze your store using [deep-freeze-strict](https://www.npmjs.com/package/deep-freeze-strict)
 module.
 
-It's important that you add `NgxsModule.forRoot([])` at the root of your module even if
-all of your states are feature states.
+It's important that you add `provideStore` at the root level even if all of your states are feature states.
 
 ## Development Builds
 
@@ -94,9 +94,9 @@ Our continuous integration server runs all tests on every commit to master and i
 This means that if you want the bleeding edge of `@ngxs/store` or any of the plugins you can simply do:
 
 ```bash
-npm install @ngxs/store@dev --save
-npm install @ngxs/logger-plugin@dev --save
-npm install @ngxs/devtools-plugin@dev --save
+npm install @ngxs/store@dev
+npm install @ngxs/logger-plugin@dev
+npm install @ngxs/devtools-plugin@dev
 
 # or if you are using yarn
 yarn add @ngxs/store@dev
@@ -105,6 +105,11 @@ yarn add @ngxs/devtools-plugin@dev
 
 # of if you want to update multiple things at the same time
 yarn add @ngxs/{store,logger-plugin,devtools-plugin}@dev
+
+# or if you are using pnpm
+pnpm install @ngxs/store@dev
+pnpm install @ngxs/logger-plugin@dev
+pnpm install @ngxs/devtools-plugin@dev
 ```
 
 This will install the version currently tagged as `@dev`.
