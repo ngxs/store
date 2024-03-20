@@ -2,7 +2,7 @@
 
 ## Installing with schematics
 
-You can install the `ngxs/store` using `ng-add` schematic
+You can install the `@ngxs/store` using `ng-add` schematic
 
 ```bash
 ng add @ngxs/store
@@ -66,18 +66,12 @@ Then, in your `app.config.ts`, add the `provideStore` to the list of providers:
 ```ts
 import { provideStore } from '@ngxs/store';
 
-import { ZooState } from './examples/zoo.state';
-
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideStore([ZooState], {
-      developmentMode: !environment.production
-    })
-  ]
+  providers: [provideStore()]
 };
 ```
 
-When you include provide the store at the root level, you can pass root states along with [options](../advanced/options.md).
+When you provide the store at the root level, you can pass root states along with [options](../advanced/options.md).
 If you are lazy loading, you can use the `provideStates` option with the same arguments.
 
 Options such as `developmentMode` can be passed to the module as the second argument in the `provideStore` function.

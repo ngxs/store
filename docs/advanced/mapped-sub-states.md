@@ -20,19 +20,19 @@ interface Animal {
 })
 @Injectable()
 export class ZooState {
-  static pandas(age: string) {
+  static getPandas(age: string) {
     return createSelector([ZooState], (state: Animal[]) => {
       return state.filter(animal => animal.type === 'panda' && animal.age === age);
     });
   }
 
-  static zebras(age: string) {
+  static getZebras(age: string) {
     return createSelector([ZooState], (state: Animal[]) => {
       return state.filter(animal => animal.type === 'zebra' && animal.age === age);
     });
   }
 
-  static pandasAndZebras(age: string) {
+  static getPandasAndZebras(age: string) {
     return createSelector(
       [ZooState.pandas(age), ZooState.zebras(age)],
       (pandas: Animal[], zebras: Animal[]) => {
@@ -79,13 +79,13 @@ export class ZooState {
     return createSelector([ZooState], (state: ZooStateModel) => state[zooName].animals);
   }
 
-  static pandas(zooName: string) {
+  static getPandas(zooName: string) {
     return createSelector([ZooState.getZooAnimals(zooName)], (state: Animal[]) => {
       return state.filter(animal => animal.type === 'panda' && animal.age === 'young');
     });
   }
 
-  static pandasWithoutMemoize(zooName: string) {
+  static getPandasWithoutMemoize(zooName: string) {
     return createSelector([ZooState], (state: ZooStateModel) => {
       return state[zooName].animals.filter(
         animal => animal.type === 'panda' && animal.age === 'young'
@@ -96,4 +96,4 @@ export class ZooState {
 ```
 
 In that example merging is required to avoid unnecessary store events.
-When we subscribe to Zoo.pandasWithoutMemoize store will dispatch event whenever ZooState will change (even ZooState.ageFilter), but when subscribing to Zoo.pandas store will dispatch event only if result has been changed.
+When we subscribe to `Zoo.getPandasWithoutMemoize` store will dispatch event whenever `ZooState` will change (even `ZooState.getAgeFilter`), but when subscribing to `Zoo.getPandas` store will dispatch event only if result has been changed.
