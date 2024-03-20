@@ -133,8 +133,10 @@ These options can also be provided through the `@SelectorOptions` decorator at a
 
 #### `injectContainerState`
 
-- `true` will cause all selectors defined within a state class to receive the container class' state model as their first parameter. As a result every selector would be re-evaluated after any change to that state.
-- `false` will prevent the injection of the container state model as the first parameter of a selector method (defined within a state class) that joins to other selectors for its parameters.
+> ⚠️ This property is only useful for migrating codebases from NGXS v3 to v4. It is not recommended to keep it set to `true`. In v4 and newer versions, users should have no reason to set this property explicitly.
+
+- `true` will cause all selectors defined within a state class to receive the container class' state model as their first parameter. As a result every selector would be re-evaluated after any change to that state (**this should only be used during migrations**).
+- `false` will prevent the injection of the container state model as the first parameter of a selector method (defined within a state class) that joins to other selectors for its parameters (**this is the default value now**).
 
 ### Memoized Selectors with Arguments
 
