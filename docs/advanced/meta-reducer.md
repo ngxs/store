@@ -23,23 +23,22 @@ export function logoutPlugin(state, action, next) {
 }
 ```
 
-Then we import that like:
+Then add it to `providers`:
 
 ```ts
-import { NgModule } from '@angular/core';
-import { NGXS_PLUGINS } from '@ngxs/store';
+import { NGXS_PLUGINS } from '@ngxs/store/plugins';
 
-@NgModule({
-  imports: [NgxsModule.forRoot([])],
+export const appConfig: ApplicationConfig = {
   providers: [
+    provideStore([]),
+
     {
       provide: NGXS_PLUGINS,
       useValue: logoutPlugin,
       multi: true
     }
   ]
-})
-export class AppModule {}
+};
 ```
 
 Now when we dispatch the logout action it will use our new

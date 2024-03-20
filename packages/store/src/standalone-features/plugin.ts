@@ -9,7 +9,7 @@ import { NGXS_PLUGINS, NgxsPlugin } from '@ngxs/store/plugins';
  *   providers: [
  *     provideStore(
  *       [CountriesState],
- *       withNgxsPlugin(logoutPlugin)
+ *       withNgxsPlugin(LogoutPlugin)
  *     )
  *   ]
  * });

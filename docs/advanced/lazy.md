@@ -1,22 +1,31 @@
-# Lazy Loaded Stores
+# Lazy Loaded States
 
-Stores can be lazy-loaded easily by importing the `NgxsModule` using the
-`forFeature` method. All the other syntax for how you import
-and describe them are the same. For example:
+States can be easily lazy-loaded by adding the `provideStates` function to the `Route` providers:
+
+```ts
+import { provideStates } from '@ngxs/store';
+
+export const routes: Routes = [
+  {
+    path: '',
+    component: AnimalsComponent,
+    providers: [provideStates([AnimalsState])]
+  }
+];
+```
+
+If you are still using modules, you can import the `NgxsModule` using the `forFeature` method:
 
 ```ts
 @NgModule({
-  imports: [NgxsModule.forFeature([LazyState])]
+  imports: [NgxsModule.forFeature([AnimalsState])]
 })
 export class LazyModule {}
 ```
 
-It's important to note when lazy-loading a store, it is registered in the global
-state so this state object will now be persisted globally. Even though
-it's available globally, you should only use it within that feature module so you
-make sure not to create dependencies on things that could not be loaded yet.
+It's important to note that when lazy-loading a state, it is registered in the global state, meaning this state object will now be persisted globally. Even though it's available globally, you should only use it within that feature component to ensure you don't create dependencies on things that may not be loaded yet.
 
-How are feature states added to the global state graph? Assume you've got a `ZoosState`:
+How are feature states added to the global state graph? Assume you have a `ZoosState`:
 
 ```ts
 @State<Zoo[]>({
@@ -27,7 +36,7 @@ How are feature states added to the global state graph? Assume you've got a `Zoo
 export class ZoosState {}
 ```
 
-And it's registered in the root module via `NgxsModule.forRoot([ZoosState])`. Assume you've got a feature `offices` state:
+And it's registered at the root level via `provideStore([ZoosState])`. Assume you've got a feature `offices` state:
 
 ```ts
 @State<Office[]>({
@@ -38,7 +47,7 @@ And it's registered in the root module via `NgxsModule.forRoot([ZoosState])`. As
 export class OfficesState {}
 ```
 
-You register this state in some lazy-loaded module via `NgxsModule.forFeature([OfficesState])`. After the lazy module is loaded - the global state will have such signature:
+After the route is loaded and its providers are initialized, the global state will have the following signature if you register this state in some lazy-loaded component via `provideStates([OfficesState])`:
 
 ```ts
 {
@@ -47,4 +56,4 @@ You register this state in some lazy-loaded module via `NgxsModule.forFeature([O
 }
 ```
 
-You can try it yourself by invoking `store.snapshot()` and printing the result to the console before and after the lazy module is loaded. .
+You can try it yourself by invoking `store.snapshot()` and printing the result to the console before and after the lazy component is loaded.

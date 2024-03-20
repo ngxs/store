@@ -27,8 +27,7 @@ import { NgxsModuleOptions } from '@ngxs/store';
 export const ngxsConfig: NgxsModuleOptions = {
   developmentMode: !environment.production,
   selectorOptions: {
-    suppressErrors: false,
-    injectContainerState: false
+    suppressErrors: false
   },
   compatibility: {
     strictContentSecurityPolicy: true
@@ -39,18 +38,16 @@ export const ngxsConfig: NgxsModuleOptions = {
 };
 ```
 
-`app.module.ts`:
+`app.config.ts`:
 
 ```ts
-import { NgxsModule } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
+
 import { ngxsConfig } from './ngxs.config';
 ...
-
-@NgModule({
-  imports: [
-    NgxsModule.forRoot(states, ngxsConfig)
-  ],
-  ...
-})
-export class AppModule {}
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideStore(states, ngxsConfig)
+  ]
+};
 ```

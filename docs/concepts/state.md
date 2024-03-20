@@ -163,6 +163,7 @@ export interface ZebraFood {
 // is for and makes debugging easier.
 export class FeedZebra {
   static readonly type = '[Zoo] FeedZebra';
+
   constructor(public zebraToFeed: ZebraFood) {}
 }
 
@@ -222,7 +223,7 @@ With a new constructed state value:
 
 ```ts
 @Action(MyAction)
-public addValue(ctx: StateContext, { payload }: MyAction) {
+addValue(ctx: StateContext, { payload }: MyAction) {
   ctx.setState({ ...ctx.getState(), value: payload  });
 }
 ```
@@ -231,7 +232,7 @@ With a function that returns the new state value:
 
 ```ts
 @Action(MyAction)
-public addValue(ctx: StateContext, { payload }: MyAction) {
+addValue(ctx: StateContext, { payload }: MyAction) {
   ctx.setState((state) => ({ ...state, value: payload }));
 }
 ```
@@ -297,6 +298,7 @@ import { tap } from 'rxjs';
 
 export class FeedAnimals {
   static readonly type = '[Zoo] FeedAnimals';
+
   constructor(public animalsToFeed: string) {}
 }
 
@@ -348,6 +350,7 @@ import { State, Action } from '@ngxs/store';
 
 export class FeedAnimals {
   static readonly type = '[Zoo] FeedAnimals';
+
   constructor(public animalsToFeed: string) {}
 }
 
