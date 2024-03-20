@@ -3,15 +3,14 @@
 Next let's talk about plugins. Similar to Redux's meta reducers, we have
 a plugins interface that allows you to build a global plugin for your state.
 
-All you have to do is provide a class to the `NGXS_PLUGINS` token.
-If your plugins have options associated with it, we suggest defining an injection token
-and then a `forRoot` method on your module.
+All you have to do is call `withNgxsPlugin` with a plugin class. If your plugins have options associated with them, we also suggest defining an injection token.
 
 Let's take a look at a basic example of a logger:
 
 ```ts
-import { Injectable, Inject, NgModule } from '@angular/core';
-import { NgxsPlugin, NGXS_PLUGINS } from '@ngxs/store';
+import { makeEnvironmentProviders, InjectionToken, Injectable, Inject } from '@angular/core';
+import { withNgxsPlugin } from '@ngxs/store';
+import { NgxsPlugin } from '@ngxs/store/plugins';
 
 export const NGXS_LOGGER_PLUGIN_OPTIONS = new InjectionToken('NGXS_LOGGER_PLUGIN_OPTIONS');
 
@@ -29,24 +28,14 @@ export class LoggerPlugin implements NgxsPlugin {
   }
 }
 
-@NgModule()
-export class NgxsLoggerPluginModule {
-  static forRoot(config?: any): ModuleWithProviders<NgxsLoggerPluginModule> {
-    return {
-      ngModule: NgxsLoggerPluginModule,
-      providers: [
-        {
-          provide: NGXS_PLUGINS,
-          useClass: LoggerPlugin,
-          multi: true
-        },
-        {
-          provide: NGXS_LOGGER_PLUGIN_OPTIONS,
-          useValue: config
-        }
-      ]
-    };
-  }
+export function withNgxsLoggerPlugin(options?: any) {
+  return makeEnvironmentProviders([
+    withNgxsPlugin(LoggerPlugin),
+    {
+      provide: NGXS_LOGGER_PLUGIN_OPTIONS,
+      useValue: options
+    }
+  ]);
 }
 ```
 
@@ -64,13 +53,10 @@ export function logPlugin(state, action, next) {
 
 NOTE: When providing a pure function make sure to use `useValue` instead of `useClass`.
 
-To register a plugin with NGXS, import the plugin module in your module and optionally pass in the plugin options like this:
+To register a plugin with NGXS, add the plugin in your `provideStore` as an NGXS feature and optionally pass in the plugin options like this:
 
 ```ts
-@NgModule({
-  imports: [NgxsModule.forRoot([ZooStore]), NgxsLoggerPluginModule.forRoot({})]
-})
-export class MyModule {}
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([ZooState], withNgxsLoggerPlugin({}))]
+};
 ```
-
-The method also works with `forFeature`.

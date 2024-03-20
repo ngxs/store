@@ -43,6 +43,7 @@ An action example in `animal.actions.ts`.
 ```ts
 export class AddAnimal {
   static readonly type = '[Zoo] Add Animal';
+
   constructor(public name: string) {}
 }
 ```
@@ -82,13 +83,11 @@ import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
-
   constructor(private store: Store) {}
 
   addAnimal(name: string) {
     this.store.dispatch(new AddAnimal(name)).subscribe(() => this.form.reset());
   }
-
 }
 ```
 
@@ -104,25 +103,23 @@ If you need to get the state after this, simply use a
 import { Store, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs';
+
+import { AnimalState } from './animal.state';
 import { AddAnimal } from './animal.actions';
 
 @Component({ ... })
 export class ZooComponent {
-
-  @Select(state => state.animals) animals$: Observable<any>;
+  animals = this.store.selectSignal(AnimalState.getAnimals);
 
   constructor(private store: Store) {}
 
   addAnimal(name: string) {
-    this.store
-      .dispatch(new AddAnimal(name))
-      .pipe(withLatestFrom(this.animals$))
-      .subscribe(([_, animals]) => {
-        // do something with animals
-        this.form.reset();
-      });
+    this.store.dispatch(new AddAnimal(name)).subscribe(() => {
+      console.log(this.animals());
+      // do something with animals
+      this.form.reset();
+    });
   }
-
 }
 ```
 
