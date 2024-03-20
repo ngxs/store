@@ -30,7 +30,16 @@ function migrateForRootWithArgs(arg: ts.Node<ts.ts.Node>) {
     objectLiteral.addPropertyAssignment({ name: 'keys', initializer: `'*'` });
   } else {
     // Rename the "key" property to "keys"
-    objectLiteral.getProperty('key')?.getChildAtIndex(0)?.replaceWithText('keys');
+    const keyProperty = objectLiteral.getProperty('key');
+    const propertyName = keyProperty?.getChildAtIndex(0);
+    const propertyValue = keyProperty?.getChildAtIndex(2);
+    propertyName?.replaceWithText('keys');
+
+    // if the property value is a string literal, then we should wrap it in an array
+    // We are checking the isStringLiteral to avoid wrapping a value that is already an array
+    if (ts.Node.isStringLiteral(propertyValue!)) {
+      propertyValue?.replaceWithText(`[${propertyValue?.getText()}]`);
+    }
   }
 }
 
@@ -38,6 +47,15 @@ function isStoragePluginProvided(callExpression: ts.CallExpression) {
   return (
     callExpression && callExpression.getText().includes('NgxsStoragePluginModule.forRoot')
   );
+}
+
+/**
+ * We do not use the ts.Node.isCallExpression(node) because the underlying implementation
+ * uses -> node.getKind() === typescript.SyntaxKind.CallExpression
+ * which is an enum that can return different numbers depending on minor typescript package versions
+ */
+function isCallExpression(node: ts.Node): node is ts.CallExpression {
+  return node.getKindName() === 'CallExpression';
 }
 
 export function migrateKeys(): Rule {
@@ -62,7 +80,7 @@ export function migrateKeys(): Rule {
       if (hasStoragePluginImported) {
         sourceFile.forEachDescendant(node => {
           if (
-            ts.Node.isCallExpression(node) &&
+            isCallExpression(node) &&
             ts.Node.isPropertyAccessExpression(node.getExpression())
           ) {
             const callExpression = node as ts.CallExpression;

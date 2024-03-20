@@ -46,7 +46,7 @@ describe('Storage Plugin Migration', () => {
     const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
 
     const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
-    expect(contentUpdate).toContain(`keys: '*'`);
+    expect(contentUpdate).toMatchSnapshot();
   });
 
   it('migrate forRoot that is missing the "key" property', async () => {
@@ -79,13 +79,10 @@ describe('Storage Plugin Migration', () => {
     const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
 
     const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
-
-    expect(contentUpdate).toContain(`proa: 'valuea'`);
-    expect(contentUpdate).toContain(`prob: 'valueb'`);
-    expect(contentUpdate).toContain(`keys: '*'`);
+    expect(contentUpdate).toMatchSnapshot();
   });
 
-  it('migrate forRoot that has the "key" property', async () => {
+  it('migrate forRoot that has the "key" property with a value as a string literal', async () => {
     const { appTree } = await testSetup();
 
     const newContent = `
@@ -115,8 +112,74 @@ describe('Storage Plugin Migration', () => {
     const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
 
     const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
-    expect(contentUpdate).toContain(`proa: 'valuea'`);
-    expect(contentUpdate).toContain(`prob: 'valueb'`);
-    expect(contentUpdate).toContain(`keys: 'keep this value'`);
+    expect(contentUpdate).toMatchSnapshot();
+  });
+
+  it('migrate forRoot that has the "key" property with values as an array literal', async () => {
+    const { appTree } = await testSetup();
+
+    const newContent = `
+    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+
+    import { AppRoutingModule } from './app-routing.module';
+    import { AppComponent } from './app.component';
+
+      @NgModule({
+        declarations: [
+          AppComponent
+        ],
+        imports: [
+          BrowserModule,
+          AppRoutingModule,
+          NgxsStoragePluginModule.forRoot({proa: 'valuea', prob: 'valueb', key: ['keyValue', NovelsState, { key: 'novels', engine: MyEngineX } ]})
+        ],
+        bootstrap: [AppComponent]
+      })
+      export class AppModule { }
+    `;
+
+    appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
+
+    const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
+
+    const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
+    expect(contentUpdate).toMatchSnapshot();
+  });
+
+  it('migrate from a constant array', async () => {
+    const { appTree } = await testSetup();
+
+    const newContent = `
+    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+
+    import { AppRoutingModule } from './app-routing.module';
+    import { AppComponent } from './app.component';
+
+    const imports = [
+      BrowserModule,
+      AppRoutingModule,
+      NgxsStoragePluginModule.forRoot({proa: 'valuea', prob: 'valueb', key: 'keep this value'})
+    ];
+
+      @NgModule({
+        declarations: [
+          AppComponent
+        ],
+        imports,
+        bootstrap: [AppComponent]
+      })
+      export class AppModule { }
+    `;
+
+    appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
+
+    const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
+
+    const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
+    expect(contentUpdate).toMatchSnapshot();
   });
 });
