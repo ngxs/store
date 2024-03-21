@@ -4,13 +4,20 @@
   "sourceRoot": "packages/storage-plugin",
   "projectType": "library",
   "targets": {
-    "build": {
+    "build-package": {
       "executor": "@angular-devkit/build-angular:ng-packagr",
       "outputs": ["{workspaceRoot}/@ngxs/storage-plugin"],
       "options": {
         "tsConfig": "tsconfig.build.json",
         "project": "packages/storage-plugin/ng-package.json"
       }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/build-schematics.mjs --projectRoot=packages/storage-plugin --distPath=@ngxs/storage-plugin"
+      },
+      "dependsOn": ["build-package"]
     },
     "test": {
       "executor": "@nx/jest:jest",

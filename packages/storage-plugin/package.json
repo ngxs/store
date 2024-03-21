@@ -6,6 +6,8 @@
   "peerDependencies": {
     "@ngxs/store": "^0.0.0",
     "@angular/core": ">=12.0.0 <18.0.0",
-    "rxjs": ">=6.5.5"
-  }
+    "rxjs": ">=6.5.5",
+    "ts-morph": "21.0.1"
+  },
+  "schematics": "./schematics/collection.json"
 }

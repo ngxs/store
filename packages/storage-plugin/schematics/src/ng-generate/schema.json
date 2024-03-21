@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsNgxsStoragePlugin",
+  "title": "Ngxs Storage Plugin Options Schema",
+  "type": "object",
+  "properties": {}
+}
