@@ -29,7 +29,6 @@
   - [Shared State](advanced/shared-state.md)
   - [State Token](advanced/token.md)
   - [State Operators](advanced/operators.md)
-  - [Sub States](advanced/sub-states.md)
 - Recipes
   - [Authentication](recipes/authentication.md)
   - [Caching](recipes/cache.md)
