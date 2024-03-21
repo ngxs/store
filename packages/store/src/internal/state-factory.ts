@@ -60,7 +60,7 @@ import { ensureStateNameIsUnique, ensureStatesAreDecorated } from '../utils/stor
 import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
+const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
 
 function cloneDefaults(defaults: any): any {
   let value = defaults === undefined ? {} : defaults;
