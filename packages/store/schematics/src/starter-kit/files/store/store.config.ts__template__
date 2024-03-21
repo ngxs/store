@@ -1,10 +1,10 @@
 import { AuthState } from './auth/auth.state';
-import { DashboardStates, DashboardState } from './dashboard';
+import { DashboardStates } from './dashboard';
 import { NgxsConfig } from '@ngxs/store/src/symbols';
 import { NgxsDevtoolsOptions } from '@ngxs/devtools-plugin/src/symbols';
 import { NgxsLoggerPluginOptions } from '@ngxs/logger-plugin/src/symbols';
 
-export const STATES_MODULES = [AuthState, DashboardState, ...DashboardStates];
+export const STATES_MODULES = [AuthState, ...DashboardStates];
 
 export const OPTIONS_CONFIG: Partial<NgxsConfig> = {
   /**

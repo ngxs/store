@@ -29,7 +29,6 @@
   - [Shared State](advanced/shared-state.md)
   - [State Token](advanced/token.md)
   - [State Operators](advanced/operators.md)
-  - [Sub States](advanced/sub-states.md)
 - Recipes
   - [Authentication](recipes/authentication.md)
   - [Caching](recipes/cache.md)
@@ -42,6 +41,7 @@
   - [Unit Testing](recipes/unit-testing.md)
   - [RxAngular Integration](recipes/intregration-with-rxangular.md)
   - [Select Decorator Deprecation](recipes/select-decorator-deprecation.md)
+  - [Sub States Deprecation](recipes/sub-states-deprecation.md)
 - Snippets
   - [State Operators](snippets/operators.md)
 - Plugins
