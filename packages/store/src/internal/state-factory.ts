@@ -59,6 +59,8 @@ import { StateContextFactory } from '../internal/state-context-factory';
 import { ensureStateNameIsUnique, ensureStatesAreDecorated } from '../utils/store-validators';
 import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
+import { NgxsUnhandledErrorHandler } from '../ngxs-error-handler';
+import { assignUnhandledCallback } from './unhandled-error-context';
 
 const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
@@ -104,6 +106,7 @@ export class StateFactory implements OnDestroy {
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
     private _stateContextFactory: StateContextFactory,
+    private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler,
     @Optional()
     @Inject(ɵINITIAL_STATE_TOKEN)
     private _initialState: any
@@ -257,9 +260,16 @@ export class StateFactory implements OnDestroy {
           return this.invokeActions(dispatched$, action!).pipe(
             map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
-            catchError(error =>
-              of(<ActionContext>{ action, status: ActionStatus.Errored, error })
-            )
+            catchError(error => {
+              const wrappedError = assignUnhandledCallback(error, () =>
+                this._ngxsUnhandledErrorHandler.handleError(error, { action })
+              );
+              return of(<ActionContext>{
+                action,
+                status: ActionStatus.Errored,
+                error: wrappedError
+              });
+            })
           );
         })
       )

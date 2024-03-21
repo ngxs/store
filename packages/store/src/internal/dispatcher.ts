@@ -9,8 +9,6 @@ import { compose } from '../utils/compose';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
-import { UnhandledErrorContext, UnhandledErrorContextSymbol } from './unhandled-error-context';
-import { NgxsUnhandledErrorHandler } from '../ngxs-error-handler';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -28,8 +26,7 @@ export class InternalDispatcher {
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
     private _stateStream: ɵStateStream,
-    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy,
-    private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler
+    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy
   ) {}
 
   /**
@@ -101,35 +98,21 @@ export class InternalDispatcher {
   private createDispatchObservable(
     actionResult$: Observable<ActionContext>
   ): Observable<ɵPlainObject> {
-    const { _ngxsUnhandledErrorHandler } = this;
-
-    return actionResult$.pipe(
-      exhaustMap((ctx: ActionContext) => {
-        switch (ctx.status) {
-          case ActionStatus.Successful:
-            // The `createDispatchObservable` function should return the
-            // state, as its result is utilized by plugins.
-            return of(this._stateStream.getValue());
-          case ActionStatus.Errored:
-            let { error, action } = ctx;
-
-            if (error) {
-              if (Object.isSealed(error)) {
-                error = Object.setPrototypeOf({}, error);
-              }
-
-              (error as any)[UnhandledErrorContextSymbol] = <UnhandledErrorContext>{
-                action: ctx.action,
-                handle: () => _ngxsUnhandledErrorHandler.handleError(error, { action })
-              };
-            }
-
-            return throwError(error);
-          default:
-            return EMPTY;
-        }
-      }),
-      shareReplay()
-    );
+    return actionResult$
+      .pipe(
+        exhaustMap((ctx: ActionContext) => {
+          switch (ctx.status) {
+            case ActionStatus.Successful:
+              // The `createDispatchObservable` function should return the
+              // state, as its result is utilized by plugins.
+              return of(this._stateStream.getValue());
+            case ActionStatus.Errored:
+              return throwError(() => ctx.error);
+            default:
+              return EMPTY;
+          }
+        })
+      )
+      .pipe(shareReplay());
   }
 }
