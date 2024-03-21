@@ -10,7 +10,7 @@ export function createPickSelector<TModel, Keys extends (keyof TModel)[]>(
   selector: TypedSelector<TModel>,
   keys: [...Keys]
 ) {
-  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+  if (typeof ngDevMode !== 'undefined' && ngDevMode) {
     ensureValidSelector(selector, { prefix: '[createPickSelector]' });
   }
   const validKeys = keys.filter(Boolean);

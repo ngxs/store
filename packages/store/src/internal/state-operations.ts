@@ -27,7 +27,7 @@ export class InternalStateOperations {
       dispatch: (actionOrActions: any | any[]) => this._dispatcher.dispatch(actionOrActions)
     };
 
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       return this._config.developmentMode
         ? ensureStateAndActionsAreImmutable(rootStateOperations)
         : rootStateOperations;

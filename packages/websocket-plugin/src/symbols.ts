@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 export const NGXS_WEBSOCKET_OPTIONS = new InjectionToken<NgxsWebSocketPluginOptions>(
   NG_DEV_MODE ? 'NGXS_WEBSOCKET_OPTIONS' : ''

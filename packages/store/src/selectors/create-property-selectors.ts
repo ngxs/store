@@ -11,7 +11,7 @@ export type PropertySelectors<TModel> = {
 export function createPropertySelectors<TModel>(
   parentSelector: SelectorDef<TModel>
 ): PropertySelectors<TModel> {
-  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+  if (typeof ngDevMode !== 'undefined' && ngDevMode) {
     ensureValidSelector(parentSelector, {
       prefix: '[createPropertySelectors]',
       noun: 'parent selector'

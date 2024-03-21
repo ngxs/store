@@ -3,7 +3,7 @@ import { InjectionToken, inject, INJECTOR, Type, ɵglobal } from '@angular/core'
 import { NoopNgxsExecutionStrategy } from './noop-ngxs-execution-strategy';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './dispatch-outside-zone-ngxs-execution-strategy';
 
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 /**
  * Consumers have the option to utilize the execution strategy provided by

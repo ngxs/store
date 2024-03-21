@@ -16,7 +16,7 @@ export function createModelSelector<T extends SelectorMap>(selectorMap: T): Mode
   const selectorKeys = Object.keys(selectorMap);
   const selectors = Object.values(selectorMap);
 
-  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+  if (typeof ngDevMode !== 'undefined' && ngDevMode) {
     ensureValidSelectorMap<T>({
       prefix: '[createModelSelector]',
       selectorMap,

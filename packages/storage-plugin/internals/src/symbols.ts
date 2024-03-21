@@ -10,7 +10,7 @@ export const ɵDEFAULT_STATE_KEY = '@@STATE';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 export const enum StorageOption {
   LocalStorage,

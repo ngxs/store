@@ -57,7 +57,7 @@ export class InternalDispatcher {
   }
 
   private dispatchSingle(action: any): Observable<void> {
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       const type: string | undefined = getActionTypeFromInstance(action);
       if (!type) {
         const error = new Error(

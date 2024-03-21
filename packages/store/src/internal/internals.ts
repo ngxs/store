@@ -12,7 +12,7 @@ import { NgxsConfig } from '../symbols';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 export type StateKeyGraph = ɵPlainObjectOf<string[]>;
 export type StatesByName = ɵPlainObjectOf<ɵStateClassInternal>;
@@ -140,9 +140,7 @@ export function buildGraph(stateClasses: ɵStateClassInternal[]): StateKeyGraph 
   const findName = (stateClass: ɵStateClassInternal) => {
     const meta = stateClasses.find(g => g === stateClass);
 
-    // Caretaker note: we have still left the `typeof` condition in order to avoid
-    // creating a breaking change for projects that still use the View Engine.
-    if ((typeof ngDevMode === 'undefined' || ngDevMode) && !meta) {
+    if (NG_DEV_MODE && !meta) {
       throw new Error(
         `Child state not found: ${stateClass}. \r\nYou may have forgotten to add states to module`
       );
@@ -260,9 +258,7 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
     visited[name] = true;
 
     graph[name].forEach((dep: string) => {
-      // Caretaker note: we have still left the `typeof` condition in order to avoid
-      // creating a breaking change for projects that still use the View Engine.
-      if ((typeof ngDevMode === 'undefined' || ngDevMode) && ancestors.indexOf(dep) >= 0) {
+      if (NG_DEV_MODE && ancestors.indexOf(dep) >= 0) {
         throw new Error(
           `Circular dependency '${dep}' is required by '${name}': ${ancestors.join(' -> ')}`
         );

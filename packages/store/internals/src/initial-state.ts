@@ -4,7 +4,7 @@ import { ɵPlainObject } from './symbols';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 export class ɵInitialState {
   private static _value: ɵPlainObject = {};
