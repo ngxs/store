@@ -4,7 +4,7 @@ import { createSelectObservable, createSelectorFn, PropertyType } from './symbol
  * Decorator for selecting a slice of state from the store.
  *
  * @deprecated
- * Read the deprecation notice at this link: https://ngxs.io/advanced/select-decorator-deprecation.
+ * Read the deprecation notice at this link: https://ngxs.io/recipes/select-decorator-deprecation.
  */
 export function Select<T>(rawSelector?: T, ...paths: string[]): PropertyDecorator {
   return function (target, key): void {
