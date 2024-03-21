@@ -14,7 +14,6 @@ const TODOS_TOKEN: StateToken<TodoStateModel> = new StateToken('todos');
 @State<TodoStateModel>({
   name: TODOS_TOKEN,
   defaults: {
-    todo: [],
     pizza: { model: undefined }
   }
 })
@@ -27,10 +26,11 @@ export class TodosState {
 
   @Selector([ListState.getHello])
   static getInjected(state: TodoStateModel, hello: string): string {
-    if (state.todo == null || hello == null) {
+    if (state.pizza == null || hello == null) {
       return 'container injection failed or is disabled';
+    } else {
+      return '';
     }
-    return `${hello}! i have ${state.todo.length} todos`;
   }
 
   @Action(SetPrefix)

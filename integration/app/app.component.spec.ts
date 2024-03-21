@@ -16,9 +16,9 @@ describe('AppComponent', () => {
 
     const initialState = {
       todos: {
-        todo: [],
         pizza: { model: undefined }
-      }
+      },
+      todo: []
     };
 
     beforeEach(() => {
@@ -125,9 +125,9 @@ describe('AppComponent', () => {
 
     const initialState = {
       todos: {
-        todo: [],
         pizza: { model: undefined }
-      }
+      },
+      todo: []
     };
 
     beforeEach(() => {
