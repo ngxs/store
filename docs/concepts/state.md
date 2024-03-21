@@ -56,7 +56,7 @@ include:
 - `name`: The name of the state slice. Note: The name is a required parameter and must be unique for the entire application.
   Names must be object property safe, (e.g. no dashes, dots, etc).
 - `defaults`: Default set of object/array for this state slice.
-- `children`: Child sub state associations.
+- `children`: Child sub state associations (it's **deprecated** and slated for removal in the future, so it's advisable not to use it in newer applications).
 
 Our states can also participate in dependency injection. This is hooked up automatically
 so all you need to do is inject your dependencies in the constructor.

@@ -51,7 +51,7 @@ export interface ɵStoreOptions<T> {
    * Sub states for the given state.
    *
    * @deprecated
-   * Read the deprecation notice at this link: https://ngxs.io/advanced/sub-states-deprecation.
+   * Read the deprecation notice at this link: https://ngxs.io/recipes/sub-states-deprecation.
    */
   children?: ɵStateClass[];
 }

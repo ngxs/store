@@ -41,6 +41,7 @@
   - [Unit Testing](recipes/unit-testing.md)
   - [RxAngular Integration](recipes/intregration-with-rxangular.md)
   - [Select Decorator Deprecation](recipes/select-decorator-deprecation.md)
+  - [Sub States Deprecation](recipes/sub-states-deprecation.md)
 - Snippets
   - [State Operators](snippets/operators.md)
 - Plugins
