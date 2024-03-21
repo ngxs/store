@@ -256,18 +256,18 @@ export class StateFactory implements OnDestroy {
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
         mergeMap(ctx => {
           dispatched$.next(ctx);
-          const action = ctx.action;
+          const action: any = ctx.action;
           return this.invokeActions(dispatched$, action!).pipe(
             map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
             catchError(error => {
-              const wrappedError = assignUnhandledCallback(error, () =>
+              const handleableError = assignUnhandledCallback(error, () =>
                 this._ngxsUnhandledErrorHandler.handleError(error, { action })
               );
               return of(<ActionContext>{
                 action,
                 status: ActionStatus.Errored,
-                error: wrappedError
+                error: handleableError
               });
             })
           );
