@@ -5,7 +5,8 @@ import {
   Type,
   NgModule,
   ɵglobal,
-  Injectable
+  Injectable,
+  inject
 } from '@angular/core';
 import { TestBed, TestModuleMetadata } from '@angular/core/testing';
 import { Observable } from 'rxjs';
@@ -15,9 +16,9 @@ import {
   StateContext,
   NgxsModule,
   Store,
-  Select,
   Actions,
-  NoopNgxsExecutionStrategy
+  NoopNgxsExecutionStrategy,
+  Selector
 } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 import { BrowserModule } from '@angular/platform-browser';
@@ -44,7 +45,7 @@ describe('NoopNgxsExecutionStrategy', () => {
   }
 
   class Increment {
-    public static readonly type = '[Counter] Increment';
+    static readonly type = '[Counter] Increment';
   }
 
   @State<number>({
@@ -53,10 +54,15 @@ describe('NoopNgxsExecutionStrategy', () => {
   })
   @Injectable()
   class CounterState {
-    public zoneCounter = new ZoneCounter();
+    @Selector()
+    static getCounter(state: number) {
+      return state;
+    }
+
+    zoneCounter = new ZoneCounter();
 
     @Action(Increment)
-    public increment({ setState, getState }: StateContext<number>): void {
+    increment({ setState, getState }: StateContext<number>): void {
       setState(getState() + 1);
       this.zoneCounter.hit();
     }
@@ -64,8 +70,7 @@ describe('NoopNgxsExecutionStrategy', () => {
 
   @Component({ template: '{{ counter$ | async }}' })
   class CounterComponent {
-    @Select(CounterState)
-    public counter$: Observable<number>;
+    counter$: Observable<number> = inject(Store).select(CounterState.getCounter);
   }
 
   function setup(moduleDef?: TestModuleMetadata) {
@@ -80,7 +85,7 @@ describe('NoopNgxsExecutionStrategy', () => {
     const ticks = { count: 0 };
     @Injectable()
     class MockApplicationRef extends ApplicationRef {
-      public tick(): void {
+      tick(): void {
         ticks.count += 1;
       }
     }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { State, Action } from '../../src/public_api';
+import { State, Action, Selector } from '../../src/public_api';
 
 export class AddTodo {
   static readonly type = 'ADD_TODO';
@@ -18,6 +18,11 @@ export class RemoveTodo {
 })
 @Injectable()
 export class TodoState {
+  @Selector()
+  static getTodos(state: string[]) {
+    return state;
+  }
+
   @Action(AddTodo)
   addTodo(state: string[], action: AddTodo) {
     return [action.todo, ...state];
