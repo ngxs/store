@@ -30,7 +30,10 @@ export { ActionType } from './actions/symbols';
 export { NoopNgxsExecutionStrategy } from './execution/noop-ngxs-execution-strategy';
 
 export { NgxsDevelopmentOptions } from './dev-features/symbols';
-export { NgxsDevelopmentModule } from './dev-features/ngxs-development.module';
+export {
+  NgxsDevelopmentModule,
+  withNgxsDevelopmentOptions
+} from './dev-features/ngxs-development.module';
 export { NgxsUnhandledActionsLogger } from './dev-features/ngxs-unhandled-actions-logger';
 
 export {
