@@ -6,7 +6,11 @@ import { Action, NgxsModule, State, Store } from '@ngxs/store';
 import { defer, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+import { makeRxJSTimeoutProviderSynchronous } from '../helpers/make-rxjs-timeout-provider-synchronous';
+
 describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
+  makeRxJSTimeoutProviderSynchronous();
+
   class ProduceErrorSynchronously {
     static readonly type = 'Produce error synchronously';
   }
@@ -19,7 +23,9 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
     static readonly type = 'Produce error asynchronously';
   }
 
-  const actionError = new RangeError('Custom NGXS error');
+  function createActionError() {
+    return new RangeError('Custom NGXS error');
+  }
 
   @State({
     name: 'app'
@@ -28,19 +34,19 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
   class AppState {
     @Action(ProduceErrorSynchronously)
     produceErrorSynchronously() {
-      throw actionError;
+      throw createActionError();
     }
 
     @Action(ProduceErrorSynchronouslyInStream)
     produceErrorSynchronouslyInStream() {
-      return throwError(actionError);
+      return throwError(() => createActionError());
     }
 
     @Action(ProduceErrorAsynchronously)
     produceErrorAsynchronously() {
       return defer(() => Promise.resolve()).pipe(
         tap(() => {
-          throw actionError;
+          throw createActionError();
         })
       );
     }
@@ -81,22 +87,25 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         store.dispatch(new ProduceErrorSynchronously());
         await macrotask();
         // Assert
-        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([actionError]);
+        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([createActionError()]);
 
         // Act
         store.dispatch(new ProduceErrorSynchronouslyInStream());
         await macrotask();
         // Assert
-        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([actionError, actionError]);
+        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([
+          createActionError(),
+          createActionError()
+        ]);
 
         // Act
         store.dispatch(new ProduceErrorAsynchronously());
         await macrotask();
         // Assert
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([
-          actionError,
-          actionError,
-          actionError
+          createActionError(),
+          createActionError(),
+          createActionError()
         ]);
       })
     );
@@ -116,22 +125,25 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         store.dispatch(new ProduceErrorSynchronously()).subscribe();
         await macrotask();
         // Assert
-        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([actionError]);
+        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([createActionError()]);
 
         // Act
         store.dispatch(new ProduceErrorSynchronouslyInStream()).subscribe();
         await macrotask();
         // Assert
-        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([actionError, actionError]);
+        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([
+          createActionError(),
+          createActionError()
+        ]);
 
         // Act
         store.dispatch(new ProduceErrorAsynchronously()).subscribe();
         await macrotask();
         // Assert
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([
-          actionError,
-          actionError,
-          actionError
+          createActionError(),
+          createActionError(),
+          createActionError()
         ]);
       })
     );
@@ -154,7 +166,7 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         });
         await macrotask();
         // Assert
-        expect(caughtErrors).toEqual([actionError]);
+        expect(caughtErrors).toEqual([createActionError()]);
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([]);
 
         // Act
@@ -163,7 +175,7 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         });
         await macrotask();
         // Assert
-        expect(caughtErrors).toEqual([actionError, actionError]);
+        expect(caughtErrors).toEqual([createActionError(), , createActionError()]);
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([]);
 
         // Act
@@ -172,7 +184,13 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         });
         await macrotask();
         // Assert
-        expect(caughtErrors).toEqual([actionError, actionError, actionError]);
+        expect(caughtErrors).toEqual([
+          createActionError(),
+          ,
+          createActionError(),
+          ,
+          createActionError()
+        ]);
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([]);
       })
     );
@@ -257,7 +275,7 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         expect(caughtErrors.length).toEqual(3);
         expect(errorHandler.caughtErrorsByErrorHandler.length).toEqual(0);
         caughtErrors.forEach(error => {
-          expect(error).toEqual(actionError);
+          expect(error).toEqual(createActionError());
         });
       })
     );

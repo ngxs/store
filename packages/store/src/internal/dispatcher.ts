@@ -6,10 +6,11 @@ import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 import { ɵPlainObject, ɵStateStream } from '@ngxs/store/internals';
 
 import { compose } from '../utils/compose';
-import { InternalErrorReporter, ngxsErrorHandler } from './error-handler';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
+import { UnhandledErrorContext, UnhandledErrorContextSymbol } from './unhandled-error-context';
+import { NgxsUnhandledErrorHandler } from '../ngxs-error-handler';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -28,7 +29,7 @@ export class InternalDispatcher {
     private _pluginManager: PluginManager,
     private _stateStream: ɵStateStream,
     private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy,
-    private _internalErrorReporter: InternalErrorReporter
+    private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler
   ) {}
 
   /**
@@ -38,10 +39,13 @@ export class InternalDispatcher {
     const result = this._ngxsExecutionStrategy.enter(() =>
       this.dispatchByEvents(actionOrActions)
     );
-
-    return result.pipe(
-      ngxsErrorHandler(this._internalErrorReporter, this._ngxsExecutionStrategy)
-    );
+    // We need to subscribe inside the framework because, in RxJS, computations
+    // or side effects within an observable will only trigger when there's a subscription.
+    // Until a subscription is made, the observable will not execute its logic.
+    // This is important to note because if developers subscribe externally,
+    // it won't trigger new computations, because the observable is "replayed".
+    result.subscribe();
+    return result;
   }
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<void> {
@@ -97,21 +101,35 @@ export class InternalDispatcher {
   private createDispatchObservable(
     actionResult$: Observable<ActionContext>
   ): Observable<ɵPlainObject> {
-    return actionResult$
-      .pipe(
-        exhaustMap((ctx: ActionContext) => {
-          switch (ctx.status) {
-            case ActionStatus.Successful:
-              // The `createDispatchObservable` function should return the
-              // state, as its result is utilized by plugins.
-              return of(this._stateStream.getValue());
-            case ActionStatus.Errored:
-              return throwError(ctx.error);
-            default:
-              return EMPTY;
-          }
-        })
-      )
-      .pipe(shareReplay());
+    const { _ngxsUnhandledErrorHandler } = this;
+
+    return actionResult$.pipe(
+      exhaustMap((ctx: ActionContext) => {
+        switch (ctx.status) {
+          case ActionStatus.Successful:
+            // The `createDispatchObservable` function should return the
+            // state, as its result is utilized by plugins.
+            return of(this._stateStream.getValue());
+          case ActionStatus.Errored:
+            let { error, action } = ctx;
+
+            if (error) {
+              if (Object.isSealed(error)) {
+                error = Object.setPrototypeOf({}, error);
+              }
+
+              (error as any)[UnhandledErrorContextSymbol] = <UnhandledErrorContext>{
+                action: ctx.action,
+                handle: () => _ngxsUnhandledErrorHandler.handleError(error, { action })
+              };
+            }
+
+            return throwError(error);
+          default:
+            return EMPTY;
+        }
+      }),
+      shareReplay()
+    );
   }
 }

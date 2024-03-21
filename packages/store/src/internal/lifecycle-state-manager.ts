@@ -1,19 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
-import { EMPTY, ReplaySubject } from 'rxjs';
-import {
-  catchError,
-  filter,
-  mergeMap,
-  pairwise,
-  startWith,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+import { filter, mergeMap, pairwise, startWith, takeUntil, tap } from 'rxjs/operators';
 
 import { Store } from '../store';
-import { InternalErrorReporter } from './error-handler';
 import { StateContextFactory } from './state-context-factory';
 import { InternalStateOperations } from './state-operations';
 import { MappedStore, StatesAndDefaults } from './internals';
@@ -30,7 +21,6 @@ export class LifecycleStateManager implements OnDestroy {
 
   constructor(
     private _store: Store,
-    private _internalErrorReporter: InternalErrorReporter,
     private _internalStateOperations: InternalStateOperations,
     private _stateContextFactory: StateContextFactory,
     private _appBootstrappedState: ɵNgxsAppBootstrappedState
@@ -68,14 +58,6 @@ export class LifecycleStateManager implements OnDestroy {
         tap(() => this._invokeInitOnStates(results!.states)),
         mergeMap(() => this._appBootstrappedState),
         filter(appBootstrapped => !!appBootstrapped),
-        catchError(error => {
-          // The `SafeSubscriber` (which is used by most RxJS operators) re-throws
-          // errors asynchronously (`setTimeout(() => { throw error })`). This might
-          // break existing user's code or unit tests. We catch the error manually to
-          // be backward compatible with the old behavior.
-          this._internalErrorReporter.reportErrorSafely(error);
-          return EMPTY;
-        }),
         takeUntil(this._destroy$)
       )
       .subscribe(() => this._invokeBootstrapOnStates(results!.states));

@@ -310,7 +310,7 @@ export class StateFactory implements OnDestroy {
                   if (ɵisPromise(value)) {
                     return from(value);
                   }
-                  if (isObservable<any>(value)) {
+                  if (isObservable(value)) {
                     return value;
                   }
                   return of(value);

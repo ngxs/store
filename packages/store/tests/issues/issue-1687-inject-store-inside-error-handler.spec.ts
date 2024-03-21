@@ -1,9 +1,15 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule, State, Action, Store, Actions, ofActionDispatched } from '@ngxs/store';
+
 import { throwError } from 'rxjs';
 
+import { NgxsModule, State, Action, Store, Actions, ofActionDispatched } from '@ngxs/store';
+
+import { makeRxJSTimeoutProviderSynchronous } from '../helpers/make-rxjs-timeout-provider-synchronous';
+
 describe('Allow to inject the Store class into the ErrorHandler (https://github.com/ngxs/store/issues/1687)', () => {
+  makeRxJSTimeoutProviderSynchronous();
+
   it('should allow to inject the Store', async () => {
     // Arrange
     class ProduceError {

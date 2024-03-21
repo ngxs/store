@@ -159,7 +159,7 @@
     "prettier": "3.2.5",
     "rollup": "^4",
     "rollup-plugin-dts": "^6.1.0",
-    "rxjs": "6.6.7",
+    "rxjs": "^7.4.0",
     "serve": "^14.2.0",
     "start-server-and-test": "^1.11.0",
     "ts-jest": "29.1.1",
