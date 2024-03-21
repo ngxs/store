@@ -1,5 +1,9 @@
 import { ErrorHandler, Injectable, Injector, NgZone } from '@angular/core';
 
+export interface NgxsErrorContext {
+  action?: any;
+}
+
 @Injectable({ providedIn: 'root' })
 export class NgxsUnhandledErrorHandler {
   private _errorHandler: ErrorHandler = null!;
@@ -9,7 +13,7 @@ export class NgxsUnhandledErrorHandler {
     private _injector: Injector
   ) {}
 
-  handleError(_error: any, _context: any): void {
+  handleError(_error: any, _context: NgxsErrorContext): void {
     // Retrieve lazily to avoid cyclic dependency exception.
     this._errorHandler ||= this._injector.get(ErrorHandler);
     // In order to avoid duplicate error handling, it is necessary to leave
@@ -19,7 +23,6 @@ export class NgxsUnhandledErrorHandler {
     // Angular zone. By default, `@angular/core` leaves the Angular zone when invoking
     // `handleError` (see `_callAndReportToErrorHandler`).
     this._ngZone.runOutsideAngular(() => {
-      // Decide what we wanna pass here...
       this._errorHandler.handleError(_error);
     });
   }
