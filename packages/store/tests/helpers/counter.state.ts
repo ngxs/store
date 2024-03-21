@@ -1,4 +1,4 @@
-import { State, Action } from '../../src/public_api';
+import { State, Action, Selector } from '../../src/public_api';
 import { Injectable } from '@angular/core';
 
 export class Increment {
@@ -24,6 +24,11 @@ export class MathService {
 })
 @Injectable()
 export class CounterState {
+  @Selector()
+  static getCounter(state: number) {
+    return state;
+  }
+
   constructor(private math: MathService) {}
 
   @Action(Increment)

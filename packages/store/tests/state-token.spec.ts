@@ -1,4 +1,4 @@
-import { NgxsModule, Select, Selector, State, StateToken, Store } from '@ngxs/store';
+import { NgxsModule, Selector, State, StateToken, Store } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 import { Component, Injectable } from '@angular/core';
 import { take } from 'rxjs/operators';
@@ -40,8 +40,7 @@ describe('[TEST]: StateToken', () => {
         template: '{{ myState$ | async | json }}'
       })
       class MyComponent {
-        @Select(TODO_LIST_TOKEN)
-        myState$: Observable<string[]>;
+        myState$: Observable<string[]> = this.storeApp.select(TODO_LIST_TOKEN);
 
         constructor(public storeApp: Store) {}
       }

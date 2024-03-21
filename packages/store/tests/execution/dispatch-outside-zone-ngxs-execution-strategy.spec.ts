@@ -1,8 +1,24 @@
-import { ApplicationRef, NgZone, Component, Type, NgModule, Injectable } from '@angular/core';
+import {
+  ApplicationRef,
+  NgZone,
+  Component,
+  Type,
+  NgModule,
+  Injectable,
+  inject
+} from '@angular/core';
 import { TestBed, TestModuleMetadata } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { State, Action, StateContext, NgxsModule, Store, Select, Actions } from '@ngxs/store';
+import {
+  State,
+  Action,
+  StateContext,
+  NgxsModule,
+  Store,
+  Actions,
+  Selector
+} from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 import { Observable } from 'rxjs';
 
@@ -28,7 +44,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
   }
 
   class Increment {
-    public static readonly type = '[Counter] Increment';
+    static readonly type = '[Counter] Increment';
   }
 
   @State<number>({
@@ -37,10 +53,15 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
   })
   @Injectable()
   class CounterState {
-    public zoneCounter = new ZoneCounter();
+    @Selector()
+    static getCounter(state: number) {
+      return state;
+    }
+
+    zoneCounter = new ZoneCounter();
 
     @Action(Increment)
-    public increment({ setState, getState }: StateContext<number>): void {
+    increment({ setState, getState }: StateContext<number>): void {
       setState(getState() + 1);
       this.zoneCounter.hit();
     }
@@ -48,8 +69,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
 
   @Component({ template: '{{ counter$ | async }}' })
   class CounterComponent {
-    @Select(CounterState)
-    public counter$: Observable<number>;
+    counter$: Observable<number> = inject(Store).select(CounterState.getCounter);
   }
 
   function setup(moduleDef?: TestModuleMetadata) {
@@ -63,7 +83,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
     const ticks = { count: 0 };
     @Injectable()
     class MockApplicationRef extends ApplicationRef {
-      public tick(): void {
+      tick(): void {
         ticks.count += 1;
       }
     }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { State, Action } from '../../src/public_api';
+import { State, Action, Selector } from '../../src/public_api';
 
 export class UpdateValue {
   static readonly type = 'UPDATE_VALUE';
@@ -13,6 +13,11 @@ export class UpdateValue {
 })
 @Injectable()
 export class SimpleState {
+  @Selector()
+  static getSimple(state: string) {
+    return state;
+  }
+
   @Action(UpdateValue)
   updateValue(_: string, action: UpdateValue) {
     return action.value;
