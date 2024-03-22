@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule, ActionStatus, Actions } from '@ngxs/store';
+import { ActionStatus } from '@ngxs/store';
 import { ɵOrderedSubject } from '@ngxs/store/internals';
 import { Subject } from 'rxjs';
 
@@ -86,23 +86,5 @@ describe('The Actions stream', () => {
       '2nd Subscriber:SUCCESSFUL',
       '3rd Subscriber:SUCCESSFUL'
     ]);
-  });
-
-  it('has to add subscriber to the internal "_subscriptions" property', () => {
-    // Arrange & act
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot()]
-    });
-
-    const actions$: Actions = TestBed.inject(Actions);
-    const subscription = actions$.subscribe(() => {});
-
-    const isArrayBeforeUnsubscribe = Array.isArray(subscription['_subscriptions']);
-    subscription.unsubscribe();
-    const isNullyAfterUnsubscribe = subscription['_subscriptions'] === null;
-
-    // Assert
-    expect(isArrayBeforeUnsubscribe).toBeTruthy();
-    expect(isNullyAfterUnsubscribe).toBeTruthy();
   });
 });

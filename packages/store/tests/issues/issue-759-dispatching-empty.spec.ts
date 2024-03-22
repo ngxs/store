@@ -29,7 +29,7 @@ describe('Dispatching an empty array with errors (https://github.com/ngxs/store/
   class AppState {
     @Action(ActionError)
     actionError() {
-      return throwError('ActionError: should be shown in the console');
+      return throwError(() => new Error('ActionError: should be shown in the console'));
     }
 
     @Action(ActionEmptyArray)
@@ -163,7 +163,7 @@ describe('Dispatching an empty array with errors (https://github.com/ngxs/store/
     expect(subscription.closed).toEqual(true);
   });
 
-  it('dispatch([ new ActionEmptyArray(), new ActionDispatchError() ])', () => {
+  it('dispatch([ new ActionEmptyArray(), new ActionDispatchError() ])', async () => {
     subscription = store
       .dispatch([new ActionEmptyArray(), new ActionDispatchError()])
       .pipe(finalize(() => events.push('finalize')))
