@@ -15,12 +15,12 @@ export class NgxsUnhandledErrorHandler implements OnInit {
 
   ngOnInit(): void {
     // Retrieve lazily to avoid cyclic dependency exception.
-    this._errorHandler ||= this._injector.get(ErrorHandler);
+    this._errorHandler = this._errorHandler || this._injector.get(ErrorHandler);
   }
 
   handleError(_error: any, _context: NgxsErrorContext): void {
     // Retrieve lazily to avoid cyclic dependency exception.
-    this._errorHandler ||= this._injector.get(ErrorHandler);
+    this._errorHandler = this._errorHandler || this._injector.get(ErrorHandler);
     // In order to avoid duplicate error handling, it is necessary to leave
     // the Angular zone to ensure that errors are not caught twice. The `handleError`
     // method may contain a `throw error` statement, which is used to re-throw the error.
