@@ -1,10 +1,10 @@
 import { config } from 'rxjs';
 
-const __unhandledRxjsErrorCallbacks = new WeakMap<any, VoidFunction>();
+const ɵɵunhandledRxjsErrorCallbacks = new WeakMap<any, VoidFunction>();
 
 const existingHandler = config.onUnhandledError;
 config.onUnhandledError = function (error: any) {
-  const unhandledErrorCallback = __unhandledRxjsErrorCallbacks.get(error);
+  const unhandledErrorCallback = ɵɵunhandledRxjsErrorCallbacks.get(error);
   if (unhandledErrorCallback) {
     unhandledErrorCallback();
   } else if (existingHandler) {
@@ -15,7 +15,7 @@ config.onUnhandledError = function (error: any) {
 };
 
 export function executeUnhandledCallback(error: any) {
-  const unhandledErrorCallback = __unhandledRxjsErrorCallbacks.get(error);
+  const unhandledErrorCallback = ɵɵunhandledRxjsErrorCallbacks.get(error);
   if (unhandledErrorCallback) {
     unhandledErrorCallback();
     return true;
@@ -29,7 +29,7 @@ export function assignUnhandledCallback(error: any, callback: VoidFunction) {
   // The error can also be a string if thrown in the following manner: `throwError('My Error')`.
   if (error !== null && typeof error === 'object') {
     let hasBeenCalled = false;
-    __unhandledRxjsErrorCallbacks.set(error, () => {
+    ɵɵunhandledRxjsErrorCallbacks.set(error, () => {
       if (!hasBeenCalled) {
         hasBeenCalled = true;
         callback();

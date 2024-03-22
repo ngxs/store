@@ -163,7 +163,7 @@ describe('Dispatching an empty array with errors (https://github.com/ngxs/store/
     expect(subscription.closed).toEqual(true);
   });
 
-  it('dispatch([ new ActionEmptyArray(), new ActionDispatchError() ])', async () => {
+  it('dispatch([ new ActionEmptyArray(), new ActionDispatchError() ])', () => {
     subscription = store
       .dispatch([new ActionEmptyArray(), new ActionDispatchError()])
       .pipe(finalize(() => events.push('finalize')))
