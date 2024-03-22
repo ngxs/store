@@ -49,7 +49,7 @@ export class InternalDispatcher {
     const result = this._ngxsExecutionStrategy.enter(() =>
       this.dispatchByEvents(actionOrActions)
     );
-    return result.pipe(leaveNgxs(this._ngxsExecutionStrategy), ensureSubscribed());
+    return result.pipe(ensureSubscribed(), leaveNgxs(this._ngxsExecutionStrategy));
   }
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<void> {
