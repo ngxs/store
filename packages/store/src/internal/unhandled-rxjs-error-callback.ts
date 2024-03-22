@@ -14,6 +14,15 @@ config.onUnhandledError = function (error: any) {
   }
 };
 
+export function executeUnhandledCallback(error: any) {
+  const unhandledErrorCallback = __unhandledRxjsErrorCallbacks.get(error);
+  if (unhandledErrorCallback) {
+    unhandledErrorCallback();
+    return true;
+  }
+  return false;
+}
+
 export function assignUnhandledCallback(error: any, callback: VoidFunction) {
   let hasBeenCalled = false;
   __unhandledRxjsErrorCallbacks.set(error, () => {

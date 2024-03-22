@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
+import { EMPTY, forkJoin, Observable, Observer, of, Subject, throwError } from 'rxjs';
 import { exhaustMap, filter, map, shareReplay, take } from 'rxjs/operators';
 
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
@@ -10,12 +10,13 @@ import { ActionContext, ActionStatus, InternalActions } from '../actions-stream'
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
+import { executeUnhandledCallback } from './unhandled-rxjs-error-callback';
 
-function ensureSubscribed() {
-  return (source: Observable<void>) => {
-    const subscription = source.subscribe();
+function ensureSubscribed<T>(fallbackObserver: Partial<Observer<T>>) {
+  return (source: Observable<T>) => {
+    const subscription = source.subscribe(fallbackObserver);
 
-    return new Observable<void>(subscriber => {
+    return new Observable<T>(subscriber => {
       // Now that there is a real subscriber, we can unsubscribe our pro-active subscription
       subscription.unsubscribe();
       return source.subscribe(subscriber);
@@ -49,7 +50,14 @@ export class InternalDispatcher {
     const result = this._ngxsExecutionStrategy.enter(() =>
       this.dispatchByEvents(actionOrActions)
     );
-    return result.pipe(ensureSubscribed(), leaveNgxs(this._ngxsExecutionStrategy));
+    return result.pipe(
+      ensureSubscribed({
+        error(err) {
+          executeUnhandledCallback(err);
+        }
+      }),
+      leaveNgxs(this._ngxsExecutionStrategy)
+    );
   }
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<void> {
