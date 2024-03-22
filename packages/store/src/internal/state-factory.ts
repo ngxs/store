@@ -97,6 +97,8 @@ export class StateFactory implements OnDestroy {
 
   private _propGetter = inject(ɵPROP_GETTER);
 
+  private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler = null!;
+
   constructor(
     private _injector: Injector,
     private _config: NgxsConfig,
@@ -106,7 +108,6 @@ export class StateFactory implements OnDestroy {
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
     private _stateContextFactory: StateContextFactory,
-    private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler,
     @Optional()
     @Inject(ɵINITIAL_STATE_TOKEN)
     private _initialState: any
@@ -261,8 +262,10 @@ export class StateFactory implements OnDestroy {
             map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
             catchError(error => {
+              const ngxsUnhandledErrorHandler = (this._ngxsUnhandledErrorHandler ||=
+                this._injector.get(NgxsUnhandledErrorHandler));
               const handleableError = assignUnhandledCallback(error, () =>
-                this._ngxsUnhandledErrorHandler.handleError(error, { action })
+                ngxsUnhandledErrorHandler.handleError(error, { action })
               );
               return of(<ActionContext>{
                 action,

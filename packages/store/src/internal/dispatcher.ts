@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { EMPTY, forkJoin, Observable, Observer, of, Subject, throwError } from 'rxjs';
+import { Injectable, NgZone } from '@angular/core';
+import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { exhaustMap, filter, map, shareReplay, take } from 'rxjs/operators';
 
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
@@ -12,11 +12,29 @@ import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execut
 import { leaveNgxs } from '../operators/leave-ngxs';
 import { executeUnhandledCallback } from './unhandled-rxjs-error-callback';
 
-function ensureSubscribed<T>(fallbackObserver: Partial<Observer<T>>) {
+function fallbackErrorHandler<T>(ngZone: NgZone) {
   return (source: Observable<T>) => {
-    const subscription = source.subscribe(fallbackObserver);
+    let realSubscriber = false;
+
+    const subscription = source.subscribe({
+      error: error => {
+        ngZone.runOutsideAngular(() => {
+          // This is necessary to schedule a microtask to ensure that synchronous
+          // errors are not reported before the real subscriber arrives. If an error
+          // is thrown synchronously in any action, it will be reported to the error
+          // handler regardless. Since RxJS reports unhandled errors asynchronously,
+          // implementing a microtask ensures that we are also safe in this scenario.
+          queueMicrotask(() => {
+            if (!realSubscriber) {
+              executeUnhandledCallback(error);
+            }
+          });
+        });
+      }
+    });
 
     return new Observable<T>(subscriber => {
+      realSubscriber = true;
       // Now that there is a real subscriber, we can unsubscribe our pro-active subscription
       subscription.unsubscribe();
       return source.subscribe(subscriber);
@@ -36,6 +54,7 @@ export class InternalDispatchedActionResults extends Subject<ActionContext> {}
 @Injectable({ providedIn: 'root' })
 export class InternalDispatcher {
   constructor(
+    private _ngZone: NgZone,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
@@ -50,12 +69,9 @@ export class InternalDispatcher {
     const result = this._ngxsExecutionStrategy.enter(() =>
       this.dispatchByEvents(actionOrActions)
     );
+
     return result.pipe(
-      ensureSubscribed({
-        error(err) {
-          executeUnhandledCallback(err);
-        }
-      }),
+      fallbackErrorHandler(this._ngZone),
       leaveNgxs(this._ngxsExecutionStrategy)
     );
   }
@@ -79,7 +95,7 @@ export class InternalDispatcher {
         const error = new Error(
           `This action doesn't have a type property: ${action.constructor.name}`
         );
-        return throwError(error);
+        return throwError(() => error);
       }
     }
 

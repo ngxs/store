@@ -3,50 +3,58 @@ import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { Action, NgxsModule, State, Store } from '@ngxs/store';
-import { defer, throwError } from 'rxjs';
+import { defer, firstValueFrom, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { makeRxJSTimeoutProviderSynchronous } from '../helpers/make-rxjs-timeout-provider-synchronous';
+import { macrotask } from '../helpers/macrotask';
 
-describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
-  makeRxJSTimeoutProviderSynchronous();
-
-  class ProduceErrorSynchronously {
+namespace ErrorActions {
+  export class ProduceErrorSynchronously {
     static readonly type = 'Produce error synchronously';
   }
 
-  class ProduceErrorSynchronouslyInStream {
+  export class ProduceErrorSynchronouslyInStream {
     static readonly type = 'Produce error synchronously in stream';
   }
 
-  class ProduceErrorAsynchronously {
+  export class ProduceErrorAsynchronously {
     static readonly type = 'Produce error asynchronously';
   }
+}
 
-  function createActionError() {
-    return new RangeError('Custom NGXS error');
-  }
+class SynchronousError {
+  message = 'Synchronously Produced Error';
+}
 
+class SynchronousErrorInStream {
+  message = 'Synchronously Produced Error In Stream';
+}
+
+class AsynchronousError {
+  message = 'Asynchronously Produced Error';
+}
+
+describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
   @State({
     name: 'app'
   })
   @Injectable()
   class AppState {
-    @Action(ProduceErrorSynchronously)
+    @Action(ErrorActions.ProduceErrorSynchronously)
     produceErrorSynchronously() {
-      throw createActionError();
+      throw new SynchronousError();
     }
 
-    @Action(ProduceErrorSynchronouslyInStream)
+    @Action(ErrorActions.ProduceErrorSynchronouslyInStream)
     produceErrorSynchronouslyInStream() {
-      return throwError(() => createActionError());
+      return throwError(() => new SynchronousErrorInStream());
     }
 
-    @Action(ProduceErrorAsynchronously)
+    @Action(ErrorActions.ProduceErrorAsynchronously)
     produceErrorAsynchronously() {
       return defer(() => Promise.resolve()).pipe(
         tap(() => {
-          throw createActionError();
+          throw new AsynchronousError();
         })
       );
     }
@@ -84,28 +92,28 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         const errorHandler = injector.get(CustomErrorHandler);
 
         // Act
-        store.dispatch(new ProduceErrorSynchronously());
+        store.dispatch(new ErrorActions.ProduceErrorSynchronously());
         await macrotask();
         // Assert
-        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([createActionError()]);
+        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([new SynchronousError()]);
 
         // Act
-        store.dispatch(new ProduceErrorSynchronouslyInStream());
+        store.dispatch(new ErrorActions.ProduceErrorSynchronouslyInStream());
         await macrotask();
         // Assert
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([
-          createActionError(),
-          createActionError()
+          new SynchronousError(),
+          new SynchronousErrorInStream()
         ]);
 
         // Act
-        store.dispatch(new ProduceErrorAsynchronously());
+        store.dispatch(new ErrorActions.ProduceErrorAsynchronously());
         await macrotask();
         // Assert
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([
-          createActionError(),
-          createActionError(),
-          createActionError()
+          new SynchronousError(),
+          new SynchronousErrorInStream(),
+          new AsynchronousError()
         ]);
       })
     );
@@ -122,28 +130,28 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         const errorHandler = injector.get(CustomErrorHandler);
 
         // Act
-        store.dispatch(new ProduceErrorSynchronously()).subscribe();
+        store.dispatch(new ErrorActions.ProduceErrorSynchronously()).subscribe();
         await macrotask();
         // Assert
-        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([createActionError()]);
+        expect(errorHandler.caughtErrorsByErrorHandler).toEqual([new SynchronousError()]);
 
         // Act
-        store.dispatch(new ProduceErrorSynchronouslyInStream()).subscribe();
+        store.dispatch(new ErrorActions.ProduceErrorSynchronouslyInStream()).subscribe();
         await macrotask();
         // Assert
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([
-          createActionError(),
-          createActionError()
+          new SynchronousError(),
+          new SynchronousErrorInStream()
         ]);
 
         // Act
-        store.dispatch(new ProduceErrorAsynchronously()).subscribe();
+        store.dispatch(new ErrorActions.ProduceErrorAsynchronously()).subscribe();
         await macrotask();
         // Assert
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([
-          createActionError(),
-          createActionError(),
-          createActionError()
+          new SynchronousError(),
+          new SynchronousErrorInStream(),
+          new AsynchronousError()
         ]);
       })
     );
@@ -161,35 +169,33 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         const errorHandler = injector.get(CustomErrorHandler);
 
         // Act
-        store.dispatch(new ProduceErrorSynchronously()).subscribe({
+        store.dispatch(new ErrorActions.ProduceErrorSynchronously()).subscribe({
           error: error => caughtErrors.push(error)
         });
         await macrotask();
         // Assert
-        expect(caughtErrors).toEqual([createActionError()]);
+        expect(caughtErrors).toEqual([new SynchronousError()]);
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([]);
 
         // Act
-        store.dispatch(new ProduceErrorSynchronouslyInStream()).subscribe({
+        store.dispatch(new ErrorActions.ProduceErrorSynchronouslyInStream()).subscribe({
           error: error => caughtErrors.push(error)
         });
         await macrotask();
         // Assert
-        expect(caughtErrors).toEqual([createActionError(), , createActionError()]);
+        expect(caughtErrors).toEqual([new SynchronousError(), new SynchronousErrorInStream()]);
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([]);
 
         // Act
-        store.dispatch(new ProduceErrorAsynchronously()).subscribe({
+        store.dispatch(new ErrorActions.ProduceErrorAsynchronously()).subscribe({
           error: error => caughtErrors.push(error)
         });
         await macrotask();
         // Assert
         expect(caughtErrors).toEqual([
-          createActionError(),
-          ,
-          createActionError(),
-          ,
-          createActionError()
+          new SynchronousError(),
+          new SynchronousErrorInStream(),
+          new AsynchronousError()
         ]);
         expect(errorHandler.caughtErrorsByErrorHandler).toEqual([]);
       })
@@ -209,27 +215,27 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         const errorHandler = injector.get(CustomErrorHandler);
 
         // Act
-        store.dispatch(new ProduceErrorSynchronously()).toPromise();
+        firstValueFrom(store.dispatch(new ErrorActions.ProduceErrorSynchronously()));
         await macrotask();
         // Assert
         expect(errorHandler.caughtErrorsByErrorHandler.length).toEqual(1);
 
         // Act
-        store.dispatch(new ProduceErrorSynchronouslyInStream()).toPromise();
+        firstValueFrom(store.dispatch(new ErrorActions.ProduceErrorSynchronouslyInStream()));
         await macrotask();
         // Assert
         expect(errorHandler.caughtErrorsByErrorHandler.length).toEqual(2);
 
         // Act
-        store.dispatch(new ProduceErrorAsynchronously()).toPromise();
+        firstValueFrom(store.dispatch(new ErrorActions.ProduceErrorAsynchronously()));
         await macrotask();
         // Assert
         expect(errorHandler.caughtErrorsByErrorHandler.length).toEqual(3);
-        errorHandler.caughtErrorsByErrorHandler.forEach(error => {
-          expect(error.message).toContain(
-            'Uncaught (in promise): RangeError: Custom NGXS error'
-          );
-        });
+
+        const messages = errorHandler.caughtErrorsByErrorHandler.map(e => e.message);
+        expect(messages[0]).toContain('Uncaught (in promise): SynchronousError');
+        expect(messages[1]).toContain('Uncaught (in promise): SynchronousErrorInStream');
+        expect(messages[2]).toContain('Uncaught (in promise): AsynchronousError');
       })
     );
 
@@ -246,45 +252,34 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         const errorHandler = injector.get(CustomErrorHandler);
 
         // Act
-        store
-          .dispatch(new ProduceErrorSynchronously())
-          .toPromise()
-          .then(
-            () => {},
-            error => caughtErrors.push(error)
-          );
+        firstValueFrom(store.dispatch(new ErrorActions.ProduceErrorSynchronously())).then(
+          () => {},
+          error => caughtErrors.push(error)
+        );
         await macrotask();
-        store
-          .dispatch(new ProduceErrorSynchronouslyInStream())
-          .toPromise()
-          .then(
-            () => {},
-            error => caughtErrors.push(error)
-          );
+        firstValueFrom(
+          store.dispatch(new ErrorActions.ProduceErrorSynchronouslyInStream())
+        ).then(
+          () => {},
+          error => caughtErrors.push(error)
+        );
         await macrotask();
-        store
-          .dispatch(new ProduceErrorAsynchronously())
-          .toPromise()
-          .then(
-            () => {},
-            error => caughtErrors.push(error)
-          );
+        firstValueFrom(store.dispatch(new ErrorActions.ProduceErrorAsynchronously())).then(
+          () => {},
+          error => caughtErrors.push(error)
+        );
         await macrotask();
 
         // Assert
         expect(caughtErrors.length).toEqual(3);
         expect(errorHandler.caughtErrorsByErrorHandler.length).toEqual(0);
-        caughtErrors.forEach(error => {
-          expect(error).toEqual(createActionError());
-        });
+
+        expect(caughtErrors).toEqual([
+          new SynchronousError(),
+          new SynchronousErrorInStream(),
+          new AsynchronousError()
+        ]);
       })
     );
   });
 });
-
-function macrotask() {
-  // We explicitly provide 10 ms to wait until RxJS `SafeSubscriber`
-  // handles the error. The `SafeSubscriber` re-throws errors asynchronously,
-  // it's the following: `setTimeout(() => { throw error })`.
-  return new Promise(resolve => setTimeout(resolve, 10));
-}

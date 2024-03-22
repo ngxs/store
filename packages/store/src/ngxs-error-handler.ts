@@ -1,22 +1,17 @@
-import { ErrorHandler, Injectable, Injector, NgZone, OnInit } from '@angular/core';
+import { ErrorHandler, Injectable, Injector, NgZone } from '@angular/core';
 
 export interface NgxsErrorContext {
   action?: any;
 }
 
 @Injectable({ providedIn: 'root' })
-export class NgxsUnhandledErrorHandler implements OnInit {
+export class NgxsUnhandledErrorHandler {
   private _errorHandler: ErrorHandler = null!;
 
   constructor(
     private _ngZone: NgZone,
     private _injector: Injector
   ) {}
-
-  ngOnInit(): void {
-    // Retrieve lazily to avoid cyclic dependency exception.
-    this._errorHandler = this._errorHandler || this._injector.get(ErrorHandler);
-  }
 
   handleError(_error: any, _context: NgxsErrorContext): void {
     // Retrieve lazily to avoid cyclic dependency exception.
