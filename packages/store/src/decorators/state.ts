@@ -48,7 +48,7 @@ function mutateMetaData<T>(params: MutateMetaOptions<T>): void {
   const stateName: string | null =
     typeof name === 'string' ? name : (name && name.getName()) || null;
 
-  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+  if (typeof ngDevMode !== 'undefined' && ngDevMode) {
     ensureStateNameIsValid(stateName);
   }
 

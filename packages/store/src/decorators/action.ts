@@ -11,9 +11,7 @@ export function Action(
   options?: ɵActionOptions
 ): MethodDecorator {
   return (target: any, name: string | symbol): void => {
-    // Caretaker note: we have still left the `typeof` condition in order to avoid
-    // creating a breaking change for projects that still use the View Engine.
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       const isStaticMethod = target.hasOwnProperty('prototype');
 
       if (isStaticMethod) {

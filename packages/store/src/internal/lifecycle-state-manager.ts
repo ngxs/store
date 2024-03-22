@@ -20,7 +20,7 @@ import { MappedStore, StatesAndDefaults } from './internals';
 import { NgxsLifeCycle, NgxsSimpleChange, StateContext } from '../symbols';
 import { getInvalidInitializationOrderMessage } from '../configs/messages.config';
 
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 @Injectable({ providedIn: 'root' })
 export class LifecycleStateManager implements OnDestroy {

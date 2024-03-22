@@ -7,7 +7,7 @@ import { ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 // The injection token is used to resolve a list of states provided at
 // the root level through either `NgxsModule.forRoot` or `provideStore`.

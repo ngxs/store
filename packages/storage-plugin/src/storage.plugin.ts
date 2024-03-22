@@ -23,7 +23,7 @@ import { ɵNgxsStoragePluginKeysManager } from './keys-manager';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
