@@ -43,7 +43,9 @@ export class InternalDispatcher {
     // Until a subscription is made, the observable will not execute its logic.
     // This is important to note because if developers subscribe externally,
     // it won't trigger new computations, because the observable is "replayed".
-    result.subscribe();
+    // The `next` and `error` callbacks are provided as empty to prevent the
+    // rxjs unhandled error callback being called.
+    result.subscribe({ next() {}, error() {} });
 
     return result.pipe(leaveNgxs(this._ngxsExecutionStrategy));
   }
