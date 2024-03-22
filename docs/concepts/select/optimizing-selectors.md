@@ -1,6 +1,6 @@
 # Optimizing Selectors
 
-[Selectors](../concepts/select.md) are responsible for providing state data to your application. As your application code grows, naturally the number of selectors you create also increases. Ensuring your selectors are optimized can be instrumental in building a faster performing application.
+[Selectors](./) are responsible for providing state data to your application. As your application code grows, naturally the number of selectors you create also increases. Ensuring your selectors are optimized can be instrumental in building a faster performing application.
 
 ## Memoization
 
@@ -26,7 +26,7 @@ static getViewData(state: SomeStateModel) {
 
 Selectors defined in state classes implicitly have `state` injected as their first argument. The above selector will be recalculated every time the user types into the input component. Since `state` could update rapidly when a user types, the expensive selector will needlessly recalculate even though it does not care about the `name` property of `state` changing. This selector does not take advantage of memoization.
 
-One way to solve this problem is to turn off the `injectContainerState` selector [option](options.md) at root, state, or selector level. By default (in NGXS v3), the state is implicitly injected as the first argument for composite selectors _defined within state classes_. Turning off this setting prevents the container state from being injected as the first argument. This requires you to explicitly specify all arguments when you use the `@Selector([...])` decorator. Any parameterless `@Selector()` decorators will still inject the state as an implicit argument. Note that this option does not apply to selectors declared _outside of state classes_ (because there is no container state to inject). For example, we create two selectors in our state class:
+One way to solve this problem is to turn off the `injectContainerState` selector [option](../store/options.md) at root, state, or selector level. By default (in NGXS v3), the state is implicitly injected as the first argument for composite selectors _defined within state classes_. Turning off this setting prevents the container state from being injected as the first argument. This requires you to explicitly specify all arguments when you use the `@Selector([...])` decorator. Any parameterless `@Selector()` decorators will still inject the state as an implicit argument. Note that this option does not apply to selectors declared _outside of state classes_ (because there is no container state to inject). For example, we create two selectors in our state class:
 
 ```ts
 @Selector([SomeState])
@@ -42,7 +42,7 @@ static getViewData(data: Data[]) {
 
 This `getViewData` selector will not be recalculated when a user types into the input component. This selector targets the specific property of `state` it cares about as its argument by leveraging an additional selector. When the `name` property of state changes, the `getViewData` arguments _do not change_. Memoization is taken advantage of.
 
-An alternative solution to turning off the selector option is to create a [meta selector](../concepts/select#meta-selectors). For example, we declare one selector in our state class and declare another selector outside of our state class:
+An alternative solution to turning off the selector option is to create a [meta selector](./#meta-selectors). For example, we declare one selector in our state class and declare another selector outside of our state class:
 
 ```ts
 @State({...})
@@ -83,7 +83,7 @@ isDataSelected(state: SelectedDataStateModel) {
 }
 ```
 
-The above selector is an example of a [lazy selector](../concepts/select#lazy-selectors). This selector returns a function, which accepts an `id` as an argument and returns a boolean indicating whether or not this `id` is selected. The lazy selector returned by `isDataSelected` uses [Array.includes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes) and has `O(n)` time complexity. In this example, we want to render a list of checkboxes:
+The above selector is an example of a [lazy selector](./#lazy-selectors). This selector returns a function, which accepts an `id` as an argument and returns a boolean indicating whether or not this `id` is selected. The lazy selector returned by `isDataSelected` uses [Array.includes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global\_Objects/Array/includes) and has `O(n)` time complexity. In this example, we want to render a list of checkboxes:
 
 ```html
 <ng-container *ngIf="isDataSelected() as isDataSelected">
@@ -105,6 +105,6 @@ isDataSelected(state: SelectedDataStateModel) {
 }
 ```
 
-The above selector implementation creates a [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set). The lazy selector returned by `isDataSelected` _is a closure with access to the `selectedIds` variable created in the parent function_. The lazy selector uses [Set.has](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/has) which has `O(1)` time complexity.
+The above selector implementation creates a [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global\_Objects/Set). The lazy selector returned by `isDataSelected` _is a closure with access to the `selectedIds` variable created in the parent function_. The lazy selector uses [Set.has](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global\_Objects/Set/has) which has `O(1)` time complexity.
 
 Now when the list re-renders, because the lazy selector has `O(1)` time complexity, this template renders with `O(n)` time complexity. This optimizes performance by a magnitude of `n`.

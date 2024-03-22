@@ -1,7 +1,6 @@
 # Plugins
 
-Next let's talk about plugins. Similar to Redux's meta reducers, we have
-a plugins interface that allows you to build a global plugin for your state.
+Next, let's talk about plugins. Similar to Redux's meta reducers, we have a plugin interface that allows you to build a global plugin for your state.
 
 All you have to do is call `withNgxsPlugin` with a plugin class. If your plugins have options associated with them, we also suggest defining an injection token.
 
@@ -39,8 +38,7 @@ export function withNgxsLoggerPlugin(options?: any) {
 }
 ```
 
-You can also use pure functions for plugins. The above example in a pure function
-would look like this:
+You can also use pure functions for plugins. The above example in a pure function would look like this:
 
 ```ts
 export function logPlugin(state, action, next) {
@@ -53,7 +51,7 @@ export function logPlugin(state, action, next) {
 
 NOTE: When providing a pure function make sure to use `useValue` instead of `useClass`.
 
-To register a plugin with NGXS, add the plugin in your `provideStore` as an NGXS feature and optionally pass in the plugin options like this:
+To register a plugin with NGXS, add the plugin to your `provideStore` as an NGXS feature and optionally pass in the plugin options like this:
 
 ```ts
 export const appConfig: ApplicationConfig = {
