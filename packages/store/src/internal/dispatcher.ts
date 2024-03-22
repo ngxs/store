@@ -11,6 +11,18 @@ import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
 
+function ensureSubscribed() {
+  return (source: Observable<void>) => {
+    const subscription = source.subscribe();
+
+    return new Observable<void>(subscriber => {
+      // Now that there is a real subscriber, we can unsubscribe our pro-active subscription
+      subscription.unsubscribe();
+      return source.subscribe(subscriber);
+    });
+  };
+}
+
 /**
  * Internal Action result stream that is emitted when an action is completed.
  * This is used as a method of returning the action result to the dispatcher
@@ -37,17 +49,7 @@ export class InternalDispatcher {
     const result = this._ngxsExecutionStrategy.enter(() =>
       this.dispatchByEvents(actionOrActions)
     );
-
-    // We need to subscribe inside the framework because, in RxJS, computations
-    // or side effects within an observable will only trigger when there's a subscription.
-    // Until a subscription is made, the observable will not execute its logic.
-    // This is important to note because if developers subscribe externally,
-    // it won't trigger new computations, because the observable is "replayed".
-    // The `next` and `error` callbacks are provided as empty to prevent the
-    // rxjs unhandled error callback being called.
-    result.subscribe({ next() {}, error() {} });
-
-    return result.pipe(leaveNgxs(this._ngxsExecutionStrategy));
+    return result.pipe(leaveNgxs(this._ngxsExecutionStrategy), ensureSubscribed());
   }
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<void> {
