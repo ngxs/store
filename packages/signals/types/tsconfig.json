@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noEmit": true,
+    "lib": ["es2017", "dom"],
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "target": "es5",
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "typeRoots": ["node_modules/@types"],
+    "baseUrl": ".",
+    "paths": {
+      "@angular/core": ["../../../node_modules/@angular/core/core.d.ts"],
+      "@ngxs/store/operators": ["../../../@ngxs/store/operators/index.d.ts"],
+      "@ngxs/store/internals": ["../../../@ngxs/store/internals/index.d.ts"],
+      "@ngxs/*": ["../../../@ngxs/*/index.d.ts"]
+    }
+  }
+}

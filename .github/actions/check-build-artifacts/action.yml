@@ -35,3 +35,4 @@ runs:
         STORAGE_PLUG_ART: './@ngxs/storage-plugin'
         STORE_ART: './@ngxs/store'
         WEBSOCKET_PLUG_ART: './@ngxs/websocket-plugin'
+        SIGNAL_PLUG_ART: './@ngxs/signals'

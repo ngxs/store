@@ -80,7 +80,7 @@
     "build:integration:ssr": "yarn build:integration && nx server integration --configuration production",
     "// - TESTING": "Test all modules #requires yarn build:packages",
     "test:integration": "nx run integration:test --colors --run-in-band",
-    "test:types": "nx lint-types store",
+    "test:types": "nx lint-types store && nx lint-types signals",
     "// - E2E": "E2E testing #requires yarn build:integration",
     "cy:open": "cypress open",
     "cy:open:ssr": "cross-env SSR=true cypress open",
