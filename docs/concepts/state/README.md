@@ -18,7 +18,7 @@ ng generate @ngxs/store:state --name NAME_OF_YOUR_STATE
 
 | Option    | Description                                                    | Required | Default Value               |
 | --------- | -------------------------------------------------------------- | :------: | --------------------------- |
-| --name    | The name of the state                                          |    Yes   |                             |
+| --name    | The name of the state                                          |   Yes    |                             |
 | --path    | The path to create the state                                   |    No    | App's root directory        |
 | --spec    | Boolean flag to indicate if a unit test file should be created |    No    | `true`                      |
 | --flat    | Boolean flag to indicate if a dir is created                   |    No    | `false`                     |
@@ -28,7 +28,7 @@ ng generate @ngxs/store:state --name NAME_OF_YOUR_STATE
 
 🪄 **This command will**:
 
-* Create a state with the given options
+- Create a state with the given options
 
 > Note: If the --flat option is false, the generated files will be organized into a directory named using the kebab case of the --name option. For instance, 'MyState' will be transformed into 'my-state'.
 
@@ -50,9 +50,9 @@ export class AnimalsState {}
 
 In the state decorator, we define some metadata about the state. These options include:
 
-* `name`: The name of the state slice. Note: The name is a required parameter and must be unique for the entire application. Names must be object property safe, (e.g. no dashes, dots, etc).
-* `defaults`: Default set of object/array for this state slice.
-* `children`: Child sub state associations (it's **deprecated** and slated for removal in the future, so it's advisable not to use it in newer applications).
+- `name`: The name of the state slice. Note: The name is a required parameter and must be unique for the entire application. Names must be object property safe, (e.g. no dashes, dots, etc).
+- `defaults`: Default set of object/array for this state slice.
+- `children`: Child sub state associations (it's **deprecated** and slated for removal in the future, so it's advisable not to use it in newer applications).
 
 Our states can also participate in dependency injection. This is hooked up automatically so all you need to do is inject your dependencies in the constructor.
 

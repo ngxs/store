@@ -20,13 +20,13 @@ ng generate @ngxs/store:actions --name NAME_OF_YOUR_ACTION
 
 | Option | Description                                  | Required | Default Value        |
 | ------ | -------------------------------------------- | :------: | -------------------- |
-| --name | The name of the actions                      |    Yes   |                      |
+| --name | The name of the actions                      |   Yes    |                      |
 | --path | The path to create the actions               |    No    | App's root directory |
 | --flat | Boolean flag to indicate if a dir is created |    No    | `false`              |
 
 🪄 **This command will**:
 
-* Create an action with the given options
+- Create an action with the given options
 
 > Note: If the --flat option is false, the generated files will be organized into a directory named using the kebab case of the --name option. For instance, 'MyActions' will be transformed into 'my-actions'.
 
@@ -35,7 +35,7 @@ ng generate @ngxs/store:actions --name NAME_OF_YOUR_ACTION
 There are two actions that get triggered in the internals of the library:
 
 1. @@INIT - store being initialized, before all the [ngxsOnInit Life-cycle](../state/life-cycle.md) events.
-2. @@UPDATE\_STATE - a new [lazy-loaded state](../state/lazy.md) being added to the store.
+2. @@UPDATE_STATE - a new [lazy-loaded state](../state/lazy.md) being added to the store.
 
 ## Simple Action
 
@@ -78,15 +78,15 @@ Commands are actions that tell your app to do something. They are usually trigge
 
 Names should contain three parts:
 
-* A context as to where the command came from, `[User API]`, `[Product Page]`, `[Dashboard Page]`.
-* A verb describing what we want to do with the entity.
-* The entity we are acting upon, `User`, `Card`, `Project`.
+- A context as to where the command came from, `[User API]`, `[Product Page]`, `[Dashboard Page]`.
+- A verb describing what we want to do with the entity.
+- The entity we are acting upon, `User`, `Card`, `Project`.
 
 Examples:
 
-* `[User API] GetUser`
-* `[Product Page] AddItemToCart`
-* `[Dashboard Page] ArchiveProject`
+- `[User API] GetUser`
+- `[Product Page] AddItemToCart`
+- `[Dashboard Page] ArchiveProject`
 
 ### Event examples
 
@@ -100,10 +100,10 @@ Actions are normally dispatched from container components such as router pages. 
 
 Examples:
 
-* \[User API] GetUserSuccess
-* \[Project API] ProjectUpdateFailed
-* \[User Details Page] PasswordChanged
-* \[Project Stars Component] StarsUpdated
+- \[User API] GetUserSuccess
+- \[Project API] ProjectUpdateFailed
+- \[User Details Page] PasswordChanged
+- \[Project Stars Component] StarsUpdated
 
 A great video on the topic is [Good Action Hygiene by Mike Ryan](https://www.youtube.com/watch?v=JmnsEvoy-gY) It's for NgRx, but the same naming conventions apply to NGXS.
 

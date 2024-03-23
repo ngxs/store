@@ -67,4 +67,4 @@ class AppState {
 
 #### Why does RxJS unsubscribe on error?
 
-RxJS [design guidelines](https://github.com/ReactiveX/rxjs/blob/master/docs\_app/content/guide/observable.md#executing-observables) provides a great explanation of this behavior.
+RxJS [design guidelines](https://github.com/ReactiveX/rxjs/blob/master/docs_app/content/guide/observable.md#executing-observables) provides a great explanation of this behavior.

@@ -4,7 +4,7 @@
 
 ### Why?
 
-The NGXS `patchState` method is used to do [immutable object](https://en.wikipedia.org/wiki/Immutable\_object) updates to the container state slice without the typical long-handed syntax. This is very neat and convenient because you do not have to use the `getState` and `setState` as well as the `Object.assign(...)`or the spread operator to update the state. The `patchState` method only offers a shallow patch and as a result is left wanting in more advanced scenarios. This is where state operators come in. The `setState` method can be passed a state operator which will be used to determine the new state.
+The NGXS `patchState` method is used to do [immutable object](https://en.wikipedia.org/wiki/Immutable_object) updates to the container state slice without the typical long-handed syntax. This is very neat and convenient because you do not have to use the `getState` and `setState` as well as the `Object.assign(...)`or the spread operator to update the state. The `patchState` method only offers a shallow patch and as a result is left wanting in more advanced scenarios. This is where state operators come in. The `setState` method can be passed a state operator which will be used to determine the new state.
 
 ### Basic
 

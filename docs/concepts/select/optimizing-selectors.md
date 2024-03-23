@@ -83,7 +83,7 @@ isDataSelected(state: SelectedDataStateModel) {
 }
 ```
 
-The above selector is an example of a [lazy selector](./#lazy-selectors). This selector returns a function, which accepts an `id` as an argument and returns a boolean indicating whether or not this `id` is selected. The lazy selector returned by `isDataSelected` uses [Array.includes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global\_Objects/Array/includes) and has `O(n)` time complexity. In this example, we want to render a list of checkboxes:
+The above selector is an example of a [lazy selector](./#lazy-selectors). This selector returns a function, which accepts an `id` as an argument and returns a boolean indicating whether or not this `id` is selected. The lazy selector returned by `isDataSelected` uses [Array.includes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes) and has `O(n)` time complexity. In this example, we want to render a list of checkboxes:
 
 ```html
 <ng-container *ngIf="isDataSelected() as isDataSelected">
@@ -105,6 +105,6 @@ isDataSelected(state: SelectedDataStateModel) {
 }
 ```
 
-The above selector implementation creates a [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global\_Objects/Set). The lazy selector returned by `isDataSelected` _is a closure with access to the `selectedIds` variable created in the parent function_. The lazy selector uses [Set.has](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global\_Objects/Set/has) which has `O(1)` time complexity.
+The above selector implementation creates a [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set). The lazy selector returned by `isDataSelected` _is a closure with access to the `selectedIds` variable created in the parent function_. The lazy selector uses [Set.has](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/has) which has `O(1)` time complexity.
 
 Now when the list re-renders, because the lazy selector has `O(1)` time complexity, this template renders with `O(n)` time complexity. This optimizes performance by a magnitude of `n`.
