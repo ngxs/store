@@ -59,7 +59,7 @@ import { StateContextFactory } from '../internal/state-context-factory';
 import { ensureStateNameIsUnique, ensureStatesAreDecorated } from '../utils/store-validators';
 import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
-import { NgxsUnhandledErrorHandler } from '../ngxs-error-handler';
+import { NgxsUnhandledErrorHandler } from '../ngxs-unhandled-error-handler';
 import { assignUnhandledCallback } from './unhandled-rxjs-error-callback';
 
 const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
