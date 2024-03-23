@@ -345,7 +345,7 @@ describe('Action', () => {
     function setup() {
       const recorder: string[] = [];
       const record = (message: string) => recorder.push(message);
-      const observable = new Subject();
+      const observable = new Subject<void>();
       const completeObservableFn = () => {
         record('(completeObservableFn) - next');
         observable?.next();
@@ -827,17 +827,17 @@ describe('Action', () => {
           'cancellableAction(1) - start',
           'action1 obs - subscribe',
           'Action 2 - dispatching',
-          'Action 1 - dispatch complete',
           'action1 obs - unsubscribe',
+          'Action 1 - dispatch complete',
           'cancellableAction(2) - start',
           'action2 obs - subscribe',
           'action2 obs - next Value2',
           'cancellableAction(2) - observable tap',
           'complete 2',
           'action2 obs - complete',
+          'action2 obs - unsubscribe',
           'Action 2 - dispatch next',
           'Action 2 - dispatch complete',
-          'action2 obs - unsubscribe',
           'complete 1'
         ]);
       }));

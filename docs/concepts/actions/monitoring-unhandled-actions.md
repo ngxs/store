@@ -62,7 +62,7 @@ export const appConfig: ApplicationConfig = {
 Ignored actions can be also expanded in lazy modules. The `@ngxs/store` exposes the `NgxsUnhandledActionsLogger` for these purposes:
 
 ```ts
-import { inject } from '@angular/core';
+import { inject, ENVIRONMENT_INITIALIZER } from '@angular/core';
 import { NgxsUnhandledActionsLogger } from '@ngxs/store';
 
 declare const ngDevMode: boolean;
