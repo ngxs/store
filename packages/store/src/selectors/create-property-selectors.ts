@@ -1,6 +1,6 @@
 import { createSelector } from './create-selector';
 import { ensureValidSelector } from './selector-checks.util';
-import { SelectorDef } from './selector-types.util';
+import { ɵSelectorDef } from './selector-types.util';
 
 export type PropertySelectors<TModel> = {
   [P in keyof NonNullable<TModel>]-?: (
@@ -9,7 +9,7 @@ export type PropertySelectors<TModel> = {
 };
 
 export function createPropertySelectors<TModel>(
-  parentSelector: SelectorDef<TModel>
+  parentSelector: ɵSelectorDef<TModel>
 ): PropertySelectors<TModel> {
   if (typeof ngDevMode !== 'undefined' && ngDevMode) {
     ensureValidSelector(parentSelector, {

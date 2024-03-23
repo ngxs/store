@@ -60,7 +60,7 @@ describe('[TEST]: createSelector', () => {
     assertType(() => store.selectSnapshot(TodoState.todoB())); // $ExpectType any
     assertType(() => store.selectSnapshot(TodoState.todoB)); // $ExpectType (s1: any) => any
     assertType(() => store.selectSnapshot(TodoState.todoC())); // $ExpectType any
-    assertType(() => store.selectSnapshot(TodoState.todoC)); // $ExpectType (s1: SelectorReturnType<S1>) => any
+    assertType(() => store.selectSnapshot(TodoState.todoC)); // $ExpectType (s1: ɵSelectorReturnType<S1>) => any
     assertType(() => store.selectSnapshot(TodoState.todoD())); // $ExpectType Observable<number>
     assertType(() => store.selectSnapshot(TodoState.todoD)); // $ExpectType (state: Observable<number>) => Observable<number>
   });
