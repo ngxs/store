@@ -2,9 +2,9 @@ import { CreationMetadata } from './selector-models';
 import { setupSelectorMetadata } from './selector-metadata';
 import { createMemoizedSelectorFn, createRootSelectorFactory } from './selector-utils';
 
-import { SelectorDef, SelectorReturnType } from './selector-types.util';
+import { ɵSelectorDef, ɵSelectorReturnType } from './selector-types.util';
 
-type SelectorArg = SelectorDef<any>;
+type SelectorArg = ɵSelectorDef<any>;
 
 /**
  * Function for creating a selector
@@ -14,7 +14,7 @@ type SelectorArg = SelectorDef<any>;
  */
 export function createSelector<
   S1 extends SelectorArg,
-  TProjector extends (s1: SelectorReturnType<S1>) => any
+  TProjector extends (s1: ɵSelectorReturnType<S1>) => any
 >(
   selectors: [S1],
   projector: TProjector,
@@ -24,7 +24,7 @@ export function createSelector<
 export function createSelector<
   S1 extends SelectorArg,
   S2 extends SelectorArg,
-  TProjector extends (s1: SelectorReturnType<S1>, s2: SelectorReturnType<S2>) => any
+  TProjector extends (s1: ɵSelectorReturnType<S1>, s2: ɵSelectorReturnType<S2>) => any
 >(
   selectors: [S1, S2],
   projector: TProjector,
@@ -36,9 +36,9 @@ export function createSelector<
   S2 extends SelectorArg,
   S3 extends SelectorArg,
   TProjector extends (
-    s1: SelectorReturnType<S1>,
-    s2: SelectorReturnType<S2>,
-    s3: SelectorReturnType<S3>
+    s1: ɵSelectorReturnType<S1>,
+    s2: ɵSelectorReturnType<S2>,
+    s3: ɵSelectorReturnType<S3>
   ) => any
 >(
   selectors: [S1, S2, S3],
@@ -52,10 +52,10 @@ export function createSelector<
   S3 extends SelectorArg,
   S4 extends SelectorArg,
   TProjector extends (
-    s1: SelectorReturnType<S1>,
-    s2: SelectorReturnType<S2>,
-    s3: SelectorReturnType<S3>,
-    s4: SelectorReturnType<S4>
+    s1: ɵSelectorReturnType<S1>,
+    s2: ɵSelectorReturnType<S2>,
+    s3: ɵSelectorReturnType<S3>,
+    s4: ɵSelectorReturnType<S4>
   ) => any
 >(
   selectors: [S1, S2, S3, S4],
@@ -70,11 +70,11 @@ export function createSelector<
   S4 extends SelectorArg,
   S5 extends SelectorArg,
   TProjector extends (
-    s1: SelectorReturnType<S1>,
-    s2: SelectorReturnType<S2>,
-    s3: SelectorReturnType<S3>,
-    s4: SelectorReturnType<S4>,
-    s5: SelectorReturnType<S5>
+    s1: ɵSelectorReturnType<S1>,
+    s2: ɵSelectorReturnType<S2>,
+    s3: ɵSelectorReturnType<S3>,
+    s4: ɵSelectorReturnType<S4>,
+    s5: ɵSelectorReturnType<S5>
   ) => any
 >(
   selectors: [S1, S2, S3, S4, S5],
@@ -90,12 +90,12 @@ export function createSelector<
   S5 extends SelectorArg,
   S6 extends SelectorArg,
   TProjector extends (
-    s1: SelectorReturnType<S1>,
-    s2: SelectorReturnType<S2>,
-    s3: SelectorReturnType<S3>,
-    s4: SelectorReturnType<S4>,
-    s5: SelectorReturnType<S5>,
-    s6: SelectorReturnType<S6>
+    s1: ɵSelectorReturnType<S1>,
+    s2: ɵSelectorReturnType<S2>,
+    s3: ɵSelectorReturnType<S3>,
+    s4: ɵSelectorReturnType<S4>,
+    s5: ɵSelectorReturnType<S5>,
+    s6: ɵSelectorReturnType<S6>
   ) => any
 >(
   selectors: [S1, S2, S3, S4, S5, S6],
@@ -112,13 +112,13 @@ export function createSelector<
   S6 extends SelectorArg,
   S7 extends SelectorArg,
   TProjector extends (
-    s1: SelectorReturnType<S1>,
-    s2: SelectorReturnType<S2>,
-    s3: SelectorReturnType<S3>,
-    s4: SelectorReturnType<S4>,
-    s5: SelectorReturnType<S5>,
-    s6: SelectorReturnType<S6>,
-    s7: SelectorReturnType<S7>
+    s1: ɵSelectorReturnType<S1>,
+    s2: ɵSelectorReturnType<S2>,
+    s3: ɵSelectorReturnType<S3>,
+    s4: ɵSelectorReturnType<S4>,
+    s5: ɵSelectorReturnType<S5>,
+    s6: ɵSelectorReturnType<S6>,
+    s7: ɵSelectorReturnType<S7>
   ) => any
 >(
   selectors: [S1, S2, S3, S4, S5, S6, S7],
@@ -136,14 +136,14 @@ export function createSelector<
   S7 extends SelectorArg,
   S8 extends SelectorArg,
   TProjector extends (
-    s1: SelectorReturnType<S1>,
-    s2: SelectorReturnType<S2>,
-    s3: SelectorReturnType<S3>,
-    s4: SelectorReturnType<S4>,
-    s5: SelectorReturnType<S5>,
-    s6: SelectorReturnType<S6>,
-    s7: SelectorReturnType<S7>,
-    s8: SelectorReturnType<S8>
+    s1: ɵSelectorReturnType<S1>,
+    s2: ɵSelectorReturnType<S2>,
+    s3: ɵSelectorReturnType<S3>,
+    s4: ɵSelectorReturnType<S4>,
+    s5: ɵSelectorReturnType<S5>,
+    s6: ɵSelectorReturnType<S6>,
+    s7: ɵSelectorReturnType<S7>,
+    s8: ɵSelectorReturnType<S8>
   ) => any
 >(
   selectors: [S1, S2, S3, S4, S5, S6, S7, S8],

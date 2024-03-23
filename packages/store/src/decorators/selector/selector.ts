@@ -1,5 +1,5 @@
 import { throwSelectorDecoratorError } from '../../configs/messages.config';
-import { SelectorDef } from '../../selectors';
+import { ɵSelectorDef } from '../../selectors';
 import { createSelector } from '../../selectors/create-selector';
 import { SelectorSpec, SelectorType } from './symbols';
 
@@ -11,9 +11,9 @@ export function Selector(): SelectorType<unknown>;
 /**
  * Decorator for creating a state selector from the provided selectors (and optionally the container State, depending on the applicable Selector Options).
  */
-export function Selector<T extends SelectorDef<any>>(selectors: T[]): SelectorType<T>;
+export function Selector<T extends ɵSelectorDef<any>>(selectors: T[]): SelectorType<T>;
 
-export function Selector<T extends SelectorDef<any>>(selectors?: T[]): SelectorType<T> {
+export function Selector<T extends ɵSelectorDef<any>>(selectors?: T[]): SelectorType<T> {
   return <U>(
     target: any,
     key: string | symbol,
