@@ -6,7 +6,7 @@ This document describes the life cycle of actions, after reading it you should h
 
 Any action in NGXS can be in one of four states, these states are `DISPATCHED`, `SUCCESSFUL`, `ERRORED`, `CANCELED`, think of it as a finite state machine.
 
-![Actions FSM](../assets/actions-fsm.png)
+![Actions FSM](../../assets/actions-fsm.png)
 
 NGXS has an internal stream of actions. When we dispatch any action using the following code:
 
@@ -214,7 +214,7 @@ store
 
 The order of dispatch would be the same as the previous example, but in this code we are able to subscribe to an observable from the `store.dispatch` function that will fire only when both actions have completed. The below diagram demonstrates how asynchronous actions are handled under the hood:
 
-![Life cycle](../assets/actions-life-cycle.png)
+![Life cycle](../../assets/actions-life-cycle.png)
 
 ## Error life cycle
 

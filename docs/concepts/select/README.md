@@ -1,4 +1,4 @@
-# Selects
+# Select
 
 Selects are functions that slice a specific portion of state from the global state container.
 
@@ -22,8 +22,7 @@ export class ZooComponent {
 }
 ```
 
-There is also a `selectOnce` that will basically do `select().pipe(take(1))` for
-you automatically as a shortcut method.
+There is also a `selectOnce` that will basically do `select().pipe(take(1))` for you automatically as a shortcut method.
 
 This can be useful in route guards where you only want to check the current state and not continue watching the stream. It can also be useful for unit testing.
 
@@ -56,10 +55,7 @@ We don't allow any options to be provided to the internal `computed` function, s
 
 ## Snapshot Selects
 
-On the store, there is a `selectSnapshot` function that allows you to pull out the
-raw value. This is helpful for cases where you need to get a static value but can't
-use Observables. A good use case for this would be an interceptor that needs to get
-the token from the auth state.
+On the store, there is a `selectSnapshot` function that allows you to pull out the raw value. This is helpful for cases where you need to get a static value but can't use Observables. A good use case for this would be an interceptor that needs to get the token from the auth state.
 
 ```ts
 @Injectable()
@@ -82,11 +78,7 @@ export class JWTInterceptor implements HttpInterceptor {
 
 ## Memoized Selectors
 
-Oftentimes you will use the same selectors in several different places
-or have complex selectors you want to keep separate from your component.
-NGXS has a `@Selector` decorator that will help us with that. This decorator
-will memoize the function for performance as well as automatically slice
-the state portion you are dealing with.
+Oftentimes you will use the same selectors in several different places or have complex selectors you want to keep separate from your component. NGXS has a `@Selector` decorator that will help us with that. This decorator will memoize the function for performance as well as automatically slice the state portion you are dealing with.
 
 Let's create a selector that will return a list of pandas from the animals.
 
@@ -107,8 +99,7 @@ export class ZooState {
 }
 ```
 
-Notice, the `state` is just the local state for this `ZooState` class. Now in our component,
-we simply do:
+Notice, the `state` is just the local state for this `ZooState` class. Now in our component, we simply do:
 
 ```ts
 @Component({ ... })
@@ -123,30 +114,29 @@ And our `pandas` will only return animals with the name panda in them.
 
 ### Selector Options
 
-The behavior of the memoized selectors can be configured at a global level using the `selectorOptions` property in the options passed to the `provideStore` or `NgxsModule.forRoot` call (see [Options](../advanced/options.md)).  
+The behavior of the memoized selectors can be configured at a global level using the `selectorOptions` property in the options passed to the `provideStore` or `NgxsModule.forRoot` call (see [Options](../store/options.md)).\
 These options can also be provided through the `@SelectorOptions` decorator at a Class or Method level in order to configure the behavior of selectors within that scope. The following options are available:
 
 #### `suppressErrors`
 
-- `true` will cause any error within a selector to result in the selector returning `undefined`.
-- `false` results in these errors propagating through the stack that triggered the evaluation of the selector that caused the error.
+* `true` will cause any error within a selector to result in the selector returning `undefined`.
+* `false` results in these errors propagating through the stack that triggered the evaluation of the selector that caused the error.
 
 #### `injectContainerState`
 
 > ⚠️ This property is only useful for migrating codebases from NGXS v3 to v4. It is not recommended to keep it set to `true`. In v4 and newer versions, users should have no reason to set this property explicitly.
 
-- `true` will cause all selectors defined within a state class to receive the container class' state model as their first parameter. As a result every selector would be re-evaluated after any change to that state (**this should only be used during migrations**).
-- `false` will prevent the injection of the container state model as the first parameter of a selector method (defined within a state class) that joins to other selectors for its parameters (**this is the default value now**).
+* `true` will cause all selectors defined within a state class to receive the container class' state model as their first parameter. As a result every selector would be re-evaluated after any change to that state (**this should only be used during migrations**).
+* `false` will prevent the injection of the container state model as the first parameter of a selector method (defined within a state class) that joins to other selectors for its parameters (**this is the default value now**).
 
 ### Memoized Selectors with Arguments
 
-Selectors can be configured to accept arguments.  
-There are two patterns that allow for this: [Lazy Selectors](#lazy-selectors) or [Dynamic Selectors](#dynamic-selectors)
+Selectors can be configured to accept arguments.\
+There are two patterns that allow for this: [Lazy Selectors](./#lazy-selectors) or [Dynamic Selectors](./#dynamic-selectors)
 
 #### Lazy Selectors
 
-To create a lazy selector all that you need to do is return a function from the selector.
-The function returned by the selector will be memoized automatically and the logic inside this function will be evaluated at a later stage when the consumer of the selector executes the function. Note that this function can take any number of arguments (or zero arguments) as it is the consumer's responsibility to supply them.
+To create a lazy selector all that you need to do is return a function from the selector. The function returned by the selector will be memoized automatically and the logic inside this function will be evaluated at a later stage when the consumer of the selector executes the function. Note that this function can take any number of arguments (or zero arguments) as it is the consumer's responsibility to supply them.
 
 For instance, I can have a Lazy Selector that will filter my pandas to the provided type of panda.
 
@@ -256,8 +246,7 @@ export class ZooComponent {
 
 ### Joining Selectors
 
-When defining a selector, you can also pass other selectors into the signature
-of the `Selector` decorator to join other selectors with this state selector:
+When defining a selector, you can also pass other selectors into the signature of the `Selector` decorator to join other selectors with this state selector:
 
 ```ts
 @State<PreferencesStateModel>({ ... })
@@ -288,15 +277,9 @@ The memoized selectors will recalculate when any of their input parameter values
 
 ### Meta Selectors
 
-By default selectors in NGXS are bound to a state. Sometimes you need the ability
-to join to un-related states in a high-performance re-usable fashion. A meta selector
-is a selector allows you to bind N number of selectors together to return a state
-stream.
+By default selectors in NGXS are bound to a state. Sometimes you need the ability to join to un-related states in a high-performance re-usable fashion. A meta selector is a selector allows you to bind N number of selectors together to return a state stream.
 
-Let's say we have 2 states; 'zoos' and 'theme parks'. We have a component that needs
-to show all the zoos and theme parks for a given city. These are two very distinct
-state classes that are likely not related in any manner. We can use a meta selector
-to join these two states together like:
+Let's say we have 2 states; 'zoos' and 'theme parks'. We have a component that needs to show all the zoos and theme parks for a given city. These are two very distinct state classes that are likely not related in any manner. We can use a meta selector to join these two states together like:
 
 ```ts
 export class CityService {
