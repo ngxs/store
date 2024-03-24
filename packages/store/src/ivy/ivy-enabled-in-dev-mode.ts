@@ -1,4 +1,4 @@
-import { getUndecoratedStateInIvyWarningMessage } from '../configs/messages.config';
+import { getUndecoratedStateWithInjectableWarningMessage } from '../configs/messages.config';
 
 /**
  * All provided or injected tokens must have `@Injectable` decorator
@@ -10,7 +10,7 @@ export function ensureStateClassIsInjectable(stateClass: any): void {
     return;
   }
 
-  console.warn(getUndecoratedStateInIvyWarningMessage(stateClass.name));
+  console.warn(getUndecoratedStateWithInjectableWarningMessage(stateClass.name));
 }
 
 function aot_hasNgInjectableDef(stateClass: any): boolean {

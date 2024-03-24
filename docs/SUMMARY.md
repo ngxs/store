@@ -60,7 +60,6 @@
   - [Module Federation](recipes/module-federation.md)
   - [Unit Testing](recipes/unit-testing.md)
   - [RxAngular Integration](recipes/intregration-with-rxangular.md)
-  - [Ivy Migration Guide](recipes/ivy-migration-guide.md)
 
 ## COMMUNITY & LABS
 

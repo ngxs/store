@@ -57,9 +57,9 @@ export class NgxsConfig {
    * - Object.freeze on the state and actions to guarantee immutability
    * (default: false)
    *
-   * Note: this property will be accounted only in development mode when using the Ivy compiler.
+   * Note: this property will be accounted only in development mode.
    * It makes sense to use it only during development to ensure there're no state mutations.
-   * When building for production, the Object.freeze will be tree-shaken away.
+   * When building for production, the `Object.freeze` will be tree-shaken away.
    */
   developmentMode: boolean;
   compatibility: {

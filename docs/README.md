@@ -12,10 +12,6 @@ NGXS is a state management pattern + library for Angular. It acts as a single so
 
 NGXS is modeled after the CQRS pattern popularly implemented in libraries like Redux and NgRx but reduces boilerplate by using modern TypeScript features such as classes and decorators.
 
-### 🌱 Does NGXS work with Ivy?
-
-Yes, it does, and very easily. Check out the [NGXS Ivy migration guide](https://ngxs.io/advanced/ivy-migration-guide) for details.
-
 ### 👋 New to NGXS?
 
 If you're just getting started with NGXS, I recommend you head over to the [concepts](ngxs/intro.md) and then explore the rich ecosystem of examples in the [community resources](community-and-labs/community/projects.md) page.
