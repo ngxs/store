@@ -9,6 +9,6 @@ export * from './src/public_api';
 export * from './src/plugin_api';
 
 /**
- * Private exports required for the Ivy compilation.
+ * Private exports required for the compilation.
  */
 export * from './src/private_api';

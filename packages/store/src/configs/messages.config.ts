@@ -38,7 +38,7 @@ export function getZoneWarningMessage(): string {
   );
 }
 
-export function getUndecoratedStateInIvyWarningMessage(name: string): string {
+export function getUndecoratedStateWithInjectableWarningMessage(name: string): string {
   return `'${name}' class should be decorated with @Injectable() right after the @State() decorator`;
 }
 

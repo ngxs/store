@@ -41,7 +41,6 @@
 ### Quick Links
 
 - ✨ Learn about it on the [docs site](https://ngxs.io/)
-- 🌱 NGXS works with Ivy! Check out the [Ivy migration guide](https://ngxs.io/advanced/ivy-migration-guide)
 - 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-repro)
 - 😎 Checkout the [sample application](integration)
 - 🔧 Scaffolding application using [NGXS Schematics](https://github.com/ngxs/schematics)
