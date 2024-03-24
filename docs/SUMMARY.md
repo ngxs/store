@@ -38,6 +38,7 @@
   - [Selector Utils](concepts/select/selector-utils.md)
   - [Error Handling](concepts/select/error-handling.md)
   - [Select Decorator Deprecation](concepts/select/select-decorator-deprecation.md)
+  - [Signals](concepts/select/signals.md)
 
 ---
 
