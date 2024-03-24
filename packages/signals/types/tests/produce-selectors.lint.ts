@@ -31,15 +31,15 @@ describe('[TEST]: produceSelectors', () => {
   });
 
   it('should infer correct return types', () => {
-    produceSelectors({ counter: CounterState.getCounter }); // $ExpectType { counter: Signal<CounterStateModel>; }
-    produceSelectors({ counter: COUNTER_STATE_TOKEN }); // $ExpectType { counter: Signal<CounterStateModel>; }
+    produceSelectors({ counter: CounterState.getCounter }); // $ExpectType { readonly counter: Signal<CounterStateModel>; }
+    produceSelectors({ counter: COUNTER_STATE_TOKEN }); // $ExpectType { readonly counter: Signal<CounterStateModel>; }
 
     const dynamicSelector_withStateClass = createSelector([CounterState], state => state.counter);
     const dynamicSelector_withSelector = createSelector([CounterState.getCounter], state => state.counter);
     const dynamicSelector_withStateToken = createSelector([COUNTER_STATE_TOKEN], state => state.counter);
 
-    produceSelectors({ counter: dynamicSelector_withStateClass }); // $ExpectType { counter: Signal<any>; }
-    produceSelectors({ counter: dynamicSelector_withSelector }); // $ExpectType { counter: Signal<number>; }
-    produceSelectors({ counter: dynamicSelector_withStateToken }); // $ExpectType { counter: Signal<number>; }
+    produceSelectors({ counter: dynamicSelector_withStateClass }); // $ExpectType { readonly counter: Signal<any>; }
+    produceSelectors({ counter: dynamicSelector_withSelector }); // $ExpectType { readonly counter: Signal<number>; }
+    produceSelectors({ counter: dynamicSelector_withStateToken }); // $ExpectType { readonly counter: Signal<number>; }
   });
 });
