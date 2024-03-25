@@ -21,6 +21,7 @@ runs:
         [[ -d $HMR_PLUG_ART ]] && echo "$HMR_PLUG_ART $OK" || echo "$HMR_PLUG_ART $FAILURE" exit 1
         [[ -d $LOGGER_PLUG_ART ]] && echo "$LOGGER_PLUG_ART $OK" || echo "$LOGGER_PLUG_ART $FAILURE" exit 1
         [[ -d $ROUTER_PLUG_ART ]] && echo "$ROUTER_PLUG_ART $OK" || echo "$ROUTER_PLUG_ART $FAILURE" exit 1
+        [[ -d $SIGNALS_ART ]] && echo "$SIGNALS_ART $OK" || echo "$SIGNALS_ART $FAILURE" exit 1
         [[ -d $STORAGE_PLUG_ART ]] && echo "$STORAGE_PLUG_ART $OK" || echo "$STORAGE_PLUG_ART $FAILURE" exit 1
         [[ -d $STORE_ART ]] && echo "$STORE_ART $OK" || echo "$STORE_ART $FAILURE" exit 1
         [[ -d $WEBSOCKET_PLUG_ART ]] && echo "$WEBSOCKET_PLUG_ART $OK" || echo "$WEBSOCKET_PLUG_ART $FAILURE" exit 1
@@ -32,7 +33,7 @@ runs:
         HMR_PLUG_ART: './@ngxs/hmr-plugin'
         LOGGER_PLUG_ART: './@ngxs/logger-plugin'
         ROUTER_PLUG_ART: './@ngxs/router-plugin'
+        SIGNALS_ART: './@ngxs/signals'
         STORAGE_PLUG_ART: './@ngxs/storage-plugin'
         STORE_ART: './@ngxs/store'
         WEBSOCKET_PLUG_ART: './@ngxs/websocket-plugin'
-        SIGNAL_PLUG_ART: './@ngxs/signals'
