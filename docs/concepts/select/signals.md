@@ -2,9 +2,23 @@
 
 NGXS offers utilities for signals that can be used with other solutions. All of these utilities are located within the `@ngxs/signals` package and are independent of any specific.
 
+## select
+
+The initial utility is the `select` function, which retrieves a signal from the state:
+
+```ts
+import { select } from '@ngxs/signals';
+
+class AppComponent {
+  invoiceId = select(InvoiceState.getInvoiceId);
+}
+```
+
+It serves as a shortcut for `store.selectSignal`. eliminating the need to inject the `Store` service and invoke its `selectSignal` function.
+
 ## Produce selectors and actions
 
-Utility functions include `produceSelectors` and `produceActions`.
+Other utility functions include `produceSelectors` and `produceActions`.
 
 ### produceSelectors
 

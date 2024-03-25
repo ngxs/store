@@ -2,9 +2,6 @@ import { Signal, inject } from '@angular/core';
 
 import { Store, TypedSelector } from '@ngxs/store';
 
-// Not exposed publicly since we're having a discussion on the naming
-// and we may rather call it differently.
-
 /**
  * This function serves as a utility and has multiple purposes.
  * Firstly, it allows you to select properties from the state class
