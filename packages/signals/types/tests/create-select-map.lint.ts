@@ -2,9 +2,9 @@
 
 import { Selector, State, StateToken, createSelector } from '@ngxs/store';
 
-import { produceSelectors } from '../../';
+import { createSelectMap } from '../../';
 
-describe('[TEST]: produceSelectors', () => {
+describe('[TEST]: createSelectMap', () => {
   interface CounterStateModel {
     counter: number;
   }
@@ -25,21 +25,21 @@ describe('[TEST]: produceSelectors', () => {
   }
 
   it('should error on invalid use cases', () => {
-    produceSelectors(); // $ExpectError
-    produceSelectors({}); // $ExpectError
-    produceSelectors({ counter: CounterState }); // $ExpectError
+    createSelectMap(); // $ExpectError
+    createSelectMap({}); // $ExpectError
+    createSelectMap({ counter: CounterState }); // $ExpectError
   });
 
   it('should infer correct return types', () => {
-    produceSelectors({ counter: CounterState.getCounter }); // $ExpectType { readonly counter: Signal<CounterStateModel>; }
-    produceSelectors({ counter: COUNTER_STATE_TOKEN }); // $ExpectType { readonly counter: Signal<CounterStateModel>; }
+    createSelectMap({ counter: CounterState.getCounter }); // $ExpectType { readonly counter: Signal<CounterStateModel>; }
+    createSelectMap({ counter: COUNTER_STATE_TOKEN }); // $ExpectType { readonly counter: Signal<CounterStateModel>; }
 
     const dynamicSelector_withStateClass = createSelector([CounterState], state => state.counter);
     const dynamicSelector_withSelector = createSelector([CounterState.getCounter], state => state.counter);
     const dynamicSelector_withStateToken = createSelector([COUNTER_STATE_TOKEN], state => state.counter);
 
-    produceSelectors({ counter: dynamicSelector_withStateClass }); // $ExpectType { readonly counter: Signal<any>; }
-    produceSelectors({ counter: dynamicSelector_withSelector }); // $ExpectType { readonly counter: Signal<number>; }
-    produceSelectors({ counter: dynamicSelector_withStateToken }); // $ExpectType { readonly counter: Signal<number>; }
+    createSelectMap({ counter: dynamicSelector_withStateClass }); // $ExpectType { readonly counter: Signal<any>; }
+    createSelectMap({ counter: dynamicSelector_withSelector }); // $ExpectType { readonly counter: Signal<number>; }
+    createSelectMap({ counter: dynamicSelector_withStateToken }); // $ExpectType { readonly counter: Signal<number>; }
   });
 });

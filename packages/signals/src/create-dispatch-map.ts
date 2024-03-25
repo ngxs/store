@@ -6,7 +6,9 @@ import { RequireAtLeastOneProperty } from './types';
 
 export type ActionMap = Record<string, ActionDef>;
 
-export function produceActions<T extends ActionMap>(actionMap: RequireAtLeastOneProperty<T>) {
+export function createDispatchMap<T extends ActionMap>(
+  actionMap: RequireAtLeastOneProperty<T>
+) {
   const store = inject(Store);
 
   return Object.entries(actionMap).reduce((accumulator, [key, actionType]) => {

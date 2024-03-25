@@ -16,19 +16,19 @@ class AppComponent {
 
 It serves as a shortcut for `store.selectSignal`. eliminating the need to inject the `Store` service and invoke its `selectSignal` function.
 
-## Produce selectors and actions
+## Create select and dispatch maps
 
-Other utility functions include `produceSelectors` and `produceActions`.
+Other utility functions include `createSelectMap` and `createDispatchMap`.
 
-### produceSelectors
+### createSelectMap
 
-The `produceSelectors` function accepts an object where the values are selector functions:
+The `createSelectMap` function accepts an object where the values are selector functions:
 
 ```ts
-import { produceSelectors } from '@ngxs/signals';
+import { createSelectMap } from '@ngxs/signals';
 
 class AppComponent {
-  selectors = produceSelectors({
+  selectors = createSelectMap({
     invoiceId: InvoiceState.getInvoiceId,
     invoiceSignature: InvoiceState.getInvoiceSignature,
     invoiceLines: InvoiceLinesState.getInvoiceLines
@@ -36,7 +36,7 @@ class AppComponent {
 }
 ```
 
-The `selectors` property will now be an object where the keys are the same keys you provided to the `produceSelectors`, and the values are signals from the state using the provided selectors. Consider the following template example:
+The `selectors` property will now be an object where the keys are the same keys you provided to the `createSelectMap`, and the values are signals from the state using the provided selectors. Consider the following template example:
 
 ```html
 <div>
@@ -54,21 +54,21 @@ Properties are also `readonly` by type and functionality. Assigning to a propert
 
 It also necessitates an injection context since it internally employs `inject`.
 
-### produceActions
+### createDispatchMap
 
-The `produceActions` function accepts an object where the values are action classes. It only allow action classes because they contain type information (constructor parameters):
+The `createDispatchMap` function accepts an object where the values are action classes. It only allow action classes because they contain type information (constructor parameters):
 
 ```ts
-import { produceSelectors, produceActions } from '@ngxs/signals';
+import { createSelectMap, createDispatchMap } from '@ngxs/signals';
 
 class AppComponent {
-  selectors = produceSelectors({
+  selectors = createSelectMap({
     invoiceId: InvoiceState.getInvoiceId,
     invoiceSignature: InvoiceState.getInvoiceSignature,
     invoiceLines: InvoiceLinesState.getInvoiceLines
   });
 
-  actions = produceActions({
+  actions = createDispatchMap({
     updateInvoiceSignature: InvoiceActions.UpdateInvoiceSignature,
     reloadInvoiceLines: InvoiceLinesActions.ReloadInvoiceLines
   });
@@ -89,14 +89,14 @@ These utility functions can be easily integrated for use with the NgRx SignalSto
 
 ```ts
 import { signalStoreFeature, withComputed } from '@ngrx/signals';
-import { produceSelectors, SelectorMap, produceActions, ActionMap } from '@ngxs/signals';
+import { createSelectMap, SelectorMap, createDispatchMap, ActionMap } from '@ngxs/signals';
 
 export function withSelectors<T extends SelectorMap>(selectorMap: T) {
-  return signalStoreFeature(withComputed(() => produceSelectors(selectorMap)));
+  return signalStoreFeature(withComputed(() => createSelectMap(selectorMap)));
 }
 
 export function withActions<T extends ActionMap>(actionMap: T) {
-  return signalStoreFeature(withMethods(() => produceActions(actionMap)));
+  return signalStoreFeature(withMethods(() => createDispatchMap(actionMap)));
 }
 ```
 
@@ -121,4 +121,4 @@ export const InvoicesStore = signalStore(
 );
 ```
 
-The reason we didn't tie our solution to NgRx signals is because we aimed for it to be solution-agnostic. Therefore, these utility functions, `produceSelectors` and `produceActions`, can be utilized in a similar manner with other state management solutions.
+The reason we didn't tie our solution to NgRx signals is because we aimed for it to be solution-agnostic. Therefore, these utility functions, `createSelectMap` and `createDispatchMap`, can be utilized in a similar manner with other state management solutions.

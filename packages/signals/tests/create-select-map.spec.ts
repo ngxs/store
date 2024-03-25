@@ -1,9 +1,9 @@
 import { Injectable, runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Selector, State, provideStore } from '@ngxs/store';
-import { produceSelectors } from '@ngxs/signals';
+import { createSelectMap } from '@ngxs/signals';
 
-describe('produceSelectors', () => {
+describe('createSelectMap', () => {
   @State({
     name: 'counter',
     defaults: 0
@@ -28,7 +28,7 @@ describe('produceSelectors', () => {
 
     // Act
     const selectors = runInInjectionContext(TestBed, () =>
-      produceSelectors({
+      createSelectMap({
         counter: CounterState.getCounter
       })
     );
@@ -43,7 +43,7 @@ describe('produceSelectors', () => {
 
     // Act
     const selectors = runInInjectionContext(TestBed, () =>
-      produceSelectors({
+      createSelectMap({
         counter: CounterState.getCounter
       })
     );

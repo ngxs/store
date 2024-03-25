@@ -5,7 +5,7 @@ import { RequireAtLeastOneProperty } from './types';
 
 export type SelectorMap = Record<string, TypedSelector<unknown>>;
 
-export function produceSelectors<T extends SelectorMap>(
+export function createSelectMap<T extends SelectorMap>(
   selectorMap: RequireAtLeastOneProperty<T>
 ) {
   const store = inject(Store);

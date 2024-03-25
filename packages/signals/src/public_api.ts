@@ -1,3 +1,3 @@
 export { select } from './select';
-export { ActionMap, produceActions } from './produce-actions';
-export { SelectorMap, produceSelectors } from './produce-selectors';
+export { SelectorMap, createSelectMap } from './create-select-map';
+export { ActionMap, createDispatchMap } from './create-dispatch-map';
