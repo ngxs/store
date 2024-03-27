@@ -1,4 +1,3 @@
-/* tslint:disable:max-line-length no-unnecessary-callback-wrapper */
 /// <reference types="@types/jest" />
 import { TestBed } from '@angular/core/testing';
 import { Action, InitState, UpdateState, NgxsModule, State, Store } from '@ngxs/store';
@@ -9,13 +8,13 @@ describe('[TEST]: Action Types', () => {
   let store: Store;
 
   class FooAction {
-    public type = 'FOO';
+    type = 'FOO';
 
     constructor(public payload: string) {}
   }
 
   class BarAction {
-    public static type = 'BAR';
+    static type = 'BAR';
 
     constructor(public payload: string) {}
   }
@@ -49,17 +48,17 @@ describe('[TEST]: Action Types', () => {
     assertType(() => Action([MyActionWithMissingType])); // $ExpectError
 
     class MyAction {
-      public static type = 'MY_ACTION';
+      static type = 'MY_ACTION';
     }
     assertType(() => Action([MyAction])); // $ExpectType MethodDecorator
 
     class RequiredOnlyStaticType {
-      public type = 'anything';
+      type = 'anything';
     }
     assertType(() => Action([RequiredOnlyStaticType])); // $ExpectError
   });
 
-  it('should be correct type in dispatch', () => {
+  it('should expect types for store.dispatch', () => {
     assertType(() => store.dispatch([])); // $ExpectType Observable<void>
     assertType(() => store.dispatch(new FooAction('payload'))); // $ExpectType Observable<void>
     assertType(() => store.dispatch(new BarAction('foo'))); // $ExpectType Observable<void>

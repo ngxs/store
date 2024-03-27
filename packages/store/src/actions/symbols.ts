@@ -1,7 +1,7 @@
-export interface ActionDef<T = any> {
+export interface ActionDef<TArgs extends any[]> {
   type: string;
 
-  new (...args: T[]): ThisType<ActionDef>;
+  new (...args: TArgs): ThisType<ActionDef<TArgs>>;
 }
 
-export type ActionType = ActionDef | { type: string };
+export type ActionType = ActionDef<any[]> | { type: string };
