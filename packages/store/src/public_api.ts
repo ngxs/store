@@ -26,7 +26,7 @@ export {
 } from './symbols';
 export { Selector } from './decorators/selector/selector';
 export { NgxsExecutionStrategy } from './execution/symbols';
-export { ActionType } from './actions/symbols';
+export { ActionType, ActionDef } from './actions/symbols';
 export { NoopNgxsExecutionStrategy } from './execution/noop-ngxs-execution-strategy';
 export {
   NgxsUnhandledErrorHandler,
