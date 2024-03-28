@@ -49,7 +49,7 @@ describe('Ngxs ng-add Schematic', () => {
         expect(content).toMatch(/import { NgxsModule } from '@ngxs\/store'/);
         expect(content).toMatch(/imports: \[[^\]]*NgxsModule.forRoot\(\[\],[^\]]*\]/m);
         expect(content).toContain(
-          'NgxsModule.forRoot([], { developmentMode: /** !environment.production */ false, selectorOptions: { suppressErrors: false, injectContainerState: false } })'
+          'NgxsModule.forRoot([], { developmentMode: /** !environment.production */ false })'
         );
       });
       it('should throw if invalid project is specified', async () => {

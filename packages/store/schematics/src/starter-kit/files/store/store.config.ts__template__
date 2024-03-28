@@ -1,8 +1,9 @@
+import { NgxsConfig } from '@ngxs/store';
+import { NgxsDevtoolsOptions } from '@ngxs/devtools-plugin';
+import { NgxsLoggerPluginOptions } from '@ngxs/logger-plugin';
+
 import { AuthState } from './auth/auth.state';
 import { DashboardStates } from './dashboard';
-import { NgxsConfig } from '@ngxs/store/src/symbols';
-import { NgxsDevtoolsOptions } from '@ngxs/devtools-plugin/src/symbols';
-import { NgxsLoggerPluginOptions } from '@ngxs/logger-plugin/src/symbols';
 
 export const STATES_MODULES = [AuthState, ...DashboardStates];
 
