@@ -76,6 +76,7 @@
 ---
 
 - [DEPRECATIONS](deprecations/README.md)
+  - [Inject Container State Deprecation](deprecations/inject-container-state-deprecation.md)
   - [Sub States Deprecation](deprecations/sub-states-deprecation.md)
   - [Select Decorator Deprecation](deprecations/select-decorator-deprecation.md)
 - [CHANGELOG](https://github.com/ngxs/store/blob/master/CHANGELOG.md)

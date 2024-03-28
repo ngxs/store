@@ -81,6 +81,10 @@ export interface ɵSelectorMetaDataModel {
 }
 
 export interface ɵSharedSelectorOptions {
+  /**
+   * @deprecated
+   * Read the deprecation notice at this link: https://ngxs.io/deprecations/inject-container-state-deprecation.md.
+   */
   injectContainerState?: boolean;
   suppressErrors?: boolean;
 }

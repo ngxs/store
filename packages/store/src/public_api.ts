@@ -16,6 +16,7 @@ export {
   ActionCompletion
 } from './operators/of-action';
 export {
+  NgxsConfig,
   StateContext,
   StateOperator,
   NgxsOnInit,
