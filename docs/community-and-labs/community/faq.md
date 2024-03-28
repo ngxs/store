@@ -2,13 +2,11 @@
 
 ## Can I use NGXS with Angular 5?
 
-3.x supports Angular 6 and RxJs 6 out of the box. However, you can still use it with Angular 5 by upgrading your RxJs version
-and using the RxJs compatibility package in your project.
+3.x supports Angular 6 and RxJs 6 out of the box. However, you can still use it with Angular 5 by upgrading your RxJs version and using the RxJs compatibility package in your project.
 
 ## Is this ready for production?
 
-Yes, we made a huge effort with 2.0 to ensure stability and good test coverage. There are several individuals who
-are using this in production today.
+Yes, we made a huge effort with 2.0 to ensure stability and good test coverage. There are several individuals who are using this in production today.
 
 ## Could we not reduce the boilerplate more by just calling the method directly?
 
