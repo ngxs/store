@@ -51,6 +51,8 @@ export {
 
 export * from './standalone-features';
 
+export * from './utils/public_api';
+
 export { StateToken } from '@ngxs/store/internals';
 export { ɵActionOptions as ActionOptions } from '@ngxs/store/internals';
 

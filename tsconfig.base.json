@@ -26,7 +26,6 @@
       "@ngxs/logger-plugin": ["packages/logger-plugin/index.ts"],
       "@ngxs/router-plugin": ["packages/router-plugin/index.ts"],
       "@ngxs/router-plugin/internals": ["packages/router-plugin/internals/src/index.ts"],
-      "@ngxs/signals": ["packages/signals/index.ts"],
       "@ngxs/storage-plugin": ["packages/storage-plugin/index.ts"],
       "@ngxs/storage-plugin/internals": ["packages/storage-plugin/internals/src/index.ts"],
       "@ngxs/store": ["packages/store/index.ts"],

@@ -1,6 +1,7 @@
 import { Signal, inject } from '@angular/core';
 
-import { Store, TypedSelector } from '@ngxs/store';
+import { Store } from '../store';
+import { TypedSelector } from '../selectors';
 
 /**
  * This function serves as a utility and has multiple purposes.

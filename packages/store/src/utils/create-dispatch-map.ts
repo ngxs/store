@@ -1,8 +1,9 @@
-import { ActionDef } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
 import { dispatch } from './dispatch';
 import { RequireAtLeastOneProperty } from './types';
+
+import { ActionDef } from '../actions/symbols';
 
 export type ActionMap = Record<string, ActionDef<any>>;
 

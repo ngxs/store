@@ -1,6 +1,6 @@
 /// <reference types="@types/jest" />
 import { TestBed } from '@angular/core/testing';
-import { Action, InitState, UpdateState, NgxsModule, State, Store } from '@ngxs/store';
+import { Action, InitState, UpdateState, NgxsModule, State, Store, dispatch } from '@ngxs/store';
 
 import { assertType } from './utils/assert-type';
 
@@ -64,6 +64,29 @@ describe('[TEST]: Action Types', () => {
     assertType(() => store.dispatch(new BarAction('foo'))); // $ExpectType Observable<void>
     assertType(() => store.dispatch()); // $ExpectError
     assertType(() => store.dispatch({})); // $ExpectType Observable<void>
+  });
+
+  describe('dispatch', () => {
+    class OneArgumentAction {
+      static type = 'OneArgumentAction';
+
+      constructor(payload: string) {}
+    }
+
+    class ManyArgumentsAction {
+      static type = 'ManyArguments';
+
+      constructor(arg_1: string, arg_2: number, arg_3: symbol) {}
+    }
+
+    it('should expect types for dispatch', () => {
+      dispatch([]); // $ExpectError
+      dispatch(); // $ExpectError
+      dispatch({}); // $ExpectError
+      dispatch(FooAction); // $ExpectError
+      dispatch(OneArgumentAction); // $ExpectType (payload: string) => Observable<void>
+      dispatch(ManyArgumentsAction); // $ExpectType (arg_1: string, arg_2: number, arg_3: symbol) => Observable<void>
+    });
   });
 
   it('should prevent invalid types passed through', () => {

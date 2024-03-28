@@ -1,5 +1,7 @@
 import { inject } from '@angular/core';
-import { ActionDef, Store } from '@ngxs/store';
+
+import { Store } from '../store';
+import { ActionDef } from '../actions/symbols';
 
 export function dispatch<TArgs extends any[]>(ActionType: ActionDef<TArgs>) {
   const store = inject(Store);

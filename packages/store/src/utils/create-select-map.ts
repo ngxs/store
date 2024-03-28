@@ -1,7 +1,9 @@
 import { Signal, inject } from '@angular/core';
-import { Store, TypedSelector, ɵSelectorReturnType } from '@ngxs/store';
 
 import { RequireAtLeastOneProperty } from './types';
+
+import { Store } from '../store';
+import { TypedSelector, ɵSelectorReturnType } from '../selectors';
 
 export type SelectorMap = Record<string, TypedSelector<unknown>>;
 
