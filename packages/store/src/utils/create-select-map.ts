@@ -1,15 +1,11 @@
 import { Signal, inject } from '@angular/core';
 
-import { RequireAtLeastOneProperty } from './types';
-
 import { Store } from '../store';
 import { TypedSelector, ɵSelectorReturnType } from '../selectors';
 
 export type SelectorMap = Record<string, TypedSelector<unknown>>;
 
-export function createSelectMap<T extends SelectorMap>(
-  selectorMap: RequireAtLeastOneProperty<T>
-) {
+export function createSelectMap<T extends SelectorMap>(selectorMap: T) {
   const store = inject(Store);
 
   return Object.entries(selectorMap).reduce((accumulator, [key, selector]) => {

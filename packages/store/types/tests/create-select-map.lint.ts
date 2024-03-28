@@ -24,7 +24,6 @@ describe('[TEST]: createSelectMap', () => {
 
   it('should error on invalid use cases', () => {
     createSelectMap(); // $ExpectError
-    createSelectMap({}); // $ExpectError
     createSelectMap({ counter: CounterState }); // $ExpectError
   });
 
