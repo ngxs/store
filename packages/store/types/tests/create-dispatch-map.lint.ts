@@ -9,7 +9,6 @@ describe('[TEST]: createDispatchMap', () => {
     }
 
     createDispatchMap(); // $ExpectError
-    createDispatchMap({}); // $ExpectError
 
     createDispatchMap({
       action: ActionWithoutType // $ExpectError

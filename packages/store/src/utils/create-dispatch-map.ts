@@ -1,15 +1,12 @@
 import { Observable } from 'rxjs';
 
 import { dispatch } from './dispatch';
-import { RequireAtLeastOneProperty } from './types';
 
 import { ActionDef } from '../actions/symbols';
 
 export type ActionMap = Record<string, ActionDef<any>>;
 
-export function createDispatchMap<T extends ActionMap>(
-  actionMap: RequireAtLeastOneProperty<T>
-) {
+export function createDispatchMap<T extends ActionMap>(actionMap: T) {
   return Object.entries(actionMap).reduce((accumulator, [key, ActionType]) => {
     Object.defineProperty(accumulator, key, {
       value: dispatch(ActionType)
