@@ -1,7 +1,6 @@
-/* tslint:disable:max-line-length no-unnecessary-callback-wrapper */
 /// <reference types="@types/jest" />
 import { TestBed } from '@angular/core/testing';
-import { Action, InitState, UpdateState, NgxsModule, State, Store } from '@ngxs/store';
+import { Action, InitState, UpdateState, NgxsModule, State, Store, dispatch } from '@ngxs/store';
 
 import { assertType } from './utils/assert-type';
 
@@ -9,13 +8,13 @@ describe('[TEST]: Action Types', () => {
   let store: Store;
 
   class FooAction {
-    public type = 'FOO';
+    type = 'FOO';
 
     constructor(public payload: string) {}
   }
 
   class BarAction {
-    public static type = 'BAR';
+    static type = 'BAR';
 
     constructor(public payload: string) {}
   }
@@ -49,22 +48,45 @@ describe('[TEST]: Action Types', () => {
     assertType(() => Action([MyActionWithMissingType])); // $ExpectError
 
     class MyAction {
-      public static type = 'MY_ACTION';
+      static type = 'MY_ACTION';
     }
     assertType(() => Action([MyAction])); // $ExpectType MethodDecorator
 
     class RequiredOnlyStaticType {
-      public type = 'anything';
+      type = 'anything';
     }
     assertType(() => Action([RequiredOnlyStaticType])); // $ExpectError
   });
 
-  it('should be correct type in dispatch', () => {
+  it('should expect types for store.dispatch', () => {
     assertType(() => store.dispatch([])); // $ExpectType Observable<void>
     assertType(() => store.dispatch(new FooAction('payload'))); // $ExpectType Observable<void>
     assertType(() => store.dispatch(new BarAction('foo'))); // $ExpectType Observable<void>
     assertType(() => store.dispatch()); // $ExpectError
     assertType(() => store.dispatch({})); // $ExpectType Observable<void>
+  });
+
+  describe('dispatch', () => {
+    class OneArgumentAction {
+      static type = 'OneArgumentAction';
+
+      constructor(payload: string) {}
+    }
+
+    class ManyArgumentsAction {
+      static type = 'ManyArguments';
+
+      constructor(arg_1: string, arg_2: number, arg_3: symbol) {}
+    }
+
+    it('should expect types for dispatch', () => {
+      dispatch([]); // $ExpectError
+      dispatch(); // $ExpectError
+      dispatch({}); // $ExpectError
+      dispatch(FooAction); // $ExpectError
+      dispatch(OneArgumentAction); // $ExpectType (payload: string) => Observable<void>
+      dispatch(ManyArgumentsAction); // $ExpectType (arg_1: string, arg_2: number, arg_3: symbol) => Observable<void>
+    });
   });
 
   it('should prevent invalid types passed through', () => {

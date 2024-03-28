@@ -1,6 +1,6 @@
 /// <reference types="@types/jest" />
 
-import { createDispatchMap } from '../../';
+import { createDispatchMap } from '@ngxs/store';
 
 describe('[TEST]: createDispatchMap', () => {
   it('should error on invalid use cases', () => {

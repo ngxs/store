@@ -1,13 +1,13 @@
 # Signals
 
-NGXS offers utilities for signals that can be used with other solutions. All of these utilities are located within the `@ngxs/signals` package and are independent of any specific.
+NGXS offers utilities for signals that can be used with other solutions. All of these utilities are located within the `@ngxs/store` package and are independent of any specific.
 
 ## select
 
 The initial utility is the `select` function, which retrieves a signal from the state:
 
 ```ts
-import { select } from '@ngxs/signals';
+import { select } from '@ngxs/store';
 
 class AppComponent {
   invoiceId = select(InvoiceState.getInvoiceId);
@@ -25,7 +25,7 @@ Other utility functions include `createSelectMap` and `createDispatchMap`.
 The `createSelectMap` function accepts an object where the values are selector functions:
 
 ```ts
-import { createSelectMap } from '@ngxs/signals';
+import { createSelectMap } from '@ngxs/store';
 
 class AppComponent {
   selectors = createSelectMap({
@@ -59,7 +59,7 @@ It also necessitates an injection context since it internally employs `inject`.
 The `createDispatchMap` function accepts an object where the values are action classes. It only allow action classes because they contain type information (constructor parameters):
 
 ```ts
-import { createSelectMap, createDispatchMap } from '@ngxs/signals';
+import { createSelectMap, createDispatchMap } from '@ngxs/store';
 
 class AppComponent {
   selectors = createSelectMap({
@@ -89,7 +89,7 @@ These utility functions can be easily integrated for use with the NgRx SignalSto
 
 ```ts
 import { signalStoreFeature, withComputed } from '@ngrx/signals';
-import { createSelectMap, SelectorMap, createDispatchMap, ActionMap } from '@ngxs/signals';
+import { createSelectMap, SelectorMap, createDispatchMap, ActionMap } from '@ngxs/store';
 
 export function withSelectors<T extends SelectorMap>(selectorMap: T) {
   return signalStoreFeature(withComputed(() => createSelectMap(selectorMap)));

@@ -1,19 +1,18 @@
-import { inject } from '@angular/core';
-import { ActionDef, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
+import { dispatch } from './dispatch';
 import { RequireAtLeastOneProperty } from './types';
 
-export type ActionMap = Record<string, ActionDef>;
+import { ActionDef } from '../actions/symbols';
+
+export type ActionMap = Record<string, ActionDef<any>>;
 
 export function createDispatchMap<T extends ActionMap>(
   actionMap: RequireAtLeastOneProperty<T>
 ) {
-  const store = inject(Store);
-
-  return Object.entries(actionMap).reduce((accumulator, [key, actionType]) => {
+  return Object.entries(actionMap).reduce((accumulator, [key, ActionType]) => {
     Object.defineProperty(accumulator, key, {
-      value: createDispatchFn(actionType)
+      value: dispatch(ActionType)
     });
     return accumulator;
   }, {}) as {
@@ -25,8 +24,4 @@ export function createDispatchMap<T extends ActionMap>(
     // functions returning observables.
     readonly [K in keyof T]: (...args: ConstructorParameters<T[K]>) => Observable<void>;
   };
-
-  function createDispatchFn(actionType: ActionDef) {
-    return (...args: any[]) => store.dispatch(new actionType(...args));
-  }
 }

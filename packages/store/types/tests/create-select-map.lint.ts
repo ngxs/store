@@ -1,8 +1,6 @@
 /// <reference types="@types/jest" />
 
-import { Selector, State, StateToken, createSelector } from '@ngxs/store';
-
-import { createSelectMap } from '../../';
+import { Selector, State, StateToken, createSelector, createSelectMap } from '@ngxs/store';
 
 describe('[TEST]: createSelectMap', () => {
   interface CounterStateModel {
