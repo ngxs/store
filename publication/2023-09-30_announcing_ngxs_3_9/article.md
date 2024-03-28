@@ -64,6 +64,80 @@ Let's explore a comprehensive list of all the plugins and how to use them using 
 | Router     | `NgxsRouterPluginModule.forRoot()`                                | `withNgxsRouterPlugin()`                                |
 | Web Socket | `NgxsWebsocketPluginModule.forRoot({url: 'ws://localhost:4200'})` | `withNgxsWebSocketPlugin({url: 'ws://localhost:4200'})` |
 
+### Breaking Change
+
+We're moving towards a more explicit approach. Now, you need to define exactly which states you want the Storage Plugin to serialize. This gives you finer control over what data gets persisted.
+
+- **Explicit State Selection:** You now have granular control over which states get serialized by the Storage Plugin. Simply specify the states you want to save in the plugin options.
+
+- **Serialize All States:** Don't worry, if you still prefer to serialize everything, there's an option for that too!
+
+- **Feature State Support:** This update also opens the door to serializing feature states, providing a more comprehensive persistence solution.
+
+As mentioned earlier, you can still configure the Storage Plugin to serialize all your application states. Here's an example of how to achieve this:
+
+_Before_
+
+```ts
+import { NgxsModule } from '@ngxs/store';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+
+@NgModule({
+  imports: [NgxsStoragePluginModule.forRoot()]
+})
+export class AppModule {}
+```
+
+_After_
+
+```ts
+import { NgxsModule } from '@ngxs/store';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+
+@NgModule({
+  imports: [NgxsStoragePluginModule.forRoot({ keys: '*' })]
+})
+export class AppModule {}
+```
+
+---
+
+Now that we've covered serializing all states, let's explore how to pick and choose which ones get saved. This approach offers greater control and potentially improves performance, especially for larger applications.
+
+Here's an example of how to serialize specific states:
+
+_Before_
+
+```ts
+import { NgxsModule } from '@ngxs/store';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+
+@NgModule({
+  imports: [NgxsStoragePluginModule.forRoot({ key: 'novels' })]
+})
+export class AppModule {}
+```
+
+_After_
+
+```ts
+import { NgxsModule } from '@ngxs/store';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+
+@NgModule({
+  imports: [NgxsStoragePluginModule.forRoot({ keys: ['novels'] })]
+})
+export class AppModule {}
+```
+
+✨ We understand that updating existing code can be time-consuming. To help with this transition, the Storage Plugin offers an automatic migration feature.
+
+This means you won't have to manually update your code to reflect the changes. The migration command will handle that for you:
+
+```bash
+ng g @ngxs/storage-plugin:keys-migration
+```
+
 ## Signals
 
 We have also introduced the `selectSignal` function, which functions similarly to `select`, but instead of returning an observable, it returns a [signal](https://angular.io/guide/signals):
@@ -75,7 +149,7 @@ import { Store } from '@ngxs/store';
   selector: 'app-zoo',
   template: `
     @for (panda of pandas(); track $index) {
-    <p>{{ panda }}</p>
+      <p>{{ panda }}</p>
     }
   `
 })
