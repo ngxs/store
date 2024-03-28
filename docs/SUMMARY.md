@@ -29,16 +29,16 @@
   - [Custom State Operators](concepts/state/operators-1.md)
   - [Shared State](concepts/state/shared-state.md)
   - [State Token](concepts/state/token.md)
-  - [Sub States Deprecation](concepts/state/sub-states-deprecation.md)
   - [Immutability Helpers](concepts/state/immutability-helpers.md)
   - [Error Handling](concepts/state/error-handling.md)
+  - [Sub States](concepts/state/sub-states.md)
 - [SELECT](concepts/select/README.md)
   - [Mapped Sub States](concepts/select/mapped-sub-states.md)
   - [Optimizing Selectors](concepts/select/optimizing-selectors.md)
   - [Selector Utils](concepts/select/selector-utils.md)
   - [Error Handling](concepts/select/error-handling.md)
-  - [Select Decorator Deprecation](concepts/select/select-decorator-deprecation.md)
   - [Signals](concepts/select/signals.md)
+  - [Select Decorator](concepts/select/select-decorator.md)
 
 ---
 
@@ -75,4 +75,7 @@
 
 ---
 
+- [DEPRECATIONS](deprecations/README.md)
+  - [Sub States Deprecation](deprecations/sub-states-deprecation.md)
+  - [Select Decorator Deprecation](deprecations/select-decorator-deprecation.md)
 - [CHANGELOG](https://github.com/ngxs/store/blob/master/CHANGELOG.md)
