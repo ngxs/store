@@ -10,6 +10,7 @@ export function createSelectMap<T extends SelectorMap>(selectorMap: T) {
 
   return Object.entries(selectorMap).reduce((accumulator, [key, selector]) => {
     Object.defineProperty(accumulator, key, {
+      enumerable: true,
       value: store.selectSignal(selector)
     });
     return accumulator;
