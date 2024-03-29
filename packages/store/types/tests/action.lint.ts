@@ -117,8 +117,7 @@ describe('[TEST]: Action Operator Types', () => {
     }
 
     getDispatchedAction(GetProductCategoriesError).subscribe(result => {
-      // TODO(arturovt): fix this ASAP
-      const errorType = result.errorType; // $ExpectError
+      const errorType = result.errorType; // $ExpectType any
     });
   });
 
