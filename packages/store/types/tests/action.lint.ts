@@ -7,7 +7,8 @@ import {
   ofActionDispatched,
   ofActionErrored,
   ofActionSuccessful,
-  Actions
+  Actions,
+  ActionDef
 } from '@ngxs/store';
 
 describe('[TEST]: Action Operator Types', () => {
@@ -95,6 +96,30 @@ describe('[TEST]: Action Operator Types', () => {
     actions$.pipe(
       ofActionDispatched(alsoNotAnAction) // $ExpectError
     );
+  });
+
+  it('ofActionDispatched() with a parameterized action type', () => {
+    // Arrange & act & assert
+    const enum SearchErrorType {
+      Timeout
+    }
+
+    function getDispatchedAction(ActionDef: ActionDef<[errorType: SearchErrorType]>) {
+      return actions$.pipe(
+        ofActionDispatched(ActionDef)
+      );
+    }
+
+    class GetProductCategoriesError {
+      static readonly type = 'GetProductCategoriesError';
+
+      constructor(readonly errorType: SearchErrorType) {}
+    }
+
+    getDispatchedAction(GetProductCategoriesError).subscribe(result => {
+      // TODO(arturovt): fix this ASAP
+      const errorType = result.errorType; // $ExpectError
+    });
   });
 
   it('ofActionSuccessful()', () => {
