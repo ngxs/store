@@ -9,7 +9,7 @@ import {
   ofActionSuccessful,
   Actions,
   ActionDef
-} from '../../index';
+} from '@ngxs/store';
 
 describe('[TEST]: Action Operator Types', () => {
   let actions$: Actions;
