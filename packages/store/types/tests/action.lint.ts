@@ -223,7 +223,6 @@ describe('[TEST]: Action Operator Types', () => {
   });
 
   describe('Action Operator Type Matching', () => {
-
     const enum CustomPropType {
       Timeout
     }
@@ -232,7 +231,7 @@ describe('[TEST]: Action Operator Types', () => {
     class ActionWithMatchingConstructor {
       static readonly type = 'ActionWithMatchingConstructor';
 
-      constructor(readonly myArg: CustomPropType) { }
+      constructor(readonly myArg: CustomPropType) {}
     }
 
     // An action where the constructor property name is different to the instance property
@@ -261,7 +260,7 @@ describe('[TEST]: Action Operator Types', () => {
     class ActionWithNonMatchingArgNameConstructor {
       static readonly type = 'ActionWithNonMatchingArgNameConstructor';
 
-      constructor(readonly myArgNamedDifferently: CustomPropType) { }
+      constructor(readonly myArgNamedDifferently: CustomPropType) {}
     }
 
 
@@ -269,7 +268,7 @@ describe('[TEST]: Action Operator Types', () => {
     class ActionWithNonMatchingArgTypeConstructor {
       static readonly type = 'ActionWithNonMatchingArgTypeConstructor';
 
-      constructor(readonly myArg: string) { }
+      constructor(readonly myArg: string) {}
     }
 
     it('ofActionDispatched() with a parameterized constructor action type match helper', () => {
@@ -302,7 +301,6 @@ describe('[TEST]: Action Operator Types', () => {
 
       // We should get an error if the constructor parameter types do not match
       getDispatchedActionWithExplicitConstructor(ActionWithNonMatchingArgTypeConstructor); // $ExpectError
-
     });
 
     it('ofActionDispatched() directly constrained with a parameterized constructor match only', () => {
@@ -326,7 +324,6 @@ describe('[TEST]: Action Operator Types', () => {
       });
       // We should get an error if the constructor parameter types do not match
       actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType]>]>(ActionWithNonMatchingArgTypeConstructor)); // $ExpectError
-
     });
 
     it('ofActionDispatched() directly constrained with an instance shape match only', () => {
@@ -390,7 +387,6 @@ describe('[TEST]: Action Operator Types', () => {
       actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType], { myArg: string }>]>(ActionWithNonMatchingArgTypeConstructor)); // $ExpectError
       // We should get an error if the instance prop types do not match
       actions$.pipe(ofActionDispatched<[ActionDef<[myArg: string], { myArg: CustomPropType }>]>(ActionWithNonMatchingArgTypeConstructor)); // $ExpectError
-
     });
   });
 });
