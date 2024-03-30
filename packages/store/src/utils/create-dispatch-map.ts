@@ -9,6 +9,7 @@ export type ActionMap = Record<string, ActionDef<any>>;
 export function createDispatchMap<T extends ActionMap>(actionMap: T) {
   return Object.entries(actionMap).reduce((accumulator, [key, ActionType]) => {
     Object.defineProperty(accumulator, key, {
+      enumerable: true,
       value: dispatch(ActionType)
     });
     return accumulator;
