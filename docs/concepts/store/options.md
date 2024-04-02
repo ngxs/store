@@ -8,15 +8,11 @@ You can provide an `NgxsModuleOptions` object as the second argument of your `Ng
   - `injectContainerState` - Setting this to `true` will inject the container state model as the first parameter of a selector method (defined within a state class) that joins to other selectors for its parameters. Note: This property should not be explicitly set by anyone using NGXS v4; it only existed for migrating codebases from v3 to v4.
 - `compatibility` - A nested options object that allows for the following compatibility options:
   - `strictContentSecurityPolicy` - Set this to `true` in order to enable support for pages where a Strict Content Security Policy has been enabled. This setting circumvent some optimisations that violate a strict CSP through the use of `new Function(...)`. (Default value is `false`)
-- `executionStrategy` - An advanced option that is used to gain specific control over the way that NGXS executes code that is considered to be inside the NGXS context (ie. within `@Action` handlers) and the context under which the NGXS behaviours are observed (outside the NGXS context). These observable behaviours are: `store.select(...)`, `actions.subscribe(...)` or `store.dispatch(...).subscribe(...)`.
-  Developers who prefer to manually control the change detection mechanism in their application may choose to use the `NoopNgxsExecutionStrategy` which does not interfere with zones and therefore relies on the external context to handle change detection (for instance, `OnPush`). The `NoopNgxsExecutionStrategy` enforces NGXS handling actions in the same context where `store.dispatch(...)` is being called. This means that given the following invocation:
-  ```ts
-  ngZone.runOutsideAngular(() => {
-    store.dispatch(new LoadBooks());
-  });
-  ```
-  NGXS will handle `LoadBooks` action outside Angular's zone.
-  Developers can also choose to implement their own strategy by providing an Angular service class that implements the `NgxsExecutionStrategy` interface. The default value of `null` will result in the default strategy being used. This default strategy runs NGXS operations outside Angular's zone but all observable behaviours of NGXS are run back inside Angular's zone. (The default value is `null`)
+- `executionStrategy` (❗) - An advanced option that is used to gain specific control over the way that NGXS executes code that is considered to be inside the NGXS context (ie. within `@Action` handlers) and the context under which the NGXS behaviours are observed (outside the NGXS context). These observable behaviours are: `store.selectSignal(...)`, `store.select(...)`, `actions.subscribe(...)` or `store.dispatch(...).subscribe(...)`.
+  The `NoopNgxsExecutionStrategy` should be used alongside `provideZonelessChangeDetection`, a feature available starting from Angular v17. This feature offers a zoneless change detection scheduler, making zone.js optional.
+  Due to practical considerations and the insights gained from existing implementations of the `executionStrategy` option, developers may find little motivation to create their own execution strategy. Understanding its purpose can be complex, which further discourages developers from undertaking this task.
+  If you choose to implement your own strategy, you can provide an Angular service class that implements the `NgxsExecutionStrategy` interface.
+  The default value of `null` will result the default strategy being used. This default strategy runs NGXS operations outside Angular's zone but all observable behaviours of NGXS are run back inside Angular's zone. (The default value is `null`).
 
 `ngxs.config.ts`:
 
