@@ -13,15 +13,18 @@
 ## CONCEPTS
 
 - [STORE](concepts/store/README.md)
+  - [Overview](concepts/store/README.md)
   - [Store Options](concepts/store/options.md)
   - [Error Handling](concepts/store/error-handling.md)
   - [Meta Reducers](concepts/store/meta-reducer.md)
 - [ACTIONS](concepts/actions/README.md)
+  - [Overview](concepts/actions/README.md)
   - [Actions Life Cycle](concepts/actions/actions-life-cycle.md)
   - [Action Handlers](concepts/actions/action-handlers.md)
   - [Cancellation](concepts/actions/cancellation.md)
   - [Monitoring Unhandled Actions](concepts/actions/monitoring-unhandled-actions.md)
 - [STATE](concepts/state/README.md)
+  - [Overview](concepts/state/README.md)
   - [Life-cycle](concepts/state/life-cycle.md)
   - [Composition](concepts/state/composition.md)
   - [Lazy Loading](concepts/state/lazy.md)
@@ -33,6 +36,7 @@
   - [Error Handling](concepts/state/error-handling.md)
   - [Sub States](concepts/state/sub-states.md)
 - [SELECT](concepts/select/README.md)
+  - [Overview](concepts/select/README.md)
   - [Mapped Sub States](concepts/select/mapped-sub-states.md)
   - [Optimizing Selectors](concepts/select/optimizing-selectors.md)
   - [Selector Utils](concepts/select/selector-utils.md)
@@ -44,6 +48,7 @@
 
 - [STYLE GUIDE](style-guide.md)
 - [PLUGINS](plugins/README.md)
+  - [Overview](plugins/README.md)
   - [CLI](plugins/cli.md)
   - [Logger](plugins/logger.md)
   - [Devtools](plugins/devtools.md)
@@ -71,7 +76,7 @@
   - [Contributing](community-and-labs/community/contributing.md)
   - [Sponsors](community-and-labs/community/sponsors.md)
 - [NGXS LABS](community-and-labs/ngxs-labs/README.md)
-  - [Introduction](community-and-labs/ngxs-labs/intro.md)
+  - [Overview](community-and-labs/ngxs-labs/README.md)
 
 ---
 
