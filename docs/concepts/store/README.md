@@ -121,21 +121,20 @@ NGXS offers a utility function named `dispatch`, which takes an action as a para
 ```ts
 import { dispatch } from '@ngxs/store';
 
-export class InvoiceLinesComponent {
-  getInvoiceLines = dispatch(GetInvoiceLines);
+// An action declared somewhere in your app
+class Greet {
+  static readonly type = 'Greet';
+
+  constructor(public greeting: string) {}
+}
+
+// Then, in your component
+export class MyComponent {
+  greet = dispatch(Greet);
 
   constructor() {
-    const route = inject(ActivatedRoute);
-
-    route.params
-      .pipe(
-        map(params => params.invoiceId),
-        distinctUntilChanged(),
-        takeUntilDestroyed()
-      )
-      .subscribe(invoiceId => {
-        this.getInvoiceLines(invoiceId);
-      });
+    // the `this.greet` function has the same signature as the action's constructor!
+    this.greet('Hello world!');
   }
 }
 ```
