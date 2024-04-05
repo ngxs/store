@@ -16,8 +16,9 @@ function removeRootElement() {
   } catch {}
 }
 
-function destroyPlatformBeforeBootstrappingTheNewOne() {
+function destroyPlatformBeforeBootstrappingTheNewOne(freshUrl: string) {
   destroyPlatform();
+  resetLocationToUrl(freshUrl);
   createRootElement();
 }
 
@@ -32,6 +33,10 @@ function resetPlatformAfterBootstrapping() {
   if (version < 14) {
     createPlatform(TestBed);
   }
+}
+
+function resetLocationToUrl(freshUrl: string) {
+  window.history.replaceState({}, 'Test', freshUrl);
 }
 
 export function freshPlatform(fn: (done?: VoidFunction) => Promise<void>) {
@@ -50,7 +55,8 @@ export function freshPlatform(fn: (done?: VoidFunction) => Promise<void>) {
 
   return async function testWithAFreshPlatform() {
     try {
-      destroyPlatformBeforeBootstrappingTheNewOne();
+      const freshUrl = '/';
+      destroyPlatformBeforeBootstrappingTheNewOne(freshUrl);
 
       if (hasDoneArgument) {
         await fn((error?: Error) => {

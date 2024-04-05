@@ -21,7 +21,9 @@ export type StateFn = (...args: any[]) => any;
  *
  * @ignore
  */
-export const compose = (funcs: StateFn[]) => (...args: any[]) => {
-  const curr = funcs.shift()!;
-  return curr(...args, (...nextArgs: any[]) => compose(funcs)(...nextArgs));
-};
+export const compose =
+  (funcs: StateFn[]) =>
+  (...args: any[]) => {
+    const curr = funcs.shift()!;
+    return curr(...args, (...nextArgs: any[]) => compose(funcs)(...nextArgs));
+  };

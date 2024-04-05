@@ -9,7 +9,7 @@ import { Server } from 'mock-socket';
 
 import { mockWebSocket } from './utils';
 import { WebSocketHandler } from '../src/websocket-handler';
-import { NgxsWebsocketPluginModule, ConnectWebSocket } from '../';
+import { NgxsWebSocketPluginModule, ConnectWebSocket } from '../';
 
 describe('WebSocketHandler cleanup', () => {
   mockWebSocket();
@@ -26,7 +26,7 @@ describe('WebSocketHandler cleanup', () => {
     imports: [
       BrowserModule,
       NgxsModule.forRoot([]),
-      NgxsWebsocketPluginModule.forRoot({ url })
+      NgxsWebSocketPluginModule.forRoot({ url })
     ],
     declarations: [TestComponent],
     bootstrap: [TestComponent]

@@ -57,26 +57,19 @@ describe('[TEST]: Action Types', () => {
       }
     }
 
-    assertType(() => store.select(TodoState)); // $ExpectType Observable<any>
     assertType(() => store.select(TodoState.getTodo)); // $ExpectType Observable<string[]>
-    assertType(() => store.select<string[]>(TodoState)); // $ExpectType Observable<string[]>
-    assertType(() => store.select('state.value')); // $ExpectType Observable<any>
     assertType(() => store.select(state => state.foo.bar)); // $ExpectType Observable<any>
     assertType(() => store.select({ foo: 'bar' })); // $ExpectError
     assertType(() => store.select()); // $ExpectError
 
-    assertType(() => store.selectOnce(TodoState)); // $ExpectType Observable<any>
     assertType(() => store.selectOnce(TodoState.getTodo)); // $ExpectType Observable<string[]>
     assertType(() => store.selectOnce<string[]>(TodoState)); // $ExpectType Observable<string[]>
-    assertType(() => store.selectOnce('state.value')); // $ExpectType Observable<any>
     assertType(() => store.selectOnce(state => state.foo.bar)); // $ExpectType Observable<any>
     assertType(() => store.selectOnce({ foo: 'bar' })); // $ExpectError
     assertType(() => store.selectOnce()); // $ExpectError
 
-    assertType(() => store.selectSnapshot(TodoState)); // $ExpectType any
     assertType(() => store.selectSnapshot(TodoState.getTodo)); // $ExpectType string[]
     assertType(() => store.selectSnapshot<string[]>(TodoState)); // $ExpectType string[]
-    assertType(() => store.selectSnapshot('state.value')); // $ExpectType any
     assertType(() => store.selectSnapshot(state => state.foo.bar)); // $ExpectType any
     assertType(() => store.selectSnapshot({ foo: 'bar' })); // $ExpectError
     assertType(() => store.selectSnapshot()); // $ExpectError

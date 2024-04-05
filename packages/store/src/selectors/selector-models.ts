@@ -1,12 +1,12 @@
-import { SharedSelectorOptions, SelectFromRootState } from '../internal/internals';
+import { ɵSharedSelectorOptions, ɵSelectFromRootState } from '@ngxs/store/internals';
 
 export interface CreationMetadata {
   containerClass: any;
   selectorName: string;
-  getSelectorOptions?: () => SharedSelectorOptions;
+  getSelectorOptions?: () => ɵSharedSelectorOptions;
 }
 
 export interface RuntimeSelectorInfo {
-  selectorOptions: SharedSelectorOptions;
-  argumentSelectorFunctions: SelectFromRootState[];
+  selectorOptions: ɵSharedSelectorOptions;
+  argumentSelectorFunctions: ɵSelectFromRootState[];
 }

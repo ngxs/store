@@ -6,7 +6,8 @@
 .cache/**
 .vscode/**
 dist*/**
-build/**
 coverage/**
 @ngxs/**
 **/dist/**
+
+/.nx/cache

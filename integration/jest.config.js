@@ -1,4 +1,4 @@
-const { pathsToModuleNameMapper: resolver } = require('ts-jest/utils');
+const { pathsToModuleNameMapper: resolver } = require('ts-jest');
 const { compilerOptions } = require('../tsconfig.base');
 const CI = process.env['CI'] === 'true';
 
@@ -12,16 +12,18 @@ module.exports = {
   displayName: 'integration',
   preset: '../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/test-setup.ts'],
-  globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.spec.json',
-      stringifyContentPathRegex: '\\.(html|svg)$'
-    }
-  },
+  globals: {},
   moduleNameMapper,
   coverageDirectory: '../coverage/integration',
   transform: {
-    '^.+\\.(ts|js|html)$': 'jest-preset-angular'
+    '^.+\\.(ts|mjs|js|html)$': [
+      'jest-preset-angular',
+      {
+        isolatedModules: true,
+        tsconfig: '<rootDir>/tsconfig.spec.json',
+        stringifyContentPathRegex: '\\.(html|svg)$'
+      }
+    ]
   },
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',

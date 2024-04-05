@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "out-tsc/lib",
+    "module": "es2015",
+    "declaration": true,
+    "inlineSources": true,
+    "importHelpers": true
+  },
+  "exclude": ["@ngxs/**", "**/*.spec.ts"]
+}

@@ -11,11 +11,11 @@ import {
   RouterStateSnapshot,
   Routes
 } from '@angular/router';
-import { NgxsModule, Selector, State, Store } from '@ngxs/store';
+import { Selector, State, Store, provideStore } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { first } from 'rxjs/operators';
 
-import { RouterState, NgxsRouterPluginModule } from '../..';
+import { RouterState, withNgxsRouterPlugin } from '../..';
 
 describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)', () => {
   @Component({
@@ -36,8 +36,6 @@ describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)'
   })
   class DetailsComponent {}
 
-  interface AppStateModel {}
-
   @State({
     name: 'app',
     defaults: {}
@@ -45,10 +43,7 @@ describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)'
   @Injectable()
   class AppState {
     @Selector([RouterState.state])
-    static getActiveRoute(
-      _stateModel: AppStateModel,
-      route: RouterStateSnapshot
-    ): ActivatedRouteSnapshot {
+    static getActiveRoute(route: RouterStateSnapshot): ActivatedRouteSnapshot {
       let state: ActivatedRouteSnapshot = route.root;
       while (state.firstChild) {
         state = state.firstChild;
@@ -79,13 +74,14 @@ describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)'
   @NgModule({
     imports: [
       BrowserModule,
-      RouterModule.forRoot(routes, { initialNavigation: 'enabled' }),
-      NgxsModule.forRoot(),
-      NgxsRouterPluginModule.forRoot()
+      RouterModule.forRoot(routes, { initialNavigation: 'enabledBlocking' })
     ],
     declarations: [RootComponent, HomeComponent, DetailsComponent],
     bootstrap: [RootComponent],
-    providers: [{ provide: APP_BASE_HREF, useValue: '/' }]
+    providers: [
+      provideStore([], withNgxsRouterPlugin()),
+      { provide: APP_BASE_HREF, useValue: '/' }
+    ]
   })
   class TestModule {}
 
@@ -103,8 +99,10 @@ describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)'
       expect(document.body.innerHTML).toContain('app-home');
 
       // Act
+      const waitForNavigationToCompletePromise =
+        waitForNavigationToComplete(router).toPromise();
       document.body.querySelector<HTMLAnchorElement>('.navigate-to-details')!.click();
-      await waitForNavigationToComplete(router).toPromise();
+      await waitForNavigationToCompletePromise;
 
       // Assert
       expect(guard.detectedRouteUrl).toEqual('details');

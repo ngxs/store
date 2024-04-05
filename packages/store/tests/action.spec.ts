@@ -12,12 +12,13 @@ import {
   ofActionCompleted,
   ofActionDispatched,
   ofActionErrored,
-  ofActionSuccessful
+  ofActionSuccessful,
+  ActionCompletion
 } from '@ngxs/store';
+import { ɵMETA_KEY } from '@ngxs/store/internals';
 import { Observable, of, Subject, throwError } from 'rxjs';
-import { delay, map, tap } from 'rxjs/operators';
+import { delay, map, take, tap } from 'rxjs/operators';
 
-import { META_KEY } from '../src/symbols';
 import { NoopErrorHandler } from './helpers/utils';
 
 describe('Action', () => {
@@ -81,7 +82,7 @@ describe('Action', () => {
       // Arrange
       setup();
       // Act
-      const meta = (<any>BarStore)[META_KEY];
+      const meta = (<any>BarStore)[ɵMETA_KEY];
       // Assert
       expect(meta.actions[Action1.type]).toBeDefined();
       expect(meta.actions[Action2.type]).toBeDefined();
@@ -200,6 +201,29 @@ describe('Action', () => {
       ]);
     }));
 
+    it('ofActionErrored should return an action completion result', async () => {
+      // Arrange
+      const { store, actions } = setup();
+
+      // Act
+      const action = new ErrorAction();
+      const promise = actions.pipe(ofActionErrored(ErrorAction), take(1)).toPromise();
+      store.dispatch(action);
+      const completion = await promise;
+
+      // Assert
+      expect(completion).toEqual({
+        action,
+        result: {
+          successful: false,
+          canceled: false,
+          error: expect.objectContaining({
+            message: expect.stringMatching(/this is a test error/)
+          })
+        }
+      });
+    });
+
     it('calls only the dispatched and canceled action', fakeAsync(() => {
       // Arrange
       const { store, actions } = setup();
@@ -215,9 +239,11 @@ describe('Action', () => {
           callbacksCalled.push('ofActionDispatched ' + id);
         });
 
-      actions.pipe(ofActionErrored(CancelingAction)).subscribe(({ id }: CancelingAction) => {
-        callbacksCalled.push('ofActionErrored ' + id);
-      });
+      actions
+        .pipe(ofActionErrored(CancelingAction))
+        .subscribe((completion: ActionCompletion<CancelingAction>) => {
+          callbacksCalled.push('ofActionErrored ' + completion.action.id);
+        });
 
       actions
         .pipe(ofActionSuccessful(CancelingAction))
@@ -319,7 +345,7 @@ describe('Action', () => {
     function setup() {
       const recorder: string[] = [];
       const record = (message: string) => recorder.push(message);
-      const observable = new Subject();
+      const observable = new Subject<void>();
       const completeObservableFn = () => {
         record('(completeObservableFn) - next');
         observable?.next();
@@ -420,7 +446,9 @@ describe('Action', () => {
     }
 
     describe('Promise that returns an observable', () => {
-      it('completes when observable is resolved', fakeAsync(() => {
+      it('completes when observable is resolved', async () => {
+        // Do not use `fakeAsync` for this test to mimic the real execution environment.
+
         // Arrange
         const { store, actions, promiseResolveFn, completeObservableFn, recorder, record } =
           setup();
@@ -438,7 +466,9 @@ describe('Action', () => {
           .subscribe(() => record('dispatch(PromiseThatReturnsObs) - Completed'));
 
         promiseResolveFn();
-        tick();
+        // Wait for anynomous promise to resolve because we record 'promise resolved'
+        // in a microtask which is resolved earlier before the following promise.
+        await Promise.resolve();
 
         // Assert
         expect(recorder).toEqual([
@@ -450,7 +480,7 @@ describe('Action', () => {
         ]);
 
         completeObservableFn();
-        tick();
+        await Promise.resolve();
 
         expect(recorder).toEqual([
           'promiseThatReturnsObs - start',
@@ -462,16 +492,18 @@ describe('Action', () => {
           'observableAction - observable tap',
           '(completeObservableFn) - complete',
           'ObservableAction [Completed]',
+          '(completeObservableFn) - end',
           'promiseThatReturnsObs - observable tap',
           'PromiseThatReturnsObs [Completed]',
-          'dispatch(PromiseThatReturnsObs) - Completed',
-          '(completeObservableFn) - end'
+          'dispatch(PromiseThatReturnsObs) - Completed'
         ]);
-      }));
+      });
     });
 
     describe('Promise that returns a promise', () => {
-      it('completes when inner promise is resolved', fakeAsync(() => {
+      it('completes when inner promise is resolved', async () => {
+        // Do not use `fakeAsync` for this test to mimic the real execution environment.
+
         // Arrange
         const { store, actions, promiseResolveFn, completeObservableFn, recorder, record } =
           setup();
@@ -489,7 +521,9 @@ describe('Action', () => {
           .subscribe(() => record('dispatch(PromiseThatReturnsPromise) - Completed'));
 
         promiseResolveFn();
-        tick();
+        // Wait for anynomous promise to resolve because we record 'promise resolved'
+        // in a microtask which is resolved earlier before the following promise.
+        await Promise.resolve();
 
         // Assert
         expect(recorder).toEqual([
@@ -501,7 +535,7 @@ describe('Action', () => {
         ]);
 
         completeObservableFn();
-        tick();
+        await Promise.resolve();
 
         expect(recorder).toEqual([
           'promiseThatReturnsPromise - start',
@@ -518,11 +552,13 @@ describe('Action', () => {
           'PromiseThatReturnsPromise [Completed]',
           'dispatch(PromiseThatReturnsPromise) - Completed'
         ]);
-      }));
+      });
     });
 
     describe('Observable that returns a promise', () => {
-      it('completes when promise is completed', fakeAsync(() => {
+      it('completes when promise is completed', async () => {
+        // Do not use `fakeAsync` for this test to mimic the real execution environment.
+
         // Arrange
         const {
           store,
@@ -547,6 +583,7 @@ describe('Action', () => {
           .subscribe(() => record('dispatch(ObsThatReturnsPromise) - Completed'));
 
         completeObservableFn();
+        await Promise.resolve();
 
         // Assert
         expect(recorder).toEqual([
@@ -558,7 +595,10 @@ describe('Action', () => {
         ]);
 
         promiseResolveFn();
-        tick();
+
+        // The below expectation is run earlier before the `ObsThatReturnsPromise`
+        // action completes.
+        await new Promise(resolve => setTimeout(resolve));
 
         expect(recorder).toEqual([
           'obsThatReturnsPromise - start',
@@ -572,7 +612,7 @@ describe('Action', () => {
           'ObsThatReturnsPromise [Completed]',
           'dispatch(ObsThatReturnsPromise) - Completed'
         ]);
-      }));
+      });
     });
 
     describe('Observable that returns an inner observable', () => {
@@ -787,17 +827,17 @@ describe('Action', () => {
           'cancellableAction(1) - start',
           'action1 obs - subscribe',
           'Action 2 - dispatching',
-          'Action 1 - dispatch complete',
           'action1 obs - unsubscribe',
+          'Action 1 - dispatch complete',
           'cancellableAction(2) - start',
           'action2 obs - subscribe',
           'action2 obs - next Value2',
           'cancellableAction(2) - observable tap',
           'complete 2',
           'action2 obs - complete',
+          'action2 obs - unsubscribe',
           'Action 2 - dispatch next',
           'Action 2 - dispatch complete',
-          'action2 obs - unsubscribe',
           'complete 1'
         ]);
       }));

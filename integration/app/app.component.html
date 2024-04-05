@@ -1,7 +1,8 @@
 <div class="todo-list">
   <div>
     <h3>Reactive Form</h3>
-    <p>{{ injected$ | async }}</p>
+    <p>(injected$) {{ injected$ | async }}</p>
+    <p>(injected() signal) {{ injected() }}</p>
     <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizza">
       Toppings: <input type="text" formControlName="toppings" /> <br />
       Crust <input type="text" formControlName="crust" /> <br />
@@ -24,9 +25,13 @@
   </div>
   <ul>
     <li class="todo" *ngFor="let todo of todos$ | async; let i = index">
-      {{ todo }} <button (click)="removeTodo(i)">🗑</button>
+      (todos$) {{ todo }} <button (click)="removeTodo(i)">🗑</button>
     </li>
-    <li *ngFor="let todo of pandas$ | async">🐼</li>
+    <li class="todo" *ngFor="let todo of todos(); let i = index">
+      (todos() signal) {{ todo }} <button (click)="removeTodo(i)">🗑</button>
+    </li>
+    <li *ngFor="let todo of pandas$ | async">(pandas$) 🐼</li>
+    <li *ngFor="let todo of pandas()">(pandas() signal) 🐼</li>
   </ul>
 
   <div class="menu">

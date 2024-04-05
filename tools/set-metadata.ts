@@ -1,4 +1,5 @@
-import { writeFile } from 'fs';
+import { writeFile } from 'fs/promises';
+
 import { getPackages } from './utils';
 
 async function setMetadata() {
@@ -28,18 +29,17 @@ async function setMetadata() {
     // set all the packages peerDependencies to be the same as root package.json version
     for (const packageInfo of packages) {
       if (packPackage.peerDependencies[packageInfo.packageName]) {
-        packPackage.peerDependencies[
-          packageInfo.packageName
-        ] = `^${ngxsJson.version} || ^${ngxsJson.version}-dev`;
+        packPackage.peerDependencies[packageInfo.packageName] =
+          `^${ngxsJson.version} || ^${ngxsJson.version}-dev`;
       }
     }
 
     // save the package file after we have updated the keys and peerDependencies
-    await writeFile(packPath, JSON.stringify(packPackage, null, 2), err => {
-      if (err) {
-        console.error('Write failed!');
-      }
-    });
+    try {
+      await writeFile(packPath, JSON.stringify(packPackage, null, 2));
+    } catch {
+      console.error('Write failed!');
+    }
   }
 
   console.log(`package version set to ${ngxsJson.version}`);

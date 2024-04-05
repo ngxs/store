@@ -8,19 +8,19 @@ import {
   NavigationError,
   NavigationEnd
 } from '@angular/router';
-import { NgxsModule, ofActionDispatched, Actions, Store } from '@ngxs/store';
+import { ofActionDispatched, Actions, Store, provideStore } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { filter } from 'rxjs/operators';
 
 import { createNgxsRouterPluginTestingPlatform } from './helpers';
 import {
-  NgxsRouterPluginModule,
   RouterNavigation,
   RouterState,
   Navigate,
   NavigationActionTiming,
-  NgxsRouterPluginOptions
+  NgxsRouterPluginOptions,
+  withNgxsRouterPlugin
 } from '../';
 
 describe('RouterNavigation', () => {
@@ -90,13 +90,12 @@ describe('RouterNavigation', () => {
               success: SuccessResolver
             }
           }
-        ]),
-        NgxsModule.forRoot([]),
-        NgxsRouterPluginModule.forRoot(options)
+        ])
       ],
       declarations: [RootComponent, HomeComponent, ErrorComponent, SuccessComponent],
       bootstrap: [RootComponent],
       providers: [
+        provideStore([], withNgxsRouterPlugin(options)),
         ErrorResolver,
         SuccessResolver,
         { provide: APP_BASE_HREF, useValue: '/' },

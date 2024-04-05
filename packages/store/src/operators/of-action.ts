@@ -1,8 +1,8 @@
+import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 import { OperatorFunction, Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { ActionType } from '../actions/symbols';
-import { getActionTypeFromInstance } from '../utils/utils';
 import { ActionContext, ActionStatus } from '../actions-stream';
 
 type TupleKeys<T extends any[]> = Exclude<keyof T, keyof []>;
@@ -108,22 +108,24 @@ export function ofActionErrored<T extends ActionType[]>(
   ...allowedTypes: T
 ): OperatorFunction<
   ActionContext<Constructed<T[TupleKeys<T>]>>,
-  Constructed<T[TupleKeys<T>]>
+  ActionCompletion<Constructed<T[TupleKeys<T>]>>
 > {
-  return ofActionOperator(allowedTypes, [ActionStatus.Errored]);
+  return ofActionOperator(allowedTypes, [ActionStatus.Errored], mapActionResult);
 }
 
 function ofActionOperator(
   allowedTypes: ActionType[],
   statuses?: ActionStatus[],
-  // This actually could've been `OperatorFunction<ActionContext, ActionCompletion | any>`,
-  // since it maps either to `ctx.action` OR to `ActionCompletion`. But `ActionCompleteion | any`
-  // defaults to `any`, thus there is no sense from union type.
+  // This could have been written as
+  // `OperatorFunction<ActionContext, ActionCompletion | any>`, as it maps
+  // either to `ctx.action` or to `ActionCompletion`. However,
+  // `ActionCompletion | any` defaults to `any`, rendering the union
+  // type meaningless.
   mapOperator: () => OperatorFunction<ActionContext, any> = mapAction
 ): OperatorFunction<ActionContext, any> {
   const allowedMap = createAllowedActionTypesMap(allowedTypes);
   const allowedStatusMap = statuses && createAllowedStatusesMap(statuses);
-  return function(o: Observable<ActionContext>) {
+  return function (o: Observable<ActionContext>) {
     return o.pipe(filterStatus(allowedMap, allowedStatusMap), mapOperator());
   };
 }
@@ -159,15 +161,21 @@ interface FilterMap {
 }
 
 function createAllowedActionTypesMap(types: ActionType[]): FilterMap {
-  return types.reduce((filterMap: FilterMap, klass: any) => {
-    filterMap[getActionTypeFromInstance(klass)!] = true;
-    return filterMap;
-  }, <FilterMap>{});
+  return types.reduce(
+    (filterMap: FilterMap, klass: any) => {
+      filterMap[getActionTypeFromInstance(klass)!] = true;
+      return filterMap;
+    },
+    <FilterMap>{}
+  );
 }
 
 function createAllowedStatusesMap(statuses: ActionStatus[]): FilterMap {
-  return statuses.reduce((filterMap: FilterMap, status: ActionStatus) => {
-    filterMap[status] = true;
-    return filterMap;
-  }, <FilterMap>{});
+  return statuses.reduce(
+    (filterMap: FilterMap, status: ActionStatus) => {
+      filterMap[status] = true;
+      return filterMap;
+    },
+    <FilterMap>{}
+  );
 }

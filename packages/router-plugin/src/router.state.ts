@@ -10,13 +10,14 @@ import {
   NavigationEnd,
   Event
 } from '@angular/router';
-import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
+import { Action, Selector, State, StateContext, StateToken, Store } from '@ngxs/store';
 import {
   NavigationActionTiming,
   NgxsRouterPluginOptions,
   ɵNGXS_ROUTER_PLUGIN_OPTIONS
 } from '@ngxs/router-plugin/internals';
-import { Subscription } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import {
   Navigate,
@@ -43,8 +44,13 @@ export type RouterTrigger =
   // The `devtools` trigger means that the state change has been triggered by Redux DevTools (e.g. when the time-traveling is used).
   | 'devtools';
 
+// NGXS doesn't permit untyped selectors, such as `select(RouterState)`,
+// as the `RouterState` class itself lacks type information. Therefore,
+// the following state token must replace `RouterState`.
+export const ROUTER_STATE_TOKEN = new StateToken<RouterStateModel>('router');
+
 @State<RouterStateModel>({
-  name: 'router',
+  name: ROUTER_STATE_TOKEN,
   defaults: {
     state: undefined,
     navigationId: undefined,
@@ -71,18 +77,20 @@ export class RouterState implements OnDestroy {
 
   private _lastEvent: Event | null = null;
 
-  private _subscription = new Subscription();
-
   private _options: NgxsRouterPluginOptions | null = null;
+
+  private _destroy$ = new ReplaySubject<void>(1);
 
   @Selector()
   static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
-    return state && state.state;
+    // The `state` is optional if the selector is invoked before the router
+    // state is registered in NGXS.
+    return state?.state;
   }
 
   @Selector()
   static url(state: RouterStateModel): string | undefined {
-    return state && state.state && state.state.url;
+    return state?.state?.url;
   }
 
   constructor(
@@ -100,7 +108,7 @@ export class RouterState implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+    this._destroy$.next();
   }
 
   @Action(Navigate)
@@ -133,18 +141,17 @@ export class RouterState implements OnDestroy {
   }
 
   private _setUpStoreListener(): void {
-    const subscription = this._store
-      .select(RouterState)
-      .subscribe((state: RouterStateModel | undefined) => {
-        this._navigateIfNeeded(state);
-      });
-
-    this._subscription.add(subscription);
+    const routerState$ = this._store
+      .select(ROUTER_STATE_TOKEN)
+      .pipe(takeUntil(this._destroy$));
+    routerState$.subscribe((state: RouterStateModel | undefined) => {
+      this._navigateIfNeeded(state);
+    });
   }
 
   private _navigateIfNeeded(routerState: RouterStateModel | undefined): void {
     if (routerState && routerState.trigger === 'devtools') {
-      this._storeState = this._store.selectSnapshot(RouterState);
+      this._storeState = this._store.selectSnapshot(ROUTER_STATE_TOKEN);
     }
 
     const canSkipNavigation =
@@ -159,7 +166,7 @@ export class RouterState implements OnDestroy {
       return;
     }
 
-    this._storeState = this._store.selectSnapshot(RouterState);
+    this._storeState = this._store.selectSnapshot(ROUTER_STATE_TOKEN);
     this._trigger = 'store';
     this._ngZone.run(() => this._router.navigateByUrl(this._storeState!.state!.url));
   }
@@ -171,7 +178,8 @@ export class RouterState implements OnDestroy {
 
     let lastRoutesRecognized: RoutesRecognized;
 
-    const subscription = this._router.events.subscribe(event => {
+    const events$ = this._router.events.pipe(takeUntil(this._destroy$));
+    events$.subscribe(event => {
       this._lastEvent = event;
 
       if (event instanceof NavigationStart) {
@@ -199,8 +207,6 @@ export class RouterState implements OnDestroy {
         this._reset();
       }
     });
-
-    this._subscription.add(subscription);
   }
 
   /** Reacts to `NavigationStart`. */
@@ -208,7 +214,7 @@ export class RouterState implements OnDestroy {
     this._routerState = this._serializer.serialize(this._router.routerState.snapshot);
 
     if (this._trigger !== 'none') {
-      this._storeState = this._store.selectSnapshot(RouterState);
+      this._storeState = this._store.selectSnapshot(ROUTER_STATE_TOKEN);
       this._dispatchRouterAction(new RouterRequest(this._routerState, event, this._trigger));
     }
   }

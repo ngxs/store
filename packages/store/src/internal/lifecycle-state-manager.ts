@@ -1,57 +1,63 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { NgxsBootstrapper } from '@ngxs/store/internals';
-import { EMPTY, Subject } from 'rxjs';
-import {
-  catchError,
-  filter,
-  mergeMap,
-  pairwise,
-  startWith,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
+import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
+import { ReplaySubject } from 'rxjs';
+import { filter, mergeMap, pairwise, startWith, takeUntil, tap } from 'rxjs/operators';
 
 import { Store } from '../store';
-import { getValue } from '../utils/utils';
-import { InternalErrorReporter } from './error-handler';
 import { StateContextFactory } from './state-context-factory';
 import { InternalStateOperations } from './state-operations';
 import { MappedStore, StatesAndDefaults } from './internals';
 import { NgxsLifeCycle, NgxsSimpleChange, StateContext } from '../symbols';
+import { getInvalidInitializationOrderMessage } from '../configs/messages.config';
+
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 @Injectable({ providedIn: 'root' })
 export class LifecycleStateManager implements OnDestroy {
-  private readonly _destroy$ = new Subject<void>();
+  private readonly _destroy$ = new ReplaySubject<void>(1);
+
+  private _initStateHasBeenDispatched?: boolean;
 
   constructor(
     private _store: Store,
-    private _internalErrorReporter: InternalErrorReporter,
     private _internalStateOperations: InternalStateOperations,
     private _stateContextFactory: StateContextFactory,
-    private _bootstrapper: NgxsBootstrapper
+    private _appBootstrappedState: ɵNgxsAppBootstrappedState
   ) {}
 
   ngOnDestroy(): void {
     this._destroy$.next();
   }
 
-  ngxsBootstrap<T>(action: T, results: StatesAndDefaults | undefined): void {
+  ngxsBootstrap(
+    action: InitState | UpdateState,
+    results: StatesAndDefaults | undefined
+  ): void {
+    if (NG_DEV_MODE) {
+      if (action instanceof InitState) {
+        this._initStateHasBeenDispatched = true;
+      } else if (
+        // This is a dev mode-only check that ensures the correct order of
+        // state initialization. The `NgxsModule.forRoot` or `provideStore` should
+        // always come first, followed by `forFeature` and `provideStates`. If the
+        // `UpdateState` is dispatched before the `InitState` is dispatched, it indicates
+        // that modules or providers are in an invalid order.
+        action instanceof UpdateState &&
+        !this._initStateHasBeenDispatched
+      ) {
+        console.error(getInvalidInitializationOrderMessage(action.addedStates));
+      }
+    }
+
     this._internalStateOperations
       .getRootStateOperations()
       .dispatch(action)
       .pipe(
         filter(() => !!results),
         tap(() => this._invokeInitOnStates(results!.states)),
-        mergeMap(() => this._bootstrapper.appBootstrapped$),
+        mergeMap(() => this._appBootstrappedState),
         filter(appBootstrapped => !!appBootstrapped),
-        catchError(error => {
-          // The `SafeSubscriber` (which is used by most RxJS operators) re-throws
-          // errors asynchronously (`setTimeout(() => { throw error })`). This might
-          // break existing user's code or unit tests. We catch the error manually to
-          // be backward compatible with the old behavior.
-          this._internalErrorReporter.reportErrorSafely(error);
-          return EMPTY;
-        }),
         takeUntil(this._destroy$)
       )
       .subscribe(() => this._invokeBootstrapOnStates(results!.states));

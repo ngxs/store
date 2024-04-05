@@ -1,12 +1,7 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../@ngxs/router-plugin",
   "lib": {
-    "flatModuleFile": "ngxs-router-plugin",
-    "entryFile": "index.ts",
-    "umdModuleIds": {
-      "@ngxs/store": "ngxs-store",
-      "@ngxs/store/internals": "ngxs-store-internals"
-    }
-  }
+    "entryFile": "index.ts"
+  },
+  "dest": "../../@ngxs/router-plugin"
 }

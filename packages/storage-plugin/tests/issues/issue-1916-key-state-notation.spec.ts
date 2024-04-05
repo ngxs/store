@@ -44,7 +44,7 @@ describe('State deserialization for keys with dot notation (https://github.com/n
       BrowserModule,
       NgxsModule.forRoot([BlogState, HomeState, AboutState]),
       NgxsStoragePluginModule.forRoot({
-        key: ['blog.name', HomeState, 'about.description']
+        keys: ['blog.name', HomeState, 'about.description']
       })
     ],
     declarations: [TestComponent],

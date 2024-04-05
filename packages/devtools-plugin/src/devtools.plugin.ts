@@ -1,11 +1,11 @@
 import { Inject, Injectable, Injector, NgZone, OnDestroy, ɵglobal } from '@angular/core';
+import { Store } from '@ngxs/store';
 import {
   InitState,
   getActionTypeFromInstance,
   NgxsNextPluginFn,
-  NgxsPlugin,
-  Store
-} from '@ngxs/store';
+  NgxsPlugin
+} from '@ngxs/store/plugins';
 import { tap, catchError } from 'rxjs/operators';
 
 import {
@@ -48,12 +48,8 @@ export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
   }
 
   ngOnDestroy(): void {
-    if (this.unsubscribe !== null) {
-      this.unsubscribe();
-    }
-    if (this.globalDevtools) {
-      this.globalDevtools.disconnect();
-    }
+    this.unsubscribe?.();
+    this.globalDevtools?.disconnect();
   }
 
   /**

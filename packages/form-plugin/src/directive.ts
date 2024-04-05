@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
-import { Actions, getValue, ofActionDispatched, Store } from '@ngxs/store';
-import { Observable, Subject } from 'rxjs';
+import { Actions, ofActionDispatched, Store } from '@ngxs/store';
+import { getValue } from '@ngxs/store/plugins';
+import { Observable, ReplaySubject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import {
   ResetForm,
@@ -12,8 +13,8 @@ import {
   UpdateFormValue
 } from './actions';
 
-@Directive({ selector: '[ngxsForm]' })
-export class FormDirective implements OnInit, OnDestroy {
+@Directive({ selector: '[ngxsForm]', standalone: true })
+export class NgxsFormDirective implements OnInit, OnDestroy {
   @Input('ngxsForm')
   path: string = null!;
 
@@ -37,7 +38,7 @@ export class FormDirective implements OnInit, OnDestroy {
 
   private _updating = false;
 
-  private readonly _destroy$ = new Subject<void>();
+  private readonly _destroy$ = new ReplaySubject<void>(1);
 
   constructor(
     private _actions$: Actions,

@@ -54,7 +54,7 @@ describe('Storage engine per individual key (https://github.com/ngxs/store/issue
       BrowserModule,
       NgxsModule.forRoot([BlogState, HomeState, EncryptedState]),
       NgxsStoragePluginModule.forRoot({
-        key: [
+        keys: [
           {
             key: 'blog.name',
             engine: SESSION_STORAGE_ENGINE

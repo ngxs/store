@@ -1,4 +1,8 @@
-const { getJestProjects } = require('@nrwl/jest');
+const { getJestProjects } = require('@nx/jest');
+
+globalThis.ngJest = {
+  skipNgcc: true
+};
 
 module.exports = {
   projects: getJestProjects()

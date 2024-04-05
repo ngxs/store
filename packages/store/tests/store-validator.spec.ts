@@ -26,7 +26,7 @@ describe('StoreValidator', () => {
         });
 
         TestBed.inject(Store);
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(
@@ -64,7 +64,7 @@ describe('StoreValidator', () => {
         });
 
         TestBed.inject(Store);
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(
@@ -97,7 +97,7 @@ describe('StoreValidator', () => {
         });
 
         TestBed.inject(Store);
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(
@@ -132,7 +132,7 @@ describe('StoreValidator', () => {
 
         const store: Store = TestBed.inject(Store);
         expect(store).toBeDefined();
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toBeUndefined();
@@ -150,7 +150,7 @@ describe('StoreValidator', () => {
         });
 
         TestBed.inject(Store);
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(
@@ -176,7 +176,7 @@ describe('StoreValidator', () => {
         });
 
         TestBed.inject(Store);
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(

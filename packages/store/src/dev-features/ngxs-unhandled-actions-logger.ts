@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
+import { InitState, UpdateState, getActionTypeFromInstance } from '@ngxs/store/plugins';
 
 import { ActionType } from '../actions/symbols';
-import { getActionTypeFromInstance } from '../utils/utils';
-import { InitState, UpdateState } from '../actions/actions';
 import { NgxsDevelopmentOptions, NGXS_DEVELOPMENT_OPTIONS } from './symbols';
 
 @Injectable()

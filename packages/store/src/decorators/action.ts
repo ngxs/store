@@ -1,5 +1,6 @@
-import { ensureStoreMetadata } from '../internal/internals';
-import { ActionType, ActionOptions } from '../actions/symbols';
+import { ɵActionOptions, ɵensureStoreMetadata } from '@ngxs/store/internals';
+
+import { ActionType } from '../actions/symbols';
 import { throwActionDecoratorError } from '../configs/messages.config';
 
 /**
@@ -7,12 +8,10 @@ import { throwActionDecoratorError } from '../configs/messages.config';
  */
 export function Action(
   actions: ActionType | ActionType[],
-  options?: ActionOptions
+  options?: ɵActionOptions
 ): MethodDecorator {
   return (target: any, name: string | symbol): void => {
-    // Caretaker note: we have still left the `typeof` condition in order to avoid
-    // creating a breaking change for projects that still use the View Engine.
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       const isStaticMethod = target.hasOwnProperty('prototype');
 
       if (isStaticMethod) {
@@ -20,7 +19,7 @@ export function Action(
       }
     }
 
-    const meta = ensureStoreMetadata(target.constructor);
+    const meta = ɵensureStoreMetadata(target.constructor);
 
     if (!Array.isArray(actions)) {
       actions = [actions];

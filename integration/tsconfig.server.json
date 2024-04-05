@@ -9,6 +9,7 @@
     "target": "es2016",
     "module": "es2020",
     "types": ["node"],
+    "module": "esnext",
     "typeRoots": ["../node_modules/@types"]
   },
   "files": ["main.server.ts", "server.ts"],

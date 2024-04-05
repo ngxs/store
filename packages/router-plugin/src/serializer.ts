@@ -10,7 +10,8 @@ export interface SerializedRouterStateSnapshot {
 }
 
 export class DefaultRouterStateSerializer
-  implements RouterStateSerializer<SerializedRouterStateSnapshot> {
+  implements RouterStateSerializer<SerializedRouterStateSnapshot>
+{
   serialize(routerState: RouterStateSnapshot): SerializedRouterStateSnapshot {
     return {
       root: this.serializeRoute(routerState.root),
@@ -22,6 +23,7 @@ export class DefaultRouterStateSerializer
     const children = route.children.map(c => this.serializeRoute(c));
     return {
       url: route.url,
+      title: route.title,
       params: route.params,
       queryParams: route.queryParams,
       fragment: route.fragment!,

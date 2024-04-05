@@ -1,6 +1,15 @@
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, Signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Store } from '@ngxs/store';
+import { NgxsFormDirective } from '@ngxs/form-plugin';
 import { Observable } from 'rxjs';
 
 import { TodoState } from '@integration/store/todos/todo/todo.state';
@@ -11,7 +20,10 @@ import { Extras, Pizza, Todo } from '@integration/store/todos/todos.model';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, NgxsFormDirective]
 })
 export class AppComponent implements OnInit {
   readonly allExtras: Extras[] = [
@@ -27,12 +39,23 @@ export class AppComponent implements OnInit {
   });
 
   greeting: string;
-  todos$: Observable<Todo[]> = this._store.select(TodoState);
-  pandas$: Observable<Todo[]> = this._store.select(TodoState.getPandas);
-  pizza$: Observable<Pizza> = this._store.select(TodosState.getPizza);
-  injected$: Observable<string> = this._store.select(TodosState.getInjected);
 
-  constructor(private _store: Store, private _fb: FormBuilder) {}
+  todos$: Observable<Todo[]> = this._store.select(TodoState.getTodoState);
+  todos: Signal<Todo[]> = this._store.selectSignal(TodoState.getTodoState);
+
+  pandas$: Observable<Todo[]> = this._store.select(TodoState.getPandas);
+  pandas: Signal<Todo[]> = this._store.selectSignal(TodoState.getPandas);
+
+  pizza$: Observable<Pizza> = this._store.select(TodosState.getPizza);
+  pizza: Signal<Pizza> = this._store.selectSignal(TodosState.getPizza);
+
+  injected$: Observable<string> = this._store.select(TodosState.getInjected);
+  injected: Signal<string> = this._store.selectSignal(TodosState.getInjected);
+
+  constructor(
+    private _store: Store,
+    private _fb: FormBuilder
+  ) {}
 
   get extras(): FormControl[] {
     const extras = this.pizzaForm.get('extras') as FormArray;
@@ -45,7 +68,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     const payload: Todo = 'ngOnInit todo';
-    const state: Todo[] = this._store.selectSnapshot(TodoState);
+    const state: Todo[] = this._store.selectSnapshot(TodoState.getTodoState);
     if (!state.includes(payload)) {
       this._store.dispatch(new AddTodo(payload));
     }

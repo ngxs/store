@@ -1,14 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
-import { exhaustMap, filter, shareReplay, take } from 'rxjs/operators';
+import { exhaustMap, filter, map, shareReplay, take } from 'rxjs/operators';
+
+import { getActionTypeFromInstance } from '@ngxs/store/plugins';
+import { ɵPlainObject, ɵStateStream } from '@ngxs/store/internals';
 
 import { compose } from '../utils/compose';
-import { InternalErrorReporter, ngxsErrorHandler } from './error-handler';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
-import { StateStream } from './state-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
-import { getActionTypeFromInstance } from '../utils/utils';
+import { leaveNgxs } from '../operators/leave-ngxs';
+import { fallbackSubscriber } from './fallback-subscriber';
 
 /**
  * Internal Action result stream that is emitted when an action is completed.
@@ -22,64 +24,66 @@ export class InternalDispatchedActionResults extends Subject<ActionContext> {}
 @Injectable({ providedIn: 'root' })
 export class InternalDispatcher {
   constructor(
+    private _ngZone: NgZone,
     private _actions: InternalActions,
     private _actionResults: InternalDispatchedActionResults,
     private _pluginManager: PluginManager,
-    private _stateStream: StateStream,
-    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy,
-    private _internalErrorReporter: InternalErrorReporter
+    private _stateStream: ɵStateStream,
+    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy
   ) {}
 
   /**
    * Dispatches event(s).
    */
-  dispatch(actionOrActions: any | any[]): Observable<any> {
+  dispatch(actionOrActions: any | any[]): Observable<void> {
     const result = this._ngxsExecutionStrategy.enter(() =>
       this.dispatchByEvents(actionOrActions)
     );
 
     return result.pipe(
-      ngxsErrorHandler(this._internalErrorReporter, this._ngxsExecutionStrategy)
+      fallbackSubscriber(this._ngZone),
+      leaveNgxs(this._ngxsExecutionStrategy)
     );
   }
 
-  private dispatchByEvents(actionOrActions: any | any[]): Observable<any> {
+  private dispatchByEvents(actionOrActions: any | any[]): Observable<void> {
     if (Array.isArray(actionOrActions)) {
-      if (actionOrActions.length === 0) return of(this._stateStream.getValue());
-      return forkJoin(actionOrActions.map(action => this.dispatchSingle(action)));
+      if (actionOrActions.length === 0) return of(undefined);
+
+      return forkJoin(actionOrActions.map(action => this.dispatchSingle(action))).pipe(
+        map(() => undefined)
+      );
     } else {
       return this.dispatchSingle(actionOrActions);
     }
   }
 
-  private dispatchSingle(action: any): Observable<any> {
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+  private dispatchSingle(action: any): Observable<void> {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       const type: string | undefined = getActionTypeFromInstance(action);
       if (!type) {
         const error = new Error(
           `This action doesn't have a type property: ${action.constructor.name}`
         );
-        return throwError(error);
+        return throwError(() => error);
       }
     }
 
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return (
-      compose([
-        ...plugins,
-        (nextState: any, nextAction: any) => {
-          if (nextState !== prevState) {
-            this._stateStream.next(nextState);
-          }
-          const actionResult$ = this.getActionResultStream(nextAction);
-          actionResult$.subscribe(ctx => this._actions.next(ctx));
-          this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
-          return this.createDispatchObservable(actionResult$);
+    return compose([
+      ...plugins,
+      (nextState: any, nextAction: any) => {
+        if (nextState !== prevState) {
+          this._stateStream.next(nextState);
         }
-      ])(prevState, action) as Observable<any>
-    ).pipe(shareReplay());
+        const actionResult$ = this.getActionResultStream(nextAction);
+        actionResult$.subscribe(ctx => this._actions.next(ctx));
+        this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
+        return this.createDispatchObservable(actionResult$);
+      }
+    ])(prevState, action).pipe(shareReplay());
   }
 
   private getActionResultStream(action: any): Observable<ActionContext> {
@@ -92,15 +96,19 @@ export class InternalDispatcher {
     );
   }
 
-  private createDispatchObservable(actionResult$: Observable<ActionContext>): Observable<any> {
+  private createDispatchObservable(
+    actionResult$: Observable<ActionContext>
+  ): Observable<ɵPlainObject> {
     return actionResult$
       .pipe(
         exhaustMap((ctx: ActionContext) => {
           switch (ctx.status) {
             case ActionStatus.Successful:
+              // The `createDispatchObservable` function should return the
+              // state, as its result is utilized by plugins.
               return of(this._stateStream.getValue());
             case ActionStatus.Errored:
-              return throwError(ctx.error);
+              return throwError(() => ctx.error);
             default:
               return EMPTY;
           }

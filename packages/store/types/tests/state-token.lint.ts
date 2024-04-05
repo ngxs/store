@@ -181,21 +181,15 @@ describe('[TEST]: StateToken', () => {
       .componentInstance;
 
     const snapshotByToken = appComponent.store.selectSnapshot(FOO_TOKEN);
-    const snapshotByStateClass = appComponent.store.selectSnapshot(FooState);
 
     assertType(() => snapshotByToken); // $ExpectType MyModel
-    assertType(() => snapshotByStateClass); // $ExpectType any
 
     const selectByToken = appComponent.store.select(FOO_TOKEN);
-    const selectByStateClass = appComponent.store.select(FooState);
 
     assertType(() => selectByToken); // $ExpectType Observable<MyModel>
-    assertType(() => selectByStateClass); // $ExpectType Observable<any>
 
     const selectOnceByToken = appComponent.store.selectOnce(FOO_TOKEN);
-    const selectOnceByStateClass = appComponent.store.selectOnce(FooState);
 
     assertType(() => selectOnceByToken); // $ExpectType Observable<MyModel>
-    assertType(() => selectOnceByStateClass); // $ExpectType Observable<any>
   });
 });

@@ -1,8 +1,8 @@
-import { Component, NgModule } from '@angular/core';
+import { Component, NgModule, inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RouterModule, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Store, NgxsModule, Select } from '@ngxs/store';
+import { Store, NgxsModule } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
@@ -11,15 +11,16 @@ import { TodoState, AddTodo } from './helpers/todo.state';
 import { SimpleState, UpdateValue } from './helpers/simple.state';
 
 describe('Lazy Loading', () => {
-  @Component({ template: '' })
+  @Component({ selector: 'my', template: '' })
   class MyComponent {
-    @Select(CounterState) counter: Observable<number>;
+    counter: Observable<number> = inject(Store).select(CounterState.getCounter);
   }
 
-  @Component({ template: '' })
+  @Component({ selector: 'my-lazy', template: '' })
   class MyLazyComponent {
-    @Select(TodoState) todos: Observable<string[]>;
+    todos: Observable<string[]> = inject(Store).select(TodoState.getTodos);
   }
+
   @NgModule({
     imports: [
       RouterModule.forChild([{ path: '', component: MyLazyComponent }]),
@@ -29,10 +30,11 @@ describe('Lazy Loading', () => {
   })
   class MyLazyModule {}
 
-  @Component({ template: '' })
+  @Component({ selector: 'second-lazy', template: '' })
   class SecondLazyComponent {
-    @Select(SimpleState) value: Observable<string>;
+    value: Observable<string> = inject(Store).select(SimpleState.getSimple);
   }
+
   @NgModule({
     imports: [
       RouterModule.forChild([{ path: '', component: SecondLazyComponent }]),

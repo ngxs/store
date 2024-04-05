@@ -1,13 +1,13 @@
-import { SelectorDef, SelectorReturnType } from '../../selectors';
+import { ɵSelectorDef, ɵSelectorReturnType } from '../../selectors';
 
-export type SelectorDefTuple = SelectorDef<any>[] | [SelectorDef<any>];
+export type SelectorDefTuple = ɵSelectorDef<any>[] | [ɵSelectorDef<any>];
 
 type UnknownToAny<T> = unknown extends T ? any : T;
 type EnsureArray<T> = T extends any[] ? T : never;
 
-type SelectorReturnTypeList<T extends SelectorDefTuple> = EnsureArray<{
-  [K in keyof T]: T[K] extends SelectorDef<any>
-    ? UnknownToAny<SelectorReturnType<T[K]>>
+type SelectorReturnTypeList<T extends ɵSelectorDefTuple> = EnsureArray<{
+  [K in keyof T]: T[K] extends ɵSelectorDef<any>
+    ? UnknownToAny<ɵSelectorReturnType<T[K]>>
     : never;
 }>;
 

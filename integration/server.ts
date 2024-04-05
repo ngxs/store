@@ -1,53 +1,48 @@
 import 'zone.js/node';
 
-import { APP_BASE_HREF } from '@angular/common';
-import { ngExpressEngine } from '@nguniversal/express-engine';
-import { REQUEST, RESPONSE } from '@nguniversal/express-engine/tokens';
+import * as path from 'node:path';
+import * as url from 'node:url';
 import * as express from 'express';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { APP_BASE_HREF } from '@angular/common';
 
-import { AppServerModule } from './main.server';
+import { CommonEngine } from '@angular/ssr';
+
+import bootstrap from './main.server';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app() {
   const server = express();
-  const distFolder = join(process.cwd(), 'dist-integration');
-  const indexHtml = existsSync(join(distFolder, 'index.original.html'))
-    ? 'index.original.html'
-    : 'index';
-
-  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
-  server.engine(
-    'html',
-    ngExpressEngine({
-      bootstrap: AppServerModule
-    }) as any
-  );
+  const browserDistFolder = path.join(process.cwd(), 'dist-integration');
+  const indexHtml = path.join(browserDistFolder, 'index.html');
+  const commonEngine = new CommonEngine();
 
   server.set('view engine', 'html');
-  server.set('views', distFolder);
+  server.set('views', browserDistFolder);
 
   // Example Express Rest API endpoints
   // app.get('/api/**', (req, res) => { });
   // Serve static files from /browser
   server.get(
     '*.*',
-    express.static(distFolder, {
+    express.static(browserDistFolder, {
       maxAge: '1y'
     })
   );
 
   // All regular routes use the Universal engine
-  server.get('*', (req, res) => {
-    res.render(indexHtml, {
-      req,
-      providers: [
-        { provide: APP_BASE_HREF, useValue: req.baseUrl },
-        { provide: REQUEST, useValue: req },
-        { provide: RESPONSE, useValue: res }
-      ]
-    });
+  server.get('*', (req, res, next) => {
+    const { protocol, originalUrl, baseUrl, headers } = req;
+
+    commonEngine
+      .render({
+        bootstrap,
+        documentFilePath: indexHtml,
+        url: `${protocol}://${headers.host}${originalUrl}`,
+        publicPath: browserDistFolder,
+        providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }]
+      })
+      .then(html => res.send(html))
+      .catch(next);
   });
 
   return server;

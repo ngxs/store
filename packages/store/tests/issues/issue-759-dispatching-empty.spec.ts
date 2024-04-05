@@ -29,7 +29,7 @@ describe('Dispatching an empty array with errors (https://github.com/ngxs/store/
   class AppState {
     @Action(ActionError)
     actionError() {
-      return throwError('ActionError: should be shown in the console');
+      return throwError(() => new Error('ActionError: should be shown in the console'));
     }
 
     @Action(ActionEmptyArray)

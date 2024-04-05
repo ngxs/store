@@ -7,7 +7,8 @@ import {
   ofActionDispatched,
   ofActionErrored,
   ofActionSuccessful,
-  Actions
+  Actions,
+  ActionDef
 } from '@ngxs/store';
 
 describe('[TEST]: Action Operator Types', () => {
@@ -33,7 +34,7 @@ describe('[TEST]: Action Operator Types', () => {
     public type = "type is not static";
   }
 
-  const alsoNotAnAction = { }; // missing action
+  const alsoNotAnAction = {}; // missing action
 
   it('ofAction()', () => {
     // Arrange & act & assert
@@ -162,19 +163,19 @@ describe('[TEST]: Action Operator Types', () => {
   it('ofActionErrored()', () => {
     // Arrange & act & assert
     actions$.pipe(
-      ofActionErrored(ActionOne) // $ExpectType OperatorFunction<ActionContext<ActionOne>, ActionOne>
+      ofActionErrored(ActionOne) // $ExpectType OperatorFunction<ActionContext<ActionOne>, ActionCompletion<ActionOne, Error>>
     );
 
     actions$.pipe(
-      ofActionErrored(ActionOne, ActionTwo) // $ExpectType OperatorFunction<ActionContext<ActionOne | ActionTwo>, ActionOne | ActionTwo>
+      ofActionErrored(ActionOne, ActionTwo) // $ExpectType OperatorFunction<ActionContext<ActionOne | ActionTwo>, ActionCompletion<ActionOne | ActionTwo, Error>>
     );
 
     actions$.pipe(
-      ofActionErrored(actionThree) // $ExpectType OperatorFunction<ActionContext<{ type: "Action three"; }>, { type: "Action three"; }>
+      ofActionErrored(actionThree) // $ExpectType OperatorFunction<ActionContext<{ type: "Action three"; }>, ActionCompletion<{ type: "Action three"; }, Error>>
     );
 
     actions$.pipe(
-      ofActionErrored(actionFour) // $ExpectType OperatorFunction<ActionContext<{ type: string; }>, { type: string; }>
+      ofActionErrored(actionFour) // $ExpectType OperatorFunction<ActionContext<{ type: string; }>, ActionCompletion<{ type: string; }, Error>>
     );
 
     actions$.pipe(
@@ -219,5 +220,173 @@ describe('[TEST]: Action Operator Types', () => {
     actions$.pipe(
       ofActionCompleted(alsoNotAnAction) // $ExpectError
     );
+  });
+
+  describe('Action Operator Type Matching', () => {
+    const enum CustomPropType {
+      Timeout
+    }
+
+    // An action with the instance properties inferred from the constructor
+    class ActionWithMatchingConstructor {
+      static readonly type = 'ActionWithMatchingConstructor';
+
+      constructor(readonly myArg: CustomPropType) {}
+    }
+
+    // An action where the constructor property name is different to the instance property
+    class ActionWithMatchingConstructor_DiffProp {
+      static readonly type = 'ActionWithMatchingConstructor_DiffProp';
+
+      readonly myProp: CustomPropType
+
+      constructor(myArg: CustomPropType) {
+        this.myProp = myArg;
+      }
+    }
+
+    // An action where the constructor argument name is different to the instance property
+    class ActionWithMatchingProp_DiffConstructor {
+      static readonly type = 'ActionWithMatchingProp_DiffConstructor';
+
+      readonly myArg: CustomPropType
+
+      constructor(myDifferentArg: CustomPropType) {
+        this.myArg = myDifferentArg;
+      }
+    }
+
+    // An action with an unmatching constructor
+    class ActionWithNonMatchingArgNameConstructor {
+      static readonly type = 'ActionWithNonMatchingArgNameConstructor';
+
+      constructor(readonly myArgNamedDifferently: CustomPropType) {}
+    }
+
+
+    // An action with an unmatching constructor
+    class ActionWithNonMatchingArgTypeConstructor {
+      static readonly type = 'ActionWithNonMatchingArgTypeConstructor';
+
+      constructor(readonly myArg: string) {}
+    }
+
+    it('ofActionDispatched() with a parameterized constructor action type match helper', () => {
+      // Arrange
+
+      function getDispatchedActionWithExplicitConstructor<T extends ActionDef<[myArg: CustomPropType]>>(ActionDef: T) {
+        return actions$.pipe(
+          ofActionDispatched(ActionDef)
+        );
+      }
+
+      // Act & Assert
+
+      // If we use a function to constrain T to a specific constructor signature, it still allows us to access the instance type properties
+      getDispatchedActionWithExplicitConstructor(ActionWithMatchingConstructor).subscribe(result => {
+        const myArg = result.myArg; // $ExpectType CustomPropType
+      });
+
+      // This demonstrates that the constructor shape has no bearing on the instance shape, which can be inferred through a generic type
+      getDispatchedActionWithExplicitConstructor(ActionWithMatchingConstructor_DiffProp).subscribe(result => {
+        const myArg = result.myArg; // $ExpectError
+        const myProp = result.myProp; // $ExpectType CustomPropType
+      });
+
+      // This demonstrates that the constructor parameter names have no bearing on matching
+      getDispatchedActionWithExplicitConstructor(ActionWithNonMatchingArgNameConstructor).subscribe(result => {
+        const myArg = result.myArg; // $ExpectError
+        const myOtherArg = result.myArgNamedDifferently; // $ExpectType CustomPropType
+      });
+
+      // We should get an error if the constructor parameter types do not match
+      getDispatchedActionWithExplicitConstructor(ActionWithNonMatchingArgTypeConstructor); // $ExpectError
+    });
+
+    it('ofActionDispatched() directly constrained with a parameterized constructor match only', () => {
+      // Arrange & act & assert      
+
+      // If we attempt just a constructor constraint with no generic to infer the instance properties, we get an `any` type
+      actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType]>]>(ActionWithMatchingConstructor)).subscribe(result => {
+        // This is to demonstrate that if a constructor is explicitly specified without the instance props, it receives any instance shape
+        const myArg = result.myArg; // $ExpectType any
+        const thisIsBad = result.someNonExistingProp; // $ExpectType any
+      });
+      // Same here
+      actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType]>]>(ActionWithMatchingConstructor_DiffProp)).subscribe(result => {
+        const myArg = result.myProp; // $ExpectType any
+        const thisIsBad = result.someNonExistingProp; // $ExpectType any
+      });
+      // Same here
+      actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType]>]>(ActionWithNonMatchingArgNameConstructor)).subscribe(result => {
+        const myArg = result.myArgNamedDifferently; // $ExpectType any
+        const thisIsBad = result.someNonExistingProp; // $ExpectType any
+      });
+      // We should get an error if the constructor parameter types do not match
+      actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType]>]>(ActionWithNonMatchingArgTypeConstructor)); // $ExpectError
+    });
+
+    it('ofActionDispatched() directly constrained with an instance shape match only', () => {
+      // Arrange & act & assert
+
+      // If we constrain the instance properties, we get the correct prop types, but any constructor
+      actions$.pipe(ofActionDispatched<[ActionDef<any[], { myArg: CustomPropType }>]>(ActionWithMatchingConstructor)).subscribe(result => {
+        const myArg = result.myArg; // $ExpectType CustomPropType
+        const thisWillError = result.someNonExistingProp; // $ExpectError
+      });
+      // If we constrain the instance properties, we get the correct prop types, but any constructor
+      actions$.pipe(ofActionDispatched<[ActionDef<any[], { myArg: CustomPropType }>]>(ActionWithMatchingProp_DiffConstructor)).subscribe(result => {
+        const myArg = result.myArg; // $ExpectType CustomPropType
+        const thisWillError = result.someNonExistingProp; // $ExpectError
+      });
+      // Same here
+      actions$.pipe(ofActionDispatched<[ActionDef<any[], { myProp: CustomPropType }>]>(ActionWithMatchingConstructor_DiffProp)).subscribe(result => {
+        const myProp = result.myProp; // $ExpectType CustomPropType
+        const thisWillError = result.someNonExistingProp; // $ExpectError
+      });
+      // Same here
+      actions$.pipe(ofActionDispatched<[ActionDef<any[], { myArgNamedDifferently: CustomPropType }>]>(ActionWithNonMatchingArgNameConstructor)).subscribe(result => {
+        const myArg = result.myArgNamedDifferently; // $ExpectType CustomPropType
+        const thisWillError = result.someNonExistingProp; // $ExpectError
+      });
+      // Same here
+      actions$.pipe(ofActionDispatched<[ActionDef<any[], { myArg: string }>]>(ActionWithNonMatchingArgTypeConstructor)).subscribe(result => {
+        const myArg = result.myArg; // $ExpectType string
+        const thisWillError = result.someNonExistingProp; // $ExpectError
+      });
+      // We should get an error if the instance prop names do not match
+      actions$.pipe(ofActionDispatched<[ActionDef<any[], { myArg: CustomPropType }>]>(ActionWithNonMatchingArgNameConstructor)); // $ExpectError
+      // We should get an error if the instance prop types do not match
+      actions$.pipe(ofActionDispatched<[ActionDef<any[], { myArg: CustomPropType }>]>(ActionWithNonMatchingArgTypeConstructor)); // $ExpectError
+    });
+
+    it('ofActionDispatched() directly constrained with a constructor and instance shape match', () => {
+      // Arrange & act & assert      
+
+      // If we constrain both the constructor and instance properties, we get full type control
+      actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType], { myArg: CustomPropType }>]>(ActionWithMatchingConstructor)).subscribe(result => {
+        const myArg = result.myArg; // $ExpectType CustomPropType
+        const thisWillError = result.someNonExistingProp; // $ExpectError
+      });
+      // Same here
+      actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType], { myProp: CustomPropType }>]>(ActionWithMatchingConstructor_DiffProp)).subscribe(result => {
+        const myArg = result.myProp; // $ExpectType CustomPropType
+        const thisIsBad = result.someNonExistingProp; // $ExpectError
+      });
+      // Same here, but note that the arg name doesn't matter in the constructor constraint
+      actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType], { myArgNamedDifferently: CustomPropType }>]>(ActionWithNonMatchingArgNameConstructor)).subscribe(result => {
+        const myArg = result.myArgNamedDifferently; // $ExpectType CustomPropType
+        const thisIsBad = result.someNonExistingProp; // $ExpectError
+      });
+      // Same here, the constructor argument name doesn't matter
+      actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType], { myArg: CustomPropType }>]>(ActionWithMatchingProp_DiffConstructor)).subscribe(result => {
+        const myArg = result.myArg; // $ExpectType CustomPropType
+        const thisWillError = result.someNonExistingProp; // $ExpectError
+      });
+      // We should get an error if the constructor parameter types do not match
+      actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType], { myArg: string }>]>(ActionWithNonMatchingArgTypeConstructor)); // $ExpectError
+      // We should get an error if the instance prop types do not match
+      actions$.pipe(ofActionDispatched<[ActionDef<[myArg: string], { myArg: CustomPropType }>]>(ActionWithNonMatchingArgTypeConstructor)); // $ExpectError
+    });
   });
 });

@@ -2,16 +2,14 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
+    "module": "esnext",
+    "target": "es2022",
     "paths": {
       "@ngxs/*": ["../@ngxs/*"],
       "@integration/*": ["./app/*"]
-    },
-    "outDir": "./out-tsc/app",
-    "module": "es2020",
-    "target": "es5",
-    "types": ["node"]
+    }
   },
-  "files": ["main.browser.ts", "polyfills.ts"],
+  "files": ["main.ts", "polyfills.ts"],
   "angularCompilerOptions": {
     "disableTypeScriptVersionCheck": true
   }

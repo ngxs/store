@@ -1,34 +1,26 @@
 {
   "name": "form-plugin",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/form-plugin",
   "sourceRoot": "packages/form-plugin",
   "projectType": "library",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:ng-packagr",
-      "outputs": ["@ngxs/form-plugin"],
+      "outputs": ["{workspaceRoot}/@ngxs/form-plugin"],
       "options": {
         "tsConfig": "tsconfig.build.json",
         "project": "packages/form-plugin/ng-package.json"
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/form-plugin/jest.config.js",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "packages/form-plugin/jest.config.js"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": ["packages/form-plugin/**/*.ts", "packages/form-plugin/**/*.html"]
       }

@@ -1,8 +1,16 @@
 import { InjectionToken } from '@angular/core';
 
-export const NGXS_WEBSOCKET_OPTIONS = new InjectionToken('NGXS_WEBSOCKET_OPTIONS');
+declare const ngDevMode: boolean;
 
-export interface NgxsWebsocketPluginOptions {
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
+
+export const NGXS_WEBSOCKET_OPTIONS = new InjectionToken<NgxsWebSocketPluginOptions>(
+  NG_DEV_MODE ? 'NGXS_WEBSOCKET_OPTIONS' : ''
+);
+
+export const USER_OPTIONS = new InjectionToken(NG_DEV_MODE ? 'USER_OPTIONS' : '');
+
+export interface NgxsWebSocketPluginOptions {
   /**
    * URL of the websocket.
    */
@@ -52,23 +60,19 @@ export interface NgxsWebsocketPluginOptions {
   deserializer?: (e: MessageEvent) => any;
 }
 
-export function noop(..._args: any[]) {
-  return function () {};
-}
-
 /**
  * Action to connect to the websocket. Optionally pass a URL.
  */
 export class ConnectWebSocket {
   static readonly type = '[WebSocket] Connect';
 
-  constructor(public payload?: NgxsWebsocketPluginOptions) {}
+  constructor(public payload?: NgxsWebSocketPluginOptions) {}
 }
 
 /**
  * Action triggered when a error ocurrs
  */
-export class WebsocketMessageError {
+export class WebSocketMessageError {
   static readonly type = '[WebSocket] Message Error';
 
   constructor(public payload: any) {}

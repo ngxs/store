@@ -2,15 +2,17 @@ module.exports = {
   displayName: 'form-plugin',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/test-setup.ts'],
-  globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.spec.json',
-      stringifyContentPathRegex: '\\.(html|svg)$'
-    }
-  },
+  globals: {},
   coverageDirectory: '../../coverage/packages/form-plugin',
   transform: {
-    '^.+\\.(ts|js|html)$': 'jest-preset-angular'
+    '^.+\\.(ts|mjs|js|html)$': [
+      'jest-preset-angular',
+      {
+        isolatedModules: true,
+        tsconfig: '<rootDir>/tsconfig.spec.json',
+        stringifyContentPathRegex: '\\.(html|svg)$'
+      }
+    ]
   },
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',

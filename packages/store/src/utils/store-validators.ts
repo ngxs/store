@@ -1,4 +1,6 @@
-import { getStoreMetadata, StateClassInternal, StatesByName } from '../internal/internals';
+import { ɵStateClassInternal, ɵgetStoreMetadata } from '@ngxs/store/internals';
+
+import { StatesByName } from '../internal/internals';
 import {
   throwStateDecoratorError,
   throwStateNameError,
@@ -18,7 +20,7 @@ export function ensureStateNameIsValid(name: string | null): void | never {
 
 export function ensureStateNameIsUnique(
   stateName: string,
-  state: StateClassInternal,
+  state: ɵStateClassInternal,
   statesByName: StatesByName
 ): void | never {
   const existingState = statesByName[stateName];
@@ -27,9 +29,9 @@ export function ensureStateNameIsUnique(
   }
 }
 
-export function ensureStatesAreDecorated(stateClasses: StateClassInternal[]): void | never {
-  stateClasses.forEach((stateClass: StateClassInternal) => {
-    if (!getStoreMetadata(stateClass)) {
+export function ensureStatesAreDecorated(stateClasses: ɵStateClassInternal[]): void | never {
+  stateClasses.forEach((stateClass: ɵStateClassInternal) => {
+    if (!ɵgetStoreMetadata(stateClass)) {
       throwStateDecoratorError(stateClass.name);
     }
   });

@@ -12,7 +12,7 @@ export function patch<T extends Record<string, any>>(
     let clone = null;
     for (const k in patchObject) {
       const newValue = patchObject[k];
-      const existingPropValue = existing[k];
+      const existingPropValue = existing?.[k];
       const newPropValue = isStateOperator(newValue)
         ? newValue(<any>existingPropValue)
         : newValue;

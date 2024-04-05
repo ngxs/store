@@ -38,7 +38,10 @@ describe('Actions stream causing ticks', () => {
     template: '<button id="set-countries" (click)="setCountries()">Set countries</button>'
   })
   class TestComponent {
-    constructor(private _store: Store, actions$: Actions) {
+    constructor(
+      private _store: Store,
+      actions$: Actions
+    ) {
       // Create 10 subscriptions in a row.
       Array.from({ length: 10 }).forEach(() => {
         actions$.pipe(ofActionSuccessful(SetCountries)).subscribe();

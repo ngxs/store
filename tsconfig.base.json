@@ -14,8 +14,9 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
-    "lib": ["es2017", "dom", "es2018.promise"],
+    "useDefineForClassFields": false,
+    "target": "ES2022",
+    "lib": ["es2020", "dom", "es2018.promise"],
     "typeRoots": ["node_modules/@types"],
     "paths": {
       "@integration/*": ["integration/app/*"],
@@ -26,10 +27,12 @@
       "@ngxs/router-plugin": ["packages/router-plugin/index.ts"],
       "@ngxs/router-plugin/internals": ["packages/router-plugin/internals/src/index.ts"],
       "@ngxs/storage-plugin": ["packages/storage-plugin/index.ts"],
+      "@ngxs/storage-plugin/internals": ["packages/storage-plugin/internals/src/index.ts"],
       "@ngxs/store": ["packages/store/index.ts"],
       "@ngxs/store/internals": ["packages/store/internals/src/index.ts"],
       "@ngxs/store/internals/testing": ["packages/store/internals/testing/src/index.ts"],
       "@ngxs/store/operators": ["packages/store/operators/src/index.ts"],
+      "@ngxs/store/plugins": ["packages/store/plugins/src/index.ts"],
       "@ngxs/websocket-plugin": ["packages/websocket-plugin/index.ts"]
     }
   }

@@ -10,12 +10,24 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+- Feat: Schematics support a project option and standalone detection [#2089](https://github.com/ngxs/store/pull/2089)
+- Fix: Ensure features are initialized after root state [#2083](https://github.com/ngxs/store/pull/2083)
+- Fix: Log feature states added before store is initialized [#2067](https://github.com/ngxs/store/pull/2067)
+- Fix: Show error when state initialization order is invalid [#2066](https://github.com/ngxs/store/pull/2066), [#2067](https://github.com/ngxs/store/pull/2067)
+- Fix: Change `instanceof Promise` to `isPromise` to allow any promisable object [#2093](https://github.com/ngxs/store/pull/2093)
+- Fix: Router Plugin - Expose `NGXS_ROUTER_PLUGIN_OPTIONS` privately [#2037](https://github.com/ngxs/store/pull/2037)
+- Build: Upgrade to NX 17 [#2087](https://github.com/ngxs/store/pull/2087)
+
+# 3.8.2 2023-11-30
+
+- Fix: `patch` state operator must handle existing nulls [#2064](https://github.com/ngxs/store/pull/2064)
 - Fix: Storage Plugin - Access local and session storages globals only in browser [#2034](https://github.com/ngxs/store/pull/2034)
 - Fix: Storage Plugin - Require only `getItem` and `setItem` on engines [#2036](https://github.com/ngxs/store/pull/2036)
-- Fix: Router Plugin - Expose `NGXS_ROUTER_PLUGIN_OPTIONS` privately [#2037](https://github.com/ngxs/store/pull/2037)
 - Fix: Devtools Plugin - Do not re-enter Angular zone when resetting state [#2038](https://github.com/ngxs/store/pull/2038)
 - Performance: Tree-shake selectors validation errors [#2020](https://github.com/ngxs/store/pull/2020)
+- Build: Add Angular 17 support [#2079](https://github.com/ngxs/store/pull/2079)
 - Refactor: Replace `get type()` with `type =` in actions [#2035](https://github.com/ngxs/store/pull/2035)
+- Refactor: WebSocket Plugin - Get rid off `rxjs/webSocket` and use `WebSocket` directly [#2033](https://github.com/ngxs/store/pull/2033)
 
 # 3.8.1 2023-05-16
 

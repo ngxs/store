@@ -1,0 +1,4 @@
+export class <%= classify(name) %>Action {
+    static readonly type = '[<%= classify(name) %>] Add item';
+    constructor(readonly payload: any) { }
+}
