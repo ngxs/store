@@ -4,7 +4,9 @@ States can implement life-cycle events.
 
 ## `ngxsOnChanges`
 
-If a state implements the NgxsOnChanges interface, its ngxsOnChanges method respond when (re)sets state. The states' ngxsOnChanges methods are invoked in a topological sorted order going from parent to child. The first parameter is the NgxsSimpleChange object of current and previous state.
+If a state implements the `NgxsOnChanges` interface, its `ngxsOnChanges` method responds when the state is (re)set.
+
+The `ngxsOnChanges` methods of states are invoked in a topologically sorted order, going from parent to child states. Within these methods, the first parameter is the `NgxsSimpleChange` object containing the current and previous states.
 
 ```ts
 export interface ZooStateModel {
@@ -28,10 +30,9 @@ export class ZooState implements NgxsOnChanges {
 
 ## `ngxsOnInit`
 
-If a state implements the `NgxsOnInit` interface, its `ngxsOnInit` method will be invoked after
-all the states from the state's module definition have been initialized and pushed into the state stream.
-The states' `ngxsOnInit` methods are invoked in a topological sorted order going from parent to child.
-The first parameter is the `StateContext` where you can get the current state and dispatch actions as usual.
+If a state implements the `NgxsOnInit` interface, its `ngxsOnInit` method is invoked after the `InitState` or `UpdateState` action has been handled, depending on where the state is registered (root or feature). If your state is provided at the root level, its `ngxsOnInit` may be called immediately once the `ENVIRONMENT_INITIALIZER` token is resolved. However, it may also be called asynchronously if you handle the `InitState` action and have some asynchronous logic.
+
+The `ngxsOnInit` methods of states are invoked in a topologically sorted order, going from parent to child states. Within these methods, the first parameter is the `StateContext`, which allows you to access the current state and dispatch actions as usual.
 
 ```ts
 export interface ZooStateModel {
@@ -55,7 +56,7 @@ export class ZooState implements NgxsOnInit {
 
 ## `ngxsAfterBootstrap`
 
-If a state implements the `NgxsAfterBootstrap` interface, its `ngxsAfterBootstrap` method will be invoked after the root view and all its children have been rendered, because Angular invokes functions, retrieved from the injector by `APP_BOOTSTRAP_LISTENER` token, only after creating and attaching `ComponentRef` of the root component to the tree of views.
+If a state implements the `NgxsAfterBootstrap` interface, its `ngxsAfterBootstrap` method will be bound to the `APP_BOOTSTRAP_LISTENER`, which is resolved after the app has been bootstrapped.
 
 ```ts
 export interface ZooStateModel {
@@ -87,22 +88,20 @@ After creating the state by calling its constructor, NGXS calls the lifecycle ho
 | ngxsOnInit()         | Called _once_, after the _first_ `ngxsOnChanges()` and _before_ the `APP_INITIALIZER` token is resolved. |
 | ngxsAfterBootstrap() | Called _once_, after the root view and all its children have been rendered.                              |
 
-## Feature Modules Order of Imports
+## Feature States Order of Imports
 
-If you have feature modules they need to be imported after the root module:
+If you have feature states they need to be registered after the root `provideStore` has been called:
 
 ```ts
-// feature.module.ts
-@NgModule({
-  imports: [NgxsModule.forFeature([FeatureState])]
-})
-export class FeatureModule {}
+// some-data-access-library/index.ts
+export function provideDataAccessInvoiceLines() {
+  return provideStates([InvoiceLinesState]);
+}
 
-// app.module.ts
-@NgModule({
-  imports: [NgxsModule.forRoot([]), FeatureModule]
-})
-export class AppModule {}
+// app.config.ts
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore(), provideDataAccessInvoiceLines()]
+};
 ```
 
 ## APP_INITIALIZER Stage
@@ -116,7 +115,7 @@ export function appInitializerFactory() {
   return () => Promise.resolve();
 }
 
-@NgModule({
+export const appConfig: ApplicationConfig = {
   providers: [
     {
       provide: APP_INITIALIZER,
@@ -124,48 +123,21 @@ export function appInitializerFactory() {
       multi: true
     }
   ]
-})
-export class AppModule {}
+};
 ```
 
-This token is injected into `ApplicationInitStatus` class. What does Angular do under the hood? It gets an instance of this class and invokes the `runInitializers` method:
-
-```ts
-const initStatus = moduleRef.injector.get(ApplicationInitStatus);
-initStatus.runInitializers();
-```
-
-All that it does inside this method is looping via the `APP_INITIALIZER` array (as it's a `multi` token) and invoking those factories, that you've provided in `useFactory` properties:
-
-```ts
-for (let i = 0; i < this.appInits.length; i++) {
-  const initResult = this.appInits[i]();
-  if (isPromise(initResult)) {
-    asyncInitPromises.push(initResult);
-  }
-}
-```
-
-Then `asyncInitPromises` are provided into `Promise.all`. That's all the magic. That's why the `bootstrapModule` returns a `Promise`:
-
-```ts
-platformBrowser()
-  .bootstrapModule(AppModule)
-  .then(() => {
-    console.log('Hey there!');
-  });
-```
+Please refer to [this guide](https://angular.io/api/core/APP_INITIALIZER) to familiarize yourself with its functionality.
 
 ### APP_INITIALIZER and NGXS
 
-Everything that we examined earlier is very important, because from this comes the fact that `APP_INITIALIZER` is resolved after NGXS states are initialized. They are initialized by the `NgxsModule` that is imported into the `AppModule`. The `ngxsOnInit` method on states is also invoked before the `APP_INITIALIZER` token is resolved. Given the following code:
+The `APP_INITIALIZER` token is resolved after NGXS states are registered. This is because they are registered during the resolution of the `ENVIRONMENT_INITIALIZER` token. Additionally, the `ngxsOnInit` method on states is invoked before the `APP_INITIALIZER` token is resolved. Given the following code:
 
 ```ts
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
   private version: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   loadVersion(): Observable<string> {
     return this.http.get<string>('/api/version').pipe(
@@ -190,32 +162,32 @@ export class ConfigService {
 })
 @Injectable()
 export class VersionState implements NgxsOnInit {
-  constructor(private configService: ConfigService) {}
+  private configService = inject(ConfigService);
 
   ngxsOnInit(ctx: StateContext<string | null>) {
     ctx.setState(this.configService.getVersion());
   }
 }
 
-export function appInitializerFactory(configService: ConfigService) {
-  return () => configService.loadVersion().toPromise();
+export function appInitializerFactory() {
+  const configService = inject(ConfigService);
+  return () => configService.loadVersion();
 }
 
-@NgModule({
-  imports: [NgxsModule.forRoot([VersionState])],
+export const appConfig: ApplicationConfig = {
   providers: [
+    provideStore([VersionState]),
+
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
-      multi: true,
-      deps: [ConfigService]
+      multi: true
     }
   ]
-})
-export class AppModule {}
+};
 ```
 
-The above example is used only for demonstration purposes! This code will throw an error because the `getVersion` method is invoked before the `version` property is set. Why? Because the `ngxsOnInit` methods on states are invoked before the `APP_INITIALIZER` is invoked!
+The example provided is for demonstration purposes and will throw an error because the `version` is not set yet. This occurs because `getVersion` is called before the version is loaded.
 
 ### Solution
 
@@ -228,7 +200,7 @@ There are different solutions. Let's look at the simplest. The first solution wo
 })
 @Injectable()
 export class VersionState implements NgxsAfterBootstrap {
-  constructor(private configService: ConfigService) {}
+  private configService = inject(ConfigService);
 
   ngxsAfterBootstrap(ctx: StateContext<string | null>) {
     ctx.setState(this.configService.getVersion());
@@ -241,6 +213,7 @@ The second solution would be dispatching some `SetVersion` action right after th
 ```ts
 export class SetVersion {
   static readonly type = '[Version] Set version';
+
   constructor(public version: string) {}
 }
 
@@ -258,10 +231,8 @@ export class VersionState {
 
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
-  constructor(
-    private http: HttpClient,
-    private store: Store
-  ) {}
+  private http = inject(HttpClient);
+  private store = inject(Store);
 
   loadVersion() {
     return this.http.get<string>('/api/version').pipe(
@@ -275,4 +246,4 @@ export class ConfigService {
 
 ### Summary
 
-In conclusion, do not try to access any data in state constructors or `ngxsOnInit` methods that is fetched during the `APP_INITIALIZER` stage.
+In conclusion, the `ngxsOnInit` method is useful when you need to set some calculated values on the state with access to dependency injection within the state class, but before the app is bootstrapped. This allows components to pick up available data.
