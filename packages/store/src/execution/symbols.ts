@@ -1,4 +1,4 @@
-import { InjectionToken, inject, INJECTOR, Type, ɵglobal } from '@angular/core';
+import { InjectionToken, inject, INJECTOR, Type, NgZone } from '@angular/core';
 
 import { NoopNgxsExecutionStrategy } from './noop-ngxs-execution-strategy';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './dispatch-outside-zone-ngxs-execution-strategy';
@@ -23,12 +23,14 @@ export const NGXS_EXECUTION_STRATEGY = new InjectionToken<NgxsExecutionStrategy>
   {
     providedIn: 'root',
     factory: () => {
+      const ngZone = inject(NgZone);
       const injector = inject(INJECTOR);
       const executionStrategy = injector.get(CUSTOM_NGXS_EXECUTION_STRATEGY);
+      const isNgZoneEnabled = ngZone instanceof NgZone;
       return executionStrategy
         ? injector.get(executionStrategy)
         : injector.get(
-            typeof ɵglobal.Zone !== 'undefined'
+            isNgZoneEnabled
               ? DispatchOutsideZoneNgxsExecutionStrategy
               : NoopNgxsExecutionStrategy
           );
