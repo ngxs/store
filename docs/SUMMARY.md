@@ -61,6 +61,7 @@
   - [Module Federation](recipes/module-federation.md)
   - [Unit Testing](recipes/unit-testing.md)
   - [RxAngular Integration](recipes/intregration-with-rxangular.md)
+  - [Waiting For App Stability](recipes/waiting-for-app-stability.md)
 
 ## COMMUNITY & LABS
 

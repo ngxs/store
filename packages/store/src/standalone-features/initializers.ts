@@ -2,6 +2,7 @@ import { ENVIRONMENT_INITIALIZER, InjectionToken, Provider, inject } from '@angu
 import { ɵStateClassInternal } from '@ngxs/store/internals';
 
 import { Store } from '../store';
+import { NGXS_PREBOOT_FNS } from './preboot';
 import { InitState, UpdateState } from '../plugin_api';
 import { FEATURE_STATE_TOKEN, ROOT_STATE_TOKEN } from '../symbols';
 import { StateFactory } from '../internal/state-factory';
@@ -18,6 +19,9 @@ const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
  * same initialization functionality.
  */
 export function rootStoreInitializer(): void {
+  const prebootFns = inject(NGXS_PREBOOT_FNS, { optional: true }) || [];
+  prebootFns.forEach(prebootFn => prebootFn());
+
   const factory = inject(StateFactory);
   const internalStateOperations = inject(InternalStateOperations);
 
