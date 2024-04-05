@@ -114,6 +114,31 @@ export class ZooComponent {
 }
 ```
 
+#### `dispatch` Utility
+
+NGXS offers a utility function named `dispatch`, which takes an action as a parameter and returns a function. This function can then be called with parameters for the action constructor. When this function is called, the action is created and is dispatched immediately:
+
+```ts
+import { dispatch } from '@ngxs/store';
+
+// An action declared somewhere in your app
+class Greet {
+  static readonly type = 'Greet';
+
+  constructor(public greeting: string) {}
+}
+
+// Then, in your component
+export class MyComponent {
+  greet = dispatch(Greet);
+
+  constructor() {
+    // the `this.greet` function has the same signature as the action's constructor!
+    this.greet('Hello world!');
+  }
+}
+```
+
 ### Snapshots
 
 You can get a snapshot of the state by calling `store.snapshot()`. This will return the entire value of the store for that point in time.
