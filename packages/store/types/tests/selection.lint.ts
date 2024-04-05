@@ -26,7 +26,7 @@ describe('[TEST]: Action Types', () => {
   it('should be correct type in selector/select decorator', () => {
     class Any {}
 
-    Selector(); // $ExpectType SelectorType<unknown>
+    Selector(); // $ExpectType SelectorTypeNoDecoratorArgs
     assertType(() => Selector([{ foo: 'bar' }])); // $ExpectError
     assertType(() => Selector({})); // $ExpectError
 
