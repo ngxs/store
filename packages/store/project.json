@@ -30,7 +30,7 @@
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "lintFilePatterns": ["!packages/store/types"]
+        "lintFilePatterns": ["packages/store/**/*.ts", "!packages/store/types"]
       }
     },
     "lint-types": {
