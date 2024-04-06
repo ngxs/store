@@ -88,7 +88,7 @@ After creating the state by calling its constructor, NGXS calls the lifecycle ho
 | ngxsOnInit()         | Called _once_, after the _first_ `ngxsOnChanges()` and _before_ the `APP_INITIALIZER` token is resolved. |
 | ngxsAfterBootstrap() | Called _once_, after the root view and all its children have been rendered.                              |
 
-## Feature States Order of Imports
+## Feature States Order of Providers
 
 If you have feature states they need to be registered after the root `provideStore` has been called:
 
@@ -103,6 +103,28 @@ export const appConfig: ApplicationConfig = {
   providers: [provideStore(), provideDataAccessInvoiceLines()]
 };
 ```
+
+<details>
+
+<summary>If you are still using modules</summary>
+
+If you have feature modules they need to be imported after the root module:
+
+```ts
+// feature.module.ts
+@NgModule({
+  imports: [NgxsModule.forFeature([FeatureState])]
+})
+export class FeatureModule {}
+
+// app.module.ts
+@NgModule({
+  imports: [NgxsModule.forRoot([]), FeatureModule]
+})
+export class AppModule {}
+```
+
+</details>
 
 ## APP_INITIALIZER Stage
 
