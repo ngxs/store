@@ -20,10 +20,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "lintFilePatterns": ["packages/form-plugin/**/*.ts", "packages/form-plugin/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   }
 }
