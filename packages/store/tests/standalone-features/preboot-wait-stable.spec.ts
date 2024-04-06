@@ -1,14 +1,15 @@
 import { JsonPipe } from '@angular/common';
 import {
   AfterViewInit,
-  ApplicationRef,
   Component,
   Injectable,
   inject,
-  ɵInitialRenderPendingTasks as PendingTasks,
+  ɵPendingTasks as PendingTasks,
+  ɵprovideZonelessChangeDetection,
   ChangeDetectionStrategy
 } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
+import { renderApplication } from '@angular/platform-server';
 import {
   Action,
   ActionStatus,
@@ -21,19 +22,15 @@ import {
   select,
   withNgxsPreboot
 } from '@ngxs/store';
-import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
-import { first, firstValueFrom, takeUntil } from 'rxjs';
+import { freshPlatform } from '@ngxs/store/internals/testing';
 
 function executeRecipeFromDocs() {
-  const appRef = inject(ApplicationRef);
   const pendingTasks = inject(PendingTasks);
   const actions$ = inject(Actions);
 
-  const isStable$ = appRef.isStable.pipe(first(isStable => isStable));
-
   const actionToTaskIdMap = new Map<any, number>();
 
-  actions$.pipe(takeUntil(isStable$)).subscribe(ctx => {
+  actions$.subscribe(ctx => {
     if (ctx.status === ActionStatus.Dispatched) {
       const taskId = pendingTasks.add();
       actionToTaskIdMap.set(ctx.action, taskId);
@@ -89,20 +86,23 @@ describe('preboot feature + stable', () => {
     'should wait for app to become stable',
     freshPlatform(async () => {
       // Arrange
-      const appRef = await skipConsoleLogging(() =>
-        bootstrapApplication(TestComponent, {
-          providers: [provideStore([CountriesState], withNgxsPreboot(executeRecipeFromDocs))]
-        })
+      const html = await renderApplication(
+        () =>
+          bootstrapApplication(TestComponent, {
+            providers: [
+              ɵprovideZonelessChangeDetection(),
+
+              provideStore([CountriesState], withNgxsPreboot(executeRecipeFromDocs))
+            ]
+          }),
+        {
+          document: '<app-root></app-root>',
+          url: '/'
+        }
       );
 
-      // Act
-      await firstValueFrom(appRef.isStable.pipe(first(isStable => isStable)));
-
       // Assert
-      const div = document.querySelector('div')!;
-      const countries = JSON.parse(div.innerHTML);
-      // Check whether view is synced with the state.
-      expect(countries).toEqual(['Angola', 'Namibia', 'Botswana', 'Zambia']);
+      expect(html).toMatchSnapshot();
     })
   );
 });

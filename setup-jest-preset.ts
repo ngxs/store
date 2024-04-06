@@ -1,3 +1,7 @@
+import { TextDecoder, TextEncoder } from 'node:util';
+
+Object.assign(global, { TextDecoder, TextEncoder });
+
 import 'jest-preset-angular/setup-jest';
 
 const CI = process.env['CI'] === 'true';

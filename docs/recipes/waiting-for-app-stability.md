@@ -9,34 +9,31 @@ NGXS also executes actions during server-side rendering, and some of these actio
 Let's examine the recipe for updating the "pending tasks" state whenever any action is dispatched and completed:
 
 ```ts
-import {
-  ApplicationConfig,
-  ApplicationRef,
-  inject,
-  ɵPendingTasks as PendingTasks
-} from '@angular/core';
+import { ApplicationConfig, inject, ɵPendingTasks as PendingTasks } from '@angular/core';
 import { ActionStatus, Actions, provideStore, withNgxsPreboot } from '@ngxs/store';
-import { first, takeUntil } from 'rxjs';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideStore(
       [],
       withNgxsPreboot(() => {
-        const appRef = inject(ApplicationRef);
         const pendingTasks = inject(PendingTasks);
         const actions$ = inject(Actions);
 
-        const isStable$ = appRef.isStable.pipe(first(isStable => isStable));
-
         const actionToTaskIdMap = new Map<any, number>();
 
-        actions$.pipe(takeUntil(isStable$)).subscribe(ctx => {
+        // Note that you don't have to unsubscribe from the actions stream in
+        // this specific case, as we complete the actions subject when the root
+        // view is destroyed. In server-side rendering, the root view is destroyed
+        // immediately once the app stabilizes and its HTML is serialized.
+        actions$.subscribe(ctx => {
           if (ctx.status === ActionStatus.Dispatched) {
             const taskId = pendingTasks.add();
             actionToTaskIdMap.set(ctx.action, taskId);
           } else {
             const taskId = actionToTaskIdMap.get(ctx.action);
+            // It can be zero, therefore the condition `if (taskId)`
+            // is not applicable.
             if (typeof taskId === 'number') {
               pendingTasks.remove(taskId);
               actionToTaskIdMap.delete(ctx.action);
@@ -49,4 +46,4 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-Please note that the pending tasks service name may differ between Angular versions. Therefore, you need to know whether it's named as follows or has been renamed.
+> :warning: Please note that the pending tasks service name may differ between Angular versions. Therefore, you need to know whether it's named as follows or has been renamed.

@@ -30,18 +30,14 @@
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "lintFilePatterns": [
-          "!packages/store/types",
-          "packages/store/**/*.ts",
-          "packages/store/**/*.html"
-        ]
+        "lintFilePatterns": ["!packages/store/types"]
       }
     },
     "lint-types": {
       "executor": "@nx/eslint:lint",
       "options": {
         "eslintConfig": "packages/store/types/.eslintrc.js",
-        "lintFilePatterns": ["packages/store/types/**/*.lint.ts"]
+        "lintFilePatterns": ["packages/store/types"]
       }
     }
   }
