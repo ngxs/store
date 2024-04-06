@@ -13,14 +13,14 @@ type EnsureArray<T> = T extends any[] ? T : never;
  * Given a tuple of selector functions, state tokens, state classes, etc., returns a tuple of what
  * a dependent selector would expect to receive for that parent as an argument when called.
  *
- * For example, if the first element in the tuple `T` is a selector function that returns a
+ * For example, if the first element in `ParentsTuple` is a selector function that returns a
  * `number`, then the first element of the result tuple will be `number`. If the second element
- * in the tuple `T` is a state class with model `{ name: string }`, then the second element of
+ * in `ParentsTuple` is a state class with model `{ name: string }`, then the second element of
  * the result tuple will be `{ name: string }`.
  */
-type SelectorReturnTypeList<T extends SelectorDefTuple> = EnsureArray<{
-  [K in keyof T]: T[K] extends ɵSelectorDef<any>
-    ? UnknownToAny<ɵSelectorReturnType<T[K]>>
+type SelectorReturnTypeList<ParentsTuple extends SelectorDefTuple> = EnsureArray<{
+  [ParentsTupleIndex in keyof ParentsTuple]: ParentsTuple[ParentsTupleIndex] extends ɵSelectorDef<any>
+    ? UnknownToAny<ɵSelectorReturnType<ParentsTuple[ParentsTupleIndex]>>
     : never;
 }>;
 
@@ -28,35 +28,37 @@ type SelectorReturnTypeList<T extends SelectorDefTuple> = EnsureArray<{
  * Defines a selector function matching a given argument list of parent selectors/states/tokens
  * and a given return type.
  */
-export type SelectorSpec<T, U> = T extends []
+export type SelectorSpec<ParentsTuple, Return> = ParentsTuple extends []
   ? () => any
-  : T extends SelectorDefTuple
-    ? (...states: SelectorReturnTypeList<T>) => U
+  : ParentsTuple extends SelectorDefTuple
+    ? (...states: SelectorReturnTypeList<ParentsTuple>) => Return
     : () => any;
 
 /**
- * Defines a selector function matching `SelectorSpec<T, U>` but with the assumption that the
+ * Defines a selector function matching `SelectorSpec<ParentsTuple, Return>` but with the assumption that the
  * container state has been injected as the first argument.
  */
-type SelectorSpecWithInjectedState<T, U> = SelectorSpec<
-  T extends SelectorDefTuple ? [any, ...T] : [any],
-  T extends SelectorDefTuple ? U : any
+type SelectorSpecWithInjectedState<ParentsTuple, Return> = SelectorSpec<
+  ParentsTuple extends SelectorDefTuple ? [any, ...ParentsTuple] : [any],
+  ParentsTuple extends SelectorDefTuple ? Return : any
 >;
 
 /**
  * Defines a property descriptor for the `@Selector` decorator that decorates a function with
- * parent selectors/states/tokens `T` and return type `U`.
+ * parent selectors/states/tokens `ParentsTuple` and return type `Return`.
  */
-type DescriptorWithNoInjectedState<T, U> = TypedPropertyDescriptor<SelectorSpec<T, U>>;
+type DescriptorWithNoInjectedState<ParentsTuple, Return> = TypedPropertyDescriptor<
+  SelectorSpec<ParentsTuple, Return>
+>;
 
 /**
  * Same as `DescriptorWithNoInjectedState` but with state injected as the first argument.
  */
-type DescriptorWithInjectedState<T, U> = TypedPropertyDescriptor<
-  SelectorSpecWithInjectedState<T, U>
+type DescriptorWithInjectedState<ParentsTuple, Return> = TypedPropertyDescriptor<
+  SelectorSpecWithInjectedState<ParentsTuple, Return>
 >;
 
-type DecoratorArgs<T> = [target: any, key: string | symbol, descriptor?: T];
+type DecoratorArgs<Descriptor> = [target: any, key: string | symbol, descriptor?: Descriptor];
 
 /**
  * Defines the return type of a call to `@Selector` when there is no argument given
@@ -66,12 +68,12 @@ type DecoratorArgs<T> = [target: any, key: string | symbol, descriptor?: T];
  * single argument that is the container state.
  */
 type SelectorTypeNoDecoratorArgs = {
-  <U>(
-    ...args: DecoratorArgs<DescriptorWithNoInjectedState<unknown, U>>
-  ): void | DescriptorWithNoInjectedState<unknown, U>;
-  <U>(
-    ...args: DecoratorArgs<DescriptorWithInjectedState<unknown, U>>
-  ): void | DescriptorWithInjectedState<unknown, U>;
+  <Return>(
+    ...args: DecoratorArgs<DescriptorWithNoInjectedState<unknown, Return>>
+  ): void | DescriptorWithNoInjectedState<unknown, Return>;
+  <Return>(
+    ...args: DecoratorArgs<DescriptorWithInjectedState<unknown, Return>>
+  ): void | DescriptorWithInjectedState<unknown, Return>;
 };
 
 /**
@@ -79,26 +81,26 @@ type SelectorTypeNoDecoratorArgs = {
  * (e.g. `@Selector([])` counts, but `@Selector()` does not)
  *
  * This result is a decorator that can only be used to decorate a function with an argument list
- * matching the results of the tuple of parents `T`.
+ * matching the results of the tuple of parents `ParentsTuple`.
  */
-type SelectorTypeWithDecoratorArgs<T> = {
-  <U>(
-    ...args: DecoratorArgs<DescriptorWithNoInjectedState<T, U>>
-  ): void | DescriptorWithNoInjectedState<T, U>;
+type SelectorTypeWithDecoratorArgs<ParentsTuple> = {
+  <Return>(
+    ...args: DecoratorArgs<DescriptorWithNoInjectedState<ParentsTuple, Return>>
+  ): void | DescriptorWithNoInjectedState<ParentsTuple, Return>;
   /**
    * @deprecated
    * Read the deprecation notice at this link: https://ngxs.io/deprecations/inject-container-state-deprecation.md.
    */
-  <U>(
-    ...args: DecoratorArgs<DescriptorWithInjectedState<T, U>>
-  ): void | DescriptorWithInjectedState<T, U>;
+  <Return>(
+    ...args: DecoratorArgs<DescriptorWithInjectedState<ParentsTuple, Return>>
+  ): void | DescriptorWithInjectedState<ParentsTuple, Return>;
 };
 
 /**
  * Defines the return type of a call to `@Selector`. This result is a decorator that can only be
- * used to decorate a function with an argument list matching the results of the tuple of
- * parents `T`.
+ * used to decorate a function with an argument list matching `ParentsTuple`, the results of the
+ * tuple of parent selectors/state tokens/state classes.
  */
-export type SelectorType<T> = unknown extends T
+export type SelectorType<ParentsTuple> = unknown extends ParentsTuple
   ? SelectorTypeNoDecoratorArgs
-  : SelectorTypeWithDecoratorArgs<T>;
+  : SelectorTypeWithDecoratorArgs<ParentsTuple>;
