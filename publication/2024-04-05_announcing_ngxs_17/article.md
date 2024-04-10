@@ -9,7 +9,7 @@ NGXS v17 is the result of months of hard work by the team, who have been dedicat
 - 🚀 Schematics
 - ❗ Error Handling
 - 🔌 Plugin Improvements
-- 🛑 Braking Changes
+- 🛑 Breaking Changes
 - 🗑️ Deprecations
 - 🧑🏾‍🤝‍🧑🏻 NGXS Community
 
@@ -285,7 +285,7 @@ You can import them using this path `@ngxs/storage-plugin/internals`.
 
 ---
 
-## Braking Changes
+## Breaking Changes
 
 ### Storage Plugin
 
@@ -495,7 +495,7 @@ In selectors decorated with `@Selector()`, the behavior depends on whether param
 
 - **No Parameters**: Without any parameters, the selector relies implicitly on the state container. Any change to the state container will trigger a recalculation of the selector's value. This can be inefficient if the selector doesn't directly use the entire state container.
 
-  > There is no braking change in this behavior.
+  > There is no breaking change in this behavior.
 
   ```ts
   @State<NotificationModel>({
@@ -513,7 +513,7 @@ In selectors decorated with `@Selector()`, the behavior depends on whether param
 
   In previous versions the State Container was injected as first argument in the selector function and the selector was recalculated on any state change.
 
-  > This is a braking change.
+  > This is a breaking change.
 
   _Before_
 
