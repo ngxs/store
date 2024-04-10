@@ -412,14 +412,6 @@ There's a distinction in how errors are thrown based on the selection method use
 
 It's important to note that errors are still logged in development mode for debugging purposes.
 
-### getState() returns DeepReadOnly
-
-The `getState` method plays a crucial role in maintaining a predictable and stable application state. To achieve this, it's essential to ensure the returned object is **immutable**. This means any attempt to modify the object directly will have no effect.
-
-To enforce immutability, the return type of `getState` is defined as `DeepReadOnly<T>` compared to previous versions where it was defined as `<T>`. This indicates that the returned object is not only read-only but also has nested properties that are themselves read-only. This ensures immutability throughout the entire state object hierarchy.
-
-Since `getState` provides a read-only object, users should never attempt to modify it directly. To update the state, users should utilize the `setState` and `patchState`
-
 ### Enforcing Typed Selectors in store.select, store.selectOnce, and store.selectSnapshot
 
 For improved type safety and maintainability, these selector functions now require typed selectors as arguments. This means raw state classes or anonymous functions are no longer accepted.
