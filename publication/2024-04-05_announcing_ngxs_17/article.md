@@ -11,6 +11,7 @@ NGXS v17 is the result of months of hard work by the team, who have been dedicat
 - 🔌 Plugin Improvements
 - 🛑 Braking Changes
 - 🗑️ Deprecations
+- 🧑🏾‍🤝‍🧑🏻 NGXS Community
 
 ---
 
@@ -558,20 +559,8 @@ We're planning to remove the option to declare sub-states on the state using the
 
 You can read more [here](https://www.ngxs.io/deprecations/sub-states-deprecation)
 
-## NGXS Labs Projects Updates
-
-...
-
-### New Labs Project: @ngxs-labs/...
-
-...
-
-### Labs Project Updates: @ngxs-labs/...
-
-...
-
 ---
 
-## Some Useful Links
+## NGXS Community
 
-If you would like any further information on changes in this release please feel free to have a look at our changelog. The code for NGXS is all available at https://github.com/ngxs/store and our docs are available at http://ngxs.io/. We have a thriving community on our slack channel so come and join us to keep abreast of the latest developments. Here is the slack invitation link: https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q
+NGXS on Discord? Heck yes! Join the party and level up your development skills together. Let's keep the conversation flowing! https://discord.gg/yFk6bu7v
