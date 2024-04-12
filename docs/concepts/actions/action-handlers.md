@@ -49,37 +49,25 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, ofActionDispatched } from '@ngxs/store';
 
 @Injectable({ providedIn: 'root' })
-export class RouteHandler {
+export class RouteHandler implements OnDestroy {
+  private destroy$ = new Subject<void>();
+
   constructor() {
     const actions$ = inject(Actions);
     const router = inject(Router);
 
     actions$
-      .pipe(ofActionDispatched(RouteNavigate))
+      .pipe(ofActionDispatched(RouteNavigate), takeUntil(this.destroy$))
       .subscribe(({ payload }) => router.navigate([payload]));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
   }
 }
 ```
 
-Remember to ensure that you inject the `RouteHandler` somewhere in your application for DI to set things up. If you want this to occur during application startup, Angular provides a method to do so:
-
-```ts
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-
-@NgModule({
-  providers: [
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      useFactory: () => () => {},
-      deps: [RouteHandler]
-    }
-  ]
-})
-export class AppModule {}
-```
-
-This can also be accomplished using the new `ENVIRONMENT_INITIALIZER` token introduced in Angular 15. You will need to update the application configuration to provide it:
+Remember to ensure that you inject the `RouteHandler` somewhere in your application for DI to set things up. If you want this to occur during application startup, this can also be accomplished using the new `ENVIRONMENT_INITIALIZER` token:
 
 ```ts
 import { ApplicationConfig, ENVIRONMENT_INITIALIZER, inject } from '@angular/core';
@@ -103,7 +91,7 @@ export class CartComponent {
   constructor() {
     const actions$ = inject(Actions);
 
-    this.actions$.pipe(ofActionSuccessful(CartDelete)).subscribe(() => alert('Item deleted'));
+    actions$.pipe(ofActionSuccessful(CartDelete)).subscribe(() => alert('Item deleted'));
   }
 }
 ```

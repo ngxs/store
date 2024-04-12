@@ -466,9 +466,11 @@ describe('Action', () => {
           .subscribe(() => record('dispatch(PromiseThatReturnsObs) - Completed'));
 
         promiseResolveFn();
-        // Wait for anynomous promise to resolve because we record 'promise resolved'
-        // in a microtask which is resolved earlier before the following promise.
-        await Promise.resolve();
+
+        // Execute a macrotask to wait for all scheduled promises to be flushed so that we
+        // can accurately assert the recorder against values (as the task queue will be
+        // completely clean).
+        await macrotask();
 
         // Assert
         expect(recorder).toEqual([
@@ -480,7 +482,11 @@ describe('Action', () => {
         ]);
 
         completeObservableFn();
-        await Promise.resolve();
+
+        // Execute a macrotask to wait for all scheduled promises to be flushed so that we
+        // can accurately assert the recorder against values (as the task queue will be
+        // completely clean).
+        await macrotask();
 
         expect(recorder).toEqual([
           'promiseThatReturnsObs - start',
@@ -492,10 +498,10 @@ describe('Action', () => {
           'observableAction - observable tap',
           '(completeObservableFn) - complete',
           'ObservableAction [Completed]',
-          '(completeObservableFn) - end',
           'promiseThatReturnsObs - observable tap',
           'PromiseThatReturnsObs [Completed]',
-          'dispatch(PromiseThatReturnsObs) - Completed'
+          'dispatch(PromiseThatReturnsObs) - Completed',
+          '(completeObservableFn) - end'
         ]);
       });
     });
@@ -521,9 +527,11 @@ describe('Action', () => {
           .subscribe(() => record('dispatch(PromiseThatReturnsPromise) - Completed'));
 
         promiseResolveFn();
-        // Wait for anynomous promise to resolve because we record 'promise resolved'
-        // in a microtask which is resolved earlier before the following promise.
-        await Promise.resolve();
+
+        // Execute a macrotask to wait for all scheduled promises to be flushed so that we
+        // can accurately assert the recorder against values (as the task queue will be
+        // completely clean).
+        await macrotask();
 
         // Assert
         expect(recorder).toEqual([
@@ -535,7 +543,11 @@ describe('Action', () => {
         ]);
 
         completeObservableFn();
-        await Promise.resolve();
+
+        // Execute a macrotask to wait for all scheduled promises to be flushed so that we
+        // can accurately assert the recorder against values (as the task queue will be
+        // completely clean).
+        await macrotask();
 
         expect(recorder).toEqual([
           'promiseThatReturnsPromise - start',
@@ -924,3 +936,7 @@ describe('Action', () => {
     });
   });
 });
+
+function macrotask() {
+  return new Promise(resolve => setTimeout(resolve));
+}

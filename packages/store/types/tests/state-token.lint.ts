@@ -125,7 +125,7 @@ describe('[TEST]: StateToken', () => {
         return state;
       }
 
-      @Selector([TodoListState, TODO_LIST_TOKEN]) // (state: string[], other: number) => number
+      @Selector([TodoListState, TODO_LIST_TOKEN]) // $ExpectError
       static todosV4(state: string[], other: number[]): number {
         return state.length + other.length;
       }
