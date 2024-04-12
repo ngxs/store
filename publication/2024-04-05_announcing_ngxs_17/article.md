@@ -6,6 +6,7 @@ NGXS v17 is the result of months of hard work by the team, who have been dedicat
 
 - 🎨 Standalone API
 - 🚦 Signals
+- ⏩ Dispatch Utilities
 - 🚀 Schematics
 - ❗ Error Handling
 - 🔌 Plugin Improvements
@@ -144,13 +145,14 @@ We don't allow any options to be provided to the internal `computed` function, s
 
 ### Signal Utilities
 
-NGXS offers utilities for signals that can be used with other solutions. All of these utilities are located within the `@ngxs/store` package and are independent of any specific.
+NGXS offers utilities for signals that can be used with other solutions, promoting modularity and flexibility. All of these utilities are located within the `@ngxs/store` package and are independent of any specific state management framework.
 
 These utilities are:
 
-- `select`: This utility function retrieves a signal from the state
-- `createSelectMap`: This utility function accepts an object where the values are selector functions
-- `createDispatchMap`: This utility function accepts an object where the values are action classes
+- `select`: This utility function retrieves a signal from the state for the provided selector.
+- `createSelectMap`: This utility function will convert an object where the values are selectors to an object where each property is the signal for the corresponding selector.
+
+See the [select](https://www.ngxs.io/concepts/select/signals#select) and [createSelectMap](https://www.ngxs.io/concepts/select/signals#createselectmap) in the documentation for further details.
 
 **NgRx SignalStore**
 
@@ -159,6 +161,13 @@ These utility functions can be easily integrated for use with the NgRx SignalSto
 You can read more [here](https://www.ngxs.io/concepts/select/signals)
 
 ---
+
+## Dispatch Utilities
+
+- `dispatch`: This utility function takes an action as a parameter and returns a function. This function can then be called with parameters for the action constructor. When this function is called, the action is created and is dispatched immediately.
+- `createDispatchMap`: This utility function accepts an object where the values are action classes
+
+See the [dispatch](https://www.ngxs.io/concepts/store#dispatch-utility) and [createDispatchMap](https://www.ngxs.io/concepts/select/signals#createdispatchmap) in the documentation for further details.
 
 ## Schematics
 
