@@ -9,9 +9,9 @@ NGXS v17 is the result of months of hard work by the team, who have been dedicat
 - ⏩ Dispatch Utilities
 - 🚀 Schematics
 - ❗ Error Handling
-- 🔌 Plugin Improvements
 - 🛑 Breaking Changes
 - 🗑️ Deprecations
+- 🔌 Plugin Improvements
 - 🧑🏾‍🤝‍🧑🏻 NGXS Community
 
 ---
@@ -237,7 +237,7 @@ Let's see some examples:
 
 NGXS provides a robust error handling mechanism that automatically catches unhandled exceptions thrown within actions. These errors are then directed to a centralized `ErrorHandler`.
 
-However, you can override the default implementation and provide your custom one
+However, you can override the default implementation and provide your custom one.
 
 You can read more [here](https://www.ngxs.io/concepts/store/error-handling#custom-unhandled-error-handler)
 
@@ -252,45 +252,6 @@ You can read more [here](https://www.ngxs.io/concepts/store/error-handling#custo
 - Log feature states added before store is initialized [#2067](https://github.com/ngxs/store/pull/2067)
 
   When a feature state is initialized before the `store`, will appear an error message and the state initialization order must be updated. This typically occurs when `NgxsModule.forFeature` or `provideStates` is called before `NgxsModule.forRoot` or `provideStore`.
-
----
-
-## Plugin Improvements
-
-The plugins exposes some of its internal API implementations to allow library authors to experiment with potential extensions. However, keep in mind that these API implementations are not part of the official API, but rather an internals API. This means that they could be changed at any time in the future. Let's see some of their details:
-
-> _Please note the `barred O` symbol which denotes it's not part of the official API_
-
-**Router Plugin**
-
-The exposed tokens and function are:
-
-- `ɵNGXS_ROUTER_PLUGIN_OPTIONS`
-- `ɵUSER_OPTIONS`
-- `ɵcreateRouterPluginOptions`
-
-You can import them using this path `@ngxs/router-plugin/internals` as seen below:
-
----
-
-**Storage Plugin**
-
-The exposed tokens and function are:
-
-- `ɵDEFAULT_STATE_KEY`
-
-  The storage plugin's key [option](https://www.ngxs.io/plugins/storage#options) allows you to specify which state slices should be persisted in storage. If you don't provide any state names, the plugin will persist all states using the `@@STATE` key. You can now use the `ɵDEFAULT_STATE_KEY` token to provide an alternative to `@@STATE`.
-
-- `ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS`,
-- `ɵNGXS_STORAGE_PLUGIN_OPTIONS`,
-- `ɵextractStringKey`,
-- `ɵisKeyWithExplicitEngine`,
-- `ɵcreateFinalStoragePluginOptions`
-
-  As of today, SSR apps can use custom storage engine implementations instead of relying on `localStorage` or `sessionStorage`.
-  This new internal API gives you the flexibility to further customize your storage solution.
-
-You can import them using this path `@ngxs/storage-plugin/internals`.
 
 ---
 
@@ -559,6 +520,45 @@ You can read more [here](https://www.ngxs.io/deprecations/select-decorator-depre
 We're planning to remove the option to declare sub-states on the state using the `children` property. This feature was introduced years ago to address certain issues, but it's not technically beneficial and doesn't add any value.
 
 You can read more [here](https://www.ngxs.io/deprecations/sub-states-deprecation)
+
+---
+
+## Plugin Improvements
+
+The plugins exposes some of its internal API implementations to allow library authors to experiment with potential extensions. However, keep in mind that these API implementations are not part of the official API, but rather an internals API. This means that they could be changed at any time in the future. Let's see some of their details:
+
+> _Please note the `barred O` symbol which denotes it's not part of the official API_
+
+**Router Plugin**
+
+The exposed tokens and function are:
+
+- `ɵNGXS_ROUTER_PLUGIN_OPTIONS`
+- `ɵUSER_OPTIONS`
+- `ɵcreateRouterPluginOptions`
+
+You can import them using this path `@ngxs/router-plugin/internals` as seen below:
+
+---
+
+**Storage Plugin**
+
+The exposed tokens and function are:
+
+- `ɵDEFAULT_STATE_KEY`
+
+  The storage plugin's key [option](https://www.ngxs.io/plugins/storage#options) allows you to specify which state slices should be persisted in storage. If you don't provide any state names, the plugin will persist all states using the `@@STATE` key. You can now use the `ɵDEFAULT_STATE_KEY` token to provide an alternative to `@@STATE`.
+
+- `ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS`,
+- `ɵNGXS_STORAGE_PLUGIN_OPTIONS`,
+- `ɵextractStringKey`,
+- `ɵisKeyWithExplicitEngine`,
+- `ɵcreateFinalStoragePluginOptions`
+
+  As of today, SSR apps can use custom storage engine implementations instead of relying on `localStorage` or `sessionStorage`.
+  This new internal API gives you the flexibility to further customize your storage solution.
+
+You can import them using this path `@ngxs/storage-plugin/internals`.
 
 ---
 
