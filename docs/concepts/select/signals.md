@@ -1,6 +1,6 @@
 # Signals
 
-NGXS offers utilities for signals that can be used with other solutions. All of these utilities are located within the `@ngxs/store` package and are independent of any specific.
+NGXS offers utilities for signals that can be used with other solutions, promoting modularity and flexibility. All of these utilities are located within the `@ngxs/store` package and are independent of any specific state management framework.
 
 ## select
 
