@@ -1,9 +1,10 @@
 # Announcing NGXS 17
 
-NGXS v17 is the result of months of hard work by the team, who have been dedicated to ensuring that the library is stable and that its core features are enhanced, all while maintaining its simplicity.
+We're thrilled to announce the release of NGXS v17! This update represents months of hard work by the NGXS team, focused on strengthening the library's core functionalities while maintaining its signature ease of use. But that's not all – we've also made a strategic decision to align NGXS versioning with Angular's release cycle. This move ensures seamless compatibility and allows you to leverage the latest features from both libraries as they evolve together.
 
 ## Overview
 
+- 🧑🏾‍🤝‍🧑🏻 NGXS Community
 - 🎨 Standalone API
 - 🚦 Signals
 - ⏩ Dispatch Utilities
@@ -12,7 +13,19 @@ NGXS v17 is the result of months of hard work by the team, who have been dedicat
 - 🛑 Breaking Changes
 - 🗑️ Deprecations
 - 🔌 Plugin Improvements
-- 🧑🏾‍🤝‍🧑🏻 NGXS Community
+
+---
+
+## NGXS Community
+
+We've got some exciting news in this release beyond the usual code wizardry. We're officially moving our community hub from Slack to **Discord**!
+
+**Why Discord?**
+
+- **Dedicated Channels:** Dive deep into specific NGXS topics with focused channels.
+- **Enhanced Support:** Find answers and resources faster with a well-organized structure.
+
+Head over to our brand new Discord server at https://discord.gg/yFk6bu7v. Don't forget to introduce yourself and let us know what awesome NGXS projects you're working on!
 
 ---
 
@@ -559,9 +572,3 @@ The exposed tokens and function are:
   This new internal API gives you the flexibility to further customize your storage solution.
 
 You can import them using this path `@ngxs/storage-plugin/internals`.
-
----
-
-## NGXS Community
-
-NGXS on Discord? Heck yes! Join the party and level up your development skills together. Let's keep the conversation flowing! https://discord.gg/yFk6bu7v
