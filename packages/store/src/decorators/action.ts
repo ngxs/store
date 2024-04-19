@@ -14,9 +14,7 @@ type ActionToPayload<Action extends ActionType> =
  * Given a list of action classes, returns the union of their payloads.
  */
 type ActionsToPayload<Actions extends readonly ActionType[]> = {
-  [K in keyof Actions]: Actions[K] extends ActionDef<any, infer ActionPayload>
-    ? ActionPayload
-    : never;
+  [K in keyof Actions]: ActionToPayload<Actions[K]>;
 }[number];
 
 /**
