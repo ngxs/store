@@ -1,5 +1,6 @@
 /* tslint:disable:max-line-length */
 /// <reference types="@types/jest" />
+import { Injectable } from '@angular/core';
 import {
   ofAction,
   ofActionCanceled,
@@ -8,7 +9,10 @@ import {
   ofActionErrored,
   ofActionSuccessful,
   Actions,
-  ActionDef
+  ActionDef,
+  State,
+  Action,
+  StateContext
 } from '@ngxs/store';
 
 describe('[TEST]: Action Operator Types', () => {
@@ -390,3 +394,68 @@ describe('[TEST]: Action Operator Types', () => {
     });
   });
 });
+
+describe('[TEST]: Action Decorator Types', () => {
+  class ActionString {
+    static type = 'ACTION 1';
+    constructor(public a: string) {}
+  }
+
+  class ActionNumber {
+    static type = 'ACTION 2';
+    constructor(public c: number) {}
+  }
+
+  class ActionString2 {
+    static type = 'ACTION 3';
+    constructor(public a: string) {}
+  }
+
+  class ActionNone {
+    static type = 'ACTION 4';
+  }
+
+  it('decorator matches method', () => {
+    @State({
+      name: 'test'
+    })
+    @Injectable()
+    class TestClass {
+      @Action(ActionString)
+      noArgs() {}
+  
+      @Action(ActionString)
+      singleActionWithOnlyStateContextArg(context: StateContext<any>) {}
+  
+      @Action(ActionString)
+      singleActionWithStateContextAndPayloadArg(context: StateContext<any>, payload: ActionString) {}
+  
+      @Action([ActionString, ActionNumber])
+      multipleActionListWithStateContextAndUnionPayloadArg(context: StateContext<any>, payload: ActionNumber | ActionString) {}
+  
+      @Action([ActionString, ActionString2])
+      multipleActionListWithStateContextAndIntersectionPayloadArg(context: StateContext<any>, payload: { a: string }) {}
+    }
+  })
+
+  it('decorator does not match method', () => {
+    
+    @State({
+      name: 'test'
+    })
+    @Injectable()
+    class TestClass {
+      @Action(ActionString) // $ExpectError
+      singleActionWithStateContextAndWrongPayloadArg(context: StateContext<any>, payload: ActionNumber) {}
+
+      @Action([ActionString]) // $ExpectError
+      singleActionListWithStateContextAndWrongPayloadArg(context: StateContext<any>, payload: ActionNumber) {}
+
+      @Action([ActionString, ActionNumber]) // $ExpectError
+      multipleActionListWithStateContextAndOnePayloadArg(context: StateContext<any>, payload: ActionNumber) {}
+
+      @Action(ActionNone) // $ExpectError
+      noArgsWithPayload(context: StateContext<any>, payload: { a: string }) {}
+    }
+  })
+})
