@@ -42,12 +42,21 @@ type HandlerTypedPropertyDescriptor<ActionOrActions> =
     >;
 
 /**
+ * The result of a call to the `@Action()` decorator with the given action(s) as its first argument.
+ */
+type ActionDecorator<ActionOrActions extends ActionType | ActionType[]> = (
+  target: any,
+  name: string | symbol,
+  _descriptor: HandlerTypedPropertyDescriptor<ActionOrActions>
+) => void;
+
+/**
  * Decorates a method with action information.
  */
 export function Action<ActionOrActions extends ActionType | ActionType[]>(
   actions: ActionOrActions,
   options?: ɵActionOptions
-) {
+): ActionDecorator<ActionOrActions> {
   return (
     target: any,
     name: string | symbol,
