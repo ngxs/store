@@ -28,13 +28,13 @@ describe('[TEST]: Action Types', () => {
   });
 
   it('should be correct type in action decorator', () => {
-    assertType(() => Action(UpdateState)); // $ExpectType MethodDecorator
-    assertType(() => Action(new FooAction('payload'))); // $ExpectType MethodDecorator
-    assertType(() => Action({ type: 'foo' })); // $ExpectType MethodDecorator
-    assertType(() => Action([])); // $ExpectType MethodDecorator
-    assertType(() => Action(BarAction)); // $ExpectType MethodDecorator
-    assertType(() => Action([InitState, UpdateState])); // $ExpectType MethodDecorator
-    assertType(() => Action([InitState], { cancelUncompleted: true })); // $ExpectType MethodDecorator
+    assertType(() => Action(UpdateState)); // $ExpectType ActionDecorator<typeof UpdateState>
+    assertType(() => Action(new FooAction('payload'))); // $ExpectType ActionDecorator<FooAction>
+    assertType(() => Action({ type: 'foo' })); // $ExpectType ActionDecorator<{ type: string; }>
+    assertType(() => Action([])); // $ExpectType ActionDecorator<never[]>
+    assertType(() => Action(BarAction)); // $ExpectType ActionDecorator<typeof BarAction>
+    assertType(() => Action([InitState, UpdateState])); // $ExpectType ActionDecorator<(typeof UpdateState | typeof InitState)[]>
+    assertType(() => Action([InitState], { cancelUncompleted: true })); // $ExpectType ActionDecorator<(typeof InitState)[]>
     assertType(() => Action(new BarAction('foo'))); // $ExpectError
     assertType(() => Action([{ foo: 'bar' }])); // $ExpectError
     assertType(() => Action([InitState, UpdateState], { foo: 'bar' })); // $ExpectError
@@ -50,7 +50,7 @@ describe('[TEST]: Action Types', () => {
     class MyAction {
       static type = 'MY_ACTION';
     }
-    assertType(() => Action([MyAction])); // $ExpectType MethodDecorator
+    assertType(() => Action([MyAction])); // $ExpectType ActionDecorator<(typeof MyAction)[]>
 
     class RequiredOnlyStaticType {
       type = 'anything';

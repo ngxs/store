@@ -122,12 +122,12 @@ export class RouterState implements OnDestroy {
   }
 
   @Action([
-    RouterRequest,
-    RouterNavigation,
-    RouterError,
-    RouterCancel,
-    RouterDataResolved,
-    RouterNavigated
+    RouterRequest<RouterStateSnapshot>,
+    RouterNavigation<RouterStateSnapshot>,
+    RouterError<RouterStateModel, RouterStateSnapshot>,
+    RouterCancel<RouterStateModel, RouterStateSnapshot>,
+    RouterDataResolved<RouterStateSnapshot>,
+    RouterNavigated<RouterStateSnapshot>
   ])
   angularRouterAction(
     ctx: StateContext<RouterStateModel>,
