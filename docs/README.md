@@ -1,8 +1,11 @@
 # NGXS
 
-![](assets/logo.png)\
-NGXS is a state management pattern + library for Angular\
-\
+<div align="left">
+
+<figure><picture><source srcset="assets/NGXS-Logo_White_Blue.png" media="(prefers-color-scheme: dark)"><img src="assets/NGXS-Logo_Black_Blue.png" alt="" width="250"></picture></figure>
+
+</div>
+
 [![Discord](https://img.shields.io/discord/1008573955587702894?style=flat-square&logo=discord&label=discord&link=https%3A%2F%2Fdiscord.com%2Fchannels%2F1008573955587702894)](https://discord.com/channels/1008573955587702894)
 [![](https://badge.fury.io/js/%40ngxs%2Fstore.svg)](https://badge.fury.io/js/%40ngxs%2Fstore) [![](https://api.codeclimate.com/v1/badges/5b43106a1ddff7d76a04/maintainability)](https://codeclimate.com/github/ngxs/store/maintainability) [![](https://api.codeclimate.com/v1/badges/5b43106a1ddff7d76a04/test_coverage)](https://codeclimate.com/github/ngxs/store/test_coverage) [![](https://circleci.com/gh/ngxs/store/tree/master.svg?style=svg)](https://circleci.com/gh/ngxs/store)
 
