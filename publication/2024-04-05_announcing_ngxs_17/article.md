@@ -6,6 +6,16 @@ But that's not all – we've also made a strategic decision to align NGXS versio
 
 This move ensures seamless compatibility and allows you to leverage the latest features from both libraries as they evolve together.
 
+But before we dive in, we want to unveil a fresh new look for NGXS!
+
+🥁 **Drumroll please...** 🥁
+
+We're thrilled to introduce our brand new logo! We believe it better reflects the energy, innovation, and (dare we say) awesomeness of the NGXS library. Keep an eye out for it on our documentation website, and social media channels.
+
+A huge shoutout to [Lena Lekkou](https://www.linkedin.com/in/lenalekkou/), the talented designer who brought this logo to life! Her creativity and design expertise have given NGXS a visual identity that truly embodies its spirit.
+
+Now, let's get down to business!
+
 ## Overview
 
 - 🧑🏾‍🤝‍🧑🏻 NGXS Community
