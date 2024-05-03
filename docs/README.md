@@ -2,7 +2,7 @@
 
 <div align="left">
 
-<figure><picture><source srcset="assets/NGXS-Logo_White_Blue.png" media="(prefers-color-scheme: dark)"><img src="assets/NGXS-Logo_Black_Blue.png" alt="" width="250"></picture></figure>
+<figure><picture><source srcset="assets/ngxs-logo_dark_theme.png" media="(prefers-color-scheme: dark)"><img src="assets/ngxs-logo_light_theme.png" alt="" width="250"></picture></figure>
 
 </div>
 
