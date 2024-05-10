@@ -1,13 +1,18 @@
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import { getProject, isLib } from '../project';
 
-export function getProjectMainFile(host: Tree, project?: string) {
+export function getProjectMainFile(host: Tree, project?: string): string | null {
   const resolvedProject = getProject(host, project);
   if (!resolvedProject) {
+    if (!project) {
+      throw new SchematicsException(
+        `Could not determine the project name. Make sure to provide the "project" option manually.`
+      );
+    }
     throw new SchematicsException(`Project "${project}" does not exist.`);
   }
   if (isLib(host, project)) {
-    throw new SchematicsException(`Invalid project type`);
+    return null;
   }
   const projectOptions = resolvedProject.architect['build'].options;
 

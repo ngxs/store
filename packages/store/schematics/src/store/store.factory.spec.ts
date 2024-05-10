@@ -16,8 +16,22 @@ describe('NGXS Store', () => {
   const testSetup = async (options?: {
     isStandalone?: boolean;
     storeSchema?: StoreSchema;
+    createSecondProject?: boolean;
   }) => {
-    const appTree = await createWorkspace(options?.isStandalone);
+    let appTree = await createWorkspace(options?.isStandalone);
+    const angularSchematicRunner = new SchematicTestRunner(
+      '@schematics/angular',
+      path.join(workspaceRoot, 'node_modules/@schematics/angular/collection.json')
+    );
+    if (options?.createSecondProject) {
+      appTree = await angularSchematicRunner.runSchematic(
+        'application',
+        {
+          name: 'second-app'
+        },
+        appTree
+      );
+    }
 
     const storeSchemaOptions: StoreSchema = options?.storeSchema || defaultOptions;
     const tree: UnitTestTree = await runner.runSchematic('store', storeSchemaOptions, appTree);
@@ -31,13 +45,12 @@ describe('NGXS Store', () => {
 
     // Act
     const files: string[] = tree.files;
-
     // Assert
     expect(files).toEqual(
       expect.arrayContaining([
-        '/todos/todos.actions.ts',
-        '/todos/todos.state.spec.ts',
-        '/todos/todos.state.ts'
+        '/projects/foo/src/app/todos/todos.actions.ts',
+        '/projects/foo/src/app/todos/todos.state.spec.ts',
+        '/projects/foo/src/app/todos/todos.state.ts'
       ])
     );
   });
@@ -56,7 +69,11 @@ describe('NGXS Store', () => {
 
     // Assert
     expect(files).toEqual(
-      expect.arrayContaining(['/todos.actions.ts', '/todos.state.spec.ts', '/todos.state.ts'])
+      expect.arrayContaining([
+        '/projects/foo/src/app/todos.actions.ts',
+        '/projects/foo/src/app/todos.state.spec.ts',
+        '/projects/foo/src/app/todos.state.ts'
+      ])
     );
   });
 
@@ -74,7 +91,10 @@ describe('NGXS Store', () => {
 
     // Assert
     expect(files).toEqual(
-      expect.arrayContaining(['/todos/todos.actions.ts', '/todos/todos.state.ts'])
+      expect.arrayContaining([
+        '/projects/foo/src/app/todos/todos.actions.ts',
+        '/projects/foo/src/app/todos/todos.state.ts'
+      ])
     );
   });
 
@@ -93,10 +113,38 @@ describe('NGXS Store', () => {
     // Assert
     expect(files).toEqual(
       expect.arrayContaining([
-        '/todos/todos.actions.ts',
-        '/todos/todos.state.spec.ts',
-        '/todos/todos.state.ts'
+        '/projects/foo/src/app/todos/todos.actions.ts',
+        '/projects/foo/src/app/todos/todos.state.spec.ts',
+        '/projects/foo/src/app/todos/todos.state.ts'
       ])
+    );
+  });
+
+  it('should resolve the path relative to the default project', async () => {
+    // Arrange
+    const { tree } = await testSetup({
+      storeSchema: {
+        ...defaultOptions,
+        path: 'my-nested-path'
+      }
+    });
+
+    // Act
+    const files: string[] = tree.files;
+    // Assert
+    expect(files).toEqual(
+      expect.arrayContaining([
+        '/projects/foo/src/app/my-nested-path/todos/todos.actions.ts',
+        '/projects/foo/src/app/my-nested-path/todos/todos.state.spec.ts',
+        '/projects/foo/src/app/my-nested-path/todos/todos.state.ts'
+      ])
+    );
+  });
+
+  it("should throw if there're multiple projects and none is specified explicitly", async () => {
+    // Arrange
+    await expect(testSetup({ createSecondProject: true })).rejects.toThrow(
+      'Could not determine the project name. Make sure to provide the "project" option manually'
     );
   });
 });

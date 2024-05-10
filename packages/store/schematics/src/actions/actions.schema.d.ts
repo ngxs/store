@@ -11,4 +11,8 @@ export interface ActionsSchema {
    * Flag to indicate if a dir is created.
    */
   flat?: boolean;
+  /**
+   * The application project name to add the Ngxs module/provider.
+   */
+  project?: string;
 }
