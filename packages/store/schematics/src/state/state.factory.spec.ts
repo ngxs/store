@@ -35,7 +35,10 @@ describe('Generate ngxs state', () => {
 
     // Assert
     expect(files).toEqual(
-      expect.arrayContaining(['/todos/todos.state.spec.ts', '/todos/todos.state.ts'])
+      expect.arrayContaining([
+        '/projects/foo/src/app/todos/todos.state.spec.ts',
+        '/projects/foo/src/app/todos/todos.state.ts'
+      ])
     );
   });
 
@@ -52,7 +55,12 @@ describe('Generate ngxs state', () => {
     const files: string[] = tree.files;
 
     // Assert
-    expect(files).toEqual(expect.arrayContaining(['/todos.state.spec.ts', '/todos.state.ts']));
+    expect(files).toEqual(
+      expect.arrayContaining([
+        '/projects/foo/src/app/todos.state.spec.ts',
+        '/projects/foo/src/app/todos.state.ts'
+      ])
+    );
   });
 
   it('should manage name with spec true', async () => {
@@ -69,7 +77,10 @@ describe('Generate ngxs state', () => {
 
     // Assert
     expect(files).toEqual(
-      expect.arrayContaining(['/todos/todos.state.spec.ts', '/todos/todos.state.ts'])
+      expect.arrayContaining([
+        '/projects/foo/src/app/todos/todos.state.spec.ts',
+        '/projects/foo/src/app/todos/todos.state.ts'
+      ])
     );
   });
 
@@ -86,7 +97,9 @@ describe('Generate ngxs state', () => {
     const files: string[] = tree.files;
 
     // Assert
-    expect(files).toEqual(expect.arrayContaining(['/todos/todos.state.ts']));
+    expect(files).toEqual(
+      expect.arrayContaining(['/projects/foo/src/app/todos/todos.state.ts'])
+    );
   });
 
   it('should provideStore if the application is standalone', async () => {
@@ -100,7 +113,7 @@ describe('Generate ngxs state', () => {
     });
 
     // Act
-    const content = tree.readContent('/todos/todos.state.spec.ts');
+    const content = tree.readContent('/projects/foo/src/app/todos/todos.state.spec.ts');
 
     // Assert
     expect(content).toMatch(/provideStore\(\[TodosState\]\)/);
@@ -117,7 +130,7 @@ describe('Generate ngxs state', () => {
     });
 
     // Act
-    const content = tree.readContent('/todos/todos.state.spec.ts');
+    const content = tree.readContent('/projects/foo/src/app/todos/todos.state.spec.ts');
 
     // Assert
     expect(content).toMatch(/NgxsModule.forRoot\(\[TodosState\]\)/);

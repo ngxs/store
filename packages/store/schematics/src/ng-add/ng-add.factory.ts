@@ -80,6 +80,9 @@ function runNpmPackageInstall(): Rule {
 function addDeclaration(schema: NormalizedNgxsPackageSchema): Rule {
   return async (host: Tree) => {
     const mainFile = getProjectMainFile(host, schema.project);
+    if (!mainFile) {
+      return;
+    }
     const isStandalone = isStandaloneApp(host, mainFile);
 
     if (isStandalone) {

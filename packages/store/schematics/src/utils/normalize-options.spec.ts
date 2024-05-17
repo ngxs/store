@@ -1,14 +1,16 @@
+import { createWorkspace } from '../_testing';
 import { normalizeBaseOptions, normalizeOptionalBoolean } from './normalize-options';
 
 describe('normalizeBaseOptions', function () {
   test.each`
-    options                                                                | expected
-    ${{ name: '' }}                                                        | ${{ name: '', path: '' }}
-    ${{ name: 'MyComponent', path: '' }}                                   | ${{ name: 'my-component', path: '' }}
-    ${{ name: 'MyComponent', path: 'app/components', extraProp: 'value' }} | ${{ name: 'my-component', path: 'app/components', extraProp: 'value' }}
-    ${{ name: 'MyComponent', path: 'app/../invalid-path' }}                | ${{ name: 'my-component', path: 'invalid-path' }}
-  `('should normalize options $options as $expected', function ({ options, expected }) {
-    var normalizedOptions = normalizeBaseOptions(options);
+    options                                                            | expected
+    ${{ name: '' }}                                                    | ${{ name: '', path: 'projects/foo/src/app', project: 'foo' }}
+    ${{ name: 'MyComponent', path: '' }}                               | ${{ name: 'my-component', path: 'projects/foo/src/app', project: 'foo' }}
+    ${{ name: 'MyComponent', path: 'components', extraProp: 'value' }} | ${{ name: 'my-component', path: 'projects/foo/src/app/components', extraProp: 'value', project: 'foo' }}
+    ${{ name: 'MyComponent', path: '/../../../outside-of-app-path' }}  | ${{ name: 'my-component', path: 'projects/outside-of-app-path', project: 'foo' }}
+  `('should normalize options $options as $expected', async function ({ options, expected }) {
+    const appTree = await createWorkspace();
+    const normalizedOptions = normalizeBaseOptions(appTree, options);
     expect(normalizedOptions).toEqual(expected);
   });
 });
@@ -23,7 +25,7 @@ describe('normalizeOptionalBoolean', function () {
   `(
     'should return $expected when value is $value and default is $defaultValue',
     function ({ value, defaultValue, expected }) {
-      var result = normalizeOptionalBoolean(value, defaultValue);
+      const result = normalizeOptionalBoolean(value, defaultValue);
       expect(result).toBe(expected);
     }
   );

@@ -1,19 +1,29 @@
 import { normalize, strings } from '@angular-devkit/core';
+import { getProjectData } from './project';
+import { Tree } from '@angular-devkit/schematics';
 
 interface BaseOptions {
   name: string;
   path?: string;
+  project?: string;
 }
 
 export function normalizeBaseOptions<T extends BaseOptions>(
+  host: Tree,
   options: T
 ): T & Required<BaseOptions> {
   const name: string = strings.dasherize(options.name);
-  const path = normalizePath(options.path);
+  const data = getProjectData(host, options);
+
+  if (!data) {
+    throw new Error('Could not resolve project path and name');
+  }
+
   return {
     ...options,
     name,
-    path
+    path: data.path,
+    project: data.project
   };
 }
 

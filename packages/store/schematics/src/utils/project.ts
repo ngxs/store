@@ -1,6 +1,7 @@
 import { TargetDefinition } from '@schematics/angular/utility/workspace';
 import { getWorkspace } from './config';
 import { Tree } from '@angular-devkit/schematics';
+import { join } from 'path';
 
 export interface WorkspaceProject {
   name: string;
@@ -16,11 +17,15 @@ export function getProject(host: Tree, project?: string): WorkspaceProject | nul
 
   if (!project) {
     const defaultProject = (workspace as { defaultProject?: string }).defaultProject;
-    project =
-      defaultProject !== undefined ? defaultProject : Object.keys(workspace.projects)[0];
+    if (!defaultProject) {
+      const projectNames = Object.keys(workspace.projects);
+      if (projectNames.length === 1) {
+        project = projectNames[0];
+      }
+    }
   }
 
-  const resolvedProject = workspace.projects[project];
+  const resolvedProject = project && workspace.projects[project];
   if (resolvedProject) {
     resolvedProject.name = project;
 
@@ -29,10 +34,10 @@ export function getProject(host: Tree, project?: string): WorkspaceProject | nul
   return null;
 }
 
-export function getProjectPath(
+export function getProjectData(
   host: Tree,
   options: { project?: string | undefined; path?: string | undefined }
-): string | null {
+): { project: string; path: string } | null {
   const project = getProject(host, options.project);
 
   if (!project) {
@@ -43,13 +48,12 @@ export function getProjectPath(
     project.root = project.root.substring(0, project.root.length - 1);
   }
 
-  if (options.path === undefined) {
-    const projectDirName = project.projectType === 'application' ? 'app' : 'lib';
+  const projectDirName = project.projectType === 'application' ? 'app' : 'lib';
 
-    return `${project.root ? `/${project.root}` : ''}/src/${projectDirName}`;
-  }
-
-  return options.path;
+  return {
+    project: project.name,
+    path: join(project.root ?? '', 'src', projectDirName, options.path ?? '')
+  };
 }
 
 export function isLib(host: Tree, project?: string) {
