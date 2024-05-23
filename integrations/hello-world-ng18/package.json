@@ -15,7 +15,7 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:run:ssr": "cypress run --spec=cypress/integration-ssr/*.ts",
-    "serve:integration:static": "serve dist-integration -s -l 4200 --cors",
+    "serve:integration:static": "serve dist-integration/browser -s -l 4200 --cors",
     "e2e": "start-test serve:integration:static 4200 cy:open",
     "e2e:ci": "start-test serve:integration:static 4200 cy:run"
   },
