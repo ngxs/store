@@ -6,7 +6,7 @@ $ npm install @ngxs/store@dev
 
 ### For next major version
 
-- ...
+- Build: Add Angular 18 support [#2168](https://github.com/ngxs/store/pull/2168)
 
 ### To become next patch version
 
