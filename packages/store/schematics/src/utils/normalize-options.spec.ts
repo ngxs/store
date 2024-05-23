@@ -1,13 +1,22 @@
 import { createWorkspace } from '../_testing';
 import { normalizeBaseOptions, normalizeOptionalBoolean } from './normalize-options';
+import { join } from 'path';
 
 describe('normalizeBaseOptions', function () {
+  function fixPath(path: string) {
+    const parts = path.split('/');
+    if (parts.length > 1) {
+      return join(...parts);
+    }
+    return path;
+  }
+
   test.each`
     options                                                            | expected
-    ${{ name: '' }}                                                    | ${{ name: '', path: 'projects/foo/src/app', project: 'foo' }}
-    ${{ name: 'MyComponent', path: '' }}                               | ${{ name: 'my-component', path: 'projects/foo/src/app', project: 'foo' }}
-    ${{ name: 'MyComponent', path: 'components', extraProp: 'value' }} | ${{ name: 'my-component', path: 'projects/foo/src/app/components', extraProp: 'value', project: 'foo' }}
-    ${{ name: 'MyComponent', path: '/../../../outside-of-app-path' }}  | ${{ name: 'my-component', path: 'projects/outside-of-app-path', project: 'foo' }}
+    ${{ name: '' }}                                                    | ${{ name: '', path: fixPath('projects/foo/src/app'), project: 'foo' }}
+    ${{ name: 'MyComponent', path: '' }}                               | ${{ name: 'my-component', path: fixPath('projects/foo/src/app'), project: 'foo' }}
+    ${{ name: 'MyComponent', path: 'components', extraProp: 'value' }} | ${{ name: 'my-component', path: fixPath('projects/foo/src/app/components'), extraProp: 'value', project: 'foo' }}
+    ${{ name: 'MyComponent', path: '/../../../outside-of-app-path' }}  | ${{ name: 'my-component', path: fixPath('projects/outside-of-app-path'), project: 'foo' }}
   `('should normalize options $options as $expected', async function ({ options, expected }) {
     const appTree = await createWorkspace();
     const normalizedOptions = normalizeBaseOptions(appTree, options);
