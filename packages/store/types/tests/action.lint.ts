@@ -308,7 +308,7 @@ describe('[TEST]: Action Operator Types', () => {
     });
 
     it('ofActionDispatched() directly constrained with a parameterized constructor match only', () => {
-      // Arrange & act & assert      
+      // Arrange & act & assert
 
       // If we attempt just a constructor constraint with no generic to infer the instance properties, we get an `any` type
       actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType]>]>(ActionWithMatchingConstructor)).subscribe(result => {
@@ -365,7 +365,7 @@ describe('[TEST]: Action Operator Types', () => {
     });
 
     it('ofActionDispatched() directly constrained with a constructor and instance shape match', () => {
-      // Arrange & act & assert      
+      // Arrange & act & assert
 
       // If we constrain both the constructor and instance properties, we get full type control
       actions$.pipe(ofActionDispatched<[ActionDef<[myArg: CustomPropType], { myArg: CustomPropType }>]>(ActionWithMatchingConstructor)).subscribe(result => {
@@ -423,23 +423,23 @@ describe('[TEST]: Action Decorator Types', () => {
     class TestClass {
       @Action(ActionString)
       noArgs() {}
-  
+
       @Action(ActionString)
       singleActionWithOnlyStateContextArg(context: StateContext<any>) {}
-  
+
       @Action(ActionString)
       singleActionWithStateContextAndPayloadArg(context: StateContext<any>, payload: ActionString) {}
-  
+
       @Action([ActionString, ActionNumber])
       multipleActionListWithStateContextAndUnionPayloadArg(context: StateContext<any>, payload: ActionNumber | ActionString) {}
-  
+
       @Action([ActionString, ActionString2])
       multipleActionListWithStateContextAndIntersectionPayloadArg(context: StateContext<any>, payload: { a: string }) {}
     }
   })
 
   it('decorator does not match method', () => {
-    
+
     @State({
       name: 'test'
     })
