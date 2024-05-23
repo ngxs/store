@@ -73,7 +73,7 @@
     "serve:integration:ssr": "node dist-integration-server/main.js",
     "// - BUILDING": "Run Apps in dev and with packaged modules",
     "build": "yarn build:packages",
-    "postbuild": "yarn rollup -c rollup.config.mjs && node ./build/remove-dts.mjs",
+    "// - postbuild": "yarn rollup -c rollup.config.mjs && node ./build/remove-dts.mjs",
     "build:packages": "yarn nx run-many --target=build --all && ts-node tools/set-metadata",
     "// - INTEGRATION BUILDS": "#requires yarn build",
     "build:integration": "nx build integration --configuration production",
