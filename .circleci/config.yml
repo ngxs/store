@@ -7,7 +7,7 @@ orbs:
 job_defaults_var: &job_defaults
   working_directory: ~/workspace/app
   docker:
-    - image: cimg/node:18.16.0-browsers
+    - image: cimg/node:18.20.0-browsers
 
 # Yarn cache key
 cache_var: &cache_key yarn-packages-v4-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -168,6 +168,22 @@ jobs:
           root: ~/workspace
           paths:
             - app/integrations/hello-world-ng17/dist-integration
+
+  integration_ng18_tests:
+    <<: *job_defaults
+    steps:
+      - *attach_workspace
+      # https://github.com/CircleCI-Public/browser-tools-orb/issues/75
+      - browser-tools/install-browser-tools:
+          chrome-version: '116.0.5845.96'
+          replace-existing-chrome: true
+      - run:
+          name: Run integration tests for ng18 application
+          command: yarn integration:ng18
+      - persist_to_workspace:
+          root: ~/workspace
+          paths:
+            - app/integrations/hello-world-ng18/dist-integration
 
   integration_test_types:
     <<: *job_defaults

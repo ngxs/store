@@ -9,16 +9,18 @@ if (!distPath) {
   throw new Error('"distPath" is required.');
 }
 
-const schematicsSrc = join(projectRoot, 'schematics/src');
+const schematicsSrc = join(projectRoot, 'schematics', 'src');
 assertSchematicsVersionIsUpToDate(schematicsSrc);
 
 const tsConfigPath = join(projectRoot, 'tsconfig.schematics.json');
 
-const cmd = `node_modules/.bin/tsc -p ${tsConfigPath}`;
+const tscExecutable = join(...['node_modules', '.bin', 'tsc']);
+
+const cmd = `${tscExecutable} -p ${tsConfigPath}`;
 console.log(`Running "${cmd}"`);
 execSync(cmd, { stdio: 'inherit' });
 
-fse.copySync(schematicsSrc, join(distPath, 'schematics/src'), src => {
+fse.copySync(schematicsSrc, join(distPath, 'schematics', 'src'), src => {
   // skip not compiled files
   if (src.endsWith('.ts')) {
     return false;
@@ -27,13 +29,13 @@ fse.copySync(schematicsSrc, join(distPath, 'schematics/src'), src => {
 });
 
 fse.copySync(
-  join(projectRoot, 'schematics/collection.json'),
-  join(distPath, 'schematics/collection.json')
+  join(projectRoot, 'schematics', 'collection.json'),
+  join(distPath, 'schematics', 'collection.json')
 );
 
 function assertSchematicsVersionIsUpToDate(schematicsSrc) {
   const rootPkg = JSON.parse(fse.readFileSync('package.json', { encoding: 'utf-8' }));
-  const schematicsVersionsFilePath = join(schematicsSrc, 'utils/versions.json');
+  const schematicsVersionsFilePath = join(schematicsSrc, 'utils', 'versions.json');
   const schematicsVersionsFile = JSON.parse(
     fse.readFileSync(schematicsVersionsFilePath, { encoding: 'utf-8' })
   );
