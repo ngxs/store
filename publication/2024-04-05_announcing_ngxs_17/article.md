@@ -410,6 +410,10 @@ There's a distinction in how errors are thrown based on the selection method use
 
 It's important to note that errors are still logged in development mode for debugging purposes.
 
+### Enforcing Typed Selectors @Action and @Selector
+
+- `@Action` and `@Selector` decorator typings will now enforce that arguments match those declared in the respective definition. [#2158](https://github.com/ngxs/store/pull/2158) and [#2042](https://github.com/ngxs/store/pull/2042)
+
 ### Enforcing Typed Selectors in store.select, store.selectOnce, and store.selectSnapshot
 
 For improved type safety and maintainability, these selector functions now require typed selectors as arguments. This means raw state classes or anonymous functions are no longer accepted.
@@ -551,11 +555,22 @@ You can read more [here](https://www.ngxs.io/deprecations/sub-states-deprecation
 
 ---
 
-## Plugin Improvements
+## Improvements
 
-The plugins exposes some of its internal API implementations to allow library authors to experiment with potential extensions. However, keep in mind that these API implementations are not part of the official API, but rather an internals API. This means that they could be changed at any time in the future. Let's see some of their details:
+The store and plugin exposes some of its internal API implementations to allow library authors to experiment with potential extensions. However, keep in mind that these API implementations are not part of the official API, but rather an internals API. This means that they could be changed at any time in the future. Let's see some of their details:
 
 > _Please note the `barred O` symbol which denotes it's not part of the official API_
+
+**Store**
+
+The exposed functions are:
+
+- `ɵSelectorFunc`
+- `ɵStateSelector`
+- `ɵSelectorDef`
+- `ɵSelectorReturnType`
+
+They might be utilized by developers working on advanced utilities who need access to these types externally. For example, they may create a function that accepts selector functions and returns signals with types corresponding to the return types of those selectors.
 
 **Router Plugin**
 
@@ -587,3 +602,6 @@ The exposed tokens and function are:
   This new internal API gives you the flexibility to further customize your storage solution.
 
 You can import them using this path `@ngxs/storage-plugin/internals`.
+
+---
+
