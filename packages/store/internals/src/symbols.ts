@@ -49,6 +49,9 @@ export interface ɵStoreOptions<T> {
 
   /**
    * Sub states for the given state.
+   *
+   * @deprecated
+   * Read the deprecation notice at this link: https://ngxs.io/deprecations/sub-states-deprecation.
    */
   children?: ɵStateClass[];
 }
@@ -65,6 +68,7 @@ export interface ɵMetaDataModel {
   defaults: any;
   path: string | null;
   makeRootSelector: ɵSelectorFactory | null;
+  /** @deprecated */
   children?: ɵStateClassInternal[];
 }
 
@@ -77,6 +81,10 @@ export interface ɵSelectorMetaDataModel {
 }
 
 export interface ɵSharedSelectorOptions {
+  /**
+   * @deprecated
+   * Read the deprecation notice at this link: https://ngxs.io/deprecations/inject-container-state-deprecation.md.
+   */
   injectContainerState?: boolean;
   suppressErrors?: boolean;
 }

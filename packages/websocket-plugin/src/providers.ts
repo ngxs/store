@@ -1,9 +1,9 @@
 import { APP_INITIALIZER } from '@angular/core';
 
 import { WebSocketHandler } from './websocket-handler';
-import { USER_OPTIONS, NGXS_WEBSOCKET_OPTIONS, NgxsWebsocketPluginOptions } from './symbols';
+import { USER_OPTIONS, NGXS_WEBSOCKET_OPTIONS, NgxsWebSocketPluginOptions } from './symbols';
 
-export function ɵwebsocketOptionsFactory(options: NgxsWebsocketPluginOptions) {
+export function ɵwebsocketOptionsFactory(options: NgxsWebSocketPluginOptions) {
   return {
     reconnectInterval: 5000,
     reconnectAttempts: 10,
@@ -18,7 +18,7 @@ export function ɵwebsocketOptionsFactory(options: NgxsWebsocketPluginOptions) {
   };
 }
 
-export function ɵgetProviders(options?: NgxsWebsocketPluginOptions) {
+export function ɵgetProviders(options?: NgxsWebSocketPluginOptions) {
   return [
     { provide: USER_OPTIONS, useValue: options },
     {

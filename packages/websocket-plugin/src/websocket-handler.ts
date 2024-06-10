@@ -9,8 +9,8 @@ import {
   DisconnectWebSocket,
   SendWebSocketMessage,
   NGXS_WEBSOCKET_OPTIONS,
-  NgxsWebsocketPluginOptions,
-  WebsocketMessageError,
+  NgxsWebSocketPluginOptions,
+  WebSocketMessageError,
   WebSocketDisconnected,
   TypeKeyPropertyMissingError,
   WebSocketConnectionUpdated,
@@ -31,7 +31,7 @@ export class WebSocketHandler implements OnDestroy {
     private _store: Store,
     private _ngZone: NgZone,
     private _actions$: Actions,
-    @Inject(NGXS_WEBSOCKET_OPTIONS) private _options: NgxsWebsocketPluginOptions
+    @Inject(NGXS_WEBSOCKET_OPTIONS) private _options: NgxsWebSocketPluginOptions
   ) {
     this._setupActionsListeners();
   }
@@ -61,7 +61,7 @@ export class WebSocketHandler implements OnDestroy {
       });
   }
 
-  private connect(options?: NgxsWebsocketPluginOptions): void {
+  private connect(options?: NgxsWebSocketPluginOptions): void {
     if (this._socket) {
       this._closeConnection(/* forcelyCloseSocket */ true);
       this._store.dispatch(new WebSocketConnectionUpdated());
@@ -118,7 +118,7 @@ export class WebSocketHandler implements OnDestroy {
           // This ensures that the WebSocket connection is properly closed to prevent
           // potential resource leaks.
           this._disconnect(/* forcelyCloseSocket */ true);
-          this._store.dispatch(new WebsocketMessageError(error));
+          this._store.dispatch(new WebSocketMessageError(error));
         });
 
       fromEvent<CloseEvent>(socket, 'close')
@@ -137,7 +137,7 @@ export class WebSocketHandler implements OnDestroy {
             // We should call `socket.close()` in this scenario, we can ensure that
             // the WebSocket connection is properly closed.
             this._disconnect(/* forcelyCloseSocket */ true);
-            this._store.dispatch(new WebsocketMessageError(event));
+            this._store.dispatch(new WebSocketMessageError(event));
           }
         });
     });
@@ -158,7 +158,7 @@ export class WebSocketHandler implements OnDestroy {
     try {
       this._socket.send(this._options.serializer!(data));
     } catch (error) {
-      this._store.dispatch(new WebsocketMessageError(error));
+      this._store.dispatch(new WebSocketMessageError(error));
     }
   }
 

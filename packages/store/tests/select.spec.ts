@@ -1,7 +1,7 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { Component, Injectable, NgModule } from '@angular/core';
+import { Component, Injectable, NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Store, NgxsModule, State, Action, Selector, Select, StateContext } from '@ngxs/store';
 import { skipConsoleLogging, freshPlatform } from '@ngxs/store/internals/testing';
@@ -312,15 +312,16 @@ describe('Select', () => {
     expect(foo).toEqual('bar');
   }));
 
-  it('should not fail when TypeError is thrown in select lambda', async () => {
+  it('should fail when TypeError is thrown in select lambda', async () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
       template: ''
     })
     class StoreSelectComponent {
-      @Select((state: any) => state.counter.not.here)
-      counter$: Observable<string>;
+      counter$: Observable<string> = inject(Store).select(
+        (state: any) => state.counter.not.here
+      );
     }
 
     TestBed.configureTestingModule({
@@ -331,9 +332,18 @@ describe('Select', () => {
     // Act
     const comp = TestBed.createComponent(StoreSelectComponent);
 
+    let message: string | null = null;
+
+    try {
+      await skipConsoleLogging(() =>
+        comp.componentInstance.counter$.pipe(take(1)).toPromise()
+      );
+    } catch (error) {
+      message = error.message;
+    }
+
     // Assert
-    const state = await comp.componentInstance.counter$.pipe(take(1)).toPromise();
-    expect(state).toBeUndefined();
+    expect(message).toEqual(`Cannot read properties of undefined (reading 'here')`);
   });
 
   @State<any>({
@@ -350,14 +360,14 @@ describe('Select', () => {
     }
   }
 
-  it('should not fail when TypeError is thrown in select static method', async () => {
+  it('should fail when TypeError is thrown in select static method', async () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
       template: ''
     })
     class StoreSelectComponent {
-      @Select(NullSelectorState.notHere) state$: Observable<any>;
+      state$ = inject(Store).select(NullSelectorState.notHere);
     }
 
     TestBed.configureTestingModule({
@@ -368,12 +378,19 @@ describe('Select', () => {
     // Act
     const comp = TestBed.createComponent(StoreSelectComponent);
 
+    let message: string | null = null;
+
+    try {
+      await skipConsoleLogging(() => comp.componentInstance.state$.pipe(take(1)).toPromise());
+    } catch (error) {
+      message = error.message;
+    }
+
     // Assert
-    const state = await comp.componentInstance.state$.pipe(take(1)).toPromise();
-    expect(state).toBeUndefined();
+    expect(message).toEqual(`Cannot read properties of undefined (reading 'not')`);
   });
 
-  it('should not fail when TypeError is custom thrown in select lambda', () => {
+  it('should fail when TypeError is re-thrown in select lambda', () => {
     // Arrange
     let countTriggeredSelection = 0;
 
@@ -384,18 +401,18 @@ describe('Select', () => {
     @Injectable()
     class CountState {
       @Action({ type: 'IncorrectClearState' })
-      incorrectClear({ setState }: StateContext<{ number: { value: number } }>): void {
-        setState({} as any); // TypeError
+      incorrectClear(ctx: StateContext<{ number: { value: number } }>): void {
+        ctx.setState({} as any); // TypeError
       }
 
       @Action({ type: 'CorrectClearState' })
-      correctClear({ setState }: StateContext<{ number: { value: number } }>): void {
-        setState({ number: { value: 0 } });
+      correctClear(ctx: StateContext<{ number: { value: number } }>): void {
+        ctx.setState({ number: { value: 0 } });
       }
 
       @Action({ type: 'Add' })
-      add({ getState, setState }: StateContext<{ number: { value: number } }>) {
-        setState({ number: { value: getState().number.value + 1 } });
+      add(ctx: StateContext<{ number: { value: number } }>) {
+        ctx.setState({ number: { value: ctx.getState().number.value + 1 } });
       }
     }
 
@@ -404,14 +421,13 @@ describe('Select', () => {
       template: ``
     })
     class CounterComponent {
-      @Select((state: { count: { number: { value: number } } }) => {
+      count$ = this.store.select((state: { count: { number: { value: number } } }) => {
         try {
           return state.count.number.value;
         } catch (err) {
           throw err;
         }
-      })
-      count$: Observable<number>;
+      });
 
       constructor(private store: Store) {}
 
@@ -450,7 +466,7 @@ describe('Select', () => {
 
     // Assert
     expect(subscription.closed).toEqual(true);
-    expect(countTriggeredSelection).toEqual(3);
+    expect(countTriggeredSelection).toEqual(2);
   });
 
   it(

@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 // These tokens are internal and can change at any point.
 

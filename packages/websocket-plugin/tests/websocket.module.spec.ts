@@ -16,19 +16,19 @@ import { tap, first } from 'rxjs/operators';
 import { Server, WebSocket } from 'mock-socket';
 
 import {
-  NgxsWebsocketPluginModule,
+  NgxsWebSocketPluginModule,
   ConnectWebSocket,
   SendWebSocketMessage,
   DisconnectWebSocket,
   WebSocketDisconnected,
-  WebsocketMessageError,
+  WebSocketMessageError,
   WebSocketConnectionUpdated,
   WebSocketConnected
 } from '../';
 
 import { mockWebSocket } from './utils';
 
-describe('NgxsWebsocketPlugin', () => {
+describe('NgxsWebSocketPlugin', () => {
   mockWebSocket();
 
   const url = 'ws://localhost:8080';
@@ -38,7 +38,7 @@ describe('NgxsWebsocketPlugin', () => {
 
   const createModuleAndServer = (states: any[] = []) => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states), NgxsWebsocketPluginModule.forRoot({ url })]
+      imports: [NgxsModule.forRoot(states), NgxsWebSocketPluginModule.forRoot({ url })]
     });
 
     return new Server(url);
@@ -140,9 +140,9 @@ describe('NgxsWebsocketPlugin', () => {
       mockServer.emit('error', new Error('just an error'));
     });
 
-    actions$.pipe(ofActionDispatched(WebsocketMessageError)).subscribe(action => {
+    actions$.pipe(ofActionDispatched(WebSocketMessageError)).subscribe(action => {
       // Assert
-      expect(action).toBeInstanceOf(WebsocketMessageError);
+      expect(action).toBeInstanceOf(WebSocketMessageError);
       mockServer.stop(done);
     });
   });
@@ -152,7 +152,7 @@ describe('NgxsWebsocketPlugin', () => {
     TestBed.configureTestingModule({
       imports: [
         NgxsModule.forRoot(),
-        NgxsWebsocketPluginModule.forRoot({
+        NgxsWebSocketPluginModule.forRoot({
           url,
           deserializer: () => null,
           serializer: () => ''

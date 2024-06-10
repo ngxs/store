@@ -2,29 +2,20 @@ import {
   NgModule,
   ModuleWithProviders,
   PLATFORM_ID,
-  InjectionToken,
-  Injector,
   EnvironmentProviders,
   makeEnvironmentProviders
 } from '@angular/core';
 import { withNgxsPlugin } from '@ngxs/store';
 import { NGXS_PLUGINS } from '@ngxs/store/plugins';
 import {
-  NgxsStoragePluginOptions,
+  ɵUSER_OPTIONS,
   STORAGE_ENGINE,
   ɵNGXS_STORAGE_PLUGIN_OPTIONS,
-  ɵcreateFinalStoragePluginOptions,
-  ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS
+  NgxsStoragePluginOptions
 } from '@ngxs/storage-plugin/internals';
 
 import { NgxsStoragePlugin } from './storage.plugin';
 import { engineFactory, storageOptionsFactory } from './internals';
-
-declare const ngDevMode: boolean;
-
-const NG_DEV_MODE = typeof ngDevMode === 'undefined' || ngDevMode;
-
-export const USER_OPTIONS = new InjectionToken(NG_DEV_MODE ? 'USER_OPTIONS' : '');
 
 @NgModule()
 export class NgxsStoragePluginModule {
@@ -40,23 +31,18 @@ export class NgxsStoragePluginModule {
           multi: true
         },
         {
-          provide: USER_OPTIONS,
+          provide: ɵUSER_OPTIONS,
           useValue: options
         },
         {
           provide: ɵNGXS_STORAGE_PLUGIN_OPTIONS,
           useFactory: storageOptionsFactory,
-          deps: [USER_OPTIONS]
+          deps: [ɵUSER_OPTIONS]
         },
         {
           provide: STORAGE_ENGINE,
           useFactory: engineFactory,
           deps: [ɵNGXS_STORAGE_PLUGIN_OPTIONS, PLATFORM_ID]
-        },
-        {
-          provide: ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS,
-          useFactory: ɵcreateFinalStoragePluginOptions,
-          deps: [Injector, ɵNGXS_STORAGE_PLUGIN_OPTIONS]
         }
       ]
     };
@@ -69,23 +55,18 @@ export function withNgxsStoragePlugin(
   return makeEnvironmentProviders([
     withNgxsPlugin(NgxsStoragePlugin),
     {
-      provide: USER_OPTIONS,
+      provide: ɵUSER_OPTIONS,
       useValue: options
     },
     {
       provide: ɵNGXS_STORAGE_PLUGIN_OPTIONS,
       useFactory: storageOptionsFactory,
-      deps: [USER_OPTIONS]
+      deps: [ɵUSER_OPTIONS]
     },
     {
       provide: STORAGE_ENGINE,
       useFactory: engineFactory,
       deps: [ɵNGXS_STORAGE_PLUGIN_OPTIONS, PLATFORM_ID]
-    },
-    {
-      provide: ɵFINAL_NGXS_STORAGE_PLUGIN_OPTIONS,
-      useFactory: ɵcreateFinalStoragePluginOptions,
-      deps: [Injector, ɵNGXS_STORAGE_PLUGIN_OPTIONS]
     }
   ]);
 }

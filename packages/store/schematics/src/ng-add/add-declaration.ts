@@ -61,7 +61,7 @@ export function addDeclarationToNonStandaloneApp(options: NormalizedNgxsPackageS
   const importPath = '@ngxs/store';
 
   const moduleImportExtras =
-    '.forRoot([], { developmentMode: /** !environment.production */ false, selectorOptions: { suppressErrors: false, injectContainerState: false } })';
+    '.forRoot([], { developmentMode: /** !environment.production */ false })';
 
   return chain([
     addRootImport(
@@ -117,7 +117,7 @@ const pluginData: ReadonlyMap<LIBRARIES, { module?: string; standalone: string }
   [
     LIBRARIES.WEBSOCKET,
     {
-      module: 'NgxsWebsocketPluginModule',
+      module: 'NgxsWebSocketPluginModule',
       standalone: 'withNgxsWebSocketPlugin'
     }
   ]

@@ -6,22 +6,22 @@ import {
 } from '@angular/core';
 
 import { ɵgetProviders } from './providers';
-import { NgxsWebsocketPluginOptions } from './symbols';
+import { NgxsWebSocketPluginOptions } from './symbols';
 
 @NgModule()
-export class NgxsWebsocketPluginModule {
+export class NgxsWebSocketPluginModule {
   static forRoot(
-    options?: NgxsWebsocketPluginOptions
-  ): ModuleWithProviders<NgxsWebsocketPluginModule> {
+    options?: NgxsWebSocketPluginOptions
+  ): ModuleWithProviders<NgxsWebSocketPluginModule> {
     return {
-      ngModule: NgxsWebsocketPluginModule,
+      ngModule: NgxsWebSocketPluginModule,
       providers: ɵgetProviders(options)
     };
   }
 }
 
 export function withNgxsWebSocketPlugin(
-  options?: NgxsWebsocketPluginOptions
+  options?: NgxsWebSocketPluginOptions
 ): EnvironmentProviders {
   return makeEnvironmentProviders(ɵgetProviders(options));
 }

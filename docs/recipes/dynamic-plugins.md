@@ -1,19 +1,19 @@
 # Dynamic Plugins
 
-Angular provides the ability to have a different environment file loaded for development as compared to production or other build targets. We can use this to improve our application bundling when it comes to development only packages. In NGXS the packages that are mainly useful only for development mode are the
-`@ngxs/devtools-plugin` and `@ngxs/logger-plugin`. Typically you would only want to use these packages
-during development and not in production.
+Please refer to this [guide](https://angular.io/guide/build#configure-environment-specific-defaults) if you haven't set up environment files yet.
+
+Angular provides the ability to have a different environment file loaded for development as compared to production or other build targets. We can use this to improve our application bundling when it comes to development only packages. In NGXS the packages that are mainly useful only for development mode are the `@ngxs/devtools-plugin` and `@ngxs/logger-plugin`. Typically you would only want to use these packages during development and not in production.
 
 Let's look at the code below:
 
 ```ts
 // environment.ts
-import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
-import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
+import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
 
 export const environment = {
   production: false,
-  plugins: [NgxsLoggerPluginModule.forRoot(), NgxsReduxDevtoolsPluginModule.forRoot()]
+  plugins: [withNgxsLoggerPlugin(), withNgxsReduxDevtoolsPlugin()]
 };
 ```
 
@@ -30,17 +30,17 @@ export const environment = {
 };
 ```
 
-All we have left to do is to import the environment file and reference `plugins` property in the `AppModule` imports:
+All we have left to do is to import the environment file and reference `plugins` property in the app config `provideStore()`:
 
 ```ts
-import { NgxsModule } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
+import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
 
 import { environment } from '../environments/environment';
 
-@NgModule({
-  imports: [NgxsModule.forRoot([]), environment.plugins]
-})
-export class AppModule {}
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([], ...[withNgxsRouterPlugin(), ...environment.plugins])]
+};
 ```
 
 This approach will reduce your production bundle size, as these packages are only needed during development.

@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import {
   Action,
   Selector,
@@ -9,7 +10,6 @@ import {
 
 import { AddTodo, RemoveTodo } from '@integration/store/todos/todo/todo.actions';
 import { Todo } from '@integration/store/todos/todos.model';
-import { Injectable } from '@angular/core';
 
 @State<Todo[]>({
   name: 'todo',

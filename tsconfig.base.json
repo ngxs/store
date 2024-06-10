@@ -16,7 +16,7 @@
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
     "target": "ES2022",
-    "lib": ["es2017", "dom", "es2018.promise"],
+    "lib": ["es2020", "dom", "es2018.promise"],
     "typeRoots": ["node_modules/@types"],
     "paths": {
       "@integration/*": ["integration/app/*"],

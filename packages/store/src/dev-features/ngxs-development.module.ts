@@ -16,7 +16,7 @@ export class NgxsDevelopmentModule {
   }
 }
 
-export function provideNgxsDevelopmentOptions(options: NgxsDevelopmentOptions) {
+export function withNgxsDevelopmentOptions(options: NgxsDevelopmentOptions) {
   return makeEnvironmentProviders([
     NgxsUnhandledActionsLogger,
     { provide: NGXS_DEVELOPMENT_OPTIONS, useValue: options }

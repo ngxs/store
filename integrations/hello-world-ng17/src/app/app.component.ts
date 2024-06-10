@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { CounterState, Increment } from './store';
+import { COUNTER_STATE_TOKEN, Increment } from './store';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  counter$ = this.store.select<number>(CounterState);
+  counter$ = this.store.select<number>(COUNTER_STATE_TOKEN);
 
   constructor(private store: Store) {}
 

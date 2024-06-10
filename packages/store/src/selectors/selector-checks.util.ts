@@ -1,9 +1,9 @@
 import { ɵgetSelectorMetadata, ɵgetStoreMetadata } from '@ngxs/store/internals';
 
-import { SelectorDef } from './selector-types.util';
+import { ɵSelectorDef } from './selector-types.util';
 
 export function ensureValidSelector(
-  selector: SelectorDef<any>,
+  selector: ɵSelectorDef<any>,
   context: { prefix?: string; noun?: string } = {}
 ) {
   const noun = context.noun || 'selector';

@@ -1,16 +1,10 @@
 {
-  "affected": {
-    "defaultBase": "master"
-  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
       "cache": true
     },
     "build-package": {
-      "cache": true
-    },
-    "lint": {
       "cache": true
     },
     "@nx/jest:jest": {
@@ -25,6 +19,14 @@
           "codeCoverage": true
         }
       }
+    },
+    "@nx/eslint:lint": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.js",
+        "{workspaceRoot}/tools/eslint-rules/**/*"
+      ]
     }
   },
   "workspaceLayout": {
@@ -32,5 +34,7 @@
     "appsDir": "packages"
   },
   "nxCloudAccessToken": "MWFlODQ3YjEtZGIzOC00OTJmLWE1NTYtMDcyZmNhYjU0NmU4fHJlYWQtd3JpdGU=",
-  "parallel": 1
+  "parallel": 1,
+  "useInferencePlugins": false,
+  "defaultBase": "master"
 }

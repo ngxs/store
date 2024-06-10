@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { State, Action, StateContext } from '@ngxs/store';
+import { State, Action, StateContext, StateToken } from '@ngxs/store';
 
 import { Increment } from './counter.actions';
 
+export const COUNTER_STATE_TOKEN = new StateToken<number>('counter');
+
 @State<number>({
-  name: 'counter',
+  name: COUNTER_STATE_TOKEN,
   defaults: 0
 })
 @Injectable()

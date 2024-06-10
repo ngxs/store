@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     const payload: Todo = 'ngOnInit todo';
-    const state: Todo[] = this._store.selectSnapshot(TodoState);
+    const state: Todo[] = this._store.selectSnapshot(TodoState.getTodoState);
     if (!state.includes(payload)) {
       this._store.dispatch(new AddTodo(payload));
     }

@@ -18,15 +18,29 @@ This plugin binds that state from the Angular router to our NGXS store.
 ## Installation
 
 ```bash
-npm install @ngxs/router-plugin --save
+npm i @ngxs/router-plugin
 
 # or if you are using yarn
 yarn add @ngxs/router-plugin
+
+# or if you are using pnpm
+pnpm i @ngxs/router-plugin
 ```
 
 ## Usage
 
-Add the `NgxsRouterPluginModule` plugin to your root app module:
+When calling `provideStore`, include `withNgxsRouterPlugin` in your app config:
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([], withNgxsRouterPlugin())]
+};
+```
+
+If you are still using modules, include the `NgxsRouterPluginModule` plugin in your root app module:
 
 ```ts
 import { NgxsModule } from '@ngxs/store';
@@ -60,30 +74,24 @@ You can use action handlers to listen to state changes in your components and se
 
 ## Listening to the data resolution event
 
-You can listen to the `RouterDataResolved` action that is dispatch when the navigated route has some linked resolvers. For example:
+You can listen for the `RouterDataResolved` action, which is dispatched when the navigated route has linked resolvers. For example:
 
 ```ts
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Actions, ofActionSuccessful } from '@ngxs/store';
 import { RouterDataResolved } from '@ngxs/router-plugin';
 
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-
 @Component({ ... })
 export class AppComponent {
-  private destroy$ = new Subject<void>();
+  constructor() {
+    const actions$ = inject(Actions);
 
-  constructor(actions$: Actions) {
     actions$.pipe(
       ofActionSuccessful(RouterDataResolved),
-      takeUntil(this.destroy$)
+      takeUntilDestroyed()
     ).subscribe((action: RouterDataResolved) => {
       console.log(action.routerState.root.firstChild.data);
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
   }
 }
 ```
@@ -94,18 +102,16 @@ The more explicit example would be a situation where you would want to bind an i
 import { Actions, ofActionSuccessful } from '@ngxs/store';
 import { RouterDataResolved } from '@ngxs/router-plugin';
 
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs';
 
 @Component({
   template: ` <app-some-component [data]="data$ | async"></app-some-component> `
 })
 export class AppComponent {
-  data$ = this.actions$.pipe(
+  data$ = inject(Actions).pipe(
     ofActionSuccessful(RouterDataResolved),
     map((action: RouterDataResolved) => action.routerState.root.firstChild.data)
   );
-
-  constructor(private actions$: Actions) {}
 }
 ```
 
@@ -116,8 +122,8 @@ You can implement your own router state serializer to serialize the router snaps
 ```ts
 import { Params, RouterStateSnapshot } from '@angular/router';
 
-import { NgxsModule } from '@ngxs/store';
-import { NgxsRouterPluginModule, RouterStateSerializer } from '@ngxs/router-plugin';
+import { provideStore } from '@ngxs/store';
+import { withNgxsRouterPlugin, RouterStateSerializer } from '@ngxs/router-plugin';
 
 export interface RouterStateParams {
   url: string;
@@ -144,6 +150,20 @@ export class CustomRouterStateSerializer implements RouterStateSerializer<Router
   }
 }
 
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideStore([], withNgxsRouterPlugin()),
+    { provide: RouterStateSerializer, useClass: CustomRouterStateSerializer }
+  ]
+};
+```
+
+Or with the module approach:
+
+```ts
+import { NgxsModule } from '@ngxs/store';
+import { NgxsRouterPluginModule, RouterStateSerializer } from '@ngxs/router-plugin';
+
 @NgModule({
   imports: [NgxsModule.forRoot([]), NgxsRouterPluginModule.forRoot()],
   providers: [{ provide: RouterStateSerializer, useClass: CustomRouterStateSerializer }]
@@ -154,6 +174,24 @@ export class AppModule {}
 ## Configuration
 
 The `RouterNavigation` action is dispatched before guards and resolvers are run by default. Therefore the action handler may run too soon due to a navigation cancel by any guard or resolver. The `RouterNavigation` action may be run after all guards and resolvers by providing the `navigationActionTiming` configuration property:
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withNgxsRouterPlugin, NavigationActionTiming } from '@ngxs/router-plugin';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideStore(
+      [],
+      withNgxsRouterPlugin({
+        navigationActionTiming: NavigationActionTiming.PostActivation
+      })
+    )
+  ]
+};
+```
+
+Or with the module approach:
 
 ```ts
 import { NgxsModule } from '@ngxs/store';

@@ -15,6 +15,7 @@ import {
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import { NoopErrorHandler } from './helpers/utils';
+import { macrotask } from './helpers/macrotask';
 
 describe('Development Mode', () => {
   class Increment {
@@ -165,6 +166,7 @@ describe('Development Mode', () => {
 
         // Act
         await skipConsoleLogging(() => platformBrowserDynamic().bootstrapModule(TestModule));
+        await macrotask();
 
         // Assert
         expect(observedErrors).toEqual([
@@ -220,6 +222,7 @@ describe('Development Mode', () => {
 
         // Act
         await skipConsoleLogging(() => platformBrowserDynamic().bootstrapModule(TestModule));
+        await macrotask();
 
         // Assert
         expect(observedErrors).toEqual([

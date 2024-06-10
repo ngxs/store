@@ -28,6 +28,11 @@ describe('Selector', () => {
   @Injectable()
   class MyState {
     @Selector()
+    static getState(state: MyStateModel) {
+      return state;
+    }
+
+    @Selector()
     static foo(state: MyStateModel) {
       return state.foo;
     }
@@ -79,37 +84,6 @@ describe('Selector', () => {
       const store: Store = TestBed.inject(Store);
       const slice = store.selectSnapshot(MetaSelector.foo);
       expect(slice).toBe('Hello');
-    });
-
-    it('should still be usable as a function', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
-      });
-
-      const store: Store = TestBed.inject(Store);
-      const myState = store.selectSnapshot<MyStateModel>(MyState);
-      const slice = MyState.foo(myState);
-      expect(slice).toBe('Hello');
-    });
-
-    it('should select multiples', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState, MyState2])]
-      });
-
-      const store: Store = TestBed.inject(Store);
-      const slice = store.selectSnapshot(MyState2.foo);
-      expect(slice).toBe('HelloHello');
-    });
-
-    it('should select multiples from self and others', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState, MyState2])]
-      });
-
-      const store: Store = TestBed.inject(Store);
-      const slice = store.selectSnapshot(MyState2.fooBar);
-      expect(slice).toBe('HelloHelloWorld');
     });
 
     it('context should be defined inside selector', () => {
@@ -356,7 +330,7 @@ describe('Selector', () => {
         }
 
         @Selector([MyStateV4])
-        static invalid() {
+        static invalid(_: MyStateModel) {
           throw new Error('This is a forced error');
         }
       }
@@ -449,7 +423,7 @@ describe('Selector', () => {
         }
 
         @Selector([MyStateV4])
-        static invalid() {
+        static invalid(_: MyStateModel) {
           throw new Error('This is a forced error');
         }
       }
@@ -507,11 +481,6 @@ describe('Selector', () => {
           return state.bar;
         }
 
-        @Selector([MyStateV3.bar])
-        static v3StyleSelector_FooAndBar(state: MyStateModel, bar: string) {
-          return state.foo + bar;
-        }
-
         @Selector([MyStateV3.foo, MyStateV3.bar])
         @SelectorOptions({ injectContainerState: false })
         static v4StyleSelector_FooAndBar(foo: string, bar: string) {
@@ -526,19 +495,10 @@ describe('Selector', () => {
 
         @Selector([MyStateV3])
         @SelectorOptions({ suppressErrors: false })
-        static invalid() {
+        static invalid(_: MyStateModel) {
           throw new Error('This is a forced error');
         }
       }
-
-      it('should select from a v3 selector', () => {
-        // Arrange
-        const store = setupStore([MyStateV3]);
-        // Act
-        const slice = store.selectSnapshot(MyStateV3.v3StyleSelector_FooAndBar);
-        // Assert
-        expect(slice).toBe('FooBar');
-      });
 
       it('should select from a v4 selector', () => {
         // Arrange
@@ -631,7 +591,7 @@ describe('Selector', () => {
       });
 
       const store: Store = TestBed.inject(Store);
-      const myState = store.selectSnapshot<MyStateModel>(MyState);
+      const myState = store.selectSnapshot<MyStateModel>(MyState.getState);
       const selector = createSelector([MyState], (state: MyStateModel) => state.foo);
       const slice: string = selector(myState);
       expect(slice).toBe('Hello');
@@ -731,6 +691,11 @@ describe('Selector', () => {
     @Injectable()
     class TasksState {
       @Selector()
+      static getTasks(state: number[]) {
+        return state;
+      }
+
+      @Selector()
       static reverse(state: number[]): number[] {
         return state.reverse();
       }
@@ -748,24 +713,10 @@ describe('Selector', () => {
       const store = TestBed.inject(Store);
       store.reset({ tasks: [1, 2, 3, 4] });
 
-      const tasks: number[] = store.selectSnapshot(TasksState);
+      const tasks: number[] = store.selectSnapshot(TasksState.getTasks);
       const reverse: number[] = store.selectSnapshot(TasksState.reverse);
       expect(tasks).toEqual([4, 3, 2, 1]);
       expect(reverse).toEqual([4, 3, 2, 1]);
-    });
-
-    it('should be incorrect mutation', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TasksState], { developmentMode: true })]
-      });
-
-      const store = TestBed.inject(Store);
-      store.reset({ tasks: [1, 2, 3, 4] });
-
-      const tasks: number[] = store.selectSnapshot(TasksState);
-      const reverse: number[] = store.selectSnapshot(TasksState.reverse);
-      expect(tasks).toEqual([1, 2, 3, 4]);
-      expect(reverse).toEqual(undefined as any);
     });
 
     it('should be correct catch errors with selectSnapshot', () => {
@@ -781,7 +732,7 @@ describe('Selector', () => {
       const store = TestBed.inject(Store);
       store.reset({ tasks: [1, 2, 3, 4] });
 
-      const tasks: number[] = store.selectSnapshot(TasksState);
+      const tasks: number[] = store.selectSnapshot(TasksState.getTasks);
       expect(tasks).toEqual([1, 2, 3, 4]);
 
       try {
@@ -801,6 +752,11 @@ describe('Selector', () => {
     })
     @Injectable()
     class NumberListState {
+      @Selector()
+      static getNumberList(state: number[]) {
+        return state;
+      }
+
       @Selector()
       static reverse(state: number[]): number[] {
         return state.reverse();
@@ -824,7 +780,9 @@ describe('Selector', () => {
 
       let snapshot: number[] = [];
 
-      store.select(NumberListState).subscribe((state: number[]) => (snapshot = state));
+      store
+        .select(NumberListState.getNumberList)
+        .subscribe((state: number[]) => (snapshot = state));
       expect(snapshot).toEqual([1, 2, 3, 4]);
 
       store.select(NumberListState.reverse).subscribe(

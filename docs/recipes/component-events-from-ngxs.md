@@ -16,13 +16,18 @@ We develop the `app-email-list` custom element that emits `messagesLoaded` DOM e
 @Component({
   selector: 'app-email-list',
   template: `
-    <app-message *ngFor="let message of messages$ | async" [message]="message"></app-message>
+    @for (message of messages(); track message) {
+      <app-message [message]="message" />
+    }
+
     <app-button (click)="refresh()">Refresh messages</app-button>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MessageComponent, ButtonComponent]
 })
 export class EmailListComponent {
-  @Select(MessagesState.getMessages) messages$: Observable<Message[]>;
+  messages: Signal<Message[]> = this.store.selectSignal(MessagesState.getMessages);
 
   @Output() messagesLoaded = new EventEmitter<Message[]>();
 
@@ -43,17 +48,24 @@ The above code is very simple and is used for demonstrating purposes only! As yo
 @Component({
   selector: 'app-email-list',
   template: `
-    <app-message *ngFor="let message of messages$ | async" [message]="message"></app-message>
-    <app-button>Refresh messages</app-button>
+    @for (message of messages(); track message) {
+      <app-message [message]="message" />
+    }
+
+    <app-button (click)="refresh()">Refresh messages</app-button>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MessageComponent, ButtonComponent]
 })
 export class EmailListComponent {
-  @Select(MessagesState.getMessages) messages$: Observable<Message[]>;
+  messages: Signal<Message[]> = this.store.selectSignal(MessagesState.getMessages);
 
-  @ViewChild(ButtonComponent, { static: true }) button: ButtonComponent;
+  button = viewChild.required(ButtonComponent);
 
-  @Output() messagesLoaded = this.button.click.pipe(
+  @Output() messagesLoaded = toObservable(this.button).pipe(
+    first(Boolean),
+    mergeMap(() => this.button().click),
     switchMap(() => this.store.dispatch(new LoadMessages())),
     map(() => this.store.selectSnapshot(MessagesState.getMessages))
   );

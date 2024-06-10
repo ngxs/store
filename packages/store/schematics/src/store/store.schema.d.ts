@@ -19,4 +19,8 @@ export interface StoreSchema {
    * The application project name to add the Ngxs module/provider.
    */
   project?: string;
+  /**
+   * Explicitly set whether should generate standalone APIs for the generated store.
+   */
+  standalone?: boolean;
 }

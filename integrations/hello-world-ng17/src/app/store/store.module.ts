@@ -4,7 +4,7 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
-import { NgxsWebsocketPluginModule } from '@ngxs/websocket-plugin';
+import { NgxsWebSocketPluginModule } from '@ngxs/websocket-plugin';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 
 import { CounterState } from './counter/counter.state';
@@ -17,7 +17,7 @@ import { environment } from '../../environments/environment';
     NgxsFormPluginModule.forRoot(),
     NgxsLoggerPluginModule.forRoot({ disabled: environment.production }),
     NgxsStoragePluginModule.forRoot({ keys: '*' }),
-    NgxsWebsocketPluginModule.forRoot(),
+    NgxsWebSocketPluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot()
   ]
 })

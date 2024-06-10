@@ -10,9 +10,7 @@ export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionSt
     private _ngZone: NgZone,
     @Inject(PLATFORM_ID) private _platformId: string
   ) {
-    // Caretaker note: we have still left the `typeof` condition in order to avoid
-    // creating a breaking change for projects that still use the View Engine.
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       verifyZoneIsNotNooped(_ngZone);
     }
   }

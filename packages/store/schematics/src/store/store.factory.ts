@@ -13,10 +13,13 @@ export function store(options: StoreSchema): Rule {
       throw new SchematicsException('Invalid options, "name" is required.');
     }
 
-    const mainFile = getProjectMainFile(host, options.project);
-    const isStandalone = isStandaloneApp(host, mainFile);
+    let isStandalone = options.standalone;
+    if (typeof isStandalone !== 'boolean') {
+      const mainFile = getProjectMainFile(host, options.project);
+      isStandalone = !!mainFile && isStandaloneApp(host, mainFile);
+    }
 
-    const normalizedOptions = normalizeBaseOptions(options);
+    const normalizedOptions = normalizeBaseOptions(host, options);
     const path = options.flat
       ? normalizedOptions.path
       : join(normalizedOptions.path, normalizedOptions.name);

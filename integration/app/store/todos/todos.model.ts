@@ -6,7 +6,6 @@ export interface Pizza<T = any> {
 }
 
 export class TodoStateModel {
-  public todo: string[];
   public pizza: Pizza;
 }
 

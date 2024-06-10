@@ -41,14 +41,13 @@
 ### Quick Links
 
 - ✨ Learn about it on the [docs site](https://ngxs.io/)
-- 🌱 NGXS works with Ivy! Check out the [Ivy migration guide](https://ngxs.io/advanced/ivy-migration-guide)
 - 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-repro)
 - 😎 Checkout the [sample application](integration)
 - 🔧 Scaffolding application using [NGXS Schematics](https://github.com/ngxs/schematics)
 - 📖 Read the blog [posts](https://medium.com/ngxs)
 - ⚡️ Development of [NGXS Labs](https://github.com/ngxs-labs)
 - 📝 Learn about updates from the [changelog](CHANGELOG.md)
-- ❤️ Give back by becoming a [Contributor](docs/community/contributors.md) or a [Sponsor](/docs/community/sponsors.md)
+- ❤️ Give back by becoming a [Contributor](docs/community-and-labs/community/contributors.md) or a [Sponsor](/docs/community-and-labs/community/sponsors.md)
 - 👂 We would love to hear about your experience with NGXS, you can [leave your feedback here](https://forms.gle/2Nf9tNyZnaD8AZL89)
 
 ---

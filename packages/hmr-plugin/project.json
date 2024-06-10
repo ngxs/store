@@ -20,10 +20,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "lintFilePatterns": ["packages/hmr-plugin/**/*.ts", "packages/hmr-plugin/**/*.html"]
-      }
+      "executor": "@nx/eslint:lint"
     }
   }
 }
