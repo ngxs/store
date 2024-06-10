@@ -1,10 +1,11 @@
-# Announcing NGXS 17
+# Announcing NGXS 18
 
-We're thrilled to announce the release of NGXS v17! This update represents months of hard work by the NGXS team, focused on strengthening the library's core functionalities while maintaining its signature ease of use.
+We're thrilled to announce the release of NGXS v18! This update represents months of hard work by the NGXS team, focused on strengthening the library's core functionalities while maintaining its signature ease of use.
 
-But that's not all – we've also made a strategic decision to align NGXS versioning with Angular's release cycle. This means, starting with v17, the minimum supported Angular version will also align with Angular's latest release, unless explicitly stated otherwise. For NGXS v17, this translates to a minimum Angular version of 17.
+But that's not all – we've also made a strategic decision to align NGXS versioning with Angular's release cycle. This means, starting with v18, the minimum supported Angular version will also align with Angular's latest release, unless explicitly stated otherwise.
 
 This move ensures seamless compatibility and allows you to leverage the latest features from both libraries as they evolve together.
+For NGXS v18, since this is our first release under the new versioning scheme we will be supporting Angular versions >=16.
 
 But before we dive in, we want to unveil a fresh new look for NGXS!
 
@@ -409,6 +410,10 @@ There's a distinction in how errors are thrown based on the selection method use
 
 It's important to note that errors are still logged in development mode for debugging purposes.
 
+### Enforcing Typed Selectors @Action and @Selector
+
+- `@Action` and `@Selector` decorator typings will now enforce that arguments match those declared in the respective definition. [#2158](https://github.com/ngxs/store/pull/2158) and [#2042](https://github.com/ngxs/store/pull/2042)
+
 ### Enforcing Typed Selectors in store.select, store.selectOnce, and store.selectSnapshot
 
 For improved type safety and maintainability, these selector functions now require typed selectors as arguments. This means raw state classes or anonymous functions are no longer accepted.
@@ -550,11 +555,22 @@ You can read more [here](https://www.ngxs.io/deprecations/sub-states-deprecation
 
 ---
 
-## Plugin Improvements
+## Improvements
 
-The plugins exposes some of its internal API implementations to allow library authors to experiment with potential extensions. However, keep in mind that these API implementations are not part of the official API, but rather an internals API. This means that they could be changed at any time in the future. Let's see some of their details:
+The store and plugin exposes some of its internal API implementations to allow library authors to experiment with potential extensions. However, keep in mind that these API implementations are not part of the official API, but rather an internals API. This means that they could be changed at any time in the future. Let's see some of their details:
 
 > _Please note the `barred O` symbol which denotes it's not part of the official API_
+
+**Store**
+
+The exposed functions are:
+
+- `ɵSelectorFunc`
+- `ɵStateSelector`
+- `ɵSelectorDef`
+- `ɵSelectorReturnType`
+
+They might be utilized by developers working on advanced utilities who need access to these types externally. For example, they may create a function that accepts selector functions and returns signals with types corresponding to the return types of those selectors.
 
 **Router Plugin**
 
