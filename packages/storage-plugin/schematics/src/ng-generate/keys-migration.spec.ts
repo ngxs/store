@@ -11,7 +11,7 @@ describe('Storage Plugin Migration', () => {
 
   const testSetup = async () => {
     const appTree = await createWorkspace();
-    appTree.overwrite('package.json', `{"dependencies": {"@ngxs/store": "3.8.2"}}`);
+    appTree.overwrite('package.json', `{"dependencies": {"@ngxs/store": "18.0.0"}}`);
 
     return { appTree };
   };
