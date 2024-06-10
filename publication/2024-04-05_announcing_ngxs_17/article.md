@@ -602,6 +602,3 @@ The exposed tokens and function are:
   This new internal API gives you the flexibility to further customize your storage solution.
 
 You can import them using this path `@ngxs/storage-plugin/internals`.
-
----
-
