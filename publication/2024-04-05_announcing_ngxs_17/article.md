@@ -1,10 +1,11 @@
-# Announcing NGXS 17
+# Announcing NGXS 18
 
-We're thrilled to announce the release of NGXS v17! This update represents months of hard work by the NGXS team, focused on strengthening the library's core functionalities while maintaining its signature ease of use.
+We're thrilled to announce the release of NGXS v18! This update represents months of hard work by the NGXS team, focused on strengthening the library's core functionalities while maintaining its signature ease of use.
 
-But that's not all – we've also made a strategic decision to align NGXS versioning with Angular's release cycle. This means, starting with v17, the minimum supported Angular version will also align with Angular's latest release, unless explicitly stated otherwise. For NGXS v17, this translates to a minimum Angular version of 17.
+But that's not all – we've also made a strategic decision to align NGXS versioning with Angular's release cycle. This means, starting with v18, the minimum supported Angular version will also align with Angular's latest release, unless explicitly stated otherwise.
 
 This move ensures seamless compatibility and allows you to leverage the latest features from both libraries as they evolve together.
+For NGXS v18, since this is our first release under the new versioning scheme we will be supporting Angular versions >=16.
 
 But before we dive in, we want to unveil a fresh new look for NGXS!
 
