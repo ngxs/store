@@ -16,8 +16,12 @@ You can provide an `NgxsModuleOptions` object as the second argument of your `Ng
 
 `ngxs.config.ts`:
 
+> :warning: If your project lacks environment files, you can generate them using the `ng generate environments` command.
+
 ```ts
-import { NgxsModuleOptions } from '@ngxs/store';
+import { NgxsModuleOptions, NoopNgxsExecutionStrategy } from '@ngxs/store';
+
+import { environment } from '../environments/environment';
 
 export const ngxsConfig: NgxsModuleOptions = {
   developmentMode: !environment.production,
@@ -39,10 +43,8 @@ export const ngxsConfig: NgxsModuleOptions = {
 import { provideStore } from '@ngxs/store';
 
 import { ngxsConfig } from './ngxs.config';
-...
+
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideStore(states, ngxsConfig)
-  ]
+  providers: [provideStore(states, ngxsConfig)]
 };
 ```
