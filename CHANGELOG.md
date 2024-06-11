@@ -1,8 +1,81 @@
 # [DEV version](https://www.npmjs.com/package/@ngxs/store/v/dev)
 
-### For next major version
+```bash
+$ npm install @ngxs/store@dev
+```
+
+### To become next patch version
+
+- ...
+
+### 18.0.0 2024-06-10
+
+- Feature(store): Improve action decorator types [#2158](https://github.com/ngxs/store/pull/2158)
+- Feature(store): Improve selector decorator types [#2042](https://github.com/ngxs/store/pull/2042)
+- Feature(store): Add preboot feature and recipe [#2156](https://github.com/ngxs/store/pull/2156)
+- Feature(store): Add `dispatch` utility [#2143](https://github.com/ngxs/store/pull/2143)
+- Feature(store): Add signals utilities [#2141](https://github.com/ngxs/store/pull/2141)
+- Feature(store): Implement NGXS unhandled error handler [#2137](https://github.com/ngxs/store/pull/2137)
+- Feature(store): Export selector util types privately [#2140](https://github.com/ngxs/store/pull/2140)
+- Feature(store): Expose `withNgxsDevelopmentOptions` standalone API [#2134](https://github.com/ngxs/store/pull/2134)
+- Feature(store): Add `selectSignal` [#2097](https://github.com/ngxs/store/pull/2097)
+- Feature(store): Deprecate state `children` [#2136](https://github.com/ngxs/store/pull/2136)
+- Feature(store): Deprecate `@Select` [#2135](https://github.com/ngxs/store/pull/2135)
+- Fix(store): Do not rely on private token when checking whether zone is enabled [#2151](https://github.com/ngxs/store/pull/2151)
+- Fix(store): Update `ActionDef` new to return `any` [#2149](https://github.com/ngxs/store/pull/2149)
+- Fix(store): Created maps properties should be enumerable [#2150](https://github.com/ngxs/store/pull/2150)
+- Fix(store): Remove `RequireAtLeastOneProperty` to make it simpler [#2147](https://github.com/ngxs/store/pull/2147)
+- Fix(store): Remove deprecated stuff [#2119](https://github.com/ngxs/store/pull/2119)
+- Fix(store): Remove `defaultsState` config property [#2118](https://github.com/ngxs/store/pull/2118)
+- Fix(store): Do not inject container state by default [#2117](https://github.com/ngxs/store/pull/2117)
+- Fix(store): `select,selectOnce,selectSnapshot` should only accept typed selector [#2116](https://github.com/ngxs/store/pull/2116)
+- Fix(store): `setState` and `patchState` should both return `<void>` [#2114](https://github.com/ngxs/store/pull/2114)
+- Fix(store): `ofActionErrored` should return `ActionCompletion` [#2112](https://github.com/ngxs/store/pull/2112)
+- Fix(store): Enable throwing errors from selectors by default [#2111](https://github.com/ngxs/store/pull/2111)
+- Fix(store): `dispatch` return observable should be `<void>` [#2109](https://github.com/ngxs/store/pull/2109)
+- Fix(store): Ensure features are initialized after root state [#2083](https://github.com/ngxs/store/pull/2083)
+- Fix(store): Log feature states added before store is initialized [#2067](https://github.com/ngxs/store/pull/2067)
+- Fix(store): Show error when state initialization order is invalid [#2066](https://github.com/ngxs/store/pull/2066), [#2067](https://github.com/ngxs/store/pull/2067)
+- Fix(store): Change `instanceof Promise` to `isPromise` to allow any promisable object [#2093](https://github.com/ngxs/store/pull/2093)
+- Fix(store): Router Plugin - Expose `NGXS_ROUTER_PLUGIN_OPTIONS` privately [#2037](https://github.com/ngxs/store/pull/2037)
+- Performance(store): Select prop getter implementation only once [#2107](https://github.com/ngxs/store/pull/2107)
+- Performance(store): Improve compliant prop getter [#2106](https://github.com/ngxs/store/pull/2106)
+- Feature(schematics): Schematics support a project option and standalone detection [#2089](https://github.com/ngxs/store/pull/2089)
+- Feature(storage-plugin): Migrate to the property 'keys' [#2108](https://github.com/ngxs/store/pull/2108)
+- Feature(storage-plugin): Allow providing feature states [#1994](https://github.com/ngxs/store/pull/1994)
+- Feature(storage-plugin): Require explicit options when providing storage plugin [#2100](https://github.com/ngxs/store/pull/2100)
+- Fix(schematics): Dasherize the state and store file name [#2090](https://github.com/ngxs/store/pull/2090)
+- Fix(websocket-plugin): `WebSocket` title casing should be consistent [#2115](https://github.com/ngxs/store/pull/2115)
+- Refactor(store): Move metadata into internals [#2062](https://github.com/ngxs/store/pull/2062)
+- Refactor(store): Rely on `ngDevMode` to be always defined [#2138](https://github.com/ngxs/store/pull/2138)
+- Refactor(schematics): Enhance schematics behavior for monorepos [#2165](https://github.com/ngxs/store/pull/2165)
+- Build: Flatten `.d.ts` files [#2131](https://github.com/ngxs/store/pull/2131)
+- Build: Upgrade workspace to Angular 17 [#2087](https://github.com/ngxs/store/pull/2087)
+- Build: Add Angular 18 support [#2168](https://github.com/ngxs/store/pull/2168)
+
+# 3.8.2 2023-11-30
+
+- Fix: `patch` state operator must handle existing nulls [#2064](https://github.com/ngxs/store/pull/2064)
+- Fix: Storage Plugin - Access local and session storages globals only in browser [#2034](https://github.com/ngxs/store/pull/2034)
+- Fix: Storage Plugin - Require only `getItem` and `setItem` on engines [#2036](https://github.com/ngxs/store/pull/2036)
+- Fix: Devtools Plugin - Do not re-enter Angular zone when resetting state [#2038](https://github.com/ngxs/store/pull/2038)
+- Performance: Tree-shake selectors validation errors [#2020](https://github.com/ngxs/store/pull/2020)
+- Build: Add Angular 17 support [#2079](https://github.com/ngxs/store/pull/2079)
+- Refactor: Replace `get type()` with `type =` in actions [#2035](https://github.com/ngxs/store/pull/2035)
+- Refactor: WebSocket Plugin - Get rid off `rxjs/webSocket` and use `WebSocket` directly [#2033](https://github.com/ngxs/store/pull/2033)
+
+# 3.8.1 2023-05-16
+
+- Fix: Check if state is injectable in JIT [#1988](https://github.com/ngxs/store/pull/1988)
+- Fix: State stream should always return latest value even if update is queued up [#1995](https://github.com/ngxs/store/pull/1995)
+- Fix: Ensure `StateFactory` does not connect actions multiple times [#2010](https://github.com/ngxs/store/pull/2010)
+- Build: Add Angular 16 support [#2008](https://github.com/ngxs/store/pull/2008)
+- Refactor: Set singletons as "providedIn: root" [#2015](https://github.com/ngxs/store/pull/2015)
+
+# 3.8.0 2023-03-29
 
 - Feature: Build packages in Ivy format [#1945](https://github.com/ngxs/store/pull/1945)
+- Feature: Add advanced selector utilities [#1824](https://github.com/ngxs/store/pull/1824)
 - Feature: Expose `ActionContext` and `ActionStatus` [#1766](https://github.com/ngxs/store/pull/1766)
 - Feature: `ofAction*` methods should have strong types [#1808](https://github.com/ngxs/store/pull/1808)
 - Feature: Improve contextual type inference for state operators [#1806](https://github.com/ngxs/store/pull/1806) [#1947](https://github.com/ngxs/store/pull/1947)
@@ -11,13 +84,11 @@
 - Feature: Storage Plugin - Allow providing namespace for keys [#1841](https://github.com/ngxs/store/pull/1841)
 - Feature: Storage Plugin - Enable providing storage engine individually [#1935](https://github.com/ngxs/store/pull/1935)
 - Feature: Devtools Plugin - Add new options to the `NgxsDevtoolsOptions` interface [#1879](https://github.com/ngxs/store/pull/1879)
+- Feature: Devtools Plugin - Add trace options to `NgxsDevtoolsOptions` [#1968](https://github.com/ngxs/store/pull/1968)
+- Feature: Form Plugin - Allow `ngxsFormDebounce` to be string [#1972](https://github.com/ngxs/store/pull/1972)
 - Performance: Tree-shake patch errors [#1955](https://github.com/ngxs/store/pull/1955)
-
-### To become next patch version
-
-```bash
-$ npm install @ngxs/store@dev
-```
+- Fix: Get descriptor explicitly when it's considered as a class property [#1961](https://github.com/ngxs/store/pull/1961)
+- Fix: Avoid delayed updates from state stream [#1981](https://github.com/ngxs/store/pull/1981)
 
 # 3.7.6 2022-11-23
 

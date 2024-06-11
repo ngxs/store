@@ -41,14 +41,13 @@
 ### Quick Links
 
 - ✨ Learn about it on the [docs site](https://ngxs.io/)
-- 🌱 NGXS works with Ivy! Check out the [Ivy migration guide](https://ngxs.io/advanced/ivy-migration-guide)
 - 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-repro)
 - 😎 Checkout the [sample application](integration)
 - 🔧 Scaffolding application using [NGXS Schematics](https://github.com/ngxs/schematics)
 - 📖 Read the blog [posts](https://medium.com/ngxs)
 - ⚡️ Development of [NGXS Labs](https://github.com/ngxs-labs)
 - 📝 Learn about updates from the [changelog](CHANGELOG.md)
-- ❤️ Give back by becoming a [Contributor](docs/community/contributors.md) or a [Sponsor](/docs/community/sponsors.md)
+- ❤️ Give back by becoming a [Contributor](docs/community-and-labs/community/contributors.md) or a [Sponsor](/docs/community-and-labs/community/sponsors.md)
 - 👂 We would love to hear about your experience with NGXS, you can [leave your feedback here](https://forms.gle/2Nf9tNyZnaD8AZL89)
 
 ---
@@ -138,11 +137,11 @@ If you have ideas for creating unique libraries, you can join us. Email us at `n
 
 #### Community
 
-| Project                 | Package                                                                    | Version                                                                                                                     | Links                                                                                                                             |
-| ----------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Reset Plugin**        | [`ngxs-reset-plugin`](https://npmjs.com/package/ngxs-reset-plugin)         | [![latest](https://img.shields.io/npm/v/ngxs-reset-plugin/latest.svg)](https://npmjs.com/package/ngxs-reset-plugin)         | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ng-turkey/ngxs-reset-plugin/blob/master/README.md) |
-| **NGXS-Loading-plugin** | [`ngxs-loading-plugin`](https://www.npmjs.com/package/ngxs-loading-plugin) | [![latest](https://img.shields.io/npm/v/ngxs-loading-plugin/latest.svg)](https://www.npmjs.com/package/ngxs-loading-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/sa-bangash/ngxs-plugin/blob/master/README.md)      |
-| **NGXS-History-plugin** | [`ngxs-history-plugin`](https://www.npmjs.com/package/ngxs-history-plugin) | [![latest](https://img.shields.io/npm/v/ngxs-history-plugin/latest.svg)](https://www.npmjs.com/package/ngxs-history-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/profanis/ngxs-history-plugin/blob/main/projects/ngxs-history-plugin/README.md)      |
+| Project                 | Package                                                                    | Version                                                                                                                     | Links                                                                                                                                                         |
+| ----------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Reset Plugin**        | [`ngxs-reset-plugin`](https://npmjs.com/package/ngxs-reset-plugin)         | [![latest](https://img.shields.io/npm/v/ngxs-reset-plugin/latest.svg)](https://npmjs.com/package/ngxs-reset-plugin)         | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ng-turkey/ngxs-reset-plugin/blob/master/README.md)                             |
+| **NGXS-Loading-plugin** | [`ngxs-loading-plugin`](https://www.npmjs.com/package/ngxs-loading-plugin) | [![latest](https://img.shields.io/npm/v/ngxs-loading-plugin/latest.svg)](https://www.npmjs.com/package/ngxs-loading-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/sa-bangash/ngxs-plugin/blob/master/README.md)                                  |
+| **NGXS-History-plugin** | [`ngxs-history-plugin`](https://www.npmjs.com/package/ngxs-history-plugin) | [![latest](https://img.shields.io/npm/v/ngxs-history-plugin/latest.svg)](https://www.npmjs.com/package/ngxs-history-plugin) | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/profanis/ngxs-history-plugin/blob/main/projects/ngxs-history-plugin/README.md) |
 
 # Contributors
 

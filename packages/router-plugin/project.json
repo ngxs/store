@@ -1,0 +1,26 @@
+{
+  "name": "router-plugin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/router-plugin",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "outputs": ["{workspaceRoot}/@ngxs/router-plugin"],
+      "options": {
+        "tsConfig": "tsconfig.build.json",
+        "project": "packages/router-plugin/ng-package.json"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/router-plugin/jest.config.js"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

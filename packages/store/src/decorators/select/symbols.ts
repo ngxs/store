@@ -1,9 +1,8 @@
 import { Observable } from 'rxjs';
+import { ɵExtractTokenType, StateToken } from '@ngxs/store/internals';
 
 import { propGetter } from '../../internal/internals';
 import { SelectFactory } from './select-factory';
-import { StateToken } from '../../state-token/state-token';
-import { ExtractTokenType } from '../../state-token/symbols';
 import { throwSelectFactoryNotConnectedError } from '../../configs/messages.config';
 
 const DOLLAR_CHAR_CODE = 36;
@@ -37,8 +36,9 @@ export function removeDollarAtTheEnd(name: string): string {
   return dollarAtTheEnd ? name.slice(0, lastCharIndex) : name;
 }
 
-export type PropertyType<T> = T extends StateToken<any>
-  ? Observable<ExtractTokenType<T>>
-  : T extends (...args: any[]) => any
-  ? Observable<ReturnType<T>>
-  : any;
+export type PropertyType<T> =
+  T extends StateToken<any>
+    ? Observable<ɵExtractTokenType<T>>
+    : T extends (...args: any[]) => any
+      ? Observable<ReturnType<T>>
+      : any;

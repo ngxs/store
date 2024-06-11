@@ -14,19 +14,35 @@ In a nutshell, this plugin helps to keep your forms and state in sync.
 ## Installation
 
 ```bash
-npm install @ngxs/form-plugin --save
+npm i @ngxs/form-plugin
 
 # or if you are using yarn
 yarn add @ngxs/form-plugin
+
+# or if you are using pnpm
+pnpm i @ngxs/form-plugin
 ```
 
 ## Usage
 
-In the root module of your application, import `NgxsFormPluginModule`
-and include it in the imports.
+When calling `provideStore`, include `withNgxsFormPlugin` in your app config:
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withNgxsFormPlugin } from '@ngxs/form-plugin';
+
+import { NovelsState } from './novels.state';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([NovelsState], withNgxsFormPlugin())]
+};
+```
+
+If you are still using modules, include the `NgxsFormPluginModule` plugin in your root app module:
 
 ```ts
 import { NgxsFormPluginModule } from '@ngxs/form-plugin';
+
 import { NovelsState } from './novels.state';
 
 @NgModule({
@@ -35,15 +51,17 @@ import { NovelsState } from './novels.state';
 export class AppModule {}
 ```
 
-If your form is used in a submodule, it must be imported there as well:
+If your form is used in a standalone component, it must be imported there as well:
 
 ```ts
-import { NgxsFormPluginModule } from '@ngxs/form-plugin';
+import { NgxsFormDirective } from '@ngxs/form-plugin';
 
-@NgModule({
-  imports: [NgxsFormPluginModule]
+@Component({
+  ...,
+  standalone: true,
+  imports: [ReactiveFormsModule, NgxsFormDirective]
 })
-export class SomeModule {}
+export class AppComponent {}
 ```
 
 ### Form State
@@ -79,6 +97,7 @@ The directive uses this path to connect itself to the store and setup bindings.
 ```ts
 import { Component } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { NgxsFormDirective } from '@ngxs/form-plugin';
 
 @Component({
   selector: 'new-novel-form',
@@ -87,7 +106,9 @@ import { FormGroup, FormControl } from '@angular/forms';
       <input type="text" formControlName="novelName" />
       <button type="submit">Create</button>
     </form>
-  `
+  `,
+  standalone: true,
+  imports: [ReactiveFormsModule, NgxsFormDirective]
 })
 export class NewNovelComponent {
   newNovelForm = new FormGroup({
@@ -104,7 +125,9 @@ Now anytime your form updates, your state will also reflect the new state.
 
 The directive also has two inputs you can utilize as well:
 
-- `ngxsFormDebounce: number` - Debounce the value changes to the form. Default value: `100`. Ignored if `updateOn` is `blur` or `submit`.
+- `ngxsFormDebounce: number | string` - Debounce the value changes from the form. Default value: `100`. Ignored if:
+  - the provided value is less than `0` (for instance, `ngxsFormDebounce="-1"` is valid)
+  - `updateOn` is `blur` or `submit`
 - `ngxsFormClearOnDestroy: boolean` - Clear the state on destroy of the form.
 
 ### Actions
@@ -164,38 +187,40 @@ The state contains information about the new novel name and its authors. Let's c
 
 ```ts
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
+import { NgxsFormDirective } from '@ngxs/form-plugin';
 
 @Component({
   selector: 'new-novel-form',
   template: `
     <form [formGroup]="newNovelForm" ngxsForm="novels.newNovelForm" (ngSubmit)="onSubmit()">
       <input type="text" formControlName="novelName" />
-      <div
-        formArrayName="authors"
-        *ngFor="let author of newNovelForm.get('authors').value; index as index"
-      >
-        <div [formGroupName]="index">
-          <input formControlName="name" />
+
+      @for (author of newNovelForm.get('authors').value; let index = $index; track author) {
+        <div formArrayName="authors">
+          <div [formGroupName]="index">
+            <input formControlName="name" />
+          </div>
         </div>
-      </div>
+      }
+
       <button type="submit">Create</button>
     </form>
-  `
+  `,
+  standalone: true,
+  imports: [ReactiveFormsModule, NgxsFormDirective]
 })
 export class NewNovelComponent {
-  newNovelForm: FormGroup;
+  newNovelForm = this.fb.group({
+    novelName: 'Zenith',
+    authors: this.fb.array([
+      this.fb.group({
+        name: 'Sasha Alsberg'
+      })
+    ])
+  });
 
-  constructor(private fb: FormBuilder) {
-    this.newNovelForm = this.fb.group({
-      novelName: 'Zenith',
-      authors: this.fb.array([
-        this.fb.group({
-          name: 'Sasha Alsberg'
-        })
-      ])
-    });
-  }
+  constructor(private fb: FormBuilder) {}
 
   onSubmit() {
     //
@@ -216,3 +241,51 @@ store.dispatch(
   })
 );
 ```
+
+### Debouncing
+
+The `ngxsFormDebounce` is used alongside `debounceTime` and pipes form's `valueChanges` and `statusChanges`. This implies that state updates are asynchronous by default. Suppose you dispatch the `UpdateFormValue`, which should patch the form value. In that case, you won't get the updated state immediately because the `debounceTime` is set to `100` by default. Given the following example:
+
+```ts
+interface NovelsStateModel {
+  newNovelForm: {
+    model?: {
+      novelName: string;
+      paperBound: boolean;
+    };
+  };
+}
+
+export class NovelsState {
+  @Action(SubmitNovelsForm)
+  submitNovelsForm(ctx: StateContext<NovelsStateModel>) {
+    console.log(ctx.getState().newNovelForm.model);
+
+    ctx.dispatch(
+      new UpdateFormValue({
+        value: { paperBound: true },
+        path: 'novels.newNovelForm'
+      })
+    );
+
+    console.log(ctx.getState().newNovelForm.model);
+  }
+}
+```
+
+You may expect to see `{ paperBound: true, novelName: null }` being logged. Still, the second `console.log` will log `{ paperBound: true }`, pretending the `novelName` value is lost. You'll see the final update state if you wrap the second `console.log` into a `setTimeout`:
+
+```ts
+ctx.dispatch(
+  new UpdateFormValue({
+    value: { paperBound: true },
+    path: 'novels.newNovelForm'
+  })
+);
+
+setTimeout(() => {
+  console.log(ctx.getState().newNovelForm.model);
+}, 100);
+```
+
+If you need to get state updates synchronously, you may want to set the `ngxsFormDebounce` to `-1`; this won't pipe value changes with `debounceTime`.

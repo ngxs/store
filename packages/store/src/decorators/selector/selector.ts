@@ -1,27 +1,35 @@
 import { throwSelectorDecoratorError } from '../../configs/messages.config';
-import { createSelector } from '../../utils/selector-utils';
-import { SelectorSpec, SelectorType } from './symbols';
+import { createSelector } from '../../selectors/create-selector';
+import { SelectorDefTuple, SelectorType } from './symbols';
 
 /**
- * Decorator for memoizing a state selector.
+ * Decorator for creating a state selector for the current state.
  */
-export function Selector<T>(selectors?: T[]): SelectorType<T> {
+export function Selector(): SelectorType<unknown>;
+
+/**
+ * Decorator for creating a state selector from the provided selectors (and optionally the container State, depending on the applicable Selector Options).
+ */
+export function Selector<T extends SelectorDefTuple>(selectors: T): SelectorType<T>;
+
+export function Selector<T extends SelectorDefTuple = []>(
+  selectors?: T
+): SelectorType<unknown> | SelectorType<T> {
   return <U>(
     target: any,
     key: string | symbol,
-    descriptor: TypedPropertyDescriptor<SelectorSpec<T, U>>
-  ): TypedPropertyDescriptor<SelectorSpec<T, U>> | void => {
-    // Caretaker note: we have still left the `typeof` condition in order to avoid
-    // creating a breaking change for projects that still use the View Engine.
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
-      const isNotMethod = !(descriptor && descriptor.value !== null);
+    descriptor?: TypedPropertyDescriptor<(...states: any[]) => U>
+  ): TypedPropertyDescriptor<(...states: any[]) => U> | void => {
+    descriptor ||= Object.getOwnPropertyDescriptor(target, key)!;
 
-      if (isNotMethod) {
+    const originalFn = descriptor?.value;
+
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+      if (originalFn && typeof originalFn !== 'function') {
         throwSelectorDecoratorError();
       }
     }
 
-    const originalFn = descriptor.value;
     const memoizedFn = createSelector(selectors, originalFn as any, {
       containerClass: target,
       selectorName: key.toString(),
@@ -33,10 +41,9 @@ export function Selector<T>(selectors?: T[]): SelectorType<T> {
       configurable: true,
       get() {
         return memoizedFn;
-      }
+      },
+      originalFn
     };
-    // Add hidden property to descriptor
-    (<any>newDescriptor)['originalFn'] = originalFn;
     return newDescriptor;
   };
 }

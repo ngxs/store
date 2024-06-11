@@ -101,7 +101,5 @@
       "compression": "gzip"
     }
   ],
-  "reportOutput": [
-    "github"
-  ]
+  "reportOutput": ["github"]
 }

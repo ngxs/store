@@ -1,4 +1,4 @@
-import { Component, NgModule, ApplicationRef } from '@angular/core';
+import { Component, NgModule, ApplicationRef, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { take } from 'rxjs/operators';
@@ -24,6 +24,7 @@ describe('Actions stream causing ticks', () => {
     name: 'countries',
     defaults: []
   })
+  @Injectable()
   class CountriesState {
     @Action(SetCountries)
     async setCountries(ctx: StateContext<string[]>, action: SetCountries) {
@@ -37,7 +38,10 @@ describe('Actions stream causing ticks', () => {
     template: '<button id="set-countries" (click)="setCountries()">Set countries</button>'
   })
   class TestComponent {
-    constructor(private _store: Store, actions$: Actions) {
+    constructor(
+      private _store: Store,
+      actions$: Actions
+    ) {
       // Create 10 subscriptions in a row.
       Array.from({ length: 10 }).forEach(() => {
         actions$.pipe(ofActionSuccessful(SetCountries)).subscribe();

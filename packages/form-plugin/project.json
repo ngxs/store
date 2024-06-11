@@ -1,0 +1,26 @@
+{
+  "name": "form-plugin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/form-plugin",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "outputs": ["{workspaceRoot}/@ngxs/form-plugin"],
+      "options": {
+        "tsConfig": "tsconfig.build.json",
+        "project": "packages/form-plugin/ng-package.json"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/form-plugin/jest.config.js"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

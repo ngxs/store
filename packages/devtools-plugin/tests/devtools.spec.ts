@@ -261,7 +261,7 @@ describe('[TEST]: Devtools', () => {
 
   describe('Action with "action" payload', () => {
     it('should call send action with action=null', () => {
-      const spy = spyOn(devtools, 'send');
+      const spy = jest.spyOn(devtools, 'send');
       store.dispatch(new TestActionPayload('test'));
       expect(spy).toHaveBeenCalledWith(
         {

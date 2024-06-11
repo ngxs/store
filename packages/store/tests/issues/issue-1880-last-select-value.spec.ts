@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NgxsModule, State, Store } from '@ngxs/store';
 
@@ -6,6 +7,7 @@ describe('Last select value (https://github.com/ngxs/store/issues/1880)', () => 
     name: 'counter',
     defaults: 0
   })
+  @Injectable()
   class CounterState {}
 
   it('should receive the latest value (previously it was a bug because of refCount() which made observable cold)', async () => {
@@ -18,10 +20,7 @@ describe('Last select value (https://github.com/ngxs/store/issues/1880)', () => 
 
     // Act
     // This is done explicitly to make stream cold.
-    store
-      .select(CounterState)
-      .subscribe()
-      .unsubscribe();
+    store.select(CounterState).subscribe().unsubscribe();
 
     store.reset({ counter: 3 });
 

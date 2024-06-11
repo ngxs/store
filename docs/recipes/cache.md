@@ -10,7 +10,7 @@ service.
 ```ts
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 
 export class GetNovels {
   static readonly type = '[Novels] Get novels';
@@ -39,7 +39,7 @@ the object whose keys are the identifiers of the novels:
 ```ts
 import { Injectable } from '@angular/core';
 import { State, Action, StateContext, createSelector } from '@ngxs/store';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 
 export interface NovelsInfoStateModel {
   [key: string]: Novel;
@@ -82,24 +82,25 @@ export class NovelsInfoState {
 }
 ```
 
-The component, that displays information about the novel, can subscribe to the `params` observable of the `ActivatedRoute` to listen to the params change. The code will look as following:
+The component responsible for displaying information about the novel can subscribe to the `params` observable of the `ActivatedRoute` to listen for changes in the parameters. The code will appear as follows:
 
 ```ts
 @Component({
   selector: 'app-novel',
   template: `
-    <h1>{{ novel?.title }}</h1>
-    <span>{{ novel?.author }}</span>
-    <p>
-      {{ novel?.content }}
-      <del datetime="{{ novel?.publishedAt }}"></del>
-    </p>
-  `
+    @if (novel(); as novel) {
+      <h1>{{ novel.title }}</h1>
+      <span>{{ novel.author }}</span>
+      <p>
+        {{ novel.content }}
+        <del datetime="{{ novel.publishedAt }}"></del>
+      </p>
+    }
+  `,
+  standalone: true
 })
-export class NovelComponent implements OnDestroy {
-  novel: Novel;
-
-  private destroy$ = new Subject<void>();
+export class NovelComponent {
+  novel = signal<Novel | null>(null);
 
   constructor(route: ActivatedRoute, store: Store) {
     route.params
@@ -109,18 +110,13 @@ export class NovelComponent implements OnDestroy {
             .dispatch(new GetNovelById(params.id))
             .pipe(mergeMap(() => store.select(NovelsInfoState.getNovelById(params.id))))
         ),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed()
       )
       .subscribe(novel => {
-        this.novel = novel;
+        this.novel.set(novel);
       });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }
 ```
 
-We're using the `switchMap` in this example, so if the user navigates to another novel and `params` observable emits new value - we have to complete previously started asynchronous job (in our case it's getting novel by ID).
+In this example, we're utilizing `switchMap`, so if the user navigates to another novel and the `params` observable emits a new value, we need to complete the previously started asynchronous job, which, in our case, involves fetching the novel by its ID.

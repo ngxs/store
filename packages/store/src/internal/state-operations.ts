@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
+import { ɵStateStream } from '@ngxs/store/internals';
 
 import { StateOperations, StatesAndDefaults } from '../internal/internals';
 import { InternalDispatcher } from '../internal/dispatcher';
-import { StateStream } from './state-stream';
 import { NgxsConfig } from '../symbols';
 import { deepFreeze } from '../utils/freeze';
 
 /**
- * State Context factory class
  * @ignore
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class InternalStateOperations {
   constructor(
-    private _stateStream: StateStream,
+    private _stateStream: ɵStateStream,
     private _dispatcher: InternalDispatcher,
     private _config: NgxsConfig
   ) {}
@@ -28,7 +27,7 @@ export class InternalStateOperations {
       dispatch: (actionOrActions: any | any[]) => this._dispatcher.dispatch(actionOrActions)
     };
 
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       return this._config.developmentMode
         ? ensureStateAndActionsAreImmutable(rootStateOperations)
         : rootStateOperations;

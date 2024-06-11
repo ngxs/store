@@ -1,5 +1,4 @@
-import { patch } from '../src/patch';
-import { removeItem } from '../src/remove-item';
+import { patch, removeItem } from '@ngxs/store/operators';
 
 describe('remove item', () => {
   describe('when null provided', () => {

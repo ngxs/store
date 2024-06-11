@@ -38,6 +38,7 @@ describe('NgxsFormPlugin', () => {
       }
     }
   })
+  @Injectable()
   class StudentState {
     @Selector()
     static getStudentForm(state: StudentStateModel): Form {
@@ -316,6 +317,7 @@ describe('NgxsFormPlugin', () => {
             }
           }
         })
+        @Injectable()
         class TodosState {}
 
         TestBed.configureTestingModule({
@@ -612,7 +614,7 @@ describe('NgxsFormPlugin', () => {
 
       @Component({
         template: `
-          <form [formGroup]="form" ngxsForm="todos.todosForm" [ngxsFormDebounce]="-1">
+          <form [formGroup]="form" ngxsForm="todos.todosForm" ngxsFormDebounce="-1">
             <input formControlName="text" /> <button type="submit">Add todo</button>
           </form>
         `
@@ -798,7 +800,7 @@ describe('NgxsFormPlugin', () => {
 
       @Component({
         template: `
-          <form [formGroup]="form" ngxsForm="todos.todosForm" [ngxsFormDebounce]="-1">
+          <form [formGroup]="form" ngxsForm="todos.todosForm" ngxsFormDebounce="-1">
             <input formControlName="text" /> <button type="submit">Add todo</button>
           </form>
         `

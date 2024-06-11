@@ -3,12 +3,12 @@ import { APP_BASE_HREF } from '@angular/common';
 import { Component, NgModule, Injectable } from '@angular/core';
 import { Routes, CanDeactivate, NavigationCancel } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgxsModule } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
 import { filter } from 'rxjs/operators';
 
-import { RouterState, NgxsRouterPluginModule } from '../';
+import { RouterState, withNgxsRouterPlugin } from '../';
 
 import { createNgxsRouterPluginTestingPlatform } from './helpers';
 
@@ -53,13 +53,15 @@ function getTestModule() {
   @NgModule({
     imports: [
       BrowserModule,
-      RouterTestingModule.withRoutes(routes, { initialNavigation: 'enabled' }),
-      NgxsModule.forRoot(),
-      NgxsRouterPluginModule.forRoot()
+      RouterTestingModule.withRoutes(routes, { initialNavigation: 'enabledBlocking' })
     ],
     declarations: [RootComponent, HomeComponent, BlogComponent],
     bootstrap: [RootComponent],
-    providers: [HomeGuard, { provide: APP_BASE_HREF, useValue: '/' }]
+    providers: [
+      provideStore([], withNgxsRouterPlugin()),
+      HomeGuard,
+      { provide: APP_BASE_HREF, useValue: '/' }
+    ]
   })
   class TestModule {}
 
@@ -71,9 +73,8 @@ describe('RouterCancel', () => {
     'should persist the previous state if the "RouterCancel" action is dispatched',
     freshPlatform(async () => {
       // Arrange
-      const { router, store, ngZone } = await createNgxsRouterPluginTestingPlatform(
-        getTestModule()
-      );
+      const { router, store, ngZone } =
+        await createNgxsRouterPluginTestingPlatform(getTestModule());
 
       let navigationCancelEmittedTimes = 0;
 
@@ -84,10 +85,8 @@ describe('RouterCancel', () => {
           navigationCancelEmittedTimes++;
         });
 
-      await ngZone.run(async () => {
-        await router.navigateByUrl('/');
-        await router.navigateByUrl('/blog');
-      });
+      await ngZone.run(() => router.navigateByUrl('/'));
+      await ngZone.run(() => router.navigateByUrl('/blog'));
 
       const url = store.selectSnapshot(RouterState.url);
 

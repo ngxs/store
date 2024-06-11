@@ -1,4 +1,6 @@
-import { getStoreMetadata, StateClassInternal, StatesByName } from '../internal/internals';
+import { ɵStateClassInternal, ɵgetStoreMetadata } from '@ngxs/store/internals';
+
+import { StatesByName } from '../internal/internals';
 import {
   throwStateDecoratorError,
   throwStateNameError,
@@ -6,35 +8,31 @@ import {
   throwStateUniqueError
 } from '../configs/messages.config';
 
-export abstract class StoreValidators {
-  private static stateNameRegex = new RegExp('^[a-zA-Z0-9_]+$');
+const stateNameRegex = new RegExp('^[a-zA-Z0-9_]+$');
 
-  static checkThatStateIsNamedCorrectly(name: string | null): void | never {
-    if (!name) {
-      throwStateNamePropertyError();
-    } else if (!this.stateNameRegex.test(name)) {
-      throwStateNameError(name);
+export function ensureStateNameIsValid(name: string | null): void | never {
+  if (!name) {
+    throwStateNamePropertyError();
+  } else if (!stateNameRegex.test(name)) {
+    throwStateNameError(name);
+  }
+}
+
+export function ensureStateNameIsUnique(
+  stateName: string,
+  state: ɵStateClassInternal,
+  statesByName: StatesByName
+): void | never {
+  const existingState = statesByName[stateName];
+  if (existingState && existingState !== state) {
+    throwStateUniqueError(stateName, state.name, existingState.name);
+  }
+}
+
+export function ensureStatesAreDecorated(stateClasses: ɵStateClassInternal[]): void | never {
+  stateClasses.forEach((stateClass: ɵStateClassInternal) => {
+    if (!ɵgetStoreMetadata(stateClass)) {
+      throwStateDecoratorError(stateClass.name);
     }
-  }
-
-  static checkThatStateNameIsUnique(
-    stateName: string,
-    state: StateClassInternal,
-    statesByName: StatesByName
-  ): void | never {
-    const existingState = statesByName[stateName];
-    if (existingState && existingState !== state) {
-      throwStateUniqueError(stateName, state.name, existingState.name);
-    }
-  }
-
-  static checkThatStateClassesHaveBeenDecorated(
-    stateClasses: StateClassInternal[]
-  ): void | never {
-    stateClasses.forEach((stateClass: StateClassInternal) => {
-      if (!getStoreMetadata(stateClass)) {
-        throwStateDecoratorError(stateClass.name);
-      }
-    });
-  }
+  });
 }

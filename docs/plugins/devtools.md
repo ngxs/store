@@ -12,15 +12,29 @@ Plugin with integration:
 ## Installation
 
 ```bash
-npm install @ngxs/devtools-plugin --save-dev
+npm i @ngxs/devtools-plugin
 
 # or if you are using yarn
-yarn add @ngxs/devtools-plugin --dev
+yarn add @ngxs/devtools-plugin
+
+# or if you are using pnpm
+pnpm i @ngxs/devtools-plugin
 ```
 
 ## Usage
 
-Add the `NgxsReduxDevtoolsPluginModule` plugin to your root app module:
+When calling `provideStore`, include `withNgxsReduxDevtoolsPlugin` in your app config:
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([], withNgxsReduxDevtoolsPlugin())]
+};
+```
+
+If you are still using modules, include the `NgxsReduxDevtoolsPluginModule` plugin in your root app module:
 
 ```ts
 import { NgxsModule } from '@ngxs/store';
@@ -40,17 +54,19 @@ The plugin supports the following options passed via the `forRoot` method:
 - `disabled`: Disable the devtools during production
 - `maxAge`: Max number of entries to keep.
 - `latency`: If more than one action is dispatched in the indicated interval, all new actions will be collected and sent at once.
-  It is the joint between performance and speed. When set to 0, all actions will be sent instantly. 
+  It is the joint between performance and speed. When set to 0, all actions will be sent instantly.
   Set it to a higher value when experiencing perf issues (also maxAge to a lower value). Default is 500 ms.
 - `actionsBlacklist`: string or array of strings as regex - actions types to be hidden in the monitors (while passed to the reducers).
   If actionsWhitelist specified, actionsBlacklist is ignored.
 - `actionsWhitelist`: string or array of strings as regex - actions types to be shown in the monitors (while passed to the reducers).
   If actionsWhitelist specified, actionsBlacklist is ignored.
-- `predicate`: called for every action before sending, takes state and action object, and 
+- `predicate`: called for every action before sending, takes state and action object, and
   returns true in case it allows sending the current data to the monitor.
-Use it as a more advanced version of actionsBlacklist/actionsWhitelist parameters
+  Use it as a more advanced version of actionsBlacklist/actionsWhitelist parameters
 - `actionSanitizer`: Reformat actions before sending to dev tools
 - `stateSanitizer`: Reformat state before sending to devtools
+- `trace`: if set to `true`, will include stack trace for every dispatched action, so you can see it in trace tab jumping directly to that part of code
+- `traceLimit`: maximum stack trace frames to be stored (in case trace option was provided as true)
 
 ### Notes
 

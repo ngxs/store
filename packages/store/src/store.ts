@@ -1,26 +1,17 @@
-// tslint:disable:unified-signatures
-import { Inject, Injectable, Optional, Type } from '@angular/core';
-import { Observable, of, Subscription, throwError, queueScheduler } from 'rxjs';
-import {
-  catchError,
-  distinctUntilChanged,
-  map,
-  shareReplay,
-  take,
-  observeOn
-} from 'rxjs/operators';
-import { INITIAL_STATE_TOKEN, PlainObject } from '@ngxs/store/internals';
+import { Inject, Injectable, Optional, Signal, computed } from '@angular/core';
+import { Observable, of, Subscription, throwError } from 'rxjs';
+import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
+import { ɵINITIAL_STATE_TOKEN, ɵStateStream } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
-import { getRootSelectorFactory } from './utils/selector-utils';
-import { StateStream } from './internal/state-stream';
+import { getRootSelectorFactory } from './selectors/selector-utils';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
-import { StateToken } from './state-token/state-token';
 import { StateFactory } from './internal/state-factory';
+import { TypedSelector } from './selectors';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class Store {
   /**
    * This is a derived state stream that leaves NGXS execution strategy to emit state changes within the Angular zone,
@@ -28,19 +19,18 @@ export class Store {
    * All selects would use this stream, and it would call leave only once for any state change across all active selectors.
    */
   private _selectableStateStream = this._stateStream.pipe(
-    observeOn(queueScheduler),
     leaveNgxs(this._internalExecutionStrategy),
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
   constructor(
-    private _stateStream: StateStream,
+    private _stateStream: ɵStateStream,
     private _internalStateOperations: InternalStateOperations,
     private _config: NgxsConfig,
     private _internalExecutionStrategy: InternalNgxsExecutionStrategy,
     private _stateFactory: StateFactory,
     @Optional()
-    @Inject(INITIAL_STATE_TOKEN)
+    @Inject(ɵINITIAL_STATE_TOKEN)
     initialStateValue: any
   ) {
     this.initStateStream(initialStateValue);
@@ -49,30 +39,25 @@ export class Store {
   /**
    * Dispatches event(s).
    */
-  dispatch(actionOrActions: any | any[]): Observable<any> {
+  dispatch(actionOrActions: any | any[]): Observable<void> {
     return this._internalStateOperations.getRootStateOperations().dispatch(actionOrActions);
   }
 
   /**
    * Selects a slice of data from the store.
    */
-  select<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
-  select<T = any>(selector: string | Type<any>): Observable<T>;
-  select<T>(selector: StateToken<T>): Observable<T>;
-  select(selector: any): Observable<any> {
+  select<T>(selector: TypedSelector<T>): Observable<T> {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
     return this._selectableStateStream.pipe(
       map(selectorFn),
-      catchError((err: Error): Observable<never> | Observable<undefined> => {
+      catchError((error: Error): Observable<never> | Observable<undefined> => {
         // if error is TypeError we swallow it to prevent usual errors with property access
-        const { suppressErrors } = this._config.selectorOptions;
-
-        if (err instanceof TypeError && suppressErrors) {
+        if (this._config.selectorOptions.suppressErrors && error instanceof TypeError) {
           return of(undefined);
         }
 
         // rethrow other errors
-        return throwError(err);
+        return throwError(error);
       }),
       distinctUntilChanged(),
       leaveNgxs(this._internalExecutionStrategy)
@@ -82,23 +67,24 @@ export class Store {
   /**
    * Select one slice of data from the store.
    */
-
-  selectOnce<T>(selector: (state: any, ...states: any[]) => T): Observable<T>;
-  selectOnce<T = any>(selector: string | Type<any>): Observable<T>;
-  selectOnce<T>(selector: StateToken<T>): Observable<T>;
-  selectOnce(selector: any): Observable<any> {
+  selectOnce<T>(selector: TypedSelector<T>): Observable<T> {
     return this.select(selector).pipe(take(1));
   }
 
   /**
    * Select a snapshot from the state.
    */
-  selectSnapshot<T>(selector: (state: any, ...states: any[]) => T): T;
-  selectSnapshot<T = any>(selector: string | Type<any>): T;
-  selectSnapshot<T>(selector: StateToken<T>): T;
-  selectSnapshot(selector: any): any {
+  selectSnapshot<T>(selector: TypedSelector<T>): T {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
     return selectorFn(this._stateStream.getValue());
+  }
+
+  /**
+   * Select a signal from the state.
+   */
+  selectSignal<T>(selector: TypedSelector<T>): Signal<T> {
+    const selectorFn = this.getStoreBoundSelectorFn(selector);
+    return computed<T>(() => selectorFn(this._stateStream.state()));
   }
 
   /**
@@ -122,7 +108,7 @@ export class Store {
    * for plugin's who need to modify the state directly or unit testing.
    */
   reset(state: any) {
-    return this._internalStateOperations.getRootStateOperations().setState(state);
+    this._internalStateOperations.getRootStateOperations().setState(state);
   }
 
   private getStoreBoundSelectorFn(selector: any) {
@@ -132,15 +118,11 @@ export class Store {
   }
 
   private initStateStream(initialStateValue: any): void {
-    const value: PlainObject = this._stateStream.value;
-    const storeIsEmpty: boolean = !value || Object.keys(value).length === 0;
-    if (storeIsEmpty) {
-      const defaultStateNotEmpty: boolean = Object.keys(this._config.defaultsState).length > 0;
-      const storeValues: PlainObject = defaultStateNotEmpty
-        ? { ...this._config.defaultsState, ...initialStateValue }
-        : initialStateValue;
+    const value = this._stateStream.value;
+    const storeIsEmpty = !value || Object.keys(value).length === 0;
 
-      this._stateStream.next(storeValues);
+    if (storeIsEmpty) {
+      this._stateStream.next(initialStateValue);
     }
   }
 }

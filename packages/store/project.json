@@ -1,0 +1,44 @@
+{
+  "name": "store",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/store",
+  "projectType": "library",
+  "targets": {
+    "build-package": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "outputs": ["{workspaceRoot}/@ngxs/store"],
+      "options": {
+        "tsConfig": "tsconfig.build.json",
+        "project": "packages/store/ng-package.json"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/build-schematics.mjs --projectRoot=packages/store --distPath=@ngxs/store"
+      },
+      "dependsOn": ["build-package"],
+      "outputs": ["{workspaceRoot}/@ngxs/store"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/store/jest.config.js"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["packages/store/**/*.ts", "!packages/store/types"]
+      }
+    },
+    "lint-types": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "eslintConfig": "packages/store/types/.eslintrc.js",
+        "lintFilePatterns": ["packages/store/types"]
+      }
+    }
+  }
+}

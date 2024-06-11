@@ -26,8 +26,8 @@ describe('[TEST]: Action Types', () => {
   it('should be correct type in selector/select decorator', () => {
     class Any {}
 
-    Selector(); // $ExpectType SelectorType<unknown>
-    assertType(() => Selector([{ foo: 'bar' }])); // $ExpectType SelectorType<{ foo: string; }>
+    Selector(); // $ExpectType SelectorTypeNoDecoratorArgs
+    assertType(() => Selector([{ foo: 'bar' }])); // $ExpectError
     assertType(() => Selector({})); // $ExpectError
 
     Select(); // $ExpectType PropertyDecorator
@@ -57,26 +57,19 @@ describe('[TEST]: Action Types', () => {
       }
     }
 
-    assertType(() => store.select(TodoState)); // $ExpectType Observable<any>
     assertType(() => store.select(TodoState.getTodo)); // $ExpectType Observable<string[]>
-    assertType(() => store.select<string[]>(TodoState)); // $ExpectType Observable<string[]>
-    assertType(() => store.select('state.value')); // $ExpectType Observable<any>
     assertType(() => store.select(state => state.foo.bar)); // $ExpectType Observable<any>
     assertType(() => store.select({ foo: 'bar' })); // $ExpectError
     assertType(() => store.select()); // $ExpectError
 
-    assertType(() => store.selectOnce(TodoState)); // $ExpectType Observable<any>
     assertType(() => store.selectOnce(TodoState.getTodo)); // $ExpectType Observable<string[]>
     assertType(() => store.selectOnce<string[]>(TodoState)); // $ExpectType Observable<string[]>
-    assertType(() => store.selectOnce('state.value')); // $ExpectType Observable<any>
     assertType(() => store.selectOnce(state => state.foo.bar)); // $ExpectType Observable<any>
     assertType(() => store.selectOnce({ foo: 'bar' })); // $ExpectError
     assertType(() => store.selectOnce()); // $ExpectError
 
-    assertType(() => store.selectSnapshot(TodoState)); // $ExpectType any
     assertType(() => store.selectSnapshot(TodoState.getTodo)); // $ExpectType string[]
     assertType(() => store.selectSnapshot<string[]>(TodoState)); // $ExpectType string[]
-    assertType(() => store.selectSnapshot('state.value')); // $ExpectType any
     assertType(() => store.selectSnapshot(state => state.foo.bar)); // $ExpectType any
     assertType(() => store.selectSnapshot({ foo: 'bar' })); // $ExpectError
     assertType(() => store.selectSnapshot()); // $ExpectError
@@ -115,6 +108,10 @@ describe('[TEST]: Action Types', () => {
     @State<object[]>({ name: 'themePark' })
     class ThemePark {}
 
+    const numberSelector = (): number => 3;
+    const stringSelector = (): string => 'a';
+    const nullableStringSelector = (): string | null => null;
+
     class MyPandaState {
       @Selector() static pandas0 = (state: string[]): string[] => state; // $ExpectError
 
@@ -128,7 +125,7 @@ describe('[TEST]: Action Types', () => {
         return state;
       }
 
-      @Selector(['Hello', 'World']) // $ExpectType (state: string[]) => string[]
+      @Selector(['Hello', 'World']) // $ExpectError
       static pandas3(state: string[]): string[] {
         return state;
       }
@@ -138,9 +135,69 @@ describe('[TEST]: Action Types', () => {
         return [...zoos, ...themeParks];
       }
 
-      @Selector([() => {}, function custom() {}, { a: 1, b: 2 }]) // $ExpectType (state: string[]) => string[]
+      @Selector([() => {}, function custom() {}, { a: 1, b: 2 }]) // $ExpectError
       static pandas5(state: string[]): string[] {
         return state;
+      }
+
+      // Injected state - selector with no matching argument
+      @Selector([numberSelector]) // $ExpectError
+      static pandas6(state: string[]): number {
+        return state.length;
+      }
+
+      // Injected state - argument with no matching selector
+      @Selector([numberSelector]) // $ExpectError
+      static pandas7(state: string[], other: number, other2: string): number {
+        return state.length + other + other2.length;
+      }
+
+      // Injected state - type mismatch (swapped string/number)
+      @Selector([numberSelector, stringSelector]) // $ExpectError
+      static pandas8(state: string[], other: string, other2: number): number {
+        return state.length + other.length + other2;
+      }
+
+      // Injected state - unhandled nullability
+      @Selector([numberSelector, nullableStringSelector]) // $ExpectError
+      static pandas9(state: string[], other: number, other2: string): number {
+        return state.length + other + other2.length;
+      }
+
+      // Injected state - correct arguments
+      @Selector([numberSelector, stringSelector]) // $ExpectType (state: string[], other: number, other2: string) => number
+      static pandas10(state: string[], other: number, other2: string): number {
+        return state.length + other + other2.length;
+      }
+
+      // No injected state - selector with no matching argument
+      @Selector([numberSelector]) // $ExpectError
+      static pandas11(): number {
+        return 0;
+      }
+
+      // No injected state - argument with no matching selector
+      @Selector([numberSelector]) // $ExpectError
+      static pandas12(other: number, other2: string): number {
+        return other + other2.length;
+      }
+
+      // No injected state - type mismatch (swapped string/number)
+      @Selector([numberSelector, stringSelector]) // $ExpectError
+      static pandas13(other: string, other2: number): number {
+        return other.length + other2;
+      }
+
+      // No injected state - unhandled nullability
+      @Selector([numberSelector, nullableStringSelector]) // $ExpectError
+      static pandas14(other: number, other2: string): number {
+        return other + other2.length;
+      }
+
+      // No injected state - correct arguments
+      @Selector([numberSelector, stringSelector]) // $ExpectType (other: number, other2: string) => number
+      static pandas15(other: number, other2: string): number {
+        return other + other2.length;
       }
     }
   });

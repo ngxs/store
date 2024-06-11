@@ -49,4 +49,20 @@ describe('[TEST]: Devtools with custom settings', () => {
 
     expect(devtools.options).toEqual({ name: 'custom', maxAge: 1000 });
   });
+
+  it('should trace actions calls', () => {
+    const devtools = new ReduxDevtoolsMockConnector();
+    createReduxDevtoolsExtension(devtools);
+
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([CountState]),
+        NgxsReduxDevtoolsPluginModule.forRoot({ trace: true, traceLimit: 10 })
+      ]
+    });
+
+    store = TestBed.inject(Store);
+
+    expect(devtools.options).toEqual({ name: 'NGXS', trace: true, traceLimit: 10 });
+  });
 });

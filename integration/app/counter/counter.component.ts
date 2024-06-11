@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { Select, Store } from '@ngxs/store';
+import { Component, OnInit, Signal } from '@angular/core';
+import { Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
+
 import { CounterStateChangeAction } from '@integration/counter/counter.actions';
 import { CounterState, CounterStateModel } from '@integration/counter/counter.state';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'counter',
   templateUrl: './counter.component.html'
 })
 export class CounterComponent implements OnInit {
-  @Select(CounterState) public counter$: Observable<CounterStateModel>;
+  counter$: Observable<CounterStateModel> = this._store.select(CounterState.getCounterState);
+  counter: Signal<CounterStateModel> = this._store.selectSignal(CounterState.getCounterState);
 
-  constructor(private store: Store) {}
+  constructor(private _store: Store) {}
 
-  public ngOnInit() {
-    this.store.dispatch(new CounterStateChangeAction());
+  ngOnInit() {
+    this._store.dispatch(new CounterStateChangeAction());
   }
 }

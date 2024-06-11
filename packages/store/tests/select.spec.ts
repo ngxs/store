@@ -1,18 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { combineLatest, Observable, Subscription } from 'rxjs';
-import { first, last } from 'rxjs/operators';
-import { Component, Injectable, NgModule } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { Component, Injectable, NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { Store, NgxsModule, State, Action, Selector, Select, StateContext } from '@ngxs/store';
 import { skipConsoleLogging, freshPlatform } from '@ngxs/store/internals/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-import { Store } from '../src/store';
-import { NgxsModule } from '../src/module';
-import { State } from '../src/decorators/state';
-import { Action } from '../src/decorators/action';
-import { Selector } from '../src/decorators/selector/selector';
-import { Select } from '../src/decorators/select/select';
-import { StateContext } from '../src/symbols';
 import { removeDollarAtTheEnd } from '../src/decorators/select/symbols';
 
 describe('Select', () => {
@@ -75,24 +69,35 @@ describe('Select', () => {
   const states = [MySubState, MySubSubState, MyState];
 
   it('should throw an exception when the user has forgotten to import the NGXS module', () => {
+    // Arrange
+    let message: string | null = null;
+
+    // Act
     try {
       class SelectComponent {
-        @Select((state: any) => state) public state: Observable<any>;
+        @Select((state: any) => state) state: Observable<any>;
       }
 
       new SelectComponent().state.subscribe();
-    } catch ({ message }) {
-      expect(message).toEqual('You have forgotten to import the NGXS module!');
+    } catch (error: any) {
+      message = error.message;
     }
+
+    // Assert
+    expect(message).toEqual('You have forgotten to import the NGXS module!');
   });
 
   it('should throw an exception when the component class is frozen', () => {
+    // Arrange
     function FreezeClass(target: Function): void {
       Object.seal(target);
       Object.freeze(target);
       Object.freeze(target.prototype);
     }
 
+    let message: string | null = null;
+
+    // Act
     try {
       @FreezeClass
       @Component({
@@ -101,7 +106,7 @@ describe('Select', () => {
       })
       class MySelectComponent {
         @Select((state: any) => state)
-        public state: Observable<any>;
+        state: Observable<any>;
       }
 
       TestBed.configureTestingModule({
@@ -111,17 +116,22 @@ describe('Select', () => {
 
       const comp = TestBed.createComponent(MySelectComponent);
       comp.componentInstance.state.subscribe();
-    } catch (e) {
-      expect(e.message).toEqual(
-        `Cannot assign to read only property '__state__selector' of object '[object Object]'`
-      );
+    } catch (error: any) {
+      message = error.message;
     }
+
+    // Assert
+    expect(message).toEqual(
+      `Cannot assign to read only property '__state__selector' of object '[object Object]'`
+    );
   });
 
-  it('should remove dollar sign at the end of property name', () => {
+  it('should remove dollar sign at the end of property name', async () => {
+    // Assert
     expect(removeDollarAtTheEnd('foo$')).toBe('foo');
     expect(removeDollarAtTheEnd('foo')).toBe('foo');
 
+    // Act
     @Component({ template: '' })
     class SelectComponent {
       @Select()
@@ -138,14 +148,15 @@ describe('Select', () => {
 
     const { counter$, counter } = TestBed.createComponent(SelectComponent).componentInstance;
 
-    combineLatest([counter$, counter])
-      .pipe(first())
-      .subscribe(([counter1, counter2]) => {
-        expect(counter1).toEqual(counter2);
-      });
+    // Assert
+    const [counter1, counter2] = await combineLatest([counter$, counter])
+      .pipe(take(1))
+      .toPromise();
+    expect(counter1).toEqual(counter2);
   });
 
-  it('should select the correct state using string', async(() => {
+  it('should select the correct state using string', async () => {
+    // Arrange
     @Component({
       selector: 'my-component-0',
       template: ''
@@ -161,24 +172,24 @@ describe('Select', () => {
       declarations: [StringSelectComponent]
     });
 
+    // Act
     const comp = TestBed.createComponent(StringSelectComponent);
 
-    comp.componentInstance.state.subscribe(state => {
-      expect(state.foo).toBe('Hello');
-      expect(state.bar).toBe('World');
-    });
+    // Assert
+    const state = await comp.componentInstance.state.pipe(take(1)).toPromise();
+    expect(state.foo).toBe('Hello');
+    expect(state.bar).toBe('World');
 
-    comp.componentInstance.subState.subscribe(state => {
-      expect(state.hello).toBe(true);
-      expect(state.world).toBe(true);
-    });
+    const subState = await comp.componentInstance.subState.pipe(take(1)).toPromise();
+    expect(subState.hello).toBe(true);
+    expect(subState.world).toBe(true);
 
-    comp.componentInstance.subSubState.subscribe(state => {
-      expect(state.name).toBe('Danny');
-    });
-  }));
+    const subSubState = await comp.componentInstance.subSubState.pipe(take(1)).toPromise();
+    expect(subSubState.name).toBe('Danny');
+  });
 
-  it('should select the correct state using a state class', async(() => {
+  it('should select the correct state using a state class', async () => {
+    // Arrange
     @Component({
       selector: 'my-component-1',
       template: ''
@@ -196,22 +207,21 @@ describe('Select', () => {
 
     const comp = TestBed.createComponent(StoreSelectComponent);
 
-    comp.componentInstance.state.subscribe(state => {
-      expect(state.foo).toBe('Hello');
-      expect(state.bar).toBe('World');
-    });
+    // Assert
+    const state = await comp.componentInstance.state.pipe(take(1)).toPromise();
+    expect(state.foo).toBe('Hello');
+    expect(state.bar).toBe('World');
 
-    comp.componentInstance.subState.subscribe(state => {
-      expect(state.hello).toBe(true);
-      expect(state.world).toBe(true);
-    });
+    const subState = await comp.componentInstance.subState.pipe(take(1)).toPromise();
+    expect(subState.hello).toBe(true);
+    expect(subState.world).toBe(true);
 
-    comp.componentInstance.subSubState.subscribe(state => {
-      expect(state.name).toBe('Danny');
-    });
-  }));
+    const subSubState = await comp.componentInstance.subSubState.pipe(take(1)).toPromise();
+    expect(subSubState.name).toBe('Danny');
+  });
 
-  it('should select the correct state using a function', async(() => {
+  it('should select the correct state using a function', async () => {
+    // Arrange
     @Component({
       selector: 'my-component-1',
       template: ''
@@ -226,14 +236,16 @@ describe('Select', () => {
       declarations: [StoreSelectComponent]
     });
 
+    // Act
     const comp = TestBed.createComponent(StoreSelectComponent);
 
-    comp.componentInstance.counter$.subscribe(state => {
-      expect(state).toBe('Hello');
-    });
-  }));
+    // Assert
+    const state = await comp.componentInstance.counter$.pipe(take(1)).toPromise();
+    expect(state).toEqual('Hello');
+  });
 
   it('should throw an exception if reserved key used in class', () => {
+    // Arrange
     const reservedNameNonConflicted = `__mySelect__selector`;
 
     @Component({
@@ -242,9 +254,9 @@ describe('Select', () => {
     })
     class StoreSelectComponent {
       @Select((state: any) => state)
-      public mySelect: Observable<string>;
+      mySelect: Observable<string>;
 
-      public [reservedNameNonConflicted](): string {
+      [reservedNameNonConflicted](): string {
         return `this.mySelect is ${this.mySelect.constructor.name}`;
       }
     }
@@ -255,20 +267,22 @@ describe('Select', () => {
     });
 
     let error: Error = null!;
-    const component: StoreSelectComponent = TestBed.createComponent(StoreSelectComponent)
-      .componentInstance;
+    // Act
+    const component = TestBed.createComponent(StoreSelectComponent).componentInstance;
 
     try {
       component.mySelect.subscribe();
-    } catch (e) {
+    } catch (e: any) {
       error = e;
     }
 
+    // Assert
     expect(error.message).toEqual('component.mySelect.subscribe is not a function');
     expect(component[reservedNameNonConflicted]()).toEqual('this.mySelect is Function');
   });
 
-  it('should select the correct state after timeout', async(() => {
+  it('should select the correct state after timeout', fakeAsync(async () => {
+    // Arrange
     @Component({
       selector: 'my-component-1',
       template: ''
@@ -280,7 +294,7 @@ describe('Select', () => {
       constructor(store: Store) {
         setTimeout(() => {
           store.dispatch(new FooIt());
-        }, 100);
+        }, 0);
       }
     }
 
@@ -289,25 +303,25 @@ describe('Select', () => {
       declarations: [StoreSelectComponent]
     });
 
+    // Act
     const comp = TestBed.createComponent(StoreSelectComponent);
+    tick(0);
 
-    comp.componentInstance.counter$.pipe(first()).subscribe(state2 => {
-      expect(state2).toBe('Hello');
-    });
-
-    comp.componentInstance.counter$.pipe(last()).subscribe(state2 => {
-      expect(state2).toBe('bar');
-    });
+    // Assert
+    const foo = await comp.componentInstance.counter$.pipe(take(1)).toPromise();
+    expect(foo).toEqual('bar');
   }));
 
-  it('should not fail when TypeError is thrown in select lambda', async(() => {
+  it('should fail when TypeError is thrown in select lambda', async () => {
+    // Arrange
     @Component({
       selector: 'my-component-1',
       template: ''
     })
     class StoreSelectComponent {
-      @Select((state: any) => state.counter.not.here)
-      counter$: Observable<string>;
+      counter$: Observable<string> = inject(Store).select(
+        (state: any) => state.counter.not.here
+      );
     }
 
     TestBed.configureTestingModule({
@@ -315,12 +329,22 @@ describe('Select', () => {
       declarations: [StoreSelectComponent]
     });
 
+    // Act
     const comp = TestBed.createComponent(StoreSelectComponent);
 
-    comp.componentInstance.counter$.subscribe(state => {
-      expect(state).toBeUndefined();
-    });
-  }));
+    let message: string | null = null;
+
+    try {
+      await skipConsoleLogging(() =>
+        comp.componentInstance.counter$.pipe(take(1)).toPromise()
+      );
+    } catch (error) {
+      message = error.message;
+    }
+
+    // Assert
+    expect(message).toEqual(`Cannot read properties of undefined (reading 'here')`);
+  });
 
   @State<any>({
     name: 'nullselector',
@@ -336,13 +360,14 @@ describe('Select', () => {
     }
   }
 
-  it('should not fail when TypeError is thrown in select static method', async(() => {
+  it('should fail when TypeError is thrown in select static method', async () => {
+    // Arrange
     @Component({
       selector: 'my-component-1',
       template: ''
     })
     class StoreSelectComponent {
-      @Select(NullSelectorState.notHere) state$: Observable<any>;
+      state$ = inject(Store).select(NullSelectorState.notHere);
     }
 
     TestBed.configureTestingModule({
@@ -350,15 +375,23 @@ describe('Select', () => {
       declarations: [StoreSelectComponent]
     });
 
+    // Act
     const comp = TestBed.createComponent(StoreSelectComponent);
 
-    comp.componentInstance.state$.subscribe(state => {
-      expect(state).toBeUndefined();
-    });
-  }));
+    let message: string | null = null;
 
-  it('should not fail when TypeError is custom thrown in select lambda', async(() => {
-    console.error = () => {}; // silent error
+    try {
+      await skipConsoleLogging(() => comp.componentInstance.state$.pipe(take(1)).toPromise());
+    } catch (error) {
+      message = error.message;
+    }
+
+    // Assert
+    expect(message).toEqual(`Cannot read properties of undefined (reading 'not')`);
+  });
+
+  it('should fail when TypeError is re-thrown in select lambda', () => {
+    // Arrange
     let countTriggeredSelection = 0;
 
     @State<{ number: { value: number } }>({
@@ -368,18 +401,18 @@ describe('Select', () => {
     @Injectable()
     class CountState {
       @Action({ type: 'IncorrectClearState' })
-      public incorrectClear({ setState }: StateContext<{ number: { value: number } }>): void {
-        setState({} as any); // TypeError
+      incorrectClear(ctx: StateContext<{ number: { value: number } }>): void {
+        ctx.setState({} as any); // TypeError
       }
 
       @Action({ type: 'CorrectClearState' })
-      public correctClear({ setState }: StateContext<{ number: { value: number } }>): void {
-        setState({ number: { value: 0 } });
+      correctClear(ctx: StateContext<{ number: { value: number } }>): void {
+        ctx.setState({ number: { value: 0 } });
       }
 
       @Action({ type: 'Add' })
-      add({ getState, setState }: StateContext<{ number: { value: number } }>) {
-        setState({ number: { value: getState().number.value + 1 } });
+      add(ctx: StateContext<{ number: { value: number } }>) {
+        ctx.setState({ number: { value: ctx.getState().number.value + 1 } });
       }
     }
 
@@ -388,26 +421,25 @@ describe('Select', () => {
       template: ``
     })
     class CounterComponent {
-      @Select((state: { count: { number: { value: number } } }) => {
+      count$ = this.store.select((state: { count: { number: { value: number } } }) => {
         try {
           return state.count.number.value;
         } catch (err) {
           throw err;
         }
-      })
-      public count$: Observable<number>;
+      });
 
       constructor(private store: Store) {}
 
-      public incorrectClearState(): void {
+      incorrectClearState(): void {
         this.store.dispatch({ type: 'IncorrectClearState' });
       }
 
-      public correctClearState(): void {
+      correctClearState(): void {
         this.store.dispatch({ type: 'CorrectClearState' });
       }
 
-      public onClick(): void {
+      onClick(): void {
         this.store.dispatch({ type: 'Add' });
       }
     }
@@ -417,21 +449,25 @@ describe('Select', () => {
       declarations: [CounterComponent]
     });
 
-    const comp: ComponentFixture<CounterComponent> = TestBed.createComponent(CounterComponent);
+    // Act
+    const comp = TestBed.createComponent(CounterComponent);
 
     const subscription: Subscription = comp.componentInstance.count$.subscribe(
       () => countTriggeredSelection++
     );
 
-    comp.componentInstance.onClick();
-    comp.componentInstance.incorrectClearState(); // unsubscribe after error
+    skipConsoleLogging(() => {
+      comp.componentInstance.onClick();
+      comp.componentInstance.incorrectClearState(); // unsubscribe after error
 
-    comp.componentInstance.correctClearState();
-    comp.componentInstance.onClick();
+      comp.componentInstance.correctClearState();
+      comp.componentInstance.onClick();
+    });
 
+    // Assert
     expect(subscription.closed).toEqual(true);
-    expect(countTriggeredSelection).toEqual(3);
-  }));
+    expect(countTriggeredSelection).toEqual(2);
+  });
 
   it(
     'should complete the state stream once the root view is removed',
@@ -441,6 +477,7 @@ describe('Select', () => {
         name: 'countries',
         defaults: []
       })
+      @Injectable()
       class CountriesState {}
 
       @Component({

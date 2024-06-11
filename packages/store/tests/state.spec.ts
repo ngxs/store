@@ -12,10 +12,19 @@ import {
   BrowserModule,
   ɵBrowserDomAdapter as BrowserDomAdapter
 } from '@angular/platform-browser';
+import {
+  InitState,
+  UpdateState,
+  Action,
+  NgxsModule,
+  NgxsOnInit,
+  State,
+  StateContext,
+  Store
+} from '@ngxs/store';
+import { ɵMETA_KEY } from '@ngxs/store/internals';
 
-import { InitState, UpdateState } from '../src/actions/actions';
-import { Action, NgxsModule, NgxsOnInit, State, StateContext, Store } from '../src/public_api';
-import { META_KEY, NgxsAfterBootstrap } from '../src/symbols';
+import { NgxsAfterBootstrap } from '../src/symbols';
 import { simplePatch } from '../src/internal/state-operators';
 
 describe('State', () => {
@@ -26,7 +35,7 @@ describe('State', () => {
     @Injectable()
     class BarState {}
 
-    const meta = (<any>BarState)[META_KEY];
+    const meta = (<any>BarState)[ɵMETA_KEY];
 
     expect(meta.name).toBe('moo');
   });
@@ -58,7 +67,7 @@ describe('State', () => {
       drink() {}
     }
 
-    const meta = (<any>Bar2State)[META_KEY];
+    const meta = (<any>Bar2State)[ɵMETA_KEY];
     expect(meta.actions[Eat.type]).toBeDefined();
     expect(meta.actions[Drink.type]).toBeDefined();
   });
@@ -74,7 +83,7 @@ describe('State', () => {
       class MyState {}
 
       (<any>window)['foo'] = MyState; // to help with unread warning
-    } catch (err) {
+    } catch (err: any) {
       message = err.message;
     }
 
@@ -92,7 +101,7 @@ describe('State', () => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([MyOtherState])]
       });
-    } catch ({ message }) {
+    } catch ({ message }: any) {
       expect(message).toEqual(`States must register a 'name' property.`);
     }
   });
@@ -392,7 +401,7 @@ describe('State', () => {
       try {
         const simple: string[] = ['hello'];
         simplePatch(['world'])(simple);
-      } catch (e) {
+      } catch (e: any) {
         expect(e.message).toEqual('Patching arrays is not supported.');
       }
     });
@@ -400,7 +409,7 @@ describe('State', () => {
     it('should throw exception if value is primitive', () => {
       try {
         simplePatch('one')('two');
-      } catch (e) {
+      } catch (e: any) {
         expect(e.message).toEqual('Patching primitives is not supported.');
       }
     });
@@ -409,7 +418,7 @@ describe('State', () => {
       try {
         const lambda: any = () => {};
         console.log(simplePatch(lambda)({}));
-      } catch (e) {
+      } catch (e: any) {
         expect(e.message).toEqual('Patching primitives is not supported.');
       }
     });

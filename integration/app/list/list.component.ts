@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { Select } from '@ngxs/store';
+import { Component, Signal } from '@angular/core';
+import { RouterStateSnapshot } from '@angular/router';
+import { Store } from '@ngxs/store';
 import { RouterState } from '@ngxs/router-plugin';
 import { Observable } from 'rxjs';
 
@@ -10,7 +11,14 @@ import { ListState } from '@integration/list/list.state';
   templateUrl: './list.component.html'
 })
 export class ListComponent {
-  @Select(ListState) public list$: Observable<string[]>;
-  @Select(ListState.hello) public foo: Observable<string>;
-  @Select(RouterState.state) public router$: Observable<RouterState>;
+  list$: Observable<string[]> = this._store.select(ListState.getListState);
+  list: Signal<string[]> = this._store.selectSignal(ListState.getListState);
+
+  hello$ = this._store.select(ListState.getHello);
+  hello = this._store.selectSignal(ListState.getHello);
+
+  router$ = this._store.select<RouterStateSnapshot | undefined>(RouterState.state);
+  router = this._store.selectSignal<RouterStateSnapshot | undefined>(RouterState.state);
+
+  constructor(private _store: Store) {}
 }

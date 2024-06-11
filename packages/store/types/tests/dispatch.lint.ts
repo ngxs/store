@@ -1,7 +1,6 @@
-/* tslint:disable:max-line-length no-unnecessary-callback-wrapper */
 /// <reference types="@types/jest" />
 import { TestBed } from '@angular/core/testing';
-import { Action, InitState, UpdateState, NgxsModule, State, Store } from '@ngxs/store';
+import { Action, InitState, UpdateState, NgxsModule, State, Store, dispatch } from '@ngxs/store';
 
 import { assertType } from './utils/assert-type';
 
@@ -9,13 +8,13 @@ describe('[TEST]: Action Types', () => {
   let store: Store;
 
   class FooAction {
-    public type = 'FOO';
+    type = 'FOO';
 
     constructor(public payload: string) {}
   }
 
   class BarAction {
-    public static type = 'BAR';
+    static type = 'BAR';
 
     constructor(public payload: string) {}
   }
@@ -29,13 +28,13 @@ describe('[TEST]: Action Types', () => {
   });
 
   it('should be correct type in action decorator', () => {
-    assertType(() => Action(UpdateState)); // $ExpectType MethodDecorator
-    assertType(() => Action(new FooAction('payload'))); // $ExpectType MethodDecorator
-    assertType(() => Action({ type: 'foo' })); // $ExpectType MethodDecorator
-    assertType(() => Action([])); // $ExpectType MethodDecorator
-    assertType(() => Action(BarAction)); // $ExpectType MethodDecorator
-    assertType(() => Action([InitState, UpdateState])); // $ExpectType MethodDecorator
-    assertType(() => Action([InitState], { cancelUncompleted: true })); // $ExpectType MethodDecorator
+    assertType(() => Action(UpdateState)); // $ExpectType ActionDecorator<typeof UpdateState>
+    assertType(() => Action(new FooAction('payload'))); // $ExpectType ActionDecorator<FooAction>
+    assertType(() => Action({ type: 'foo' })); // $ExpectType ActionDecorator<{ type: string; }>
+    assertType(() => Action([])); // $ExpectType ActionDecorator<never[]>
+    assertType(() => Action(BarAction)); // $ExpectType ActionDecorator<typeof BarAction>
+    assertType(() => Action([InitState, UpdateState])); // $ExpectType ActionDecorator<(typeof UpdateState | typeof InitState)[]>
+    assertType(() => Action([InitState], { cancelUncompleted: true })); // $ExpectType ActionDecorator<(typeof InitState)[]>
     assertType(() => Action(new BarAction('foo'))); // $ExpectError
     assertType(() => Action([{ foo: 'bar' }])); // $ExpectError
     assertType(() => Action([InitState, UpdateState], { foo: 'bar' })); // $ExpectError
@@ -49,22 +48,45 @@ describe('[TEST]: Action Types', () => {
     assertType(() => Action([MyActionWithMissingType])); // $ExpectError
 
     class MyAction {
-      public static type = 'MY_ACTION';
+      static type = 'MY_ACTION';
     }
-    assertType(() => Action([MyAction])); // $ExpectType MethodDecorator
+    assertType(() => Action([MyAction])); // $ExpectType ActionDecorator<(typeof MyAction)[]>
 
     class RequiredOnlyStaticType {
-      public type = 'anything';
+      type = 'anything';
     }
     assertType(() => Action([RequiredOnlyStaticType])); // $ExpectError
   });
 
-  it('should be correct type in dispatch', () => {
-    assertType(() => store.dispatch([])); // $ExpectType Observable<any>
-    assertType(() => store.dispatch(new FooAction('payload'))); // $ExpectError Actions
-    assertType(() => store.dispatch(new BarAction('foo'))); // $ExpectError Actions
+  it('should expect types for store.dispatch', () => {
+    assertType(() => store.dispatch([])); // $ExpectType Observable<void>
+    assertType(() => store.dispatch(new FooAction('payload'))); // $ExpectType Observable<void>
+    assertType(() => store.dispatch(new BarAction('foo'))); // $ExpectType Observable<void>
     assertType(() => store.dispatch()); // $ExpectError
-    assertType(() => store.dispatch({})); // $ExpectType Observable<any>
+    assertType(() => store.dispatch({})); // $ExpectType Observable<void>
+  });
+
+  describe('dispatch', () => {
+    class OneArgumentAction {
+      static type = 'OneArgumentAction';
+
+      constructor(payload: string) {}
+    }
+
+    class ManyArgumentsAction {
+      static type = 'ManyArguments';
+
+      constructor(arg_1: string, arg_2: number, arg_3: symbol) {}
+    }
+
+    it('should expect types for dispatch', () => {
+      dispatch([]); // $ExpectError
+      dispatch(); // $ExpectError
+      dispatch({}); // $ExpectError
+      dispatch(FooAction); // $ExpectError
+      dispatch(OneArgumentAction); // $ExpectType (payload: string) => Observable<void>
+      dispatch(ManyArgumentsAction); // $ExpectType (arg_1: string, arg_2: number, arg_3: symbol) => Observable<void>
+    });
   });
 
   it('should prevent invalid types passed through', () => {
@@ -83,16 +105,16 @@ describe('[TEST]: Action Types', () => {
       @Action({ foo: 123 }) increment4() {} // $ExpectError
     }
 
-    assertType(() => store.dispatch(new Increment())); // $ExpectType Observable<any>
-    assertType(() => store.dispatch({ type: 'INCREMENT' })); // $ExpectType Observable<any>
-    assertType(() => store.dispatch(Increment)); // $ExpectType Observable<any>
-    assertType(() => store.dispatch({ foo: 123 })); // $ExpectType Observable<any>
+    assertType(() => store.dispatch(new Increment())); // $ExpectType Observable<void>
+    assertType(() => store.dispatch({ type: 'INCREMENT' })); // $ExpectType Observable<void>
+    assertType(() => store.dispatch(Increment)); // $ExpectType Observable<void>
+    assertType(() => store.dispatch({ foo: 123 })); // $ExpectType Observable<void>
   });
 
   it('should be correct type base API', () => {
     assertType(() => store.snapshot()); // $ExpectType any
     assertType(() => store.subscribe()); // $ExpectType Subscription
-    assertType(() => store.reset({})); // $ExpectType any
+    assertType(() => store.reset({})); // $ExpectType void
     assertType(() => store.reset()); // $ExpectError
   });
 });

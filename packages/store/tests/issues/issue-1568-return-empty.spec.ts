@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { NgxsModule, State, Action, Store, Actions } from '@ngxs/store';
@@ -11,6 +12,7 @@ describe('https://github.com/ngxs/store/issues/1568', () => {
     name: 'myState',
     defaults: 'STATE_VALUE'
   })
+  @Injectable()
   class MyState {
     @Action(MyAction)
     handleAction(): Observable<string> {

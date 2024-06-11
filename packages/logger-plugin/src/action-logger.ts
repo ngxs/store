@@ -1,10 +1,15 @@
-import { getActionTypeFromInstance, Store } from '@ngxs/store';
+import { Store } from '@ngxs/store';
+import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 
 import { formatTime } from './internals';
 import { LogWriter } from './log-writer';
 
 export class ActionLogger {
-  constructor(private action: any, private store: Store, private logWriter: LogWriter) {}
+  constructor(
+    private action: any,
+    private store: Store,
+    private logWriter: LogWriter
+  ) {}
 
   dispatched(state: any) {
     const actionName = getActionTypeFromInstance(this.action);

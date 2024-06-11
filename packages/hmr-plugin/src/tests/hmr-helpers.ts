@@ -11,7 +11,9 @@ import { BootstrapModuleFn, hmr, NgxsHmrOptions } from '../public_api';
 
 export function setup<T>(moduleType: Type<T>) {
   TestBed.resetTestEnvironment();
-  TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+  TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting(), {
+    teardown: { destroyAfterEach: false }
+  });
   const bootstrap: BootstrapModuleFn<T> = () =>
     getTestBed().platform.bootstrapModule(moduleType);
   MockState.clear();

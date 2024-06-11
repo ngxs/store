@@ -1,6 +1,8 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { NgxsNextPluginFn, NgxsPlugin, Store } from '@ngxs/store';
+import { Store } from '@ngxs/store';
+import { NgxsNextPluginFn, NgxsPlugin } from '@ngxs/store/plugins';
 import { catchError, tap } from 'rxjs/operators';
+
 import { ActionLogger } from './action-logger';
 import { LogWriter } from './log-writer';
 import { NgxsLoggerPluginOptions, NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';

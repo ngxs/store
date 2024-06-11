@@ -1,4 +1,4 @@
-export { NgxsFormPluginModule } from './form.module';
+export { NgxsFormPluginModule, withNgxsFormPlugin } from './form.module';
 export { NgxsFormPlugin } from './form.plugin';
-export { FormDirective as ɵFormDirective } from './directive';
+export { NgxsFormDirective } from './directive';
 export * from './actions';

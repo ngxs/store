@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsNgxsActions",
+  "title": "Ngxs Actions Options Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "The name of the actions.",
+      "type": "string",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for the actions?",
+      "x-priority": "important"
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path to create the actions. Relative to the specified (or default) project."
+    },
+    "flat": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flag to indicate if a dir is created."
+    },
+    "project": {
+      "type": "string",
+      "description": "The name of the project.",
+      "aliases": ["p"],
+      "x-dropdown": "projects"
+    }
+  },
+  "required": ["name"]
+}

@@ -1,13 +1,18 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
-import { NGXS_PLUGINS } from '@ngxs/store';
+import {
+  NgModule,
+  ModuleWithProviders,
+  EnvironmentProviders,
+  makeEnvironmentProviders
+} from '@angular/core';
+import { withNgxsPlugin } from '@ngxs/store';
+import { NGXS_PLUGINS } from '@ngxs/store/plugins';
+
 import { NgxsFormPlugin } from './form.plugin';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormDirective } from './directive';
+import { NgxsFormDirective } from './directive';
 
 @NgModule({
-  imports: [ReactiveFormsModule],
-  declarations: [FormDirective],
-  exports: [FormDirective]
+  imports: [NgxsFormDirective],
+  exports: [NgxsFormDirective]
 })
 export class NgxsFormPluginModule {
   static forRoot(): ModuleWithProviders<NgxsFormPluginModule> {
@@ -22,4 +27,8 @@ export class NgxsFormPluginModule {
       ]
     };
   }
+}
+
+export function withNgxsFormPlugin(): EnvironmentProviders {
+  return makeEnvironmentProviders([withNgxsPlugin(NgxsFormPlugin)]);
 }

@@ -1,14 +1,19 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
-import { NgxsModule } from '@ngxs/store';
+import {
+  EnvironmentProviders,
+  ModuleWithProviders,
+  NgModule,
+  makeEnvironmentProviders
+} from '@angular/core';
+import { NgxsModule, provideStates } from '@ngxs/store';
+import {
+  NgxsRouterPluginOptions,
+  ɵcreateRouterPluginOptions,
+  ɵNGXS_ROUTER_PLUGIN_OPTIONS,
+  ɵUSER_OPTIONS
+} from '@ngxs/router-plugin/internals';
 
 import { RouterState } from './router.state';
 import { DefaultRouterStateSerializer, RouterStateSerializer } from './serializer';
-import {
-  USER_OPTIONS,
-  NGXS_ROUTER_PLUGIN_OPTIONS,
-  NgxsRouterPluginOptions,
-  createRouterPluginOptions
-} from './symbols';
 
 @NgModule({
   imports: [NgxsModule.forFeature([RouterState])]
@@ -20,14 +25,27 @@ export class NgxsRouterPluginModule {
     return {
       ngModule: NgxsRouterPluginModule,
       providers: [
-        { provide: USER_OPTIONS, useValue: options },
+        { provide: ɵUSER_OPTIONS, useValue: options },
         {
-          provide: NGXS_ROUTER_PLUGIN_OPTIONS,
-          useFactory: createRouterPluginOptions,
-          deps: [USER_OPTIONS]
+          provide: ɵNGXS_ROUTER_PLUGIN_OPTIONS,
+          useFactory: ɵcreateRouterPluginOptions,
+          deps: [ɵUSER_OPTIONS]
         },
         { provide: RouterStateSerializer, useClass: DefaultRouterStateSerializer }
       ]
     };
   }
+}
+
+export function withNgxsRouterPlugin(options?: NgxsRouterPluginOptions): EnvironmentProviders {
+  return makeEnvironmentProviders([
+    provideStates([RouterState]),
+    { provide: ɵUSER_OPTIONS, useValue: options },
+    {
+      provide: ɵNGXS_ROUTER_PLUGIN_OPTIONS,
+      useFactory: ɵcreateRouterPluginOptions,
+      deps: [ɵUSER_OPTIONS]
+    },
+    { provide: RouterStateSerializer, useClass: DefaultRouterStateSerializer }
+  ]);
 }

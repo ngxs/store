@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { ActionStatus } from '@ngxs/store';
+import { ɵOrderedSubject } from '@ngxs/store/internals';
 import { Subject } from 'rxjs';
 
-import { NgxsModule } from '../src/module';
-import { InternalActions, OrderedSubject, ActionStatus, Actions } from '../src/actions-stream';
+import { InternalActions } from '../src/actions-stream';
 
 describe('The Actions stream', () => {
   it('should not use Subject because of the following issue (note that 3rd subscriber receives the events out of order)', () => {
@@ -33,7 +34,7 @@ describe('The Actions stream', () => {
 
   it('should rather use OrderedSubject because it preserves the order of dispatch for subscribers', () => {
     // Arrange
-    const statuses$ = new OrderedSubject<string>();
+    const statuses$ = new ɵOrderedSubject<string>();
     const callsRecorded = <string[]>[];
 
     // Act
@@ -85,23 +86,5 @@ describe('The Actions stream', () => {
       '2nd Subscriber:SUCCESSFUL',
       '3rd Subscriber:SUCCESSFUL'
     ]);
-  });
-
-  it('has to add subscriber to the internal "_subscriptions" property', () => {
-    // Arrange & act
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot()]
-    });
-
-    const actions$: Actions = TestBed.inject(Actions);
-    const subscription = actions$.subscribe(() => {});
-
-    const isArrayBeforeUnsubscribe = Array.isArray(subscription['_subscriptions']);
-    subscription.unsubscribe();
-    const isNullyAfterUnsubscribe = subscription['_subscriptions'] === null;
-
-    // Assert
-    expect(isArrayBeforeUnsubscribe).toBeTruthy();
-    expect(isNullyAfterUnsubscribe).toBeTruthy();
   });
 });

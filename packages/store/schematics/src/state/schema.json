@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsNgxsState",
+  "title": "Ngxs State Options Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "The name of the state.",
+      "type": "string",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for the state?",
+      "x-priority": "important"
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path to create the state. Relative to the specified (or default) project."
+    },
+    "spec": {
+      "type": "boolean",
+      "description": "Specifies if a spec file is generated.",
+      "default": true
+    },
+    "flat": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flag to indicate if a dir is created."
+    },
+    "project": {
+      "type": "string",
+      "description": "The name of the project.",
+      "aliases": ["p"],
+      "x-dropdown": "projects"
+    },
+    "standalone": {
+      "type": "boolean",
+      "description": "Explicitly set whether should generate standalone APIs for the generated state."
+    }
+  },
+  "required": ["name"]
+}

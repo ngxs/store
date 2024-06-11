@@ -1,0 +1,125 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storage Plugin Migration migrate empty forRoot 1`] = `
+"
+    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+
+    import { AppRoutingModule } from './app-routing.module';
+    import { AppComponent } from './app.component';
+
+      @NgModule({
+        declarations: [
+          AppComponent
+        ],
+        imports: [
+          BrowserModule,
+          AppRoutingModule,
+          NgxsStoragePluginModule.forRoot({ keys: '*' })
+        ],
+        bootstrap: [AppComponent]
+      })
+      export class AppModule { }
+    "
+`;
+
+exports[`Storage Plugin Migration migrate forRoot that has the "key" property with a value as a string literal 1`] = `
+"
+    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+
+    import { AppRoutingModule } from './app-routing.module';
+    import { AppComponent } from './app.component';
+
+      @NgModule({
+        declarations: [
+          AppComponent
+        ],
+        imports: [
+          BrowserModule,
+          AppRoutingModule,
+          NgxsStoragePluginModule.forRoot({proa: 'valuea', prob: 'valueb', keys: ['keep this value']})
+        ],
+        bootstrap: [AppComponent]
+      })
+      export class AppModule { }
+    "
+`;
+
+exports[`Storage Plugin Migration migrate forRoot that has the "key" property with values as an array literal 1`] = `
+"
+    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+
+    import { AppRoutingModule } from './app-routing.module';
+    import { AppComponent } from './app.component';
+
+      @NgModule({
+        declarations: [
+          AppComponent
+        ],
+        imports: [
+          BrowserModule,
+          AppRoutingModule,
+          NgxsStoragePluginModule.forRoot({proa: 'valuea', prob: 'valueb', keys: ['keyValue', NovelsState, { key: 'novels', engine: MyEngineX } ]})
+        ],
+        bootstrap: [AppComponent]
+      })
+      export class AppModule { }
+    "
+`;
+
+exports[`Storage Plugin Migration migrate forRoot that is missing the "key" property 1`] = `
+"
+    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+
+    import { AppRoutingModule } from './app-routing.module';
+    import { AppComponent } from './app.component';
+
+      @NgModule({
+        declarations: [
+          AppComponent
+        ],
+        imports: [
+          BrowserModule,
+          AppRoutingModule,
+          NgxsStoragePluginModule.forRoot({proa: 'valuea', prob: 'valueb',
+              keys: '*'
+        })
+        ],
+        bootstrap: [AppComponent]
+      })
+      export class AppModule { }
+    "
+`;
+
+exports[`Storage Plugin Migration migrate from a constant array 1`] = `
+"
+    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+
+    import { AppRoutingModule } from './app-routing.module';
+    import { AppComponent } from './app.component';
+
+    const imports = [
+      BrowserModule,
+      AppRoutingModule,
+      NgxsStoragePluginModule.forRoot({proa: 'valuea', prob: 'valueb', keys: ['keep this value']})
+    ];
+
+      @NgModule({
+        declarations: [
+          AppComponent
+        ],
+        imports,
+        bootstrap: [AppComponent]
+      })
+      export class AppModule { }
+    "
+`;

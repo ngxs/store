@@ -1,0 +1,1 @@
+The ng-utils folder represents a set of files copied from the @schematics/angular package's latest version. These utilities can be removed once @ngxs supports @angular >=16 as the minimum required version.

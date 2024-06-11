@@ -1,7 +1,7 @@
 export class SetPrefix {
-  public static type = 'SetPrefix';
+  static type = 'SetPrefix';
 }
 
 export class LoadData {
-  public static type = 'LoadData';
+  static type = 'LoadData';
 }

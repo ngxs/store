@@ -13,6 +13,7 @@ describe('Storage engine per individual key (https://github.com/ngxs/store/issue
       name: null
     }
   })
+  @Injectable()
   class BlogState {}
 
   @State({
@@ -21,6 +22,7 @@ describe('Storage engine per individual key (https://github.com/ngxs/store/issue
       name: null
     }
   })
+  @Injectable()
   class HomeState {}
 
   @State({
@@ -29,6 +31,7 @@ describe('Storage engine per individual key (https://github.com/ngxs/store/issue
       names: []
     }
   })
+  @Injectable()
   class EncryptedState {}
 
   @Component({ selector: 'app-root', template: '' })
@@ -51,7 +54,7 @@ describe('Storage engine per individual key (https://github.com/ngxs/store/issue
       BrowserModule,
       NgxsModule.forRoot([BlogState, HomeState, EncryptedState]),
       NgxsStoragePluginModule.forRoot({
-        key: [
+        keys: [
           {
             key: 'blog.name',
             engine: SESSION_STORAGE_ENGINE
@@ -62,7 +65,7 @@ describe('Storage engine per individual key (https://github.com/ngxs/store/issue
           },
           {
             key: 'encrypted',
-            engine: <any>EncryptedStorageEngine
+            engine: EncryptedStorageEngine
           }
         ]
       })

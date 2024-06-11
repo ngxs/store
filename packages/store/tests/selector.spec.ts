@@ -1,14 +1,16 @@
-import { async, TestBed } from '@angular/core/testing';
-import { StateClass } from '@ngxs/store/internals';
-
-import { State } from '../src/decorators/state';
-import { createSelector } from '../src/utils/selector-utils';
-import { Store } from '../src/store';
-import { NgxsModule } from '../src/module';
-import { Selector } from '../src/decorators/selector/selector';
-import { NgxsConfig } from '../src/symbols';
-import { SelectorOptions } from '../src/decorators/selector-options';
 import { Injectable } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import {
+  State,
+  createSelector,
+  Store,
+  NgxsModule,
+  Selector,
+  SelectorOptions
+} from '@ngxs/store';
+import { ɵStateClass } from '@ngxs/store/internals';
+
+import { NgxsConfig } from '../src/symbols';
 
 describe('Selector', () => {
   interface MyStateModel {
@@ -25,6 +27,11 @@ describe('Selector', () => {
   })
   @Injectable()
   class MyState {
+    @Selector()
+    static getState(state: MyStateModel) {
+      return state;
+    }
+
     @Selector()
     static foo(state: MyStateModel) {
       return state.foo;
@@ -59,7 +66,7 @@ describe('Selector', () => {
   }
 
   describe('(Decorator)', () => {
-    it('should select the state', async(() => {
+    it('should select the state', () => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([MyState])]
       });
@@ -67,9 +74,9 @@ describe('Selector', () => {
       const store: Store = TestBed.inject(Store);
       const slice = store.selectSnapshot(MyState.foo);
       expect(slice).toBe('Hello');
-    }));
+    });
 
-    it('should select using the meta selector', async(() => {
+    it('should select using the meta selector', () => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([MyState])]
       });
@@ -77,38 +84,7 @@ describe('Selector', () => {
       const store: Store = TestBed.inject(Store);
       const slice = store.selectSnapshot(MetaSelector.foo);
       expect(slice).toBe('Hello');
-    }));
-
-    it('should still be usable as a function', async(() => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
-      });
-
-      const store: Store = TestBed.inject(Store);
-      const myState = store.selectSnapshot<MyStateModel>(MyState);
-      const slice = MyState.foo(myState);
-      expect(slice).toBe('Hello');
-    }));
-
-    it('should select multiples', async(() => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState, MyState2])]
-      });
-
-      const store: Store = TestBed.inject(Store);
-      const slice = store.selectSnapshot(MyState2.foo);
-      expect(slice).toBe('HelloHello');
-    }));
-
-    it('should select multiples from self and others', async(() => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState, MyState2])]
-      });
-
-      const store: Store = TestBed.inject(Store);
-      const slice = store.selectSnapshot(MyState2.fooBar);
-      expect(slice).toBe('HelloHelloWorld');
-    }));
+    });
 
     it('context should be defined inside selector', () => {
       @State<any>({
@@ -141,7 +117,7 @@ describe('Selector', () => {
     });
 
     describe('(memoization)', () => {
-      it('should memoize the last result', async(() => {
+      it('should memoize the last result', () => {
         const selectorCalls: string[] = [];
 
         @State<MyStateModel>({
@@ -177,9 +153,9 @@ describe('Selector', () => {
         store.selectSnapshot(TestState.bar);
         store.selectSnapshot(TestState.foo);
         expect(selectorCalls).toEqual(['foo', 'bar']);
-      }));
+      });
 
-      it('should memoize the last result of an inner function', async(() => {
+      it('should memoize the last result of an inner function', () => {
         const selectorCalls: string[] = [];
 
         @State<MyStateModel>({
@@ -213,12 +189,12 @@ describe('Selector', () => {
         fn();
         store.selectSnapshot(TestState.foo);
         expect(selectorCalls).toEqual(['foo[outer]', 'foo[inner]']);
-      }));
+      });
     });
   });
 
   describe('(Selector Options)', () => {
-    function setupStore(states: StateClass[], extendedOptions?: Partial<NgxsConfig>) {
+    function setupStore(states: ɵStateClass[], extendedOptions?: Partial<NgxsConfig>) {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot(states, extendedOptions)]
       });
@@ -284,7 +260,7 @@ describe('Selector', () => {
         }
       }
 
-      it('should configure injectContainerState as false globally', async(() => {
+      it('should configure injectContainerState as false globally', () => {
         // Arrange
         const store = setupStore([MyStateV4_1, MyStateV4_2], {
           selectorOptions: {
@@ -298,9 +274,9 @@ describe('Selector', () => {
         expect(store.selectSnapshot(MyStateV4_2.foo)).toBe('Foo2');
         expect(store.selectSnapshot(MyStateV4_2.bar)).toBe('Bar2');
         expect(store.selectSnapshot(MyStateV4_2.fooAndBar)).toBe('Foo2Bar2');
-      }));
+      });
 
-      it('should successfully globally configure no supression of selector errors', async(() => {
+      it('should successfully globally configure no supression of selector errors', () => {
         // Arrange
         const store = setupStore([MyStateV4_1, MyStateV4_2], {
           selectorOptions: {
@@ -312,11 +288,11 @@ describe('Selector', () => {
         try {
           store.selectSnapshot(MyStateV4_2.invalid);
         } catch (e) {
-          exception = e;
+          exception = e as Error;
         }
         // Assert
         expect(exception).not.toBeNull();
-      }));
+      });
     });
 
     describe('[at class level]', () => {
@@ -354,48 +330,48 @@ describe('Selector', () => {
         }
 
         @Selector([MyStateV4])
-        static invalid() {
+        static invalid(_: MyStateModel) {
           throw new Error('This is a forced error');
         }
       }
 
-      it('should select from a simple selector', async(() => {
+      it('should select from a simple selector', () => {
         // Arrange
         const store = setupStore([MyStateV4]);
         // Act
         const slice = store.selectSnapshot(MyStateV4.foo);
         // Assert
         expect(slice).toBe('Foo');
-      }));
+      });
 
-      it('should select from another simple selector', async(() => {
+      it('should select from another simple selector', () => {
         // Arrange
         const store = setupStore([MyStateV4]);
         // Act
         const slice = store.selectSnapshot(MyStateV4.bar);
         // Assert
         expect(slice).toBe('Bar');
-      }));
+      });
 
-      it('should select from a self joined selector', async(() => {
+      it('should select from a self joined selector', () => {
         // Arrange
         const store = setupStore([MyStateV4]);
         // Act
         const slice = store.selectSnapshot(MyStateV4.selfAndFoo);
         // Assert
         expect(slice).toBe('FooFoo');
-      }));
+      });
 
-      it('should select from a joined selector', async(() => {
+      it('should select from a joined selector', () => {
         // Arrange
         const store = setupStore([MyStateV4]);
         // Act
         const slice = store.selectSnapshot(MyStateV4.fooAndBar);
         // Assert
         expect(slice).toBe('FooBar');
-      }));
+      });
 
-      it('should successfully configure no supression of selector errors', async(() => {
+      it('should successfully configure no supression of selector errors', () => {
         // Arrange
         const store = setupStore([MyStateV4]);
         // Act
@@ -403,11 +379,11 @@ describe('Selector', () => {
         try {
           store.selectSnapshot(MyStateV4.invalid);
         } catch (e) {
-          exception = e;
+          exception = e as Error;
         }
         // Assert
         expect(exception).not.toBeNull();
-      }));
+      });
     });
 
     describe('[at query class level]', () => {
@@ -447,30 +423,30 @@ describe('Selector', () => {
         }
 
         @Selector([MyStateV4])
-        static invalid() {
+        static invalid(_: MyStateModel) {
           throw new Error('This is a forced error');
         }
       }
 
-      it('should select from a self joined selector', async(() => {
+      it('should select from a self joined selector', () => {
         // Arrange
         const store = setupStore([MyStateV4]);
         // Act
         const slice = store.selectSnapshot(MyStateV4Queries.selfAndFoo);
         // Assert
         expect(slice).toBe('FooFoo');
-      }));
+      });
 
-      it('should select from a joined selector', async(() => {
+      it('should select from a joined selector', () => {
         // Arrange
         const store = setupStore([MyStateV4]);
         // Act
         const slice = store.selectSnapshot(MyStateV4Queries.fooAndBar);
         // Assert
         expect(slice).toBe('FooBar');
-      }));
+      });
 
-      it('should successfully configure no supression of selector errors', async(() => {
+      it('should successfully configure no supression of selector errors', () => {
         // Arrange
         const store = setupStore([MyStateV4]);
         // Act
@@ -478,11 +454,11 @@ describe('Selector', () => {
         try {
           store.selectSnapshot(MyStateV4Queries.invalid);
         } catch (e) {
-          exception = e;
+          exception = e as Error;
         }
         // Assert
         expect(exception).not.toBeNull();
-      }));
+      });
     });
 
     describe('[at method level]', () => {
@@ -505,11 +481,6 @@ describe('Selector', () => {
           return state.bar;
         }
 
-        @Selector([MyStateV3.bar])
-        static v3StyleSelector_FooAndBar(state: MyStateModel, bar: string) {
-          return state.foo + bar;
-        }
-
         @Selector([MyStateV3.foo, MyStateV3.bar])
         @SelectorOptions({ injectContainerState: false })
         static v4StyleSelector_FooAndBar(foo: string, bar: string) {
@@ -524,39 +495,30 @@ describe('Selector', () => {
 
         @Selector([MyStateV3])
         @SelectorOptions({ suppressErrors: false })
-        static invalid() {
+        static invalid(_: MyStateModel) {
           throw new Error('This is a forced error');
         }
       }
 
-      it('should select from a v3 selector', async(() => {
-        // Arrange
-        const store = setupStore([MyStateV3]);
-        // Act
-        const slice = store.selectSnapshot(MyStateV3.v3StyleSelector_FooAndBar);
-        // Assert
-        expect(slice).toBe('FooBar');
-      }));
-
-      it('should select from a v4 selector', async(() => {
+      it('should select from a v4 selector', () => {
         // Arrange
         const store = setupStore([MyStateV3]);
         // Act
         const slice = store.selectSnapshot(MyStateV3.v4StyleSelector_FooAndBar);
         // Assert
         expect(slice).toBe('FooBar');
-      }));
+      });
 
-      it('should select from a v4 selector when provided before @Selector', async(() => {
+      it('should select from a v4 selector when provided before @Selector', () => {
         // Arrange
         const store = setupStore([MyStateV3]);
         // Act
         const slice = store.selectSnapshot(MyStateV3.V4StyleSelector_flipped_FooAndBar);
         // Assert
         expect(slice).toBe('FooBar');
-      }));
+      });
 
-      it('should successfully configure no supression of selector errors', async(() => {
+      it('should successfully configure no supression of selector errors', () => {
         // Arrange
         const store = setupStore([MyStateV3]);
         // Act
@@ -564,16 +526,16 @@ describe('Selector', () => {
         try {
           store.selectSnapshot(MyStateV3.invalid);
         } catch (e) {
-          exception = e;
+          exception = e as Error;
         }
         // Assert
         expect(exception).not.toBeNull();
-      }));
+      });
     });
   });
 
   describe('(from createSelector)', () => {
-    it('should select the state', async(() => {
+    it('should select the state', () => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([MyState])]
       });
@@ -582,9 +544,9 @@ describe('Selector', () => {
       const selector = createSelector([MyState], (state: MyStateModel) => state.foo);
       const slice: string = store.selectSnapshot(selector);
       expect(slice).toBe('Hello');
-    }));
+    });
 
-    it('should allow for null in the returned value [regression fix]', async(() => {
+    it('should allow for null in the returned value [regression fix]', () => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([MyState])]
       });
@@ -596,9 +558,9 @@ describe('Selector', () => {
       });
       const slice = store.selectSnapshot(selector);
       expect(slice).toBe(null);
-    }));
+    });
 
-    it('should allow for undefined in the returned value [regression fix]', async(() => {
+    it('should allow for undefined in the returned value [regression fix]', () => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([MyState])]
       });
@@ -610,9 +572,9 @@ describe('Selector', () => {
       });
       const slice = store.selectSnapshot(selector);
       expect(slice).toBe(undefined);
-    }));
+    });
 
-    it('should select using the meta selector', async(() => {
+    it('should select using the meta selector', () => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([MyState])]
       });
@@ -621,21 +583,21 @@ describe('Selector', () => {
       const selector = createSelector([MyState.foo], (state: string) => state);
       const slice: string = store.selectSnapshot(selector);
       expect(slice).toBe('Hello');
-    }));
+    });
 
-    it('should still be usable as a function', async(() => {
+    it('should still be usable as a function', () => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([MyState])]
       });
 
       const store: Store = TestBed.inject(Store);
-      const myState = store.selectSnapshot<MyStateModel>(MyState);
+      const myState = store.selectSnapshot<MyStateModel>(MyState.getState);
       const selector = createSelector([MyState], (state: MyStateModel) => state.foo);
       const slice: string = selector(myState);
       expect(slice).toBe('Hello');
-    }));
+    });
 
-    it('should select multiples', async(() => {
+    it('should select multiples', () => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot([MyState, MyState2])]
       });
@@ -647,10 +609,10 @@ describe('Selector', () => {
       );
       const slice: string = store.selectSnapshot(selector);
       expect(slice).toBe('HelloHello');
-    }));
+    });
 
     describe('(memoization)', () => {
-      it('should memoize the last result', async(() => {
+      it('should memoize the last result', () => {
         const selectorCalls: string[] = [];
 
         @State<MyStateModel>({
@@ -683,9 +645,9 @@ describe('Selector', () => {
         store.selectSnapshot(barSelector);
         store.selectSnapshot(fooSelector);
         expect(selectorCalls).toEqual(['foo', 'bar']);
-      }));
+      });
 
-      it('should memoize the last result of an inner function', async(() => {
+      it('should memoize the last result of an inner function', () => {
         const selectorCalls: string[] = [];
 
         @State<MyStateModel>({
@@ -717,7 +679,7 @@ describe('Selector', () => {
         fn();
         store.selectSnapshot(fooSelector);
         expect(selectorCalls).toEqual(['foo[outer]', 'foo[inner]']);
-      }));
+      });
     });
   });
 
@@ -728,6 +690,11 @@ describe('Selector', () => {
     })
     @Injectable()
     class TasksState {
+      @Selector()
+      static getTasks(state: number[]) {
+        return state;
+      }
+
       @Selector()
       static reverse(state: number[]): number[] {
         return state.reverse();
@@ -746,24 +713,10 @@ describe('Selector', () => {
       const store = TestBed.inject(Store);
       store.reset({ tasks: [1, 2, 3, 4] });
 
-      const tasks: number[] = store.selectSnapshot(TasksState);
+      const tasks: number[] = store.selectSnapshot(TasksState.getTasks);
       const reverse: number[] = store.selectSnapshot(TasksState.reverse);
       expect(tasks).toEqual([4, 3, 2, 1]);
       expect(reverse).toEqual([4, 3, 2, 1]);
-    });
-
-    it('should be incorrect mutation', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TasksState], { developmentMode: true })]
-      });
-
-      const store = TestBed.inject(Store);
-      store.reset({ tasks: [1, 2, 3, 4] });
-
-      const tasks: number[] = store.selectSnapshot(TasksState);
-      const reverse: number[] = store.selectSnapshot(TasksState.reverse);
-      expect(tasks).toEqual([1, 2, 3, 4]);
-      expect(reverse).toEqual(undefined as any);
     });
 
     it('should be correct catch errors with selectSnapshot', () => {
@@ -779,13 +732,15 @@ describe('Selector', () => {
       const store = TestBed.inject(Store);
       store.reset({ tasks: [1, 2, 3, 4] });
 
-      const tasks: number[] = store.selectSnapshot(TasksState);
+      const tasks: number[] = store.selectSnapshot(TasksState.getTasks);
       expect(tasks).toEqual([1, 2, 3, 4]);
 
       try {
         store.selectSnapshot(TasksState.reverse);
       } catch (e) {
-        expect(e.message.includes('Cannot assign to read only property')).toBe(true);
+        expect((e as Error).message.includes('Cannot assign to read only property')).toBe(
+          true
+        );
       }
     });
   });
@@ -797,6 +752,11 @@ describe('Selector', () => {
     })
     @Injectable()
     class NumberListState {
+      @Selector()
+      static getNumberList(state: number[]) {
+        return state;
+      }
+
       @Selector()
       static reverse(state: number[]): number[] {
         return state.reverse();
@@ -820,7 +780,9 @@ describe('Selector', () => {
 
       let snapshot: number[] = [];
 
-      store.select(NumberListState).subscribe((state: number[]) => (snapshot = state));
+      store
+        .select(NumberListState.getNumberList)
+        .subscribe((state: number[]) => (snapshot = state));
       expect(snapshot).toEqual([1, 2, 3, 4]);
 
       store.select(NumberListState.reverse).subscribe(
@@ -835,6 +797,9 @@ describe('Selector', () => {
     });
 
     it('@Selector should only work on methods', () => {
+      // Arrange
+      let message: string | null = null;
+      // Act
       try {
         class MyComponent {
           // @ts-ignore
@@ -842,9 +807,11 @@ describe('Selector', () => {
         }
 
         new MyComponent();
-      } catch ({ message }) {
-        expect(message).toEqual('Selectors only work on methods.');
+      } catch (error) {
+        message = (error as Error).message;
       }
+      // Assert
+      expect(message).toEqual('Object prototype may only be an Object or null: undefined');
     });
   });
 

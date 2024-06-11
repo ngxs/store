@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 
 import { NgxsExecutionStrategy, NGXS_EXECUTION_STRATEGY } from './symbols';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class InternalNgxsExecutionStrategy implements NgxsExecutionStrategy {
   constructor(
     @Inject(NGXS_EXECUTION_STRATEGY) private _executionStrategy: NgxsExecutionStrategy

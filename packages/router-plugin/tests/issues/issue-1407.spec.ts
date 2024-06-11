@@ -3,11 +3,11 @@ import { APP_BASE_HREF, DOCUMENT } from '@angular/common';
 import { Component, Injectable, NgModule } from '@angular/core';
 import { Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgxsModule, State, Action, StateContext } from '@ngxs/store';
-import { StateClass } from '@ngxs/store/internals';
+import { State, Action, StateContext, provideStore, provideStates } from '@ngxs/store';
+import { ɵStateClass } from '@ngxs/store/internals';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
-import { NgxsRouterPluginModule, Navigate, RouterNavigation, RouterState } from '../..';
+import { Navigate, RouterNavigation, RouterState, withNgxsRouterPlugin } from '../..';
 
 import { createNgxsRouterPluginTestingPlatform } from '../helpers';
 
@@ -40,18 +40,16 @@ const routes: Routes = [
   }
 ];
 
-function getTestModule(states: StateClass[] = []) {
+function getTestModule(states: ɵStateClass[] = []) {
   @NgModule({
-    imports: [
-      BrowserModule,
-      RouterTestingModule.withRoutes(routes, { enableTracing: true }),
-      NgxsModule.forRoot([]),
-      NgxsRouterPluginModule.forRoot(),
-      NgxsModule.forFeature(states)
-    ],
+    imports: [BrowserModule, RouterTestingModule.withRoutes(routes, { enableTracing: true })],
     declarations: [RootComponent, HomeComponent, DialedNumberComponent],
     bootstrap: [RootComponent],
-    providers: [{ provide: APP_BASE_HREF, useValue: '/' }]
+    providers: [
+      provideStore([], withNgxsRouterPlugin()),
+      provideStates(states),
+      { provide: APP_BASE_HREF, useValue: '/' }
+    ]
   })
   class TestModule {}
 
@@ -81,6 +79,7 @@ describe('#1407 issue', () => {
             const [url] = action.routerState.url.split('?');
             return ctx.dispatch(new Navigate([url]));
           }
+          return;
         }
       }
 

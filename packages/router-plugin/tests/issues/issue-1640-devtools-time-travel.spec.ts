@@ -3,11 +3,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { NavigationEnd, Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NgxsModule, Store } from '@ngxs/store';
+import { Store, provideStore } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { first } from 'rxjs/operators';
 
-import { NgxsRouterPluginModule } from '../..';
+import { withNgxsRouterPlugin } from '../..';
 
 describe('Time-traveling with Redux DevTools (https://github.com/ngxs/store/issues/1640)', () => {
   @Component({
@@ -34,14 +34,10 @@ describe('Time-traveling with Redux DevTools (https://github.com/ngxs/store/issu
   ];
 
   @NgModule({
-    imports: [
-      BrowserModule,
-      RouterTestingModule.withRoutes(routes),
-      NgxsModule.forRoot(),
-      NgxsRouterPluginModule.forRoot()
-    ],
+    imports: [BrowserModule, RouterTestingModule.withRoutes(routes)],
     declarations: [RootComponent, HomeComponent, LoginComponent],
-    bootstrap: [RootComponent]
+    bootstrap: [RootComponent],
+    providers: [provideStore([], withNgxsRouterPlugin())]
   })
   class TestModule {}
 

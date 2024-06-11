@@ -1,10 +1,12 @@
-import { iif } from '../src/iif';
-import { patch } from '../src/patch';
-import { append } from '../src/append';
-import { compose } from '../src/compose';
-import { removeItem } from '../src/remove-item';
-import { updateItem } from '../src/update-item';
-import { insertItem } from '../src/insert-item';
+import {
+  iif,
+  patch,
+  append,
+  compose,
+  removeItem,
+  updateItem,
+  insertItem
+} from '@ngxs/store/operators';
 
 describe('compose', () => {
   describe('compose with objects', () => {
@@ -37,8 +39,8 @@ describe('compose', () => {
 
       // Act
       const newValue = patch({
-        a: compose<typeof original['a']>(
-          iif<typeof original['a']>(
+        a: compose<(typeof original)['a']>(
+          iif<(typeof original)['a']>(
             a => a!.hello === 'world',
             patch({
               hello: 'world'
@@ -230,19 +232,12 @@ describe('compose', () => {
 
       // Act
       const newValue = patch({
-        a: compose<Original['a']>(
-          removeItem(0),
-          append([{ name: 'Artur' }])
-        ),
+        a: compose<Original['a']>(removeItem(0), append([{ name: 'Artur' }])),
         b: patch({
           numbers: compose(
             iif<Original['b']['numbers']>(
               numbers => numbers!.length === 5,
-              compose(
-                removeItem(0),
-                removeItem(0),
-                insertItem(10)
-              )
+              compose(removeItem(0), removeItem(0), insertItem(10))
             )
           )
         }),

@@ -1,8 +1,6 @@
-import { TestBed } from '@angular/core/testing';
-import { NgxsModule } from '../src/module';
-import { State } from '../src/decorators/state';
-import { Store } from '../src/store';
 import { Injectable } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { NgxsModule, State, Store } from '@ngxs/store';
 
 describe('StoreValidator', () => {
   describe('duplicate state name check', () => {
@@ -28,7 +26,7 @@ describe('StoreValidator', () => {
         });
 
         TestBed.inject(Store);
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(
@@ -43,12 +41,14 @@ describe('StoreValidator', () => {
           name: 'duplicate',
           defaults: 'first'
         })
+        @Injectable()
         class MyOtherState {}
 
         @State<string>({
           name: 'duplicate',
           defaults: 'third'
         })
+        @Injectable()
         class MyDuplicateChildState {}
 
         @State<string>({
@@ -56,6 +56,7 @@ describe('StoreValidator', () => {
           defaults: 'second',
           children: [MyDuplicateChildState]
         })
+        @Injectable()
         class MyAnotherState {}
 
         TestBed.configureTestingModule({
@@ -63,7 +64,7 @@ describe('StoreValidator', () => {
         });
 
         TestBed.inject(Store);
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(
@@ -78,12 +79,14 @@ describe('StoreValidator', () => {
           name: 'duplicate',
           defaults: 'first'
         })
+        @Injectable()
         class MyOtherState {}
 
         @State<string>({
           name: 'duplicate',
           defaults: 'second'
         })
+        @Injectable()
         class MyDuplicateState {}
 
         TestBed.configureTestingModule({
@@ -94,7 +97,7 @@ describe('StoreValidator', () => {
         });
 
         TestBed.inject(Store);
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(
@@ -109,12 +112,14 @@ describe('StoreValidator', () => {
           name: 'main',
           defaults: 'first'
         })
+        @Injectable()
         class MyMainState {}
 
         @State<string>({
           name: 'feature',
           defaults: 'second'
         })
+        @Injectable()
         class MyFeatureState {}
 
         TestBed.configureTestingModule({
@@ -127,7 +132,7 @@ describe('StoreValidator', () => {
 
         const store: Store = TestBed.inject(Store);
         expect(store).toBeDefined();
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toBeUndefined();
@@ -145,7 +150,7 @@ describe('StoreValidator', () => {
         });
 
         TestBed.inject(Store);
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(
@@ -163,6 +168,7 @@ describe('StoreValidator', () => {
           defaults: {},
           children: [ChildState]
         })
+        @Injectable()
         class MyState {}
 
         TestBed.configureTestingModule({
@@ -170,7 +176,7 @@ describe('StoreValidator', () => {
         });
 
         TestBed.inject(Store);
-      } catch (e) {
+      } catch (e: any) {
         errorMessage = e.message;
       }
       expect(errorMessage).toEqual(

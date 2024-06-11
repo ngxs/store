@@ -5,15 +5,29 @@ A simple console log plugin to log actions as they are processed.
 ## Installation
 
 ```bash
-npm install @ngxs/logger-plugin --save
+npm i @ngxs/logger-plugin
 
 # or if you are using yarn
 yarn add @ngxs/logger-plugin
+
+# or if you are using pnpm
+pnpm i @ngxs/logger-plugin
 ```
 
 ## Usage
 
-Add the `NgxsLoggerPluginModule` plugin to your root app module:
+When calling `provideStore`, include `withNgxsLoggerPlugin` in your app config:
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([], withNgxsLoggerPlugin())]
+};
+```
+
+If you are still using modules, include the `NgxsLoggerPluginModule` plugin in your root app module:
 
 ```ts
 import { NgxsModule } from '@ngxs/store';
@@ -35,8 +49,38 @@ The plugin supports the following options passed via the `forRoot` method:
 - `filter`: Filter actions to be logged. Takes action and state snapshot as parameters. Default predicate returns `true` for all actions.
 
 ```ts
+import { provideStore, getActionTypeFromInstance } from '@ngxs/store';
+import { withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
+
+import { environment } from '../environments/environment';
+import { customLogger } from './path/to/custom/logger';
+import { SomeAction } from './path/to/some/action';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideStore(
+      [],
+      withNgxsLoggerPlugin({
+        // Use customLogger instead of console
+        logger: customLogger,
+        // Do not collapse log groups
+        collapsed: false,
+        // Do not log in production mode
+        disabled: environment.production,
+        // Do not log SomeAction
+        filter: action => getActionTypeFromInstance(action) !== SomeAction.type
+      })
+    )
+  ]
+};
+```
+
+Or with the module approach:
+
+```ts
 import { NgxsModule, getActionTypeFromInstance } from '@ngxs/store';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
+
 import { environment } from '../environments/environment';
 import { customLogger } from './path/to/custom/logger';
 import { SomeAction } from './path/to/some/action';

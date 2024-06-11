@@ -1,5 +1,13 @@
-import { InjectionToken, ModuleWithProviders, NgModule } from '@angular/core';
-import { NGXS_PLUGINS } from '@ngxs/store';
+import {
+  EnvironmentProviders,
+  InjectionToken,
+  ModuleWithProviders,
+  NgModule,
+  makeEnvironmentProviders
+} from '@angular/core';
+import { withNgxsPlugin } from '@ngxs/store';
+import { NGXS_PLUGINS } from '@ngxs/store/plugins';
+
 import { NgxsLoggerPlugin } from './logger.plugin';
 import { NgxsLoggerPluginOptions, NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';
 
@@ -44,4 +52,16 @@ export class NgxsLoggerPluginModule {
       ]
     };
   }
+}
+
+export function withNgxsLoggerPlugin(options?: NgxsLoggerPluginOptions): EnvironmentProviders {
+  return makeEnvironmentProviders([
+    withNgxsPlugin(NgxsLoggerPlugin),
+    { provide: USER_OPTIONS, useValue: options },
+    {
+      provide: NGXS_LOGGER_PLUGIN_OPTIONS,
+      useFactory: loggerOptionsFactory,
+      deps: [USER_OPTIONS]
+    }
+  ]);
 }

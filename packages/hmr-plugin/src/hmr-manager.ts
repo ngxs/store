@@ -1,5 +1,5 @@
 import { ApplicationRef, ComponentRef, NgModuleRef } from '@angular/core';
-import { InitialState, NgxsBootstrapper } from '@ngxs/store/internals';
+import { ɵInitialState, ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 
 import { HmrStorage } from './internal/hmr-storage';
 import {
@@ -31,22 +31,22 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
     return this.ngModule.injector.get(ApplicationRef);
   }
 
-  private get bootstrap(): NgxsBootstrapper {
-    return this.ngModule.injector.get(NgxsBootstrapper);
+  private get appBootstrappedState() {
+    return this.ngModule.injector.get(ɵNgxsAppBootstrappedState);
   }
 
   public async hmrModule(
     bootstrapFn: BootstrapModuleFn<T>,
     tick: () => void
   ): Promise<NgModuleRef<T>> {
-    InitialState.set(this.storage.snapshot);
+    ɵInitialState.set(this.storage.snapshot);
     this.ngModule = await bootstrapFn();
     this.context = new HmrStateContextFactory(this.ngModule);
     this.lifecycle = this.createLifecycle();
 
     tick();
 
-    InitialState.pop();
+    ɵInitialState.pop();
     return this.ngModule;
   }
 
@@ -71,7 +71,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
   private createLifecycle(): HmrLifecycle<T, S> {
     return new HmrLifecycle(
       this.ngModule.instance,
-      this.bootstrap,
+      this.appBootstrappedState,
       this.storage,
       this.context,
       this.optionsBuilder

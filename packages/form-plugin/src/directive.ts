@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
-import { Actions, getValue, ofActionDispatched, Store } from '@ngxs/store';
-import { Observable, Subject } from 'rxjs';
+import { Actions, ofActionDispatched, Store } from '@ngxs/store';
+import { getValue } from '@ngxs/store/plugins';
+import { Observable, ReplaySubject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import {
   ResetForm,
@@ -12,27 +13,32 @@ import {
   UpdateFormValue
 } from './actions';
 
-@Directive({ selector: '[ngxsForm]' })
-export class FormDirective implements OnInit, OnDestroy {
+@Directive({ selector: '[ngxsForm]', standalone: true })
+export class NgxsFormDirective implements OnInit, OnDestroy {
   @Input('ngxsForm')
   path: string = null!;
 
   @Input('ngxsFormDebounce')
-  debounce = 100;
+  set debounce(debounce: string | number) {
+    this._debounce = Number(debounce);
+  }
+  get debounce() {
+    return this._debounce;
+  }
+  private _debounce = 100;
 
   @Input('ngxsFormClearOnDestroy')
   set clearDestroy(val: boolean) {
     this._clearDestroy = val != null && `${val}` !== 'false';
   }
-
   get clearDestroy(): boolean {
     return this._clearDestroy;
   }
+  private _clearDestroy = false;
 
-  _clearDestroy = false;
-
-  private readonly _destroy$ = new Subject<void>();
   private _updating = false;
+
+  private readonly _destroy$ = new ReplaySubject<void>(1);
 
   constructor(
     private _actions$: Actions,
@@ -167,9 +173,9 @@ export class FormDirective implements OnInit, OnDestroy {
       complete: () => (this._updating = false)
     });
   }
+
   ngOnDestroy() {
     this._destroy$.next();
-    this._destroy$.complete();
 
     if (this.clearDestroy) {
       this._store.dispatch(
@@ -186,12 +192,12 @@ export class FormDirective implements OnInit, OnDestroy {
 
   private debounceChange() {
     const skipDebounceTime =
-      this._formGroupDirective.control.updateOn !== 'change' || this.debounce < 0;
+      this._formGroupDirective.control.updateOn !== 'change' || this._debounce < 0;
 
     return skipDebounceTime
       ? (change: Observable<any>) => change.pipe(takeUntil(this._destroy$))
       : (change: Observable<any>) =>
-          change.pipe(debounceTime(this.debounce), takeUntil(this._destroy$));
+          change.pipe(debounceTime(this._debounce), takeUntil(this._destroy$));
   }
 
   private get form(): FormGroup {

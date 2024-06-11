@@ -5,10 +5,10 @@ import { Router, RouterEvent, RouterModule } from '@angular/router';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { Subject } from 'rxjs';
-import { NgxsModule } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
-import { NgxsRouterPluginModule, RouterState } from '../';
+import { RouterState, withNgxsRouterPlugin } from '../';
 
 describe('RouterState cleanup', () => {
   @Component({
@@ -18,14 +18,12 @@ describe('RouterState cleanup', () => {
   class TestComponent {}
 
   @NgModule({
-    imports: [
-      BrowserModule,
-      RouterModule.forRoot([], { initialNavigation: 'disabled' }),
-      NgxsModule.forRoot([]),
-      NgxsRouterPluginModule.forRoot()
-    ],
+    imports: [BrowserModule, RouterModule.forRoot([], { initialNavigation: 'disabled' })],
     declarations: [TestComponent],
-    providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
+    providers: [
+      provideStore([], withNgxsRouterPlugin()),
+      { provide: APP_BASE_HREF, useValue: '/' }
+    ],
     bootstrap: [TestComponent]
   })
   class TestModule {}

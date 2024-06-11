@@ -1,10 +1,9 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-
-import { Action, NgxsModule, State, StateContext, Store } from '../src/public_api';
+import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
 
 describe('Lazy loading with duplicate bootstrap states', () => {
   let store: Store;
@@ -18,6 +17,7 @@ describe('Lazy loading with duplicate bootstrap states', () => {
     name: 'counter',
     defaults: 0
   })
+  @Injectable()
   class CounterValueState {
     @Action(CounterAction)
     openAlert({ setState }: StateContext<number>): void {
@@ -51,19 +51,16 @@ describe('Lazy loading with duplicate bootstrap states', () => {
     ]);
   });
 
-  it('should be correct initial lazy state', fakeAsync(async () => {
+  it('should be correct initial lazy state', async () => {
     await router.navigateByUrl('/pathA');
     store.dispatch(new CounterAction());
-    tick(1000);
 
     await router.navigateByUrl('/pathB');
     store.dispatch(new CounterAction());
-    tick(1000);
 
     await router.navigateByUrl('/pathC');
     store.dispatch(new CounterAction());
-    tick(1000);
 
     expect(store.snapshot()).toEqual({ counter: 3 });
-  }));
+  });
 });
