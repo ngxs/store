@@ -253,11 +253,11 @@ There are various schematics available to quickly generate various NGXS files:
 
 ## Error Handling
 
-NGXS provides a robust error handling mechanism that automatically catches unhandled exceptions thrown within actions. These errors are then directed to a centralized `ErrorHandler`.
+NGXS provides a robust unhandled error handling mechanism that automatically catches unhandled exceptions thrown within actions. These errors are directed to a centralized `NgxsUnhandledErrorHandler`, which by default forwards the error to the Angular `ErrorHandler`.
 
-However, you can override the default implementation and provide your custom one.
+It is [recommended](https://www.ngxs.io/concepts/store/error-handling#recommended-approach) to do error handling within your action functions in your state, but some developers have opted for approaches that rely heavily on the fallback error handling mechanisms in NGXS. In order to allow for more control over this, NGXS now allows you to override the default implementation of the `NgxsUnhandledErrorHandler` and provide a custom one to suit your particular application's needs.
 
-You can read more [here](https://www.ngxs.io/concepts/store/error-handling#custom-unhandled-error-handler)
+You can read more [here](https://www.ngxs.io/concepts/store/error-handling#overriding-the-ngxsunhandlederrorhandler)
 
 ---
 
