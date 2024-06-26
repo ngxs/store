@@ -4,22 +4,39 @@ We're thrilled to announce the release of NGXS v18! This update represents month
 
 But that's not all – we've also made a strategic decision to align NGXS versioning with Angular's release cycle. This means, starting with v18, the minimum supported Angular version will also align with Angular's latest release, unless explicitly stated otherwise.
 
-This move ensures seamless compatibility and allows you to leverage the latest features from both libraries as they evolve together.
-For NGXS v18, since this is our first release under the new versioning scheme we will be supporting Angular versions >=16.
+Angular has entered a new era, where the incremental introduction of new features and api changes offer a host of opportunities for libraries. This move by NGXS ensures seamless compatibility and allows you to leverage the latest features from both libraries as they evolve together.   
+For NGXS v18, since this is our first release under the new versioning scheme, we will be supporting Angular versions >=16.
 
 But before we dive in, we want to unveil a fresh new look for NGXS!
 
 🥁 **Drumroll please...** 🥁
 
-We're thrilled to introduce our brand new logo! We believe it better reflects the energy, innovation, and awesomeness of the NGXS library. Keep an eye out for it on our documentation website, and social media channels.
+## Our Brand New Logo!!!
+
+We're thrilled to introduce our brand new logo! We believe it better reflects the energy, innovation, and awesomeness of the NGXS library:
+
+![The new NGXS logo. The letters N, G, x, and S are presented in a clean font. The x is presented as a lower case letter, where the rest are upper case. This distinguises the "NG" of Angular, the "x" that represents the modern Angular version placeholder and the "S", which stands for state. In the lettering, there are areas of triangular negative space that match triangles above and below the lettering. This signifies the movement of the events and data that are core elements of the library.](ngxs-logo_dark_theme.png)
 
 A huge shoutout to [Lena Lekkou](https://www.linkedin.com/in/lenalekkou/), the talented designer who brought this logo to life! Her creativity and design expertise have given NGXS a visual identity that truly embodies its spirit.
+
+## NGXS Community moving to Discord
+
+We've got some exciting news in this release beyond the usual code wizardry. We're officially moving our community hub from Slack to **Discord**!
+
+**Why Discord?**
+
+- **Dedicated Channels:** Dive deep into specific NGXS topics with focused channels.
+- **Enhanced Support:** Find answers and resources faster with a well-organized structure.
+
+Head over to our brand new Discord server at https://discord.gg/yFk6bu7v. Don't forget to introduce yourself and let us know what awesome NGXS projects you're working on!
+
+The move from Slack to Discord will be incremental, as we encourage our many Slack users to move over. There is a wealth of valuable community discussions in our Slack archives (6 years of data). This is unfortunately inaccessible due to Slack's 90-day policy. We plan to make this archive available in dedicated discord channels in the near future.
+---
 
 Now, let's get down to business!
 
 ## Overview
 
-- 🧑🏾‍🤝‍🧑🏻 NGXS Community
 - 🎨 Standalone API
 - 🚦 Signals
 - ⏩ Dispatch Utilities
@@ -31,18 +48,6 @@ Now, let's get down to business!
 
 ---
 
-## NGXS Community
-
-We've got some exciting news in this release beyond the usual code wizardry. We're officially moving our community hub from Slack to **Discord**!
-
-**Why Discord?**
-
-- **Dedicated Channels:** Dive deep into specific NGXS topics with focused channels.
-- **Enhanced Support:** Find answers and resources faster with a well-organized structure.
-
-Head over to our brand new Discord server at https://discord.gg/yFk6bu7v. Don't forget to introduce yourself and let us know what awesome NGXS projects you're working on!
-
----
 
 ## Standalone API
 
