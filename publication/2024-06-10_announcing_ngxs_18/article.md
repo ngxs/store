@@ -204,65 +204,50 @@ See the [dispatch](https://www.ngxs.io/concepts/store#dispatch-utility) and [cre
 
 ## Schematics
 
-NGXS is a popular state management library for Angular applications. It is known for its simplicity, but it can be challenging to get started with, especially for beginners.
+With NGXS v18, schematics are now included in the main package. These schematics make it easier to use NGXS by automating the installation, and creation of common NGXS constructs, such as the Store, Actions, and State.
 
-NGXS schematics are a new feature that makes it easier to use NGXS by automating the installation, and creation of common NGXS concepts, such as Store, Actions, and State.
+> Note: All the schematics support both non-standalone and standalone Angular apps.
 
-To auto-configure NGXS to your application, all you have to do is to execute the following command in your terminal:
+### `ng add` Schematic
+
+To install and auto-configure NGXS in your existing Angular application, all you have to do is to execute the following command in your terminal:
 
 ```bash
 ng add @ngxs/store
 ```
 
-Does your workspace have multiple projects? No problem! You'll be prompted to select the project you want to add NGXS to.
+If your workspace has multiple projects, you will be prompted to select the project you want to add NGXS to.🎉
 
-NGXS plugins: We couldn't resist adding [plugins](https://www.ngxs.io/plugins) to the schematics. Now you can choose which plugins you want to use, and we'll install the necessary packages and configure them for you automatically!
+NGXS [plugins](https://www.ngxs.io/plugins) can easily be added through this schematic too. Just choose which plugins you want to use, and we'll install the necessary packages and configure them for you automatically!
 
-> All the schematics support both non-standalone and standalone Angular apps.
+See our documentation for more information on [this schematic](https://www.ngxs.io/introduction/installation#installing-with-schematics).
 
-Let's see some examples:
+### File Generation Schematics
 
-- To create a `Store` :
+There are various schematics available to quickly generate various NGXS files:
+
+- Generate all store files:
 
   ```bash
   ng generate @ngxs/store:store
   ```
+  Generates sample `state` and `actions` files in the provided location, with the provided name and generation options (see [documentation](https://www.ngxs.io/concepts/store/schematics)).
 
-  ```ts
-  import { provideStore } from '@ngxs/store';
-
-  export const appConfig: ApplicationConfig = {
-    providers: [provideStore([], { developmentMode: !environment.production })]
-  };
-  ```
-
-- To create a `State`:
+- Generate `state` file:
 
   ```bash
   ng generate @ngxs/store:state --name TodosState
   ```
+  Will generate a sample `todos.state.ts` file in the provided location (with the provided name and generation options - see [documentation](https://www.ngxs.io/concepts/state/schematics)).
+  
 
-  ```ts
-  import { provideStore } from '@ngxs/store';
-  import { TodosState } from 'your/path';
-
-  export const appConfig: ApplicationConfig = {
-    providers: [
-      provideStore(
-        [TodosState], // <--
-        { developmentMode: !environment.production }
-      )
-    ]
-  };
-  ```
-
-- To create `Actions`:
+- Generate `actions` file:
 
   ```bash
   ng generate @ngxs/store:actions --name todos
   ```
 
-  It will create the `todos.actions.ts` file
+  Will generate a sample `todos.actions.ts` file in the provided location (with the provided name and generation options - see [documentation](https://www.ngxs.io/concepts/actions/schematics)).
 
 ---
 
