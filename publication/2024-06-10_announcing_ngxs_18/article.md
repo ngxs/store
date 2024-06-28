@@ -37,14 +37,17 @@ Now, let's get down to business!
 
 ## Overview
 
-- 🎨 Standalone API
+Part 1
 - 🚦 Signals
 - ⏩ Dispatch Utilities
+Part 2
+- 🎨 Standalone API
 - 🚀 Schematics
 - ❗ Error Handling
+Part 3
 - 🛑 Breaking Changes
 - 🗑️ Deprecations
-- 🔌 Plugin Improvements
+- 🔌 Exposed Internals
 
 ---
 
@@ -347,7 +350,7 @@ This means you won't have to manually update your code to reflect the changes. T
 ng g @ngxs/storage-plugin:keys-migration
 ```
 
-### Dispatch
+### `dispatch` call return type
 
 In previous versions, the `dispatch` function incorrectly returned an `Observable<any>`. This meant the observable could emit any type of data, including the `state` snapshot. This behavior has been rectified in this version. Now, `dispatch` correctly returns an `Observable<void>`, indicating it does not emit any values.
 
@@ -400,7 +403,7 @@ There's a distinction in how errors are thrown based on the selection method use
 
 It's important to note that errors are still logged in development mode for debugging purposes.
 
-### Enforcing Typed Selectors @Action and @Selector
+### Enforcing Typing with @Action and @Selector decorators
 
 - `@Action` and `@Selector` decorator typings will now enforce that arguments match those declared in the respective definition. [#2158](https://github.com/ngxs/store/pull/2158) and [#2042](https://github.com/ngxs/store/pull/2042)
 
@@ -545,7 +548,7 @@ You can read more [here](https://www.ngxs.io/deprecations/sub-states-deprecation
 
 ---
 
-## Improvements
+## Exposed Internals (for Advanced Development)
 
 The store and plugin exposes some of its internal API implementations to allow library authors to experiment with potential extensions. However, keep in mind that these API implementations are not part of the official API, but rather an internals API. This means that they could be changed at any time in the future. Let's see some of their details:
 
