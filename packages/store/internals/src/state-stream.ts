@@ -4,13 +4,16 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ɵPlainObject } from './symbols';
 import { ɵOrderedBehaviorSubject } from './custom-rxjs-subjects';
 
+import { asapScheduler } from 'rxjs/';
+import { subscribeOn } from 'rxjs/operators';
+
 /**
  * BehaviorSubject of the entire state.
  * @ignore
  */
 @Injectable({ providedIn: 'root' })
 export class ɵStateStream extends ɵOrderedBehaviorSubject<ɵPlainObject> implements OnDestroy {
-  readonly state: Signal<ɵPlainObject> = toSignal(this, {
+  readonly state: Signal<ɵPlainObject> = toSignal(this.pipe(subscribeOn(asapScheduler)), {
     manualCleanup: true,
     requireSync: true
   });
