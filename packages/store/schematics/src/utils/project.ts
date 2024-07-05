@@ -1,6 +1,6 @@
 import { TargetDefinition } from '@schematics/angular/utility/workspace';
 import { getWorkspace } from './config';
-import { Tree } from '@angular-devkit/schematics';
+import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import { join } from 'path';
 
 export interface WorkspaceProject {
@@ -60,4 +60,28 @@ export function isLib(host: Tree, project?: string) {
   const resolvedProject = getProject(host, project);
 
   return resolvedProject?.projectType === 'library';
+}
+
+export function getProjectMainFile(host: Tree, project?: string): string | null {
+  const resolvedProject = getProject(host, project);
+  if (!resolvedProject) {
+    if (!project) {
+      throw new SchematicsException(
+        `Could not determine the project name. Make sure to provide the "project" option manually.`
+      );
+    }
+    throw new SchematicsException(`Project "${project}" does not exist.`);
+  }
+  if (isLib(host, project)) {
+    return null;
+  }
+  const projectOptions = resolvedProject.architect['build'].options;
+
+  if (projectOptions?.main) {
+    return projectOptions.main as string;
+  } else if (projectOptions?.browser) {
+    return projectOptions.browser as string;
+  }
+
+  throw new SchematicsException('No `main` or `browser` files have been found.');
 }

@@ -1,13 +1,13 @@
 import { Rule, chain } from '@angular-devkit/schematics';
-import { addRootImport, addRootProvider } from '../utils/ng-utils/standalone/rules';
+import { addRootImport, addRootProvider } from '@schematics/angular/utility/standalone/rules';
 import {
   applyChangesToFile,
   findBootstrapApplicationCall,
   getMainFilePath,
   getSourceFile
-} from '../utils/ng-utils/standalone/util';
+} from '@schematics/angular/utility/standalone/util';
 import { insertImport } from '@schematics/angular/utility/ast-utils';
-import { findAppConfig } from '../utils/ng-utils/standalone/app_config';
+import { findAppConfig } from '@schematics/angular/utility/standalone/app_config';
 import { LIBRARIES } from '../utils/common/lib.config';
 import { NormalizedNgxsPackageSchema } from './ng-add.factory';
 

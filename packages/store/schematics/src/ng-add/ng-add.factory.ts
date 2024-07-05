@@ -16,13 +16,13 @@ import {
 import { LIBRARIES } from '../utils/common/lib.config';
 
 import { NgxsPackageSchema } from './ng-add.schema';
-import { getProjectMainFile } from '../utils/ng-utils/project';
-import { isStandaloneApp } from '../utils/ng-utils/ng-ast-utils';
+import { getProjectMainFile } from '../utils/project';
 import {
   addDeclarationToNonStandaloneApp,
   addDeclarationToStandaloneApp
 } from './add-declaration';
 import { getProject } from '../utils/project';
+import { isStandaloneApp } from '@schematics/angular/utility/ng-ast-utils';
 
 const versions = require('./../utils/versions.json');
 
