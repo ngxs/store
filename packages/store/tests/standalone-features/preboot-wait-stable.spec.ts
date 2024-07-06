@@ -4,8 +4,8 @@ import {
   Component,
   Injectable,
   inject,
-  ɵPendingTasks as PendingTasks,
-  ɵprovideZonelessChangeDetection,
+  ExperimentalPendingTasks,
+  provideExperimentalZonelessChangeDetection,
   ChangeDetectionStrategy
 } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
@@ -25,20 +25,20 @@ import {
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
 function executeRecipeFromDocs() {
-  const pendingTasks = inject(PendingTasks);
+  const pendingTasks = inject(ExperimentalPendingTasks);
   const actions$ = inject(Actions);
 
-  const actionToTaskIdMap = new Map<any, number>();
+  const actionToRemoveTaskFnMap = new Map<any, () => void>();
 
   actions$.subscribe(ctx => {
     if (ctx.status === ActionStatus.Dispatched) {
-      const taskId = pendingTasks.add();
-      actionToTaskIdMap.set(ctx.action, taskId);
+      const removeTaskFn = pendingTasks.add();
+      actionToRemoveTaskFnMap.set(ctx.action, removeTaskFn);
     } else {
-      const taskId = actionToTaskIdMap.get(ctx.action);
-      if (typeof taskId === 'number') {
-        pendingTasks.remove(taskId);
-        actionToTaskIdMap.delete(ctx.action);
+      const removeTaskFn = actionToRemoveTaskFnMap.get(ctx.action);
+      if (typeof removeTaskFn === 'function') {
+        removeTaskFn();
+        actionToRemoveTaskFnMap.delete(ctx.action);
       }
     }
   });
@@ -90,7 +90,7 @@ describe('preboot feature + stable', () => {
         () =>
           bootstrapApplication(TestComponent, {
             providers: [
-              ɵprovideZonelessChangeDetection(),
+              provideExperimentalZonelessChangeDetection(),
 
               provideStore([CountriesState], withNgxsPreboot(executeRecipeFromDocs))
             ]
