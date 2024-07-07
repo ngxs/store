@@ -70,3 +70,4 @@ dist-integration-server/
 .cache
 migrations.json
 .nx/cache
+.nx/workspace-data
