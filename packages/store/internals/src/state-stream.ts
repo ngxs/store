@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { asapScheduler, observeOn } from 'rxjs';
 
 import { ɵPlainObject } from './symbols';
 import { ɵOrderedBehaviorSubject } from './custom-rxjs-subjects';
@@ -10,10 +11,17 @@ import { ɵOrderedBehaviorSubject } from './custom-rxjs-subjects';
  */
 @Injectable({ providedIn: 'root' })
 export class ɵStateStream extends ɵOrderedBehaviorSubject<ɵPlainObject> implements OnDestroy {
-  readonly state: Signal<ɵPlainObject> = toSignal(this, {
-    manualCleanup: true,
-    requireSync: true
-  });
+  readonly state: Signal<ɵPlainObject | undefined> = toSignal(
+    // This is explicitly piped with the `asapScheduler` to prevent synchronous
+    // signal updates. Signal updates occurring within effects can lead to errors
+    // stating that signal writes are not permitted in effects. This approach helps
+    // decouple signal updates from synchronous changes, ensuring compliance with
+    // constraints on updates inside effects.
+    this.pipe(observeOn(asapScheduler)),
+    {
+      manualCleanup: true
+    }
+  );
 
   constructor() {
     super({});
