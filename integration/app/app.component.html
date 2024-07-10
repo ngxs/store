@@ -3,7 +3,13 @@
     <h3>Reactive Form</h3>
     <p>(injected$) {{ injected$ | async }}</p>
     <p>(injected() signal) {{ injected() }}</p>
-    <form [formGroup]="pizzaForm" novalidate (ngSubmit)="onSubmit()" ngxsForm="todos.pizza">
+    <form
+      [formGroup]="pizzaForm"
+      novalidate
+      (ngSubmit)="onSubmit()"
+      ngxsForm="todos.pizza"
+      [ngxsFormDebounce]="debounce"
+    >
       Toppings: <input type="text" formControlName="toppings" /> <br />
       Crust <input type="text" formControlName="crust" /> <br />
       Extras

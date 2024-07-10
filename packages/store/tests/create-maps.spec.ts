@@ -44,12 +44,34 @@ describe('create maps', () => {
       );
 
       // Assert
-      expect(selectors.number()).toEqual(0);
       expect(Object.keys(selectors)).toEqual(['number']);
+    });
+
+    it('should receive an asynchronous update and would throw an error if read too early', async () => {
+      // Arrange
+      testSetup();
+
+      // Act
+      const selectors = runInInjectionContext(TestBed, () =>
+        createSelectMap({
+          number: NumberState.getNumberState
+        })
+      );
+
+      // Assert
+      expect(() => selectors.number()).toThrow(
+        // The state signal has not received an update yet.
+        "Cannot read properties of undefined (reading 'number')"
+      );
+
+      await Promise.resolve();
+
+      // Assert
+      expect(selectors.number()).toEqual(0);
     });
   });
 
-  describe('createSelectMap', () => {
+  describe('createDispatchMap', () => {
     it('should allow listing properties through Object.keys', () => {
       // Arrange
       testSetup();
