@@ -12,7 +12,7 @@ import { ɵOrderedBehaviorSubject } from './custom-rxjs-subjects';
 @Injectable({ providedIn: 'root' })
 export class ɵStateStream extends ɵOrderedBehaviorSubject<ɵPlainObject> implements OnDestroy {
   readonly state: Signal<ɵPlainObject | undefined> = toSignal(
-    // https://github.com/ngxs/store/pull/2189
+    // https://github.com/ngxs/store/issues/2180
     // This is explicitly piped with the `asapScheduler` to prevent synchronous
     // signal updates. Signal updates occurring within effects can lead to errors
     // stating that signal writes are not permitted in effects. This approach helps
