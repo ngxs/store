@@ -1,7 +1,24 @@
-import { Inject, Injectable, Optional, Signal, computed } from '@angular/core';
-import { Observable, of, Subscription, throwError } from 'rxjs';
-import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
-import { ɵINITIAL_STATE_TOKEN, ɵStateStream } from '@ngxs/store/internals';
+import { Inject, Injectable, Injector, Optional, Signal, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  asapScheduler,
+  Observable,
+  of,
+  Subscription,
+  throwError,
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  take
+} from 'rxjs';
+import {
+  ɵINITIAL_STATE_TOKEN,
+  ɵPlainObject,
+  ɵSelectFromRootState,
+  ɵStateStream
+} from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
@@ -22,6 +39,8 @@ export class Store {
     leaveNgxs(this._internalExecutionStrategy),
     shareReplay({ bufferSize: 1, refCount: true })
   );
+
+  private _injector = inject(Injector);
 
   constructor(
     private _stateStream: ɵStateStream,
@@ -48,20 +67,7 @@ export class Store {
    */
   select<T>(selector: TypedSelector<T>): Observable<T> {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
-    return this._selectableStateStream.pipe(
-      map(selectorFn),
-      catchError((error: Error): Observable<never> | Observable<undefined> => {
-        // if error is TypeError we swallow it to prevent usual errors with property access
-        if (this._config.selectorOptions.suppressErrors && error instanceof TypeError) {
-          return of(undefined);
-        }
-
-        // rethrow other errors
-        return throwError(error);
-      }),
-      distinctUntilChanged(),
-      leaveNgxs(this._internalExecutionStrategy)
-    );
+    return this.selectFromStateStream(this._selectableStateStream, selectorFn);
   }
 
   /**
@@ -84,7 +90,44 @@ export class Store {
    */
   selectSignal<T>(selector: TypedSelector<T>): Signal<T> {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
-    return computed<T>(() => selectorFn(this._stateStream.state()));
+    const initialValue = selectorFn(this._stateStream.value);
+    const observable = this.selectFromStateStream(
+      // https://github.com/ngxs/store/issues/2180
+      // This is explicitly piped with the `debounceTime` to prevent synchronous
+      // signal updates. Signal updates occurring within effects can lead to errors
+      // stating that signal writes are not permitted in effects. This approach helps
+      // decouple signal updates from synchronous changes, ensuring compliance with
+      // constraints on updates inside effects.
+      // Developers should never rely on manually reading the signal after the state
+      // has been updated, whether synchronously or asynchronously, since the expected
+      // result may not be immediately available. To retrieve the current slice of the
+      // state, use `selectSnapshot` instead of directly accessing the signal. Signals
+      // are intended for use in templates or effects, as they always guarantee
+      // consistency with the latest signal value.
+      this._selectableStateStream.pipe(debounceTime(0, asapScheduler)),
+      selectorFn
+    );
+    return toSignal(observable, { initialValue, injector: this._injector });
+  }
+
+  private selectFromStateStream(
+    observable: Observable<ɵPlainObject>,
+    selectorFn: ɵSelectFromRootState
+  ) {
+    return observable.pipe(
+      map(selectorFn),
+      catchError((error: Error): Observable<never> | Observable<undefined> => {
+        // if error is TypeError we swallow it to prevent usual errors with property access
+        if (this._config.selectorOptions.suppressErrors && error instanceof TypeError) {
+          return of(undefined);
+        }
+
+        // rethrow other errors
+        return throwError(error);
+      }),
+      distinctUntilChanged(),
+      leaveNgxs(this._internalExecutionStrategy)
+    );
   }
 
   /**

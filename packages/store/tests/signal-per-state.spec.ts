@@ -1,7 +1,9 @@
 import {
+  APP_INITIALIZER,
   Component,
   Injectable,
   effect,
+  inject,
   provideExperimentalZonelessChangeDetection,
   signal
 } from '@angular/core';
@@ -9,7 +11,7 @@ import { TestBed } from '@angular/core/testing';
 import { Action, NgxsModule, Selector, State, StateContext, Store } from '@ngxs/store';
 import { skipConsoleLogging } from '@ngxs/store/internals/testing';
 
-describe('Dispatching actions in effects (https://github.com/ngxs/store/issues/2180)', () => {
+describe('State per signal', () => {
   class Set {
     static readonly type = 'Set';
 
@@ -33,26 +35,39 @@ describe('Dispatching actions in effects (https://github.com/ngxs/store/issues/2
     }
   }
 
+  @Injectable({ providedIn: 'root' })
+  class TestService {
+    number = inject(Store).selectSignal(NumberState.getNumber);
+
+    constructor() {
+      console.log(this.number());
+    }
+  }
+
   @Component({
     template: `
       <h1>{{ value() }}</h1>
-      <h2>{{ valueFromState() }}</h2>
+      <h2>{{ number() }}</h2>
       <button (click)="updateValue()">Click me</button>
-    `
+    `,
+    standalone: true
   })
   class TestComponent {
     value = signal(0);
-    valueFromState = this.store.selectSignal(NumberState.getNumber);
+    number = this.store.selectSignal(NumberState.getNumber);
 
     constructor(private store: Store) {
-      effect(() => {
-        const value = this.value();
-        store.dispatch(new Set(value));
-      });
+      effect(
+        () => {
+          const value = this.value();
+          store.dispatch(new Set(value));
+        }
+        // { allowSignalWrites: true }
+      );
     }
 
     updateValue() {
-      this.value.update(value => value + 100);
+      this.value.set(100);
     }
   }
 
@@ -60,9 +75,18 @@ describe('Dispatching actions in effects (https://github.com/ngxs/store/issues/2
     // Arrange
     skipConsoleLogging(() =>
       TestBed.configureTestingModule({
-        declarations: [TestComponent],
-        imports: [NgxsModule.forRoot([NumberState])],
-        providers: [provideExperimentalZonelessChangeDetection()]
+        imports: [NgxsModule.forRoot([NumberState]), TestComponent],
+        providers: [
+          provideExperimentalZonelessChangeDetection(),
+          {
+            provide: APP_INITIALIZER,
+            multi: true,
+            useFactory: () => {
+              inject(TestService);
+              return () => {};
+            }
+          }
+        ]
       })
     );
 
@@ -73,12 +97,10 @@ describe('Dispatching actions in effects (https://github.com/ngxs/store/issues/2
     // Act
     document.querySelector('button')!.click();
     await fixture.whenStable();
-
     document.querySelector('button')!.click();
     await fixture.whenStable();
 
     // Assert
-    expect(document.querySelector('h1')!.innerHTML).toEqual('200');
-    expect(document.querySelector('h2')!.innerHTML).toEqual('200');
+    expect(document.querySelector('h1')!.innerHTML).toEqual('100');
   });
 });
