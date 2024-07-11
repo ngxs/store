@@ -4,7 +4,7 @@ We're thrilled to announce the release of NGXS v18! This update represents month
 
 But that's not all – we've also made a strategic decision to align NGXS versioning with Angular's release cycle. This means, starting with v18, the minimum supported Angular version will also align with Angular's latest release, unless explicitly stated otherwise.
 
-Angular has entered a new era, where the incremental introduction of new features and api changes offer a host of opportunities for libraries. This move by NGXS ensures seamless compatibility and allows you to leverage the latest features from both libraries as they evolve together.   
+Angular has entered a new era, where the incremental introduction of new features and API changes offer a host of opportunities for libraries. This move by NGXS ensures seamless compatibility and allows you to leverage the latest features from both libraries as they evolve together.  
 For NGXS v18, since this is our first release under the new versioning scheme, we will be supporting Angular versions >=16.
 
 But before we dive in, we want to unveil a fresh new look for NGXS!
@@ -30,27 +30,27 @@ We've got some exciting news in this release beyond the usual code wizardry. We'
 
 Head over to our brand new Discord server at https://discord.gg/yFk6bu7v. Don't forget to introduce yourself and let us know what awesome NGXS projects you're working on!
 
-The move from Slack to Discord will be incremental, as we encourage our many Slack users to move over. There is a wealth of valuable community discussions in our Slack archives (6 years of data). This is unfortunately inaccessible due to Slack's 90-day policy. We plan to make this archive available in dedicated discord channels in the near future.
----
+## The move from Slack to Discord will be incremental, as we encourage our many Slack users to move over. There is a wealth of valuable community discussions in our Slack archives (6 years of data). This is unfortunately inaccessible due to Slack's 90-day policy. We plan to make this archive available in dedicated discord channels in the near future.
 
 Now, let's get down to business!
 
 ## Overview
 
 Part 1
+
 - 🚦 Signals
 - ⏩ Dispatch Utilities
-Part 2
+  Part 2
 - 🎨 Standalone API
 - 🚀 Schematics
 - ❗ Error Handling
-Part 3
+- 🗄️ Zoneless Server-Side Rendering
+  Part 3
 - 🛑 Breaking Changes
 - 🗑️ Deprecations
 - 🔌 Exposed Internals
 
 ---
-
 
 ## Standalone API
 
@@ -234,6 +234,7 @@ There are various schematics available to quickly generate various NGXS files:
   ```bash
   ng generate @ngxs/store:store
   ```
+
   Generates sample `state` and `actions` files in the provided location, with the provided name and generation options (see [documentation](https://www.ngxs.io/concepts/store/schematics)).
 
 - Generate `state` file:
@@ -241,8 +242,8 @@ There are various schematics available to quickly generate various NGXS files:
   ```bash
   ng generate @ngxs/store:state --name TodosState
   ```
+
   Will generate a sample `todos.state.ts` file in the provided location (with the provided name and generation options - see [documentation](https://www.ngxs.io/concepts/state/schematics)).
-  
 
 - Generate `actions` file:
 
@@ -275,6 +276,21 @@ You can read more [here](https://www.ngxs.io/concepts/store/error-handling#overr
   When a feature state is initialized before the `store`, will appear an error message and the state initialization order must be updated. This typically occurs when `NgxsModule.forFeature` or `provideStates` is called before `NgxsModule.forRoot` or `provideStore`.
 
 ---
+
+## Zoneless Server-Side Rendering (experimental)
+
+Before zoneless change detection was introduced, Angular required zone.js to be used for server-side rendering. This was necessary to determine when the application became 'stable' and could be serialized for client transmission. With zoneless change detection, Angular utilizes its internal pending tasks service. This service explicitly contributes to application stability by notifying Angular when asynchronous tasks are in progress, preventing premature serialization.
+
+NGXS provides an experimental feature called `withExperimentalNgxsPendingTasks`, which can be registered when calling `provideStore`. This feature prevents SSR serialization before NGXS actions have been handled:
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withExperimentalNgxsPendingTasks } from '@ngxs/store/experimental';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([], withExperimentalNgxsPendingTasks())]
+};
+```
 
 ## Breaking Changes
 

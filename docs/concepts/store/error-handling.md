@@ -5,15 +5,16 @@
 It is recommended to handle errors within your `@Action` function in your state:
 
 ### Deterministice errors:
-  - `Update the state` to capture the error details
-    - Ensure that the relevant selectors cater for these error states and provide information for your user to respond to the error accordingly
-  - OR `dispatch` an action that sends the error details to the necessary state or service
-    - This action could be picked up by an application level error state or could be picked up by a service that is listening to the action stream (see [Action Handlers](../actions/action-handlers.md))
+
+- `Update the state` to capture the error details
+  - Ensure that the relevant selectors cater for these error states and provide information for your user to respond to the error accordingly
+- OR `dispatch` an action that sends the error details to the necessary state or service
+  - This action could be picked up by an application level error state or could be picked up by a service that is listening to the action stream (see [Action Handlers](../actions/action-handlers.md))
 
 ### Non-deterministic errors:
-  - Respond to the error accordingly(retry, abort, etc.)
-  - AND use one of the deterministic error handling mechanisms above to inform your user about the situation
 
+- Respond to the error accordingly(retry, abort, etc.)
+- AND use one of the deterministic error handling mechanisms above to inform your user about the situation
 
 ## Fallback Error Handling
 
@@ -26,6 +27,7 @@ Error handling firstly falls back to any error handler at the `dispatch` call an
 To manually catch an error thrown and not handled by an action, you can subscribe to the observable returned by the `dispatch` call and include an `error` callback. By subscribing and providing an `error` callback, NGXS won't pass the error to its final unhandled error handler.
 
 You can include this error callback in three ways:
+
 - by explicitly supplying the `error` callback in your `subscribe` function call
 - by using one of the `rjxs` error handling operators
 - by converting the observable into a promise and using any standard `async` or `promise` error handling mechanisms
@@ -60,9 +62,7 @@ class AppComponent {
 
   async handleErrorAsync() {
     try {
-      await latestValueFrom(
-        this.store.dispatch(new ActionThatCausesAnError())
-      );
+      await latestValueFrom(this.store.dispatch(new ActionThatCausesAnError()));
     } catch (error) {
       console.log('unhandled error on dispatch caught: ', error);
     }
