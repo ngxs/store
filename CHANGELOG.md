@@ -6,6 +6,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+- Feat(store): Add `withExperimentalNgxsPendingTasks` [#2186](https://github.com/ngxs/store/pull/2186)
 - Fix(store): Decouple state signal updates from synchronous changes [#2189](https://github.com/ngxs/store/pull/2189)
 
 ### 18.0.0 2024-06-10
