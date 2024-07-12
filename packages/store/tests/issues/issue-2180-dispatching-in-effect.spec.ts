@@ -9,8 +9,8 @@ import { TestBed } from '@angular/core/testing';
 import { Action, NgxsModule, Selector, State, StateContext, Store } from '@ngxs/store';
 import { skipConsoleLogging } from '@ngxs/store/internals/testing';
 
-describe('Dispatching actions in effects (https://github.com/ngxs/store/issues/2180)', () => {
-  class Set {
+describe('State per signal', () => {
+  class SetNumber {
     static readonly type = 'Set';
 
     constructor(readonly value: number) {}
@@ -27,8 +27,8 @@ describe('Dispatching actions in effects (https://github.com/ngxs/store/issues/2
       return number;
     }
 
-    @Action(Set)
-    set(ctx: StateContext<number>, action: Set) {
+    @Action(SetNumber)
+    setNumber(ctx: StateContext<number>, action: SetNumber) {
       ctx.setState(action.value);
     }
   }
@@ -36,18 +36,19 @@ describe('Dispatching actions in effects (https://github.com/ngxs/store/issues/2
   @Component({
     template: `
       <h1>{{ value() }}</h1>
-      <h2>{{ valueFromState() }}</h2>
+      <h2>{{ number() }}</h2>
       <button (click)="updateValue()">Click me</button>
-    `
+    `,
+    standalone: true
   })
   class TestComponent {
     value = signal(0);
-    valueFromState = this.store.selectSignal(NumberState.getNumber);
+    number = this.store.selectSignal(NumberState.getNumber);
 
     constructor(private store: Store) {
       effect(() => {
         const value = this.value();
-        store.dispatch(new Set(value));
+        store.dispatch(new SetNumber(value));
       });
     }
 
@@ -60,8 +61,7 @@ describe('Dispatching actions in effects (https://github.com/ngxs/store/issues/2
     // Arrange
     skipConsoleLogging(() =>
       TestBed.configureTestingModule({
-        declarations: [TestComponent],
-        imports: [NgxsModule.forRoot([NumberState])],
+        imports: [NgxsModule.forRoot([NumberState]), TestComponent],
         providers: [provideExperimentalZonelessChangeDetection()]
       })
     );
@@ -73,7 +73,6 @@ describe('Dispatching actions in effects (https://github.com/ngxs/store/issues/2
     // Act
     document.querySelector('button')!.click();
     await fixture.whenStable();
-
     document.querySelector('button')!.click();
     await fixture.whenStable();
 

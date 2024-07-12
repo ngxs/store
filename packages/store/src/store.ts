@@ -1,12 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  Injector,
-  Optional,
-  Signal,
-  assertInInjectionContext,
-  inject
-} from '@angular/core';
+import { Inject, Injectable, Injector, Optional, Signal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   asapScheduler,
@@ -116,12 +108,7 @@ export class Store {
       selectorFn
     );
 
-    try {
-      assertInInjectionContext(() => {});
-      return toSignal(observable, { initialValue });
-    } catch {
-      return toSignal(observable, { initialValue, injector: this._injector });
-    }
+    return toSignal(observable, { initialValue, injector: this._injector });
   }
 
   private selectFromStateStream(
