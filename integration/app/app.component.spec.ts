@@ -11,9 +11,9 @@ import { TodoState } from './store/todos/todo/todo.state';
 
 // Every time the state is updated, the primary state signal
 // receives updates asynchronously behind the scenes after the
-// microtask is executed.
+// macrotask is executed.
 function waitForStateSignalToReceiveUpdate() {
-  return Promise.resolve();
+  return new Promise(resolve => setTimeout(resolve, 5));
 }
 
 function waitForFormDebounce(debounce: number) {
