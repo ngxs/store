@@ -122,12 +122,13 @@ These options can also be provided through the `@SelectorOptions` decorator at a
 - `true` will cause any error within a selector to result in the selector returning `undefined`.
 - `false` results in these errors propagating through the stack that triggered the evaluation of the selector that caused the error.
 
-#### `injectContainerState`
+#### `injectContainerState` ([TO BE DEPRECATED](../../deprecations/inject-container-state-deprecation.md))
 
-> ⚠️ This property is only useful for migrating codebases from NGXS v3 to v4. It is not recommended to keep it set to `true`. In v4 and newer versions, users should have no reason to set this property explicitly.
+> ⚠️ This property is only useful for incrementally migrating codebases from NGXS v3 to versions after v3. It is not recommended to keep it set to `true`. In versions after v3, users should have no reason to set this property explicitly.
 
 - `true` will cause all selectors defined within a state class to receive the container class' state model as their first parameter. As a result every selector would be re-evaluated after any change to that state (**this should only be used during migrations**).
 - `false` will prevent the injection of the container state model as the first parameter of a selector method (defined within a state class) that joins to other selectors for its parameters (**this is the default value now**).
+- See the linked deprecation notice for a detailed explanation of the effects of this setting.
 
 ### Memoized Selectors with Arguments
 
