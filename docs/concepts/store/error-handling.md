@@ -1,19 +1,43 @@
 # Error Handling
 
-## Recommended Approach
+## Deterministic vs Non-deterministic
+
+Firstly, it is good to understand that your error handling approach should consider two different classes of error: Deterministic and Non-deterministic errors.
+
+### Deterministic errors:
+
+- These are repeatable errors that you would expect during the normal course of operation of your application.
+- The condition for this error to happen is fully determined by the state of the application (hence the word "deterministic").
+- `Determinism` is the property that you will always get the same output given the same input.
+- If the application's data remains unchanged, then an erroring operation will always fail, no matter how many times it is retried.
+- You should consider how your code should handle these errors as part of building a robust application.
+- Some example approaches (from the 4xx HTTP status codes):
+  - Bad request (400): The data that you are sending is in the incorrect format, something definitely needs to change with what you are sending.
+  - Not Found (404): The requested item is not found, so you need to make a decision on how to respond to this scenario.
+
+### Non-deterministic errors:
+
+- These are errors generally occur as a result of the environment within which your application operates. For example, the network or a server failure could cause this type of error.
+- Because this type of error lacks `Determinism` (see definition above), then it is possible that retrying the operation could lead to success. It is recommended to decide on a retry strategy that makes sense for the application experience that you wish to offer.
+- Some example approaches (from the 5xx HTTP status codes - "server-side" errors ):
+  - Internal Server Error (500): Something went wrong with the server. Things could succeed on retry, but it really depends on how resilient your server side is. Not recommended to retry for too long because this type of error could take more than a negligible time to resolve.
+  - Gateway Timeout (504): There is a connection timeout, so it may be a good idea to check if there is network availability before retrying too many times.
+
+## Recommended Approach in NGXS
 
 It is recommended to handle errors within your `@Action` function in your state:
 
-### Deterministice errors:
-  - `Update the state` to capture the error details
-    - Ensure that the relevant selectors cater for these error states and provide information for your user to respond to the error accordingly
-  - OR `dispatch` an action that sends the error details to the necessary state or service
-    - This action could be picked up by an application level error state or could be picked up by a service that is listening to the action stream (see [Action Handlers](../actions/action-handlers.md))
+### Deterministic errors:
+
+- `Update the state` to capture the error details
+  - Ensure that the relevant selectors cater for these error states and provide information for your user to respond to the error accordingly
+- OR `dispatch` an action that sends the error details to the necessary state or service
+  - This action could be picked up by an application level error state or could be picked up by a service that is listening to the action stream (see [Action Handlers](../actions/action-handlers.md))
 
 ### Non-deterministic errors:
-  - Respond to the error accordingly(retry, abort, etc.)
-  - AND use one of the deterministic error handling mechanisms above to inform your user about the situation
 
+- Respond to the error accordingly(retry, abort, etc.)
+- AND use one of the deterministic error handling mechanisms above to inform your user about the situation
 
 ## Fallback Error Handling
 
@@ -26,6 +50,7 @@ Error handling firstly falls back to any error handler at the `dispatch` call an
 To manually catch an error thrown and not handled by an action, you can subscribe to the observable returned by the `dispatch` call and include an `error` callback. By subscribing and providing an `error` callback, NGXS won't pass the error to its final unhandled error handler.
 
 You can include this error callback in three ways:
+
 - by explicitly supplying the `error` callback in your `subscribe` function call
 - by using one of the `rjxs` error handling operators
 - by converting the observable into a promise and using any standard `async` or `promise` error handling mechanisms
@@ -60,9 +85,7 @@ class AppComponent {
 
   async handleErrorAsync() {
     try {
-      await latestValueFrom(
-        this.store.dispatch(new ActionThatCausesAnError())
-      );
+      await latestValueFrom(this.store.dispatch(new ActionThatCausesAnError()));
     } catch (error) {
       console.log('unhandled error on dispatch caught: ', error);
     }
