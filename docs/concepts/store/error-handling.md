@@ -1,35 +1,44 @@
 # Error Handling
 
-## How NGXS handles errors
+## Recommended Approach
 
-If an unhandled exception is thrown within an action, the error will be passed to the `ErrorHandler`. To manually catch the error, you just need to subscribe to the `dispatch` observable and include an `error` callback. By subscribing and providing an `error` callback, NGXS won't pass the error to its unhandled error handler.
+It is recommended to handle errors within your `@Action` function in your state:
 
-NGXS configures the RxJS [`onUnhandledError`](https://rxjs.dev/api/index/interface/GlobalConfig#onUnhandledError) callback. This property is accessible in RxJS versions 7 and above, which is why NGXS mandates a minimum RxJS version of 7.
+### Deterministice errors:
+  - `Update the state` to capture the error details
+    - Ensure that the relevant selectors cater for these error states and provide information for your user to respond to the error accordingly
+  - OR `dispatch` an action that sends the error details to the necessary state or service
+    - This action could be picked up by an application level error state or could be picked up by a service that is listening to the action stream (see [Action Handlers](../actions/action-handlers.md))
 
-The RxJS `onUnhandledError` callback triggers whenever an unhandled error occurs within an observable and no `error` callback has been supplied.
+### Non-deterministic errors:
+  - Respond to the error accordingly(retry, abort, etc.)
+  - AND use one of the deterministic error handling mechanisms above to inform your user about the situation
 
-:warning: If you configure `onUnhandledError` after NGXS has loaded, ensure to store the existing implementation in a local variable. You'll need to invoke it when the error shouldn't be handled by your customized error strategy:
 
-```ts
-import { config } from 'rxjs';
+## Fallback Error Handling
 
-const existingHandler = config.onUnhandledError;
-config.onUnhandledError = function (error: any) {
-  if (shouldWeHandleThis(error)) {
-    // Do something with this error
-  } else {
-    existingHandler.call(this, error);
-  }
-};
-```
+NGXS has a robost and predictable fallback mechanism for error handling. Although it is not recommended, some developers use these to tailor their application design to suit their team's preference.
 
-### Handling errors after dispatching an action
+Error handling firstly falls back to any error handler at the `dispatch` call and then to the `NgxsUnhandledErrorHandler`.
+
+### Handling at the `dispatch` call
+
+To manually catch an error thrown and not handled by an action, you can subscribe to the observable returned by the `dispatch` call and include an `error` callback. By subscribing and providing an `error` callback, NGXS won't pass the error to its final unhandled error handler.
+
+You can include this error callback in three ways:
+- by explicitly supplying the `error` callback in your `subscribe` function call
+- by using one of the `rjxs` error handling operators
+- by converting the observable into a promise and using any standard `async` or `promise` error handling mechanisms
+
+Check this [special note](#ngxs-error-handling-detection-in-observables) if you have custom code that modifies rxjs's default error fallbacks.
+
+#### Example
 
 Given the following code:
 
 ```ts
 class AppState {
-  @Action(UnhandledError)
+  @Action(ActionThatCausesAnError)
   unhandledError(ctx: StateContext<StateModel>) {
     // error is thrown
   }
@@ -37,22 +46,39 @@ class AppState {
 ```
 
 ```ts
+import { lastValueFrom } from 'rxjs';
+
 class AppComponent {
-  unhandled() {
-    this.store.dispatch(new UnhandledError()).subscribe({
+  //...
+  handleError() {
+    this.store.dispatch(new ActionThatCausesAnError()).subscribe({
       error: error => {
         console.log('unhandled error on dispatch subscription: ', error);
       }
     });
   }
+
+  async handleErrorAsync() {
+    try {
+      await latestValueFrom(
+        this.store.dispatch(new ActionThatCausesAnError())
+      );
+    } catch (error) {
+      console.log('unhandled error on dispatch caught: ', error);
+    }
+  }
 }
 ```
 
-It is recommended to handle errors within `@Action` and update the state to reflect the error, which you can later select to display where required.
-
 You can play around with error handling in the following [stackblitz](https://stackblitz.com/edit/ngxs-error-handling)
 
-## Custom unhandled error handler
+### The `NgxsUnhandledErrorHandler`
+
+The final level of fallback in NGXS will pass the error to the `NgxsUnhandledErrorHandler`. The default implementation of this service will pass the error on to the Angular `ErrorHandler` that is configured in the application.
+
+The application developer can choose to provide a custom `NgxsUnhandledErrorHandler` to direct the error as they see fit.
+
+#### Overriding the `NgxsUnhandledErrorHandler`
 
 NGXS provides the `NgxsUnhandledErrorHandler` class, which you can override with your custom implementation to manage unhandled errors according to your requirements:
 
@@ -77,3 +103,26 @@ export const appConfig: ApplicationConfig = {
 ```
 
 Note that the second parameter, `NgxsUnhandledErrorContext`, contains an object with an `action` property. This property holds the action that triggered the error while being processed.
+
+## Special Notes
+
+### NGXS Error Handling Detection in Observables
+
+In order to acheive the detection of `dispatch` call error handling, NGXS configures the RxJS [`onUnhandledError`](https://rxjs.dev/api/index/interface/GlobalConfig#onUnhandledError) callback. This property is accessible in RxJS versions 7 and above, which is why NGXS mandates a minimum RxJS version of 7.
+
+The RxJS `onUnhandledError` callback triggers whenever an unhandled error occurs within an observable and no `error` callback has been supplied.
+
+:warning: If you configure `onUnhandledError` after NGXS has loaded, you will need to store the existing implementation in a local variable and invoke it when the error is not handled by your customized rxjs error strategy:
+
+```ts
+import { config } from 'rxjs';
+
+const existingHandler = config.onUnhandledError;
+config.onUnhandledError = function (error: any) {
+  if (shouldWeHandleThis(error)) {
+    // Do something with this error
+  } else {
+    existingHandler.call(this, error);
+  }
+};
+```
