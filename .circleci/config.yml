@@ -64,9 +64,10 @@ jobs:
           name: Set NPM global path
           command: echo 'prefix = ~/.npm' > ~/.npmrc
       - checkout
-      - *restore_cache
+      # The Circle CI caching for yarn takes longer than the yarn install. Removed caching.
+      # - *restore_cache
       - *yarn_install
-      - *save_cache
+      # - *save_cache
       - run:
           name: Compile NGXS
           command: yarn build
