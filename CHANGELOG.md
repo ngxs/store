@@ -6,9 +6,14 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-- Feat(store): Debounce `selectSignal` by default [#2190](https://github.com/ngxs/store/pull/2190)
-- Feat(store): Add `withExperimentalNgxsPendingTasks` [#2186](https://github.com/ngxs/store/pull/2186)
+- ...
+
+### 18.1.0 2024-07-29
+
+- Feature(store): Debounce `selectSignal` by default [#2190](https://github.com/ngxs/store/pull/2190)
+- Feature(store): Add `withExperimentalNgxsPendingTasks` [#2186](https://github.com/ngxs/store/pull/2186)
 - Fix(store): Decouple state signal updates from synchronous changes [#2189](https://github.com/ngxs/store/pull/2189)
+- Fix(schematics): remove local ng utils for schematics [#2184](https://github.com/ngxs/store/pull/2184)
 
 ### 18.0.0 2024-06-10
 
