@@ -1748,37 +1748,37 @@
   integrity sha512-wcJp15H52RgEiZOcq/8YlgF53dNR2C+ap6mof8HziD5lTXmkPLKn1US0gqHixu5njkWKslCzu2td/k2Fg6r5Kg==
 
 "@ngxs/devtools-plugin@file:./node_modules/@ngxs/devtools-plugin":
-  version "18.0.0"
+  version "18.1.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/form-plugin@file:./node_modules/@ngxs/form-plugin":
-  version "18.0.0"
+  version "18.1.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/logger-plugin@file:./node_modules/@ngxs/logger-plugin":
-  version "18.0.0"
+  version "18.1.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/router-plugin@file:./node_modules/@ngxs/router-plugin":
-  version "18.0.0"
+  version "18.1.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/storage-plugin@file:./node_modules/@ngxs/storage-plugin":
-  version "18.0.0"
+  version "18.1.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/store@file:./node_modules/@ngxs/store":
-  version "18.0.0"
+  version "18.1.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/websocket-plugin@file:./node_modules/@ngxs/websocket-plugin":
-  version "18.0.0"
+  version "18.1.0"
   dependencies:
     tslib "^2.3.0"
 
@@ -3890,7 +3890,7 @@ execa@4.1.0:
     signal-exit "^3.0.2"
     strip-final-newline "^2.0.0"
 
-execa@5.1.1, execa@^5.0.0, execa@^5.1.1:
+execa@5.1.1, execa@^5.1.1:
   version "5.1.1"
   resolved "https://registry.npmjs.org/execa/-/execa-5.1.1.tgz#f80ad9cbf4298f7bd1d4c9555c21e93741c411dd"
   integrity sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==
