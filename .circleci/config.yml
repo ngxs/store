@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  browser-tools: circleci/browser-tools@1.4.4
+  browser-tools: circleci/browser-tools@1.4.8
 
 # Configuration
 job_defaults_var: &job_defaults
@@ -141,10 +141,7 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
-      # https://github.com/CircleCI-Public/browser-tools-orb/issues/75
-      - browser-tools/install-browser-tools:
-          chrome-version: '116.0.5845.96'
-          replace-existing-chrome: true
+      - browser-tools/install-browser-tools
       - run:
           name: Run integration tests for ng16 application
           command: yarn integration:ng16
@@ -157,10 +154,7 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
-      # https://github.com/CircleCI-Public/browser-tools-orb/issues/75
-      - browser-tools/install-browser-tools:
-          chrome-version: '116.0.5845.96'
-          replace-existing-chrome: true
+      - browser-tools/install-browser-tools
       - run:
           name: Run integration tests for ng17 application
           command: yarn integration:ng17
@@ -173,10 +167,7 @@ jobs:
     <<: *job_defaults
     steps:
       - *attach_workspace
-      # https://github.com/CircleCI-Public/browser-tools-orb/issues/75
-      - browser-tools/install-browser-tools:
-          chrome-version: '116.0.5845.96'
-          replace-existing-chrome: true
+      - browser-tools/install-browser-tools
       - run:
           name: Run integration tests for ng18 application
           command: yarn integration:ng18
@@ -263,6 +254,14 @@ workflows:
       ###       - build
 
       - integration_ng16_tests:
+          requires:
+            - build
+
+      - integration_ng17_tests:
+          requires:
+            - build
+
+      - integration_ng18_tests:
           requires:
             - build
 
