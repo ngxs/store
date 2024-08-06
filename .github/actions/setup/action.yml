@@ -64,7 +64,7 @@ runs:
           ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-
           ${{ runner.os }}-
 
-    - name: Download hello-world-ng16 artifacts
+    - name: Download ngxs build artifacts
       uses: actions/download-artifact@v4
       with:
         name: ngxs-build
