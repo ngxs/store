@@ -4,8 +4,7 @@ import {
   Injectable,
   effect,
   provideExperimentalZonelessChangeDetection,
-  signal,
-  untracked
+  signal
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { bootstrapApplication } from '@angular/platform-browser';
@@ -75,7 +74,7 @@ describe('State per signal', () => {
       constructor(private store: Store) {
         effect(() => {
           const value = this.value();
-          untracked(() => store.dispatch(new SetNumber(value)));
+          store.dispatch(new SetNumber(value));
         });
       }
 
@@ -125,8 +124,8 @@ describe('State per signal', () => {
       constructor(store: Store) {
         effect(() => {
           const value = this.value();
-          untracked(() => store.dispatch(new SetNumber(value)));
-          untracked(() => store.dispatch(new SetNumberAsynchronously(value + 100)));
+          store.dispatch(new SetNumber(value));
+          store.dispatch(new SetNumberAsynchronously(value + 100));
         });
       }
 
