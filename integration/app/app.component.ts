@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
     { name: 'olives', selected: false }
   ];
 
-  readonly debounce = 100; // Default `ngxsFormDebounce` value.
+  debounce = 100; // Default `ngxsFormDebounce` value.
 
   pizzaForm = this._fb.group({
     toppings: [''],
