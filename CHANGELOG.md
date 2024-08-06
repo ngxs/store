@@ -8,6 +8,11 @@ $ npm install @ngxs/store@dev
 
 - ...
 
+### 18.1.1 2024-08-06
+
+- Fix(store): allow dispatch within effect [#2201](https://github.com/ngxs/store/pull/2201)
+- Fix(store): use computed in selectSignal [#2201](https://github.com/ngxs/store/pull/2201)
+
 ### 18.1.0 2024-07-29
 
 - Feature(store): Debounce `selectSignal` by default [#2190](https://github.com/ngxs/store/pull/2190)
