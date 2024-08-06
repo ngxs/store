@@ -2,8 +2,8 @@ import { Rule, SchematicsException, Tree, url } from '@angular-devkit/schematics
 import { join } from 'path';
 import { isEmpty } from '../utils/common/properties';
 import { generateFiles } from '../utils/generate-utils';
-import { isStandaloneApp } from '../utils/ng-utils/ng-ast-utils';
-import { getProjectMainFile } from '../utils/ng-utils/project';
+import { isStandaloneApp } from '@schematics/angular/utility/ng-ast-utils';
+import { getProjectMainFile } from '../utils/project';
 import { normalizeBaseOptions } from '../utils/normalize-options';
 import { StoreSchema } from './store.schema';
 

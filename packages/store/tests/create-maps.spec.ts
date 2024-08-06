@@ -49,7 +49,7 @@ describe('create maps', () => {
     });
   });
 
-  describe('createSelectMap', () => {
+  describe('createDispatchMap', () => {
     it('should allow listing properties through Object.keys', () => {
       // Arrange
       testSetup();

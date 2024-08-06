@@ -3,46 +3,22 @@ import {
   AfterViewInit,
   Component,
   Injectable,
-  inject,
-  ɵPendingTasks as PendingTasks,
-  ɵprovideZonelessChangeDetection,
+  provideExperimentalZonelessChangeDetection,
   ChangeDetectionStrategy
 } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { renderApplication } from '@angular/platform-server';
 import {
   Action,
-  ActionStatus,
-  Actions,
   State,
   StateContext,
   StateToken,
   dispatch,
   provideStore,
-  select,
-  withNgxsPreboot
+  select
 } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
-
-function executeRecipeFromDocs() {
-  const pendingTasks = inject(PendingTasks);
-  const actions$ = inject(Actions);
-
-  const actionToTaskIdMap = new Map<any, number>();
-
-  actions$.subscribe(ctx => {
-    if (ctx.status === ActionStatus.Dispatched) {
-      const taskId = pendingTasks.add();
-      actionToTaskIdMap.set(ctx.action, taskId);
-    } else {
-      const taskId = actionToTaskIdMap.get(ctx.action);
-      if (typeof taskId === 'number') {
-        pendingTasks.remove(taskId);
-        actionToTaskIdMap.delete(ctx.action);
-      }
-    }
-  });
-}
+import { withExperimentalNgxsPendingTasks } from '@ngxs/store/experimental';
 
 describe('preboot feature + stable', () => {
   const COUNTRIES_STATE_TOKEN = new StateToken<string[]>('countries');
@@ -90,9 +66,9 @@ describe('preboot feature + stable', () => {
         () =>
           bootstrapApplication(TestComponent, {
             providers: [
-              ɵprovideZonelessChangeDetection(),
+              provideExperimentalZonelessChangeDetection(),
 
-              provideStore([CountriesState], withNgxsPreboot(executeRecipeFromDocs))
+              provideStore([CountriesState], withExperimentalNgxsPendingTasks())
             ]
           }),
         {

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.png">
+  <figure><picture><source srcset="docs/assets/ngxs-logo_dark_theme.png" media="(prefers-color-scheme: dark)"><img src="docs/assets/ngxs-logo_light_theme.png" alt=""></picture></figure>
   <br />
   NGXS is a state management pattern + library for Angular
   <br /><br />
@@ -43,7 +43,7 @@
 - ✨ Learn about it on the [docs site](https://ngxs.io/)
 - 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-repro)
 - 😎 Checkout the [sample application](integration)
-- 🔧 Scaffolding application using [NGXS Schematics](https://github.com/ngxs/schematics)
+- 🔧 Scaffolding application using [NGXS Schematics](https://www.ngxs.io/introduction/schematics)
 - 📖 Read the blog [posts](https://medium.com/ngxs)
 - ⚡️ Development of [NGXS Labs](https://github.com/ngxs-labs)
 - 📝 Learn about updates from the [changelog](CHANGELOG.md)

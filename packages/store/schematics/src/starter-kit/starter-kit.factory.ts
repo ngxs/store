@@ -1,7 +1,7 @@
 import { Rule, Tree, url } from '@angular-devkit/schematics';
 import { generateFiles } from '../utils/generate-utils';
-import { isStandaloneApp } from '../utils/ng-utils/ng-ast-utils';
-import { getProjectMainFile } from '../utils/ng-utils/project';
+import { isStandaloneApp } from '@schematics/angular/utility/ng-ast-utils';
+import { getProjectMainFile } from '../utils/project';
 import { normalizePath } from '../utils/normalize-options';
 import { StarterKitSchema } from './starter-kit.schema';
 

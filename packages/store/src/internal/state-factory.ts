@@ -393,9 +393,9 @@ export class StateFactory implements OnDestroy {
 
   private addRuntimeInfoToMeta(meta: ɵMetaDataModel, path: string): void {
     this.statePaths[meta.name!] = path;
-    // TODO: v4 - we plan to get rid of the path property because it is non-deterministic
+    // TODO: versions after v3 - we plan to get rid of the `path` property because it is non-deterministic
     // we can do this when we get rid of the incorrectly exposed getStoreMetadata
-    // We will need to come up with an alternative in v4 because this is used by many plugins
+    // We will need to come up with an alternative to what was exposed in v3 because this is used by many plugins
     meta.path = path;
   }
 

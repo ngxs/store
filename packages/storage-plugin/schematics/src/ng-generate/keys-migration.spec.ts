@@ -3,6 +3,9 @@ import { workspaceRoot } from '@nrwl/devkit';
 import { join } from 'path';
 import { createWorkspace } from '../_testing';
 
+const versions = require('./../utils/versions.json');
+const ngxsStoreVersion: string = versions['@ngxs/store'];
+
 describe('Storage Plugin Migration', () => {
   const ngxsSchematicRunner = new SchematicTestRunner(
     '@ngxs/storage-plugin/schematics',
@@ -11,7 +14,10 @@ describe('Storage Plugin Migration', () => {
 
   const testSetup = async () => {
     const appTree = await createWorkspace();
-    appTree.overwrite('package.json', `{"dependencies": {"@ngxs/store": "3.8.2"}}`);
+    appTree.overwrite(
+      'package.json',
+      `{"dependencies": {"@ngxs/store": "${ngxsStoreVersion}"}}`
+    );
 
     return { appTree };
   };

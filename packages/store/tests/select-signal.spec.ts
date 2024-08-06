@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   State,
@@ -6,11 +6,24 @@ import {
   Store,
   NgxsModule,
   Selector,
-  SelectorOptions
+  SelectorOptions,
+  TypedSelector
 } from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 
 import { NgxsConfig } from '../src/symbols';
+
+// Every time the state is updated, the primary state signal
+// receives updates asynchronously behind the scenes after the
+// microtask is executed.
+function waitForStateSignalToReceiveUpdate() {
+  return Promise.resolve();
+}
+
+function selectSignal<T>(selector: TypedSelector<T>) {
+  const store = TestBed.inject(Store);
+  return runInInjectionContext(TestBed, () => store.selectSignal(selector));
+}
 
 describe('Selector', () => {
   interface MyStateModel {
@@ -65,24 +78,26 @@ describe('Selector', () => {
     }
   }
 
+  const testSetup = (states: ɵStateClass[], options?: Partial<NgxsConfig>) => {
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot(states, options)]
+    });
+
+    return TestBed.inject(Store);
+  };
+
   describe('(Decorator)', () => {
     it('should select the state', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
-      });
+      testSetup([MyState]);
 
-      const store = TestBed.inject(Store);
-      const slice = store.selectSignal(MyState.foo);
+      const slice = selectSignal(MyState.foo);
       expect(slice()).toBe('Hello');
     });
 
     it('should select using the meta selector', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
-      });
+      testSetup([MyState]);
 
-      const store = TestBed.inject(Store);
-      const slice = store.selectSignal(MetaSelector.foo);
+      const slice = selectSignal(MetaSelector.foo);
       expect(slice()).toBe('Hello');
     });
 
@@ -108,12 +123,9 @@ describe('Selector', () => {
         }
       }
 
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TestState])]
-      });
+      testSetup([TestState]);
 
-      const store = TestBed.inject(Store);
-      store.selectSignal(TestState.foo)();
+      selectSignal(TestState.foo)();
     });
 
     describe('(memoization)', () => {
@@ -142,16 +154,13 @@ describe('Selector', () => {
           }
         }
 
-        TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])]
-        });
+        testSetup([TestState]);
 
-        const store = TestBed.inject(Store);
-        store.selectSignal(TestState.foo)();
-        store.selectSignal(TestState.foo)();
-        store.selectSignal(TestState.bar)();
-        store.selectSignal(TestState.bar)();
-        store.selectSignal(TestState.foo)();
+        selectSignal(TestState.foo)();
+        selectSignal(TestState.foo)();
+        selectSignal(TestState.bar)();
+        selectSignal(TestState.bar)();
+        selectSignal(TestState.foo)();
         expect(selectorCalls).toEqual(['foo', 'bar']);
       });
 
@@ -177,17 +186,14 @@ describe('Selector', () => {
           }
         }
 
-        TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])]
-        });
+        testSetup([TestState]);
 
-        const store = TestBed.inject(Store);
-        store.selectSignal(TestState.foo)();
-        store.selectSignal(TestState.foo)()();
-        const fn = store.selectSignal(TestState.foo)();
+        selectSignal(TestState.foo)();
+        selectSignal(TestState.foo)()();
+        const fn = selectSignal(TestState.foo)();
         fn();
         fn();
-        store.selectSignal(TestState.foo)();
+        selectSignal(TestState.foo)();
         expect(selectorCalls).toEqual(['foo[outer]', 'foo[inner]']);
       });
     });
@@ -198,8 +204,7 @@ describe('Selector', () => {
       TestBed.configureTestingModule({
         imports: [NgxsModule.forRoot(states, extendedOptions)]
       });
-      const store = TestBed.inject(Store);
-      return store;
+      return TestBed.inject(Store);
     }
 
     describe('[at global level]', () => {
@@ -262,18 +267,18 @@ describe('Selector', () => {
 
       it('should configure injectContainerState as false globally', () => {
         // Arrange
-        const store = setupStore([MyStateV4_1, MyStateV4_2], {
+        setupStore([MyStateV4_1, MyStateV4_2], {
           selectorOptions: {
             injectContainerState: false
           }
         });
         // Act & Assert
-        expect(store.selectSignal(MyStateV4_1.foo)()).toBe('Foo1');
-        expect(store.selectSignal(MyStateV4_1.bar)()).toBe('Bar1');
-        expect(store.selectSignal(MyStateV4_1.fooAndBar)()).toBe('Foo1Bar1');
-        expect(store.selectSignal(MyStateV4_2.foo)()).toBe('Foo2');
-        expect(store.selectSignal(MyStateV4_2.bar)()).toBe('Bar2');
-        expect(store.selectSignal(MyStateV4_2.fooAndBar)()).toBe('Foo2Bar2');
+        expect(selectSignal(MyStateV4_1.foo)()).toBe('Foo1');
+        expect(selectSignal(MyStateV4_1.bar)()).toBe('Bar1');
+        expect(selectSignal(MyStateV4_1.fooAndBar)()).toBe('Foo1Bar1');
+        expect(selectSignal(MyStateV4_2.foo)()).toBe('Foo2');
+        expect(selectSignal(MyStateV4_2.bar)()).toBe('Bar2');
+        expect(selectSignal(MyStateV4_2.fooAndBar)()).toBe('Foo2Bar2');
       });
 
       it('should successfully globally configure no supression of selector errors', () => {
@@ -337,47 +342,47 @@ describe('Selector', () => {
 
       it('should select from a simple selector', () => {
         // Arrange
-        const store = setupStore([MyStateV4]);
+        setupStore([MyStateV4]);
         // Act
-        const slice = store.selectSignal(MyStateV4.foo);
+        const slice = selectSignal(MyStateV4.foo);
         // Assert
         expect(slice()).toBe('Foo');
       });
 
       it('should select from another simple selector', () => {
         // Arrange
-        const store = setupStore([MyStateV4]);
+        setupStore([MyStateV4]);
         // Act
-        const slice = store.selectSignal(MyStateV4.bar);
+        const slice = selectSignal(MyStateV4.bar);
         // Assert
         expect(slice()).toBe('Bar');
       });
 
       it('should select from a self joined selector', () => {
         // Arrange
-        const store = setupStore([MyStateV4]);
+        setupStore([MyStateV4]);
         // Act
-        const slice = store.selectSignal(MyStateV4.selfAndFoo);
+        const slice = selectSignal(MyStateV4.selfAndFoo);
         // Assert
         expect(slice()).toBe('FooFoo');
       });
 
       it('should select from a joined selector', () => {
         // Arrange
-        const store = setupStore([MyStateV4]);
+        setupStore([MyStateV4]);
         // Act
-        const slice = store.selectSignal(MyStateV4.fooAndBar);
+        const slice = selectSignal(MyStateV4.fooAndBar);
         // Assert
         expect(slice()).toBe('FooBar');
       });
 
       it('should successfully configure no supression of selector errors', () => {
         // Arrange
-        const store = setupStore([MyStateV4]);
+        setupStore([MyStateV4]);
         // Act
         let exception: Error | null = null;
         try {
-          store.selectSignal(MyStateV4.invalid)();
+          selectSignal(MyStateV4.invalid)();
         } catch (e) {
           exception = e as Error;
         }
@@ -430,29 +435,29 @@ describe('Selector', () => {
 
       it('should select from a self joined selector', () => {
         // Arrange
-        const store = setupStore([MyStateV4]);
+        setupStore([MyStateV4]);
         // Act
-        const slice = store.selectSignal(MyStateV4Queries.selfAndFoo);
+        const slice = selectSignal(MyStateV4Queries.selfAndFoo);
         // Assert
         expect(slice()).toBe('FooFoo');
       });
 
       it('should select from a joined selector', () => {
         // Arrange
-        const store = setupStore([MyStateV4]);
+        setupStore([MyStateV4]);
         // Act
-        const slice = store.selectSignal(MyStateV4Queries.fooAndBar);
+        const slice = selectSignal(MyStateV4Queries.fooAndBar);
         // Assert
         expect(slice()).toBe('FooBar');
       });
 
       it('should successfully configure no supression of selector errors', () => {
         // Arrange
-        const store = setupStore([MyStateV4]);
+        setupStore([MyStateV4]);
         // Act
         let exception: Error | null = null;
         try {
-          store.selectSignal(MyStateV4Queries.invalid)();
+          selectSignal(MyStateV4Queries.invalid)();
         } catch (e) {
           exception = e as Error;
         }
@@ -502,29 +507,29 @@ describe('Selector', () => {
 
       it('should select from a v4 selector', () => {
         // Arrange
-        const store = setupStore([MyStateV3]);
+        setupStore([MyStateV3]);
         // Act
-        const slice = store.selectSignal(MyStateV3.v4StyleSelector_FooAndBar);
+        const slice = selectSignal(MyStateV3.v4StyleSelector_FooAndBar);
         // Assert
         expect(slice()).toBe('FooBar');
       });
 
       it('should select from a v4 selector when provided before @Selector', () => {
         // Arrange
-        const store = setupStore([MyStateV3]);
+        setupStore([MyStateV3]);
         // Act
-        const slice = store.selectSignal(MyStateV3.V4StyleSelector_flipped_FooAndBar);
+        const slice = selectSignal(MyStateV3.V4StyleSelector_flipped_FooAndBar);
         // Assert
         expect(slice()).toBe('FooBar');
       });
 
       it('should successfully configure no supression of selector errors', () => {
         // Arrange
-        const store = setupStore([MyStateV3]);
+        setupStore([MyStateV3]);
         // Act
         let exception: Error | null = null;
         try {
-          store.selectSignal(MyStateV3.invalid)();
+          selectSignal(MyStateV3.invalid)();
         } catch (e) {
           exception = e as Error;
         }
@@ -536,78 +541,60 @@ describe('Selector', () => {
 
   describe('(from createSelector)', () => {
     it('should select the state', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
-      });
+      testSetup([MyState]);
 
-      const store = TestBed.inject(Store);
       const selector = createSelector([MyState], (state: MyStateModel) => state.foo);
-      const slice = store.selectSignal(selector);
+      const slice = selectSignal(selector);
       expect(slice()).toBe('Hello');
     });
 
     it('should allow for null in the returned value [regression fix]', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
-      });
+      testSetup([MyState]);
 
-      const store = TestBed.inject(Store);
       const selector = createSelector([MyState], (state: MyStateModel) => {
         const foo = state.foo;
         return foo === 'Hello' ? null : foo;
       });
-      const slice = store.selectSignal(selector);
+      const slice = selectSignal(selector);
       expect(slice()).toBe(null);
     });
 
     it('should allow for undefined in the returned value [regression fix]', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
-      });
+      testSetup([MyState]);
 
-      const store = TestBed.inject(Store);
       const selector = createSelector([MyState], (state: MyStateModel) => {
         const foo = state.foo;
         return foo === 'Hello' ? undefined : foo;
       });
-      const slice = store.selectSignal(selector);
+      const slice = selectSignal(selector);
       expect(slice()).toBe(undefined);
     });
 
     it('should select using the meta selector', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
-      });
+      testSetup([MyState]);
 
-      const store = TestBed.inject(Store);
       const selector = createSelector([MyState.foo], (state: string) => state);
-      const slice = store.selectSignal(selector);
+      const slice = selectSignal(selector);
       expect(slice()).toBe('Hello');
     });
 
     it('should still be usable as a function', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
-      });
+      testSetup([MyState]);
 
-      const store = TestBed.inject(Store);
-      const myState = store.selectSignal<MyStateModel>(MyState.getState);
+      const myState = selectSignal<MyStateModel>(MyState.getState);
       const selector = createSelector([MyState], (state: MyStateModel) => state.foo);
       const slice = selector(myState());
       expect(slice).toBe('Hello');
     });
 
     it('should select multiples', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState, MyState2])]
-      });
+      testSetup([MyState, MyState2]);
 
-      const store = TestBed.inject(Store);
       const selector = createSelector(
         [MyState, MyState.foo],
         (state: MyStateModel, foo: string) => state.foo + foo
       );
-      const slice = store.selectSignal(selector);
+      const slice = selectSignal(selector);
       expect(slice()).toBe('HelloHello');
     });
 
@@ -625,11 +612,7 @@ describe('Selector', () => {
         @Injectable()
         class TestState {}
 
-        TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])]
-        });
-
-        const store = TestBed.inject(Store);
+        testSetup([TestState]);
 
         const fooSelector = createSelector([TestState], (state: MyStateModel) => {
           selectorCalls.push('foo');
@@ -639,11 +622,11 @@ describe('Selector', () => {
           selectorCalls.push('bar');
           return state.bar;
         });
-        store.selectSignal(fooSelector)();
-        store.selectSignal(fooSelector)();
-        store.selectSignal(barSelector)();
-        store.selectSignal(barSelector)();
-        store.selectSignal(fooSelector)();
+        selectSignal(fooSelector)();
+        selectSignal(fooSelector)();
+        selectSignal(barSelector)();
+        selectSignal(barSelector)();
+        selectSignal(fooSelector)();
         expect(selectorCalls).toEqual(['foo', 'bar']);
       });
 
@@ -660,11 +643,8 @@ describe('Selector', () => {
         @Injectable()
         class TestState {}
 
-        TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])]
-        });
+        testSetup([TestState]);
 
-        const store = TestBed.inject(Store);
         const fooSelector = createSelector([TestState], (state: MyStateModel) => {
           selectorCalls.push('foo[outer]');
           return () => {
@@ -672,12 +652,12 @@ describe('Selector', () => {
             return state.foo;
           };
         });
-        store.selectSignal(fooSelector)();
-        store.selectSignal(fooSelector)()();
-        const fn = store.selectSignal(fooSelector)();
+        selectSignal(fooSelector)();
+        selectSignal(fooSelector)()();
+        const fn = selectSignal(fooSelector)();
         fn();
         fn();
-        store.selectSignal(fooSelector)();
+        selectSignal(fooSelector)();
         expect(selectorCalls).toEqual(['foo[outer]', 'foo[inner]']);
       });
     });
@@ -706,37 +686,29 @@ describe('Selector', () => {
     });
 
     it('should be a wrong mutation', () => {
-      TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TasksState])]
-      });
+      const store = testSetup([TasksState]);
 
-      const store = TestBed.inject(Store);
       store.reset({ tasks: [1, 2, 3, 4] });
 
-      const tasks = store.selectSignal(TasksState.getTasks)();
-      const reverse = store.selectSignal(TasksState.reverse)();
+      const tasks = selectSignal(TasksState.getTasks)();
+      const reverse = selectSignal(TasksState.reverse)();
       expect(tasks).toEqual([4, 3, 2, 1]);
       expect(reverse).toEqual([4, 3, 2, 1]);
     });
 
     it('should be correct catch errors with selectSnapshot', () => {
-      TestBed.configureTestingModule({
-        imports: [
-          NgxsModule.forRoot([TasksState], {
-            developmentMode: true,
-            selectorOptions: { suppressErrors: false }
-          })
-        ]
+      const store = testSetup([TasksState], {
+        developmentMode: true,
+        selectorOptions: { suppressErrors: false }
       });
 
-      const store = TestBed.inject(Store);
       store.reset({ tasks: [1, 2, 3, 4] });
 
-      const tasks = store.selectSignal(TasksState.getTasks);
+      const tasks = selectSignal(TasksState.getTasks);
       expect(tasks()).toEqual([1, 2, 3, 4]);
 
       try {
-        store.selectSignal(TasksState.reverse)();
+        selectSignal(TasksState.reverse)();
       } catch (e) {
         expect((e as Error).message.includes('Cannot assign to read only property')).toBe(
           true
@@ -797,12 +769,12 @@ describe('Selector', () => {
       if (initialState) {
         store.reset(initialState);
       }
-      return { store };
+      return store;
     }
 
     it('should not give error for selector', () => {
       // Arrange
-      const { store } = setup({
+      setup({
         contacts: {
           entities: {
             456: { name: 'Artur' },
@@ -813,7 +785,7 @@ describe('Selector', () => {
         }
       });
       // Act
-      const result = store.selectSignal(ContactsState.orderedContactNames);
+      const result = selectSignal(ContactsState.orderedContactNames);
       // Assert
       expect(result()).toEqual(['Mark', 'Max', 'Artur']);
     });

@@ -1,4 +1,4 @@
-# Waiting For App Stability
+# Zoneless Server-Side Rendering
 
 > :warning: Note that the current recipe may be used starting from Angular 18 because the experimental API was publicly exposed in Angular 18.
 
@@ -11,37 +11,11 @@ NGXS also executes actions during server-side rendering, and some of these actio
 Let's examine the recipe for updating the "pending tasks" state whenever any action is dispatched and completed:
 
 ```ts
-import { ApplicationConfig, inject, ExperimentalPendingTasks } from '@angular/core';
-import { ActionStatus, Actions, provideStore, withNgxsPreboot } from '@ngxs/store';
+import { ApplicationConfig } from '@angular/core';
+import { provideStore } from '@ngxs/store';
+import { withExperimentalNgxsPendingTasks } from '@ngxs/store/experimental';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideStore(
-      [],
-      withNgxsPreboot(() => {
-        const pendingTasks = inject(ExperimentalPendingTasks);
-        const actions$ = inject(Actions);
-
-        const actionToRemoveTaskFnMap = new Map<any, () => void>();
-
-        // Note that you don't have to unsubscribe from the actions stream in
-        // this specific case, as we complete the actions subject when the root
-        // view is destroyed. In server-side rendering, the root view is destroyed
-        // immediately once the app stabilizes and its HTML is serialized.
-        actions$.subscribe(ctx => {
-          if (ctx.status === ActionStatus.Dispatched) {
-            const removeTaskFn = pendingTasks.add();
-            actionToRemoveTaskFnMap.set(ctx.action, removeTaskFn);
-          } else {
-            const removeTaskFn = actionToRemoveTaskFnMap.get(ctx.action);
-            if (typeof removeTaskFn === 'function') {
-              removeTaskFn();
-              actionToRemoveTaskFnMap.delete(ctx.action);
-            }
-          }
-        });
-      })
-    )
-  ]
+  providers: [provideStore([], withExperimentalNgxsPendingTasks())]
 };
 ```

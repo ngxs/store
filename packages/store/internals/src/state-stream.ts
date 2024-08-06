@@ -1,8 +1,9 @@
-import { Injectable, OnDestroy, Signal } from '@angular/core';
+import { Injectable, OnDestroy, Signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { ɵPlainObject } from './symbols';
+import { ɵwrapObserverCalls } from './custom-rxjs-operators';
 import { ɵOrderedBehaviorSubject } from './custom-rxjs-subjects';
+import { ɵPlainObject } from './symbols';
 
 /**
  * BehaviorSubject of the entire state.
@@ -10,7 +11,7 @@ import { ɵOrderedBehaviorSubject } from './custom-rxjs-subjects';
  */
 @Injectable({ providedIn: 'root' })
 export class ɵStateStream extends ɵOrderedBehaviorSubject<ɵPlainObject> implements OnDestroy {
-  readonly state: Signal<ɵPlainObject> = toSignal(this, {
+  readonly state: Signal<ɵPlainObject> = toSignal(this.pipe(ɵwrapObserverCalls(untracked)), {
     manualCleanup: true,
     requireSync: true
   });

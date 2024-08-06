@@ -4,7 +4,18 @@
 $ npm install @ngxs/store@dev
 ```
 
-### For next major version
+### To become next patch version
+
+- ...
+
+### 18.1.0 2024-07-29
+
+- Feature(store): Debounce `selectSignal` by default [#2190](https://github.com/ngxs/store/pull/2190)
+- Feature(store): Add `withExperimentalNgxsPendingTasks` [#2186](https://github.com/ngxs/store/pull/2186)
+- Fix(store): Decouple state signal updates from synchronous changes [#2189](https://github.com/ngxs/store/pull/2189)
+- Fix(schematics): remove local ng utils for schematics [#2184](https://github.com/ngxs/store/pull/2184)
+
+### 18.0.0 2024-06-10
 
 - Feature(store): Improve action decorator types [#2158](https://github.com/ngxs/store/pull/2158)
 - Feature(store): Improve selector decorator types [#2042](https://github.com/ngxs/store/pull/2042)
@@ -48,10 +59,6 @@ $ npm install @ngxs/store@dev
 - Build: Flatten `.d.ts` files [#2131](https://github.com/ngxs/store/pull/2131)
 - Build: Upgrade workspace to Angular 17 [#2087](https://github.com/ngxs/store/pull/2087)
 - Build: Add Angular 18 support [#2168](https://github.com/ngxs/store/pull/2168)
-
-### To become next patch version
-
-- ...
 
 # 3.8.2 2023-11-30
 

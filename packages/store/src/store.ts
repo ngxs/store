@@ -1,6 +1,15 @@
-import { Inject, Injectable, Optional, Signal, computed } from '@angular/core';
-import { Observable, of, Subscription, throwError } from 'rxjs';
-import { catchError, distinctUntilChanged, map, shareReplay, take } from 'rxjs/operators';
+import { computed, Inject, Injectable, Optional, Signal } from '@angular/core';
+import {
+  Observable,
+  of,
+  Subscription,
+  throwError,
+  catchError,
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  take
+} from 'rxjs';
 import { ɵINITIAL_STATE_TOKEN, ɵStateStream } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
