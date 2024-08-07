@@ -23,5 +23,4 @@ runs:
       with:
         pattern: hello-world-*
         path: ${{ inputs.path }}
-        merge-multiple: false
 
