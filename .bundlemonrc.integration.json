@@ -2,6 +2,7 @@
   "baseDir": "./integrations/",
   "subProject": "Integration Projects",
   "defaultCompression": "none",
+  "includeCommitMessage": true,
   "files": [
     {
       "friendlyName": "Main bundles",
@@ -15,5 +16,14 @@
       "maxPercentIncrease": 1
     }
   ],
-  "reportOutput": ["github"]
+  "reportOutput": [
+    [
+      "github",
+      {
+        "checkRun": false,
+        "commitStatus": true,
+        "prComment": true
+      }
+    ]
+  ]
 }
