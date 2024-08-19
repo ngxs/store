@@ -41,6 +41,7 @@
 ### Quick Links
 
 - ✨ Learn about it on the [docs site](https://ngxs.io/)
+- 💬 Ask a question in our [Discord](https://discord.gg/yT3Q8cXTnz) server (we are migrating from our [slack](https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q) server).
 - 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-repro)
 - 😎 Checkout the [sample application](integration)
 - 🔧 Scaffolding application using [NGXS Schematics](https://www.ngxs.io/introduction/schematics)

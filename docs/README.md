@@ -23,7 +23,8 @@ If you're just getting started with NGXS, I recommend you head over to the [conc
 
 For questions, please ask them on Stack Overflow with the `ngxs` tag: [https://stackoverflow.com/questions/ask?tags=ngxs](https://stackoverflow.com/questions/ask?tags=ngxs)
 
-To chat with other users and contributors join us on Slack: [https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5\~vqwNCiZa\~RRibh60Q](https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q)
+To chat with other users and contributors join us on Discord: [https://discord.gg/yT3Q8cXTnz](https://discord.gg/yT3Q8cXTnz)
+(PS. we are migrating from our [Slack](https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q) server)
 
 If you think there is a bug in this library, you can open an issue on GitHub ([https://github.com/ngxs/store/issues/new](https://github.com/ngxs/store/issues/new)). If possible a link to a [http://stackblitz.com](https://stackblitz.com/edit/ngxs-repro) (or github) repo with a repro or a failing test would be great.
 

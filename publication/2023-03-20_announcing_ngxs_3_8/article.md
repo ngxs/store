@@ -310,4 +310,4 @@ Finally, added support to fetch metadata fields (fromCache, hasPendingWrites) fr
 1. [Documentation](https://ngxs.gitbook.io/ngxs/)
 1. [Github](https://github.com/ngxs/store)
 1. [3.8.0 Release Note](https://github.com/ngxs/store/releases/tag/v3.8.0)
-1. [Discord Server](https://discord.gg/s6PmkwWpYN)
+1. [Discord Server](https://discord.gg/yT3Q8cXTnz)

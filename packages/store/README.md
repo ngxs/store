@@ -12,6 +12,7 @@
 ---
 
 - ✨ Learn about it on the [docs site](https://ngxs.io/)
+- 💬 Chat with us on [Discord](https://discord.gg/yT3Q8cXTnz)
 - 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-repro)
 - 😎 Checkout the [sample application](https://github.com/ngxs/store/tree/master/integration)
 - 🗄 Learn about updates from the [changelog](https://github.com/ngxs/store/blob/master/CHANGELOG.md)
