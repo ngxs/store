@@ -40,7 +40,7 @@ We've got some exciting news in this release beyond the usual code wizardry. We'
 - **Dedicated Channels:** Dive deep into specific NGXS topics with focused channels.
 - **Enhanced Support:** Find answers and resources faster with a well-organized structure.
 
-Head over to our brand new Discord server at https://discord.gg/yFk6bu7v. Don't forget to introduce yourself and let us know what awesome NGXS projects you're working on!
+Head over to our brand new Discord server at https://discord.gg/yT3Q8cXTnz. Don't forget to introduce yourself and let us know what awesome NGXS projects you're working on!
 
 ---
 

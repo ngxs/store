@@ -29,7 +29,7 @@ The following is a set of guidelines for contributing to NGXS and its packages.
 > **Note:** Please don't file an issue to ask a question.
 
 - Read our [docs](https://ngxs.gitbook.io/ngxs)
-- Ask a question in our [slack](https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q).
+- Ask a question in our [Discord](https://discord.gg/yT3Q8cXTnz) server (we are migrating from our [slack](https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q) server).
 - Ask a question on [stackoverflow](https://stackoverflow.com/questions/tagged/ngxs).
 
 # How can I help?
