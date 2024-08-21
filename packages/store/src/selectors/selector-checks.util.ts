@@ -26,7 +26,11 @@ export function ensureValidSelector(
     // If we have used this utility within a state class, we may be
     //  before the @State or @Selector decorators have been applied.
     //  wait until the next microtask to verify.
-    Promise.resolve().then(() => {
+const isNgZoneEnabled = typeof Zone !== 'undefined';
+const runOutsideAngular = isNgZoneEnabled ? (fn) => Zone.root.run(fn) : fn => fn();
+
+    runOutsideAngular(() => {
+      Promise.resolve().then(() => {   
       const errorAgain = getMissingMetaDataError(selector, { noun, prefix });
       if (errorAgain) {
         // Throw the originally captured error so that the stack trace shows the
