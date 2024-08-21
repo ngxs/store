@@ -26,6 +26,7 @@ import { ɵMETA_KEY } from '@ngxs/store/internals';
 
 import { NgxsAfterBootstrap } from '../src/symbols';
 import { simplePatch } from '../src/internal/state-operators';
+import { skipConsoleLogging } from '../internals/testing/src/skip-console-logging';
 
 describe('State', () => {
   it('describes correct name', () => {
@@ -319,7 +320,7 @@ describe('State', () => {
         imports: [MockModule, NgxsModule.forRoot([FooState])]
       });
 
-      MockModule.ngDoBootstrap(TestBed.inject(ApplicationRef));
+      skipConsoleLogging(() => MockModule.ngDoBootstrap(TestBed.inject(ApplicationRef)));
 
       expect(hooks).toEqual([
         LifecycleHooks.NgxsOnInit,
@@ -348,7 +349,7 @@ describe('State', () => {
         imports: [MockModule, NgxsModule.forRoot(), NgxsModule.forFeature([FooFeatureState])]
       });
 
-      MockModule.ngDoBootstrap(TestBed.inject(ApplicationRef));
+      skipConsoleLogging(() => MockModule.ngDoBootstrap(TestBed.inject(ApplicationRef)));
 
       expect(hooks).toEqual([
         LifecycleHooks.NgxsOnInit,

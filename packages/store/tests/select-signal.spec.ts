@@ -12,6 +12,7 @@ import {
 import { ɵStateClass } from '@ngxs/store/internals';
 
 import { NgxsConfig } from '../src/symbols';
+import { skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 // Every time the state is updated, the primary state signal
 // receives updates asynchronously behind the scenes after the
@@ -291,7 +292,7 @@ describe('Selector', () => {
         // Act
         let exception: Error | null = null;
         try {
-          store.selectSignal(MyStateV4_2.invalid)();
+          skipConsoleLogging(() => store.selectSignal(MyStateV4_2.invalid)());
         } catch (e) {
           exception = e as Error;
         }
@@ -382,7 +383,7 @@ describe('Selector', () => {
         // Act
         let exception: Error | null = null;
         try {
-          selectSignal(MyStateV4.invalid)();
+          skipConsoleLogging(() => selectSignal(MyStateV4.invalid)());
         } catch (e) {
           exception = e as Error;
         }
@@ -457,7 +458,7 @@ describe('Selector', () => {
         // Act
         let exception: Error | null = null;
         try {
-          selectSignal(MyStateV4Queries.invalid)();
+          skipConsoleLogging(() => selectSignal(MyStateV4Queries.invalid)());
         } catch (e) {
           exception = e as Error;
         }
@@ -529,7 +530,7 @@ describe('Selector', () => {
         // Act
         let exception: Error | null = null;
         try {
-          selectSignal(MyStateV3.invalid)();
+          skipConsoleLogging(() => selectSignal(MyStateV3.invalid)());
         } catch (e) {
           exception = e as Error;
         }
@@ -708,7 +709,7 @@ describe('Selector', () => {
       expect(tasks()).toEqual([1, 2, 3, 4]);
 
       try {
-        selectSignal(TasksState.reverse)();
+        skipConsoleLogging(() => selectSignal(TasksState.reverse)());
       } catch (e) {
         expect((e as Error).message.includes('Cannot assign to read only property')).toBe(
           true

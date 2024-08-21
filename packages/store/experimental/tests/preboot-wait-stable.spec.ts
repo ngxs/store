@@ -17,7 +17,7 @@ import {
   provideStore,
   select
 } from '@ngxs/store';
-import { freshPlatform } from '@ngxs/store/internals/testing';
+import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { withExperimentalNgxsPendingTasks } from '@ngxs/store/experimental';
 
 describe('preboot feature + stable', () => {
@@ -62,19 +62,21 @@ describe('preboot feature + stable', () => {
     'should wait for app to become stable',
     freshPlatform(async () => {
       // Arrange
-      const html = await renderApplication(
-        () =>
-          bootstrapApplication(TestComponent, {
-            providers: [
-              provideExperimentalZonelessChangeDetection(),
+      const html = await skipConsoleLogging(() =>
+        renderApplication(
+          () =>
+            bootstrapApplication(TestComponent, {
+              providers: [
+                provideExperimentalZonelessChangeDetection(),
 
-              provideStore([CountriesState], withExperimentalNgxsPendingTasks())
-            ]
-          }),
-        {
-          document: '<app-root></app-root>',
-          url: '/'
-        }
+                provideStore([CountriesState], withExperimentalNgxsPendingTasks())
+              ]
+            }),
+          {
+            document: '<app-root></app-root>',
+            url: '/'
+          }
+        )
       );
 
       // Assert

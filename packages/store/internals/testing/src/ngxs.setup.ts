@@ -10,6 +10,7 @@ import { NgxsModule, Store } from '@ngxs/store';
 
 import { NgxsTestModule } from './helpers/ngxs-test.module';
 import { NgxsOptionsTesting, NgxsTesting } from './symbol';
+import { skipConsoleLogging } from './skip-console-logging';
 
 export class NgxsTestBed {
   public static configureTestingStates(options: NgxsOptionsTesting): NgxsTesting {
@@ -19,13 +20,15 @@ export class NgxsTestBed {
       options.before();
     }
 
-    TestBed.configureTestingModule({
-      imports: [
-        NgxsTestModule,
-        NgxsModule.forRoot(options.states || [], options.ngxsOptions || {}),
-        ...(options.imports || [])
-      ]
-    }).compileComponents();
+    skipConsoleLogging(() =>
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsTestModule,
+          NgxsModule.forRoot(options.states || [], options.ngxsOptions || {}),
+          ...(options.imports || [])
+        ]
+      }).compileComponents()
+    );
 
     NgxsTestBed.ngxsBootstrap();
 
