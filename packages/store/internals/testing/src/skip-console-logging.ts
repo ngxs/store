@@ -1,11 +1,27 @@
-/// <reference types="jest" />
+export type ConsoleRecord = [string, any[]];
+export type ConsoleRecorder = ConsoleRecord[];
 
-export function skipConsoleLogging<T extends (...args: any[]) => any>(fn: T): ReturnType<T> {
+export function loggedError(message: string): ConsoleRecord {
+  return ['error', [expect.objectContaining({ message })]];
+}
+
+export function skipConsoleLogging<T extends (...args: any[]) => any>(
+  fn: T,
+  consoleRecorder: ConsoleRecorder = []
+): ReturnType<T> {
   const consoleSpies = [
-    jest.spyOn(console, 'log').mockImplementation(() => {}),
-    jest.spyOn(console, 'warn').mockImplementation(() => {}),
-    jest.spyOn(console, 'error').mockImplementation(() => {}),
-    jest.spyOn(console, 'info').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation((...args) => {
+      consoleRecorder.push(['log', args]);
+    }),
+    jest.spyOn(console, 'warn').mockImplementation((...args) => {
+      consoleRecorder.push(['warn', args]);
+    }),
+    jest.spyOn(console, 'error').mockImplementation((...args) => {
+      consoleRecorder.push(['error', args]);
+    }),
+    jest.spyOn(console, 'info').mockImplementation((...args) => {
+      consoleRecorder.push(['info', args]);
+    })
   ];
   function restoreSpies() {
     consoleSpies.forEach(spy => spy.mockRestore());
