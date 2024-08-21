@@ -68,53 +68,66 @@ describe('Lazy Loading', () => {
     ]);
   });
 
-  it('should correctly select state from lazy loaded feature modules', () => {
+  it('should correctly select state from lazy loaded feature modules', async () => {
     const c0 = TestBed.createComponent(MyComponent).componentInstance;
 
     c0.counter.subscribe(res => {
       expect(res).toBe(0);
     });
 
-    navigate().then(() => {
-      const c1 = TestBed.createComponent(MyLazyComponent).componentInstance;
-      const c2 = TestBed.createComponent(SecondLazyComponent).componentInstance;
+    await navigate();
 
-      c1.todos.subscribe(res => {
-        expect(res).toEqual([]);
-      });
+    const c1 = TestBed.createComponent(MyLazyComponent).componentInstance;
+    const c2 = TestBed.createComponent(SecondLazyComponent).componentInstance;
 
-      c2.value.subscribe(res => {
-        expect(res).toBe('');
-      });
+    c1.todos.subscribe(res => {
+      expect(res).toEqual([]);
+    });
+
+    c2.value.subscribe(res => {
+      expect(res).toBe('');
+    });
+
+    const store = TestBed.inject(Store);
+
+    expect(store.snapshot()).toEqual({
+      counter: 0,
+      simple: '',
+      todos: []
     });
   });
 
-  it('should correctly dispatch actions and respond in feature module', () => {
+  it('should correctly dispatch actions and respond in feature module', async () => {
     const store: Store = TestBed.inject(Store);
 
-    navigate().then(() => {
-      const c0 = TestBed.createComponent(MyComponent).componentInstance; // eager
-      const c1 = TestBed.createComponent(MyLazyComponent).componentInstance; // lazy
-      const c2 = TestBed.createComponent(SecondLazyComponent).componentInstance; // lazy
+    await navigate();
+    const c0 = TestBed.createComponent(MyComponent).componentInstance; // eager
+    const c1 = TestBed.createComponent(MyLazyComponent).componentInstance; // lazy
+    const c2 = TestBed.createComponent(SecondLazyComponent).componentInstance; // lazy
 
-      c0.counter.pipe(skip(1)).subscribe(res => {
-        expect(res).toBe(2);
-      });
+    c0.counter.pipe(skip(1)).subscribe(res => {
+      expect(res).toBe(2);
+    });
 
-      c1.todos.pipe(skip(1)).subscribe(res => {
-        expect(res).toEqual(['Hello World']);
-      });
+    c1.todos.pipe(skip(1)).subscribe(res => {
+      expect(res).toEqual(['Hello World']);
+    });
 
-      c2.value.pipe(skip(1)).subscribe(res => {
-        expect(res).toBe('TEST');
-      });
+    c2.value.pipe(skip(1)).subscribe(res => {
+      expect(res).toBe('TEST');
+    });
 
-      store.dispatch([
-        new Increment(),
-        new AddTodo('Hello World'),
-        new UpdateValue('TEST'),
-        new Increment()
-      ]);
+    store.dispatch([
+      new Increment(),
+      new AddTodo('Hello World'),
+      new UpdateValue('TEST'),
+      new Increment()
+    ]);
+
+    expect(store.snapshot()).toEqual({
+      counter: 2,
+      simple: '',
+      todos: ['Hello World']
     });
   });
 });

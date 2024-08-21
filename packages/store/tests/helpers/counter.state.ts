@@ -1,4 +1,4 @@
-import { State, Action, Selector } from '../../src/public_api';
+import { State, Action, Selector, StateContext } from '../../src/public_api';
 import { Injectable } from '@angular/core';
 
 export class Increment {
@@ -32,12 +32,12 @@ export class CounterState {
   constructor(private math: MathService) {}
 
   @Action(Increment)
-  increment(state: number) {
-    return this.math.add(state, 1);
+  increment(ctx: StateContext<number>) {
+    ctx.setState(state => this.math.add(state, 1));
   }
 
   @Action(Decrement)
-  decrement(state: number) {
-    return this.math.subtract(state, 1);
+  decrement(ctx: StateContext<number>) {
+    ctx.setState(state => this.math.subtract(state, 1));
   }
 }
