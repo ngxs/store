@@ -6,7 +6,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-- ...
+- Fix(store): allow selector utils usage within state class [#2210](https://github.com/ngxs/store/pull/2210)
 
 ### 18.1.1 2024-08-06
 
