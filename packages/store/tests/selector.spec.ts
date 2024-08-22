@@ -11,6 +11,7 @@ import {
 import { ɵStateClass } from '@ngxs/store/internals';
 
 import { NgxsConfig } from '../src/symbols';
+import { skipConsoleLogging } from '../internals/testing/src/skip-console-logging';
 
 describe('Selector', () => {
   interface MyStateModel {
@@ -286,7 +287,7 @@ describe('Selector', () => {
         // Act
         let exception: Error | null = null;
         try {
-          store.selectSnapshot(MyStateV4_2.invalid);
+          skipConsoleLogging(() => store.selectSnapshot(MyStateV4_2.invalid));
         } catch (e) {
           exception = e as Error;
         }
@@ -377,7 +378,7 @@ describe('Selector', () => {
         // Act
         let exception: Error | null = null;
         try {
-          store.selectSnapshot(MyStateV4.invalid);
+          skipConsoleLogging(() => store.selectSnapshot(MyStateV4.invalid));
         } catch (e) {
           exception = e as Error;
         }
@@ -452,7 +453,7 @@ describe('Selector', () => {
         // Act
         let exception: Error | null = null;
         try {
-          store.selectSnapshot(MyStateV4Queries.invalid);
+          skipConsoleLogging(() => store.selectSnapshot(MyStateV4Queries.invalid));
         } catch (e) {
           exception = e as Error;
         }
@@ -524,7 +525,7 @@ describe('Selector', () => {
         // Act
         let exception: Error | null = null;
         try {
-          store.selectSnapshot(MyStateV3.invalid);
+          skipConsoleLogging(() => store.selectSnapshot(MyStateV3.invalid));
         } catch (e) {
           exception = e as Error;
         }
@@ -736,7 +737,7 @@ describe('Selector', () => {
       expect(tasks).toEqual([1, 2, 3, 4]);
 
       try {
-        store.selectSnapshot(TasksState.reverse);
+        skipConsoleLogging(() => store.selectSnapshot(TasksState.reverse));
       } catch (e) {
         expect((e as Error).message.includes('Cannot assign to read only property')).toBe(
           true
@@ -785,9 +786,11 @@ describe('Selector', () => {
         .subscribe((state: number[]) => (snapshot = state));
       expect(snapshot).toEqual([1, 2, 3, 4]);
 
-      store.select(NumberListState.reverse).subscribe(
-        (state: number[]) => (snapshot = state),
-        (err: TypeError) => (errorMessage = err.message)
+      skipConsoleLogging(() =>
+        store.select(NumberListState.reverse).subscribe(
+          (state: number[]) => (snapshot = state),
+          (err: TypeError) => (errorMessage = err.message)
+        )
       );
 
       expect(snapshot).toEqual([1, 2, 3, 4]);

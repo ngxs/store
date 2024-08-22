@@ -20,7 +20,7 @@ import {
   NoopNgxsExecutionStrategy,
   Selector
 } from '@ngxs/store';
-import { freshPlatform } from '@ngxs/store/internals/testing';
+import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
@@ -127,9 +127,11 @@ describe('NoopNgxsExecutionStrategy', () => {
       class TestModule {}
 
       // Act
-      const { injector } = await platformBrowserDynamic().bootstrapModule(TestModule, {
-        ngZone: 'noop'
-      });
+      const { injector } = await skipConsoleLogging(() =>
+        platformBrowserDynamic().bootstrapModule(TestModule, {
+          ngZone: 'noop'
+        })
+      );
 
       // Assert
       try {

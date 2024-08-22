@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { Pizza } from './store/todos/todos.model';
 import { TodosState } from './store/todos/todos.state';
 import { TodoState } from './store/todos/todo/todo.state';
+import { skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -41,15 +42,17 @@ describe('AppComponent', () => {
     expect(component.todos().length).toEqual(2);
   });
 
-  it('should remove a todo', async () => {
-    component.addTodo('Get Milk');
-    component.addTodo('Clean Bathroom');
-    component.removeTodo(1);
+  it('should remove a todo', () =>
+    skipConsoleLogging(async () => {
+      component.addTodo('Get Milk');
+      component.addTodo('Clean Bathroom');
 
-    const todos = component.todos();
-    expect(todos.length).toEqual(1);
-    expect(todos[0]).toEqual('Get Milk');
-  });
+      component.removeTodo(1);
+
+      const todos = component.todos();
+      expect(todos.length).toEqual(1);
+      expect(todos[0]).toEqual('Get Milk');
+    }));
 
   it('should set toppings using form control', async () => {
     fixture.detectChanges();

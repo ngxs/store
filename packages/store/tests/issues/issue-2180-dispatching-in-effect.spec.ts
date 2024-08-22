@@ -138,17 +138,19 @@ describe('State per signal', () => {
       'should server-side render the content correctly even if the dispatch is untracked',
       freshPlatform(async () => {
         // Arrange
-        const html = await renderApplication(
-          () =>
-            bootstrapApplication(TestComponent, {
-              providers: [
-                provideExperimentalZonelessChangeDetection(),
-                provideStore([NumberState], withExperimentalNgxsPendingTasks())
-              ]
-            }),
-          {
-            document: '<app-root></app-root>'
-          }
+        const html = await skipConsoleLogging(() =>
+          renderApplication(
+            () =>
+              bootstrapApplication(TestComponent, {
+                providers: [
+                  provideExperimentalZonelessChangeDetection(),
+                  provideStore([NumberState], withExperimentalNgxsPendingTasks())
+                ]
+              }),
+            {
+              document: '<app-root></app-root>'
+            }
+          )
         );
 
         // Assert

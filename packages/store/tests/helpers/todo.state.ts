@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { State, Action, Selector } from '../../src/public_api';
+import { State, Action, Selector, StateContext } from '../../src/public_api';
 
 export class AddTodo {
   static readonly type = 'ADD_TODO';
@@ -24,12 +24,14 @@ export class TodoState {
   }
 
   @Action(AddTodo)
-  addTodo(state: string[], action: AddTodo) {
-    return [action.todo, ...state];
+  addTodo(ctx: StateContext<string[]>, action: AddTodo) {
+    const state = ctx.getState();
+    ctx.setState([action.todo, ...state]);
   }
 
   @Action(RemoveTodo)
-  removeTodo(state: string[], action: RemoveTodo) {
-    return state.filter((_, index) => index !== action.index);
+  removeTodo(ctx: StateContext<string[]>, action: RemoveTodo) {
+    const state = ctx.getState();
+    ctx.setState(state.filter((_, index) => index !== action.index));
   }
 }
