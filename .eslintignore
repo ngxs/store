@@ -1,2 +1,3 @@
 **/*.spec.ts
 packages/store/types/.eslintrc.js
+node_modules/
