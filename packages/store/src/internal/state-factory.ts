@@ -17,7 +17,8 @@ import {
   ɵStateClassInternal,
   ɵINITIAL_STATE_TOKEN,
   ɵSharedSelectorOptions,
-  ɵRuntimeSelectorContext
+  ɵRuntimeSelectorContext,
+  ɵActionHandlerMetaData
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
 import {
@@ -78,6 +79,11 @@ function cloneDefaults(defaults: any): any {
   return value;
 }
 
+interface InvokableActionHandlerMetaData extends ɵActionHandlerMetaData {
+  path: string;
+  instance: any;
+}
+
 /**
  * The `StateFactory` class adds root and feature states to the graph.
  * This extracts state names from state classes, checks if they already
@@ -112,6 +118,19 @@ export class StateFactory implements OnDestroy {
     @Inject(ɵINITIAL_STATE_TOKEN)
     private _initialState: any
   ) {}
+
+  // Instead of going over the states list every time an action is dispatched,
+  // we are constructing a map of action types to lists of action metadata.
+  // If the `@@Init` action is handled in two different states, the action
+  // metadata list will contain two objects that have the state `instance` and
+  // method names to be used as action handlers (decorated with `@Action(InitState)`).
+  private _actionTypeToMetasMap = new Map<string, InvokableActionHandlerMetaData[]>();
+
+  get actionTypeToMetasMap(): Map<string, InvokableActionHandlerMetaData[]> {
+    return this._parentFactory
+      ? this._parentFactory.actionTypeToMetasMap
+      : this._actionTypeToMetasMap;
+  }
 
   private _states: MappedStore[] = [];
 
@@ -223,6 +242,7 @@ export class StateFactory implements OnDestroy {
       }
 
       this.states.push(stateMap);
+      this.hydrateActionMetasMap(stateMap);
     }
 
     return bootstrappedStores;
@@ -290,64 +310,62 @@ export class StateFactory implements OnDestroy {
     // to `true` within the below `for` loop if any `actionMetas` has been found.
     let actionHasBeenHandled = false;
 
-    for (const metadata of this.states) {
-      const actionMetas = metadata.actions[type];
+    const actionMetas = this.actionTypeToMetasMap.get(type);
 
-      if (actionMetas) {
-        for (const actionMeta of actionMetas) {
-          const stateContext = this._stateContextFactory.createStateContext(metadata);
-          try {
-            let result = metadata.instance[actionMeta.fn](stateContext, action);
+    if (actionMetas) {
+      for (const actionMeta of actionMetas) {
+        const stateContext = this._stateContextFactory.createStateContext(actionMeta.path);
 
-            // We need to use `isPromise` instead of checking whether
-            // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
-            // is the `ZoneAwarePromise`. Some APIs, which are likely not patched by zone.js
-            // for certain reasons, might not work with `instanceof`. For instance, the dynamic
-            // import returns a native promise (not a `ZoneAwarePromise`), causing this check to
-            // be falsy.
-            if (ɵisPromise(result)) {
-              result = from(result);
-            }
+        let result;
+        try {
+          result = actionMeta.instance[actionMeta.fn](stateContext, action);
 
-            if (isObservable(result)) {
-              // If this observable has been completed w/o emitting
-              // any value then we wouldn't want to complete the whole chain
-              // of actions. Since if any observable completes then
-              // action will be canceled.
-              // For instance if any action handler would've had such statement:
-              // `handler(ctx) { return EMPTY; }`
-              // then the action will be canceled.
-              // See https://github.com/ngxs/store/issues/1568
-              result = result.pipe(
-                mergeMap((value: any) => {
-                  if (ɵisPromise(value)) {
-                    return from(value);
-                  }
-                  if (isObservable(value)) {
-                    return value;
-                  }
-                  return of(value);
-                }),
-                defaultIfEmpty({})
-              );
-
-              if (actionMeta.options.cancelUncompleted) {
-                // todo: ofActionDispatched should be used with action class
-                result = result.pipe(
-                  takeUntil(dispatched$.pipe(ofActionDispatched(action as any)))
-                );
-              }
-            } else {
-              result = of({}).pipe(shareReplay());
-            }
-
-            results.push(result);
-          } catch (e) {
-            results.push(throwError(e));
+          // We need to use `isPromise` instead of checking whether
+          // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
+          // is the `ZoneAwarePromise`. Some APIs, which are likely not patched by zone.js
+          // for certain reasons, might not work with `instanceof`. For instance, the dynamic
+          // import returns a native promise (not a `ZoneAwarePromise`), causing this check to
+          // be falsy.
+          if (ɵisPromise(result)) {
+            result = from(result);
           }
 
-          actionHasBeenHandled = true;
+          if (isObservable(result)) {
+            result = result.pipe(
+              mergeMap((value: any) => {
+                if (ɵisPromise(value)) {
+                  return from(value);
+                }
+                if (isObservable(value)) {
+                  return value;
+                }
+                return of(value);
+              }),
+              // If this observable has completed without emitting any values,
+              // we wouldn't want to complete the entire chain of actions.
+              // If any observable completes, then the action will be canceled.
+              // For instance, if any action handler had a statement like
+              // `handler(ctx) { return EMPTY; }`, then the action would be canceled.
+              // See https://github.com/ngxs/store/issues/1568
+              defaultIfEmpty({})
+            );
+
+            if (actionMeta.options.cancelUncompleted) {
+              // todo: ofActionDispatched should be used with action class
+              result = result.pipe(
+                takeUntil(dispatched$.pipe(ofActionDispatched(action as any)))
+              );
+            }
+          } else {
+            result = of({}).pipe(shareReplay());
+          }
+        } catch (e) {
+          result = throwError(e);
         }
+
+        results.push(result);
+
+        actionHasBeenHandled = true;
       }
     }
 
@@ -358,9 +376,7 @@ export class StateFactory implements OnDestroy {
       // The `NgxsUnhandledActionsLogger` will not be resolved by the injector if the
       // `NgxsDevelopmentModule` is not provided. It's enough to check whether the `injector.get`
       // didn't return `null` so we may ensure the module has been imported.
-      if (unhandledActionsLogger) {
-        unhandledActionsLogger.warn(action);
-      }
+      unhandledActionsLogger?.warn(action);
     }
 
     if (!results.length) {
@@ -405,5 +421,32 @@ export class StateFactory implements OnDestroy {
     // This checks whether a state has been already added to the global graph and
     // its lifecycle is in 'bootstrapped' state.
     return this.statesByName[name] && valueIsBootstrappedInInitialState;
+  }
+
+  private hydrateActionMetasMap({ path, actions, instance }: MappedStore): void {
+    const actionTypeToMetasMap = this.actionTypeToMetasMap;
+
+    for (const actionType of Object.keys(actions)) {
+      // Initialize the map entry if it does not already exist for that
+      // action type. Note that action types may overlap between states,
+      // as the same action can be handled by different states.
+      if (!actionTypeToMetasMap.has(actionType)) {
+        actionTypeToMetasMap.set(actionType, []);
+      }
+
+      const extendedActionMetas = actionTypeToMetasMap.get(actionType)!;
+
+      extendedActionMetas.push(
+        // This involves combining each individual action metadata with
+        // the state instance and the path—essentially everything needed
+        // to invoke an action. This eliminates the need to loop over states
+        // every time an action is dispatched.
+        ...actions[actionType].map(actionMeta => ({
+          ...actionMeta,
+          path,
+          instance
+        }))
+      );
+    }
   }
 }

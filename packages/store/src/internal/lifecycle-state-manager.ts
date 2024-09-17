@@ -99,6 +99,6 @@ export class LifecycleStateManager implements OnDestroy {
   }
 
   private _getStateContext(mappedStore: MappedStore): StateContext<any> {
-    return this._stateContextFactory.createStateContext(mappedStore);
+    return this._stateContextFactory.createStateContext(mappedStore.path);
   }
 }
