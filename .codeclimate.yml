@@ -18,6 +18,7 @@ exclude_patterns:
   - 'integrations/'
   - 'integration/'
   - 'tools/'
+  - 'tutorials/'
 ratings:
   paths:
     - 'packages/**/**.ts'

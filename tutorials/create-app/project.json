@@ -1,0 +1,30 @@
+{
+  "name": "create-app",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "tutorials/create-app/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "dev"
+      }
+    },
+    "build": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "build"
+      }
+    },
+    "check": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "check"
+      }
+    }
+  }
+}

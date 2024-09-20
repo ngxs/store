@@ -1,0 +1,27 @@
+{
+  "name": "ngxs-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "ng serve",
+    "build": "ng build"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^18.0.7",
+    "@angular/animations": "^18.0.6",
+    "@angular/cdk": "^18.0.6",
+    "@angular/cli": "^18.0.7",
+    "@angular/common": "^18.0.6",
+    "@angular/compiler": "^18.0.6",
+    "@angular/compiler-cli": "^18.0.6",
+    "@angular/core": "^18.0.6",
+    "@angular/material": "^18.0.6",
+    "@angular/platform-browser": "^18.0.6",
+    "@angular/platform-browser-dynamic": "^18.0.6",
+    "@ngxs/store": "^18.1.1",
+    "rxjs": "~7.8.1",
+    "tslib": "^2.0.0",
+    "zone.js": "~0.14.2"
+  }
+}
