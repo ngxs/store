@@ -17,7 +17,9 @@ yarn_install_var: &yarn_install
   run:
     name: Yarn Install Packages
     # We install deps based on the frozen yarn file, so we know it's always the same
-    command: yarn install --frozen-lockfile --cache-folder ~/.cache/yarn --non-interactive
+    command: |
+      yarn install --frozen-lockfile --cache-folder ~/.cache/yarn --non-interactive
+      yarn --cwd tutorials/create-app/ install --frozen-lockfile --cache-folder ~/.cache/yarn --non-interactive
 
 # Save yarn cache
 save_cache_var: &save_cache
