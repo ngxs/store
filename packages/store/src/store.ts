@@ -48,7 +48,7 @@ export class Store {
   /**
    * Dispatches event(s).
    */
-  dispatch(actionOrActions: any | any[]): Observable<void> {
+  dispatch(actionOrActions: NonNullable<unknown> | NonNullable<unknown>[]): Observable<void> {
     return this._internalStateOperations.getRootStateOperations().dispatch(actionOrActions);
   }
 
