@@ -20,6 +20,14 @@ import { NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { TypedSelector } from './selectors';
 
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
+
+// We need to check whether the provided `T` type extends an array in order to
+// apply the `NonNullable[]` type to its elements. This is because, for
+// `const actions = [undefined]`, type inference would result in `NonNullable<unknown>`
+// rather than `NonNullable<unknown>[]`.
+type ActionOrArrayOfActions<T> = T extends (infer U)[] ? NonNullable<U>[] : NonNullable<T>;
+
 @Injectable({ providedIn: 'root' })
 export class Store {
   /**
@@ -46,9 +54,21 @@ export class Store {
   }
 
   /**
-   * Dispatches event(s).
+   * Dispatches action(s).
    */
-  dispatch(actionOrActions: any | any[]): Observable<void> {
+  dispatch<T>(actionOrActions: ActionOrArrayOfActions<T>): Observable<void> {
+    if (NG_DEV_MODE) {
+      if (
+        // If a single action is dispatched and it's nullable.
+        actionOrActions == null ||
+        // If a list of actions is dispatched and any of the actions are nullable.
+        (Array.isArray(actionOrActions) && actionOrActions.some(action => action == null))
+      ) {
+        const error = new Error('`dispatch()` was called without providing an action.');
+        return throwError(() => error);
+      }
+    }
+
     return this._internalStateOperations.getRootStateOperations().dispatch(actionOrActions);
   }
 
