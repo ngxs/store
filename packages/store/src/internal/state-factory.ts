@@ -182,6 +182,14 @@ export class StateFactory implements OnDestroy {
       ensureStatesAreDecorated(stateClasses);
     }
 
+    // Just playing around with this because the metadata is not
+    // set until the constructor function is called (if `State` is used
+    // as a factory function rather than as a decorator, which returns
+    // a base state).
+    for (const stateClass of stateClasses) {
+      this._injector.get(stateClass);
+    }
+
     const { newStates } = this.addToStatesMap(stateClasses);
     if (!newStates.length) return [];
 
@@ -295,7 +303,7 @@ export class StateFactory implements OnDestroy {
 
       if (actionMetas) {
         for (const actionMeta of actionMetas) {
-          const stateContext = this._stateContextFactory.createStateContext(metadata);
+          const stateContext = this._stateContextFactory.createStateContext(metadata.path);
           try {
             let result = metadata.instance[actionMeta.fn](stateContext, action);
 
