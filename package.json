@@ -110,7 +110,8 @@
     "version:integration:ng16": "cd integrations/hello-world-ng16 && yarn install --force && cd ../..",
     "version:integration:ng17": "cd integrations/hello-world-ng17 && yarn install --force && cd ../..",
     "version:integration:ng18": "cd integrations/hello-world-ng18 && yarn install --force && cd ../..",
-    "// - INTEGRATION END -": "----------"
+    "// - INTEGRATION END -": "----------",
+    "tutorials:install": "yarn --cwd tutorials/create-app/ install --frozen-lockfile --non-interactive"
   },
   "private": true,
   "devDependencies": {
