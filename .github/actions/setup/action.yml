@@ -77,4 +77,4 @@ runs:
 
     - name: Install tutorials dependencies
       shell: bash
-      run: yarn --cwd tutorials/create-app/ install --frozen-lockfile --non-interactive
+      run: yarn tutorials:install
