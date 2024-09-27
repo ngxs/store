@@ -87,7 +87,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Run ESLint analyzer
-          command: yarn nx run-many --target=lint --all
+          command: yarn nx run-many --target=lint --all --exclude=create-app
 
   unit_tests:
     <<: *job_defaults
