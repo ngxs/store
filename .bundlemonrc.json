@@ -30,7 +30,7 @@
     },
     {
       "path": "./fesm2022/ngxs-store.mjs",
-      "maxSize": "100kB",
+      "maxSize": "101kB",
       "maxPercentIncrease": 0.5
     }
   ],
