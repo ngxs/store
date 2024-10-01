@@ -17,8 +17,7 @@ import {
   ɵStateClassInternal,
   ɵINITIAL_STATE_TOKEN,
   ɵSharedSelectorOptions,
-  ɵRuntimeSelectorContext,
-  ɵActionHandlerMetaData
+  ɵRuntimeSelectorContext
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
 import {
@@ -54,6 +53,7 @@ import {
   topologicalSort
 } from './internals';
 import { ofActionDispatched } from '../operators/of-action';
+import { NgxsActionRegistry } from '../actions/action-registry';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
 import { StateContextFactory } from '../internal/state-context-factory';
@@ -79,11 +79,6 @@ function cloneDefaults(defaults: any): any {
   return value;
 }
 
-interface InvokableActionHandlerMetaData extends ɵActionHandlerMetaData {
-  path: string;
-  instance: any;
-}
-
 /**
  * The `StateFactory` class adds root and feature states to the graph.
  * This extracts state names from state classes, checks if they already
@@ -105,6 +100,8 @@ export class StateFactory implements OnDestroy {
 
   private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler = null!;
 
+  private _actionRegistry = inject(NgxsActionRegistry);
+
   constructor(
     private _injector: Injector,
     private _config: NgxsConfig,
@@ -118,19 +115,6 @@ export class StateFactory implements OnDestroy {
     @Inject(ɵINITIAL_STATE_TOKEN)
     private _initialState: any
   ) {}
-
-  // Instead of going over the states list every time an action is dispatched,
-  // we are constructing a map of action types to lists of action metadata.
-  // If the `@@Init` action is handled in two different states, the action
-  // metadata list will contain two objects that have the state `instance` and
-  // method names to be used as action handlers (decorated with `@Action(InitState)`).
-  private _actionTypeToMetasMap = new Map<string, InvokableActionHandlerMetaData[]>();
-
-  get actionTypeToMetasMap(): Map<string, InvokableActionHandlerMetaData[]> {
-    return this._parentFactory
-      ? this._parentFactory.actionTypeToMetasMap
-      : this._actionTypeToMetasMap;
-  }
 
   private _states: MappedStore[] = [];
 
@@ -310,7 +294,7 @@ export class StateFactory implements OnDestroy {
     // to `true` within the below `for` loop if any `actionMetas` has been found.
     let actionHasBeenHandled = false;
 
-    const actionMetas = this.actionTypeToMetasMap.get(type);
+    const actionMetas = this._actionRegistry.get(type);
 
     if (actionMetas) {
       for (const actionMeta of actionMetas) {
@@ -424,29 +408,20 @@ export class StateFactory implements OnDestroy {
   }
 
   private hydrateActionMetasMap({ path, actions, instance }: MappedStore): void {
-    const actionTypeToMetasMap = this.actionTypeToMetasMap;
-
     for (const actionType of Object.keys(actions)) {
-      // Initialize the map entry if it does not already exist for that
-      // action type. Note that action types may overlap between states,
-      // as the same action can be handled by different states.
-      if (!actionTypeToMetasMap.has(actionType)) {
-        actionTypeToMetasMap.set(actionType, []);
+      // This involves combining each individual action metadata with
+      // the state instance and the path—essentially everything needed
+      // to invoke an action. This eliminates the need to loop over states
+      // every time an action is dispatched.
+      const actionHandlers = actions[actionType].map(actionMeta => ({
+        ...actionMeta,
+        path,
+        instance
+      }));
+
+      for (const actionHandler of actionHandlers) {
+        this._actionRegistry.register(actionType, actionHandler);
       }
-
-      const extendedActionMetas = actionTypeToMetasMap.get(actionType)!;
-
-      extendedActionMetas.push(
-        // This involves combining each individual action metadata with
-        // the state instance and the path—essentially everything needed
-        // to invoke an action. This eliminates the need to loop over states
-        // every time an action is dispatched.
-        ...actions[actionType].map(actionMeta => ({
-          ...actionMeta,
-          path,
-          instance
-        }))
-      );
     }
   }
 }
