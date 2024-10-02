@@ -1,13 +1,4 @@
-import {
-  Injectable,
-  Injector,
-  Optional,
-  SkipSelf,
-  Inject,
-  OnDestroy,
-  ɵisPromise,
-  inject
-} from '@angular/core';
+import { Injectable, Injector, OnDestroy, inject, ɵisPromise } from '@angular/core';
 import {
   ɵmemoize,
   ɵMETA_KEY,
@@ -17,29 +8,26 @@ import {
   ɵStateClassInternal,
   ɵINITIAL_STATE_TOKEN,
   ɵSharedSelectorOptions,
-  ɵRuntimeSelectorContext,
-  ɵActionHandlerMetaData
+  ɵRuntimeSelectorContext
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
 import {
   forkJoin,
   from,
+  isObservable,
   Observable,
   of,
-  throwError,
-  Subscription,
   Subject,
-  isObservable
-} from 'rxjs';
-import {
+  Subscription,
+  throwError,
   catchError,
   defaultIfEmpty,
   filter,
   map,
   mergeMap,
-  shareReplay,
-  takeUntil
-} from 'rxjs/operators';
+  shareReplay
+  // takeUntil
+} from 'rxjs';
 
 import { NgxsConfig } from '../symbols';
 import {
@@ -53,15 +41,16 @@ import {
   StatesByName,
   topologicalSort
 } from './internals';
-import { ofActionDispatched } from '../operators/of-action';
+import { NgxsActionRegistry } from '../actions/action-registry';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
-import { StateContextFactory } from '../internal/state-context-factory';
 import { ensureStateNameIsUnique, ensureStatesAreDecorated } from '../utils/store-validators';
 import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
 import { NgxsUnhandledErrorHandler } from '../ngxs-unhandled-error-handler';
 import { assignUnhandledCallback } from './unhandled-rxjs-error-callback';
+import { StateContextFactory } from './state-context-factory';
+// import { ofActionDispatched } from '../operators/of-action';
 
 const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
@@ -79,11 +68,6 @@ function cloneDefaults(defaults: any): any {
   return value;
 }
 
-interface InvokableActionHandlerMetaData extends ɵActionHandlerMetaData {
-  path: string;
-  instance: any;
-}
-
 /**
  * The `StateFactory` class adds root and feature states to the graph.
  * This extracts state names from state classes, checks if they already
@@ -99,53 +83,31 @@ interface InvokableActionHandlerMetaData extends ɵActionHandlerMetaData {
  */
 @Injectable()
 export class StateFactory implements OnDestroy {
-  private _actionsSubscription: Subscription | null = null;
+  private readonly _injector = inject(Injector);
+  private readonly _config = inject(NgxsConfig);
+  private readonly _parentFactory = inject(StateFactory, { optional: true, skipSelf: true });
+  private readonly _stateContextFactory = inject(StateContextFactory);
+  private readonly _actions = inject(InternalActions);
+  private readonly _actionResults = inject(InternalDispatchedActionResults);
+  private readonly _initialState = inject(ɵINITIAL_STATE_TOKEN, { optional: true });
+  private readonly _actionRegistry = inject(NgxsActionRegistry);
+  private readonly _propGetter = inject(ɵPROP_GETTER);
 
-  private _propGetter = inject(ɵPROP_GETTER);
+  private _actionsSubscription: Subscription | null = null;
 
   private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler = null!;
 
-  constructor(
-    private _injector: Injector,
-    private _config: NgxsConfig,
-    @Optional()
-    @SkipSelf()
-    private _parentFactory: StateFactory,
-    private _actions: InternalActions,
-    private _actionResults: InternalDispatchedActionResults,
-    private _stateContextFactory: StateContextFactory,
-    @Optional()
-    @Inject(ɵINITIAL_STATE_TOKEN)
-    private _initialState: any
-  ) {}
-
-  // Instead of going over the states list every time an action is dispatched,
-  // we are constructing a map of action types to lists of action metadata.
-  // If the `@@Init` action is handled in two different states, the action
-  // metadata list will contain two objects that have the state `instance` and
-  // method names to be used as action handlers (decorated with `@Action(InitState)`).
-  private _actionTypeToMetasMap = new Map<string, InvokableActionHandlerMetaData[]>();
-
-  get actionTypeToMetasMap(): Map<string, InvokableActionHandlerMetaData[]> {
-    return this._parentFactory
-      ? this._parentFactory.actionTypeToMetasMap
-      : this._actionTypeToMetasMap;
-  }
-
   private _states: MappedStore[] = [];
-
   get states(): MappedStore[] {
     return this._parentFactory ? this._parentFactory.states : this._states;
   }
 
   private _statesByName: StatesByName = {};
-
   get statesByName(): StatesByName {
     return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
   }
 
   private _statePaths: ɵPlainObjectOf<string> = {};
-
   private get statePaths(): ɵPlainObjectOf<string> {
     return this._parentFactory ? this._parentFactory.statePaths : this._statePaths;
   }
@@ -302,7 +264,7 @@ export class StateFactory implements OnDestroy {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(dispatched$: Observable<ActionContext>, action: any) {
+  invokeActions(_dispatched$: Observable<ActionContext>, action: any) {
     const type = getActionTypeFromInstance(action)!;
     const results = [];
 
@@ -310,15 +272,14 @@ export class StateFactory implements OnDestroy {
     // to `true` within the below `for` loop if any `actionMetas` has been found.
     let actionHasBeenHandled = false;
 
-    const actionMetas = this.actionTypeToMetasMap.get(type);
+    const actionHandlers = this._actionRegistry.get(type);
 
-    if (actionMetas) {
-      for (const actionMeta of actionMetas) {
-        const stateContext = this._stateContextFactory.createStateContext(actionMeta.path);
-
+    if (actionHandlers) {
+      for (const actionHandler of actionHandlers) {
         let result;
+
         try {
-          result = actionMeta.instance[actionMeta.fn](stateContext, action);
+          result = actionHandler(action);
 
           // We need to use `isPromise` instead of checking whether
           // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
@@ -350,20 +311,20 @@ export class StateFactory implements OnDestroy {
               defaultIfEmpty({})
             );
 
-            if (actionMeta.options.cancelUncompleted) {
-              // todo: ofActionDispatched should be used with action class
-              result = result.pipe(
-                takeUntil(dispatched$.pipe(ofActionDispatched(action as any)))
-              );
-            }
+            // Question: how do we know whether action is cancelable?
+
+            // if (actionMeta.options.cancelUncompleted) {
+            //   // todo: ofActionDispatched should be used with action class
+            //   result = result.pipe(
+            //     takeUntil(dispatched$.pipe(ofActionDispatched(action as any)))
+            //   );
+            // }
           } else {
             result = of({}).pipe(shareReplay());
           }
         } catch (e) {
           result = throwError(e);
         }
-
-        results.push(result);
 
         actionHasBeenHandled = true;
       }
@@ -424,29 +385,18 @@ export class StateFactory implements OnDestroy {
   }
 
   private hydrateActionMetasMap({ path, actions, instance }: MappedStore): void {
-    const actionTypeToMetasMap = this.actionTypeToMetasMap;
-
     for (const actionType of Object.keys(actions)) {
-      // Initialize the map entry if it does not already exist for that
-      // action type. Note that action types may overlap between states,
-      // as the same action can be handled by different states.
-      if (!actionTypeToMetasMap.has(actionType)) {
-        actionTypeToMetasMap.set(actionType, []);
-      }
-
-      const extendedActionMetas = actionTypeToMetasMap.get(actionType)!;
-
-      extendedActionMetas.push(
-        // This involves combining each individual action metadata with
-        // the state instance and the path—essentially everything needed
-        // to invoke an action. This eliminates the need to loop over states
-        // every time an action is dispatched.
-        ...actions[actionType].map(actionMeta => ({
-          ...actionMeta,
-          path,
-          instance
-        }))
+      const actionHandlers = actions[actionType].map(
+        // action: Instance<ActionType>
+        actionMeta => (action: any) => {
+          const stateContext = this._stateContextFactory.createStateContext(path);
+          return instance[actionMeta.fn](stateContext, action);
+        }
       );
+
+      for (const actionHandler of actionHandlers) {
+        this._actionRegistry.register(actionType, actionHandler);
+      }
     }
   }
 }
