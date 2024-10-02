@@ -1,4 +1,4 @@
-import { Injectable, Injector, OnDestroy, inject } from '@angular/core';
+import { Injectable, Injector, OnDestroy, inject, ɵisPromise } from '@angular/core';
 import {
   ɵmemoize,
   ɵMETA_KEY,
@@ -11,8 +11,23 @@ import {
   ɵRuntimeSelectorContext
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
-import { forkJoin, of, Subscription } from 'rxjs';
-import { catchError, defaultIfEmpty, filter, map, mergeMap } from 'rxjs/operators';
+import {
+  forkJoin,
+  from,
+  isObservable,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+  throwError,
+  catchError,
+  defaultIfEmpty,
+  filter,
+  map,
+  mergeMap,
+  shareReplay
+  // takeUntil
+} from 'rxjs';
 
 import { NgxsConfig } from '../symbols';
 import {
@@ -34,7 +49,8 @@ import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
 import { NgxsUnhandledErrorHandler } from '../ngxs-unhandled-error-handler';
 import { assignUnhandledCallback } from './unhandled-rxjs-error-callback';
-import { ɵNgxsInternalDispatchedActions } from '../actions/dispatched-actions';
+import { StateContextFactory } from './state-context-factory';
+// import { ofActionDispatched } from '../operators/of-action';
 
 const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
@@ -70,11 +86,11 @@ export class StateFactory implements OnDestroy {
   private readonly _injector = inject(Injector);
   private readonly _config = inject(NgxsConfig);
   private readonly _parentFactory = inject(StateFactory, { optional: true, skipSelf: true });
+  private readonly _stateContextFactory = inject(StateContextFactory);
   private readonly _actions = inject(InternalActions);
   private readonly _actionResults = inject(InternalDispatchedActionResults);
   private readonly _initialState = inject(ɵINITIAL_STATE_TOKEN, { optional: true });
   private readonly _actionRegistry = inject(NgxsActionRegistry);
-  private readonly _dispatched$ = inject(ɵNgxsInternalDispatchedActions);
   private readonly _propGetter = inject(ɵPROP_GETTER);
 
   private _actionsSubscription: Subscription | null = null;
@@ -217,13 +233,14 @@ export class StateFactory implements OnDestroy {
       return;
     }
 
+    const dispatched$ = new Subject<ActionContext>();
     this._actionsSubscription = this._actions
       .pipe(
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
         mergeMap(ctx => {
-          this._dispatched$.next(ctx);
+          dispatched$.next(ctx);
           const action: any = ctx.action;
-          return this.invokeActions(action!).pipe(
+          return this.invokeActions(dispatched$, action!).pipe(
             map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
             catchError(error => {
@@ -247,7 +264,7 @@ export class StateFactory implements OnDestroy {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(action: any) {
+  invokeActions(_dispatched$: Observable<ActionContext>, action: any) {
     const type = getActionTypeFromInstance(action)!;
     const results = [];
 
@@ -259,8 +276,56 @@ export class StateFactory implements OnDestroy {
 
     if (actionHandlers) {
       for (const actionHandler of actionHandlers) {
-        const result = actionHandler(action);
-        results.push(result);
+        let result;
+
+        try {
+          result = actionHandler(action);
+
+          // We need to use `isPromise` instead of checking whether
+          // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
+          // is the `ZoneAwarePromise`. Some APIs, which are likely not patched by zone.js
+          // for certain reasons, might not work with `instanceof`. For instance, the dynamic
+          // import returns a native promise (not a `ZoneAwarePromise`), causing this check to
+          // be falsy.
+          if (ɵisPromise(result)) {
+            result = from(result);
+          }
+
+          if (isObservable(result)) {
+            result = result.pipe(
+              mergeMap((value: any) => {
+                if (ɵisPromise(value)) {
+                  return from(value);
+                }
+                if (isObservable(value)) {
+                  return value;
+                }
+                return of(value);
+              }),
+              // If this observable has completed without emitting any values,
+              // we wouldn't want to complete the entire chain of actions.
+              // If any observable completes, then the action will be canceled.
+              // For instance, if any action handler had a statement like
+              // `handler(ctx) { return EMPTY; }`, then the action would be canceled.
+              // See https://github.com/ngxs/store/issues/1568
+              defaultIfEmpty({})
+            );
+
+            // Question: how do we know whether action is cancelable?
+
+            // if (actionMeta.options.cancelUncompleted) {
+            //   // todo: ofActionDispatched should be used with action class
+            //   result = result.pipe(
+            //     takeUntil(dispatched$.pipe(ofActionDispatched(action as any)))
+            //   );
+            // }
+          } else {
+            result = of({}).pipe(shareReplay());
+          }
+        } catch (e) {
+          result = throwError(e);
+        }
+
         actionHasBeenHandled = true;
       }
     }
@@ -321,14 +386,16 @@ export class StateFactory implements OnDestroy {
 
   private hydrateActionMetasMap({ path, actions, instance }: MappedStore): void {
     for (const actionType of Object.keys(actions)) {
-      for (const actionMeta of actions[actionType]) {
-        const invokableActionMeta = {
-          ...actionMeta,
-          path,
-          instance
-        };
+      const actionHandlers = actions[actionType].map(
+        // action: Instance<ActionType>
+        actionMeta => (action: any) => {
+          const stateContext = this._stateContextFactory.createStateContext(path);
+          return instance[actionMeta.fn](stateContext, action);
+        }
+      );
 
-        this._actionRegistry.register(actionType, invokableActionMeta);
+      for (const actionHandler of actionHandlers) {
+        this._actionRegistry.register(actionType, actionHandler);
       }
     }
   }
