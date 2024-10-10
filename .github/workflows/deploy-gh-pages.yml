@@ -1,0 +1,58 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy tutorial to GitHub Pages
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "fp/tutorial-deploy" ]
+  pull_request:
+    branches: [ "fp/tutorial-deploy" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Install NGXS dependencies
+        run: yarn
+
+      - name: Install tutorial dependencies
+        run: yarn tutorials:install
+
+      - name: Build tutorial
+        env:
+          BASE_URL: store
+        run: npx nx run create-app:build --base /store --publicDir store --site https://ngxs.github.io/store --skip-nx-cache
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: "@tutorials/create-app"
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{steps.deployment.outputs.page_url}}
+    runs-on: ubuntu-latest
+    needs: build
+
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
