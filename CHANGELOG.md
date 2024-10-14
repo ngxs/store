@@ -9,6 +9,7 @@ $ npm install @ngxs/store@dev
 - Fix(store): allow selector utils usage within state class [#2210](https://github.com/ngxs/store/pull/2210)
 - Fix(store): register feature plugins correctly [#2228](https://github.com/ngxs/store/pull/2228)
 - Performance(store): Avoid going over states list every time action is dispatched [#2219](https://github.com/ngxs/store/pull/2219)
+- Refactor(store): Add action registry [#2224](https://github.com/ngxs/store/pull/2224)
 
 ### 18.1.1 2024-08-06
 
