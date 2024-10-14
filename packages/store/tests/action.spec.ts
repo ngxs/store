@@ -627,7 +627,7 @@ describe('Action', () => {
       });
     });
 
-    fdescribe('Observable that returns an inner observable', () => {
+    describe('Observable that returns an inner observable', () => {
       it('completes when inner observable is completed', fakeAsync(() => {
         // Arrange
         const {
@@ -655,7 +655,6 @@ describe('Action', () => {
         completeObservableFn();
 
         // Assert
-        console.log(recorder);
         expect(recorder).toEqual([
           'obsThatReturnsObservable - start',
           '(completeObservableFn) - next',
