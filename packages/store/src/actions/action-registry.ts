@@ -1,8 +1,8 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, type OnDestroy } from '@angular/core';
 import type { Observable } from 'rxjs';
 
-// `action: Instance<ActionType>`.
-type ActionHandlerFn = (action: any) => void | Promise<void> | Observable<unknown>;
+// action: Instance<ActionType>.
+export type ActionHandlerFn = (action: any) => void | Promise<void> | Observable<unknown>;
 
 @Injectable({ providedIn: 'root' })
 export class NgxsActionRegistry implements OnDestroy {

@@ -15,9 +15,7 @@ import {
   forkJoin,
   from,
   isObservable,
-  Observable,
   of,
-  Subject,
   Subscription,
   throwError,
   catchError,
@@ -25,8 +23,8 @@ import {
   filter,
   map,
   mergeMap,
-  shareReplay
-  // takeUntil
+  shareReplay,
+  takeUntil
 } from 'rxjs';
 
 import { NgxsConfig } from '../symbols';
@@ -50,7 +48,7 @@ import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actio
 import { NgxsUnhandledErrorHandler } from '../ngxs-unhandled-error-handler';
 import { assignUnhandledCallback } from './unhandled-rxjs-error-callback';
 import { StateContextFactory } from './state-context-factory';
-// import { ofActionDispatched } from '../operators/of-action';
+import { ofActionDispatched } from '../operators/of-action';
 
 const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
@@ -233,14 +231,12 @@ export class StateFactory implements OnDestroy {
       return;
     }
 
-    const dispatched$ = new Subject<ActionContext>();
     this._actionsSubscription = this._actions
       .pipe(
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
         mergeMap(ctx => {
-          dispatched$.next(ctx);
           const action: any = ctx.action;
-          return this.invokeActions(dispatched$, action!).pipe(
+          return this.invokeActions(action).pipe(
             map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
             catchError(error => {
@@ -264,7 +260,7 @@ export class StateFactory implements OnDestroy {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(_dispatched$: Observable<ActionContext>, action: any) {
+  invokeActions(action: any) {
     const type = getActionTypeFromInstance(action)!;
     const results = [];
 
@@ -280,51 +276,11 @@ export class StateFactory implements OnDestroy {
 
         try {
           result = actionHandler(action);
-
-          // We need to use `isPromise` instead of checking whether
-          // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
-          // is the `ZoneAwarePromise`. Some APIs, which are likely not patched by zone.js
-          // for certain reasons, might not work with `instanceof`. For instance, the dynamic
-          // import returns a native promise (not a `ZoneAwarePromise`), causing this check to
-          // be falsy.
-          if (ɵisPromise(result)) {
-            result = from(result);
-          }
-
-          if (isObservable(result)) {
-            result = result.pipe(
-              mergeMap((value: any) => {
-                if (ɵisPromise(value)) {
-                  return from(value);
-                }
-                if (isObservable(value)) {
-                  return value;
-                }
-                return of(value);
-              }),
-              // If this observable has completed without emitting any values,
-              // we wouldn't want to complete the entire chain of actions.
-              // If any observable completes, then the action will be canceled.
-              // For instance, if any action handler had a statement like
-              // `handler(ctx) { return EMPTY; }`, then the action would be canceled.
-              // See https://github.com/ngxs/store/issues/1568
-              defaultIfEmpty({})
-            );
-
-            // Question: how do we know whether action is cancelable?
-
-            // if (actionMeta.options.cancelUncompleted) {
-            //   // todo: ofActionDispatched should be used with action class
-            //   result = result.pipe(
-            //     takeUntil(dispatched$.pipe(ofActionDispatched(action as any)))
-            //   );
-            // }
-          } else {
-            result = of({}).pipe(shareReplay());
-          }
         } catch (e) {
           result = throwError(e);
         }
+
+        results.push(result);
 
         actionHasBeenHandled = true;
       }
@@ -385,14 +341,54 @@ export class StateFactory implements OnDestroy {
   }
 
   private hydrateActionMetasMap({ path, actions, instance }: MappedStore): void {
+    const { dispatched$ } = this._actions;
     for (const actionType of Object.keys(actions)) {
-      const actionHandlers = actions[actionType].map(
+      const actionHandlers = actions[actionType].map(actionMeta => {
         // action: Instance<ActionType>
-        actionMeta => (action: any) => {
+        return (action: any) => {
           const stateContext = this._stateContextFactory.createStateContext(path);
-          return instance[actionMeta.fn](stateContext, action);
-        }
-      );
+
+          let result = instance[actionMeta.fn](stateContext, action);
+
+          // We need to use `isPromise` instead of checking whether
+          // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
+          // is the `ZoneAwarePromise`. Some APIs, which are likely not patched by zone.js
+          // for certain reasons, might not work with `instanceof`. For instance, the dynamic
+          // import returns a native promise (not a `ZoneAwarePromise`), causing this check to
+          // be falsy.
+          if (ɵisPromise(result)) {
+            result = from(result);
+          }
+
+          if (isObservable(result)) {
+            result = result.pipe(
+              mergeMap((value: any) => {
+                if (ɵisPromise(value)) {
+                  return from(value);
+                }
+                if (isObservable(value)) {
+                  return value;
+                }
+                return of(value);
+              }),
+              // If this observable has completed without emitting any values,
+              // we wouldn't want to complete the entire chain of actions.
+              // If any observable completes, then the action will be canceled.
+              // For instance, if any action handler had a statement like
+              // `handler(ctx) { return EMPTY; }`, then the action would be canceled.
+              // See https://github.com/ngxs/store/issues/1568
+              defaultIfEmpty({})
+            );
+
+            if (actionMeta.options.cancelUncompleted) {
+              result = result.pipe(takeUntil(dispatched$.pipe(ofActionDispatched(action))));
+            }
+          } else {
+            result = of({}).pipe(shareReplay());
+          }
+          return result;
+        };
+      });
 
       for (const actionHandler of actionHandlers) {
         this._actionRegistry.register(actionType, actionHandler);
