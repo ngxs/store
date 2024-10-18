@@ -6,8 +6,9 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-- Fix(store): allow selector utils usage within state class [#2210](https://github.com/ngxs/store/pull/2210)
-- Fix(store): register feature plugins correctly [#2228](https://github.com/ngxs/store/pull/2228)
+- Fix(store): Allow selector utils usage within state class [#2210](https://github.com/ngxs/store/pull/2210)
+- Fix(store): Register feature plugins correctly [#2228](https://github.com/ngxs/store/pull/2228)
+- Fix(store): Memoize selectors which return NaN [#2230](https://github.com/ngxs/store/pull/2230)
 - Performance(store): Avoid going over states list every time action is dispatched [#2219](https://github.com/ngxs/store/pull/2219)
 - Refactor(store): Add action registry [#2224](https://github.com/ngxs/store/pull/2224)
 
