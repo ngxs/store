@@ -1,5 +1,17 @@
+const isNaN = Number.isNaN;
 function defaultEqualityCheck(a: any, b: any) {
-  return a === b;
+  if (a === b) {
+    return true;
+  }
+
+  // Special case for `NaN` (NaN !== NaN).
+  // According to the IEEE 754 standard, `NaN` is not equal to any value,
+  // including itself.
+  if (isNaN(a) && isNaN(b)) {
+    return true;
+  }
+
+  return false;
 }
 
 function areArgumentsShallowlyEqual(
@@ -11,7 +23,8 @@ function areArgumentsShallowlyEqual(
     return false;
   }
 
-  // Do this in a for loop (and not a `forEach` or an `every`) so we can determine equality as fast as possible.
+  // Do this in a for loop (and not a `forEach` or an `every`) so we can
+  // determine equality as fast as possible.
   const length = prev.length;
   for (let i = 0; i < length; i++) {
     if (!equalityCheck(prev[i], next[i])) {
