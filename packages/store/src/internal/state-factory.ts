@@ -24,7 +24,9 @@ import {
   map,
   mergeMap,
   shareReplay,
-  takeUntil
+  takeUntil,
+  finalize,
+  Observable
 } from 'rxjs';
 
 import { NgxsConfig } from '../symbols';
@@ -65,6 +67,8 @@ function cloneDefaults(defaults: any): any {
 
   return value;
 }
+
+const noop = () => {};
 
 /**
  * The `StateFactory` class adds root and feature states to the graph.
@@ -344,11 +348,16 @@ export class StateFactory implements OnDestroy {
     const { dispatched$ } = this._actions;
     for (const actionType of Object.keys(actions)) {
       const actionHandlers = actions[actionType].map(actionMeta => {
+        const cancelable = !!actionMeta.options.cancelUncompleted;
+
         // action: Instance<ActionType>
         return (action: any) => {
           const stateContext = this._stateContextFactory.createStateContext(path);
 
-          let result = instance[actionMeta.fn](stateContext, action);
+          // We explicitly specify `Observable<void>`, which is always the final
+          // result for the action handler, as the framework does not care about
+          // the values returned by action handlers.
+          let result: Observable<void> = instance[actionMeta.fn](stateContext, action);
 
           // We need to use `isPromise` instead of checking whether
           // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
@@ -380,12 +389,28 @@ export class StateFactory implements OnDestroy {
               defaultIfEmpty({})
             );
 
-            if (actionMeta.options.cancelUncompleted) {
-              result = result.pipe(takeUntil(dispatched$.pipe(ofActionDispatched(action))));
+            if (cancelable) {
+              const notifier$ = dispatched$.pipe(ofActionDispatched(action));
+              result = result.pipe(takeUntil(notifier$));
             }
+
+            result = result.pipe(
+              // Note that we use the `finalize` operator only when the action handler
+              // returns an observable. If the action handler is synchronous, we do not
+              // need to set the state context functions to `noop`, as the absence of a
+              // return value indicates no asynchronous functionality. If the handler's
+              // result is unsubscribed (either because the observable has completed or it
+              // was unsubscribed by `takeUntil` due to a new action being dispatched),
+              // we prevent writing to the state context.
+              finalize(() => {
+                stateContext.setState = noop;
+                stateContext.patchState = noop;
+              })
+            );
           } else {
-            result = of({}).pipe(shareReplay());
+            result = of(undefined).pipe(shareReplay());
           }
+
           return result;
         };
       });
