@@ -6,6 +6,10 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+- ...
+
+### 18.1.2 2024-10-21
+
 - Fix(store): Allow selector utils usage within state class [#2210](https://github.com/ngxs/store/pull/2210)
 - Fix(store): Register feature plugins correctly [#2228](https://github.com/ngxs/store/pull/2228)
 - Fix(store): Memoize selectors which return NaN [#2230](https://github.com/ngxs/store/pull/2230)
