@@ -1,3 +1,4 @@
 **/*.spec.ts
 packages/store/types/.eslintrc.js
 node_modules/
+tutorials/create-app/src/env.d.ts
