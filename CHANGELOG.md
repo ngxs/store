@@ -6,7 +6,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-- ...
+- Build: Copy LICENSE after build [#2234](https://github.com/ngxs/store/pull/2234)
 
 ### 18.1.2 2024-10-21
 
