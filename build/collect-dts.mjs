@@ -3,18 +3,10 @@ import * as url from 'node:url';
 import * as path from 'node:path';
 import { createRequire } from 'node:module';
 
+import { packages } from './packages.mjs';
+
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-
-const packages = [
-  'store',
-  'devtools-plugin',
-  'form-plugin',
-  'logger-plugin',
-  'router-plugin',
-  'storage-plugin',
-  'websocket-plugin'
-];
 
 export function getEntryPointsAndDtsToRemove() {
   const entryPoints = [];
