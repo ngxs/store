@@ -6,7 +6,8 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-- Fix: Logger Plugin - Run `filter` function in injection context [#2236](https://github.com/ngxs/store/pull/2236)
+- Fix(store): Disallow nullable actions in `dispatch()` [#2221](https://github.com/ngxs/store/pull/2221)
+- Fix(logger-plugin) - Run `filter` function in injection context [#2236](https://github.com/ngxs/store/pull/2236)
 
 ### 18.1.3 2024-10-21
 

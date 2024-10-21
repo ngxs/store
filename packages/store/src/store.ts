@@ -20,6 +20,8 @@ import { NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { TypedSelector } from './selectors';
 
+const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
+
 @Injectable({ providedIn: 'root' })
 export class Store {
   /**
@@ -49,6 +51,26 @@ export class Store {
    * Dispatches event(s).
    */
   dispatch(actionOrActions: any | any[]): Observable<void> {
+    // The `any | any[]` type actually defaults to `any` (without a union);
+    // this is retained only for readability. Ideally, we should not specify `any`
+    // but instead use `NonNullable<unknown> | NonNullable<unknown>[]`.
+    // However, changing this type would introduce a breaking change.
+    // To adopt this more user-friendly, we include a check guarded by `ngDevMode` that
+    // throws an error immediately if `actions` is `null|undefined`.
+    // This change will only trigger runtime errors in development mode, ensuring no
+    // production applications are affected.
+    if (NG_DEV_MODE) {
+      if (
+        // If a single action is dispatched and it's nullable.
+        actionOrActions == null ||
+        // If a list of actions is dispatched and any of the actions are nullable.
+        (Array.isArray(actionOrActions) && actionOrActions.some(action => action == null))
+      ) {
+        const error = new Error('`dispatch()` was called without providing an action.');
+        return throwError(() => error);
+      }
+    }
+
     return this._internalStateOperations.getRootStateOperations().dispatch(actionOrActions);
   }
 
