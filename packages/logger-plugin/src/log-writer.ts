@@ -1,4 +1,5 @@
 import { NgxsLoggerPluginOptions } from './symbols';
+
 export class LogWriter {
   private logger: any;
 
@@ -42,24 +43,6 @@ export class LogWriter {
   }
 
   log(title: string, color: string, payload: any) {
-    if (this.isIE()) {
-      this.logger.log(title, payload);
-    } else {
-      this.logger.log('%c ' + title, color, payload);
-    }
-  }
-
-  isIE(): boolean {
-    const ua =
-      typeof window !== 'undefined' && window.navigator.userAgent
-        ? window.navigator.userAgent
-        : '';
-    let msIE = false;
-    const oldIE = ua.indexOf('MSIE ');
-    const newIE = ua.indexOf('Trident/');
-    if (oldIE > -1 || newIE > -1) {
-      msIE = true;
-    }
-    return msIE;
+    this.logger.log('%c ' + title, color, payload);
   }
 }

@@ -14,4 +14,6 @@ export interface NgxsLoggerPluginOptions {
   filter?: (action: any, state: any) => boolean;
 }
 
-export const NGXS_LOGGER_PLUGIN_OPTIONS = new InjectionToken('NGXS_LOGGER_PLUGIN_OPTIONS');
+export const NGXS_LOGGER_PLUGIN_OPTIONS = new InjectionToken<NgxsLoggerPluginOptions>(
+  'NGXS_LOGGER_PLUGIN_OPTIONS'
+);
