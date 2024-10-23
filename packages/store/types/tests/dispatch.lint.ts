@@ -63,6 +63,7 @@ describe('[TEST]: Action Types', () => {
     assertType(() => store.dispatch(new FooAction('payload'))); // $ExpectType Observable<void>
     assertType(() => store.dispatch(new BarAction('foo'))); // $ExpectType Observable<void>
     assertType(() => store.dispatch({})); // $ExpectType Observable<void>
+    assertType(() => store.dispatch([new FooAction('payload'), new BarAction('foo')])); // $ExpectType Observable<void>
 
     assertType(() => store.dispatch()); // $ExpectError
     assertType(() => store.dispatch(null)); // $ExpectError
