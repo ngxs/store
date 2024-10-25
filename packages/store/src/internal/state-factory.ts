@@ -23,8 +23,9 @@ import {
   filter,
   map,
   mergeMap,
-  shareReplay,
-  takeUntil
+  takeUntil,
+  finalize,
+  Observable
 } from 'rxjs';
 
 import { NgxsConfig } from '../symbols';
@@ -260,9 +261,9 @@ export class StateFactory implements OnDestroy {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(action: any) {
+  private invokeActions(action: any): Observable<unknown[]> {
     const type = getActionTypeFromInstance(action)!;
-    const results = [];
+    const results: Observable<unknown>[] = [];
 
     // Determines whether the dispatched action has been handled, this is assigned
     // to `true` within the below `for` loop if any `actionMetas` has been found.
@@ -277,7 +278,7 @@ export class StateFactory implements OnDestroy {
         try {
           result = actionHandler(action);
         } catch (e) {
-          result = throwError(e);
+          result = throwError(() => e);
         }
 
         results.push(result);
@@ -297,7 +298,7 @@ export class StateFactory implements OnDestroy {
     }
 
     if (!results.length) {
-      results.push(of({}));
+      results.push(of(undefined));
     }
 
     return forkJoin(results);
@@ -344,7 +345,8 @@ export class StateFactory implements OnDestroy {
     const { dispatched$ } = this._actions;
     for (const actionType of Object.keys(actions)) {
       const actionHandlers = actions[actionType].map(actionMeta => {
-        // action: Instance<ActionType>
+        const cancelable = !!actionMeta.options.cancelUncompleted;
+
         return (action: any) => {
           const stateContext = this._stateContextFactory.createStateContext(path);
 
@@ -365,11 +367,11 @@ export class StateFactory implements OnDestroy {
               mergeMap((value: any) => {
                 if (ɵisPromise(value)) {
                   return from(value);
-                }
-                if (isObservable(value)) {
+                } else if (isObservable(value)) {
                   return value;
+                } else {
+                  return of(value);
                 }
-                return of(value);
               }),
               // If this observable has completed without emitting any values,
               // we wouldn't want to complete the entire chain of actions.
@@ -377,15 +379,35 @@ export class StateFactory implements OnDestroy {
               // For instance, if any action handler had a statement like
               // `handler(ctx) { return EMPTY; }`, then the action would be canceled.
               // See https://github.com/ngxs/store/issues/1568
-              defaultIfEmpty({})
+              // Note that we actually don't care about the return type; we only care
+              // about emission, and thus `undefined` is applicable by the framework.
+              defaultIfEmpty(undefined)
             );
 
-            if (actionMeta.options.cancelUncompleted) {
-              result = result.pipe(takeUntil(dispatched$.pipe(ofActionDispatched(action))));
+            if (cancelable) {
+              const notifier$ = dispatched$.pipe(ofActionDispatched(action));
+              result = result.pipe(takeUntil(notifier$));
             }
+
+            result = result.pipe(
+              // Note that we use the `finalize` operator only when the action handler
+              // returns an observable. If the action handler is synchronous, we do not
+              // need to set the state context functions to `noop`, as the absence of a
+              // return value indicates no asynchronous functionality. If the handler's
+              // result is unsubscribed (either because the observable has completed or it
+              // was unsubscribed by `takeUntil` due to a new action being dispatched),
+              // we prevent writing to the state context.
+              finalize(() => {
+                stateContext.setState = noop;
+                stateContext.patchState = noop;
+              })
+            );
           } else {
-            result = of({}).pipe(shareReplay());
+            // If the action handler is synchronous and returns nothing (`void`), we
+            // still have to convert the result to a synchronous observable.
+            result = of(undefined);
           }
+
           return result;
         };
       });
@@ -396,3 +418,8 @@ export class StateFactory implements OnDestroy {
     }
   }
 }
+
+// This is used to replace `setState` and `patchState` once the action
+// handler has been unsubscribed or completed, to prevent writing
+// to the state context.
+function noop() {}
