@@ -32,9 +32,8 @@ jobs:
         run: yarn tutorials:install
 
       - name: Build tutorial
-        env:
-          BASE_URL: store
-        run: npx nx run create-app:build --base /store --publicDir store --site https://ngxs.github.io/store --skip-nx-cache
+        working-directory: tutorials/create-app
+        run: npx astro build --base /store --publicDir store --site https://ngxs.github.io/store
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
