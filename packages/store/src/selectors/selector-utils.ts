@@ -68,9 +68,10 @@ export function createMemoizedSelectorFn<T extends (...args: any[]) => any>(
   creationMetadata: Partial<CreationMetadata> | undefined
 ) {
   const containerClass = creationMetadata && creationMetadata.containerClass;
-  const wrappedFn = function wrappedSelectorFn(...args: any[]) {
-    const returnValue = originalFn.apply(containerClass, args);
-    if (returnValue instanceof Function) {
+  const wrappedFn = function wrappedSelectorFn() {
+    // eslint-disable-next-line prefer-rest-params
+    const returnValue = originalFn.apply(containerClass, <any>arguments);
+    if (typeof returnValue === 'function') {
       const innerMemoizedFn = ɵmemoize.apply(null, [returnValue]);
       return innerMemoizedFn;
     }
