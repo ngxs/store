@@ -1,19 +1,3 @@
-const isNaN = Number.isNaN;
-function defaultEqualityCheck(a: any, b: any) {
-  if (a === b) {
-    return true;
-  }
-
-  // Special case for `NaN` (NaN !== NaN).
-  // According to the IEEE 754 standard, `NaN` is not equal to any value,
-  // including itself.
-  if (isNaN(a) && isNaN(b)) {
-    return true;
-  }
-
-  return false;
-}
-
 function areArgumentsShallowlyEqual(
   equalityCheck: (a: any, b: any) => boolean,
   prev: IArguments | null,
@@ -43,7 +27,7 @@ function areArgumentsShallowlyEqual(
  */
 export function ɵmemoize<T extends (...args: any[]) => any>(
   func: T,
-  equalityCheck = defaultEqualityCheck
+  equalityCheck = Object.is
 ): T {
   let lastArgs: IArguments | null = null;
   let lastResult: any = null;
