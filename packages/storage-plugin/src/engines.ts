@@ -6,7 +6,7 @@ declare const ngDevMode: boolean;
 
 const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
-export const LOCAL_STORAGE_ENGINE = new InjectionToken<StorageEngine | null>(
+export const LOCAL_STORAGE_ENGINE = /* @__PURE__ */ new InjectionToken<StorageEngine | null>(
   NG_DEV_MODE ? 'LOCAL_STORAGE_ENGINE' : '',
   {
     providedIn: 'root',
@@ -14,7 +14,7 @@ export const LOCAL_STORAGE_ENGINE = new InjectionToken<StorageEngine | null>(
   }
 );
 
-export const SESSION_STORAGE_ENGINE = new InjectionToken<StorageEngine | null>(
+export const SESSION_STORAGE_ENGINE = /* @__PURE__ */ new InjectionToken<StorageEngine | null>(
   NG_DEV_MODE ? 'SESSION_STORAGE_ENGINE' : '',
   {
     providedIn: 'root',
