@@ -10,6 +10,7 @@ $ npm install @ngxs/store@dev
 - Performance(store): Replace `instanceof Function` with `typeof` [#2247](https://github.com/ngxs/store/pull/2247)
 - Refactor(store): Use `Object.is` as default equality check [#2245](https://github.com/ngxs/store/pull/2245)
 - Refactor(router-plugin): Mark selectors as pure [#2248](https://github.com/ngxs/store/pull/2248)
+- Refactor(storage-plugin): Mark engine tokens as pure [#2249](https://github.com/ngxs/store/pull/2249)
 
 ### 18.1.4 2024-10-23
 
