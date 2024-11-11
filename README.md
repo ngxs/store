@@ -16,6 +16,9 @@
   <a href="https://www.npmjs.com/package/@ngxs/store">
     <img src="https://img.shields.io/npm/dw/@ngxs/store.svg" />
   </a>
+  <a href="https://gurubase.io/g/ngxs">
+    <img src="https://img.shields.io/badge/Gurubase-Ask%20NGXS%20Guru-006BFF" />
+  </a>
   
   <br />
   
