@@ -6,6 +6,10 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+- ...
+
+### 18.1.5 2024-11-12
+
 - Fix(store): Prevent writing to state once action handler is unsubscribed [#2231](https://github.com/ngxs/store/pull/2231)
 - Performance(store): Replace `instanceof Function` with `typeof` [#2247](https://github.com/ngxs/store/pull/2247)
 - Refactor(store): Use `Object.is` as default equality check [#2245](https://github.com/ngxs/store/pull/2245)
