@@ -8,6 +8,7 @@ $ npm install @ngxs/store@dev
 
 - Refactor: Use field initializers for injectees [#2258](https://github.com/ngxs/store/pull/2258)
 - Refactor: Allow tree-shaking of dev-only code [#2259](https://github.com/ngxs/store/pull/2259)
+- Fix(store): Allow plain functions in `withNgxsPlugin` [#2255](https://github.com/ngxs/store/pull/2255)
 - Fix(store): Run plugins in injection context [#2256](https://github.com/ngxs/store/pull/2256)
 - Fix(websocket-plugin): Do not dispatch action when root injector is destroyed [#2257](https://github.com/ngxs/store/pull/2257)
 - Refactor(store): Replace `exhaustMap` [#2254](https://github.com/ngxs/store/pull/2254)

@@ -9,7 +9,7 @@ Let's take a look at a basic example of a logger:
 ```ts
 import { makeEnvironmentProviders, InjectionToken, Injectable, Inject } from '@angular/core';
 import { withNgxsPlugin } from '@ngxs/store';
-import { NgxsPlugin } from '@ngxs/store/plugins';
+import { NgxsPlugin, NgxsNextPluginFn } from '@ngxs/store/plugins';
 
 export const NGXS_LOGGER_PLUGIN_OPTIONS = new InjectionToken('NGXS_LOGGER_PLUGIN_OPTIONS');
 
@@ -17,7 +17,7 @@ export const NGXS_LOGGER_PLUGIN_OPTIONS = new InjectionToken('NGXS_LOGGER_PLUGIN
 export class LoggerPlugin implements NgxsPlugin {
   constructor(@Inject(NGXS_LOGGER_PLUGIN_OPTIONS) private options: any) {}
 
-  handle(state, action, next) {
+  handle(state: any, action: any, next: NgxsNextPluginFn) {
     console.log('Action started!', state);
     return next(state, action).pipe(
       tap(result => {
@@ -41,15 +41,19 @@ export function withNgxsLoggerPlugin(options?: any) {
 You can also use pure functions for plugins. The above example in a pure function would look like this:
 
 ```ts
-export function logPlugin(state, action, next) {
+import { NgxsNextPluginFn } from '@ngxs/store/plugins';
+
+export function logPlugin(state: any, action: any, next: NgxsNextPluginFn) {
+  // Note that plugin functions are called within an injection context,
+  // allowing you to inject dependencies.
+  const options = inject(NGXS_LOGGER_PLUGIN_OPTIONS);
+
   console.log('Action started!', state);
   return next(state, action).pipe(tap(result) => {
     console.log('Action happened!', result);
   });
 }
 ```
-
-NOTE: When providing a pure function make sure to use `useValue` instead of `useClass`.
 
 To register a plugin with NGXS, add the plugin to your `provideStore` as an NGXS feature and optionally pass in the plugin options like this:
 

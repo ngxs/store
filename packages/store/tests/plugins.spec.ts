@@ -1,6 +1,6 @@
 import { assertInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule, NGXS_PLUGINS, Store, NgxsNextPluginFn, InitState } from '@ngxs/store';
+import { NgxsModule, withNgxsPlugin, Store, NgxsNextPluginFn, InitState } from '@ngxs/store';
 import { debounceTime, firstValueFrom, tap } from 'rxjs';
 
 describe('Plugins', () => {
@@ -37,18 +37,7 @@ describe('Plugins', () => {
 
     TestBed.configureTestingModule({
       imports: [NgxsModule.forRoot()],
-      providers: [
-        {
-          provide: NGXS_PLUGINS,
-          useValue: asyncLogPlugin,
-          multi: true
-        },
-        {
-          provide: NGXS_PLUGINS,
-          useValue: otherPlugin,
-          multi: true
-        }
-      ]
+      providers: [withNgxsPlugin(asyncLogPlugin), withNgxsPlugin(otherPlugin)]
     });
 
     // Act
