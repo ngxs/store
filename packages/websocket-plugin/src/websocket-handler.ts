@@ -1,8 +1,7 @@
-import { Injectable, Inject, OnDestroy, NgZone } from '@angular/core';
+import { Injectable, Inject, NgZone, inject, DestroyRef } from '@angular/core';
 import { Actions, Store, ofActionDispatched } from '@ngxs/store';
 import { getValue } from '@ngxs/store/plugins';
-import { ReplaySubject, Subject, fromEvent } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { ReplaySubject, Subject, fromEvent, takeUntil } from 'rxjs';
 
 import {
   ConnectWebSocket,
@@ -18,7 +17,7 @@ import {
 } from './symbols';
 
 @Injectable({ providedIn: 'root' })
-export class WebSocketHandler implements OnDestroy {
+export class WebSocketHandler {
   private _socket: WebSocket | null = null;
 
   private readonly _socketClosed$ = new Subject<void>();
@@ -34,11 +33,12 @@ export class WebSocketHandler implements OnDestroy {
     @Inject(NGXS_WEBSOCKET_OPTIONS) private _options: NgxsWebSocketPluginOptions
   ) {
     this._setupActionsListeners();
-  }
 
-  ngOnDestroy(): void {
-    this._disconnect(/* forcelyCloseSocket */ true);
-    this._destroy$.next();
+    const destroyRef = inject(DestroyRef);
+    destroyRef.onDestroy(() => {
+      this._closeConnection(/* forcelyCloseSocket */ true);
+      this._destroy$.next();
+    });
   }
 
   private _setupActionsListeners(): void {
