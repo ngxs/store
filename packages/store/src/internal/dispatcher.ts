@@ -1,11 +1,10 @@
-import { inject, Injectable, NgZone } from '@angular/core';
+import { inject, Injectable, Injector, NgZone, runInInjectionContext } from '@angular/core';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { exhaustMap, filter, map, shareReplay, take } from 'rxjs/operators';
 
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 import { ɵPlainObject, ɵStateStream } from '@ngxs/store/internals';
 
-import { compose } from '../utils/compose';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { PluginManager } from '../plugin-manager';
 import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
@@ -29,6 +28,7 @@ export class InternalDispatcher {
   private _pluginManager = inject(PluginManager);
   private _stateStream = inject(ɵStateStream);
   private _ngxsExecutionStrategy = inject(InternalNgxsExecutionStrategy);
+  private _injector = inject(Injector);
 
   /**
    * Dispatches event(s).
@@ -70,7 +70,7 @@ export class InternalDispatcher {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return compose([
+    return compose(this._injector, [
       ...plugins,
       (nextState: any, nextAction: any) => {
         if (nextState !== prevState) {
@@ -115,3 +115,33 @@ export class InternalDispatcher {
       .pipe(shareReplay());
   }
 }
+
+type StateFn = (...args: any[]) => any;
+
+/**
+ * Composes a array of functions from left to right. Example:
+ *
+ *      compose([fn, final])(state, action);
+ *
+ * then the funcs have a signature like:
+ *
+ *      function fn (state, action, next) {
+ *          console.log('here', state, action, next);
+ *          return next(state, action);
+ *      }
+ *
+ *      function final (state, action) {
+ *          console.log('here', state, action);
+ *          return state;
+ *      }
+ *
+ * the last function should not call `next`.
+ */
+const compose =
+  (injector: Injector, funcs: StateFn[]) =>
+  (...args: any[]) => {
+    const curr = funcs.shift()!;
+    return runInInjectionContext(injector, () =>
+      curr(...args, (...nextArgs: any[]) => compose(injector, funcs)(...nextArgs))
+    );
+  };

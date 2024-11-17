@@ -7,6 +7,7 @@ $ npm install @ngxs/store@dev
 ### To become next patch version
 
 - Refactor: Use field initializers for injectees [#2258](https://github.com/ngxs/store/pull/2258)
+- Fix(store): Run plugins in injection context [#2256](https://github.com/ngxs/store/pull/2256)
 - Fix(websocket-plugin): Do not dispatch action when root injector is destroyed [#2257](https://github.com/ngxs/store/pull/2257)
 
 ### 18.1.5 2024-11-12
