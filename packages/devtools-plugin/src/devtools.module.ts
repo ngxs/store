@@ -6,7 +6,6 @@ import {
   makeEnvironmentProviders
 } from '@angular/core';
 import { withNgxsPlugin } from '@ngxs/store';
-import { NGXS_PLUGINS } from '@ngxs/store/plugins';
 
 import { NgxsDevtoolsOptions, NGXS_DEVTOOLS_OPTIONS } from './symbols';
 import { NgxsReduxDevtoolsPlugin } from './devtools.plugin';
@@ -28,11 +27,7 @@ export class NgxsReduxDevtoolsPluginModule {
     return {
       ngModule: NgxsReduxDevtoolsPluginModule,
       providers: [
-        {
-          provide: NGXS_PLUGINS,
-          useClass: NgxsReduxDevtoolsPlugin,
-          multi: true
-        },
+        withNgxsPlugin(NgxsReduxDevtoolsPlugin),
         {
           provide: USER_OPTIONS,
           useValue: options
