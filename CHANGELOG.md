@@ -10,6 +10,7 @@ $ npm install @ngxs/store@dev
 - Refactor: Allow tree-shaking of dev-only code [#2259](https://github.com/ngxs/store/pull/2259)
 - Fix(store): Run plugins in injection context [#2256](https://github.com/ngxs/store/pull/2256)
 - Fix(websocket-plugin): Do not dispatch action when root injector is destroyed [#2257](https://github.com/ngxs/store/pull/2257)
+- Refactor(store): Replace `exhaustMap` [#2254](https://github.com/ngxs/store/pull/2254)
 - Refactor(store): Tree-shake development options token [#2260](https://github.com/ngxs/store/pull/2260)
 
 ### 18.1.5 2024-11-12

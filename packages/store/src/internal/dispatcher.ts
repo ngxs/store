@@ -1,6 +1,6 @@
 import { inject, Injectable, Injector, NgZone, runInInjectionContext } from '@angular/core';
-import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
-import { exhaustMap, filter, map, shareReplay, take } from 'rxjs/operators';
+import { forkJoin, Observable, of, Subject, throwError } from 'rxjs';
+import { filter, map, mergeMap, shareReplay, take } from 'rxjs/operators';
 
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 import { ɵPlainObject, ɵStateStream } from '@ngxs/store/internals';
@@ -97,22 +97,23 @@ export class InternalDispatcher {
   private createDispatchObservable(
     actionResult$: Observable<ActionContext>
   ): Observable<ɵPlainObject> {
-    return actionResult$
-      .pipe(
-        exhaustMap((ctx: ActionContext) => {
-          switch (ctx.status) {
-            case ActionStatus.Successful:
-              // The `createDispatchObservable` function should return the
-              // state, as its result is utilized by plugins.
-              return of(this._stateStream.getValue());
-            case ActionStatus.Errored:
-              return throwError(() => ctx.error);
-            default:
-              return EMPTY;
-          }
-        })
-      )
-      .pipe(shareReplay());
+    return actionResult$.pipe(
+      mergeMap((ctx: ActionContext) => {
+        switch (ctx.status) {
+          case ActionStatus.Successful:
+            // The `createDispatchObservable` function should return the
+            // state, as its result is used by plugins.
+            return of(this._stateStream.getValue());
+          case ActionStatus.Errored:
+            return throwError(() => ctx.error);
+          default:
+            // Once dispatched or canceled, we complete it immediately because
+            // `dispatch()` should emit (or error, or complete) as soon as it succeeds or fails.
+            return of();
+        }
+      }),
+      shareReplay()
+    );
   }
 }
 
