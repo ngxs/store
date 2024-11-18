@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
 import { ReplaySubject } from 'rxjs';
@@ -15,16 +15,14 @@ const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 @Injectable({ providedIn: 'root' })
 export class LifecycleStateManager implements OnDestroy {
+  private _store = inject(Store);
+  private _internalStateOperations = inject(InternalStateOperations);
+  private _stateContextFactory = inject(StateContextFactory);
+  private _appBootstrappedState = inject(ɵNgxsAppBootstrappedState);
+
   private readonly _destroy$ = new ReplaySubject<void>(1);
 
   private _initStateHasBeenDispatched?: boolean;
-
-  constructor(
-    private _store: Store,
-    private _internalStateOperations: InternalStateOperations,
-    private _stateContextFactory: StateContextFactory,
-    private _appBootstrappedState: ɵNgxsAppBootstrappedState
-  ) {}
 
   ngOnDestroy(): void {
     this._destroy$.next();

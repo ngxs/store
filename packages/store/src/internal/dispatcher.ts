@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { inject, Injectable, NgZone } from '@angular/core';
 import { EMPTY, forkJoin, Observable, of, Subject, throwError } from 'rxjs';
 import { exhaustMap, filter, map, shareReplay, take } from 'rxjs/operators';
 
@@ -23,14 +23,12 @@ export class InternalDispatchedActionResults extends Subject<ActionContext> {}
 
 @Injectable({ providedIn: 'root' })
 export class InternalDispatcher {
-  constructor(
-    private _ngZone: NgZone,
-    private _actions: InternalActions,
-    private _actionResults: InternalDispatchedActionResults,
-    private _pluginManager: PluginManager,
-    private _stateStream: ɵStateStream,
-    private _ngxsExecutionStrategy: InternalNgxsExecutionStrategy
-  ) {}
+  private _ngZone = inject(NgZone);
+  private _actions = inject(InternalActions);
+  private _actionResults = inject(InternalDispatchedActionResults);
+  private _pluginManager = inject(PluginManager);
+  private _stateStream = inject(ɵStateStream);
+  private _ngxsExecutionStrategy = inject(InternalNgxsExecutionStrategy);
 
   /**
    * Dispatches event(s).

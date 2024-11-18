@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { getValue, setValue } from '@ngxs/store/plugins';
 import { ExistingState, StateOperator, isStateOperator } from '@ngxs/store/operators';
 import { Observable } from 'rxjs';
@@ -14,7 +14,7 @@ import { simplePatch } from './state-operators';
  */
 @Injectable({ providedIn: 'root' })
 export class StateContextFactory {
-  constructor(private _internalStateOperations: InternalStateOperations) {}
+  private _internalStateOperations = inject(InternalStateOperations);
 
   /**
    * Create the state context

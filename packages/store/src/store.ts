@@ -1,4 +1,4 @@
-import { computed, Inject, Injectable, Optional, Signal } from '@angular/core';
+import { computed, inject, Injectable, Signal } from '@angular/core';
 import {
   Observable,
   of,
@@ -30,6 +30,12 @@ type ActionOrArrayOfActions<T> = T extends (infer U)[] ? NonNullable<U>[] : NonN
 
 @Injectable({ providedIn: 'root' })
 export class Store {
+  private _stateStream = inject(ɵStateStream);
+  private _internalStateOperations = inject(InternalStateOperations);
+  private _config = inject(NgxsConfig);
+  private _internalExecutionStrategy = inject(InternalNgxsExecutionStrategy);
+  private _stateFactory = inject(StateFactory);
+
   /**
    * This is a derived state stream that leaves NGXS execution strategy to emit state changes within the Angular zone,
    * because state is being changed actually within the `<root>` zone, see `InternalDispatcher#dispatchSingle`.
@@ -40,17 +46,8 @@ export class Store {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  constructor(
-    private _stateStream: ɵStateStream,
-    private _internalStateOperations: InternalStateOperations,
-    private _config: NgxsConfig,
-    private _internalExecutionStrategy: InternalNgxsExecutionStrategy,
-    private _stateFactory: StateFactory,
-    @Optional()
-    @Inject(ɵINITIAL_STATE_TOKEN)
-    initialStateValue: any
-  ) {
-    this.initStateStream(initialStateValue);
+  constructor() {
+    this.initStateStream();
   }
 
   /**
@@ -146,7 +143,8 @@ export class Store {
     return makeSelectorFn(runtimeContext);
   }
 
-  private initStateStream(initialStateValue: any): void {
+  private initStateStream(): void {
+    const initialStateValue: any = inject(ɵINITIAL_STATE_TOKEN);
     const value = this._stateStream.value;
     const storeIsEmpty = !value || Object.keys(value).length === 0;
 

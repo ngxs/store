@@ -1,4 +1,4 @@
-import { PLATFORM_ID, Inject, Injectable, inject } from '@angular/core';
+import { PLATFORM_ID, Injectable, inject } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { ɵPlainObject } from '@ngxs/store/internals';
 import {
@@ -13,7 +13,6 @@ import {
 import {
   ɵDEFAULT_STATE_KEY,
   ɵALL_STATES_PERSISTED,
-  NgxsStoragePluginOptions,
   ɵNGXS_STORAGE_PLUGIN_OPTIONS
 } from '@ngxs/storage-plugin/internals';
 import { tap } from 'rxjs/operators';
@@ -27,16 +26,13 @@ const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
+  private _keysManager = inject(ɵNgxsStoragePluginKeysManager);
+  private _options = inject(ɵNGXS_STORAGE_PLUGIN_OPTIONS);
   private _allStatesPersisted = inject(ɵALL_STATES_PERSISTED);
-
-  constructor(
-    private _keysManager: ɵNgxsStoragePluginKeysManager,
-    @Inject(ɵNGXS_STORAGE_PLUGIN_OPTIONS) private _options: NgxsStoragePluginOptions,
-    @Inject(PLATFORM_ID) private _platformId: string
-  ) {}
+  private _isServer = isPlatformServer(inject(PLATFORM_ID));
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
-    if (isPlatformServer(this._platformId)) {
+    if (this._isServer) {
       return next(state, event);
     }
 

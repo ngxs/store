@@ -81,4 +81,6 @@ export interface NgxsDevtoolsOptions {
   traceLimit?: number;
 }
 
-export const NGXS_DEVTOOLS_OPTIONS = new InjectionToken('NGXS_DEVTOOLS_OPTIONS');
+export const NGXS_DEVTOOLS_OPTIONS = new InjectionToken<NgxsDevtoolsOptions>(
+  'NGXS_DEVTOOLS_OPTIONS'
+);

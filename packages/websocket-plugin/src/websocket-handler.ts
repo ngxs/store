@@ -1,4 +1,4 @@
-import { Injectable, Inject, NgZone, inject, DestroyRef } from '@angular/core';
+import { Injectable, NgZone, inject, DestroyRef } from '@angular/core';
 import { Actions, Store, ofActionDispatched } from '@ngxs/store';
 import { getValue } from '@ngxs/store/plugins';
 import { ReplaySubject, Subject, fromEvent, takeUntil } from 'rxjs';
@@ -18,6 +18,11 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class WebSocketHandler {
+  private _store = inject(Store);
+  private _ngZone = inject(NgZone);
+  private _actions$ = inject(Actions);
+  private _options = inject(NGXS_WEBSOCKET_OPTIONS);
+
   private _socket: WebSocket | null = null;
 
   private readonly _socketClosed$ = new Subject<void>();
@@ -26,12 +31,7 @@ export class WebSocketHandler {
 
   private readonly _destroy$ = new ReplaySubject<void>(1);
 
-  constructor(
-    private _store: Store,
-    private _ngZone: NgZone,
-    private _actions$: Actions,
-    @Inject(NGXS_WEBSOCKET_OPTIONS) private _options: NgxsWebSocketPluginOptions
-  ) {
+  constructor() {
     this._setupActionsListeners();
 
     const destroyRef = inject(DestroyRef);
