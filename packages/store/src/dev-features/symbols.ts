@@ -12,10 +12,11 @@ export interface NgxsDevelopmentOptions {
       };
 }
 
-export const NGXS_DEVELOPMENT_OPTIONS = new InjectionToken<NgxsDevelopmentOptions>(
-  typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_DEVELOPMENT_OPTIONS' : '',
-  {
-    providedIn: 'root',
-    factory: () => ({ warnOnUnhandledActions: true })
-  }
-);
+export const NGXS_DEVELOPMENT_OPTIONS =
+  /* @__PURE__ */ new InjectionToken<NgxsDevelopmentOptions>(
+    typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_DEVELOPMENT_OPTIONS' : '',
+    {
+      providedIn: 'root',
+      factory: () => ({ warnOnUnhandledActions: true })
+    }
+  );

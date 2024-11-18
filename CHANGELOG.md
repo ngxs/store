@@ -6,10 +6,11 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-- Refactor: Allow tree-shaking of dev-only code [#2259](https://github.com/ngxs/store/pull/2259)
 - Refactor: Use field initializers for injectees [#2258](https://github.com/ngxs/store/pull/2258)
+- Refactor: Allow tree-shaking of dev-only code [#2259](https://github.com/ngxs/store/pull/2259)
 - Fix(store): Run plugins in injection context [#2256](https://github.com/ngxs/store/pull/2256)
 - Fix(websocket-plugin): Do not dispatch action when root injector is destroyed [#2257](https://github.com/ngxs/store/pull/2257)
+- Refactor(store): Tree-shake development options token [#2260](https://github.com/ngxs/store/pull/2260)
 
 ### 18.1.5 2024-11-12
 
