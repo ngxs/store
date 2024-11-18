@@ -20,8 +20,6 @@ import { NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { TypedSelector } from './selectors';
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 // We need to check whether the provided `T` type extends an array in order to
 // apply the `NonNullable[]` type to its elements. This is because, for
 // `const actions = [undefined]`, type inference would result in `NonNullable<unknown>`
@@ -54,7 +52,7 @@ export class Store {
    * Dispatches action(s).
    */
   dispatch<T>(actionOrActions: ActionOrArrayOfActions<T>): Observable<void> {
-    if (NG_DEV_MODE) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       if (
         // If a single action is dispatched and it's nullable.
         actionOrActions == null ||

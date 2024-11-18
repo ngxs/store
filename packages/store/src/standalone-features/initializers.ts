@@ -11,8 +11,6 @@ import { SelectFactory } from '../decorators/select/select-factory';
 import { InternalStateOperations } from '../internal/state-operations';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 /**
  * This function is shared by both NgModule and standalone features.
  * When using `NgxsModule.forRoot` and `provideStore`, we can depend on the
@@ -78,14 +76,14 @@ export function featureStatesInitializer(): void {
  * InjectionToken that registers the global Store.
  */
 export const NGXS_ROOT_STORE_INITIALIZER = new InjectionToken<void>(
-  NG_DEV_MODE ? 'NGXS_ROOT_STORE_INITIALIZER' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_ROOT_STORE_INITIALIZER' : ''
 );
 
 /**
  * InjectionToken that registers feature states.
  */
 export const NGXS_FEATURE_STORE_INITIALIZER = new InjectionToken<void>(
-  NG_DEV_MODE ? 'NGXS_FEATURE_STORE_INITIALIZER' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_FEATURE_STORE_INITIALIZER' : ''
 );
 
 export const NGXS_ROOT_ENVIRONMENT_INITIALIZER: Provider[] = [

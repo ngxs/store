@@ -51,8 +51,6 @@ import { assignUnhandledCallback } from './unhandled-rxjs-error-callback';
 import { StateContextFactory } from './state-context-factory';
 import { ofActionDispatched } from '../operators/of-action';
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 function cloneDefaults(defaults: any): any {
   let value = defaults === undefined ? {} : defaults;
 
@@ -158,7 +156,7 @@ export class StateFactory implements OnDestroy {
    * Add a new state to the global defs.
    */
   add(stateClasses: ɵStateClassInternal[]): MappedStore[] {
-    if (NG_DEV_MODE) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       ensureStatesAreDecorated(stateClasses);
     }
 
@@ -182,7 +180,7 @@ export class StateFactory implements OnDestroy {
       // `State` decorator. This check is moved here because the `ɵprov` property
       // will not exist on the class in JIT mode (because it's set asynchronously
       // during JIT compilation through `Object.defineProperty`).
-      if (NG_DEV_MODE) {
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
         ensureStateClassIsInjectable(stateClass);
       }
 
@@ -289,7 +287,7 @@ export class StateFactory implements OnDestroy {
 
     // The `NgxsUnhandledActionsLogger` is a tree-shakable class which functions
     // only during development.
-    if (NG_DEV_MODE && !actionHasBeenHandled) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode && !actionHasBeenHandled) {
       const unhandledActionsLogger = this._injector.get(NgxsUnhandledActionsLogger, null);
       // The `NgxsUnhandledActionsLogger` will not be resolved by the injector if the
       // `NgxsDevelopmentModule` is not provided. It's enough to check whether the `injector.get`
@@ -312,7 +310,7 @@ export class StateFactory implements OnDestroy {
 
     for (const stateClass of stateClasses) {
       const stateName = ɵgetStoreMetadata(stateClass).name!;
-      if (NG_DEV_MODE) {
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
         ensureStateNameIsUnique(stateName, stateClass, statesMap);
       }
       const unmountedState = !statesMap[stateName];
