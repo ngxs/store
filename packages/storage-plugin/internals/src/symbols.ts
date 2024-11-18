@@ -10,8 +10,6 @@ export const ɵDEFAULT_STATE_KEY = '@@STATE';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 export const enum StorageOption {
   LocalStorage,
   SessionStorage
@@ -88,12 +86,12 @@ export interface ɵNgxsTransformedStoragePluginOptions extends NgxsStoragePlugin
 }
 
 export const ɵUSER_OPTIONS = new InjectionToken<NgxsStoragePluginOptions>(
-  NG_DEV_MODE ? 'USER_OPTIONS' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'USER_OPTIONS' : ''
 );
 
 // Determines whether all states in the NGXS registry should be persisted or not.
 export const ɵALL_STATES_PERSISTED = new InjectionToken<boolean>(
-  NG_DEV_MODE ? 'ALL_STATES_PERSISTED' : '',
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'ALL_STATES_PERSISTED' : '',
   {
     providedIn: 'root',
     factory: () => inject(ɵUSER_OPTIONS).keys === '*'
@@ -102,11 +100,11 @@ export const ɵALL_STATES_PERSISTED = new InjectionToken<boolean>(
 
 export const ɵNGXS_STORAGE_PLUGIN_OPTIONS =
   new InjectionToken<ɵNgxsTransformedStoragePluginOptions>(
-    NG_DEV_MODE ? 'NGXS_STORAGE_PLUGIN_OPTIONS' : ''
+    typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_STORAGE_PLUGIN_OPTIONS' : ''
   );
 
 export const STORAGE_ENGINE = new InjectionToken<StorageEngine>(
-  NG_DEV_MODE ? 'STORAGE_ENGINE' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'STORAGE_ENGINE' : ''
 );
 
 export interface StorageEngine {

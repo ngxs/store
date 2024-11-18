@@ -2,11 +2,11 @@ import { InjectionToken } from '@angular/core';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 // The injection token is used to resolve to custom NGXS plugins provided
 // at the root level through either `{provide}` scheme or `withNgxsPlugin`.
-export const NGXS_PLUGINS = new InjectionToken(NG_DEV_MODE ? 'NGXS_PLUGINS' : '');
+export const NGXS_PLUGINS = new InjectionToken(
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_PLUGINS' : ''
+);
 
 export type NgxsPluginFn = (state: any, mutation: any, next: NgxsNextPluginFn) => any;
 

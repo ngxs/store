@@ -7,12 +7,10 @@ import { ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 // The injection token is used to resolve a list of states provided at
 // the root level through either `NgxsModule.forRoot` or `provideStore`.
 export const ROOT_STATE_TOKEN = new InjectionToken<Array<ɵStateClass>>(
-  NG_DEV_MODE ? 'ROOT_STATE_TOKEN' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'ROOT_STATE_TOKEN' : ''
 );
 
 // The injection token is used to resolve a list of states provided at
@@ -20,13 +18,13 @@ export const ROOT_STATE_TOKEN = new InjectionToken<Array<ɵStateClass>>(
 // The Array<Array> is used to overload the resolved value of the token because
 // it is a multi-provider token.
 export const FEATURE_STATE_TOKEN = new InjectionToken<Array<Array<ɵStateClass>>>(
-  NG_DEV_MODE ? 'FEATURE_STATE_TOKEN' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'FEATURE_STATE_TOKEN' : ''
 );
 
 // The injection token is used to resolve to options provided at the root
 // level through either `NgxsModule.forRoot` or `provideStore`.
 export const NGXS_OPTIONS = new InjectionToken<NgxsModuleOptions>(
-  NG_DEV_MODE ? 'NGXS_OPTIONS' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_OPTIONS' : ''
 );
 
 export type NgxsLifeCycle = Partial<NgxsOnChanges> &

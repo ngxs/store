@@ -4,10 +4,8 @@ import { StorageEngine } from '@ngxs/storage-plugin/internals';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 export const LOCAL_STORAGE_ENGINE = /* @__PURE__ */ new InjectionToken<StorageEngine | null>(
-  NG_DEV_MODE ? 'LOCAL_STORAGE_ENGINE' : '',
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'LOCAL_STORAGE_ENGINE' : '',
   {
     providedIn: 'root',
     factory: () => (isPlatformBrowser(inject(PLATFORM_ID)) ? localStorage : null)
@@ -15,7 +13,7 @@ export const LOCAL_STORAGE_ENGINE = /* @__PURE__ */ new InjectionToken<StorageEn
 );
 
 export const SESSION_STORAGE_ENGINE = /* @__PURE__ */ new InjectionToken<StorageEngine | null>(
-  NG_DEV_MODE ? 'SESSION_STORAGE_ENGINE' : '',
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'SESSION_STORAGE_ENGINE' : '',
   {
     providedIn: 'root',
     factory: () => (isPlatformBrowser(inject(PLATFORM_ID)) ? sessionStorage : null)
