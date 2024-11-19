@@ -1,7 +1,6 @@
 import { APP_BOOTSTRAP_LISTENER, Provider, inject } from '@angular/core';
 import { ɵStateClass, ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 
-import { StateFactory } from '../internal/state-factory';
 import { CUSTOM_NGXS_EXECUTION_STRATEGY } from '../execution/symbols';
 import { NgxsModuleOptions, ROOT_STATE_TOKEN, NGXS_OPTIONS } from '../symbols';
 
@@ -14,7 +13,6 @@ export function getRootProviders(
   options: NgxsModuleOptions
 ): Provider[] {
   return [
-    StateFactory,
     ...states,
     {
       provide: ROOT_STATE_TOKEN,
