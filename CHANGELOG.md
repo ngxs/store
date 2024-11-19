@@ -13,6 +13,7 @@ $ npm install @ngxs/store@dev
 - Fix(websocket-plugin): Do not dispatch action when root injector is destroyed [#2257](https://github.com/ngxs/store/pull/2257)
 - Refactor(store): Replace `exhaustMap` [#2254](https://github.com/ngxs/store/pull/2254)
 - Refactor(store): Tree-shake development options token [#2260](https://github.com/ngxs/store/pull/2260)
+- Performance(store): Prevent initializing state factory at feature levels [#2261](https://github.com/ngxs/store/pull/2261)
 
 ### 18.1.5 2024-11-12
 
