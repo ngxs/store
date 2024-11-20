@@ -15,6 +15,7 @@ $ npm install @ngxs/store@dev
 - Refactor(store): Replace `exhaustMap` [#2254](https://github.com/ngxs/store/pull/2254)
 - Refactor(store): Tree-shake development options token [#2260](https://github.com/ngxs/store/pull/2260)
 - Performance(store): Prevent initializing state factory at feature levels [#2261](https://github.com/ngxs/store/pull/2261)
+- Revert: Revert router state changes [#2264](https://github.com/ngxs/store/pull/2264)
 
 ### 18.1.5 2024-11-12
 
@@ -22,7 +23,7 @@ $ npm install @ngxs/store@dev
 - Performance(store): Replace `instanceof Function` with `typeof` [#2247](https://github.com/ngxs/store/pull/2247)
 - Refactor(store): Use `Object.is` as default equality check [#2245](https://github.com/ngxs/store/pull/2245)
 - Refactor(store): Tree-shake internal state tokens [#2246](https://github.com/ngxs/store/pull/2246)
-- Refactor(router-plugin): Mark selectors as pure [#2248](https://github.com/ngxs/store/pull/2248)
+- Refactor(router-plugin): Mark selectors as pure [#2248](https://github.com/ngxs/store/pull/2248) **(Note: reverted in 18.1.6)**
 - Refactor(storage-plugin): Mark engine tokens as pure [#2249](https://github.com/ngxs/store/pull/2249)
 
 ### 18.1.4 2024-10-23

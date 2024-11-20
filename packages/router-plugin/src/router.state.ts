@@ -10,7 +10,7 @@ import {
   NavigationEnd,
   Event
 } from '@angular/router';
-import { Action, createSelector, State, StateContext, StateToken, Store } from '@ngxs/store';
+import { Action, Selector, State, StateContext, StateToken, Store } from '@ngxs/store';
 import {
   NavigationActionTiming,
   ɵNGXS_ROUTER_PLUGIN_OPTIONS
@@ -86,19 +86,17 @@ export class RouterState implements OnDestroy {
 
   private _destroy$ = new ReplaySubject<void>(1);
 
-  static state = /* @__PURE__ */ createSelector(
-    [ROUTER_STATE_TOKEN],
-    (state: RouterStateModel<RouterStateSnapshot>) => {
-      // The `state` is optional if the selector is invoked before the router
-      // state is registered in NGXS.
-      return state?.state;
-    }
-  );
+  @Selector()
+  static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
+    // The `state` is optional if the selector is invoked before the router
+    // state is registered in NGXS.
+    return state?.state;
+  }
 
-  static url = /* @__PURE__ */ createSelector(
-    [ROUTER_STATE_TOKEN],
-    state => state?.state?.url
-  );
+  @Selector()
+  static url(state: RouterStateModel): string | undefined {
+    return state?.state?.url;
+  }
 
   constructor() {
     this._setUpStoreListener();
