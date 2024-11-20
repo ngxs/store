@@ -10,6 +10,7 @@ import { StatesAndDefaults } from '../internal/internals';
 import { SelectFactory } from '../decorators/select/select-factory';
 import { InternalStateOperations } from '../internal/state-operations';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
+import { installOnUnhandhedErrorHandler } from '../internal/unhandled-rxjs-error-callback';
 
 /**
  * This function is shared by both NgModule and standalone features.
@@ -17,6 +18,12 @@ import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
  * same initialization functionality.
  */
 export function rootStoreInitializer(): void {
+  // Override the RxJS `config.onUnhandledError` within the root store initializer,
+  // but only after other code has already executed.
+  // If users have a custom `config.onUnhandledError`, we might overwrite it too
+  // early and capture the original `config.onUnhandledError` before it is properly set.
+  installOnUnhandhedErrorHandler();
+
   const prebootFns = inject(NGXS_PREBOOT_FNS, { optional: true }) || [];
   prebootFns.forEach(prebootFn => prebootFn());
 
