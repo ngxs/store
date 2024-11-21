@@ -99,6 +99,7 @@ jobs:
           - 'integration:ng16'
           - 'integration:ng17'
           - 'integration:ng18'
+          - 'integration:ng19'
           - 'test:types'
 
     steps:

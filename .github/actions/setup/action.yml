@@ -57,6 +57,7 @@ runs:
           ./integrations/hello-world-ng16/dist-integration
           ./integrations/hello-world-ng17/dist-integration
           ./integrations/hello-world-ng18/dist-integration
+          ./integrations/hello-world-ng19/dist-integration
         key: ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-${{ inputs.github-sha }}
         restore-keys: |
           ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-
