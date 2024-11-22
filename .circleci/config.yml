@@ -280,6 +280,10 @@ workflows:
           requires:
             - build
 
+      - integration_ng19_tests:
+          requires:
+            - build
+
       - integration_test_types:
           requires:
             - build
