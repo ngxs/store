@@ -102,7 +102,8 @@ describe('Select', () => {
       @FreezeClass
       @Component({
         selector: 'my-select',
-        template: ''
+        template: '',
+        standalone: false
       })
       class MySelectComponent {
         @Select((state: any) => state)
@@ -132,7 +133,7 @@ describe('Select', () => {
     expect(removeDollarAtTheEnd('foo')).toBe('foo');
 
     // Act
-    @Component({ template: '' })
+    @Component({ template: '', standalone: false })
     class SelectComponent {
       @Select()
       counter$: Observable<any>;
@@ -159,7 +160,8 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-0',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StringSelectComponent {
       @Select('counter') state: Observable<StateModel>;
@@ -192,7 +194,8 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       @Select(MyState) state: Observable<StateModel>;
@@ -224,7 +227,8 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       @Select((state: any) => state.counter.foo)
@@ -250,7 +254,8 @@ describe('Select', () => {
 
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       @Select((state: any) => state)
@@ -285,7 +290,8 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       @Select((state: any) => state.counter.foo)
@@ -316,7 +322,8 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       counter$: Observable<string> = inject(Store).select(
@@ -364,7 +371,8 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       state$ = inject(Store).select(NullSelectorState.notHere);
@@ -418,7 +426,8 @@ describe('Select', () => {
 
     @Component({
       selector: 'my-counter',
-      template: ``
+      template: ``,
+      standalone: false
     })
     class CounterComponent {
       count$ = this.store.select((state: { count: { number: { value: number } } }) => {
@@ -482,7 +491,8 @@ describe('Select', () => {
 
       @Component({
         selector: 'app-root',
-        template: ''
+        template: '',
+        standalone: false
       })
       class TestComponent {}
 

@@ -80,7 +80,9 @@ describe('preboot feature + stable', () => {
       );
 
       // Assert
-      expect(html).toMatchSnapshot();
+      // Replace `ng-version="19.0.0"` to avoid updating the snapshot every time
+      // we bump the Angular version.
+      expect(html.replace(/ng-version="(\d+\.\d+\.\d+)"/, '')).toMatchSnapshot();
     })
   );
 });

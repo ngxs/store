@@ -230,7 +230,8 @@ describe('zone', () => {
 
       @Component({
         selector: 'app-root',
-        template: ''
+        template: '',
+        standalone: false
       })
       class MockComponent {}
 

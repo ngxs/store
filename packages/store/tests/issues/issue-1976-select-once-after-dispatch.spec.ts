@@ -30,7 +30,8 @@ describe('Select once after dispatch (https://github.com/ngxs/store/issues/1976)
     template: `
       <h1>{{ counter$ | async }}</h1>
       <button (click)="dispatch()">Click me</button>
-    `
+    `,
+    standalone: false
   })
   class TestComponent {
     selectSnapshotValue: number | null = null;

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`preboot feature + stable should wait for app to become stable 1`] = `
-"<html><head></head><body><app-root ng-version="18.0.6" ng-server-context="other"><div>[
+"<html><head></head><body><app-root  ng-server-context="other"><div>[
   "Angola",
   "Namibia",
   "Botswana",
