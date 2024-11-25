@@ -4,8 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgxsTestComponent } from './ngxs-test.component';
 
 @NgModule({
-  imports: [BrowserModule],
-  declarations: [NgxsTestComponent]
+  imports: [BrowserModule, NgxsTestComponent]
 })
 export class NgxsTestModule {
   public static ngDoBootstrap(app: ApplicationRef): void {

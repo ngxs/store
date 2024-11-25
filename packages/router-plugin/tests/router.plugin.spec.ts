@@ -203,7 +203,8 @@ async function createTestModule(
 ) {
   @Component({
     selector: 'app-root',
-    template: '<router-outlet></router-outlet>'
+    template: '<router-outlet></router-outlet>',
+    standalone: false
   })
   class AppComponent {}
 
@@ -212,7 +213,8 @@ async function createTestModule(
 
   @Component({
     selector: 'pagea-cmp',
-    template: 'pagea-cmp'
+    template: 'pagea-cmp',
+    standalone: false
   })
   class SimpleComponent {
     constructor(store: Store) {

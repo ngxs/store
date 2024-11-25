@@ -43,7 +43,8 @@ describe('Multiple `ngxsForm` bindings (https://github.com/ngxs/store/issues/182
       <form [formGroup]="form" ngxsForm="user.userForm">
         <input id="surname" formControlName="surname" />
       </form>
-    `
+    `,
+    standalone: false
   })
   class TestComponent {
     form = new FormGroup({

@@ -36,7 +36,7 @@ describe('State deserialization for keys with dot notation (https://github.com/n
   @Injectable()
   class AboutState {}
 
-  @Component({ selector: 'app-root', template: '' })
+  @Component({ selector: 'app-root', template: '', standalone: false })
   class TestComponent {}
 
   @NgModule({

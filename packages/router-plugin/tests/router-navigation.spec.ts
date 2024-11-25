@@ -42,25 +42,29 @@ describe('RouterNavigation', () => {
 
   @Component({
     selector: 'app-root',
-    template: '<router-outlet></router-outlet>'
+    template: '<router-outlet></router-outlet>',
+    standalone: false
   })
   class RootComponent {}
 
   @Component({
     selector: 'home',
-    template: ''
+    template: '',
+    standalone: false
   })
   class HomeComponent {}
 
   @Component({
     selector: 'error',
-    template: ''
+    template: '',
+    standalone: false
   })
   class ErrorComponent {}
 
   @Component({
     selector: 'success',
-    template: ''
+    template: '',
+    standalone: false
   })
   class SuccessComponent {}
 
