@@ -8,6 +8,7 @@
 **/src/environments/version.ts
 **/builds
 **/@ngxs*
+**/@tutorials*
 
 # dependencies
 **/node_modules
@@ -51,6 +52,8 @@ testem.log
 /dist-lib
 /dist-integration
 **/_ignore
+.astro
+
 
 # testing
 /junit/

@@ -1,12 +1,10 @@
 import { InjectionToken, makeEnvironmentProviders } from '@angular/core';
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 /**
  * InjectionToken that registers preboot functions (called before the root initializer).
  */
 export const NGXS_PREBOOT_FNS = new InjectionToken<VoidFunction[]>(
-  NG_DEV_MODE ? 'NGXS_PREBOOT_FNS' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_PREBOOT_FNS' : ''
 );
 
 /**

@@ -17,7 +17,9 @@ yarn_install_var: &yarn_install
   run:
     name: Yarn Install Packages
     # We install deps based on the frozen yarn file, so we know it's always the same
-    command: yarn install --frozen-lockfile --cache-folder ~/.cache/yarn --non-interactive
+    command: |
+      yarn install --frozen-lockfile --cache-folder ~/.cache/yarn --non-interactive
+      yarn tutorials:install
 
 # Save yarn cache
 save_cache_var: &save_cache
@@ -85,7 +87,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Run ESLint analyzer
-          command: yarn nx run-many --target=lint --all
+          command: yarn nx run-many --target=lint --all --exclude=create-app
 
   unit_tests:
     <<: *job_defaults

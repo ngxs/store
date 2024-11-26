@@ -27,8 +27,8 @@ runs:
         SCRIPT: ${{ inputs.script }}
 
     - name: Upload ${{ inputs.script }} artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.artifact-name.outputs.value }}
-        path: ./integrations/**/dist-integration/main.*.js
+        path: ./integrations/**/dist-integration/**/main*.js
         retention-days: 1

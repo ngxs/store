@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, flushMicrotasks } from '@angular/core/testing';
 import { NgxsModule, State, Store, createPropertySelectors } from '@ngxs/store';
+import { ɵStateClass } from '@ngxs/store/internals';
+import {
+  ConsoleRecorder,
+  loggedError,
+  skipConsoleLogging
+} from '@ngxs/store/internals/testing';
 
 describe('createPropertySelectors', () => {
   interface MyStateModel {
@@ -22,9 +28,9 @@ describe('createPropertySelectors', () => {
   @Injectable()
   class MyState {}
 
-  function setupFixture() {
+  function setupFixture(states?: ɵStateClass[]) {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [NgxsModule.forRoot(states || [MyState])]
     });
     const store: Store = TestBed.inject(Store);
     const setState = (newState: MyStateModel) => store.reset({ myState: newState });
@@ -64,39 +70,54 @@ describe('createPropertySelectors', () => {
       );
     });
 
-    it('should fail if a class that is not a selector is provided', () => {
-      // Arrange
-      let error: Error | null = null;
-      // Act
-      try {
-        class NotAState {}
-        createPropertySelectors(NotAState);
-      } catch (err) {
-        error = err as Error;
+    function isClass(obj) {
+      const isCtorClass =
+        obj.constructor && obj.constructor.toString().substring(0, 5) === 'class';
+      if (obj.prototype === undefined) {
+        return isCtorClass;
       }
-      // Assert
-      expect(error).not.toBeNull();
-      expect(error?.message).toMatchInlineSnapshot(
-        `"[createPropertySelectors]: The value provided as the parent selector is not a valid selector."`
-      );
-    });
+      const isPrototypeCtorClass =
+        obj.prototype.constructor &&
+        obj.prototype.constructor.toString &&
+        obj.prototype.constructor.toString().substring(0, 5) === 'class';
+      return isCtorClass || isPrototypeCtorClass;
+    }
 
-    it('should fail if a function that is not a selector is provided', () => {
+    it('should fail if a class that is not a selector is provided', fakeAsync(async () => {
       // Arrange
-      let error: Error | null = null;
-      function NotASelector() {}
-      // Act
-      try {
-        createPropertySelectors(NotASelector);
-      } catch (err) {
-        error = err as Error;
-      }
+      const consoleRecorder: ConsoleRecorder = [];
+      class NotAState {}
+      await skipConsoleLogging(async () => {
+        // Act
+        createPropertySelectors(NotAState);
+        flushMicrotasks();
+      }, consoleRecorder);
       // Assert
-      expect(error).not.toBeNull();
-      expect(error?.message).toMatchInlineSnapshot(
-        `"[createPropertySelectors]: The value provided as the parent selector is not a valid selector."`
-      );
-    });
+      expect(consoleRecorder).not.toHaveLength(0);
+      expect(consoleRecorder).toEqual([
+        loggedError(
+          '[createPropertySelectors]: The value provided as the parent selector is not a valid selector.'
+        )
+      ]);
+    }));
+
+    it('should fail if a function that is not a selector is provided', fakeAsync(async () => {
+      // Arrange
+      const consoleRecorder: ConsoleRecorder = [];
+      function NotASelector() {}
+      await skipConsoleLogging(async () => {
+        // Act
+        createPropertySelectors(NotASelector);
+        flushMicrotasks();
+      }, consoleRecorder);
+      // Assert
+      expect(consoleRecorder).not.toHaveLength(0);
+      expect(consoleRecorder).toEqual([
+        loggedError(
+          '[createPropertySelectors]: The value provided as the parent selector is not a valid selector.'
+        )
+      ]);
+    }));
   });
 
   it('should create a selector for each property of state', () => {
@@ -185,5 +206,38 @@ describe('createPropertySelectors', () => {
     expect(slices1.property1).not.toBe(slices2.property1);
     expect(slices1.property2).not.toBe(slices2.property2);
     expect(slices1.emptyProperty).not.toBe(slices2.emptyProperty);
+  });
+
+  describe('[Creation]', () => {
+    function createPropertySelectorsInState() {
+      @State<MyStateModel>({
+        name: 'myState',
+        defaults: {
+          property1: 'testValue',
+          property2: [1, 2, 3],
+          emptyProperty: {}
+        }
+      })
+      @Injectable()
+      class MyState2 {
+        static readonly _props = createPropertySelectors<MyStateModel>(MyState2);
+      }
+
+      const result = setupFixture([MyState2]);
+      return {
+        ...result,
+        selectors: MyState2._props
+      };
+    }
+
+    it('should allow creation of the pick selector within a state class', () => {
+      // Arrange
+      // Act
+      const { selectors, store } = createPropertySelectorsInState();
+      // Assert
+      expect(selectors.property1).toBeDefined();
+      const property1Value = store.selectSnapshot(selectors.property1);
+      expect(property1Value).toEqual('testValue');
+    });
   });
 });

@@ -6,7 +6,6 @@ import {
   makeEnvironmentProviders
 } from '@angular/core';
 import { withNgxsPlugin } from '@ngxs/store';
-import { NGXS_PLUGINS } from '@ngxs/store/plugins';
 
 import { NgxsLoggerPlugin } from './logger.plugin';
 import { NgxsLoggerPluginOptions, NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';
@@ -35,11 +34,7 @@ export class NgxsLoggerPluginModule {
     return {
       ngModule: NgxsLoggerPluginModule,
       providers: [
-        {
-          provide: NGXS_PLUGINS,
-          useClass: NgxsLoggerPlugin,
-          multi: true
-        },
+        withNgxsPlugin(NgxsLoggerPlugin),
         {
           provide: USER_OPTIONS,
           useValue: options

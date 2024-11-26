@@ -1,11 +1,5 @@
-import {
-  NgModule,
-  ModuleWithProviders,
-  EnvironmentProviders,
-  makeEnvironmentProviders
-} from '@angular/core';
+import { NgModule, ModuleWithProviders, EnvironmentProviders } from '@angular/core';
 import { withNgxsPlugin } from '@ngxs/store';
-import { NGXS_PLUGINS } from '@ngxs/store/plugins';
 
 import { NgxsFormPlugin } from './form.plugin';
 import { NgxsFormDirective } from './directive';
@@ -18,17 +12,11 @@ export class NgxsFormPluginModule {
   static forRoot(): ModuleWithProviders<NgxsFormPluginModule> {
     return {
       ngModule: NgxsFormPluginModule,
-      providers: [
-        {
-          provide: NGXS_PLUGINS,
-          useClass: NgxsFormPlugin,
-          multi: true
-        }
-      ]
+      providers: [withNgxsPlugin(NgxsFormPlugin)]
     };
   }
 }
 
 export function withNgxsFormPlugin(): EnvironmentProviders {
-  return makeEnvironmentProviders([withNgxsPlugin(NgxsFormPlugin)]);
+  return withNgxsPlugin(NgxsFormPlugin);
 }

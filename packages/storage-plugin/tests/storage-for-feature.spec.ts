@@ -98,7 +98,8 @@ describe('forFeature', () => {
     'should log an error if the `keys` property is set to `*`',
     freshPlatform(async () => {
       // Arrange
-      const spy = jest.spyOn(console, 'error');
+      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
       const appConfig = setupAppConfig({
         keys: '*'
@@ -117,6 +118,7 @@ describe('forFeature', () => {
         );
       } finally {
         spy.mockRestore();
+        logSpy.mockRestore();
       }
     })
   );

@@ -328,6 +328,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
 
       // Act
       const spy = jest.spyOn(console, 'warn').mockImplementation();
+      const logSpy = jest.spyOn(console, 'log').mockImplementation();
 
       await platformBrowserDynamic().bootstrapModule(MockModule, { ngZone: 'noop' });
 
@@ -336,6 +337,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
         expect(spy).toHaveBeenCalledWith(getZoneWarningMessage());
       } finally {
         spy.mockRestore();
+        logSpy.mockRestore();
       }
     })
   );

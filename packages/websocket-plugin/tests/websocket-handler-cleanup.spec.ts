@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { NgxsModule, Store } from '@ngxs/store';
-import { freshPlatform } from '@ngxs/store/internals/testing';
+import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import { Server } from 'mock-socket';
 
@@ -38,10 +38,13 @@ describe('WebSocketHandler cleanup', () => {
     freshPlatform(async done => {
       // Arrange & act
       const server = new Server(url);
-      const ngModuleRef = await platformBrowserDynamic().bootstrapModule(TestModule);
+      const ngModuleRef = await skipConsoleLogging(() =>
+        platformBrowserDynamic().bootstrapModule(TestModule)
+      );
       const store = ngModuleRef.injector.get(Store);
       const webSocketHandler = ngModuleRef.injector.get(WebSocketHandler);
-      const ngOnDestroySpy = jest.spyOn(webSocketHandler, 'ngOnDestroy');
+      const nextSpy = jest.fn();
+      webSocketHandler['_destroy$'].subscribe(nextSpy);
 
       store.dispatch(new ConnectWebSocket());
 
@@ -49,7 +52,7 @@ describe('WebSocketHandler cleanup', () => {
         server.on('close', () => {
           try {
             // Assert
-            expect(ngOnDestroySpy).toHaveBeenCalled();
+            expect(nextSpy).toHaveBeenCalled();
           } finally {
             server.stop(done);
           }

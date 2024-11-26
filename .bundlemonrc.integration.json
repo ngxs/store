@@ -2,18 +2,28 @@
   "baseDir": "./integrations/",
   "subProject": "Integration Projects",
   "defaultCompression": "none",
+  "includeCommitMessage": true,
   "files": [
     {
       "friendlyName": "Main bundles",
-      "path": "./**/dist-integration/main.<hash>.js",
+      "path": "./**/dist-integration/**/main{-,.}<hash>.js",
       "maxPercentIncrease": 1
     },
     {
       "friendlyName": "Main bundles(Gzip)",
-      "path": "./**/dist-integration/main.<hash>.js",
+      "path": "./**/dist-integration/**/main{-,.}<hash>.js",
       "compression": "gzip",
       "maxPercentIncrease": 1
     }
   ],
-  "reportOutput": ["github"]
+  "reportOutput": [
+    [
+      "github",
+      {
+        "checkRun": false,
+        "commitStatus": true,
+        "prComment": true
+      }
+    ]
+  ]
 }

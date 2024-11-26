@@ -1,4 +1,4 @@
-import { computed, Inject, Injectable, Optional, Signal } from '@angular/core';
+import { computed, inject, Injectable, Signal } from '@angular/core';
 import {
   Observable,
   of,
@@ -20,8 +20,20 @@ import { NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { TypedSelector } from './selectors';
 
+// We need to check whether the provided `T` type extends an array in order to
+// apply the `NonNullable[]` type to its elements. This is because, for
+// `const actions = [undefined]`, type inference would result in `NonNullable<unknown>`
+// rather than `NonNullable<unknown>[]`.
+type ActionOrArrayOfActions<T> = T extends (infer U)[] ? NonNullable<U>[] : NonNullable<T>;
+
 @Injectable({ providedIn: 'root' })
 export class Store {
+  private _stateStream = inject(ɵStateStream);
+  private _internalStateOperations = inject(InternalStateOperations);
+  private _config = inject(NgxsConfig);
+  private _internalExecutionStrategy = inject(InternalNgxsExecutionStrategy);
+  private _stateFactory = inject(StateFactory);
+
   /**
    * This is a derived state stream that leaves NGXS execution strategy to emit state changes within the Angular zone,
    * because state is being changed actually within the `<root>` zone, see `InternalDispatcher#dispatchSingle`.
@@ -32,23 +44,26 @@ export class Store {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  constructor(
-    private _stateStream: ɵStateStream,
-    private _internalStateOperations: InternalStateOperations,
-    private _config: NgxsConfig,
-    private _internalExecutionStrategy: InternalNgxsExecutionStrategy,
-    private _stateFactory: StateFactory,
-    @Optional()
-    @Inject(ɵINITIAL_STATE_TOKEN)
-    initialStateValue: any
-  ) {
-    this.initStateStream(initialStateValue);
+  constructor() {
+    this.initStateStream();
   }
 
   /**
-   * Dispatches event(s).
+   * Dispatches action(s).
    */
-  dispatch(actionOrActions: any | any[]): Observable<void> {
+  dispatch<T>(actionOrActions: ActionOrArrayOfActions<T>): Observable<void> {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+      if (
+        // If a single action is dispatched and it's nullable.
+        actionOrActions == null ||
+        // If a list of actions is dispatched and any of the actions are nullable.
+        (Array.isArray(actionOrActions) && actionOrActions.some(action => action == null))
+      ) {
+        const error = new Error('`dispatch()` was called without providing an action.');
+        return throwError(() => error);
+      }
+    }
+
     return this._internalStateOperations.getRootStateOperations().dispatch(actionOrActions);
   }
 
@@ -126,7 +141,8 @@ export class Store {
     return makeSelectorFn(runtimeContext);
   }
 
-  private initStateStream(initialStateValue: any): void {
+  private initStateStream(): void {
+    const initialStateValue: any = inject(ɵINITIAL_STATE_TOKEN);
     const value = this._stateStream.value;
     const storeIsEmpty = !value || Object.keys(value).length === 0;
 

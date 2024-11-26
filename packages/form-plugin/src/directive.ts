@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Directive, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { Actions, ofActionDispatched, Store } from '@ngxs/store';
 import { getValue } from '@ngxs/store/plugins';
@@ -38,14 +38,12 @@ export class NgxsFormDirective implements OnInit, OnDestroy {
 
   private _updating = false;
 
-  private readonly _destroy$ = new ReplaySubject<void>(1);
+  private _actions$ = inject(Actions);
+  private _store = inject(Store);
+  private _formGroupDirective = inject(FormGroupDirective);
+  private _cd = inject(ChangeDetectorRef);
 
-  constructor(
-    private _actions$: Actions,
-    private _store: Store,
-    private _formGroupDirective: FormGroupDirective,
-    private _cd: ChangeDetectorRef
-  ) {}
+  private readonly _destroy$ = new ReplaySubject<void>(1);
 
   ngOnInit() {
     this._actions$

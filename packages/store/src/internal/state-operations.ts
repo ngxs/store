@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ɵStateStream } from '@ngxs/store/internals';
 
 import { StateOperations, StatesAndDefaults } from '../internal/internals';
@@ -11,11 +11,9 @@ import { deepFreeze } from '../utils/freeze';
  */
 @Injectable({ providedIn: 'root' })
 export class InternalStateOperations {
-  constructor(
-    private _stateStream: ɵStateStream,
-    private _dispatcher: InternalDispatcher,
-    private _config: NgxsConfig
-  ) {}
+  private _stateStream = inject(ɵStateStream);
+  private _dispatcher = inject(InternalDispatcher);
+  private _config = inject(NgxsConfig);
 
   /**
    * Returns the root state operators.

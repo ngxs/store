@@ -18,15 +18,15 @@ From time to time we will be posting about projects that have been started under
 
 #### Labs Packages
 
-| Package                                                                                      | Version                                                                          | Status      |
-| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ----------- |
-| [@ngxs-labs/data](https://npmjs.com/package/@ngxs-labs/data)                                 | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fdata/latest.svg)                 | Stable      |
-| [@ngxs-labs/emitter](https://npmjs.com/package/@ngxs-labs/emitter)                           | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Femitter/latest.svg)              | Stable      |
-| [@ngxs-labs/immer-adapter](https://npmjs.com/package/@ngxs-labs/immer-adapter)               | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fimmer-adapter/latest.svg)        | Stable      |
-| [@ngxs-labs/dispatch-decorator](https://npmjs.com/package/@ngxs-labs/dispatch-decorator)     | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fdispatch-decorator/latest.svg)   | Stable      |
-| [@ngxs-labs/select-snapshot](https://npmjs.com/package/@ngxs-labs/select-snapshot)           | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fselect-snapshot/latest.svg)      | Stable      |
-| [@ngxs-labs/async-storage-plugin](https://npmjs.com/package/@ngxs-labs/async-storage-plugin) | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fasync-storage-plugin/latest.svg) | Alpha       |
-| [@ngxs-labs/entity-state](https://npmjs.com/package/@ngxs-labs/entity-state)                 | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fentity-state/latest.svg)         | Development |
-| [@ngxs-labs/actions-executing](https://npmjs.com/package/@ngxs-labs/actions-executing)       | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Factions-executing/latest.svg)    | Alpha       |
-| [@ngxs-labs/attach-action](https://npmjs.com/package/@ngxs-labs/attach-action)               | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fattach-action/latest.svg)        | Alpha       |
-| [@ngxs-labs/firestore-plugin](https://npmjs.com/package/@ngxs-labs/firestore-plugin)         | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Ffirestore-plugin/latest.svg)     | Alpha       |
+| Package                                                                                      | Version                                                                                                                        | Status      |
+|----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|-------------|
+| [@anglar-ru/ngxs](https://angular-ru.gitbook.io/sdk/ngxs/ngxs)                             | [![latest](https://img.shields.io/npm/v/%40angular-ru%2Fngxs/latest.svg)](https://npmjs.com/package/@angular-ru/ngxs) | Stable      |
+| [@ngxs-labs/emitter](https://npmjs.com/package/@ngxs-labs/emitter)                           | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Femitter/latest.svg)                                                            | Stable      |
+| [@ngxs-labs/immer-adapter](https://npmjs.com/package/@ngxs-labs/immer-adapter)               | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fimmer-adapter/latest.svg)                                                      | Stable      |
+| [@ngxs-labs/dispatch-decorator](https://npmjs.com/package/@ngxs-labs/dispatch-decorator)     | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fdispatch-decorator/latest.svg)                                                 | Stable      |
+| [@ngxs-labs/select-snapshot](https://npmjs.com/package/@ngxs-labs/select-snapshot)           | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fselect-snapshot/latest.svg)                                                    | Stable      |
+| [@ngxs-labs/async-storage-plugin](https://npmjs.com/package/@ngxs-labs/async-storage-plugin) | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fasync-storage-plugin/latest.svg)                                               | Alpha       |
+| [@ngxs-labs/entity-state](https://npmjs.com/package/@ngxs-labs/entity-state)                 | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fentity-state/latest.svg)                                                       | Development |
+| [@ngxs-labs/actions-executing](https://npmjs.com/package/@ngxs-labs/actions-executing)       | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Factions-executing/latest.svg)                                                  | Alpha       |
+| [@ngxs-labs/attach-action](https://npmjs.com/package/@ngxs-labs/attach-action)               | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Fattach-action/latest.svg)                                                      | Alpha       |
+| [@ngxs-labs/firestore-plugin](https://npmjs.com/package/@ngxs-labs/firestore-plugin)         | ![](https://img.shields.io/npm/v/%40ngxs-labs%2Ffirestore-plugin/latest.svg)                                                   | Alpha       |

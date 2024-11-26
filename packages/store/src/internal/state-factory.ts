@@ -1,13 +1,4 @@
-import {
-  Injectable,
-  Injector,
-  Optional,
-  SkipSelf,
-  Inject,
-  OnDestroy,
-  ɵisPromise,
-  inject
-} from '@angular/core';
+import { Injectable, Injector, OnDestroy, inject, ɵisPromise } from '@angular/core';
 import {
   ɵmemoize,
   ɵMETA_KEY,
@@ -23,22 +14,19 @@ import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugi
 import {
   forkJoin,
   from,
-  Observable,
+  isObservable,
   of,
-  throwError,
   Subscription,
-  Subject,
-  isObservable
-} from 'rxjs';
-import {
+  throwError,
   catchError,
   defaultIfEmpty,
   filter,
   map,
   mergeMap,
-  shareReplay,
-  takeUntil
-} from 'rxjs/operators';
+  takeUntil,
+  finalize,
+  Observable
+} from 'rxjs';
 
 import { NgxsConfig } from '../symbols';
 import {
@@ -52,17 +40,16 @@ import {
   StatesByName,
   topologicalSort
 } from './internals';
-import { ofActionDispatched } from '../operators/of-action';
+import { NgxsActionRegistry } from '../actions/action-registry';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { InternalDispatchedActionResults } from '../internal/dispatcher';
-import { StateContextFactory } from '../internal/state-context-factory';
 import { ensureStateNameIsUnique, ensureStatesAreDecorated } from '../utils/store-validators';
 import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
 import { NgxsUnhandledErrorHandler } from '../ngxs-unhandled-error-handler';
 import { assignUnhandledCallback } from './unhandled-rxjs-error-callback';
-
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
+import { StateContextFactory } from './state-context-factory';
+import { ofActionDispatched } from '../operators/of-action';
 
 function cloneDefaults(defaults: any): any {
   let value = defaults === undefined ? {} : defaults;
@@ -82,54 +69,31 @@ function cloneDefaults(defaults: any): any {
  * The `StateFactory` class adds root and feature states to the graph.
  * This extracts state names from state classes, checks if they already
  * exist in the global graph, throws errors if their names are invalid, etc.
- * See its constructor, state factories inject state factories that are
- * parent-level providers. This is required to get feature states from the
- * injector on the same level.
  *
- * The `NgxsModule.forFeature(...)` returns `providers: [StateFactory, ...states]`.
- * The `StateFactory` is initialized on the feature level and goes through `...states`
- * to get them from the injector through `injector.get(state)`.
+ * Root and feature initializers call `addAndReturnDefaults()` to add those states
+ * to the global graph. Since `addAndReturnDefaults` runs within the injection
+ * context (which might be the root injector or a feature injector), we can
+ * retrieve an instance of the state class using `inject(StateClass)`.
  * @ignore
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class StateFactory implements OnDestroy {
-  private _actionsSubscription: Subscription | null = null;
+  private readonly _injector = inject(Injector);
+  private readonly _config = inject(NgxsConfig);
+  private readonly _stateContextFactory = inject(StateContextFactory);
+  private readonly _actions = inject(InternalActions);
+  private readonly _actionResults = inject(InternalDispatchedActionResults);
+  private readonly _initialState = inject(ɵINITIAL_STATE_TOKEN, { optional: true });
+  private readonly _actionRegistry = inject(NgxsActionRegistry);
+  private readonly _propGetter = inject(ɵPROP_GETTER);
 
-  private _propGetter = inject(ɵPROP_GETTER);
+  private _actionsSubscription: Subscription | null = null;
 
   private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler = null!;
 
-  constructor(
-    private _injector: Injector,
-    private _config: NgxsConfig,
-    @Optional()
-    @SkipSelf()
-    private _parentFactory: StateFactory,
-    private _actions: InternalActions,
-    private _actionResults: InternalDispatchedActionResults,
-    private _stateContextFactory: StateContextFactory,
-    @Optional()
-    @Inject(ɵINITIAL_STATE_TOKEN)
-    private _initialState: any
-  ) {}
-
   private _states: MappedStore[] = [];
-
-  get states(): MappedStore[] {
-    return this._parentFactory ? this._parentFactory.states : this._states;
-  }
-
   private _statesByName: StatesByName = {};
-
-  get statesByName(): StatesByName {
-    return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
-  }
-
   private _statePaths: ɵPlainObjectOf<string> = {};
-
-  private get statePaths(): ɵPlainObjectOf<string> {
-    return this._parentFactory ? this._parentFactory.statePaths : this._statePaths;
-  }
 
   getRuntimeSelectorContext = ɵmemoize(() => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -137,36 +101,34 @@ export class StateFactory implements OnDestroy {
     const propGetter = stateFactory._propGetter;
 
     function resolveGetter(key: string) {
-      const path = stateFactory.statePaths[key];
+      const path = stateFactory._statePaths[key];
       return path ? propGetter(path.split('.')) : null;
     }
 
-    const context: ɵRuntimeSelectorContext = this._parentFactory
-      ? this._parentFactory.getRuntimeSelectorContext()
-      : {
-          getStateGetter(key: string) {
-            // Use `@__INLINE__` annotation to forcely inline `resolveGetter`.
-            // This is a Terser annotation, which will function only in the production mode.
-            let getter = /*@__INLINE__*/ resolveGetter(key);
-            if (getter) {
-              return getter;
-            }
-            return (...args) => {
-              // Late loaded getter
-              if (!getter) {
-                getter = /*@__INLINE__*/ resolveGetter(key);
-              }
-              return getter ? getter(...args) : undefined;
-            };
-          },
-          getSelectorOptions(localOptions?: ɵSharedSelectorOptions) {
-            const globalSelectorOptions = stateFactory._config.selectorOptions;
-            return {
-              ...globalSelectorOptions,
-              ...(localOptions || {})
-            };
+    const context: ɵRuntimeSelectorContext = {
+      getStateGetter(key: string) {
+        // Use `@__INLINE__` annotation to forcely inline `resolveGetter`.
+        // This is a Terser annotation, which will function only in the production mode.
+        let getter = /*@__INLINE__*/ resolveGetter(key);
+        if (getter) {
+          return getter;
+        }
+        return (...args) => {
+          // Late loaded getter
+          if (!getter) {
+            getter = /*@__INLINE__*/ resolveGetter(key);
           }
+          return getter ? getter(...args) : undefined;
         };
+      },
+      getSelectorOptions(localOptions?: ɵSharedSelectorOptions) {
+        const globalSelectorOptions = stateFactory._config.selectorOptions;
+        return {
+          ...globalSelectorOptions,
+          ...(localOptions || {})
+        };
+      }
+    };
     return context;
   });
 
@@ -177,8 +139,8 @@ export class StateFactory implements OnDestroy {
   /**
    * Add a new state to the global defs.
    */
-  add(stateClasses: ɵStateClassInternal[]): MappedStore[] {
-    if (NG_DEV_MODE) {
+  private add(stateClasses: ɵStateClassInternal[]): MappedStore[] {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       ensureStatesAreDecorated(stateClasses);
     }
 
@@ -202,7 +164,7 @@ export class StateFactory implements OnDestroy {
       // `State` decorator. This check is moved here because the `ɵprov` property
       // will not exist on the class in JIT mode (because it's set asynchronously
       // during JIT compilation through `Object.defineProperty`).
-      if (NG_DEV_MODE) {
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
         ensureStateClassIsInjectable(stateClass);
       }
 
@@ -211,7 +173,7 @@ export class StateFactory implements OnDestroy {
         path,
         isInitialised: false,
         actions: meta.actions,
-        instance: this._injector.get(stateClass),
+        instance: inject(stateClass),
         defaults: cloneDefaults(meta.defaults)
       };
 
@@ -222,7 +184,8 @@ export class StateFactory implements OnDestroy {
         bootstrappedStores.push(stateMap);
       }
 
-      this.states.push(stateMap);
+      this._states.push(stateMap);
+      this.hydrateActionMetasMap(stateMap);
     }
 
     return bootstrappedStores;
@@ -244,21 +207,12 @@ export class StateFactory implements OnDestroy {
   }
 
   connectActionHandlers(): void {
-    // Note: We have to connect actions only once when the `StateFactory`
-    //       is being created for the first time. This checks if we're in
-    //       a child state factory and the parent state factory already exists.
-    if (this._parentFactory || this._actionsSubscription !== null) {
-      return;
-    }
-
-    const dispatched$ = new Subject<ActionContext>();
     this._actionsSubscription = this._actions
       .pipe(
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
         mergeMap(ctx => {
-          dispatched$.next(ctx);
           const action: any = ctx.action;
-          return this.invokeActions(dispatched$, action!).pipe(
+          return this.invokeActions(action).pipe(
             map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
             defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
             catchError(error => {
@@ -282,89 +236,44 @@ export class StateFactory implements OnDestroy {
   /**
    * Invoke actions on the states.
    */
-  invokeActions(dispatched$: Observable<ActionContext>, action: any) {
+  private invokeActions(action: any): Observable<unknown[]> {
     const type = getActionTypeFromInstance(action)!;
-    const results = [];
+    const results: Observable<unknown>[] = [];
 
     // Determines whether the dispatched action has been handled, this is assigned
     // to `true` within the below `for` loop if any `actionMetas` has been found.
     let actionHasBeenHandled = false;
 
-    for (const metadata of this.states) {
-      const actionMetas = metadata.actions[type];
+    const actionHandlers = this._actionRegistry.get(type);
 
-      if (actionMetas) {
-        for (const actionMeta of actionMetas) {
-          const stateContext = this._stateContextFactory.createStateContext(metadata);
-          try {
-            let result = metadata.instance[actionMeta.fn](stateContext, action);
+    if (actionHandlers) {
+      for (const actionHandler of actionHandlers) {
+        let result;
 
-            // We need to use `isPromise` instead of checking whether
-            // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
-            // is the `ZoneAwarePromise`. Some APIs, which are likely not patched by zone.js
-            // for certain reasons, might not work with `instanceof`. For instance, the dynamic
-            // import returns a native promise (not a `ZoneAwarePromise`), causing this check to
-            // be falsy.
-            if (ɵisPromise(result)) {
-              result = from(result);
-            }
-
-            if (isObservable(result)) {
-              // If this observable has been completed w/o emitting
-              // any value then we wouldn't want to complete the whole chain
-              // of actions. Since if any observable completes then
-              // action will be canceled.
-              // For instance if any action handler would've had such statement:
-              // `handler(ctx) { return EMPTY; }`
-              // then the action will be canceled.
-              // See https://github.com/ngxs/store/issues/1568
-              result = result.pipe(
-                mergeMap((value: any) => {
-                  if (ɵisPromise(value)) {
-                    return from(value);
-                  }
-                  if (isObservable(value)) {
-                    return value;
-                  }
-                  return of(value);
-                }),
-                defaultIfEmpty({})
-              );
-
-              if (actionMeta.options.cancelUncompleted) {
-                // todo: ofActionDispatched should be used with action class
-                result = result.pipe(
-                  takeUntil(dispatched$.pipe(ofActionDispatched(action as any)))
-                );
-              }
-            } else {
-              result = of({}).pipe(shareReplay());
-            }
-
-            results.push(result);
-          } catch (e) {
-            results.push(throwError(e));
-          }
-
-          actionHasBeenHandled = true;
+        try {
+          result = actionHandler(action);
+        } catch (e) {
+          result = throwError(() => e);
         }
+
+        results.push(result);
+
+        actionHasBeenHandled = true;
       }
     }
 
     // The `NgxsUnhandledActionsLogger` is a tree-shakable class which functions
     // only during development.
-    if (NG_DEV_MODE && !actionHasBeenHandled) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode && !actionHasBeenHandled) {
       const unhandledActionsLogger = this._injector.get(NgxsUnhandledActionsLogger, null);
       // The `NgxsUnhandledActionsLogger` will not be resolved by the injector if the
       // `NgxsDevelopmentModule` is not provided. It's enough to check whether the `injector.get`
       // didn't return `null` so we may ensure the module has been imported.
-      if (unhandledActionsLogger) {
-        unhandledActionsLogger.warn(action);
-      }
+      unhandledActionsLogger?.warn(action);
     }
 
     if (!results.length) {
-      results.push(of({}));
+      results.push(of(undefined));
     }
 
     return forkJoin(results);
@@ -374,11 +283,11 @@ export class StateFactory implements OnDestroy {
     newStates: ɵStateClassInternal[];
   } {
     const newStates: ɵStateClassInternal[] = [];
-    const statesMap: StatesByName = this.statesByName;
+    const statesMap: StatesByName = this._statesByName;
 
     for (const stateClass of stateClasses) {
       const stateName = ɵgetStoreMetadata(stateClass).name!;
-      if (NG_DEV_MODE) {
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
         ensureStateNameIsUnique(stateName, stateClass, statesMap);
       }
       const unmountedState = !statesMap[stateName];
@@ -392,7 +301,7 @@ export class StateFactory implements OnDestroy {
   }
 
   private addRuntimeInfoToMeta(meta: ɵMetaDataModel, path: string): void {
-    this.statePaths[meta.name!] = path;
+    this._statePaths[meta.name!] = path;
     // TODO: versions after v3 - we plan to get rid of the `path` property because it is non-deterministic
     // we can do this when we get rid of the incorrectly exposed getStoreMetadata
     // We will need to come up with an alternative to what was exposed in v3 because this is used by many plugins
@@ -404,6 +313,88 @@ export class StateFactory implements OnDestroy {
       getValue(this._initialState, path) !== undefined;
     // This checks whether a state has been already added to the global graph and
     // its lifecycle is in 'bootstrapped' state.
-    return this.statesByName[name] && valueIsBootstrappedInInitialState;
+    return this._statesByName[name] && valueIsBootstrappedInInitialState;
+  }
+
+  private hydrateActionMetasMap({ path, actions, instance }: MappedStore): void {
+    const { dispatched$ } = this._actions;
+    for (const actionType of Object.keys(actions)) {
+      const actionHandlers = actions[actionType].map(actionMeta => {
+        const cancelable = !!actionMeta.options.cancelUncompleted;
+
+        return (action: any) => {
+          const stateContext = this._stateContextFactory.createStateContext(path);
+
+          let result = instance[actionMeta.fn](stateContext, action);
+
+          // We need to use `isPromise` instead of checking whether
+          // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
+          // is the `ZoneAwarePromise`. Some APIs, which are likely not patched by zone.js
+          // for certain reasons, might not work with `instanceof`. For instance, the dynamic
+          // import returns a native promise (not a `ZoneAwarePromise`), causing this check to
+          // be falsy.
+          if (ɵisPromise(result)) {
+            result = from(result);
+          }
+
+          if (isObservable(result)) {
+            result = result.pipe(
+              mergeMap((value: any) => {
+                if (ɵisPromise(value)) {
+                  return from(value);
+                } else if (isObservable(value)) {
+                  return value;
+                } else {
+                  return of(value);
+                }
+              }),
+              // If this observable has completed without emitting any values,
+              // we wouldn't want to complete the entire chain of actions.
+              // If any observable completes, then the action will be canceled.
+              // For instance, if any action handler had a statement like
+              // `handler(ctx) { return EMPTY; }`, then the action would be canceled.
+              // See https://github.com/ngxs/store/issues/1568
+              // Note that we actually don't care about the return type; we only care
+              // about emission, and thus `undefined` is applicable by the framework.
+              defaultIfEmpty(undefined)
+            );
+
+            if (cancelable) {
+              const notifier$ = dispatched$.pipe(ofActionDispatched(action));
+              result = result.pipe(takeUntil(notifier$));
+            }
+
+            result = result.pipe(
+              // Note that we use the `finalize` operator only when the action handler
+              // returns an observable. If the action handler is synchronous, we do not
+              // need to set the state context functions to `noop`, as the absence of a
+              // return value indicates no asynchronous functionality. If the handler's
+              // result is unsubscribed (either because the observable has completed or it
+              // was unsubscribed by `takeUntil` due to a new action being dispatched),
+              // we prevent writing to the state context.
+              finalize(() => {
+                stateContext.setState = noop;
+                stateContext.patchState = noop;
+              })
+            );
+          } else {
+            // If the action handler is synchronous and returns nothing (`void`), we
+            // still have to convert the result to a synchronous observable.
+            result = of(undefined);
+          }
+
+          return result;
+        };
+      });
+
+      for (const actionHandler of actionHandlers) {
+        this._actionRegistry.register(actionType, actionHandler);
+      }
+    }
   }
 }
+
+// This is used to replace `setState` and `patchState` once the action
+// handler has been unsubscribed or completed, to prevent writing
+// to the state context.
+function noop() {}

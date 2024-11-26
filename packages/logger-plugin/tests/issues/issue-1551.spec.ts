@@ -1,6 +1,7 @@
 import { InitState, State } from '@ngxs/store';
 
 import { setupWithLogger, LoggerSpy, formatActionCallStack } from '../helpers';
+import { Injectable } from '@angular/core';
 
 describe('https://github.com/ngxs/store/issues/1551', () => {
   class RemoveTodo {
@@ -20,6 +21,7 @@ describe('https://github.com/ngxs/store/issues/1551', () => {
     name: 'test',
     defaults: stateModelDefaults
   })
+  @Injectable()
   class TodosState {}
 
   it('should not filter out numbers', () => {

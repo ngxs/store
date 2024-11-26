@@ -12,8 +12,6 @@ import { CreationMetadata, RuntimeSelectorInfo } from './selector-models';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 export function createRootSelectorFactory<T extends (...args: any[]) => any>(
   selectorMetaData: ɵSelectorMetaDataModel,
   selectors: any[] | undefined,
@@ -45,7 +43,7 @@ export function createRootSelectorFactory<T extends (...args: any[]) => any>(
         // We're logging an error in this function because it may be used by `select`,
         // `selectSignal`, and `selectSnapshot`. Therefore, there's no need to catch
         // exceptions there to log errors.
-        if (NG_DEV_MODE) {
+        if (typeof ngDevMode !== 'undefined' && ngDevMode) {
           const message =
             'The selector below has thrown an error upon invocation. ' +
             'Please check for any unsafe property access that may result in null ' +
@@ -68,9 +66,10 @@ export function createMemoizedSelectorFn<T extends (...args: any[]) => any>(
   creationMetadata: Partial<CreationMetadata> | undefined
 ) {
   const containerClass = creationMetadata && creationMetadata.containerClass;
-  const wrappedFn = function wrappedSelectorFn(...args: any[]) {
-    const returnValue = originalFn.apply(containerClass, args);
-    if (returnValue instanceof Function) {
+  const wrappedFn = function wrappedSelectorFn() {
+    // eslint-disable-next-line prefer-rest-params
+    const returnValue = originalFn.apply(containerClass, <any>arguments);
+    if (typeof returnValue === 'function') {
       const innerMemoizedFn = ɵmemoize.apply(null, [returnValue]);
       return innerMemoizedFn;
     }

@@ -1,15 +1,7 @@
 import { APP_BOOTSTRAP_LISTENER, Provider, inject } from '@angular/core';
-import {
-  ɵStateClass,
-  ɵNGXS_STATE_CONTEXT_FACTORY,
-  ɵNGXS_STATE_FACTORY,
-  ɵNgxsAppBootstrappedState
-} from '@ngxs/store/internals';
+import { ɵStateClass, ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 
-import { PluginManager } from '../plugin-manager';
-import { StateFactory } from '../internal/state-factory';
 import { CUSTOM_NGXS_EXECUTION_STRATEGY } from '../execution/symbols';
-import { StateContextFactory } from '../internal/state-context-factory';
 import { NgxsModuleOptions, ROOT_STATE_TOKEN, NGXS_OPTIONS } from '../symbols';
 
 /**
@@ -21,8 +13,6 @@ export function getRootProviders(
   options: NgxsModuleOptions
 ): Provider[] {
   return [
-    StateFactory,
-    PluginManager,
     ...states,
     {
       provide: ROOT_STATE_TOKEN,
@@ -43,14 +33,6 @@ export function getRootProviders(
     {
       provide: CUSTOM_NGXS_EXECUTION_STRATEGY,
       useValue: options.executionStrategy
-    },
-    {
-      provide: ɵNGXS_STATE_CONTEXT_FACTORY,
-      useExisting: StateContextFactory
-    },
-    {
-      provide: ɵNGXS_STATE_FACTORY,
-      useExisting: StateFactory
     }
   ];
 }

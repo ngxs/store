@@ -1,7 +1,3 @@
-function defaultEqualityCheck(a: any, b: any) {
-  return a === b;
-}
-
 function areArgumentsShallowlyEqual(
   equalityCheck: (a: any, b: any) => boolean,
   prev: IArguments | null,
@@ -11,7 +7,8 @@ function areArgumentsShallowlyEqual(
     return false;
   }
 
-  // Do this in a for loop (and not a `forEach` or an `every`) so we can determine equality as fast as possible.
+  // Do this in a for loop (and not a `forEach` or an `every`) so we can
+  // determine equality as fast as possible.
   const length = prev.length;
   for (let i = 0; i < length; i++) {
     if (!equalityCheck(prev[i], next[i])) {
@@ -30,7 +27,7 @@ function areArgumentsShallowlyEqual(
  */
 export function ɵmemoize<T extends (...args: any[]) => any>(
   func: T,
-  equalityCheck = defaultEqualityCheck
+  equalityCheck = Object.is
 ): T {
   let lastArgs: IArguments | null = null;
   let lastResult: any = null;
