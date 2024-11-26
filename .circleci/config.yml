@@ -139,19 +139,6 @@ jobs:
           name: Run integration tests for the SSR build application
           command: yarn test:ci:integration:ssr
 
-  integration_ng17_tests:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - browser-tools/install-browser-tools
-      - run:
-          name: Run integration tests for ng17 application
-          command: yarn integration:ng17
-      - persist_to_workspace:
-          root: ~/workspace
-          paths:
-            - app/integrations/hello-world-ng17/dist-integration
-
   integration_ng18_tests:
     <<: *job_defaults
     steps:
@@ -254,10 +241,6 @@ workflows:
       ### - integration_ssr_tests:
       ###     requires:
       ###       - build
-
-      - integration_ng17_tests:
-          requires:
-            - build
 
       - integration_ng18_tests:
           requires:

@@ -85,7 +85,6 @@ jobs:
     strategy:
       matrix:
         script:
-          - 'integration:ng17'
           - 'integration:ng18'
           - 'test:types'
 
