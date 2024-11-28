@@ -4,10 +4,12 @@ import { Actions, ActionStatus } from './actions-stream';
 import { withNgxsPreboot } from './standalone-features/preboot';
 
 /**
- * This feature that contributes to app stability, * which is required during
+ * This feature that contributes to app stability, which is required during
  * server-side rendering. With asynchronous actions being dispatched and handled,
  * Angular is unaware of them in zoneless mode and doesn't know whether the app is
  * still unstable. This may prematurely serialize the final HTML that is sent to the client.
+ * Including `withNgxsPendingTasks` in your `provideStore` for your SSR
+ * app will resolve the above issue.
  */
 export function withNgxsPendingTasks() {
   return withNgxsPreboot(() => {

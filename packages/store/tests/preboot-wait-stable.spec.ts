@@ -15,10 +15,10 @@ import {
   StateToken,
   dispatch,
   provideStore,
-  select
+  select,
+  withNgxsPendingTasks
 } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
-import { withExperimentalNgxsPendingTasks } from '@ngxs/store/experimental';
 
 describe('preboot feature + stable', () => {
   const COUNTRIES_STATE_TOKEN = new StateToken<string[]>('countries');
@@ -69,7 +69,7 @@ describe('preboot feature + stable', () => {
               providers: [
                 provideExperimentalZonelessChangeDetection(),
 
-                provideStore([CountriesState], withExperimentalNgxsPendingTasks())
+                provideStore([CountriesState], withNgxsPendingTasks())
               ]
             }),
           {
