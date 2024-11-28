@@ -56,6 +56,13 @@ export const appConfig: ApplicationConfig = {
     },
   ],
 };
+//or
+bootstrapApplication(App, {
+  providers: [
+    //...
+    provideAppInitializer(() => inject(Sentry.TraceService))
+  ],
+});
 ```
 
 Now, let's go over how to log NGXS actions as breadcrumbs.
@@ -74,23 +81,20 @@ export class NgxsSentryBreadcrumbsService implements OnDestroy {
 
   #subscribeToActions() {
     const excludeAction = [] //You can add the actions you want to exclude from your breadcrumbs here;
-    this.#actions
-      .pipe(
-        tap((ctx) => {
-          const actionType = getActionTypeFromInstance(ctx.action);
-          if (actionType && !excludeActions.some((excludeAction) => actionType.startsWith(excludeAction))) {
-            Sentry.addBreadcrumb({
-              category: 'NGXS',
-              message: `${actionType} ${ctx.status}`,
-              level: 'info',
-              type: 'info',
-              data: typeof ctx.action === 'string' ? { data: ctx.action } : ctx.action,
-            });
-          }
-        }),
-        takeUntil(this.#destroyed$)
-      )
-      .subscribe();
+    this.#actions.subscribe(
+      (ctx) => {
+        const actionType = getActionTypeFromInstance(ctx.action);
+        if (actionType && !excludeActions.some((excludeAction) => actionType.startsWith(excludeAction))) {
+          Sentry.addBreadcrumb({
+            category: 'NGXS',
+            message: `${actionType} ${ctx.status}`,
+            level: 'info',
+            type: 'info',
+            data: typeof ctx.action === 'string' ? { data: ctx.action } : ctx.action,
+          });
+        }
+      }
+    );
   }
 
   ngOnDestroy() {
@@ -112,6 +116,13 @@ Lastly provide the `NgxsSentryBreadcrumbsService` and include it as dependency o
   deps: [NgxsSentryBreadcrumbsService],
   multi: true,
 }
+// or 
+bootstrapApplication(App, {
+  providers: [
+    //...
+    provideAppInitializer(() => inject(NgxsSentryBreadcrumbsService))
+  ],
+});
 ```
 
 That's it! This is a simple implementation on how to integrate NGXS and Sentry to trace actions as breadcrumbs. This will result in Sentry displaying the executed actions previous to an error.
