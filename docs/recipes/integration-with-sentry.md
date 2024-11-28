@@ -60,10 +60,10 @@ export const appConfig: ApplicationConfig = {
 
 Now, let's go over how to log NGXS actions as breadcrumbs.
 Create a service `NgxsSentryBreadcrumbsService`. 
-This service uses NGXS `Actions` dependendecy to listen to all events and send them to Sentry using `Sentry.addBreadcrumb`.
+This service uses NGXS `Actions` dependency to listen to all events and send them to Sentry using `Sentry.addBreadcrumb`.
 
 ```ts
-@Injectable()
+@Injectable({providedIn:root})
 export class NgxsSentryBreadcrumbsService implements OnDestroy {
   #actions = inject(Actions);
   #destroyed$ = new Subject<void>();
