@@ -13,19 +13,22 @@ import { createNgxsRouterPluginTestingPlatform } from '../helpers';
 
 @Component({
   selector: 'app-root',
-  template: '<router-outlet></router-outlet>'
+  template: '<router-outlet></router-outlet>',
+  standalone: false
 })
 class RootComponent {}
 
 @Component({
   selector: 'app-home',
-  template: 'Home page'
+  template: 'Home page',
+  standalone: false
 })
 class HomeComponent {}
 
 @Component({
   selector: 'app-dialed-number',
-  template: 'Dialed number page'
+  template: 'Dialed number page',
+  standalone: false
 })
 class DialedNumberComponent {}
 

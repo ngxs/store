@@ -26,7 +26,8 @@ describe('Selectors within templates causing ticks (https://github.com/ngxs/stor
 
   @Component({
     selector: 'app-child',
-    template: ` {{ countries$ | async }} `
+    template: ` {{ countries$ | async }} `,
+    standalone: false
   })
   class TestChildComponent {
     countries$ = this.store.select(CountriesState);
@@ -36,7 +37,8 @@ describe('Selectors within templates causing ticks (https://github.com/ngxs/stor
 
   @Component({
     selector: 'app-root',
-    template: ` <app-child *ngFor="let item of items"></app-child> `
+    template: ` <app-child *ngFor="let item of items"></app-child> `,
+    standalone: false
   })
   class TestComponent {
     items = new Array(10);

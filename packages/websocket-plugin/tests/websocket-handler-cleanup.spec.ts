@@ -18,7 +18,8 @@ describe('WebSocketHandler cleanup', () => {
 
   @Component({
     selector: 'app-root',
-    template: ''
+    template: '',
+    standalone: false
   })
   class TestComponent {}
 

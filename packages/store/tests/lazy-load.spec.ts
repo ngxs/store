@@ -11,12 +11,12 @@ import { TodoState, AddTodo } from './helpers/todo.state';
 import { SimpleState, UpdateValue } from './helpers/simple.state';
 
 describe('Lazy Loading', () => {
-  @Component({ selector: 'my', template: '' })
+  @Component({ selector: 'my', template: '', standalone: false })
   class MyComponent {
     counter: Observable<number> = inject(Store).select(CounterState.getCounter);
   }
 
-  @Component({ selector: 'my-lazy', template: '' })
+  @Component({ selector: 'my-lazy', template: '', standalone: false })
   class MyLazyComponent {
     todos: Observable<string[]> = inject(Store).select(TodoState.getTodos);
   }
@@ -30,7 +30,7 @@ describe('Lazy Loading', () => {
   })
   class MyLazyModule {}
 
-  @Component({ selector: 'second-lazy', template: '' })
+  @Component({ selector: 'second-lazy', template: '', standalone: false })
   class SecondLazyComponent {
     value: Observable<string> = inject(Store).select(SimpleState.getSimple);
   }

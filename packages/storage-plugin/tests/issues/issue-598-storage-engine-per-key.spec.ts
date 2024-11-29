@@ -34,7 +34,7 @@ describe('Storage engine per individual key (https://github.com/ngxs/store/issue
   @Injectable()
   class EncryptedState {}
 
-  @Component({ selector: 'app-root', template: '' })
+  @Component({ selector: 'app-root', template: '', standalone: false })
   class TestComponent {}
 
   @Injectable({ providedIn: 'root' })
