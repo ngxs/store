@@ -8,6 +8,10 @@ $ npm install @ngxs/store@dev
 
 - ...
 
+### 19.0.0 2024-12-3
+
+- Build: Add Angular 19 support [#2269](https://github.com/ngxs/store/pull/2269)
+
 ### 18.1.6 2024-11-20
 
 - Refactor: Use field initializers for injectees [#2258](https://github.com/ngxs/store/pull/2258)

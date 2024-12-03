@@ -1741,37 +1741,37 @@
   integrity sha512-UuLK1P184R12l6obaVzGk5yzCMQNwfahlkhNapbntvvFw27O76nEYVFM5y8tPkhC3XrsH4v6Ag21q+WADkR9jQ==
 
 "@ngxs/devtools-plugin@file:./node_modules/@ngxs/devtools-plugin":
-  version "18.1.6"
+  version "19.0.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/form-plugin@file:./node_modules/@ngxs/form-plugin":
-  version "18.1.6"
+  version "19.0.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/logger-plugin@file:./node_modules/@ngxs/logger-plugin":
-  version "18.1.6"
+  version "19.0.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/router-plugin@file:./node_modules/@ngxs/router-plugin":
-  version "18.1.6"
+  version "19.0.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/storage-plugin@file:./node_modules/@ngxs/storage-plugin":
-  version "18.1.6"
+  version "19.0.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/store@file:./node_modules/@ngxs/store":
-  version "18.1.6"
+  version "19.0.0"
   dependencies:
     tslib "^2.3.0"
 
 "@ngxs/websocket-plugin@file:./node_modules/@ngxs/websocket-plugin":
-  version "18.1.6"
+  version "19.0.0"
   dependencies:
     tslib "^2.3.0"
 
