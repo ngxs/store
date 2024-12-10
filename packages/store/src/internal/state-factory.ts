@@ -51,8 +51,6 @@ import { assignUnhandledCallback } from './unhandled-rxjs-error-callback';
 import { StateContextFactory } from './state-context-factory';
 import { ofActionDispatched } from '../operators/of-action';
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 function cloneDefaults(defaults: any): any {
   let value = defaults === undefined ? {} : defaults;
 
@@ -71,20 +69,17 @@ function cloneDefaults(defaults: any): any {
  * The `StateFactory` class adds root and feature states to the graph.
  * This extracts state names from state classes, checks if they already
  * exist in the global graph, throws errors if their names are invalid, etc.
- * See its constructor, state factories inject state factories that are
- * parent-level providers. This is required to get feature states from the
- * injector on the same level.
  *
- * The `NgxsModule.forFeature(...)` returns `providers: [StateFactory, ...states]`.
- * The `StateFactory` is initialized on the feature level and goes through `...states`
- * to get them from the injector through `injector.get(state)`.
+ * Root and feature initializers call `addAndReturnDefaults()` to add those states
+ * to the global graph. Since `addAndReturnDefaults` runs within the injection
+ * context (which might be the root injector or a feature injector), we can
+ * retrieve an instance of the state class using `inject(StateClass)`.
  * @ignore
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class StateFactory implements OnDestroy {
   private readonly _injector = inject(Injector);
   private readonly _config = inject(NgxsConfig);
-  private readonly _parentFactory = inject(StateFactory, { optional: true, skipSelf: true });
   private readonly _stateContextFactory = inject(StateContextFactory);
   private readonly _actions = inject(InternalActions);
   private readonly _actionResults = inject(InternalDispatchedActionResults);
@@ -97,19 +92,8 @@ export class StateFactory implements OnDestroy {
   private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler = null!;
 
   private _states: MappedStore[] = [];
-  get states(): MappedStore[] {
-    return this._parentFactory ? this._parentFactory.states : this._states;
-  }
-
   private _statesByName: StatesByName = {};
-  get statesByName(): StatesByName {
-    return this._parentFactory ? this._parentFactory.statesByName : this._statesByName;
-  }
-
   private _statePaths: ɵPlainObjectOf<string> = {};
-  private get statePaths(): ɵPlainObjectOf<string> {
-    return this._parentFactory ? this._parentFactory.statePaths : this._statePaths;
-  }
 
   getRuntimeSelectorContext = ɵmemoize(() => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -117,36 +101,34 @@ export class StateFactory implements OnDestroy {
     const propGetter = stateFactory._propGetter;
 
     function resolveGetter(key: string) {
-      const path = stateFactory.statePaths[key];
+      const path = stateFactory._statePaths[key];
       return path ? propGetter(path.split('.')) : null;
     }
 
-    const context: ɵRuntimeSelectorContext = this._parentFactory
-      ? this._parentFactory.getRuntimeSelectorContext()
-      : {
-          getStateGetter(key: string) {
-            // Use `@__INLINE__` annotation to forcely inline `resolveGetter`.
-            // This is a Terser annotation, which will function only in the production mode.
-            let getter = /*@__INLINE__*/ resolveGetter(key);
-            if (getter) {
-              return getter;
-            }
-            return (...args) => {
-              // Late loaded getter
-              if (!getter) {
-                getter = /*@__INLINE__*/ resolveGetter(key);
-              }
-              return getter ? getter(...args) : undefined;
-            };
-          },
-          getSelectorOptions(localOptions?: ɵSharedSelectorOptions) {
-            const globalSelectorOptions = stateFactory._config.selectorOptions;
-            return {
-              ...globalSelectorOptions,
-              ...(localOptions || {})
-            };
+    const context: ɵRuntimeSelectorContext = {
+      getStateGetter(key: string) {
+        // Use `@__INLINE__` annotation to forcely inline `resolveGetter`.
+        // This is a Terser annotation, which will function only in the production mode.
+        let getter = /*@__INLINE__*/ resolveGetter(key);
+        if (getter) {
+          return getter;
+        }
+        return (...args) => {
+          // Late loaded getter
+          if (!getter) {
+            getter = /*@__INLINE__*/ resolveGetter(key);
           }
+          return getter ? getter(...args) : undefined;
         };
+      },
+      getSelectorOptions(localOptions?: ɵSharedSelectorOptions) {
+        const globalSelectorOptions = stateFactory._config.selectorOptions;
+        return {
+          ...globalSelectorOptions,
+          ...(localOptions || {})
+        };
+      }
+    };
     return context;
   });
 
@@ -157,8 +139,8 @@ export class StateFactory implements OnDestroy {
   /**
    * Add a new state to the global defs.
    */
-  add(stateClasses: ɵStateClassInternal[]): MappedStore[] {
-    if (NG_DEV_MODE) {
+  private add(stateClasses: ɵStateClassInternal[]): MappedStore[] {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       ensureStatesAreDecorated(stateClasses);
     }
 
@@ -182,7 +164,7 @@ export class StateFactory implements OnDestroy {
       // `State` decorator. This check is moved here because the `ɵprov` property
       // will not exist on the class in JIT mode (because it's set asynchronously
       // during JIT compilation through `Object.defineProperty`).
-      if (NG_DEV_MODE) {
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
         ensureStateClassIsInjectable(stateClass);
       }
 
@@ -191,7 +173,7 @@ export class StateFactory implements OnDestroy {
         path,
         isInitialised: false,
         actions: meta.actions,
-        instance: this._injector.get(stateClass),
+        instance: inject(stateClass),
         defaults: cloneDefaults(meta.defaults)
       };
 
@@ -202,7 +184,7 @@ export class StateFactory implements OnDestroy {
         bootstrappedStores.push(stateMap);
       }
 
-      this.states.push(stateMap);
+      this._states.push(stateMap);
       this.hydrateActionMetasMap(stateMap);
     }
 
@@ -225,13 +207,6 @@ export class StateFactory implements OnDestroy {
   }
 
   connectActionHandlers(): void {
-    // Note: We have to connect actions only once when the `StateFactory`
-    //       is being created for the first time. This checks if we're in
-    //       a child state factory and the parent state factory already exists.
-    if (this._parentFactory || this._actionsSubscription !== null) {
-      return;
-    }
-
     this._actionsSubscription = this._actions
       .pipe(
         filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
@@ -289,7 +264,7 @@ export class StateFactory implements OnDestroy {
 
     // The `NgxsUnhandledActionsLogger` is a tree-shakable class which functions
     // only during development.
-    if (NG_DEV_MODE && !actionHasBeenHandled) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode && !actionHasBeenHandled) {
       const unhandledActionsLogger = this._injector.get(NgxsUnhandledActionsLogger, null);
       // The `NgxsUnhandledActionsLogger` will not be resolved by the injector if the
       // `NgxsDevelopmentModule` is not provided. It's enough to check whether the `injector.get`
@@ -308,11 +283,11 @@ export class StateFactory implements OnDestroy {
     newStates: ɵStateClassInternal[];
   } {
     const newStates: ɵStateClassInternal[] = [];
-    const statesMap: StatesByName = this.statesByName;
+    const statesMap: StatesByName = this._statesByName;
 
     for (const stateClass of stateClasses) {
       const stateName = ɵgetStoreMetadata(stateClass).name!;
-      if (NG_DEV_MODE) {
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
         ensureStateNameIsUnique(stateName, stateClass, statesMap);
       }
       const unmountedState = !statesMap[stateName];
@@ -326,7 +301,7 @@ export class StateFactory implements OnDestroy {
   }
 
   private addRuntimeInfoToMeta(meta: ɵMetaDataModel, path: string): void {
-    this.statePaths[meta.name!] = path;
+    this._statePaths[meta.name!] = path;
     // TODO: versions after v3 - we plan to get rid of the `path` property because it is non-deterministic
     // we can do this when we get rid of the incorrectly exposed getStoreMetadata
     // We will need to come up with an alternative to what was exposed in v3 because this is used by many plugins
@@ -338,7 +313,7 @@ export class StateFactory implements OnDestroy {
       getValue(this._initialState, path) !== undefined;
     // This checks whether a state has been already added to the global graph and
     // its lifecycle is in 'bootstrapped' state.
-    return this.statesByName[name] && valueIsBootstrappedInInitialState;
+    return this._statesByName[name] && valueIsBootstrappedInInitialState;
   }
 
   private hydrateActionMetasMap({ path, actions, instance }: MappedStore): void {

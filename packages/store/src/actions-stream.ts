@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { ɵOrderedSubject } from '@ngxs/store/internals';
 import { Observable, Subject, filter, share } from 'rxjs';
 
@@ -50,10 +50,10 @@ export class InternalActions extends ɵOrderedSubject<ActionContext> implements 
  */
 @Injectable({ providedIn: 'root' })
 export class Actions extends Observable<ActionContext> {
-  constructor(
-    internalActions$: InternalActions,
-    internalExecutionStrategy: InternalNgxsExecutionStrategy
-  ) {
+  constructor() {
+    const internalActions$ = inject(InternalActions);
+    const internalExecutionStrategy = inject(InternalNgxsExecutionStrategy);
+
     const sharedInternalActions$ = internalActions$.pipe(
       leaveNgxs(internalExecutionStrategy),
       // The `InternalActions` subject emits outside of the Angular zone.

@@ -37,7 +37,8 @@ describe('[TEST]: StateToken', () => {
 
       @Component({
         selector: 'myApp',
-        template: '{{ myState$ | async | json }}'
+        template: '{{ myState$ | async | json }}',
+        standalone: false
       })
       class MyComponent {
         myState$: Observable<string[]> = this.storeApp.select(TODO_LIST_TOKEN);

@@ -18,7 +18,8 @@ describe('WebSocketHandler cleanup', () => {
 
   @Component({
     selector: 'app-root',
-    template: ''
+    template: '',
+    standalone: false
   })
   class TestComponent {}
 
@@ -43,7 +44,8 @@ describe('WebSocketHandler cleanup', () => {
       );
       const store = ngModuleRef.injector.get(Store);
       const webSocketHandler = ngModuleRef.injector.get(WebSocketHandler);
-      const ngOnDestroySpy = jest.spyOn(webSocketHandler, 'ngOnDestroy');
+      const nextSpy = jest.fn();
+      webSocketHandler['_destroy$'].subscribe(nextSpy);
 
       store.dispatch(new ConnectWebSocket());
 
@@ -51,7 +53,7 @@ describe('WebSocketHandler cleanup', () => {
         server.on('close', () => {
           try {
             // Assert
-            expect(ngOnDestroySpy).toHaveBeenCalled();
+            expect(nextSpy).toHaveBeenCalled();
           } finally {
             server.stop(done);
           }

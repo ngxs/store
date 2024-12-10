@@ -13,7 +13,8 @@ import { RouterState, withNgxsRouterPlugin } from '../';
 describe('RouterState cleanup', () => {
   @Component({
     selector: 'app-root',
-    template: ''
+    template: '',
+    standalone: false
   })
   class TestComponent {}
 

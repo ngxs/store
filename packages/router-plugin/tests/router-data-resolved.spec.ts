@@ -40,13 +40,15 @@ describe('RouterDataResolved', () => {
 
   @Component({
     selector: 'app-root',
-    template: '<router-outlet></router-outlet>'
+    template: '<router-outlet></router-outlet>',
+    standalone: false
   })
   class RootComponent {}
 
   @Component({
     selector: 'test',
-    template: '{{ router$ | async }}'
+    template: '{{ router$ | async }}',
+    standalone: false
   })
   class TestComponent {
     router$: Observable<RouterStateModel>;

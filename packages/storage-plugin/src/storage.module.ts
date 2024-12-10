@@ -6,7 +6,6 @@ import {
   makeEnvironmentProviders
 } from '@angular/core';
 import { withNgxsPlugin } from '@ngxs/store';
-import { NGXS_PLUGINS } from '@ngxs/store/plugins';
 import {
   ɵUSER_OPTIONS,
   STORAGE_ENGINE,
@@ -25,11 +24,7 @@ export class NgxsStoragePluginModule {
     return {
       ngModule: NgxsStoragePluginModule,
       providers: [
-        {
-          provide: NGXS_PLUGINS,
-          useClass: NgxsStoragePlugin,
-          multi: true
-        },
+        withNgxsPlugin(NgxsStoragePlugin),
         {
           provide: ɵUSER_OPTIONS,
           useValue: options

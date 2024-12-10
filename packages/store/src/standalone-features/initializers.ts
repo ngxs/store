@@ -10,8 +10,7 @@ import { StatesAndDefaults } from '../internal/internals';
 import { SelectFactory } from '../decorators/select/select-factory';
 import { InternalStateOperations } from '../internal/state-operations';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
-
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
+import { installOnUnhandhedErrorHandler } from '../internal/unhandled-rxjs-error-callback';
 
 /**
  * This function is shared by both NgModule and standalone features.
@@ -19,6 +18,12 @@ const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
  * same initialization functionality.
  */
 export function rootStoreInitializer(): void {
+  // Override the RxJS `config.onUnhandledError` within the root store initializer,
+  // but only after other code has already executed.
+  // If users have a custom `config.onUnhandledError`, we might overwrite it too
+  // early and capture the original `config.onUnhandledError` before it is properly set.
+  installOnUnhandhedErrorHandler();
+
   const prebootFns = inject(NGXS_PREBOOT_FNS, { optional: true }) || [];
   prebootFns.forEach(prebootFn => prebootFn());
 
@@ -78,14 +83,14 @@ export function featureStatesInitializer(): void {
  * InjectionToken that registers the global Store.
  */
 export const NGXS_ROOT_STORE_INITIALIZER = new InjectionToken<void>(
-  NG_DEV_MODE ? 'NGXS_ROOT_STORE_INITIALIZER' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_ROOT_STORE_INITIALIZER' : ''
 );
 
 /**
  * InjectionToken that registers feature states.
  */
 export const NGXS_FEATURE_STORE_INITIALIZER = new InjectionToken<void>(
-  NG_DEV_MODE ? 'NGXS_FEATURE_STORE_INITIALIZER' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_FEATURE_STORE_INITIALIZER' : ''
 );
 
 export const NGXS_ROOT_ENVIRONMENT_INITIALIZER: Provider[] = [

@@ -10,8 +10,6 @@ import { ɵNgxsStoragePluginKeysManager } from './keys-manager';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 export function withStorageFeature(storageKeys: StorageKey[]): EnvironmentProviders {
   return makeEnvironmentProviders([
     {
@@ -21,7 +19,7 @@ export function withStorageFeature(storageKeys: StorageKey[]): EnvironmentProvid
         const allStatesPersisted = inject(ɵALL_STATES_PERSISTED);
 
         if (allStatesPersisted) {
-          if (NG_DEV_MODE) {
+          if (typeof ngDevMode !== 'undefined' && ngDevMode) {
             const message =
               'The NGXS storage plugin is currently persisting all states because the `keys` ' +
               'option was explicitly set to `*` at the root level. To selectively persist states, ' +

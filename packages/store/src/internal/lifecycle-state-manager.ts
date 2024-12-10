@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
 import { ReplaySubject } from 'rxjs';
@@ -11,20 +11,16 @@ import { MappedStore, StatesAndDefaults } from './internals';
 import { NgxsLifeCycle, NgxsSimpleChange, StateContext } from '../symbols';
 import { getInvalidInitializationOrderMessage } from '../configs/messages.config';
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 @Injectable({ providedIn: 'root' })
 export class LifecycleStateManager implements OnDestroy {
+  private _store = inject(Store);
+  private _internalStateOperations = inject(InternalStateOperations);
+  private _stateContextFactory = inject(StateContextFactory);
+  private _appBootstrappedState = inject(ɵNgxsAppBootstrappedState);
+
   private readonly _destroy$ = new ReplaySubject<void>(1);
 
   private _initStateHasBeenDispatched?: boolean;
-
-  constructor(
-    private _store: Store,
-    private _internalStateOperations: InternalStateOperations,
-    private _stateContextFactory: StateContextFactory,
-    private _appBootstrappedState: ɵNgxsAppBootstrappedState
-  ) {}
 
   ngOnDestroy(): void {
     this._destroy$.next();
@@ -34,7 +30,7 @@ export class LifecycleStateManager implements OnDestroy {
     action: InitState | UpdateState,
     results: StatesAndDefaults | undefined
   ): void {
-    if (NG_DEV_MODE) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       if (action instanceof InitState) {
         this._initStateHasBeenDispatched = true;
       } else if (

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { NGXS_PLUGINS, NgxsPlugin, NgxsPluginFn } from '@ngxs/store/plugins';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PluginManager {
   readonly plugins: NgxsPluginFn[] = [];
 

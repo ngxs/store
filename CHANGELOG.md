@@ -6,10 +6,32 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+- ...
+
+### 19.0.0 2024-12-3
+
+- Build: Add Angular 19 support [#2269](https://github.com/ngxs/store/pull/2269)
+
+### 18.1.6 2024-11-20
+
+- Refactor: Use field initializers for injectees [#2258](https://github.com/ngxs/store/pull/2258)
+- Refactor: Allow tree-shaking of dev-only code [#2259](https://github.com/ngxs/store/pull/2259)
+- Fix(store): Allow plain functions in `withNgxsPlugin` [#2255](https://github.com/ngxs/store/pull/2255)
+- Fix(store): Run plugins in injection context [#2256](https://github.com/ngxs/store/pull/2256)
+- Fix(store): Setup unhandled error handler during NGXS initialization [#2263](https://github.com/ngxs/store/pull/2263)
+- Fix(websocket-plugin): Do not dispatch action when root injector is destroyed [#2257](https://github.com/ngxs/store/pull/2257)
+- Refactor(store): Replace `exhaustMap` [#2254](https://github.com/ngxs/store/pull/2254)
+- Refactor(store): Tree-shake development options token [#2260](https://github.com/ngxs/store/pull/2260)
+- Performance(store): Prevent initializing state factory at feature levels [#2261](https://github.com/ngxs/store/pull/2261)
+- Revert: Revert router state changes [#2264](https://github.com/ngxs/store/pull/2264)
+
+### 18.1.5 2024-11-12
+
 - Fix(store): Prevent writing to state once action handler is unsubscribed [#2231](https://github.com/ngxs/store/pull/2231)
 - Performance(store): Replace `instanceof Function` with `typeof` [#2247](https://github.com/ngxs/store/pull/2247)
 - Refactor(store): Use `Object.is` as default equality check [#2245](https://github.com/ngxs/store/pull/2245)
-- Refactor(router-plugin): Mark selectors as pure [#2248](https://github.com/ngxs/store/pull/2248)
+- Refactor(store): Tree-shake internal state tokens [#2246](https://github.com/ngxs/store/pull/2246)
+- Refactor(router-plugin): Mark selectors as pure [#2248](https://github.com/ngxs/store/pull/2248) **(Note: reverted in 18.1.6)**
 - Refactor(storage-plugin): Mark engine tokens as pure [#2249](https://github.com/ngxs/store/pull/2249)
 
 ### 18.1.4 2024-10-23

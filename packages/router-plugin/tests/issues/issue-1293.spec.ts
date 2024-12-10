@@ -12,25 +12,29 @@ import { createNgxsRouterPluginTestingPlatform } from '../helpers';
 
 @Component({
   selector: 'app-root',
-  template: '<router-outlet></router-outlet>'
+  template: '<router-outlet></router-outlet>',
+  standalone: false
 })
 class RootComponent {}
 
 @Component({
   selector: 'app-home',
-  template: 'Home page'
+  template: 'Home page',
+  standalone: false
 })
 class HomeComponent {}
 
 @Component({
   selector: 'app-login',
-  template: 'Login page'
+  template: 'Login page',
+  standalone: false
 })
 class LoginComponent {}
 
 @Component({
   selector: 'app-blog',
-  template: 'Blog page'
+  template: 'Blog page',
+  standalone: false
 })
 class BlogComponent {}
 
