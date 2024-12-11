@@ -25,7 +25,8 @@ import {
   mergeMap,
   takeUntil,
   finalize,
-  Observable
+  Observable,
+  fromEvent
 } from 'rxjs';
 
 import { NgxsConfig } from '../symbols';
@@ -320,10 +321,12 @@ export class StateFactory implements OnDestroy {
     const { dispatched$ } = this._actions;
     for (const actionType of Object.keys(actions)) {
       const actionHandlers = actions[actionType].map(actionMeta => {
-        const cancelable = !!actionMeta.options.cancelUncompleted;
+        const abortController = new AbortController();
+        const abortSignal = abortController.signal;
+        const cancellable = !!actionMeta.options.cancelUncompleted;
 
         return (action: any) => {
-          const stateContext = this._stateContextFactory.createStateContext(path);
+          const stateContext = this._stateContextFactory.createStateContext(path, abortSignal);
 
           let result = instance[actionMeta.fn](stateContext, action);
 
@@ -359,12 +362,16 @@ export class StateFactory implements OnDestroy {
               defaultIfEmpty(undefined)
             );
 
-            if (cancelable) {
-              const notifier$ = dispatched$.pipe(ofActionDispatched(action));
-              result = result.pipe(takeUntil(notifier$));
+            if (cancellable) {
+              const cancelled = dispatched$.pipe(ofActionDispatched(action));
+              result = result.pipe(takeUntil(cancelled));
             }
 
+            const aborted = fromEvent(abortSignal, 'abort');
+
             result = result.pipe(
+              takeUntil(aborted),
+
               // Note that we use the `finalize` operator only when the action handler
               // returns an observable. If the action handler is synchronous, we do not
               // need to set the state context functions to `noop`, as the absence of a
