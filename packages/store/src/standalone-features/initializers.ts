@@ -7,6 +7,7 @@ import { InitState, UpdateState } from '../plugin_api';
 import { FEATURE_STATE_TOKEN, ROOT_STATE_TOKEN } from '../symbols';
 import { StateFactory } from '../internal/state-factory';
 import { StatesAndDefaults } from '../internal/internals';
+import { assertRootStoreNotInitialized } from './root-guard';
 import { SelectFactory } from '../decorators/select/select-factory';
 import { InternalStateOperations } from '../internal/state-operations';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
@@ -18,6 +19,10 @@ import { installOnUnhandhedErrorHandler } from '../internal/unhandled-rxjs-error
  * same initialization functionality.
  */
 export function rootStoreInitializer(): void {
+  if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+    assertRootStoreNotInitialized();
+  }
+
   // Override the RxJS `config.onUnhandledError` within the root store initializer,
   // but only after other code has already executed.
   // If users have a custom `config.onUnhandledError`, we might overwrite it too
