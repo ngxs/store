@@ -15,6 +15,10 @@ describe('Canceling promises (preventing state writes)', () => {
     static readonly type = 'Increment with then';
   }
 
+  class IncrementWithFireAndForget {
+    static readonly type = 'Increment with fire and forget';
+  }
+
   const { promise: promiseAwaitReady, markPromiseResolved: markPromiseAwaitReady } =
     createPromiseTestHelper();
 
@@ -40,6 +44,16 @@ describe('Canceling promises (preventing state writes)', () => {
     incrementWithThen(ctx: StateContext<number>) {
       recorder.push('before promise then ready');
       return promiseThenReady.then(() => {
+        recorder.push('after promise then ready');
+        ctx.setState(value => value + 1);
+        recorder.push(`value: ${ctx.getState()}`);
+      });
+    }
+
+    @Action(IncrementWithFireAndForget, { cancelUncompleted: true })
+    incrementWithFireAndForget(ctx: StateContext<number>) {
+      recorder.push('before promise then ready');
+      promiseThenReady.then(() => {
         recorder.push('after promise then ready');
         ctx.setState(value => value + 1);
         recorder.push(`value: ${ctx.getState()}`);
@@ -123,6 +137,38 @@ describe('Canceling promises (preventing state writes)', () => {
       'value: 0',
       'after promise then ready',
       'value: 1'
+    ]);
+  });
+
+  it('should allow state writes when the action is written in "fire & forget" style', async () => {
+    // Arrange
+    const store = TestBed.inject(Store);
+
+    // Act
+    store.dispatch(new IncrementWithFireAndForget());
+
+    // Assert
+    expect(recorder).toEqual(['before promise then ready']);
+
+    // Act
+    store.dispatch(new IncrementWithFireAndForget());
+
+    // Assert
+    expect(recorder).toEqual(['before promise then ready', 'before promise then ready']);
+
+    // Act
+    markPromiseThenReady();
+    await promiseThenReady;
+
+    // Assert
+    expect(store.snapshot()).toEqual({ counter: 2 });
+    expect(recorder).toEqual([
+      'before promise then ready',
+      'before promise then ready',
+      'after promise then ready',
+      'value: 1',
+      'after promise then ready',
+      'value: 2'
     ]);
   });
 });
