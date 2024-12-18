@@ -22,10 +22,6 @@ export const appConfig: ApplicationConfig = {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler()
     },
-    {
-      provide: Sentry.TraceService,
-      deps: [Router]
-    },
     provideAppInitializer(() => inject(Sentry.TraceService))
   ]
 };
@@ -38,10 +34,6 @@ export const appConfig: ApplicationConfig = {
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler()
-    },
-    {
-      provide: Sentry.TraceService,
-      deps: [Router]
     },
     provideAppInitializer(() => inject(Sentry.TraceService))
   ]
