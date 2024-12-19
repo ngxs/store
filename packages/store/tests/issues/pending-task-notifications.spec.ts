@@ -3,6 +3,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import {
   Action,
   provideStore,
+  Selector,
   State,
   StateContext,
   Store,
@@ -21,6 +22,11 @@ describe('Pending task notifications', () => {
   })
   @Injectable()
   class CounterState {
+    @Selector()
+    static getCounter(state: number) {
+      return state;
+    }
+
     @Action(Increment)
     increment(ctx: StateContext<number>) {
       ctx.setState(counter => counter + 1);
@@ -29,11 +35,12 @@ describe('Pending task notifications', () => {
 
   @Component({
     selector: 'app-root',
-    template: ''
+    template: '<h1>{{ counter() }}</h1>'
   })
   class TestComponent {
-    constructor() {
-      const store = inject(Store);
+    readonly counter = this.store.selectSignal(CounterState.getCounter);
+
+    constructor(private store: Store) {
       for (let i = 0; i < 20; i++) {
         store.dispatch(new Increment());
       }
@@ -45,7 +52,7 @@ describe('Pending task notifications', () => {
   };
 
   it(
-    'should call `scheduler.notify()` more than 20 times',
+    'should NOT call `scheduler.notify()` more than 20 times (because of 20 actions)',
     freshPlatform(async () => {
       // Arrange
       const notifySpy = jest.spyOn(ɵChangeDetectionSchedulerImpl.prototype, 'notify');
@@ -53,8 +60,8 @@ describe('Pending task notifications', () => {
       await skipConsoleLogging(() => bootstrapApplication(TestComponent, appConfig));
       try {
         // Assert
-        // `notify` has been called more than 20 times because we dispatched 20 times.
-        expect(notifySpy.mock.calls.length > 20).toBeTruthy();
+        expect(notifySpy).toHaveBeenCalledTimes(2);
+        expect(document.body.innerHTML).toContain('<h1>20</h1>');
       } finally {
         notifySpy.mockRestore();
       }
