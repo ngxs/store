@@ -1,4 +1,5 @@
-import { inject, PendingTasks } from '@angular/core';
+import { DestroyRef, inject, PendingTasks } from '@angular/core';
+import { debounceTime, filter } from 'rxjs';
 
 import { Actions, ActionStatus } from './actions-stream';
 import { withNgxsPreboot } from './standalone-features/preboot';
@@ -13,22 +14,54 @@ import { withNgxsPreboot } from './standalone-features/preboot';
  */
 export function withNgxsPendingTasks() {
   return withNgxsPreboot(() => {
-    const pendingTasks = inject(PendingTasks);
     const actions$ = inject(Actions);
+    const destroyRef = inject(DestroyRef);
+    const pendingTasks = inject(PendingTasks);
 
-    const actionToRemoveTaskFnMap = new Map<any, () => void>();
+    // Removing a pending task via the public API forces a scheduled tick, ensuring that
+    // stability is async and delayed until there was at least an opportunity to run
+    // application synchronization.
+    // Adding a new task every time an action is dispatched drastically increases the
+    // number of change detection cycles because removing a task schedules a new change
+    // detection cycle.
+    // If 10 actions are dispatched with synchronous action handlers, this would trigger
+    // 10 change detection cycles in a row, potentially leading to an
+    // `INFINITE_CHANGE_DETECTION` error.
+    let removeTaskFn: VoidFunction | null = null;
 
-    actions$.subscribe(ctx => {
-      if (ctx.status === ActionStatus.Dispatched) {
-        const removeTaskFn = pendingTasks.add();
-        actionToRemoveTaskFnMap.set(ctx.action, removeTaskFn);
-      } else {
-        const removeTaskFn = actionToRemoveTaskFnMap.get(ctx.action);
-        if (typeof removeTaskFn === 'function') {
-          actionToRemoveTaskFnMap.delete(ctx.action);
-          removeTaskFn();
+    const executedActions = new Set<unknown>();
+
+    // If the app is forcely destroyed before all actions are completed,
+    // we clean up the set of actions being executed to prevent memory leaks
+    // and remove the pending task to stabilize the app.
+    destroyRef.onDestroy(() => executedActions.clear());
+
+    actions$
+      .pipe(
+        filter(ctx => {
+          if (ctx.status === ActionStatus.Dispatched) {
+            removeTaskFn ||= pendingTasks.add();
+            executedActions.add(ctx.action);
+            return false;
+          } else {
+            return true;
+          }
+        }),
+        // Every time an action is completed, we debounce the stream to ensure only one
+        // task is removed, even if multiple synchronous actions are completed in a row.
+        debounceTime(0)
+      )
+      .subscribe(ctx => {
+        if (!executedActions.has(ctx.action)) {
+          return;
         }
-      }
-    });
+
+        executedActions.delete(ctx.action);
+
+        if (executedActions.size === 0) {
+          removeTaskFn?.();
+          removeTaskFn = null;
+        }
+      });
   });
 }
