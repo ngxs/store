@@ -1,9 +1,17 @@
-import { ChangeDetectorRef, Directive, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  DestroyRef,
+  Directive,
+  inject,
+  Input,
+  OnInit
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { Actions, ofActionDispatched, Store } from '@ngxs/store';
 import { getValue } from '@ngxs/store/plugins';
-import { Observable, ReplaySubject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
+import { Observable, debounceTime, distinctUntilChanged } from 'rxjs';
+
 import {
   ResetForm,
   UpdateForm,
@@ -14,7 +22,7 @@ import {
 } from './actions';
 
 @Directive({ selector: '[ngxsForm]', standalone: true })
-export class NgxsFormDirective implements OnInit, OnDestroy {
+export class NgxsFormDirective implements OnInit {
   @Input('ngxsForm')
   path: string = null!;
 
@@ -43,20 +51,39 @@ export class NgxsFormDirective implements OnInit, OnDestroy {
   private _formGroupDirective = inject(FormGroupDirective);
   private _cd = inject(ChangeDetectorRef);
 
-  private readonly _destroy$ = new ReplaySubject<void>(1);
+  private readonly _destroyRef = inject(DestroyRef);
+
+  constructor() {
+    this._destroyRef.onDestroy(() => {
+      if (this.clearDestroy) {
+        this._store.dispatch(
+          new UpdateForm({
+            path: this.path,
+            value: null,
+            dirty: null,
+            status: null,
+            errors: null
+          })
+        );
+      }
+    });
+  }
 
   ngOnInit() {
-    this._actions$
-      .pipe(
-        ofActionDispatched(ResetForm),
-        filter((action: ResetForm) => action.payload.path === this.path),
-        takeUntil(this._destroy$)
-      )
-      .subscribe(({ payload: { value } }: ResetForm) => {
-        this.form.reset(value);
-        this.updateFormStateWithRawValue(true);
-        this._cd.markForCheck();
-      });
+    const resetForm$ = this._actions$.pipe(
+      ofActionDispatched(ResetForm),
+      takeUntilDestroyed(this._destroyRef)
+    );
+
+    resetForm$.subscribe((action: ResetForm) => {
+      if (action.payload.path !== this.path) {
+        return;
+      }
+
+      this.form.reset(action.payload.value);
+      this.updateFormStateWithRawValue(true);
+      this._cd.markForCheck();
+    });
 
     this.getStateStream(`${this.path}.model`).subscribe(model => {
       if (this._updating || !model) {
@@ -84,6 +111,7 @@ export class NgxsFormDirective implements OnInit, OnDestroy {
     // On first state change, sync form model, status and dirty with state
     this._store
       .selectOnce(state => getValue(state, this.path))
+      .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe(() => {
         this._store.dispatch([
           new UpdateFormValue({
@@ -172,30 +200,14 @@ export class NgxsFormDirective implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this._destroy$.next();
-
-    if (this.clearDestroy) {
-      this._store.dispatch(
-        new UpdateForm({
-          path: this.path,
-          value: null,
-          dirty: null,
-          status: null,
-          errors: null
-        })
-      );
-    }
-  }
-
   private debounceChange() {
     const skipDebounceTime =
       this._formGroupDirective.control.updateOn !== 'change' || this._debounce < 0;
 
     return skipDebounceTime
-      ? (change: Observable<any>) => change.pipe(takeUntil(this._destroy$))
+      ? (change: Observable<any>) => change.pipe(takeUntilDestroyed(this._destroyRef))
       : (change: Observable<any>) =>
-          change.pipe(debounceTime(this._debounce), takeUntil(this._destroy$));
+          change.pipe(debounceTime(this._debounce), takeUntilDestroyed(this._destroyRef));
   }
 
   private get form(): FormGroup {
@@ -203,6 +215,8 @@ export class NgxsFormDirective implements OnInit, OnDestroy {
   }
 
   private getStateStream(path: string) {
-    return this._store.select(state => getValue(state, path)).pipe(takeUntil(this._destroy$));
+    return this._store
+      .select(state => getValue(state, path))
+      .pipe(takeUntilDestroyed(this._destroyRef));
   }
 }
