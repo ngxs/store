@@ -1,24 +1,16 @@
 import { inject, Injectable, Injector, NgZone, runInInjectionContext } from '@angular/core';
-import { forkJoin, Observable, of, Subject, throwError } from 'rxjs';
+import { forkJoin, Observable, of, throwError } from 'rxjs';
 import { filter, map, mergeMap, shareReplay, take } from 'rxjs/operators';
 
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 import { ɵPlainObject, ɵStateStream } from '@ngxs/store/internals';
 
-import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { PluginManager } from '../plugin-manager';
-import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
 import { fallbackSubscriber } from './fallback-subscriber';
-
-/**
- * Internal Action result stream that is emitted when an action is completed.
- * This is used as a method of returning the action result to the dispatcher
- * for the observable returned by the dispatch(...) call.
- * The dispatcher then asynchronously pushes the result from this stream onto the main action stream as a result.
- */
-@Injectable({ providedIn: 'root' })
-export class InternalDispatchedActionResults extends Subject<ActionContext> {}
+import { InternalDispatchedActionResults } from './action-results';
+import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
+import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 
 @Injectable({ providedIn: 'root' })
 export class InternalDispatcher {
