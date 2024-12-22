@@ -7,6 +7,7 @@ $ npm install @ngxs/store@dev
 ### To become next patch version
 
 - Fix(store): Add root store initializer guard [#2278](https://github.com/ngxs/store/pull/2278)
+- Fix(store): Complete action results on destroy [#2282](https://github.com/ngxs/store/pull/2282)
 
 ### 19.0.0 2024-12-3
 

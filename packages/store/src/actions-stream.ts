@@ -39,6 +39,9 @@ export class InternalActions extends ɵOrderedSubject<ActionContext> implements 
   }
 
   ngOnDestroy(): void {
+    // Complete the subject once the root injector is destroyed to ensure
+    // there are no active subscribers that would receive events or perform
+    // any actions after the application is destroyed.
     this.complete();
   }
 }

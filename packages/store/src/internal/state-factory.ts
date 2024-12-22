@@ -42,7 +42,7 @@ import {
 } from './internals';
 import { NgxsActionRegistry } from '../actions/action-registry';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
-import { InternalDispatchedActionResults } from '../internal/dispatcher';
+import { InternalDispatchedActionResults } from '../internal/action-results';
 import { ensureStateNameIsUnique, ensureStatesAreDecorated } from '../utils/store-validators';
 import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
