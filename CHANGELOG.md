@@ -9,6 +9,7 @@ $ npm install @ngxs/store@dev
 - Fix(store): Add root store initializer guard [#2278](https://github.com/ngxs/store/pull/2278)
 - Fix(store): Reduce change detection cycles with pending tasks [#2280](https://github.com/ngxs/store/pull/2280)
 - Fix(store): Complete action results on destroy [#2282](https://github.com/ngxs/store/pull/2282)
+- Fix(store): Complete `dispatched$` in internal actions [#2285](https://github.com/ngxs/store/pull/2285)
 - Refactor(form-plugin): Replace `takeUntil` with `takeUntilDestroyed` [#2283](https://github.com/ngxs/store/pull/2283)
 
 ### 19.0.0 2024-12-3
