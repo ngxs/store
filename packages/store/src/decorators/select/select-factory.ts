@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 
 import { Store } from '../../store';
 import { NgxsConfig } from '../../symbols';
@@ -8,17 +8,17 @@ import { NgxsConfig } from '../../symbols';
  * in `@Select` decorator.
  */
 @Injectable({ providedIn: 'root' })
-export class SelectFactory implements OnDestroy {
+export class SelectFactory {
   static store: Store | null = null;
   static config: NgxsConfig | null = null;
 
   constructor(store: Store, config: NgxsConfig) {
     SelectFactory.store = store;
     SelectFactory.config = config;
-  }
 
-  ngOnDestroy(): void {
-    SelectFactory.store = null;
-    SelectFactory.config = null;
+    inject(DestroyRef).onDestroy(() => {
+      SelectFactory.store = null;
+      SelectFactory.config = null;
+    });
   }
 }

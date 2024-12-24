@@ -1,4 +1,4 @@
-import { Injectable, Injector, OnDestroy, inject, ɵisPromise } from '@angular/core';
+import { DestroyRef, Injectable, Injector, inject, ɵisPromise } from '@angular/core';
 import {
   ɵmemoize,
   ɵMETA_KEY,
@@ -77,7 +77,7 @@ function cloneDefaults(defaults: any): any {
  * @ignore
  */
 @Injectable({ providedIn: 'root' })
-export class StateFactory implements OnDestroy {
+export class StateFactory {
   private readonly _injector = inject(Injector);
   private readonly _config = inject(NgxsConfig);
   private readonly _stateContextFactory = inject(StateContextFactory);
@@ -132,8 +132,8 @@ export class StateFactory implements OnDestroy {
     return context;
   });
 
-  ngOnDestroy(): void {
-    this._actionsSubscription?.unsubscribe();
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this._actionsSubscription?.unsubscribe());
   }
 
   /**

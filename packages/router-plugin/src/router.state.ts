@@ -1,4 +1,4 @@
-import { NgZone, Injectable, OnDestroy, inject } from '@angular/core';
+import { NgZone, Injectable, inject, DestroyRef } from '@angular/core';
 import {
   NavigationCancel,
   NavigationError,
@@ -57,7 +57,7 @@ export const ROUTER_STATE_TOKEN = new StateToken<RouterStateModel>('router');
   }
 })
 @Injectable()
-export class RouterState implements OnDestroy {
+export class RouterState {
   private _store = inject(Store);
   private _router = inject(Router);
   private _serializer: RouterStateSerializer<RouterStateSnapshot> =
@@ -101,10 +101,8 @@ export class RouterState implements OnDestroy {
   constructor() {
     this._setUpStoreListener();
     this._setUpRouterEventsListener();
-  }
 
-  ngOnDestroy(): void {
-    this._destroy$.next();
+    inject(DestroyRef).onDestroy(() => this._destroy$.next());
   }
 
   @Action(Navigate)
