@@ -11,6 +11,7 @@ $ npm install @ngxs/store@dev
 - Fix(store): Complete action results on destroy [#2282](https://github.com/ngxs/store/pull/2282)
 - Fix(store): Complete `dispatched$` in internal actions [#2285](https://github.com/ngxs/store/pull/2285)
 - Build(store): Use `ngServerMode` to check whether we are in SSR [#2287](https://github.com/ngxs/store/pull/2287)
+- Build(storage-plugin): Use `ngServerMode` to check whether we are in SSR [#2288](https://github.com/ngxs/store/pull/2288)
 - Refactor(form-plugin): Replace `takeUntil` with `takeUntilDestroyed` [#2283](https://github.com/ngxs/store/pull/2283)
 
 ### 19.0.0 2024-12-3
