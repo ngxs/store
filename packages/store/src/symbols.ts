@@ -156,4 +156,8 @@ export type NgxsModuleOptions = Partial<NgxsConfig>;
 /** @internal */
 declare global {
   const ngDevMode: boolean;
+  // Indicates whether the application is operating in server-rendering mode.
+  // `ngServerMode` is a global flag set by Angular CLI.
+  // https://github.com/angular/angular-cli/blob/b4e9a2af9e50e7b65167d0fdbd4012023135e875/packages/angular/build/src/tools/vite/utils.ts#L102
+  const ngServerMode: boolean;
 }
