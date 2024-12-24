@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import type { ActionContext } from '../actions-stream';
@@ -10,14 +10,12 @@ import type { ActionContext } from '../actions-stream';
  * The dispatcher then asynchronously pushes the result from this stream onto the main action stream as a result.
  */
 @Injectable({ providedIn: 'root' })
-export class InternalDispatchedActionResults
-  extends Subject<ActionContext>
-  implements OnDestroy
-{
-  ngOnDestroy(): void {
+export class InternalDispatchedActionResults extends Subject<ActionContext> {
+  constructor() {
+    super();
     // Complete the subject once the root injector is destroyed to ensure
     // there are no active subscribers that would receive events or perform
     // any actions after the application is destroyed.
-    this.complete();
+    inject(DestroyRef).onDestroy(() => this.complete());
   }
 }

@@ -1,10 +1,10 @@
-import { Injectable, type OnDestroy } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
 
 export type ActionHandlerFn = (action: any) => Observable<unknown>;
 
 @Injectable({ providedIn: 'root' })
-export class NgxsActionRegistry implements OnDestroy {
+export class NgxsActionRegistry {
   // Instead of going over the states list every time an action is dispatched,
   // we are constructing a map of action types to lists of action metadata.
   // If the `@@Init` action is handled in two different states, the action
@@ -12,8 +12,8 @@ export class NgxsActionRegistry implements OnDestroy {
   // method names to be used as action handlers (decorated with `@Action(InitState)`).
   private readonly _actionTypeToHandlersMap = new Map<string, Set<ActionHandlerFn>>();
 
-  ngOnDestroy(): void {
-    this._actionTypeToHandlersMap.clear();
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this._actionTypeToHandlersMap.clear());
   }
 
   get(type: string) {

@@ -1,4 +1,4 @@
-import { inject, Injectable, OnDestroy } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
 import { ReplaySubject } from 'rxjs';
@@ -12,7 +12,7 @@ import { NgxsLifeCycle, NgxsSimpleChange, StateContext } from '../symbols';
 import { getInvalidInitializationOrderMessage } from '../configs/messages.config';
 
 @Injectable({ providedIn: 'root' })
-export class LifecycleStateManager implements OnDestroy {
+export class LifecycleStateManager {
   private _store = inject(Store);
   private _internalStateOperations = inject(InternalStateOperations);
   private _stateContextFactory = inject(StateContextFactory);
@@ -22,8 +22,8 @@ export class LifecycleStateManager implements OnDestroy {
 
   private _initStateHasBeenDispatched?: boolean;
 
-  ngOnDestroy(): void {
-    this._destroy$.next();
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this._destroy$.next());
   }
 
   ngxsBootstrap(
