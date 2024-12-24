@@ -1,4 +1,3 @@
-import { isPlatformServer } from '@angular/common';
 import {
   ɵDEFAULT_STATE_KEY,
   StorageOption,
@@ -6,6 +5,8 @@ import {
   NgxsStoragePluginOptions,
   ɵNgxsTransformedStoragePluginOptions
 } from '@ngxs/storage-plugin/internals';
+
+declare const ngServerMode: boolean;
 
 export function storageOptionsFactory(
   options: NgxsStoragePluginOptions
@@ -21,11 +22,8 @@ export function storageOptionsFactory(
   };
 }
 
-export function engineFactory(
-  options: NgxsStoragePluginOptions,
-  platformId: string
-): StorageEngine | null {
-  if (isPlatformServer(platformId)) {
+export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine | null {
+  if (typeof ngServerMode !== 'undefined' && ngServerMode) {
     return null;
   }
 
