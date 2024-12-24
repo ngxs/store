@@ -95,6 +95,7 @@ export class LifecycleStateManager {
   }
 
   private _getStateContext(mappedStore: MappedStore): StateContext<any> {
+    // Question: abort controller is not gonna be available for lifecycle hooks.
     return this._stateContextFactory.createStateContext(mappedStore.path);
   }
 }

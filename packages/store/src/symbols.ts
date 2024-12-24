@@ -97,6 +97,8 @@ export { StateOperator };
  * State context provided to the actions in the state.
  */
 export interface StateContext<T> {
+  abortSignal: AbortSignal;
+
   /**
    * Get the current state.
    */
