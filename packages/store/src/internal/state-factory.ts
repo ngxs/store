@@ -360,17 +360,16 @@ export class StateFactory {
             );
 
             if (cancelable) {
-              const notifier$ = dispatched$.pipe(ofActionDispatched(action));
-              result = result.pipe(takeUntil(notifier$));
+              const canceled = dispatched$.pipe(ofActionDispatched(action));
+              result = result.pipe(takeUntil(canceled));
             }
 
             result = result.pipe(
               // Note that we use the `finalize` operator only when the action handler
-              // returns an observable. If the action handler is synchronous, we do not
-              // need to set the state context functions to `noop`, as the absence of a
-              // return value indicates no asynchronous functionality. If the handler's
-              // result is unsubscribed (either because the observable has completed or it
-              // was unsubscribed by `takeUntil` due to a new action being dispatched),
+              // explicitly returns an observable (or a promise) to wait for. This means
+              // the action handler is written in a "fire & wait" style. If the handler’s
+              // result is unsubscribed (either because the observable has completed or
+              // it was unsubscribed by `takeUntil` due to a new action being dispatched),
               // we prevent writing to the state context.
               finalize(() => {
                 stateContext.setState = noop;
