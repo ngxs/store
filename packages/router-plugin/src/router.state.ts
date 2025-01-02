@@ -15,8 +15,7 @@ import {
   NavigationActionTiming,
   ɵNGXS_ROUTER_PLUGIN_OPTIONS
 } from '@ngxs/router-plugin/internals';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import type { Subscription } from 'rxjs';
 
 import {
   Navigate,
@@ -84,7 +83,7 @@ export class RouterState {
 
   private _options = inject(ɵNGXS_ROUTER_PLUGIN_OPTIONS);
 
-  private _destroy$ = new ReplaySubject<void>(1);
+  private _subscription!: Subscription;
 
   @Selector()
   static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
@@ -102,7 +101,7 @@ export class RouterState {
     this._setUpStoreListener();
     this._setUpRouterEventsListener();
 
-    inject(DestroyRef).onDestroy(() => this._destroy$.next());
+    inject(DestroyRef).onDestroy(() => this._subscription.unsubscribe());
   }
 
   @Action(Navigate)
@@ -135,9 +134,8 @@ export class RouterState {
   }
 
   private _setUpStoreListener(): void {
-    const routerState$ = this._store
-      .select(ROUTER_STATE_TOKEN)
-      .pipe(takeUntil(this._destroy$));
+    const routerState$ = this._store.select(ROUTER_STATE_TOKEN);
+
     routerState$.subscribe((state: RouterStateModel | undefined) => {
       this._navigateIfNeeded(state);
     });
@@ -172,8 +170,7 @@ export class RouterState {
 
     let lastRoutesRecognized: RoutesRecognized;
 
-    const events$ = this._router.events.pipe(takeUntil(this._destroy$));
-    events$.subscribe(event => {
+    this._subscription = this._router.events.subscribe(event => {
       this._lastEvent = event;
 
       if (event instanceof NavigationStart) {
