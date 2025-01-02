@@ -14,6 +14,7 @@ $ npm install @ngxs/store@dev
 - Build(store): Use `ngServerMode` to check whether we are in SSR [#2287](https://github.com/ngxs/store/pull/2287)
 - Build(storage-plugin): Use `ngServerMode` to check whether we are in SSR [#2288](https://github.com/ngxs/store/pull/2288)
 - Refactor(form-plugin): Replace `takeUntil` with `takeUntilDestroyed` [#2283](https://github.com/ngxs/store/pull/2283)
+- Refactor(router-plugin): Reduce RxJS depedency [#2291](https://github.com/ngxs/store/pull/2291)
 
 ### 19.0.0 2024-12-3
 
