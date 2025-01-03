@@ -44,8 +44,8 @@ describe('WebSocketHandler cleanup', () => {
       );
       const store = ngModuleRef.injector.get(Store);
       const webSocketHandler = ngModuleRef.injector.get(WebSocketHandler);
-      const nextSpy = jest.fn();
-      webSocketHandler['_destroy$'].subscribe(nextSpy);
+      // @ts-expect-error private property.
+      const spy = jest.spyOn(webSocketHandler, '_closeConnection');
 
       store.dispatch(new ConnectWebSocket());
 
@@ -53,7 +53,7 @@ describe('WebSocketHandler cleanup', () => {
         server.on('close', () => {
           try {
             // Assert
-            expect(nextSpy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledWith(/* forcelyCloseSocket */ true);
           } finally {
             server.stop(done);
           }

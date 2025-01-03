@@ -1,8 +1,7 @@
-import { DestroyRef, inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
-import { ReplaySubject } from 'rxjs';
-import { filter, mergeMap, pairwise, startWith, takeUntil, tap } from 'rxjs/operators';
+import { EMPTY, mergeMap, pairwise, startWith } from 'rxjs';
 
 import { Store } from '../store';
 import { StateContextFactory } from './state-context-factory';
@@ -18,13 +17,7 @@ export class LifecycleStateManager {
   private _stateContextFactory = inject(StateContextFactory);
   private _appBootstrappedState = inject(ɵNgxsAppBootstrappedState);
 
-  private readonly _destroy$ = new ReplaySubject<void>(1);
-
   private _initStateHasBeenDispatched?: boolean;
-
-  constructor() {
-    inject(DestroyRef).onDestroy(() => this._destroy$.next());
-  }
 
   ngxsBootstrap(
     action: InitState | UpdateState,
@@ -46,17 +39,28 @@ export class LifecycleStateManager {
       }
     }
 
+    // It does not need to unsubscribe because it is completed when the
+    // root injector is destroyed.
     this._internalStateOperations
       .getRootStateOperations()
       .dispatch(action)
       .pipe(
-        filter(() => !!results),
-        tap(() => this._invokeInitOnStates(results!.states)),
-        mergeMap(() => this._appBootstrappedState),
-        filter(appBootstrapped => !!appBootstrapped),
-        takeUntil(this._destroy$)
+        mergeMap(() => {
+          // If no states are provided, we safely complete the stream
+          // and do not proceed further.
+          if (!results) {
+            return EMPTY;
+          }
+
+          this._invokeInitOnStates(results!.states);
+          return this._appBootstrappedState;
+        })
       )
-      .subscribe(() => this._invokeBootstrapOnStates(results!.states));
+      .subscribe(appBootstrapped => {
+        if (appBootstrapped) {
+          this._invokeBootstrapOnStates(results!.states);
+        }
+      });
   }
 
   private _invokeInitOnStates(mappedStores: MappedStore[]): void {
@@ -64,9 +68,11 @@ export class LifecycleStateManager {
       const instance: NgxsLifeCycle = mappedStore.instance;
 
       if (instance.ngxsOnChanges) {
+        // It does not need to unsubscribe because it is completed when the
+        // root injector is destroyed.
         this._store
           .select(state => getValue(state, mappedStore.path))
-          .pipe(startWith(undefined), pairwise(), takeUntil(this._destroy$))
+          .pipe(startWith(undefined), pairwise())
           .subscribe(([previousValue, currentValue]) => {
             const change = new NgxsSimpleChange(
               previousValue,

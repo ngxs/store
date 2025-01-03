@@ -54,7 +54,8 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
 
     const state$: Observable<any> = this.context.store.select(state => state);
 
-    this.appBootstrappedState.subscribe(() => {
+    this.appBootstrappedState.subscribe(bootstrapped => {
+      if (!bootstrapped) return;
       let eventId: number;
       const storeEventId: Subscription = state$.subscribe(() => {
         // setTimeout used for zone detection after set hmr state
