@@ -95,7 +95,7 @@ describe('#1407 issue', () => {
 
       const document = injector.get(DOCUMENT);
       const root = document.querySelector('app-root')!;
-      const routerState = store.selectSnapshot(RouterState.state);
+      const routerState = store.selectSnapshot(RouterState.state());
 
       // Assert
       expect(navigateDispatchedTimes).toBe(1);
