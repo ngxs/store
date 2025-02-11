@@ -74,7 +74,7 @@ To get started locally, follow these instructions:
 2. Clone to your local computer using git.
 3. Make sure that you have installed NodeJS.
 4. Make sure that you have yarn installed.
-5. Run `yarn install`.
+5. Run `yarn && yarn --cwd tutorials/create-app`.
 6. Run `yarn build:packages`.
 
 #### Creating new packages or add feature/fix
@@ -127,8 +127,8 @@ If you have ideas for creating unique libraries, you can join us. Email us at `n
 #### NGXS Labs
 
 | Project                                 | Package                                                                                        | Version                                                                                                                                             | Links                                                                                                          |
-|-----------------------------------------|------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
-| **NGXS Persistence API**                | [`@anglar-ru/ngxs`](https://angular-ru.gitbook.io/sdk/ngxs/ngxs)                               | [![latest](https://img.shields.io/npm/v/%40angular-ru%2Fngxs/latest.svg)](https://npmjs.com/package/@angular-ru/ngxs)                           | [![README](https://img.shields.io/badge/README--green.svg)](https://angular-ru.gitbook.io/sdk/ngxs/ngxs)       |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **NGXS Persistence API**                | [`@anglar-ru/ngxs`](https://angular-ru.gitbook.io/sdk/ngxs/ngxs)                               | [![latest](https://img.shields.io/npm/v/%40angular-ru%2Fngxs/latest.svg)](https://npmjs.com/package/@angular-ru/ngxs)                               | [![README](https://img.shields.io/badge/README--green.svg)](https://angular-ru.gitbook.io/sdk/ngxs/ngxs)       |
 | **NGXS-labs Emitter**                   | [`@ngxs-labs/emitter`](https://npmjs.com/package/@ngxs-labs/emitter)                           | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Femitter/latest.svg)](https://npmjs.com/package/@ngxs-labs/emitter)                           | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/emitter)              |
 | **NGXS-labs Immer adapter**             | [`@ngxs-labs/immer-adapter`](https://npmjs.com/package/@ngxs-labs/immer-adapter)               | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fimmer-adapter/latest.svg)](https://npmjs.com/package/@ngxs-labs/immer-adapter)               | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/immer-adapter)        |
 | **NGXS-labs Dispatch decorator**        | [`@ngxs-labs/dispatch-decorator`](https://npmjs.com/package/@ngxs-labs/dispatch-decorator)     | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fdispatch-decorator/latest.svg)](https://npmjs.com/package/@ngxs-labs/dispatch-decorator)     | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/dispatch-decorator)   |
