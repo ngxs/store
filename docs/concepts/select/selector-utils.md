@@ -156,7 +156,7 @@ export class AnimalsSelectors {
     <h1> Zebras and Pandas </h1>
     @if (zebrasAndPandas(); as zebrasAndPandas) {
       <ol>
-        <li>Zerba Count: {{ zebrasAndPandas.zebras?.length || 0 }}</li>
+        <li>Zebra Count: {{ zebrasAndPandas.zebras?.length || 0 }}</li>
         <li>Panda Count: {{ zebrasAndPandas.pandas?.length || 0 }}</li>
       </ol>
     }
