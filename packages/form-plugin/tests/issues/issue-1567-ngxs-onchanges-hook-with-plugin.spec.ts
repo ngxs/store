@@ -38,7 +38,8 @@ describe('ngxsOnChanges with form plugin (https://github.com/ngxs/store/issues/1
       <form [formGroup]="form" ngxsForm="form">
         <input id="name" formControlName="name" />
       </form>
-    `
+    `,
+    standalone: false
   })
   class TestComponent {
     form = this._fb.group({

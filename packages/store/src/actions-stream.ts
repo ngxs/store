@@ -1,7 +1,6 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { ɵOrderedSubject } from '@ngxs/store/internals';
-import { Observable } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { Observable, Subject, filter, share } from 'rxjs';
 
 import { leaveNgxs } from './operators/leave-ngxs';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
@@ -26,9 +25,26 @@ export interface ActionContext<T = any> {
  * Internal Action stream that is emitted anytime an action is dispatched.
  */
 @Injectable({ providedIn: 'root' })
-export class InternalActions extends ɵOrderedSubject<ActionContext> implements OnDestroy {
-  ngOnDestroy(): void {
-    this.complete();
+export class InternalActions extends ɵOrderedSubject<ActionContext> {
+  // This subject will be the first to know about the dispatched action, its purpose is for
+  // any logic that must be executed before action handlers are invoked (i.e., cancelation).
+  readonly dispatched$ = new Subject<ActionContext>();
+
+  constructor() {
+    super();
+
+    this.pipe(filter(ctx => ctx.status === ActionStatus.Dispatched)).subscribe(ctx => {
+      this.dispatched$.next(ctx);
+    });
+
+    const destroyRef = inject(DestroyRef);
+    destroyRef.onDestroy(() => {
+      // Complete the subject once the root injector is destroyed to ensure
+      // there are no active subscribers that would receive events or perform
+      // any actions after the application is destroyed.
+      this.complete();
+      this.dispatched$.complete();
+    });
   }
 }
 
@@ -39,10 +55,10 @@ export class InternalActions extends ɵOrderedSubject<ActionContext> implements 
  */
 @Injectable({ providedIn: 'root' })
 export class Actions extends Observable<ActionContext> {
-  constructor(
-    internalActions$: InternalActions,
-    internalExecutionStrategy: InternalNgxsExecutionStrategy
-  ) {
+  constructor() {
+    const internalActions$ = inject(InternalActions);
+    const internalExecutionStrategy = inject(InternalNgxsExecutionStrategy);
+
     const sharedInternalActions$ = internalActions$.pipe(
       leaveNgxs(internalExecutionStrategy),
       // The `InternalActions` subject emits outside of the Angular zone.

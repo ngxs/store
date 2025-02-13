@@ -50,7 +50,7 @@ describe('Restore state only if key matches', () => {
       @Injectable()
       class UserState {}
 
-      @Component({ template: '' })
+      @Component({ template: '', standalone: false })
       class UserComponent {}
 
       @NgModule({
@@ -67,7 +67,11 @@ describe('Restore state only if key matches', () => {
       })
       class UserModule {}
 
-      @Component({ selector: 'app-root', template: '<router-outlet></router-outlet>' })
+      @Component({
+        selector: 'app-root',
+        template: '<router-outlet></router-outlet>',
+        standalone: false
+      })
       class TestComponent {}
 
       @NgModule({

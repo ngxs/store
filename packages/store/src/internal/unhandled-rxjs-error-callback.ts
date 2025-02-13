@@ -2,17 +2,26 @@ import { config } from 'rxjs';
 
 const ɵɵunhandledRxjsErrorCallbacks = new WeakMap<any, VoidFunction>();
 
-const existingHandler = config.onUnhandledError;
-config.onUnhandledError = function (error: any) {
-  const unhandledErrorCallback = ɵɵunhandledRxjsErrorCallbacks.get(error);
-  if (unhandledErrorCallback) {
-    unhandledErrorCallback();
-  } else if (existingHandler) {
-    existingHandler.call(this, error);
-  } else {
-    throw error;
+let installed = false;
+export function installOnUnhandhedErrorHandler(): void {
+  if (installed) {
+    return;
   }
-};
+
+  const existingHandler = config.onUnhandledError;
+  config.onUnhandledError = function (error: any) {
+    const unhandledErrorCallback = ɵɵunhandledRxjsErrorCallbacks.get(error);
+    if (unhandledErrorCallback) {
+      unhandledErrorCallback();
+    } else if (existingHandler) {
+      existingHandler.call(this, error);
+    } else {
+      throw error;
+    }
+  };
+
+  installed = true;
+}
 
 export function executeUnhandledCallback(error: any) {
   const unhandledErrorCallback = ɵɵunhandledRxjsErrorCallbacks.get(error);

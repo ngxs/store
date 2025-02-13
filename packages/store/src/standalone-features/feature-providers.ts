@@ -3,7 +3,6 @@ import { ɵStateClass } from '@ngxs/store/internals';
 
 import { FEATURE_STATE_TOKEN } from '../symbols';
 import { PluginManager } from '../plugin-manager';
-import { StateFactory } from '../internal/state-factory';
 
 /**
  * This function provides the required providers when calling `NgxsModule.forFeature`
@@ -11,7 +10,6 @@ import { StateFactory } from '../internal/state-factory';
  */
 export function getFeatureProviders(states: ɵStateClass[]): Provider[] {
   return [
-    StateFactory,
     PluginManager,
     ...states,
     {

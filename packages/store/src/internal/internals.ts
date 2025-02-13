@@ -12,8 +12,6 @@ import { NgxsConfig } from '../symbols';
 
 declare const ngDevMode: boolean;
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 export type StateKeyGraph = ɵPlainObjectOf<string[]>;
 export type StatesByName = ɵPlainObjectOf<ɵStateClassInternal>;
 
@@ -108,7 +106,7 @@ export function propGetter(paths: string[], config: NgxsConfig) {
 // We've been trying to deprecate the `Select` decorator because it's unstable with
 // server-side rendering and micro-frontend applications.
 export const ɵPROP_GETTER = new InjectionToken<(paths: string[]) => (x: any) => any>(
-  NG_DEV_MODE ? 'PROP_GETTER' : '',
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'PROP_GETTER' : '',
   {
     providedIn: 'root',
     factory: () =>
@@ -140,7 +138,7 @@ export function buildGraph(stateClasses: ɵStateClassInternal[]): StateKeyGraph 
   const findName = (stateClass: ɵStateClassInternal) => {
     const meta = stateClasses.find(g => g === stateClass);
 
-    if (NG_DEV_MODE && !meta) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode && !meta) {
       throw new Error(
         `Child state not found: ${stateClass}. \r\nYou may have forgotten to add states to module`
       );
@@ -258,7 +256,7 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
     visited[name] = true;
 
     graph[name].forEach((dep: string) => {
-      if (NG_DEV_MODE && ancestors.indexOf(dep) >= 0) {
+      if (typeof ngDevMode !== 'undefined' && ngDevMode && ancestors.indexOf(dep) >= 0) {
         throw new Error(
           `Circular dependency '${dep}' is required by '${name}': ${ancestors.join(' -> ')}`
         );

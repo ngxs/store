@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { getValue, setValue } from '@ngxs/store/plugins';
 import { ExistingState, StateOperator, isStateOperator } from '@ngxs/store/operators';
 import { Observable } from 'rxjs';
 
 import { StateContext } from '../symbols';
-import { MappedStore, StateOperations } from '../internal/internals';
+import { StateOperations } from '../internal/internals';
 import { InternalStateOperations } from '../internal/state-operations';
 import { simplePatch } from './state-operators';
 
@@ -14,30 +14,30 @@ import { simplePatch } from './state-operators';
  */
 @Injectable({ providedIn: 'root' })
 export class StateContextFactory {
-  constructor(private _internalStateOperations: InternalStateOperations) {}
+  private _internalStateOperations = inject(InternalStateOperations);
 
   /**
    * Create the state context
    */
-  createStateContext<T>(mappedStore: MappedStore): StateContext<T> {
+  createStateContext<T>(path: string): StateContext<T> {
     const root = this._internalStateOperations.getRootStateOperations();
 
     return {
       getState(): T {
         const currentAppState = root.getState();
-        return getState(currentAppState, mappedStore.path);
+        return getState(currentAppState, path);
       },
       patchState(val: Partial<T>): void {
         const currentAppState = root.getState();
         const patchOperator = simplePatch<T>(val);
-        setStateFromOperator(root, currentAppState, patchOperator, mappedStore.path);
+        setStateFromOperator(root, currentAppState, patchOperator, path);
       },
       setState(val: T | StateOperator<T>): void {
         const currentAppState = root.getState();
         if (isStateOperator(val)) {
-          setStateFromOperator(root, currentAppState, val, mappedStore.path);
+          setStateFromOperator(root, currentAppState, val, path);
         } else {
-          setStateValue(root, currentAppState, val, mappedStore.path);
+          setStateValue(root, currentAppState, val, path);
         }
       },
       dispatch(actions: any | any[]): Observable<void> {

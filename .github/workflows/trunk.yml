@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -38,6 +38,13 @@ jobs:
       - name: Build NGXS
         run: yarn build
 
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ngxs-build
+          path: ./@ngxs
+          retention-days: 1
+
   trunk-test:
     runs-on: ubuntu-latest
     needs: trunk-build
@@ -48,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -78,14 +85,11 @@ jobs:
     strategy:
       matrix:
         script:
-          - 'integration:ng16'
-          - 'integration:ng17'
-          - 'integration:ng18'
           - 'test:types'
 
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -110,7 +114,7 @@ jobs:
 
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -138,7 +142,7 @@ jobs:
 
   #   steps:
   #     - name: Checkout sources
-  #       uses: actions/checkout@v3
+  #       uses: actions/checkout@v4
 
   #     - name: Setup
   #       uses: ./.github/actions/setup

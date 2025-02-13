@@ -50,6 +50,8 @@ export {
   TypedSelector
 } from './selectors';
 
+export { withNgxsPendingTasks } from './pending-tasks';
+
 export * from './standalone-features';
 
 export * from './utils/public_api';

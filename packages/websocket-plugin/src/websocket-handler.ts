@@ -1,8 +1,8 @@
-import { Injectable, Inject, OnDestroy, NgZone } from '@angular/core';
+import { Injectable, NgZone, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Actions, Store, ofActionDispatched } from '@ngxs/store';
 import { getValue } from '@ngxs/store/plugins';
-import { ReplaySubject, Subject, fromEvent } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject, fromEvent, takeUntil } from 'rxjs';
 
 import {
   ConnectWebSocket,
@@ -18,44 +18,41 @@ import {
 } from './symbols';
 
 @Injectable({ providedIn: 'root' })
-export class WebSocketHandler implements OnDestroy {
+export class WebSocketHandler {
+  private _store = inject(Store);
+  private _ngZone = inject(NgZone);
+  private _actions$ = inject(Actions);
+  private _options = inject(NGXS_WEBSOCKET_OPTIONS);
+
   private _socket: WebSocket | null = null;
 
   private readonly _socketClosed$ = new Subject<void>();
 
   private readonly _typeKey = this._options.typeKey!;
 
-  private readonly _destroy$ = new ReplaySubject<void>(1);
+  private readonly _destroyRef = inject(DestroyRef);
 
-  constructor(
-    private _store: Store,
-    private _ngZone: NgZone,
-    private _actions$: Actions,
-    @Inject(NGXS_WEBSOCKET_OPTIONS) private _options: NgxsWebSocketPluginOptions
-  ) {
+  constructor() {
     this._setupActionsListeners();
-  }
 
-  ngOnDestroy(): void {
-    this._disconnect(/* forcelyCloseSocket */ true);
-    this._destroy$.next();
+    this._destroyRef.onDestroy(() => this._closeConnection(/* forcelyCloseSocket */ true));
   }
 
   private _setupActionsListeners(): void {
     this._actions$
-      .pipe(ofActionDispatched(ConnectWebSocket), takeUntil(this._destroy$))
+      .pipe(ofActionDispatched(ConnectWebSocket), takeUntilDestroyed(this._destroyRef))
       .subscribe(({ payload }) => {
         this.connect(payload);
       });
 
     this._actions$
-      .pipe(ofActionDispatched(DisconnectWebSocket), takeUntil(this._destroy$))
+      .pipe(ofActionDispatched(DisconnectWebSocket), takeUntilDestroyed(this._destroyRef))
       .subscribe(() => {
         this._disconnect(/* forcelyCloseSocket */ true);
       });
 
     this._actions$
-      .pipe(ofActionDispatched(SendWebSocketMessage), takeUntil(this._destroy$))
+      .pipe(ofActionDispatched(SendWebSocketMessage), takeUntilDestroyed(this._destroyRef))
       .subscribe(({ payload }) => {
         this.send(payload);
       });

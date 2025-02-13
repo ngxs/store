@@ -6,8 +6,72 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-- Feat(store): Add `withExperimentalNgxsPendingTasks` [#2186](https://github.com/ngxs/store/pull/2186)
+- Refactor: Replace `ngOnDestroy` with `DestroyRef` [#2289](https://github.com/ngxs/store/pull/2289)
+- Refactor: Reduce RxJS dependency [#2292](https://github.com/ngxs/store/pull/2292)
+- Fix(store): Add root store initializer guard [#2278](https://github.com/ngxs/store/pull/2278)
+- Fix(store): Reduce change detection cycles with pending tasks [#2280](https://github.com/ngxs/store/pull/2280)
+- Fix(store): Complete action results on destroy [#2282](https://github.com/ngxs/store/pull/2282)
+- Fix(store): Complete `dispatched$` in internal actions [#2285](https://github.com/ngxs/store/pull/2285)
+- Build(store): Use `ngServerMode` to check whether we are in SSR [#2287](https://github.com/ngxs/store/pull/2287)
+- Build(storage-plugin): Use `ngServerMode` to check whether we are in SSR [#2288](https://github.com/ngxs/store/pull/2288)
+- Refactor(form-plugin): Replace `takeUntil` with `takeUntilDestroyed` [#2283](https://github.com/ngxs/store/pull/2283)
+- Refactor(router-plugin): Reduce RxJS depedency [#2291](https://github.com/ngxs/store/pull/2291)
+- Refactor(router-plugin): Change `@Selector` to `createSelector` [#2294](https://github.com/ngxs/store/pull/2294)
+
+### 19.0.0 2024-12-3
+
+- Build: Add Angular 19 support [#2269](https://github.com/ngxs/store/pull/2269)
+
+### 18.1.6 2024-11-20
+
+- Refactor: Use field initializers for injectees [#2258](https://github.com/ngxs/store/pull/2258)
+- Refactor: Allow tree-shaking of dev-only code [#2259](https://github.com/ngxs/store/pull/2259)
+- Fix(store): Allow plain functions in `withNgxsPlugin` [#2255](https://github.com/ngxs/store/pull/2255)
+- Fix(store): Run plugins in injection context [#2256](https://github.com/ngxs/store/pull/2256)
+- Fix(store): Setup unhandled error handler during NGXS initialization [#2263](https://github.com/ngxs/store/pull/2263)
+- Fix(websocket-plugin): Do not dispatch action when root injector is destroyed [#2257](https://github.com/ngxs/store/pull/2257)
+- Refactor(store): Replace `exhaustMap` [#2254](https://github.com/ngxs/store/pull/2254)
+- Refactor(store): Tree-shake development options token [#2260](https://github.com/ngxs/store/pull/2260)
+- Performance(store): Prevent initializing state factory at feature levels [#2261](https://github.com/ngxs/store/pull/2261)
+- Revert: Revert router state changes [#2264](https://github.com/ngxs/store/pull/2264)
+
+### 18.1.5 2024-11-12
+
+- Fix(store): Prevent writing to state once action handler is unsubscribed [#2231](https://github.com/ngxs/store/pull/2231)
+- Performance(store): Replace `instanceof Function` with `typeof` [#2247](https://github.com/ngxs/store/pull/2247)
+- Refactor(store): Use `Object.is` as default equality check [#2245](https://github.com/ngxs/store/pull/2245)
+- Refactor(store): Tree-shake internal state tokens [#2246](https://github.com/ngxs/store/pull/2246)
+- Refactor(router-plugin): Mark selectors as pure [#2248](https://github.com/ngxs/store/pull/2248) **(Note: reverted in 18.1.6)**
+- Refactor(storage-plugin): Mark engine tokens as pure [#2249](https://github.com/ngxs/store/pull/2249)
+
+### 18.1.4 2024-10-23
+
+- Fix(store): Disallow nullable actions in `dispatch()` [#2221](https://github.com/ngxs/store/pull/2221)
+- Fix(logger-plugin): Run `filter` function in injection context [#2236](https://github.com/ngxs/store/pull/2236)
+
+### 18.1.3 2024-10-21
+
+- Build: Copy LICENSE after build [#2234](https://github.com/ngxs/store/pull/2234)
+
+### 18.1.2 2024-10-21
+
+- Fix(store): Allow selector utils usage within state class [#2210](https://github.com/ngxs/store/pull/2210)
+- Fix(store): Register feature plugins correctly [#2228](https://github.com/ngxs/store/pull/2228)
+- Fix(store): Memoize selectors which return NaN [#2230](https://github.com/ngxs/store/pull/2230)
+- Performance(store): Avoid going over states list every time action is dispatched [#2219](https://github.com/ngxs/store/pull/2219)
+- Refactor(store): Add action registry [#2224](https://github.com/ngxs/store/pull/2224)
+
+### 18.1.1 2024-08-06
+
+- Fix(store): allow dispatch within effect [#2201](https://github.com/ngxs/store/pull/2201)
+- Fix(store): use computed in selectSignal [#2201](https://github.com/ngxs/store/pull/2201)
+
+### 18.1.0 2024-07-29
+
+- Feature(store): Debounce `selectSignal` by default [#2190](https://github.com/ngxs/store/pull/2190)
+- Feature(store): Add `withExperimentalNgxsPendingTasks` [#2186](https://github.com/ngxs/store/pull/2186)
 - Fix(store): Decouple state signal updates from synchronous changes [#2189](https://github.com/ngxs/store/pull/2189)
+- Fix(schematics): remove local ng utils for schematics [#2184](https://github.com/ngxs/store/pull/2184)
 
 ### 18.0.0 2024-06-10
 

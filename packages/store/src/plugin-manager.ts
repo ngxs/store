@@ -1,28 +1,30 @@
-import { Inject, Injectable, Optional, SkipSelf } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { NGXS_PLUGINS, NgxsPlugin, NgxsPluginFn } from '@ngxs/store/plugins';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PluginManager {
-  public plugins: NgxsPluginFn[] = [];
+  readonly plugins: NgxsPluginFn[] = [];
 
-  constructor(
-    @Optional()
-    @SkipSelf()
-    private _parentManager: PluginManager,
-    @Inject(NGXS_PLUGINS)
-    @Optional()
-    private _pluginHandlers: NgxsPlugin[]
-  ) {
+  private readonly _parentManager = inject(PluginManager, {
+    optional: true,
+    skipSelf: true
+  });
+
+  private readonly _pluginHandlers = inject<NgxsPlugin[]>(NGXS_PLUGINS, {
+    optional: true
+  });
+
+  constructor() {
     this.registerHandlers();
   }
 
-  private get rootPlugins(): NgxsPluginFn[] {
-    return (this._parentManager && this._parentManager.plugins) || this.plugins;
+  private get _rootPlugins(): NgxsPluginFn[] {
+    return this._parentManager?.plugins || this.plugins;
   }
 
   private registerHandlers(): void {
     const pluginHandlers: NgxsPluginFn[] = this.getPluginHandlers();
-    this.rootPlugins.push(...pluginHandlers);
+    this._rootPlugins.push(...pluginHandlers);
   }
 
   private getPluginHandlers(): NgxsPluginFn[] {

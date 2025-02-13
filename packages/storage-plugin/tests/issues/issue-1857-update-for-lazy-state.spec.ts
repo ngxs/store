@@ -38,7 +38,7 @@ describe('Update for lazy state (https://github.com/ngxs/store/issues/1857)', ()
   })
   class FeatureStateModule {}
 
-  @Component({ selector: 'app-root', template: '' })
+  @Component({ selector: 'app-root', template: '', standalone: false })
   class TestComponent {}
 
   @NgModule({

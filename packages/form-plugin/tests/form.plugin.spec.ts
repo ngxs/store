@@ -275,7 +275,8 @@ describe('NgxsFormPlugin', () => {
           <form [formGroup]="form" ngxsForm="todos.todosForm">
             <input formControlName="text" /> <button type="submit">Add todo</button>
           </form>
-        `
+        `,
+        standalone: false
       })
       class MockComponent {
         public form = new FormGroup({
@@ -343,7 +344,8 @@ describe('NgxsFormPlugin', () => {
                 Add todo
               </button>
             </form>
-          `
+          `,
+          standalone: false
         })
         class MockComponent {
           public form = new FormGroup({ text: new FormControl() });
@@ -380,7 +382,8 @@ describe('NgxsFormPlugin', () => {
                 Add todo
               </button>
             </form>
-          `
+          `,
+          standalone: false
         })
         class MockComponent {
           public form = new FormGroup({ text: new FormControl() });
@@ -419,7 +422,8 @@ describe('NgxsFormPlugin', () => {
                 Add todo
               </button>
             </form>
-          `
+          `,
+          standalone: false
         })
         class MockComponent {
           public form = new FormGroup({ text: new FormControl() });
@@ -456,7 +460,8 @@ describe('NgxsFormPlugin', () => {
             <form [formGroup]="form" ngxsForm="todos.todosForm" ngxsFormClearOnDestroy="true">
               <input formControlName="text" /> <button type="submit">Add todo</button>
             </form>
-          `
+          `,
+          standalone: false
         })
         class MockComponent {
           public form = new FormGroup({ text: new FormControl() });
@@ -495,7 +500,8 @@ describe('NgxsFormPlugin', () => {
             >
               <input formControlName="text" /> <button type="submit">Add todo</button>
             </form>
-          `
+          `,
+          standalone: false
         })
         class MockComponent {
           public form = new FormGroup({
@@ -547,7 +553,8 @@ describe('NgxsFormPlugin', () => {
           <form [formGroup]="form" ngxsForm="todos.todosForm" [ngxsFormDebounce]="0">
             <input formControlName="text" /> <button type="submit">Add todo</button>
           </form>
-        `
+        `,
+        standalone: false
       })
       class MockComponent {
         public form = new FormGroup({
@@ -617,7 +624,8 @@ describe('NgxsFormPlugin', () => {
           <form [formGroup]="form" ngxsForm="todos.todosForm" ngxsFormDebounce="-1">
             <input formControlName="text" /> <button type="submit">Add todo</button>
           </form>
-        `
+        `,
+        standalone: false
       })
       class MockComponent {
         public form = new FormGroup({
@@ -678,7 +686,8 @@ describe('NgxsFormPlugin', () => {
           <form [formGroup]="form" ngxsForm="todos.todosForm">
             <input formControlName="text" /> <button type="submit">Add todo</button>
           </form>
-        `
+        `,
+        standalone: false
       })
       class MockComponent {
         public form = new FormGroup(
@@ -742,7 +751,8 @@ describe('NgxsFormPlugin', () => {
           <form [formGroup]="form" ngxsForm="todos.todosForm">
             <input formControlName="text" /> <button type="submit">Add todo</button>
           </form>
-        `
+        `,
+        standalone: false
       })
       class MockComponent {
         public form = new FormGroup(
@@ -803,7 +813,8 @@ describe('NgxsFormPlugin', () => {
           <form [formGroup]="form" ngxsForm="todos.todosForm" ngxsFormDebounce="-1">
             <input formControlName="text" /> <button type="submit">Add todo</button>
           </form>
-        `
+        `,
+        standalone: false
       })
       class MockComponent {
         public form = new FormGroup({
@@ -873,7 +884,8 @@ describe('NgxsFormPlugin', () => {
           <form [formGroup]="form" ngxsForm="todos.todosForm">
             <input formControlName="text" /> <button type="submit">Add todo</button>
           </form>
-        `
+        `,
+        standalone: false
       })
       class MockComponent {
         public form = new FormGroup({
@@ -936,7 +948,8 @@ describe('NgxsFormPlugin', () => {
           <form [formGroup]="form" [ngxsFormDebounce]="500" ngxsForm="todos.todosForm">
             <input formControlName="text" /> <button type="submit">Add todo</button>
           </form>
-        `
+        `,
+        standalone: false
       })
       class MockComponent {
         public form = new FormGroup({
@@ -1007,7 +1020,8 @@ describe('NgxsFormPlugin', () => {
           <form [formGroup]="form" ngxsForm="todos.todosForm">
             <input formControlName="text" /> <button type="submit">Add todo</button>
           </form>
-        `
+        `,
+        standalone: false
       })
       class MockComponent {
         public form = new FormGroup({

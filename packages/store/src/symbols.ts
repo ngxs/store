@@ -7,12 +7,10 @@ import { ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
 import { NgxsExecutionStrategy } from './execution/symbols';
 import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 // The injection token is used to resolve a list of states provided at
 // the root level through either `NgxsModule.forRoot` or `provideStore`.
 export const ROOT_STATE_TOKEN = new InjectionToken<Array<ɵStateClass>>(
-  NG_DEV_MODE ? 'ROOT_STATE_TOKEN' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'ROOT_STATE_TOKEN' : ''
 );
 
 // The injection token is used to resolve a list of states provided at
@@ -20,13 +18,13 @@ export const ROOT_STATE_TOKEN = new InjectionToken<Array<ɵStateClass>>(
 // The Array<Array> is used to overload the resolved value of the token because
 // it is a multi-provider token.
 export const FEATURE_STATE_TOKEN = new InjectionToken<Array<Array<ɵStateClass>>>(
-  NG_DEV_MODE ? 'FEATURE_STATE_TOKEN' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'FEATURE_STATE_TOKEN' : ''
 );
 
 // The injection token is used to resolve to options provided at the root
 // level through either `NgxsModule.forRoot` or `provideStore`.
 export const NGXS_OPTIONS = new InjectionToken<NgxsModuleOptions>(
-  NG_DEV_MODE ? 'NGXS_OPTIONS' : ''
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_OPTIONS' : ''
 );
 
 export type NgxsLifeCycle = Partial<NgxsOnChanges> &
@@ -158,4 +156,8 @@ export type NgxsModuleOptions = Partial<NgxsConfig>;
 /** @internal */
 declare global {
   const ngDevMode: boolean;
+  // Indicates whether the application is operating in server-rendering mode.
+  // `ngServerMode` is a global flag set by Angular CLI.
+  // https://github.com/angular/angular-cli/blob/b4e9a2af9e50e7b65167d0fdbd4012023135e875/packages/angular/build/src/tools/vite/utils.ts#L102
+  const ngServerMode: boolean;
 }

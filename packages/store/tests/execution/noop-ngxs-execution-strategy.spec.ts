@@ -20,7 +20,7 @@ import {
   NoopNgxsExecutionStrategy,
   Selector
 } from '@ngxs/store';
-import { freshPlatform } from '@ngxs/store/internals/testing';
+import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
@@ -68,7 +68,7 @@ describe('NoopNgxsExecutionStrategy', () => {
     }
   }
 
-  @Component({ template: '{{ counter$ | async }}' })
+  @Component({ template: '{{ counter$ | async }}', standalone: false })
   class CounterComponent {
     counter$: Observable<number> = inject(Store).select(CounterState.getCounter);
   }
@@ -115,7 +115,8 @@ describe('NoopNgxsExecutionStrategy', () => {
 
       @Component({
         selector: 'app-root',
-        template: ''
+        template: '',
+        standalone: false
       })
       class TestComponent {}
 
@@ -127,9 +128,11 @@ describe('NoopNgxsExecutionStrategy', () => {
       class TestModule {}
 
       // Act
-      const { injector } = await platformBrowserDynamic().bootstrapModule(TestModule, {
-        ngZone: 'noop'
-      });
+      const { injector } = await skipConsoleLogging(() =>
+        platformBrowserDynamic().bootstrapModule(TestModule, {
+          ngZone: 'noop'
+        })
+      );
 
       // Assert
       try {

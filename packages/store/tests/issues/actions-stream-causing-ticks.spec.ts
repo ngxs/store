@@ -35,7 +35,8 @@ describe('Actions stream causing ticks', () => {
 
   @Component({
     selector: 'app-root',
-    template: '<button id="set-countries" (click)="setCountries()">Set countries</button>'
+    template: '<button id="set-countries" (click)="setCountries()">Set countries</button>',
+    standalone: false
   })
   class TestComponent {
     constructor(

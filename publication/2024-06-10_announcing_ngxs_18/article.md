@@ -28,7 +28,7 @@ We've got some exciting news in this release beyond the usual code wizardry. We'
 - **Dedicated Channels:** Dive deep into specific NGXS topics with focused channels.
 - **Enhanced Support:** Find answers and resources faster with a well-organized structure.
 
-Head over to our brand new Discord server at https://discord.gg/yFk6bu7v. Don't forget to introduce yourself and let us know what awesome NGXS projects you're working on!
+Head over to our brand new Discord server at https://discord.gg/yT3Q8cXTnz. Don't forget to introduce yourself and let us know what awesome NGXS projects you're working on!
 
 ## The move from Slack to Discord will be incremental, as we encourage our many Slack users to move over. There is a wealth of valuable community discussions in our Slack archives (6 years of data). This is unfortunately inaccessible due to Slack's 90-day policy. We plan to make this archive available in dedicated discord channels in the near future.
 

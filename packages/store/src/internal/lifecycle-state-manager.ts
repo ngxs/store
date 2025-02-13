@@ -1,8 +1,7 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
-import { ReplaySubject } from 'rxjs';
-import { filter, mergeMap, pairwise, startWith, takeUntil, tap } from 'rxjs/operators';
+import { EMPTY, mergeMap, pairwise, startWith } from 'rxjs';
 
 import { Store } from '../store';
 import { StateContextFactory } from './state-context-factory';
@@ -11,30 +10,20 @@ import { MappedStore, StatesAndDefaults } from './internals';
 import { NgxsLifeCycle, NgxsSimpleChange, StateContext } from '../symbols';
 import { getInvalidInitializationOrderMessage } from '../configs/messages.config';
 
-const NG_DEV_MODE = typeof ngDevMode !== 'undefined' && ngDevMode;
-
 @Injectable({ providedIn: 'root' })
-export class LifecycleStateManager implements OnDestroy {
-  private readonly _destroy$ = new ReplaySubject<void>(1);
+export class LifecycleStateManager {
+  private _store = inject(Store);
+  private _internalStateOperations = inject(InternalStateOperations);
+  private _stateContextFactory = inject(StateContextFactory);
+  private _appBootstrappedState = inject(ɵNgxsAppBootstrappedState);
 
   private _initStateHasBeenDispatched?: boolean;
-
-  constructor(
-    private _store: Store,
-    private _internalStateOperations: InternalStateOperations,
-    private _stateContextFactory: StateContextFactory,
-    private _appBootstrappedState: ɵNgxsAppBootstrappedState
-  ) {}
-
-  ngOnDestroy(): void {
-    this._destroy$.next();
-  }
 
   ngxsBootstrap(
     action: InitState | UpdateState,
     results: StatesAndDefaults | undefined
   ): void {
-    if (NG_DEV_MODE) {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       if (action instanceof InitState) {
         this._initStateHasBeenDispatched = true;
       } else if (
@@ -50,17 +39,28 @@ export class LifecycleStateManager implements OnDestroy {
       }
     }
 
+    // It does not need to unsubscribe because it is completed when the
+    // root injector is destroyed.
     this._internalStateOperations
       .getRootStateOperations()
       .dispatch(action)
       .pipe(
-        filter(() => !!results),
-        tap(() => this._invokeInitOnStates(results!.states)),
-        mergeMap(() => this._appBootstrappedState),
-        filter(appBootstrapped => !!appBootstrapped),
-        takeUntil(this._destroy$)
+        mergeMap(() => {
+          // If no states are provided, we safely complete the stream
+          // and do not proceed further.
+          if (!results) {
+            return EMPTY;
+          }
+
+          this._invokeInitOnStates(results!.states);
+          return this._appBootstrappedState;
+        })
       )
-      .subscribe(() => this._invokeBootstrapOnStates(results!.states));
+      .subscribe(appBootstrapped => {
+        if (appBootstrapped) {
+          this._invokeBootstrapOnStates(results!.states);
+        }
+      });
   }
 
   private _invokeInitOnStates(mappedStores: MappedStore[]): void {
@@ -68,9 +68,11 @@ export class LifecycleStateManager implements OnDestroy {
       const instance: NgxsLifeCycle = mappedStore.instance;
 
       if (instance.ngxsOnChanges) {
+        // It does not need to unsubscribe because it is completed when the
+        // root injector is destroyed.
         this._store
           .select(state => getValue(state, mappedStore.path))
-          .pipe(startWith(undefined), pairwise(), takeUntil(this._destroy$))
+          .pipe(startWith(undefined), pairwise())
           .subscribe(([previousValue, currentValue]) => {
             const change = new NgxsSimpleChange(
               previousValue,
@@ -99,6 +101,6 @@ export class LifecycleStateManager implements OnDestroy {
   }
 
   private _getStateContext(mappedStore: MappedStore): StateContext<any> {
-    return this._stateContextFactory.createStateContext(mappedStore);
+    return this._stateContextFactory.createStateContext(mappedStore.path);
   }
 }

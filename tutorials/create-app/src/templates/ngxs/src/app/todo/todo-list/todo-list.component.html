@@ -1,0 +1,45 @@
+<mat-card style="margin: 50px; padding: 8px">
+  <mat-card-title>Add an Item</mat-card-title>
+  <!-- Add new item -->
+  <div class="flex items-center">
+    <mat-form-field class="mr-4" appearance="fill">
+      <mat-label>Item name</mat-label>
+      <input matInput autocomplete="off" [(ngModel)]="newItemName" />
+    </mat-form-field>
+    <div>
+      <button type="button" mat-raised-button color="primary" (click)="addItem()">Add</button>
+    </div>
+  </div>
+  <!-- /Add new item -->
+</mat-card>
+<mat-card style="margin: 50px; padding: 8px">
+  <mat-card-title>Complete Items</mat-card-title>
+  <!-- Todo items -->
+  <ng-container
+    *ngTemplateOutlet="todoItems; context: { todoItems: completeTodoItems() }"
+  ></ng-container>
+  <!-- /Todo items -->
+</mat-card>
+
+<mat-card style="margin: 50px; padding: 8px">
+  <mat-card-title>Incomplete Items</mat-card-title>
+  <!-- Todo items -->
+  <ng-container
+    *ngTemplateOutlet="todoItems; context: { todoItems: inCompleteTodoItems() }"
+  ></ng-container>
+  <!-- /Todo items -->
+</mat-card>
+
+<ng-template #todoItems let-todoItems="todoItems">
+  <mat-list role="list">
+    @for (item of todoItems; track item.id) {
+      <app-todo-item [item]="item" (toggleItem)="toggleItem($event)" />
+    } @empty {
+      <mat-list-item role="listitem">
+        <div class="flex items-center">
+          <span>No items found</span>
+        </div>
+      </mat-list-item>
+    }
+  </mat-list>
+</ng-template>

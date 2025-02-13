@@ -1,22 +1,20 @@
-import { Inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
-import { isPlatformServer } from '@angular/common';
+import { inject, Injectable, NgZone } from '@angular/core';
 
 import { NgxsExecutionStrategy } from './symbols';
 import { getZoneWarningMessage } from '../configs/messages.config';
 
 @Injectable({ providedIn: 'root' })
 export class DispatchOutsideZoneNgxsExecutionStrategy implements NgxsExecutionStrategy {
-  constructor(
-    private _ngZone: NgZone,
-    @Inject(PLATFORM_ID) private _platformId: string
-  ) {
+  private _ngZone = inject(NgZone);
+
+  constructor() {
     if (typeof ngDevMode !== 'undefined' && ngDevMode) {
-      verifyZoneIsNotNooped(_ngZone);
+      verifyZoneIsNotNooped(this._ngZone);
     }
   }
 
   enter<T>(func: () => T): T {
-    if (isPlatformServer(this._platformId)) {
+    if (typeof ngServerMode !== 'undefined' && ngServerMode) {
       return this.runInsideAngular(func);
     }
     return this.runOutsideAngular(func);

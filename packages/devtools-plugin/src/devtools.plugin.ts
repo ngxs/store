@@ -1,4 +1,4 @@
-import { Inject, Injectable, Injector, NgZone, OnDestroy, ɵglobal } from '@angular/core';
+import { DestroyRef, inject, Injectable, Injector, NgZone, ɵglobal } from '@angular/core';
 import { Store } from '@ngxs/store';
 import {
   InitState,
@@ -8,12 +8,7 @@ import {
 } from '@ngxs/store/plugins';
 import { tap, catchError } from 'rxjs/operators';
 
-import {
-  NGXS_DEVTOOLS_OPTIONS,
-  NgxsDevtoolsAction,
-  NgxsDevtoolsExtension,
-  NgxsDevtoolsOptions
-} from './symbols';
+import { NGXS_DEVTOOLS_OPTIONS, NgxsDevtoolsAction, NgxsDevtoolsExtension } from './symbols';
 
 const enum ReduxDevtoolsActionType {
   Dispatch = 'DISPATCH',
@@ -32,24 +27,24 @@ const enum ReduxDevtoolsPayloadType {
  * http://extension.remotedev.io/
  */
 @Injectable()
-export class NgxsReduxDevtoolsPlugin implements OnDestroy, NgxsPlugin {
+export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
+  private _injector = inject(Injector);
+  private _ngZone = inject(NgZone);
+  private _options = inject(NGXS_DEVTOOLS_OPTIONS);
+
   private devtoolsExtension: NgxsDevtoolsExtension | null = null;
   private readonly globalDevtools =
     ɵglobal['__REDUX_DEVTOOLS_EXTENSION__'] || ɵglobal['devToolsExtension'];
 
   private unsubscribe: VoidFunction | null = null;
 
-  constructor(
-    @Inject(NGXS_DEVTOOLS_OPTIONS) private _options: NgxsDevtoolsOptions,
-    private _injector: Injector,
-    private _ngZone: NgZone
-  ) {
+  constructor() {
     this.connect();
-  }
 
-  ngOnDestroy(): void {
-    this.unsubscribe?.();
-    this.globalDevtools?.disconnect();
+    inject(DestroyRef).onDestroy(() => {
+      this.unsubscribe?.();
+      this.globalDevtools?.disconnect();
+    });
   }
 
   /**

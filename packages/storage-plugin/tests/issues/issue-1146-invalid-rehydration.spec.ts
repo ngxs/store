@@ -34,7 +34,8 @@ describe('Invalid state re-hydration (https://github.com/ngxs/store/issues/1146)
 
   @Component({
     selector: 'app-root',
-    template: 'Counter: {{ counter$ | async }}'
+    template: 'Counter: {{ counter$ | async }}',
+    standalone: false
   })
   class TestComponent {
     counter$: Observable<number>;

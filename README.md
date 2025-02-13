@@ -16,6 +16,9 @@
   <a href="https://www.npmjs.com/package/@ngxs/store">
     <img src="https://img.shields.io/npm/dw/@ngxs/store.svg" />
   </a>
+  <a href="https://gurubase.io/g/ngxs">
+    <img src="https://img.shields.io/badge/Gurubase-Ask%20NGXS%20Guru-006BFF" />
+  </a>
   
   <br />
   
@@ -41,6 +44,7 @@
 ### Quick Links
 
 - ✨ Learn about it on the [docs site](https://ngxs.io/)
+- 💬 Ask a question in our [Discord](https://discord.gg/yT3Q8cXTnz) server (we are migrating from our [slack](https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q) server).
 - 🚀 See it in action on [Stackblitz](https://stackblitz.com/edit/ngxs-repro)
 - 😎 Checkout the [sample application](integration)
 - 🔧 Scaffolding application using [NGXS Schematics](https://www.ngxs.io/introduction/schematics)
@@ -70,7 +74,7 @@ To get started locally, follow these instructions:
 2. Clone to your local computer using git.
 3. Make sure that you have installed NodeJS.
 4. Make sure that you have yarn installed.
-5. Run `yarn install`.
+5. Run `yarn && yarn --cwd tutorials/create-app`.
 6. Run `yarn build:packages`.
 
 #### Creating new packages or add feature/fix
@@ -124,7 +128,7 @@ If you have ideas for creating unique libraries, you can join us. Email us at `n
 
 | Project                                 | Package                                                                                        | Version                                                                                                                                             | Links                                                                                                          |
 | --------------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **NGXS-labs Data**                      | [`@ngxs-labs/data`](https://npmjs.com/package/@ngxs-labs/data)                                 | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fdata/latest.svg)](https://npmjs.com/package/@ngxs-labs/data)                                 | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/data)                 |
+| **NGXS Persistence API**                | [`@anglar-ru/ngxs`](https://angular-ru.gitbook.io/sdk/ngxs/ngxs)                               | [![latest](https://img.shields.io/npm/v/%40angular-ru%2Fngxs/latest.svg)](https://npmjs.com/package/@angular-ru/ngxs)                               | [![README](https://img.shields.io/badge/README--green.svg)](https://angular-ru.gitbook.io/sdk/ngxs/ngxs)       |
 | **NGXS-labs Emitter**                   | [`@ngxs-labs/emitter`](https://npmjs.com/package/@ngxs-labs/emitter)                           | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Femitter/latest.svg)](https://npmjs.com/package/@ngxs-labs/emitter)                           | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/emitter)              |
 | **NGXS-labs Immer adapter**             | [`@ngxs-labs/immer-adapter`](https://npmjs.com/package/@ngxs-labs/immer-adapter)               | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fimmer-adapter/latest.svg)](https://npmjs.com/package/@ngxs-labs/immer-adapter)               | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/immer-adapter)        |
 | **NGXS-labs Dispatch decorator**        | [`@ngxs-labs/dispatch-decorator`](https://npmjs.com/package/@ngxs-labs/dispatch-decorator)     | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fdispatch-decorator/latest.svg)](https://npmjs.com/package/@ngxs-labs/dispatch-decorator)     | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/dispatch-decorator)   |

@@ -56,7 +56,8 @@ describe('UpdateFormValue.propertyPath', () => {
           </div>
         </div>
       </form>
-    `
+    `,
+    standalone: false
   })
   class NewNovelFormComponent {
     path = path;

@@ -31,18 +31,21 @@ runs:
       run: unset HISTFILE
 
     - name: Use Node.js ${{ inputs.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
         registry-url: https://registry.npmjs.org
         check-latest: true
+        cache: 'yarn'
 
     - name: Configure kernel (increase watchers)
       shell: bash
       run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
     - name: Workspace cache
-      uses: actions/cache@v3
+      # Skip the workspace cache, because it might be slowing things down. Using setup-node action above instead
+      if: false
+      uses: actions/cache@v4
       id: workspace-cache
       env:
         cache-name: workspace-cache
@@ -51,9 +54,7 @@ runs:
           ~/.cache
           ./node_modules
           ./@ngxs
-          ./integrations/hello-world-ng16/dist-integration
-          ./integrations/hello-world-ng17/dist-integration
-          ./integrations/hello-world-ng18/dist-integration
+          ./integrations/hello-world-ng19/dist-integration
         key: ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-${{ inputs.github-sha }}
         restore-keys: |
           ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-
@@ -61,6 +62,17 @@ runs:
           ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-
           ${{ runner.os }}-
 
+    - name: Download ngxs build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: ngxs-build
+        path: ./@ngxs
+      continue-on-error: true
+
     - name: Install project dependencies
       shell: bash
       run: yarn install --frozen-lockfile --non-interactive
+
+    - name: Install tutorials dependencies
+      shell: bash
+      run: yarn tutorials:install

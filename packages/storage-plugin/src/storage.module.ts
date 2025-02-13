@@ -1,12 +1,10 @@
 import {
   NgModule,
   ModuleWithProviders,
-  PLATFORM_ID,
   EnvironmentProviders,
   makeEnvironmentProviders
 } from '@angular/core';
 import { withNgxsPlugin } from '@ngxs/store';
-import { NGXS_PLUGINS } from '@ngxs/store/plugins';
 import {
   ɵUSER_OPTIONS,
   STORAGE_ENGINE,
@@ -25,11 +23,7 @@ export class NgxsStoragePluginModule {
     return {
       ngModule: NgxsStoragePluginModule,
       providers: [
-        {
-          provide: NGXS_PLUGINS,
-          useClass: NgxsStoragePlugin,
-          multi: true
-        },
+        withNgxsPlugin(NgxsStoragePlugin),
         {
           provide: ɵUSER_OPTIONS,
           useValue: options
@@ -42,7 +36,7 @@ export class NgxsStoragePluginModule {
         {
           provide: STORAGE_ENGINE,
           useFactory: engineFactory,
-          deps: [ɵNGXS_STORAGE_PLUGIN_OPTIONS, PLATFORM_ID]
+          deps: [ɵNGXS_STORAGE_PLUGIN_OPTIONS]
         }
       ]
     };
@@ -66,7 +60,7 @@ export function withNgxsStoragePlugin(
     {
       provide: STORAGE_ENGINE,
       useFactory: engineFactory,
-      deps: [ɵNGXS_STORAGE_PLUGIN_OPTIONS, PLATFORM_ID]
+      deps: [ɵNGXS_STORAGE_PLUGIN_OPTIONS]
     }
   ]);
 }

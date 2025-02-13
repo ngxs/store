@@ -1,10 +1,33 @@
 # Error Handling
 
-## Recommended Approach
+## Deterministic vs Non-deterministic
+
+Firstly, it is good to understand that your error handling approach should consider two different classes of error: Deterministic and Non-deterministic errors.
+
+### Deterministic errors:
+
+- These are repeatable errors that you would expect during the normal course of operation of your application.
+- The condition for this error to happen is fully determined by the state of the application (hence the word "deterministic").
+- `Determinism` is the property that you will always get the same output given the same input.
+- If the application's data remains unchanged, then an erroring operation will always fail, no matter how many times it is retried.
+- You should consider how your code should handle these errors as part of building a robust application.
+- Some example approaches (from the 4xx HTTP status codes):
+  - Bad request (400): The data that you are sending is in the incorrect format, something definitely needs to change with what you are sending.
+  - Not Found (404): The requested item is not found, so you need to make a decision on how to respond to this scenario.
+
+### Non-deterministic errors:
+
+- These are errors generally occur as a result of the environment within which your application operates. For example, the network or a server failure could cause this type of error.
+- Because this type of error lacks `Determinism` (see definition above), then it is possible that retrying the operation could lead to success. It is recommended to decide on a retry strategy that makes sense for the application experience that you wish to offer.
+- Some example approaches (from the 5xx HTTP status codes - "server-side" errors ):
+  - Internal Server Error (500): Something went wrong with the server. Things could succeed on retry, but it really depends on how resilient your server side is. Not recommended to retry for too long because this type of error could take more than a negligible time to resolve.
+  - Gateway Timeout (504): There is a connection timeout, so it may be a good idea to check if there is network availability before retrying too many times.
+
+## Recommended Approach in NGXS
 
 It is recommended to handle errors within your `@Action` function in your state:
 
-### Deterministice errors:
+### Deterministic errors:
 
 - `Update the state` to capture the error details
   - Ensure that the relevant selectors cater for these error states and provide information for your user to respond to the error accordingly

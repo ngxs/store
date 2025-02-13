@@ -19,21 +19,13 @@ export function logoutPlugin(state, action, next) {
 }
 ```
 
-Then add it to `providers`:
+Then add it to `provideStore` features:
 
 ```ts
-import { NGXS_PLUGINS } from '@ngxs/store/plugins';
+import { provideStore, withNgxsPlugin } from '@ngxs/store';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideStore([]),
-
-    {
-      provide: NGXS_PLUGINS,
-      useValue: logoutPlugin,
-      multi: true
-    }
-  ]
+  providers: [provideStore([], withNgxsPlugin(logoutPlugin))]
 };
 ```
 

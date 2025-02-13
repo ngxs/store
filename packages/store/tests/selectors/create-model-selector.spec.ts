@@ -1,13 +1,21 @@
 import { Injectable } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, flushMicrotasks } from '@angular/core/testing';
 import {
   NgxsModule,
   State,
   Store,
   createModelSelector,
   createSelector,
-  createPropertySelectors
+  createPropertySelectors,
+  Selector,
+  TypedSelector
 } from '@ngxs/store';
+import { ɵStateClass } from '@ngxs/store/internals';
+import {
+  ConsoleRecorder,
+  skipConsoleLogging,
+  loggedError
+} from '@ngxs/store/internals/testing';
 
 describe('createModelSelector', () => {
   interface MockStateModel {
@@ -27,14 +35,16 @@ describe('createModelSelector', () => {
   @Injectable()
   class MockState {}
 
-  function setupFixture() {
+  function setupFixture(states?: ɵStateClass[]) {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MockState])]
+      imports: [NgxsModule.forRoot(states || [MockState])]
     });
     const store: Store = TestBed.inject(Store);
     const setState = (newState: MockStateModel) => store.reset({ mockstate: newState });
     const patchState = (newState: Partial<MockStateModel>) => {
-      const currentState = store.selectSnapshot(MockState);
+      const currentState = store.selectSnapshot(
+        MockState as unknown as TypedSelector<MockStateModel>
+      );
       setState({ ...currentState, ...newState });
     };
     const stateSelector = createSelector([MockState], (state: MockStateModel) => state);
@@ -146,47 +156,49 @@ describe('createModelSelector', () => {
       );
     });
 
-    it('should fail if a class that is not a selector is provided in the selector map', () => {
+    it('should fail if a class that is not a selector is provided in the selector map', fakeAsync(async () => {
       // Arrange
       const { stateSelector } = setupFixture();
-      let error: Error | null = null;
+      const consoleRecorder: ConsoleRecorder = [];
       class NotAState {}
-      // Act
-      try {
+      await skipConsoleLogging(async () => {
+        // Act
         createModelSelector({
           everything: stateSelector,
           test: NotAState as unknown as typeof stateSelector
         });
-      } catch (err) {
-        error = err as Error;
-      }
+        flushMicrotasks();
+      }, consoleRecorder);
       // Assert
-      expect(error).not.toBeNull();
-      expect(error?.message).toMatchInlineSnapshot(
-        `"[createModelSelector]: The value provided as the selector for the 'test' property is not a valid selector."`
-      );
-    });
+      expect(consoleRecorder).not.toHaveLength(0);
+      expect(consoleRecorder).toEqual([
+        loggedError(
+          `[createModelSelector]: The value provided as the selector for the 'test' property is not a valid selector.`
+        )
+      ]);
+    }));
 
-    it('should fail if a class that is not a selector is provided in the selector map', () => {
+    it('should fail if a class that is not a selector is provided in the selector map', fakeAsync(async () => {
       // Arrange
       const { stateSelector } = setupFixture();
-      let error: Error | null = null;
+      const consoleRecorder: ConsoleRecorder = [];
       function NotASelector() {}
-      // Act
-      try {
+      await skipConsoleLogging(async () => {
+        // Act
         createModelSelector({
           everything: stateSelector,
           test: NotASelector as unknown as typeof stateSelector
         });
-      } catch (err) {
-        error = err as Error;
-      }
+        flushMicrotasks();
+      }, consoleRecorder);
       // Assert
-      expect(error).not.toBeNull();
-      expect(error?.message).toMatchInlineSnapshot(
-        `"[createModelSelector]: The value provided as the selector for the 'test' property is not a valid selector."`
-      );
-    });
+      expect(consoleRecorder).not.toHaveLength(0);
+      expect(consoleRecorder).toEqual([
+        loggedError(
+          `[createModelSelector]: The value provided as the selector for the 'test' property is not a valid selector.`
+        )
+      ]);
+    }));
   });
 
   it('should create a model from the selectors in the selector map', () => {
@@ -257,6 +269,52 @@ describe('createModelSelector', () => {
       const snapshot2 = store.selectSnapshot(modelSelector);
       expect(snapshot2).toBe(snapshot1);
       expect(snapshot1).toStrictEqual({ bar: 'Tada', hello: 'there' });
+    });
+  });
+
+  describe('[Creation]', () => {
+    function createModelSelectorInState() {
+      @State<MockStateModel>({
+        name: 'myState',
+        defaults: {
+          property1: 'testValue',
+          property2: [1, 2, 3],
+          property3: { hello: 'world' }
+        }
+      })
+      @Injectable()
+      class MyState2 {
+        @Selector()
+        static prop1(state: MockStateModel) {
+          return state.property1;
+        }
+        static readonly newModel = createModelSelector({
+          bar: MyState2.prop1,
+          fullState: MyState2 as unknown as TypedSelector<MockStateModel>
+        });
+      }
+
+      const result = setupFixture([MyState2]);
+      return {
+        ...result,
+        modelSelector: MyState2.newModel
+      };
+    }
+
+    it('should allow creation of the pick selector within a state class', () => {
+      // Arrange
+      // Act
+      const { modelSelector, store } = createModelSelectorInState();
+      // Assert
+      expect(modelSelector).toBeDefined();
+      expect(store.selectSnapshot(modelSelector)).toStrictEqual({
+        bar: 'testValue',
+        fullState: {
+          property1: 'testValue',
+          property2: [1, 2, 3],
+          property3: { hello: 'world' }
+        }
+      });
     });
   });
 });
