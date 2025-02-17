@@ -38,6 +38,7 @@ export function withNgxsPendingTasks() {
 
     actions$
       .pipe(
+        filter(context => context.status !== ActionStatus.PreHandler),
         filter(context => {
           if (context.status === ActionStatus.Dispatched) {
             executedActions.add(context.action);
