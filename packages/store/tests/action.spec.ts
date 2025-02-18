@@ -20,6 +20,7 @@ import { Observable, of, Subject, throwError } from 'rxjs';
 import { delay, map, take, tap } from 'rxjs/operators';
 
 import { NoopErrorHandler } from './helpers/utils';
+import { ofActionPreHandler } from '../src/operators/of-action';
 
 describe('Action', () => {
   class Action1 {
@@ -92,8 +93,13 @@ describe('Action', () => {
       // Arrange
       const { store, actions } = setup();
       const callbacksCalled: string[] = [];
+
       actions.pipe(ofAction(Action1)).subscribe(() => {
         callbacksCalled.push('ofAction');
+      });
+
+      actions.pipe(ofActionPreHandler(Action1)).subscribe(() => {
+        callbacksCalled.push('ofActionPreHandler');
       });
 
       actions.pipe(ofActionDispatched(Action1)).subscribe(() => {
@@ -103,6 +109,8 @@ describe('Action', () => {
       actions.pipe(ofActionSuccessful(Action1)).subscribe(() => {
         callbacksCalled.push('ofActionSuccessful');
         expect(callbacksCalled).toEqual([
+          'ofAction',
+          'ofActionPreHandler',
           'ofAction',
           'ofActionDispatched',
           'ofAction',
@@ -123,6 +131,8 @@ describe('Action', () => {
       store.dispatch(new Action1()).subscribe(() => {
         expect(callbacksCalled).toEqual([
           'ofAction',
+          'ofActionPreHandler',
+          'ofAction',
           'ofActionDispatched',
           'ofAction',
           'ofActionSuccessful',
@@ -133,6 +143,8 @@ describe('Action', () => {
       tick(1);
       expect(callbacksCalled).toEqual([
         'ofAction',
+        'ofActionPreHandler',
+        'ofAction',
         'ofActionDispatched',
         'ofAction',
         'ofActionSuccessful',
@@ -140,7 +152,7 @@ describe('Action', () => {
       ]);
     }));
 
-    it('calls only the dispatched and error action', fakeAsync(() => {
+    it('calls only the preHandler, dispatched and error action', fakeAsync(() => {
       // Arrange
       const { store, actions } = setup();
       const callbacksCalled: string[] = [];
@@ -148,8 +160,13 @@ describe('Action', () => {
       actions.pipe(ofAction(Action1)).subscribe(() => {
         callbacksCalled.push('ofAction[Action1]');
       });
+
       actions.pipe(ofAction(ErrorAction)).subscribe(() => {
         callbacksCalled.push('ofAction');
+      });
+
+      actions.pipe(ofActionPreHandler(ErrorAction)).subscribe(() => {
+        callbacksCalled.push('ofActionPreHandler');
       });
 
       actions.pipe(ofActionDispatched(ErrorAction)).subscribe(() => {
@@ -163,6 +180,8 @@ describe('Action', () => {
       actions.pipe(ofActionErrored(ErrorAction)).subscribe(() => {
         callbacksCalled.push('ofActionErrored');
         expect(callbacksCalled).toEqual([
+          'ofAction',
+          'ofActionPreHandler',
           'ofAction',
           'ofActionDispatched',
           'ofAction',
@@ -184,6 +203,8 @@ describe('Action', () => {
         error: () =>
           expect(callbacksCalled).toEqual([
             'ofAction',
+            'ofActionPreHandler',
+            'ofAction',
             'ofActionDispatched',
             'ofAction',
             'ofActionErrored',
@@ -193,6 +214,8 @@ describe('Action', () => {
 
       tick(1);
       expect(callbacksCalled).toEqual([
+        'ofAction',
+        'ofActionPreHandler',
         'ofAction',
         'ofActionDispatched',
         'ofAction',
@@ -234,6 +257,12 @@ describe('Action', () => {
       });
 
       actions
+        .pipe(ofActionPreHandler(CancelingAction))
+        .subscribe(({ id }: CancelingAction) => {
+          callbacksCalled.push('ofActionPreHandler ' + id);
+        });
+
+      actions
         .pipe(ofActionDispatched(CancelingAction))
         .subscribe(({ id }: CancelingAction) => {
           callbacksCalled.push('ofActionDispatched ' + id);
@@ -251,7 +280,11 @@ describe('Action', () => {
           callbacksCalled.push('ofActionSuccessful ' + id);
           expect(callbacksCalled).toEqual([
             'ofAction 1',
+            'ofActionPreHandler 1',
+            'ofAction 1',
             'ofActionDispatched 1',
+            'ofAction 2',
+            'ofActionPreHandler 2',
             'ofAction 2',
             'ofActionDispatched 2',
             'ofAction 1',
@@ -265,7 +298,11 @@ describe('Action', () => {
         callbacksCalled.push('ofActionCanceled ' + id);
         expect(callbacksCalled).toEqual([
           'ofAction 1',
+          'ofActionPreHandler 1',
+          'ofAction 1',
           'ofActionDispatched 1',
+          'ofAction 2',
+          'ofActionPreHandler 2',
           'ofAction 2',
           'ofActionDispatched 2',
           'ofAction 1',
@@ -278,7 +315,11 @@ describe('Action', () => {
         complete: () => {
           expect(callbacksCalled).toEqual([
             'ofAction 1',
+            'ofActionPreHandler 1',
+            'ofAction 1',
             'ofActionDispatched 1',
+            'ofAction 2',
+            'ofActionPreHandler 2',
             'ofAction 2',
             'ofActionDispatched 2',
             'ofAction 1',
@@ -291,7 +332,11 @@ describe('Action', () => {
       // Assert
       expect(callbacksCalled).toEqual([
         'ofAction 1',
+        'ofActionPreHandler 1',
+        'ofAction 1',
         'ofActionDispatched 1',
+        'ofAction 2',
+        'ofActionPreHandler 2',
         'ofAction 2',
         'ofActionDispatched 2',
         'ofAction 1',

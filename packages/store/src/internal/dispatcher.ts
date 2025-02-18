@@ -62,6 +62,8 @@ export class InternalDispatcher {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
+    this._actions.next({ action, status: ActionStatus.PreHandler });
+
     return compose(this._injector, [
       ...plugins,
       (nextState: any, nextAction: any) => {
