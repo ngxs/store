@@ -1,4 +1,4 @@
-import { DestroyRef, inject, PendingTasks } from '@angular/core';
+import { ApplicationRef, inject, PendingTasks } from '@angular/core';
 import { buffer, debounceTime, filter } from 'rxjs';
 
 import { Actions, ActionStatus } from './actions-stream';
@@ -15,7 +15,7 @@ import { withNgxsPreboot } from './standalone-features/preboot';
 export function withNgxsPendingTasks() {
   return withNgxsPreboot(() => {
     const actions$ = inject(Actions);
-    const destroyRef = inject(DestroyRef);
+    const appRef = inject(ApplicationRef);
     const pendingTasks = inject(PendingTasks);
 
     // Removing a pending task via the public API forces a scheduled tick, ensuring that
@@ -34,9 +34,14 @@ export function withNgxsPendingTasks() {
     // If the app is forcely destroyed before all actions are completed,
     // we clean up the set of actions being executed to prevent memory leaks
     // and remove the pending task to stabilize the app.
-    destroyRef.onDestroy(() => executedActions.clear());
+    appRef.onDestroy(() => executedActions.clear());
 
-    actions$
+    let isStable = false;
+    appRef.whenStable().then(() => {
+      isStable = true;
+    });
+
+    const subscription = actions$
       .pipe(
         filter(context => {
           if (context.status === ActionStatus.Dispatched) {
@@ -65,6 +70,12 @@ export function withNgxsPendingTasks() {
           if (executedActions.size === 0) {
             removeTask?.();
             removeTask = null;
+            if (isStable) {
+              // Stop contributing to stability once the application has become stable,
+              // which may happen on the server before the platform is destroyed or in
+              // the browser once hydration is complete.
+              subscription.unsubscribe();
+            }
           }
         }
       });
