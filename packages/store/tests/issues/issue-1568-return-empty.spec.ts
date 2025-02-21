@@ -48,6 +48,10 @@ describe('https://github.com/ngxs/store/issues/1568', () => {
     expect(contexts).toEqual([
       {
         action: {},
+        status: 'PRE_HANDLER'
+      },
+      {
+        action: {},
         status: 'DISPATCHED'
       },
       {
