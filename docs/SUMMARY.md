@@ -76,6 +76,7 @@
 - [COMMUNITY](community-and-labs/community/README.md)
   - [FAQ](community-and-labs/community/faq.md)
   - [Resources](community-and-labs/community/projects.md)
+  - [Developer Guide](community-and-labs/community/developer-guide.md)
   - [Contributors](community-and-labs/community/contributors.md)
   - [Contributing](community-and-labs/community/contributing.md)
   - [Sponsors](community-and-labs/community/sponsors.md)
