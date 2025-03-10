@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, Signal } from '@angular/core';
 import {
-  Observable,
-  Subscription,
+  type Observable,
+  type Subscription,
   throwError,
   catchError,
   distinctUntilChanged,
@@ -80,7 +80,7 @@ export class Store {
         }
 
         // rethrow other errors
-        return throwError(error);
+        throw error;
       }),
       distinctUntilChanged(),
       leaveNgxs(this._internalExecutionStrategy)

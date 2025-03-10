@@ -14,7 +14,7 @@ import {
   ɵALL_STATES_PERSISTED,
   ɵNGXS_STORAGE_PLUGIN_OPTIONS
 } from '@ngxs/storage-plugin/internals';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 
 import { getStorageKey } from './internals';
 import { ɵNgxsStoragePluginKeysManager } from './keys-manager';

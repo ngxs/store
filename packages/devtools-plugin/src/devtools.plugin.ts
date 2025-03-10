@@ -6,7 +6,7 @@ import {
   NgxsNextPluginFn,
   NgxsPlugin
 } from '@ngxs/store/plugins';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs';
 
 import { NGXS_DEVTOOLS_OPTIONS, NgxsDevtoolsAction, NgxsDevtoolsExtension } from './symbols';
 
