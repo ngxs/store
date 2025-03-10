@@ -8,7 +8,7 @@ import {
   throwStateUniqueError
 } from '../configs/messages.config';
 
-const stateNameRegex = new RegExp('^[a-zA-Z0-9_]+$');
+const stateNameRegex = /* @__PURE__ */ new RegExp('^[a-zA-Z0-9_]+$');
 
 export function ensureStateNameIsValid(name: string | null): void | never {
   if (!name) {
