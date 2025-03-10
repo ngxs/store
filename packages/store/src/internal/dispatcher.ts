@@ -1,6 +1,15 @@
 import { inject, Injectable, Injector, NgZone, runInInjectionContext } from '@angular/core';
-import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
-import { filter, map, mergeMap, shareReplay, take } from 'rxjs/operators';
+import {
+  EMPTY,
+  forkJoin,
+  Observable,
+  throwError,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  take
+} from 'rxjs';
 
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 import { ɵPlainObject, ɵStateStream, ɵof } from '@ngxs/store/internals';
@@ -97,7 +106,7 @@ export class InternalDispatcher {
             // state, as its result is used by plugins.
             return ɵof(this._stateStream.getValue());
           case ActionStatus.Errored:
-            return throwError(() => ctx.error);
+            throw ctx.error;
           default:
             // Once dispatched or canceled, we complete it immediately because
             // `dispatch()` should emit (or error, or complete) as soon as it succeeds or fails.
