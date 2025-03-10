@@ -1,6 +1,6 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { ɵOrderedSubject } from '@ngxs/store/internals';
-import { Observable, Subject, filter, share } from 'rxjs';
+import { Observable, Subject, share } from 'rxjs';
 
 import { leaveNgxs } from './operators/leave-ngxs';
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
@@ -33,8 +33,10 @@ export class InternalActions extends ɵOrderedSubject<ActionContext> {
   constructor() {
     super();
 
-    this.pipe(filter(ctx => ctx.status === ActionStatus.Dispatched)).subscribe(ctx => {
-      this.dispatched$.next(ctx);
+    this.subscribe(ctx => {
+      if (ctx.status === ActionStatus.Dispatched) {
+        this.dispatched$.next(ctx);
+      }
     });
 
     const destroyRef = inject(DestroyRef);

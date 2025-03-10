@@ -1,7 +1,6 @@
 import { computed, inject, Injectable, Signal } from '@angular/core';
 import {
   Observable,
-  of,
   Subscription,
   throwError,
   catchError,
@@ -10,7 +9,7 @@ import {
   shareReplay,
   take
 } from 'rxjs';
-import { ɵINITIAL_STATE_TOKEN, ɵStateStream } from '@ngxs/store/internals';
+import { ɵINITIAL_STATE_TOKEN, ɵStateStream, ɵof } from '@ngxs/store/internals';
 
 import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
@@ -77,7 +76,7 @@ export class Store {
       catchError((error: Error): Observable<never> | Observable<undefined> => {
         // if error is TypeError we swallow it to prevent usual errors with property access
         if (this._config.selectorOptions.suppressErrors && error instanceof TypeError) {
-          return of(undefined);
+          return ɵof(undefined);
         }
 
         // rethrow other errors

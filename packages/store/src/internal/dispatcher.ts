@@ -1,9 +1,9 @@
 import { inject, Injectable, Injector, NgZone, runInInjectionContext } from '@angular/core';
-import { forkJoin, Observable, of, throwError } from 'rxjs';
+import { EMPTY, forkJoin, Observable, throwError } from 'rxjs';
 import { filter, map, mergeMap, shareReplay, take } from 'rxjs/operators';
 
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
-import { ɵPlainObject, ɵStateStream } from '@ngxs/store/internals';
+import { ɵPlainObject, ɵStateStream, ɵof } from '@ngxs/store/internals';
 
 import { PluginManager } from '../plugin-manager';
 import { leaveNgxs } from '../operators/leave-ngxs';
@@ -38,7 +38,7 @@ export class InternalDispatcher {
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<void> {
     if (Array.isArray(actionOrActions)) {
-      if (actionOrActions.length === 0) return of(undefined);
+      if (actionOrActions.length === 0) return ɵof(undefined);
 
       return forkJoin(actionOrActions.map(action => this.dispatchSingle(action))).pipe(
         map(() => undefined)
@@ -95,13 +95,13 @@ export class InternalDispatcher {
           case ActionStatus.Successful:
             // The `createDispatchObservable` function should return the
             // state, as its result is used by plugins.
-            return of(this._stateStream.getValue());
+            return ɵof(this._stateStream.getValue());
           case ActionStatus.Errored:
             return throwError(() => ctx.error);
           default:
             // Once dispatched or canceled, we complete it immediately because
             // `dispatch()` should emit (or error, or complete) as soon as it succeeds or fails.
-            return of();
+            return EMPTY;
         }
       }),
       shareReplay()

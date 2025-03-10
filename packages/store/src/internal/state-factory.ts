@@ -11,11 +11,11 @@ import {
   ɵRuntimeSelectorContext
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
+import { ɵof } from '@ngxs/store/internals';
 import {
   forkJoin,
   from,
   isObservable,
-  of,
   Subscription,
   throwError,
   catchError,
@@ -221,7 +221,7 @@ export class StateFactory {
               const handleableError = assignUnhandledCallback(error, () =>
                 ngxsUnhandledErrorHandler.handleError(error, { action })
               );
-              return of(<ActionContext>{
+              return ɵof(<ActionContext>{
                 action,
                 status: ActionStatus.Errored,
                 error: handleableError
@@ -273,7 +273,7 @@ export class StateFactory {
     }
 
     if (!results.length) {
-      results.push(of(undefined));
+      results.push(ɵof(undefined));
     }
 
     return forkJoin(results);
@@ -340,12 +340,10 @@ export class StateFactory {
           if (isObservable(result)) {
             result = result.pipe(
               mergeMap((value: any) => {
-                if (ɵisPromise(value)) {
-                  return from(value);
-                } else if (isObservable(value)) {
+                if (ɵisPromise(value) || isObservable(value)) {
                   return value;
                 } else {
-                  return of(value);
+                  return ɵof(value);
                 }
               }),
               // If this observable has completed without emitting any values,
@@ -379,7 +377,7 @@ export class StateFactory {
           } else {
             // If the action handler is synchronous and returns nothing (`void`), we
             // still have to convert the result to a synchronous observable.
-            result = of(undefined);
+            result = ɵof(undefined);
           }
 
           return result;

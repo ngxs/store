@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
-import { EMPTY, mergeMap, pairwise, startWith } from 'rxjs';
+import { EMPTY, mergeMap, skip, startWith } from 'rxjs';
 
 import { Store } from '../store';
 import { StateContextFactory } from './state-context-factory';
@@ -68,17 +68,26 @@ export class LifecycleStateManager {
       const instance: NgxsLifeCycle = mappedStore.instance;
 
       if (instance.ngxsOnChanges) {
+        // We are manually keeping track of the previous value
+        // within the subscribe block in order to drop the `pairwise()` operator.
+        let previousValue: any;
         // It does not need to unsubscribe because it is completed when the
         // root injector is destroyed.
         this._store
           .select(state => getValue(state, mappedStore.path))
-          .pipe(startWith(undefined), pairwise())
-          .subscribe(([previousValue, currentValue]) => {
+          .pipe(
+            // Ensure initial state is captured
+            startWith(undefined),
+            // `skip` is using `filter` internally.
+            skip(1)
+          )
+          .subscribe(currentValue => {
             const change = new NgxsSimpleChange(
               previousValue,
               currentValue,
               !mappedStore.isInitialised
             );
+            previousValue = currentValue;
             instance.ngxsOnChanges!(change);
           });
       }
