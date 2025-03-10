@@ -8,6 +8,7 @@ $ npm install @ngxs/store@dev
 
 - Refactor: Replace `ngOnDestroy` with `DestroyRef` [#2289](https://github.com/ngxs/store/pull/2289)
 - Refactor: Reduce RxJS dependency [#2292](https://github.com/ngxs/store/pull/2292)
+- Refactor: Pull less RxJS symbols [#2309](https://github.com/ngxs/store/pull/2309)
 - Fix(store): Add root store initializer guard [#2278](https://github.com/ngxs/store/pull/2278)
 - Fix(store): Reduce change detection cycles with pending tasks [#2280](https://github.com/ngxs/store/pull/2280)
 - Fix(store): Complete action results on destroy [#2282](https://github.com/ngxs/store/pull/2282)
