@@ -41,6 +41,20 @@ export function ofAction<T extends ActionType[]>(
 /**
  * RxJS operator for selecting out specific actions.
  *
+ * This will ONLY grab actions before being handled
+ */
+export function ofActionPreHandler<T extends ActionType[]>(
+  ...allowedTypes: T
+): OperatorFunction<
+  ActionContext<Constructed<T[TupleKeys<T>]>>,
+  Constructed<T[TupleKeys<T>]>
+> {
+  return ofActionOperator(allowedTypes, [ActionStatus.PreHandler]);
+}
+
+/**
+ * RxJS operator for selecting out specific actions.
+ *
  * This will ONLY grab actions that have just been dispatched
  */
 export function ofActionDispatched<T extends ActionType[]>(
