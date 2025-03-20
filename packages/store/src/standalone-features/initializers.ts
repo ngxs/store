@@ -1,4 +1,9 @@
-import { ENVIRONMENT_INITIALIZER, InjectionToken, Provider, inject } from '@angular/core';
+import {
+  InjectionToken,
+  Provider,
+  inject,
+  provideEnvironmentInitializer
+} from '@angular/core';
 import { ɵStateClassInternal } from '@ngxs/store/internals';
 
 import { Store } from '../store';
@@ -98,15 +103,9 @@ export const NGXS_FEATURE_STORE_INITIALIZER = new InjectionToken<void>(
   typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_FEATURE_STORE_INITIALIZER' : ''
 );
 
-export const NGXS_ROOT_ENVIRONMENT_INITIALIZER: Provider[] = [
+export const NGXS_ROOT_ENVIRONMENT_INITIALIZER: Provider = [
   { provide: NGXS_ROOT_STORE_INITIALIZER, useFactory: rootStoreInitializer },
-  {
-    provide: ENVIRONMENT_INITIALIZER,
-    multi: true,
-    useFactory() {
-      return () => inject(NGXS_ROOT_STORE_INITIALIZER);
-    }
-  }
+  provideEnvironmentInitializer(() => inject(NGXS_ROOT_STORE_INITIALIZER))
 ];
 
 /**
@@ -115,13 +114,7 @@ export const NGXS_ROOT_ENVIRONMENT_INITIALIZER: Provider[] = [
  * matched route where navigation occurs. The injector is created once, ensuring that
  * the feature states initialization only happens once as well.
  */
-export const NGXS_FEATURE_ENVIRONMENT_INITIALIZER: Provider[] = [
+export const NGXS_FEATURE_ENVIRONMENT_INITIALIZER: Provider = [
   { provide: NGXS_FEATURE_STORE_INITIALIZER, useFactory: featureStatesInitializer },
-  {
-    provide: ENVIRONMENT_INITIALIZER,
-    multi: true,
-    useFactory() {
-      return () => inject(NGXS_FEATURE_STORE_INITIALIZER);
-    }
-  }
+  provideEnvironmentInitializer(() => inject(NGXS_FEATURE_STORE_INITIALIZER))
 ];
