@@ -9,6 +9,7 @@ import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-executi
  * Status of a dispatched action
  */
 export const enum ActionStatus {
+  PreHandler = 'PRE_HANDLER',
   Dispatched = 'DISPATCHED',
   Successful = 'SUCCESSFUL',
   Canceled = 'CANCELED',
