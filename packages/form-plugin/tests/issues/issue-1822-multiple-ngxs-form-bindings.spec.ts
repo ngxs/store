@@ -1,7 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { Component, Injectable } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NgxsModule, State, Actions, ofActionDispatched, Store, Selector } from '@ngxs/store';
+import {
+  NgxsModule,
+  State,
+  Actions,
+  ofActionDispatched,
+  Store,
+  Selector,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 
 import { NgxsFormPluginModule, UpdateFormValue } from '../../';
 
@@ -57,7 +65,9 @@ describe('Multiple `ngxsForm` bindings (https://github.com/ngxs/store/issues/182
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        NgxsModule.forRoot([UserState]),
+        NgxsModule.forRoot([UserState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsFormPluginModule.forRoot()
       ],
       declarations: [TestComponent]

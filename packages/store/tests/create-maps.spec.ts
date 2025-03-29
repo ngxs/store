@@ -1,6 +1,7 @@
 import { Injectable, runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
+  DispatchOutsideZoneNgxsExecutionStrategy,
   Selector,
   State,
   createDispatchMap,
@@ -27,7 +28,11 @@ describe('create maps', () => {
 
   const testSetup = () => {
     TestBed.configureTestingModule({
-      providers: [provideStore([NumberState])]
+      providers: [
+        provideStore([NumberState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
   };
 

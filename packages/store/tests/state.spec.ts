@@ -20,7 +20,8 @@ import {
   NgxsOnInit,
   State,
   StateContext,
-  Store
+  Store,
+  DispatchOutsideZoneNgxsExecutionStrategy
 } from '@ngxs/store';
 import { ɵMETA_KEY } from '@ngxs/store/internals';
 
@@ -100,7 +101,11 @@ describe('State', () => {
       class MyOtherState {}
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyOtherState])]
+        imports: [
+          NgxsModule.forRoot([MyOtherState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
     } catch ({ message }: any) {
       expect(message).toEqual(`States must register a 'name' property.`);
@@ -123,7 +128,11 @@ describe('State', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([FooState])]
+        imports: [
+          NgxsModule.forRoot([FooState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       TestBed.inject(FooState);
@@ -144,7 +153,12 @@ describe('State', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([]), NgxsModule.forFeature([FooState])]
+        imports: [
+          NgxsModule.forRoot([], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
+          NgxsModule.forFeature([FooState])
+        ]
       });
 
       TestBed.inject(FooState);
@@ -170,7 +184,11 @@ describe('State', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([FooState])]
+        imports: [
+          NgxsModule.forRoot([FooState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       TestBed.inject(FooState);
@@ -216,7 +234,9 @@ describe('State', () => {
 
       TestBed.configureTestingModule({
         imports: [
-          NgxsModule.forRoot([EagerState]),
+          NgxsModule.forRoot([EagerState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsModule.forFeature([FooState, BarState, QuxState])
         ]
       });
@@ -247,7 +267,12 @@ describe('State', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([]), NgxsModule.forFeature([FooState])]
+        imports: [
+          NgxsModule.forRoot([], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
+          NgxsModule.forFeature([FooState])
+        ]
       });
 
       TestBed.inject(FooState);
@@ -318,7 +343,12 @@ describe('State', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [MockModule, NgxsModule.forRoot([FooState])]
+        imports: [
+          MockModule,
+          NgxsModule.forRoot([FooState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       skipConsoleLogging(() => MockModule.ngDoBootstrap(TestBed.inject(ApplicationRef)));
@@ -347,7 +377,13 @@ describe('State', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [MockModule, NgxsModule.forRoot(), NgxsModule.forFeature([FooFeatureState])]
+        imports: [
+          MockModule,
+          NgxsModule.forRoot([], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
+          NgxsModule.forFeature([FooFeatureState])
+        ]
       });
 
       skipConsoleLogging(() => MockModule.ngDoBootstrap(TestBed.inject(ApplicationRef)));

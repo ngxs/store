@@ -3,7 +3,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { Component, NgModule, Injectable } from '@angular/core';
 import { Routes, CanDeactivate, NavigationCancel } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { provideStore } from '@ngxs/store';
+import { DispatchOutsideZoneNgxsExecutionStrategy, provideStore } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
 import { filter } from 'rxjs/operators';
@@ -61,7 +61,13 @@ function getTestModule() {
     declarations: [RootComponent, HomeComponent, BlogComponent],
     bootstrap: [RootComponent],
     providers: [
-      provideStore([], withNgxsRouterPlugin()),
+      provideStore(
+        [],
+        {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        },
+        withNgxsRouterPlugin()
+      ),
       HomeGuard,
       { provide: APP_BASE_HREF, useValue: '/' }
     ]

@@ -5,7 +5,6 @@ import { StateOperator } from '@ngxs/store/operators';
 import { ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
 
 import { NgxsExecutionStrategy } from './execution/symbols';
-import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 
 // The injection token is used to resolve a list of states provided at
 // the root level through either `NgxsModule.forRoot` or `provideStore`.
@@ -81,7 +80,7 @@ export class NgxsConfig {
    * `NoopNgxsExecutionStrategy` that doesn't interact with zones.
    * (default: null)
    */
-  executionStrategy: Type<NgxsExecutionStrategy> = DispatchOutsideZoneNgxsExecutionStrategy;
+  executionStrategy: Type<NgxsExecutionStrategy>;
   /**
    * Defining shared selector options
    */
@@ -151,7 +150,9 @@ export interface NgxsAfterBootstrap {
   ngxsAfterBootstrap(ctx: StateContext<any>): void;
 }
 
-export type NgxsModuleOptions = Partial<NgxsConfig>;
+export type NgxsModuleOptions = Partial<NgxsConfig> & {
+  executionStrategy: Type<NgxsExecutionStrategy>;
+};
 
 /** @internal */
 declare global {

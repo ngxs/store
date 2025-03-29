@@ -6,7 +6,7 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
-import { NgxsModule, Store } from '@ngxs/store';
+import { DispatchOutsideZoneNgxsExecutionStrategy, NgxsModule, Store } from '@ngxs/store';
 
 import { NgxsTestModule } from './helpers/ngxs-test.module';
 import { NgxsOptionsTesting, NgxsTesting } from './symbol';
@@ -24,7 +24,12 @@ export class NgxsTestBed {
       TestBed.configureTestingModule({
         imports: [
           NgxsTestModule,
-          NgxsModule.forRoot(options.states || [], options.ngxsOptions || {}),
+          NgxsModule.forRoot(
+            options.states || [],
+            options.ngxsOptions || {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            }
+          ),
           ...(options.imports || [])
         ]
       }).compileComponents()

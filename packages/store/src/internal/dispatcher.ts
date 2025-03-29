@@ -17,9 +17,9 @@ import { ɵPlainObject, ɵStateStream, ɵof } from '@ngxs/store/internals';
 import { PluginManager } from '../plugin-manager';
 import { leaveNgxs } from '../operators/leave-ngxs';
 import { fallbackSubscriber } from './fallback-subscriber';
+import { NGXS_EXECUTION_STRATEGY } from '../execution/symbols';
 import { InternalDispatchedActionResults } from './action-results';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
-import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 
 @Injectable({ providedIn: 'root' })
 export class InternalDispatcher {
@@ -28,7 +28,7 @@ export class InternalDispatcher {
   private _actionResults = inject(InternalDispatchedActionResults);
   private _pluginManager = inject(PluginManager);
   private _stateStream = inject(ɵStateStream);
-  private _ngxsExecutionStrategy = inject(InternalNgxsExecutionStrategy);
+  private _ngxsExecutionStrategy = inject(NGXS_EXECUTION_STRATEGY);
   private _injector = inject(Injector);
 
   /**

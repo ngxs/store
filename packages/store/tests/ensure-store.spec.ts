@@ -1,4 +1,11 @@
-import { State, Action, Selector, NgxsModule, SelectorOptions } from '@ngxs/store';
+import {
+  State,
+  Action,
+  Selector,
+  NgxsModule,
+  SelectorOptions,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import {
   ɵSelectorMetaDataModel,
   ɵgetSelectorMetadata,
@@ -54,7 +61,11 @@ describe('Ensure metadata', () => {
 
     beforeAll(() => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([CountState, MyCounterState])]
+        imports: [
+          NgxsModule.forRoot([CountState, MyCounterState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
     });
 

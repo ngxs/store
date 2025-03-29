@@ -4,7 +4,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Component, NgModule, NgZone, Injectable } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
-import { State, NgxsModule, Store, StateToken } from '@ngxs/store';
+import {
+  State,
+  NgxsModule,
+  Store,
+  StateToken,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 
 import { NgxsStoragePluginModule } from '../../';
 
@@ -83,7 +89,9 @@ describe('Restore state only if key matches', () => {
               loadChildren: () => UserModule
             }
           ]),
-          NgxsModule.forRoot([AuthState]),
+          NgxsModule.forRoot([AuthState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsStoragePluginModule.forRoot({
             keys: [AuthState]
           })

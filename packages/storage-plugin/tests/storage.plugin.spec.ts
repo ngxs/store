@@ -2,7 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { Injectable } from '@angular/core';
 
 import { skipConsoleLogging } from '@ngxs/store/internals/testing';
-import { NgxsModule, State, Store, Action, StateContext } from '@ngxs/store';
+import {
+  NgxsModule,
+  State,
+  Store,
+  Action,
+  StateContext,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import { ɵDEFAULT_STATE_KEY } from '@ngxs/storage-plugin/internals';
 
 import {
@@ -77,7 +84,9 @@ describe('NgxsStoragePlugin', () => {
     // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CounterState]),
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsStoragePluginModule.forRoot({ keys: '*' })
       ]
     });
@@ -96,7 +105,9 @@ describe('NgxsStoragePlugin', () => {
     // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CounterState]),
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsStoragePluginModule.forRoot({ keys: '*' })
       ]
     });
@@ -135,7 +146,9 @@ describe('NgxsStoragePlugin', () => {
       // Act
       TestBed.configureTestingModule({
         imports: [
-          NgxsModule.forRoot([TestState]),
+          NgxsModule.forRoot([TestState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsStoragePluginModule.forRoot({ keys: '*' })
         ]
       });
@@ -163,7 +176,9 @@ describe('NgxsStoragePlugin', () => {
       // Act
       TestBed.configureTestingModule({
         imports: [
-          NgxsModule.forRoot([TestState]),
+          NgxsModule.forRoot([TestState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsStoragePluginModule.forRoot({ keys: '*' })
         ]
       });
@@ -191,7 +206,9 @@ describe('NgxsStoragePlugin', () => {
       // Act
       TestBed.configureTestingModule({
         imports: [
-          NgxsModule.forRoot([TestState]),
+          NgxsModule.forRoot([TestState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsStoragePluginModule.forRoot({ keys: '*' })
         ]
       });
@@ -212,7 +229,9 @@ describe('NgxsStoragePlugin', () => {
     // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CounterState]),
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsStoragePluginModule.forRoot({
           keys: '*',
           migrations: [
@@ -251,7 +270,9 @@ describe('NgxsStoragePlugin', () => {
     // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CounterState]),
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsStoragePluginModule.forRoot({
           keys: ['counter'],
           migrations: [
@@ -288,7 +309,9 @@ describe('NgxsStoragePlugin', () => {
     // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CounterState]),
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsStoragePluginModule.forRoot({
           keys: '*',
           storage: StorageOption.SessionStorage
@@ -308,7 +331,9 @@ describe('NgxsStoragePlugin', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CounterState]),
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsStoragePluginModule.forRoot({
           keys: '*',
           storage: StorageOption.SessionStorage
@@ -368,7 +393,9 @@ describe('NgxsStoragePlugin', () => {
     // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CounterState]),
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsStoragePluginModule.forRoot({
           keys: '*',
           serialize(val) {
@@ -409,7 +436,9 @@ describe('NgxsStoragePlugin', () => {
     // Act
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CounterState]),
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsStoragePluginModule.forRoot({ keys: '*' }),
         NgxsModule.forFeature([LazyLoadedState])
       ]
@@ -440,7 +469,9 @@ describe('NgxsStoragePlugin', () => {
       // Act
       TestBed.configureTestingModule({
         imports: [
-          NgxsModule.forRoot([CounterState]),
+          NgxsModule.forRoot([CounterState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsStoragePluginModule.forRoot({
             keys: [CounterState]
           })
@@ -462,7 +493,9 @@ describe('NgxsStoragePlugin', () => {
       // Act
       TestBed.configureTestingModule({
         imports: [
-          NgxsModule.forRoot([CounterState, NamesState]),
+          NgxsModule.forRoot([CounterState, NamesState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsStoragePluginModule.forRoot({
             keys: [CounterState, NamesState]
           })
@@ -488,7 +521,9 @@ describe('NgxsStoragePlugin', () => {
       // Act
       TestBed.configureTestingModule({
         imports: [
-          NgxsModule.forRoot([CounterState, NamesState]),
+          NgxsModule.forRoot([CounterState, NamesState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsStoragePluginModule.forRoot({
             keys: [CounterState, 'names']
           })
@@ -515,7 +550,9 @@ describe('NgxsStoragePlugin', () => {
       // Act
       TestBed.configureTestingModule({
         imports: [
-          NgxsModule.forRoot([CounterState]),
+          NgxsModule.forRoot([CounterState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsStoragePluginModule.forRoot({
             keys: '*',
             beforeSerialize: obj => {
@@ -549,7 +586,9 @@ describe('NgxsStoragePlugin', () => {
       // Act
       TestBed.configureTestingModule({
         imports: [
-          NgxsModule.forRoot([CounterInfoState]),
+          NgxsModule.forRoot([CounterInfoState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsStoragePluginModule.forRoot({
             keys: ['counterInfo'],
             afterDeserialize: (obj, key) => {
@@ -581,7 +620,10 @@ describe('NgxsStoragePlugin', () => {
       const testSetup = (options?: NgxsStoragePluginOptions) => {
         TestBed.configureTestingModule({
           imports: [
-            NgxsModule.forRoot([CounterState, NamesState], { developmentMode: true }),
+            NgxsModule.forRoot([CounterState, NamesState], {
+              developmentMode: true,
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            }),
             NgxsStoragePluginModule.forRoot(options as any)
           ]
         });

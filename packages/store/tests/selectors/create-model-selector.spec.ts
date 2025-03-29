@@ -8,7 +8,8 @@ import {
   createSelector,
   createPropertySelectors,
   Selector,
-  TypedSelector
+  TypedSelector,
+  DispatchOutsideZoneNgxsExecutionStrategy
 } from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 import {
@@ -37,7 +38,11 @@ describe('createModelSelector', () => {
 
   function setupFixture(states?: ɵStateClass[]) {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states || [MockState])]
+      imports: [
+        NgxsModule.forRoot(states || [MockState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
     const store: Store = TestBed.inject(Store);
     const setState = (newState: MockStateModel) => store.reset({ mockstate: newState });

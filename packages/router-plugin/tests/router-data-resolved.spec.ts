@@ -15,7 +15,8 @@ import {
   Action,
   StateContext,
   Selector,
-  provideStore
+  provideStore,
+  DispatchOutsideZoneNgxsExecutionStrategy
 } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
@@ -83,7 +84,13 @@ describe('RouterDataResolved', () => {
       declarations: [RootComponent, TestComponent],
       bootstrap: [RootComponent],
       providers: [
-        provideStore(states, withNgxsRouterPlugin()),
+        provideStore(
+          states,
+          {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          },
+          withNgxsRouterPlugin()
+        ),
         TestResolver,
         { provide: APP_BASE_HREF, useValue: '/' }
       ]

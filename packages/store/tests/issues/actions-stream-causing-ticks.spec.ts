@@ -5,6 +5,7 @@ import { take } from 'rxjs/operators';
 import {
   Action,
   Actions,
+  DispatchOutsideZoneNgxsExecutionStrategy,
   NgxsModule,
   ofActionSuccessful,
   State,
@@ -55,7 +56,12 @@ describe('Actions stream causing ticks', () => {
   }
 
   @NgModule({
-    imports: [BrowserModule, NgxsModule.forRoot([CountriesState])],
+    imports: [
+      BrowserModule,
+      NgxsModule.forRoot([CountriesState], {
+        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+      })
+    ],
     declarations: [TestComponent],
     bootstrap: [TestComponent]
   })

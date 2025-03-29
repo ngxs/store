@@ -1,4 +1,4 @@
-import { provideStore } from '@ngxs/store';
+import { NoopNgxsExecutionStrategy, provideStore } from '@ngxs/store';
 import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
 import { withNgxsFormPlugin } from '@ngxs/form-plugin';
 import { withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
@@ -13,6 +13,9 @@ declare const ngDevMode: boolean;
 export function provideNgxs() {
   return provideStore(
     [CounterState],
+    {
+      executionStrategy: NoopNgxsExecutionStrategy
+    },
     withNgxsReduxDevtoolsPlugin({
       disabled: typeof ngDevMode !== 'undefined' && !ngDevMode
     }),

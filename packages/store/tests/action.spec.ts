@@ -13,7 +13,8 @@ import {
   ofActionDispatched,
   ofActionErrored,
   ofActionSuccessful,
-  ActionCompletion
+  ActionCompletion,
+  DispatchOutsideZoneNgxsExecutionStrategy
 } from '@ngxs/store';
 import { ɵMETA_KEY } from '@ngxs/store/internals';
 import { Observable, of, Subject, throwError } from 'rxjs';
@@ -66,7 +67,11 @@ describe('Action', () => {
   describe('', () => {
     function setup() {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([BarStore])],
+        imports: [
+          NgxsModule.forRoot([BarStore], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
@@ -428,7 +433,11 @@ describe('Action', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([AsyncState])],
+        imports: [
+          NgxsModule.forRoot([AsyncState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
@@ -714,7 +723,11 @@ describe('Action', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([AsyncState])],
+        imports: [
+          NgxsModule.forRoot([AsyncState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
