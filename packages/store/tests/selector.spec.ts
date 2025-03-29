@@ -6,7 +6,8 @@ import {
   Store,
   NgxsModule,
   Selector,
-  SelectorOptions
+  SelectorOptions,
+  DispatchOutsideZoneNgxsExecutionStrategy
 } from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 
@@ -69,7 +70,11 @@ describe('Selector', () => {
   describe('(Decorator)', () => {
     it('should select the state', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
+        imports: [
+          NgxsModule.forRoot([MyState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -79,7 +84,11 @@ describe('Selector', () => {
 
     it('should select using the meta selector', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
+        imports: [
+          NgxsModule.forRoot([MyState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -110,7 +119,11 @@ describe('Selector', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TestState])]
+        imports: [
+          NgxsModule.forRoot([TestState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -144,7 +157,11 @@ describe('Selector', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])]
+          imports: [
+            NgxsModule.forRoot([TestState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store: Store = TestBed.inject(Store);
@@ -179,7 +196,11 @@ describe('Selector', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])]
+          imports: [
+            NgxsModule.forRoot([TestState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store: Store = TestBed.inject(Store);
@@ -197,7 +218,12 @@ describe('Selector', () => {
   describe('(Selector Options)', () => {
     function setupStore(states: ɵStateClass[], extendedOptions?: Partial<NgxsConfig>) {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states, extendedOptions)]
+        imports: [
+          NgxsModule.forRoot(states, {
+            ...extendedOptions,
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
       const store: Store = TestBed.inject(Store);
       return store;
@@ -538,7 +564,11 @@ describe('Selector', () => {
   describe('(from createSelector)', () => {
     it('should select the state', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
+        imports: [
+          NgxsModule.forRoot([MyState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -549,7 +579,11 @@ describe('Selector', () => {
 
     it('should allow for null in the returned value [regression fix]', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
+        imports: [
+          NgxsModule.forRoot([MyState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -563,7 +597,11 @@ describe('Selector', () => {
 
     it('should allow for undefined in the returned value [regression fix]', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
+        imports: [
+          NgxsModule.forRoot([MyState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -577,7 +615,11 @@ describe('Selector', () => {
 
     it('should select using the meta selector', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
+        imports: [
+          NgxsModule.forRoot([MyState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -588,7 +630,11 @@ describe('Selector', () => {
 
     it('should still be usable as a function', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState])]
+        imports: [
+          NgxsModule.forRoot([MyState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -600,7 +646,11 @@ describe('Selector', () => {
 
     it('should select multiples', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyState, MyState2])]
+        imports: [
+          NgxsModule.forRoot([MyState, MyState2], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -627,7 +677,11 @@ describe('Selector', () => {
         class TestState {}
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])]
+          imports: [
+            NgxsModule.forRoot([TestState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store: Store = TestBed.inject(Store);
@@ -662,7 +716,11 @@ describe('Selector', () => {
         class TestState {}
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([TestState])]
+          imports: [
+            NgxsModule.forRoot([TestState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store: Store = TestBed.inject(Store);
@@ -708,7 +766,11 @@ describe('Selector', () => {
 
     it('should be a wrong mutation', () => {
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TasksState])]
+        imports: [
+          NgxsModule.forRoot([TasksState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store = TestBed.inject(Store);
@@ -725,7 +787,8 @@ describe('Selector', () => {
         imports: [
           NgxsModule.forRoot([TasksState], {
             developmentMode: true,
-            selectorOptions: { suppressErrors: false }
+            selectorOptions: { suppressErrors: false },
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
           })
         ]
       });
@@ -771,7 +834,8 @@ describe('Selector', () => {
         imports: [
           NgxsModule.forRoot([NumberListState], {
             developmentMode: true,
-            selectorOptions: { suppressErrors: false }
+            selectorOptions: { suppressErrors: false },
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
           })
         ]
       });
@@ -861,7 +925,8 @@ describe('Selector', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([ContactsState], {
-            selectorOptions: { suppressErrors: false, injectContainerState: false }
+            selectorOptions: { suppressErrors: false, injectContainerState: false },
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
           })
         ]
       });

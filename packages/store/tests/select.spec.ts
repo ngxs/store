@@ -3,7 +3,16 @@ import { combineLatest, Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Component, Injectable, NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { Store, NgxsModule, State, Action, Selector, Select, StateContext } from '@ngxs/store';
+import {
+  Store,
+  NgxsModule,
+  State,
+  Action,
+  Selector,
+  Select,
+  StateContext,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import { skipConsoleLogging, freshPlatform } from '@ngxs/store/internals/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
@@ -111,7 +120,11 @@ describe('Select', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)],
+        imports: [
+          NgxsModule.forRoot(states, {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         declarations: [MySelectComponent]
       });
 
@@ -143,7 +156,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [SelectComponent]
     });
 
@@ -170,7 +187,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StringSelectComponent]
     });
 
@@ -204,7 +225,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -236,7 +261,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -267,7 +296,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -305,7 +338,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -332,7 +369,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -379,7 +420,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([NullSelectorState])],
+      imports: [
+        NgxsModule.forRoot([NullSelectorState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -454,7 +499,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([CountState])],
+      imports: [
+        NgxsModule.forRoot([CountState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [CounterComponent]
     });
 
@@ -497,7 +546,12 @@ describe('Select', () => {
       class TestComponent {}
 
       @NgModule({
-        imports: [BrowserModule, NgxsModule.forRoot([CountriesState])],
+        imports: [
+          BrowserModule,
+          NgxsModule.forRoot([CountriesState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         declarations: [TestComponent],
         bootstrap: [TestComponent]
       })

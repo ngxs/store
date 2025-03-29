@@ -10,7 +10,8 @@ import {
   NgxsModule,
   Store,
   StateContext,
-  Selector
+  Selector,
+  DispatchOutsideZoneNgxsExecutionStrategy
 } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
@@ -42,7 +43,12 @@ describe('Development Mode', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyStore], { developmentMode: false })]
+        imports: [
+          NgxsModule.forRoot([MyStore], {
+            developmentMode: false,
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -76,7 +82,12 @@ describe('Development Mode', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyStore], { developmentMode: false })],
+        imports: [
+          NgxsModule.forRoot([MyStore], {
+            developmentMode: false,
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
@@ -108,7 +119,12 @@ describe('Development Mode', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyStore], { developmentMode: true })]
+        imports: [
+          NgxsModule.forRoot([MyStore], {
+            developmentMode: true,
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ]
       });
 
       const store: Store = TestBed.inject(Store);
@@ -150,7 +166,13 @@ describe('Development Mode', () => {
         }
 
         @NgModule({
-          imports: [BrowserModule, NgxsModule.forRoot([MyStore], { developmentMode: true })],
+          imports: [
+            BrowserModule,
+            NgxsModule.forRoot([MyStore], {
+              developmentMode: true,
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ],
           providers: [
             {
               provide: ErrorHandler,
@@ -204,7 +226,10 @@ describe('Development Mode', () => {
         @NgModule({
           imports: [
             BrowserModule,
-            NgxsModule.forRoot([], { developmentMode: true }),
+            NgxsModule.forRoot([], {
+              developmentMode: true,
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            }),
             NgxsModule.forFeature([MyStore])
           ],
           providers: [
@@ -250,7 +275,12 @@ describe('Development Mode', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyStore], { developmentMode: true })],
+        imports: [
+          NgxsModule.forRoot([MyStore], {
+            developmentMode: true,
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
@@ -296,7 +326,12 @@ describe('Development Mode', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyStore], { developmentMode: true })],
+        imports: [
+          NgxsModule.forRoot([MyStore], {
+            developmentMode: true,
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
@@ -329,7 +364,12 @@ describe('Development Mode', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyStore], { developmentMode: true })],
+        imports: [
+          NgxsModule.forRoot([MyStore], {
+            developmentMode: true,
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
@@ -361,7 +401,12 @@ describe('Development Mode', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyStore], { developmentMode: true })],
+        imports: [
+          NgxsModule.forRoot([MyStore], {
+            developmentMode: true,
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
@@ -387,7 +432,12 @@ describe('Development Mode', () => {
       class MyStore {}
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyStore], { developmentMode: true })],
+        imports: [
+          NgxsModule.forRoot([MyStore], {
+            developmentMode: true,
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
@@ -421,7 +471,12 @@ describe('Development Mode', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyStore], { developmentMode: true })],
+        imports: [
+          NgxsModule.forRoot([MyStore], {
+            developmentMode: true,
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 
@@ -466,7 +521,12 @@ describe('Development Mode', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([MyStore], { developmentMode: true })],
+        imports: [
+          NgxsModule.forRoot([MyStore], {
+            developmentMode: true,
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       });
 

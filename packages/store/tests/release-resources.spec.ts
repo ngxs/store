@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, ErrorHandler, DoBootstrap } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { NgxsModule, Store } from '@ngxs/store';
+import { DispatchOutsideZoneNgxsExecutionStrategy, NgxsModule, Store } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
 import { NoopErrorHandler } from './helpers/utils';
@@ -13,7 +13,12 @@ describe('Release NGXS resources', () => {
     freshPlatform(async () => {
       // Arrange
       @NgModule({
-        imports: [BrowserModule, NgxsModule.forRoot([])],
+        imports: [
+          BrowserModule,
+          NgxsModule.forRoot([], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
       })
       class TestModule implements DoBootstrap {

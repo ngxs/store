@@ -7,7 +7,13 @@ import {
   Routes,
   withEnabledBlockingInitialNavigation
 } from '@angular/router';
-import { provideStates, provideStore, withNgxsPlugin, Store } from '@ngxs/store';
+import {
+  provideStates,
+  provideStore,
+  withNgxsPlugin,
+  Store,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import { getActionTypeFromInstance, NgxsNextPluginFn, NgxsPlugin } from '@ngxs/store/plugins';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
@@ -51,7 +57,12 @@ describe('Feature plugin initialization (https://github.com/ngxs/store/issues/22
   ];
 
   const appConfig = {
-    providers: [provideRouter(routes, withEnabledBlockingInitialNavigation()), provideStore()]
+    providers: [
+      provideRouter(routes, withEnabledBlockingInitialNavigation()),
+      provideStore([], {
+        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+      })
+    ]
   };
 
   it(

@@ -1,7 +1,12 @@
 import { Component, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { NgxsModule, State, Store } from '@ngxs/store';
+import {
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  State,
+  Store
+} from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import { NgxsStoragePluginModule } from '../../';
@@ -42,7 +47,9 @@ describe('State deserialization for keys with dot notation (https://github.com/n
   @NgModule({
     imports: [
       BrowserModule,
-      NgxsModule.forRoot([BlogState, HomeState, AboutState]),
+      NgxsModule.forRoot([BlogState, HomeState, AboutState], {
+        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+      }),
       NgxsStoragePluginModule.forRoot({
         keys: ['blog.name', HomeState, 'about.description']
       })

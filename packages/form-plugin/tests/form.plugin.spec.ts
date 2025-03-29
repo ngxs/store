@@ -2,7 +2,15 @@ import { Component, Injectable, Type } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { Actions, NgxsModule, ofActionDispatched, Selector, State, Store } from '@ngxs/store';
+import {
+  Actions,
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  ofActionDispatched,
+  Selector,
+  State,
+  Store
+} from '@ngxs/store';
 import {
   NgxsFormPluginModule,
   ResetForm,
@@ -48,7 +56,12 @@ describe('NgxsFormPlugin', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([StudentState]), NgxsFormPluginModule.forRoot()]
+      imports: [
+        NgxsModule.forRoot([StudentState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
+        NgxsFormPluginModule.forRoot()
+      ]
     });
   });
 
@@ -288,7 +301,9 @@ describe('NgxsFormPlugin', () => {
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          NgxsModule.forRoot([TodosState]),
+          NgxsModule.forRoot([TodosState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsFormPluginModule.forRoot()
         ],
         declarations: [MockComponent]
@@ -324,7 +339,9 @@ describe('NgxsFormPlugin', () => {
         TestBed.configureTestingModule({
           imports: [
             ReactiveFormsModule,
-            NgxsModule.forRoot([TodosState]),
+            NgxsModule.forRoot([TodosState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            }),
             NgxsFormPluginModule.forRoot()
           ],
           declarations: [ComponentType]
@@ -566,7 +583,9 @@ describe('NgxsFormPlugin', () => {
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          NgxsModule.forRoot([TodosState]),
+          NgxsModule.forRoot([TodosState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsFormPluginModule.forRoot()
         ],
         declarations: [MockComponent]
@@ -637,7 +656,9 @@ describe('NgxsFormPlugin', () => {
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          NgxsModule.forRoot([TodosState]),
+          NgxsModule.forRoot([TodosState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsFormPluginModule.forRoot()
         ],
         declarations: [MockComponent]
@@ -702,7 +723,9 @@ describe('NgxsFormPlugin', () => {
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          NgxsModule.forRoot([TodosState]),
+          NgxsModule.forRoot([TodosState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsFormPluginModule.forRoot()
         ],
         declarations: [MockComponent]
@@ -767,7 +790,9 @@ describe('NgxsFormPlugin', () => {
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          NgxsModule.forRoot([TodosState]),
+          NgxsModule.forRoot([TodosState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsFormPluginModule.forRoot()
         ],
         declarations: [MockComponent]
@@ -825,7 +850,9 @@ describe('NgxsFormPlugin', () => {
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          NgxsModule.forRoot([TodosState]),
+          NgxsModule.forRoot([TodosState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsFormPluginModule.forRoot()
         ],
         declarations: [MockComponent]
@@ -896,7 +923,9 @@ describe('NgxsFormPlugin', () => {
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          NgxsModule.forRoot([TodosState]),
+          NgxsModule.forRoot([TodosState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsFormPluginModule.forRoot()
         ],
         declarations: [MockComponent]
@@ -960,7 +989,9 @@ describe('NgxsFormPlugin', () => {
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          NgxsModule.forRoot([TodosState]),
+          NgxsModule.forRoot([TodosState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsFormPluginModule.forRoot()
         ],
         declarations: [MockComponent]
@@ -1032,7 +1063,9 @@ describe('NgxsFormPlugin', () => {
       TestBed.configureTestingModule({
         imports: [
           ReactiveFormsModule,
-          NgxsModule.forRoot([TodosState]),
+          NgxsModule.forRoot([TodosState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsFormPluginModule.forRoot()
         ],
         declarations: [MockComponent]

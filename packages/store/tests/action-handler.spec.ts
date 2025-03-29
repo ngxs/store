@@ -1,6 +1,14 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Action, State, StateContext, NgxsModule, Store, Actions } from '@ngxs/store';
+import {
+  Action,
+  State,
+  StateContext,
+  NgxsModule,
+  Store,
+  Actions,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 import { timer } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -21,7 +29,11 @@ describe('Action handlers', () => {
       stores: []
     };
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(config.stores)],
+      imports: [
+        NgxsModule.forRoot(config.stores, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
     });
 

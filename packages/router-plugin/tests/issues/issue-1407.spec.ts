@@ -3,7 +3,14 @@ import { APP_BASE_HREF, DOCUMENT } from '@angular/common';
 import { Component, Injectable, NgModule } from '@angular/core';
 import { Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { State, Action, StateContext, provideStore, provideStates } from '@ngxs/store';
+import {
+  State,
+  Action,
+  StateContext,
+  provideStore,
+  provideStates,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
@@ -49,7 +56,13 @@ function getTestModule(states: ɵStateClass[] = []) {
     declarations: [RootComponent, HomeComponent, DialedNumberComponent],
     bootstrap: [RootComponent],
     providers: [
-      provideStore([], withNgxsRouterPlugin()),
+      provideStore(
+        [],
+        {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        },
+        withNgxsRouterPlugin()
+      ),
       provideStates(states),
       { provide: APP_BASE_HREF, useValue: '/' }
     ]

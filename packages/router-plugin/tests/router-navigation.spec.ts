@@ -8,7 +8,13 @@ import {
   NavigationError,
   NavigationEnd
 } from '@angular/router';
-import { ofActionDispatched, Actions, Store, provideStore } from '@ngxs/store';
+import {
+  ofActionDispatched,
+  Actions,
+  Store,
+  provideStore,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { filter } from 'rxjs/operators';
@@ -99,7 +105,13 @@ describe('RouterNavigation', () => {
       declarations: [RootComponent, HomeComponent, ErrorComponent, SuccessComponent],
       bootstrap: [RootComponent],
       providers: [
-        provideStore([], withNgxsRouterPlugin(options)),
+        provideStore(
+          [],
+          {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          },
+          withNgxsRouterPlugin(options)
+        ),
         ErrorResolver,
         SuccessResolver,
         { provide: APP_BASE_HREF, useValue: '/' },

@@ -1,4 +1,11 @@
-import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
+import {
+  Action,
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  State,
+  StateContext,
+  Store
+} from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { TestBed } from '@angular/core/testing';
 
@@ -41,7 +48,12 @@ describe('[TEST]: Devtools with errors', () => {
     createReduxDevtoolsExtension(devtools);
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([CountState]), NgxsReduxDevtoolsPluginModule.forRoot()]
+      imports: [
+        NgxsModule.forRoot([CountState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
+        NgxsReduxDevtoolsPluginModule.forRoot()
+      ]
     });
 
     const store = TestBed.inject(Store);

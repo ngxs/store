@@ -10,6 +10,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { renderApplication } from '@angular/platform-server';
 import {
   Action,
+  DispatchOutsideZoneNgxsExecutionStrategy,
   State,
   StateContext,
   StateToken,
@@ -69,7 +70,13 @@ describe('preboot feature + stable', () => {
               providers: [
                 provideExperimentalZonelessChangeDetection(),
 
-                provideStore([CountriesState], withNgxsPendingTasks())
+                provideStore(
+                  [CountriesState],
+                  {
+                    executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+                  },
+                  withNgxsPendingTasks()
+                )
               ]
             }),
           {

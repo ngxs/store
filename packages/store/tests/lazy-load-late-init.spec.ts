@@ -3,7 +3,14 @@ import { CommonModule } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
+import {
+  Action,
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  State,
+  StateContext,
+  Store
+} from '@ngxs/store';
 
 describe('Lazy loading with duplicate bootstrap states', () => {
   let store: Store;
@@ -36,7 +43,12 @@ describe('Lazy loading with duplicate bootstrap states', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, NgxsModule.forRoot([])]
+      imports: [
+        RouterTestingModule,
+        NgxsModule.forRoot([], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
   });
 

@@ -121,7 +121,12 @@ describe('NoopNgxsExecutionStrategy', () => {
       class TestComponent {}
 
       @NgModule({
-        imports: [BrowserModule, NgxsModule.forRoot()],
+        imports: [
+          BrowserModule,
+          NgxsModule.forRoot([], {
+            executionStrategy: NoopNgxsExecutionStrategy
+          })
+        ],
         declarations: [TestComponent],
         bootstrap: [TestComponent]
       })

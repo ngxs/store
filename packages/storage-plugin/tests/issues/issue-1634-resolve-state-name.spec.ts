@@ -1,5 +1,13 @@
 import { Injectable } from '@angular/core';
-import { State, StateToken, NgxsModule, Action, StateContext, Store } from '@ngxs/store';
+import {
+  State,
+  StateToken,
+  NgxsModule,
+  Action,
+  StateContext,
+  Store,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 
 import { NgxsStoragePluginModule } from '../../';
@@ -28,7 +36,9 @@ describe('Resolve state name if the state class has been provided (https://githu
 
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CountriesState]),
+        NgxsModule.forRoot([CountriesState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsStoragePluginModule.forRoot({
           keys: [CountriesState]
         })

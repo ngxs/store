@@ -3,7 +3,7 @@ import { ɵOrderedSubject } from '@ngxs/store/internals';
 import { Observable, Subject, share } from 'rxjs';
 
 import { leaveNgxs } from './operators/leave-ngxs';
-import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
+import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 
 /**
  * Status of a dispatched action
@@ -59,7 +59,7 @@ export class InternalActions extends ɵOrderedSubject<ActionContext> {
 export class Actions extends Observable<ActionContext> {
   constructor() {
     const internalActions$ = inject(InternalActions);
-    const internalExecutionStrategy = inject(InternalNgxsExecutionStrategy);
+    const internalExecutionStrategy = inject(NGXS_EXECUTION_STRATEGY);
 
     const sharedInternalActions$ = internalActions$.pipe(
       leaveNgxs(internalExecutionStrategy),

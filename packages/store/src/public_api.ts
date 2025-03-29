@@ -28,7 +28,10 @@ export {
 export { Selector } from './decorators/selector/selector';
 export { NgxsExecutionStrategy } from './execution/symbols';
 export { ActionType, ActionDef } from './actions/symbols';
+
+export { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 export { NoopNgxsExecutionStrategy } from './execution/noop-ngxs-execution-strategy';
+
 export {
   NgxsUnhandledErrorHandler,
   NgxsUnhandledErrorContext

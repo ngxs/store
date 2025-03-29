@@ -1,6 +1,12 @@
 import { Injectable, NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule, State, Store, Selector } from '@ngxs/store';
+import {
+  NgxsModule,
+  State,
+  Store,
+  Selector,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 
 interface RootStateModel {
   foo: string;
@@ -49,7 +55,11 @@ class FeatureState2 {
 }
 
 @NgModule({
-  imports: [NgxsModule.forRoot([RootState])]
+  imports: [
+    NgxsModule.forRoot([RootState], {
+      executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+    })
+  ]
 })
 class RootModule {}
 
@@ -67,7 +77,11 @@ describe('module', () => {
   it('should configure and run with no states', () => {
     // Arrange
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot()]
+      imports: [
+        NgxsModule.forRoot([], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
 
     // Assert
@@ -112,7 +126,12 @@ describe('module', () => {
   it('should allow empty root module and a feature module', () => {
     // Arrange
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(), FeatureModule]
+      imports: [
+        NgxsModule.forRoot([], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
+        FeatureModule
+      ]
     });
 
     // Assert
@@ -123,7 +142,13 @@ describe('module', () => {
   it('should initialize all feature modules state', async () => {
     // Arrange
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(), FeatureModule, FeatureModule2]
+      imports: [
+        NgxsModule.forRoot([], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
+        FeatureModule,
+        FeatureModule2
+      ]
     });
 
     const store = TestBed.inject(Store);

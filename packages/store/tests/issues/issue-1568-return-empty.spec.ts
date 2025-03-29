@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
-import { NgxsModule, State, Action, Store, Actions } from '@ngxs/store';
+import {
+  NgxsModule,
+  State,
+  Action,
+  Store,
+  Actions,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 
 describe('https://github.com/ngxs/store/issues/1568', () => {
   class MyAction {
@@ -27,7 +34,11 @@ describe('https://github.com/ngxs/store/issues/1568', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [
+        NgxsModule.forRoot([MyState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
   });
 

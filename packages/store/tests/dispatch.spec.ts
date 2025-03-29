@@ -6,7 +6,8 @@ import {
   Store,
   NgxsModule,
   StateContext,
-  NgxsExecutionStrategy
+  NgxsExecutionStrategy,
+  DispatchOutsideZoneNgxsExecutionStrategy
 } from '@ngxs/store';
 import { of, throwError, timer } from 'rxjs';
 import { delay, map, tap } from 'rxjs/operators';
@@ -107,7 +108,12 @@ describe('Dispatch', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState]), NgxsModule.forFeature([])]
+      imports: [
+        NgxsModule.forRoot([MyState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
+        NgxsModule.forFeature([])
+      ]
     });
 
     const store = TestBed.inject(Store);
@@ -143,7 +149,12 @@ describe('Dispatch', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState]), NgxsModule.forFeature([])]
+      imports: [
+        NgxsModule.forRoot([MyState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
+        NgxsModule.forFeature([])
+      ]
     });
 
     const store = TestBed.inject(Store);
@@ -181,7 +192,11 @@ describe('Dispatch', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [
+        NgxsModule.forRoot([MyState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
 
     const store = TestBed.inject(Store);
@@ -221,7 +236,11 @@ describe('Dispatch', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [
+        NgxsModule.forRoot([MyState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
 
     const store = TestBed.inject(Store);
@@ -265,7 +284,11 @@ describe('Dispatch', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [
+        NgxsModule.forRoot([MyState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
 
     const store = TestBed.inject(Store);
@@ -305,7 +328,11 @@ describe('Dispatch', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [
+        NgxsModule.forRoot([MyState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
 
     const store = TestBed.inject(Store);
@@ -344,7 +371,11 @@ describe('Dispatch', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([MyState])]
+      imports: [
+        NgxsModule.forRoot([MyState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
 
     const store = TestBed.inject(Store);
@@ -387,7 +418,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -421,7 +456,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -454,7 +493,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -493,7 +536,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -529,7 +576,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -570,7 +621,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -617,7 +672,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -647,7 +706,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -674,7 +737,11 @@ describe('Dispatch', () => {
         class MyState {}
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -698,7 +765,11 @@ describe('Dispatch', () => {
         class MyState {}
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -722,7 +793,11 @@ describe('Dispatch', () => {
         class MyState {}
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -746,7 +821,11 @@ describe('Dispatch', () => {
         class MyState {}
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -781,7 +860,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -820,7 +903,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -867,7 +954,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])],
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ],
           providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
         });
 
@@ -902,7 +993,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])],
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ],
           providers: [{ provide: ErrorHandler, useClass: NoopErrorHandler }]
         });
 
@@ -946,7 +1041,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
@@ -1005,7 +1104,11 @@ describe('Dispatch', () => {
         }
 
         TestBed.configureTestingModule({
-          imports: [NgxsModule.forRoot([MyState])]
+          imports: [
+            NgxsModule.forRoot([MyState], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         });
 
         const store = TestBed.inject(Store);
