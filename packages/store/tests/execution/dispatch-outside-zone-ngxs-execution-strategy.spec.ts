@@ -234,7 +234,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
 
       // Assert
       zoneCounter.assert({
-        inside: 4,
+        inside: 6,
         outside: 0
       });
     });
@@ -256,7 +256,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
 
       // Assert
       zoneCounter.assert({
-        inside: 4,
+        inside: 6,
         outside: 0
       });
     });

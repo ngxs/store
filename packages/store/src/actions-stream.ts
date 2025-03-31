@@ -9,6 +9,7 @@ import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
  * Status of a dispatched action
  */
 export const enum ActionStatus {
+  PreHandler = 'PRE_HANDLER',
   Dispatched = 'DISPATCHED',
   Successful = 'SUCCESSFUL',
   Canceled = 'CANCELED',
