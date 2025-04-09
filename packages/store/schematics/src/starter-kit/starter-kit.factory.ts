@@ -1,8 +1,8 @@
 import { Rule, Tree, url } from '@angular-devkit/schematics';
-import { generateFiles } from '../utils/generate-utils';
+import { generateFiles } from '../../../schematics-utils/src/generate-utils';
 import { isStandaloneApp } from '@schematics/angular/utility/ng-ast-utils';
-import { getProjectMainFile } from '../utils/project';
-import { normalizePath } from '../utils/normalize-options';
+import { getProjectMainFile } from '../../../schematics-utils/src/project';
+import { normalizePath } from '../../../schematics-utils/src/normalize-options';
 import { StarterKitSchema } from './starter-kit.schema';
 
 export function starterKit(options: StarterKitSchema): Rule {

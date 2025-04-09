@@ -4,7 +4,7 @@ import { workspaceRoot } from '@nrwl/devkit';
 import * as path from 'path';
 
 import { ActionsSchema } from './actions.schema';
-import { createWorkspace } from '../_testing';
+import { createWorkspace } from '../../../schematics-utils/_testing';
 
 describe('NGXS Actions', () => {
   const runner: SchematicTestRunner = new SchematicTestRunner(

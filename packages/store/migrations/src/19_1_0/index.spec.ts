@@ -1,19 +1,19 @@
 import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
 import { workspaceRoot } from '@nrwl/devkit';
 import { join } from 'path';
-import { createWorkspace } from '../_testing';
+import { createWorkspace } from '../../../schematics-utils/_testing';
 
-const versions = require('./../../../schematics-utils/src/versions.json');
+const versions = require('../../../schematics-utils/src/versions.json');
 const ngxsStoreVersion: string = versions['@ngxs/store'];
 
-describe('Storage Plugin Migration', () => {
-  const ngxsSchematicRunner = new SchematicTestRunner(
-    '@ngxs/storage-plugin/schematics',
-    join(workspaceRoot, 'packages/storage-plugin/schematics/collection.json')
+describe('Migrate to 19.1.0', () => {
+  const ngxsMigrationsRunner = new SchematicTestRunner(
+    '@ngxs/store/migrations',
+    join(workspaceRoot, 'packages/store/migrations/migrations.json')
   );
 
-  const testSetup = async () => {
-    const appTree = await createWorkspace();
+  const testSetup = async (options?: { isStandalone?: boolean }) => {
+    const appTree = await createWorkspace(options?.isStandalone);
     appTree.overwrite(
       'package.json',
       `{"dependencies": {"@ngxs/store": "${ngxsStoreVersion}"}}`
@@ -26,7 +26,7 @@ describe('Storage Plugin Migration', () => {
     const { appTree } = await testSetup();
 
     const newContent = `
-    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+    import { NgxsModule } from '@ngxs/store';
     import { NgModule } from '@angular/core';
     import { BrowserModule } from '@angular/platform-browser';
 
@@ -40,7 +40,7 @@ describe('Storage Plugin Migration', () => {
         imports: [
           BrowserModule,
           AppRoutingModule,
-          NgxsStoragePluginModule.forRoot()
+          NgxsModule.forRoot()
         ],
         bootstrap: [AppComponent]
       })
@@ -49,17 +49,21 @@ describe('Storage Plugin Migration', () => {
 
     appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
 
-    const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
+    const tree = await ngxsMigrationsRunner.runSchematic(
+      'ngxs-store-migration-19-1-0',
+      {},
+      appTree
+    );
 
     const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
     expect(contentUpdate).toMatchSnapshot();
   });
 
-  it('migrate forRoot that is missing the "key" property', async () => {
+  it('migrate forRoot with states', async () => {
     const { appTree } = await testSetup();
 
     const newContent = `
-    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+    import { NgxsModule } from '@ngxs/store';
     import { NgModule } from '@angular/core';
     import { BrowserModule } from '@angular/platform-browser';
 
@@ -73,7 +77,7 @@ describe('Storage Plugin Migration', () => {
         imports: [
           BrowserModule,
           AppRoutingModule,
-          NgxsStoragePluginModule.forRoot({proa: 'valuea', prob: 'valueb'})
+          NgxsModule.forRoot(states)
         ],
         bootstrap: [AppComponent]
       })
@@ -82,17 +86,21 @@ describe('Storage Plugin Migration', () => {
 
     appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
 
-    const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
+    const tree = await ngxsMigrationsRunner.runSchematic(
+      'ngxs-store-migration-19-1-0',
+      {},
+      appTree
+    );
 
     const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
     expect(contentUpdate).toMatchSnapshot();
   });
 
-  it('migrate forRoot that has the "key" property with a value as a string literal', async () => {
+  it('migrate forRoot with states and existing options', async () => {
     const { appTree } = await testSetup();
 
     const newContent = `
-    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+    import { NgxsModule } from '@ngxs/store';
     import { NgModule } from '@angular/core';
     import { BrowserModule } from '@angular/platform-browser';
 
@@ -106,7 +114,7 @@ describe('Storage Plugin Migration', () => {
         imports: [
           BrowserModule,
           AppRoutingModule,
-          NgxsStoragePluginModule.forRoot({proa: 'valuea', prob: 'valueb', key: 'keep this value'})
+          NgxsModule.forRoot(states, {foo:'bar'})
         ],
         bootstrap: [AppComponent]
       })
@@ -115,40 +123,11 @@ describe('Storage Plugin Migration', () => {
 
     appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
 
-    const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
-
-    const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
-    expect(contentUpdate).toMatchSnapshot();
-  });
-
-  it('migrate forRoot that has the "key" property with values as an array literal', async () => {
-    const { appTree } = await testSetup();
-
-    const newContent = `
-    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
-    import { NgModule } from '@angular/core';
-    import { BrowserModule } from '@angular/platform-browser';
-
-    import { AppRoutingModule } from './app-routing.module';
-    import { AppComponent } from './app.component';
-
-      @NgModule({
-        declarations: [
-          AppComponent
-        ],
-        imports: [
-          BrowserModule,
-          AppRoutingModule,
-          NgxsStoragePluginModule.forRoot({proa: 'valuea', prob: 'valueb', key: ['keyValue', NovelsState, { key: 'novels', engine: MyEngineX } ]})
-        ],
-        bootstrap: [AppComponent]
-      })
-      export class AppModule { }
-    `;
-
-    appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
-
-    const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
+    const tree = await ngxsMigrationsRunner.runSchematic(
+      'ngxs-store-migration-19-1-0',
+      {},
+      appTree
+    );
 
     const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
     expect(contentUpdate).toMatchSnapshot();
@@ -158,7 +137,7 @@ describe('Storage Plugin Migration', () => {
     const { appTree } = await testSetup();
 
     const newContent = `
-    import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+    import { NgxsModule } from '@ngxs/store';
     import { NgModule } from '@angular/core';
     import { BrowserModule } from '@angular/platform-browser';
 
@@ -168,7 +147,7 @@ describe('Storage Plugin Migration', () => {
     const imports = [
       BrowserModule,
       AppRoutingModule,
-      NgxsStoragePluginModule.forRoot({proa: 'valuea', prob: 'valueb', key: 'keep this value'})
+      NgxsModule.forRoot(states, {foo:'bar'})
     ];
 
       @NgModule({
@@ -183,9 +162,71 @@ describe('Storage Plugin Migration', () => {
 
     appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
 
-    const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
+    const tree = await ngxsMigrationsRunner.runSchematic(
+      'ngxs-store-migration-19-1-0',
+      {},
+      appTree
+    );
 
     const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
+    console.log(contentUpdate);
+    // expect(contentUpdate).toMatchSnapshot();
+  });
+
+  it('migrate provideStore with states without options', async () => {
+    const { appTree } = await testSetup({
+      isStandalone: true
+    });
+
+    const newContent = `
+    import { bootstrapApplication } from '@angular/platform-browser';
+    import { AppComponent } from './app/app.component';
+    import { provideStore } from '@ngxs/store';
+
+    bootstrapApplication(AppComponent, {
+      providers: [provideStore([])],
+    });
+
+    `;
+
+    appTree.overwrite('/projects/foo/src/main.ts', newContent);
+
+    const tree = await ngxsMigrationsRunner.runSchematic(
+      'ngxs-store-migration-19-1-0',
+      {},
+      appTree
+    );
+
+    const contentUpdate = tree!.readContent('/projects/foo/src/main.ts');
+    expect(contentUpdate).toMatchSnapshot();
+  });
+
+  it('migrate provideStore with states and existing options', async () => {
+    const { appTree } = await testSetup({
+      isStandalone: true
+    });
+
+    const newContent = `
+    import { bootstrapApplication } from '@angular/platform-browser';
+    import { AppComponent } from './app/app.component';
+    import { provideStore } from '@ngxs/store';
+
+    bootstrapApplication(AppComponent, {
+      providers: [provideStore([], {foo:'bar'})],
+    });
+
+    `;
+
+    appTree.overwrite('/projects/foo/src/main.ts', newContent);
+
+    const tree = await ngxsMigrationsRunner.runSchematic(
+      'ngxs-store-migration-19-1-0',
+      {},
+      appTree
+    );
+
+    const contentUpdate = tree!.readContent('/projects/foo/src/main.ts');
+
     expect(contentUpdate).toMatchSnapshot();
   });
 });

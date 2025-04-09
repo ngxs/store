@@ -1,8 +1,8 @@
 import { Rule, SchematicsException, url, Tree } from '@angular-devkit/schematics';
 import { ActionsSchema } from './actions.schema';
-import { generateFiles } from '../utils/generate-utils';
-import { isEmpty } from '../utils/common/properties';
-import { normalizeBaseOptions } from '../utils/normalize-options';
+import { generateFiles } from '../../../schematics-utils/src/generate-utils';
+import { isEmpty } from '../../../schematics-utils/src/common/properties';
+import { normalizeBaseOptions } from '../../../schematics-utils/src/normalize-options';
 import { join } from 'path';
 
 export function actions(options: ActionsSchema): Rule {
