@@ -160,10 +160,6 @@ export class StateFactory {
 
       this.addRuntimeInfoToMeta(meta, path);
 
-      // Note: previously we called `ensureStateClassIsInjectable` within the
-      // `State` decorator. This check is moved here because the `ɵprov` property
-      // will not exist on the class in JIT mode (because it's set asynchronously
-      // during JIT compilation through `Object.defineProperty`).
       if (typeof ngDevMode !== 'undefined' && ngDevMode) {
         ensureStateClassIsInjectable(stateClass);
       }
