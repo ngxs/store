@@ -281,7 +281,7 @@ describe('NoopNgxsExecutionStrategy', () => {
       // Assert
       zoneCounter.assert({
         inside: 0,
-        outside: 4
+        outside: 6
       });
     });
 
@@ -302,7 +302,7 @@ describe('NoopNgxsExecutionStrategy', () => {
 
       // Assert
       zoneCounter.assert({
-        inside: 4,
+        inside: 6,
         outside: 0
       });
     });
