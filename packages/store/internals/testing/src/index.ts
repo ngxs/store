@@ -7,3 +7,4 @@ export {
   loggedError
 } from './skip-console-logging';
 export { NgxsTesting } from './symbol';
+export { NgxsActionCollector } from './action-collector';
