@@ -135,26 +135,23 @@ export const ɵPROP_GETTER = new InjectionToken<(paths: string[]) => (x: any) =>
  * @ignore
  */
 export function buildGraph(stateClasses: ɵStateClassInternal[]): StateKeyGraph {
-  const findName = (stateClass: ɵStateClassInternal) => {
-    const meta = stateClasses.find(g => g === stateClass);
-
+  // Resolve a state's name from the class reference.
+  const findName = (stateClass: ɵStateClassInternal): string => {
+    const meta = stateClasses.find(s => s === stateClass);
     if (typeof ngDevMode !== 'undefined' && ngDevMode && !meta) {
       throw new Error(
         `Child state not found: ${stateClass}. \r\nYou may have forgotten to add states to module`
       );
     }
-
     return meta![ɵMETA_KEY]!.name!;
   };
 
-  return stateClasses.reduce<StateKeyGraph>(
-    (result: StateKeyGraph, stateClass: ɵStateClassInternal) => {
-      const { name, children } = stateClass[ɵMETA_KEY]!;
-      result[name!] = (children || []).map(findName);
-      return result;
-    },
-    {}
-  );
+  // Build the dependency graph.
+  return stateClasses.reduce((graph: StateKeyGraph, stateClass) => {
+    const meta = stateClass[ɵMETA_KEY]!;
+    graph[meta.name!] = (meta.children || []).map(findName);
+    return graph;
+  }, {});
 }
 
 /**
@@ -202,26 +199,26 @@ export function nameToState(
  */
 export function findFullParentPath(
   obj: StateKeyGraph,
-  newObj: ɵPlainObjectOf<string> = {}
+  out: ɵPlainObjectOf<string> = {}
 ): ɵPlainObjectOf<string> {
-  const visit = (child: StateKeyGraph, keyToFind: string): string | null => {
-    for (const key in child) {
-      if (child.hasOwnProperty(key) && child[key].indexOf(keyToFind) >= 0) {
-        const parent = visit(child, key);
-        return parent !== null ? `${parent}.${key}` : key;
+  // Recursively find the full dotted parent path for a given key.
+  const find = (graph: StateKeyGraph, target: string): string | null => {
+    for (const key in graph) {
+      if (graph[key]?.includes(target)) {
+        const parent = find(graph, key);
+        return parent ? `${parent}.${key}` : key;
       }
     }
     return null;
   };
 
+  // Build full path for each key
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      const parent = visit(obj, key);
-      newObj[key] = parent ? `${parent}.${key}` : key;
-    }
+    const parent = find(obj, key);
+    out[key] = parent ? `${parent}.${key}` : key;
   }
 
-  return newObj;
+  return out;
 }
 
 /**
@@ -247,34 +244,27 @@ export function topologicalSort(graph: StateKeyGraph): string[] {
   const sorted: string[] = [];
   const visited: ɵPlainObjectOf<boolean> = {};
 
+  // DFS (Depth-First Search) to visit each node and its dependencies.
   const visit = (name: string, ancestors: string[] = []) => {
-    if (!Array.isArray(ancestors)) {
-      ancestors = [];
-    }
-
-    ancestors.push(name);
     visited[name] = true;
+    ancestors.push(name);
 
-    graph[name].forEach((dep: string) => {
-      if (typeof ngDevMode !== 'undefined' && ngDevMode && ancestors.indexOf(dep) >= 0) {
+    for (const dep of graph[name]) {
+      if (typeof ngDevMode !== 'undefined' && ngDevMode && ancestors.includes(dep)) {
         throw new Error(
           `Circular dependency '${dep}' is required by '${name}': ${ancestors.join(' -> ')}`
         );
       }
 
-      if (visited[dep]) {
-        return;
-      }
-
-      visit(dep, ancestors.slice(0));
-    });
-
-    if (sorted.indexOf(name) < 0) {
-      sorted.push(name);
+      if (!visited[dep]) visit(dep, ancestors.slice());
     }
+
+    // Add to sorted list if not already included.
+    if (!sorted.includes(name)) sorted.push(name);
   };
 
-  Object.keys(graph).forEach(k => visit(k));
+  // Start DFS from each key
+  for (const key in graph) visit(key);
 
   return sorted.reverse();
 }
