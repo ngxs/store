@@ -1,0 +1,11 @@
+{
+  "extends": ["@schematics/angular"],
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ngxs-store-migration-19-1-0": {
+      "description": "Migrate to NGXS v19.1.0",
+      "version": "19.1.0",
+      "factory": "./src/19_1_0/index"
+    }
+  }
+}
