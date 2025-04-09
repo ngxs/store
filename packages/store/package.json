@@ -7,5 +7,9 @@
     "@angular/core": ">=19.0.0 <20.0.0",
     "rxjs": ">=7.0.0"
   },
-  "schematics": "./schematics/collection.json"
+  "schematics": "./schematics/collection.json",
+  "ng-update": {
+    "packageGroupName": "@ngxs/store",
+    "migrations": "./migrations/migrations.json"
+  }
 }
