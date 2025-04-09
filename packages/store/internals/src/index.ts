@@ -9,3 +9,4 @@ export { ɵOrderedSubject, ɵOrderedBehaviorSubject } from './custom-rxjs-subjec
 export { ɵwrapObserverCalls } from './custom-rxjs-operators';
 export { ɵStateStream } from './state-stream';
 export { ɵof } from './rxjs';
+export { ɵhasOwnProperty, ɵdefineProperty } from './object-utils';

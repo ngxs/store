@@ -1,4 +1,4 @@
-import { ɵActionOptions, ɵensureStoreMetadata } from '@ngxs/store/internals';
+import { ɵActionOptions, ɵensureStoreMetadata, ɵhasOwnProperty } from '@ngxs/store/internals';
 
 import { ActionDef, ActionType } from '../actions/symbols';
 import { throwActionDecoratorError } from '../configs/messages.config';
@@ -62,7 +62,7 @@ export function Action<ActionOrActions extends ActionType | ActionType[]>(
     _descriptor: HandlerTypedPropertyDescriptor<ActionOrActions>
   ): void => {
     if (typeof ngDevMode !== 'undefined' && ngDevMode) {
-      const isStaticMethod = target.hasOwnProperty('prototype');
+      const isStaticMethod = ɵhasOwnProperty(target, 'prototype');
 
       if (isStaticMethod) {
         throwActionDecoratorError();
