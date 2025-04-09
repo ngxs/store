@@ -1,6 +1,6 @@
 import { ExistingState, NoInfer, StateOperator } from './types';
 
-import { isStateOperator, isUndefined, isPredicate, Predicate } from './utils';
+import { isStateOperator, isPredicate, Predicate } from './utils';
 
 function retrieveValue<T>(
   operatorOrValue: StateOperator<T> | T,
@@ -16,7 +16,7 @@ function retrieveValue<T>(
   // If operator or value was not provided
   // e.g. `elseOperatorOrValue` is `undefined`
   // then we just return an original value
-  if (isUndefined(operatorOrValue)) {
+  if (operatorOrValue === undefined) {
     return existing as T;
   }
 
