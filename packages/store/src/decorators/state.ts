@@ -5,16 +5,11 @@ import {
   ɵMetaDataModel,
   ɵStateClassInternal,
   ɵStoreOptions,
-  ɵensureStoreMetadata
+  ɵensureStoreMetadata,
+  ɵhasOwnProperty
 } from '@ngxs/store/internals';
 
 import { ensureStateNameIsValid } from '../utils/store-validators';
-
-interface MutateMetaOptions<T> {
-  meta: ɵMetaDataModel;
-  inheritedStateClass: ɵStateClassInternal;
-  optionsWithInheritance: ɵStoreOptions<T>;
-}
 
 /**
  * Decorates a class with ngxs state information.
@@ -22,42 +17,35 @@ interface MutateMetaOptions<T> {
 export function State<T>(options: ɵStoreOptions<T>) {
   return (target: ɵStateClass): void => {
     const stateClass: ɵStateClassInternal = target;
-    const meta: ɵMetaDataModel = ɵensureStoreMetadata(stateClass);
-    const inheritedStateClass: ɵStateClassInternal = Object.getPrototypeOf(stateClass);
-    const optionsWithInheritance: ɵStoreOptions<T> = getStateOptions(
-      inheritedStateClass,
-      options
-    );
-    mutateMetaData<T>({ meta, inheritedStateClass, optionsWithInheritance });
-    stateClass[ɵMETA_OPTIONS_KEY] = optionsWithInheritance;
+    const inherited = Object.getPrototypeOf(stateClass) as ɵStateClassInternal;
+    const meta = ɵensureStoreMetadata(stateClass);
+    const mergedOptions = { ...(inherited[ɵMETA_OPTIONS_KEY] || {}), ...options };
+
+    // Apply merged options to metadata.
+    mutateMetaData(meta, inherited, mergedOptions);
+    stateClass[ɵMETA_OPTIONS_KEY] = mergedOptions;
   };
 }
 
-function getStateOptions<T>(
-  inheritedStateClass: ɵStateClassInternal,
+// Updates metadata using inherited and current options
+function mutateMetaData<T>(
+  meta: ɵMetaDataModel,
+  inherited: ɵStateClassInternal,
   options: ɵStoreOptions<T>
-): ɵStoreOptions<T> {
-  const inheritanceOptions: Partial<ɵStoreOptions<T>> =
-    inheritedStateClass[ɵMETA_OPTIONS_KEY] || {};
-  return { ...inheritanceOptions, ...options } as ɵStoreOptions<T>;
-}
-
-function mutateMetaData<T>(params: MutateMetaOptions<T>): void {
-  const { meta, inheritedStateClass, optionsWithInheritance } = params;
-  const { children, defaults, name } = optionsWithInheritance;
-  const stateName: string | null =
-    typeof name === 'string' ? name : (name && name.getName()) || null;
+): void {
+  const { name, defaults, children } = options;
+  const stateName = typeof name === 'string' ? name : name?.getName?.() || null;
 
   if (typeof ngDevMode !== 'undefined' && ngDevMode) {
     ensureStateNameIsValid(stateName);
   }
 
-  if (inheritedStateClass.hasOwnProperty(ɵMETA_KEY)) {
-    const inheritedMeta: Partial<ɵMetaDataModel> = inheritedStateClass[ɵMETA_KEY] || {};
+  if (ɵhasOwnProperty(inherited, ɵMETA_KEY)) {
+    const inheritedMeta = inherited[ɵMETA_KEY] || <ɵMetaDataModel>{};
     meta.actions = { ...meta.actions, ...inheritedMeta.actions };
   }
 
-  meta.children = children;
-  meta.defaults = defaults;
   meta.name = stateName;
+  meta.defaults = defaults;
+  meta.children = children;
 }

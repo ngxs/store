@@ -1,6 +1,6 @@
 import { InjectionToken, Type } from '@angular/core';
 import { StateToken } from '@ngxs/store';
-import { ɵMETA_OPTIONS_KEY, ɵStateClass } from '@ngxs/store/internals';
+import { ɵhasOwnProperty, ɵMETA_OPTIONS_KEY, ɵStateClass } from '@ngxs/store/internals';
 
 import { StorageEngine } from './symbols';
 
@@ -30,7 +30,7 @@ export function ɵextractStringKey(storageKey: StorageKey): string {
   // Given the `storageKey` is a class, for instance, `AuthState`.
   // We should retrieve its metadata and the `name` property.
   // The `name` property might be a string (state name) or a state token.
-  if (storageKey.hasOwnProperty(ɵMETA_OPTIONS_KEY)) {
+  if (ɵhasOwnProperty(storageKey, ɵMETA_OPTIONS_KEY)) {
     storageKey = (storageKey as any)[ɵMETA_OPTIONS_KEY].name;
   }
 

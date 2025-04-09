@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ɵPlainObject } from '@ngxs/store/internals';
+import { ɵhasOwnProperty, ɵPlainObject } from '@ngxs/store/internals';
 import {
   NgxsPlugin,
   setValue,
@@ -55,9 +55,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           // Given the `key` is `myState.myProperty`, the `addedStates` will only contain `myState`.
           const dotNotationIndex = key.indexOf(DOT);
           const stateName = dotNotationIndex > -1 ? key.slice(0, dotNotationIndex) : key;
-          if (!addedStates.hasOwnProperty(stateName)) {
-            continue;
-          }
+          if (!ɵhasOwnProperty(addedStates, stateName)) continue;
         }
 
         const storageKey = getStorageKey(key, this._options);
@@ -166,7 +164,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     // avoiding unnecessary rehydration of the `counter` state.
     return Object.keys(addedStates).reduce(
       (accumulator, addedState) => {
-        if (storedValue.hasOwnProperty(addedState)) {
+        if (ɵhasOwnProperty(storedValue, addedState)) {
           accumulator[addedState] = storedValue[addedState];
         }
         return accumulator;
