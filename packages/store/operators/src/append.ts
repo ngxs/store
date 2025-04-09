@@ -1,4 +1,5 @@
 import { ExistingState, NoInfer, StateOperator } from './types';
+import { isArray } from './utils';
 
 /**
  * @param items - Specific items to append to the end of an array
@@ -12,7 +13,7 @@ export function append<T>(items: NoInfer<T[]>): StateOperator<T[]> {
       return existing as unknown as T[];
     }
 
-    if (Array.isArray(existing)) {
+    if (isArray(existing)) {
       return existing.concat(items as unknown as ExistingState<T[]>);
     }
 

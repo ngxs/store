@@ -1,5 +1,5 @@
 import { ExistingState, NoInfer, StateOperator } from './types';
-import { isNil } from './utils';
+import { isArray } from './utils';
 
 /**
  * @param value - Value to insert
@@ -9,12 +9,12 @@ export function insertItem<T>(value: NoInfer<T>, beforePosition?: number): State
   return function insertItemOperator(existing: ExistingState<T[]>): T[] {
     // Have to check explicitly for `null` and `undefined`
     // because `value` can be `0`, thus `!value` will return `true`
-    if (isNil(value) && existing) {
+    if (value == null && existing) {
       return existing as T[];
     }
 
     // Property may be dynamic and might not existed before
-    if (!Array.isArray(existing)) {
+    if (!isArray(existing)) {
       return [value as unknown as T];
     }
 
