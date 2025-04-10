@@ -60,7 +60,7 @@ function migrateNgxsForRoot(
       _context.logger.info(`Migrating forRoot with states in ${path}`);
       migrateForRootWithStates(callExpression);
     } else if (args.length === 2) {
-      _context.logger.info(`Migrating forRoot with states and exiting properties in ${path}`);
+      _context.logger.info(`Migrating forRoot with states and existing properties in ${path}`);
       migrateForRootWithExistingOptions(args[1]);
     }
 
@@ -93,7 +93,7 @@ function migrateProvideStore(
     } else if (args.length === 2) {
       // args.length === 2 --> provideStore([], {foo:'bar'})
       _context.logger.info(
-        `Migrating provideStore with states and exiting properties in ${path}`
+        `Migrating provideStore with states and existing properties in ${path}`
       );
       migrateForRootWithExistingOptions(args[1]);
     }
@@ -132,6 +132,7 @@ function addNgxsExecutionStrategyImport(options: {
   options.tree.overwrite(options.path, updatedText);
 }
 
+// TODO(FP): move to utilities
 function visitTsFiles(tree: Tree, dirPath = tree.root, visitor: (path: string) => void): void {
   function visit(directory: DirEntry) {
     for (const path of directory.subfiles) {
