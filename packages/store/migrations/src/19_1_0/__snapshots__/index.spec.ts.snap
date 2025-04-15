@@ -64,10 +64,34 @@ exports[`Migrate to 19.1.0 migrate forRoot with states and existing options 1`] 
         imports: [
           BrowserModule,
           AppRoutingModule,
-          NgxsModule.forRoot(states, {foo:'bar',
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
+          NgxsModule.forRoot(states, {foo:'bar', executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy})
         ],
+        bootstrap: [AppComponent]
+      })
+      export class AppModule { }
+    "
+`;
+
+exports[`Migrate to 19.1.0 migrate from a constant array 1`] = `
+"
+    import { NgxsModule, DispatchOutsideZoneNgxsExecutionStrategy } from '@ngxs/store';
+    import { NgModule } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+
+    import { AppRoutingModule } from './app-routing.module';
+    import { AppComponent } from './app.component';
+
+    const imports = [
+      BrowserModule,
+      AppRoutingModule,
+      NgxsModule.forRoot(states, {foo:'bar', executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy})
+    ];
+
+      @NgModule({
+        declarations: [
+          AppComponent
+        ],
+        imports,
         bootstrap: [AppComponent]
       })
       export class AppModule { }
@@ -81,9 +105,7 @@ exports[`Migrate to 19.1.0 migrate provideStore with states and existing options
     import { provideStore, DispatchOutsideZoneNgxsExecutionStrategy } from '@ngxs/store';
 
     bootstrapApplication(AppComponent, {
-      providers: [provideStore([], {foo:'bar',
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-    })],
+      providers: [provideStore([], {foo:'bar', executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy})],
     });
 
     "

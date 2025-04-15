@@ -1,11 +1,13 @@
 import { DirEntry, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
-import * as ts from 'ts-morph';
+import * as ts from 'typescript';
+
 import { exit } from 'node:process';
 import { getProjectMainFile } from '../../../schematics-utils/src/project';
+import { Change, InsertChange } from '@schematics/angular/utility/change';
+import { findNodes, insertImport } from '@schematics/angular/utility/ast-utils';
 
 export default function (): Rule {
   return (tree: Tree, _context: SchematicContext) => {
-    const tsProject = new ts.Project({ useInMemoryFileSystem: true });
     const packageJson = tree.readJson('package.json') as any;
     const storePackage = packageJson['dependencies']['@ngxs/store'];
 
@@ -19,127 +21,197 @@ export default function (): Rule {
       return;
     }
 
-    visitTsFiles(tree, tree.root, async path => {
-      const fileContent = tree.readText(path);
-      const sourceFile = tsProject.createSourceFile(path, fileContent!);
+    visitTsFiles(tree, tree.root, async (source, path) => {
+      const hasNgxsModuleOrProvideStoreImported = source.statements
+        .filter(ts.isImportDeclaration)
+        .filter(importDeclaration =>
+          importDeclaration.moduleSpecifier.getText().includes('@ngxs/store')
+        )
+        .filter(importDeclaration => {
+          const hasNgxsModule = importDeclaration.importClause?.namedBindings
+            ?.getText()
+            .includes('NgxsModule');
 
-      sourceFile.forEachDescendant(node => {
-        const callExpression = node as ts.CallExpression;
+          const hasProvideStore = importDeclaration.importClause?.namedBindings
+            ?.getText()
+            .includes('provideStore');
 
-        if (!isCallExpression(node)) {
-          return;
+          return hasNgxsModule || hasProvideStore;
+        });
+
+      if (!hasNgxsModuleOrProvideStoreImported.length) {
+        // Avoid running the migration if the NgxsModule or the provideStore is not imported
+        return;
+      }
+
+      const changes: Change[] = [];
+
+      const ngxsModuleImportChanges = migrateNgxsForRoot(source, path, _context);
+      const provideStoreChanges = migrateProvideStore(source, path, _context);
+      changes.push(...ngxsModuleImportChanges, ...provideStoreChanges);
+      const recorder = tree.beginUpdate(path);
+
+      changes.forEach(change => {
+        if (change instanceof InsertChange) {
+          recorder.insertLeft(change.pos, change.toAdd);
         }
-
-        migrateProvideStore(node, callExpression, _context, path, sourceFile, tree);
-
-        migrateNgxsForRoot(node, callExpression, _context, path, sourceFile, tree);
       });
 
-      tree.overwrite(path, sourceFile.getFullText());
+      tree.commitUpdate(recorder);
     });
+
+    return tree;
   };
 }
 
-function migrateNgxsForRoot(
-  node: ts.CallExpression<ts.ts.CallExpression>,
-  callExpression: ts.CallExpression<ts.ts.CallExpression>,
-  _context: SchematicContext,
-  path: string,
-  sourceFile: ts.SourceFile,
-  tree: Tree
-) {
-  if (
-    ts.Node.isPropertyAccessExpression(node.getExpression()) &&
-    isNgxsModule(callExpression)
-  ) {
-    const args = callExpression.getArguments();
-    if (!args.length) {
-      _context.logger.info(`Migrating empty forRoot in ${path}`);
-      migrateEmptyForRoot(callExpression);
-    } else if (args.length === 1) {
-      _context.logger.info(`Migrating forRoot with states in ${path}`);
-      migrateForRootWithStates(callExpression);
-    } else if (args.length === 2) {
-      _context.logger.info(`Migrating forRoot with states and existing properties in ${path}`);
-      migrateForRootWithExistingOptions(args[1]);
-    }
-
-    if (!args.length || args.length <= 2) {
-      // Add the import statement
-      addNgxsExecutionStrategyImport({
-        path,
-        sourceFile,
-        tree
-      });
-    }
-  }
-}
-
 function migrateProvideStore(
-  node: ts.CallExpression<ts.ts.CallExpression>,
-  callExpression: ts.CallExpression<ts.ts.CallExpression>,
-  _context: SchematicContext,
+  source: ts.SourceFile,
   path: string,
-  sourceFile: ts.SourceFile,
-  tree: Tree
-) {
-  if (ts.Node.isIdentifier(node.getExpression()) && isProviderFunction(callExpression)) {
-    const args = callExpression.getArguments();
+  context: SchematicContext
+): Change[] {
+  const provideStoreImport = findProvideStore(source);
+  const changes: Change[] = [];
 
-    if (args.length === 1) {
-      // args.length === 1 --> provideStore([])
-      _context.logger.info(`Migrating provideStore with states in ${path}`);
-      migrateForRootWithStates(callExpression);
-    } else if (args.length === 2) {
-      // args.length === 2 --> provideStore([], {foo:'bar'})
-      _context.logger.info(
-        `Migrating provideStore with states and existing properties in ${path}`
-      );
-      migrateForRootWithExistingOptions(args[1]);
-    }
-
-    if (args.length === 1 || args.length === 2) {
-      // Add the import statement
-      addNgxsExecutionStrategyImport({
-        path,
-        sourceFile,
-        tree
-      });
-    }
+  if (!provideStoreImport) {
+    return [];
   }
-}
+  const args = provideStoreImport.arguments;
 
-function addNgxsExecutionStrategyImport(options: {
-  sourceFile: ts.SourceFile;
-  path: string;
-  tree: Tree;
-}) {
-  // Add the import statement
-  const importDeclaration = options.sourceFile.getImportDeclaration('@ngxs/store');
-  if (importDeclaration) {
-    importDeclaration.addNamedImports(['DispatchOutsideZoneNgxsExecutionStrategy']);
-  } else {
-    options.sourceFile.addImportDeclaration({
-      namedImports: ['DispatchOutsideZoneNgxsExecutionStrategy'],
-      moduleSpecifier: '@ngxs/store'
+  if (args.length === 1) {
+    // args.length === 1 --> provideStore([])
+    context.logger.info(`Migrating provideStore with states in ${path}`);
+    migrateForRootWithStates(provideStoreImport.arguments[0].end, path, changes);
+  } else if (args.length === 2) {
+    // args.length === 2 --> provideStore([], {foo:'bar'})
+    context.logger.info(
+      `Migrating provideStore with states and existing properties in ${path}`
+    );
+    migrateForRootWithExistingOptions(provideStoreImport.arguments, path, changes);
+  }
+
+  if (args.length === 1 || args.length === 2) {
+    // add the import if it does not exists
+    addNgxsExecutionStrategyImport({
+      source,
+      path,
+      changes
     });
   }
 
-  // Get the updated text
-  const updatedText = options.sourceFile.getText();
-
-  // Update the tree
-  options.tree.overwrite(options.path, updatedText);
+  return changes;
 }
 
-// TODO(FP): move to utilities
-function visitTsFiles(tree: Tree, dirPath = tree.root, visitor: (path: string) => void): void {
+function migrateNgxsForRoot(
+  source: ts.SourceFile,
+  path: string,
+  context: SchematicContext
+): Change[] {
+  const ngxsModuleImport = findNgxsModuleImport(source);
+  const changes: Change[] = [];
+
+  if (!ngxsModuleImport) {
+    return [];
+  }
+  const args = ngxsModuleImport.arguments;
+
+  if (!args.length) {
+    context.logger.info(`Migrating empty forRoot in ${path}`);
+    migrateEmptyForRoot(ngxsModuleImport.arguments.pos, path, changes);
+  } else if (args.length === 1) {
+    context.logger.info(`Migrating forRoot with states in ${path}`);
+    migrateForRootWithStates(ngxsModuleImport.arguments[0].end, path, changes);
+  } else {
+    context.logger.info(`Migrating forRoot with states and existing properties in ${path}`);
+    migrateForRootWithExistingOptions(ngxsModuleImport.arguments, path, changes);
+  }
+
+  // add the import if it does not exists
+  addNgxsExecutionStrategyImport({
+    source,
+    path,
+    changes
+  });
+
+  return changes;
+}
+
+function findNgxsModuleImport(source: ts.SourceFile): ts.CallExpression | undefined {
+  const nodes = findNodes(source, (node): node is ts.CallExpression => {
+    if (
+      ts.isCallExpression(node) &&
+      ts.isPropertyAccessExpression(node.expression) &&
+      ts.isIdentifier(node.expression.expression) &&
+      node.expression.expression.text === 'NgxsModule' &&
+      ts.isIdentifier(node.expression.name) &&
+      node.expression.name.text === 'forRoot'
+    ) {
+      return ts.isCallExpression(node);
+    }
+
+    return false;
+  });
+
+  if (nodes.length === 0) {
+    return undefined;
+  }
+  return nodes[0] as ts.CallExpression;
+}
+
+function findProvideStore(source: ts.SourceFile): ts.CallExpression | undefined {
+  const nodes = findNodes(source, (node): node is ts.CallExpression => {
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === 'provideStore'
+    ) {
+      return ts.isCallExpression(node);
+    }
+
+    return false;
+  });
+
+  if (nodes.length === 0) {
+    return undefined;
+  }
+
+  return nodes[0] as ts.CallExpression;
+}
+
+function addNgxsExecutionStrategyImport(options: {
+  source: ts.SourceFile;
+  path: string;
+  changes: Change[];
+}) {
+  // add the import if it does not exists
+  const importChange = insertImport(
+    options.source,
+    options.path,
+    'DispatchOutsideZoneNgxsExecutionStrategy',
+    '@ngxs/store'
+  );
+  if (importChange) {
+    options.changes.push(importChange);
+  }
+}
+
+function visitTsFiles(
+  tree: Tree,
+  dirPath = tree.root,
+  visitor: (sourceFile: ts.SourceFile, filePath: string) => void
+): void {
   function visit(directory: DirEntry) {
     for (const path of directory.subfiles) {
       if (path.endsWith('.ts') && !path.endsWith('.d.ts')) {
         const entry = directory.file(path);
         if (entry) {
-          visitor(entry.path);
+          const content = entry.content;
+          const source = ts.createSourceFile(
+            entry.path,
+            content.toString(),
+            ts.ScriptTarget.Latest,
+            true
+          );
+          visitor(source, entry.path);
         }
       }
     }
@@ -157,63 +229,47 @@ function visitTsFiles(tree: Tree, dirPath = tree.root, visitor: (path: string) =
 }
 
 /**
- * We do not use the ts.Node.isCallExpression(node) because the underlying implementation
- * uses -> node.getKind() === typescript.SyntaxKind.CallExpression
- * which is an enum that can return different numbers depending on minor typescript package versions
- */
-function isCallExpression(node: ts.Node): node is ts.CallExpression {
-  return node.getKindName() === 'CallExpression';
-}
-
-function isNgxsModule(callExpression: ts.CallExpression) {
-  return callExpression && callExpression.getText().includes('NgxsModule.forRoot');
-}
-
-function isProviderFunction(callExpression: ts.CallExpression) {
-  return callExpression.getExpression().getText() === 'provideStore';
-}
-
-/**
  * NgxsModule.forRoot() -> NgxsModule.forRoot([], { executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy })
  */
-function migrateEmptyForRoot(callExpression: ts.CallExpression<ts.ts.CallExpression>) {
-  callExpression.addArgument(`[]`);
-  callExpression.addArgument(
-    `{ executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy }`
-  );
+function migrateEmptyForRoot(start: number, modulePath: string, changes: Change[]) {
+  const newArguments = `[], { executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy }`;
+
+  changes.push(new InsertChange(modulePath, start, newArguments));
 }
 
 /**
  * NgxsModule.forRoot(states) -> NgxsModule.forRoot(states, { executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy })
  * provideStore([]) -> provideStore([], { executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy })
  */
-function migrateForRootWithStates(callExpression: ts.CallExpression<ts.ts.CallExpression>) {
-  callExpression.addArgument(
-    `{ executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy }`
-  );
+function migrateForRootWithStates(start: number, modulePath: string, changes: Change[]) {
+  const newArguments = `, { executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy }`;
+
+  changes.push(new InsertChange(modulePath, start, newArguments));
 }
 
 /**
  * NgxsModule.forRoot([], { foo:'bar' }) -> NgxsModule.forRoot([], { foo:'bar', executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy })
  * provideStore([], { foo:'bar' }) -> provideStore([], { foo:'bar', executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy })
  */
-function migrateForRootWithExistingOptions(arg: ts.Node<ts.ts.Node>) {
-  const objectLiteral = arg as ts.ObjectLiteralExpression;
+function migrateForRootWithExistingOptions(
+  args: ts.NodeArray<ts.Expression>,
+  modulePath: string,
+  changes: Change[]
+) {
+  if (args.length === 2 && ts.isObjectLiteralExpression(args[1])) {
+    const configObject = args[1];
 
-  const hasPropertyName = (name: string) =>
-    objectLiteral.getProperties().some(prop => {
-      return ts.Node.isPropertyAssignment(prop) && prop.getName() === name;
-    });
+    const executionStrategyProperty = configObject.properties.find(
+      prop =>
+        ts.isPropertyAssignment(prop) &&
+        ts.isIdentifier(prop.name) &&
+        prop.name.text === 'executionStrategy'
+    );
 
-  const isAlreadyMigrated = hasPropertyName('executionStrategy');
-
-  // If the "executionStrategy" property is already there, we should not try migrating
-  if (isAlreadyMigrated) {
-    return;
+    if (!executionStrategyProperty) {
+      const insertionPoint = configObject.properties.end;
+      const toInsert = `, executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy`;
+      changes.push(new InsertChange(modulePath, insertionPoint, toInsert));
+    }
   }
-
-  objectLiteral.addPropertyAssignment({
-    name: 'executionStrategy',
-    initializer: 'DispatchOutsideZoneNgxsExecutionStrategy'
-  });
 }

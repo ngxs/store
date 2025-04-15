@@ -169,8 +169,7 @@ describe('Migrate to 19.1.0', () => {
     );
 
     const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
-    console.log(contentUpdate);
-    // expect(contentUpdate).toMatchSnapshot();
+    expect(contentUpdate).toMatchSnapshot();
   });
 
   it('migrate provideStore with states without options', async () => {
