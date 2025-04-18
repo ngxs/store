@@ -8,7 +8,7 @@ import {
 } from '@schematics/angular/utility/standalone/util';
 import { insertImport } from '@schematics/angular/utility/ast-utils';
 import { findAppConfig } from '@schematics/angular/utility/standalone/app_config';
-import { LIBRARIES } from '../utils/common/lib.config';
+import { LIBRARIES } from '../../../schematics-utils/src/common/lib.config';
 import { NormalizedNgxsPackageSchema } from './ng-add.factory';
 
 export function addDeclarationToStandaloneApp(options: NormalizedNgxsPackageSchema): Rule {

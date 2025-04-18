@@ -3,7 +3,7 @@ import { workspaceRoot } from '@nrwl/devkit';
 import { join } from 'path';
 import { createWorkspace } from '../_testing';
 
-const versions = require('./../utils/versions.json');
+const versions = require('./../../../schematics-utils/src/versions.json');
 const ngxsStoreVersion: string = versions['@ngxs/store'];
 
 describe('Storage Plugin Migration', () => {

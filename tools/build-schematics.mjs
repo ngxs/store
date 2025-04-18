@@ -10,7 +10,9 @@ if (!distPath) {
 }
 
 const schematicsSrc = join(projectRoot, 'schematics', 'src');
-assertSchematicsVersionIsUpToDate(schematicsSrc);
+const schematicsUtilSrc = join(projectRoot, 'schematics-utils', 'src');
+const migrationsSrc = join(projectRoot, 'migrations', 'src');
+assertSchematicsVersionIsUpToDate(schematicsUtilSrc);
 
 const tsConfigPath = join(projectRoot, 'tsconfig.schematics.json');
 
@@ -33,9 +35,24 @@ fse.copySync(
   join(distPath, 'schematics', 'collection.json')
 );
 
+if (fse.existsSync(migrationsSrc)) {
+  fse.copySync(migrationsSrc, join(distPath, 'migrations', 'src'), src => {
+    // skip not compiled files
+    if (src.endsWith('.ts')) {
+      return false;
+    }
+    return true;
+  });
+
+  fse.copySync(
+    join(projectRoot, 'migrations', 'migrations.json'),
+    join(distPath, 'migrations', 'migrations.json')
+  );
+}
+
 function assertSchematicsVersionIsUpToDate(schematicsSrc) {
   const rootPkg = JSON.parse(fse.readFileSync('package.json', { encoding: 'utf-8' }));
-  const schematicsVersionsFilePath = join(schematicsSrc, 'utils', 'versions.json');
+  const schematicsVersionsFilePath = join(schematicsSrc, 'versions.json');
   const schematicsVersionsFile = JSON.parse(
     fse.readFileSync(schematicsVersionsFilePath, { encoding: 'utf-8' })
   );

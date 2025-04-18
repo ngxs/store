@@ -1,10 +1,10 @@
 import { Rule, SchematicsException, Tree, url } from '@angular-devkit/schematics';
 import { join } from 'path';
-import { isEmpty } from '../utils/common/properties';
-import { generateFiles } from '../utils/generate-utils';
+import { isEmpty } from '../../../schematics-utils/src/common/properties';
+import { generateFiles } from '../../../schematics-utils/src/generate-utils';
 import { isStandaloneApp } from '@schematics/angular/utility/ng-ast-utils';
-import { getProjectMainFile } from '../utils/project';
-import { normalizeBaseOptions } from '../utils/normalize-options';
+import { getProjectMainFile } from '../../../schematics-utils/src/project';
+import { normalizeBaseOptions } from '../../../schematics-utils/src/normalize-options';
 import { StateSchema } from './state.schema';
 
 export function state(options: StateSchema): Rule {
