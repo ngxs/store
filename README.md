@@ -16,6 +16,9 @@
   <a href="https://www.npmjs.com/package/@ngxs/store">
     <img src="https://img.shields.io/npm/dw/@ngxs/store.svg" />
   </a>
+  <a href="https://gurubase.io/g/ngxs">
+    <img src="https://img.shields.io/badge/Gurubase-Ask%20NGXS%20Guru-006BFF" />
+  </a>
   
   <br />
   
@@ -61,39 +64,12 @@ NGXS tries to make things as simple and accessible as possible. There can be a l
 
 The idea with this github organisation is to provide a place for the community to create libraries that augment the main framework with functionality that does not need to be integrated directly into the framework and therefore can evolve through their initial iterations of experimentation without affecting the main @ngxs/store library.
 
-### Getting Started - Local Development
+### Developer Guides
 
-#### Installation
-
-To get started locally, follow these instructions:
-
-1. If you haven't done it already, make a fork of this repo.
-2. Clone to your local computer using git.
-3. Make sure that you have installed NodeJS.
-4. Make sure that you have yarn installed.
-5. Run `yarn install`.
-6. Run `yarn build:packages`.
-
-#### Creating new packages or add feature/fix
-
-##### if you make changes @ngxs/store
-
-1. Run development mode `yarn build:packages --package store --watch`
-2. Run serve integration examples `yarn start`
-3. **...development...**
-4. Run tests `yarn test:ci`
-5. Create pull request
-
-##### if you add a new package @ngxs/my-super-plugin
-
-1. Create a new project folder `packages/my-super-plugin`
-2. Create template library with ngPackagr
-3. Add your project to package.json
-4. Run development mode `yarn build:packages --package my-super-plugin --watch`
-5. **...development...**
-6. Run build `yarn build:packages --package my-super-plugin`
-7. Run tests `yarn test:ci`
-8. Create pull request
+- [Getting Started](docs/community-and-labs/community/developer-guide.md) - Installation and local development.
+- [Contributing](docs/community-and-labs/community/contributing.md) - Learn how to contribute to the project.
+- [Style Guide](docs/style-guide.md) - Coding conventions and best practices.
+- [Code of Conduct](CODE_OF_CONDUCT.md) - Contributor Code of Conduct.
 
 #### NGXS Labs
 
@@ -124,8 +100,8 @@ If you have ideas for creating unique libraries, you can join us. Email us at `n
 #### NGXS Labs
 
 | Project                                 | Package                                                                                        | Version                                                                                                                                             | Links                                                                                                          |
-|-----------------------------------------|------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
-| **NGXS Persistence API**                | [`@anglar-ru/ngxs`](https://angular-ru.gitbook.io/sdk/ngxs/ngxs)                               | [![latest](https://img.shields.io/npm/v/%40angular-ru%2Fngxs/latest.svg)](https://npmjs.com/package/@angular-ru/ngxs)                           | [![README](https://img.shields.io/badge/README--green.svg)](https://angular-ru.gitbook.io/sdk/ngxs/ngxs)       |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **NGXS Persistence API**                | [`@anglar-ru/ngxs`](https://angular-ru.gitbook.io/sdk/ngxs/ngxs)                               | [![latest](https://img.shields.io/npm/v/%40angular-ru%2Fngxs/latest.svg)](https://npmjs.com/package/@angular-ru/ngxs)                               | [![README](https://img.shields.io/badge/README--green.svg)](https://angular-ru.gitbook.io/sdk/ngxs/ngxs)       |
 | **NGXS-labs Emitter**                   | [`@ngxs-labs/emitter`](https://npmjs.com/package/@ngxs-labs/emitter)                           | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Femitter/latest.svg)](https://npmjs.com/package/@ngxs-labs/emitter)                           | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/emitter)              |
 | **NGXS-labs Immer adapter**             | [`@ngxs-labs/immer-adapter`](https://npmjs.com/package/@ngxs-labs/immer-adapter)               | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fimmer-adapter/latest.svg)](https://npmjs.com/package/@ngxs-labs/immer-adapter)               | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/immer-adapter)        |
 | **NGXS-labs Dispatch decorator**        | [`@ngxs-labs/dispatch-decorator`](https://npmjs.com/package/@ngxs-labs/dispatch-decorator)     | [![latest](https://img.shields.io/npm/v/%40ngxs-labs%2Fdispatch-decorator/latest.svg)](https://npmjs.com/package/@ngxs-labs/dispatch-decorator)     | [![README](https://img.shields.io/badge/README--green.svg)](https://github.com/ngxs-labs/dispatch-decorator)   |

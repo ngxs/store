@@ -1,4 +1,4 @@
-import { NgZone, Injectable, OnDestroy, inject } from '@angular/core';
+import { NgZone, Injectable, inject, DestroyRef } from '@angular/core';
 import {
   NavigationCancel,
   NavigationError,
@@ -10,13 +10,12 @@ import {
   NavigationEnd,
   Event
 } from '@angular/router';
-import { Action, Selector, State, StateContext, StateToken, Store } from '@ngxs/store';
+import { Action, createSelector, State, StateContext, StateToken, Store } from '@ngxs/store';
 import {
   NavigationActionTiming,
   ɵNGXS_ROUTER_PLUGIN_OPTIONS
 } from '@ngxs/router-plugin/internals';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import type { Subscription } from 'rxjs';
 
 import {
   Navigate,
@@ -57,7 +56,7 @@ export const ROUTER_STATE_TOKEN = new StateToken<RouterStateModel>('router');
   }
 })
 @Injectable()
-export class RouterState implements OnDestroy {
+export class RouterState {
   private _store = inject(Store);
   private _router = inject(Router);
   private _serializer: RouterStateSerializer<RouterStateSnapshot> =
@@ -84,27 +83,23 @@ export class RouterState implements OnDestroy {
 
   private _options = inject(ɵNGXS_ROUTER_PLUGIN_OPTIONS);
 
-  private _destroy$ = new ReplaySubject<void>(1);
+  private _subscription!: Subscription;
 
-  @Selector()
-  static state<T = RouterStateSnapshot>(state: RouterStateModel<T>) {
-    // The `state` is optional if the selector is invoked before the router
-    // state is registered in NGXS.
-    return state?.state;
+  static state<T = RouterStateSnapshot>() {
+    return createSelector([ROUTER_STATE_TOKEN], (state: RouterStateModel<T>) => {
+      // The `state` is optional if the selector is invoked before the router
+      // state is registered in NGXS.
+      return state?.state;
+    });
   }
 
-  @Selector()
-  static url(state: RouterStateModel): string | undefined {
-    return state?.state?.url;
-  }
+  static url = createSelector([ROUTER_STATE_TOKEN], state => state?.state?.url);
 
   constructor() {
     this._setUpStoreListener();
     this._setUpRouterEventsListener();
-  }
 
-  ngOnDestroy(): void {
-    this._destroy$.next();
+    inject(DestroyRef).onDestroy(() => this._subscription.unsubscribe());
   }
 
   @Action(Navigate)
@@ -137,9 +132,8 @@ export class RouterState implements OnDestroy {
   }
 
   private _setUpStoreListener(): void {
-    const routerState$ = this._store
-      .select(ROUTER_STATE_TOKEN)
-      .pipe(takeUntil(this._destroy$));
+    const routerState$ = this._store.select(ROUTER_STATE_TOKEN);
+
     routerState$.subscribe((state: RouterStateModel | undefined) => {
       this._navigateIfNeeded(state);
     });
@@ -174,8 +168,7 @@ export class RouterState implements OnDestroy {
 
     let lastRoutesRecognized: RoutesRecognized;
 
-    const events$ = this._router.events.pipe(takeUntil(this._destroy$));
-    events$.subscribe(event => {
+    this._subscription = this._router.events.subscribe(event => {
       this._lastEvent = event;
 
       if (event instanceof NavigationStart) {

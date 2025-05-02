@@ -1,4 +1,11 @@
-import { NgxsModule, Selector, State, StateToken, Store } from '@ngxs/store';
+import {
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  Selector,
+  State,
+  StateToken,
+  Store
+} from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 import { Component, Injectable } from '@angular/core';
 import { take } from 'rxjs/operators';
@@ -37,7 +44,8 @@ describe('[TEST]: StateToken', () => {
 
       @Component({
         selector: 'myApp',
-        template: '{{ myState$ | async | json }}'
+        template: '{{ myState$ | async | json }}',
+        standalone: false
       })
       class MyComponent {
         myState$: Observable<string[]> = this.storeApp.select(TODO_LIST_TOKEN);
@@ -46,7 +54,11 @@ describe('[TEST]: StateToken', () => {
       }
 
       await TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot([TodoListState])],
+        imports: [
+          NgxsModule.forRoot([TodoListState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         declarations: [MyComponent]
       }).compileComponents();
 

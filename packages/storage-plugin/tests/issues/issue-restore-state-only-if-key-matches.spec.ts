@@ -4,7 +4,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Component, NgModule, NgZone, Injectable } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
-import { State, NgxsModule, Store, StateToken } from '@ngxs/store';
+import {
+  State,
+  NgxsModule,
+  Store,
+  StateToken,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 
 import { NgxsStoragePluginModule } from '../../';
 
@@ -50,7 +56,7 @@ describe('Restore state only if key matches', () => {
       @Injectable()
       class UserState {}
 
-      @Component({ template: '' })
+      @Component({ template: '', standalone: false })
       class UserComponent {}
 
       @NgModule({
@@ -67,7 +73,11 @@ describe('Restore state only if key matches', () => {
       })
       class UserModule {}
 
-      @Component({ selector: 'app-root', template: '<router-outlet></router-outlet>' })
+      @Component({
+        selector: 'app-root',
+        template: '<router-outlet></router-outlet>',
+        standalone: false
+      })
       class TestComponent {}
 
       @NgModule({
@@ -79,7 +89,9 @@ describe('Restore state only if key matches', () => {
               loadChildren: () => UserModule
             }
           ]),
-          NgxsModule.forRoot([AuthState]),
+          NgxsModule.forRoot([AuthState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          }),
           NgxsStoragePluginModule.forRoot({
             keys: [AuthState]
           })

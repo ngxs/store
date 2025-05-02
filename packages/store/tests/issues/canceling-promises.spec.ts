@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { State, Action, Store, provideStore, StateContext } from '@ngxs/store';
+import {
+  State,
+  Action,
+  Store,
+  provideStore,
+  StateContext,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 
 import { createPromiseTestHelper } from '../helpers/promise-test-helper';
 
@@ -13,6 +20,10 @@ describe('Canceling promises (preventing state writes)', () => {
 
   class IncrementWithThen {
     static readonly type = 'Increment with then';
+  }
+
+  class IncrementWithFireAndForget {
+    static readonly type = 'Increment with fire and forget';
   }
 
   const { promise: promiseAwaitReady, markPromiseResolved: markPromiseAwaitReady } =
@@ -45,13 +56,27 @@ describe('Canceling promises (preventing state writes)', () => {
         recorder.push(`value: ${ctx.getState()}`);
       });
     }
+
+    @Action(IncrementWithFireAndForget, { cancelUncompleted: true })
+    incrementWithFireAndForget(ctx: StateContext<number>) {
+      recorder.push('before promise then ready');
+      promiseThenReady.then(() => {
+        recorder.push('after promise then ready');
+        ctx.setState(value => value + 1);
+        recorder.push(`value: ${ctx.getState()}`);
+      });
+    }
   }
 
   beforeEach(() => {
     recorder.length = 0;
 
     TestBed.configureTestingModule({
-      providers: [provideStore([CounterState])]
+      providers: [
+        provideStore([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
   });
 
@@ -123,6 +148,38 @@ describe('Canceling promises (preventing state writes)', () => {
       'value: 0',
       'after promise then ready',
       'value: 1'
+    ]);
+  });
+
+  it('should allow state writes when the action is written in "fire & forget" style', async () => {
+    // Arrange
+    const store = TestBed.inject(Store);
+
+    // Act
+    store.dispatch(new IncrementWithFireAndForget());
+
+    // Assert
+    expect(recorder).toEqual(['before promise then ready']);
+
+    // Act
+    store.dispatch(new IncrementWithFireAndForget());
+
+    // Assert
+    expect(recorder).toEqual(['before promise then ready', 'before promise then ready']);
+
+    // Act
+    markPromiseThenReady();
+    await promiseThenReady;
+
+    // Assert
+    expect(store.snapshot()).toEqual({ counter: 2 });
+    expect(recorder).toEqual([
+      'before promise then ready',
+      'before promise then ready',
+      'after promise then ready',
+      'value: 1',
+      'after promise then ready',
+      'value: 2'
     ]);
   });
 });

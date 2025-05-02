@@ -3,7 +3,15 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
-import { Store, NgxsModule, State, Selector, SelectorOptions, StateToken } from '@ngxs/store';
+import {
+  Store,
+  NgxsModule,
+  State,
+  Selector,
+  SelectorOptions,
+  StateToken,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 
 describe('Store (isolation)', () => {
@@ -21,7 +29,8 @@ describe('Store (isolation)', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([], {
-            selectorOptions: { suppressErrors: false }
+            selectorOptions: { suppressErrors: false },
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
           })
         ]
       });
@@ -38,7 +47,8 @@ describe('Store (isolation)', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([ChildState, ParentState], {
-            selectorOptions: { suppressErrors: false }
+            selectorOptions: { suppressErrors: false },
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
           })
         ]
       });
@@ -55,7 +65,8 @@ describe('Store (isolation)', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([], {
-            selectorOptions: { suppressErrors: false }
+            selectorOptions: { suppressErrors: false },
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
           })
         ]
       });
@@ -96,7 +107,8 @@ describe('Store (isolation)', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([], {
-            selectorOptions: { suppressErrors: false }
+            selectorOptions: { suppressErrors: false },
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
           })
         ]
       });
@@ -113,7 +125,8 @@ describe('Store (isolation)', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([ChildState, ParentState], {
-            selectorOptions: { suppressErrors: false }
+            selectorOptions: { suppressErrors: false },
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
           })
         ]
       });
@@ -130,7 +143,8 @@ describe('Store (isolation)', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([], {
-            selectorOptions: { suppressErrors: false }
+            selectorOptions: { suppressErrors: false },
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
           })
         ]
       });
@@ -174,7 +188,8 @@ describe('Store (isolation)', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot(states, {
-            selectorOptions: { suppressErrors: false }
+            selectorOptions: { suppressErrors: false },
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
           })
         ]
       });
@@ -238,7 +253,8 @@ describe('Store (isolation)', () => {
         imports: [
           RouterTestingModule,
           NgxsModule.forRoot([], {
-            selectorOptions: { suppressErrors: false }
+            selectorOptions: { suppressErrors: false },
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
           })
         ]
       });

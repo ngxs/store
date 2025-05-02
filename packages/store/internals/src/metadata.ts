@@ -1,3 +1,4 @@
+import { ɵdefineProperty, ɵhasOwnProperty } from './object-utils';
 import {
   ɵMETA_KEY,
   ɵSELECTOR_META_KEY,
@@ -13,7 +14,7 @@ import {
  * @ignore
  */
 export function ɵensureStoreMetadata(target: ɵStateClassInternal): ɵMetaDataModel {
-  if (!target.hasOwnProperty(ɵMETA_KEY)) {
+  if (!ɵhasOwnProperty(target, ɵMETA_KEY)) {
     const defaultMetadata: ɵMetaDataModel = {
       name: null,
       actions: {},
@@ -25,7 +26,7 @@ export function ɵensureStoreMetadata(target: ɵStateClassInternal): ɵMetaDataM
       children: []
     };
 
-    Object.defineProperty(target, ɵMETA_KEY, { value: defaultMetadata });
+    ɵdefineProperty(target, ɵMETA_KEY, { value: defaultMetadata });
   }
   return ɵgetStoreMetadata(target);
 }
@@ -45,7 +46,7 @@ export function ɵgetStoreMetadata(target: ɵStateClassInternal): ɵMetaDataMode
  * @ignore
  */
 export function ɵensureSelectorMetadata(target: Function): ɵSelectorMetaDataModel {
-  if (!target.hasOwnProperty(ɵSELECTOR_META_KEY)) {
+  if (!ɵhasOwnProperty(target, ɵSELECTOR_META_KEY)) {
     const defaultMetadata: ɵSelectorMetaDataModel = {
       makeRootSelector: null,
       originalFn: null,
@@ -54,7 +55,7 @@ export function ɵensureSelectorMetadata(target: Function): ɵSelectorMetaDataMo
       getSelectorOptions: () => ({})
     };
 
-    Object.defineProperty(target, ɵSELECTOR_META_KEY, { value: defaultMetadata });
+    ɵdefineProperty(target, ɵSELECTOR_META_KEY, { value: defaultMetadata });
   }
 
   return ɵgetSelectorMetadata(target);

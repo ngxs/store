@@ -3,17 +3,16 @@ import { Component, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Router, RouterEvent, RouterModule } from '@angular/router';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
 import { Subject } from 'rxjs';
-import { provideStore } from '@ngxs/store';
+import { DispatchOutsideZoneNgxsExecutionStrategy, provideStore } from '@ngxs/store';
+import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
-
-import { RouterState, withNgxsRouterPlugin } from '../';
 
 describe('RouterState cleanup', () => {
   @Component({
     selector: 'app-root',
-    template: ''
+    template: '',
+    standalone: false
   })
   class TestComponent {}
 
@@ -21,7 +20,13 @@ describe('RouterState cleanup', () => {
     imports: [BrowserModule, RouterModule.forRoot([], { initialNavigation: 'disabled' })],
     declarations: [TestComponent],
     providers: [
-      provideStore([], withNgxsRouterPlugin()),
+      provideStore(
+        [],
+        {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        },
+        withNgxsRouterPlugin()
+      ),
       { provide: APP_BASE_HREF, useValue: '/' }
     ],
     bootstrap: [TestComponent]
@@ -37,19 +42,12 @@ describe('RouterState cleanup', () => {
       );
 
       const router = ngModuleRef.injector.get(Router);
-      const events = router.events as Subject<RouterEvent>;
-      const routerState = ngModuleRef.injector.get(RouterState);
-      const spy = jest.spyOn(routerState, 'ngOnDestroy');
+      const events = router.events as unknown as Subject<RouterEvent>;
 
-      try {
-        // Assert
-        expect(events.observers.length).toBeGreaterThan(0);
-        ngModuleRef.destroy();
-        expect(spy).toHaveBeenCalled();
-        expect(events.observers.length).toEqual(0);
-      } finally {
-        spy.mockRestore();
-      }
+      // Assert
+      expect(events.observers.length).toBeGreaterThan(0);
+      ngModuleRef.destroy();
+      expect(events.observers.length).toEqual(0);
     })
   );
 });

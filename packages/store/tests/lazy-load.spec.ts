@@ -2,7 +2,7 @@ import { Component, NgModule, inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RouterModule, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Store, NgxsModule } from '@ngxs/store';
+import { Store, NgxsModule, DispatchOutsideZoneNgxsExecutionStrategy } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
@@ -11,12 +11,12 @@ import { TodoState, AddTodo } from './helpers/todo.state';
 import { SimpleState, UpdateValue } from './helpers/simple.state';
 
 describe('Lazy Loading', () => {
-  @Component({ selector: 'my', template: '' })
+  @Component({ selector: 'my', template: '', standalone: false })
   class MyComponent {
     counter: Observable<number> = inject(Store).select(CounterState.getCounter);
   }
 
-  @Component({ selector: 'my-lazy', template: '' })
+  @Component({ selector: 'my-lazy', template: '', standalone: false })
   class MyLazyComponent {
     todos: Observable<string[]> = inject(Store).select(TodoState.getTodos);
   }
@@ -30,7 +30,7 @@ describe('Lazy Loading', () => {
   })
   class MyLazyModule {}
 
-  @Component({ selector: 'second-lazy', template: '' })
+  @Component({ selector: 'second-lazy', template: '', standalone: false })
   class SecondLazyComponent {
     value: Observable<string> = inject(Store).select(SimpleState.getSimple);
   }
@@ -53,7 +53,9 @@ describe('Lazy Loading', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        NgxsModule.forRoot([]),
+        NgxsModule.forRoot([], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsModule.forFeature([CounterState])
       ],
       declarations: [MyComponent],

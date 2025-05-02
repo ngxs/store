@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, Signal } from '@angular/core';
 import { RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngxs/store';
@@ -8,7 +9,8 @@ import { ListState } from '@integration/list/list.state';
 
 @Component({
   selector: 'app-list',
-  templateUrl: './list.component.html'
+  templateUrl: './list.component.html',
+  imports: [CommonModule]
 })
 export class ListComponent {
   list$: Observable<string[]> = this._store.select(ListState.getListState);
@@ -17,8 +19,8 @@ export class ListComponent {
   hello$ = this._store.select(ListState.getHello);
   hello = this._store.selectSignal(ListState.getHello);
 
-  router$ = this._store.select<RouterStateSnapshot | undefined>(RouterState.state);
-  router = this._store.selectSignal<RouterStateSnapshot | undefined>(RouterState.state);
+  router$ = this._store.select<RouterStateSnapshot | undefined>(RouterState.state());
+  router = this._store.selectSignal<RouterStateSnapshot | undefined>(RouterState.state());
 
   constructor(private _store: Store) {}
 }

@@ -2,6 +2,7 @@
 
 ### Projects
 
+- [Angular Authentication and Authorization flows with NGXS](https://github.com/nikosanif/angular-authentication)
 - [Angular 6 with NGXS and NX](https://xmlking.github.io/ngx-starter-kit/home)
 - [Angular 7, Angular Material and NGXS](https://github.com/adoi/Libnr)
 - [Ngxs-Pizza-Order](https://github.com/tommythongnguyen/Ngxs-Pizza-Order)

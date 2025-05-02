@@ -5,7 +5,6 @@ import { StateOperator } from '@ngxs/store/operators';
 import { ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
 
 import { NgxsExecutionStrategy } from './execution/symbols';
-import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 
 // The injection token is used to resolve a list of states provided at
 // the root level through either `NgxsModule.forRoot` or `provideStore`.
@@ -81,7 +80,7 @@ export class NgxsConfig {
    * `NoopNgxsExecutionStrategy` that doesn't interact with zones.
    * (default: null)
    */
-  executionStrategy: Type<NgxsExecutionStrategy> = DispatchOutsideZoneNgxsExecutionStrategy;
+  executionStrategy: Type<NgxsExecutionStrategy>;
   /**
    * Defining shared selector options
    */
@@ -151,9 +150,15 @@ export interface NgxsAfterBootstrap {
   ngxsAfterBootstrap(ctx: StateContext<any>): void;
 }
 
-export type NgxsModuleOptions = Partial<NgxsConfig>;
+export type NgxsModuleOptions = Partial<NgxsConfig> & {
+  executionStrategy: Type<NgxsExecutionStrategy>;
+};
 
 /** @internal */
 declare global {
   const ngDevMode: boolean;
+  // Indicates whether the application is operating in server-rendering mode.
+  // `ngServerMode` is a global flag set by Angular CLI.
+  // https://github.com/angular/angular-cli/blob/b4e9a2af9e50e7b65167d0fdbd4012023135e875/packages/angular/build/src/tools/vite/utils.ts#L102
+  const ngServerMode: boolean;
 }

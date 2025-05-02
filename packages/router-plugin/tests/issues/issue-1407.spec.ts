@@ -3,7 +3,14 @@ import { APP_BASE_HREF, DOCUMENT } from '@angular/common';
 import { Component, Injectable, NgModule } from '@angular/core';
 import { Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { State, Action, StateContext, provideStore, provideStates } from '@ngxs/store';
+import {
+  State,
+  Action,
+  StateContext,
+  provideStore,
+  provideStates,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
@@ -13,19 +20,22 @@ import { createNgxsRouterPluginTestingPlatform } from '../helpers';
 
 @Component({
   selector: 'app-root',
-  template: '<router-outlet></router-outlet>'
+  template: '<router-outlet></router-outlet>',
+  standalone: false
 })
 class RootComponent {}
 
 @Component({
   selector: 'app-home',
-  template: 'Home page'
+  template: 'Home page',
+  standalone: false
 })
 class HomeComponent {}
 
 @Component({
   selector: 'app-dialed-number',
-  template: 'Dialed number page'
+  template: 'Dialed number page',
+  standalone: false
 })
 class DialedNumberComponent {}
 
@@ -46,7 +56,13 @@ function getTestModule(states: ɵStateClass[] = []) {
     declarations: [RootComponent, HomeComponent, DialedNumberComponent],
     bootstrap: [RootComponent],
     providers: [
-      provideStore([], withNgxsRouterPlugin()),
+      provideStore(
+        [],
+        {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        },
+        withNgxsRouterPlugin()
+      ),
       provideStates(states),
       { provide: APP_BASE_HREF, useValue: '/' }
     ]
@@ -92,7 +108,7 @@ describe('#1407 issue', () => {
 
       const document = injector.get(DOCUMENT);
       const root = document.querySelector('app-root')!;
-      const routerState = store.selectSnapshot(RouterState.state);
+      const routerState = store.selectSnapshot(RouterState.state());
 
       // Assert
       expect(navigateDispatchedTimes).toBe(1);

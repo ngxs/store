@@ -1,6 +1,5 @@
-import { PLATFORM_ID, Injectable, inject } from '@angular/core';
-import { isPlatformServer } from '@angular/common';
-import { ɵPlainObject } from '@ngxs/store/internals';
+import { Injectable, inject } from '@angular/core';
+import { ɵhasOwnProperty, ɵPlainObject } from '@ngxs/store/internals';
 import {
   NgxsPlugin,
   setValue,
@@ -15,22 +14,22 @@ import {
   ɵALL_STATES_PERSISTED,
   ɵNGXS_STORAGE_PLUGIN_OPTIONS
 } from '@ngxs/storage-plugin/internals';
-import { tap } from 'rxjs/operators';
+import { tap } from 'rxjs';
 
 import { getStorageKey } from './internals';
 import { ɵNgxsStoragePluginKeysManager } from './keys-manager';
 
 declare const ngDevMode: boolean;
+declare const ngServerMode: boolean;
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
   private _keysManager = inject(ɵNgxsStoragePluginKeysManager);
   private _options = inject(ɵNGXS_STORAGE_PLUGIN_OPTIONS);
   private _allStatesPersisted = inject(ɵALL_STATES_PERSISTED);
-  private _isServer = isPlatformServer(inject(PLATFORM_ID));
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
-    if (this._isServer) {
+    if (typeof ngServerMode !== 'undefined' && ngServerMode) {
       return next(state, event);
     }
 
@@ -56,9 +55,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           // Given the `key` is `myState.myProperty`, the `addedStates` will only contain `myState`.
           const dotNotationIndex = key.indexOf(DOT);
           const stateName = dotNotationIndex > -1 ? key.slice(0, dotNotationIndex) : key;
-          if (!addedStates.hasOwnProperty(stateName)) {
-            continue;
-          }
+          if (!ɵhasOwnProperty(addedStates, stateName)) continue;
         }
 
         const storageKey = getStorageKey(key, this._options);
@@ -167,7 +164,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     // avoiding unnecessary rehydration of the `counter` state.
     return Object.keys(addedStates).reduce(
       (accumulator, addedState) => {
-        if (storedValue.hasOwnProperty(addedState)) {
+        if (ɵhasOwnProperty(storedValue, addedState)) {
           accumulator[addedState] = storedValue[addedState];
         }
         return accumulator;

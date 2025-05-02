@@ -1,9 +1,9 @@
-import { inject, Injectable, OnDestroy } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { ɵOrderedSubject } from '@ngxs/store/internals';
-import { Observable, Subject, filter, share } from 'rxjs';
+import { Observable, Subject, share } from 'rxjs';
 
 import { leaveNgxs } from './operators/leave-ngxs';
-import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
+import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 
 /**
  * Status of a dispatched action
@@ -25,7 +25,7 @@ export interface ActionContext<T = any> {
  * Internal Action stream that is emitted anytime an action is dispatched.
  */
 @Injectable({ providedIn: 'root' })
-export class InternalActions extends ɵOrderedSubject<ActionContext> implements OnDestroy {
+export class InternalActions extends ɵOrderedSubject<ActionContext> {
   // This subject will be the first to know about the dispatched action, its purpose is for
   // any logic that must be executed before action handlers are invoked (i.e., cancelation).
   readonly dispatched$ = new Subject<ActionContext>();
@@ -33,13 +33,20 @@ export class InternalActions extends ɵOrderedSubject<ActionContext> implements 
   constructor() {
     super();
 
-    this.pipe(filter(ctx => ctx.status === ActionStatus.Dispatched)).subscribe(ctx => {
-      this.dispatched$.next(ctx);
+    this.subscribe(ctx => {
+      if (ctx.status === ActionStatus.Dispatched) {
+        this.dispatched$.next(ctx);
+      }
     });
-  }
 
-  ngOnDestroy(): void {
-    this.complete();
+    const destroyRef = inject(DestroyRef);
+    destroyRef.onDestroy(() => {
+      // Complete the subject once the root injector is destroyed to ensure
+      // there are no active subscribers that would receive events or perform
+      // any actions after the application is destroyed.
+      this.complete();
+      this.dispatched$.complete();
+    });
   }
 }
 
@@ -52,7 +59,7 @@ export class InternalActions extends ɵOrderedSubject<ActionContext> implements 
 export class Actions extends Observable<ActionContext> {
   constructor() {
     const internalActions$ = inject(InternalActions);
-    const internalExecutionStrategy = inject(InternalNgxsExecutionStrategy);
+    const internalExecutionStrategy = inject(NGXS_EXECUTION_STRATEGY);
 
     const sharedInternalActions$ = internalActions$.pipe(
       leaveNgxs(internalExecutionStrategy),

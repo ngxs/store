@@ -3,7 +3,16 @@ import { combineLatest, Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Component, Injectable, NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { Store, NgxsModule, State, Action, Selector, Select, StateContext } from '@ngxs/store';
+import {
+  Store,
+  NgxsModule,
+  State,
+  Action,
+  Selector,
+  Select,
+  StateContext,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import { skipConsoleLogging, freshPlatform } from '@ngxs/store/internals/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
@@ -102,7 +111,8 @@ describe('Select', () => {
       @FreezeClass
       @Component({
         selector: 'my-select',
-        template: ''
+        template: '',
+        standalone: false
       })
       class MySelectComponent {
         @Select((state: any) => state)
@@ -110,7 +120,11 @@ describe('Select', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)],
+        imports: [
+          NgxsModule.forRoot(states, {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         declarations: [MySelectComponent]
       });
 
@@ -132,7 +146,7 @@ describe('Select', () => {
     expect(removeDollarAtTheEnd('foo')).toBe('foo');
 
     // Act
-    @Component({ template: '' })
+    @Component({ template: '', standalone: false })
     class SelectComponent {
       @Select()
       counter$: Observable<any>;
@@ -142,7 +156,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [SelectComponent]
     });
 
@@ -159,7 +177,8 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-0',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StringSelectComponent {
       @Select('counter') state: Observable<StateModel>;
@@ -168,7 +187,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StringSelectComponent]
     });
 
@@ -192,7 +215,8 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       @Select(MyState) state: Observable<StateModel>;
@@ -201,7 +225,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -224,7 +252,8 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       @Select((state: any) => state.counter.foo)
@@ -232,7 +261,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -250,7 +283,8 @@ describe('Select', () => {
 
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       @Select((state: any) => state)
@@ -262,7 +296,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -285,7 +323,8 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       @Select((state: any) => state.counter.foo)
@@ -299,7 +338,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -316,7 +359,8 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       counter$: Observable<string> = inject(Store).select(
@@ -325,7 +369,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [
+        NgxsModule.forRoot(states, {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -364,14 +412,19 @@ describe('Select', () => {
     // Arrange
     @Component({
       selector: 'my-component-1',
-      template: ''
+      template: '',
+      standalone: false
     })
     class StoreSelectComponent {
       state$ = inject(Store).select(NullSelectorState.notHere);
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([NullSelectorState])],
+      imports: [
+        NgxsModule.forRoot([NullSelectorState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [StoreSelectComponent]
     });
 
@@ -418,7 +471,8 @@ describe('Select', () => {
 
     @Component({
       selector: 'my-counter',
-      template: ``
+      template: ``,
+      standalone: false
     })
     class CounterComponent {
       count$ = this.store.select((state: { count: { number: { value: number } } }) => {
@@ -445,7 +499,11 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([CountState])],
+      imports: [
+        NgxsModule.forRoot([CountState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       declarations: [CounterComponent]
     });
 
@@ -482,12 +540,18 @@ describe('Select', () => {
 
       @Component({
         selector: 'app-root',
-        template: ''
+        template: '',
+        standalone: false
       })
       class TestComponent {}
 
       @NgModule({
-        imports: [BrowserModule, NgxsModule.forRoot([CountriesState])],
+        imports: [
+          BrowserModule,
+          NgxsModule.forRoot([CountriesState], {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          })
+        ],
         declarations: [TestComponent],
         bootstrap: [TestComponent]
       })

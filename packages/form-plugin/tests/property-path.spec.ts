@@ -2,7 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { Component, Injectable } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { FormGroup, FormControl, FormArray, ReactiveFormsModule } from '@angular/forms';
-import { State, NgxsModule, Store, Selector } from '@ngxs/store';
+import {
+  State,
+  NgxsModule,
+  Store,
+  Selector,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 
 import { NgxsFormPluginModule, UpdateFormValue } from '..';
 
@@ -56,7 +62,8 @@ describe('UpdateFormValue.propertyPath', () => {
           </div>
         </div>
       </form>
-    `
+    `,
+    standalone: false
   })
   class NewNovelFormComponent {
     path = path;
@@ -84,7 +91,9 @@ describe('UpdateFormValue.propertyPath', () => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        NgxsModule.forRoot([NovelsState]),
+        NgxsModule.forRoot([NovelsState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsFormPluginModule.forRoot()
       ],
       declarations: [NewNovelFormComponent]

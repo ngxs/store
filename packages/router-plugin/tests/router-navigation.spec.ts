@@ -8,7 +8,13 @@ import {
   NavigationError,
   NavigationEnd
 } from '@angular/router';
-import { ofActionDispatched, Actions, Store, provideStore } from '@ngxs/store';
+import {
+  ofActionDispatched,
+  Actions,
+  Store,
+  provideStore,
+  DispatchOutsideZoneNgxsExecutionStrategy
+} from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { filter } from 'rxjs/operators';
@@ -42,25 +48,29 @@ describe('RouterNavigation', () => {
 
   @Component({
     selector: 'app-root',
-    template: '<router-outlet></router-outlet>'
+    template: '<router-outlet></router-outlet>',
+    standalone: false
   })
   class RootComponent {}
 
   @Component({
     selector: 'home',
-    template: ''
+    template: '',
+    standalone: false
   })
   class HomeComponent {}
 
   @Component({
     selector: 'error',
-    template: ''
+    template: '',
+    standalone: false
   })
   class ErrorComponent {}
 
   @Component({
     selector: 'success',
-    template: ''
+    template: '',
+    standalone: false
   })
   class SuccessComponent {}
 
@@ -95,7 +105,13 @@ describe('RouterNavigation', () => {
       declarations: [RootComponent, HomeComponent, ErrorComponent, SuccessComponent],
       bootstrap: [RootComponent],
       providers: [
-        provideStore([], withNgxsRouterPlugin(options)),
+        provideStore(
+          [],
+          {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          },
+          withNgxsRouterPlugin(options)
+        ),
         ErrorResolver,
         SuccessResolver,
         { provide: APP_BASE_HREF, useValue: '/' },

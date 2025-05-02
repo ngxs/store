@@ -67,7 +67,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
     }
   }
 
-  @Component({ template: '{{ counter$ | async }}' })
+  @Component({ template: '{{ counter$ | async }}', standalone: false })
   class CounterComponent {
     counter$: Observable<number> = inject(Store).select(CounterState.getCounter);
   }
@@ -310,7 +310,8 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
 
       @Component({
         selector: 'app-root',
-        template: ''
+        template: '',
+        standalone: false
       })
       class MockComponent {}
 
@@ -355,7 +356,11 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
     const spy = jest.spyOn(console, 'warn').mockImplementation();
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot()],
+      imports: [
+        NgxsModule.forRoot([], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ],
       providers: [
         {
           provide: NgZone,

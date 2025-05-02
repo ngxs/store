@@ -1,7 +1,12 @@
 import { APP_INITIALIZER, Component, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { NgxsModule, State, Store } from '@ngxs/store';
+import {
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  State,
+  Store
+} from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { ɵDEFAULT_STATE_KEY } from '@ngxs/storage-plugin/internals';
 
@@ -38,13 +43,15 @@ describe('Update for lazy state (https://github.com/ngxs/store/issues/1857)', ()
   })
   class FeatureStateModule {}
 
-  @Component({ selector: 'app-root', template: '' })
+  @Component({ selector: 'app-root', template: '', standalone: false })
   class TestComponent {}
 
   @NgModule({
     imports: [
       BrowserModule,
-      NgxsModule.forRoot([]),
+      NgxsModule.forRoot([], {
+        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+      }),
       NgxsStoragePluginModule.forRoot({ keys: '*' }),
       FeatureStateModule
     ],

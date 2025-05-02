@@ -3,7 +3,7 @@ import { APP_BASE_HREF, DOCUMENT } from '@angular/common';
 import { Component, NgModule, Injectable } from '@angular/core';
 import { Routes, CanActivate } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { Store, provideStore } from '@ngxs/store';
+import { DispatchOutsideZoneNgxsExecutionStrategy, Store, provideStore } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
 import { Navigate, withNgxsRouterPlugin } from '../..';
@@ -12,25 +12,29 @@ import { createNgxsRouterPluginTestingPlatform } from '../helpers';
 
 @Component({
   selector: 'app-root',
-  template: '<router-outlet></router-outlet>'
+  template: '<router-outlet></router-outlet>',
+  standalone: false
 })
 class RootComponent {}
 
 @Component({
   selector: 'app-home',
-  template: 'Home page'
+  template: 'Home page',
+  standalone: false
 })
 class HomeComponent {}
 
 @Component({
   selector: 'app-login',
-  template: 'Login page'
+  template: 'Login page',
+  standalone: false
 })
 class LoginComponent {}
 
 @Component({
   selector: 'app-blog',
-  template: 'Blog page'
+  template: 'Blog page',
+  standalone: false
 })
 class BlogComponent {}
 
@@ -77,7 +81,13 @@ function getTestModule() {
     declarations: [RootComponent, HomeComponent, BlogComponent, LoginComponent],
     bootstrap: [RootComponent],
     providers: [
-      provideStore([], withNgxsRouterPlugin()),
+      provideStore(
+        [],
+        {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        },
+        withNgxsRouterPlugin()
+      ),
       AuthGuard,
       { provide: APP_BASE_HREF, useValue: '/' }
     ]

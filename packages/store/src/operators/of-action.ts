@@ -1,6 +1,5 @@
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
-import { OperatorFunction, Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { type OperatorFunction, type Observable, map, filter } from 'rxjs';
 
 import { ActionType } from '../actions/symbols';
 import { ActionContext, ActionStatus } from '../actions-stream';

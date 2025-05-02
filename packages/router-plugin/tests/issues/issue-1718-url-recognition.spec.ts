@@ -11,7 +11,13 @@ import {
   RouterStateSnapshot,
   Routes
 } from '@angular/router';
-import { Selector, State, Store, provideStore } from '@ngxs/store';
+import {
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  Selector,
+  State,
+  Store,
+  provideStore
+} from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { first } from 'rxjs/operators';
 
@@ -20,19 +26,22 @@ import { RouterState, withNgxsRouterPlugin } from '../..';
 describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)', () => {
   @Component({
     selector: 'app-root',
-    template: '<router-outlet></router-outlet>'
+    template: '<router-outlet></router-outlet>',
+    standalone: false
   })
   class RootComponent {}
 
   @Component({
     selector: 'app-home',
-    template: '<a class="navigate-to-details" routerLink="/details">Details</a>'
+    template: '<a class="navigate-to-details" routerLink="/details">Details</a>',
+    standalone: false
   })
   class HomeComponent {}
 
   @Component({
     selector: 'app-details',
-    template: 'Details page'
+    template: 'Details page',
+    standalone: false
   })
   class DetailsComponent {}
 
@@ -42,7 +51,7 @@ describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)'
   })
   @Injectable()
   class AppState {
-    @Selector([RouterState.state])
+    @Selector([RouterState.state()])
     static getActiveRoute(route: RouterStateSnapshot): ActivatedRouteSnapshot {
       let state: ActivatedRouteSnapshot = route.root;
       while (state.firstChild) {
@@ -79,7 +88,13 @@ describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)'
     declarations: [RootComponent, HomeComponent, DetailsComponent],
     bootstrap: [RootComponent],
     providers: [
-      provideStore([], withNgxsRouterPlugin()),
+      provideStore(
+        [],
+        {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        },
+        withNgxsRouterPlugin()
+      ),
       { provide: APP_BASE_HREF, useValue: '/' }
     ]
   })

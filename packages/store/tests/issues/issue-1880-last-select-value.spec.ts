@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { NgxsModule, State, Store } from '@ngxs/store';
+import {
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  State,
+  Store
+} from '@ngxs/store';
 
 describe('Last select value (https://github.com/ngxs/store/issues/1880)', () => {
   @State<number>({
@@ -13,7 +18,11 @@ describe('Last select value (https://github.com/ngxs/store/issues/1880)', () => 
   it('should receive the latest value (previously it was a bug because of refCount() which made observable cold)', async () => {
     // Arrange
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([CounterState])]
+      imports: [
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
 
     const store = TestBed.inject(Store);

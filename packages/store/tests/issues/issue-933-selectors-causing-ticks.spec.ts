@@ -1,7 +1,14 @@
 import { Component, NgModule, ApplicationRef, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
+import {
+  Action,
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  State,
+  StateContext,
+  Store
+} from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 describe('Selectors within templates causing ticks (https://github.com/ngxs/store/issues/933)', () => {
@@ -26,7 +33,8 @@ describe('Selectors within templates causing ticks (https://github.com/ngxs/stor
 
   @Component({
     selector: 'app-child',
-    template: ` {{ countries$ | async }} `
+    template: ` {{ countries$ | async }} `,
+    standalone: false
   })
   class TestChildComponent {
     countries$ = this.store.select(CountriesState);
@@ -36,14 +44,20 @@ describe('Selectors within templates causing ticks (https://github.com/ngxs/stor
 
   @Component({
     selector: 'app-root',
-    template: ` <app-child *ngFor="let item of items"></app-child> `
+    template: ` <app-child *ngFor="let item of items"></app-child> `,
+    standalone: false
   })
   class TestComponent {
     items = new Array(10);
   }
 
   @NgModule({
-    imports: [BrowserModule, NgxsModule.forRoot([CountriesState])],
+    imports: [
+      BrowserModule,
+      NgxsModule.forRoot([CountriesState], {
+        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+      })
+    ],
     declarations: [TestComponent, TestChildComponent],
     bootstrap: [TestComponent]
   })

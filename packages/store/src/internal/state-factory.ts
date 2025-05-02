@@ -1,4 +1,4 @@
-import { Injectable, Injector, OnDestroy, inject, ɵisPromise } from '@angular/core';
+import { DestroyRef, Injectable, Injector, inject, ɵisPromise } from '@angular/core';
 import {
   ɵmemoize,
   ɵMETA_KEY,
@@ -11,11 +11,11 @@ import {
   ɵRuntimeSelectorContext
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
+import { ɵof } from '@ngxs/store/internals';
 import {
   forkJoin,
   from,
   isObservable,
-  of,
   Subscription,
   throwError,
   catchError,
@@ -42,7 +42,7 @@ import {
 } from './internals';
 import { NgxsActionRegistry } from '../actions/action-registry';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
-import { InternalDispatchedActionResults } from '../internal/dispatcher';
+import { InternalDispatchedActionResults } from '../internal/action-results';
 import { ensureStateNameIsUnique, ensureStatesAreDecorated } from '../utils/store-validators';
 import { ensureStateClassIsInjectable } from '../ivy/ivy-enabled-in-dev-mode';
 import { NgxsUnhandledActionsLogger } from '../dev-features/ngxs-unhandled-actions-logger';
@@ -77,7 +77,7 @@ function cloneDefaults(defaults: any): any {
  * @ignore
  */
 @Injectable({ providedIn: 'root' })
-export class StateFactory implements OnDestroy {
+export class StateFactory {
   private readonly _injector = inject(Injector);
   private readonly _config = inject(NgxsConfig);
   private readonly _stateContextFactory = inject(StateContextFactory);
@@ -132,8 +132,8 @@ export class StateFactory implements OnDestroy {
     return context;
   });
 
-  ngOnDestroy(): void {
-    this._actionsSubscription?.unsubscribe();
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this._actionsSubscription?.unsubscribe());
   }
 
   /**
@@ -160,10 +160,6 @@ export class StateFactory implements OnDestroy {
 
       this.addRuntimeInfoToMeta(meta, path);
 
-      // Note: previously we called `ensureStateClassIsInjectable` within the
-      // `State` decorator. This check is moved here because the `ɵprov` property
-      // will not exist on the class in JIT mode (because it's set asynchronously
-      // during JIT compilation through `Object.defineProperty`).
       if (typeof ngDevMode !== 'undefined' && ngDevMode) {
         ensureStateClassIsInjectable(stateClass);
       }
@@ -221,7 +217,7 @@ export class StateFactory implements OnDestroy {
               const handleableError = assignUnhandledCallback(error, () =>
                 ngxsUnhandledErrorHandler.handleError(error, { action })
               );
-              return of(<ActionContext>{
+              return ɵof(<ActionContext>{
                 action,
                 status: ActionStatus.Errored,
                 error: handleableError
@@ -273,7 +269,7 @@ export class StateFactory implements OnDestroy {
     }
 
     if (!results.length) {
-      results.push(of(undefined));
+      results.push(ɵof(undefined));
     }
 
     return forkJoin(results);
@@ -340,12 +336,10 @@ export class StateFactory implements OnDestroy {
           if (isObservable(result)) {
             result = result.pipe(
               mergeMap((value: any) => {
-                if (ɵisPromise(value)) {
-                  return from(value);
-                } else if (isObservable(value)) {
+                if (ɵisPromise(value) || isObservable(value)) {
                   return value;
                 } else {
-                  return of(value);
+                  return ɵof(value);
                 }
               }),
               // If this observable has completed without emitting any values,
@@ -360,17 +354,16 @@ export class StateFactory implements OnDestroy {
             );
 
             if (cancelable) {
-              const notifier$ = dispatched$.pipe(ofActionDispatched(action));
-              result = result.pipe(takeUntil(notifier$));
+              const canceled = dispatched$.pipe(ofActionDispatched(action));
+              result = result.pipe(takeUntil(canceled));
             }
 
             result = result.pipe(
               // Note that we use the `finalize` operator only when the action handler
-              // returns an observable. If the action handler is synchronous, we do not
-              // need to set the state context functions to `noop`, as the absence of a
-              // return value indicates no asynchronous functionality. If the handler's
-              // result is unsubscribed (either because the observable has completed or it
-              // was unsubscribed by `takeUntil` due to a new action being dispatched),
+              // explicitly returns an observable (or a promise) to wait for. This means
+              // the action handler is written in a "fire & wait" style. If the handler’s
+              // result is unsubscribed (either because the observable has completed or
+              // it was unsubscribed by `takeUntil` due to a new action being dispatched),
               // we prevent writing to the state context.
               finalize(() => {
                 stateContext.setState = noop;
@@ -380,7 +373,7 @@ export class StateFactory implements OnDestroy {
           } else {
             // If the action handler is synchronous and returns nothing (`void`), we
             // still have to convert the result to a synchronous observable.
-            result = of(undefined);
+            result = ɵof(undefined);
           }
 
           return result;

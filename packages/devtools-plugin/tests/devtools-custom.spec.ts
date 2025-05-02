@@ -1,4 +1,11 @@
-import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
+import {
+  Action,
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  State,
+  StateContext,
+  Store
+} from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { TestBed } from '@angular/core/testing';
 
@@ -24,7 +31,9 @@ describe('[TEST]: Devtools with custom settings', () => {
   it('should disable devtools', () => {
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CountState]),
+        NgxsModule.forRoot([CountState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsReduxDevtoolsPluginModule.forRoot({ disabled: true })
       ]
     });
@@ -40,7 +49,9 @@ describe('[TEST]: Devtools with custom settings', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CountState]),
+        NgxsModule.forRoot([CountState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsReduxDevtoolsPluginModule.forRoot({ name: 'custom', maxAge: 1000 })
       ]
     });
@@ -56,7 +67,9 @@ describe('[TEST]: Devtools with custom settings', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([CountState]),
+        NgxsModule.forRoot([CountState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        }),
         NgxsReduxDevtoolsPluginModule.forRoot({ trace: true, traceLimit: 10 })
       ]
     });

@@ -1,24 +1,25 @@
 import { inject, Injectable, Injector, NgZone, runInInjectionContext } from '@angular/core';
-import { forkJoin, Observable, of, Subject, throwError } from 'rxjs';
-import { filter, map, mergeMap, shareReplay, take } from 'rxjs/operators';
+import {
+  EMPTY,
+  forkJoin,
+  Observable,
+  throwError,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  take
+} from 'rxjs';
 
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
-import { ɵPlainObject, ɵStateStream } from '@ngxs/store/internals';
+import { ɵPlainObject, ɵStateStream, ɵof } from '@ngxs/store/internals';
 
-import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { PluginManager } from '../plugin-manager';
-import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
 import { leaveNgxs } from '../operators/leave-ngxs';
 import { fallbackSubscriber } from './fallback-subscriber';
-
-/**
- * Internal Action result stream that is emitted when an action is completed.
- * This is used as a method of returning the action result to the dispatcher
- * for the observable returned by the dispatch(...) call.
- * The dispatcher then asynchronously pushes the result from this stream onto the main action stream as a result.
- */
-@Injectable({ providedIn: 'root' })
-export class InternalDispatchedActionResults extends Subject<ActionContext> {}
+import { NGXS_EXECUTION_STRATEGY } from '../execution/symbols';
+import { InternalDispatchedActionResults } from './action-results';
+import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 
 @Injectable({ providedIn: 'root' })
 export class InternalDispatcher {
@@ -27,7 +28,7 @@ export class InternalDispatcher {
   private _actionResults = inject(InternalDispatchedActionResults);
   private _pluginManager = inject(PluginManager);
   private _stateStream = inject(ɵStateStream);
-  private _ngxsExecutionStrategy = inject(InternalNgxsExecutionStrategy);
+  private _ngxsExecutionStrategy = inject(NGXS_EXECUTION_STRATEGY);
   private _injector = inject(Injector);
 
   /**
@@ -46,7 +47,7 @@ export class InternalDispatcher {
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<void> {
     if (Array.isArray(actionOrActions)) {
-      if (actionOrActions.length === 0) return of(undefined);
+      if (actionOrActions.length === 0) return ɵof(undefined);
 
       return forkJoin(actionOrActions.map(action => this.dispatchSingle(action))).pipe(
         map(() => undefined)
@@ -103,13 +104,13 @@ export class InternalDispatcher {
           case ActionStatus.Successful:
             // The `createDispatchObservable` function should return the
             // state, as its result is used by plugins.
-            return of(this._stateStream.getValue());
+            return ɵof(this._stateStream.getValue());
           case ActionStatus.Errored:
-            return throwError(() => ctx.error);
+            throw ctx.error;
           default:
             // Once dispatched or canceled, we complete it immediately because
             // `dispatch()` should emit (or error, or complete) as soon as it succeeds or fails.
-            return of();
+            return EMPTY;
         }
       }),
       shareReplay()

@@ -68,7 +68,7 @@ describe('NoopNgxsExecutionStrategy', () => {
     }
   }
 
-  @Component({ template: '{{ counter$ | async }}' })
+  @Component({ template: '{{ counter$ | async }}', standalone: false })
   class CounterComponent {
     counter$: Observable<number> = inject(Store).select(CounterState.getCounter);
   }
@@ -115,12 +115,18 @@ describe('NoopNgxsExecutionStrategy', () => {
 
       @Component({
         selector: 'app-root',
-        template: ''
+        template: '',
+        standalone: false
       })
       class TestComponent {}
 
       @NgModule({
-        imports: [BrowserModule, NgxsModule.forRoot()],
+        imports: [
+          BrowserModule,
+          NgxsModule.forRoot([], {
+            executionStrategy: NoopNgxsExecutionStrategy
+          })
+        ],
         declarations: [TestComponent],
         bootstrap: [TestComponent]
       })

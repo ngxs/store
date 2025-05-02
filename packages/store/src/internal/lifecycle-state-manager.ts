@@ -1,8 +1,7 @@
-import { inject, Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
-import { ReplaySubject } from 'rxjs';
-import { filter, mergeMap, pairwise, startWith, takeUntil, tap } from 'rxjs/operators';
+import { EMPTY, mergeMap, skip, startWith } from 'rxjs';
 
 import { Store } from '../store';
 import { StateContextFactory } from './state-context-factory';
@@ -12,19 +11,13 @@ import { NgxsLifeCycle, NgxsSimpleChange, StateContext } from '../symbols';
 import { getInvalidInitializationOrderMessage } from '../configs/messages.config';
 
 @Injectable({ providedIn: 'root' })
-export class LifecycleStateManager implements OnDestroy {
+export class LifecycleStateManager {
   private _store = inject(Store);
   private _internalStateOperations = inject(InternalStateOperations);
   private _stateContextFactory = inject(StateContextFactory);
   private _appBootstrappedState = inject(ɵNgxsAppBootstrappedState);
 
-  private readonly _destroy$ = new ReplaySubject<void>(1);
-
   private _initStateHasBeenDispatched?: boolean;
-
-  ngOnDestroy(): void {
-    this._destroy$.next();
-  }
 
   ngxsBootstrap(
     action: InitState | UpdateState,
@@ -46,17 +39,28 @@ export class LifecycleStateManager implements OnDestroy {
       }
     }
 
+    // It does not need to unsubscribe because it is completed when the
+    // root injector is destroyed.
     this._internalStateOperations
       .getRootStateOperations()
       .dispatch(action)
       .pipe(
-        filter(() => !!results),
-        tap(() => this._invokeInitOnStates(results!.states)),
-        mergeMap(() => this._appBootstrappedState),
-        filter(appBootstrapped => !!appBootstrapped),
-        takeUntil(this._destroy$)
+        mergeMap(() => {
+          // If no states are provided, we safely complete the stream
+          // and do not proceed further.
+          if (!results) {
+            return EMPTY;
+          }
+
+          this._invokeInitOnStates(results!.states);
+          return this._appBootstrappedState;
+        })
       )
-      .subscribe(() => this._invokeBootstrapOnStates(results!.states));
+      .subscribe(appBootstrapped => {
+        if (appBootstrapped) {
+          this._invokeBootstrapOnStates(results!.states);
+        }
+      });
   }
 
   private _invokeInitOnStates(mappedStores: MappedStore[]): void {
@@ -64,15 +68,26 @@ export class LifecycleStateManager implements OnDestroy {
       const instance: NgxsLifeCycle = mappedStore.instance;
 
       if (instance.ngxsOnChanges) {
+        // We are manually keeping track of the previous value
+        // within the subscribe block in order to drop the `pairwise()` operator.
+        let previousValue: any;
+        // It does not need to unsubscribe because it is completed when the
+        // root injector is destroyed.
         this._store
           .select(state => getValue(state, mappedStore.path))
-          .pipe(startWith(undefined), pairwise(), takeUntil(this._destroy$))
-          .subscribe(([previousValue, currentValue]) => {
+          .pipe(
+            // Ensure initial state is captured
+            startWith(undefined),
+            // `skip` is using `filter` internally.
+            skip(1)
+          )
+          .subscribe(currentValue => {
             const change = new NgxsSimpleChange(
               previousValue,
               currentValue,
               !mappedStore.isInitialised
             );
+            previousValue = currentValue;
             instance.ngxsOnChanges!(change);
           });
       }

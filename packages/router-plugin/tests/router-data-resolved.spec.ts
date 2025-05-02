@@ -15,7 +15,8 @@ import {
   Action,
   StateContext,
   Selector,
-  provideStore
+  provideStore,
+  DispatchOutsideZoneNgxsExecutionStrategy
 } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
@@ -40,20 +41,22 @@ describe('RouterDataResolved', () => {
 
   @Component({
     selector: 'app-root',
-    template: '<router-outlet></router-outlet>'
+    template: '<router-outlet></router-outlet>',
+    standalone: false
   })
   class RootComponent {}
 
   @Component({
     selector: 'test',
-    template: '{{ router$ | async }}'
+    template: '{{ router$ | async }}',
+    standalone: false
   })
   class TestComponent {
     router$: Observable<RouterStateModel>;
 
     constructor(store: Store) {
       this.router$ = store.select(
-        RouterState.state
+        RouterState.state()
       ) as unknown as Observable<RouterStateModel>;
     }
   }
@@ -81,7 +84,13 @@ describe('RouterDataResolved', () => {
       declarations: [RootComponent, TestComponent],
       bootstrap: [RootComponent],
       providers: [
-        provideStore(states, withNgxsRouterPlugin()),
+        provideStore(
+          states,
+          {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          },
+          withNgxsRouterPlugin()
+        ),
         TestResolver,
         { provide: APP_BASE_HREF, useValue: '/' }
       ]
@@ -108,7 +117,7 @@ describe('RouterDataResolved', () => {
       expect(dataFromTheOriginalRouter).toEqual({ test });
 
       const dataFromTheRouterState = store.selectSnapshot<RouterStateSnapshot | undefined>(
-        RouterState.state
+        RouterState.state()
       )!.root.firstChild!.data;
       expect(dataFromTheOriginalRouter).toEqual(dataFromTheRouterState);
     })
@@ -158,7 +167,7 @@ describe('RouterDataResolved', () => {
       expect(dataFromTheOriginalRouter).toEqual({ test });
 
       const dataFromTheRouterState = store.selectSnapshot<RouterStateSnapshot | undefined>(
-        RouterState.state
+        RouterState.state()
       )!.root.firstChild!.data;
       expect(dataFromTheOriginalRouter).toEqual(dataFromTheRouterState);
     })

@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
+import {
+  Action,
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  State,
+  StateContext,
+  Store
+} from '@ngxs/store';
 import { first } from 'rxjs/operators';
 
 describe('State stream order of updates', () => {
@@ -57,7 +64,11 @@ describe('State stream order of updates', () => {
   it('should not get the latest stream value when the patchState is called (because it is queued up)', done => {
     // Arrange
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([PresentationState, ProductsState])]
+      imports: [
+        NgxsModule.forRoot([PresentationState, ProductsState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
 
     const store = TestBed.inject(Store);

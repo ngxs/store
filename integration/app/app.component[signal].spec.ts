@@ -1,6 +1,6 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Store, provideStore } from '@ngxs/store';
+import { DispatchOutsideZoneNgxsExecutionStrategy, Store, provideStore } from '@ngxs/store';
 import { withNgxsFormPlugin } from '@ngxs/form-plugin';
 
 import { AppComponent } from './app.component';
@@ -23,7 +23,15 @@ describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      providers: [provideStore([TodosState, TodoState], withNgxsFormPlugin())]
+      providers: [
+        provideStore(
+          [TodosState, TodoState],
+          {
+            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+          },
+          withNgxsFormPlugin()
+        )
+      ]
     });
 
     fixture = TestBed.createComponent(AppComponent);

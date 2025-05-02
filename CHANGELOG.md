@@ -6,7 +6,24 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-- ...
+- Refactor: Replace `ngOnDestroy` with `DestroyRef` [#2289](https://github.com/ngxs/store/pull/2289)
+- Refactor: Reduce RxJS dependency [#2292](https://github.com/ngxs/store/pull/2292)
+- Refactor: Pull less RxJS symbols [#2309](https://github.com/ngxs/store/pull/2309) [#2310](https://github.com/ngxs/store/pull/2310)
+- Refactor: Replace `ENVIRONMENT_INITIALIZER` [#2314](https://github.com/ngxs/store/pull/2314)
+- Fix(store): Add root store initializer guard [#2278](https://github.com/ngxs/store/pull/2278)
+- Fix(store): Reduce change detection cycles with pending tasks [#2280](https://github.com/ngxs/store/pull/2280)
+- Fix(store): Complete action results on destroy [#2282](https://github.com/ngxs/store/pull/2282)
+- Fix(store): Complete `dispatched$` in internal actions [#2285](https://github.com/ngxs/store/pull/2285)
+- Fix(store): Stop contributing to stability once app is stable [#2306](https://github.com/ngxs/store/pull/2306)
+- Build(store): Use `ngServerMode` to check whether we are in SSR [#2287](https://github.com/ngxs/store/pull/2287)
+- Build(storage-plugin): Use `ngServerMode` to check whether we are in SSR [#2288](https://github.com/ngxs/store/pull/2288)
+- Refactor(form-plugin): Replace `takeUntil` with `takeUntilDestroyed` [#2283](https://github.com/ngxs/store/pull/2283)
+- Refactor(router-plugin): Reduce RxJS depedency [#2291](https://github.com/ngxs/store/pull/2291)
+- Refactor(router-plugin): Change `@Selector` to `createSelector` [#2294](https://github.com/ngxs/store/pull/2294)
+
+### 19.0.0 2024-12-3
+
+- Build: Add Angular 19 support [#2269](https://github.com/ngxs/store/pull/2269)
 
 ### 18.1.6 2024-11-20
 

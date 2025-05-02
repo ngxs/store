@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { NavigationEnd, Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Store, provideStore } from '@ngxs/store';
+import { DispatchOutsideZoneNgxsExecutionStrategy, Store, provideStore } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { first } from 'rxjs/operators';
 
@@ -12,19 +12,22 @@ import { withNgxsRouterPlugin } from '../..';
 describe('Time-traveling with Redux DevTools (https://github.com/ngxs/store/issues/1640)', () => {
   @Component({
     selector: 'app-root',
-    template: '<router-outlet></router-outlet>'
+    template: '<router-outlet></router-outlet>',
+    standalone: false
   })
   class RootComponent {}
 
   @Component({
     selector: 'app-home',
-    template: 'Home page'
+    template: 'Home page',
+    standalone: false
   })
   class HomeComponent {}
 
   @Component({
     selector: 'app-login',
-    template: 'Login page'
+    template: 'Login page',
+    standalone: false
   })
   class LoginComponent {}
 
@@ -37,7 +40,15 @@ describe('Time-traveling with Redux DevTools (https://github.com/ngxs/store/issu
     imports: [BrowserModule, RouterTestingModule.withRoutes(routes)],
     declarations: [RootComponent, HomeComponent, LoginComponent],
     bootstrap: [RootComponent],
-    providers: [provideStore([], withNgxsRouterPlugin())]
+    providers: [
+      provideStore(
+        [],
+        {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        },
+        withNgxsRouterPlugin()
+      )
+    ]
   })
   class TestModule {}
 

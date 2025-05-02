@@ -24,6 +24,8 @@ ng generate @ngxs/store:store --name NAME_OF_YOUR_STORE
 
 > When working with multiple projects within a workspace, you can explicitly specify the `project` where you want to install the **store**. The schematic will automatically detect whether the provided project is a standalone or not, and it will generate the necessary files accordingly.
 
+> Be sure to update `provideStore` in `app.config.ts` if working with standalone project or `NgxsModule.forRoot([])` in `app.module.ts` if working with module based project. Without this, your app will not recognise your store and actions properly.
+
 🪄 **This command will**:
 
 - Generate a `{name}.actions.ts`

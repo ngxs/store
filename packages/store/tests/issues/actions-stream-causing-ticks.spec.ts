@@ -5,6 +5,7 @@ import { take } from 'rxjs/operators';
 import {
   Action,
   Actions,
+  DispatchOutsideZoneNgxsExecutionStrategy,
   NgxsModule,
   ofActionSuccessful,
   State,
@@ -35,7 +36,8 @@ describe('Actions stream causing ticks', () => {
 
   @Component({
     selector: 'app-root',
-    template: '<button id="set-countries" (click)="setCountries()">Set countries</button>'
+    template: '<button id="set-countries" (click)="setCountries()">Set countries</button>',
+    standalone: false
   })
   class TestComponent {
     constructor(
@@ -54,7 +56,12 @@ describe('Actions stream causing ticks', () => {
   }
 
   @NgModule({
-    imports: [BrowserModule, NgxsModule.forRoot([CountriesState])],
+    imports: [
+      BrowserModule,
+      NgxsModule.forRoot([CountriesState], {
+        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+      })
+    ],
     declarations: [TestComponent],
     bootstrap: [TestComponent]
   })

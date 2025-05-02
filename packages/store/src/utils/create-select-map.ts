@@ -1,4 +1,5 @@
 import { Signal, inject } from '@angular/core';
+import { ɵdefineProperty } from '@ngxs/store/internals';
 
 import { Store } from '../store';
 import { TypedSelector, ɵSelectorReturnType } from '../selectors';
@@ -9,7 +10,7 @@ export function createSelectMap<T extends SelectorMap>(selectorMap: T) {
   const store = inject(Store);
 
   return Object.entries(selectorMap).reduce((accumulator, [key, selector]) => {
-    Object.defineProperty(accumulator, key, {
+    ɵdefineProperty(accumulator, key, {
       enumerable: true,
       value: store.selectSignal(selector)
     });

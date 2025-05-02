@@ -47,7 +47,11 @@ describe('Standalone features', () => {
       // Act
       const appRef = await skipConsoleLogging(() =>
         bootstrapApplication(TestComponent, {
-          providers: [provideStore([])]
+          providers: [
+            provideStore([], {
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         })
       );
 
@@ -104,7 +108,12 @@ describe('Standalone features', () => {
 
       const appRef = await skipConsoleLogging(() =>
         bootstrapApplication(TestComponent, {
-          providers: [provideStore([CountriesState], { developmentMode: false })]
+          providers: [
+            provideStore([CountriesState], {
+              developmentMode: false,
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
+          ]
         })
       );
       const store = appRef.injector.get(Store);
@@ -156,7 +165,10 @@ describe('Standalone features', () => {
                 providers: [provideStates([ProductsState])]
               }
             ]),
-            provideStore([CountriesState], { developmentMode: false })
+            provideStore([CountriesState], {
+              developmentMode: false,
+              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            })
           ]
         })
       );

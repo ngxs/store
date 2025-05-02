@@ -13,7 +13,8 @@ import {
   State,
   Action,
   StateContext,
-  provideStore
+  provideStore,
+  DispatchOutsideZoneNgxsExecutionStrategy
 } from '@ngxs/store';
 
 import {
@@ -38,7 +39,7 @@ describe('NgxsRouterPlugin', () => {
       await ngZone.run(() => router.navigateByUrl('/testpath'));
 
       // Assert
-      const routerState = store.selectSnapshot(RouterState.state)!;
+      const routerState = store.selectSnapshot(RouterState.state())!;
       expect(routerState.url).toEqual('/testpath');
 
       const routerUrl = store.selectSnapshot(RouterState.url);
@@ -57,7 +58,7 @@ describe('NgxsRouterPlugin', () => {
       await store.dispatch(new Navigate(['a-path'])).toPromise();
 
       // Assert
-      const routerState = store.selectSnapshot(RouterState.state);
+      const routerState = store.selectSnapshot(RouterState.state());
       expect(routerState!.url).toEqual('/a-path');
     })
   );
@@ -92,7 +93,7 @@ describe('NgxsRouterPlugin', () => {
 
       // Assert
       const routerState = store.selectSnapshot(state =>
-        RouterState.state<RouterStateParams>(state.router)
+        RouterState.state<RouterStateParams>()(state.router)
       );
 
       expect(routerState!.url).toEqual('/a-path?foo=bar');
@@ -146,7 +147,7 @@ describe('NgxsRouterPlugin', () => {
         .toPromise();
 
       // Assert
-      const routerState = store.selectSnapshot(RouterState.state);
+      const routerState = store.selectSnapshot(RouterState.state());
       expect(routerState!.url).toEqual('/route1?a=10&b=20');
       expect(count).toBe(2);
     })
@@ -166,7 +167,7 @@ describe('NgxsRouterPlugin', () => {
 
         @Action(TestAction)
         testAction(ctx: StateContext<unknown>) {
-          ctx.setState(this.store.selectSnapshot(RouterState.state));
+          ctx.setState(this.store.selectSnapshot(RouterState.state()));
         }
       }
 
@@ -203,7 +204,8 @@ async function createTestModule(
 ) {
   @Component({
     selector: 'app-root',
-    template: '<router-outlet></router-outlet>'
+    template: '<router-outlet></router-outlet>',
+    standalone: false
   })
   class AppComponent {}
 
@@ -212,7 +214,8 @@ async function createTestModule(
 
   @Component({
     selector: 'pagea-cmp',
-    template: 'pagea-cmp'
+    template: 'pagea-cmp',
+    standalone: false
   })
   class SimpleComponent {
     constructor(store: Store) {
@@ -243,7 +246,13 @@ async function createTestModule(
       )
     ],
     providers: [
-      provideStore(opts.states, withNgxsRouterPlugin()),
+      provideStore(
+        opts.states,
+        {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        },
+        withNgxsRouterPlugin()
+      ),
       {
         provide: 'CanActivateNext',
         useValue: opts.canActivate || (() => true)

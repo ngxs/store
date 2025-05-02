@@ -1,6 +1,14 @@
 import { Component, Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Action, NgxsModule, Selector, State, StateContext, Store } from '@ngxs/store';
+import {
+  Action,
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  Selector,
+  State,
+  StateContext,
+  Store
+} from '@ngxs/store';
 import { switchMap, tap } from 'rxjs/operators';
 
 describe('Select once after dispatch (https://github.com/ngxs/store/issues/1976)', () => {
@@ -30,7 +38,8 @@ describe('Select once after dispatch (https://github.com/ngxs/store/issues/1976)
     template: `
       <h1>{{ counter$ | async }}</h1>
       <button (click)="dispatch()">Click me</button>
-    `
+    `,
+    standalone: false
   })
   class TestComponent {
     selectSnapshotValue: number | null = null;
@@ -58,7 +67,11 @@ describe('Select once after dispatch (https://github.com/ngxs/store/issues/1976)
     // Arrange
     TestBed.configureTestingModule({
       declarations: [TestComponent],
-      imports: [NgxsModule.forRoot([CounterState])]
+      imports: [
+        NgxsModule.forRoot([CounterState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
 
     const fixture = TestBed.createComponent(TestComponent);

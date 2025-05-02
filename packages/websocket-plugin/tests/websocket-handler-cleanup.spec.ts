@@ -2,7 +2,7 @@ import { Component, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-import { NgxsModule, Store } from '@ngxs/store';
+import { DispatchOutsideZoneNgxsExecutionStrategy, NgxsModule, Store } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import { Server } from 'mock-socket';
@@ -18,14 +18,17 @@ describe('WebSocketHandler cleanup', () => {
 
   @Component({
     selector: 'app-root',
-    template: ''
+    template: '',
+    standalone: false
   })
   class TestComponent {}
 
   @NgModule({
     imports: [
       BrowserModule,
-      NgxsModule.forRoot([]),
+      NgxsModule.forRoot([], {
+        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+      }),
       NgxsWebSocketPluginModule.forRoot({ url })
     ],
     declarations: [TestComponent],
@@ -43,8 +46,8 @@ describe('WebSocketHandler cleanup', () => {
       );
       const store = ngModuleRef.injector.get(Store);
       const webSocketHandler = ngModuleRef.injector.get(WebSocketHandler);
-      const nextSpy = jest.fn();
-      webSocketHandler['_destroy$'].subscribe(nextSpy);
+      // @ts-expect-error private property.
+      const spy = jest.spyOn(webSocketHandler, '_closeConnection');
 
       store.dispatch(new ConnectWebSocket());
 
@@ -52,7 +55,7 @@ describe('WebSocketHandler cleanup', () => {
         server.on('close', () => {
           try {
             // Assert
-            expect(nextSpy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledWith(/* forcelyCloseSocket */ true);
           } finally {
             server.stop(done);
           }

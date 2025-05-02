@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { TestBed, fakeAsync, flushMicrotasks } from '@angular/core/testing';
-import { NgxsModule, State, Store, createPropertySelectors } from '@ngxs/store';
+import {
+  DispatchOutsideZoneNgxsExecutionStrategy,
+  NgxsModule,
+  State,
+  Store,
+  createPropertySelectors
+} from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 import {
   ConsoleRecorder,
@@ -30,7 +36,11 @@ describe('createPropertySelectors', () => {
 
   function setupFixture(states?: ɵStateClass[]) {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states || [MyState])]
+      imports: [
+        NgxsModule.forRoot(states || [MyState], {
+          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+        })
+      ]
     });
     const store: Store = TestBed.inject(Store);
     const setState = (newState: MyStateModel) => store.reset({ myState: newState });
@@ -69,19 +79,6 @@ describe('createPropertySelectors', () => {
         `"[createPropertySelectors]: A parent selector must be provided."`
       );
     });
-
-    function isClass(obj) {
-      const isCtorClass =
-        obj.constructor && obj.constructor.toString().substring(0, 5) === 'class';
-      if (obj.prototype === undefined) {
-        return isCtorClass;
-      }
-      const isPrototypeCtorClass =
-        obj.prototype.constructor &&
-        obj.prototype.constructor.toString &&
-        obj.prototype.constructor.toString().substring(0, 5) === 'class';
-      return isCtorClass || isPrototypeCtorClass;
-    }
 
     it('should fail if a class that is not a selector is provided', fakeAsync(async () => {
       // Arrange
