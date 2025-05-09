@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Router, RouterEvent, RouterModule } from '@angular/router';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { Subject } from 'rxjs';
-import { DispatchOutsideZoneNgxsExecutionStrategy, provideStore } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
 import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
@@ -20,13 +20,7 @@ describe('RouterState cleanup', () => {
     imports: [BrowserModule, RouterModule.forRoot([], { initialNavigation: 'disabled' })],
     declarations: [TestComponent],
     providers: [
-      provideStore(
-        [],
-        {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        },
-        withNgxsRouterPlugin()
-      ),
+      provideStore([], withNgxsRouterPlugin()),
       { provide: APP_BASE_HREF, useValue: '/' }
     ],
     bootstrap: [TestComponent]

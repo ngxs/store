@@ -1,12 +1,4 @@
-import {
-  Action,
-  StateContext,
-  Selector,
-  State,
-  NgxsModule,
-  Store,
-  DispatchOutsideZoneNgxsExecutionStrategy
-} from '@ngxs/store';
+import { Action, StateContext, Selector, State, NgxsModule, Store } from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
@@ -91,11 +83,7 @@ class StatusState {
 describe('Dispatch from select subscriber (https://github.com/ngxs/store/issues/1728)', () => {
   function setup() {
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([DataState, StatusState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot([DataState, StatusState])]
     });
 
     const recorder: string[] = [];

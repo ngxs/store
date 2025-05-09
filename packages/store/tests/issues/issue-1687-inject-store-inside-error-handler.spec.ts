@@ -3,15 +3,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { throwError } from 'rxjs';
 
-import {
-  NgxsModule,
-  State,
-  Action,
-  Store,
-  Actions,
-  ofActionDispatched,
-  DispatchOutsideZoneNgxsExecutionStrategy
-} from '@ngxs/store';
+import { NgxsModule, State, Action, Store, Actions, ofActionDispatched } from '@ngxs/store';
 
 import { makeRxJSTimeoutProviderSynchronous } from '../helpers/make-rxjs-timeout-provider-synchronous';
 
@@ -53,11 +45,7 @@ describe('Allow to inject the Store class into the ErrorHandler (https://github.
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([AnimalsState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot([AnimalsState])],
       providers: [{ provide: ErrorHandler, useClass: MyErrorHandler }]
     });
 

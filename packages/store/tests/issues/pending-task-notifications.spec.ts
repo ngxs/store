@@ -2,7 +2,6 @@ import { Component, Injectable, inject, ɵChangeDetectionSchedulerImpl } from '@
 import { bootstrapApplication } from '@angular/platform-browser';
 import {
   Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
   provideStore,
   Selector,
   State,
@@ -49,15 +48,7 @@ describe('Pending task notifications', () => {
   }
 
   const appConfig = {
-    providers: [
-      provideStore(
-        [CounterState],
-        {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        },
-        withNgxsPendingTasks()
-      )
-    ]
+    providers: [provideStore([CounterState], withNgxsPendingTasks())]
   };
 
   it(

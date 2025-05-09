@@ -72,6 +72,5 @@ package-lock.json
 dist-integration-server/
 .cache
 migrations.json
-!packages/store/migrations/migrations.json
 .nx/cache
 .nx/workspace-data

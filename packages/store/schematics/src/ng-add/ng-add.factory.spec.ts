@@ -1,8 +1,8 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
 import { workspaceRoot } from '@nrwl/devkit';
 import { join } from 'path';
-import { createWorkspace } from '../../../schematics-utils/_testing';
-import { LIBRARIES } from '../../../schematics-utils/src/common/lib.config';
+import { createWorkspace } from '../_testing';
+import { LIBRARIES } from '../utils/common/lib.config';
 import { NgxsPackageSchema } from './ng-add.schema';
 
 describe('Ngxs ng-add Schematic', () => {

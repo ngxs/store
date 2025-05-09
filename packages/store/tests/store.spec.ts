@@ -1,13 +1,6 @@
 import { Injectable, ModuleWithProviders, NgModule, Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  Store,
-  NgxsModule,
-  State,
-  Action,
-  StateContext,
-  DispatchOutsideZoneNgxsExecutionStrategy
-} from '@ngxs/store';
+import { Store, NgxsModule, State, Action, StateContext } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -94,9 +87,7 @@ describe('Store', () => {
     TestBed.configureTestingModule({
       imports: [
         ...(options.preImports || []),
-        NgxsModule.forRoot([MySubState, MySubSubState, MyState, MyOtherState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
+        NgxsModule.forRoot([MySubState, MySubSubState, MyState, MyOtherState])
       ]
     });
 
