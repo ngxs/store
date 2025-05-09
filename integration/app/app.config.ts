@@ -1,7 +1,7 @@
 import { APP_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { ApplicationConfig } from '@angular/platform-browser';
-import { DispatchOutsideZoneNgxsExecutionStrategy, provideStore } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
 import { withNgxsFormPlugin } from '@ngxs/form-plugin';
 import { withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
 import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
@@ -40,11 +40,7 @@ export const appConfig: ApplicationConfig = {
 
     provideStore(
       [TodosState, TodoState],
-      {
-        developmentMode: !environment.production,
-        selectorOptions: {},
-        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-      },
+      { developmentMode: !environment.production, selectorOptions: {} },
       withNgxsFormPlugin(),
       withNgxsLoggerPlugin({ logger: console, collapsed: false, disabled: true }),
       withNgxsReduxDevtoolsPlugin({ disabled: environment.production }),

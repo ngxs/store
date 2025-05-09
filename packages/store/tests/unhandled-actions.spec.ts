@@ -4,8 +4,7 @@ import {
   NgxsModule,
   NgxsDevelopmentModule,
   NgxsUnhandledActionsLogger,
-  NgxsDevelopmentOptions,
-  DispatchOutsideZoneNgxsExecutionStrategy
+  NgxsDevelopmentOptions
 } from '@ngxs/store';
 
 describe('Unhandled actions warnings', () => {
@@ -19,12 +18,7 @@ describe('Unhandled actions warnings', () => {
     options: NgxsDevelopmentOptions | null = { warnOnUnhandledActions: true }
   ) => {
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        }),
-        options ? NgxsDevelopmentModule.forRoot(options) : []
-      ]
+      imports: [NgxsModule.forRoot([]), options ? NgxsDevelopmentModule.forRoot(options) : []]
     });
 
     const store = TestBed.inject(Store);

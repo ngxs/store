@@ -8,8 +8,7 @@ import {
   State,
   StateContext,
   Store,
-  NoopNgxsExecutionStrategy,
-  DispatchOutsideZoneNgxsExecutionStrategy
+  NoopNgxsExecutionStrategy
 } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { take } from 'rxjs/operators';
@@ -37,11 +36,7 @@ describe('zone', () => {
     let nextCallsInAngularZone = 0;
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([CounterState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot([CounterState])]
     });
 
     const store: Store = TestBed.inject(Store);
@@ -78,11 +73,7 @@ describe('zone', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([CounterState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot([CounterState])],
       providers: [
         {
           provide: ApplicationRef,

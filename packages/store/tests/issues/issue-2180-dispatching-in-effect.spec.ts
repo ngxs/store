@@ -11,7 +11,6 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { renderApplication } from '@angular/platform-server';
 import {
   Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
   NgxsModule,
   provideStore,
   select,
@@ -88,12 +87,7 @@ describe('State per signal', () => {
       // Arrange
       skipConsoleLogging(() =>
         TestBed.configureTestingModule({
-          imports: [
-            NgxsModule.forRoot([NumberState], {
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            }),
-            TestComponent
-          ],
+          imports: [NgxsModule.forRoot([NumberState]), TestComponent],
           providers: [provideExperimentalZonelessChangeDetection()]
         })
       );
@@ -150,13 +144,7 @@ describe('State per signal', () => {
               bootstrapApplication(TestComponent, {
                 providers: [
                   provideExperimentalZonelessChangeDetection(),
-                  provideStore(
-                    [NumberState],
-                    {
-                      executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-                    },
-                    withExperimentalNgxsPendingTasks()
-                  )
+                  provideStore([NumberState], withExperimentalNgxsPendingTasks())
                 ]
               }),
             {

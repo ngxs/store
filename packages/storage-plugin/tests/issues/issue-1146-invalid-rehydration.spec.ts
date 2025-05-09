@@ -6,14 +6,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { Observable } from 'rxjs';
 
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
-import {
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  NgxsModule,
-  NgxsOnInit,
-  State,
-  StateContext,
-  Store
-} from '@ngxs/store';
+import { NgxsModule, NgxsOnInit, State, StateContext, Store } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { ɵDEFAULT_STATE_KEY } from '@ngxs/storage-plugin/internals';
 
@@ -55,9 +48,7 @@ describe('Invalid state re-hydration (https://github.com/ngxs/store/issues/1146)
   @NgModule({
     imports: [
       BrowserModule,
-      NgxsModule.forRoot([CounterState], {
-        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-      }),
+      NgxsModule.forRoot([CounterState]),
       NgxsStoragePluginModule.forRoot({ keys: '*' }),
       NgxsRouterPluginModule.forRoot(),
       RouterModule.forRoot([])

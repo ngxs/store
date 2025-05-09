@@ -8,8 +8,7 @@ import {
   Action,
   StateContext,
   ofActionSuccessful,
-  ofActionDispatched,
-  DispatchOutsideZoneNgxsExecutionStrategy
+  ofActionDispatched
 } from '@ngxs/store';
 
 import { tap, first } from 'rxjs/operators';
@@ -39,12 +38,7 @@ describe('NgxsWebSocketPlugin', () => {
 
   const createModuleAndServer = (states: any[] = []) => {
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states, {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        }),
-        NgxsWebSocketPluginModule.forRoot({ url })
-      ]
+      imports: [NgxsModule.forRoot(states), NgxsWebSocketPluginModule.forRoot({ url })]
     });
 
     return new Server(url);
@@ -157,9 +151,7 @@ describe('NgxsWebSocketPlugin', () => {
     // Arrange
     TestBed.configureTestingModule({
       imports: [
-        NgxsModule.forRoot([], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        }),
+        NgxsModule.forRoot(),
         NgxsWebSocketPluginModule.forRoot({
           url,
           deserializer: () => null,

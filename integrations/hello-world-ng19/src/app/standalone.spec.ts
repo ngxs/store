@@ -1,6 +1,6 @@
-import { Component, Injectable, NgModule } from '@angular/core';
+import { Component, Injectable, NgModule, importProvidersFrom } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { NgxsModule, NoopNgxsExecutionStrategy, provideStore, State } from '@ngxs/store';
+import { NgxsModule, State } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
 describe('Standalone component', () => {
@@ -29,11 +29,7 @@ describe('Standalone component', () => {
     freshPlatform(async () => {
       // Arrange
       const appRef = await bootstrapApplication(StandaloneComponent, {
-        providers: [
-          provideStore([], {
-            executionStrategy: NoopNgxsExecutionStrategy
-          })
-        ]
+        providers: [importProvidersFrom(NgxsModule.forRoot([]))]
       });
 
       // Assert

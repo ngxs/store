@@ -8,13 +8,7 @@ import {
   withDisabledInitialNavigation
 } from '@angular/router';
 
-import {
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  State,
-  Store,
-  provideStates,
-  provideStore
-} from '@ngxs/store';
+import { State, Store, provideStates, provideStore } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import { NgxsStoragePluginOptions, withNgxsStoragePlugin, withStorageFeature } from '..';
@@ -69,13 +63,7 @@ describe('forFeature', () => {
           withDisabledInitialNavigation()
         ),
 
-        provideStore(
-          [CounterState],
-          {
-            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-          },
-          withNgxsStoragePlugin(options)
-        )
+        provideStore([CounterState], withNgxsStoragePlugin(options))
       ]
     };
 

@@ -356,11 +356,7 @@ describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
     const spy = jest.spyOn(console, 'warn').mockImplementation();
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot()],
       providers: [
         {
           provide: NgZone,

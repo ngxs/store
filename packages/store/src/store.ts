@@ -11,13 +11,13 @@ import {
 } from 'rxjs';
 import { ɵINITIAL_STATE_TOKEN, ɵStateStream, ɵof } from '@ngxs/store/internals';
 
+import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
 import { InternalStateOperations } from './internal/state-operations';
 import { getRootSelectorFactory } from './selectors/selector-utils';
 import { leaveNgxs } from './operators/leave-ngxs';
 import { NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { TypedSelector } from './selectors';
-import { NGXS_EXECUTION_STRATEGY } from './execution/symbols';
 
 // We need to check whether the provided `T` type extends an array in order to
 // apply the `NonNullable[]` type to its elements. This is because, for
@@ -30,7 +30,7 @@ export class Store {
   private _stateStream = inject(ɵStateStream);
   private _internalStateOperations = inject(InternalStateOperations);
   private _config = inject(NgxsConfig);
-  private _internalExecutionStrategy = inject(NGXS_EXECUTION_STRATEGY);
+  private _internalExecutionStrategy = inject(InternalNgxsExecutionStrategy);
   private _stateFactory = inject(StateFactory);
 
   /**

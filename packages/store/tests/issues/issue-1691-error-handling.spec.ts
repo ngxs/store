@@ -2,13 +2,7 @@ import { DoBootstrap, ErrorHandler, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
-import {
-  Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  NgxsModule,
-  State,
-  Store
-} from '@ngxs/store';
+import { Action, NgxsModule, State, Store } from '@ngxs/store';
 import { defer, firstValueFrom, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -76,12 +70,7 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
   }
 
   @NgModule({
-    imports: [
-      BrowserModule,
-      NgxsModule.forRoot([AppState], {
-        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-      })
-    ],
+    imports: [BrowserModule, NgxsModule.forRoot([AppState])],
     providers: [CustomErrorHandler, { provide: ErrorHandler, useExisting: CustomErrorHandler }]
   })
   class TestModule implements DoBootstrap {

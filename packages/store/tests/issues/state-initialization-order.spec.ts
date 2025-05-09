@@ -1,11 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  NgxsModule,
-  State,
-  Store
-} from '@ngxs/store';
+import { NgxsModule, State, Store } from '@ngxs/store';
 
 describe('State initialization order', () => {
   @Injectable()
@@ -21,12 +16,7 @@ describe('State initialization order', () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation();
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forFeature([CounterState, PostsState]),
-        NgxsModule.forRoot([], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forFeature([CounterState, PostsState]), NgxsModule.forRoot()]
     });
 
     // Act

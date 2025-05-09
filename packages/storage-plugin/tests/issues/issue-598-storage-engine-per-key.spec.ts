@@ -1,12 +1,7 @@
 import { Component, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import {
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  NgxsModule,
-  State,
-  Store
-} from '@ngxs/store';
+import { NgxsModule, State, Store } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 import { LOCAL_STORAGE_ENGINE, NgxsStoragePluginModule, SESSION_STORAGE_ENGINE } from '../../';
@@ -57,9 +52,7 @@ describe('Storage engine per individual key (https://github.com/ngxs/store/issue
   @NgModule({
     imports: [
       BrowserModule,
-      NgxsModule.forRoot([BlogState, HomeState, EncryptedState], {
-        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-      }),
+      NgxsModule.forRoot([BlogState, HomeState, EncryptedState]),
       NgxsStoragePluginModule.forRoot({
         keys: [
           {
