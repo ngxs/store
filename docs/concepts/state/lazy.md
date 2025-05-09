@@ -57,3 +57,39 @@ After the route is loaded and its providers are initialized, the global state wi
 ```
 
 You can try it yourself by invoking `store.snapshot()` and printing the result to the console before and after the lazy component is loaded.
+
+## `lazyProvider`
+
+The `lazyProvider` function is designed to defer the registration of Angular providers until they are explicitly needed — such as when navigating to a route or triggering a guard. This is particularly useful for feature state libraries, where including providers in multiple locations could cause them to be unintentionally bundled into the initial application bundle.
+
+```ts
+import { lazyProvider } from '@ngxs/store';
+
+const routes = [
+  {
+    path: 'home',
+    loadComponent: () => import('./home/home.component').then(m => m.HomeComponent),
+    canActivate: [
+      lazyProvider(async () => (await import('path-to-state-library')).invoicesStateProvider)
+    ]
+  }
+];
+```
+
+Exporting a provider:
+
+```ts
+// path-to-state-library/index.ts
+export const invoicesStateProvider = provideStates([InvoicesState]);
+```
+
+It also supports `default` exports, which are common in dynamically imported ES modules. If the imported provider is wrapped in a default property (e.g., `export default invoicesStateProvider`), the function will automatically unwrap and register it.
+
+```ts
+// In routes
+lazyProvider(() => import('path-to-state-library'));
+
+// path-to-state-library/index.ts
+const invoicesStateProvider = provideStates([InvoicesState]);
+export default invoicesStateProvider;
+```
