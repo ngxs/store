@@ -4,7 +4,7 @@ import type { Observable } from 'rxjs';
 export type ActionHandlerFn = (action: any) => Observable<unknown>;
 
 @Injectable({ providedIn: 'root' })
-export class NgxsActionRegistry {
+export class ɵNgxsActionRegistry {
   // Instead of going over the states list every time an action is dispatched,
   // we are constructing a map of action types to lists of action metadata.
   // If the `@@Init` action is handled in two different states, the action

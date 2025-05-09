@@ -8,7 +8,8 @@ import {
   ɵStateClassInternal,
   ɵINITIAL_STATE_TOKEN,
   ɵSharedSelectorOptions,
-  ɵRuntimeSelectorContext
+  ɵRuntimeSelectorContext,
+  ɵNgxsActionRegistry
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
 import { ɵof } from '@ngxs/store/internals';
@@ -40,7 +41,6 @@ import {
   StatesByName,
   topologicalSort
 } from './internals';
-import { NgxsActionRegistry } from '../actions/action-registry';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { InternalDispatchedActionResults } from '../internal/action-results';
 import { ensureStateNameIsUnique, ensureStatesAreDecorated } from '../utils/store-validators';
@@ -84,7 +84,7 @@ export class StateFactory {
   private readonly _actions = inject(InternalActions);
   private readonly _actionResults = inject(InternalDispatchedActionResults);
   private readonly _initialState = inject(ɵINITIAL_STATE_TOKEN, { optional: true });
-  private readonly _actionRegistry = inject(NgxsActionRegistry);
+  private readonly _actionRegistry = inject(ɵNgxsActionRegistry);
   private readonly _propGetter = inject(ɵPROP_GETTER);
 
   private _actionsSubscription: Subscription | null = null;
