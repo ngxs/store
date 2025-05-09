@@ -2,14 +2,7 @@ import { ApplicationRef, Component, Injectable, NgModule, NgZone } from '@angula
 import { TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import {
-  Action,
-  NgxsModule,
-  State,
-  StateContext,
-  Store,
-  NoopNgxsExecutionStrategy
-} from '@ngxs/store';
+import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { take } from 'rxjs/operators';
 
@@ -109,50 +102,6 @@ describe('zone', () => {
     expect(selectCalls).toEqual(3);
     expect(selectCallsInAngularZone).toEqual(3);
   });
-
-  it('"select" should be performed outside Angular zone', () => {
-    let ticks = 0;
-
-    @Injectable()
-    class MockApplicationRef extends ApplicationRef {
-      public tick(): void {
-        ticks++;
-      }
-    }
-
-    TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([CounterState], { executionStrategy: NoopNgxsExecutionStrategy })
-      ],
-      providers: [
-        {
-          provide: ApplicationRef,
-          useClass: MockApplicationRef
-        }
-      ]
-    });
-
-    const store: Store = TestBed.inject(Store);
-    const zone: NgZone = TestBed.inject(NgZone);
-
-    // NGXS performed all initializations outside Angular zone
-    expect(ticks).toBe(0);
-
-    zone.runOutsideAngular(() => {
-      store
-        .select<number>(({ counter }) => counter)
-        .pipe(take(3))
-        .subscribe(() => {
-          expect(NgZone.isInAngularZone()).toBeFalsy();
-        });
-
-      store.dispatch(new Increment());
-      store.dispatch(new Increment());
-    });
-
-    // Angular hasn't run any change detection
-    expect(ticks).toBe(0);
-  });
   // =============================================================
 
   it('action should be handled inside zone if NoopNgxsExecutionStrategy is used', () => {
@@ -172,9 +121,7 @@ describe('zone', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([FooState], { executionStrategy: NoopNgxsExecutionStrategy })
-      ]
+      imports: [NgxsModule.forRoot([FooState])]
     });
 
     const store: Store = TestBed.inject(Store);
@@ -201,9 +148,7 @@ describe('zone', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([FooState], { executionStrategy: NoopNgxsExecutionStrategy })
-      ]
+      imports: [NgxsModule.forRoot([FooState])]
     });
 
     const store: Store = TestBed.inject(Store);
@@ -236,12 +181,7 @@ describe('zone', () => {
       class MockComponent {}
 
       @NgModule({
-        imports: [
-          BrowserModule,
-          NgxsModule.forRoot([FooState], {
-            executionStrategy: NoopNgxsExecutionStrategy
-          })
-        ],
+        imports: [BrowserModule, NgxsModule.forRoot([FooState])],
         declarations: [MockComponent],
         bootstrap: [MockComponent]
       })
