@@ -3,16 +3,18 @@ import { InjectionToken, inject } from '@angular/core';
 import { NGXS_OPTIONS } from '../symbols';
 
 /**
- * The injection token is used internally to resolve an instance of the execution strategy.
+ * The injection token is used internally to resolve an instance of the execution
+ * strategy. It checks whether consumers have provided their own `executionStrategy`
+ * and also verifies if we are operating in a zone-aware environment.
  */
 export const NGXS_EXECUTION_STRATEGY = new InjectionToken<NgxsExecutionStrategy>(
   typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_EXECUTION_STRATEGY' : '',
   {
     providedIn: 'root',
-    // Since `executionStrategy` is a `Type<...>`, we should inject it to retrieve an
-    // instance. This injection token essentially holds an instance of the
-    // execution strategy class.
-    factory: () => inject(inject(NGXS_OPTIONS).executionStrategy)
+    factory: () => {
+      const options = inject(NGXS_OPTIONS);
+      return inject(options.executionStrategy!);
+    }
   }
 );
 
