@@ -2,7 +2,7 @@ import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/te
 import { workspaceRoot } from '@nrwl/devkit';
 
 import * as path from 'path';
-import { createWorkspace } from '../../../schematics-utils/_testing';
+import { createWorkspace } from '../_testing';
 import { StateSchema } from './state.schema';
 
 describe('Generate ngxs state', () => {

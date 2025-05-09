@@ -13,18 +13,18 @@ import {
   getPackageJsonDependency
 } from '@schematics/angular/utility/dependencies';
 
-import { LIBRARIES } from '../../../schematics-utils/src/common/lib.config';
+import { LIBRARIES } from '../utils/common/lib.config';
 
 import { NgxsPackageSchema } from './ng-add.schema';
-import { getProjectMainFile } from '../../../schematics-utils/src/project';
+import { getProjectMainFile } from '../utils/project';
 import {
   addDeclarationToNonStandaloneApp,
   addDeclarationToStandaloneApp
 } from './add-declaration';
-import { getProject } from '../../../schematics-utils/src/project';
+import { getProject } from '../utils/project';
 import { isStandaloneApp } from '@schematics/angular/utility/ng-ast-utils';
 
-const versions = require('../../../schematics-utils/src/versions.json');
+const versions = require('./../utils/versions.json');
 
 export type NormalizedNgxsPackageSchema = {
   skipInstall: boolean;
