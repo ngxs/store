@@ -19,7 +19,7 @@ import { leaveNgxs } from '../operators/leave-ngxs';
 import { fallbackSubscriber } from './fallback-subscriber';
 import { InternalDispatchedActionResults } from './action-results';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
-import { InternalNgxsExecutionStrategy } from '../execution/internal-ngxs-execution-strategy';
+import { InternalNgxsExecutionStrategy } from '../execution/execution-strategy';
 
 @Injectable({ providedIn: 'root' })
 export class InternalDispatcher {

@@ -3,7 +3,7 @@ import { ɵOrderedSubject } from '@ngxs/store/internals';
 import { Observable, Subject, share } from 'rxjs';
 
 import { leaveNgxs } from './operators/leave-ngxs';
-import { InternalNgxsExecutionStrategy } from './execution/internal-ngxs-execution-strategy';
+import { InternalNgxsExecutionStrategy } from './execution/execution-strategy';
 
 /**
  * Status of a dispatched action

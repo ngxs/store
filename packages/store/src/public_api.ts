@@ -26,9 +26,7 @@ export {
   NgxsSimpleChange
 } from './symbols';
 export { Selector } from './decorators/selector/selector';
-export { NgxsExecutionStrategy } from './execution/symbols';
 export { ActionType, ActionDef } from './actions/symbols';
-export { NoopNgxsExecutionStrategy } from './execution/noop-ngxs-execution-strategy';
 export {
   NgxsUnhandledErrorHandler,
   NgxsUnhandledErrorContext

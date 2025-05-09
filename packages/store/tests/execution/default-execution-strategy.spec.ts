@@ -4,12 +4,12 @@ import {
   Component,
   Type,
   NgModule,
-  ɵglobal,
   Injectable,
   inject
 } from '@angular/core';
 import { TestBed, TestModuleMetadata } from '@angular/core/testing';
-import { Observable } from 'rxjs';
+import { BrowserModule } from '@angular/platform-browser';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import {
   State,
   Action,
@@ -17,16 +17,12 @@ import {
   NgxsModule,
   Store,
   Actions,
-  NoopNgxsExecutionStrategy,
   Selector
 } from '@ngxs/store';
-import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
-import { BrowserModule } from '@angular/platform-browser';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { freshPlatform } from '@ngxs/store/internals/testing';
+import { Observable } from 'rxjs';
 
-import { NGXS_EXECUTION_STRATEGY } from '../../src/execution/symbols';
-
-describe('NoopNgxsExecutionStrategy', () => {
+describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
   class ZoneCounter {
     inside = 0;
     outside = 0;
@@ -75,13 +71,8 @@ describe('NoopNgxsExecutionStrategy', () => {
 
   function setup(moduleDef?: TestModuleMetadata) {
     moduleDef = moduleDef || {
-      imports: [
-        NgxsModule.forRoot([CounterState], {
-          executionStrategy: NoopNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot([CounterState])]
     };
-
     const ticks = { count: 0 };
     @Injectable()
     class MockApplicationRef extends ApplicationRef {
@@ -106,47 +97,8 @@ describe('NoopNgxsExecutionStrategy', () => {
     return { zone, store, ticks, get };
   }
 
-  it(
-    'should provide NoopNgxsExecutionStrategy as an execution strategy if it is not specified explicitly',
-    freshPlatform(async () => {
-      // Arrange
-      const Zone = ɵglobal.Zone;
-      ɵglobal.Zone = undefined;
-
-      @Component({
-        selector: 'app-root',
-        template: '',
-        standalone: false
-      })
-      class TestComponent {}
-
-      @NgModule({
-        imports: [BrowserModule, NgxsModule.forRoot()],
-        declarations: [TestComponent],
-        bootstrap: [TestComponent]
-      })
-      class TestModule {}
-
-      // Act
-      const { injector } = await skipConsoleLogging(() =>
-        platformBrowserDynamic().bootstrapModule(TestModule, {
-          ngZone: 'noop'
-        })
-      );
-
-      // Assert
-      try {
-        expect(injector.get(NGXS_EXECUTION_STRATEGY)).toBeInstanceOf(
-          NoopNgxsExecutionStrategy
-        );
-      } finally {
-        ɵglobal.Zone = Zone;
-      }
-    })
-  );
-
   describe('[store.select]', () => {
-    it('should be performed outside Angular zone, when dispatched from outside zones', () => {
+    it('should be performed inside Angular zone, when dispatched from outside zones', () => {
       // Arrange
       const { zone, store, ticks } = setup();
       ticks.count = 0;
@@ -164,10 +116,10 @@ describe('NoopNgxsExecutionStrategy', () => {
       });
 
       // Assert
-      expect(ticks.count).toEqual(0);
+      expect(ticks.count).toEqual(3);
       zoneCounter.assert({
-        inside: 0,
-        outside: 3
+        inside: 3,
+        outside: 0
       });
     });
 
@@ -200,11 +152,7 @@ describe('NoopNgxsExecutionStrategy', () => {
   describe('[@Select]', () => {
     function setupWithComponentSubscription() {
       const { zone, store, ticks, get } = setup({
-        imports: [
-          NgxsModule.forRoot([CounterState], {
-            executionStrategy: NoopNgxsExecutionStrategy
-          })
-        ],
+        imports: [NgxsModule.forRoot([CounterState])],
         declarations: [CounterComponent]
       });
       const fixture = TestBed.createComponent(CounterComponent);
@@ -222,7 +170,7 @@ describe('NoopNgxsExecutionStrategy', () => {
       return { zone, store, ticks, get, zoneCounter, cleanup };
     }
 
-    it('should be performed outside Angular zone, when dispatched from outside zones', () => {
+    it('should be performed inside Angular zone, when dispatched from outside zones', () => {
       // Arrange
       const { zone, store, ticks, zoneCounter, cleanup } = setupWithComponentSubscription();
       // Act
@@ -232,10 +180,10 @@ describe('NoopNgxsExecutionStrategy', () => {
       });
       // Assert
       cleanup();
-      expect(ticks.count).toEqual(1);
+      expect(ticks.count).toEqual(4);
       zoneCounter.assert({
-        inside: 0,
-        outside: 3
+        inside: 3,
+        outside: 0
       });
     });
 
@@ -247,18 +195,18 @@ describe('NoopNgxsExecutionStrategy', () => {
         store.dispatch(new Increment());
         store.dispatch(new Increment());
       });
-      cleanup();
       // Assert
-      expect(ticks.count).toEqual(2);
+      cleanup();
+      expect(ticks.count).toEqual(3);
       zoneCounter.assert({
-        inside: 2,
-        outside: 1
+        inside: 3,
+        outside: 0
       });
     });
   });
 
   describe('[actions...subscribe]', () => {
-    it('should be performed outside Angular zone, when dispatched from outside zones', () => {
+    it('should be performed inside Angular zone, when dispatched from outside zones', () => {
       // Arrange
       const { zone, store, get } = setup();
       const actionsStream = get(Actions);
@@ -275,8 +223,8 @@ describe('NoopNgxsExecutionStrategy', () => {
 
       // Assert
       zoneCounter.assert({
-        inside: 0,
-        outside: 4
+        inside: 4,
+        outside: 0
       });
     });
 
@@ -321,7 +269,7 @@ describe('NoopNgxsExecutionStrategy', () => {
       });
     });
 
-    it('should be performed inside Angular zone, when dispatched from inside zones', () => {
+    it('should be performed outside Angular zone, when dispatched from inside zones', () => {
       // Arrange
       const { zone, store, get } = setup();
       const counterState = get(CounterState);
@@ -333,8 +281,8 @@ describe('NoopNgxsExecutionStrategy', () => {
 
       // Assert
       counterState.zoneCounter.assert({
-        inside: 2,
-        outside: 0
+        inside: 0,
+        outside: 2
       });
     });
   });

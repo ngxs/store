@@ -19,7 +19,7 @@ export class NgxsActionCollector {
    * {
    *   providers: [
    *     NgxsActionCollector.collectActions(),
-   *     provideStore([MyState], { executionStrategy: ... }),
+   *     provideStore([MyState]),
    *   ],
    *   // ...
    * }

@@ -1,11 +1,8 @@
-import { Injectable, InjectionToken, Type, inject } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { StateOperator } from '@ngxs/store/operators';
 import { ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
-
-import { NgxsExecutionStrategy } from './execution/symbols';
-import { DispatchOutsideZoneNgxsExecutionStrategy } from './execution/dispatch-outside-zone-ngxs-execution-strategy';
 
 // The injection token is used to resolve a list of states provided at
 // the root level through either `NgxsModule.forRoot` or `provideStore`.
@@ -70,18 +67,6 @@ export class NgxsConfig {
   } = {
     strictContentSecurityPolicy: false
   };
-  /**
-   * Determines the execution context to perform async operations inside. An implementation can be
-   * provided to override the default behaviour where the async operations are run
-   * outside Angular's zone but all observable behaviours of NGXS are run back inside Angular's zone.
-   * These observable behaviours are from:
-   *   `store.selectSignal(...)`, `store.select(...)`, `actions.subscribe(...)` or `store.dispatch(...).subscribe(...)`
-   * Every `zone.run` causes Angular to run change detection on the whole tree (`app.tick()`) so of your
-   * application doesn't rely on zone.js running change detection then you can switch to the
-   * `NoopNgxsExecutionStrategy` that doesn't interact with zones.
-   * (default: null)
-   */
-  executionStrategy: Type<NgxsExecutionStrategy> = DispatchOutsideZoneNgxsExecutionStrategy;
   /**
    * Defining shared selector options
    */
