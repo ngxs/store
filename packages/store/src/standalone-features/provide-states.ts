@@ -18,6 +18,9 @@ import { NGXS_FEATURE_ENVIRONMENT_INITIALIZER } from './initializers';
  *   }
  * ];
  * ```
+ *
+ * To lazy-load feature states at the route level,
+ * please refer to the `lazyProvider` utility function.
  */
 export function provideStates(
   states: ɵStateClass[],
