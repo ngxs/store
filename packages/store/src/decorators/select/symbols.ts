@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
 import { ɵExtractTokenType, StateToken } from '@ngxs/store/internals';
 
 import { propGetter } from '../../internal/internals';

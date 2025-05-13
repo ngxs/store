@@ -3,16 +3,16 @@ import {
   EMPTY,
   forkJoin,
   Observable,
-  throwError,
   filter,
   map,
   mergeMap,
   shareReplay,
-  take
+  take,
+  of
 } from 'rxjs';
 
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
-import { ɵPlainObject, ɵStateStream, ɵof } from '@ngxs/store/internals';
+import { ɵPlainObject, ɵStateStream } from '@ngxs/store/internals';
 
 import { PluginManager } from '../plugin-manager';
 import { leaveNgxs } from '../operators/leave-ngxs';
@@ -47,7 +47,7 @@ export class InternalDispatcher {
 
   private dispatchByEvents(actionOrActions: any | any[]): Observable<void> {
     if (Array.isArray(actionOrActions)) {
-      if (actionOrActions.length === 0) return ɵof(undefined);
+      if (actionOrActions.length === 0) return of(undefined);
 
       return forkJoin(actionOrActions.map(action => this.dispatchSingle(action))).pipe(
         map(() => undefined)
@@ -64,7 +64,7 @@ export class InternalDispatcher {
         const error = new Error(
           `This action doesn't have a type property: ${action.constructor.name}`
         );
-        return throwError(() => error);
+        return new Observable(subscriber => subscriber.error(error));
       }
     }
 
@@ -104,7 +104,7 @@ export class InternalDispatcher {
           case ActionStatus.Successful:
             // The `createDispatchObservable` function should return the
             // state, as its result is used by plugins.
-            return ɵof(this._stateStream.getValue());
+            return of(this._stateStream.getValue());
           case ActionStatus.Errored:
             throw ctx.error;
           default:

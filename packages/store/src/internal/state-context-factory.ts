@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { getValue, setValue } from '@ngxs/store/plugins';
 import { ExistingState, StateOperator, isStateOperator } from '@ngxs/store/operators';
-import { Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
 
 import { StateContext } from '../symbols';
 import { StateOperations } from '../internal/internals';

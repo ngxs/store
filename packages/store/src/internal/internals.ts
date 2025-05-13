@@ -1,5 +1,5 @@
 import { InjectionToken, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
 
 import {
   ɵMETA_KEY,
