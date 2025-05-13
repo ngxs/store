@@ -26,6 +26,9 @@ export {
 } from './symbols';
 export { Selector } from './decorators/selector/selector';
 export { ActionType, ActionDef } from './actions/symbols';
+
+export { ActionDirector } from './actions/action-director';
+
 export {
   NgxsUnhandledErrorHandler,
   NgxsUnhandledErrorContext
