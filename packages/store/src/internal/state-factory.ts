@@ -12,13 +12,11 @@ import {
   ɵNgxsActionRegistry
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
-import { ɵof } from '@ngxs/store/internals';
 import {
   forkJoin,
   from,
   isObservable,
   Subscription,
-  throwError,
   catchError,
   defaultIfEmpty,
   filter,
@@ -26,7 +24,8 @@ import {
   mergeMap,
   takeUntil,
   finalize,
-  Observable
+  Observable,
+  of
 } from 'rxjs';
 
 import { NgxsConfig } from '../symbols';
@@ -217,7 +216,7 @@ export class StateFactory {
               const handleableError = assignUnhandledCallback(error, () =>
                 ngxsUnhandledErrorHandler.handleError(error, { action })
               );
-              return ɵof(<ActionContext>{
+              return of(<ActionContext>{
                 action,
                 status: ActionStatus.Errored,
                 error: handleableError
@@ -249,7 +248,7 @@ export class StateFactory {
         try {
           result = actionHandler(action);
         } catch (e) {
-          result = throwError(() => e);
+          result = new Observable(subscriber => subscriber.error(e));
         }
 
         results.push(result);
@@ -269,7 +268,7 @@ export class StateFactory {
     }
 
     if (!results.length) {
-      results.push(ɵof(undefined));
+      results.push(of(undefined));
     }
 
     return forkJoin(results);
@@ -339,7 +338,7 @@ export class StateFactory {
                 if (ɵisPromise(value) || isObservable(value)) {
                   return value;
                 } else {
-                  return ɵof(value);
+                  return of(value);
                 }
               }),
               // If this observable has completed without emitting any values,
@@ -373,7 +372,7 @@ export class StateFactory {
           } else {
             // If the action handler is synchronous and returns nothing (`void`), we
             // still have to convert the result to a synchronous observable.
-            result = ɵof(undefined);
+            result = of(undefined);
           }
 
           return result;

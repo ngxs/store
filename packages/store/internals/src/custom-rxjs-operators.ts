@@ -1,4 +1,4 @@
-import { MonoTypeOperatorFunction, Observable } from 'rxjs';
+import { type MonoTypeOperatorFunction, Observable } from 'rxjs';
 
 export function ɵwrapObserverCalls<TValue>(
   invokeFn: (fn: () => void) => void
