@@ -112,6 +112,8 @@ jobs:
     if: github.repository_owner == 'ngxs'
     runs-on: ubuntu-latest
     needs: trunk-integration-test
+    env:
+      BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
 
     steps:
       - name: Checkout sources
