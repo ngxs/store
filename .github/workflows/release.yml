@@ -127,11 +127,20 @@ jobs:
       - name: Download integration test artifacts
         uses: ./.github/actions/download-integration-test-artifacts
 
-      - name: Run BundleMon
-        run: yarn bundlemon
-        env:
-          BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
-          CI_COMMIT_SHA: ${{ github.sha }}
+      - name: Run BundleMon (Main)
+        uses: lironer/bundlemon-action@v1
+        with:
+          bundlemon-args: --config .bundlemonrc.json
+
+      - name: Run BundleMon (Plugins)
+        uses: lironer/bundlemon-action@v1
+        with:
+          bundlemon-args: --config .bundlemonrc.plugins.json
+
+      - name: Run BundleMon (Integration)
+        uses: lironer/bundlemon-action@v1
+        with:
+          bundlemon-args: --config .bundlemonrc.integration.json
 
   release-publish:
     if: github.repository_owner == 'ngxs'
