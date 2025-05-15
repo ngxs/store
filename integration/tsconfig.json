@@ -21,7 +21,8 @@
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+    "skipLibCheck": true
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
