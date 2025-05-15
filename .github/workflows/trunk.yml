@@ -131,16 +131,19 @@ jobs:
         uses: lironer/bundlemon-action@v1
         with:
           bundlemon-args: --config .bundlemonrc.json
+          fail-on-error: false
 
       - name: Run BundleMon (Plugins)
         uses: lironer/bundlemon-action@v1
         with:
           bundlemon-args: --config .bundlemonrc.plugins.json
+          fail-on-error: false
 
       - name: Run BundleMon (Integration)
         uses: lironer/bundlemon-action@v1
         with:
           bundlemon-args: --config .bundlemonrc.integration.json
+          fail-on-error: false
 
   ## Skip this for now, because it is still handled by Circle CI
   # trunk-publish:

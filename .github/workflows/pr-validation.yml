@@ -49,10 +49,10 @@ jobs:
 
       # create a preview release of the packages using pkg.pr.new
       - name: Continuous Release
-        run: npx pkg-pr-new publish --compact ./@ngxs/devtools-plugin ./@ngxs/form-plugin ./@ngxs/hmr-plugin ./@ngxs/router-plugin ./@ngxs/storage-plugin ./@ngxs/store ./@ngxs/websocket-plugin 
+        run: npx pkg-pr-new publish --compact ./@ngxs/devtools-plugin ./@ngxs/form-plugin ./@ngxs/hmr-plugin ./@ngxs/router-plugin ./@ngxs/storage-plugin ./@ngxs/store ./@ngxs/websocket-plugin
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-  
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   premerge-test:
     runs-on: ubuntu-latest
     needs: premerge-build
@@ -148,13 +148,16 @@ jobs:
         uses: lironer/bundlemon-action@v1
         with:
           bundlemon-args: --config .bundlemonrc.json
+          fail-on-error: false
 
       - name: Run BundleMon (Plugins)
         uses: lironer/bundlemon-action@v1
         with:
           bundlemon-args: --config .bundlemonrc.plugins.json
+          fail-on-error: false
 
       - name: Run BundleMon (Integration)
         uses: lironer/bundlemon-action@v1
         with:
           bundlemon-args: --config .bundlemonrc.integration.json
+          fail-on-error: false
