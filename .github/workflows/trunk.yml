@@ -85,6 +85,7 @@ jobs:
     strategy:
       matrix:
         script:
+          - 'integration:ng19'
           - 'test:types'
 
     steps:
@@ -126,11 +127,23 @@ jobs:
       - name: Download integration test artifacts
         uses: ./.github/actions/download-integration-test-artifacts
 
-      - name: Run BundleMon
-        run: yarn bundlemon
-        env:
-          BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
-          CI_COMMIT_SHA: ${{ github.sha }}
+      - name: Run BundleMon (Main)
+        uses: lironer/bundlemon-action@v1
+        with:
+          bundlemon-args: --config .bundlemonrc.json
+          fail-on-error: false
+
+      - name: Run BundleMon (Plugins)
+        uses: lironer/bundlemon-action@v1
+        with:
+          bundlemon-args: --config .bundlemonrc.plugins.json
+          fail-on-error: false
+
+      - name: Run BundleMon (Integration)
+        uses: lironer/bundlemon-action@v1
+        with:
+          bundlemon-args: --config .bundlemonrc.integration.json
+          fail-on-error: false
 
   ## Skip this for now, because it is still handled by Circle CI
   # trunk-publish:
