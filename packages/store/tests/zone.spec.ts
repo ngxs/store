@@ -1,14 +1,11 @@
-import { ApplicationRef, Component, Injectable, NgModule, NgZone } from '@angular/core';
+import { ApplicationRef, Injectable, NgZone } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { BrowserModule } from '@angular/platform-browser';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
-import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
-import { take } from 'rxjs/operators';
+import { take } from 'rxjs';
 
 describe('zone', () => {
   class Increment {
-    public static readonly type = '[Counter] Increment';
+    static readonly type = '[Counter] Increment';
   }
 
   @State<number>({
@@ -18,7 +15,7 @@ describe('zone', () => {
   @Injectable()
   class CounterState {
     @Action(Increment)
-    public increment({ setState, getState }: StateContext<number>): void {
+    increment({ setState, getState }: StateContext<number>): void {
       setState(getState() + 1);
     }
   }
@@ -32,8 +29,8 @@ describe('zone', () => {
       imports: [NgxsModule.forRoot([CounterState])]
     });
 
-    const store: Store = TestBed.inject(Store);
-    const ngZone: NgZone = TestBed.inject(NgZone);
+    const store = TestBed.inject(Store);
+    const ngZone = TestBed.inject(NgZone);
 
     ngZone.runOutsideAngular(() => {
       store.subscribe(() => {
@@ -60,7 +57,7 @@ describe('zone', () => {
 
     @Injectable()
     class MockApplicationRef extends ApplicationRef {
-      public tick(): void {
+      tick(): void {
         ticks++;
       }
     }
@@ -75,8 +72,8 @@ describe('zone', () => {
       ]
     });
 
-    const store: Store = TestBed.inject(Store);
-    const zone: NgZone = TestBed.inject(NgZone);
+    const store = TestBed.inject(Store);
+    const zone = TestBed.inject(NgZone);
 
     // NGXS performes initializions inside Angular zone
     // thus it causes app to tick
@@ -104,9 +101,12 @@ describe('zone', () => {
   });
   // =============================================================
 
-  it('action should be handled inside zone if NoopNgxsExecutionStrategy is used', () => {
+  it('action should be handled outside zone by default', () => {
+    // Arrange
+    let isInAngularZone: boolean | null = null;
+
     class FooAction {
-      public static readonly type = 'Foo';
+      static readonly type = 'Foo';
     }
 
     @State({
@@ -115,8 +115,8 @@ describe('zone', () => {
     @Injectable()
     class FooState {
       @Action(FooAction)
-      public fooAction(): void {
-        expect(NgZone.isInAngularZone()).toBeTruthy();
+      fooAction(): void {
+        isInAngularZone = NgZone.isInAngularZone();
       }
     }
 
@@ -124,74 +124,46 @@ describe('zone', () => {
       imports: [NgxsModule.forRoot([FooState])]
     });
 
-    const store: Store = TestBed.inject(Store);
-    const ngZone: NgZone = TestBed.inject(NgZone);
+    const store = TestBed.inject(Store);
+    // Act
+    store.dispatch(new FooAction());
+
+    // Assert
+    expect(isInAngularZone).toEqual(false);
+  });
+
+  it('action should be handled outside zone (event if wrapped with `ngZone.run`', () => {
+    // Arrange
+    let isInAngularZone: boolean | null = null;
+
+    class FooAction {
+      static readonly type = 'Foo';
+    }
+
+    @State({
+      name: 'foo'
+    })
+    @Injectable()
+    class FooState {
+      @Action(FooAction)
+      fooAction(): void {
+        isInAngularZone = NgZone.isInAngularZone();
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([FooState])]
+    });
+
+    const store = TestBed.inject(Store);
+    const ngZone = TestBed.inject(NgZone);
+
+    // Act
     ngZone.run(() => {
       store.dispatch(new FooAction());
     });
+
+    // Assert
+    expect(isInAngularZone).toEqual(false);
   });
-
-  it('action should be handled outside zone if NoopNgxsExecutionStrategy is used', () => {
-    class FooAction {
-      public static readonly type = 'Foo';
-    }
-
-    @State({
-      name: 'foo'
-    })
-    @Injectable()
-    class FooState {
-      @Action(FooAction)
-      public fooAction(): void {
-        expect(NgZone.isInAngularZone()).toBeFalsy();
-      }
-    }
-
-    TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([FooState])]
-    });
-
-    const store: Store = TestBed.inject(Store);
-    store.dispatch(new FooAction());
-  });
-
-  it(
-    'actions should be handled outside zone if zone is "nooped"',
-    freshPlatform(async () => {
-      class FooAction {
-        public static readonly type = 'Foo';
-      }
-
-      @State({
-        name: 'foo'
-      })
-      @Injectable()
-      class FooState {
-        @Action(FooAction)
-        public fooAction(): void {
-          expect(NgZone.isInAngularZone()).toBeFalsy();
-        }
-      }
-
-      @Component({
-        selector: 'app-root',
-        template: '',
-        standalone: false
-      })
-      class MockComponent {}
-
-      @NgModule({
-        imports: [BrowserModule, NgxsModule.forRoot([FooState])],
-        declarations: [MockComponent],
-        bootstrap: [MockComponent]
-      })
-      class MockModule {}
-
-      const { injector } = await skipConsoleLogging(() =>
-        platformBrowserDynamic().bootstrapModule(MockModule, { ngZone: 'noop' })
-      );
-      const store = injector.get<Store>(Store);
-      store.dispatch(new FooAction());
-    })
-  );
 });
