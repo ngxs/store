@@ -22,7 +22,7 @@ describe('buildActionHandler', () => {
 
     // Act
     const { addCountryActionHandler } = await import('./fixtures/add-country-action-handler');
-    runInInjectionContext(TestBed, () => addCountryActionHandler.attach());
+    runInInjectionContext(TestBed, addCountryActionHandler);
 
     store.dispatch(new AddCountry('Canada'));
 

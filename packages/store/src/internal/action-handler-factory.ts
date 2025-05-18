@@ -5,7 +5,7 @@ import {
   from,
   isObservable,
   mergeMap,
-  Observable,
+  type Observable,
   of,
   takeUntil
 } from 'rxjs';
@@ -13,7 +13,7 @@ import {
 import { InternalActions } from '../actions-stream';
 import { ofActionDispatched } from '../operators/of-action';
 import { StateContextFactory } from './state-context-factory';
-import { StateContext } from '../symbols';
+import type { StateContext } from '../symbols';
 
 @Injectable({ providedIn: 'root' })
 export class InternalActionHandlerFactory {

@@ -9,8 +9,7 @@ import {
   ɵINITIAL_STATE_TOKEN,
   ɵSharedSelectorOptions,
   ɵRuntimeSelectorContext,
-  ɵNgxsActionRegistry,
-  ɵStateClass
+  ɵNgxsActionRegistry
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
 import {
@@ -129,11 +128,6 @@ export class StateFactory {
 
   constructor() {
     inject(DestroyRef).onDestroy(() => this._actionsSubscription?.unsubscribe());
-  }
-
-  /** @internal */
-  resolveStatePath(StateClass: ɵStateClass) {
-    return this._states.find(s => s.instance instanceof StateClass)?.path;
   }
 
   /**
