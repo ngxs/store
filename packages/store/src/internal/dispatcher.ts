@@ -20,6 +20,7 @@ import { fallbackSubscriber } from './fallback-subscriber';
 import { InternalDispatchedActionResults } from './action-results';
 import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
 import { InternalNgxsExecutionStrategy } from '../execution/execution-strategy';
+import { QueuedActions } from '../actions/queued-actions';
 
 @Injectable({ providedIn: 'root' })
 export class InternalDispatcher {
@@ -29,6 +30,7 @@ export class InternalDispatcher {
   private _pluginManager = inject(PluginManager);
   private _stateStream = inject(ɵStateStream);
   private _ngxsExecutionStrategy = inject(InternalNgxsExecutionStrategy);
+  private _queue = inject(QueuedActions);
   private _injector = inject(Injector);
 
   /**
@@ -66,6 +68,12 @@ export class InternalDispatcher {
         );
         return new Observable(subscriber => subscriber.error(error));
       }
+    }
+
+    if (this._queue.size > 0) {
+      // Allows using `inject` within the `flushActions()`.
+      // This avoids circular dependencies between DI features.
+      runInInjectionContext(this._injector, () => this._queue.flushActions());
     }
 
     const prevState = this._stateStream.getValue();
