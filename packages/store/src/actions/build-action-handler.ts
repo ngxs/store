@@ -1,30 +1,28 @@
 import { inject } from '@angular/core';
-import { ɵNgxsActionRegistry, ɵStateClass } from '@ngxs/store/internals';
+import { ɵStateClass } from '@ngxs/store/internals';
+import type { Observable } from 'rxjs';
 
-import { ActionType } from './symbols';
+import { ActionDef } from './symbols';
 import { StateContext } from '../symbols';
-import { StateFactory } from '../internal/state-factory';
-import { InternalActionHandlerFactory } from '../internal/action-handler-factory';
+import { QueuedActions } from './queued-actions';
 
-/**
- *
- */
-export function experimentalBuildActionHandler(
-  StateClass: ɵStateClass,
-  Action: ActionType,
-  handlerFn: (ctx: StateContext<any>, action: any) => any
-) {
-  return {
-    attach: () => {
-      const stateFactory = inject(StateFactory);
-      const registry = inject(ɵNgxsActionRegistry);
-      const actionHandlerFactory = inject(InternalActionHandlerFactory);
-      const path = stateFactory.resolveStatePath(StateClass);
-      if (typeof ngDevMode !== 'undefined' && ngDevMode && !path) {
-        throw new Error('State is not registered yet to define action on.');
-      }
-      const actionHandler = actionHandlerFactory.createActionHandler(path!, handlerFn, true);
-      return registry.register(Action.type, actionHandler);
-    }
-  };
+export class ActionHandler<TActionType extends ActionDef> {
+  constructor(
+    private _StateClass: ɵStateClass,
+    private _Action: TActionType,
+    private _handlerFn: (
+      ctx: StateContext<any>,
+      action: InstanceType<TActionType>
+    ) => void | Observable<void> | Promise<void>
+  ) {}
+
+  attach() {
+    const queue = inject(QueuedActions);
+
+    queue.add({
+      StateClass: this._StateClass,
+      Action: this._Action,
+      handlerFn: this._handlerFn
+    });
+  }
 }
