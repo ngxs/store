@@ -11,6 +11,7 @@ $ npm install @ngxs/store@dev
 - Refactor: Reduce RxJS dependency [#2292](https://github.com/ngxs/store/pull/2292)
 - Refactor: Pull less RxJS symbols [#2309](https://github.com/ngxs/store/pull/2309) [#2310](https://github.com/ngxs/store/pull/2310)
 - Refactor: Replace `ENVIRONMENT_INITIALIZER` [#2314](https://github.com/ngxs/store/pull/2314)
+- Refactor: Replace `const enum` [#2332](https://github.com/ngxs/store/pull/2332)
 - Fix(store): Add root store initializer guard [#2278](https://github.com/ngxs/store/pull/2278)
 - Fix(store): Reduce change detection cycles with pending tasks [#2280](https://github.com/ngxs/store/pull/2280)
 - Fix(store): Complete action results on destroy [#2282](https://github.com/ngxs/store/pull/2282)
