@@ -2,10 +2,13 @@ import { InjectionToken } from '@angular/core';
 
 declare const ngDevMode: boolean;
 
-export const enum NavigationActionTiming {
-  PreActivation = 1,
-  PostActivation = 2
-}
+export const NavigationActionTiming = {
+  PreActivation: 1,
+  PostActivation: 2
+} as const;
+
+export type NavigationActionTiming =
+  (typeof NavigationActionTiming)[keyof typeof NavigationActionTiming];
 
 export interface NgxsRouterPluginOptions {
   navigationActionTiming?: NavigationActionTiming;
