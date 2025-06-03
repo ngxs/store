@@ -8,14 +8,12 @@ import { InternalNgxsExecutionStrategy } from './execution/execution-strategy';
 /**
  * Status of a dispatched action
  */
-export const ActionStatus = {
-  Dispatched: 'DISPATCHED',
-  Successful: 'SUCCESSFUL',
-  Canceled: 'CANCELED',
-  Errored: 'ERRORED'
-} as const;
-
-export type ActionStatus = (typeof ActionStatus)[keyof typeof ActionStatus];
+export enum ActionStatus {
+  Dispatched = 'DISPATCHED',
+  Successful = 'SUCCESSFUL',
+  Canceled = 'CANCELED',
+  Errored = 'ERRORED'
+}
 
 export interface ActionContext<T = any> {
   status: ActionStatus;
