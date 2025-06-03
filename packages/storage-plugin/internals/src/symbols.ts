@@ -10,12 +10,10 @@ export const ɵDEFAULT_STATE_KEY = '@@STATE';
 
 declare const ngDevMode: boolean;
 
-export const StorageOption = {
-  LocalStorage: 0,
-  SessionStorage: 1
-} as const;
-
-export type StorageOption = (typeof StorageOption)[keyof typeof StorageOption];
+export enum StorageOption {
+  LocalStorage,
+  SessionStorage
+}
 
 export interface NgxsStoragePluginOptions {
   /**
