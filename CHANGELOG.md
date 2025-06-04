@@ -7,6 +7,7 @@ $ npm install @ngxs/store@dev
 ### To become next patch version
 
 - Feature(store): Add `lazyProvider` utility [#2326](https://github.com/ngxs/store/pull/2326)
+- Feature(devtools-plugin): Add `serialize` option [#2337](https://github.com/ngxs/store/pull/2337)
 - Refactor: Replace `ngOnDestroy` with `DestroyRef` [#2289](https://github.com/ngxs/store/pull/2289)
 - Refactor: Reduce RxJS dependency [#2292](https://github.com/ngxs/store/pull/2292)
 - Refactor: Pull less RxJS symbols [#2309](https://github.com/ngxs/store/pull/2309) [#2310](https://github.com/ngxs/store/pull/2310)
