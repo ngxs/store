@@ -1,11 +1,10 @@
-import { runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideStore, Store } from '@ngxs/store';
+import { ActionDirector, provideStore, Store } from '@ngxs/store';
 
 import { AddCountry } from './fixtures/actions';
 import { CountriesState } from './fixtures/state';
 
-describe('buildActionHandler', () => {
+describe('ActionDirector', () => {
   it('should allow attaching action handlers on the fly', async () => {
     // Arrange
     TestBed.configureTestingModule({
@@ -22,7 +21,7 @@ describe('buildActionHandler', () => {
 
     // Act
     const { addCountryActionHandler } = await import('./fixtures/add-country-action-handler');
-    runInInjectionContext(TestBed, addCountryActionHandler);
+    addCountryActionHandler(TestBed.inject(ActionDirector));
 
     store.dispatch(new AddCountry('Canada'));
 

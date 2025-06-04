@@ -1,5 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { type StateToken, ɵNgxsActionRegistry } from '@ngxs/store/internals';
+import {
+  type StateToken,
+  type ɵActionOptions,
+  ɵNgxsActionRegistry
+} from '@ngxs/store/internals';
 import type { Observable } from 'rxjs';
 
 import type { ActionDef } from './symbols';
@@ -18,12 +22,12 @@ export class ActionDirector {
       ctx: StateContext<TStateModel>,
       action: InstanceType<TActionType>
     ) => void | Observable<void> | Promise<void>,
-    cancelUncompleted = false
+    options: ɵActionOptions = {}
   ) {
     const actionHandler = this._actionHandlerFactory.createActionHandler(
       stateToken.getName(),
       handlerFn,
-      cancelUncompleted
+      options
     );
     this._registry.register(Action.type, actionHandler);
   }

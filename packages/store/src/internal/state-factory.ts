@@ -315,7 +315,7 @@ export class StateFactory {
         return this._actionHandlerFactory.createActionHandler(
           path,
           handlerFn,
-          !!actionMeta.options.cancelUncompleted
+          actionMeta.options
         );
       });
 

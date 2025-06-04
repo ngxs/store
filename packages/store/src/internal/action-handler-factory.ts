@@ -9,6 +9,7 @@ import {
   of,
   takeUntil
 } from 'rxjs';
+import type { ɵActionOptions } from '@ngxs/store/internals';
 
 import { InternalActions } from '../actions-stream';
 import { ofActionDispatched } from '../operators/of-action';
@@ -23,7 +24,7 @@ export class InternalActionHandlerFactory {
   createActionHandler(
     path: string,
     handlerFn: (ctx: StateContext<any>, action: any) => any,
-    cancelUncompleted: boolean
+    options: ɵActionOptions
   ): (action: any) => Observable<any> {
     const { dispatched$ } = this._actions;
 
@@ -56,7 +57,7 @@ export class InternalActionHandlerFactory {
           defaultIfEmpty(undefined)
         );
 
-        if (cancelUncompleted) {
+        if (options.cancelUncompleted) {
           const canceled = dispatched$.pipe(ofActionDispatched(action));
           result = result.pipe(takeUntil(canceled));
         }
