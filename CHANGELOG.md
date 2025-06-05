@@ -4,8 +4,9 @@
 $ npm install @ngxs/store@dev
 ```
 
-### To become next patch version
+### To become next minor/major version
 
+- Feature(store): Implement attachAction [#2329](https://github.com/ngxs/store/pull/2329)
 - Feature(store): Add `lazyProvider` utility [#2326](https://github.com/ngxs/store/pull/2326)
 - Refactor: Replace `ngOnDestroy` with `DestroyRef` [#2289](https://github.com/ngxs/store/pull/2289)
 - Refactor: Reduce RxJS dependency [#2292](https://github.com/ngxs/store/pull/2292)
