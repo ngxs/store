@@ -226,14 +226,14 @@ store
     new GetNovelById(id), // action handler throws `new Error(...)`
     new GetDetectiveById(id)
   ])
-  .subscribe(
-    () => {
+  .subscribe({
+    next: () => {
       // they will never see me
     },
-    error => {
+    error: error => {
       console.log(error); // `Error` that was thrown by the `getNovelById` handler
     }
-  );
+  });
 ```
 
 Because at least one action throws an error NGXS returns an error to the `onError` observable callback and neither the `onNext` or `onComplete` callbacks would be called.
@@ -242,32 +242,20 @@ Because at least one action throws an error NGXS returns an error to the `onErro
 
 In NGXS, when you do asynchronous work you should return an `Observable` or `Promise` from your `@Action` method that represents that asynchronous work (and completion). The completion of the action will then be bound to the completion of the asynchronous work. If you use the `async/await` javascript syntax then NGXS will know about the completion because an `async` method returns the `Promise` for you. If you return an `Observable` NGXS will subscribe to the observable for you and bind the action's completion lifecycle event to the completion of the `Observable`.
 
-Sometimes you may not want the completion of an action to wait for the asynchronous work to complete. This is what we will refer to as "fire and forget". This can be achieved by simply not returning the handle to your asynchronous work from the `@Action` method. Note that in the case of an `Observable` you would have to `.subscribe(...)` or call `.toPromise()` to ensure that your observable runs.
-
-`Observable` version:
+The "fire-and-forget" approach refers to performing asynchronous work inside an action handler without returning anything from the method. This approach is not recommended because state writes are no longer allowed once the action handler "completes". When you don't return anything (effectively using a `void` return type), state writes are disabled immediately after the synchronous part of the handler finishes executing:
 
 ```ts
 @Action(GetNovels)
 getNovels(ctx: StateContext<BooksStateModel>) {
   this.booksService.getNovels().subscribe(novels => {
+    // This code will not patch the state because `patchState` is disabled
+    // after the `GetNovels` handler has finished executing.
     ctx.patchState({ novels });
   });
 }
 ```
 
-`Promise` version:
-
-```ts
-@Action(GetNovels)
-getNovels(ctx: StateContext<BooksStateModel>) {
-  this.booksService.getNovels().toPromise()
-    .then(novels => {
-      ctx.patchState({ novels });
-    });
-}
-```
-
-Another more common use case of using the "fire and forget" approach would be when you dispatch a new action inside a handler and you don't want to wait for the 'child' action to complete. For example, if we want to load detectives right after novels but we don't want the completion of our `GetNovels` action to wait for the detectives to load then we would have the following code:
+Another more common use case of using the "fire and forget" approach would be when you dispatch a new action inside a handler and you don't want to wait for the "child" action to complete. For example, if we want to load detectives right after novels but we don't want the completion of our `GetNovels` action to wait for the detectives to load then we would have the following code:
 
 ```ts
 export class BooksState {
@@ -321,9 +309,9 @@ Often this type of code can be made simpler by converting to Promises and using 
 ```ts
 @Action(GetNovels)
 async getNovels(ctx: StateContext<BooksStateModel>) {
-  const novels = await this.booksService.getNovels().toPromise();
+  const novels = await firstValueFrom(this.booksService.getNovels());
   ctx.patchState({ novels });
-  await ctx.dispatch(new GetDetectives()).toPromise();
+  await firstValueFrom(ctx.dispatch(new GetDetectives()));
 }
 ```
 
