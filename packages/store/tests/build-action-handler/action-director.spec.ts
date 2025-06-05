@@ -28,4 +28,26 @@ describe('ActionDirector', () => {
     // Assert
     expect(store.snapshot()).toEqual({ countries: ['Canada'] });
   });
+
+  it('should allow detaching lazy action handlers', async () => {
+    // Arrange
+    TestBed.configureTestingModule({
+      providers: [provideStore([CountriesState])]
+    });
+
+    const store = TestBed.inject(Store);
+    expect(store.snapshot()).toEqual({ countries: [] });
+    const { addCountryActionHandler } = await import('./fixtures/add-country-action-handler');
+    const handle = addCountryActionHandler(TestBed.inject(ActionDirector));
+
+    store.dispatch(new AddCountry('Canada'));
+    expect(store.snapshot()).toEqual({ countries: ['Canada'] });
+
+    // Act
+    handle.detach();
+    store.dispatch(new AddCountry('England'));
+
+    // Assert
+    expect(store.snapshot()).toEqual({ countries: ['Canada'] });
+  });
 });
