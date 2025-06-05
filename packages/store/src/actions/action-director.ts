@@ -1,12 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import {
-  type StateToken,
-  type ɵActionOptions,
-  ɵNgxsActionRegistry
-} from '@ngxs/store/internals';
+import { type StateToken, ɵNgxsActionRegistry } from '@ngxs/store/internals';
 import type { Observable } from 'rxjs';
 
-import type { ActionDef } from './symbols';
+import type { ActionDef, ActionOptions } from './symbols';
 import type { StateContext } from '../symbols';
 import { InternalActionHandlerFactory } from '../internal/action-handler-factory';
 
@@ -22,7 +18,7 @@ export class ActionDirector {
       ctx: StateContext<TStateModel>,
       action: InstanceType<TActionType>
     ) => void | Observable<void> | Promise<void>,
-    options: ɵActionOptions = {}
+    options: ActionOptions = {}
   ) {
     const actionHandler = this._actionHandlerFactory.createActionHandler(
       stateToken.getName(),

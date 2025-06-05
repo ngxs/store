@@ -26,7 +26,7 @@ export {
   NgxsSimpleChange
 } from './symbols';
 export { Selector } from './decorators/selector/selector';
-export { ActionType, ActionDef } from './actions/symbols';
+export { ActionType, ActionDef, ActionOptions } from './actions/symbols';
 
 export { ActionDirector } from './actions/action-director';
 
@@ -58,6 +58,5 @@ export * from './standalone-features';
 export * from './utils/public_api';
 
 export { StateToken } from '@ngxs/store/internals';
-export { ɵActionOptions as ActionOptions } from '@ngxs/store/internals';
 
 export { getActionTypeFromInstance, actionMatcher } from '@ngxs/store/plugins';
