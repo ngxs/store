@@ -1,6 +1,6 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { ɵOrderedSubject } from '@ngxs/store/internals';
-import { Observable, Subject, share } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { leaveNgxs } from './operators/leave-ngxs';
 import { InternalNgxsExecutionStrategy } from './execution/execution-strategy';
@@ -61,14 +61,15 @@ export class Actions extends Observable<ActionContext> {
     const internalActions$ = inject(InternalActions);
     const internalExecutionStrategy = inject(InternalNgxsExecutionStrategy);
 
-    const sharedInternalActions$ = internalActions$.pipe(
-      leaveNgxs(internalExecutionStrategy),
-      // The `InternalActions` subject emits outside of the Angular zone.
-      // We have to re-enter the Angular zone for any incoming consumer.
-      // The `share()` operator reduces the number of change detections.
-      // This would call leave only once for any stream emission across all active subscribers.
-      share()
-    );
+    // The `InternalActions` subject emits outside of the Angular zone.
+    // We have to re-enter the Angular zone for any incoming consumer.
+    // The shared `Subject` reduces the number of change detections.
+    // This would call leave only once for any stream emission across all active subscribers.
+    const sharedInternalActions$ = new Subject<ActionContext>();
+
+    internalActions$
+      .pipe(leaveNgxs(internalExecutionStrategy))
+      .subscribe(sharedInternalActions$);
 
     super(observer => {
       const childSubscription = sharedInternalActions$.subscribe({
