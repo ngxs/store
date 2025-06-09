@@ -1,6 +1,6 @@
-import { ɵActionOptions, ɵensureStoreMetadata, ɵhasOwnProperty } from '@ngxs/store/internals';
+import { ɵensureStoreMetadata, ɵhasOwnProperty } from '@ngxs/store/internals';
 
-import { ActionDef, ActionType } from '../actions/symbols';
+import { ActionDef, ActionType, ActionOptions } from '../actions/symbols';
 import { throwActionDecoratorError } from '../configs/messages.config';
 import { StateContext } from '../symbols';
 
@@ -53,7 +53,7 @@ type ActionDecorator<ActionOrActions extends ActionType | ActionType[]> = (
  */
 export function Action<ActionOrActions extends ActionType | ActionType[]>(
   actions: ActionOrActions,
-  options?: ɵActionOptions
+  options?: ActionOptions
 ): ActionDecorator<ActionOrActions> {
   return (
     target: any,

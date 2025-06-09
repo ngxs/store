@@ -1,21 +1,21 @@
-# Action Handlers
+# Actions Stream
 
 Before reading this article, we advise you to become acquainted with the [actions life cycle](./actions-life-cycle.md).
 
 Event sourcing involves modeling the state changes made by applications as an immutable sequence or “log” of events.
 Instead of focusing on current state, you focus on the changes that have occurred over time. It is the practice of
-modeling your system as a sequence of events. In NGXS, we called this Action Handlers.
+modeling your system as a sequence of events. In NGXS, we called this the Actions Stream.
 
 Typically actions directly correspond to state changes but it can be difficult to always make your component react
 based on state. As a side effect of this paradigm, we end up creating lots of intermediate state properties
-to do things like reset a form/etc. Action handlers let us drive our components based on state along with events
+to do things like reset a form/etc. The Actions Stream lets us drive our components based on state along with events
 that are emitted.
 
 For example, if we were to have a shopping cart and we were to delete an item out of it you might want to show
 a notification that it was successfully removed. In a pure state driven application, you might create some kind
-of message array to make the dialog show up. With Action Handlers, we can respond to the action directly.
+of message array to make the dialog show up. With the Actions Stream, we can respond to the action directly.
 
-The action handler is an Observable that receives all the actions dispatched before the state takes any action on it.
+The Actions Stream is an Observable that receives all the actions dispatched before the state takes any action on it.
 
 Actions in NGXS also have a lifecycle. Since any potential action can be async we tag actions showing when they are "DISPATCHED", "SUCCESSFUL", "CANCELED" or "ERRORED". This gives you the ability to react to actions at different points in their existence.
 
@@ -83,7 +83,7 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-Action handlers can also be utilized in components. For example, considering the cart deletion scenario, we could use the following code:
+The Actions Stream can also be utilized in components. For example, considering the cart deletion scenario, we could use the following code:
 
 ```ts
 @Component({ ... })
@@ -96,7 +96,7 @@ export class CartComponent {
 }
 ```
 
-Also, remember to unsubscribe from the actions stream at the end:
+Also, remember to unsubscribe from the Actions Stream at the end:
 
 ```ts
 @Component({ ... })
