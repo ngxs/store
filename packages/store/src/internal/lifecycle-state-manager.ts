@@ -92,9 +92,7 @@ export class LifecycleStateManager {
           });
       }
 
-      if (instance.ngxsOnInit) {
-        instance.ngxsOnInit(this._getStateContext(mappedStore));
-      }
+      instance.ngxsOnInit?.(this._getStateContext(mappedStore));
 
       mappedStore.isInitialised = true;
     }
@@ -103,13 +101,14 @@ export class LifecycleStateManager {
   private _invokeBootstrapOnStates(mappedStores: MappedStore[]) {
     for (const mappedStore of mappedStores) {
       const instance: NgxsLifeCycle = mappedStore.instance;
-      if (instance.ngxsAfterBootstrap) {
-        instance.ngxsAfterBootstrap(this._getStateContext(mappedStore));
-      }
+      instance.ngxsAfterBootstrap?.(this._getStateContext(mappedStore));
     }
   }
 
   private _getStateContext(mappedStore: MappedStore): StateContext<any> {
-    return this._stateContextFactory.createStateContext(mappedStore.path);
+    return this._stateContextFactory.createStateContext(
+      mappedStore.path,
+      new AbortController()
+    );
   }
 }
