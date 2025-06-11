@@ -6,7 +6,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-...
+- Feature(store): Expose `AbortSignal` on the state context [#2244](https://github.com/ngxs/store/pull/2244)
 
 ### 20.1.0 2025-07-16
 
