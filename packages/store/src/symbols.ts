@@ -83,6 +83,11 @@ export { StateOperator };
  */
 export interface StateContext<T> {
   /**
+   * Aborts the action if it has not yet been completed.
+   */
+  abort: () => void;
+
+  /**
    * Get the current state.
    */
   getState(): T;
