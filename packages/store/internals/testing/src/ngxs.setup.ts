@@ -1,6 +1,6 @@
-import { ApplicationRef } from '@angular/core';
+import { ApplicationRef, DOCUMENT } from '@angular/core';
 import { TestBed, TestBedStatic } from '@angular/core/testing';
-import { DOCUMENT } from '@angular/common';
+
 import { ɵBrowserDomAdapter as BrowserDomAdapter } from '@angular/platform-browser';
 import {
   BrowserDynamicTestingModule,

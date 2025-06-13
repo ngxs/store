@@ -96,7 +96,8 @@
         }
       },
       "defaultConfiguration": "development",
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "continuous": true
     },
     "test": {
       "executor": "@nx/jest:jest",

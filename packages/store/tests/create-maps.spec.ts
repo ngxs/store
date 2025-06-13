@@ -1,4 +1,4 @@
-import { Injectable, runInInjectionContext } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   Selector,
@@ -37,7 +37,7 @@ describe('create maps', () => {
       testSetup();
 
       // Act
-      const selectors = runInInjectionContext(TestBed, () =>
+      const selectors = TestBed.runInInjectionContext(() =>
         createSelectMap({
           number: NumberState.getNumberState
         })
@@ -55,7 +55,7 @@ describe('create maps', () => {
       testSetup();
 
       // Act
-      const dispatchers = runInInjectionContext(TestBed, () =>
+      const dispatchers = TestBed.runInInjectionContext(() =>
         createDispatchMap({
           increment: Increment
         })

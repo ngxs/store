@@ -85,7 +85,7 @@ jobs:
     strategy:
       matrix:
         script:
-          - 'integration:ng19'
+          - 'integration:ng20'
           - 'test:types'
 
     steps:

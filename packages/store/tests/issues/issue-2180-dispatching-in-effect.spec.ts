@@ -3,7 +3,7 @@ import {
   Component,
   Injectable,
   effect,
-  provideExperimentalZonelessChangeDetection,
+  provideZonelessChangeDetection,
   signal
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -88,7 +88,7 @@ describe('State per signal', () => {
       skipConsoleLogging(() =>
         TestBed.configureTestingModule({
           imports: [NgxsModule.forRoot([NumberState]), TestComponent],
-          providers: [provideExperimentalZonelessChangeDetection()]
+          providers: [provideZonelessChangeDetection()]
         })
       );
 
@@ -143,7 +143,7 @@ describe('State per signal', () => {
             () =>
               bootstrapApplication(TestComponent, {
                 providers: [
-                  provideExperimentalZonelessChangeDetection(),
+                  provideZonelessChangeDetection(),
                   provideStore([NumberState], withExperimentalNgxsPendingTasks())
                 ]
               }),
