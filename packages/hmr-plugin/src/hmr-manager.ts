@@ -17,10 +17,10 @@ type OldHostRemoverFn = () => void;
 
 export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnapshot> {
   public storage: HmrStorage<S>;
-  public context: HmrStateContextFactory<T, S>;
-  public lifecycle: HmrLifecycle<T, S>;
+  public context!: HmrStateContextFactory<T, S>;
+  public lifecycle!: HmrLifecycle<T, S>;
   public optionsBuilder: HmrOptionBuilder;
-  private ngModule: NgModuleRef<T>;
+  private ngModule!: NgModuleRef<T>;
 
   constructor(options: NgxsHmrOptions, storage: HmrStorage<S>) {
     this.storage = storage;

@@ -1,5 +1,5 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
-import { workspaceRoot } from '@nrwl/devkit';
+import { workspaceRoot } from '@nx/devkit';
 import { join } from 'path';
 import { createWorkspace } from '../_testing';
 import { LIBRARIES } from '../utils/common/lib.config';
@@ -45,7 +45,7 @@ describe('Ngxs ng-add Schematic', () => {
         });
 
         // Assert
-        const content = tree!.readContent('/projects/foo/src/app/app.module.ts');
+        const content = tree!.readContent('/projects/foo/src/app/app-module.ts');
         expect(content).toMatch(/import { NgxsModule } from '@ngxs\/store'/);
         expect(content).toMatch(/imports: \[[^\]]*NgxsModule.forRoot\(\[\],[^\]]*\]/m);
         expect(content).toContain(
@@ -84,7 +84,7 @@ describe('Ngxs ng-add Schematic', () => {
 
         // Assert
         expect(content).toMatch(/provideStore\(/);
-        expect(tree!.files).not.toContain('/projects/foo/src/app/app.module.ts');
+        expect(tree!.files).not.toContain('/projects/foo/src/app/app-module.ts');
       });
     });
   });

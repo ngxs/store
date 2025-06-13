@@ -3,7 +3,7 @@ export { Action } from './decorators/action';
 export { Store } from './store';
 export { State } from './decorators/state';
 export { SelectorOptions } from './decorators/selector-options';
-export { Actions, ActionContext, ActionStatus } from './actions-stream';
+export { Actions, type ActionContext, ActionStatus } from './actions-stream';
 
 export {
   ofAction,
@@ -12,29 +12,29 @@ export {
   ofActionCanceled,
   ofActionErrored,
   ofActionCompleted,
-  ActionCompletion
+  type ActionCompletion
 } from './operators/of-action';
 export {
   NgxsConfig,
-  StateContext,
-  StateOperator,
-  NgxsOnInit,
-  NgxsAfterBootstrap,
-  NgxsOnChanges,
-  NgxsModuleOptions,
+  type StateContext,
+  type StateOperator,
+  type NgxsOnInit,
+  type NgxsAfterBootstrap,
+  type NgxsOnChanges,
+  type NgxsModuleOptions,
   NgxsSimpleChange
 } from './symbols';
 export { Selector } from './decorators/selector/selector';
-export { ActionType, ActionDef } from './actions/symbols';
+export type { ActionType, ActionDef } from './actions/symbols';
 
 export { ActionDirector } from './actions/action-director';
 
 export {
   NgxsUnhandledErrorHandler,
-  NgxsUnhandledErrorContext
+  type NgxsUnhandledErrorContext
 } from './ngxs-unhandled-error-handler';
 
-export { NgxsDevelopmentOptions } from './dev-features/symbols';
+export type { NgxsDevelopmentOptions } from './dev-features/symbols';
 export {
   NgxsDevelopmentModule,
   withNgxsDevelopmentOptions
@@ -46,8 +46,8 @@ export {
   createPickSelector,
   createPropertySelectors,
   createSelector,
-  PropertySelectors,
-  TypedSelector
+  type PropertySelectors,
+  type TypedSelector
 } from './selectors';
 
 export { withNgxsPendingTasks } from './pending-tasks';
@@ -57,6 +57,6 @@ export * from './standalone-features';
 export * from './utils/public_api';
 
 export { StateToken } from '@ngxs/store/internals';
-export { ɵActionOptions as ActionOptions } from '@ngxs/store/internals';
+export type { ɵActionOptions as ActionOptions } from '@ngxs/store/internals';
 
 export { getActionTypeFromInstance, actionMatcher } from '@ngxs/store/plugins';

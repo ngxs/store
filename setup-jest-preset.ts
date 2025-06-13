@@ -1,8 +1,12 @@
+/// <reference types="jest" />
+
 import { TextDecoder, TextEncoder } from 'node:util';
 
 Object.assign(global, { TextDecoder, TextEncoder });
 
-import 'jest-preset-angular/setup-jest';
+import { setupZoneTestEnv } from 'jest-preset-angular/setup-env/zone';
+
+setupZoneTestEnv();
 
 const CI = process.env['CI'] === 'true';
 

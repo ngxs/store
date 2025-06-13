@@ -41,7 +41,7 @@ describe('RouterState cleanup', () => {
       // Assert
       expect(events.observers.length).toBeGreaterThan(0);
       ngModuleRef.destroy();
-      expect(events.observers.length).toEqual(0);
+      expect(events.observers).toEqual(null);
     })
   );
 });

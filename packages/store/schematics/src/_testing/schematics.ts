@@ -1,5 +1,5 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
-import { workspaceRoot } from '@nrwl/devkit';
+import { workspaceRoot } from '@nx/devkit';
 import { Schema as ApplicationOptions } from '@schematics/angular/application/schema';
 import { Schema as WorkspaceOptions } from '@schematics/angular/workspace/schema';
 import * as path from 'path';
@@ -72,16 +72,16 @@ function updateToStandalone(
       @Component({
         selector: 'app-root',
         standalone: true,
-        templateUrl: './app.component.html',
-        styleUrls: ['./app.component.scss'],
+        templateUrl: './app.html',
+        styleUrls: ['./app.scss'],
       })
       export class AppComponent {}
   `;
 
   const projectPath = `/${workspaceOptions.newProjectRoot}/${appOptions.name}`;
   appTree.overwrite(`${projectPath}/src/main.ts`, mainTsContent);
-  appTree.overwrite(`${projectPath}/src/app/app.component.ts`, appComponentContent);
-  if (appTree.files.includes(`${projectPath}/src/app/app.module.ts`)) {
-    appTree.delete(`${projectPath}/src/app/app.module.ts`);
+  appTree.overwrite(`${projectPath}/src/app/app.ts`, appComponentContent);
+  if (appTree.files.includes(`${projectPath}/src/app/app-module.ts`)) {
+    appTree.delete(`${projectPath}/src/app/app-module.ts`);
   }
 }

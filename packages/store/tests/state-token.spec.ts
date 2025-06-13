@@ -1,11 +1,10 @@
 import { NgxsModule, Selector, State, StateToken, Store } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
-import { Component, Injectable } from '@angular/core';
-import { take } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Component, inject, Injectable } from '@angular/core';
+import { firstValueFrom, Observable } from 'rxjs';
 
 describe('[TEST]: StateToken', () => {
-  describe('Simple use', function () {
+  describe('Simple use', () => {
     it('should successfully create a simple token', () => {
       const TODO_TOKEN = new StateToken<string>('todo');
       expect(TODO_TOKEN).toBeInstanceOf(StateToken);
@@ -41,9 +40,9 @@ describe('[TEST]: StateToken', () => {
         standalone: false
       })
       class MyComponent {
-        myState$: Observable<string[]> = this.storeApp.select(TODO_LIST_TOKEN);
+        myState$: Observable<string[]> = inject(Store).select(TODO_LIST_TOKEN);
 
-        constructor(public storeApp: Store) {}
+        readonly store = inject(Store);
       }
 
       await TestBed.configureTestingModule({
@@ -62,7 +61,7 @@ describe('[TEST]: StateToken', () => {
       const { fixture, TODO_LIST_TOKEN, TodoListState } = await setup();
 
       // Assert
-      const store: Store = fixture.componentInstance.storeApp;
+      const store = fixture.componentInstance.store;
       expect(store.selectSnapshot(TodoListState.todos)).toEqual(['hello', 'world']);
       expect(store.selectSnapshot(TodoListState.first)).toEqual('hello');
 
@@ -73,15 +72,14 @@ describe('[TEST]: StateToken', () => {
       expect(store.selectSnapshot(TODO_LIST_TOKEN)).toEqual(['hello', 'world']);
 
       // Act
-      const selectResult: string[] = await store
-        .select(TODO_LIST_TOKEN)
-        .pipe(take(1))
-        .toPromise();
+      const selectResult: string[] = await firstValueFrom(store.select(TODO_LIST_TOKEN));
       // Assert
       expect(selectResult).toEqual(['hello', 'world']);
 
       // Act
-      const selectOnceResult: string[] = await store.selectOnce(TODO_LIST_TOKEN).toPromise();
+      const selectOnceResult: string[] = await firstValueFrom(
+        store.selectOnce(TODO_LIST_TOKEN)
+      );
       // Assert
       expect(selectOnceResult).toEqual(['hello', 'world']);
     });

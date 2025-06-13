@@ -56,7 +56,7 @@ function orderedQueueOperation<TArgs extends any[]>(operation: (...args: TArgs) 
 export class ɵOrderedSubject<T> extends Subject<T> {
   private _orderedNext = orderedQueueOperation((value?: T) => super.next(<T>value));
 
-  next(value?: T): void {
+  override next(value?: T): void {
     this._orderedNext(value);
   }
 }
@@ -85,11 +85,11 @@ export class ɵOrderedBehaviorSubject<T> extends BehaviorSubject<T> {
     this._currentValue = value;
   }
 
-  getValue(): T {
+  override getValue(): T {
     return this._currentValue;
   }
 
-  next(value: T): void {
+  override next(value: T): void {
     this._currentValue = value;
     this._orderedNext(value);
   }

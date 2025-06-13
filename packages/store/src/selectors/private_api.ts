@@ -4,7 +4,7 @@
  * they may have a function that accepts selector functions and returns
  * signals with the type corresponding to the return type of those selectors.
  */
-export {
+export type {
   ɵSelectorFunc,
   ɵStateSelector,
   ɵSelectorDef,

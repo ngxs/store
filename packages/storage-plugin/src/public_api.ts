@@ -5,7 +5,7 @@ export * from './engines';
 
 export {
   StorageOption,
-  NgxsStoragePluginOptions,
+  type NgxsStoragePluginOptions,
   STORAGE_ENGINE,
-  StorageEngine
+  type StorageEngine
 } from '@ngxs/storage-plugin/internals';

@@ -9,8 +9,8 @@ import { NGXS_LOGGER_PLUGIN_OPTIONS } from './symbols';
 
 @Injectable()
 export class NgxsLoggerPlugin implements NgxsPlugin {
-  private _store: Store;
-  private _logWriter: LogWriter;
+  private _store!: Store;
+  private _logWriter!: LogWriter;
 
   private _options = inject(NGXS_LOGGER_PLUGIN_OPTIONS);
   private _injector = inject(Injector);

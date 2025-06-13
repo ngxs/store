@@ -178,7 +178,7 @@ describe('Select', () => {
       standalone: false
     })
     class CounterComponent {
-      count$ = this.store.select((state: { count: { number: { value: number } } }) => {
+      count$ = inject(Store).select((state: { count: { number: { value: number } } }) => {
         try {
           return state.count.number.value;
         } catch (err) {

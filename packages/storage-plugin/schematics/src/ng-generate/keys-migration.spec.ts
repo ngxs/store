@@ -1,5 +1,5 @@
 import { SchematicTestRunner } from '@angular-devkit/schematics/testing';
-import { workspaceRoot } from '@nrwl/devkit';
+import { workspaceRoot } from '@nx/devkit';
 import { join } from 'path';
 import { createWorkspace } from '../_testing';
 
@@ -47,11 +47,11 @@ describe('Storage Plugin Migration', () => {
       export class AppModule { }
     `;
 
-    appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
+    appTree.overwrite('/projects/foo/src/app/app-module.ts', newContent);
 
     const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
 
-    const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
+    const contentUpdate = tree!.readContent('/projects/foo/src/app/app-module.ts');
     expect(contentUpdate).toMatchSnapshot();
   });
 
@@ -80,11 +80,11 @@ describe('Storage Plugin Migration', () => {
       export class AppModule { }
     `;
 
-    appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
+    appTree.overwrite('/projects/foo/src/app/app-module.ts', newContent);
 
     const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
 
-    const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
+    const contentUpdate = tree!.readContent('/projects/foo/src/app/app-module.ts');
     expect(contentUpdate).toMatchSnapshot();
   });
 
@@ -113,11 +113,11 @@ describe('Storage Plugin Migration', () => {
       export class AppModule { }
     `;
 
-    appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
+    appTree.overwrite('/projects/foo/src/app/app-module.ts', newContent);
 
     const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
 
-    const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
+    const contentUpdate = tree!.readContent('/projects/foo/src/app/app-module.ts');
     expect(contentUpdate).toMatchSnapshot();
   });
 
@@ -146,11 +146,11 @@ describe('Storage Plugin Migration', () => {
       export class AppModule { }
     `;
 
-    appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
+    appTree.overwrite('/projects/foo/src/app/app-module.ts', newContent);
 
     const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
 
-    const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
+    const contentUpdate = tree!.readContent('/projects/foo/src/app/app-module.ts');
     expect(contentUpdate).toMatchSnapshot();
   });
 
@@ -181,11 +181,11 @@ describe('Storage Plugin Migration', () => {
       export class AppModule { }
     `;
 
-    appTree.overwrite('/projects/foo/src/app/app.module.ts', newContent);
+    appTree.overwrite('/projects/foo/src/app/app-module.ts', newContent);
 
     const tree = await ngxsSchematicRunner.runSchematic('ngxs-keys-migration', {}, appTree);
 
-    const contentUpdate = tree!.readContent('/projects/foo/src/app/app.module.ts');
+    const contentUpdate = tree!.readContent('/projects/foo/src/app/app-module.ts');
     expect(contentUpdate).toMatchSnapshot();
   });
 });

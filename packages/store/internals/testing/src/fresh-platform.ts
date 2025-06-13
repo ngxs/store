@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { DOCUMENT } from '@angular/common';
+
 import { ɵgetDOM as getDOM } from '@angular/platform-browser';
-import { VERSION, destroyPlatform, createPlatform } from '@angular/core';
+import { VERSION, destroyPlatform, createPlatform, DOCUMENT, Injector } from '@angular/core';
 
 function createRootElement() {
   const document = TestBed.inject(DOCUMENT);
@@ -31,7 +31,7 @@ function resetPlatformAfterBootstrapping() {
   const version = +VERSION.major;
   // https://github.com/angular/angular/commit/e250db4f261741b04ee4cbad4dec41a8908a12aa
   if (version < 14) {
-    createPlatform(TestBed);
+    createPlatform(TestBed.inject(Injector));
   }
 }
 
