@@ -13,7 +13,7 @@ describe('[TEST]: Action Types', () => {
       imports: [NgxsModule.forRoot()]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   it('should be correct type for selection', () => {

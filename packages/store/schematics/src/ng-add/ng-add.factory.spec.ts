@@ -1,5 +1,5 @@
 import { SchematicTestRunner, UnitTestTree } from '@angular-devkit/schematics/testing';
-import { workspaceRoot } from '@nrwl/devkit';
+import { workspaceRoot } from '@nx/devkit';
 import { join } from 'path';
 import { createWorkspace } from '../_testing';
 import { LIBRARIES } from '../utils/common/lib.config';

@@ -233,9 +233,9 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         expect(errorHandler.caughtErrorsByErrorHandler.length).toEqual(3);
 
         const messages = errorHandler.caughtErrorsByErrorHandler.map(e => e.message);
-        expect(messages[0]).toContain('Uncaught (in promise): SynchronousError');
-        expect(messages[1]).toContain('Uncaught (in promise): SynchronousErrorInStream');
-        expect(messages[2]).toContain('Uncaught (in promise): AsynchronousError');
+        expect(messages[0]).toContain('Synchronously Produced Error');
+        expect(messages[1]).toContain('Synchronously Produced Error In Stream');
+        expect(messages[2]).toContain('Asynchronously Produced Error');
       })
     );
 

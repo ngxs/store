@@ -1,73 +1,62 @@
-import 'zone.js/node';
-
-import * as path from 'node:path';
-import * as url from 'node:url';
+import {
+  AngularNodeAppEngine,
+  createNodeRequestHandler,
+  isMainModule,
+  writeResponseToNodeResponse
+} from '@angular/ssr/node';
 import * as express from 'express';
-import { APP_BASE_HREF } from '@angular/common';
+import { join } from 'node:path';
 
-import { CommonEngine } from '@angular/ssr';
+const browserDistFolder = join(process.cwd(), 'dist-integration');
 
-import bootstrap from './main.server';
+const app = express();
+const angularApp = new AngularNodeAppEngine();
 
-// The Express app is exported so that it can be used by serverless Functions.
-export function app() {
-  const server = express();
-  const browserDistFolder = path.join(process.cwd(), 'dist-integration');
-  const indexHtml = path.join(browserDistFolder, 'index.html');
-  const commonEngine = new CommonEngine();
+/**
+ * Example Express Rest API endpoints can be defined here.
+ * Uncomment and define endpoints as necessary.
+ *
+ * Example:
+ * ```ts
+ * app.get('/api/{*splat}', (req, res) => {
+ *   // Handle API request
+ * });
+ * ```
+ */
 
-  server.set('view engine', 'html');
-  server.set('views', browserDistFolder);
+/**
+ * Serve static files from /browser
+ */
+app.use(
+  express.static(browserDistFolder, {
+    maxAge: '1y',
+    index: false,
+    redirect: false
+  })
+);
 
-  // Example Express Rest API endpoints
-  // app.get('/api/**', (req, res) => { });
-  // Serve static files from /browser
-  server.get(
-    '*.*',
-    express.static(browserDistFolder, {
-      maxAge: '1y'
-    })
-  );
+/**
+ * Handle all other requests by rendering the Angular application.
+ */
+app.use((req, res, next) => {
+  angularApp
+    .handle(req)
+    .then(response => (response ? writeResponseToNodeResponse(response, res) : next()))
+    .catch(next);
+});
 
-  // All regular routes use the Universal engine
-  server.get('*', (req, res, next) => {
-    const { protocol, originalUrl, baseUrl, headers } = req;
-
-    commonEngine
-      .render({
-        bootstrap,
-        documentFilePath: indexHtml,
-        url: `${protocol}://${headers.host}${originalUrl}`,
-        publicPath: browserDistFolder,
-        providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }]
-      })
-      .then(html => res.send(html))
-      .catch(next);
-  });
-
-  return server;
-}
-
-function run() {
-  const port = process.env.PORT || 4200;
-
-  // Start up the Node server
-  const server = app();
-  server.listen(port, () => {
+/**
+ * Start the server if this module is the main entry point.
+ * The server listens on the port defined by the `PORT` environment variable, or defaults to 4200.
+ */
+if (isMainModule(import.meta.url)) {
+  const port = process.env['PORT'] || 4200;
+  app.listen(port, () => {
     console.log(`Node Express server listening on http://localhost:${port}`);
   });
 }
 
-// Webpack will replace 'require' with '__webpack_require__'
-// '__non_webpack_require__' is a proxy to Node 'require'
-// The below code is to ensure that the server is run only when not requiring the bundle.
-// eslint-disable-next-line
-declare const __non_webpack_require__: NodeRequire;
-// eslint-disable-next-line
-const mainModule = __non_webpack_require__.main;
-const moduleFilename = (mainModule && mainModule.filename) || '';
-if (moduleFilename === __filename || moduleFilename.includes('iisnode')) {
-  run();
-}
-
-export * from './main.server';
+/**
+ * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
+ */
+export const reqHandler = createNodeRequestHandler(app);

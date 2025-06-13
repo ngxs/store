@@ -3,7 +3,7 @@ import {
   AfterViewInit,
   Component,
   Injectable,
-  provideExperimentalZonelessChangeDetection,
+  provideZonelessChangeDetection,
   ChangeDetectionStrategy
 } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
@@ -67,7 +67,7 @@ describe('preboot feature + stable', () => {
           () =>
             bootstrapApplication(TestComponent, {
               providers: [
-                provideExperimentalZonelessChangeDetection(),
+                provideZonelessChangeDetection(),
 
                 provideStore([CountriesState], withNgxsPendingTasks())
               ]
