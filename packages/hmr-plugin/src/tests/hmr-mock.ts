@@ -1,11 +1,11 @@
-import { Component, Injectable, NgModule } from '@angular/core';
+import { Component, Injectable, NgModule, DOCUMENT } from '@angular/core';
 import {
   BrowserModule,
   ɵBrowserDomAdapter as BrowserDomAdapter
 } from '@angular/platform-browser';
 import { Action, NgxsModule, State, StateContext } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
-import { DOCUMENT } from '@angular/common';
+
 
 import { NgxsHmrLifeCycle, NgxsHmrSnapshot as Snapshot, WebpackModule } from '../symbols';
 import { HmrInitAction } from '../actions/hmr-init.action';

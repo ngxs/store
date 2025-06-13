@@ -20,7 +20,7 @@ describe('[TEST]: Action Types', () => {
       imports: [NgxsModule.forRoot()]
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   it('should be correct type in selector/select decorator', () => {
@@ -98,7 +98,7 @@ describe('[TEST]: Action Types', () => {
       @Select(TodoState.reverse) public D1$: Observable<string[]>; // $ExpectType Observable<string[]>
     }
 
-    TestBed.get(CheckSelectorComponent); // $ExpectType any
+    TestBed.inject(CheckSelectorComponent); // $ExpectType any
   });
 
   it('should be correct passed selectors', () => {
