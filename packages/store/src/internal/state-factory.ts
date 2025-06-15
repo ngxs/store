@@ -318,7 +318,11 @@ export class StateFactory {
         const cancelable = !!actionMeta.options.cancelUncompleted;
 
         return (action: any) => {
-          const stateContext = this._stateContextFactory.createStateContext(path);
+          const abortController = new AbortController();
+          const stateContext = this._stateContextFactory.createStateContext(
+            path,
+            abortController
+          );
 
           let result = instance[actionMeta.fn](stateContext, action);
 
@@ -358,6 +362,13 @@ export class StateFactory {
             }
 
             result = result.pipe(
+              takeUntil(
+                new Observable<void>(subscriber => {
+                  const onAbort = () => subscriber.next();
+                  abortController.signal.addEventListener('abort', onAbort);
+                  return () => abortController.signal.removeEventListener('abort', onAbort);
+                })
+              ),
               // Note that we use the `finalize` operator only when the action handler
               // explicitly returns an observable (or a promise) to wait for. This means
               // the action handler is written in a "fire & wait" style. If the handler’s

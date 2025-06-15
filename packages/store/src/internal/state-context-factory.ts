@@ -19,10 +19,13 @@ export class StateContextFactory {
   /**
    * Create the state context
    */
-  createStateContext<T>(path: string): StateContext<T> {
+  createStateContext<T>(path: string, abortController: AbortController): StateContext<T> {
     const root = this._internalStateOperations.getRootStateOperations();
 
     return {
+      abort() {
+        abortController.abort();
+      },
       getState(): T {
         const currentAppState = root.getState();
         return getState(currentAppState, path);
