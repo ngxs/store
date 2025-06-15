@@ -26,6 +26,6 @@ export function ɵcreateRouterPluginOptions(
 ): NgxsRouterPluginOptions {
   return {
     navigationActionTiming:
-      (options && options.navigationActionTiming) || NavigationActionTiming.PreActivation
+      options?.navigationActionTiming || NavigationActionTiming.PreActivation
   };
 }

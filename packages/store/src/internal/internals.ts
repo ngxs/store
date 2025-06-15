@@ -80,31 +80,6 @@ function fastPropGetter(paths: string[]): (x: any) => any {
   return <(x: any) => any>fn;
 }
 
-/**
- * Get a deeply nested value. Example:
- *
- *    getValue({ foo: bar: [] }, 'foo.bar') //=> []
- *
- * @ignore
- *
- * Marked for removal. It's only used within `createSelectorFn`.
- */
-export function propGetter(paths: string[], config: NgxsConfig) {
-  if (config?.compatibility?.strictContentSecurityPolicy) {
-    return compliantPropGetter(paths);
-  } else {
-    return fastPropGetter(paths);
-  }
-}
-
-// This injection token selects the prop getter implementation once the app is
-// bootstrapped, as the `propGetter` function's behavior determines the implementation
-// each time it's called. It accepts the config as the second argument. We no longer
-// need to check for the `strictContentSecurityPolicy` every time the prop getter
-// implementation is selected. Now, the `propGetter` function is only used within
-// `createSelectorFn`, which, in turn, is solely used by the `Select` decorator.
-// We've been trying to deprecate the `Select` decorator because it's unstable with
-// server-side rendering and micro-frontend applications.
 export const ɵPROP_GETTER = new InjectionToken<(paths: string[]) => (x: any) => any>(
   typeof ngDevMode !== 'undefined' && ngDevMode ? 'PROP_GETTER' : '',
   {
