@@ -8,7 +8,7 @@ on:
   pull_request:
 
 env:
-  NODE_VERSION: 18.x
+  NODE_VERSION: 22.x
   BASE_REF: ${{ format('remotes/origin/{0}', github.base_ref) }}
 
 defaults:
@@ -96,7 +96,7 @@ jobs:
     strategy:
       matrix:
         script:
-          - 'integration:ng19'
+          - 'integration:ng20'
           - 'test:types'
 
     steps:

@@ -10,7 +10,7 @@ on:
     tags-ignore: ['*']
 
 env:
-  NODE_VERSION: 18.x
+  NODE_VERSION: 22.x
 
 defaults:
   run:
@@ -85,7 +85,7 @@ jobs:
     strategy:
       matrix:
         script:
-          - 'integration:ng19'
+          - 'integration:ng20'
           - 'test:types'
 
     steps:

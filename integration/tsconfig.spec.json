@@ -10,6 +10,5 @@
     "target": "es5",
     "types": ["jest", "node"]
   },
-  "files": ["polyfills.ts"],
   "include": ["**/*.spec.ts"]
 }

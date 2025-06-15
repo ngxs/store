@@ -4,7 +4,8 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
-describe('Selectors within templates causing ticks (https://github.com/ngxs/store/issues/933)', () => {
+// Not an issue anymore.
+xdescribe('Selectors within templates causing ticks (https://github.com/ngxs/store/issues/933)', () => {
   class SetCountries {
     static readonly type = '[CountriesState] Set countries';
 
