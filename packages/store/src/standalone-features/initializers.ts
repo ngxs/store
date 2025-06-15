@@ -13,7 +13,6 @@ import { FEATURE_STATE_TOKEN, ROOT_STATE_TOKEN } from '../symbols';
 import { StateFactory } from '../internal/state-factory';
 import { StatesAndDefaults } from '../internal/internals';
 import { assertRootStoreNotInitialized } from './root-guard';
-import { SelectFactory } from '../decorators/select/select-factory';
 import { InternalStateOperations } from '../internal/state-operations';
 import { LifecycleStateManager } from '../internal/lifecycle-state-manager';
 import { installOnUnhandhedErrorHandler } from '../internal/unhandled-rxjs-error-callback';
@@ -41,7 +40,6 @@ export function rootStoreInitializer(): void {
   const internalStateOperations = inject(InternalStateOperations);
 
   inject(Store);
-  inject(SelectFactory);
 
   const states = inject(ROOT_STATE_TOKEN, { optional: true }) || [];
   const lifecycleStateManager = inject(LifecycleStateManager);
