@@ -100,7 +100,7 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
         // `trigger` property, confirming that it is our router state (coming from `@ngxs/router-plugin`).
         // This enables a time-traveling feature, as it not only restores the state but
         // also allows the `RouterState` to navigate back when the action is jumped.
-        if (prevState.router && prevState.router.trigger) {
+        if (prevState.router?.trigger) {
           prevState.router.trigger = 'devtools';
         }
         this.store.reset(prevState);

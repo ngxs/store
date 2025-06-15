@@ -12,7 +12,7 @@ export interface KeyWithExplicitEngine {
 
 /** Determines whether the provided key has the following structure. */
 export function ɵisKeyWithExplicitEngine(key: any): key is KeyWithExplicitEngine {
-  return key != null && !!key.engine;
+  return !!key?.engine;
 }
 
 /**

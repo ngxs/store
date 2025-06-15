@@ -140,7 +140,7 @@ export class RouterState {
   }
 
   private _navigateIfNeeded(routerState: RouterStateModel | undefined): void {
-    if (routerState && routerState.trigger === 'devtools') {
+    if (routerState?.trigger === 'devtools') {
       this._storeState = this._store.selectSnapshot(ROUTER_STATE_TOKEN);
     }
 

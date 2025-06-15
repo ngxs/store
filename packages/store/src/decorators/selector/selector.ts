@@ -25,7 +25,7 @@ export function Selector<T extends SelectorDefTuple = []>(
     const originalFn = descriptor?.value;
 
     if (typeof ngDevMode !== 'undefined' && ngDevMode) {
-      if (originalFn && typeof originalFn !== 'function') {
+      if (typeof originalFn !== 'function') {
         throwSelectorDecoratorError();
       }
     }

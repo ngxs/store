@@ -51,10 +51,6 @@ export function getInvalidInitializationOrderMessage(addedStates?: ɵPlainObject
   return message;
 }
 
-export function throwSelectFactoryNotConnectedError(): never {
-  throw new Error('You have forgotten to import the NGXS module!');
-}
-
 export function throwPatchingArrayError(): never {
   throw new Error('Patching arrays is not supported.');
 }
