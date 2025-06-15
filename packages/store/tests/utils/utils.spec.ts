@@ -1,8 +1,9 @@
+import { TestBed } from '@angular/core/testing';
 import { setValue } from '@ngxs/store/plugins';
 import { ɵPlainObject } from '@ngxs/store/internals';
+import { provideStore } from '@ngxs/store';
 
-import { propGetter } from '../../src/internal/internals';
-import { NgxsConfig } from '../../src/symbols';
+import { ɵPROP_GETTER } from '../../src/internal/internals';
 
 describe('utils', () => {
   describe('setValue', () => {
@@ -57,27 +58,39 @@ describe('utils', () => {
 
   describe('propGetter', () => {
     it('strictContentSecurityPolicy: false', () => {
-      const config: NgxsConfig = new NgxsConfig();
+      TestBed.configureTestingModule({
+        providers: [
+          provideStore([], {
+            compatibility: {
+              strictContentSecurityPolicy: false
+            }
+          })
+        ]
+      });
+      const propGetter = TestBed.inject(ɵPROP_GETTER);
+
       const target: ɵPlainObject = { a: { b: { c: 100 } } };
 
-      expect(propGetter(['a', 'b', 'c'], config)(target)).toEqual(100);
-      expect(propGetter(['a', 'b'], config)(target)).toEqual({ c: 100 });
+      expect(propGetter(['a', 'b', 'c'])(target)).toEqual(100);
+      expect(propGetter(['a', 'b'])(target)).toEqual({ c: 100 });
     });
 
     it('strictContentSecurityPolicy: true', () => {
-      const defaultConfig: NgxsConfig = new NgxsConfig();
-      const config: NgxsConfig = {
-        ...defaultConfig,
-        compatibility: {
-          ...defaultConfig.compatibility,
-          strictContentSecurityPolicy: true
-        }
-      };
+      TestBed.configureTestingModule({
+        providers: [
+          provideStore([], {
+            compatibility: {
+              strictContentSecurityPolicy: true
+            }
+          })
+        ]
+      });
+      const propGetter = TestBed.inject(ɵPROP_GETTER);
 
       const target: ɵPlainObject = { a: { b: { c: 100 } } };
 
-      expect(propGetter(['a', 'b', 'c'], config)(target)).toEqual(100);
-      expect(propGetter(['a', 'b'], config)(target)).toEqual({ c: 100 });
+      expect(propGetter(['a', 'b', 'c'])(target)).toEqual(100);
+      expect(propGetter(['a', 'b'])(target)).toEqual({ c: 100 });
     });
   });
 });
