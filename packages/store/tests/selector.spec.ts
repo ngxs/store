@@ -801,6 +801,7 @@ describe('Selector', () => {
 
     it('@Selector should only work on methods', () => {
       // Arrange
+      expect.assertions(1);
       let message: string | null = null;
       // Act
       try {
@@ -810,11 +811,10 @@ describe('Selector', () => {
         }
 
         new MyComponent();
-      } catch (error) {
-        message = (error as Error).message;
+      } catch ({ message }) {
+        // Assert
+        expect(message).toEqual('Selectors only work on methods.');
       }
-      // Assert
-      expect(message).toEqual('Object prototype may only be an Object or null: undefined');
     });
   });
 
