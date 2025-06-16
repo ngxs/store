@@ -6,14 +6,14 @@ For a complete list of changes, see our [v20.0.0 changelog entry](https://github
 
 ## Overview
 
-- 🚀 Angular 20 Support ([PR #2342](https://github.com/ngxs/store/pull/2342))
-- 🎨 New ActionDirector for Dynamic Action Handlers ([PR #2329](https://github.com/ngxs/store/pull/2329))
-- 🧩 lazyProvider Utility for Better Lazy Loading ([PR #2326](https://github.com/ngxs/store/pull/2326))
-- 🔍 New DevTools Plugin Serialization Options ([PR #2337](https://github.com/ngxs/store/pull/2337))
-- ♻️ DestroyRef Modernization ([PR #2289](https://github.com/ngxs/store/pull/2289))
-- 📦 RxJS Dependency Reduction ([PR #2292](https://github.com/ngxs/store/pull/2292), [PR #2309](https://github.com/ngxs/store/pull/2309), [PR #2310](https://github.com/ngxs/store/pull/2310))
-- 🐛 Bug Fixes and Performance Improvements
-- 🔌 Plugin Improvements
+- 🚀 [Angular 20 Support](#angular-20-support) ([PR #2342](https://github.com/ngxs/store/pull/2342))
+- 🎨 [New ActionDirector for Dynamic Action Handlers](#actiondirector) ([PR #2329](https://github.com/ngxs/store/pull/2329))
+- 🧩 [lazyProvider Utility for Better Lazy Loading](#lazyprovider-utility) ([PR #2326](https://github.com/ngxs/store/pull/2326))
+- 🔍 [New DevTools Plugin Serialization Options](#devtools-plugin-serialization) ([PR #2337](https://github.com/ngxs/store/pull/2337))
+- ♻️ [DestroyRef Modernization](#destroyref-modernization) ([PR #2289](https://github.com/ngxs/store/pull/2289))
+- 📦 [RxJS Dependency Reduction](#reduced-rxjs-dependency) ([PR #2292](https://github.com/ngxs/store/pull/2292), [PR #2309](https://github.com/ngxs/store/pull/2309), [PR #2310](https://github.com/ngxs/store/pull/2310))
+- 🐛 [Bug Fixes and Performance Improvements](#bug-fixes)
+- 🔌 [Plugin Improvements](#plugin-improvements)
 
 ---
 
