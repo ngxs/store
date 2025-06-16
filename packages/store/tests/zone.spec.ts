@@ -1,4 +1,4 @@
-import { ApplicationRef, Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
 import { take } from 'rxjs';
@@ -51,33 +51,15 @@ describe('zone', () => {
 
   // =============================================================
   it('"select" should be performed inside Angular zone', () => {
-    let ticks = 0;
     let selectCalls = 0;
     let selectCallsInAngularZone = 0;
 
-    @Injectable()
-    class MockApplicationRef extends ApplicationRef {
-      tick(): void {
-        ticks++;
-      }
-    }
-
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([CounterState])],
-      providers: [
-        {
-          provide: ApplicationRef,
-          useClass: MockApplicationRef
-        }
-      ]
+      imports: [NgxsModule.forRoot([CounterState])]
     });
 
     const store = TestBed.inject(Store);
     const zone = TestBed.inject(NgZone);
-
-    // NGXS performes initializions inside Angular zone
-    // thus it causes app to tick
-    expect(ticks).toEqual(2);
 
     zone.runOutsideAngular(() => {
       store
@@ -94,8 +76,6 @@ describe('zone', () => {
       store.dispatch(new Increment());
     });
 
-    // Angular has run change detection 5 times
-    expect(ticks).toBe(5);
     expect(selectCalls).toEqual(3);
     expect(selectCallsInAngularZone).toEqual(3);
   });

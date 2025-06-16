@@ -3,6 +3,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import {
   Action,
   provideStore,
+  select,
   Selector,
   State,
   StateContext,
@@ -38,9 +39,10 @@ describe('Pending task notifications', () => {
     template: '<h1>{{ counter() }}</h1>'
   })
   class TestComponent {
-    readonly counter = this.store.selectSignal(CounterState.getCounter);
+    readonly counter = select(CounterState.getCounter);
 
-    constructor(private store: Store) {
+    constructor() {
+      const store = inject(Store);
       for (let i = 0; i < 20; i++) {
         store.dispatch(new Increment());
       }

@@ -7,86 +7,42 @@
   "implicitDependencies": ["*-plugin", "store"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nx/angular:application",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist-integration/",
-        "index": "./integration/index.html",
-        "main": "./integration/main.ts",
+        "index": "./integration/src/index.html",
+        "browser": "./integration/src/main.ts",
+        "server": "./integration/src/main.server.ts",
         "tsConfig": "./integration/tsconfig.app.json",
-        "polyfills": "./integration/polyfills.ts",
         "assets": [
           {
             "glob": "favicon.ico",
-            "input": "./integration",
+            "input": "./integration/src",
             "output": "./"
           }
         ],
-        "styles": ["./integration/styles.scss"],
-        "vendorChunk": true,
-        "extractLicenses": false,
-        "buildOptimizer": false,
-        "sourceMap": true,
-        "optimization": false,
-        "namedChunks": true
-      },
-      "configurations": {
-        "development": {
-          "buildOptimizer": false,
-          "optimization": false,
-          "vendorChunk": true,
-          "extractLicenses": false,
-          "sourceMap": true,
-          "namedChunks": true
-        },
-        "production": {
-          "optimization": true,
-          "outputHashing": "all",
-          "sourceMap": false,
-          "namedChunks": false,
-          "extractLicenses": true,
-          "vendorChunk": false,
-          "buildOptimizer": true,
-          "fileReplacements": [
-            {
-              "replace": "/integration/environments/environment.ts",
-              "with": "/integration/environments/environment.prod.ts"
-            }
-          ]
+        "styles": ["./integration/src/styles.scss"],
+        "outputMode": "server",
+        "ssr": {
+          "entry": "./integration/src/server.ts"
         }
       },
-      "defaultConfiguration": "production",
-      "dependsOn": ["^build"]
-    },
-    "server": {
-      "executor": "@angular-devkit/build-angular:server",
-      "options": {
-        "outputPath": "dist-integration-server",
-        "main": "./integration/server.ts",
-        "tsConfig": "./integration/tsconfig.server.json",
-        "sourceMap": true,
-        "optimization": false
-      },
       "configurations": {
         "production": {
-          "optimization": true,
-          "outputHashing": "none",
-          "sourceMap": false,
-          "namedChunks": false,
-          "extractLicenses": true,
-          "fileReplacements": [
-            {
-              "replace": "/integration/environments/environment.ts",
-              "with": "/integration/environments/environment.prod.ts"
-            }
-          ]
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
         }
       },
       "defaultConfiguration": "production",
       "dependsOn": ["^build"]
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:dev-server",
       "configurations": {
         "development": {
           "browserTarget": "integration:build:development"
@@ -96,7 +52,8 @@
         }
       },
       "defaultConfiguration": "development",
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "continuous": true
     },
     "test": {
       "executor": "@nx/jest:jest",

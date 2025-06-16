@@ -4,6 +4,6 @@
   "license": "MIT",
   "sideEffects": true,
   "peerDependencies": {
-    "@angular/core": ">=19.0.0 <20.0.0"
+    "@angular/core": ">=20.0.0 <21.0.0"
   }
 }

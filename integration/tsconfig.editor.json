@@ -2,7 +2,8 @@
   "extends": "./tsconfig.json",
   "include": ["**/*.ts"],
   "compilerOptions": {
-    "module": "esnext",
-    "types": ["jest", "node"]
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
   }
 }

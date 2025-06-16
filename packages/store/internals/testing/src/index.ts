@@ -2,9 +2,9 @@ export { freshPlatform } from './fresh-platform';
 export { NgxsTestBed } from './ngxs.setup';
 export {
   skipConsoleLogging,
-  ConsoleRecord,
-  ConsoleRecorder,
+  type ConsoleRecord,
+  type ConsoleRecorder,
   loggedError
 } from './skip-console-logging';
-export { NgxsTesting } from './symbol';
+export type { NgxsTesting } from './symbol';
 export { NgxsActionCollector } from './action-collector';

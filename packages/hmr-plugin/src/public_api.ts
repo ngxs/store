@@ -1,5 +1,5 @@
 export { HmrInitAction } from './actions/hmr-init.action';
-export {
+export type {
   NgxsHmrLifeCycle,
   NgxsHmrOptions,
   WebpackModule,

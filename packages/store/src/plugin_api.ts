@@ -5,7 +5,7 @@ export {
   setValue,
   getValue,
   NGXS_PLUGINS,
-  NgxsPlugin,
-  NgxsPluginFn,
-  NgxsNextPluginFn
+  type NgxsPlugin,
+  type NgxsPluginFn,
+  type NgxsNextPluginFn
 } from '@ngxs/store/plugins';

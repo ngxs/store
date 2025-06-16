@@ -6,12 +6,12 @@
   "files": [
     {
       "friendlyName": "Main bundles",
-      "path": "./**/dist-integration/**/main{-,.}<hash>.js",
+      "path": "./**/dist-integration/browser/**/main{-,.}<hash>.js",
       "maxPercentIncrease": 1
     },
     {
       "friendlyName": "Main bundles(Gzip)",
-      "path": "./**/dist-integration/**/main{-,.}<hash>.js",
+      "path": "./**/dist-integration/browser/**/main{-,.}<hash>.js",
       "compression": "gzip",
       "maxPercentIncrease": 1
     }
