@@ -32,7 +32,7 @@ It is recommended to handle errors within your `@Action` function in your state:
 - `Update the state` to capture the error details
   - Ensure that the relevant selectors cater for these error states and provide information for your user to respond to the error accordingly
 - OR `dispatch` an action that sends the error details to the necessary state or service
-  - This action could be picked up by an application level error state or could be picked up by a service that is listening to the action stream (see [Action Handlers](../actions/action-handlers.md))
+  - This action could be picked up by an application level error state or could be picked up by a service that is listening to the action stream (see [Actions Stream](../actions/actions-stream.md))
 
 ### Non-deterministic errors:
 
