@@ -25,7 +25,7 @@ NGXS v20 adds full support for Angular 20, ensuring that you can use the latest 
 
 One of the most exciting new features in this release is the `ActionDirector` service, which provides a powerful way to attach and detach action handlers dynamically ([PR #2329](https://github.com/ngxs/store/pull/2329)).
 
-You can find detailed documentation on this feature in our [Dynamic Action Handlers](http://ngxs.io/concepts/actions/dynamic-action-handlers) guide.
+You can find detailed documentation on this feature in our [Dynamic Action Handlers](https://www.ngxs.io/concepts/actions/dynamic-action-handlers) guide.
 
 The `ActionDirector` allows you to:
 
@@ -83,7 +83,7 @@ This feature is particularly useful for plugin systems, lazy-loaded features, te
 
 The new `lazyProvider` utility function helps you defer the registration of Angular providers until they are explicitly needed ([PR #2326](https://github.com/ngxs/store/pull/2326)). This is especially valuable for feature state libraries, preventing them from being unnecessarily included in the initial application bundle.
 
-You can find this feature documented in our [Lazy Loaded States](http://ngxs.io/concepts/state/lazy) guide.
+You can find this feature documented in our [Lazy Loaded States](https://www.ngxs.io/concepts/state/lazy#lazyprovider) guide.
 
 ```ts
 import { lazyProvider } from '@ngxs/store';
@@ -116,7 +116,7 @@ This approach reduces your initial bundle size and ensures that state providers 
 
 The DevTools plugin now includes a `serialize` option, allowing for more customized state serialization when working with the Redux DevTools ([PR #2337](https://github.com/ngxs/store/pull/2337)). This feature helps you handle complex state objects or circular references that might cause issues when inspecting state in the DevTools.
 
-The `serialize` option provides control over how your state is displayed and manipulated in the Redux DevTools extension, making debugging and time-traveling easier with complex state structures. For more information, see our [Redux DevTools Plugin](http://ngxs.io/plugins/devtools) documentation.
+The `serialize` option provides control over how your state is displayed and manipulated in the Redux DevTools extension, making debugging and time-traveling easier with complex state structures. For more information, see our [Redux DevTools Plugin](https://www.ngxs.io/plugins/devtools) documentation.
 
 ## DestroyRef Modernization
 
@@ -162,7 +162,7 @@ We've addressed several important issues in this release:
 
 - Improved SSR support with `ngServerMode` ([PR #2288](https://github.com/ngxs/store/pull/2288))
 
-For more information on using NGXS plugins, check our [plugins documentation](http://ngxs.io/plugins).
+For more information on using NGXS plugins, check our [plugins documentation](https://www.ngxs.io/plugins).
 
 ## Breaking Changes
 
@@ -172,19 +172,19 @@ While we've worked to minimize breaking changes, there are a few changes to be a
 - The `ENVIRONMENT_INITIALIZER` has been replaced with a more efficient implementation ([PR #2314](https://github.com/ngxs/store/pull/2314))
 - Some internal APIs have changed to support the new features
 
-If you encounter any issues when upgrading, please check our [migration guide](http://ngxs.io/) and [deprecations documentation](http://ngxs.io/deprecations).
+If you encounter any issues when upgrading, please check our [full documentation](https://www.ngxs.io/) and [deprecations documentation](https://www.ngxs.io/deprecations) first to see if there is anything that can help. Feel free to comment on the [discussion on GitHub](https://github.com/ngxs/store/discussions/2347) if you believe that there is an issue introduced by this release.
 
 ---
 
 ## Some Useful Links
 
-If you would like any further information on changes in this release please feel free to have a look at our [changelog](https://github.com/ngxs/store/blob/master/CHANGELOG.md). The code for NGXS is all available at [https://github.com/ngxs/store](https://github.com/ngxs/store) and our docs are available at [http://ngxs.io/](http://ngxs.io/).
+If you would like any further information on changes in this release please feel free to have a look at our [changelog](https://github.com/ngxs/store/blob/master/CHANGELOG.md). The code for NGXS is all available at [https://github.com/ngxs/store](https://github.com/ngxs/store) and our docs are available at [https://www.ngxs.io/](https://www.ngxs.io/).
 
 Helpful resources:
 
-- [NGXS Concepts Documentation](http://ngxs.io/concepts)
-- [NGXS Plugins Documentation](http://ngxs.io/plugins)
-- [NGXS Recipes](http://ngxs.io/recipes)
+- [NGXS Concepts Documentation](https://www.ngxs.io/concepts)
+- [NGXS Plugins Documentation](https://www.ngxs.io/plugins)
+- [NGXS Recipes](https://www.ngxs.io/recipes)
 - [Github Repository](https://github.com/ngxs/store)
 
 We have a thriving community on our slack channel so come and join us to keep abreast of the latest developments. Here is the slack invitation link: [https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q](https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q)
