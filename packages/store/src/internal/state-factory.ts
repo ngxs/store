@@ -365,8 +365,19 @@ export class StateFactory {
               // it was unsubscribed by `takeUntil` due to a new action being dispatched),
               // we prevent writing to the state context.
               finalize(() => {
-                stateContext.setState = noop;
-                stateContext.patchState = noop;
+                if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+                  function noopAndWarn() {
+                    console.warn(
+                      `"${actionType}" attempted to change the state, but the change was ignored because state updates are not allowed after the action handler has completed.`
+                    );
+                  }
+
+                  stateContext.setState = noopAndWarn;
+                  stateContext.patchState = noopAndWarn;
+                } else {
+                  stateContext.setState = noop;
+                  stateContext.patchState = noop;
+                }
               })
             );
           } else {
