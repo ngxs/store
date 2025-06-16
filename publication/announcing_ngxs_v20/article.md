@@ -187,4 +187,4 @@ Helpful resources:
 - [NGXS Recipes](https://www.ngxs.io/recipes)
 - [Github Repository](https://github.com/ngxs/store)
 
-We have a thriving community on our slack channel so come and join us to keep abreast of the latest developments. Here is the slack invitation link: [https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q](https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q)
+We have a thriving community on our Discord server so come and join us to keep abreast of the latest developments. Here is the Discord invitation link: [https://discord.gg/yT3Q8cXTnz](https://discord.gg/yT3Q8cXTnz)
