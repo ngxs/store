@@ -9,8 +9,6 @@ For a complete list of changes, see our [v20.0.0 changelog entry](https://github
 - 🚀 [Angular 20 Support](#angular-20-support) ([PR #2342](https://github.com/ngxs/store/pull/2342))
 - 🎨 [New ActionDirector for Dynamic Action Handlers](#actiondirector) ([PR #2329](https://github.com/ngxs/store/pull/2329))
 - 🧩 [lazyProvider Utility for Better Lazy Loading](#lazyprovider-utility) ([PR #2326](https://github.com/ngxs/store/pull/2326))
-- 🔍 [New DevTools Plugin Serialization Options](#devtools-plugin-serialization) ([PR #2337](https://github.com/ngxs/store/pull/2337))
-- ♻️ [DestroyRef Modernization](#destroyref-modernization) ([PR #2289](https://github.com/ngxs/store/pull/2289))
 - 📦 [RxJS Dependency Reduction](#reduced-rxjs-dependency) ([PR #2292](https://github.com/ngxs/store/pull/2292), [PR #2309](https://github.com/ngxs/store/pull/2309), [PR #2310](https://github.com/ngxs/store/pull/2310))
 - 🐛 [Bug Fixes and Performance Improvements](#bug-fixes)
 - 🔌 [Plugin Improvements](#plugin-improvements)
@@ -45,7 +43,8 @@ const COUNTRIES_STATE_TOKEN = new StateToken<string[]>('countries');
 // Action
 export class AddCountry {
   static readonly type = '[Countries] Add Country';
-  constructor(public country: string) {}
+
+  constructor(readonly country: string) {}
 }
 
 @Injectable({ providedIn: 'root' })
@@ -69,10 +68,8 @@ export class CountryService {
 
   // Detach the action handler when no longer needed
   detachCountryHandler() {
-    if (this.handle) {
-      this.handle.detach();
-      this.handle = null;
-    }
+    this.handle?.detach();
+    this.handle = null;
   }
 }
 ```
@@ -112,22 +109,11 @@ export default provideStates([InvoicesState]);
 
 This approach reduces your initial bundle size and ensures that state providers are only loaded when they're actually needed.
 
-## DevTools Plugin Serialization
-
-The DevTools plugin now includes a `serialize` option, allowing for more customized state serialization when working with the Redux DevTools ([PR #2337](https://github.com/ngxs/store/pull/2337)). This feature helps you handle complex state objects or circular references that might cause issues when inspecting state in the DevTools.
-
-The `serialize` option provides control over how your state is displayed and manipulated in the Redux DevTools extension, making debugging and time-traveling easier with complex state structures. For more information, see our [Redux DevTools Plugin](https://www.ngxs.io/plugins/devtools) documentation.
-
-## DestroyRef Modernization
-
-We've replaced traditional `ngOnDestroy` lifecycle hooks with Angular's `DestroyRef` throughout the codebase ([PR #2289](https://github.com/ngxs/store/pull/2289)). This modernization improves memory management and makes our code more aligned with Angular's recommended practices for handling component and service destruction.
-
 ## Reduced RxJS Dependency
 
 NGXS v20 continues our efforts to reduce reliance on RxJS by:
 
 - Pulling fewer RxJS symbols ([PR #2309](https://github.com/ngxs/store/pull/2309), [PR #2310](https://github.com/ngxs/store/pull/2310))
-- Replacing operators with more efficient implementations
 - Optimizing how we handle observable streams ([PR #2292](https://github.com/ngxs/store/pull/2292))
 
 These changes result in smaller bundle sizes and improved performance, especially for applications that don't heavily use RxJS elsewhere.
@@ -139,38 +125,25 @@ We've addressed several important issues in this release:
 - Added root store initializer guard to prevent initialization issues ([PR #2278](https://github.com/ngxs/store/pull/2278))
 - Reduced change detection cycles with pending tasks ([PR #2280](https://github.com/ngxs/store/pull/2280))
 - Completed action results on destroy to prevent memory leaks ([PR #2282](https://github.com/ngxs/store/pull/2282))
-- Completed `dispatched$` in internal actions ([PR #2285](https://github.com/ngxs/store/pull/2285))
 - Stopped contributing to stability once app is stable ([PR #2306](https://github.com/ngxs/store/pull/2306))
-- Improved server-side rendering (SSR) support with `ngServerMode` ([PR #2287](https://github.com/ngxs/store/pull/2287), [PR #2288](https://github.com/ngxs/store/pull/2288))
 
 ## Plugin Improvements
 
-### Form Plugin
-
-- Replaced `takeUntil` with `takeUntilDestroyed` for better cleanup ([PR #2283](https://github.com/ngxs/store/pull/2283))
-
 ### Router Plugin
 
-- Reduced RxJS dependency for better performance ([PR #2291](https://github.com/ngxs/store/pull/2291))
 - Changed `@Selector` to `createSelector` for better type safety and tree-shaking ([PR #2294](https://github.com/ngxs/store/pull/2294))
 
 ### DevTools Plugin
 
 - Added `serialize` option for better control over state serialization ([PR #2337](https://github.com/ngxs/store/pull/2337))
 
-### Storage Plugin
-
-- Improved SSR support with `ngServerMode` ([PR #2288](https://github.com/ngxs/store/pull/2288))
-
-For more information on using NGXS plugins, check our [plugins documentation](https://www.ngxs.io/plugins).
-
 ## Breaking Changes
 
 While we've worked to minimize breaking changes, there are a few changes to be aware of:
 
-- `const enum` has been replaced with regular enums for better compatibility ([PR #2335](https://github.com/ngxs/store/pull/2335))
-- The `ENVIRONMENT_INITIALIZER` has been replaced with a more efficient implementation ([PR #2314](https://github.com/ngxs/store/pull/2314))
-- Some internal APIs have changed to support the new features
+- `@Select` decorator has been removed, since it was deprecated long time ago.
+- `executionStrategy` option has been removed, consider removing this option in your applications.
+- To get the `RouterState.state`, it is now required to call the state function — `select(RouterState.state())`. Previously, it was possible to provide a generic type for the router state, e.g., `select(RouterState.state<CustomRouterState>)`, but this is not possible if state were a property.
 
 If you encounter any issues when upgrading, please check our [full documentation](https://www.ngxs.io/) and [deprecations documentation](https://www.ngxs.io/deprecations) first to see if there is anything that can help. Feel free to comment on the [discussion on GitHub](https://github.com/ngxs/store/discussions/2347) if you believe that there is an issue introduced by this release.
 
