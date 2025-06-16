@@ -6,6 +6,10 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+...
+
+### 20.0.0 2025-06-16
+
 - Build: Add Angular 20 support [#2342](https://github.com/ngxs/store/pull/2342)
 - Feature(store): Implement `ActionDirector` [#2329](https://github.com/ngxs/store/pull/2329)
 - Feature(store): Add `lazyProvider` utility [#2326](https://github.com/ngxs/store/pull/2326)
