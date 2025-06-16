@@ -4,8 +4,8 @@
   "license": "MIT",
   "sideEffects": false,
   "peerDependencies": {
-    "@angular/core": ">=19.0.0 <20.0.0",
-    "rxjs": ">=7.0.0"
+    "@angular/core": ">=19.0.0 <21.0.0",
+    "rxjs": ">=7.8.2"
   },
   "schematics": "./schematics/collection.json"
 }
