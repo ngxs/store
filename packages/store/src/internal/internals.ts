@@ -47,7 +47,7 @@ export interface StatesAndDefaults {
  *
  * @ignore
  */
-function compliantPropGetter(paths: string[]): (x: any) => any {
+export function compliantPropGetter(paths: string[]): (x: any) => any {
   return obj => {
     for (let i = 0; i < paths.length; i++) {
       if (!obj) return undefined;
@@ -64,7 +64,7 @@ function compliantPropGetter(paths: string[]): (x: any) => any {
  *
  * @ignore
  */
-function fastPropGetter(paths: string[]): (x: any) => any {
+export function fastPropGetter(paths: string[]): (x: any) => any {
   const segments = paths;
   let seg = 'store.' + segments[0];
   let i = 0;
