@@ -21,9 +21,16 @@ describe('ActionDirector', () => {
 
     // Act
     const { addCountryActionHandler } = await import('./fixtures/add-country-action-handler');
-    addCountryActionHandler(TestBed.inject(ActionDirector));
+    const handle = addCountryActionHandler(TestBed.inject(ActionDirector));
 
     store.dispatch(new AddCountry('Canada'));
+
+    // Assert
+    expect(store.snapshot()).toEqual({ countries: ['Canada'] });
+
+    // Act
+    handle.detach();
+    store.dispatch(new AddCountry('Spain'));
 
     // Assert
     expect(store.snapshot()).toEqual({ countries: ['Canada'] });
