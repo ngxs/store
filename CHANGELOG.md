@@ -6,7 +6,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-...
+- Fix(store): Add missing `detach` to action director [#2349](https://github.com/ngxs/store/pull/2349)
 
 ### 20.0.0 2025-06-16
 
