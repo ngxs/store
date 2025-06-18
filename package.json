@@ -1,6 +1,6 @@
 {
   "name": "ngxs",
-  "version": "20.0.1",
+  "version": "20.0.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ngxs/store.git"
