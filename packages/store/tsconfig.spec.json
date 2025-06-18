@@ -4,7 +4,11 @@
     "outDir": "../../dist/out-tsc",
     "module": "commonjs",
     "types": ["jest", "node"],
-    "isolatedModules": true
+    "isolatedModules": true,
+    // The ES5 target is required for the `@Select` decorator unit tests.
+    "target": "es5",
+    // This is required for `for-of` to work.
+    "downlevelIteration": true
   },
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

@@ -6,7 +6,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-...
+- Revert(store): Revert `@Select` decorator removal [#2351](https://github.com/ngxs/store/pull/2351)
 
 ### 20.0.1 2025-06-19
 

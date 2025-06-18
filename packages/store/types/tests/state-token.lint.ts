@@ -1,6 +1,10 @@
 /// <reference types="@types/jest" />
-import { State, NgxsModule, StateToken, Selector } from '@ngxs/store';
-import { Injectable } from '@angular/core';
+import { State, NgxsModule, StateToken, Select, Selector, Store } from '@ngxs/store';
+import { TestBed } from '@angular/core/testing';
+import { Component, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+import { assertType } from './utils/assert-type';
 
 describe('[TEST]: StateToken', () => {
   it('should successfully create a simple token', () => {
@@ -128,5 +132,64 @@ describe('[TEST]: StateToken', () => {
     }
 
     NgxsModule.forRoot([TodoListState]);
+  });
+
+  it('should be correct type checking in select', () => {
+    interface MyModel {
+      bar: boolean;
+    }
+
+    const FOO_TOKEN = new StateToken<MyModel>('foo');
+
+    @State({
+      name: FOO_TOKEN,
+      defaults: { bar: false }
+    })
+    @Injectable()
+    class FooState {
+      @Selector([FOO_TOKEN])
+      static bar(state: MyModel) {
+        return state.bar;
+      }
+    }
+
+    @Component({ selector: 'app' })
+    class AppComponent {
+      @Select() appV1$: string; // $ExpectType string
+      @Select() appV2$: string; // $ExpectType string
+      @Select((state: string) => state) appV3$: string; // $ExpectType string
+      @Select((state: string) => state) appV3_1$: Observable<string>; // $ExpectType Observable<string>
+
+      // Argument of type is not assignable to parameter of type Observable<{ foo: boolean }>
+      @Select(FOO_TOKEN) appV4$: string; // $ExpectType string
+      @Select(FOO_TOKEN) appV5$: Observable<string>; // $ExpectType Observable<string>
+      @Select(FOO_TOKEN) appV6$: Observable<MyModel>; // $ExpectType Observable<MyModel>
+
+      @Select(FooState.bar) bar$: string; // $ExpectType string
+      @Select(FooState.bar) bar1$: Observable<string>; // $ExpectType Observable<string>
+      @Select(FooState.bar) bar2$: Observable<boolean>; // $ExpectType Observable<boolean>
+
+      constructor(public store: Store) {}
+    }
+
+    TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      imports: [NgxsModule.forRoot([FooState])]
+    });
+
+    const appComponent: AppComponent = TestBed.createComponent<AppComponent>(AppComponent)
+      .componentInstance;
+
+    const snapshotByToken = appComponent.store.selectSnapshot(FOO_TOKEN);
+
+    assertType(() => snapshotByToken); // $ExpectType MyModel
+
+    const selectByToken = appComponent.store.select(FOO_TOKEN);
+
+    assertType(() => selectByToken); // $ExpectType Observable<MyModel>
+
+    const selectOnceByToken = appComponent.store.selectOnce(FOO_TOKEN);
+
+    assertType(() => selectOnceByToken); // $ExpectType Observable<MyModel>
   });
 });
