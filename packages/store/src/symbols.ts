@@ -83,6 +83,15 @@ export type { StateOperator };
  */
 export interface StateContext<T> {
   /**
+   * An AbortSignal tied to the current action's lifecycle.
+   *
+   * It gives you a handle to proactively cancel ongoing async work.
+   * If you're using an observable, it will be unsubscribed automatically when cancellation occurs.
+   * If you're using async/await, check `abortSignal.aborted` after `await` blocks to decide whether to continue.
+   */
+  abortSignal: AbortSignal;
+
+  /**
    * Get the current state.
    */
   getState(): T;
