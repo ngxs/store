@@ -141,9 +141,8 @@ We've addressed several important issues in this release:
 
 While we've worked to minimize breaking changes, there are a few changes to be aware of:
 
-- `@Select` decorator has been removed, since it was deprecated long time ago.
 - `executionStrategy` option has been removed, consider removing this option in your applications.
-- To get the `RouterState.state`, it is now required to call the state function — `select(RouterState.state())`. Previously, it was possible to provide a generic type for the router state, e.g., `select(RouterState.state<CustomRouterState>)`, but this is not possible if state were a property.
+- To get the `RouterState.state`, it is now required to call the state function — `select(RouterState.state<CustomRouterState>())`. Previously, it was possible to provide a generic type for the router state, e.g., `select(RouterState.state<CustomRouterState>)`, but this is not possible if state were a property.
 
 If you encounter any issues when upgrading, please check our [full documentation](https://www.ngxs.io/) and [deprecations documentation](https://www.ngxs.io/deprecations) first to see if there is anything that can help. Feel free to comment on the [discussion on GitHub](https://github.com/ngxs/store/discussions/2347) if you believe that there is an issue introduced by this release.
 
