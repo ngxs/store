@@ -11,7 +11,7 @@ import {
 } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
-describe('DispatchOutsideZoneNgxsExecutionStrategy', () => {
+describe('Default execution strategy', () => {
   class ZoneCounter {
     inside = 0;
     outside = 0;

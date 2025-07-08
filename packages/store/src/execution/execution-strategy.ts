@@ -1,7 +1,8 @@
 import { inject, Injectable, NgZone } from '@angular/core';
+import { NgxsExecutionStrategy } from './symbols';
 
 @Injectable({ providedIn: 'root' })
-export class InternalNgxsExecutionStrategy {
+export class InternalNgxsExecutionStrategy implements NgxsExecutionStrategy {
   private _ngZone = inject(NgZone);
 
   enter<T>(func: () => T): T {

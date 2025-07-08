@@ -6,7 +6,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
-...
+- Feature(store): Add `withNgxsNoopExecutionStrategy` [#2359](https://github.com/ngxs/store/pull/2359)
 
 ### 20.0.2 2025-06-19
 
