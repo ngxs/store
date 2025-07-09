@@ -42,6 +42,8 @@ export {
 } from './dev-features/ngxs-development.module';
 export { NgxsUnhandledActionsLogger } from './dev-features/ngxs-unhandled-actions-logger';
 
+export { withNgxsNoopExecutionStrategy } from './execution/noop-execution-strategy';
+
 export {
   createModelSelector,
   createPickSelector,
