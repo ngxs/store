@@ -21,6 +21,7 @@ export class HmrStateContextFactory<T, S> {
    */
   public createStateContext(): StateContext<S> {
     return {
+      abortSignal: new AbortController().signal,
       dispatch: actions => this.store!.dispatch(actions),
       getState: () => <S>this.store!.snapshot(),
       setState: val => {
