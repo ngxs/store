@@ -56,10 +56,10 @@ export class ZooComponent {
 
 The Observable that a dispatch returns has a void type, this is because there can be multiple states that listen to the same `@Action`, therefore it's not realistically possible to return the state from these actions since we don't know the form of them.
 
-If you need to get the state after this, simply use a `@Select` in the chain like:
+If you need to get the state after this, simply use `selectSignal` in the chain like:
 
 ```ts
-import { Store, Select } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { withLatestFrom } from 'rxjs';
 
