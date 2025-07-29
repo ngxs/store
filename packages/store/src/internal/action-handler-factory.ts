@@ -5,7 +5,7 @@ import {
   from,
   isObservable,
   mergeMap,
-  type Observable,
+  Observable,
   of,
   takeUntil
 } from 'rxjs';
@@ -29,7 +29,11 @@ export class InternalActionHandlerFactory {
     const { dispatched$ } = this._actions;
 
     return (action: any) => {
-      const stateContext = this._stateContextFactory.createStateContext(path);
+      const abortController = new AbortController();
+      const stateContext = this._stateContextFactory.createStateContext(
+        path,
+        abortController.signal
+      );
 
       let result = handlerFn(stateContext, action);
 
@@ -52,14 +56,24 @@ export class InternalActionHandlerFactory {
           // For instance, if any action handler had a statement like
           // `handler(ctx) { return EMPTY; }`, then the action would be canceled.
           // See https://github.com/ngxs/store/issues/1568
-          // Note that we actually don't care about the return type; we only care
-          // about emission, and thus `undefined` is applicable by the framework.
           defaultIfEmpty(undefined)
         );
 
         if (options.cancelUncompleted) {
           const canceled = dispatched$.pipe(ofActionDispatched(action));
-          result = result.pipe(takeUntil(canceled));
+          result = result.pipe(
+            takeUntil(
+              new Observable<void>(subscriber => {
+                return canceled.subscribe(() => {
+                  // Note that we shouldn't use `catchError` to catch abort errors
+                  // because the observable is canceled before the error is thrown,
+                  // so we don't need to handle it.
+                  abortController.abort();
+                  subscriber.next();
+                });
+              })
+            )
+          );
         }
 
         result = result.pipe(

@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
 import { EMPTY, mergeMap, skip, startWith } from 'rxjs';
@@ -16,8 +16,13 @@ export class LifecycleStateManager {
   private _internalStateOperations = inject(InternalStateOperations);
   private _stateContextFactory = inject(StateContextFactory);
   private _appBootstrappedState = inject(ɵNgxsAppBootstrappedState);
+  private _abortController = new AbortController();
 
   private _initStateHasBeenDispatched?: boolean;
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this._abortController.abort());
+  }
 
   ngxsBootstrap(
     action: InitState | UpdateState,
@@ -92,9 +97,7 @@ export class LifecycleStateManager {
           });
       }
 
-      if (instance.ngxsOnInit) {
-        instance.ngxsOnInit(this._getStateContext(mappedStore));
-      }
+      instance.ngxsOnInit?.(this._getStateContext(mappedStore));
 
       mappedStore.isInitialised = true;
     }
@@ -103,13 +106,14 @@ export class LifecycleStateManager {
   private _invokeBootstrapOnStates(mappedStores: MappedStore[]) {
     for (const mappedStore of mappedStores) {
       const instance: NgxsLifeCycle = mappedStore.instance;
-      if (instance.ngxsAfterBootstrap) {
-        instance.ngxsAfterBootstrap(this._getStateContext(mappedStore));
-      }
+      instance.ngxsAfterBootstrap?.(this._getStateContext(mappedStore));
     }
   }
 
   private _getStateContext(mappedStore: MappedStore): StateContext<any> {
-    return this._stateContextFactory.createStateContext(mappedStore.path);
+    return this._stateContextFactory.createStateContext(
+      mappedStore.path,
+      this._abortController.signal
+    );
   }
 }
