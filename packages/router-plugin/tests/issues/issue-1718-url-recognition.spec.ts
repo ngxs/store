@@ -11,13 +11,7 @@ import {
   RouterStateSnapshot,
   Routes
 } from '@angular/router';
-import {
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  Selector,
-  State,
-  Store,
-  provideStore
-} from '@ngxs/store';
+import { Selector, State, Store, provideStore } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { first } from 'rxjs/operators';
 
@@ -88,13 +82,7 @@ describe('URL recognition in guards (https://github.com/ngxs/store/issues/1718)'
     declarations: [RootComponent, HomeComponent, DetailsComponent],
     bootstrap: [RootComponent],
     providers: [
-      provideStore(
-        [],
-        {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        },
-        withNgxsRouterPlugin()
-      ),
+      provideStore([], withNgxsRouterPlugin()),
       { provide: APP_BASE_HREF, useValue: '/' }
     ]
   })

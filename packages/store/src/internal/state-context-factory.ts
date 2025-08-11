@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { getValue, setValue } from '@ngxs/store/plugins';
 import { ExistingState, StateOperator, isStateOperator } from '@ngxs/store/operators';
-import { Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
 
 import { StateContext } from '../symbols';
 import { StateOperations } from '../internal/internals';
@@ -19,10 +19,11 @@ export class StateContextFactory {
   /**
    * Create the state context
    */
-  createStateContext<T>(path: string): StateContext<T> {
+  createStateContext<T>(path: string, abortSignal: AbortSignal): StateContext<T> {
     const root = this._internalStateOperations.getRootStateOperations();
 
     return {
+      abortSignal,
       getState(): T {
         const currentAppState = root.getState();
         return getState(currentAppState, path);

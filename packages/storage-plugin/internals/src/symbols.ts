@@ -10,7 +10,7 @@ export const ɵDEFAULT_STATE_KEY = '@@STATE';
 
 declare const ngDevMode: boolean;
 
-export const enum StorageOption {
+export enum StorageOption {
   LocalStorage,
   SessionStorage
 }

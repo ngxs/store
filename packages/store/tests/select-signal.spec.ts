@@ -7,13 +7,19 @@ import {
   NgxsModule,
   Selector,
   SelectorOptions,
-  TypedSelector,
-  DispatchOutsideZoneNgxsExecutionStrategy
+  TypedSelector
 } from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 
 import { NgxsConfig } from '../src/symbols';
 import { skipConsoleLogging } from '@ngxs/store/internals/testing';
+
+// Every time the state is updated, the primary state signal
+// receives updates asynchronously behind the scenes after the
+// microtask is executed.
+function waitForStateSignalToReceiveUpdate() {
+  return Promise.resolve();
+}
 
 function selectSignal<T>(selector: TypedSelector<T>) {
   const store = TestBed.inject(Store);
@@ -75,12 +81,7 @@ describe('Selector', () => {
 
   const testSetup = (states: ɵStateClass[], options?: Partial<NgxsConfig>) => {
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states, {
-          ...options,
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot(states, options)]
     });
 
     return TestBed.inject(Store);
@@ -202,12 +203,7 @@ describe('Selector', () => {
   describe('(Selector Options)', () => {
     function setupStore(states: ɵStateClass[], extendedOptions?: Partial<NgxsConfig>) {
       TestBed.configureTestingModule({
-        imports: [
-          NgxsModule.forRoot(states, {
-            ...extendedOptions,
-            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-          })
-        ]
+        imports: [NgxsModule.forRoot(states, extendedOptions)]
       });
       return TestBed.inject(Store);
     }
@@ -765,8 +761,7 @@ describe('Selector', () => {
       TestBed.configureTestingModule({
         imports: [
           NgxsModule.forRoot([ContactsState], {
-            selectorOptions: { suppressErrors: false, injectContainerState: false },
-            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
+            selectorOptions: { suppressErrors: false, injectContainerState: false }
           })
         ]
       });

@@ -2,7 +2,7 @@ import { Component, NgModule, inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { RouterModule, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Store, NgxsModule, DispatchOutsideZoneNgxsExecutionStrategy } from '@ngxs/store';
+import { Store, NgxsModule } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { skip } from 'rxjs/operators';
 
@@ -53,9 +53,7 @@ describe('Lazy Loading', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        NgxsModule.forRoot([], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        }),
+        NgxsModule.forRoot([]),
         NgxsModule.forFeature([CounterState])
       ],
       declarations: [MyComponent],

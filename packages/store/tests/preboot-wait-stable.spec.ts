@@ -3,14 +3,13 @@ import {
   AfterViewInit,
   Component,
   Injectable,
-  provideExperimentalZonelessChangeDetection,
+  provideZonelessChangeDetection,
   ChangeDetectionStrategy
 } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { renderApplication } from '@angular/platform-server';
 import {
   Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
   State,
   StateContext,
   StateToken,
@@ -68,15 +67,9 @@ describe('preboot feature + stable', () => {
           () =>
             bootstrapApplication(TestComponent, {
               providers: [
-                provideExperimentalZonelessChangeDetection(),
+                provideZonelessChangeDetection(),
 
-                provideStore(
-                  [CountriesState],
-                  {
-                    executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-                  },
-                  withNgxsPendingTasks()
-                )
+                provideStore([CountriesState], withNgxsPendingTasks())
               ]
             }),
           {

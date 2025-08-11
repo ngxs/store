@@ -4,7 +4,6 @@ import {
   Action,
   createPropertySelectors,
   createSelector,
-  DispatchOutsideZoneNgxsExecutionStrategy,
   provideStore,
   State,
   StateContext,
@@ -55,11 +54,7 @@ describe('Selector returns NaN (https://github.com/ngxs/store/issues/2229)', () 
 
   const testSetup = () => {
     TestBed.configureTestingModule({
-      providers: [
-        provideStore([CounterState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      providers: [provideStore([CounterState])]
     });
 
     return TestBed.inject(Store);

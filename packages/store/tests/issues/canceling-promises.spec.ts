@@ -1,13 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  State,
-  Action,
-  Store,
-  provideStore,
-  StateContext,
-  DispatchOutsideZoneNgxsExecutionStrategy
-} from '@ngxs/store';
+import { State, Action, Store, provideStore, StateContext } from '@ngxs/store';
 
 import { createPromiseTestHelper } from '../helpers/promise-test-helper';
 
@@ -72,11 +65,7 @@ describe('Canceling promises (preventing state writes)', () => {
     recorder.length = 0;
 
     TestBed.configureTestingModule({
-      providers: [
-        provideStore([CounterState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      providers: [provideStore([CounterState])]
     });
   });
 

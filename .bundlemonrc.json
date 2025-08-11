@@ -10,12 +10,12 @@
     },
     {
       "path": "./fesm2022/ngxs-store-internals-testing.mjs",
-      "maxSize": "7kB",
+      "maxSize": "13kB",
       "maxPercentIncrease": 0.5
     },
     {
       "path": "./fesm2022/ngxs-store-internals.mjs",
-      "maxSize": "13kB",
+      "maxSize": "15kB",
       "maxPercentIncrease": 0.5
     },
     {
@@ -30,7 +30,7 @@
     },
     {
       "path": "./fesm2022/ngxs-store.mjs",
-      "maxSize": "110kB",
+      "maxSize": "105kB",
       "maxPercentIncrease": 0.5
     }
   ],

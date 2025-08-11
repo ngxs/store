@@ -7,9 +7,6 @@
       "path": "./tsconfig.app.json"
     },
     {
-      "path": "./tsconfig.server.json"
-    },
-    {
       "path": "./tsconfig.spec.json"
     },
     {
@@ -19,9 +16,12 @@
   "compilerOptions": {
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": false
+    "target": "es2022",
+    "verbatimModuleSyntax": false
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,

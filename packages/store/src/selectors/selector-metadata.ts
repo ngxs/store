@@ -10,7 +10,7 @@ const SELECTOR_OPTIONS_META_KEY = 'NGXS_SELECTOR_OPTIONS_META';
 
 export const selectorOptionsMetaAccessor = {
   getOptions: (target: any): ɵSharedSelectorOptions => {
-    return (target && (<any>target)[SELECTOR_OPTIONS_META_KEY]) || {};
+    return (<any>target)?.[SELECTOR_OPTIONS_META_KEY] || {};
   },
   defineOptions: (target: any, options: ɵSharedSelectorOptions) => {
     if (!target) return;

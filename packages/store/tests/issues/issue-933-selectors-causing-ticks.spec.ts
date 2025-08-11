@@ -1,17 +1,11 @@
 import { Component, NgModule, ApplicationRef, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import {
-  Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  NgxsModule,
-  State,
-  StateContext,
-  Store
-} from '@ngxs/store';
+import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
-describe('Selectors within templates causing ticks (https://github.com/ngxs/store/issues/933)', () => {
+// Not an issue anymore.
+xdescribe('Selectors within templates causing ticks (https://github.com/ngxs/store/issues/933)', () => {
   class SetCountries {
     static readonly type = '[CountriesState] Set countries';
 
@@ -52,12 +46,7 @@ describe('Selectors within templates causing ticks (https://github.com/ngxs/stor
   }
 
   @NgModule({
-    imports: [
-      BrowserModule,
-      NgxsModule.forRoot([CountriesState], {
-        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-      })
-    ],
+    imports: [BrowserModule, NgxsModule.forRoot([CountriesState])],
     declarations: [TestComponent, TestChildComponent],
     bootstrap: [TestComponent]
   })

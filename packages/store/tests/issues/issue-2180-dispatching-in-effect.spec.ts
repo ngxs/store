@@ -3,7 +3,8 @@ import {
   Component,
   Injectable,
   effect,
-  provideExperimentalZonelessChangeDetection,
+  inject,
+  provideZonelessChangeDetection,
   signal
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -11,7 +12,6 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { renderApplication } from '@angular/platform-server';
 import {
   Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
   NgxsModule,
   provideStore,
   select,
@@ -70,9 +70,10 @@ describe('State per signal', () => {
     })
     class TestComponent {
       value = signal(0);
-      number = this.store.selectSignal(NumberState.getNumber);
+      number = select(NumberState.getNumber);
 
-      constructor(private store: Store) {
+      constructor() {
+        const store = inject(Store);
         effect(() => {
           const value = this.value();
           store.dispatch(new SetNumber(value));
@@ -88,13 +89,8 @@ describe('State per signal', () => {
       // Arrange
       skipConsoleLogging(() =>
         TestBed.configureTestingModule({
-          imports: [
-            NgxsModule.forRoot([NumberState], {
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            }),
-            TestComponent
-          ],
-          providers: [provideExperimentalZonelessChangeDetection()]
+          imports: [NgxsModule.forRoot([NumberState]), TestComponent],
+          providers: [provideZonelessChangeDetection()]
         })
       );
 
@@ -149,14 +145,8 @@ describe('State per signal', () => {
             () =>
               bootstrapApplication(TestComponent, {
                 providers: [
-                  provideExperimentalZonelessChangeDetection(),
-                  provideStore(
-                    [NumberState],
-                    {
-                      executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-                    },
-                    withExperimentalNgxsPendingTasks()
-                  )
+                  provideZonelessChangeDetection(),
+                  provideStore([NumberState], withExperimentalNgxsPendingTasks())
                 ]
               }),
             {

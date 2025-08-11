@@ -11,7 +11,7 @@ if (!CI) {
 module.exports = {
   displayName: 'integration',
   preset: '../jest.preset.js',
-  setupFilesAfterEnv: ['<rootDir>/test-setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {},
   moduleNameMapper,
   coverageDirectory: '../coverage/integration',
@@ -19,7 +19,6 @@ module.exports = {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
       {
-        isolatedModules: true,
         tsconfig: '<rootDir>/tsconfig.spec.json',
         stringifyContentPathRegex: '\\.(html|svg)$'
       }

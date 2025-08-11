@@ -1,9 +1,9 @@
-const { getJestProjects } = require('@nx/jest');
+const { getJestProjectsAsync } = require('@nx/jest');
 
 globalThis.ngJest = {
   skipNgcc: true
 };
 
-module.exports = {
-  projects: getJestProjects()
-};
+module.exports = async () => ({
+  projects: await getJestProjectsAsync()
+});

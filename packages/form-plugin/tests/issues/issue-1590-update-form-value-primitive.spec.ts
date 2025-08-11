@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  NgxsModule,
-  Selector,
-  State,
-  Store
-} from '@ngxs/store';
+import { NgxsModule, Selector, State, Store } from '@ngxs/store';
 
 import { UpdateFormValue, NgxsFormPluginModule } from '../../';
 
@@ -38,12 +32,7 @@ describe('UpdateFormValue with primitives (https://github.com/ngxs/store/issues/
 
   const testSetup = () => {
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([PizzaState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        }),
-        NgxsFormPluginModule.forRoot()
-      ]
+      imports: [NgxsModule.forRoot([PizzaState]), NgxsFormPluginModule.forRoot()]
     });
 
     return { store: TestBed.inject(Store) };

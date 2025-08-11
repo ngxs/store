@@ -1,6 +1,5 @@
 import {
   Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
   NgxsModule,
   NgxsOnChanges,
   NgxsSimpleChange,
@@ -46,11 +45,7 @@ describe('ngxsOnChanges', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([CounterState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot([CounterState])]
     });
 
     const store = TestBed.inject(Store);
@@ -150,11 +145,7 @@ describe('ngxsOnChanges', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([ParentCounterState, ChildCounterState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot([ParentCounterState, ChildCounterState])]
     });
 
     const store = TestBed.inject(Store);

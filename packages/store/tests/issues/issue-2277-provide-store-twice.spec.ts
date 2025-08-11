@@ -1,7 +1,7 @@
 import { ApplicationConfig, Component } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter, Router } from '@angular/router';
-import { DispatchOutsideZoneNgxsExecutionStrategy, provideStore } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
 describe('provideStore() being called twice', () => {
@@ -13,19 +13,9 @@ describe('provideStore() being called twice', () => {
 
   const appConfig: ApplicationConfig = {
     providers: [
-      provideStore([], {
-        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-      }),
+      provideStore(),
       provideRouter([
-        {
-          path: 'route',
-          loadComponent: () => RouteComponent,
-          providers: [
-            provideStore([], {
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            })
-          ]
-        }
+        { path: 'route', loadComponent: () => RouteComponent, providers: [provideStore()] }
       ])
     ]
   };

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed, fakeAsync, flushMicrotasks } from '@angular/core/testing';
 import {
-  DispatchOutsideZoneNgxsExecutionStrategy,
   NgxsModule,
   State,
   Store,
@@ -36,11 +35,7 @@ describe('createPickSelector', () => {
 
   function setupFixture(states?: ɵStateClass[]) {
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states || [MockState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot(states || [MockState])]
     });
     const store: Store = TestBed.inject(Store);
     const setState = (newState: MockStateModel) => store.reset({ mockstate: newState });

@@ -6,10 +6,31 @@ $ npm install @ngxs/store@dev
 
 ### To become next patch version
 
+- Feature(store): Expose `AbortSignal` on the state context [#2244](https://github.com/ngxs/store/pull/2244)
+
+### 20.1.0 2025-07-16
+
+- Feature(store): Add `withNgxsNoopExecutionStrategy` [#2359](https://github.com/ngxs/store/pull/2359)
+
+### 20.0.2 2025-06-19
+
+- Revert(store): Revert `@Select` decorator removal [#2351](https://github.com/ngxs/store/pull/2351)
+
+### 20.0.1 2025-06-19
+
+- Fix(store): Add missing `detach` to action director [#2349](https://github.com/ngxs/store/pull/2349)
+
+### 20.0.0 2025-06-16
+
+- Build: Add Angular 20 support [#2342](https://github.com/ngxs/store/pull/2342)
+- Feature(store): Implement `ActionDirector` [#2329](https://github.com/ngxs/store/pull/2329)
+- Feature(store): Add `lazyProvider` utility [#2326](https://github.com/ngxs/store/pull/2326)
+- Feature(devtools-plugin): Add `serialize` option [#2337](https://github.com/ngxs/store/pull/2337)
 - Refactor: Replace `ngOnDestroy` with `DestroyRef` [#2289](https://github.com/ngxs/store/pull/2289)
 - Refactor: Reduce RxJS dependency [#2292](https://github.com/ngxs/store/pull/2292)
 - Refactor: Pull less RxJS symbols [#2309](https://github.com/ngxs/store/pull/2309) [#2310](https://github.com/ngxs/store/pull/2310)
 - Refactor: Replace `ENVIRONMENT_INITIALIZER` [#2314](https://github.com/ngxs/store/pull/2314)
+- Refactor: Replace `const enum` [#2335](https://github.com/ngxs/store/pull/2335)
 - Fix(store): Add root store initializer guard [#2278](https://github.com/ngxs/store/pull/2278)
 - Fix(store): Reduce change detection cycles with pending tasks [#2280](https://github.com/ngxs/store/pull/2280)
 - Fix(store): Complete action results on destroy [#2282](https://github.com/ngxs/store/pull/2282)
@@ -20,6 +41,7 @@ $ npm install @ngxs/store@dev
 - Refactor(form-plugin): Replace `takeUntil` with `takeUntilDestroyed` [#2283](https://github.com/ngxs/store/pull/2283)
 - Refactor(router-plugin): Reduce RxJS depedency [#2291](https://github.com/ngxs/store/pull/2291)
 - Refactor(router-plugin): Change `@Selector` to `createSelector` [#2294](https://github.com/ngxs/store/pull/2294)
+- CI(bundlemon): Upgrade to bundlemon v3 [#2330](https://github.com/ngxs/store/pull/2330)
 
 ### 19.0.0 2024-12-3
 

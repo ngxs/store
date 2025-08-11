@@ -7,7 +7,7 @@ orbs:
 job_defaults_var: &job_defaults
   working_directory: ~/workspace/app
   docker:
-    - image: cimg/node:18.20.0-browsers
+    - image: cimg/node:22.16.0-browsers
 
 # Yarn cache key
 cache_var: &cache_key yarn-packages-v5-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -139,18 +139,18 @@ jobs:
           name: Run integration tests for the SSR build application
           command: yarn test:ci:integration:ssr
 
-  integration_ng19_tests:
+  integration_ng20_tests:
     <<: *job_defaults
     steps:
       - *attach_workspace
       - browser-tools/install-browser-tools
       - run:
-          name: Run integration tests for ng19 application
-          command: yarn integration:ng19
+          name: Run integration tests for ng20 application
+          command: yarn integration:ng20
       - persist_to_workspace:
           root: ~/workspace
           paths:
-            - app/integrations/hello-world-ng19/dist-integration
+            - app/integrations/hello-world-ng20/dist-integration
 
   integration_test_types:
     <<: *job_defaults
@@ -229,7 +229,7 @@ workflows:
       ###     requires:
       ###       - build
 
-      - integration_ng19_tests:
+      - integration_ng20_tests:
           requires:
             - build
 

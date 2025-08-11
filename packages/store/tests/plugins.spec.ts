@@ -1,13 +1,6 @@
 import { assertInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  NgxsModule,
-  withNgxsPlugin,
-  Store,
-  NgxsNextPluginFn,
-  InitState,
-  DispatchOutsideZoneNgxsExecutionStrategy
-} from '@ngxs/store';
+import { NgxsModule, withNgxsPlugin, Store, NgxsNextPluginFn, InitState } from '@ngxs/store';
 import { debounceTime, firstValueFrom, tap } from 'rxjs';
 
 describe('Plugins', () => {
@@ -43,11 +36,7 @@ describe('Plugins', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot()],
       providers: [withNgxsPlugin(asyncLogPlugin), withNgxsPlugin(otherPlugin)]
     });
 

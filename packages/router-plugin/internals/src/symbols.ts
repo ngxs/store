@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 
 declare const ngDevMode: boolean;
 
-export const enum NavigationActionTiming {
+export enum NavigationActionTiming {
   PreActivation = 1,
   PostActivation = 2
 }
@@ -26,6 +26,6 @@ export function ɵcreateRouterPluginOptions(
 ): NgxsRouterPluginOptions {
   return {
     navigationActionTiming:
-      (options && options.navigationActionTiming) || NavigationActionTiming.PreActivation
+      options?.navigationActionTiming || NavigationActionTiming.PreActivation
   };
 }

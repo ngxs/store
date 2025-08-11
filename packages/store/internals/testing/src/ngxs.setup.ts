@@ -1,12 +1,12 @@
-import { ApplicationRef } from '@angular/core';
+import { ApplicationRef, DOCUMENT } from '@angular/core';
 import { TestBed, TestBedStatic } from '@angular/core/testing';
-import { DOCUMENT } from '@angular/common';
+
 import { ɵBrowserDomAdapter as BrowserDomAdapter } from '@angular/platform-browser';
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
-import { DispatchOutsideZoneNgxsExecutionStrategy, NgxsModule, Store } from '@ngxs/store';
+import { NgxsModule, Store } from '@ngxs/store';
 
 import { NgxsTestModule } from './helpers/ngxs-test.module';
 import { NgxsOptionsTesting, NgxsTesting } from './symbol';
@@ -24,12 +24,7 @@ export class NgxsTestBed {
       TestBed.configureTestingModule({
         imports: [
           NgxsTestModule,
-          NgxsModule.forRoot(
-            options.states || [],
-            options.ngxsOptions || {
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            }
-          ),
+          NgxsModule.forRoot(options.states || [], options.ngxsOptions || {}),
           ...(options.imports || [])
         ]
       }).compileComponents()

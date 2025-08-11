@@ -11,7 +11,7 @@ import { getFeatureProviders } from './standalone-features/feature-providers';
 export class NgxsModule {
   static forRoot(
     states: ɵStateClass[] = [],
-    options: NgxsModuleOptions
+    options: NgxsModuleOptions = {}
   ): ModuleWithProviders<NgxsRootModule> {
     return {
       ngModule: NgxsRootModule,

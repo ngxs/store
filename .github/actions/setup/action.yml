@@ -13,7 +13,7 @@ inputs:
   node-version:
     description: Node version
     required: true
-    default: 18.x
+    default: 22.x
   github-ref-name:
     description: Branch name
     required: true
@@ -54,7 +54,7 @@ runs:
           ~/.cache
           ./node_modules
           ./@ngxs
-          ./integrations/hello-world-ng19/dist-integration
+          ./integrations/hello-world-ng20/dist-integration
         key: ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-${{ inputs.github-sha }}
         restore-keys: |
           ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-

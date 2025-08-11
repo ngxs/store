@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  provideStore,
-  State,
-  Store
-} from '@ngxs/store';
+import { Action, provideStore, State, Store } from '@ngxs/store';
 
 describe('dispatch() with nullable arguments', () => {
   class MyAction {
@@ -27,11 +21,7 @@ describe('dispatch() with nullable arguments', () => {
 
   const testSetup = () => {
     TestBed.configureTestingModule({
-      providers: [
-        provideStore([MyState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      providers: [provideStore([MyState])]
     });
 
     return TestBed.inject(Store);

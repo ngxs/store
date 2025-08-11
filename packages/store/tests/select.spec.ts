@@ -3,16 +3,7 @@ import { combineLatest, Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Component, Injectable, NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {
-  Store,
-  NgxsModule,
-  State,
-  Action,
-  Selector,
-  Select,
-  StateContext,
-  DispatchOutsideZoneNgxsExecutionStrategy
-} from '@ngxs/store';
+import { Store, NgxsModule, State, Action, Selector, Select, StateContext } from '@ngxs/store';
 import { skipConsoleLogging, freshPlatform } from '@ngxs/store/internals/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
@@ -120,11 +111,7 @@ describe('Select', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [
-          NgxsModule.forRoot(states, {
-            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-          })
-        ],
+        imports: [NgxsModule.forRoot(states)],
         declarations: [MySelectComponent]
       });
 
@@ -156,11 +143,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states, {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot(states)],
       declarations: [SelectComponent]
     });
 
@@ -187,11 +170,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states, {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot(states)],
       declarations: [StringSelectComponent]
     });
 
@@ -225,11 +204,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states, {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot(states)],
       declarations: [StoreSelectComponent]
     });
 
@@ -261,11 +236,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states, {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot(states)],
       declarations: [StoreSelectComponent]
     });
 
@@ -296,11 +267,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states, {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot(states)],
       declarations: [StoreSelectComponent]
     });
 
@@ -338,11 +305,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states, {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot(states)],
       declarations: [StoreSelectComponent]
     });
 
@@ -369,11 +332,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot(states, {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot(states)],
       declarations: [StoreSelectComponent]
     });
 
@@ -420,11 +379,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([NullSelectorState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot([NullSelectorState])],
       declarations: [StoreSelectComponent]
     });
 
@@ -475,7 +430,7 @@ describe('Select', () => {
       standalone: false
     })
     class CounterComponent {
-      count$ = this.store.select((state: { count: { number: { value: number } } }) => {
+      count$ = inject(Store).select((state: { count: { number: { value: number } } }) => {
         try {
           return state.count.number.value;
         } catch (err) {
@@ -499,11 +454,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([CountState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ],
+      imports: [NgxsModule.forRoot([CountState])],
       declarations: [CounterComponent]
     });
 
@@ -546,12 +497,7 @@ describe('Select', () => {
       class TestComponent {}
 
       @NgModule({
-        imports: [
-          BrowserModule,
-          NgxsModule.forRoot([CountriesState], {
-            executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-          })
-        ],
+        imports: [BrowserModule, NgxsModule.forRoot([CountriesState])],
         declarations: [TestComponent],
         bootstrap: [TestComponent]
       })

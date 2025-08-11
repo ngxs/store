@@ -14,7 +14,7 @@ describe('[TEST]: createSelector', () => {
       imports: [NgxsModule.forRoot()],
     });
 
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
   });
 
   it('should be correct detect type with createSelector', () => {

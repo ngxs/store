@@ -1,14 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  NgxsModule,
-  State,
-  Action,
-  Store,
-  Actions,
-  ofActionDispatched,
-  DispatchOutsideZoneNgxsExecutionStrategy
-} from '@ngxs/store';
+import { NgxsModule, State, Action, Store, Actions, ofActionDispatched } from '@ngxs/store';
 
 describe('Throw error when actions do not have a type property (https://github.com/ngxs/store/issues/1603)', () => {
   class MyAction {
@@ -29,11 +21,7 @@ describe('Throw error when actions do not have a type property (https://github.c
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([MyState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot([MyState])]
     });
   });
 

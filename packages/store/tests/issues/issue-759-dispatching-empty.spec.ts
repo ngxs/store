@@ -1,12 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  NgxsModule,
-  State,
-  StateContext,
-  Store
-} from '@ngxs/store';
+import { Action, NgxsModule, State, StateContext, Store } from '@ngxs/store';
 import { TestBed } from '@angular/core/testing';
 import { Subscription, throwError } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -52,11 +45,7 @@ describe('Dispatching an empty array with errors (https://github.com/ngxs/store/
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([AppState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot([AppState])]
     });
 
     store = TestBed.inject(Store);

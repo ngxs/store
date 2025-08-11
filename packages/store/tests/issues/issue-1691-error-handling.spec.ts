@@ -2,13 +2,7 @@ import { DoBootstrap, ErrorHandler, Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
-import {
-  Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  NgxsModule,
-  State,
-  Store
-} from '@ngxs/store';
+import { Action, NgxsModule, State, Store } from '@ngxs/store';
 import { defer, firstValueFrom, throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -76,12 +70,7 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
   }
 
   @NgModule({
-    imports: [
-      BrowserModule,
-      NgxsModule.forRoot([AppState], {
-        executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-      })
-    ],
+    imports: [BrowserModule, NgxsModule.forRoot([AppState])],
     providers: [CustomErrorHandler, { provide: ErrorHandler, useExisting: CustomErrorHandler }]
   })
   class TestModule implements DoBootstrap {
@@ -244,9 +233,9 @@ describe('Error handling (https://github.com/ngxs/store/issues/1691)', () => {
         expect(errorHandler.caughtErrorsByErrorHandler.length).toEqual(3);
 
         const messages = errorHandler.caughtErrorsByErrorHandler.map(e => e.message);
-        expect(messages[0]).toContain('Uncaught (in promise): SynchronousError');
-        expect(messages[1]).toContain('Uncaught (in promise): SynchronousErrorInStream');
-        expect(messages[2]).toContain('Uncaught (in promise): AsynchronousError');
+        expect(messages[0]).toContain('Synchronously Produced Error');
+        expect(messages[1]).toContain('Synchronously Produced Error In Stream');
+        expect(messages[2]).toContain('Asynchronously Produced Error');
       })
     );
 

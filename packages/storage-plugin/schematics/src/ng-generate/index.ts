@@ -69,7 +69,7 @@ export function migrateKeys(): Rule {
       return exit(1);
     }
 
-    visitTsFiles(tree, tree.root, async path => {
+    visitTsFiles(tree, tree.root, path => {
       const fileContent = tree.readText(path);
       const sourceFile = tsProject.createSourceFile(path, fileContent!);
       const hasStoragePluginImported = sourceFile.getImportDeclaration(
@@ -77,33 +77,35 @@ export function migrateKeys(): Rule {
       );
 
       // do not try migrating if the storage plugin is not imported
-      if (hasStoragePluginImported) {
-        sourceFile.forEachDescendant(node => {
-          if (
-            isCallExpression(node) &&
-            ts.Node.isPropertyAccessExpression(node.getExpression())
-          ) {
-            const callExpression = node as ts.CallExpression;
-
-            // If the storage plugin is not provided, we should not try migrating
-            if (!isStoragePluginProvided(callExpression)) {
-              return;
-            }
-
-            const args = callExpression.getArguments();
-            // If there are no arguments in the forRoot(), then add the `keys` property
-            if (!args.length) {
-              _context.logger.info(`Migrating empty forRoot in ${path}`);
-              migrateEmptyForRoot(callExpression);
-            } else if (ts.Node.isObjectLiteralExpression(args[0])) {
-              _context.logger.info(`Migrating forRoot with args in ${path}`);
-              migrateForRootWithArgs(args[0]);
-            }
-          }
-        });
-
-        tree.overwrite(path, sourceFile.getFullText());
+      if (!hasStoragePluginImported) {
+        return;
       }
+
+      sourceFile.forEachDescendant(node => {
+        if (
+          isCallExpression(node) &&
+          ts.Node.isPropertyAccessExpression(node.getExpression())
+        ) {
+          const callExpression = node as ts.CallExpression;
+
+          // If the storage plugin is not provided, we should not try migrating
+          if (!isStoragePluginProvided(callExpression)) {
+            return;
+          }
+
+          const args = callExpression.getArguments();
+          // If there are no arguments in the forRoot(), then add the `keys` property
+          if (!args.length) {
+            _context.logger.info(`Migrating empty forRoot in ${path}`);
+            migrateEmptyForRoot(callExpression);
+          } else if (ts.Node.isObjectLiteralExpression(args[0])) {
+            _context.logger.info(`Migrating forRoot with args in ${path}`);
+            migrateForRootWithArgs(args[0]);
+          }
+        }
+      });
+
+      tree.overwrite(path, sourceFile.getFullText());
     });
   };
 }

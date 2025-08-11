@@ -1,6 +1,6 @@
 import { ErrorHandler } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { DispatchOutsideZoneNgxsExecutionStrategy, Store, provideStore } from '@ngxs/store';
+import { Store, provideStore } from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 import { NgxsLoggerPluginOptions, withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
 
@@ -12,13 +12,7 @@ export function setupWithLogger(states: ɵStateClass[], opts?: NgxsLoggerPluginO
 
   TestBed.configureTestingModule({
     providers: [
-      provideStore(
-        states,
-        {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        },
-        withNgxsLoggerPlugin({ ...opts, logger })
-      ),
+      provideStore(states, withNgxsLoggerPlugin({ ...opts, logger })),
       { provide: ErrorHandler, useClass: NoopErrorHandler }
     ]
   });

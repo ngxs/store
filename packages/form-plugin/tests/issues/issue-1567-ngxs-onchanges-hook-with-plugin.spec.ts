@@ -1,13 +1,7 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, inject, Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import {
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  NgxsModule,
-  NgxsSimpleChange,
-  State,
-  Store
-} from '@ngxs/store';
+import { NgxsModule, NgxsSimpleChange, State, Store } from '@ngxs/store';
 
 import { NgxsFormPluginModule } from '../../';
 
@@ -48,20 +42,16 @@ describe('ngxsOnChanges with form plugin (https://github.com/ngxs/store/issues/1
     standalone: false
   })
   class TestComponent {
-    form = this._fb.group({
+    form = inject(FormBuilder).group({
       name: ['']
     });
-
-    constructor(private _fb: FormBuilder) {}
   }
 
   const testSetup = () => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        NgxsModule.forRoot([FormState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        }),
+        NgxsModule.forRoot([FormState]),
         NgxsFormPluginModule.forRoot()
       ],
       declarations: [TestComponent]

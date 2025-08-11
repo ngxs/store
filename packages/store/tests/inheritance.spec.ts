@@ -1,11 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  Store,
-  State,
-  NgxsModule,
-  DispatchOutsideZoneNgxsExecutionStrategy
-} from '@ngxs/store';
+import { Store, State, NgxsModule } from '@ngxs/store';
 
 describe('Inheritance @State', () => {
   interface MyStateModel {
@@ -43,11 +38,7 @@ describe('Inheritance @State', () => {
     class MyOtherState extends MyState {}
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([MyState, MyOtherState, MyChildAState, MyChildBState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot([MyState, MyOtherState, MyChildAState, MyChildBState])]
     });
 
     const store = TestBed.inject(Store);
@@ -90,11 +81,7 @@ describe('Inheritance @State', () => {
     class ThirdState extends SharedState {}
 
     TestBed.configureTestingModule({
-      imports: [
-        NgxsModule.forRoot([FirstState, MyChildState, SecondState, ThirdState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot([FirstState, MyChildState, SecondState, ThirdState])]
     });
 
     const store = TestBed.inject(Store);

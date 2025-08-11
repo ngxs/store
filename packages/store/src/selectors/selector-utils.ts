@@ -65,7 +65,7 @@ export function createMemoizedSelectorFn<T extends (...args: any[]) => any>(
   originalFn: T,
   creationMetadata: Partial<CreationMetadata> | undefined
 ) {
-  const containerClass = creationMetadata && creationMetadata.containerClass;
+  const containerClass = creationMetadata?.containerClass;
   const wrappedFn = function wrappedSelectorFn() {
     // eslint-disable-next-line prefer-rest-params
     const returnValue = originalFn.apply(containerClass, <any>arguments);
@@ -139,5 +139,5 @@ function getSelectorsToApply(
  */
 export function getRootSelectorFactory(selector: any): ɵSelectorFactory {
   const metadata = ɵgetSelectorMetadata(selector) || ɵgetStoreMetadata(selector);
-  return (metadata && metadata.makeRootSelector) || (() => selector);
+  return metadata?.makeRootSelector || (() => selector);
 }

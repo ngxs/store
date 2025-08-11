@@ -1,14 +1,6 @@
 import { Component, Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  NgxsModule,
-  Selector,
-  State,
-  StateContext,
-  Store
-} from '@ngxs/store';
+import { Action, NgxsModule, Selector, State, StateContext, Store } from '@ngxs/store';
 import { switchMap, tap } from 'rxjs/operators';
 
 describe('Select once after dispatch (https://github.com/ngxs/store/issues/1976)', () => {
@@ -67,11 +59,7 @@ describe('Select once after dispatch (https://github.com/ngxs/store/issues/1976)
     // Arrange
     TestBed.configureTestingModule({
       declarations: [TestComponent],
-      imports: [
-        NgxsModule.forRoot([CounterState], {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        })
-      ]
+      imports: [NgxsModule.forRoot([CounterState])]
     });
 
     const fixture = TestBed.createComponent(TestComponent);

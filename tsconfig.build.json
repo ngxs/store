@@ -11,7 +11,8 @@
     "stripInternal": true,
     "paths": {
       "@ngxs/*": ["@ngxs/*"]
-    }
+    },
+    "moduleResolution": "bundler"
   },
   "angularCompilerOptions": {
     "compilationMode": "partial",

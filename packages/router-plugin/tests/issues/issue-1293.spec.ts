@@ -3,7 +3,7 @@ import { APP_BASE_HREF, DOCUMENT } from '@angular/common';
 import { Component, NgModule, Injectable } from '@angular/core';
 import { Routes, CanActivate } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { DispatchOutsideZoneNgxsExecutionStrategy, Store, provideStore } from '@ngxs/store';
+import { Store, provideStore } from '@ngxs/store';
 import { freshPlatform } from '@ngxs/store/internals/testing';
 
 import { Navigate, withNgxsRouterPlugin } from '../..';
@@ -81,13 +81,7 @@ function getTestModule() {
     declarations: [RootComponent, HomeComponent, BlogComponent, LoginComponent],
     bootstrap: [RootComponent],
     providers: [
-      provideStore(
-        [],
-        {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        },
-        withNgxsRouterPlugin()
-      ),
+      provideStore([], withNgxsRouterPlugin()),
       AuthGuard,
       { provide: APP_BASE_HREF, useValue: '/' }
     ]

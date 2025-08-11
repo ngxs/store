@@ -41,7 +41,7 @@ export const setValue = (obj: any, prop: string, val: any) => {
       acc[part] = Array.isArray(acc[part]) ? acc[part].slice() : { ...acc[part] };
     }
 
-    return acc && acc[part];
+    return acc?.[part];
   }, obj);
 
   return obj;
@@ -55,4 +55,4 @@ export const setValue = (obj: any, prop: string, val: any) => {
  * @ignore
  */
 export const getValue = (obj: any, prop: string): any =>
-  prop.split('.').reduce((acc: any, part: string) => acc && acc[part], obj);
+  prop.split('.').reduce((acc: any, part: string) => acc?.[part], obj);

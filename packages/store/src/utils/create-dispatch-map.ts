@@ -1,5 +1,4 @@
-import { Observable } from 'rxjs';
-import { ɵdefineProperty } from '@ngxs/store/internals';
+import type { Observable } from 'rxjs';
 
 import { dispatch } from './dispatch';
 
@@ -9,10 +8,7 @@ export type ActionMap = Record<string, ActionDef<any>>;
 
 export function createDispatchMap<T extends ActionMap>(actionMap: T) {
   return Object.entries(actionMap).reduce((accumulator, [key, ActionType]) => {
-    ɵdefineProperty(accumulator, key, {
-      enumerable: true,
-      value: dispatch(ActionType)
-    });
+    (accumulator as any)[key] = dispatch(ActionType);
     return accumulator;
   }, {}) as {
     // This is inlined to enhance developer experience.

@@ -1,5 +1,5 @@
 import { NgZone } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, type Subscription } from 'rxjs';
 
 import { executeUnhandledCallback } from './unhandled-rxjs-error-callback';
 

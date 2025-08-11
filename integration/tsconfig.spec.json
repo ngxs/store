@@ -4,12 +4,11 @@
     "baseUrl": "./",
     "paths": {
       "@ngxs/*": ["../@ngxs/*"],
-      "@integration/*": ["./app/*"]
+      "@integration/*": ["./src/app/*"]
     },
     "module": "commonjs",
-    "target": "es5",
+    "isolatedModules": true,
     "types": ["jest", "node"]
   },
-  "files": ["polyfills.ts"],
   "include": ["**/*.spec.ts"]
 }

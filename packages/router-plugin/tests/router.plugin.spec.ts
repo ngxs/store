@@ -13,8 +13,7 @@ import {
   State,
   Action,
   StateContext,
-  provideStore,
-  DispatchOutsideZoneNgxsExecutionStrategy
+  provideStore
 } from '@ngxs/store';
 
 import {
@@ -246,13 +245,7 @@ async function createTestModule(
       )
     ],
     providers: [
-      provideStore(
-        opts.states,
-        {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        },
-        withNgxsRouterPlugin()
-      ),
+      provideStore(opts.states, withNgxsRouterPlugin()),
       {
         provide: 'CanActivateNext',
         useValue: opts.canActivate || (() => true)

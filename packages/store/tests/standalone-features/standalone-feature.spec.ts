@@ -1,19 +1,8 @@
 import { Component, Injectable, NgZone } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
-import {
-  Action,
-  NoopNgxsExecutionStrategy,
-  State,
-  StateContext,
-  Store,
-  provideStates,
-  provideStore
-} from '@ngxs/store';
+import { Action, State, StateContext, Store, provideStates, provideStore } from '@ngxs/store';
 import { Router, provideRouter } from '@angular/router';
-
-import { NGXS_EXECUTION_STRATEGY } from '../../src/execution/symbols';
-import { DispatchOutsideZoneNgxsExecutionStrategy } from '../../src/execution/dispatch-outside-zone-ngxs-execution-strategy';
 
 describe('Standalone features', () => {
   class AddCountry {
@@ -34,68 +23,6 @@ describe('Standalone features', () => {
   }
 
   it(
-    'should bootstrap with no explicit options',
-    freshPlatform(async () => {
-      // Arrange
-      @Component({
-        selector: 'app-root',
-        template: '',
-        standalone: true
-      })
-      class TestComponent {}
-
-      // Act
-      const appRef = await skipConsoleLogging(() =>
-        bootstrapApplication(TestComponent, {
-          providers: [
-            provideStore([], {
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            })
-          ]
-        })
-      );
-
-      // Assert
-      expect(appRef.injector.get(NGXS_EXECUTION_STRATEGY)).toBeInstanceOf(
-        DispatchOutsideZoneNgxsExecutionStrategy
-      );
-
-      appRef.destroy();
-    })
-  );
-
-  it(
-    'should overwrite default values when `withNgxsConfig` is provided',
-    freshPlatform(async () => {
-      // Arrange
-      @Component({
-        selector: 'app-root',
-        template: '',
-        standalone: true
-      })
-      class TestComponent {}
-
-      // Act
-      const appRef = await skipConsoleLogging(() =>
-        bootstrapApplication(TestComponent, {
-          providers: [
-            provideStore([], {
-              executionStrategy: NoopNgxsExecutionStrategy
-            })
-          ]
-        })
-      );
-
-      // Assert
-      expect(appRef.injector.get(NGXS_EXECUTION_STRATEGY)).toBeInstanceOf(
-        NoopNgxsExecutionStrategy
-      );
-
-      appRef.destroy();
-    })
-  );
-
-  it(
     'should bootstrap an app with `provideStore`',
     freshPlatform(async () => {
       // Arrange
@@ -108,12 +35,7 @@ describe('Standalone features', () => {
 
       const appRef = await skipConsoleLogging(() =>
         bootstrapApplication(TestComponent, {
-          providers: [
-            provideStore([CountriesState], {
-              developmentMode: false,
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            })
-          ]
+          providers: [provideStore([CountriesState], { developmentMode: false })]
         })
       );
       const store = appRef.injector.get(Store);
@@ -165,10 +87,7 @@ describe('Standalone features', () => {
                 providers: [provideStates([ProductsState])]
               }
             ]),
-            provideStore([CountriesState], {
-              developmentMode: false,
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            })
+            provideStore([CountriesState], { developmentMode: false })
           ]
         })
       );

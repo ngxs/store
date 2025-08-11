@@ -8,7 +8,7 @@ on:
   pull_request:
 
 env:
-  NODE_VERSION: 18.x
+  NODE_VERSION: 22.x
   BASE_REF: ${{ format('remotes/origin/{0}', github.base_ref) }}
 
 defaults:
@@ -49,10 +49,10 @@ jobs:
 
       # create a preview release of the packages using pkg.pr.new
       - name: Continuous Release
-        run: npx pkg-pr-new publish --compact ./@ngxs/devtools-plugin ./@ngxs/form-plugin ./@ngxs/hmr-plugin ./@ngxs/router-plugin ./@ngxs/storage-plugin ./@ngxs/store ./@ngxs/websocket-plugin 
+        run: npx pkg-pr-new publish --compact ./@ngxs/devtools-plugin ./@ngxs/form-plugin ./@ngxs/hmr-plugin ./@ngxs/router-plugin ./@ngxs/storage-plugin ./@ngxs/store ./@ngxs/websocket-plugin
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-  
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   premerge-test:
     runs-on: ubuntu-latest
     needs: premerge-build
@@ -96,7 +96,7 @@ jobs:
     strategy:
       matrix:
         script:
-          - 'integration:ng19'
+          - 'integration:ng20'
           - 'test:types'
 
     steps:
@@ -144,8 +144,20 @@ jobs:
       - name: Download integration test artifacts
         uses: ./.github/actions/download-integration-test-artifacts
 
-      - name: Run BundleMon
-        run: yarn bundlemon
-        env:
-          BUNDLEMON_PROJECT_ID: 62b174ff6619780d8caf79fa
-          CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+      - name: Run BundleMon (Main)
+        uses: lironer/bundlemon-action@v1
+        with:
+          bundlemon-args: --config .bundlemonrc.json
+          fail-on-error: false
+
+      - name: Run BundleMon (Plugins)
+        uses: lironer/bundlemon-action@v1
+        with:
+          bundlemon-args: --config .bundlemonrc.plugins.json
+          fail-on-error: false
+
+      - name: Run BundleMon (Integration)
+        uses: lironer/bundlemon-action@v1
+        with:
+          bundlemon-args: --config .bundlemonrc.integration.json
+          fail-on-error: false

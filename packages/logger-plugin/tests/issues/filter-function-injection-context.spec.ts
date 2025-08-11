@@ -6,14 +6,7 @@ import {
   Injectable
 } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import {
-  Action,
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  provideStore,
-  State,
-  StateContext,
-  Store
-} from '@ngxs/store';
+import { Action, provideStore, State, StateContext, Store } from '@ngxs/store';
 import { withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
@@ -68,9 +61,6 @@ describe('Running `filter: () => ...` function within the injection context', ()
 
       provideStore(
         [CounterState],
-        {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        },
         withNgxsLoggerPlugin({
           logger,
           filter: () => {

@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { NavigationEnd, Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { DispatchOutsideZoneNgxsExecutionStrategy, Store, provideStore } from '@ngxs/store';
+import { Store, provideStore } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { first } from 'rxjs/operators';
 
@@ -40,15 +40,7 @@ describe('Time-traveling with Redux DevTools (https://github.com/ngxs/store/issu
     imports: [BrowserModule, RouterTestingModule.withRoutes(routes)],
     declarations: [RootComponent, HomeComponent, LoginComponent],
     bootstrap: [RootComponent],
-    providers: [
-      provideStore(
-        [],
-        {
-          executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-        },
-        withNgxsRouterPlugin()
-      )
-    ]
+    providers: [provideStore([], withNgxsRouterPlugin())]
   })
   class TestModule {}
 

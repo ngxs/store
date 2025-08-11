@@ -1,10 +1,8 @@
-import { Injectable, InjectionToken, Type, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, InjectionToken, inject } from '@angular/core';
+import type { Observable } from 'rxjs';
 
 import { StateOperator } from '@ngxs/store/operators';
 import { ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
-
-import { NgxsExecutionStrategy } from './execution/symbols';
 
 // The injection token is used to resolve a list of states provided at
 // the root level through either `NgxsModule.forRoot` or `provideStore`.
@@ -58,7 +56,7 @@ export class NgxsConfig {
    * It makes sense to use it only during development to ensure there're no state mutations.
    * When building for production, the `Object.freeze` will be tree-shaken away.
    */
-  developmentMode: boolean;
+  developmentMode!: boolean;
   compatibility: {
     /**
      * Support a strict Content Security Policy.
@@ -70,18 +68,6 @@ export class NgxsConfig {
     strictContentSecurityPolicy: false
   };
   /**
-   * Determines the execution context to perform async operations inside. An implementation can be
-   * provided to override the default behaviour where the async operations are run
-   * outside Angular's zone but all observable behaviours of NGXS are run back inside Angular's zone.
-   * These observable behaviours are from:
-   *   `store.selectSignal(...)`, `store.select(...)`, `actions.subscribe(...)` or `store.dispatch(...).subscribe(...)`
-   * Every `zone.run` causes Angular to run change detection on the whole tree (`app.tick()`) so of your
-   * application doesn't rely on zone.js running change detection then you can switch to the
-   * `NoopNgxsExecutionStrategy` that doesn't interact with zones.
-   * (default: null)
-   */
-  executionStrategy: Type<NgxsExecutionStrategy>;
-  /**
    * Defining shared selector options
    */
   selectorOptions: ɵSharedSelectorOptions = {
@@ -90,12 +76,21 @@ export class NgxsConfig {
   };
 }
 
-export { StateOperator };
+export type { StateOperator };
 
 /**
  * State context provided to the actions in the state.
  */
 export interface StateContext<T> {
+  /**
+   * An AbortSignal tied to the current action's lifecycle.
+   *
+   * It gives you a handle to proactively cancel ongoing async work.
+   * If you're using an observable, it will be unsubscribed automatically when cancellation occurs.
+   * If you're using async/await, check `abortSignal.aborted` after `await` blocks to decide whether to continue.
+   */
+  abortSignal: AbortSignal;
+
   /**
    * Get the current state.
    */
@@ -150,15 +145,4 @@ export interface NgxsAfterBootstrap {
   ngxsAfterBootstrap(ctx: StateContext<any>): void;
 }
 
-export type NgxsModuleOptions = Partial<NgxsConfig> & {
-  executionStrategy: Type<NgxsExecutionStrategy>;
-};
-
-/** @internal */
-declare global {
-  const ngDevMode: boolean;
-  // Indicates whether the application is operating in server-rendering mode.
-  // `ngServerMode` is a global flag set by Angular CLI.
-  // https://github.com/angular/angular-cli/blob/b4e9a2af9e50e7b65167d0fdbd4012023135e875/packages/angular/build/src/tools/vite/utils.ts#L102
-  const ngServerMode: boolean;
-}
+export type NgxsModuleOptions = Partial<NgxsConfig>;

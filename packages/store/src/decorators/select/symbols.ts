@@ -1,9 +1,30 @@
-import { Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
 import { ɵExtractTokenType, StateToken } from '@ngxs/store/internals';
 
-import { propGetter } from '../../internal/internals';
 import { SelectFactory } from './select-factory';
-import { throwSelectFactoryNotConnectedError } from '../../configs/messages.config';
+import type { NgxsConfig } from '../../symbols';
+import { compliantPropGetter, fastPropGetter } from '../../internal/internals';
+
+/**
+ * Get a deeply nested value. Example:
+ *
+ *    getValue({ foo: bar: [] }, 'foo.bar') //=> []
+ *
+ * @ignore
+ *
+ * Marked for removal. It's only used within `createSelectorFn`.
+ */
+export function propGetter(paths: string[], config: NgxsConfig) {
+  if (config?.compatibility?.strictContentSecurityPolicy) {
+    return compliantPropGetter(paths);
+  } else {
+    return fastPropGetter(paths);
+  }
+}
+
+function throwSelectFactoryNotConnectedError(): never {
+  throw new Error('You have forgotten to import the NGXS module!');
+}
 
 const DOLLAR_CHAR_CODE = 36;
 

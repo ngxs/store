@@ -1,11 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import {
-  DispatchOutsideZoneNgxsExecutionStrategy,
-  NgxsModule,
-  State,
-  Store
-} from '@ngxs/store';
+import { NgxsModule, State, Store } from '@ngxs/store';
 
 describe('StoreValidator', () => {
   describe('duplicate state name check', () => {
@@ -27,11 +22,7 @@ describe('StoreValidator', () => {
         class MyDuplicateState {}
 
         TestBed.configureTestingModule({
-          imports: [
-            NgxsModule.forRoot([MyOtherState, MyDuplicateState], {
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            })
-          ]
+          imports: [NgxsModule.forRoot([MyOtherState, MyDuplicateState])]
         });
 
         TestBed.inject(Store);
@@ -69,11 +60,7 @@ describe('StoreValidator', () => {
         class MyAnotherState {}
 
         TestBed.configureTestingModule({
-          imports: [
-            NgxsModule.forRoot([MyOtherState, MyAnotherState, MyDuplicateChildState], {
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            })
-          ]
+          imports: [NgxsModule.forRoot([MyOtherState, MyAnotherState, MyDuplicateChildState])]
         });
 
         TestBed.inject(Store);
@@ -104,9 +91,7 @@ describe('StoreValidator', () => {
 
         TestBed.configureTestingModule({
           imports: [
-            NgxsModule.forRoot([MyOtherState], {
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            }),
+            NgxsModule.forRoot([MyOtherState]),
             NgxsModule.forFeature([MyDuplicateState])
           ]
         });
@@ -139,9 +124,7 @@ describe('StoreValidator', () => {
 
         TestBed.configureTestingModule({
           imports: [
-            NgxsModule.forRoot([MyMainState], {
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            }),
+            NgxsModule.forRoot([MyMainState]),
             NgxsModule.forFeature([MyFeatureState]),
             NgxsModule.forFeature([MyFeatureState])
           ]
@@ -163,11 +146,7 @@ describe('StoreValidator', () => {
         class TestState {}
 
         TestBed.configureTestingModule({
-          imports: [
-            NgxsModule.forRoot([TestState], {
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            })
-          ]
+          imports: [NgxsModule.forRoot([TestState])]
         });
 
         TestBed.inject(Store);
@@ -193,11 +172,7 @@ describe('StoreValidator', () => {
         class MyState {}
 
         TestBed.configureTestingModule({
-          imports: [
-            NgxsModule.forRoot([MyState, ChildState], {
-              executionStrategy: DispatchOutsideZoneNgxsExecutionStrategy
-            })
-          ]
+          imports: [NgxsModule.forRoot([MyState, ChildState])]
         });
 
         TestBed.inject(Store);

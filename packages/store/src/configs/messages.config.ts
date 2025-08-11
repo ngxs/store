@@ -30,14 +30,6 @@ export function throwSelectorDecoratorError(): never {
   throw new Error('Selectors only work on methods.');
 }
 
-export function getZoneWarningMessage(): string {
-  return (
-    'Your application was bootstrapped with nooped zone and your execution strategy requires an actual NgZone!\n' +
-    'Please set the value of the executionStrategy property to NoopNgxsExecutionStrategy.\n' +
-    'NgxsModule.forRoot(states, { executionStrategy: NoopNgxsExecutionStrategy })'
-  );
-}
-
 export function getUndecoratedStateWithInjectableWarningMessage(name: string): string {
   return `'${name}' class should be decorated with @Injectable() right after the @State() decorator`;
 }
@@ -57,10 +49,6 @@ export function getInvalidInitializationOrderMessage(addedStates?: ɵPlainObject
   }
 
   return message;
-}
-
-export function throwSelectFactoryNotConnectedError(): never {
-  throw new Error('You have forgotten to import the NGXS module!');
 }
 
 export function throwPatchingArrayError(): never {
