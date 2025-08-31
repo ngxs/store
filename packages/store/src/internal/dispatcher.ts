@@ -1,11 +1,4 @@
-import {
-  DestroyRef,
-  inject,
-  Injectable,
-  Injector,
-  NgZone,
-  runInInjectionContext
-} from '@angular/core';
+import { inject, Injectable, Injector, NgZone, runInInjectionContext } from '@angular/core';
 import {
   EMPTY,
   forkJoin,
@@ -37,7 +30,6 @@ export class InternalDispatcher {
   private _stateStream = inject(ɵStateStream);
   private _ngxsExecutionStrategy = inject(InternalNgxsExecutionStrategy);
   private _injector = inject(Injector);
-  private _destroyRef = inject(DestroyRef);
 
   /**
    * Dispatches event(s).
