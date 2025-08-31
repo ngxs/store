@@ -1,4 +1,11 @@
-import { inject, Injectable, Injector, NgZone, runInInjectionContext } from '@angular/core';
+import {
+  DestroyRef,
+  inject,
+  Injectable,
+  Injector,
+  NgZone,
+  runInInjectionContext
+} from '@angular/core';
 import {
   EMPTY,
   forkJoin,
@@ -30,6 +37,7 @@ export class InternalDispatcher {
   private _stateStream = inject(ɵStateStream);
   private _ngxsExecutionStrategy = inject(InternalNgxsExecutionStrategy);
   private _injector = inject(Injector);
+  private _destroyRef = inject(DestroyRef);
 
   /**
    * Dispatches event(s).
@@ -140,10 +148,22 @@ type StateFn = (...args: any[]) => any;
  * the last function should not call `next`.
  */
 const compose =
-  (injector: Injector, funcs: StateFn[]) =>
+  (injector: Injector, fns: StateFn[]) =>
   (...args: any[]) => {
-    const curr = funcs.shift()!;
+    // Note: the root Injector does have a `destroyed` flag, but it's not part of the
+    // public API surface. We check it here via a cast to avoid introducing a dependency
+    // on `ApplicationRef` (which would risk cyclic references and a potential breaking change).
+    if ((injector as unknown as { destroyed: boolean }).destroyed) {
+      // Injector was already destroyed → no-op
+      return;
+    }
+
+    const fn = fns.shift();
+    if (!fn) {
+      return;
+    }
+
     return runInInjectionContext(injector, () =>
-      curr(...args, (...nextArgs: any[]) => compose(injector, funcs)(...nextArgs))
+      fn(...args, (...nextArgs: any[]) => compose(injector, fns)(...nextArgs))
     );
   };
