@@ -10,7 +10,7 @@ import {
 
 interface KeyWithEngine {
   key: string;
-  engine: StorageEngine;
+  engine: StorageEngine | null;
 }
 
 @Injectable({ providedIn: 'root' })
