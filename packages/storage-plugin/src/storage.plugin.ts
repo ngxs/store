@@ -58,6 +58,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           if (!ɵhasOwnProperty(addedStates, stateName)) continue;
         }
 
+        if (engine === null) continue;
+
         const storageKey = getStorageKey(key, this._options);
         let storedValue: any = engine.getItem(storageKey);
 
@@ -104,6 +106,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
         }
 
         for (const { key, engine } of this._keysManager.getKeysWithEngines()) {
+          if (engine === null) continue;
+
           let storedValue = nextState;
 
           const storageKey = getStorageKey(key, this._options);
