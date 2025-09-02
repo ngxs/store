@@ -10,6 +10,7 @@ $ npm install @ngxs/store@dev
 - Fix(store): Guard against running state functions after injector is destroyed [#2366](https://github.com/ngxs/store/pull/2366)
 - Refactor(store): Clear `_states` on destroy to aid GC under high load [#2365](https://github.com/ngxs/store/pull/2365)
 - Fix(storage-plugin): Guard against `engine` may be falsy [#2367](https://github.com/ngxs/store/pull/2367) [#2368](https://github.com/ngxs/store/pull/2368)
+- Peformance(storage-plugin): Replace closure-based action matcher with direct type comparison [#2369](https://github.com/ngxs/store/pull/2369)
 
 ### 20.1.0 2025-07-16
 

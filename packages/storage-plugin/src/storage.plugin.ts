@@ -7,7 +7,8 @@ import {
   InitState,
   UpdateState,
   actionMatcher,
-  NgxsNextPluginFn
+  NgxsNextPluginFn,
+  getActionTypeFromInstance
 } from '@ngxs/store/plugins';
 import {
   ɵDEFAULT_STATE_KEY,
@@ -33,9 +34,9 @@ export class NgxsStoragePlugin implements NgxsPlugin {
       return next(state, event);
     }
 
-    const matches = actionMatcher(event);
-    const isInitAction = matches(InitState);
-    const isUpdateAction = matches(UpdateState);
+    const type = getActionTypeFromInstance(event);
+    const isInitAction = type === InitState.type;
+    const isUpdateAction = type === UpdateState.type;
     const isInitOrUpdateAction = isInitAction || isUpdateAction;
     let hasMigration = false;
 
