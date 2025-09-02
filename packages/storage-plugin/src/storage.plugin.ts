@@ -58,7 +58,9 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           if (!ɵhasOwnProperty(addedStates, stateName)) continue;
         }
 
-        if (engine === null) continue;
+        // Guard against `engine` being falsy. Since it can be provided via DI,
+        // we should assume it may be `null` or `undefined` at runtime and skip it safely.
+        if (!engine) continue;
 
         const storageKey = getStorageKey(key, this._options);
         let storedValue: any = engine.getItem(storageKey);
@@ -106,7 +108,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
         }
 
         for (const { key, engine } of this._keysManager.getKeysWithEngines()) {
-          if (engine === null) continue;
+          if (!engine) continue;
 
           let storedValue = nextState;
 
