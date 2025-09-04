@@ -9,6 +9,7 @@ $ npm install @ngxs/store@dev
 - Feature(store): Expose `AbortSignal` on the state context [#2244](https://github.com/ngxs/store/pull/2244)
 - Fix(store): Guard against running state functions after injector is destroyed [#2366](https://github.com/ngxs/store/pull/2366)
 - Refactor(store): Clear `_states` on destroy to aid GC under high load [#2365](https://github.com/ngxs/store/pull/2365)
+- Refactor(store): Add `debugName` to `computed` signals in `selectSignal` [#2370](https://github.com/ngxs/store/pull/2370)
 - Fix(storage-plugin): Guard against `engine` may be falsy [#2367](https://github.com/ngxs/store/pull/2367) [#2368](https://github.com/ngxs/store/pull/2368)
 - Peformance(storage-plugin): Replace closure-based action matcher with direct type comparison [#2369](https://github.com/ngxs/store/pull/2369)
 
