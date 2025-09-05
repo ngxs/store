@@ -1,7 +1,6 @@
 import { DestroyRef, inject, Injectable, Signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { ɵwrapObserverCalls } from './custom-rxjs-operators';
 import { ɵOrderedBehaviorSubject } from './custom-rxjs-subjects';
 import { ɵPlainObject } from './symbols';
 
@@ -11,7 +10,7 @@ import { ɵPlainObject } from './symbols';
  */
 @Injectable({ providedIn: 'root' })
 export class ɵStateStream extends ɵOrderedBehaviorSubject<ɵPlainObject> {
-  readonly state: Signal<ɵPlainObject> = toSignal(this.pipe(ɵwrapObserverCalls(untracked)), {
+  readonly state: Signal<ɵPlainObject> = toSignal(this, {
     manualCleanup: true,
     requireSync: true
   });
@@ -28,5 +27,17 @@ export class ɵStateStream extends ɵOrderedBehaviorSubject<ɵPlainObject> {
     // is created for each HTTP request. If users forget to unsubscribe from `store.select`
     // or `store.subscribe`, it can result in significant memory leaks in SSR apps.
     inject(DestroyRef).onDestroy(() => this.complete());
+  }
+
+  override next(value: ɵPlainObject): void {
+    // Without `untracked()`, if some signal happened to be
+    // read while computing the next state (e.g. reducers/selectors
+    // reading other signals before calling `stateStream.next()`),
+    // Angular would incorrectly record a dependency on that signal.
+    untracked(() => super.next(value));
+  }
+
+  override complete(): void {
+    untracked(() => super.complete());
   }
 }
