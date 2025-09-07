@@ -112,6 +112,19 @@ export class RouterState {
     );
   }
 
+  /**
+   * Handles all Angular Router actions (request, navigation, cancel, error, data resolved, navigated).
+   *
+   * Each time one of these actions is dispatched, the router state in the NGXS store
+   * is updated to reflect the latest router snapshot and navigation metadata.
+   *
+   * Specifically:
+   * - `trigger`: source of the navigation
+   * - `state`: current `RouterStateSnapshot` of the Angular Router
+   * - `navigationId`: unique ID of the router event
+   *
+   * This ensures the NGXS store always mirrors the latest Angular Router state.
+   */
   @Action([
     RouterRequest<RouterStateSnapshot>,
     RouterNavigation<RouterStateSnapshot>,
@@ -124,11 +137,34 @@ export class RouterState {
     ctx: StateContext<RouterStateModel>,
     action: RouterAction<RouterStateModel, RouterStateSnapshot>
   ): void {
-    ctx.setState({
+    const state = ctx.getState();
+    const newState = {
       trigger: action.trigger,
       state: action.routerState,
       navigationId: action.event.id
-    });
+    };
+
+    // Skip updating NGXS state if nothing has changed.
+    // This avoids updating the internal NGXS state signal, which would otherwise
+    // trigger recomputation of `selectSignal` selectors and schedule unnecessary
+    // Angular change detection cycles.
+    if (state.trigger === newState.trigger && state.navigationId === newState.navigationId) {
+      let equal = false;
+      try {
+        equal =
+          JSON.stringify(this._serializer.serialize(state.state!)) ===
+          JSON.stringify(this._serializer.serialize(newState.state));
+      } catch {
+        // If serialization or stringify fails, assume not equal.
+        equal = false;
+      }
+
+      if (equal) {
+        return;
+      }
+    }
+
+    ctx.setState(newState);
   }
 
   private _setUpStoreListener(): void {
