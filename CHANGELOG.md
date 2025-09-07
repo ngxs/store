@@ -13,6 +13,7 @@ $ npm install @ngxs/store@dev
 - Refactor(store): Drop `ɵwrapObserverCalls` [#2371](https://github.com/ngxs/store/pull/2371)
 - Fix(storage-plugin): Guard against `engine` may be falsy [#2367](https://github.com/ngxs/store/pull/2367) [#2368](https://github.com/ngxs/store/pull/2368)
 - Peformance(storage-plugin): Replace closure-based action matcher with direct type comparison [#2369](https://github.com/ngxs/store/pull/2369)
+- Fix(router-plugin): Avoid redundant NGXS state updates for identical router snapshots [#2372](https://github.com/ngxs/store/pull/2372)
 
 ### 20.1.0 2025-07-16
 
