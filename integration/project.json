@@ -58,7 +58,8 @@
     "test": {
       "executor": "@nx/jest:jest",
       "options": {
-        "jestConfig": "integration/jest.config.js"
+        "jestConfig": "integration/jest.config.js",
+        "tsConfig": "integration/tsconfig.spec.json"
       },
       "dependsOn": ["^build"]
     }
