@@ -1,4 +1,11 @@
-import { inject, Injectable, Injector, NgZone, runInInjectionContext } from '@angular/core';
+import {
+  DestroyRef,
+  inject,
+  Injectable,
+  Injector,
+  NgZone,
+  runInInjectionContext
+} from '@angular/core';
 import {
   EMPTY,
   forkJoin,
@@ -30,6 +37,7 @@ export class InternalDispatcher {
   private _stateStream = inject(ɵStateStream);
   private _ngxsExecutionStrategy = inject(InternalNgxsExecutionStrategy);
   private _injector = inject(Injector);
+  private _destroyRef = inject(DestroyRef);
 
   /**
    * Dispatches event(s).
@@ -71,7 +79,7 @@ export class InternalDispatcher {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return compose(this._injector, [
+    return compose(this._injector, this._destroyRef, [
       ...plugins,
       (nextState: any, nextAction: any) => {
         if (nextState !== prevState) {
@@ -118,7 +126,7 @@ export class InternalDispatcher {
   }
 }
 
-type StateFn = (...args: any[]) => any;
+type StateFn = (...args: any[]) => Observable<void>;
 
 /**
  * Composes a array of functions from left to right. Example:
@@ -140,22 +148,16 @@ type StateFn = (...args: any[]) => any;
  * the last function should not call `next`.
  */
 const compose =
-  (injector: Injector, fns: StateFn[]) =>
+  (injector: Injector, destroyRef: DestroyRef, fns: StateFn[]) =>
   (...args: any[]) => {
-    // Note: the root Injector does have a `destroyed` flag, but it's not part of the
-    // public API surface. We check it here via a cast to avoid introducing a dependency
-    // on `ApplicationRef` (which would risk cyclic references and a potential breaking change).
-    if ((injector as unknown as { destroyed: boolean }).destroyed) {
-      // Injector was already destroyed → no-op
-      return;
-    }
-
     const fn = fns.shift();
-    if (!fn) {
-      return;
+
+    if (destroyRef.destroyed || !fn) {
+      // Injector was already destroyed → no-op
+      return EMPTY;
     }
 
     return runInInjectionContext(injector, () =>
-      fn(...args, (...nextArgs: any[]) => compose(injector, fns)(...nextArgs))
+      fn(...args, (...nextArgs: any[]) => compose(injector, destroyRef, fns)(...nextArgs))
     );
   };
