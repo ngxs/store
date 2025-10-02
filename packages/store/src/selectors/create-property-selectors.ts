@@ -26,7 +26,9 @@ export function createPropertySelectors<TModel>(
           cache[prop] ||
           (createSelector(
             [parentSelector],
-            (s: TModel) => s?.[prop]
+            // Optional chaining is used because the state being selected may not be
+            // registered yet — for example, if the selector is called before `provideStates()`.
+            (state: TModel) => state?.[prop]
           ) as PropertySelectors<TModel>[typeof prop]);
         cache[prop] = selector;
         return selector;

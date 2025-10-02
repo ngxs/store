@@ -14,7 +14,11 @@ export function createPickSelector<TModel, Keys extends (keyof TModel)[]>(
     ensureValidSelector(selector, { prefix: '[createPickSelector]' });
   }
   const validKeys = keys.filter(Boolean);
-  const selectors = validKeys.map(key => createSelector([selector], (s: TModel) => s[key]));
+  const selectors = validKeys.map(key =>
+    // Optional chaining is used because the state being selected may not be
+    // registered yet — for example, if the selector is called before `provideStates()`.
+    createSelector([selector], (state: TModel) => state?.[key])
+  );
   return createSelector([...selectors], (...props: KeysToValues<TModel, Keys>) => {
     return validKeys.reduce(
       (acc, key, index) => {

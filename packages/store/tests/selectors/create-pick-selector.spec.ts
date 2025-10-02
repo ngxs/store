@@ -119,6 +119,19 @@ describe('createPickSelector', () => {
         )
       ]);
     }));
+
+    it('should not throw an error when state is not registered yet', () => {
+      // Arrange
+      const { store, stateSelector, setState } = setupFixture(/* explicitly no states */ []);
+      setState({ property1: 'Tada', property2: [1, 3, 5], property3: { hello: 'there' } });
+      // Act
+      const pickSelector = createPickSelector(stateSelector, ['property1', 'property2']);
+      // Assert
+      expect(store.selectSnapshot(pickSelector)).toEqual({
+        property1: undefined,
+        property2: undefined
+      });
+    });
   });
 
   it('should select only the specified properties', () => {
