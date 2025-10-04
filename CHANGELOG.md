@@ -9,6 +9,7 @@ $ npm install @ngxs/store@dev
 - Feature(store): Expose `AbortSignal` on the state context [#2244](https://github.com/ngxs/store/pull/2244)
 - Fix(store): Guard against running state functions after injector is destroyed [#2366](https://github.com/ngxs/store/pull/2366) [#2377](https://github.com/ngxs/store/pull/2377)
 - Fix(store): `createPickSelector` should not throw on unregistered states [#2378](https://github.com/ngxs/store/pull/2378)
+- Fix(store): Stop contributing to stability once app is stable [#2379](https://github.com/ngxs/store/pull/2379)
 - Refactor(store): Clear `_states` on destroy to aid GC under high load [#2365](https://github.com/ngxs/store/pull/2365)
 - Refactor(store): Add `debugName` to `computed` signals in `selectSignal` [#2370](https://github.com/ngxs/store/pull/2370)
 - Refactor(store): Drop `ɵwrapObserverCalls` [#2371](https://github.com/ngxs/store/pull/2371)
