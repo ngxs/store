@@ -36,11 +36,6 @@ export function withNgxsPendingTasks() {
     // and remove the pending task to stabilize the app.
     appRef.onDestroy(() => executedActions.clear());
 
-    let isStable = false;
-    appRef.whenStable().then(() => {
-      isStable = true;
-    });
-
     const subscription = actions$
       .pipe(
         filter(context => {
@@ -70,14 +65,15 @@ export function withNgxsPendingTasks() {
           if (executedActions.size === 0) {
             removeTask?.();
             removeTask = null;
-            if (isStable) {
-              // Stop contributing to stability once the application has become stable,
-              // which may happen on the server before the platform is destroyed or in
-              // the browser once hydration is complete.
-              subscription.unsubscribe();
-            }
           }
         }
       });
+
+    // Stop contributing to stability once the application has become stable,
+    // which may happen on the server before the platform is destroyed or in
+    // the browser once hydration is complete.
+    appRef.whenStable().then(() => {
+      subscription.unsubscribe();
+    });
   });
 }
