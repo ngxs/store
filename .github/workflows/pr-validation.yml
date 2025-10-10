@@ -82,7 +82,7 @@ jobs:
         if: ${{ matrix.script == 'test' }}
         uses: qltysh/qlty-action/coverage@v2
         with:
-          oidc: true
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: coverage/packages/**/lcov.info
 
   premerge-integration-test:

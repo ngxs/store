@@ -71,7 +71,7 @@ jobs:
         if: ${{ matrix.script == 'test:ci' }}
         uses: qltysh/qlty-action/coverage@v2
         with:
-          oidc: true
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: coverage/packages/**/lcov.info
 
   release-integration-test:
