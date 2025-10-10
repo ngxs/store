@@ -4,9 +4,6 @@
   NGXS is a state management pattern + library for Angular
   <br /><br />
   
-  <a href="https://travis-ci.org/ngxs/store">
-    <img src="https://api.travis-ci.org/ngxs/store.svg?branch=master" />
-  </a>
   <a href="https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q">
     <img src="https://img.shields.io/badge/slack-join%20us-blue.svg?style=flat&logo=slack" />
   </a>
