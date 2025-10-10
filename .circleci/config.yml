@@ -162,16 +162,10 @@ jobs:
 
   upload_coverage:
     <<: *job_defaults
-    environment:
-      - CC_TEST_REPORTER_ID: 3f4c9a9d57ded045e0f9ab5d23e5bbcbf709bb85637bea555f1233e72134b818
     steps:
       - *attach_workspace
-      - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /tmp/cc-test-reporter
-      - run: chmod +x /tmp/cc-test-reporter
-      - run: node tools/merge-reports.js --coverageDir=coverage/packages --reporterBinaryPath=/tmp/cc-test-reporter
-      - deploy:
-          name: Upload coverage results to Code Climate
-          command: /tmp/cc-test-reporter upload-coverage -i tmp/codeclimate-final.json
+      - qlty-orb/coverage_publish:
+        files: coverage/packages/**/lcov.info
 
   # Publish latest build to npm under the @next tag
   publish_dev_build_to_npm:
