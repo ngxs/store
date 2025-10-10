@@ -2,6 +2,7 @@ import { DestroyRef, inject, Injectable, Signal, untracked } from '@angular/core
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
 
+import { ɵwrapObserverCalls } from './custom-rxjs-operators';
 import { ɵOrderedBehaviorSubject } from './custom-rxjs-subjects';
 import { ɵPlainObject } from './symbols';
 
@@ -11,26 +12,10 @@ import { ɵPlainObject } from './symbols';
  */
 @Injectable({ providedIn: 'root' })
 export class ɵStateStream extends ɵOrderedBehaviorSubject<ɵPlainObject> {
-  readonly state: Signal<ɵPlainObject> = toSignal(
-    this.pipe(
-      source =>
-        new Observable(subscriber =>
-          source.subscribe({
-            // Without `untracked()`, if some signal happened to be
-            // read while computing the next state (e.g. reducers/selectors
-            // reading other signals before calling `stateStream.next()`),
-            // Angular would incorrectly record a dependency on that signal.
-            next: value => untracked(() => subscriber.next(value)),
-            error: error => untracked(() => subscriber.error(error)),
-            complete: () => untracked(() => subscriber.complete())
-          })
-        )
-    ),
-    {
-      manualCleanup: true,
-      requireSync: true
-    }
-  );
+  readonly state: Signal<ɵPlainObject> = toSignal(this.pipe(ɵwrapObserverCalls(untracked)), {
+    manualCleanup: true,
+    requireSync: true
+  });
 
   constructor() {
     super({});

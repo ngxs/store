@@ -12,7 +12,6 @@ $ npm install @ngxs/store@dev
 - Fix(store): Stop contributing to stability once app is stable [#2379](https://github.com/ngxs/store/pull/2379)
 - Refactor(store): Clear `_states` on destroy to aid GC under high load [#2365](https://github.com/ngxs/store/pull/2365)
 - Refactor(store): Add `debugName` to `computed` signals in `selectSignal` [#2370](https://github.com/ngxs/store/pull/2370)
-- Refactor(store): Drop `ɵwrapObserverCalls` [#2371](https://github.com/ngxs/store/pull/2371)
 - Fix(storage-plugin): Guard against `engine` may be falsy [#2367](https://github.com/ngxs/store/pull/2367) [#2368](https://github.com/ngxs/store/pull/2368)
 - Peformance(storage-plugin): Replace closure-based action matcher with direct type comparison [#2369](https://github.com/ngxs/store/pull/2369)
 - Fix(router-plugin): Avoid redundant NGXS state updates for identical router snapshots [#2372](https://github.com/ngxs/store/pull/2372)
