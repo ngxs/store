@@ -39,7 +39,16 @@ exclude_patterns = [
   "**/target/**",
   "**/templates/**",
   "**/testdata/**",
-  "**/vendor/**", ".github/", "assets/", "docs/", "packages/**/tests/", "packages/store/schematics/src/utils/ng-utils/", "integrations/", "integration/", "tools/", "tutorials/",
+  "**/vendor/**",
+  ".github/",
+  "assets/",
+  "docs/",
+  "packages/**/tests/",
+  "packages/store/schematics/src/utils/ng-utils/",
+  "integrations/",
+  "integration/",
+  "tools/",
+  "tutorials/",
 ]
 
 test_patterns = [
