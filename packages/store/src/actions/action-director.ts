@@ -21,7 +21,7 @@ export class ActionDirector {
     handlerFn: (
       ctx: StateContext<TStateModel>,
       action: InstanceType<TActionType>
-    ) => void | Observable<void> | Promise<void>,
+    ) => void | Observable<unknown> | Promise<unknown>,
     options: ɵActionOptions = {}
   ) {
     const actionHandler = this._actionHandlerFactory.createActionHandler(
