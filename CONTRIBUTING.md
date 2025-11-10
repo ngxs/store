@@ -158,7 +158,7 @@ If the commit reverts a previous commit, it should begin with `revert:`, followe
 Must be one of the following:
 
 - **build**: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
-- **ci**: Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
+- **ci**: Changes to our CI configuration files and scripts (example scopes: Github, Circle, BrowserStack, SauceLabs)
 - **docs**: Documentation only changes
 - **feat**: A new feature
 - **fix**: A bug fix

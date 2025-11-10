@@ -199,6 +199,25 @@ describe('createModelSelector', () => {
         )
       ]);
     }));
+
+    it('should not throw an error when state is not registered yet', () => {
+      // Arrange
+      const { store, stateSelector, setState } = setupFixture(/* explicitly no states */ []);
+      setState({ property1: 'Tada', property2: [1, 3, 5], property3: { hello: 'there' } });
+      const props = createPropertySelectors(stateSelector);
+      const prop3 = createPropertySelectors(props.property3);
+      // Act
+      const modelSelector = createModelSelector({
+        foo: props.property2,
+        bar: props.property1,
+        hello: prop3.hello
+      });
+      // Assert
+      expect(store.selectSnapshot(modelSelector)).toEqual({
+        property1: undefined,
+        property2: undefined
+      });
+    });
   });
 
   it('should create a model from the selectors in the selector map', () => {

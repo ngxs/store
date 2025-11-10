@@ -7,7 +7,8 @@ import {
   InitState,
   UpdateState,
   actionMatcher,
-  NgxsNextPluginFn
+  NgxsNextPluginFn,
+  getActionTypeFromInstance
 } from '@ngxs/store/plugins';
 import {
   ɵDEFAULT_STATE_KEY,
@@ -33,9 +34,9 @@ export class NgxsStoragePlugin implements NgxsPlugin {
       return next(state, event);
     }
 
-    const matches = actionMatcher(event);
-    const isInitAction = matches(InitState);
-    const isUpdateAction = matches(UpdateState);
+    const type = getActionTypeFromInstance(event);
+    const isInitAction = type === InitState.type;
+    const isUpdateAction = type === UpdateState.type;
     const isInitOrUpdateAction = isInitAction || isUpdateAction;
     let hasMigration = false;
 
@@ -57,6 +58,10 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           const stateName = dotNotationIndex > -1 ? key.slice(0, dotNotationIndex) : key;
           if (!ɵhasOwnProperty(addedStates, stateName)) continue;
         }
+
+        // Guard against `engine` being falsy. Since it can be provided via DI,
+        // we should assume it may be `null` or `undefined` at runtime and skip it safely.
+        if (!engine) continue;
 
         const storageKey = getStorageKey(key, this._options);
         let storedValue: any = engine.getItem(storageKey);
@@ -104,6 +109,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
         }
 
         for (const { key, engine } of this._keysManager.getKeysWithEngines()) {
+          if (!engine) continue;
+
           let storedValue = nextState;
 
           const storageKey = getStorageKey(key, this._options);

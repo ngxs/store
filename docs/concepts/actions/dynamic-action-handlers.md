@@ -40,7 +40,8 @@ const COUNTRIES_STATE_TOKEN = new StateToken<string[]>('countries');
 // Action
 export class AddCountry {
   static readonly type = '[Countries] Add Country';
-  constructor(public country: string) {}
+
+  constructor(readonly country: string) {}
 }
 
 @Injectable({ providedIn: 'root' })
@@ -64,10 +65,8 @@ export class CountryService {
 
   // Detach the action handler when no longer needed
   detachCountryHandler() {
-    if (this.handle) {
-      this.handle.detach();
-      this.handle = null;
-    }
+    this.handle?.detach();
+    this.handle = null;
   }
 }
 ```

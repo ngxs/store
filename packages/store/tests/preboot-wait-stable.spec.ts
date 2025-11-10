@@ -64,14 +64,18 @@ describe('preboot feature + stable', () => {
       // Arrange
       const html = await skipConsoleLogging(() =>
         renderApplication(
-          () =>
-            bootstrapApplication(TestComponent, {
-              providers: [
-                provideZonelessChangeDetection(),
+          context =>
+            bootstrapApplication(
+              TestComponent,
+              {
+                providers: [
+                  provideZonelessChangeDetection(),
 
-                provideStore([CountriesState], withNgxsPendingTasks())
-              ]
-            }),
+                  provideStore([CountriesState], withNgxsPendingTasks())
+                ]
+              },
+              context
+            ),
           {
             document: '<app-root></app-root>',
             url: '/'

@@ -127,7 +127,12 @@ export class StateFactory {
   });
 
   constructor() {
-    inject(DestroyRef).onDestroy(() => this._actionsSubscription?.unsubscribe());
+    inject(DestroyRef).onDestroy(() => {
+      // Clear state references to help the garbage collector in SSR
+      // environments under high load, preventing memory leaks.
+      this._states = [];
+      this._actionsSubscription?.unsubscribe();
+    });
   }
 
   /**

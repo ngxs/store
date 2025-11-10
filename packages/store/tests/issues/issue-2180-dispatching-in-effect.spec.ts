@@ -142,13 +142,17 @@ describe('State per signal', () => {
         // Arrange
         const html = await skipConsoleLogging(() =>
           renderApplication(
-            () =>
-              bootstrapApplication(TestComponent, {
-                providers: [
-                  provideZonelessChangeDetection(),
-                  provideStore([NumberState], withExperimentalNgxsPendingTasks())
-                ]
-              }),
+            context =>
+              bootstrapApplication(
+                TestComponent,
+                {
+                  providers: [
+                    provideZonelessChangeDetection(),
+                    provideStore([NumberState], withExperimentalNgxsPendingTasks())
+                  ]
+                },
+                context
+              ),
             {
               document: '<app-root></app-root>'
             }

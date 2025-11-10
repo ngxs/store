@@ -4,9 +4,6 @@
   NGXS is a state management pattern + library for Angular
   <br /><br />
   
-  <a href="https://travis-ci.org/ngxs/store">
-    <img src="https://api.travis-ci.org/ngxs/store.svg?branch=master" />
-  </a>
   <a href="https://join.slack.com/t/ngxs/shared_invite/zt-by26i24h-2CC5~vqwNCiZa~RRibh60Q">
     <img src="https://img.shields.io/badge/slack-join%20us-blue.svg?style=flat&logo=slack" />
   </a>
@@ -25,12 +22,12 @@
   <a href="https://npm-stat.com/charts.html?package=%40ngxs%2Fstore&from=2017-01-12">
     <img src="https://img.shields.io/npm/dt/@ngxs/store.svg" />
   </a>
-  <a href="https://codeclimate.com/github/ngxs/store/maintainability">
-    <img src="https://api.codeclimate.com/v1/badges/5b43106a1ddff7d76a04/maintainability" />
+  <a href="https://qlty.sh/gh/ngxs/projects/store">
+    <img src="https://qlty.sh/gh/ngxs/projects/store/maintainability.svg" alt="Maintainability" />
   </a>
-  <a href="https://codeclimate.com/github/ngxs/store/test_coverage">
-    <img src="https://api.codeclimate.com/v1/badges/5b43106a1ddff7d76a04/test_coverage" />
-  </a> 
+  <a href="https://qlty.sh/gh/ngxs/projects/store">
+    <img src="https://qlty.sh/gh/ngxs/projects/store/coverage.svg" alt="Code Coverage" />
+  </a>
   <a href="https://circleci.com/gh/ngxs/store">
     <img src="https://circleci.com/gh/ngxs/store/tree/master.svg?style=svg" />
   </a>

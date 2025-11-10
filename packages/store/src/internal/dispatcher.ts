@@ -1,4 +1,11 @@
-import { inject, Injectable, Injector, NgZone, runInInjectionContext } from '@angular/core';
+import {
+  DestroyRef,
+  inject,
+  Injectable,
+  Injector,
+  NgZone,
+  runInInjectionContext
+} from '@angular/core';
 import {
   EMPTY,
   forkJoin,
@@ -30,6 +37,7 @@ export class InternalDispatcher {
   private _stateStream = inject(ɵStateStream);
   private _ngxsExecutionStrategy = inject(InternalNgxsExecutionStrategy);
   private _injector = inject(Injector);
+  private _destroyRef = inject(DestroyRef);
 
   /**
    * Dispatches event(s).
@@ -71,7 +79,7 @@ export class InternalDispatcher {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return compose(this._injector, [
+    return compose(this._injector, this._destroyRef, [
       ...plugins,
       (nextState: any, nextAction: any) => {
         if (nextState !== prevState) {
@@ -118,7 +126,7 @@ export class InternalDispatcher {
   }
 }
 
-type StateFn = (...args: any[]) => any;
+type StateFn = (...args: any[]) => Observable<void>;
 
 /**
  * Composes a array of functions from left to right. Example:
@@ -140,10 +148,16 @@ type StateFn = (...args: any[]) => any;
  * the last function should not call `next`.
  */
 const compose =
-  (injector: Injector, funcs: StateFn[]) =>
+  (injector: Injector, destroyRef: DestroyRef, fns: StateFn[]) =>
   (...args: any[]) => {
-    const curr = funcs.shift()!;
+    const fn = fns.shift();
+
+    if (destroyRef.destroyed || !fn) {
+      // Injector was already destroyed → no-op
+      return EMPTY;
+    }
+
     return runInInjectionContext(injector, () =>
-      curr(...args, (...nextArgs: any[]) => compose(injector, funcs)(...nextArgs))
+      fn(...args, (...nextArgs: any[]) => compose(injector, destroyRef, fns)(...nextArgs))
     );
   };

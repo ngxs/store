@@ -1,5 +1,6 @@
 import { DestroyRef, inject, Injectable, Signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Observable } from 'rxjs';
 
 import { ɵwrapObserverCalls } from './custom-rxjs-operators';
 import { ɵOrderedBehaviorSubject } from './custom-rxjs-subjects';

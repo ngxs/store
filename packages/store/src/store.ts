@@ -107,7 +107,13 @@ export class Store {
    */
   selectSignal<T>(selector: TypedSelector<T>): Signal<T> {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
-    return computed<T>(() => selectorFn(this._stateStream.state()));
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+      return computed<T>(() => selectorFn(this._stateStream.state()), {
+        debugName: 'NGXS selectSignal'
+      });
+    } else {
+      return computed<T>(() => selectorFn(this._stateStream.state()));
+    }
   }
 
   /**
