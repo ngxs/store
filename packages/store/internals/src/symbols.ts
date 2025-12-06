@@ -63,7 +63,8 @@ export interface ɵStateClassInternal<T = any, U = any> extends ɵStateClass<T> 
 }
 
 export interface ɵMetaDataModel {
-  name: string | null;
+  name: string;
+  token: StateToken<unknown>;
   actions: ɵPlainObjectOf<ɵActionHandlerMetaData[]>;
   defaults: any;
   path: string | null;

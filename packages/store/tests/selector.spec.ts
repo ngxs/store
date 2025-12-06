@@ -6,11 +6,12 @@ import {
   Store,
   NgxsModule,
   Selector,
-  SelectorOptions
+  SelectorOptions,
+  Action
 } from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 
-import { NgxsConfig } from '../src/symbols';
+import { NgxsConfig, StateContext } from '../src/symbols';
 import { skipConsoleLogging } from '../internals/testing/src/skip-console-logging';
 
 describe('Selector', () => {
@@ -649,6 +650,101 @@ describe('Selector', () => {
       });
 
       it('should memoize the last result of an inner function', () => {
+        const selectorCalls: string[] = [];
+
+        @State<MyStateModel>({
+          name: 'counter',
+          defaults: {
+            foo: 'Hello',
+            bar: 'World'
+          }
+        })
+        @Injectable()
+        class TestState {}
+
+        TestBed.configureTestingModule({
+          imports: [NgxsModule.forRoot([TestState])]
+        });
+
+        const store: Store = TestBed.inject(Store);
+        const fooSelector = createSelector([TestState], (state: MyStateModel) => {
+          selectorCalls.push('foo[outer]');
+          return () => {
+            selectorCalls.push('foo[inner]');
+            return state.foo;
+          };
+        });
+        store.selectSnapshot(fooSelector);
+        store.selectSnapshot(fooSelector)();
+        const fn = store.selectSnapshot(fooSelector);
+        fn();
+        fn();
+        store.selectSnapshot(fooSelector);
+        expect(selectorCalls).toEqual(['foo[outer]', 'foo[inner]']);
+      });
+
+      it('should memoize the last result of an inner function, when other state changes', () => {
+        const selectorCalls: string[] = [];
+
+        @State<MyStateModel>({
+          name: 'counter',
+          defaults: {
+            foo: 'Hello',
+            bar: 'World'
+          }
+        })
+        @Injectable()
+        class TestState {}
+
+        class ChangeOtherState {
+          static readonly type = 'Change other state';
+          constructor(public value: string) {}
+        }
+
+        @State<MyStateModel>({
+          name: 'otherCounter',
+          defaults: {
+            foo: 'Hello',
+            bar: 'World'
+          }
+        })
+        @Injectable()
+        class OtherTestState {
+          @Action(ChangeOtherState)
+          changeOtherState(ctx: StateContext<MyStateModel>, action: ChangeOtherState) {
+            ctx.patchState({
+              foo: action.value
+            });
+          }
+        }
+
+        TestBed.configureTestingModule({
+          imports: [NgxsModule.forRoot([TestState, OtherTestState])]
+        });
+
+        const store: Store = TestBed.inject(Store);
+        const fooSelector = createSelector([TestState], (state: MyStateModel) => {
+          selectorCalls.push('foo[outer]');
+          return () => {
+            selectorCalls.push('foo[inner]');
+            return state.foo;
+          };
+        });
+        store.selectSnapshot(fooSelector);
+        store.dispatch(new ChangeOtherState('x'));
+        store.selectSnapshot(fooSelector)();
+        store.dispatch(new ChangeOtherState('y'));
+        const fn = store.selectSnapshot(fooSelector);
+        fn();
+        store.dispatch(new ChangeOtherState('z'));
+        fn();
+        store.selectSnapshot(fooSelector);
+        expect(selectorCalls).toEqual(['foo[outer]', 'foo[inner]']);
+      });
+    });
+
+    describe(`(internal selector functions)`, () => {
+      it('should not create multiple internal selector functions', () => {
         const selectorCalls: string[] = [];
 
         @State<MyStateModel>({

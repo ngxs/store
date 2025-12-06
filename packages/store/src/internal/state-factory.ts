@@ -281,7 +281,7 @@ export class StateFactory {
     const statesMap: StatesByName = this._statesByName;
 
     for (const stateClass of stateClasses) {
-      const stateName = ɵgetStoreMetadata(stateClass).name!;
+      const stateName = ɵgetStoreMetadata(stateClass).name;
       if (typeof ngDevMode !== 'undefined' && ngDevMode) {
         ensureStateNameIsUnique(stateName, stateClass, statesMap);
       }
@@ -296,7 +296,7 @@ export class StateFactory {
   }
 
   private addRuntimeInfoToMeta(meta: ɵMetaDataModel, path: string): void {
-    this._statePaths[meta.name!] = path;
+    this._statePaths[meta.name] = path;
     // TODO: versions after v3 - we plan to get rid of the `path` property because it is non-deterministic
     // we can do this when we get rid of the incorrectly exposed getStoreMetadata
     // We will need to come up with an alternative to what was exposed in v3 because this is used by many plugins

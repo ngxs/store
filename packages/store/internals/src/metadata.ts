@@ -16,7 +16,7 @@ import {
 export function ɵensureStoreMetadata(target: ɵStateClassInternal): ɵMetaDataModel {
   if (!ɵhasOwnProperty(target, ɵMETA_KEY)) {
     const defaultMetadata: ɵMetaDataModel = {
-      name: null,
+      name: null as unknown as string,
       actions: {},
       defaults: {},
       path: null,

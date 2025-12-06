@@ -118,13 +118,13 @@ export function buildGraph(stateClasses: ɵStateClassInternal[]): StateKeyGraph 
         `Child state not found: ${stateClass}. \r\nYou may have forgotten to add states to module`
       );
     }
-    return meta![ɵMETA_KEY]!.name!;
+    return meta![ɵMETA_KEY]!.name;
   };
 
   // Build the dependency graph.
   return stateClasses.reduce((graph: StateKeyGraph, stateClass) => {
     const meta = stateClass[ɵMETA_KEY]!;
-    graph[meta.name!] = (meta.children || []).map(findName);
+    graph[meta.name] = (meta.children || []).map(findName);
     return graph;
   }, {});
 }
@@ -145,7 +145,7 @@ export function nameToState(
   return states.reduce<ɵPlainObjectOf<ɵStateClassInternal>>(
     (result: ɵPlainObjectOf<ɵStateClassInternal>, stateClass: ɵStateClassInternal) => {
       const meta = stateClass[ɵMETA_KEY]!;
-      result[meta.name!] = stateClass;
+      result[meta.name] = stateClass;
       return result;
     },
     {}

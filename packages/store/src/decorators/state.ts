@@ -6,7 +6,9 @@ import {
   ɵStateClassInternal,
   ɵStoreOptions,
   ɵensureStoreMetadata,
-  ɵhasOwnProperty
+  ɵhasOwnProperty,
+  StateToken,
+  ɵTokenName
 } from '@ngxs/store/internals';
 
 import { ensureStateNameIsValid } from '../utils/store-validators';
@@ -35,6 +37,8 @@ function mutateMetaData<T>(
 ): void {
   const { name, defaults, children } = options;
   const stateName = typeof name === 'string' ? name : name?.getName?.() || null;
+  const stateToken =
+    typeof name === 'string' ? new StateToken<T>(name as ɵTokenName<T>) : name;
 
   if (typeof ngDevMode !== 'undefined' && ngDevMode) {
     ensureStateNameIsValid(stateName);
@@ -45,7 +49,8 @@ function mutateMetaData<T>(
     meta.actions = { ...meta.actions, ...inheritedMeta.actions };
   }
 
-  meta.name = stateName;
+  meta.name = stateName as string;
+  meta.token = stateToken;
   meta.defaults = defaults;
   meta.children = children;
 }

@@ -17,7 +17,8 @@ export function createRootSelectorFactory<T extends (...args: any[]) => any>(
   selectors: any[] | undefined,
   memoizedSelectorFn: T
 ): ɵSelectorFactory {
-  return (context: ɵRuntimeSelectorContext) => {
+  return ɵmemoize((context: ɵRuntimeSelectorContext) => {
+    // console.log('PONG');
     const { argumentSelectorFunctions, selectorOptions } = getRuntimeSelectorInfo(
       context,
       selectorMetaData,
@@ -58,7 +59,7 @@ export function createRootSelectorFactory<T extends (...args: any[]) => any>(
         throw ex;
       }
     };
-  };
+  });
 }
 
 export function createMemoizedSelectorFn<T extends (...args: any[]) => any>(
