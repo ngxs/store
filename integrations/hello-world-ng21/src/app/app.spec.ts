@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { App } from './app';
@@ -25,6 +26,6 @@ describe('App', () => {
     const { fixture } = setup();
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Angular 20 Integration Test');
+    expect(compiled.querySelector('h1').textContent).toContain('Angular 21 Integration Test');
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "ngxs",
-  "version": "20.1.0",
+  "version": "21.0.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ngxs/store.git"
@@ -102,9 +102,9 @@
     "// - UTILS": "Utility Scripts",
     "format": "nx format:write",
     "// - INTEGRATION": "Integration builds",
-    "integration:ng20": "cd integrations/hello-world-ng20 && yarn test:integration",
+    "integration:ng21": "cd integrations/hello-world-ng21 && yarn test:integration",
     "version:integration": "npm-run-all build version:integration:*",
-    "version:integration:ng20": "cd integrations/hello-world-ng20 && yarn install --force && cd ../..",
+    "version:integration:ng21": "cd integrations/hello-world-ng21 && yarn install --force && cd ../..",
     "// - INTEGRATION END -": "----------",
     "tutorials:install": "yarn --cwd tutorials/create-app/ install --frozen-lockfile --non-interactive"
   },
