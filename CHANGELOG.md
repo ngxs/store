@@ -11,6 +11,7 @@ $ npm install @ngxs/store@dev
 - Fix(store): `createPickSelector` should not throw on unregistered states [#2378](https://github.com/ngxs/store/pull/2378)
 - Fix(store): Stop contributing to stability once app is stable [#2379](https://github.com/ngxs/store/pull/2379)
 - Fix(store): update action handler type to allow Observable<unknown> and Promise<unknown> [#2385](https://github.com/ngxs/store/pull/2385)
+- Fix(store): Avoid unsubscribe when task is removed [#2388](https://github.com/ngxs/store/pull/2388)
 - Refactor(store): Clear `_states` on destroy to aid GC under high load [#2365](https://github.com/ngxs/store/pull/2365)
 - Refactor(store): Add `debugName` to `computed` signals in `selectSignal` [#2370](https://github.com/ngxs/store/pull/2370)
 - Fix(storage-plugin): Guard against `engine` may be falsy [#2367](https://github.com/ngxs/store/pull/2367) [#2368](https://github.com/ngxs/store/pull/2368)
