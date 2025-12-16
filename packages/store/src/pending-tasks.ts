@@ -1,4 +1,5 @@
 import { DestroyRef, inject, PendingTasks } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { buffer, debounceTime, filter } from 'rxjs';
 
 import { Actions, ActionStatus } from './actions-stream';
@@ -23,6 +24,7 @@ export function withNgxsPendingTasks() {
 
     const actions$ = inject(Actions);
     const pendingTasks = inject(PendingTasks);
+    const destroyRef = inject(DestroyRef);
 
     // Removing a pending task via the public API forces a scheduled tick, ensuring that
     // stability is async and delayed until there was at least an opportunity to run
@@ -40,9 +42,9 @@ export function withNgxsPendingTasks() {
     // If the app is forcely destroyed before all actions are completed,
     // we clean up the set of actions being executed to prevent memory leaks
     // and remove the pending task to stabilize the app.
-    inject(DestroyRef).onDestroy(() => executedActions.clear());
+    destroyRef.onDestroy(() => executedActions.clear());
 
-    const subscription = actions$
+    actions$
       .pipe(
         filter(context => {
           if (context.status === ActionStatus.Dispatched) {
@@ -57,7 +59,8 @@ export function withNgxsPendingTasks() {
         // task is removed, even if multiple synchronous actions are completed in a row.
         // We use `buffer` to collect action contexts because, if we only use
         // `debounceTime(0)`, we may lose action contexts that are never removed from the set.
-        buffer(actions$.pipe(debounceTime(0)))
+        buffer(actions$.pipe(debounceTime(0))),
+        takeUntilDestroyed(destroyRef)
       )
       .subscribe(contexts => {
         for (const context of contexts) {
@@ -71,10 +74,6 @@ export function withNgxsPendingTasks() {
           if (executedActions.size === 0) {
             removeTask?.();
             removeTask = null;
-            // Stop contributing to stability once the application has become stable,
-            // which may happen on the server before the platform is destroyed or in
-            // the browser once hydration is complete.
-            subscription.unsubscribe();
           }
         }
       });
