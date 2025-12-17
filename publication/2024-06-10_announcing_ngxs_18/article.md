@@ -4,34 +4,22 @@ We're thrilled to announce the release of NGXS v18! This update represents month
 
 But that's not all – we've also made a strategic decision to align NGXS versioning with Angular's release cycle. This means, starting with v18, the minimum supported Angular version will also align with Angular's latest release, unless explicitly stated otherwise.
 
-This move ensures seamless compatibility and allows you to leverage the latest features from both libraries as they evolve together.
-For NGXS v18, since this is our first release under the new versioning scheme we will be supporting Angular versions >=16.
+Angular has entered a new era, where the incremental introduction of new features and API changes offer a host of opportunities for libraries. This move by NGXS ensures seamless compatibility and allows you to leverage the latest features from both libraries as they evolve together.  
+For NGXS v18, since this is our first release under the new versioning scheme, we will be supporting Angular versions >=16.
 
 But before we dive in, we want to unveil a fresh new look for NGXS!
 
 🥁 **Drumroll please...** 🥁
 
-We're thrilled to introduce our brand new logo! We believe it better reflects the energy, innovation, and awesomeness of the NGXS library. Keep an eye out for it on our documentation website, and social media channels.
+## Our Brand New Logo!!!
+
+We're thrilled to introduce our brand new logo! We believe it better reflects the energy, innovation, and awesomeness of the NGXS library:
+
+![The new NGXS logo. The letters N, G, x, and S are presented in a clean font. The x is presented as a lower case letter, where the rest are upper case. This distinguises the "NG" of Angular, the "x" that represents the modern Angular version placeholder and the "S", which stands for state. In the lettering, there are areas of triangular negative space that match triangles above and below the lettering. This signifies the movement of the events and data that are core elements of the library.](ngxs-logo_dark_theme.png)
 
 A huge shoutout to [Lena Lekkou](https://www.linkedin.com/in/lenalekkou/), the talented designer who brought this logo to life! Her creativity and design expertise have given NGXS a visual identity that truly embodies its spirit.
 
-Now, let's get down to business!
-
-## Overview
-
-- 🧑🏾‍🤝‍🧑🏻 NGXS Community
-- 🎨 Standalone API
-- 🚦 Signals
-- ⏩ Dispatch Utilities
-- 🚀 Schematics
-- ❗ Error Handling
-- 🛑 Breaking Changes
-- 🗑️ Deprecations
-- 🔌 Plugin Improvements
-
----
-
-## NGXS Community
+## NGXS Community moving to Discord
 
 We've got some exciting news in this release beyond the usual code wizardry. We're officially moving our community hub from Slack to **Discord**!
 
@@ -41,6 +29,26 @@ We've got some exciting news in this release beyond the usual code wizardry. We'
 - **Enhanced Support:** Find answers and resources faster with a well-organized structure.
 
 Head over to our brand new Discord server at https://discord.gg/yT3Q8cXTnz. Don't forget to introduce yourself and let us know what awesome NGXS projects you're working on!
+
+## The move from Slack to Discord will be incremental, as we encourage our many Slack users to move over. There is a wealth of valuable community discussions in our Slack archives (6 years of data). This is unfortunately inaccessible due to Slack's 90-day policy. We plan to make this archive available in dedicated discord channels in the near future.
+
+Now, let's get down to business!
+
+## Overview
+
+Part 1
+
+- 🚦 Signals
+- ⏩ Dispatch Utilities
+  Part 2
+- 🎨 Standalone API
+- 🚀 Schematics
+- ❗ Error Handling
+- 🗄️ Zoneless Server-Side Rendering
+  Part 3
+- 🛑 Breaking Changes
+- 🗑️ Deprecations
+- 🔌 Exposed Internals
 
 ---
 
@@ -199,75 +207,61 @@ See the [dispatch](https://www.ngxs.io/concepts/store#dispatch-utility) and [cre
 
 ## Schematics
 
-NGXS is a popular state management library for Angular applications. It is known for its simplicity, but it can be challenging to get started with, especially for beginners.
+With NGXS v18, schematics are now included in the main package. These schematics make it easier to use NGXS by automating the installation, and creation of common NGXS constructs, such as the Store, Actions, and State.
 
-NGXS schematics are a new feature that makes it easier to use NGXS by automating the installation, and creation of common NGXS concepts, such as Store, Actions, and State.
+> Note: All the schematics support both non-standalone and standalone Angular apps.
 
-To auto-configure NGXS to your application, all you have to do is to execute the following command in your terminal:
+### `ng add` Schematic
+
+To install and auto-configure NGXS in your existing Angular application, all you have to do is to execute the following command in your terminal:
 
 ```bash
 ng add @ngxs/store
 ```
 
-Does your workspace have multiple projects? No problem! You'll be prompted to select the project you want to add NGXS to.
+If your workspace has multiple projects, you will be prompted to select the project you want to add NGXS to.🎉
 
-NGXS plugins: We couldn't resist adding [plugins](https://www.ngxs.io/plugins) to the schematics. Now you can choose which plugins you want to use, and we'll install the necessary packages and configure them for you automatically!
+NGXS [plugins](https://www.ngxs.io/plugins) can easily be added through this schematic too. Just choose which plugins you want to use, and we'll install the necessary packages and configure them for you automatically!
 
-> All the schematics support both non-standalone and standalone Angular apps.
+See our documentation for more information on [this schematic](https://www.ngxs.io/introduction/installation#installing-with-schematics).
 
-Let's see some examples:
+### File Generation Schematics
 
-- To create a `Store` :
+There are various schematics available to quickly generate various NGXS files:
+
+- Generate all store files:
 
   ```bash
   ng generate @ngxs/store:store
   ```
 
-  ```ts
-  import { provideStore } from '@ngxs/store';
+  Generates sample `state` and `actions` files in the provided location, with the provided name and generation options (see [documentation](https://www.ngxs.io/concepts/store/schematics)).
 
-  export const appConfig: ApplicationConfig = {
-    providers: [provideStore([], { developmentMode: !environment.production })]
-  };
-  ```
-
-- To create a `State`:
+- Generate `state` file:
 
   ```bash
   ng generate @ngxs/store:state --name TodosState
   ```
 
-  ```ts
-  import { provideStore } from '@ngxs/store';
-  import { TodosState } from 'your/path';
+  Will generate a sample `todos.state.ts` file in the provided location (with the provided name and generation options - see [documentation](https://www.ngxs.io/concepts/state/schematics)).
 
-  export const appConfig: ApplicationConfig = {
-    providers: [
-      provideStore(
-        [TodosState], // <--
-        { developmentMode: !environment.production }
-      )
-    ]
-  };
-  ```
-
-- To create `Actions`:
+- Generate `actions` file:
 
   ```bash
   ng generate @ngxs/store:actions --name todos
   ```
 
-  It will create the `todos.actions.ts` file
+  Will generate a sample `todos.actions.ts` file in the provided location (with the provided name and generation options - see [documentation](https://www.ngxs.io/concepts/actions/schematics)).
 
 ---
 
 ## Error Handling
 
-NGXS provides a robust error handling mechanism that automatically catches unhandled exceptions thrown within actions. These errors are then directed to a centralized `ErrorHandler`.
+NGXS provides a robust unhandled error handling mechanism that automatically catches unhandled exceptions thrown within actions. These errors are directed to a centralized `NgxsUnhandledErrorHandler`, which by default forwards the error to the Angular `ErrorHandler`.
 
-However, you can override the default implementation and provide your custom one.
+It is [recommended](https://www.ngxs.io/concepts/store/error-handling#recommended-approach) to do error handling within your action functions in your state, but some developers have opted for approaches that rely heavily on the fallback error handling mechanisms in NGXS. In order to allow for more control over this, NGXS now allows you to override the default implementation of the `NgxsUnhandledErrorHandler` and provide a custom one to suit your particular application's needs.
 
-You can read more [here](https://www.ngxs.io/concepts/store/error-handling#custom-unhandled-error-handler)
+You can read more [here](https://www.ngxs.io/concepts/store/error-handling#overriding-the-ngxsunhandlederrorhandler)
 
 ---
 
@@ -282,6 +276,21 @@ You can read more [here](https://www.ngxs.io/concepts/store/error-handling#custo
   When a feature state is initialized before the `store`, will appear an error message and the state initialization order must be updated. This typically occurs when `NgxsModule.forFeature` or `provideStates` is called before `NgxsModule.forRoot` or `provideStore`.
 
 ---
+
+## Zoneless Server-Side Rendering (experimental)
+
+Before zoneless change detection was introduced, Angular required zone.js to be used for server-side rendering. This was necessary to determine when the application became 'stable' and could be serialized for client transmission. With zoneless change detection, Angular utilizes its internal pending tasks service. This service explicitly contributes to application stability by notifying Angular when asynchronous tasks are in progress, preventing premature serialization.
+
+NGXS provides an experimental feature called `withExperimentalNgxsPendingTasks`, which can be registered when calling `provideStore`. This feature prevents SSR serialization before NGXS actions have been handled:
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withExperimentalNgxsPendingTasks } from '@ngxs/store/experimental';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([], withExperimentalNgxsPendingTasks())]
+};
+```
 
 ## Breaking Changes
 
@@ -357,7 +366,7 @@ This means you won't have to manually update your code to reflect the changes. T
 ng g @ngxs/storage-plugin:keys-migration
 ```
 
-### Dispatch
+### `dispatch` call return type
 
 In previous versions, the `dispatch` function incorrectly returned an `Observable<any>`. This meant the observable could emit any type of data, including the `state` snapshot. This behavior has been rectified in this version. Now, `dispatch` correctly returns an `Observable<void>`, indicating it does not emit any values.
 
@@ -410,7 +419,7 @@ There's a distinction in how errors are thrown based on the selection method use
 
 It's important to note that errors are still logged in development mode for debugging purposes.
 
-### Enforcing Typed Selectors @Action and @Selector
+### Enforcing Typing with @Action and @Selector decorators
 
 - `@Action` and `@Selector` decorator typings will now enforce that arguments match those declared in the respective definition. [#2158](https://github.com/ngxs/store/pull/2158) and [#2042](https://github.com/ngxs/store/pull/2042)
 
@@ -555,7 +564,7 @@ You can read more [here](https://www.ngxs.io/deprecations/sub-states-deprecation
 
 ---
 
-## Improvements
+## Exposed Internals (for Advanced Development)
 
 The store and plugin exposes some of its internal API implementations to allow library authors to experiment with potential extensions. However, keep in mind that these API implementations are not part of the official API, but rather an internals API. This means that they could be changed at any time in the future. Let's see some of their details:
 
