@@ -226,6 +226,7 @@ workflows:
 
       # Publish @dev builds if no tag is specified
       - publish_dev_build_to_npm:
+          context: ngxs
           filters:
             branches:
               only:
