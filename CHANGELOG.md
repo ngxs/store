@@ -8,7 +8,7 @@ $ npm install @ngxs/store@dev
 
 ...
 
-### 21.0.0 2025-11-08
+### 21.0.0 2025-12-17
 
 - Feature(store): Expose `AbortSignal` on the state context [#2244](https://github.com/ngxs/store/pull/2244)
 - Fix(store): Guard against running state functions after injector is destroyed [#2366](https://github.com/ngxs/store/pull/2366) [#2377](https://github.com/ngxs/store/pull/2377)
