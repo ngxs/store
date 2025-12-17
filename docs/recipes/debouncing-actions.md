@@ -91,3 +91,74 @@ export class NewsState {
 ```
 
 The above state is pretty simple. As you can see we don't create an action handler for the `SearchNews` but it still will be passed via `Actions` stream and debounced. It all depends on the task in practice but you're already informed about debouncing actions.
+
+## Alternative Approach: Using cancelUncompleted
+
+Instead of debouncing in the component, you can use the `cancelUncompleted` option with the `abortSignal` (available in v21+) to automatically cancel previous search requests:
+
+```ts
+@Component({
+  selector: 'app-news-portal',
+  template: `
+    <app-news-search [lastSearchedTitle]="lastSearchedTitle()" (search)="search($event)" />
+    <app-news [news]="news()" />
+  `,
+  standalone: true,
+  imports: [NewsSearchComponent, NewsComponents]
+})
+export class NewsPortalComponent {
+  news = this.store.selectSignal(NewsState.getNews);
+  lastSearchedTitle = this.store.selectSignal(NewsState.getLastSearchedTitle);
+
+  constructor(private store: Store) {}
+
+  search(title: string): void {
+    // Dispatch directly - cancellation is handled by the state
+    this.store.dispatch(new GetNews(title));
+  }
+}
+```
+
+```ts
+@State<NewsStateModel>({
+  name: 'news',
+  defaults: {
+    news: [],
+    lastSearchedTitle: null
+  }
+})
+@Injectable()
+export class NewsState {
+  @Selector()
+  static getNews(state: NewsStateModel): News[] {
+    return state.news;
+  }
+
+  @Selector()
+  static getLastSearchedTitle(state: NewsStateModel): string | null {
+    return state.lastSearchedTitle;
+  }
+
+  constructor(private http: HttpClient) {}
+
+  @Action(GetNews, { cancelUncompleted: true })
+  async getNews(ctx: StateContext<NewsStateModel>, { title }: GetNews) {
+    try {
+      // Pass abortSignal to automatically cancel previous requests
+      const response = await fetch(`/api/news?search=${title}`, {
+        signal: ctx.abortSignal
+      });
+
+      const news = await response.json();
+      ctx.setState({ news, lastSearchedTitle: title });
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        return; // Gracefully handle cancellation
+      }
+      throw error;
+    }
+  }
+}
+```
+
+This approach is simpler as it moves the cancellation logic into the state where it belongs, and automatically cancels in-flight HTTP requests when a new search is dispatched. You can still combine this with debouncing in the component if you want to delay the dispatch itself.

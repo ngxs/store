@@ -317,6 +317,50 @@ async getNovels(ctx: StateContext<BooksStateModel>) {
 
 Note: leaving out the final `await` keyword here would cause this to be "fire and forget" again.
 
+## Handling Cancellation with AbortSignal
+
+When using `cancelUncompleted`, NGXS provides an `abortSignal` property on the `StateContext` (available in v21+) that allows you to detect and respond to action cancellation. This is especially useful when working with async/await:
+
+```ts
+@Action(GetNovels, { cancelUncompleted: true })
+async getNovels(ctx: StateContext<Novel[]>) {
+  // Perform async work
+  const novels = await firstValueFrom(this.booksService.getNovels());
+
+  // Check if action was canceled before updating state
+  if (ctx.abortSignal.aborted) {
+    return; // Exit gracefully without updating state
+  }
+
+  ctx.setState(novels);
+}
+```
+
+The `abortSignal` can also be passed directly to the Fetch API:
+
+```ts
+@Action(SearchBooks, { cancelUncompleted: true })
+async searchBooks(ctx: StateContext<BooksStateModel>, action: SearchBooks) {
+  try {
+    const response = await fetch(`/api/books?q=${action.query}`, {
+      signal: ctx.abortSignal // Automatically cancels the request
+    });
+
+    const books = await response.json();
+    ctx.patchState({ books });
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      return; // Gracefully handle cancellation
+    }
+    throw error;
+  }
+}
+```
+
+When you return an Observable from an action handler, NGXS automatically unsubscribes when the action is canceled, so you don't need to manually check the `abortSignal`.
+
+For more details on action cancellation, see the [Cancellation guide](cancellation.md).
+
 ## Summary
 
 In summary - any dispatched action starts with the status `DISPATCHED`. Next, NGXS looks for handlers that listen to this action, if there are any — NGXS invokes them and processes the return value and errors. If the handler has done some work and has not thrown an error, the status of the action changes to `SUCCESSFUL`. If something went wrong while processing the action (for example, if the server returned an error) then the status of the action changes to `ERRORED`. And if an action handler is marked as `cancelUncompleted` and a new action has arrived before the old one was processed then NGXS interrupts the processing of the first action and sets the action status to `CANCELED`.
