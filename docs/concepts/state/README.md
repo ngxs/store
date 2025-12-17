@@ -99,7 +99,15 @@ export class ZooState {
 }
 ```
 
-The `feedAnimals` function has one argument called `ctx` with a type of `StateContext<ZooStateModel>`. This context state has a slice pointer and a function exposed to set the state. It's important to note that the `getState()` method will always return the freshest state slice from the global store each time it is accessed. This ensures that when we're performing async operations the state is always fresh. If you want a snapshot, you can always clone the state in the method.
+The `feedAnimals` function has one argument called `ctx` with a type of `StateContext<ZooStateModel>`. This context state has a slice pointer and several functions and properties for managing state:
+
+- `getState()`: Returns the freshest state slice from the global store. When performing async operations the state is always fresh when you call this method.
+- `setState()`: Sets the entire state to a new value
+- `patchState()`: Patches only the specified properties
+- `dispatch()`: Dispatches one or more actions
+- `abortSignal`: An `AbortSignal` tied to the action's lifecycle (available in NGXS v21+). This allows you to handle cancellation of async operations, especially useful with `cancelUncompleted` actions.
+
+It's important to note that the `getState()` method will always return the freshest state slice from the global store each time it is accessed. This ensures that when we're performing async operations the state is always fresh. If you want a snapshot, you can always clone the state in the method.
 
 ### Actions with a payload
 
@@ -307,6 +315,52 @@ export class ZooState {
   @Action(FeedAnimals)
   async feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
     const result = await this.animalService.feed(action.animalsToFeed);
+    const state = ctx.getState();
+    ctx.setState({
+      ...state,
+      feedAnimals: [...state.feedAnimals, result]
+    });
+  }
+}
+```
+
+### Handling Cancellation in Async Actions
+
+When using `cancelUncompleted` with async/await, you can use the `abortSignal` property to gracefully handle cancellation:
+
+```ts
+import { Injectable } from '@angular/core';
+import { State, Action } from '@ngxs/store';
+
+export class FeedAnimals {
+  static readonly type = '[Zoo] FeedAnimals';
+
+  constructor(public animalsToFeed: string) {}
+}
+
+export interface ZooStateModel {
+  feedAnimals: string[];
+}
+
+@State<ZooStateModel>({
+  name: 'zoo',
+  defaults: {
+    feedAnimals: []
+  }
+})
+@Injectable()
+export class ZooState {
+  constructor(private animalService: AnimalService) {}
+
+  @Action(FeedAnimals, { cancelUncompleted: true })
+  async feedAnimals(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
+    const result = await this.animalService.feed(action.animalsToFeed);
+
+    // Check if action was canceled before updating state
+    if (ctx.abortSignal.aborted) {
+      return; // Exit gracefully without updating state
+    }
+
     const state = ctx.getState();
     ctx.setState({
       ...state,
