@@ -72,7 +72,7 @@ async fetchUsers(ctx: StateContext<User[]>) {
   } catch (error) {
     if (error.name === 'AbortError') {
       console.log('Fetch was canceled');
-      return;
+      return; // Gracefully exit if canceled
     }
     throw error;
   }
@@ -92,16 +92,21 @@ We've addressed several important issues to improve stability and reliability:
 
 - **Lifecycle Safety**: Added guards against running state functions after the injector is destroyed ([PR #2366](https://github.com/ngxs/store/pull/2366), [PR #2377](https://github.com/ngxs/store/pull/2377))
 - **Selector Improvements**: Fixed `createPickSelector` to not throw on unregistered states ([PR #2378](https://github.com/ngxs/store/pull/2378))
-- **Application Stability**: Stopped contributing to stability once the app is stable, improving performance ([PR #2379](https://github.com/ngxs/store/pull/2379))
 - **Type Safety**: Updated action handler types to allow `Observable<unknown>` and `Promise<unknown>` ([PR #2385](https://github.com/ngxs/store/pull/2385))
-- **Task Management**: Fixed issue where tasks could cause unnecessary unsubscribe operations ([PR #2388](https://github.com/ngxs/store/pull/2388))
+
+## Debugging Improvements
+
+This release includes the following debugging improvements:
+
+- **Signal Debugging**: Added `debugName` to computed signals in `selectSignal` for better developer experience ([PR #2370](https://github.com/ngxs/store/pull/2370))
 
 ## Performance Improvements
 
 This release includes several performance optimizations:
 
 - **Memory Management**: Cleared internal `_states` on destroy to aid garbage collection under high load ([PR #2365](https://github.com/ngxs/store/pull/2365))
-- **Signal Debugging**: Added `debugName` to computed signals in `selectSignal` for better developer experience ([PR #2370](https://github.com/ngxs/store/pull/2370))
+- **Task Management**: Fixed issue where tasks could cause unnecessary unsubscribe operations ([PR #2388](https://github.com/ngxs/store/pull/2388))
+- **Application Stability**: Stopped contributing to stability once the app is stable, improving performance ([PR #2379](https://github.com/ngxs/store/pull/2379))
 
 ## Plugin Improvements
 
