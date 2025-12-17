@@ -1,13 +1,40 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
+  "cli": {
+    "packageManager": "yarn"
+  },
   "newProjectRoot": "projects",
   "projects": {
-    "hello-world-ng20": {
+    "hello-world-ng21": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "inlineTemplate": true,
+          "inlineStyle": true,
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:resolver": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
         }
       },
       "root": "",
@@ -59,28 +86,18 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "hello-world-ng20:build:production"
+              "buildTarget": "hello-world-ng21:build:production"
             },
             "development": {
-              "buildTarget": "hello-world-ng20:build:development"
+              "buildTarget": "hello-world-ng21:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": ["zone.js", "zone.js/testing"],
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": ["src/styles.scss"]
+            "runnerConfig": "vitest.config.ts"
           }
         }
       }

@@ -5,8 +5,8 @@
   "sideEffects": false,
   "peerDependencies": {
     "@ngxs/store": "^0.0.0",
-    "@angular/core": ">=20.0.0 <21.0.0",
-    "@angular/router": ">=20.0.0 <21.0.0",
+    "@angular/core": ">=21.0.0 <22.0.0",
+    "@angular/router": ">=21.0.0 <22.0.0",
     "rxjs": ">=7.0.0"
   }
 }

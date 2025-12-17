@@ -4,7 +4,7 @@
   "license": "MIT",
   "sideEffects": false,
   "peerDependencies": {
-    "@angular/core": ">=20.0.0 <21.0.0",
+    "@angular/core": ">=21.0.0 <22.0.0",
     "rxjs": ">=7.0.0"
   },
   "schematics": "./schematics/collection.json"

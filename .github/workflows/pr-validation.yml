@@ -92,7 +92,7 @@ jobs:
     strategy:
       matrix:
         script:
-          - 'integration:ng20'
+          - 'integration:ng21'
           - 'test:types'
 
     steps:
