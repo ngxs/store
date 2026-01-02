@@ -36,7 +36,7 @@ jobs:
           github-sha: ${{ github.sha }}
 
       - name: Build NGXS
-        run: yarn build
+        run: pnpm build
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
@@ -65,7 +65,7 @@ jobs:
           github-sha: ${{ github.sha }}
 
       - name: Run ${{ matrix.script }}
-        run: yarn nx run-many --target=${{ matrix.script }} --configuration=ci --all
+        run: pnpm nx run-many --target=${{ matrix.script }} --configuration=ci --all
 
       - name: Upload coverage results to Qlty
         if: ${{ matrix.script == 'test' }}
@@ -96,7 +96,7 @@ jobs:
           github-sha: ${{ github.sha }}
 
       - name: Run ${{ matrix.script }}
-        run: yarn ${{ matrix.script }}
+        run: pnpm ${{ matrix.script }}
 
       - name: Upload an integration test artifact
         if: ${{ startsWith( matrix.script, 'integration:' ) }}
@@ -164,6 +164,6 @@ jobs:
   #       uses: ./.github/actions/check-build-artifacts
 
   #     - name: Development release - publish development builds to all @ngxs packages
-  #       run: yarn publish:dev
+  #       run: pnpm publish:dev
   #       env:
   #         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

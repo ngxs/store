@@ -1,6 +1,6 @@
-import glob from 'glob';
-import * as url from 'node:url';
-import * as path from 'node:path';
+import fs from 'node:fs';
+import url from 'node:url';
+import path from 'node:path';
 import { createRequire } from 'node:module';
 
 import { packages } from './packages.mjs';
@@ -25,7 +25,7 @@ export function getEntryPointsAndDtsToRemove() {
     );
 
     dtsToRemove.push(
-      ...glob.sync(path.join(__dirname, `../@ngxs/${package$}/**/*.d.ts`)).filter(
+      ...fs.globSync(path.join(__dirname, `../@ngxs/${package$}/**/*.d.ts`)).filter(
         file =>
           // We need to remove all declaration files except for the
           // `index.d.ts` entry points.
