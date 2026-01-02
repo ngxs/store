@@ -44,7 +44,7 @@ export function execute(script: string, options: ExecOptions = {}): Promise<stri
       if (error) {
         rejectPromise({ error, stderr });
       } else {
-        resolvePromise(stdout);
+        resolvePromise(stdout.toString());
       }
     });
   });
@@ -64,10 +64,10 @@ export async function publishAllPackagesToNpm(version: any, tag: string) {
 async function publishPackage(pack: Package, version: any, tag: string) {
   const packageDescription = `${pack.buildPath} ${version} @${tag}`;
   try {
-    const script = `yarn publish --access public --non-interactive --no-git-tag-version --new-version ${version} --tag ${tag}`;
+    const script = `pnpm publish --access public --no-git-checks --new-version ${version} --tag ${tag}`;
     const output = await execute(script, { cwd: pack.buildPath });
     console.log(`Published ${packageDescription} /r/n -> ${output}`);
-  } catch ({ error, stdErr }) {
+  } catch ({ error, stdErr }: any) {
     console.log(`Error Publishing ${packageDescription} /r/n -> ${error}`);
     throw error;
   }
