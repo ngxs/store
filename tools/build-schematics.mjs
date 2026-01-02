@@ -1,7 +1,7 @@
+import fs from 'node:fs';
 import yargs from 'yargs';
-import { join } from 'path';
-import { execSync } from 'child_process';
-import fse from 'fs-extra';
+import { join } from 'node:path';
+import { execSync } from 'node:child_process';
 
 const { projectRoot, distPath } = yargs(process.argv).argv;
 
@@ -20,24 +20,24 @@ const cmd = `${tscExecutable} -p ${tsConfigPath}`;
 console.log(`Running "${cmd}"`);
 execSync(cmd, { stdio: 'inherit' });
 
-fse.copySync(schematicsSrc, join(distPath, 'schematics', 'src'), src => {
-  // skip not compiled files
-  if (src.endsWith('.ts')) {
-    return false;
+fs.cpSync(schematicsSrc, join(distPath, 'schematics', 'src'), {
+  recursive: true,
+  filter: src => {
+    // skip not compiled files
+    return !src.endsWith('.ts');
   }
-  return true;
 });
 
-fse.copySync(
+fs.copyFileSync(
   join(projectRoot, 'schematics', 'collection.json'),
   join(distPath, 'schematics', 'collection.json')
 );
 
 function assertSchematicsVersionIsUpToDate(schematicsSrc) {
-  const rootPkg = JSON.parse(fse.readFileSync('package.json', { encoding: 'utf-8' }));
+  const rootPkg = JSON.parse(fs.readFileSync('package.json', { encoding: 'utf-8' }));
   const schematicsVersionsFilePath = join(schematicsSrc, 'utils', 'versions.json');
   const schematicsVersionsFile = JSON.parse(
-    fse.readFileSync(schematicsVersionsFilePath, { encoding: 'utf-8' })
+    fs.readFileSync(schematicsVersionsFilePath, { encoding: 'utf-8' })
   );
   if (rootPkg.version !== schematicsVersionsFile['@ngxs/store']) {
     throw new Error(

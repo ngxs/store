@@ -68,6 +68,7 @@ Thumbs.db
 yarn-error.log
 .ng_pkg_build/
 package-lock.json
+yarn.lock
 .cache
 migrations.json
 .nx/cache
