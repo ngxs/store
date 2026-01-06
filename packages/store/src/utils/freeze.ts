@@ -6,7 +6,7 @@ import { ɵhasOwnProperty } from '@ngxs/store/internals';
  */
 export const deepFreeze = (o: any) => {
 // Skip freezing for non-state objects
-if (o && typeof o === 'object' && !o.__isState) {
+if (o && typeof o === 'object' && o.constructor !== Object && !Array.isArray(o)) {
         return o;
     }
   
