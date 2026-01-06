@@ -5,6 +5,11 @@ import { ɵhasOwnProperty } from '@ngxs/store/internals';
  * https://github.com/jsdf/deep-freeze
  */
 export const deepFreeze = (o: any) => {
+// Skip freezing for non-state objects
+if (o && typeof o === 'object' && !o.__isState) {
+        return o;
+    }
+  
   Object.freeze(o);
 
   const oIsFunction = typeof o === 'function';
