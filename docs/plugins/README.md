@@ -62,3 +62,50 @@ export const appConfig: ApplicationConfig = {
   providers: [provideStore([ZooState], withNgxsLoggerPlugin({}))]
 };
 ```
+
+## Dynamic Plugin Registration
+
+Use `registerNgxsPlugin` to register a plugin at runtime from within an injection context (e.g., a component constructor or `runInInjectionContext`). The plugin is automatically torn down when the injection context is destroyed.
+
+```ts
+import { Component } from '@angular/core';
+import { registerNgxsPlugin } from '@ngxs/store';
+import { MyPlugin } from './my.plugin';
+
+@Component({
+  selector: 'app-root',
+  template: '...'
+})
+export class AppComponent {
+  constructor() {
+    registerNgxsPlugin(MyPlugin);
+  }
+}
+```
+
+Plugin functions are also supported:
+
+```ts
+import { registerNgxsPlugin } from '@ngxs/store';
+import { myPluginFn } from './my.plugin';
+
+@Component({ selector: 'app-root', template: '...' })
+export class AppComponent {
+  constructor() {
+    registerNgxsPlugin(myPluginFn);
+  }
+}
+```
+
+To register outside of a class constructor, use Angular's `runInInjectionContext`:
+
+```ts
+import { Injector, runInInjectionContext } from '@angular/core';
+import { registerNgxsPlugin } from '@ngxs/store';
+import { MyPlugin } from './my.plugin';
+
+// injector obtained from inject(Injector) or ApplicationRef
+runInInjectionContext(injector, () => registerNgxsPlugin(MyPlugin));
+```
+
+> **Note:** `registerNgxsPlugin` must be called within an [injection context](https://angular.dev/guide/di/dependency-injection-context). In development mode, registering the same plugin twice will throw an error to prevent unexpected behavior.
