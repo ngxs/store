@@ -92,8 +92,8 @@ describe('[TEST]: Action Types', () => {
       dispatch(); // $ExpectError
       dispatch({}); // $ExpectError
       dispatch(FooAction); // $ExpectError
-      dispatch(OneArgumentAction); // $ExpectType (payload: string) => Observable<void>
-      dispatch(ManyArgumentsAction); // $ExpectType (arg_1: string, arg_2: number, arg_3: symbol) => Observable<void>
+      dispatch(OneArgumentAction); // $ExpectType (payload: string) => AsyncReturnType<void>
+      dispatch(ManyArgumentsAction); // $ExpectType (arg_1: string, arg_2: number, arg_3: symbol) => AsyncReturnType<void>
     });
   });
 
