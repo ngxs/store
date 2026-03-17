@@ -1,4 +1,5 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Injector, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 import { ɵhasOwnProperty, ɵPlainObject } from '@ngxs/store/internals';
 import {
   NgxsPlugin,
@@ -6,7 +7,6 @@ import {
   getValue,
   InitState,
   UpdateState,
-  actionMatcher,
   NgxsNextPluginFn,
   getActionTypeFromInstance
 } from '@ngxs/store/plugins';
@@ -25,12 +25,16 @@ declare const ngServerMode: boolean;
 
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
+  private _injector = inject(Injector);
   private _keysManager = inject(ɵNgxsStoragePluginKeysManager);
   private _options = inject(ɵNGXS_STORAGE_PLUGIN_OPTIONS);
   private _allStatesPersisted = inject(ɵALL_STATES_PERSISTED);
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
-    if (typeof ngServerMode !== 'undefined' && ngServerMode) {
+    if (
+      (typeof ngServerMode !== 'undefined' && ngServerMode) ||
+      isPlatformServer(this._injector.get(PLATFORM_ID))
+    ) {
       return next(state, event);
     }
 
