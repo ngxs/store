@@ -6,6 +6,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next version
 
+- Feature(store): add `registerNgxsPlugin` function for dynamic plugin registration [#2396](https://github.com/ngxs/store/pull/2396)
 - Feature(store): Support async/await syntax for dispatch [#2399](https://github.com/ngxs/store/pull/2399)
 
 ### 21.0.0 2025-12-17

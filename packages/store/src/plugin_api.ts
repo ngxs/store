@@ -9,3 +9,5 @@ export {
   type NgxsPluginFn,
   type NgxsNextPluginFn
 } from '@ngxs/store/plugins';
+
+export { registerNgxsPlugin } from './register-plugin';

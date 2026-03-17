@@ -44,3 +44,27 @@ export const appConfig: ApplicationConfig = {
 ```
 
 This approach will reduce your production bundle size, as these packages are only needed during development.
+
+## Runtime Registration with `registerNgxsPlugin`
+
+For cases where you need to register a plugin imperatively at runtime — for example, based on a feature flag or after lazy-loading a module — use `registerNgxsPlugin` instead of the environment-file approach:
+
+```ts
+import { Component } from '@angular/core';
+import { registerNgxsPlugin } from '@ngxs/store';
+import { MyDevtoolsPlugin } from './plugins/devtools.plugin';
+
+@Component({
+  selector: 'app-root',
+  template: '...'
+})
+export class AppComponent {
+  constructor() {
+    if (ngDevMode) {
+      registerNgxsPlugin(MyDevtoolsPlugin);
+    }
+  }
+}
+```
+
+The plugin is automatically cleaned up when the component (or any injection context) is destroyed. See the [Plugins](../plugins/README.md#dynamic-plugin-registration) overview for full API details.
