@@ -107,6 +107,53 @@ export class MyComponent {
 }
 ```
 
+The dispatched function returns a value that is both an `Observable` and a `PromiseLike`, so you can use either reactive or async/await patterns without any API change — the syntax at the call site determines the behavior.
+
+**Reactive (subscribe):**
+
+```ts
+export class MyComponent {
+  greet = dispatch(Greet);
+
+  onGreet() {
+    this.greet('Hello world!').subscribe(() => {
+      // action completed
+    });
+  }
+}
+```
+
+**Async/await:**
+
+```ts
+export class MyComponent {
+  greet = dispatch(Greet);
+
+  async onGreet() {
+    await this.greet('Hello world!');
+    // action completed
+  }
+}
+```
+
+**Error handling with async/await:**
+
+If the action throws, the rejection is propagated into the promise so a standard `try/catch` works as expected:
+
+```ts
+export class MyComponent {
+  greet = dispatch(Greet);
+
+  async onGreet() {
+    try {
+      await this.greet('Hello world!');
+    } catch (err) {
+      // handle error
+    }
+  }
+}
+```
+
 ### Snapshots
 
 You can get a snapshot of the state by calling `store.snapshot()`. This will return the entire value of the store for that point in time.
