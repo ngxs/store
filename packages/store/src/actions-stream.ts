@@ -45,7 +45,9 @@ export class InternalActions extends ɵOrderedSubject<ActionContext> {
       // there are no active subscribers that would receive events or perform
       // any actions after the application is destroyed.
       this.complete();
+      this.unsubscribe();
       this.dispatched$.complete();
+      this.dispatched$.unsubscribe();
     });
   }
 }

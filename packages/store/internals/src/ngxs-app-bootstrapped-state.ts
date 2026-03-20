@@ -10,7 +10,10 @@ export class ɵNgxsAppBootstrappedState extends BehaviorSubject<boolean> {
     // Complete the subject once the root injector is destroyed to ensure
     // there are no active subscribers that would receive events or perform
     // any actions after the application is destroyed.
-    destroyRef.onDestroy(() => this.complete());
+    destroyRef.onDestroy(() => {
+      this.complete();
+      this.unsubscribe();
+    });
   }
 
   bootstrap(): void {
