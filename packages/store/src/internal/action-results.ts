@@ -16,6 +16,9 @@ export class InternalDispatchedActionResults extends Subject<ActionContext> {
     // Complete the subject once the root injector is destroyed to ensure
     // there are no active subscribers that would receive events or perform
     // any actions after the application is destroyed.
-    inject(DestroyRef).onDestroy(() => this.complete());
+    inject(DestroyRef).onDestroy(() => {
+      this.complete();
+      this.unsubscribe();
+    });
   }
 }

@@ -28,6 +28,9 @@ export class ɵStateStream extends ɵOrderedBehaviorSubject<ɵPlainObject> {
     // for preventing memory leaks in server-side rendered apps, where a new `StateStream`
     // is created for each HTTP request. If users forget to unsubscribe from `store.select`
     // or `store.subscribe`, it can result in significant memory leaks in SSR apps.
-    inject(DestroyRef).onDestroy(() => this.complete());
+    inject(DestroyRef).onDestroy(() => {
+      this.complete();
+      this.unsubscribe();
+    });
   }
 }

@@ -8,6 +8,7 @@ $ npm install @ngxs/store@dev
 
 - Feature(store): add `registerNgxsPlugin` function for dynamic plugin registration [#2396](https://github.com/ngxs/store/pull/2396)
 - Feature(store): Support async/await syntax for dispatch [#2399](https://github.com/ngxs/store/pull/2399)
+- Fix(store): Cleanup observers once subjects complete [#2401](https://github.com/ngxs/store/pull/2401)
 - Fix(storage-plugin): Guard against environments that do not provide `ngServerMode` [#2400](https://github.com/ngxs/store/pull/2400)
 
 ### 21.0.0 2025-12-17
