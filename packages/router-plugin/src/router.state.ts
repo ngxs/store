@@ -86,11 +86,14 @@ export class RouterState {
   private _subscription!: Subscription;
 
   static state<T = RouterStateSnapshot>() {
-    return createSelector([ROUTER_STATE_TOKEN], (state: RouterStateModel<T>) => {
-      // The `state` is optional if the selector is invoked before the router
-      // state is registered in NGXS.
-      return state?.state;
-    });
+    return createSelector(
+      [ROUTER_STATE_TOKEN],
+      (state: RouterStateModel<RouterStateSnapshot>) => {
+        // The `state` is optional if the selector is invoked before the router
+        // state is registered in NGXS.
+        return state?.state as T | undefined;
+      }
+    );
   }
 
   static url = createSelector([ROUTER_STATE_TOKEN], state => state?.state?.url);
