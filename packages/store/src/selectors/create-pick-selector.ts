@@ -19,10 +19,10 @@ export function createPickSelector<TModel, Keys extends (keyof TModel)[]>(
     // registered yet — for example, if the selector is called before `provideStates()`.
     createSelector([selector], (state: TModel) => state?.[key])
   );
-  return createSelector([...selectors], (...props: KeysToValues<TModel, Keys>) => {
+  return createSelector([...selectors], (...props) => {
     return validKeys.reduce(
       (acc, key, index) => {
-        acc[key] = props[index];
+        acc[key] = props[index] as TModel[Keys[number]];
         return acc;
       },
       {} as Pick<TModel, Keys[number]>

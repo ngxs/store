@@ -30,7 +30,7 @@ export function Selector<T extends SelectorDefTuple = []>(
       }
     }
 
-    const memoizedFn = createSelector(selectors, originalFn as any, {
+    const memoizedFn = createSelector(selectors || [], originalFn as any, {
       containerClass: target,
       selectorName: key.toString(),
       getSelectorOptions() {
