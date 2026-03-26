@@ -7,7 +7,7 @@ import { ActionDef } from '../actions/symbols';
 // Extends Observable so callers can subscribe to emission updates (e.g. progress, intermediate states),
 // while implementing PromiseLike so the JS engine treats it as a thenable when `await` is used —
 // without this dual nature, callers would have to choose upfront between async/await and reactive patterns.
-class AsyncReturnType<T> extends Observable<T> implements PromiseLike<void> {
+export class AsyncReturnType<T> extends Observable<T> implements PromiseLike<void> {
   constructor(private dispatchResult$: Observable<T>) {
     super(subscriber => dispatchResult$.subscribe(subscriber));
   }
