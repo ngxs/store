@@ -11,6 +11,7 @@ $ npm install @ngxs/store@dev
 - Feature(store): Improve createSelector signature type checking [#2402](https://github.com/ngxs/store/pull/2402)
 - Feature(store): Export AsyncReturnType from public API [#2405](https://github.com/ngxs/store/pull/2405)
 - Fix(store): Cleanup observers once subjects complete [#2401](https://github.com/ngxs/store/pull/2401)
+- Fix(store): Skip state mutations when injector is destroyed mid-action [#2406](https://github.com/ngxs/store/pull/2406)
 - Fix(storage-plugin): Guard against environments that do not provide `ngServerMode` [#2400](https://github.com/ngxs/store/pull/2400)
 - Fix(storage-plugin): Improve dependency ranges for security fixes [#2404](https://github.com/ngxs/store/pull/2404)
 
