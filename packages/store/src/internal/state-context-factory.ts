@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { EnvironmentInjector, inject, Injectable } from '@angular/core';
 import { getValue, setValue } from '@ngxs/store/plugins';
 import { ExistingState, StateOperator, isStateOperator } from '@ngxs/store/operators';
 import type { Observable } from 'rxjs';
@@ -14,12 +14,14 @@ import { simplePatch } from './state-operators';
  */
 @Injectable({ providedIn: 'root' })
 export class StateContextFactory {
+  private _injector = inject(EnvironmentInjector);
   private _internalStateOperations = inject(InternalStateOperations);
 
   /**
    * Create the state context
    */
   createStateContext<T>(path: string, abortSignal: AbortSignal): StateContext<T> {
+    const injector = this._injector;
     const root = this._internalStateOperations.getRootStateOperations();
 
     return {
@@ -28,17 +30,22 @@ export class StateContextFactory {
         const currentAppState = root.getState();
         return getState(currentAppState, path);
       },
-      patchState(val: Partial<T>): void {
+      patchState(value: Partial<T>): void {
+        // If the injector has been destroyed (e.g. app destroyed mid-action),
+        // skip the state update to avoid writing to completed subjects.
+        if (injector.destroyed) return;
         const currentAppState = root.getState();
-        const patchOperator = simplePatch<T>(val);
+        const patchOperator = simplePatch<T>(value);
         setStateFromOperator(root, currentAppState, patchOperator, path);
       },
-      setState(val: T | StateOperator<T>): void {
+      setState(value: T | StateOperator<T>): void {
+        // Same guard as patchState — no-op if the injector is already destroyed.
+        if (injector.destroyed) return;
         const currentAppState = root.getState();
-        if (isStateOperator(val)) {
-          setStateFromOperator(root, currentAppState, val, path);
+        if (isStateOperator(value)) {
+          setStateFromOperator(root, currentAppState, value, path);
         } else {
-          setStateValue(root, currentAppState, val, path);
+          setStateValue(root, currentAppState, value, path);
         }
       },
       dispatch(actions: any | any[]): Observable<void> {
