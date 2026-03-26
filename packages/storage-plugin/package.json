@@ -7,7 +7,7 @@
     "@ngxs/store": "^0.0.0",
     "@angular/core": ">=21.0.0 <22.0.0",
     "rxjs": ">=7.0.0",
-    "ts-morph": "21.0.1"
+    "ts-morph": ">=21.0.0"
   },
   "schematics": "./schematics/collection.json"
 }

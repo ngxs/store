@@ -11,6 +11,7 @@ $ npm install @ngxs/store@dev
 - Feature(store): Improve createSelector signature type checking [#2402](https://github.com/ngxs/store/pull/2402)
 - Fix(store): Cleanup observers once subjects complete [#2401](https://github.com/ngxs/store/pull/2401)
 - Fix(storage-plugin): Guard against environments that do not provide `ngServerMode` [#2400](https://github.com/ngxs/store/pull/2400)
+- Fix(storage-plugin): Improve dependency ranges for security fixes [#2404](https://github.com/ngxs/store/pull/2404)
 
 ### 21.0.0 2025-12-17
 
