@@ -1,5 +1,5 @@
 import { patch, type ɵPatchSpec } from './patch';
-import type { ExistingState, StateOperator } from './types';
+import type { ExistingState, NoInfer, StateOperator } from './types';
 
 export function safePatch<T extends object>(
   patchSpec: NoInfer<ɵPatchSpec<T>>
