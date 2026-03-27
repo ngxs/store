@@ -47,6 +47,8 @@ describe('Injector destroyed inside action handler', () => {
         })
       );
 
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
       const store = injector.get(Store);
 
       // Act — dispatch completes (or the firstValueFrom default kicks in) after
@@ -57,6 +59,12 @@ describe('Injector destroyed inside action handler', () => {
 
       // Assert — setState was silently skipped, so state stays at its default.
       expect(store.snapshot()).toEqual({ countries: [] });
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Attempted to setState after injector has been destroyed')
+      );
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Value: ["Canada"], state path: "countries"')
+      );
     })
   );
 });

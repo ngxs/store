@@ -33,14 +33,44 @@ export class StateContextFactory {
       patchState(value: Partial<T>): void {
         // If the injector has been destroyed (e.g. app destroyed mid-action),
         // skip the state update to avoid writing to completed subjects.
-        if (injector.destroyed) return;
+        if (injector.destroyed) {
+          // Also warn in SSR regardless of devMode — bundle size is not a
+          // concern on the server, and silently dropping state mutations is
+          // critical enough to always surface in server logs.
+          if (
+            (typeof ngDevMode !== 'undefined' && ngDevMode) ||
+            (typeof ngServerMode !== 'undefined' && ngServerMode)
+          ) {
+            console.warn(
+              `Attempted to patchState after injector has been destroyed. Value: ${JSON.stringify(value)}, state path: "${path}". ` +
+                `This can happen in server-side rendering when the app is destroyed before all async operations complete, ` +
+                `e.g. inside a finalize() operator that runs after the injector has been destroyed.`
+            );
+          }
+          return;
+        }
         const currentAppState = root.getState();
         const patchOperator = simplePatch<T>(value);
         setStateFromOperator(root, currentAppState, patchOperator, path);
       },
       setState(value: T | StateOperator<T>): void {
         // Same guard as patchState — no-op if the injector is already destroyed.
-        if (injector.destroyed) return;
+        if (injector.destroyed) {
+          // Also warn in SSR regardless of devMode — bundle size is not a
+          // concern on the server, and silently dropping state mutations is
+          // critical enough to always surface in server logs.
+          if (
+            (typeof ngDevMode !== 'undefined' && ngDevMode) ||
+            (typeof ngServerMode !== 'undefined' && ngServerMode)
+          ) {
+            console.warn(
+              `Attempted to setState after injector has been destroyed. Value: ${JSON.stringify(value)}, state path: "${path}". ` +
+                `This can happen in server-side rendering when the app is destroyed before all async operations complete, ` +
+                `e.g. inside a finalize() operator that runs after the injector has been destroyed.`
+            );
+          }
+          return;
+        }
         const currentAppState = root.getState();
         if (isStateOperator(value)) {
           setStateFromOperator(root, currentAppState, value, path);
