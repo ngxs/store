@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`preboot feature + stable should wait for app to become stable 1`] = `
 "<html><head></head><body><app-root  ng-server-context="other"><div>[

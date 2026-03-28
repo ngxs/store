@@ -28,6 +28,8 @@ export class LifecycleStateManager {
     action: InitState | UpdateState,
     results: StatesAndDefaults | undefined
   ): void {
+    this._stateContextFactory.setErrorHandler();
+
     if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       if (action instanceof InitState) {
         this._initStateHasBeenDispatched = true;

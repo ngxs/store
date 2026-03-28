@@ -25,14 +25,18 @@ export class StateContextDestroyedError extends Error {
 }
 
 /**
- * State Context factory class
+ * Creates `StateContext` instances scoped to a specific state path.
+ * Each action handler receives one of these contexts so it can read and
+ * write only its own slice of the global state tree.
  * @ignore
  */
 @Injectable({ providedIn: 'root' })
 export class StateContextFactory {
   private _injector = inject(EnvironmentInjector);
   private _internalStateOperations = inject(InternalStateOperations);
-  private _errorHandler = inject(ErrorHandler);
+  // Resolved lazily via `setErrorHandler` to avoid a cyclic dependency when
+  // the ErrorHandler itself injects the Store.
+  private _errorHandler: ErrorHandler | null = null;
 
   /**
    * Create the state context
@@ -50,7 +54,7 @@ export class StateContextFactory {
           // be a breaking change for callers that assume getState() always
           // returns a value. handleError is just for observability (e.g. Rollbar);
           // the state data is still readable even after the injector is gone.
-          errorHandler.handleError(new StateContextDestroyedError(path));
+          errorHandler?.handleError(new StateContextDestroyedError(path));
         }
         const currentAppState = root.getState();
         return getState(currentAppState, path);
@@ -59,7 +63,7 @@ export class StateContextFactory {
         // If the injector has been destroyed (e.g. app destroyed mid-action),
         // skip the state update to avoid writing to completed subjects.
         if (injector.destroyed) {
-          errorHandler.handleError(new StateContextDestroyedError(path));
+          errorHandler?.handleError(new StateContextDestroyedError(path));
           return;
         }
         const currentAppState = root.getState();
@@ -69,7 +73,7 @@ export class StateContextFactory {
       setState(value: T | StateOperator<T>): void {
         // Same guard as patchState — no-op if the injector is already destroyed.
         if (injector.destroyed) {
-          errorHandler.handleError(new StateContextDestroyedError(path));
+          errorHandler?.handleError(new StateContextDestroyedError(path));
           return;
         }
         const currentAppState = root.getState();
@@ -84,6 +88,15 @@ export class StateContextFactory {
       }
     };
   }
+
+  /** @internal */
+  setErrorHandler(): void {
+    // Called from `LifecycleStateManager.ngxsBootstrap` rather than at
+    // construction time. If we injected ErrorHandler in the constructor,
+    // an ErrorHandler that itself injects Store would create a circular
+    // dependency — deferring the lookup breaks the cycle.
+    this._errorHandler ??= this._injector.get(ErrorHandler);
+  }
 }
 
 function setStateValue<T>(
@@ -94,13 +107,10 @@ function setStateValue<T>(
 ): any {
   const newAppState = setValue(currentAppState, path, newValue);
   root.setState(newAppState);
+  // Note: this returns the full app state rather than just the patched slice.
+  // That's a long-standing quirk (present since the original state-factory.ts)
+  // and fixing it would be a breaking change — tracked for a future release.
   return newAppState;
-  // In doing this refactoring I noticed that there is a 'bug' where the
-  // application state is returned instead of this state slice.
-  // This has worked this way since the beginning see:
-  // https://github.com/ngxs/store/blame/324c667b4b7debd8eb979006c67ca0ae347d88cd/src/state-factory.ts
-  // This needs to be fixed, but is a 'breaking' change.
-  // I will do this fix in a subsequent PR and we can decide how to handle it.
 }
 
 function setStateFromOperator<T>(
