@@ -13,4 +13,5 @@ export { isStateOperator, isPredicate, type Predicate } from './utils';
 export { updateItem } from './update-item';
 export { updateItems } from './update-items';
 export { removeItem } from './remove-item';
+export { removeItems } from './remove-items';
 export type { ExistingState, NoInfer, StateOperator } from './types';

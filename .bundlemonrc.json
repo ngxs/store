@@ -20,7 +20,7 @@
     },
     {
       "path": "./fesm2022/ngxs-store-operators.mjs",
-      "maxSize": "14kB",
+      "maxSize": "16kB",
       "maxPercentIncrease": 0.5
     },
     {
