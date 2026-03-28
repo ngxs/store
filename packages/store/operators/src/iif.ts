@@ -6,16 +6,14 @@ function retrieveValue<T>(
   operatorOrValue: StateOperator<T> | T,
   existing: ExistingState<T>
 ): T {
-  // If state operator is a function
-  // then call it with an original value
+  // Delegate to the operator so a derived transformation can be applied
+  // rather than substituting a static value.
   if (isStateOperator(operatorOrValue)) {
     const value = operatorOrValue(existing);
     return value as T;
   }
 
-  // If operator or value was not provided
-  // e.g. `elseOperatorOrValue` is `undefined`
-  // then we just return an original value
+  // No else branch was provided, so leave the state unchanged.
   if (operatorOrValue === undefined) {
     return existing as T;
   }
@@ -24,11 +22,30 @@ function retrieveValue<T>(
 }
 
 /**
- * @param condition - Condition can be a plain boolean value or a function,
- * that returns boolean, also this function can take a value as an argument
- * to which this state operator applies
- * @param trueOperatorOrValue - Any value or a state operator
- * @param elseOperatorOrValue - Any value or a state operator
+ * Applies one of two operators (or values) based on a condition, keeping
+ * conditional logic out of action handlers and inside the state mutation
+ * pipeline where it belongs.
+ *
+ * @param condition - A boolean or a predicate receiving the current state value.
+ * Use a predicate when the decision depends on the existing state rather than
+ * external data available at dispatch time.
+ * @param trueOperatorOrValue - Applied when `condition` is truthy.
+ * @param elseOperatorOrValue - Applied when `condition` is falsy. Omit to
+ * leave the state unchanged in the false branch.
+ *
+ * @example
+ * ```ts
+ * // Only add a panda when the list has fewer than 5 — the cap is enforced
+ * // inside the operator so the action handler stays free of branching logic.
+ * ctx.setState(
+ *   patch<AnimalsStateModel>({
+ *     pandas: iif(
+ *       pandas => pandas.length < 5,
+ *       append<string>([action.payload])
+ *     )
+ *   })
+ * );
+ * ```
  */
 export function iif<T>(
   condition: NoInfer<Predicate<T>> | boolean,
@@ -36,9 +53,11 @@ export function iif<T>(
   elseOperatorOrValue?: NoInfer<StateOperator<T> | T>
 ): StateOperator<T> {
   return function iifOperator(existing: ExistingState<T>): T {
-    // Convert the value to a boolean
+    // Normalise to a boolean so both plain booleans and predicates
+    // share the same resolution path below.
     let result = !!condition;
-    // but if it is a function then run it to get the result
+    // Predicates receive the current state value so the decision can be
+    // based on live state rather than values captured at dispatch time.
     if (isPredicate(condition)) {
       result = condition(existing as T);
     }

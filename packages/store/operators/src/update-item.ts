@@ -3,10 +3,30 @@ import { ExistingState, NoInfer, StateOperator } from './types';
 import { isStateOperator, isPredicate, isNumber, invalidIndex, Predicate } from './utils';
 
 /**
- * @param selector - Index of item in the array or a predicate function
- * that can be provided in `Array.prototype.findIndex`
- * @param operatorOrValue - New value under the `selector` index or a
- * function that can be applied to an existing value
+ * Replaces or transforms a single array element without cloning elements that
+ * did not change, preserving referential equality for the rest of the array.
+ * Returns the original array reference when nothing changed, keeping
+ * memoized selectors and `OnPush` components from re-rendering unnecessarily.
+ *
+ * @param selector - The index to update, or a predicate used to locate the
+ * item. Prefer a predicate when the item's position may have shifted since the
+ * index was last known.
+ * @param operatorOrValue - The replacement value, or a state operator applied
+ * to the existing element when a derived update is needed.
+ *
+ * @example
+ * ```ts
+ * // Rename a panda — locate it by current name so the index doesn't need
+ * // to be known ahead of time.
+ * ctx.setState(
+ *   patch<AnimalsStateModel>({
+ *     pandas: updateItem<string>(
+ *       name => name === action.payload.name,
+ *       action.payload.newName
+ *     )
+ *   })
+ * );
+ * ```
  */
 export function updateItem<T>(
   selector: number | NoInfer<Predicate<T>>,
@@ -26,8 +46,8 @@ export function updateItem<T>(
     }
 
     let value: T = null!;
-    // Need to check if the new item value will change the existing item value
-    // then, only if it will change it then clone the array and set the item
+    // Resolve the new value before touching the array so we can bail out
+    // early and skip the clone when nothing actually changed.
     const theOperatorOrValue = operatorOrValue as T | StateOperator<T>;
     if (isStateOperator(theOperatorOrValue)) {
       value = theOperatorOrValue(existing[index] as ExistingState<T>);
@@ -35,8 +55,8 @@ export function updateItem<T>(
       value = theOperatorOrValue;
     }
 
-    // If the value hasn't been mutated
-    // then we just return `existing` array
+    // Return the original reference to prevent memoized selectors and
+    // OnPush components from reacting to a no-op update.
     if (value === existing[index]) {
       return existing as T[];
     }
