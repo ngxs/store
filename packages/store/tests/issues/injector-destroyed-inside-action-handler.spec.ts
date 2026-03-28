@@ -1,6 +1,13 @@
-import { ApplicationRef, Component, inject, Injectable } from '@angular/core';
+import { ApplicationRef, Component, ErrorHandler, inject, Injectable } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { Action, provideStore, State, StateContext, Store } from '@ngxs/store';
+import {
+  Action,
+  provideStore,
+  State,
+  StateContext,
+  StateContextDestroyedError,
+  Store
+} from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 import { finalize, firstValueFrom, timer } from 'rxjs';
 
@@ -37,17 +44,28 @@ describe('Injector destroyed inside action handler', () => {
   @Component({ selector: 'app-root', template: '' })
   class AppComponent {}
 
+  const recorder: StateContextDestroyedError[] = [];
+  class TestErrorHandler implements ErrorHandler {
+    handleError(error: any): void {
+      recorder.push(error);
+    }
+  }
+
   it(
     'should not throw an UnsubscriptionError when injector is destroyed in the middle of actions execution',
     freshPlatform(async () => {
       // Arrange
       const { injector } = await skipConsoleLogging(() =>
         bootstrapApplication(AppComponent, {
-          providers: [provideStore([CountriesState])]
+          providers: [
+            {
+              provide: ErrorHandler,
+              useFactory: () => new TestErrorHandler()
+            },
+            provideStore([CountriesState])
+          ]
         })
       );
-
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
       const store = injector.get(Store);
 
@@ -59,12 +77,8 @@ describe('Injector destroyed inside action handler', () => {
 
       // Assert — setState was silently skipped, so state stays at its default.
       expect(store.snapshot()).toEqual({ countries: [] });
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Attempted to setState after injector has been destroyed')
-      );
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Value: ["Canada"], state path: "countries"')
-      );
+      expect(recorder.length).toEqual(1);
+      expect(recorder[0].path).toEqual('countries');
     })
   );
 });

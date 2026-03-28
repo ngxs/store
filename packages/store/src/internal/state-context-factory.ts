@@ -1,4 +1,4 @@
-import { EnvironmentInjector, inject, Injectable } from '@angular/core';
+import { EnvironmentInjector, ErrorHandler, inject, Injectable } from '@angular/core';
 import { getValue, setValue } from '@ngxs/store/plugins';
 import { ExistingState, StateOperator, isStateOperator } from '@ngxs/store/operators';
 import type { Observable } from 'rxjs';
@@ -8,6 +8,22 @@ import { StateOperations } from '../internal/internals';
 import { InternalStateOperations } from '../internal/state-operations';
 import { simplePatch } from './state-operators';
 
+export class StateContextDestroyedError extends Error {
+  override readonly name = 'StateContextDestroyedError';
+
+  constructor(readonly path: string) {
+    super(
+      typeof ngDevMode !== 'undefined' && ngDevMode
+        ? `Attempted to interact with state after the injector has been destroyed. State path: "${path}". ` +
+            `This can happen in server-side rendering when the app is destroyed before all async operations complete, ` +
+            `e.g. inside a finalize() operator that runs after the injector has been destroyed.`
+        : ''
+    );
+
+    Object.setPrototypeOf(this, StateContextDestroyedError.prototype);
+  }
+}
+
 /**
  * State Context factory class
  * @ignore
@@ -16,17 +32,26 @@ import { simplePatch } from './state-operators';
 export class StateContextFactory {
   private _injector = inject(EnvironmentInjector);
   private _internalStateOperations = inject(InternalStateOperations);
+  private _errorHandler = inject(ErrorHandler);
 
   /**
    * Create the state context
    */
   createStateContext<T>(path: string, abortSignal: AbortSignal): StateContext<T> {
     const injector = this._injector;
+    const errorHandler = this._errorHandler;
     const root = this._internalStateOperations.getRootStateOperations();
 
     return {
       abortSignal,
       getState(): T {
+        if (injector.destroyed) {
+          // Only report — do not return early. Returning `undefined as T` would
+          // be a breaking change for callers that assume getState() always
+          // returns a value. handleError is just for observability (e.g. Rollbar);
+          // the state data is still readable even after the injector is gone.
+          errorHandler.handleError(new StateContextDestroyedError(path));
+        }
         const currentAppState = root.getState();
         return getState(currentAppState, path);
       },
@@ -34,19 +59,7 @@ export class StateContextFactory {
         // If the injector has been destroyed (e.g. app destroyed mid-action),
         // skip the state update to avoid writing to completed subjects.
         if (injector.destroyed) {
-          // Also warn in SSR regardless of devMode — bundle size is not a
-          // concern on the server, and silently dropping state mutations is
-          // critical enough to always surface in server logs.
-          if (
-            (typeof ngDevMode !== 'undefined' && ngDevMode) ||
-            (typeof ngServerMode !== 'undefined' && ngServerMode)
-          ) {
-            console.warn(
-              `Attempted to patchState after injector has been destroyed. Value: ${JSON.stringify(value)}, state path: "${path}". ` +
-                `This can happen in server-side rendering when the app is destroyed before all async operations complete, ` +
-                `e.g. inside a finalize() operator that runs after the injector has been destroyed.`
-            );
-          }
+          errorHandler.handleError(new StateContextDestroyedError(path));
           return;
         }
         const currentAppState = root.getState();
@@ -56,19 +69,7 @@ export class StateContextFactory {
       setState(value: T | StateOperator<T>): void {
         // Same guard as patchState — no-op if the injector is already destroyed.
         if (injector.destroyed) {
-          // Also warn in SSR regardless of devMode — bundle size is not a
-          // concern on the server, and silently dropping state mutations is
-          // critical enough to always surface in server logs.
-          if (
-            (typeof ngDevMode !== 'undefined' && ngDevMode) ||
-            (typeof ngServerMode !== 'undefined' && ngServerMode)
-          ) {
-            console.warn(
-              `Attempted to setState after injector has been destroyed. Value: ${JSON.stringify(value)}, state path: "${path}". ` +
-                `This can happen in server-side rendering when the app is destroyed before all async operations complete, ` +
-                `e.g. inside a finalize() operator that runs after the injector has been destroyed.`
-            );
-          }
+          errorHandler.handleError(new StateContextDestroyedError(path));
           return;
         }
         const currentAppState = root.getState();
