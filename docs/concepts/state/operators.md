@@ -134,6 +134,49 @@ If you want to update an item in the array using an operator or value - you can 
 updateItem<T>(selector: number | Predicate<T>, operator: T | StateOperator<T>): StateOperator<T[]>
 ```
 
+If you want to update **all** items in the array that match a predicate - use `updateItems`. Unlike `updateItem`, which stops at the first match, `updateItems` walks the entire array and applies the operator or value to every matching element:
+
+```ts
+updateItems<T>(selector: Predicate<T>, operator: T | StateOperator<T>): StateOperator<T[]>
+```
+
+For example, to mark every inactive animal as active in one `setState` call:
+
+```ts
+import { Injectable } from '@angular/core';
+import { State, Action, StateContext } from '@ngxs/store';
+import { patch, updateItems } from '@ngxs/store/operators';
+
+export interface Animal {
+  name: string;
+  active: boolean;
+}
+
+export interface AnimalsStateModel {
+  animals: Animal[];
+}
+
+export class ActivateAll {
+  static readonly type = '[Animals] Activate all';
+}
+
+@State<AnimalsStateModel>({
+  name: 'animals',
+  defaults: { animals: [] }
+})
+@Injectable()
+export class AnimalsState {
+  @Action(ActivateAll)
+  activateAll(ctx: StateContext<AnimalsStateModel>) {
+    ctx.setState(
+      patch<AnimalsStateModel>({
+        animals: updateItems<Animal>(animal => !animal.active, patch({ active: true }))
+      })
+    );
+  }
+}
+```
+
 If you want to remove an item from an array by index or predicate - you can use `removeItem`:
 
 ```ts
