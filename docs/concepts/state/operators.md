@@ -67,6 +67,57 @@ The `patch` operator expresses the intended modification quite nicely and return
 
 This is not the only operator, we introduce much more that can be used along with or in place of `patch`.
 
+If the state slice you're patching might be `null` or `undefined`, regular `patch` will throw because it tries to spread a non-object. `safePatch` handles that case by treating a missing state as an empty object `{}` before applying the patch:
+
+```ts
+safePatch<T extends object>(patchSpec: PatchSpec<T>): StateOperator<T>
+```
+
+This is handy when a slice of state is optional and may not have been initialized yet. For example:
+
+```ts
+import { Injectable } from '@angular/core';
+import { State, Action, StateContext } from '@ngxs/store';
+import { patch, safePatch } from '@ngxs/store/operators';
+
+export interface UserPreferences {
+  theme: string;
+  language: string;
+}
+
+export interface UserStateModel {
+  name: string;
+  preferences: UserPreferences | null;
+}
+
+export class SetTheme {
+  static readonly type = '[User] Set theme';
+  constructor(public theme: string) {}
+}
+
+@State<UserStateModel>({
+  name: 'user',
+  defaults: {
+    name: '',
+    preferences: null
+  }
+})
+@Injectable()
+export class UserState {
+  @Action(SetTheme)
+  setTheme(ctx: StateContext<UserStateModel>, action: SetTheme) {
+    ctx.setState(
+      patch<UserStateModel>({
+        // safePatch handles preferences being null — no need to initialize it first
+        preferences: safePatch<UserPreferences>({ theme: action.theme })
+      })
+    );
+  }
+}
+```
+
+With plain `patch`, the action above would fail if `preferences` is `null`. With `safePatch`, it treats `null` as `{}` and produces `{ theme: 'dark', language: undefined }` — or whatever the patch spec describes. This also works when nesting `safePatch` inside itself for deeply optional structures.
+
 If you want to update the value of a property based on some condition - you can use `iif`, it's signature is:
 
 ```ts
