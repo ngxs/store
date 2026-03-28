@@ -7,13 +7,14 @@ $ npm install @ngxs/store@dev
 ### To become next version
 
 - Feature(store): add `registerNgxsPlugin` function for dynamic plugin registration [#2396](https://github.com/ngxs/store/pull/2396)
-- Feature(store): Support async/await syntax for dispatch [#2399](https://github.com/ngxs/store/pull/2399)
-- Feature(store): Improve createSelector signature type checking [#2402](https://github.com/ngxs/store/pull/2402)
-- Feature(store): Export AsyncReturnType from public API [#2405](https://github.com/ngxs/store/pull/2405)
+- Feature(store): Support async/await syntax for `dispatch` [#2399](https://github.com/ngxs/store/pull/2399)
+- Feature(store): Improve `createSelector` signature type checking [#2402](https://github.com/ngxs/store/pull/2402)
+- Feature(store): Export `AsyncReturnType` from public API [#2405](https://github.com/ngxs/store/pull/2405)
 - Feature(store): Add `safePatch` operator [#2408](https://github.com/ngxs/store/pull/2408)
 - Fix(store): Cleanup observers once subjects complete [#2401](https://github.com/ngxs/store/pull/2401)
 - Fix(store): Skip state mutations when injector is destroyed mid-action [#2406](https://github.com/ngxs/store/pull/2406)
 - Fix(store): Warn when state is mutated after injector destruction [#2407](https://github.com/ngxs/store/pull/2407)
+- Fix(store): Report destroyed injector errors via `ErrorHandler` [#2409](https://github.com/ngxs/store/pull/2409)
 - Fix(storage-plugin): Guard against environments that do not provide `ngServerMode` [#2400](https://github.com/ngxs/store/pull/2400)
 - Fix(storage-plugin): Improve dependency ranges for security fixes [#2404](https://github.com/ngxs/store/pull/2404)
 

@@ -55,6 +55,8 @@ export {
 
 export { withNgxsPendingTasks } from './pending-tasks';
 
+export { StateContextDestroyedError } from './internal/state-context-factory';
+
 export * from './standalone-features';
 
 export * from './utils/public_api';
