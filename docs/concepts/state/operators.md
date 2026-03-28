@@ -183,6 +183,49 @@ If you want to remove an item from an array by index or predicate - you can use 
 removeItem<T>(selector: number | Predicate<T>): StateOperator<T[]>
 ```
 
+If you want to remove **all** items in the array that match a predicate - use `removeItems`. Unlike `removeItem`, which stops at the first match, `removeItems` walks the entire array and drops every qualifying element:
+
+```ts
+removeItems<T>(selector: Predicate<T>): StateOperator<T[]>
+```
+
+For example, to purge all inactive animals in one `setState` call:
+
+```ts
+import { Injectable } from '@angular/core';
+import { State, Action, StateContext } from '@ngxs/store';
+import { patch, removeItems } from '@ngxs/store/operators';
+
+export interface Animal {
+  name: string;
+  active: boolean;
+}
+
+export interface AnimalsStateModel {
+  animals: Animal[];
+}
+
+export class PurgeInactive {
+  static readonly type = '[Animals] Purge inactive';
+}
+
+@State<AnimalsStateModel>({
+  name: 'animals',
+  defaults: { animals: [] }
+})
+@Injectable()
+export class AnimalsState {
+  @Action(PurgeInactive)
+  purgeInactive(ctx: StateContext<AnimalsStateModel>) {
+    ctx.setState(
+      patch<AnimalsStateModel>({
+        animals: removeItems<Animal>(animal => !animal.active)
+      })
+    );
+  }
+}
+```
+
 If you want to insert an item to an array, optionally before a specified index - use `insertItem` operator:
 
 ```ts

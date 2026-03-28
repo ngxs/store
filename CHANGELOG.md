@@ -12,6 +12,7 @@ $ npm install @ngxs/store@dev
 - Feature(store): Export `AsyncReturnType` from public API [#2405](https://github.com/ngxs/store/pull/2405)
 - Feature(store): Add `safePatch` operator [#2408](https://github.com/ngxs/store/pull/2408)
 - Feature(store): Add `updateItems` operator [#2413](https://github.com/ngxs/store/pull/2413)
+- Feature(store): Add `removeItems` operator [#2414](https://github.com/ngxs/store/pull/2414)
 - Fix(store): Cleanup observers once subjects complete [#2401](https://github.com/ngxs/store/pull/2401)
 - Fix(store): Skip state mutations when injector is destroyed mid-action [#2406](https://github.com/ngxs/store/pull/2406)
 - Fix(store): Warn when state is mutated after injector destruction [#2407](https://github.com/ngxs/store/pull/2407)
