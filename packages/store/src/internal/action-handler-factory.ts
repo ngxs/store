@@ -1,6 +1,7 @@
 import { inject, Injectable, ɵisPromise } from '@angular/core';
 import {
   defaultIfEmpty,
+  EMPTY,
   finalize,
   from,
   isObservable,
@@ -11,7 +12,7 @@ import {
 } from 'rxjs';
 import type { ɵActionOptions } from '@ngxs/store/internals';
 
-import { InternalActions } from '../actions-stream';
+import { ActionResult, ActionStatus, InternalActions } from '../actions-stream';
 import { ofActionDispatched } from '../operators/of-action';
 import { StateContextFactory } from './state-context-factory';
 import type { StateContext } from '../symbols';
@@ -30,9 +31,13 @@ export class InternalActionHandlerFactory {
 
     return (action: any) => {
       const abortController = new AbortController();
+      let resultOverride: ActionResult | null = null;
       const stateContext = this._stateContextFactory.createStateContext(
         path,
-        abortController.signal
+        abortController.signal,
+        result => {
+          resultOverride = result;
+        }
       );
 
       let result = handlerFn(stateContext, action);
@@ -77,6 +82,7 @@ export class InternalActionHandlerFactory {
         }
 
         result = result.pipe(
+          mergeMap(value => applyResultOverride(resultOverride, value)),
           // Note that we use the `finalize` operator only when the action handler
           // explicitly returns an observable (or a promise) to wait for. This means
           // the action handler is written in a "fire & wait" style. If the handler’s
@@ -93,16 +99,20 @@ export class InternalActionHandlerFactory {
 
               stateContext.setState = noopAndWarn;
               stateContext.patchState = noopAndWarn;
+              stateContext.setActionResult = noop;
             } else {
               stateContext.setState = noop;
               stateContext.patchState = noop;
+              stateContext.setActionResult = noop;
             }
           })
         );
       } else {
         // If the action handler is synchronous and returns nothing (`void`), we
         // still have to convert the result to a synchronous observable.
-        result = of(undefined);
+        result = of(undefined).pipe(
+          mergeMap(value => applyResultOverride(resultOverride, value))
+        );
       }
 
       return result;
@@ -110,7 +120,20 @@ export class InternalActionHandlerFactory {
   }
 }
 
-// This is used to replace `setState` and `patchState` once the action
-// handler has been unsubscribed or completed, to prevent writing
-// to the state context.
+// This is used to replace `setState`, `patchState`, and `setActionResult` once
+// the action handler has been unsubscribed or completed, to prevent any further
+// mutations or result overrides.
 function noop() {}
+
+function applyResultOverride(
+  override: ActionResult | null,
+  value: unknown
+): Observable<unknown> {
+  if (override === null || override.type === ActionStatus.Successful) {
+    return of(value);
+  }
+  if (override.type === ActionStatus.Canceled) {
+    return EMPTY;
+  }
+  return new Observable(subscriber => subscriber.error(override.error));
+}

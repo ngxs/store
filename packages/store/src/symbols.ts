@@ -3,6 +3,7 @@ import type { Observable } from 'rxjs';
 
 import { StateOperator } from '@ngxs/store/operators';
 import { ɵSharedSelectorOptions, ɵStateClass } from '@ngxs/store/internals';
+import type { ActionResult } from './actions-stream';
 
 // The injection token is used to resolve a list of states provided at
 // the root level through either `NgxsModule.forRoot` or `provideStore`.
@@ -110,6 +111,33 @@ export interface StateContext<T> {
    * Dispatch a new action and return the dispatched observable.
    */
   dispatch(actions: any | any[]): Observable<void>;
+
+  /**
+   * Override the result status reported for this action on the `Actions` stream.
+   *
+   * By default the status is determined automatically:
+   * - `SUCCESSFUL` when the handler observable emits at least one value.
+   * - `CANCELED` when the handler observable completes without emitting.
+   * - `ERRORED` when the handler observable throws.
+   *
+   * `setActionResult` lets you take explicit control from inside the handler:
+   * - `actionCanceled()` — mark the action as canceled regardless of whether the handler emitted.
+   * - `actionErrored(error)` — mark the action as errored with the given error.
+   * - `actionSuccessful()` — mark the action as successful (the default; rarely needed explicitly).
+   *
+   * @example
+   * ```ts
+   * \@Action(SetNbPages)
+   * setNbPages(ctx: StateContext<Model>, action: SetNbPages) {
+   *   if (action.nbPages < 0) {
+   *     ctx.setActionResult(actionCanceled());
+   *     return;
+   *   }
+   *   ctx.patchState({ nbPages: action.nbPages });
+   * }
+   * ```
+   */
+  setActionResult(result: ActionResult): void;
 }
 
 /**

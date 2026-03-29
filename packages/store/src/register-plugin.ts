@@ -90,9 +90,9 @@ const REGISTERED_PLUGINS = /* @__PURE__ */ new InjectionToken('', {
  * ```
  */
 export function registerNgxsPlugin(plugin: Type<NgxsPlugin> | NgxsPluginFn) {
-  ngDevMode && assertInInjectionContext(registerNgxsPlugin);
-
   if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+    assertInInjectionContext(registerNgxsPlugin);
+
     const registeredPlugins = inject(REGISTERED_PLUGINS);
     if (registeredPlugins.has(plugin)) {
       throw new Error(

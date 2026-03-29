@@ -4,7 +4,15 @@ export { Store } from './store';
 export { State } from './decorators/state';
 export { Select } from './decorators/select/select';
 export { SelectorOptions } from './decorators/selector-options';
-export { Actions, type ActionContext, ActionStatus } from './actions-stream';
+export {
+  Actions,
+  type ActionContext,
+  ActionStatus,
+  type ActionResult,
+  actionCanceled,
+  actionSuccessful,
+  actionErrored
+} from './actions-stream';
 
 export {
   ofAction,

@@ -22,6 +22,30 @@ export interface ActionContext<T = any> {
 }
 
 /**
+ * Describes the explicit result an action handler wants to force.
+ * Passed to `ctx.setActionResult(...)`.
+ */
+export type ActionResult =
+  | { readonly type: ActionStatus.Successful }
+  | { readonly type: ActionStatus.Canceled }
+  | { readonly type: ActionStatus.Errored; readonly error: unknown };
+
+/** Force the action to be marked as successful. */
+export function actionSuccessful(): ActionResult {
+  return { type: ActionStatus.Successful };
+}
+
+/** Force the action to be marked as canceled, regardless of whether the handler emitted a value. */
+export function actionCanceled(): ActionResult {
+  return { type: ActionStatus.Canceled };
+}
+
+/** Force the action to be marked as errored with the given error. */
+export function actionErrored(error: unknown): ActionResult {
+  return { type: ActionStatus.Errored, error };
+}
+
+/**
  * Internal Action stream that is emitted anytime an action is dispatched.
  */
 @Injectable({ providedIn: 'root' })

@@ -4,6 +4,7 @@ import { ExistingState, StateOperator, isStateOperator } from '@ngxs/store/opera
 import type { Observable } from 'rxjs';
 
 import { StateContext } from '../symbols';
+import type { ActionResult } from '../actions-stream';
 import { StateOperations } from '../internal/internals';
 import { InternalStateOperations } from '../internal/state-operations';
 import { simplePatch } from './state-operators';
@@ -41,7 +42,11 @@ export class StateContextFactory {
   /**
    * Create the state context
    */
-  createStateContext<T>(path: string, abortSignal: AbortSignal): StateContext<T> {
+  createStateContext<T>(
+    path: string,
+    abortSignal: AbortSignal,
+    onSetActionResult?: (result: ActionResult) => void
+  ): StateContext<T> {
     const injector = this._injector;
     const errorHandler = this._errorHandler;
     const root = this._internalStateOperations.getRootStateOperations();
@@ -85,6 +90,9 @@ export class StateContextFactory {
       },
       dispatch(actions: any | any[]): Observable<void> {
         return root.dispatch(actions);
+      },
+      setActionResult(result: ActionResult): void {
+        onSetActionResult?.(result);
       }
     };
   }
