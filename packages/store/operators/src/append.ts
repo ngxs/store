@@ -1,4 +1,4 @@
-import { ExistingState, NoInfer, StateOperator } from './types';
+import { ExistingState, StateOperator } from './types';
 import { isArray } from './utils';
 
 /**
