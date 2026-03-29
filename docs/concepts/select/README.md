@@ -78,7 +78,11 @@ export class JWTInterceptor implements HttpInterceptor {
 
 ## Memoized Selectors
 
-Oftentimes you will use the same selectors in several different places or have complex selectors you want to keep separate from your component. NGXS has a `@Selector` decorator that will help us with that. This decorator will memoize the function for performance as well as automatically slice the state portion you are dealing with.
+There are two distinct roles in NGXS selectors: **defining** selectors with `@Selector` and **consuming** them in components and services via `store.select()`, `store.selectSignal()`, or `store.selectSnapshot()`.
+
+The `@Selector` decorator defines a memoized, reusable selector function. It is placed on `static` methods and can live in a state class, a dedicated query class (see [Meta Selectors](#meta-selectors) below), or any plain class. Keeping selectors outside component classes is recommended so they remain reusable and independently testable. Components and services consume those selectors using the `store.select*` methods shown above — they do not define them.
+
+Selectors defined with `@Selector` are memoized: they recalculate only when their input arguments change, and the cached result is shared across all consumers.
 
 Let's create a selector that will return a list of pandas from the animals.
 
@@ -280,10 +284,10 @@ The memoized selectors will recalculate when any of their input parameter values
 
 By default selectors in NGXS are bound to a state. Sometimes you need the ability to join to un-related states in a high-performance re-usable fashion. A meta selector is a selector allows you to bind N number of selectors together to return a state stream.
 
-Let's say we have 2 states; 'zoos' and 'theme parks'. We have a component that needs to show all the zoos and theme parks for a given city. These are two very distinct state classes that are likely not related in any manner. We can use a meta selector to join these two states together like:
+Because `@Selector` works on any plain class — not only state classes — you can group related cross-cutting selectors into a dedicated query class. This is the recommended alternative to placing selectors in component classes:
 
 ```ts
-export class CityService {
+export class CityQueries {
   @Selector([Zoo, ThemePark])
   static getZooThemeParks(zoos, themeParks) {
     return [...zoos, ...themeParks];
