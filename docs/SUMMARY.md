@@ -43,6 +43,7 @@
   - [Overview](concepts/select/README.md)
   - [Mapped Sub States](concepts/select/mapped-sub-states.md)
   - [Optimizing Selectors](concepts/select/optimizing-selectors.md)
+  - [Type-Safe Selectors](concepts/select/type-safe-selectors.md)
   - [Selector Utils](concepts/select/selector-utils.md)
   - [Error Handling](concepts/select/error-handling.md)
   - [Signals](concepts/select/signals.md)
