@@ -1,11 +1,16 @@
+type _NoInfer<T> = T extends infer S ? S : never;
+
 /**
- * Re-exported alias for the TypeScript built-in `NoInfer<T>` (available since
- * TypeScript 5.4). Blocks the TypeScript inference engine from using this
- * parameter position to infer type parameters, so that `StateOperator<T>`
- * type parameters are resolved from context (the return type) rather than
- * from the arguments passed to the operator.
- *
+ * Blocks the ability of the typescript inferrence engine to be able to use the provided type as part of
+ * inferring any type parameters from this usage.
  * @example
+ * Primarily used to wrap parameters of functions in order to prevent the TypeScript inferrence engine
+ * from inferring a type parameter of the function from the value provided to this parameter.
+ * This essentially blocks the Contravariance of the function (through its parameters) so that the
+ * function type parameter is purely determined by the Covariant requirements of the function's return type.
+ * This is key to creating `StateOperator`s that are typed based on their contextual usage and not on the arguments
+ * provided to them. This is critical for type safety and intellisense for State Operators.
+ * Here is an example of how this benefits a state operator:
  * ```ts
  * declare function append<T>(items: NoInfer<T[]>): StateOperator<T[]>;
  * declare function appendBad<T>(items: T[]): StateOperator<T[]>;
@@ -15,16 +20,17 @@
  *   bar?: boolean;
  * }
  *
- * // Works — T is correctly inferred as AAA from the surrounding patch<...> context.
+ * // Works
+ * // (T in append is correctly inferred as AAA)
  * patch<{ test: AAA[] }>({ test: append([{ foo: true }]) });
  *
  * // Incorrectly throws: Type 'AAA' is not assignable to type '{ foo: true; }'.ts(2322)
- * // T in appendBad is incorrectly inferred as { foo: true } from the argument.
+ * // (T in appendBad is incorrectly inferred as { foo: true; })
  * patch<{ test: AAA[] }>({ test: appendBad([{ foo: true }]) });
  * ```
+ *
  */
-type ɵNoInfer<T> = NoInfer<T>;
-export type { ɵNoInfer as NoInfer };
+export type NoInfer<T> = T extends (infer O)[] ? _NoInfer<O>[] : _NoInfer<T>;
 
 /* Note to maintainers... AsReadonly works as follows:
  It is best explained by its 3 result types.

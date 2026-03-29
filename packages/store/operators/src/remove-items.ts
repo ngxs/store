@@ -1,4 +1,4 @@
-import { type ExistingState } from './types';
+import { type ExistingState, type NoInfer } from './types';
 import type { Predicate } from './utils';
 
 /**

@@ -1,4 +1,4 @@
-import { ExistingState, StateOperator } from './types';
+import { ExistingState, NoInfer, StateOperator } from './types';
 import { isStateOperator } from './utils';
 
 type NotUndefined<T> = T extends undefined ? never : T;
