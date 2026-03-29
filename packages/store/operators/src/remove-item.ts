@@ -1,4 +1,4 @@
-import { ExistingState, StateOperator } from './types';
+import { ExistingState, NoInfer, StateOperator } from './types';
 import { isPredicate, isNumber, invalidIndex, Predicate } from './utils';
 
 /**
