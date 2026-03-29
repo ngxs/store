@@ -26,7 +26,7 @@ static getViewData(state: SomeStateModel) {
 
 Selectors defined in state classes implicitly have `state` injected as their first argument. The above selector will be recalculated every time the user types into the input component. Since `state` could update rapidly when a user types, the expensive selector will needlessly recalculate even though it does not care about the `name` property of `state` changing. This selector does not take advantage of memoization.
 
-One way to solve this problem is to turn off the `injectContainerState` selector [option](../store/options.md) at root, state, or selector level. By default (in NGXS v3), the state is implicitly injected as the first argument for composite selectors _defined within state classes_. Turning off this setting prevents the container state from being injected as the first argument. This requires you to explicitly specify all arguments when you use the `@Selector([...])` decorator. Any parameterless `@Selector()` decorators will still inject the state as an implicit argument. Note that this option does not apply to selectors declared _outside of state classes_ (because there is no container state to inject). For example, we create two selectors in our state class:
+One way to solve this problem is to explicitly specify selector arguments using the `@Selector([...])` decorator. By default, the `injectContainerState` selector [option](../store/options.md) is `false`, which means the container state is **not** implicitly injected as the first argument for composite selectors defined within state classes. You must explicitly specify all arguments when using `@Selector([...])`. Any parameterless `@Selector()` decorators will still inject the state as an implicit argument. Note that this option does not apply to selectors declared _outside of state classes_ (because there is no container state to inject). For example, we create two selectors in our state class:
 
 ```ts
 @Selector([SomeState])
@@ -42,7 +42,7 @@ static getViewData(data: Data[]) {
 
 This `getViewData` selector will not be recalculated when a user types into the input component. This selector targets the specific property of `state` it cares about as its argument by leveraging an additional selector. When the `name` property of state changes, the `getViewData` arguments _do not change_. Memoization is taken advantage of.
 
-An alternative solution to turning off the selector option is to create a [meta selector](./#meta-selectors). For example, we declare one selector in our state class and declare another selector outside of our state class:
+An alternative solution is to create a [meta selector](./#meta-selectors). For example, we declare one selector in our state class and declare another selector outside of our state class:
 
 ```ts
 @State({...})
