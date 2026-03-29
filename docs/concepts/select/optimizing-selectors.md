@@ -83,17 +83,30 @@ isDataSelected(state: SelectedDataStateModel) {
 }
 ```
 
-The above selector is an example of a [lazy selector](./#lazy-selectors). This selector returns a function, which accepts an `id` as an argument and returns a boolean indicating whether or not this `id` is selected. The lazy selector returned by `isDataSelected` uses [Array.includes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes) and has `O(n)` time complexity. In this example, we want to render a list of checkboxes:
+The above selector is an example of a [lazy selector](./#lazy-selectors). This selector returns a function, which accepts an `id` as an argument and returns a boolean indicating whether or not this `id` is selected.
 
-```html
-<ng-container *ngIf="isDataSelected() as isDataSelected">
-  @for (data of data(); track data) {
-  <data-check-box [checked]="isDataSelected(d.id)" />
-  }
-</ng-container>
+To consume this lazy selector in a component, use the standalone `select()` function, which calls `inject(Store).selectSignal` internally and returns a signal:
+
+```ts
+import { select } from '@ngxs/store';
+
+@Component({
+  selector: 'app-data-list',
+  template: `
+    @for (item of data(); track item.id) {
+      <data-check-box [checked]="isDataSelected()(item.id)" />
+    }
+  `
+})
+export class DataListComponent {
+  data = select(DataState.getData);
+  isDataSelected = select(SelectedDataState.isDataSelected);
+}
 ```
 
-When a user checks or unchecks an item, `state.selectedIds` is updated, therefore the `isDataSelected` selector is recalculated and the list must re-render. Every time the list re-renders, the lazy selector `isDataSelected` is invoked `data.length` number of times. Because the lazy selector implementation has `O(n)` time complexity, this template renders with `O(n^2)` time complexity - **Ugh!**. One magnitude of `n` for the length of `data` , another for `state.selectedIds.length`.
+`isDataSelected` is a signal whose value is the filter function. In the template, `isDataSelected()` reads the signal and `(item.id)` invokes the returned function with the item's id.
+
+The lazy selector returned by `isDataSelected` uses [Array.includes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes) and has `O(n)` time complexity. When a user checks or unchecks an item, `state.selectedIds` is updated, therefore the `isDataSelected` selector is recalculated and the list must re-render. Every time the list re-renders, the lazy selector `isDataSelected` is invoked `data.length` number of times. Because the lazy selector implementation has `O(n)` time complexity, this template renders with `O(n^2)` time complexity - **Ugh!**. One magnitude of `n` for the length of `data`, another for `state.selectedIds.length`.
 
 Here's one way to improve performance in that example:
 
