@@ -1,4 +1,4 @@
-import { ExistingState, NoInfer, StateOperator } from './types';
+import { ExistingState, StateOperator } from './types';
 
 /**
  * Chains multiple state operators so they execute left-to-right, each

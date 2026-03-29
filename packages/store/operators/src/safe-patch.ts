@@ -1,5 +1,5 @@
 import { patch, type ɵPatchSpec } from './patch';
-import type { ExistingState, NoInfer, StateOperator } from './types';
+import type { ExistingState, StateOperator } from './types';
 
 /**
  * Like `patch`, but safe to call when the state slice is `null` or

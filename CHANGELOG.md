@@ -17,6 +17,7 @@ $ npm install @ngxs/store@dev
 - Fix(store): Skip state mutations when injector is destroyed mid-action [#2406](https://github.com/ngxs/store/pull/2406)
 - Fix(store): Warn when state is mutated after injector destruction [#2407](https://github.com/ngxs/store/pull/2407)
 - Fix(store): Report destroyed injector errors via `ErrorHandler` [#2409](https://github.com/ngxs/store/pull/2409)
+- Refactor(store): Replace custom `NoInfer` with TypeScript built-in [#2418](https://github.com/ngxs/store/pull/2418)
 - Fix(storage-plugin): Guard against environments that do not provide `ngServerMode` [#2400](https://github.com/ngxs/store/pull/2400)
 - Fix(storage-plugin): Improve dependency ranges for security fixes [#2404](https://github.com/ngxs/store/pull/2404)
 
