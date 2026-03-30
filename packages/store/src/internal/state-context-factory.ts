@@ -17,7 +17,7 @@ export class StateContextDestroyedError extends Error {
         ? `Attempted to interact with state after the injector has been destroyed. State path: "${path}". ` +
             `This can happen in server-side rendering when the app is destroyed before all async operations complete, ` +
             `e.g. inside a finalize() operator that runs after the injector has been destroyed.`
-        : ''
+        : path
     );
 
     Object.setPrototypeOf(this, StateContextDestroyedError.prototype);
