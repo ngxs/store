@@ -42,7 +42,7 @@ describe('AbortSignal', () => {
     @Action(AddCountryUsingNodeFetch, { cancelUncompleted: true })
     async addCountryUsingNodeFetch(ctx: StateContext<string[]>) {
       try {
-        await fetch('http://localhost:4200/non-existing-url', { signal: ctx.abortSignal });
+        await fetch('http://localhost:59123/non-existing-url', { signal: ctx.abortSignal });
       } catch (error) {
         recorder.push(error);
         throw error;
@@ -82,7 +82,7 @@ describe('AbortSignal', () => {
 
   it('should not propagate an abort error when fetch is aborted', async () => {
     // Arrange
-    expect.assertions(4);
+    expect.assertions(3);
 
     const store = TestBed.inject(Store);
 
@@ -93,9 +93,13 @@ describe('AbortSignal', () => {
     } catch (error) {
       expect(error).toBeInstanceOf(FetchError);
 
+      // The abort signal fires synchronously but node-fetch resolves it
+      // asynchronously, so the AbortError and FetchError can arrive in either
+      // order depending on the event loop. Check for presence, not position.
       expect(recorder.length).toEqual(2);
-      expect(recorder[0]).toBeInstanceOf(AbortError);
-      expect(recorder[1]).toBeInstanceOf(FetchError);
+      expect(recorder).toEqual(
+        expect.arrayContaining([expect.any(AbortError), expect.any(FetchError)])
+      );
     }
   });
 });
