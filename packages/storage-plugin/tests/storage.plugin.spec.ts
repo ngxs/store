@@ -281,6 +281,75 @@ describe('NgxsStoragePlugin', () => {
     expect(localStorage.getItem('counter')).toBe(JSON.stringify({ counts: 100, version: 2 }));
   });
 
+  it('should migrate global localstorage when stored state has no version (treats missing version as 0)', () => {
+    // Arrange — stored state has no version field at all
+    const data = JSON.stringify({ counter: { count: 100 } });
+    localStorage.setItem(ɵDEFAULT_STATE_KEY, data);
+
+    // Act
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([CounterState]),
+        NgxsStoragePluginModule.forRoot({
+          keys: '*',
+          migrations: [
+            {
+              version: 0,
+              versionKey: 'counter.version',
+              migrate: (state: any) => {
+                state.counter = {
+                  ...state.counter,
+                  version: 1
+                };
+                return state;
+              }
+            }
+          ]
+        })
+      ]
+    });
+
+    const store: Store = TestBed.inject(Store);
+    store.selectSnapshot(CounterState);
+
+    // Assert — migration ran and version was written
+    expect(localStorage.getItem(ɵDEFAULT_STATE_KEY)).toBe(
+      JSON.stringify({ counter: { count: 100, version: 1 } })
+    );
+  });
+
+  it('should migrate single localstorage when stored state has no version (treats missing version as 0)', () => {
+    // Arrange — stored state has no version field at all
+    const data = JSON.stringify({ count: 100 });
+    localStorage.setItem('counter', data);
+
+    // Act
+    TestBed.configureTestingModule({
+      imports: [
+        NgxsModule.forRoot([CounterState]),
+        NgxsStoragePluginModule.forRoot({
+          keys: ['counter'],
+          migrations: [
+            {
+              version: 0,
+              key: 'counter',
+              versionKey: 'version',
+              migrate: (state: any) => {
+                return { ...state, version: 1 };
+              }
+            }
+          ]
+        })
+      ]
+    });
+
+    const store: Store = TestBed.inject(Store);
+    store.selectSnapshot(CounterState);
+
+    // Assert — migration ran and version was written
+    expect(localStorage.getItem('counter')).toBe(JSON.stringify({ count: 100, version: 1 }));
+  });
+
   it('should correct get data from session storage', () => {
     // Arrange
     sessionStorage.setItem(ɵDEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));

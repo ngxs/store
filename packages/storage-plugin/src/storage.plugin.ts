@@ -86,8 +86,8 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           }
 
           this._options.migrations?.forEach(strategy => {
-            const versionMatch =
-              strategy.version === getValue(storedValue, strategy.versionKey || 'version');
+            const storedVersion = getValue(storedValue, strategy.versionKey || 'version') ?? 0;
+            const versionMatch = strategy.version === storedVersion;
             const keyMatch =
               (!strategy.key && this._allStatesPersisted) || strategy.key === key;
             if (versionMatch && keyMatch) {
