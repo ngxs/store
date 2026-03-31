@@ -40,6 +40,7 @@ export function updateItems<T>(
     }
 
     const clone = existing.slice();
+    let updated = false;
     for (let index = 0; index < clone.length; index++) {
       let value = clone[index];
       if (selector(value)) {
@@ -50,8 +51,11 @@ export function updateItems<T>(
           value = theOperatorOrValue;
         }
         clone[index] = value;
+        updated = true;
       }
     }
-    return clone;
+    // Return the original reference when nothing was updated to avoid
+    // invalidating memoized selectors on a no-op call.
+    return updated ? clone : existing;
   };
 }
