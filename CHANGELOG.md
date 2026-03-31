@@ -20,6 +20,7 @@ $ npm install @ngxs/store@dev
 - Fix(store): Include state path in `StateContextDestroyedError` production message [#2421](https://github.com/ngxs/store/pull/2421)
 - Fix(storage-plugin): Guard against environments that do not provide `ngServerMode` [#2400](https://github.com/ngxs/store/pull/2400)
 - Fix(storage-plugin): Improve dependency ranges for security fixes [#2404](https://github.com/ngxs/store/pull/2404)
+- Fix(storage-plugin): Treat missing version key as 0 when matching migrations [#2422](https://github.com/ngxs/store/pull/2422)
 
 ### 21.0.0 2025-12-17
 
