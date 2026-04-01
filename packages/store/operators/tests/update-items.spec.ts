@@ -27,7 +27,7 @@ describe('update items', () => {
   });
 
   describe('when no items match the predicate', () => {
-    it('returns a new array with the same content', () => {
+    it('returns the original array reference', () => {
       // Arrange
       const original = { a: [1, 2, 3] };
 
@@ -38,7 +38,7 @@ describe('update items', () => {
 
       // Assert
       expect(newValue['a']).toEqual([1, 2, 3]);
-      expect(newValue['a']).not.toBe(original.a);
+      expect(newValue['a']).toBe(original.a);
     });
   });
 

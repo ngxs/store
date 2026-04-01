@@ -6,10 +6,9 @@ import { isStateOperator, type Predicate } from './utils';
  * Unlike `updateItem`, which stops at the first match, this operator walks
  * the entire array so all qualifying elements are updated in one pass.
  *
- * Always returns a new array reference, even when no elements matched or the
- * values produced by the operator are identical to the originals. Use
- * `updateItem` instead when only a single element needs updating and
- * referential equality on no-op updates matters.
+ * Returns the original array reference unchanged when no elements match the
+ * predicate, preserving referential equality for memoized selectors. A new
+ * array is returned only when at least one element was actually updated.
  *
  * @param selector - Predicate used to decide which elements to update.
  * @param operatorOrValue - Replacement value, or a state operator applied
