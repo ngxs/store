@@ -15,11 +15,13 @@ import { withNgxsPreboot } from './standalone-features/preboot';
  */
 export function withNgxsPendingTasks() {
   return withNgxsPreboot(() => {
+    // We silently return instead of logging a warning when not in server mode,
+    // as `withNgxsPendingTasks` may legitimately be included in a shared
+    // `provideStore` configuration used by both browser and server apps.
+    // In the browser, data hydrated from the transfer state is consumed
+    // synchronously, so there is no need to contribute to app stability.
     if (typeof ngServerMode === 'undefined' || !ngServerMode) {
-      console.warn(
-        '[withNgxsPendingTasks] This setup is recommended for server-side rendering only. ' +
-          'Using it in the browser may lead to redundant change detection cycles and degraded performance.'
-      );
+      return;
     }
 
     const actions$ = inject(Actions);
