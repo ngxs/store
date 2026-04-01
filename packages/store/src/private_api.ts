@@ -3,4 +3,7 @@ export { NgxsFeatureModule as ɵNgxsFeatureModule } from './modules/ngxs-feature
 
 export * from './selectors/private_api';
 
-export { ɵprovideNgxsInternalStateTokens } from './internal/provide-internal-tokens';
+export {
+  ɵprovideNgxsInternalStateTokens,
+  ɵgetTypedNgxsStateFactory
+} from './internal/provide-internal-tokens';
