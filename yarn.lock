@@ -334,10 +334,10 @@
     tslib "^2.3.0"
     yargs "^18.0.0"
 
-"@angular/compiler@20.3.2":
-  version "20.3.2"
-  resolved "https://registry.npmjs.org/@angular/compiler/-/compiler-20.3.2.tgz#0e236145ba9369b16c3dc371df7462c5cc7d96cc"
-  integrity sha512-5fSzkPmRomZ9H43c82FJWLwdOi7MICMimP1y1oYJZcUh3jYRhXUrQvD0jifdRVkkgKNjaZYlMr0NkrYQFgFong==
+"@angular/compiler@20.3.16":
+  version "20.3.16"
+  resolved "https://registry.npmjs.org/@angular/compiler/-/compiler-20.3.16.tgz#9970a72d4c7dac5b5bf1b2e9292e55eb22046623"
+  integrity sha512-Pt9Ms9GwTThgzdxWBwMfN8cH1JEtQ2DK5dc2yxYtPSaD+WKmG9AVL1PrzIYQEbaKcWk2jxASUHpEWSlNiwo8uw==
   dependencies:
     tslib "^2.3.0"
 
