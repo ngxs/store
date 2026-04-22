@@ -72,6 +72,7 @@
   - [Unit Testing](recipes/unit-testing.md)
   - [RxAngular Integration](recipes/intregration-with-rxangular.md)
   - [Zoneless Server-Side Rendering](recipes/zoneless-ssr.md)
+  - [Lazy Loading Action Handlers](recipes/lazy-loading-action-handlers.md)
 
 ## COMMUNITY & LABS
 
