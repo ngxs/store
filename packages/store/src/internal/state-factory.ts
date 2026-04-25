@@ -1,5 +1,4 @@
 import { DestroyRef, Injectable, Injector, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ɵmemoize,
   ɵMETA_KEY,
@@ -13,7 +12,17 @@ import {
   ɵNgxsActionRegistry
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
-import { forkJoin, catchError, defaultIfEmpty, map, Observable, of } from 'rxjs';
+import {
+  forkJoin,
+  catchError,
+  defaultIfEmpty,
+  map,
+  Observable,
+  of,
+  type Unsubscribable,
+  mergeMap,
+  EMPTY
+} from 'rxjs';
 
 import { NgxsConfig, StateContext } from '../symbols';
 import {
@@ -71,7 +80,7 @@ export class StateFactory {
   private readonly _initialState = inject(ɵINITIAL_STATE_TOKEN, { optional: true });
   private readonly _actionRegistry = inject(ɵNgxsActionRegistry);
   private readonly _propGetter = inject(ɵPROP_GETTER);
-  private readonly _destroyRef = inject(DestroyRef);
+  private _actionsSubscription: Unsubscribable | null = null;
 
   private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler = null!;
 
@@ -117,10 +126,11 @@ export class StateFactory {
   });
 
   constructor() {
-    this._destroyRef.onDestroy(() => {
+    inject(DestroyRef).onDestroy(() => {
       // Clear state references to help the garbage collector in SSR
       // environments under high load, preventing memory leaks.
       this._states = [];
+      this._actionsSubscription?.unsubscribe();
     });
   }
 
@@ -191,29 +201,35 @@ export class StateFactory {
   }
 
   connectActionHandlers(): void {
-    this._actions.subscribe(ctx => {
-      if (ctx.status !== ActionStatus.Dispatched) return;
-      const action = ctx.action;
-      this.invokeActions(action)
-        .pipe(
-          map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
-          defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
-          catchError(error => {
-            const ngxsUnhandledErrorHandler = (this._ngxsUnhandledErrorHandler ||=
-              this._injector.get(NgxsUnhandledErrorHandler));
-            const handleableError = assignUnhandledCallback(error, () =>
-              ngxsUnhandledErrorHandler.handleError(error, { action })
-            );
-            return of(<ActionContext>{
-              action,
-              status: ActionStatus.Errored,
-              error: handleableError
-            });
-          }),
-          takeUntilDestroyed(this._destroyRef)
-        )
-        .subscribe(ctx => this._actionResults.next(ctx));
-    });
+    this._actionsSubscription = this._actions
+      .pipe(
+        mergeMap(ctx => {
+          if (ctx.status !== ActionStatus.Dispatched) {
+            return EMPTY;
+          }
+
+          const action = ctx.action;
+          return this.invokeActions(action).pipe(
+            map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
+            defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
+            catchError(error => {
+              const ngxsUnhandledErrorHandler = (this._ngxsUnhandledErrorHandler ||=
+                this._injector.get(NgxsUnhandledErrorHandler));
+              const handleableError = assignUnhandledCallback(error, () =>
+                ngxsUnhandledErrorHandler.handleError(error, { action })
+              );
+              return of(<ActionContext>{
+                action,
+                status: ActionStatus.Errored,
+                error: handleableError
+              });
+            })
+          );
+        })
+      )
+      .subscribe(ctx => {
+        this._actionResults.next(ctx);
+      });
   }
 
   /**
