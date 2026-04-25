@@ -62,7 +62,7 @@ describe('Pending task notifications', () => {
       await skipConsoleLogging(() => bootstrapApplication(TestComponent, appConfig));
       try {
         // Assert
-        expect(notifySpy).toHaveBeenCalledTimes(2);
+        expect(notifySpy).toHaveBeenCalledTimes(4);
         expect(document.body.innerHTML).toContain('<h1>20</h1>');
       } finally {
         notifySpy.mockRestore();

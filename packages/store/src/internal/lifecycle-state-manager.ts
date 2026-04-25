@@ -1,7 +1,7 @@
-import { DestroyRef, inject, Injectable } from '@angular/core';
-import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
+import { DestroyRef, effect, inject, Injectable, Injector } from '@angular/core';
+import { ɵNGXS_APP_BOOTSTRAP_STATE } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
-import { EMPTY, mergeMap, skip, startWith } from 'rxjs';
+import { skip, startWith } from 'rxjs';
 
 import { Store } from '../store';
 import { StateContextFactory } from './state-context-factory';
@@ -12,10 +12,11 @@ import { getInvalidInitializationOrderMessage } from '../configs/messages.config
 
 @Injectable({ providedIn: 'root' })
 export class LifecycleStateManager {
+  private _injector = inject(Injector);
   private _store = inject(Store);
   private _internalStateOperations = inject(InternalStateOperations);
   private _stateContextFactory = inject(StateContextFactory);
-  private _appBootstrappedState = inject(ɵNgxsAppBootstrappedState);
+  private _appBootstrapState = inject(ɵNGXS_APP_BOOTSTRAP_STATE);
   private _abortController = new AbortController();
 
   private _initStateHasBeenDispatched?: boolean;
@@ -48,26 +49,25 @@ export class LifecycleStateManager {
 
     // It does not need to unsubscribe because it is completed when the
     // root injector is destroyed.
-    this._internalStateOperations
-      .getRootStateOperations()
-      .dispatch(action)
-      .pipe(
-        mergeMap(() => {
-          // If no states are provided, we safely complete the stream
-          // and do not proceed further.
-          if (!results) {
-            return EMPTY;
-          }
+    const rotoStateOperations = this._internalStateOperations.getRootStateOperations();
 
-          this._invokeInitOnStates(results!.states);
-          return this._appBootstrappedState;
-        })
-      )
-      .subscribe(appBootstrapped => {
-        if (appBootstrapped) {
-          this._invokeBootstrapOnStates(results!.states);
-        }
-      });
+    rotoStateOperations.dispatch(action).subscribe(() => {
+      // If no states are provided, we safely complete the stream
+      // and do not proceed further.
+      if (!results) {
+        return;
+      }
+
+      this._invokeInitOnStates(results.states);
+
+      const options = { injector: this._injector };
+      const ref = effect(() => {
+        const appBootstrapped = this._appBootstrapState();
+        if (!appBootstrapped) return;
+        ref.destroy();
+        this._invokeBootstrapOnStates(results.states);
+      }, options);
+    });
   }
 
   private _invokeInitOnStates(mappedStores: MappedStore[]): void {
