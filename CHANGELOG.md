@@ -22,6 +22,7 @@ $ npm install @ngxs/store@dev
 - Fix(store): Return original reference from `updateItems` when no elements match [#2424](https://github.com/ngxs/store/pull/2424)
 - Fix(store): Silence `console.warn` in `withNgxsPendingTasks` for browser [#2425](https://github.com/ngxs/store/pull/2425)
 - Performance(store): Reduce operator allocations on action dispatch hot path [#2435](https://github.com/ngxs/store/pull/2435)
+- Performance(store): Replace `map/defaultIfEmpty/catchError` with manual `Observable` in `connectActionHandlers` [#2437](https://github.com/ngxs/store/pull/2435)
 - Fix(storage-plugin): Guard against environments that do not provide `ngServerMode` [#2400](https://github.com/ngxs/store/pull/2400)
 - Fix(storage-plugin): Improve dependency ranges for security fixes [#2404](https://github.com/ngxs/store/pull/2404)
 - Fix(storage-plugin): Treat missing version key as 0 when matching migrations [#2422](https://github.com/ngxs/store/pull/2422)
