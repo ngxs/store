@@ -209,9 +209,20 @@ export class StateFactory {
               error: error => {
                 const ngxsUnhandledErrorHandler = (this._ngxsUnhandledErrorHandler ||=
                   this._injector.get(NgxsUnhandledErrorHandler));
-                const handleableError = assignUnhandledCallback(error, () =>
-                  ngxsUnhandledErrorHandler.handleError(error, { action })
-                );
+                function callback() {
+                  ngxsUnhandledErrorHandler.handleError(error, { action });
+                }
+                // An arrow function here would share the `[[Context]]` of the enclosing `error =>`
+                // arrow function, which captures `this` (StateFactory), causing the error object to
+                // retain the entire instance. A named function declaration creates its own context and
+                // V8 only captures variables it actually references — `ngxsUnhandledErrorHandler`,
+                // `error`, `action` — so `this` is never captured. `.bind(null)` goes one step further:
+                // a JSBoundFunction has no `[[Context]]` slot at all, fully severing the retention chain.
+                // This matters because the callback is stored as a value in the
+                // `ɵɵunhandledRxjsErrorCallbacks` WeakMap, keyed by the error object. The error may be
+                // held by third-party code (e.g. error trackers, logging) for an indeterminate duration,
+                // and we have no control over when that key is released.
+                const handleableError = assignUnhandledCallback(error, callback.bind(null));
                 subscriber.next(<ActionContext>{
                   action,
                   status: ActionStatus.Errored,
