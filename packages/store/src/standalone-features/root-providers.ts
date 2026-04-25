@@ -1,5 +1,5 @@
 import { APP_BOOTSTRAP_LISTENER, Provider, inject } from '@angular/core';
-import { ɵStateClass, ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
+import { ɵStateClass, ɵNGXS_APP_BOOTSTRAP_STATE } from '@ngxs/store/internals';
 
 import { NgxsModuleOptions, ROOT_STATE_TOKEN, NGXS_OPTIONS } from '../symbols';
 
@@ -20,8 +20,8 @@ export function getRootProviders(
     {
       provide: APP_BOOTSTRAP_LISTENER,
       useFactory: () => {
-        const appBootstrappedState = inject(ɵNgxsAppBootstrappedState);
-        return () => appBootstrappedState.bootstrap();
+        const bootstrapState = inject(ɵNGXS_APP_BOOTSTRAP_STATE);
+        return () => bootstrapState.set(true);
       },
       multi: true
     },
