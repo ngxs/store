@@ -1,4 +1,5 @@
 import { DestroyRef, Injectable, Injector, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ɵmemoize,
   ɵMETA_KEY,
@@ -12,17 +13,7 @@ import {
   ɵNgxsActionRegistry
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
-import {
-  forkJoin,
-  Subscription,
-  catchError,
-  defaultIfEmpty,
-  filter,
-  map,
-  mergeMap,
-  Observable,
-  of
-} from 'rxjs';
+import { forkJoin, catchError, defaultIfEmpty, map, Observable, of } from 'rxjs';
 
 import { NgxsConfig, StateContext } from '../symbols';
 import {
@@ -80,8 +71,7 @@ export class StateFactory {
   private readonly _initialState = inject(ɵINITIAL_STATE_TOKEN, { optional: true });
   private readonly _actionRegistry = inject(ɵNgxsActionRegistry);
   private readonly _propGetter = inject(ɵPROP_GETTER);
-
-  private _actionsSubscription: Subscription | null = null;
+  private readonly _destroyRef = inject(DestroyRef);
 
   private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler = null!;
 
@@ -127,11 +117,10 @@ export class StateFactory {
   });
 
   constructor() {
-    inject(DestroyRef).onDestroy(() => {
+    this._destroyRef.onDestroy(() => {
       // Clear state references to help the garbage collector in SSR
       // environments under high load, preventing memory leaks.
       this._states = [];
-      this._actionsSubscription?.unsubscribe();
     });
   }
 
@@ -202,36 +191,35 @@ export class StateFactory {
   }
 
   connectActionHandlers(): void {
-    this._actionsSubscription = this._actions
-      .pipe(
-        filter((ctx: ActionContext) => ctx.status === ActionStatus.Dispatched),
-        mergeMap(ctx => {
-          const action: any = ctx.action;
-          return this.invokeActions(action).pipe(
-            map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
-            defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
-            catchError(error => {
-              const ngxsUnhandledErrorHandler = (this._ngxsUnhandledErrorHandler ||=
-                this._injector.get(NgxsUnhandledErrorHandler));
-              const handleableError = assignUnhandledCallback(error, () =>
-                ngxsUnhandledErrorHandler.handleError(error, { action })
-              );
-              return of(<ActionContext>{
-                action,
-                status: ActionStatus.Errored,
-                error: handleableError
-              });
-            })
-          );
-        })
-      )
-      .subscribe(ctx => this._actionResults.next(ctx));
+    this._actions.subscribe(ctx => {
+      if (ctx.status !== ActionStatus.Dispatched) return;
+      const action = ctx.action;
+      this.invokeActions(action)
+        .pipe(
+          map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
+          defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
+          catchError(error => {
+            const ngxsUnhandledErrorHandler = (this._ngxsUnhandledErrorHandler ||=
+              this._injector.get(NgxsUnhandledErrorHandler));
+            const handleableError = assignUnhandledCallback(error, () =>
+              ngxsUnhandledErrorHandler.handleError(error, { action })
+            );
+            return of(<ActionContext>{
+              action,
+              status: ActionStatus.Errored,
+              error: handleableError
+            });
+          }),
+          takeUntilDestroyed(this._destroyRef)
+        )
+        .subscribe(ctx => this._actionResults.next(ctx));
+    });
   }
 
   /**
    * Invoke actions on the states.
    */
-  private invokeActions(action: any): Observable<unknown[]> {
+  private invokeActions(action: any): Observable<unknown> {
     const type = getActionTypeFromInstance(action)!;
     const results: Observable<unknown>[] = [];
 
@@ -267,11 +255,7 @@ export class StateFactory {
       unhandledActionsLogger?.warn(action);
     }
 
-    if (!results.length) {
-      results.push(of(undefined));
-    }
-
-    return forkJoin(results);
+    return results.length > 0 ? forkJoin(results) : of(undefined);
   }
 
   private addToStatesMap(stateClasses: ɵStateClassInternal[]): {

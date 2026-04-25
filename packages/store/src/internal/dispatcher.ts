@@ -6,17 +6,7 @@ import {
   NgZone,
   runInInjectionContext
 } from '@angular/core';
-import {
-  EMPTY,
-  forkJoin,
-  Observable,
-  filter,
-  map,
-  mergeMap,
-  shareReplay,
-  take,
-  of
-} from 'rxjs';
+import { EMPTY, forkJoin, Observable, map, mergeMap, shareReplay, of } from 'rxjs';
 
 import { getActionTypeFromInstance } from '@ngxs/store/plugins';
 import { ɵPlainObject, ɵStateStream } from '@ngxs/store/internals';
@@ -94,13 +84,23 @@ export class InternalDispatcher {
   }
 
   private getActionResultStream(action: any): Observable<ActionContext> {
-    return this._actionResults.pipe(
-      filter(
-        (ctx: ActionContext) => ctx.action === action && ctx.status !== ActionStatus.Dispatched
-      ),
-      take(1),
-      shareReplay()
-    );
+    // Hot path: avoid allocating `filter` + `take(1)` operator subscriber wrappers on every
+    // dispatch. Instead, subscribe directly and complete inline — functionally identical but
+    // without the intermediate operator chain objects.
+    // `subscriber.complete()` triggers the outer subscription's teardown synchronously, which
+    // calls `.unsubscribe()` on the inner `_actionResults` subscription (the returned
+    // TeardownLogic), so there is no leak even though unsubscription fires mid-callback.
+    return new Observable<ActionContext>(subscriber => {
+      return this._actionResults.subscribe({
+        next: ctx => {
+          if (ctx.action === action && ctx.status !== ActionStatus.Dispatched) {
+            subscriber.next(ctx);
+            subscriber.complete();
+          }
+        },
+        complete: () => !subscriber.closed && subscriber.complete()
+      });
+    }).pipe(shareReplay());
   }
 
   private createDispatchObservable(
