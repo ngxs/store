@@ -12,17 +12,7 @@ import {
   ɵNgxsActionRegistry
 } from '@ngxs/store/internals';
 import { getActionTypeFromInstance, getValue, setValue } from '@ngxs/store/plugins';
-import {
-  forkJoin,
-  catchError,
-  defaultIfEmpty,
-  map,
-  Observable,
-  of,
-  type Unsubscribable,
-  mergeMap,
-  EMPTY
-} from 'rxjs';
+import { forkJoin, Observable, of, type Unsubscribable, mergeMap, EMPTY } from 'rxjs';
 
 import { NgxsConfig, StateContext } from '../symbols';
 import {
@@ -209,20 +199,31 @@ export class StateFactory {
           }
 
           const action = ctx.action;
-          return this.invokeActions(action).pipe(
-            map(() => <ActionContext>{ action, status: ActionStatus.Successful }),
-            defaultIfEmpty(<ActionContext>{ action, status: ActionStatus.Canceled }),
-            catchError(error => {
-              const ngxsUnhandledErrorHandler = (this._ngxsUnhandledErrorHandler ||=
-                this._injector.get(NgxsUnhandledErrorHandler));
-              const handleableError = assignUnhandledCallback(error, () =>
-                ngxsUnhandledErrorHandler.handleError(error, { action })
-              );
-              return of(<ActionContext>{
-                action,
-                status: ActionStatus.Errored,
-                error: handleableError
-              });
+
+          return new Observable<ActionContext>(subscriber =>
+            this.invokeActions(action).subscribe({
+              next: () => {
+                subscriber.next(<ActionContext>{ action, status: ActionStatus.Successful });
+                subscriber.complete();
+              },
+              error: error => {
+                const ngxsUnhandledErrorHandler = (this._ngxsUnhandledErrorHandler ||=
+                  this._injector.get(NgxsUnhandledErrorHandler));
+                const handleableError = assignUnhandledCallback(error, () =>
+                  ngxsUnhandledErrorHandler.handleError(error, { action })
+                );
+                subscriber.next(<ActionContext>{
+                  action,
+                  status: ActionStatus.Errored,
+                  error: handleableError
+                });
+                subscriber.complete();
+              },
+              complete: () => {
+                if (subscriber.closed) return;
+                subscriber.next(<ActionContext>{ action, status: ActionStatus.Canceled });
+                subscriber.complete();
+              }
             })
           );
         })
