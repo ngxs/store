@@ -1,5 +1,5 @@
 import { ApplicationRef, ComponentRef, NgModuleRef } from '@angular/core';
-import { ɵInitialState, ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
+import { ɵInitialState, ɵNGXS_APP_BOOTSTRAP_STATE } from '@ngxs/store/internals';
 
 import { HmrStorage } from './internal/hmr-storage';
 import {
@@ -32,7 +32,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
   }
 
   private get appBootstrappedState() {
-    return this.ngModule.injector.get(ɵNgxsAppBootstrappedState);
+    return this.ngModule.injector.get(ɵNGXS_APP_BOOTSTRAP_STATE);
   }
 
   public async hmrModule(
@@ -70,6 +70,7 @@ export class HmrManager<T extends Partial<NgxsHmrLifeCycle<S>>, S = NgxsHmrSnaps
 
   private createLifecycle(): HmrLifecycle<T, S> {
     return new HmrLifecycle(
+      this.ngModule.injector,
       this.ngModule.instance,
       this.appBootstrappedState,
       this.storage,

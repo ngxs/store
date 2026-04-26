@@ -1,4 +1,4 @@
-import { ɵNgxsAppBootstrappedState } from '@ngxs/store/internals';
+import { effect, type Injector, type Signal } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { StateContext } from '@ngxs/store';
 
@@ -10,8 +10,9 @@ import { HmrStorage } from './hmr-storage';
 
 export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
   constructor(
+    private injector: Injector,
     private ngAppModule: T,
-    private appBootstrappedState: ɵNgxsAppBootstrappedState,
+    private appBootstrappedState: Signal<boolean>,
     private storage: HmrStorage<S>,
     private context: HmrStateContextFactory<T, S>,
     private options: HmrOptionBuilder
@@ -54,21 +55,25 @@ export class HmrLifecycle<T extends Partial<NgxsHmrLifeCycle<S>>, S> {
 
     const state$: Observable<any> = this.context.store.select(state => state);
 
-    this.appBootstrappedState.subscribe(bootstrapped => {
-      if (!bootstrapped) return;
-      let eventId: number;
-      const storeEventId: Subscription = state$.subscribe(() => {
-        // setTimeout used for zone detection after set hmr state
-        clearInterval(eventId);
-        eventId = window.setTimeout(() => {
-          // close check on the message queue
-          storeEventId.unsubscribe();
-          // if events are no longer running on the call stack,
-          // then we can update the state
-          callback(this.context.createStateContext(), this.storage.snapshot as Partial<S>);
-        }, this.options.deferTime);
-      });
-    });
+    effect(
+      () => {
+        const bootstrapped = this.appBootstrappedState();
+        if (!bootstrapped) return;
+        let eventId: number;
+        const storeEventId: Subscription = state$.subscribe(() => {
+          // setTimeout used for zone detection after set hmr state
+          clearInterval(eventId);
+          eventId = window.setTimeout(() => {
+            // close check on the message queue
+            storeEventId.unsubscribe();
+            // if events are no longer running on the call stack,
+            // then we can update the state
+            callback(this.context.createStateContext(), this.storage.snapshot as Partial<S>);
+          }, this.options.deferTime);
+        });
+      },
+      { injector: this.injector }
+    );
   }
 
   private detectIvyWithJIT(): void {
