@@ -1,7 +1,7 @@
-import { DestroyRef, effect, inject, Injectable, Injector } from '@angular/core';
+import { DestroyRef, inject, Injectable, Injector } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { ɵNGXS_APP_BOOTSTRAP_STATE } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
-import { skip, startWith } from 'rxjs';
 
 import { Store } from '../store';
 import { StateContextFactory } from './state-context-factory';
@@ -12,6 +12,7 @@ import { getInvalidInitializationOrderMessage } from '../configs/messages.config
 
 @Injectable({ providedIn: 'root' })
 export class LifecycleStateManager {
+  private _destroyRef = inject(DestroyRef);
   private _injector = inject(Injector);
   private _store = inject(Store);
   private _internalStateOperations = inject(InternalStateOperations);
@@ -49,9 +50,9 @@ export class LifecycleStateManager {
 
     // It does not need to unsubscribe because it is completed when the
     // root injector is destroyed.
-    const rotoStateOperations = this._internalStateOperations.getRootStateOperations();
+    const rootStateOperations = this._internalStateOperations.getRootStateOperations();
 
-    rotoStateOperations.dispatch(action).subscribe(() => {
+    rootStateOperations.dispatch(action).subscribe(() => {
       // If no states are provided, we safely complete the stream
       // and do not proceed further.
       if (!results) {
@@ -61,12 +62,12 @@ export class LifecycleStateManager {
       this._invokeInitOnStates(results.states);
 
       const options = { injector: this._injector };
-      const ref = effect(() => {
-        const appBootstrapped = this._appBootstrapState();
-        if (!appBootstrapped) return;
-        ref.destroy();
-        this._invokeBootstrapOnStates(results.states);
-      }, options);
+      toObservable(this._appBootstrapState, options)
+        .pipe(takeUntilDestroyed(this._destroyRef))
+        .subscribe(appBootstrapped => {
+          if (!appBootstrapped) return;
+          this._invokeBootstrapOnStates(results.states);
+        });
     });
   }
 
@@ -82,12 +83,6 @@ export class LifecycleStateManager {
         // root injector is destroyed.
         this._store
           .select(state => getValue(state, mappedStore.path))
-          .pipe(
-            // Ensure initial state is captured
-            startWith(undefined),
-            // `skip` is using `filter` internally.
-            skip(1)
-          )
           .subscribe(currentValue => {
             const change = new NgxsSimpleChange(
               previousValue,
