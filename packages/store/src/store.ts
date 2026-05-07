@@ -109,6 +109,22 @@ export class Store {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
     if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       return computed<T>(() => selectorFn(this._stateStream.state()), {
+        equal: (a, b) => {
+          if (!Object.is(a, b)) {
+            try {
+              if (JSON.stringify(a) === JSON.stringify(b)) {
+                console.error(
+                  'The selector returned the same value shape as it was before triggering signal recomputation. Selector function: ',
+                  selectorFn
+                );
+              }
+            } catch {
+              // Swallow silently.
+            }
+          }
+          return false;
+        },
+
         debugName: 'NGXS selectSignal'
       });
     } else {
