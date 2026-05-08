@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal } from '@angular/core';
+import { computed, inject, Injectable, Injector, Signal } from '@angular/core';
 import {
   type Subscription,
   catchError,
@@ -18,6 +18,7 @@ import { NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { TypedSelector } from './selectors';
 import { InternalNgxsExecutionStrategy } from './execution/execution-strategy';
+import { NGXS_DEVELOPMENT_OPTIONS } from './dev-features/symbols';
 
 // We need to check whether the provided `T` type extends an array in order to
 // apply the `NonNullable[]` type to its elements. This is because, for
@@ -27,6 +28,7 @@ type ActionOrArrayOfActions<T> = T extends (infer U)[] ? NonNullable<U>[] : NonN
 
 @Injectable({ providedIn: 'root' })
 export class Store {
+  private _injector?: Injector;
   private _stateStream = inject(ɵStateStream);
   private _internalStateOperations = inject(InternalStateOperations);
   private _config = inject(NgxsConfig);
@@ -45,6 +47,10 @@ export class Store {
 
   constructor() {
     this.initStateStream();
+
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+      this._injector = inject(Injector);
+    }
   }
 
   /**
@@ -110,9 +116,13 @@ export class Store {
     if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       return computed<T>(() => selectorFn(this._stateStream.state()), {
         equal: (a, b) => {
-          if (!Object.is(a, b)) {
+          const warnOption = this._injector?.get(
+            NGXS_DEVELOPMENT_OPTIONS,
+            null
+          )?.warnOnNewReferenceWithIdenticalValue;
+          if (warnOption && !Object.is(a, b)) {
             try {
-              if (JSON.stringify(a) === JSON.stringify(b)) {
+              if (warnOption.isEqual(a, b)) {
                 console.error(
                   'The selector returned the same value shape as it was before triggering signal recomputation. Selector function: ',
                   selector

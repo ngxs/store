@@ -3,6 +3,9 @@ import { InjectionToken } from '@angular/core';
 import { ActionType } from '../actions/symbols';
 
 export interface NgxsDevelopmentOptions {
+  warnOnNewReferenceWithIdenticalValue?: {
+    isEqual: (a: unknown, b: unknown) => boolean;
+  };
   // This allows setting only `true` because there's no reason to set `false`.
   // Developers may just skip importing the development module at all.
   warnOnUnhandledActions:
@@ -16,7 +19,6 @@ export const NGXS_DEVELOPMENT_OPTIONS =
   /* @__PURE__ */ new InjectionToken<NgxsDevelopmentOptions>(
     typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_DEVELOPMENT_OPTIONS' : '',
     {
-      providedIn: 'root',
       factory: () => ({ warnOnUnhandledActions: true })
     }
   );
