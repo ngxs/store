@@ -115,7 +115,7 @@ export class Store {
               if (JSON.stringify(a) === JSON.stringify(b)) {
                 console.error(
                   'The selector returned the same value shape as it was before triggering signal recomputation. Selector function: ',
-                  selectorFn
+                  selector
                 );
               }
             } catch {
