@@ -132,7 +132,7 @@ export class Store {
               // Swallow silently.
             }
           }
-          return false;
+          return a === b;
         },
 
         debugName: 'NGXS selectSignal'
