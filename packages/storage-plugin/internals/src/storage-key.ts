@@ -1,8 +1,8 @@
 import { InjectionToken, Type } from '@angular/core';
-import { StateToken } from '@ngxs/store';
+import { StateToken } from '@ngxs/store/internals';
 import { ɵhasOwnProperty, ɵMETA_OPTIONS_KEY, ɵStateClass } from '@ngxs/store/internals';
 
-import { StorageEngine } from './symbols';
+import { StorageEngine } from './storage-engine';
 
 /** This enables the user to provide a storage engine per individual key. */
 export interface KeyWithExplicitEngine {

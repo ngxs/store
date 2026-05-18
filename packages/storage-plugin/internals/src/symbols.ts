@@ -102,12 +102,3 @@ export const ɵNGXS_STORAGE_PLUGIN_OPTIONS =
   new InjectionToken<ɵNgxsTransformedStoragePluginOptions>(
     typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_STORAGE_PLUGIN_OPTIONS' : ''
   );
-
-export const STORAGE_ENGINE = new InjectionToken<StorageEngine>(
-  typeof ngDevMode !== 'undefined' && ngDevMode ? 'STORAGE_ENGINE' : ''
-);
-
-export interface StorageEngine {
-  getItem(key: string): any;
-  setItem(key: string, value: any): void;
-}
