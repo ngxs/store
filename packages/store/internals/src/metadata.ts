@@ -1,13 +1,33 @@
 import { ɵdefineProperty, ɵhasOwnProperty } from './object-utils';
-import { StateToken } from './state-token';
 import {
   ɵMETA_KEY,
   ɵSELECTOR_META_KEY,
   ɵMetaDataModel,
   ɵStateClassInternal,
   ɵSelectorMetaDataModel,
-  ɵRuntimeSelectorContext
+  ɵRuntimeSelectorContext,
+  ɵTokenName,
+  ɵSelectFromRootState
 } from './symbols';
+
+export class StateToken<T = void> {
+  constructor(private readonly _name: ɵTokenName<T>) {
+    const selectorMetadata = ɵensureSelectorMetadata(<any>this);
+    selectorMetadata.makeRootSelector = (
+      runtimeContext: ɵRuntimeSelectorContext
+    ): ɵSelectFromRootState => {
+      return runtimeContext.getStateGetter(this._name);
+    };
+  }
+
+  getName(): string {
+    return this._name;
+  }
+
+  toString(): string {
+    return `StateToken[${this._name}]`;
+  }
+}
 
 /**
  * Ensures metadata is attached to the class and returns it.
