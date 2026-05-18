@@ -105,10 +105,12 @@
     "integration:ng20": "cd integrations/hello-world-ng20 && yarn test:integration",
     "version:integration": "npm-run-all build version:integration:*",
     "version:integration:ng20": "cd integrations/hello-world-ng20 && yarn install --force && cd ../..",
-    "// - INTEGRATION END -": "----------",
-    "tutorials:install": "yarn --cwd tutorials/create-app/ install --frozen-lockfile --non-interactive"
+    "// - INTEGRATION END -": "----------"
   },
   "private": true,
+  "workspaces": [
+    "tutorials/create-app"
+  ],
   "devDependencies": {
     "@angular-devkit/build-angular": "20.3.3",
     "@angular-devkit/core": "20.3.3",
