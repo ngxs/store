@@ -1,4 +1,5 @@
 import { ɵdefineProperty, ɵhasOwnProperty } from './object-utils';
+import { StateToken } from './state-token';
 import {
   ɵMETA_KEY,
   ɵSELECTOR_META_KEY,
@@ -17,6 +18,7 @@ export function ɵensureStoreMetadata(target: ɵStateClassInternal): ɵMetaDataM
   if (!ɵhasOwnProperty(target, ɵMETA_KEY)) {
     const defaultMetadata: ɵMetaDataModel = {
       name: null as unknown as string,
+      token: null as unknown as StateToken<unknown>,
       actions: {},
       defaults: {},
       path: null,
