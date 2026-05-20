@@ -7,12 +7,19 @@ import { StorageEngine } from './symbols';
 /** This enables the user to provide a storage engine per individual key. */
 export interface KeyWithExplicitEngine {
   key: string | ɵStateClass | StateToken<any>;
-  engine: Type<StorageEngine> | InjectionToken<StorageEngine>;
+  engine: Type<StorageEngine> | InjectionToken<StorageEngine> | (() => StorageEngine);
 }
 
 /** Determines whether the provided key has the following structure. */
 export function ɵisKeyWithExplicitEngine(key: any): key is KeyWithExplicitEngine {
   return !!key?.engine;
+}
+
+/** Determines whether the engine is a factory function rather than a class or InjectionToken. */
+export function ɵisEngineFactory(
+  engine: Type<StorageEngine> | InjectionToken<StorageEngine> | (() => StorageEngine)
+): engine is () => StorageEngine {
+  return !(engine instanceof InjectionToken) && !engine.toString().startsWith('class');
 }
 
 /**

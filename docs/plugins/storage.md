@@ -233,6 +233,38 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
+The `engine` property also accepts a factory function `() => StorageEngine`. The function runs in an Angular injection context, so `inject()` is available inside it. This is useful when the same engine class needs different construction arguments for different keys:
+
+```ts
+import { inject } from '@angular/core';
+import { withNgxsStoragePlugin, StorageEngine } from '@ngxs/storage-plugin';
+
+export class MyCustomStorageEngine implements StorageEngine {
+  constructor(private readonly fallback: StorageEngine | null) {}
+  // ...
+}
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideStore(
+      [NovelsState, DetectivesState],
+      withNgxsStoragePlugin({
+        keys: [
+          {
+            key: 'novels',
+            engine: () => new MyCustomStorageEngine(inject(SESSION_STORAGE_ENGINE))
+          },
+          {
+            key: 'detectives',
+            engine: () => new MyCustomStorageEngine(null) // no fallback storage
+          }
+        ]
+      })
+    )
+  ]
+};
+```
+
 ### Namespace Option
 
 The namespace option should be provided when the storage plugin is used in micro frontend applications. The namespace may equal the app name and will prefix keys for state slices:
