@@ -16,6 +16,7 @@ $ npm install @ngxs/store@dev
 - Feature(store): Expose `ɵgetTypedNgxsStateFactory` for internal third-party usage [#2426](https://github.com/ngxs/store/pull/2426)
 - Feature(store): Error in dev mode when `selectSignal` selector returns new reference with identical value [#2441](https://github.com/ngxs/store/pull/2441)
 - Feature(store): add `warnOnNewReferenceWithIdenticalValue` to `NgxsDevelopmentOptions` [#2442](https://github.com/ngxs/store/pull/2442)
+- Feature(storage-plugin): Support factory functions as `engine` in `KeyWithExplicitEngine` [#2444](https://github.com/ngxs/store/pull/2444)
 - Fix(store): Cleanup observers once subjects complete [#2401](https://github.com/ngxs/store/pull/2401)
 - Fix(store): Skip state mutations when injector is destroyed mid-action [#2406](https://github.com/ngxs/store/pull/2406)
 - Fix(store): Warn when state is mutated after injector destruction [#2407](https://github.com/ngxs/store/pull/2407)

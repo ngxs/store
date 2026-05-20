@@ -1,9 +1,10 @@
-import { Injectable, Injector, inject } from '@angular/core';
+import { Injectable, Injector, inject, runInInjectionContext } from '@angular/core';
 import {
   STORAGE_ENGINE,
   StorageEngine,
   StorageKey,
   ɵextractStringKey,
+  ɵisEngineFactory,
   ɵisKeyWithExplicitEngine,
   ɵNGXS_STORAGE_PLUGIN_OPTIONS
 } from '@ngxs/storage-plugin/internals';
@@ -13,7 +14,7 @@ interface KeyWithEngine {
   engine: StorageEngine | null;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class ɵNgxsStoragePluginKeysManager {
   /** Store keys separately in a set so we're able to check if the key already exists. */
   private readonly _keys = new Set<string>();
@@ -49,7 +50,9 @@ export class ɵNgxsStoragePluginKeysManager {
       this._keys.add(key);
 
       const engine = ɵisKeyWithExplicitEngine(storageKey)
-        ? this._injector.get(storageKey.engine)
+        ? ɵisEngineFactory(storageKey.engine)
+          ? runInInjectionContext(this._injector, storageKey.engine)
+          : this._injector.get(storageKey.engine)
         : this._injector.get(STORAGE_ENGINE);
 
       this._keysWithEngines.push({ key, engine });

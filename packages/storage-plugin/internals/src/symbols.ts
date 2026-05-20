@@ -93,7 +93,6 @@ export const ɵUSER_OPTIONS = new InjectionToken<NgxsStoragePluginOptions>(
 export const ɵALL_STATES_PERSISTED = new InjectionToken<boolean>(
   typeof ngDevMode !== 'undefined' && ngDevMode ? 'ALL_STATES_PERSISTED' : '',
   {
-    providedIn: 'root',
     factory: () => inject(ɵUSER_OPTIONS).keys === '*'
   }
 );

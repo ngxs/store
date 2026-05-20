@@ -14,6 +14,7 @@ import {
 
 import { NgxsStoragePlugin } from './storage.plugin';
 import { engineFactory, storageOptionsFactory } from './internals';
+import { ɵNgxsStoragePluginKeysManager } from './keys-manager';
 
 @NgModule()
 export class NgxsStoragePluginModule {
@@ -23,6 +24,7 @@ export class NgxsStoragePluginModule {
     return {
       ngModule: NgxsStoragePluginModule,
       providers: [
+        ɵNgxsStoragePluginKeysManager,
         withNgxsPlugin(NgxsStoragePlugin),
         {
           provide: ɵUSER_OPTIONS,
@@ -47,6 +49,7 @@ export function withNgxsStoragePlugin(
   options: NgxsStoragePluginOptions
 ): EnvironmentProviders {
   return makeEnvironmentProviders([
+    ɵNgxsStoragePluginKeysManager,
     withNgxsPlugin(NgxsStoragePlugin),
     {
       provide: ɵUSER_OPTIONS,
