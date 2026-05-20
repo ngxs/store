@@ -320,7 +320,7 @@ export const appConfig: ApplicationConfig = {
 
 ### Serialization Interceptors
 
-You can define your own logic before or after the state get serialized or deserialized.
+You can define your own logic before or after the state gets serialized or deserialized.
 
 - `beforeSerialize`: Use this option to alter the state before it gets serialized.
 - `afterSerialize`: Use this option to alter the state after it gets deserialized. For instance, you can use it to instantiate a concrete class.
@@ -390,7 +390,7 @@ In the migration strategy, we define:
 - `migrate`: A function that accepts a state and expects the new state in return.
 - `key`: The key for the item to migrate. If not specified, it takes the entire storage state.
 
-Note: Its important to specify the strategies in the order of which they should progress.
+Note: It's important to specify the strategies in the order of which they should progress.
 
 ### Feature States
 
