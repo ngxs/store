@@ -15,10 +15,16 @@ import {
 import { RouterState } from './router.state';
 import { DefaultRouterStateSerializer, RouterStateSerializer } from './serializer';
 
+/**
+ * @deprecated Use `withNgxsRouterPlugin()` instead.
+ */
 @NgModule({
   imports: [NgxsModule.forFeature([RouterState])]
 })
 export class NgxsRouterPluginModule {
+  /**
+   * @deprecated Use `withNgxsRouterPlugin()` instead.
+   */
   static forRoot(
     options?: NgxsRouterPluginOptions
   ): ModuleWithProviders<NgxsRouterPluginModule> {

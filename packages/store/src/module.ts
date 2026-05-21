@@ -7,8 +7,14 @@ import { NgxsFeatureModule } from './modules/ngxs-feature.module';
 import { getRootProviders } from './standalone-features/root-providers';
 import { getFeatureProviders } from './standalone-features/feature-providers';
 
+/**
+ * @deprecated Use `provideStore()` and `provideStates()` instead.
+ */
 @NgModule()
 export class NgxsModule {
+  /**
+   * @deprecated Use `provideStore()` instead.
+   */
   static forRoot(
     states: ɵStateClass[] = [],
     options: NgxsModuleOptions = {}
@@ -19,6 +25,9 @@ export class NgxsModule {
     };
   }
 
+  /**
+   * @deprecated Use `provideStates()` instead.
+   */
   static forFeature(states: ɵStateClass[] = []): ModuleWithProviders<NgxsFeatureModule> {
     return {
       ngModule: NgxsFeatureModule,

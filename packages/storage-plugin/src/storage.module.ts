@@ -16,8 +16,14 @@ import { NgxsStoragePlugin } from './storage.plugin';
 import { engineFactory, storageOptionsFactory } from './internals';
 import { ɵNgxsStoragePluginKeysManager } from './keys-manager';
 
+/**
+ * @deprecated Use `withNgxsStoragePlugin()` instead.
+ */
 @NgModule()
 export class NgxsStoragePluginModule {
+  /**
+   * @deprecated Use `withNgxsStoragePlugin()` instead.
+   */
   static forRoot(
     options: NgxsStoragePluginOptions
   ): ModuleWithProviders<NgxsStoragePluginModule> {

@@ -8,8 +8,14 @@ import {
 import { ɵgetProviders } from './providers';
 import { NgxsWebSocketPluginOptions } from './symbols';
 
+/**
+ * @deprecated Use `withNgxsWebSocketPlugin()` instead.
+ */
 @NgModule()
 export class NgxsWebSocketPluginModule {
+  /**
+   * @deprecated Use `withNgxsWebSocketPlugin()` instead.
+   */
   static forRoot(
     options?: NgxsWebSocketPluginOptions
   ): ModuleWithProviders<NgxsWebSocketPluginModule> {

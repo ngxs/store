@@ -26,8 +26,14 @@ export function loggerOptionsFactory(options: NgxsLoggerPluginOptions) {
   };
 }
 
+/**
+ * @deprecated Use `withNgxsLoggerPlugin()` instead.
+ */
 @NgModule()
 export class NgxsLoggerPluginModule {
+  /**
+   * @deprecated Use `withNgxsLoggerPlugin()` instead.
+   */
   static forRoot(
     options?: NgxsLoggerPluginOptions
   ): ModuleWithProviders<NgxsLoggerPluginModule> {
