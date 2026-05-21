@@ -3,8 +3,14 @@ import { ModuleWithProviders, NgModule, makeEnvironmentProviders } from '@angula
 import { NgxsDevelopmentOptions, NGXS_DEVELOPMENT_OPTIONS } from './symbols';
 import { NgxsUnhandledActionsLogger } from './ngxs-unhandled-actions-logger';
 
+/**
+ * @deprecated Use `withNgxsDevelopmentOptions()` instead.
+ */
 @NgModule()
 export class NgxsDevelopmentModule {
+  /**
+   * @deprecated Use `withNgxsDevelopmentOptions()` instead.
+   */
   static forRoot(options: NgxsDevelopmentOptions): ModuleWithProviders<NgxsDevelopmentModule> {
     return {
       ngModule: NgxsDevelopmentModule,

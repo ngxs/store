@@ -4,11 +4,17 @@ import { withNgxsPlugin } from '@ngxs/store';
 import { NgxsFormPlugin } from './form.plugin';
 import { NgxsFormDirective } from './directive';
 
+/**
+ * @deprecated Use `withNgxsFormPlugin()` instead.
+ */
 @NgModule({
   imports: [NgxsFormDirective],
   exports: [NgxsFormDirective]
 })
 export class NgxsFormPluginModule {
+  /**
+   * @deprecated Use `withNgxsFormPlugin()` instead.
+   */
   static forRoot(): ModuleWithProviders<NgxsFormPluginModule> {
     return {
       ngModule: NgxsFormPluginModule,

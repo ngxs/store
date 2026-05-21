@@ -19,8 +19,14 @@ export function devtoolsOptionsFactory(options: NgxsDevtoolsOptions) {
 
 export const USER_OPTIONS = new InjectionToken('USER_OPTIONS');
 
+/**
+ * @deprecated Use `withNgxsReduxDevtoolsPlugin()` instead.
+ */
 @NgModule()
 export class NgxsReduxDevtoolsPluginModule {
+  /**
+   * @deprecated Use `withNgxsReduxDevtoolsPlugin()` instead.
+   */
   static forRoot(
     options?: NgxsDevtoolsOptions
   ): ModuleWithProviders<NgxsReduxDevtoolsPluginModule> {
