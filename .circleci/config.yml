@@ -9,34 +9,42 @@ job_defaults_var: &job_defaults
   docker:
     - image: cimg/node:22.16.0-browsers
 
-# Yarn cache key
-cache_var: &cache_key yarn-packages-v5-{{ .Branch }}-{{ checksum "yarn.lock" }}
+# PNPM cache key
+cache_var: &cache_key pnpm-packages-v5-{{ .Branch }}-{{ checksum "pnpm-lock.yaml" }}
 
-# Install yarn packages
-yarn_install_var: &yarn_install
+# Install pnpm
+install_pnpm_var: &install_pnpm
   run:
-    name: Yarn Install Packages
-    # We install deps based on the frozen yarn file, so we know it's always the same
+    name: Install pnpm
     command: |
-      yarn install --frozen-lockfile --cache-folder ~/.cache/yarn --non-interactive
-      yarn tutorials:install
+      corepack enable
+      corepack prepare pnpm@10.19.0 --activate
 
-# Save yarn cache
+# Install pnpm packages
+pnpm_install_var: &pnpm_install
+  run:
+    name: PNPM Install Packages
+    # We install deps based on the frozen pnpm file, so we know it's always the same
+    command: |
+      pnpm install --frozen-lockfile
+      pnpm tutorials:install
+
+# Save pnpm cache
 save_cache_var: &save_cache
   save_cache:
-    name: Save Yarn Package Cache and Cypress binary
+    name: Save Pnpm Package Cache and Cypress binary
     key: *cache_key
     paths:
-      - ~/.cache/yarn
+      - ~/.local/share/pnpm/store
 
-# Restore yarn cache
+# Restore pnpm cache
 restore_cache_var: &restore_cache
   restore_cache:
-    name: Restore Yarn Package Cache
+    name: Restore Pnpm Package Cache
     keys:
       - *cache_key
-      - yarn-packages-v5-master
-      - yarn-packages-v5
+      - pnpm-packages-v6-master
+      - pnpm-packages-v6
 
 # Persist the whole working space so we can share it between jobs
 persist_workspace_var: &persist_workspace
@@ -65,17 +73,18 @@ jobs:
       - run:
           name: Set NPM global path
           command: echo 'prefix = ~/.npm' > ~/.npmrc
+      - *install_pnpm
       - checkout
-      # The Circle CI caching for yarn takes longer than the yarn install. Removed caching.
+      # The Circle CI caching for pnpm takes longer than the pnpm install. Removed caching.
       # - *restore_cache
-      - *yarn_install
+      - *pnpm_install
       # - *save_cache
       - run:
           name: Compile NGXS
-          command: yarn build
+          command: pnpm build
       - run:
           name: Create Pack
-          command: yarn pack --filename ngxs-core.tgz
+          command: pnpm pack && mv *.tgz ngxs-core.tgz
       - *persist_workspace
       - store_artifacts:
           path: ngxs-core.tgz
@@ -87,7 +96,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Run ESLint analyzer
-          command: yarn nx run-many --target=lint --all --exclude=create-app
+          command: pnpm nx run-many --target=lint --all --exclude=create-app
 
   unit_tests:
     <<: *job_defaults
@@ -98,7 +107,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Unit Tests
-          command: yarn nx run-many --target=test --all --configuration=ci --maxWorkers=4
+          command: pnpm nx run-many --target=test --all --configuration=ci --maxWorkers=4
       - store_test_results:
           path: coverage/junit
       - store_artifacts:
@@ -115,7 +124,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Integration Tests
-          command: yarn test:ci:integration
+          command: pnpm test:ci:integration
       - *persist_workspace
       - store_artifacts:
           path: dist-integration
@@ -128,7 +137,7 @@ jobs:
       - *restore_cache
       - run:
           name: Run E2E tests
-          command: yarn test:ci:e2e
+          command: pnpm test:ci:e2e
 
   integration_ssr_tests:
     <<: *job_defaults
@@ -137,7 +146,7 @@ jobs:
       - *restore_cache
       - run:
           name: Run integration tests for the SSR build application
-          command: yarn test:ci:integration:ssr
+          command: pnpm test:ci:integration:ssr
 
   integration_ng21_tests:
     <<: *job_defaults
@@ -146,7 +155,7 @@ jobs:
       - browser-tools/install-browser-tools
       - run:
           name: Run integration tests for ng21 application
-          command: yarn integration:ng21
+          command: pnpm integration:ng21
       - persist_to_workspace:
           root: ~/workspace
           paths:
@@ -158,7 +167,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Test types
-          command: yarn test:types
+          command: pnpm test:types
 
   # Publish latest build to npm under the @next tag
   publish_dev_build_to_npm:
@@ -170,7 +179,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - deploy:
           name: Publish development builds to all @ngxs packages
-          command: yarn publish:dev
+          command: pnpm publish:dev
 
   # Publish tagged build to npm under the @latest tag
   publish_tagged_build_to_npm:
@@ -182,7 +191,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - deploy:
           name: Publish tagged builds to all @ngxs packages
-          command: yarn publish:tagged
+          command: pnpm publish:tagged
 #
 # Workflow
 #

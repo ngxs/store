@@ -42,19 +42,19 @@ Also chat us up on slack, where we will be more than happy to get you started on
 Start by installing all dependencies
 
 ```bash
-yarn
+pnpm install
 ```
 
 You can then either start develping using TDD
 
 ```bash
-yarn test
+pnpm test
 ```
 
 Or start the integration app and start playing around
 
 ```bash
-yarn start
+pnpm start
 ```
 
 ## Building
@@ -64,7 +64,7 @@ Since our library is a combination of the main `@ngxs/store` and the plugins, we
 running
 
 ```bash
-yarn build
+pnpm build
 ```
 
 will create a build for each package in the `builds/` directory.
@@ -75,23 +75,23 @@ If you want to test out a local build in your own app you can create a global sy
 
 ```bash
 # build ngxs
-yarn build
+pnpm build
 
 # cd into the build you want to link
 cd builds/store
 
 # create the global symlink
-yarn link
+pnpm link
 ```
 
 now navigate to your app then run
 
 ```bash
-yarn link @ngxs/store
+pnpm link @ngxs/store
 ```
 
 now `node_modules/@ngxs/store` will be symlinked to the local build directory of `@ngxs/store`.
-to make a change, save the file in ngxs, run `yarn build` and your app should now be using the new build.
+to make a change, save the file in ngxs, run `pnpm build` and your app should now be using the new build.
 
 # Publishing new version
 

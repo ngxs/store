@@ -1,0 +1,17 @@
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - core-js
+  - fsevents
+  - less
+  - lmdb
+  - msgpackr-extract
+  - unrs-resolver
+
+onlyBuiltDependencies:
+  - cypress
+  - esbuild
+  - nx
+
+packages:
+  - 'integrations/*'
+  - '!@ngxs'

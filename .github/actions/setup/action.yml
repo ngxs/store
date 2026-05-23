@@ -30,13 +30,18 @@ runs:
       shell: bash
       run: unset HISTFILE
 
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
     - name: Use Node.js ${{ inputs.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
         registry-url: https://registry.npmjs.org
         check-latest: true
-        cache: 'yarn'
+        cache: 'pnpm'
 
     - name: Configure kernel (increase watchers)
       shell: bash
@@ -55,11 +60,11 @@ runs:
           ./node_modules
           ./@ngxs
           ./integrations/hello-world-ng21/dist-integration
-        key: ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-${{ inputs.github-sha }}
+        key: ${{ runner.os }}-node-${{ inputs.node-version }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-branch-${{ inputs.github-ref-name }}-sha-${{ inputs.github-sha }}
         restore-keys: |
-          ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-
-          ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-
-          ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-
+          ${{ runner.os }}-node-${{ inputs.node-version }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-branch-${{ inputs.github-ref-name }}-sha-
+          ${{ runner.os }}-node-${{ inputs.node-version }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-branch-
+          ${{ runner.os }}-node-${{ inputs.node-version }}-pnpm-
           ${{ runner.os }}-
 
     - name: Download ngxs build artifacts
@@ -71,8 +76,8 @@ runs:
 
     - name: Install project dependencies
       shell: bash
-      run: yarn install --frozen-lockfile --non-interactive
+      run: pnpm install --frozen-lockfile --non-interactive
 
     - name: Install tutorials dependencies
       shell: bash
-      run: yarn tutorials:install
+      run: pnpm tutorials:install
