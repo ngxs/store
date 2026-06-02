@@ -17,7 +17,7 @@ export function ɵensureStoreMetadata(target: ɵStateClassInternal): ɵMetaDataM
   if (!ɵhasOwnProperty(target, ɵMETA_KEY)) {
     const defaultMetadata: ɵMetaDataModel = {
       name: null,
-      actions: {},
+      actions: Object.create(null),
       defaults: {},
       path: null,
       makeRootSelector(context: ɵRuntimeSelectorContext) {
