@@ -24,6 +24,7 @@ $ npm install @ngxs/store@dev
 - Fix(store): Include state path in `StateContextDestroyedError` production message [#2421](https://github.com/ngxs/store/pull/2421)
 - Fix(store): Return original reference from `updateItems` when no elements match [#2424](https://github.com/ngxs/store/pull/2424)
 - Fix(store): Silence `console.warn` in `withNgxsPendingTasks` for browser [#2425](https://github.com/ngxs/store/pull/2425)
+- Fix(store): Use `Object.create(null)` for plain lookup maps to prevent prototype pollution [#2446](https://github.com/ngxs/store/pull/2446)
 - Performance(store): Reduce operator allocations on action dispatch hot path [#2435](https://github.com/ngxs/store/pull/2435)
 - Performance(store): Replace `map/defaultIfEmpty/catchError` with manual `Observable` in `connectActionHandlers` [#2437](https://github.com/ngxs/store/pull/2435)
 - Performance(store): Prevent `StateFactory` retention via unhandled error callback [#2438](https://github.com/ngxs/store/pull/2438)
