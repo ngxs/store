@@ -75,8 +75,8 @@ export class StateFactory {
   private _ngxsUnhandledErrorHandler: NgxsUnhandledErrorHandler = null!;
 
   private _states: MappedStore[] = [];
-  private _statesByName: StatesByName = {};
-  private _statePaths: ɵPlainObjectOf<string> = {};
+  private _statesByName: StatesByName = Object.create(null);
+  private _statePaths: ɵPlainObjectOf<string> = Object.create(null);
 
   getRuntimeSelectorContext = ɵmemoize(() => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias

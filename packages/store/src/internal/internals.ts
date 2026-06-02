@@ -126,7 +126,7 @@ export function buildGraph(stateClasses: ɵStateClassInternal[]): StateKeyGraph 
     const meta = stateClass[ɵMETA_KEY]!;
     graph[meta.name!] = (meta.children || []).map(findName);
     return graph;
-  }, {});
+  }, Object.create(null));
 }
 
 /**
@@ -148,7 +148,7 @@ export function nameToState(
       result[meta.name!] = stateClass;
       return result;
     },
-    {}
+    Object.create(null)
   );
 }
 
@@ -174,7 +174,7 @@ export function nameToState(
  */
 export function findFullParentPath(
   obj: StateKeyGraph,
-  out: ɵPlainObjectOf<string> = {}
+  out: ɵPlainObjectOf<string> = Object.create(null)
 ): ɵPlainObjectOf<string> {
   // Recursively find the full dotted parent path for a given key.
   const find = (graph: StateKeyGraph, target: string): string | null => {
@@ -217,7 +217,7 @@ export function findFullParentPath(
  */
 export function topologicalSort(graph: StateKeyGraph): string[] {
   const sorted: string[] = [];
-  const visited: ɵPlainObjectOf<boolean> = {};
+  const visited: ɵPlainObjectOf<boolean> = Object.create(null);
 
   // DFS (Depth-First Search) to visit each node and its dependencies.
   const visit = (name: string, ancestors: string[] = []) => {

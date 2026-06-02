@@ -165,7 +165,7 @@ function createAllowedActionTypesMap(types: ActionType[]): FilterMap {
       filterMap[getActionTypeFromInstance(klass)!] = true;
       return filterMap;
     },
-    <FilterMap>{}
+    Object.create(null) as FilterMap
   );
 }
 
@@ -175,6 +175,6 @@ function createAllowedStatusesMap(statuses: ActionStatus[]): FilterMap {
       filterMap[status] = true;
       return filterMap;
     },
-    <FilterMap>{}
+    Object.create(null) as FilterMap
   );
 }
