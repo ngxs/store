@@ -7,7 +7,7 @@ orbs:
 job_defaults_var: &job_defaults
   working_directory: ~/workspace/app
   docker:
-    - image: cimg/node:22.16.0-browsers
+    - image: cimg/node:22.22.3-browsers
 
 # Yarn cache key
 cache_var: &cache_key yarn-packages-v5-{{ .Branch }}-{{ checksum "yarn.lock" }}
