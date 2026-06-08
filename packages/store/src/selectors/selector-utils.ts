@@ -75,7 +75,7 @@ export function createMemoizedSelectorFn<T extends (...args: any[]) => any>(
     }
     return returnValue;
   } as T;
-  const memoizedFn = ɵmemoize(wrappedFn);
+  const memoizedFn = ɵmemoize(wrappedFn, originalFn);
   Object.setPrototypeOf(memoizedFn, originalFn);
   return memoizedFn;
 }

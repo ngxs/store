@@ -1,8 +1,4 @@
-function areArgumentsShallowlyEqual(
-  equalityCheck: (a: any, b: any) => boolean,
-  prev: IArguments | null,
-  next: IArguments | null
-) {
+function areArgumentsShallowlyEqual(prev: IArguments | null, next: IArguments | null) {
   if (prev === null || next === null || prev.length !== next.length) {
     return false;
   }
@@ -11,7 +7,7 @@ function areArgumentsShallowlyEqual(
   // determine equality as fast as possible.
   const length = prev.length;
   for (let i = 0; i < length; i++) {
-    if (!equalityCheck(prev[i], next[i])) {
+    if (!Object.is(prev[i], next[i])) {
       return false;
     }
   }
@@ -25,28 +21,28 @@ function areArgumentsShallowlyEqual(
  *
  * @ignore
  */
-export function ɵmemoize<T extends (...args: any[]) => any>(
-  func: T,
-  equalityCheck = Object.is
-): T {
+export function ɵmemoize<T extends (...args: any[]) => any>(fn: T, originalFn?: T): T {
   let lastArgs: IArguments | null = null;
   let lastResult: any = null;
   // we reference arguments instead of spreading them for performance reasons
   function memoized() {
     // eslint-disable-next-line prefer-rest-params
-    if (!areArgumentsShallowlyEqual(equalityCheck, lastArgs, arguments)) {
+    if (!areArgumentsShallowlyEqual(lastArgs, arguments)) {
       // apply arguments instead of spreading for performance.
       // eslint-disable-next-line prefer-rest-params, prefer-spread
-      lastResult = (<Function>func).apply(null, arguments);
+      lastResult = (<Function>fn).apply(null, arguments);
     }
     // eslint-disable-next-line prefer-rest-params
     lastArgs = arguments;
     return lastResult;
   }
-  (<any>memoized).reset = function () {
-    // The hidden (for now) ability to reset the memoization
-    lastArgs = null;
-    lastResult = null;
-  };
+  if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+    (<any>memoized).reset = function () {
+      // The hidden (for now) ability to reset the memoization
+      lastArgs = null;
+      lastResult = null;
+    };
+    (<any>memoized).originalFn = originalFn ?? fn;
+  }
   return memoized as T;
 }
