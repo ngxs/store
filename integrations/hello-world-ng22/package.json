@@ -46,7 +46,7 @@
     "jsdom": "^27.1.0",
     "serve": "file:../../node_modules/serve",
     "start-server-and-test": "file:../../node_modules/start-server-and-test",
-    "typescript": "~5.9.2",
+    "typescript": "~6.0.0",
     "vitest": "^4.0.8"
   }
 }
