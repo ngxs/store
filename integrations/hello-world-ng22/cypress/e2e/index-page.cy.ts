@@ -5,7 +5,7 @@ describe('Index page', () => {
     // Arrange & act & assert
     // Expect that the running applicaiton was compiled
     // with the necessary Angular version!
-    cy.get('app-root').invoke('attr', 'ng-version').should('have.string', '21');
+    cy.get('app-root').invoke('attr', 'ng-version').should('have.string', '22');
   });
 
   it('should click on the button and increase the counter', () => {

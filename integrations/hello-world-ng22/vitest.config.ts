@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     coverage: {
       provider: 'v8',
-      reportsDirectory: './coverage/ng21',
+      reportsDirectory: './coverage/ng22',
       reporter: ['html', 'text-summary']
     },
     environment: 'jsdom',
