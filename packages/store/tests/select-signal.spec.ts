@@ -7,7 +7,9 @@ import {
   NgxsModule,
   Selector,
   SelectorOptions,
-  TypedSelector
+  TypedSelector,
+  provideStore,
+  withNgxsDevelopmentOptions
 } from '@ngxs/store';
 import { ɵStateClass } from '@ngxs/store/internals';
 
@@ -790,5 +792,122 @@ describe('Selector', () => {
       // Assert
       expect(result()).toEqual(['Mark', 'Max', 'Artur']);
     });
+  });
+});
+
+describe('warnOnNewReferenceWithIdenticalValue', () => {
+  interface TestStateModel {
+    value: number;
+    counter: number;
+  }
+
+  @State<TestStateModel>({
+    name: 'testWarn',
+    defaults: { value: 1, counter: 0 }
+  })
+  @Injectable()
+  class TestWarnState {
+    // Always returns a new object reference — same shape when `value` unchanged.
+    @Selector()
+    static data(state: TestStateModel) {
+      return { value: state.value };
+    }
+  }
+
+  beforeEach(() => TestBed.resetTestingModule());
+
+  it('should log console.error when selector returns new reference with identical value', () => {
+    // Arrange
+    TestBed.configureTestingModule({
+      providers: [
+        provideStore(
+          [TestWarnState],
+          withNgxsDevelopmentOptions({
+            warnOnUnhandledActions: true,
+            warnOnNewReferenceWithIdenticalValue: {
+              isEqual: (a, b) => JSON.stringify(a) === JSON.stringify(b)
+            }
+          })
+        )
+      ]
+    });
+    const store = TestBed.inject(Store);
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    try {
+      const signal = TestBed.runInInjectionContext(() =>
+        store.selectSignal(TestWarnState.data)
+      );
+      signal(); // initial read
+
+      // Increment `counter` but keep `value` the same — selector returns a new
+      // reference with the same shape, triggering the warning.
+      store.reset({ testWarn: { value: 1, counter: 1 } });
+      signal(); // triggers recomputation and the equal() callback
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        'The selector returned the same value shape as it was before triggering signal recomputation. Selector function: ',
+        expect.any(Function)
+      );
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
+  it('should not log console.error when warnOnNewReferenceWithIdenticalValue is not configured', () => {
+    // Arrange
+    TestBed.configureTestingModule({
+      providers: [provideStore([TestWarnState])]
+    });
+    const store = TestBed.inject(Store);
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    try {
+      const signal = TestBed.runInInjectionContext(() =>
+        store.selectSignal(TestWarnState.data)
+      );
+      signal();
+
+      store.reset({ testWarn: { value: 1, counter: 1 } });
+      signal();
+
+      expect(errorSpy).not.toHaveBeenCalled();
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
+  it('should not log console.error when selector returns a genuinely different value', () => {
+    // Arrange
+    TestBed.configureTestingModule({
+      providers: [
+        provideStore(
+          [TestWarnState],
+          withNgxsDevelopmentOptions({
+            warnOnUnhandledActions: true,
+            warnOnNewReferenceWithIdenticalValue: {
+              isEqual: (a, b) => JSON.stringify(a) === JSON.stringify(b)
+            }
+          })
+        )
+      ]
+    });
+    const store = TestBed.inject(Store);
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    try {
+      const signal = TestBed.runInInjectionContext(() =>
+        store.selectSignal(TestWarnState.data)
+      );
+      signal();
+
+      // Change `value` — selector returns a genuinely different result.
+      store.reset({ testWarn: { value: 2, counter: 0 } });
+      signal();
+
+      expect(errorSpy).not.toHaveBeenCalled();
+    } finally {
+      errorSpy.mockRestore();
+    }
   });
 });
