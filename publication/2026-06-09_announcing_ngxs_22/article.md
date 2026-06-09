@@ -1,6 +1,6 @@
 # Announcing NGXS v22
 
-We are excited to announce the release of NGXS v22, our latest major version of the state management library for Angular! This release brings support for Angular 22, a long-awaited ergonomic improvement to `dispatch` for async/await consumers, a richer set of state operators, dynamic plugin registration, and a clear signal that the future of NGXS configuration lies with standalone providers.
+We are excited to announce the release of NGXS v22, our latest major version of the state management library for Angular! This release brings support for Angular 22, a long-awaited ergonomic improvement to `dispatch` for async/await consumers, a richer set of state operators, dynamic plugin registration, sharper `createSelector` typings, and a clear signal that the future of NGXS configuration lies with standalone providers.
 
 For a complete list of changes, see our [v22.0.0 changelog entry](https://github.com/ngxs/store/blob/master/CHANGELOG.md#2200).
 
@@ -11,6 +11,7 @@ For a complete list of changes, see our [v22.0.0 changelog entry](https://github
 - 🧮 [New State Operators: `safePatch`, `updateItems`, `removeItems`](#new-state-operators) ([PR #2408](https://github.com/ngxs/store/pull/2408), [PR #2413](https://github.com/ngxs/store/pull/2413), [PR #2414](https://github.com/ngxs/store/pull/2414))
 - 🧩 [Dynamic Plugin Registration with `registerNgxsPlugin`](#dynamic-plugin-registration) ([PR #2396](https://github.com/ngxs/store/pull/2396))
 - 🪶 [Standalone-First: NgModule APIs Are Now Deprecated](#standalone-first-ngmodule-apis-are-now-deprecated) ([PR #2445](https://github.com/ngxs/store/pull/2445))
+- 🎯 [Sharper `createSelector` Type Inference & Checking](#sharper-createselector-type-inference--checking) ([PR #2402](https://github.com/ngxs/store/pull/2402))
 - 🛠️ [Developer-Experience Improvements](#developer-experience-improvements)
 - 🐛 [Bug Fixes and Stability Improvements](#bug-fixes)
 - ⚡ [Performance Improvements](#performance-improvements)
@@ -156,6 +157,71 @@ export const appConfig: ApplicationConfig = {
 
 If you are still on `NgModule`-based bootstrap, the [Getting Started](https://www.ngxs.io/introduction/installation) documentation walks through the equivalent standalone setup for every plugin.
 
+## Sharper `createSelector` Type Inference & Checking
+
+`createSelector` is a heavily-used corner of the NGXS API, and historically its type signature had two stubborn limitations: it was implemented as a stack of nine hand-written overloads (one for each supported arity from 1 to 9 selectors), and the projector argument types were inferred via a chain of `Sn extends SelectorArg` constraints that didn't enforce strict assignability when the developer wrote explicit annotations on the projector parameters.
+
+In v22 we replace the entire overload stack with a single variadic-tuple signature ([PR #2402](https://github.com/ngxs/store/pull/2402)):
+
+```ts
+export function createSelector<
+  Selectors extends SelectorArg[],
+  TProjector extends (
+    ...selectorResult: { [K in keyof Selectors]: ɵSelectorReturnType<Selectors[K]> }
+  ) => any
+>(
+  selectors: [...Selectors],
+  projector: TProjector,
+  creationMetadata?: Partial<CreationMetadata>
+): TProjector;
+```
+
+This is a small change with two visible effects.
+
+### 1. Better inferred projector arguments — at any arity
+
+The previous overload stack stopped at 8 selectors. The moment you reached 9 selectors, TypeScript fell through to the variadic catch-all and collapsed the projector parameter types to `any[]`. With the variadic-tuple signature, inference works uniformly regardless of how many selectors you pass in:
+
+```ts
+const a = () => 'a' as const;
+const b = () => 'b' as const;
+const c = () => 'c' as const;
+// ...up to nine selectors
+const i = () => 'i' as const;
+
+const all = createSelector(
+  [a, b, c, d, e, f, g, h, i],
+  // Before v22: (a: any, b: any, ..., i: any) => readonly any[]
+  // From v22:   (a: 'a', b: 'b', ..., i: 'i') => readonly ['a', 'b', ..., 'i']
+  (a, b, c, d, e, f, g, h, i) => [a, b, c, d, e, f, g, h, i] as const
+);
+```
+
+The same applies to the "mixed" case where some selectors are typed and others are not — typed slots now keep their precise types right through to the projector and to the return type.
+
+### 2. Mismatched explicit projector argument types are now caught
+
+When you _do_ annotate projector parameters explicitly — for example to widen `readonly ['a']` to `readonly [string]` — the new signature checks that your annotation is assignable from the corresponding selector's return type. Previously this check was silently skipped, and you could write a projector that took a parameter type completely incompatible with the selector feeding it:
+
+```ts
+// Before v22: allowed (silently)
+// From v22:   compile error — number is not assignable to string
+createSelector([() => 1], (state: string) => state);
+```
+
+Widening that _is_ legitimate continues to compile:
+
+```ts
+const a = () => ['a'] as const; // returns readonly ['a']
+
+// Widening to readonly [string] is a valid supertype — compiles fine
+createSelector([a], (a: readonly [string]) => [...a] as const);
+```
+
+### What this means for your codebase
+
+This change is technically additive — there is no API surface change — but on first compile after the upgrade you may see new errors at `createSelector` call sites. **Those errors almost certainly represent real bugs.** As part of this PR we caught one such latent bug in the router plugin's own selector definition and fixed it in the same change. If TypeScript starts complaining at a `createSelector` you wrote, the most productive first move is to look at the selector's actual return type rather than to suppress the error.
+
 ## Developer-Experience Improvements
 
 ### Catching missing memoization in `selectSignal`
@@ -178,10 +244,6 @@ provideStore(
 ```
 
 Because the equality check runs inside every signal read, you supply the comparator (e.g. lodash `isEqual`) — NGXS deliberately avoids `JSON.stringify`-based deep equality, which is prohibitively slow on a hot path.
-
-### Sharper `createSelector` typings
-
-The `createSelector` projector arguments now use a modern TypeScript signature instead of the legacy multi-overload approach. Mismatched projector argument types are now caught at compile time ([PR #2402](https://github.com/ngxs/store/pull/2402)). This may surface latent typing bugs in existing code — which is exactly the point.
 
 ### Type-Safe Selectors guide
 
@@ -234,7 +296,7 @@ Most projects should be able to upgrade by bumping the `@ngxs/*` packages alongs
 A few things to be aware of:
 
 1. **NgModule APIs surface deprecation warnings.** Your code keeps working. Plan a migration to `provideStore()` and the `withNgxs*()` providers when convenient. See the [Standalone-First](#standalone-first-ngmodule-apis-are-now-deprecated) section above.
-2. **`createSelector` typings are stricter.** If TypeScript starts complaining at a `createSelector` call site after the upgrade, it is almost certainly catching a real type mismatch — the legacy signature accepted some incorrect types silently.
+2. **`createSelector` typings are stricter.** If TypeScript starts complaining at a `createSelector` call site after the upgrade, it is almost certainly catching a real type mismatch — the legacy signature accepted some incorrect types silently. See the [Sharper `createSelector` Type Inference & Checking](#sharper-createselector-type-inference--checking) section for details.
 3. **Dev-mode signal warnings.** If you see new `console.error` output from `selectSignal` after upgrading, you have a selector that returns a fresh reference for an unchanged value. Memoize it (e.g. via `createSelector`, `createPropertySelectors`, etc.) to eliminate the warning and the wasted recomputation it represents.
 
 If you encounter any issues when upgrading, please check the [full documentation](https://www.ngxs.io/) first. If you believe you've found a regression, please open a [discussion on GitHub](https://github.com/ngxs/store/discussions) so we can take a look.
