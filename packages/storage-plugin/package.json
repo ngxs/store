@@ -5,9 +5,9 @@
   "sideEffects": false,
   "peerDependencies": {
     "@ngxs/store": "^0.0.0",
-    "@angular/core": ">=21.0.0 <22.0.0",
-    "rxjs": ">=7.0.0",
-    "ts-morph": ">=21.0.0"
+    "@angular/core": ">=21.0.0 <23.0.0",
+    "rxjs": ">=7.8.2",
+    "ts-morph": ">=28.0.0"
   },
   "schematics": "./schematics/collection.json"
 }
