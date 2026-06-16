@@ -190,6 +190,13 @@ jobs:
       - name: Check @ngxs build artifacts
         uses: ./.github/actions/check-build-artifacts
 
+      # npm trusted publishing requires npm >= 11.5.1; Node 22 LTS bundles
+      # npm 10.x. Upgrade so the OIDC token exchange runs against the registry.
+      - name: Upgrade npm for trusted publishing
+        run: |
+          npm install -g npm@latest
+          npm --version
+
       - name: Publish to npm
         run: 'yarn publish:tagged'
 
@@ -215,6 +222,13 @@ jobs:
 
       - name: Check @ngxs build artifacts
         uses: ./.github/actions/check-build-artifacts
+
+      # npm trusted publishing requires npm >= 11.5.1; Node 22 LTS bundles
+      # npm 10.x. Upgrade so the OIDC token exchange runs against the registry.
+      - name: Upgrade npm for trusted publishing
+        run: |
+          npm install -g npm@latest
+          npm --version
 
       - name: Development release - publish dev builds to all @ngxs packages
         run: yarn publish:dev
