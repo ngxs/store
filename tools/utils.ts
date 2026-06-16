@@ -64,8 +64,15 @@ export async function publishAllPackagesToNpm(version: any, tag: string) {
 async function publishPackage(pack: Package, version: any, tag: string) {
   const packageDescription = `${pack.buildPath} ${version} @${tag}`;
   try {
-    const script = `yarn publish --access public --non-interactive --no-git-tag-version --new-version ${version} --tag ${tag}`;
-    const output = await execute(script, { cwd: pack.buildPath });
+    // npm publish reads the version from the built package.json, so set it
+    // first. `--allow-same-version` makes this a no-op when the version
+    // already matches (e.g. tagged release builds).
+    await execute(`npm version ${version} --no-git-tag-version --allow-same-version`, {
+      cwd: pack.buildPath
+    });
+    const output = await execute(`npm publish --access public --tag ${tag}`, {
+      cwd: pack.buildPath
+    });
     console.log(`Published ${packageDescription} /r/n -> ${output}`);
   } catch ({ error, stdErr }) {
     console.log(`Error Publishing ${packageDescription} /r/n -> ${error}`);
