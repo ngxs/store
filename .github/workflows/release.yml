@@ -7,8 +7,7 @@
 #   - `release` event (tag created): runs the full pipeline (incl. bundlemon)
 #     and publishes tagged builds via the `npm-publish` environment.
 #   - `workflow_dispatch` (manual, master branch only): publishes dev builds
-#     under the `@dev` npm tag via the `npm-publish-dev` environment, which has
-#     its own set of required reviewers.
+#     under the `@dev` npm tag via the `npm-publish` environment.
 
 name: release
 
