@@ -172,6 +172,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm-publish
     needs: [release-build, release-test, release-integration-test, release-bundlemon]
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Checkout sources
@@ -195,6 +198,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm-publish
     needs: [release-build, release-test, release-integration-test]
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Checkout sources
