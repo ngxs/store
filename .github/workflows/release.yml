@@ -171,7 +171,7 @@ jobs:
   release-publish:
     if: github.repository_owner == 'ngxs' && github.event_name == 'release'
     runs-on: ubuntu-latest
-    environment: 'npm-publish'
+    environment: npm-publish
     needs: [release-build, release-test, release-integration-test, release-bundlemon]
 
     steps:
@@ -194,7 +194,7 @@ jobs:
   dev-publish:
     if: github.repository_owner == 'ngxs' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-    environment: npm-publish-dev
+    environment: npm-publish
     needs: [release-build, release-test, release-integration-test]
 
     steps:
