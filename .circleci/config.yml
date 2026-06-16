@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  browser-tools: circleci/browser-tools@1.5.2
+  browser-tools: circleci/browser-tools@1.5.3
 
 # Configuration
 job_defaults_var: &job_defaults
@@ -160,17 +160,6 @@ jobs:
           name: Test types
           command: yarn test:types
 
-  # Publish tagged build to npm under the @latest tag
-  publish_tagged_build_to_npm:
-    <<: *job_defaults
-    steps:
-      - *attach_workspace
-      - run:
-          name: Set NPM publish token
-          command: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-      - deploy:
-          name: Publish tagged builds to all @ngxs packages
-          command: yarn publish:tagged
 #
 # Workflow
 #
@@ -211,16 +200,3 @@ workflows:
       - integration_test_types:
           requires:
             - build
-
-      # Publish package.version @latest when a v.* git tag is present
-      - publish_tagged_build_to_npm:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-          requires:
-            - unit_tests
-            ### - integration_tests
-            ### - integration_ssr_tests
-            - integration_test_types
