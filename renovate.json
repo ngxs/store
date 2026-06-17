@@ -5,6 +5,7 @@
   "baseBranches": ["master"],
   "ignoreDeps": ["@types/node"],
   "automerge": true,
+  "minimumReleaseAge": "7 days",
   "includePaths": ["package.json", "packages/**/package.json"],
   "major": {
     "packageRules": [
