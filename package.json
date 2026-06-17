@@ -162,7 +162,7 @@
     "rollup": "^4",
     "rollup-plugin-dts": "^6.1.0",
     "rxjs": "^7.4.0",
-    "serve": "^14.2.0",
+    "serve": "^14.2.5",
     "start-server-and-test": "^3.0.11",
     "ts-jest": "29.4.4",
     "ts-morph": "^21.0.1",
