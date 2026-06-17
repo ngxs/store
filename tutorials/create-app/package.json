@@ -33,6 +33,7 @@
     "unocss": "^0.59.4"
   },
   "resolutions": {
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "zod-to-json-schema": "3.23.5"
   }
 }
