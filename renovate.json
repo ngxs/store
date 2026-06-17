@@ -5,27 +5,29 @@
   "baseBranches": ["master"],
   "ignoreDeps": ["@types/node"],
   "automerge": true,
-  "packageFiles": ["package.json", "packages/**/package.json"],
+  "includePaths": ["package.json", "packages/**/package.json"],
   "major": {
-    "devDependencies": {
-      "enabled": false
-    }
+    "packageRules": [
+      {
+        "matchDepTypes": ["devDependencies"],
+        "enabled": false
+      }
+    ]
   },
   "packageRules": [
     {
-      "extends": ["monorepo:angular", "monorepo:angularcli"],
+      "extends": ["monorepo:angular", "monorepo:angular-cli"],
       "groupName": "@angular",
       "schedule": ["before 3am on the first day of the month"]
     },
     {
-      "packageNames": ["typescript"],
+      "matchPackageNames": ["typescript"],
+      "matchUpdateTypes": ["patch"],
       "groupName": "typescript",
-      "updateTypes": "patch",
       "schedule": ["before 3am on the first day of the month"]
     },
     {
-      "packagePatterns": ["*"],
-      "excludePackageNames": ["typescript"],
+      "matchPackageNames": ["!typescript"],
       "groupName": "all dependencies",
       "groupSlug": "all",
       "schedule": ["before 3am on the first day of the month"]
