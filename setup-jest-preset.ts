@@ -55,3 +55,17 @@ if (CI) {
     jest.spyOn(global.console, methodName as any).mockImplementation(() => jest.fn());
   });
 }
+
+// JSDOM does not implement `URL.canParse`, but `@angular/platform-server` relies on it.
+if (typeof window.URL.canParse !== 'function') {
+  Object.defineProperty(window.URL, 'canParse', {
+    value: (url: string, base?: string) => {
+      try {
+        new URL(url, base);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+  });
+}
