@@ -170,5 +170,8 @@
     "tslib": "^2.3.0",
     "typescript": "5.9.3",
     "zone.js": "~0.15.1"
+  },
+  "resolutions": {
+    "tmp": "^0.2.4"
   }
 }
