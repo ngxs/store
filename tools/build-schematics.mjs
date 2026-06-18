@@ -1,5 +1,5 @@
 import yargs from 'yargs';
-import { join } from 'path';
+import { basename, join } from 'path';
 import { execSync } from 'child_process';
 import fse from 'fs-extra';
 
@@ -21,8 +21,13 @@ console.log(`Running "${cmd}"`);
 execSync(cmd, { stdio: 'inherit' });
 
 fse.copySync(schematicsSrc, join(distPath, 'schematics', 'src'), src => {
-  // skip not compiled files
+  // TypeScript sources are compiled separately by tsc above.
   if (src.endsWith('.ts')) {
+    return false;
+  }
+  // Jest snapshot artifacts live alongside spec files in source but must
+  // never ship in the published package.
+  if (src.endsWith('.snap') || basename(src) === '__snapshots__') {
     return false;
   }
   return true;

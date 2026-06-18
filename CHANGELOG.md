@@ -31,7 +31,8 @@ $ npm install @ngxs/store@dev
 - Fix(storage-plugin): Guard against environments that do not provide `ngServerMode` [#2400](https://github.com/ngxs/store/pull/2400)
 - Fix(storage-plugin): Improve dependency ranges for security fixes [#2404](https://github.com/ngxs/store/pull/2404)
 - Fix(storage-plugin): Treat missing version key as 0 when matching migrations [#2422](https://github.com/ngxs/store/pull/2422)
-- Build: use trusted npm publishing for provenance signed builds [#2454](https://github.com/ngxs/store/pull/2454)
+- Build: Simplify package build pipeline and fix windows pipeline issue [#2458](https://github.com/ngxs/store/pull/2458)
+- Build: Use trusted npm publishing for provenance signed builds [#2454](https://github.com/ngxs/store/pull/2454)
 
 ### 21.0.0 2025-12-17
 
