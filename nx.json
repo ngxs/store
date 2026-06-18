@@ -24,6 +24,7 @@
       "cache": true,
       "inputs": [
         "default",
+        "^default",
         "{workspaceRoot}/.eslintrc.js",
         "{workspaceRoot}/tools/eslint-rules/**/*"
       ]
@@ -95,5 +96,6 @@
   },
   "tui": {
     "enabled": false
-  }
+  },
+  "analytics": false
 }
