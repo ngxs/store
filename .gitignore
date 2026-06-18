@@ -40,7 +40,7 @@ dist-integration
 
 # misc
 .yarn
-/.angular/cache
+**/.angular/cache
 /.sass-cache
 /connect.lock
 /coverage
