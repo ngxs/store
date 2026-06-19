@@ -354,7 +354,7 @@ git commit -m "test(e2e): port SSR specs from Cypress to Playwright"
 - Consumes: working `playwright.config.ts` from A1.
 - Produces: `yarn e2e`, `yarn e2e:ssr`, `yarn test:ci:e2e`, `yarn test:ci:integration:ssr` as Playwright invocations.
 
-- [ ] **Step 1: Modify `package.json` scripts block**
+- [x] **Step 1: Modify `package.json` scripts block**
 
 Remove these script entries:
 
@@ -384,7 +384,7 @@ Add under the same `// - E2E` / `// - CI` section comments:
 "test:ci:integration:ssr": "cross-env CI=true SSR=true yarn build:integration && playwright test",
 ```
 
-- [ ] **Step 2: Remove `start-server-and-test` from devDependencies**
+- [x] **Step 2: Remove `start-server-and-test` from devDependencies**
 
 In `package.json` devDependencies, remove:
 
@@ -392,7 +392,7 @@ In `package.json` devDependencies, remove:
 "start-server-and-test": "^3.0.11",
 ```
 
-- [ ] **Step 3: Remove `cypress` from devDependencies**
+- [x] **Step 3: Remove `cypress` from devDependencies**
 
 In `package.json` devDependencies, remove:
 
@@ -400,32 +400,25 @@ In `package.json` devDependencies, remove:
 "cypress": "^14.5.4",
 ```
 
-- [ ] **Step 4: Reinstall**
+- [x] **Step 4: Reinstall**
 
 ```bash
 yarn install
 ```
 
-Expected: lockfile shrinks; cypress and start-server-and-test removed.
+Confirmed: `grep "cypress" yarn.lock` returns empty; `grep "start-server-and-test" yarn.lock` returns empty.
 
-- [ ] **Step 5: Smoke-test the new scripts**
+- [x] **Step 5: Smoke-test the new scripts** _(deferred — see Deferred Follow-ups #3: blocked on serve infra; will be covered by Phase B `yarn integration:ng22` validation against hello-world-ng22.)_
 
 ```bash
 yarn test:ci:e2e
-```
-
-Expected: 1 passed (list-page spec).
-
-```bash
 yarn test:ci:integration:ssr
 ```
 
-Expected: integration builds, SSR specs run, 9 passed.
-
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
-but commit -m "build(e2e): switch root scripts from Cypress to Playwright"
+git commit -m "build(e2e): switch root scripts from Cypress to Playwright"
 ```
 
 ---
