@@ -78,3 +78,8 @@ migrations.json
 .claude/worktrees
 .nx/polygraph
 .nx/self-healing
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

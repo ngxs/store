@@ -196,7 +196,7 @@ git commit -m "chore(e2e): add @playwright/test scaffolding at root"
 - Consumes: `playwright.config.ts` from A1 (testDir, baseURL, webServer).
 - Produces: `e2e/list-page.spec.ts` — first passing Playwright spec at the root.
 
-- [ ] **Step 1: Write the new spec**
+- [x] **Step 1: Write the new spec**
 
 `e2e/list-page.spec.ts`:
 
@@ -214,28 +214,28 @@ test.describe('List page', () => {
 });
 ```
 
-- [ ] **Step 2: Remove the placeholder**
+- [x] **Step 2: Remove the placeholder**
 
 ```bash
 git rm e2e/.gitkeep
 ```
 
-- [ ] **Step 3: Run the new spec**
+- [x] **Step 3: Run the new spec** _(deferred — see Deferred Follow-ups #3: root integration serve infrastructure is broken pre-migration; local run blocked)_
 
 ```bash
 yarn playwright test e2e/list-page.spec.ts
 ```
 
-Expected: Playwright spawns `yarn serve:integration` (because CI is unset locally), waits for `http://localhost:4200`, runs the test, server shuts down. 1 passed.
+Expected (once serve infra is fixed): Playwright spawns `yarn serve:integration` (because CI is unset locally), waits for `http://localhost:4200`, runs the test, server shuts down. 1 passed.
 
-- [ ] **Step 4: Verify equivalence against old Cypress spec**
+- [x] **Step 4: Verify equivalence against old Cypress spec**
 
-Open `cypress/e2e/list-page.cy.ts` side-by-side with the new spec and confirm the selector (`.todo-list h3`) and expected text (`Reactive Form`) match exactly.
+Open `cypress/e2e/list-page.cy.ts` side-by-side with the new spec and confirm the selector (`.todo-list h3`) and expected text (`Reactive Form`) match exactly. ✓ Confirmed: locator `.todo-list h3`, expected text `Reactive Form`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
-but commit -m "test(e2e): port list-page test from Cypress to Playwright"
+git commit -m "test(e2e): port list-page test from Cypress to Playwright"
 ```
 
 ---
@@ -826,6 +826,11 @@ These are recorded so the merits of each can be assessed in isolation rather tha
 
 1. **Convert to `@nx/playwright` plugin** — wire e2e into Nx via `nx run integration:e2e`, gain Nx caching and project-graph awareness, move config to follow Nx conventions. Should be done after the standalone migration is stable and we've used it for a release cycle.
 2. **Convert SSR organization from env-var to Playwright projects** — define `e2e` and `ssr` as Playwright projects in the same config, each with its own `webServer`, run via `--project=ssr` instead of `SSR=true`. Lets us evaluate whether the projects model is genuinely cleaner than the env-var toggle.
+3. **Fix root `integration` app serve infrastructure (pre-existing, surfaced during this migration):**
+   - `integration/project.json` `serve` target uses deprecated `browserTarget` instead of `buildTarget`, so `yarn serve:integration` (Nx dev server) currently errors with "Required property 'buildTarget' is missing".
+   - `serve:integration:static` script points at `dist-integration` but the Angular build (with `outputMode: "server"`) puts the browser bundle under `dist-integration/browser/`, so `serve dist-integration` returns 404 pages.
+   - `node dist-integration/server/server.mjs` runs but returns an empty `<app-root></app-root>` shell for `/list` — none of the SSR-rendered content (`Reactive Form`, `ngOnInit todo`, `animals were resolved`) that the SSR specs assert against is present. SSR routing/rendering needs investigation.
+   - Until these are fixed, the root `e2e/list-page.spec.ts` and `e2e/ssr/ssr.spec.ts` cannot be locally validated. The migration's spec ports are verified line-for-line against their Cypress equivalents, but the live run remains blocked on the serve infrastructure fixes. CI is unaffected — only `yarn integration:ng22` (against `hello-world-ng22`) runs in CI workflows.
 
 Both should reference this PR in their descriptions for context.
 
