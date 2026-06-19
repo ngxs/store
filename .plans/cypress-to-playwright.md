@@ -4,19 +4,34 @@
 
 **Goal:** Replace Cypress with Playwright across the NGXS monorepo (root integration app + `hello-world-ng22` integration), preserving every behavior currently exercised by Cypress while eliminating the Node-22-compatibility friction that motivated this work.
 
-**Architecture:** Playwright at the root acts as the single source of e2e tooling. Both the root integration app and `hello-world-ng22` use `@playwright/test`, with the integration app linking back via a `file:` dependency (mirroring the current Cypress wiring). Playwright's built-in `webServer` config replaces `start-server-and-test` for both apps. SSR vs non-SSR mode (currently toggled by the `SSR` env var) is preserved using the same env var driving `testMatch` and `webServer.command` in `playwright.config.ts`.
+**Architecture:** Playwright at the root acts as the single source of e2e tooling. Both the root integration app and `hello-world-ng22` use `@playwright/test`, with the integration app linking back via a `file:` dependency (mirroring the current Cypress wiring). Playwright's built-in `webServer` config replaces `start-server-and-test` for both apps. SSR vs non-SSR mode (currently toggled by the `SSR` env var) is preserved using the same env var driving `testMatch` and `webServer.command` in `playwright.config.ts`. The current split between local dev server (`nx serve integration`) and CI static bundle (`serve dist-integration`) is preserved by also branching `webServer.command` on `process.env.CI`.
 
-**Tech Stack:** `@playwright/test` (latest, currently 1.49.x family), TypeScript 5.9 at root / 6.0 in ng22, Node 22.22.3, Angular 20 (root) / Angular 22 (ng22).
+**Tech Stack:** `@playwright/test` (latest 1.49.x family), TypeScript 5.9 at root / 6.0 in ng22, Node 22.22.3, Angular 20 (root) / Angular 22 (ng22).
 
 ## Global Constraints
 
 - Node version: 22.22.3 (set by `.node-version` and CI `NODE_VERSION: 22.x`).
 - Yarn classic (1.22.x) — `preinstall` script enforces yarn-only.
-- Browser coverage: chromium only by default (matches current Cypress CI usage). Firefox/WebKit not required for migration parity but can be added later.
+- Browser coverage: **chromium only** (matches current Cypress CI usage). Firefox/WebKit not in scope.
 - Existing CI entry point must remain `yarn integration:ng22` (workflows in `.github/workflows/{pr-validation,trunk,release}.yml` reference this script verbatim).
 - Tests under `cypress/ssr/` rely on `cy.request()` only (no browser rendering). Migrate to Playwright `APIRequestContext` via the `request` fixture — do not introduce headless browser navigation for these.
 - Cypress at the root is also referenced by integration via `"cypress": "file:../../node_modules/cypress"`. Replacement dep must follow the same pattern: `"@playwright/test": "file:../../node_modules/@playwright/test"`.
-- Mark's commit style: small semantic conventional commits (`build(integration-ng22): …`, `test(e2e): …`, `chore: …`).
+- Commit style: small semantic conventional commits (`build(integration-ng22): …`, `test(e2e): …`, `chore: …`). Commit via `but commit` (GitButler CLI) to the existing `chore/release-v22` branch.
+- **Single PR** delivery — all phases in one merge, but commits are small and semantic for reviewability.
+- **Mirror current dev/static split** — `yarn e2e` (UI mode) uses the Nx dev server; `yarn test:ci:e2e` uses the static built bundle. Implemented by branching `webServer.command` on `process.env.CI`.
+- **Trace/screenshot/video policy** — `trace: 'on-first-retry'`, `screenshot: 'only-on-failure'`, `video` left as default (off). Lightweight green runs, diagnostics on failure.
+
+## Decisions Locked In
+
+| Topic                  | Decision                                                    | Notes                                                                                      |
+| ---------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Nx integration         | Standalone Playwright                                       | Future @nx/playwright plugin migration deferred to its own PR (see "Deferred Follow-ups"). |
+| Browser coverage       | chromium only                                               | Matches current Cypress CI.                                                                |
+| SSR organization       | Env var `SSR=true` parity                                   | Future projects-based approach deferred to its own PR (see "Deferred Follow-ups").         |
+| Phasing                | Single PR (all-in-one)                                      | Three logical phases (A: root, B: integration, C: CI), one merge.                          |
+| Local vs CI web server | Mirror current split                                        | dev server local, static built in CI.                                                      |
+| Artifacts              | trace=on-first-retry, screenshot=only-on-failure, video=off | Default-ish; balances CI cost against debug value.                                         |
+| Folder naming          | Rename `cypress/` → `e2e/`                                  | At both root and integration.                                                              |
 
 ---
 
@@ -24,11 +39,11 @@
 
 **Created:**
 
-- `playwright.config.ts` (root) — main config, branches on `SSR` env var like the old `cypress.config.ts`.
+- `playwright.config.ts` (root) — main config, branches on both `SSR` and `CI` env vars.
 - `e2e/list-page.spec.ts` — replaces `cypress/e2e/list-page.cy.ts`.
 - `e2e/ssr/ssr.spec.ts` — replaces `cypress/ssr/ssr.cy.ts`.
 - `e2e/tsconfig.json` — minimal TS config for Playwright specs at root.
-- `integrations/hello-world-ng22/playwright.config.ts` — integration config.
+- `integrations/hello-world-ng22/playwright.config.ts` — integration config (no SSR/dev branches).
 - `integrations/hello-world-ng22/e2e/index-page.spec.ts` — replaces `cypress/e2e/index-page.cy.ts`.
 - `integrations/hello-world-ng22/e2e/tsconfig.json` — minimal TS config for integration specs.
 
@@ -91,7 +106,7 @@ yarn add -D @playwright/test
 yarn playwright install --with-deps chromium
 ```
 
-Expected: `package.json` updated, `~/.cache/ms-playwright/` (or `%LOCALAPPDATA%\ms-playwright`) populated with chromium build.
+Expected: `package.json` updated, chromium build downloaded to `~/.cache/ms-playwright/` (Linux/macOS) or `%LOCALAPPDATA%\ms-playwright` (Windows).
 
 - [ ] **Step 2: Create root `playwright.config.ts`**
 
@@ -99,27 +114,35 @@ Expected: `package.json` updated, `~/.cache/ms-playwright/` (or `%LOCALAPPDATA%\
 import { defineConfig, devices } from '@playwright/test';
 
 const isSsr = process.env.SSR === 'true';
+const isCi = !!process.env.CI;
+
+const serveCommand = isSsr
+  ? 'yarn serve:integration:ssr'
+  : isCi
+    ? 'yarn serve:integration:static'
+    : 'yarn serve:integration';
 
 export default defineConfig({
   testDir: './e2e',
   testMatch: isSsr ? 'ssr/**/*.spec.ts' : '*.spec.ts',
   testIgnore: isSsr ? undefined : 'ssr/**',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  reporter: process.env.CI ? [['github'], ['list']] : 'list',
+  forbidOnly: isCi,
+  retries: isCi ? 2 : 0,
+  reporter: isCi ? [['github'], ['list']] : 'list',
   timeout: 60_000,
   use: {
     baseURL: 'http://localhost:4200',
     navigationTimeout: 120_000,
     actionTimeout: 60_000,
-    trace: 'on-first-retry'
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure'
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: isSsr ? 'yarn serve:integration:ssr' : 'yarn serve:integration:static',
+    command: serveCommand,
     url: 'http://localhost:4200',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !isCi,
     timeout: 180_000
   }
 });
@@ -156,8 +179,7 @@ Expected: lists zero tests, no errors. Config loads cleanly.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add package.json yarn.lock playwright.config.ts e2e/
-git commit -m "chore(e2e): add @playwright/test scaffolding at root"
+but commit -m "chore(e2e): add @playwright/test scaffolding at root"
 ```
 
 ---
@@ -204,7 +226,7 @@ git rm e2e/.gitkeep
 yarn playwright test e2e/list-page.spec.ts
 ```
 
-Expected: Playwright spawns `yarn serve:integration:static` (via webServer), waits for `http://localhost:4200`, runs the test, server shuts down. 1 passed.
+Expected: Playwright spawns `yarn serve:integration` (because CI is unset locally), waits for `http://localhost:4200`, runs the test, server shuts down. 1 passed.
 
 - [ ] **Step 4: Verify equivalence against old Cypress spec**
 
@@ -213,8 +235,7 @@ Open `cypress/e2e/list-page.cy.ts` side-by-side with the new spec and confirm th
 - [ ] **Step 5: Commit**
 
 ```bash
-git add e2e/list-page.spec.ts
-git commit -m "test(e2e): port list-page test from Cypress to Playwright"
+but commit -m "test(e2e): port list-page test from Cypress to Playwright"
 ```
 
 ---
@@ -321,8 +342,7 @@ Expected: only `list-page.spec.ts` runs (testIgnore excludes `ssr/**`), 1 passed
 - [ ] **Step 5: Commit**
 
 ```bash
-git add e2e/ssr/ssr.spec.ts
-git commit -m "test(e2e): port SSR specs from Cypress to Playwright"
+but commit -m "test(e2e): port SSR specs from Cypress to Playwright"
 ```
 
 ---
@@ -340,7 +360,7 @@ git commit -m "test(e2e): port SSR specs from Cypress to Playwright"
 
 - [ ] **Step 1: Modify `package.json` scripts block**
 
-Remove:
+Remove these script entries:
 
 ```
 "start-test": "start-server-and-test",
@@ -358,7 +378,7 @@ Remove:
 "test:ci:integration:ssr": "cross-env CI=true yarn build:integration && yarn start-test serve:integration:ssr 4200 cy:run:ssr",
 ```
 
-Add (under the same `// - E2E` / `// - CI` section comments):
+Add under the same `// - E2E` / `// - CI` section comments:
 
 ```
 "e2e": "playwright test --ui",
@@ -370,7 +390,7 @@ Add (under the same `// - E2E` / `// - CI` section comments):
 
 - [ ] **Step 2: Remove `start-server-and-test` from devDependencies**
 
-In `package.json` devDependencies, remove the line:
+In `package.json` devDependencies, remove:
 
 ```
 "start-server-and-test": "^3.0.11",
@@ -378,7 +398,7 @@ In `package.json` devDependencies, remove the line:
 
 - [ ] **Step 3: Remove `cypress` from devDependencies**
 
-In `package.json` devDependencies, remove the line:
+In `package.json` devDependencies, remove:
 
 ```
 "cypress": "^14.5.4",
@@ -409,8 +429,7 @@ Expected: integration builds, SSR specs run, 9 passed.
 - [ ] **Step 6: Commit**
 
 ```bash
-git add package.json yarn.lock
-git commit -m "build(e2e): switch root scripts from Cypress to Playwright"
+but commit -m "build(e2e): switch root scripts from Cypress to Playwright"
 ```
 
 ---
@@ -420,7 +439,7 @@ git commit -m "build(e2e): switch root scripts from Cypress to Playwright"
 **Files:**
 
 - Delete: `cypress.config.ts`
-- Delete: `cypress/` (entire directory: `e2e/`, `ssr/`, `support/`, `plugins/`, `fixtures/`, `tsconfig.json`)
+- Delete: `cypress/` (entire directory)
 
 **Interfaces:**
 
@@ -430,16 +449,10 @@ git commit -m "build(e2e): switch root scripts from Cypress to Playwright"
 - [ ] **Step 1: Confirm nothing else references these paths**
 
 ```bash
-yarn nx graph --file=/dev/null 2>&1 | grep -i cypress || echo "no cypress references"
+grep -rn "cypress" --include="*.ts" --include="*.json" --include="*.yml" . | grep -v node_modules | grep -v ".plans"
 ```
 
-And:
-
-```bash
-grep -r "cypress" --include="*.ts" --include="*.json" --include="*.yml" -l . | grep -v node_modules | grep -v .plans
-```
-
-Expected: no Cypress references outside `cypress.config.ts` and `cypress/`.
+Expected: only references inside `cypress.config.ts` and the `cypress/` directory itself.
 
 - [ ] **Step 2: Remove the files**
 
@@ -458,8 +471,7 @@ Expected: both succeed.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add -A
-git commit -m "chore(e2e): remove legacy Cypress config and specs from root"
+but commit -m "chore(e2e): remove legacy Cypress config and specs from root"
 ```
 
 ---
@@ -479,7 +491,7 @@ git commit -m "chore(e2e): remove legacy Cypress config and specs from root"
 
 - [ ] **Step 1: Add `@playwright/test` as devDependency in `integrations/hello-world-ng22/package.json`**
 
-Replace this block:
+Replace:
 
 ```json
 "cypress": "file:../../node_modules/cypress",
@@ -520,8 +532,7 @@ Expected: prints Playwright version (matches root install).
 
 ```bash
 cd ../..
-git add integrations/hello-world-ng22/package.json integrations/hello-world-ng22/yarn.lock
-git commit -m "build(integration-ng22): swap cypress dep for @playwright/test"
+but commit -m "build(integration-ng22): swap cypress dep for @playwright/test"
 ```
 
 ---
@@ -544,24 +555,27 @@ git commit -m "build(integration-ng22): swap cypress dep for @playwright/test"
 ```typescript
 import { defineConfig, devices } from '@playwright/test';
 
+const isCi = !!process.env.CI;
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  reporter: process.env.CI ? [['github'], ['list']] : 'list',
+  forbidOnly: isCi,
+  retries: isCi ? 2 : 0,
+  reporter: isCi ? [['github'], ['list']] : 'list',
   timeout: 60_000,
   use: {
     baseURL: 'http://localhost:4200',
     navigationTimeout: 120_000,
     actionTimeout: 60_000,
-    trace: 'on-first-retry'
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure'
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     command: 'yarn serve:integration:static',
     url: 'http://localhost:4200',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !isCi,
     timeout: 180_000
   }
 });
@@ -630,8 +644,7 @@ Expected: webServer spawns `yarn serve:integration:static`, both tests pass.
 
 ```bash
 cd ../..
-git add integrations/hello-world-ng22/playwright.config.ts integrations/hello-world-ng22/e2e/
-git commit -m "test(integration-ng22): port index-page spec from Cypress to Playwright"
+but commit -m "test(integration-ng22): port index-page spec from Cypress to Playwright"
 ```
 
 ---
@@ -672,7 +685,7 @@ Leave `test:integration` definition unchanged:
 "test:integration": "yarn install:ci && yarn test:ci && yarn build:prod && yarn e2e:ci"
 ```
 
-(The internal step `yarn e2e:ci` now resolves to Playwright instead of Cypress; the CI entry point `yarn integration:ng22` from the root keeps working.)
+(The internal step `yarn e2e:ci` now resolves to Playwright; the CI entry point `yarn integration:ng22` from the root keeps working.)
 
 - [ ] **Step 2: Smoke-test from the integration folder**
 
@@ -695,8 +708,7 @@ Expected: vitest unit tests pass, build succeeds, Playwright e2e passes, exit 0.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add integrations/hello-world-ng22/package.json
-git commit -m "build(integration-ng22): switch e2e scripts to Playwright"
+but commit -m "build(integration-ng22): switch e2e scripts to Playwright"
 ```
 
 ---
@@ -730,8 +742,7 @@ Expected: 2 e2e tests + 3 vitest tests pass.
 - [ ] **Step 3: Commit**
 
 ```bash
-git add -A
-git commit -m "chore(integration-ng22): remove legacy Cypress config and specs"
+but commit -m "chore(integration-ng22): remove legacy Cypress config and specs"
 ```
 
 ---
@@ -746,8 +757,8 @@ git commit -m "chore(integration-ng22): remove legacy Cypress config and specs"
 
 **Interfaces:**
 
-- Consumes: nothing from previous tasks beyond the fact that `@playwright/test` is now a project dep at root and integration.
-- Produces: every CI job that uses `./.github/actions/setup` has chromium pre-installed for Playwright.
+- Consumes: `@playwright/test` is now a project dep at root and integration.
+- Produces: every CI job that uses `./.github/actions/setup` has chromium pre-installed.
 
 - [ ] **Step 1: Inspect the current setup action**
 
@@ -755,15 +766,13 @@ Read `.github/actions/setup/action.yml`. Identify the step that runs `yarn insta
 
 - [ ] **Step 2: Add a browser-install step immediately after `yarn install`**
 
-Append a step like:
-
 ```yaml
 - name: Install Playwright browsers
   shell: bash
   run: yarn playwright install --with-deps chromium
 ```
 
-**Why `--with-deps`:** On Linux runners, chromium needs system libraries that Playwright knows how to apt-install. `--with-deps` handles this in one step. (Mac/Windows runners do not require this flag but it is a no-op there.)
+**Why `--with-deps`:** On Linux runners, chromium needs system libraries that Playwright knows how to apt-install. `--with-deps` handles this in one step. On Mac/Windows runners it's a no-op.
 
 - [ ] **Step 3: Verify locally that the same install works on a fresh `node_modules`**
 
@@ -779,8 +788,7 @@ Expected: end-to-end success from cold start.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add .github/actions/setup/action.yml
-git commit -m "ci: install Playwright chromium in setup composite action"
+but commit -m "ci: install Playwright chromium in setup composite action"
 ```
 
 ---
@@ -808,7 +816,18 @@ Confirm `path: ./integrations/**/dist-integration/**/main*.js` still matches the
 
 Push the branch and open a draft PR. Watch `premerge-integration-test` job complete green.
 
-- [ ] **Step 3: If green, mark plan complete; if red, capture the failing logs and fall back to Phase A/B for the affected sub-step**
+- [ ] **Step 3: If green, mark plan complete; if red, capture the failing logs and fall back to Phase A/B for the affected sub-step.**
+
+---
+
+## Deferred Follow-ups (separate PRs, intentionally out of scope)
+
+These are recorded so the merits of each can be assessed in isolation rather than buried inside the migration:
+
+1. **Convert to `@nx/playwright` plugin** — wire e2e into Nx via `nx run integration:e2e`, gain Nx caching and project-graph awareness, move config to follow Nx conventions. Should be done after the standalone migration is stable and we've used it for a release cycle.
+2. **Convert SSR organization from env-var to Playwright projects** — define `e2e` and `ssr` as Playwright projects in the same config, each with its own `webServer`, run via `--project=ssr` instead of `SSR=true`. Lets us evaluate whether the projects model is genuinely cleaner than the env-var toggle.
+
+Both should reference this PR in their descriptions for context.
 
 ---
 
@@ -816,19 +835,13 @@ Push the branch and open a draft PR. Watch `premerge-integration-test` job compl
 
 These are flagged for the engineer/reviewer — not blockers, but worth a conscious decision in flight.
 
-1. **Browser strategy** — The plan installs only chromium to match current CI behavior. If the team wants the migration to expand coverage to Firefox/WebKit, add projects in both `playwright.config.ts` files and adjust the install step to omit the explicit `chromium` arg.
+1. **TypeScript deprecations in TS 6 (ng22)** — The new `e2e/tsconfig.json` in the integration uses `ignoreDeprecations: "6.0"` for the same reason as the cypress tsconfig fix already committed. If TS 7 lands before the next refresh, both these tsconfigs will need an update.
 
-2. **`webServer` vs `start-server-and-test` semantics** — Playwright's `webServer` blocks until the URL responds and tears it down at the end of the run. This is equivalent to `start-server-and-test`'s contract, but if any external script outside Playwright also expected `start-server-and-test` to be available (e.g., a developer's personal alias), it disappears with this migration. Search the repo before merging: `grep -r "start-server-and-test\|start-test " --include="*.json" --include="*.md"` should return only the touch points listed in this plan.
+2. **`integration` Nx project has no `e2e` target** — Currently e2e is driven entirely from root yarn scripts, not Nx. The plan keeps this pattern. Addressing this is covered by the deferred @nx/playwright follow-up.
 
-3. **`reuseExistingServer: !process.env.CI`** — Locally, if a dev already has `yarn serve:integration:static` running on 4200, Playwright will use it. On CI it will always spawn a fresh one. This matches the Cypress + start-server-and-test behavior closely enough; flag if a different policy is wanted.
+3. **Tutorials directory** — `tutorials/create-app/` has its own install. The audit confirmed no Cypress usage there, so it's untouched. Re-verify with `grep -r cypress tutorials/` before declaring done.
 
-4. **Trace/video/screenshot policy** — The plan sets `trace: 'on-first-retry'`. The old Cypress config disabled video and screenshots. Playwright's defaults are off for screenshot/video, on for trace-on-retry. Decide whether to dial trace down to `off` to match Cypress exactly, or keep `on-first-retry` for CI debugging value (recommended: keep).
-
-5. **TypeScript deprecations in TS 6 (ng22)** — The new `e2e/tsconfig.json` in the integration uses `ignoreDeprecations: "6.0"` for the same reason as the cypress tsconfig fix already committed. If TS 7 lands before the next refresh, both these tsconfigs will need an update — track via the same surface as the existing tsconfigs that carry this flag.
-
-6. **`integration` Nx project has no `e2e` target** — Currently e2e is driven entirely from root yarn scripts, not Nx. The plan keeps this pattern (does not introduce an Nx `e2e` target). If a future cleanup wants to put e2e behind `nx run integration:e2e`, that's a separate refactor.
-
-7. **Tutorials directory** — `tutorials/create-app/` has its own install. The audit confirmed no Cypress usage there, so it's untouched. Re-verify with `grep -r cypress tutorials/` before declaring done.
+4. **`reuseExistingServer: !isCi`** — Locally, if a dev already has a server running on 4200, Playwright will use it. On CI it will always spawn a fresh one. This matches the existing Cypress + start-server-and-test contract.
 
 ---
 
@@ -839,7 +852,7 @@ These are flagged for the engineer/reviewer — not blockers, but worth a consci
 - Root e2e (`list-page.cy.ts`) → Task A2 ✓
 - Root SSR (`ssr.cy.ts`) → Task A3 ✓
 - Integration e2e (`index-page.cy.ts`) → Task B2 ✓
-- Root configuration (`cypress.config.ts`, SSR toggle) → Task A1 (config), A5 (delete) ✓
+- Root configuration (`cypress.config.ts`, SSR toggle, dev/CI server split) → Task A1 (config), A5 (delete) ✓
 - Integration configuration → Task B2 (config), B4 (delete) ✓
 - Root yarn scripts (12 of them) → Task A4 ✓
 - Integration yarn scripts (4 of them) → Task B3 ✓
@@ -847,7 +860,7 @@ These are flagged for the engineer/reviewer — not blockers, but worth a consci
 - `cypress` devDependency in integration → Task B1 (swap) ✓
 - `start-server-and-test` at root → Task A4 (remove) ✓
 - `start-server-and-test` in integration → Task B1 (remove) ✓
-- CI workflows (`pr-validation`, `trunk`, `release`) — unchanged at the `yarn integration:ng22` entry point, but browser install is added → Task C1 ✓
+- CI workflows — unchanged at `yarn integration:ng22` entry point; browser install added → Task C1 ✓
 - CI artifact upload — verified unchanged → Task C2 ✓
 
 **Type consistency check:**
