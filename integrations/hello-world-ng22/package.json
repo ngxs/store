@@ -41,11 +41,10 @@
     "@angular/cli": "^22.0.0",
     "@angular/compiler-cli": "^22.0.0",
     "@types/node": "^22.10.0",
-    "cypress": "file:../../node_modules/cypress",
+    "@playwright/test": "file:../../node_modules/@playwright/test",
     "@vitest/coverage-v8": "^4.0.15",
     "jsdom": "^27.1.0",
     "serve": "file:../../node_modules/serve",
-    "start-server-and-test": "file:../../node_modules/start-server-and-test",
     "typescript": "~6.0.0",
     "vitest": "^4.0.8"
   }

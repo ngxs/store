@@ -468,7 +468,7 @@ git commit -m "chore(e2e): remove legacy Cypress config and specs from root"
 - Consumes: `@playwright/test` already present in root `node_modules` from Task A1.
 - Produces: integration's `node_modules/@playwright/test` linked via `file:` reference.
 
-- [ ] **Step 1: Add `@playwright/test` as devDependency in `integrations/hello-world-ng22/package.json`**
+- [x] **Step 1: Add `@playwright/test` as devDependency in `integrations/hello-world-ng22/package.json`**
 
 Replace:
 
@@ -490,28 +490,19 @@ Remove:
 
 Keep `serve` (still needed by the static file server for the integration).
 
-- [ ] **Step 2: Reinstall integration deps**
+- [x] **Step 2: Reinstall integration deps**
 
 ```bash
 cd integrations/hello-world-ng22
 yarn install --force
 ```
 
-Expected: `node_modules/@playwright/test/package.json` exists, version matches root.
+- [x] **Step 3: Verify Playwright CLI is reachable** — confirmed `@playwright/test@1.61.0` linked from root.
 
-- [ ] **Step 3: Verify Playwright CLI is reachable**
-
-```bash
-yarn playwright --version
-```
-
-Expected: prints Playwright version (matches root install).
-
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
-cd ../..
-but commit -m "build(integration-ng22): swap cypress dep for @playwright/test"
+git commit -m "build(integration-ng22): swap cypress dep for @playwright/test"
 ```
 
 ---
