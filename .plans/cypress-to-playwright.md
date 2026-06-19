@@ -706,11 +706,9 @@ git commit -m "chore(integration-ng22): remove legacy Cypress config and specs"
 - Consumes: `@playwright/test` is now a project dep at root and integration.
 - Produces: every CI job that uses `./.github/actions/setup` has chromium pre-installed.
 
-- [ ] **Step 1: Inspect the current setup action**
+- [x] **Step 1: Inspect the current setup action** — done.
 
-Read `.github/actions/setup/action.yml`. Identify the step that runs `yarn install` (or equivalent).
-
-- [ ] **Step 2: Add a browser-install step immediately after `yarn install`**
+- [x] **Step 2: Add a browser-install step immediately after `yarn install`**
 
 ```yaml
 - name: Install Playwright browsers
@@ -718,23 +716,12 @@ Read `.github/actions/setup/action.yml`. Identify the step that runs `yarn insta
   run: yarn playwright install --with-deps chromium
 ```
 
-**Why `--with-deps`:** On Linux runners, chromium needs system libraries that Playwright knows how to apt-install. `--with-deps` handles this in one step. On Mac/Windows runners it's a no-op.
+- [x] **Step 3: Verify locally** _(partial — the local `yarn integration:ng22` end-to-end pass during Task B3 used the already-installed chromium from Task A1's setup; cold-start install will be validated on the first CI run on the PR.)_
 
-- [ ] **Step 3: Verify locally that the same install works on a fresh `node_modules`**
-
-```bash
-rm -rf node_modules ~/.cache/ms-playwright
-yarn install
-yarn playwright install --with-deps chromium
-yarn test:ci:e2e
-```
-
-Expected: end-to-end success from cold start.
-
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
-but commit -m "ci: install Playwright chromium in setup composite action"
+git commit -m "ci: install Playwright chromium in setup composite action"
 ```
 
 ---

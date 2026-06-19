@@ -73,6 +73,10 @@ runs:
       shell: bash
       run: yarn install --frozen-lockfile --non-interactive
 
+    - name: Install Playwright browsers
+      shell: bash
+      run: yarn playwright install --with-deps chromium
+
     - name: Install tutorials dependencies
       shell: bash
       run: yarn tutorials:install
