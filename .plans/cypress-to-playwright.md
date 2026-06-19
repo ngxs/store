@@ -737,17 +737,9 @@ git commit -m "ci: install Playwright chromium in setup composite action"
 - Consumes: build output from `yarn integration:ng22` (path `./integrations/**/dist-integration/**/main*.js`).
 - Produces: confirmation that Playwright's introduction did not break artifact paths.
 
-- [ ] **Step 1: Re-read the action**
+- [x] **Step 1: Re-read the action** — confirmed path glob `./integrations/**/dist-integration/**/main*.js` matches the produced artifact `integrations/hello-world-ng22/dist-integration/browser/main-U4F37IES.js`. No change required.
 
-```bash
-cat .github/actions/upload-integration-test-artifact/action.yml
-```
-
-Confirm `path: ./integrations/**/dist-integration/**/main*.js` still matches the integration build output. Playwright does not change the build path — only the test runner — so this should be a no-op.
-
-- [ ] **Step 2: Open a PR**
-
-Push the branch and open a draft PR. Watch `premerge-integration-test` job complete green.
+- [ ] **Step 2: Open a PR** — handed off to the user (push branch and open PR; watch `premerge-integration-test` job).
 
 - [ ] **Step 3: If green, mark plan complete; if red, capture the failing logs and fall back to Phase A/B for the affected sub-step.**
 
