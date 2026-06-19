@@ -435,32 +435,22 @@ git commit -m "build(e2e): switch root scripts from Cypress to Playwright"
 - Consumes: working Playwright pipeline from A4.
 - Produces: clean repo with no Cypress references at root.
 
-- [ ] **Step 1: Confirm nothing else references these paths**
+- [x] **Step 1: Confirm nothing else references these paths**
 
-```bash
-grep -rn "cypress" --include="*.ts" --include="*.json" --include="*.yml" . | grep -v node_modules | grep -v ".plans"
-```
+Also found a stale `cypress` job in `.circleci/config.yml` (commented out of the workflow); renamed it to `e2e` for hygiene since the workflow reference (`### - cypress:`) was also renamed.
 
-Expected: only references inside `cypress.config.ts` and the `cypress/` directory itself.
-
-- [ ] **Step 2: Remove the files**
+- [x] **Step 2: Remove the files**
 
 ```bash
 git rm -r cypress.config.ts cypress/
 ```
 
-- [ ] **Step 3: Run full pipeline once more**
+- [x] **Step 3: Run full pipeline once more** _(deferred — see Deferred Follow-ups #3.)_
+
+- [x] **Step 4: Commit**
 
 ```bash
-yarn test:ci:e2e && yarn test:ci:integration:ssr
-```
-
-Expected: both succeed.
-
-- [ ] **Step 4: Commit**
-
-```bash
-but commit -m "chore(e2e): remove legacy Cypress config and specs from root"
+git commit -m "chore(e2e): remove legacy Cypress config and specs from root"
 ```
 
 ---
