@@ -626,7 +626,7 @@ git commit -m "test(integration-ng22): port index-page spec from Cypress to Play
 - Consumes: working `playwright.config.ts` from B2.
 - Produces: `yarn e2e` and `yarn e2e:ci` in the integration are Playwright invocations; `yarn test:integration` (called by CI from root) is unchanged at its name boundary.
 
-- [ ] **Step 1: Modify `integrations/hello-world-ng22/package.json` scripts block**
+- [x] **Step 1: Modify `integrations/hello-world-ng22/package.json` scripts block**
 
 Replace:
 
@@ -653,28 +653,14 @@ Leave `test:integration` definition unchanged:
 
 (The internal step `yarn e2e:ci` now resolves to Playwright; the CI entry point `yarn integration:ng22` from the root keeps working.)
 
-- [ ] **Step 2: Smoke-test from the integration folder**
+- [x] **Step 2: Smoke-test from the integration folder** — **2 passed (2.6s)** via `yarn e2e:ci`.
+
+- [x] **Step 3: Smoke-test the full CI entry point from root** — `yarn integration:ng22` exits 0: vitest (3 tests) + Angular build + Playwright (2 tests) all pass.
+
+- [x] **Step 4: Commit**
 
 ```bash
-cd integrations/hello-world-ng22
-yarn e2e:ci
-```
-
-Expected: 2 passed.
-
-- [ ] **Step 3: Smoke-test the full CI entry point from root**
-
-```bash
-cd ../..
-yarn integration:ng22
-```
-
-Expected: vitest unit tests pass, build succeeds, Playwright e2e passes, exit 0.
-
-- [ ] **Step 4: Commit**
-
-```bash
-but commit -m "build(integration-ng22): switch e2e scripts to Playwright"
+git commit -m "build(integration-ng22): switch e2e scripts to Playwright"
 ```
 
 ---
