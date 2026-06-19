@@ -520,7 +520,7 @@ git commit -m "build(integration-ng22): swap cypress dep for @playwright/test"
 - Consumes: `@playwright/test` from B1; `yarn serve:integration:static` script already in `integrations/hello-world-ng22/package.json`.
 - Produces: passing integration e2e under Playwright.
 
-- [ ] **Step 1: Create `integrations/hello-world-ng22/playwright.config.ts`**
+- [x] **Step 1: Create `integrations/hello-world-ng22/playwright.config.ts`**
 
 ```typescript
 import { defineConfig, devices } from '@playwright/test';
@@ -551,7 +551,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 2: Create `integrations/hello-world-ng22/e2e/tsconfig.json`**
+- [x] **Step 2: Create `integrations/hello-world-ng22/e2e/tsconfig.json`**
 
 ```json
 {
@@ -569,7 +569,7 @@ export default defineConfig({
 }
 ```
 
-- [ ] **Step 3: Create `integrations/hello-world-ng22/e2e/index-page.spec.ts`**
+- [x] **Step 3: Create `integrations/hello-world-ng22/e2e/index-page.spec.ts`**
 
 ```typescript
 import { test, expect } from '@playwright/test';
@@ -593,28 +593,24 @@ test.describe('Index page', () => {
 });
 ```
 
-- [ ] **Step 4: Build the integration app (required so the static server has something to serve)**
+- [x] **Step 4: Build the integration app**
 
 ```bash
 cd integrations/hello-world-ng22
 yarn build:prod
 ```
 
-Expected: `dist-integration/browser/` populated.
-
-- [ ] **Step 5: Run the new spec locally**
+- [x] **Step 5: Run the new spec locally** — **2 passed (4.9s)** under chromium. webServer spawned `yarn serve:integration:static`, navigated to `/`, assertions on `ng-version` regex and counter text both green.
 
 ```bash
 yarn playwright test
 ```
 
-Expected: webServer spawns `yarn serve:integration:static`, both tests pass.
-
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 cd ../..
-but commit -m "test(integration-ng22): port index-page spec from Cypress to Playwright"
+git commit -m "test(integration-ng22): port index-page spec from Cypress to Playwright"
 ```
 
 ---
