@@ -121,7 +121,7 @@ jobs:
           path: dist-integration
           destination: dist-integration
 
-  cypress:
+  e2e:
     <<: *job_defaults
     steps:
       - *attach_workspace
@@ -185,7 +185,7 @@ workflows:
       ###     requires:
       ###       - build
       ###
-      ### - cypress:
+      ### - e2e:
       ###     requires:
       ###       - integration_tests
       ###
