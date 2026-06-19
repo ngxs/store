@@ -677,24 +677,18 @@ git commit -m "build(integration-ng22): switch e2e scripts to Playwright"
 - Consumes: working Playwright integration pipeline from B3.
 - Produces: clean integration folder, only Playwright artifacts remain.
 
-- [ ] **Step 1: Remove the files**
+- [x] **Step 1: Remove the files**
 
 ```bash
 git rm -r integrations/hello-world-ng22/cypress.config.ts integrations/hello-world-ng22/cypress/
 ```
 
-- [ ] **Step 2: Re-run the CI entry point one final time**
+- [x] **Step 2: Re-run the CI entry point one final time** — `yarn integration:ng22` exit 0 (vitest 3, Playwright 2).
+
+- [x] **Step 3: Commit**
 
 ```bash
-yarn integration:ng22
-```
-
-Expected: 2 e2e tests + 3 vitest tests pass.
-
-- [ ] **Step 3: Commit**
-
-```bash
-but commit -m "chore(integration-ng22): remove legacy Cypress config and specs"
+git commit -m "chore(integration-ng22): remove legacy Cypress config and specs"
 ```
 
 ---
