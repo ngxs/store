@@ -135,6 +135,7 @@
     "@nx/jest": "22.7.5",
     "@nx/js": "22.7.5",
     "@nx/workspace": "22.7.5",
+    "@playwright/test": "^1.61.0",
     "@schematics/angular": "20.3.28",
     "@types/express": "^4.17.6",
     "@types/jest": "29.5.14",
