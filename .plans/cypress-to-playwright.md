@@ -99,7 +99,7 @@ For `request`-based specs (SSR), use the `request` fixture: `test('...', async (
 
 - Produces: `@playwright/test` available at root `node_modules/`; `playwright.config.ts` exporting a config that A2/A3 will register tests against.
 
-- [ ] **Step 1: Install Playwright as devDependency**
+- [x] **Step 1: Install Playwright as devDependency**
 
 ```bash
 yarn add -D @playwright/test
@@ -108,7 +108,7 @@ yarn playwright install --with-deps chromium
 
 Expected: `package.json` updated, chromium build downloaded to `~/.cache/ms-playwright/` (Linux/macOS) or `%LOCALAPPDATA%\ms-playwright` (Windows).
 
-- [ ] **Step 2: Create root `playwright.config.ts`**
+- [x] **Step 2: Create root `playwright.config.ts`**
 
 ```typescript
 import { defineConfig, devices } from '@playwright/test';
@@ -148,7 +148,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 3: Create `e2e/tsconfig.json`**
+- [x] **Step 3: Create `e2e/tsconfig.json`**
 
 ```json
 {
@@ -166,9 +166,9 @@ export default defineConfig({
 }
 ```
 
-- [ ] **Step 4: Create placeholder `e2e/.gitkeep`** (empty file, deleted in A2)
+- [x] **Step 4: Create placeholder `e2e/.gitkeep`** (empty file, deleted in A2)
 
-- [ ] **Step 5: Verify Playwright sees the config**
+- [x] **Step 5: Verify Playwright sees the config**
 
 ```bash
 yarn playwright test --list
@@ -176,10 +176,10 @@ yarn playwright test --list
 
 Expected: lists zero tests, no errors. Config loads cleanly.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
-but commit -m "chore(e2e): add @playwright/test scaffolding at root"
+git commit -m "chore(e2e): add @playwright/test scaffolding at root"
 ```
 
 ---
