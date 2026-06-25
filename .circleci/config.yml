@@ -145,6 +145,9 @@ jobs:
       - *attach_workspace
       - browser-tools/install-browser-tools
       - run:
+          name: Install Playwright browsers
+          command: yarn playwright install --with-deps chromium
+      - run:
           name: Clear stale Angular/Nx caches inherited from build job
           command: |
             rm -rf integrations/hello-world-ng22/.angular/cache
