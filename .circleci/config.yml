@@ -35,8 +35,8 @@ restore_cache_var: &restore_cache
     name: Restore Yarn Package Cache
     keys:
       - *cache_key
-      - yarn-packages-v5-master
-      - yarn-packages-v5
+      - yarn-packages-v6-master
+      - yarn-packages-v6
 
 # Persist the whole working space so we can share it between jobs
 persist_workspace_var: &persist_workspace
