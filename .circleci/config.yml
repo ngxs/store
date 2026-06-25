@@ -10,7 +10,7 @@ job_defaults_var: &job_defaults
     - image: cimg/node:22.22.3-browsers
 
 # Yarn cache key
-cache_var: &cache_key yarn-packages-v5-{{ .Branch }}-{{ checksum "yarn.lock" }}
+cache_var: &cache_key yarn-packages-v6-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
 # Install yarn packages
 yarn_install_var: &yarn_install
