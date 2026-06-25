@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start-test": "start-server-and-test",
     "start": "ng serve",
     "build": "ng build",
     "build:prod": "ng build --configuration production",
@@ -12,11 +11,9 @@
     "test:integration": "yarn install:ci && yarn test:ci && yarn build:prod && yarn e2e:ci",
     "preinstall": "yarn --cwd ../../ cpx -v -C \"@ngxs/**/*\" integrations/hello-world-ng22/node_modules/@ngxs",
     "install:ci": "yarn --frozen-lockfile --non-interactive --no-progress",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
     "serve:integration:static": "serve dist-integration/browser -s -l 4200 --cors",
-    "e2e": "start-test serve:integration:static 4200 cy:open",
-    "e2e:ci": "start-test serve:integration:static 4200 cy:run"
+    "e2e": "playwright test --ui",
+    "e2e:ci": "playwright test"
   },
   "private": true,
   "dependencies": {
@@ -41,11 +38,10 @@
     "@angular/cli": "^22.0.0",
     "@angular/compiler-cli": "^22.0.0",
     "@types/node": "^22.10.0",
-    "cypress": "file:../../node_modules/cypress",
+    "@playwright/test": "file:../../node_modules/@playwright/test",
     "@vitest/coverage-v8": "^4.0.15",
     "jsdom": "^27.1.0",
     "serve": "file:../../node_modules/serve",
-    "start-server-and-test": "file:../../node_modules/start-server-and-test",
     "typescript": "~6.0.0",
     "vitest": "^4.0.8"
   }

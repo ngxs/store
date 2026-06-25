@@ -10,7 +10,7 @@ job_defaults_var: &job_defaults
     - image: cimg/node:22.22.3-browsers
 
 # Yarn cache key
-cache_var: &cache_key yarn-packages-v5-{{ .Branch }}-{{ checksum "yarn.lock" }}
+cache_var: &cache_key yarn-packages-v6-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
 # Install yarn packages
 yarn_install_var: &yarn_install
@@ -35,8 +35,8 @@ restore_cache_var: &restore_cache
     name: Restore Yarn Package Cache
     keys:
       - *cache_key
-      - yarn-packages-v5-master
-      - yarn-packages-v5
+      - yarn-packages-v6-master
+      - yarn-packages-v6
 
 # Persist the whole working space so we can share it between jobs
 persist_workspace_var: &persist_workspace
@@ -121,7 +121,7 @@ jobs:
           path: dist-integration
           destination: dist-integration
 
-  cypress:
+  e2e:
     <<: *job_defaults
     steps:
       - *attach_workspace
@@ -144,6 +144,16 @@ jobs:
     steps:
       - *attach_workspace
       - browser-tools/install-browser-tools
+      - run:
+          name: Install Playwright browsers
+          command: yarn playwright install --with-deps chromium
+      - run:
+          name: Clear stale Angular/Nx caches inherited from build job
+          command: |
+            rm -rf integrations/hello-world-ng22/.angular/cache
+            rm -rf integrations/hello-world-ng22/node_modules/.angular
+            rm -rf .angular/cache
+            rm -rf .nx/cache
       - run:
           name: Run integration tests for ng22 application
           command: yarn integration:ng22
@@ -185,7 +195,7 @@ workflows:
       ###     requires:
       ###       - build
       ###
-      ### - cypress:
+      ### - e2e:
       ###     requires:
       ###       - integration_tests
       ###
