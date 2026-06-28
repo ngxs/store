@@ -145,6 +145,9 @@ jobs:
       - *attach_workspace
       - browser-tools/install-browser-tools
       - run:
+          name: Install Playwright browsers
+          command: yarn playwright install --with-deps chromium
+      - run:
           name: Run integration tests for ng21 application
           command: yarn integration:ng21
       - persist_to_workspace:
