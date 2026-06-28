@@ -80,6 +80,6 @@ migrations.json
 .nx/self-healing
 
 # Playwright
-/test-results/
-/playwright-report/
-/playwright/.cache/
+**/test-results/
+**/playwright-report/
+**/playwright/.cache/
