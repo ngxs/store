@@ -121,7 +121,7 @@ jobs:
           path: dist-integration
           destination: dist-integration
 
-  cypress:
+  e2e:
     <<: *job_defaults
     steps:
       - *attach_workspace
@@ -144,6 +144,9 @@ jobs:
     steps:
       - *attach_workspace
       - browser-tools/install-browser-tools
+      - run:
+          name: Install Playwright browsers
+          command: yarn playwright install --with-deps chromium
       - run:
           name: Run integration tests for ng21 application
           command: yarn integration:ng21
@@ -185,7 +188,7 @@ workflows:
       ###     requires:
       ###       - build
       ###
-      ### - cypress:
+      ### - e2e:
       ###     requires:
       ###       - integration_tests
       ###

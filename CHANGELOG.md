@@ -33,6 +33,7 @@ $ npm install @ngxs/store@dev
 - Fix(storage-plugin): Treat missing version key as 0 when matching migrations [#2422](https://github.com/ngxs/store/pull/2422)
 - Build: Simplify package build pipeline and fix windows pipeline issue [#2458](https://github.com/ngxs/store/pull/2458)
 - Build: Use trusted npm publishing for provenance signed builds [#2454](https://github.com/ngxs/store/pull/2454)
+- Test: Change from Cypress to Playwright for E2E tests [#2460](https://github.com/ngxs/store/pull/2460)
 
 ### 21.0.0 2025-12-17
 
