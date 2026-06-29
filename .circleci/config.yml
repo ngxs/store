@@ -148,13 +148,6 @@ jobs:
           name: Install Playwright browsers
           command: yarn playwright install --with-deps chromium
       - run:
-          name: Clear stale Angular/Nx caches inherited from build job
-          command: |
-            rm -rf integrations/hello-world-ng22/.angular/cache
-            rm -rf integrations/hello-world-ng22/node_modules/.angular
-            rm -rf .angular/cache
-            rm -rf .nx/cache
-      - run:
           name: Run integration tests for ng22 application
           command: yarn integration:ng22
       - persist_to_workspace:
