@@ -6,7 +6,7 @@ test.describe('Index page', () => {
   });
 
   test('should render application using the latest version', async ({ page }) => {
-    await expect(page.locator('app-root')).toHaveAttribute('ng-version', /^21\./);
+    await expect(page.locator('app-root')).toHaveAttribute('ng-version', /^22\./);
   });
 
   test('should click on the button and increase the counter', async ({ page }) => {

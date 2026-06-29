@@ -7,10 +7,10 @@ orbs:
 job_defaults_var: &job_defaults
   working_directory: ~/workspace/app
   docker:
-    - image: cimg/node:22.16.0-browsers
+    - image: cimg/node:22.22.3-browsers
 
 # Yarn cache key
-cache_var: &cache_key yarn-packages-v5-{{ .Branch }}-{{ checksum "yarn.lock" }}
+cache_var: &cache_key yarn-packages-v6-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
 # Install yarn packages
 yarn_install_var: &yarn_install
@@ -35,8 +35,8 @@ restore_cache_var: &restore_cache
     name: Restore Yarn Package Cache
     keys:
       - *cache_key
-      - yarn-packages-v5-master
-      - yarn-packages-v5
+      - yarn-packages-v6-master
+      - yarn-packages-v6
 
 # Persist the whole working space so we can share it between jobs
 persist_workspace_var: &persist_workspace
@@ -139,7 +139,7 @@ jobs:
           name: Run integration tests for the SSR build application
           command: yarn test:ci:integration:ssr
 
-  integration_ng21_tests:
+  integration_ng22_tests:
     <<: *job_defaults
     steps:
       - *attach_workspace
@@ -148,12 +148,12 @@ jobs:
           name: Install Playwright browsers
           command: yarn playwright install --with-deps chromium
       - run:
-          name: Run integration tests for ng21 application
-          command: yarn integration:ng21
+          name: Run integration tests for ng22 application
+          command: yarn integration:ng22
       - persist_to_workspace:
           root: ~/workspace
           paths:
-            - app/integrations/hello-world-ng21/dist-integration
+            - app/integrations/hello-world-ng22/dist-integration
 
   integration_test_types:
     <<: *job_defaults
@@ -196,7 +196,7 @@ workflows:
       ###     requires:
       ###       - build
 
-      - integration_ng21_tests:
+      - integration_ng22_tests:
           requires:
             - build
 
