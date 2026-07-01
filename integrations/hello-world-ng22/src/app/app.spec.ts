@@ -26,6 +26,6 @@ describe('App', () => {
     const { fixture } = setup();
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Angular 21 Integration Test');
+    expect(compiled.querySelector('h1').textContent).toContain('Angular 22 Integration Test');
   });
 });

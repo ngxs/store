@@ -2,11 +2,12 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "yarn"
+    "packageManager": "yarn",
+    "analytics": false
   },
   "newProjectRoot": "projects",
   "projects": {
-    "hello-world-ng21": {
+    "hello-world-ng22": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -86,10 +87,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "hello-world-ng21:build:production"
+              "buildTarget": "hello-world-ng22:build:production"
             },
             "development": {
-              "buildTarget": "hello-world-ng21:build:development"
+              "buildTarget": "hello-world-ng22:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -122,10 +122,11 @@ export class Store {
           )?.warnOnNewReferenceWithIdenticalValue;
           if (warnOption && !Object.is(a, b)) {
             try {
-              if (warnOption.isEqual(a, b)) {
+              const originalFn = (<any>selector).originalFn;
+              if (warnOption.isEqual(a, b) && originalFn) {
                 console.error(
                   'The selector returned the same value shape as it was before triggering signal recomputation. Selector function: ',
-                  selector
+                  originalFn
                 );
               }
             } catch {

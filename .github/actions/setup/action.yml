@@ -54,7 +54,7 @@ runs:
           ~/.cache
           ./node_modules
           ./@ngxs
-          ./integrations/hello-world-ng21/dist-integration
+          ./integrations/hello-world-ng22/dist-integration
         key: ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-${{ inputs.github-sha }}
         restore-keys: |
           ${{ runner.os }}-node-${{ inputs.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}-branch-${{ inputs.github-ref-name }}-sha-
@@ -72,6 +72,10 @@ runs:
     - name: Install project dependencies
       shell: bash
       run: yarn install --frozen-lockfile --non-interactive
+
+    - name: Install Playwright browsers
+      shell: bash
+      run: yarn playwright install --with-deps chromium
 
     - name: Install tutorials dependencies
       shell: bash

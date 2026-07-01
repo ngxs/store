@@ -1,6 +1,13 @@
 # For more information see:
 # - https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 # - https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
+#
+# This workflow handles two publish paths to npm (required because npm
+# trusted publishing is configured to allow publishing from this workflow only):
+#   - `release` event (tag created): runs the full pipeline (incl. bundlemon)
+#     and publishes tagged builds via the `npm-publish` environment.
+#   - `workflow_dispatch` (manual, master branch only): publishes dev builds
+#     under the `@dev` npm tag via the `npm-publish` environment.
 
 name: release
 
@@ -8,6 +15,7 @@ on:
   release:
     types:
       - created
+  workflow_dispatch:
 
 env:
   NODE_VERSION: 22.x
@@ -22,6 +30,12 @@ concurrency:
 
 jobs:
   release-build:
+    if: >
+      github.repository_owner == 'ngxs' &&
+      (
+        github.event_name == 'release' ||
+        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master')
+      )
     runs-on: ubuntu-latest
 
     steps:
@@ -46,6 +60,12 @@ jobs:
           retention-days: 1
 
   release-test:
+    if: >
+      github.repository_owner == 'ngxs' &&
+      (
+        github.event_name == 'release' ||
+        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master')
+      )
     runs-on: ubuntu-latest
     needs: release-build
 
@@ -68,20 +88,26 @@ jobs:
         run: yarn nx run-many --target=${{ matrix.script }} --configuration=ci --all
 
       - name: Upload coverage results to Qlty
-        if: ${{ matrix.script == 'test:ci' }}
+        if: ${{ matrix.script == 'test' }}
         uses: qltysh/qlty-action/coverage@v2
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: coverage/packages/**/lcov.info
 
   release-integration-test:
+    if: >
+      github.repository_owner == 'ngxs' &&
+      (
+        github.event_name == 'release' ||
+        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master')
+      )
     runs-on: ubuntu-latest
     needs: release-build
 
     strategy:
       matrix:
         script:
-          - 'integration:ng21'
+          - 'integration:ng22'
           - 'test:types'
 
     steps:
@@ -105,7 +131,7 @@ jobs:
           script: ${{ matrix.script }}
 
   release-bundlemon:
-    if: github.repository_owner == 'ngxs'
+    if: github.repository_owner == 'ngxs' && github.event_name == 'release'
     runs-on: ubuntu-latest
     needs: release-integration-test
 
@@ -142,10 +168,13 @@ jobs:
           fail-on-error: false
 
   release-publish:
-    if: github.repository_owner == 'ngxs'
+    if: github.repository_owner == 'ngxs' && github.event_name == 'release'
     runs-on: ubuntu-latest
     environment: npm-publish
     needs: [release-build, release-test, release-integration-test, release-bundlemon]
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Checkout sources
@@ -161,7 +190,45 @@ jobs:
       - name: Check @ngxs build artifacts
         uses: ./.github/actions/check-build-artifacts
 
-      - name: Production release - publish tagged builds to all @ngxs packages
-        run: yarn publish:tagged
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # npm trusted publishing requires npm >= 11.5.1; Node 22 LTS bundles
+      # npm 10.x. Upgrade so the OIDC token exchange runs against the registry.
+      - name: Upgrade npm for trusted publishing
+        run: |
+          npm install -g npm@latest
+          npm --version
+
+      - name: Publish to npm
+        run: 'yarn publish:tagged'
+
+  dev-publish:
+    if: github.repository_owner == 'ngxs' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    needs: [release-build, release-test, release-integration-test]
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          github-ref-name: ${{ github.ref_name }}
+          github-sha: ${{ github.sha }}
+
+      - name: Check @ngxs build artifacts
+        uses: ./.github/actions/check-build-artifacts
+
+      # npm trusted publishing requires npm >= 11.5.1; Node 22 LTS bundles
+      # npm 10.x. Upgrade so the OIDC token exchange runs against the registry.
+      - name: Upgrade npm for trusted publishing
+        run: |
+          npm install -g npm@latest
+          npm --version
+
+      - name: Development release - publish dev builds to all @ngxs packages
+        run: yarn publish:dev
