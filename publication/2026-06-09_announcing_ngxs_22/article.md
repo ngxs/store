@@ -23,26 +23,18 @@ For a complete list of changes, see our [v22.0.0 changelog entry](https://github
 
 NGXS v22 adds full support for Angular 22 so you can use the latest Angular features alongside our state management solution. The peer-dependency range on all `@ngxs/*` packages now targets `@angular/core@>=22.0.0 <23.0.0`. As with previous major releases, this is a straightforward upgrade for the vast majority of applications — there are no public API breaks.
 
-## Async/await Support for `dispatch`
+## Async/await Support for `dispatch` utility
 
 Calling `dispatch()` and then `await`-ing the result has historically required a small dance: you had to wrap the returned `Observable<void>` in `lastValueFrom` (or the older `toPromise`) before `await` would do the right thing. v22 removes that ceremony.
 
-`store.dispatch()` now returns a dual-natured value that both extends `Observable` and implements `PromiseLike<void>`. The shape of your code decides which API you get — `subscribe()` for the reactive flow, `await` for the imperative one. There is no API change for existing callers ([PR #2399](https://github.com/ngxs/store/pull/2399)).
+`dispatch()` now returns a dual-natured value that both extends `Observable` and implements `PromiseLike<void>`. The shape of your code decides which API you get — `subscribe()` for the reactive flow, `await` for the imperative one. There is no API change for existing callers ([PR #2399](https://github.com/ngxs/store/pull/2399)).
 
 ```ts
 // Reactive style — unchanged
 this.store.dispatch(new FetchOrders()).subscribe(() => {
   console.log('orders fetched');
 });
-
-// Imperative style — now natural
-async loadOrders() {
-  await this.store.dispatch(new FetchOrders());
-  console.log('orders fetched');
-}
 ```
-
-This pairs nicely with the `AbortSignal` support introduced in v21 — `await store.dispatch(...)` inside a `cancelUncompleted` handler now reads exactly like any other async function.
 
 To support this without changing the public dispatch type from your perspective, we've also exposed `AsyncReturnType` from the public API ([PR #2405](https://github.com/ngxs/store/pull/2405)) so you can reference it when mocking dispatch-returning methods in your unit tests:
 
