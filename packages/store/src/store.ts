@@ -9,7 +9,11 @@ import {
   take,
   of
 } from 'rxjs';
-import { ɵINITIAL_STATE_TOKEN, ɵStateStream } from '@ngxs/store/internals';
+import {
+  ɵINITIAL_STATE_TOKEN,
+  ɵNGXS_DEVELOPMENT_OPTIONS,
+  ɵStateStream
+} from '@ngxs/store/internals';
 
 import { InternalStateOperations } from './internal/state-operations';
 import { getRootSelectorFactory } from './selectors/selector-utils';
@@ -18,7 +22,6 @@ import { NgxsConfig } from './symbols';
 import { StateFactory } from './internal/state-factory';
 import { TypedSelector } from './selectors';
 import { InternalNgxsExecutionStrategy } from './execution/execution-strategy';
-import { NGXS_DEVELOPMENT_OPTIONS } from './dev-features/symbols';
 
 // We need to check whether the provided `T` type extends an array in order to
 // apply the `NonNullable[]` type to its elements. This is because, for
@@ -117,7 +120,7 @@ export class Store {
       return computed<T>(() => selectorFn(this._stateStream.state()), {
         equal: (a, b) => {
           const warnOption = this._injector?.get(
-            NGXS_DEVELOPMENT_OPTIONS,
+            ɵNGXS_DEVELOPMENT_OPTIONS,
             null
           )?.warnOnNewReferenceWithIdenticalValue;
           if (warnOption && !Object.is(a, b)) {

@@ -1,6 +1,9 @@
 import { ModuleWithProviders, NgModule, makeEnvironmentProviders } from '@angular/core';
+import {
+  type ɵNgxsDevelopmentOptions,
+  ɵNGXS_DEVELOPMENT_OPTIONS
+} from '@ngxs/store/internals';
 
-import { NgxsDevelopmentOptions, NGXS_DEVELOPMENT_OPTIONS } from './symbols';
 import { NgxsUnhandledActionsLogger } from './ngxs-unhandled-actions-logger';
 
 /**
@@ -11,20 +14,22 @@ export class NgxsDevelopmentModule {
   /**
    * @deprecated Use `withNgxsDevelopmentOptions()` instead.
    */
-  static forRoot(options: NgxsDevelopmentOptions): ModuleWithProviders<NgxsDevelopmentModule> {
+  static forRoot(
+    options: ɵNgxsDevelopmentOptions
+  ): ModuleWithProviders<NgxsDevelopmentModule> {
     return {
       ngModule: NgxsDevelopmentModule,
       providers: [
         NgxsUnhandledActionsLogger,
-        { provide: NGXS_DEVELOPMENT_OPTIONS, useValue: options }
+        { provide: ɵNGXS_DEVELOPMENT_OPTIONS, useValue: options }
       ]
     };
   }
 }
 
-export function withNgxsDevelopmentOptions(options: NgxsDevelopmentOptions) {
+export function withNgxsDevelopmentOptions(options: ɵNgxsDevelopmentOptions) {
   return makeEnvironmentProviders([
     NgxsUnhandledActionsLogger,
-    { provide: NGXS_DEVELOPMENT_OPTIONS, useValue: options }
+    { provide: ɵNGXS_DEVELOPMENT_OPTIONS, useValue: options }
   ]);
 }

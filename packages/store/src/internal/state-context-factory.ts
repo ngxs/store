@@ -1,13 +1,13 @@
 import { EnvironmentInjector, ErrorHandler, inject, Injectable } from '@angular/core';
 import { getValue, setValue } from '@ngxs/store/plugins';
 import { ExistingState, StateOperator, isStateOperator } from '@ngxs/store/operators';
+import { ɵNGXS_DEVELOPMENT_OPTIONS } from '@ngxs/store/internals';
 import type { Observable } from 'rxjs';
 
 import { StateContext } from '../symbols';
 import { StateOperations } from '../internal/internals';
 import { InternalStateOperations } from '../internal/state-operations';
 import { simplePatch } from './state-operators';
-import { NGXS_DEVELOPMENT_OPTIONS } from '../dev-features/symbols';
 
 export class StateContextDestroyedError extends Error {
   override readonly name = 'StateContextDestroyedError';
@@ -151,7 +151,7 @@ function warnIfNewReferenceHasIdenticalValue(
   if (Object.is(oldValue, newValue) || injector.destroyed) return;
 
   const warnOption = injector.get(
-    NGXS_DEVELOPMENT_OPTIONS,
+    ɵNGXS_DEVELOPMENT_OPTIONS,
     null
   )?.warnOnNewReferenceWithIdenticalValue;
   if (!warnOption) return;

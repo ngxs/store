@@ -1,8 +1,8 @@
 import { InjectionToken } from '@angular/core';
 
-import { ActionType } from '../actions/symbols';
+import { ActionType } from './symbols';
 
-export interface NgxsDevelopmentOptions {
+export interface ɵNgxsDevelopmentOptions {
   warnOnNewReferenceWithIdenticalValue?: {
     isEqual: (a: unknown, b: unknown) => boolean;
   };
@@ -13,10 +13,16 @@ export interface NgxsDevelopmentOptions {
     | {
         ignore: ActionType[];
       };
+  /**
+   * Warns when two different action classes are declared with the same `type` string.
+   * Since handlers are looked up by `type`, every handler registered for that type runs
+   * whenever either action is dispatched, even though their payloads may differ.
+   */
+  warnOnDuplicateActionTypes?: boolean;
 }
 
-export const NGXS_DEVELOPMENT_OPTIONS =
-  /* @__PURE__ */ new InjectionToken<NgxsDevelopmentOptions>(
+export const ɵNGXS_DEVELOPMENT_OPTIONS =
+  /* @__PURE__ */ new InjectionToken<ɵNgxsDevelopmentOptions>(
     typeof ngDevMode !== 'undefined' && ngDevMode ? 'NGXS_DEVELOPMENT_OPTIONS' : '',
     {
       factory: () => ({ warnOnUnhandledActions: true })

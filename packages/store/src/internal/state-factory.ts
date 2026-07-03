@@ -325,19 +325,17 @@ export class StateFactory {
 
   private hydrateActionMetasMap({ path, actions, instance }: MappedStore): void {
     for (const actionType of Object.keys(actions)) {
-      const actionHandlers = actions[actionType].map(actionMeta => {
+      for (const actionMeta of actions[actionType]) {
         const handlerFn = (ctx: StateContext<any>, action: any) =>
           instance[actionMeta.fn](ctx, action);
 
-        return this._actionHandlerFactory.createActionHandler(
+        const actionHandler = this._actionHandlerFactory.createActionHandler(
           path,
           handlerFn,
           actionMeta.options
         );
-      });
 
-      for (const actionHandler of actionHandlers) {
-        this._actionRegistry.register(actionType, actionHandler);
+        this._actionRegistry.register(actionType, actionHandler, actionMeta.actionClass);
       }
     }
   }
