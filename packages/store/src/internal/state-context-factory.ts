@@ -7,6 +7,7 @@ import { StateContext } from '../symbols';
 import { StateOperations } from '../internal/internals';
 import { InternalStateOperations } from '../internal/state-operations';
 import { simplePatch } from './state-operators';
+import { NGXS_DEVELOPMENT_OPTIONS } from '../dev-features/symbols';
 
 export class StateContextDestroyedError extends Error {
   override readonly name = 'StateContextDestroyedError';
@@ -68,7 +69,7 @@ export class StateContextFactory {
         }
         const currentAppState = root.getState();
         const patchOperator = simplePatch<T>(value);
-        setStateFromOperator(root, currentAppState, patchOperator, path);
+        setStateFromOperator(root, currentAppState, patchOperator, path, injector);
       },
       setState(value: T | StateOperator<T>): void {
         // Same guard as patchState — no-op if the injector is already destroyed.
@@ -78,9 +79,9 @@ export class StateContextFactory {
         }
         const currentAppState = root.getState();
         if (isStateOperator(value)) {
-          setStateFromOperator(root, currentAppState, value, path);
+          setStateFromOperator(root, currentAppState, value, path, injector);
         } else {
-          setStateValue(root, currentAppState, value, path);
+          setStateValue(root, currentAppState, value, path, injector);
         }
       },
       dispatch(actions: any | any[]): Observable<void> {
@@ -103,8 +104,17 @@ function setStateValue<T>(
   root: StateOperations<any>,
   currentAppState: any,
   newValue: T,
-  path: string
+  path: string,
+  injector: EnvironmentInjector
 ): any {
+  if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+    warnIfNewReferenceHasIdenticalValue(
+      injector,
+      getState(currentAppState, path),
+      newValue,
+      path
+    );
+  }
   const newAppState = setValue(currentAppState, path, newValue);
   root.setState(newAppState);
   // Note: this returns the full app state rather than just the patched slice.
@@ -117,13 +127,42 @@ function setStateFromOperator<T>(
   root: StateOperations<any>,
   currentAppState: any,
   stateOperator: StateOperator<T>,
-  path: string
+  path: string,
+  injector: EnvironmentInjector
 ) {
   const local = getState(currentAppState, path);
   const newValue = stateOperator(local as ExistingState<T>);
-  return setStateValue(root, currentAppState, newValue, path);
+  return setStateValue(root, currentAppState, newValue, path, injector);
 }
 
 function getState<T>(currentAppState: any, path: string): T {
   return getValue(currentAppState, path);
+}
+
+// Mirrors `warnOnNewReferenceWithIdenticalValue` in `Store#selectSignal`, but catches the
+// producer side: an action handler that sets a new reference with an identical value causes
+// unnecessary re-emissions for every `select()`/`selectSignal()` subscriber on this slice.
+function warnIfNewReferenceHasIdenticalValue(
+  injector: EnvironmentInjector,
+  oldValue: unknown,
+  newValue: unknown,
+  path: string
+): void {
+  if (Object.is(oldValue, newValue) || injector.destroyed) return;
+
+  const warnOption = injector.get(
+    NGXS_DEVELOPMENT_OPTIONS,
+    null
+  )?.warnOnNewReferenceWithIdenticalValue;
+  if (!warnOption) return;
+
+  try {
+    if (warnOption.isEqual(oldValue, newValue)) {
+      console.error(
+        `A new reference with an identical value was set on the "${path}" state slice. This will cause unnecessary re-emissions for subscribers relying on reference-based equality.`
+      );
+    }
+  } catch {
+    // Swallow silently.
+  }
 }

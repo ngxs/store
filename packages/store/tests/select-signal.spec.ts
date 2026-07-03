@@ -1,7 +1,9 @@
 import { Injectable, runInInjectionContext } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
+  Action,
   State,
+  StateContext,
   createSelector,
   Store,
   NgxsModule,
@@ -904,6 +906,147 @@ describe('warnOnNewReferenceWithIdenticalValue', () => {
       // Change `value` — selector returns a genuinely different result.
       store.reset({ testWarn: { value: 2, counter: 0 } });
       signal();
+
+      expect(errorSpy).not.toHaveBeenCalled();
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+});
+
+describe('warnOnNewReferenceWithIdenticalValue (setState/patchState)', () => {
+  interface TodosStateModel {
+    items: string[];
+  }
+
+  class SetSameShape {
+    static type = '[Todos] SetSameShape';
+  }
+
+  class PatchSameShape {
+    static type = '[Todos] PatchSameShape';
+  }
+
+  class SetDifferentValue {
+    static type = '[Todos] SetDifferentValue';
+  }
+
+  class SetSameReference {
+    static type = '[Todos] SetSameReference';
+  }
+
+  @State<TodosStateModel>({
+    name: 'todos',
+    defaults: { items: [] }
+  })
+  @Injectable()
+  class TodosState {
+    // Always builds a brand-new array — same shape when the item list is unchanged.
+    @Action(SetSameShape)
+    setSameShape(ctx: StateContext<TodosStateModel>) {
+      ctx.setState({ items: [...ctx.getState().items] });
+    }
+
+    @Action(PatchSameShape)
+    patchSameShape(ctx: StateContext<TodosStateModel>) {
+      ctx.patchState({ items: [...ctx.getState().items] });
+    }
+
+    @Action(SetDifferentValue)
+    setDifferentValue(ctx: StateContext<TodosStateModel>) {
+      ctx.setState({ items: [...ctx.getState().items, 'new'] });
+    }
+
+    @Action(SetSameReference)
+    setSameReference(ctx: StateContext<TodosStateModel>) {
+      ctx.setState(ctx.getState());
+    }
+  }
+
+  beforeEach(() => TestBed.resetTestingModule());
+
+  function setup() {
+    TestBed.configureTestingModule({
+      providers: [
+        provideStore(
+          [TodosState],
+          withNgxsDevelopmentOptions({
+            warnOnUnhandledActions: true,
+            warnOnNewReferenceWithIdenticalValue: {
+              isEqual: (a, b) => JSON.stringify(a) === JSON.stringify(b)
+            }
+          })
+        )
+      ]
+    });
+    return TestBed.inject(Store);
+  }
+
+  it('should log console.error when setState sets a new reference with an identical value', () => {
+    const store = setup();
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    try {
+      store.dispatch(new SetSameShape());
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        'A new reference with an identical value was set on the "todos" state slice. This will cause unnecessary re-emissions for subscribers relying on reference-based equality.'
+      );
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
+  it('should log console.error when patchState sets a new reference with an identical value', () => {
+    const store = setup();
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    try {
+      store.dispatch(new PatchSameShape());
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        'A new reference with an identical value was set on the "todos" state slice. This will cause unnecessary re-emissions for subscribers relying on reference-based equality.'
+      );
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
+  it('should not log console.error when the value genuinely changes', () => {
+    const store = setup();
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    try {
+      store.dispatch(new SetDifferentValue());
+
+      expect(errorSpy).not.toHaveBeenCalled();
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
+  it('should not log console.error when the same reference is set', () => {
+    const store = setup();
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    try {
+      store.dispatch(new SetSameReference());
+
+      expect(errorSpy).not.toHaveBeenCalled();
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
+  it('should not log console.error when warnOnNewReferenceWithIdenticalValue is not configured', () => {
+    TestBed.configureTestingModule({
+      providers: [provideStore([TodosState])]
+    });
+    const store = TestBed.inject(Store);
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    try {
+      store.dispatch(new SetSameShape());
 
       expect(errorSpy).not.toHaveBeenCalled();
     } finally {
