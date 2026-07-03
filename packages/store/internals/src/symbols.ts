@@ -113,4 +113,14 @@ export interface ɵActionHandlerMetaData {
   fn: string | symbol;
   options: ɵActionOptions;
   type: string;
+  /** The action class this handler was registered for, used to detect `type` collisions in dev mode. */
+  actionClass: unknown;
 }
+
+export interface ActionDef<TArgs extends any[] = any[], TReturn = any> {
+  type: string;
+
+  new (...args: TArgs): TReturn;
+}
+
+export type ActionType = ActionDef | { type: string };

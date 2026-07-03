@@ -10,3 +10,4 @@ export { ɵwrapObserverCalls } from './custom-rxjs-operators';
 export { ɵStateStream } from './state-stream';
 export { ɵhasOwnProperty, ɵdefineProperty } from './object-utils';
 export { ɵNgxsActionRegistry } from './action-registry';
+export { type ɵNgxsDevelopmentOptions, ɵNGXS_DEVELOPMENT_OPTIONS } from './dev-features';

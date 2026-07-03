@@ -83,7 +83,8 @@ export function Action<ActionOrActions extends ActionType | ActionType[]>(
       meta.actions[type].push({
         fn: name,
         options: options || {},
-        type
+        type,
+        actionClass: action
       });
     }
   };

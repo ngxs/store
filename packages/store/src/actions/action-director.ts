@@ -29,7 +29,7 @@ export class ActionDirector {
       handlerFn,
       options
     );
-    const detach = this._registry.register(Action.type, actionHandler);
+    const detach = this._registry.register(Action.type, actionHandler, Action);
     return { detach };
   }
 }

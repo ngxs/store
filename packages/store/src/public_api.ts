@@ -35,7 +35,6 @@ export {
   type NgxsUnhandledErrorContext
 } from './ngxs-unhandled-error-handler';
 
-export type { NgxsDevelopmentOptions } from './dev-features/symbols';
 export {
   NgxsDevelopmentModule,
   withNgxsDevelopmentOptions
@@ -63,5 +62,6 @@ export * from './utils/public_api';
 
 export { StateToken } from '@ngxs/store/internals';
 export type { ɵActionOptions as ActionOptions } from '@ngxs/store/internals';
+export type { ɵNgxsDevelopmentOptions as NgxsDevelopmentOptions } from '@ngxs/store/internals';
 
 export { getActionTypeFromInstance, actionMatcher } from '@ngxs/store/plugins';

@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { InitState, UpdateState, getActionTypeFromInstance } from '@ngxs/store/plugins';
+import { ɵNGXS_DEVELOPMENT_OPTIONS } from '@ngxs/store/internals';
 
 import { ActionType } from '../actions/symbols';
-import { NGXS_DEVELOPMENT_OPTIONS } from './symbols';
 
 @Injectable()
 export class NgxsUnhandledActionsLogger {
@@ -13,7 +13,7 @@ export class NgxsUnhandledActionsLogger {
   private _ignoredActions = new Set<string>([InitState.type, UpdateState.type]);
 
   constructor() {
-    const options = inject(NGXS_DEVELOPMENT_OPTIONS);
+    const options = inject(ɵNGXS_DEVELOPMENT_OPTIONS);
     if (typeof options.warnOnUnhandledActions === 'object') {
       this.ignoreActions(...options.warnOnUnhandledActions.ignore);
     }

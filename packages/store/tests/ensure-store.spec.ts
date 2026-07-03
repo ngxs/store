@@ -63,10 +63,27 @@ describe('Ensure metadata', () => {
         name: 'count',
         actions: {
           increment: [
-            { fn: 'addOne', options: {}, type: 'increment' },
-            { fn: 'addTwo', options: {}, type: 'increment' }
+            {
+              fn: 'addOne',
+              options: {},
+              type: 'increment',
+              actionClass: { type: 'increment' }
+            },
+            {
+              fn: 'addTwo',
+              options: {},
+              type: 'increment',
+              actionClass: { type: 'increment' }
+            }
           ],
-          decrement: [{ fn: 'decrement', options: {}, type: 'decrement' }]
+          decrement: [
+            {
+              fn: 'decrement',
+              options: {},
+              type: 'decrement',
+              actionClass: { type: 'decrement' }
+            }
+          ]
         },
         defaults: 0,
         path: null,
@@ -78,7 +95,16 @@ describe('Ensure metadata', () => {
     it('should get the meta data from the MyCounterState', () => {
       expect(ɵgetStoreMetadata(MyCounterState)).toEqual({
         name: 'myCounter',
-        actions: { decrement: [{ fn: 'decrement', options: {}, type: 'decrement' }] },
+        actions: {
+          decrement: [
+            {
+              fn: 'decrement',
+              options: {},
+              type: 'decrement',
+              actionClass: { type: 'decrement' }
+            }
+          ]
+        },
         defaults: 1,
         path: null,
         makeRootSelector: expect.any(Function),
