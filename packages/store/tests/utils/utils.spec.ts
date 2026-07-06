@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { setValue } from '@ngxs/store/plugins';
+import { getValue, setValue } from '@ngxs/store/plugins';
 import { ɵPlainObject } from '@ngxs/store/internals';
 import { provideStore } from '@ngxs/store';
 
@@ -7,6 +7,16 @@ import { ɵPROP_GETTER } from '../../src/internal/internals';
 
 describe('utils', () => {
   describe('setValue', () => {
+    it('should set the value for a top-level (single-segment) path', () => {
+      const state = { cart: { items: [] }, other: 'bar' };
+
+      const newState = setValue(state, 'other', 'baz');
+
+      expect(newState).toEqual({ cart: { items: [] }, other: 'baz' });
+      // Top-level `setValue` must still copy the object rather than mutate it.
+      expect(newState).not.toBe(state);
+    });
+
     it('should set the value in the path', () => {
       const state = {
         cart: {
@@ -53,6 +63,26 @@ describe('utils', () => {
         },
         other: 'bar'
       });
+    });
+  });
+
+  describe('getValue', () => {
+    it('should get the value for a top-level (single-segment) path', () => {
+      const state = { cart: { items: [] }, other: 'bar' };
+
+      expect(getValue(state, 'other')).toEqual('bar');
+    });
+
+    it('should get the value for a nested path', () => {
+      const state = { cart: { saved: { items: ['Item1'] } } };
+
+      expect(getValue(state, 'cart.saved.items')).toEqual(['Item1']);
+    });
+
+    it('should return undefined when an intermediate segment is missing', () => {
+      const state = { cart: undefined };
+
+      expect(getValue(state, 'cart.saved.items')).toBeUndefined();
     });
   });
 

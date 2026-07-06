@@ -29,6 +29,12 @@ export function actionMatcher(action1: any) {
  * @ignore
  */
 export const setValue = (obj: any, prop: string, val: any) => {
+  // Most state paths are a single segment (top-level state, no nesting).
+  // Skip `split`/`reduce` for that common case since it's just a shallow copy + assignment.
+  if (prop.indexOf('.') === -1) {
+    return { ...obj, [prop]: val };
+  }
+
   obj = { ...obj };
 
   const split = prop.split('.');
@@ -54,5 +60,8 @@ export const setValue = (obj: any, prop: string, val: any) => {
  *
  * @ignore
  */
-export const getValue = (obj: any, prop: string): any =>
-  prop.split('.').reduce((acc: any, part: string) => acc?.[part], obj);
+export const getValue = (obj: any, prop: string): any => {
+  if (prop.indexOf('.') === -1) return obj?.[prop];
+
+  return prop.split('.').reduce((acc: any, part: string) => acc?.[part], obj);
+};
