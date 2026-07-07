@@ -154,9 +154,7 @@ export class RouterState {
     if (state.trigger === newState.trigger && state.navigationId === newState.navigationId) {
       let equal = false;
       try {
-        equal =
-          JSON.stringify(this._serializer.serialize(state.state!)) ===
-          JSON.stringify(this._serializer.serialize(newState.state));
+        equal = JSON.stringify(state.state) === JSON.stringify(newState.state);
       } catch {
         // If serialization or stringify fails, assume not equal.
         equal = false;
