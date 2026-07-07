@@ -19,6 +19,7 @@ import {
 import {
   RouterState,
   RouterStateSerializer,
+  ROUTER_STATE_TOKEN,
   Navigate,
   RouterNavigation,
   withNgxsRouterPlugin
@@ -98,6 +99,63 @@ describe('NgxsRouterPlugin', () => {
       expect(routerState!.url).toEqual('/a-path?foo=bar');
       expect(routerState!.queryParams).toBeDefined();
       expect(routerState!.queryParams.foo).toEqual('bar');
+    })
+  );
+
+  it(
+    'should correctly dedupe equal router actions when using a custom serializer whose output has no `root` property',
+    freshPlatform(async () => {
+      // Arrange
+      // Unlike `DefaultRouterStateSerializer`, this serializer's output can't be fed back
+      // into `serialize()` a second time (it has no `root` property), which is exactly
+      // what `state.state`/`newState.state` already are by the time they reach the
+      // equality check in `angularRouterAction`.
+      interface FlatRouterState {
+        url: string;
+        queryParams: Params;
+      }
+
+      class FlatRouterStateSerializer implements RouterStateSerializer<FlatRouterState> {
+        serialize(state: RouterStateSnapshot): FlatRouterState {
+          const {
+            url,
+            root: { queryParams }
+          } = state;
+          return { url, queryParams };
+        }
+      }
+
+      const injector = await createTestModule({
+        providers: [{ provide: RouterStateSerializer, useClass: FlatRouterStateSerializer }]
+      });
+
+      const store = injector.get(Store);
+
+      let emissions = 0;
+      const subscription = store.select(ROUTER_STATE_TOKEN).subscribe(() => emissions++);
+
+      const flatState: FlatRouterState = { url: '/a-path', queryParams: {} };
+      const event = { id: 1 } as any;
+
+      // Act
+      // The first dispatch always calls `ctx.setState` because the `trigger` differs
+      // from the default state (`'none'`).
+      await store.dispatch(new RouterNavigation(flatState, event, 'router')).toPromise();
+      expect(emissions).toBe(2);
+
+      // The second dispatch has the same `trigger`/`navigationId` and structurally
+      // identical `routerState`, so it should hit the equality check. This must not
+      // throw (the pre-fix code re-invoked `serialize()` on the already-serialized
+      // state, which crashes for this serializer since there's no `.root`), and it
+      // should correctly skip `ctx.setState` since the states are equal.
+      await store
+        .dispatch(new RouterNavigation({ ...flatState }, { ...event }, 'router'))
+        .toPromise();
+
+      // Assert
+      expect(emissions).toBe(2);
+
+      subscription.unsubscribe();
     })
   );
 
