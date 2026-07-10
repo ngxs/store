@@ -471,6 +471,82 @@ describe('NgxsStoragePlugin', () => {
     expect(CustomStorage.Storage[ɵDEFAULT_STATE_KEY]).toEqual({ counter: { count: 105 } });
   });
 
+  describe('persistOnInit option', () => {
+    class InMemoryEngine implements StorageEngine {
+      private readonly store = new Map<string, any>();
+      getItem(key: string) {
+        return this.store.get(key) ?? null;
+      }
+      setItem(key: string, value: any) {
+        this.store.set(key, value);
+      }
+    }
+
+    it('should not write back to the engine on init by default, even without a migration', () => {
+      // Arrange
+      const engine = new InMemoryEngine();
+      const setItemSpy = jest.spyOn(engine, 'setItem');
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState]),
+          NgxsStoragePluginModule.forRoot({ keys: ['counter'] })
+        ],
+        providers: [{ provide: STORAGE_ENGINE, useValue: engine }]
+      });
+      TestBed.inject(Store);
+
+      // Assert
+      expect(setItemSpy).not.toHaveBeenCalled();
+    });
+
+    it('should write back to the engine on init when `persistOnInit` is true', () => {
+      // Arrange — the value returned by `getItem` doesn't have to have come
+      // from this same engine (e.g. a custom engine that sources its first
+      // read from somewhere else, like Angular's `TransferState`); either
+      // way, with `persistOnInit: true` it's written straight back.
+      const engine = new InMemoryEngine();
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState]),
+          NgxsStoragePluginModule.forRoot({ keys: ['counter'], persistOnInit: true })
+        ],
+        providers: [{ provide: STORAGE_ENGINE, useValue: engine }]
+      });
+      TestBed.inject(Store);
+
+      // Assert
+      expect(engine.getItem('counter')).toBe(JSON.stringify({ count: 0 }));
+    });
+
+    it('should run the value through `beforeSerialize`/`serialize` when persisting on init', () => {
+      // Arrange
+      const engine = new InMemoryEngine();
+
+      // Act
+      TestBed.configureTestingModule({
+        imports: [
+          NgxsModule.forRoot([CounterState]),
+          NgxsStoragePluginModule.forRoot({
+            keys: ['counter'],
+            persistOnInit: true,
+            beforeSerialize: obj => ({ ...obj, taggedByBeforeSerialize: true })
+          })
+        ],
+        providers: [{ provide: STORAGE_ENGINE, useValue: engine }]
+      });
+      TestBed.inject(Store);
+
+      // Assert
+      expect(engine.getItem('counter')).toBe(
+        JSON.stringify({ count: 0, taggedByBeforeSerialize: true })
+      );
+    });
+  });
+
   it('should merge unloaded data from feature with local storage', () => {
     // Arrange
     localStorage.setItem(ɵDEFAULT_STATE_KEY, JSON.stringify({ counter: { count: 100 } }));
