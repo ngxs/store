@@ -36,6 +36,18 @@ export interface NgxsStoragePluginOptions {
   storage?: StorageOption;
 
   /**
+   * By default, the plugin does not write back to the storage engine when
+   * rehydrating on the `InitState`/`UpdateState` actions (unless a migration
+   * ran), since the value it just read is normally already what's in storage.
+   * Set this to `true` if that assumption doesn't hold for your engine — for
+   * example, a custom `StorageEngine` that sources its first read from
+   * somewhere other than the engine it wraps (such as Angular's
+   * `TransferState` during SSR hydration) — so the wrapped engine is written
+   * to right away instead of waiting for the next dispatched action.
+   */
+  persistOnInit?: boolean;
+
+  /**
    * Migration strategies.
    */
   migrations?: {

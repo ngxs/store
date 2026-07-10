@@ -108,7 +108,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
     return next(state, event).pipe(
       tap(nextState => {
-        if (isInitOrUpdateAction && !hasMigration) {
+        if (isInitOrUpdateAction && !hasMigration && !this._options.persistOnInit) {
           return;
         }
 

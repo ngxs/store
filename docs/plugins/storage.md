@@ -61,6 +61,7 @@ The plugin has the following optional values:
 - `migrations`: Migration strategies
 - `beforeSerialize`: Interceptor executed before serialization
 - `afterDeserialize`: Interceptor executed after deserialization
+- `persistOnInit`: Write the value back to the storage engine right after rehydrating on init, even without a migration. Defaults to `false`. See [Persist On Init Option](#persist-on-init-option).
 
 ### Keys option
 
@@ -391,6 +392,28 @@ In the migration strategy, we define:
 - `key`: The key for the item to migrate. If not specified, it takes the entire storage state.
 
 Note: It's important to specify the strategies in the order of which they should progress.
+
+### Persist On Init Option
+
+By default, the plugin does not write back to the storage engine when rehydrating on init (unless a migration ran), since the value it just read is normally already what's in storage — writing it back would be redundant.
+
+That assumption doesn't hold for a custom `StorageEngine` whose first read can come from somewhere other than the engine it wraps — for example, one that reads from Angular's `TransferState` on the client after SSR, then falls back to `localStorage`/`sessionStorage` for every read after that. Without `persistOnInit`, the value obtained from `TransferState` would never be written back into the wrapped engine until some later dispatched action happens to trigger a normal write, so a second read within the same session (or a future reload with no `TransferState` payload) could see stale data.
+
+Setting `persistOnInit: true` makes the plugin write the rehydrated value back to the storage engine right after init, going through the same `beforeSerialize`/`serialize` pipeline as every other write:
+
+```ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideStore(
+      [],
+      withNgxsStoragePlugin({
+        keys: '*',
+        persistOnInit: true
+      })
+    )
+  ]
+};
+```
 
 ### Feature States
 
