@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import {
   type StateToken,
-  type ɵActionOptions,
+  type ɵMutuallyExclusiveActionOptions,
   ɵNgxsActionRegistry
 } from '@ngxs/store/internals';
 import type { Observable } from 'rxjs';
@@ -22,7 +22,7 @@ export class ActionDirector {
       ctx: StateContext<TStateModel>,
       action: InstanceType<TActionType>
     ) => void | Observable<unknown> | Promise<unknown>,
-    options: ɵActionOptions = {}
+    options: ɵMutuallyExclusiveActionOptions = {}
   ) {
     const actionHandler = this._actionHandlerFactory.createActionHandler(
       stateToken.getName(),

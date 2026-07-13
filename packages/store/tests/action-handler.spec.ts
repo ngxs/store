@@ -49,6 +49,33 @@ describe('Action handlers', () => {
       }
     });
 
+    it('should throw an exception if `cancelUncompleted` and `ignoreUncompleted` are both set', () => {
+      let errorMessage: string | null = null;
+
+      @State({
+        name: 'counter'
+      })
+      @Injectable()
+      class CounterState {
+        @Action(TestAction, { cancelUncompleted: true, ignoreUncompleted: true } as any)
+        increment() {}
+      }
+
+      try {
+        TestBed.configureTestingModule({
+          imports: [NgxsModule.forRoot([CounterState])]
+        });
+
+        TestBed.inject(Store);
+      } catch (e: any) {
+        errorMessage = e.message;
+      }
+
+      expect(errorMessage).toEqual(
+        '`cancelUncompleted` and `ignoreUncompleted` are mutually exclusive action options.'
+      );
+    });
+
     it(`should allow for retrieval of the current state`, () => {
       // Arrange
       let currentState: any = null;

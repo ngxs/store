@@ -29,6 +29,34 @@ export class ZooState {
 }
 ```
 
+## Ignoring
+
+`cancelUncompleted` cancels the previous uncompleted invocation and lets the new dispatch proceed (similar to RxJS's `switchMap`). If instead you want to ignore new dispatches while the previous invocation is still uncompleted (similar to RxJS's `exhaustMap`), use the `ignoreUncompleted` option:
+
+```ts
+import { Injectable } from '@angular/core';
+import { State, Action } from '@ngxs/store';
+
+@State<ZooStateModel>({
+  defaults: {
+    animals: []
+  }
+})
+@Injectable()
+export class ZooState {
+  constructor(private animalService: AnimalService) {}
+
+  @Action(FeedAnimals, { ignoreUncompleted: true })
+  get(ctx: StateContext<ZooStateModel>, action: FeedAnimals) {
+    return this.animalService.get(action.payload).pipe(
+      tap((res) => ctx.setState(res))
+    ));
+  }
+}
+```
+
+`cancelUncompleted` and `ignoreUncompleted` are mutually exclusive - setting both on the same handler throws an error.
+
 ## Using AbortSignal
 
 Starting from NGXS v21, the `StateContext` includes an `abortSignal` property that provides a standardized way to handle cancellation of asynchronous operations. This is particularly useful when working with `cancelUncompleted` actions.
