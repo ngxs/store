@@ -12,6 +12,7 @@ import {
 import type { ɵActionOptions } from '@ngxs/store/internals';
 
 import { InternalActions } from '../actions-stream';
+import { throwActionOptionsConflictError } from '../configs/messages.config';
 import { ofActionDispatched } from '../operators/of-action';
 import { StateContextFactory } from './state-context-factory';
 import type { StateContext } from '../symbols';
@@ -26,9 +27,22 @@ export class InternalActionHandlerFactory {
     handlerFn: (ctx: StateContext<any>, action: any) => any,
     options: ɵActionOptions
   ): (action: any) => Observable<any> {
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+      if (options.cancelUncompleted && options.ignoreUncompleted) {
+        throwActionOptionsConflictError();
+      }
+    }
+
     const { dispatched$ } = this._actions;
+    // Tracks whether a previously dispatched, still-uncompleted invocation of
+    // this exact handler is in flight. Only used for `ignoreUncompleted`.
+    let isUncompleted = false;
 
     return (action: any) => {
+      if (options.ignoreUncompleted && isUncompleted) {
+        return of(undefined);
+      }
+
       const abortController = new AbortController();
       const stateContext = this._stateContextFactory.createStateContext(
         path,
@@ -73,6 +87,15 @@ export class InternalActionHandlerFactory {
                 });
               })
             )
+          );
+        }
+
+        if (options.ignoreUncompleted) {
+          isUncompleted = true;
+          result = result.pipe(
+            finalize(() => {
+              isUncompleted = false;
+            })
           );
         }
 

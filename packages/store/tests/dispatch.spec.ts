@@ -349,6 +349,54 @@ describe('Dispatch', () => {
     expect(await store.selectOnce(MyState).toPromise()).toEqual(1);
   }));
 
+  it('should correctly ignore new dispatches while the previous action is uncompleted', fakeAsync(async () => {
+    // Arrange
+    let actionInvokedTimes = 0;
+
+    @State<number>({
+      name: 'counter',
+      defaults: 0
+    })
+    @Injectable()
+    class MyState {
+      @Action(Increment, { ignoreUncompleted: true })
+      increment({ getState, setState }: StateContext<number>) {
+        actionInvokedTimes++;
+        return timer(0).pipe(
+          tap(() => {
+            const state = getState();
+
+            setState(state + 1);
+          })
+        );
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([MyState])]
+    });
+
+    const store = TestBed.inject(Store);
+
+    // Act
+    store.dispatch([
+      new Increment(),
+      new Increment(),
+      new Increment(),
+      new Increment(),
+      new Increment(),
+      new Increment()
+    ]);
+
+    store.dispatch([new Increment()]);
+
+    tick(0);
+
+    // Assert
+    expect(actionInvokedTimes).toEqual(1);
+    expect(await store.selectOnce(MyState).toPromise()).toEqual(1);
+  }));
+
   describe('returns an observable that', () => {
     describe('when the action handler is synchronous', () => {
       it('should notify of the completion of the action handler', () => {
@@ -829,6 +877,56 @@ describe('Dispatch', () => {
           'latest',
           'latest complete'
         ]);
+      }));
+    });
+
+    describe('when the action is ignored because the previous action is uncompleted', () => {
+      it('should not invoke the handler again, and should complete the ignored dispatch immediately', fakeAsync(() => {
+        // Arrange
+        const resolvers: (() => void)[] = [];
+        const subscriptionsCalled: string[] = [];
+
+        @State<number>({
+          name: 'counter',
+          defaults: 0
+        })
+        @Injectable()
+        class MyState {
+          @Action(Increment, { ignoreUncompleted: true })
+          increment() {
+            subscriptionsCalled.push('increment');
+            return new Promise<void>(resolve => resolvers.push(resolve));
+          }
+        }
+
+        TestBed.configureTestingModule({
+          imports: [NgxsModule.forRoot([MyState])]
+        });
+
+        const store = TestBed.inject(Store);
+
+        // Act
+        store.dispatch(new Increment()).subscribe(
+          () => subscriptionsCalled.push('previous'),
+          () => subscriptionsCalled.push('previous error'),
+          () => subscriptionsCalled.push('previous complete')
+        );
+        store.dispatch(new Increment()).subscribe(
+          () => subscriptionsCalled.push('latest'),
+          () => subscriptionsCalled.push('latest error'),
+          () => subscriptionsCalled.push('latest complete')
+        );
+        resolvers[0]();
+        tick(0);
+
+        // Assert
+        // The handler only runs once - the second dispatch is silently ignored
+        // while the first one is still uncompleted.
+        expect(subscriptionsCalled.filter(call => call === 'increment')).toEqual([
+          'increment'
+        ]);
+        expect(subscriptionsCalled).toContain('latest complete');
+        expect(subscriptionsCalled).toContain('previous complete');
       }));
     });
 

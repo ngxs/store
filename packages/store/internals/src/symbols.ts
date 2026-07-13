@@ -107,7 +107,20 @@ export interface ɵActionOptions {
    * Cancel the previous uncompleted observable(s).
    */
   cancelUncompleted?: boolean;
+  /**
+   * Ignore this dispatch if the previous observable(s) haven't completed yet.
+   */
+  ignoreUncompleted?: boolean;
 }
+
+/**
+ * `cancelUncompleted` and `ignoreUncompleted` describe opposite flattening
+ * strategies (switchMap-like vs exhaustMap-like), so they cannot both be set
+ * on the same handler.
+ */
+export type ɵMutuallyExclusiveActionOptions =
+  | (ɵActionOptions & { ignoreUncompleted?: never })
+  | (ɵActionOptions & { cancelUncompleted?: never });
 
 export interface ɵActionHandlerMetaData {
   fn: string | symbol;

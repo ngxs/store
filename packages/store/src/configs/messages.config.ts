@@ -26,6 +26,12 @@ export function throwActionDecoratorError(): never {
   throw new Error('@Action() decorator cannot be used with static methods.');
 }
 
+export function throwActionOptionsConflictError(): never {
+  throw new Error(
+    '`cancelUncompleted` and `ignoreUncompleted` are mutually exclusive action options.'
+  );
+}
+
 export function throwSelectorDecoratorError(): never {
   throw new Error('Selectors only work on methods.');
 }
