@@ -6,7 +6,12 @@ $ npm install @ngxs/store@dev
 
 ### To become next version
 
-...
+- Feature(store): Warn when `setState`/`patchState` produce a new reference with an identical value [#2465](https://github.com/ngxs/store/pull/2465)
+- Feature(store): Warn on duplicate action types via `warnOnDuplicateActionTypes` [#2466](https://github.com/ngxs/store/pull/2466)
+- Feature(store): Add `ignoreUncompleted` action option [#2470](https://github.com/ngxs/store/pull/2470)
+- Feature(storage-plugin): Add `persistOnInit` option to persist rehydrated state on init [#2469](https://github.com/ngxs/store/pull/2469)
+- Fix(router-plugin): Avoid re-serializing already-serialized state in equality check [#2468](https://github.com/ngxs/store/pull/2468)
+- Performance(store): Skip split/reduce for single-segment paths in `getValue`/`setValue` [#2467](https://github.com/ngxs/store/pull/2467)
 
 ### 22.0.0 2026-07-01
 
