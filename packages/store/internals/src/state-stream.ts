@@ -1,9 +1,9 @@
 import { DestroyRef, inject, Injectable, Signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
 
 import { ɵwrapObserverCalls } from './custom-rxjs-operators';
 import { ɵOrderedBehaviorSubject } from './custom-rxjs-subjects';
+import { ɵINITIAL_STATE_TOKEN } from './initial-state';
 import { ɵPlainObject } from './symbols';
 
 /**
@@ -18,7 +18,9 @@ export class ɵStateStream extends ɵOrderedBehaviorSubject<ɵPlainObject> {
   });
 
   constructor() {
-    super({});
+    // Seeded here (rather than by `Store`) so that nothing can call `.next()`
+    // on this subject before it receives its initial value.
+    super(inject(ɵINITIAL_STATE_TOKEN));
 
     // Complete the subject once the root injector is destroyed to ensure
     // there are no active subscribers that would receive events or perform
