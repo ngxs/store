@@ -52,7 +52,8 @@ export class NgxsStoragePluginModule {
 }
 
 export function withNgxsStoragePlugin(
-  options: NgxsStoragePluginOptions
+  options: NgxsStoragePluginOptions,
+  ...features: EnvironmentProviders[]
 ): EnvironmentProviders {
   return makeEnvironmentProviders([
     ɵNgxsStoragePluginKeysManager,
@@ -70,6 +71,7 @@ export function withNgxsStoragePlugin(
       provide: STORAGE_ENGINE,
       useFactory: engineFactory,
       deps: [ɵNGXS_STORAGE_PLUGIN_OPTIONS]
-    }
+    },
+    features
   ]);
 }
