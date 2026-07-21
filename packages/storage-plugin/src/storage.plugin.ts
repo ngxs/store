@@ -1,4 +1,4 @@
-import { Injectable, Injector, PLATFORM_ID, inject } from '@angular/core';
+import { ErrorHandler, Injectable, Injector, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { ɵhasOwnProperty, ɵPlainObject } from '@ngxs/store/internals';
 import {
@@ -23,12 +23,78 @@ import { ɵNgxsStoragePluginKeysManager } from './keys-manager';
 declare const ngDevMode: boolean;
 declare const ngServerMode: boolean;
 
+/** Reported to `ErrorHandler` when a persisted value fails to deserialize on read. */
+export class NgxsStorageDeserializationError extends Error {
+  override readonly name = 'NgxsStorageDeserializationError';
+
+  constructor(
+    readonly key: string,
+    options?: ErrorOptions
+  ) {
+    super(
+      typeof ngDevMode !== 'undefined' && ngDevMode
+        ? `Error occurred while deserializing the ${key} store value, falling back to empty object.`
+        : key,
+      options
+    );
+
+    Object.setPrototypeOf(this, NgxsStorageDeserializationError.prototype);
+  }
+}
+
+/** Reported to `ErrorHandler` when writing a persisted value exceeds the browser's storage quota. */
+export class NgxsStorageQuotaExceededError extends Error {
+  override readonly name = 'NgxsStorageQuotaExceededError';
+
+  constructor(
+    readonly key: string,
+    options?: ErrorOptions
+  ) {
+    super(
+      typeof ngDevMode !== 'undefined' && ngDevMode
+        ? `The ${key} store value exceeds the browser storage quota.`
+        : key,
+      options
+    );
+
+    Object.setPrototypeOf(this, NgxsStorageQuotaExceededError.prototype);
+  }
+}
+
+/** Reported to `ErrorHandler` when a persisted value fails to serialize (or otherwise write) on save. */
+export class NgxsStorageSerializationError extends Error {
+  override readonly name = 'NgxsStorageSerializationError';
+
+  constructor(
+    readonly key: string,
+    options?: ErrorOptions
+  ) {
+    super(
+      typeof ngDevMode !== 'undefined' && ngDevMode
+        ? `Error occurred while serializing the ${key} store value, value not updated.`
+        : key,
+      options
+    );
+
+    Object.setPrototypeOf(this, NgxsStorageSerializationError.prototype);
+  }
+}
+
 @Injectable()
 export class NgxsStoragePlugin implements NgxsPlugin {
   private _injector = inject(Injector);
   private _keysManager = inject(ɵNgxsStoragePluginKeysManager);
   private _options = inject(ɵNGXS_STORAGE_PLUGIN_OPTIONS);
   private _allStatesPersisted = inject(ɵALL_STATES_PERSISTED);
+  private _errorHandler?: ErrorHandler;
+
+  /**
+   * Keys currently over quota. Once a key lands here, further quota errors
+   * for it are swallowed rather than re-reported on every dispatch, since
+   * they'll keep failing the same way until something frees up space. Cleared
+   * once a write for that key succeeds again.
+   */
+  private _quotaExceededKeys = new Set<string>();
 
   handle(state: any, event: any, next: NgxsNextPluginFn) {
     if (
@@ -74,13 +140,10 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           try {
             const newVal = this._options.deserialize!(storedValue);
             storedValue = this._options.afterDeserialize!(newVal, key);
-          } catch {
-            typeof ngDevMode !== 'undefined' &&
-              ngDevMode &&
-              console.error(
-                `Error ocurred while deserializing the ${storageKey} store value, falling back to empty object, the value obtained from the store: `,
-                storedValue
-              );
+          } catch (error) {
+            (this._errorHandler ??= this._injector.get(ErrorHandler)).handleError(
+              new NgxsStorageDeserializationError(storageKey, { cause: error })
+            );
 
             storedValue = {};
           }
@@ -126,24 +189,25 @@ export class NgxsStoragePlugin implements NgxsPlugin {
           try {
             const newStoredValue = this._options.beforeSerialize!(storedValue, key);
             engine.setItem(storageKey, this._options.serialize!(newStoredValue));
+            this._quotaExceededKeys.delete(storageKey);
           } catch (error: any) {
-            if (typeof ngDevMode !== 'undefined' && ngDevMode) {
-              if (
-                error &&
-                (error.name === 'QuotaExceededError' ||
-                  error.name === 'NS_ERROR_DOM_QUOTA_REACHED')
-              ) {
-                console.error(
-                  `The ${storageKey} store value exceeds the browser storage quota: `,
-                  storedValue
-                );
-              } else {
-                console.error(
-                  `Error ocurred while serializing the ${storageKey} store value, value not updated, the value obtained from the store: `,
-                  storedValue
-                );
+            const isQuotaError =
+              error &&
+              (error.name === 'QuotaExceededError' ||
+                error.name === 'NS_ERROR_DOM_QUOTA_REACHED');
+
+            if (isQuotaError) {
+              if (this._quotaExceededKeys.has(storageKey)) {
+                continue;
               }
+              this._quotaExceededKeys.add(storageKey);
             }
+
+            (this._errorHandler ??= this._injector.get(ErrorHandler)).handleError(
+              isQuotaError
+                ? new NgxsStorageQuotaExceededError(storageKey, { cause: error })
+                : new NgxsStorageSerializationError(storageKey, { cause: error })
+            );
           }
         }
       })
