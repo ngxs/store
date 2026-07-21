@@ -80,20 +80,24 @@ export class Store {
    */
   select<T>(selector: TypedSelector<T>): Observable<T> {
     const selectorFn = this.getStoreBoundSelectorFn(selector);
-    return this._selectableStateStream.pipe(
-      map(selectorFn),
-      catchError((error: Error): Observable<never> | Observable<undefined> => {
-        // if error is TypeError we swallow it to prevent usual errors with property access
-        if (this._config.selectorOptions.suppressErrors && error instanceof TypeError) {
-          return of(undefined);
-        }
+    const mapped = this._selectableStateStream.pipe(map(selectorFn));
+    const { suppressErrors } = this._config.selectorOptions;
 
-        // rethrow other errors
-        throw error;
-      }),
-      distinctUntilChanged(),
-      leaveNgxs(this._internalExecutionStrategy)
-    );
+    return (
+      suppressErrors
+        ? mapped.pipe(
+            // if error is TypeError we swallow it to prevent usual errors with property access
+            catchError((error: Error): Observable<undefined> => {
+              if (error instanceof TypeError) {
+                return of(undefined);
+              }
+
+              // rethrow other errors
+              throw error;
+            })
+          )
+        : mapped
+    ).pipe(distinctUntilChanged(), leaveNgxs(this._internalExecutionStrategy));
   }
 
   /**
