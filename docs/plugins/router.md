@@ -72,6 +72,33 @@ export class MyApp {
 
 You can use action handlers to listen to state changes in your components and services by subscribing to the `RouterNavigation`, `RouterCancel`, `RouterError` or `RouterDataResolved` action classes.
 
+## Derived Selectors
+
+Besides `RouterState.url`, `RouterState` exposes a handful of selectors derived from the current router snapshot, so you don't have to drill into `RouterState.state()` yourself:
+
+```ts
+import { Component } from '@angular/core';
+import { select } from '@ngxs/store';
+import { RouterState } from '@ngxs/router-plugin';
+
+@Component({ ... })
+export class MyComponent {
+  queryParams = select(RouterState.queryParams);
+  fragment = select(RouterState.fragment);
+
+  // The path params, `data`, and resolved `title` of the deepest activated
+  // route — mirrors what `ActivatedRoute.snapshot` exposes for the component
+  // currently being rendered.
+  params = select(RouterState.params);
+  data = select(RouterState.data);
+  title = select(RouterState.title);
+}
+```
+
+`queryParams`/`queryParamMap`/`fragment` are global to the whole navigation, so they're always accurate. `params`/`paramMap`/`data`/`title`, however, are resolved by walking the _first_ child at each level of the route tree down to the leaf — the same approach `ActivatedRoute` itself uses — so in an app with multiple simultaneously active named outlets, this can resolve to the wrong branch. Build a custom selector from `RouterState.state()` if that applies to your app.
+
+These selectors assume the default `RouterStateSerializer` output shape (`SerializedRouterStateSnapshot`). If you provide a [custom serializer](#custom-router-state-serializer), build your own selectors from `RouterState.state()` instead.
+
 ## Listening to the data resolution event
 
 You can listen for the `RouterDataResolved` action, which is dispatched when the navigated route has linked resolvers. For example:

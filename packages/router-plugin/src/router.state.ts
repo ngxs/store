@@ -1,5 +1,6 @@
 import { NgZone, Injectable, inject, DestroyRef } from '@angular/core';
 import {
+  ActivatedRouteSnapshot,
   NavigationCancel,
   NavigationError,
   Router,
@@ -97,6 +98,60 @@ export class RouterState {
   }
 
   static url = createSelector([ROUTER_STATE_TOKEN], state => state?.state?.url);
+
+  /**
+   * The query params of the current navigation. Unlike `params`/`data`/`title`
+   * below, query params are global to the whole navigation, not tied to a
+   * specific activated route, so this is always accurate regardless of outlets.
+   *
+   * Assumes the default `RouterStateSerializer` output shape
+   * (`SerializedRouterStateSnapshot`). If you've provided a custom serializer,
+   * build your own selector from `RouterState.state()` instead.
+   */
+  static queryParams = createSelector(
+    [ROUTER_STATE_TOKEN],
+    state => state?.state?.root.queryParams
+  );
+
+  static queryParamMap = createSelector(
+    [ROUTER_STATE_TOKEN],
+    state => state?.state?.root.queryParamMap
+  );
+
+  static fragment = createSelector([ROUTER_STATE_TOKEN], state => state?.state?.root.fragment);
+
+  /**
+   * The path params of the deepest activated route — mirrors what
+   * `ActivatedRoute.snapshot.params` exposes for the component currently
+   * being rendered.
+   *
+   * Only follows the *first* child at each level of the route tree, so —
+   * same caveat as Angular's own `ActivatedRoute` — this can resolve to the
+   * wrong branch in an app with multiple simultaneously active named
+   * outlets. Build a custom selector from `RouterState.state()` if that
+   * applies to you.
+   */
+  static params = createSelector(
+    [ROUTER_STATE_TOKEN],
+    state => getActivatedLeafRoute(state)?.params
+  );
+
+  static paramMap = createSelector(
+    [ROUTER_STATE_TOKEN],
+    state => getActivatedLeafRoute(state)?.paramMap
+  );
+
+  /** The `data` of the deepest activated route. Same named-outlet caveat as `params`. */
+  static data = createSelector(
+    [ROUTER_STATE_TOKEN],
+    state => getActivatedLeafRoute(state)?.data
+  );
+
+  /** The resolved `title` of the deepest activated route. Same named-outlet caveat as `params`. */
+  static title = createSelector(
+    [ROUTER_STATE_TOKEN],
+    state => getActivatedLeafRoute(state)?.title
+  );
 
   constructor() {
     this._setUpStoreListener();
@@ -309,4 +364,15 @@ export class RouterState {
     this._storeState = null;
     this._routerState = null;
   }
+}
+
+/** Walks the primary-outlet chain down to the deepest activated route. */
+function getActivatedLeafRoute(
+  state: RouterStateModel<RouterStateSnapshot> | undefined
+): ActivatedRouteSnapshot | undefined {
+  let route = state?.state?.root;
+  while (route?.firstChild) {
+    route = route.firstChild;
+  }
+  return route;
 }
