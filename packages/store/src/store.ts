@@ -9,11 +9,7 @@ import {
   take,
   of
 } from 'rxjs';
-import {
-  ɵINITIAL_STATE_TOKEN,
-  ɵNGXS_DEVELOPMENT_OPTIONS,
-  ɵStateStream
-} from '@ngxs/store/internals';
+import { ɵNGXS_DEVELOPMENT_OPTIONS, ɵStateStream } from '@ngxs/store/internals';
 
 import { InternalStateOperations } from './internal/state-operations';
 import { getRootSelectorFactory } from './selectors/selector-utils';
@@ -49,8 +45,6 @@ export class Store {
   );
 
   constructor() {
-    this.initStateStream();
-
     if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       this._injector = inject(Injector);
     }
@@ -178,15 +172,5 @@ export class Store {
     const makeSelectorFn = getRootSelectorFactory(selector);
     const runtimeContext = this._stateFactory.getRuntimeSelectorContext();
     return makeSelectorFn(runtimeContext);
-  }
-
-  private initStateStream(): void {
-    const initialStateValue: any = inject(ɵINITIAL_STATE_TOKEN);
-    const value = this._stateStream.value;
-    const storeIsEmpty = !value || Object.keys(value).length === 0;
-
-    if (storeIsEmpty) {
-      this._stateStream.next(initialStateValue);
-    }
   }
 }
