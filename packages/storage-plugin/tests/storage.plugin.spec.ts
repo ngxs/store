@@ -6,6 +6,7 @@ import { NgxsModule, State, Store, Action, StateContext } from '@ngxs/store';
 import { ɵDEFAULT_STATE_KEY } from '@ngxs/storage-plugin/internals';
 
 import {
+  NgxsStorageDeserializationError,
   NgxsStoragePluginModule,
   StorageOption,
   StorageEngine,
@@ -764,7 +765,7 @@ describe('NgxsStoragePlugin', () => {
         expect(count).toEqual(0);
       });
 
-      it('should log the namespaced key into the console when it failed to deserialize the value', () => {
+      it('should report the namespaced key via ErrorHandler when it failed to deserialize the value', () => {
         // Arrange & act
         const namespace = 'my_cool_app';
         localStorage.setItem(
@@ -773,16 +774,22 @@ describe('NgxsStoragePlugin', () => {
           // Just a random invalid value.
           `undefined+null+something_else`
         );
+        // The default `ErrorHandler` logs to `console.error('ERROR', error)`,
+        // so this also confirms the plugin no longer logs its own message directly.
         const spy = jest.spyOn(console, 'error').mockImplementation();
         testSetup({ namespace, keys: [NamesState] });
         // Assert
         try {
           expect(spy).toHaveBeenCalledWith(
-            expect.stringMatching(
-              /Error ocurred while deserializing the my_cool_app:names store value/
-            ),
-            expect.anything()
+            'ERROR',
+            expect.objectContaining({
+              key: `${namespace}:names`,
+              message: expect.stringMatching(
+                /Error occurred while deserializing the my_cool_app:names store value/
+              )
+            })
           );
+          expect(spy.mock.calls[0][1]).toBeInstanceOf(NgxsStorageDeserializationError);
         } finally {
           spy.mockRestore();
         }
