@@ -1,6 +1,8 @@
 import {
   DestroyRef,
+  ErrorHandler,
   EnvironmentProviders,
+  Injector,
   NgZone,
   PLATFORM_ID,
   inject,
@@ -16,6 +18,7 @@ import {
 
 import { getStorageKey } from '../internals';
 import { ɵNgxsStoragePluginKeysManager } from '../keys-manager';
+import { NgxsStorageDeserializationError } from '../storage.plugin';
 
 /**
  * Keeps the store in sync across browser tabs/windows that share the same
@@ -45,6 +48,8 @@ export function withNgxsStorageSync(): EnvironmentProviders {
     const store = inject(Store);
     const keysManager = inject(ɵNgxsStoragePluginKeysManager);
     const options = inject(ɵNGXS_STORAGE_PLUGIN_OPTIONS);
+    const injector = inject(Injector);
+    let errorHandler: ErrorHandler | undefined;
 
     const listener = (event: StorageEvent) => {
       // `event.key` is `null` when the change came from `Storage.clear()` —
@@ -64,13 +69,10 @@ export function withNgxsStorageSync(): EnvironmentProviders {
         try {
           const newVal = options.deserialize!(event.newValue);
           storedValue = options.afterDeserialize!(newVal, key);
-        } catch {
-          typeof ngDevMode !== 'undefined' &&
-            ngDevMode &&
-            console.error(
-              `Error occurred while deserializing the ${event.key} value written by another tab, skipping sync: `,
-              event.newValue
-            );
+        } catch (error) {
+          (errorHandler ??= injector.get(ErrorHandler)).handleError(
+            new NgxsStorageDeserializationError(event.key, { cause: error })
+          );
           continue;
         }
 
