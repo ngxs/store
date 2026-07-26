@@ -1,9 +1,13 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { ApplicationConfig, Component, Injectable } from '@angular/core';
+import { ApplicationConfig, Component, ErrorHandler, Injectable } from '@angular/core';
 import { Action, State, StateContext, Store, provideStore } from '@ngxs/store';
 import { freshPlatform, skipConsoleLogging } from '@ngxs/store/internals/testing';
 
-import { withNgxsStoragePlugin, withNgxsStorageSync } from '..';
+import {
+  NgxsStorageDeserializationError,
+  withNgxsStoragePlugin,
+  withNgxsStorageSync
+} from '..';
 
 describe('withNgxsStorageSync', () => {
   interface CounterStateModel {
@@ -29,13 +33,14 @@ describe('withNgxsStorageSync', () => {
   @Component({ selector: 'app-root', template: '', standalone: true })
   class TestComponent {}
 
-  function bootstrap() {
+  function bootstrap(extraProviders: ApplicationConfig['providers'] = []) {
     const appConfig: ApplicationConfig = {
       providers: [
         provideStore(
           [CounterState],
           withNgxsStoragePlugin({ keys: [CounterState] }, withNgxsStorageSync())
-        )
+        ),
+        ...extraProviders
       ]
     };
 
@@ -113,23 +118,25 @@ describe('withNgxsStorageSync', () => {
   );
 
   it(
-    'should log and skip rather than throw when the new value fails to deserialize',
+    'should report and skip rather than throw when the new value fails to deserialize',
     freshPlatform(async () => {
       // Arrange
-      const { injector } = await bootstrap();
+      const handleError = jest.fn();
+      const { injector } = await bootstrap([
+        { provide: ErrorHandler, useValue: { handleError } }
+      ]);
       const store = injector.get(Store);
-      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-      try {
-        // Act
-        writeFromAnotherTab('counter', null, '{not valid json');
+      // Act
+      writeFromAnotherTab('counter', null, '{not valid json');
 
-        // Assert
-        expect(store.snapshot()).toEqual({ counter: { count: 0 } });
-        expect(spy).toHaveBeenCalled();
-      } finally {
-        spy.mockRestore();
-      }
+      // Assert
+      expect(store.snapshot()).toEqual({ counter: { count: 0 } });
+      expect(handleError).toHaveBeenCalledTimes(1);
+      const reportedError = handleError.mock.calls[0][0];
+      expect(reportedError).toBeInstanceOf(NgxsStorageDeserializationError);
+      expect(reportedError.key).toBe('counter');
+      expect(reportedError.cause).toBeInstanceOf(Error);
     })
   );
 
