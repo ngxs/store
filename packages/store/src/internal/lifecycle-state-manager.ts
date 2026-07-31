@@ -1,5 +1,4 @@
-import { DestroyRef, inject, Injectable, Injector } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { DestroyRef, effect, inject, Injectable, Injector } from '@angular/core';
 import { ɵNGXS_APP_BOOTSTRAP_STATE } from '@ngxs/store/internals';
 import { getValue, InitState, UpdateState } from '@ngxs/store/plugins';
 
@@ -12,7 +11,6 @@ import { getInvalidInitializationOrderMessage } from '../configs/messages.config
 
 @Injectable({ providedIn: 'root' })
 export class LifecycleStateManager {
-  private _destroyRef = inject(DestroyRef);
   private _injector = inject(Injector);
   private _store = inject(Store);
   private _internalStateOperations = inject(InternalStateOperations);
@@ -62,12 +60,18 @@ export class LifecycleStateManager {
       this._invokeInitOnStates(results.states);
 
       const options = { injector: this._injector };
-      toObservable(this._appBootstrapState, options)
-        .pipe(takeUntilDestroyed(this._destroyRef))
-        .subscribe(appBootstrapped => {
-          if (!appBootstrapped) return;
-          this._invokeBootstrapOnStates(results.states);
-        });
+      // The effect is destroyed as soon as it fires so that nothing is left
+      // registered against the root injector's `DestroyRef`. Keeping a live
+      // effect/subscription around until root injector destruction (e.g. via
+      // `toObservable` + `takeUntilDestroyed`) races with other root-scoped
+      // teardown (such as `ɵStateStream` completing itself), which can throw
+      // `NG0205`/`ObjectUnsubscribedError` during fast TestBed teardown.
+      const ref = effect(() => {
+        const appBootstrapped = this._appBootstrapState();
+        if (!appBootstrapped) return;
+        ref.destroy();
+        this._invokeBootstrapOnStates(results.states);
+      }, options);
     });
   }
 
