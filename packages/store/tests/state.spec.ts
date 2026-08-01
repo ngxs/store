@@ -22,7 +22,7 @@ import {
   StateContext,
   Store
 } from '@ngxs/store';
-import { ɵMETA_KEY } from '@ngxs/store/internals';
+import { ɵMETA_KEY, ɵNGXS_APP_BOOTSTRAP_STATE } from '@ngxs/store/internals';
 
 import { NgxsAfterBootstrap } from '../src/symbols';
 import { simplePatch } from '../src/internal/state-operators';
@@ -358,6 +358,45 @@ describe('State', () => {
         LifecycleHooks.NgAfterViewInit,
         LifecycleHooks.NgxsAfterBootstrap
       ]);
+    });
+
+    it('should invoke "ngxsAfterBootstrap" only once, even if the bootstrap signal flips again later', () => {
+      // This guards against reintroducing `toObservable(...).pipe(takeUntilDestroyed(...))`
+      // for the bootstrap-completion signal (see #2479): that pattern keeps the
+      // internal `effect`/subscription alive until the root injector is destroyed,
+      // which both invokes `ngxsAfterBootstrap` on every subsequent truthy emission
+      // and races with other root-scoped teardown (e.g. `ɵStateStream` completing
+      // itself), producing `NG0205`/`ObjectUnsubscribedError` during fast TestBed
+      // teardown. The fix keeps a self-destroying `effect` that detaches itself
+      // the moment it fires, so it can only ever run `ngxsAfterBootstrap` once.
+      @State({
+        name: 'foo'
+      })
+      @Injectable()
+      class FooState implements NgxsAfterBootstrap {
+        public ngxsAfterBootstrap(): void {
+          hooks.push(LifecycleHooks.NgxsAfterBootstrap);
+        }
+      }
+
+      TestBed.configureTestingModule({
+        imports: [NgxsModule.forRoot([FooState])]
+      });
+
+      TestBed.inject(Store);
+
+      const appBootstrapState = TestBed.inject(ɵNGXS_APP_BOOTSTRAP_STATE);
+
+      appBootstrapState.set(true);
+      TestBed.flushEffects();
+
+      appBootstrapState.set(false);
+      TestBed.flushEffects();
+
+      appBootstrapState.set(true);
+      TestBed.flushEffects();
+
+      expect(hooks).toEqual([LifecycleHooks.NgxsAfterBootstrap]);
     });
   });
 
