@@ -80,11 +80,11 @@ describe('TransferStateStorageEngine', () => {
         }
       }
 
-      return this.engine.getItem(key);
+      return this.engine?.getItem(key);
     }
 
     setItem(key: string, value: unknown): void {
-      this.engine.setItem(key, value);
+      this.engine?.setItem(key, value);
     }
   }
 
