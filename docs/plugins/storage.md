@@ -319,6 +319,26 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
+`STORAGE_ENGINE` is also the token you'd `inject()` if you want to build a custom engine that wraps whatever the plugin is already using, instead of replacing it outright. Since it resolves to `null` on the server (and whenever the `storage` option doesn't resolve to a known engine), treat it as `StorageEngine | null` and guard against `null` wherever you use it:
+
+```ts
+import { inject, Injectable } from '@angular/core';
+import { StorageEngine, STORAGE_ENGINE } from '@ngxs/storage-plugin';
+
+@Injectable({ providedIn: 'root' })
+export class MyWrappingStorageEngine implements StorageEngine {
+  private readonly engine = inject(STORAGE_ENGINE);
+
+  getItem(key: string): any {
+    return this.engine?.getItem(key);
+  }
+
+  setItem(key: string, value: any): void {
+    this.engine?.setItem(key, value);
+  }
+}
+```
+
 ### Serialization Interceptors
 
 You can define your own logic before or after the state gets serialized or deserialized.
