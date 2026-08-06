@@ -1,1 +1,1 @@
-export type CallStack = (string | {})[][];
+export type CallStack = (string | {} | undefined)[][];

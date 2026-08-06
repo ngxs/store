@@ -18,7 +18,7 @@ export function formatActionCallStack(options: FormatActionCallStackOptions): Ca
     : [];
 
   const formattedCallstack = [
-    [collapsed ? 'groupCollapsed' : 'group', `action ${action} @ `],
+    [collapsed ? 'groupCollapsed' : 'group', `action ${action} (started @ )`],
     ...formattedPayload,
     ['log', '%c prev state', 'color: #9E9E9E; font-weight: bold', { test: prevState }]
   ];
