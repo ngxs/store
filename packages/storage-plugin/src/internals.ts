@@ -27,10 +27,15 @@ export function engineFactory(options: NgxsStoragePluginOptions): StorageEngine 
     return null;
   }
 
+  // `ngServerMode` only tells us we're not on Angular's own SSR. Some pages are also
+  // rendered by crawlers/bots running JS engines that never define these globals at
+  // all, so referencing them directly would throw a ReferenceError instead of just
+  // leaving storage disabled. Users can't opt out of this factory, so it needs to be
+  // defensive on their behalf.
   if (options.storage === StorageOption.LocalStorage) {
-    return localStorage;
+    return typeof localStorage === 'undefined' ? null : localStorage;
   } else if (options.storage === StorageOption.SessionStorage) {
-    return sessionStorage;
+    return typeof sessionStorage === 'undefined' ? null : sessionStorage;
   }
 
   return null;
