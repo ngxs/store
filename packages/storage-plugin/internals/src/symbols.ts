@@ -118,9 +118,8 @@ export const ɵNGXS_STORAGE_PLUGIN_OPTIONS =
  * This is the engine the plugin uses by default, for any key that wasn't
  * given its own explicit engine. Normally it's just `localStorage` or
  * `sessionStorage`, picked based on the `storage` option — but it can also
- * be a custom engine if a feature (like `withNgxsStorageBatching()`)
- * overrides it. It's `null` on the server, since there's no storage to use
- * there.
+ * be a custom engine if a feature overrides it. It's `null` on the server,
+ * since there's no storage to use there.
  *
  * Inject this token when you want to build a custom `StorageEngine` that
  * wraps whatever engine the plugin is already using.

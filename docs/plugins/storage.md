@@ -435,6 +435,30 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
+### Syncing Across Tabs
+
+Imagine you have your app open in two browser tabs at the same time. You log out in one tab — but the other tab has no idea that happened, and still shows you as logged in. That's confusing for users, and it's a common problem with any app that stores data in the browser.
+
+`withNgxsStorageSync()` fixes this. Add it as a feature next to `withNgxsStoragePlugin()`, and whenever one tab writes a persisted value to storage, every other open tab automatically picks up that change too — no page refresh needed.
+
+```ts
+import { provideStore } from '@ngxs/store';
+import { withNgxsStoragePlugin, withNgxsStorageSync } from '@ngxs/storage-plugin';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([], withNgxsStoragePlugin({ keys: '*' }, withNgxsStorageSync()))]
+};
+```
+
+That's it — there's nothing else to configure. As long as a key is being persisted by the plugin, it's covered.
+
+**How does it actually work, under the hood?** Browsers have had a built-in way to do this for a long time: whenever `localStorage` or `sessionStorage` changes, every _other_ tab on the same site automatically receives a `storage` event (the tab that made the change does not receive it, only the others). `withNgxsStorageSync()` just listens for that event, checks whether it's one of your persisted keys, and if so, updates your NGXS state to match — the same way your state gets loaded from storage when the app first starts.
+
+**A couple of things worth knowing:**
+
+- This only works for the two storage mechanisms the browser natively supports: `localStorage` and `sessionStorage`. If a key is persisted through your own custom `StorageEngine`, there's no `storage` event for that engine to hook into, so that key won't sync across tabs. (This is a limitation of the browser, not something the plugin could work around.)
+- This feature is currently marked `@experimental`, which means its behavior could still change in a future release.
+
 ### Feature States
 
 We can also add states at the feature level when invoking `provideStates`, such as within `Route` providers. This is useful when we want to avoid the root level, responsible for providing the store, from being aware of any feature states. If we do not specify any states to be persisted at the root level, we should specify an empty list:
