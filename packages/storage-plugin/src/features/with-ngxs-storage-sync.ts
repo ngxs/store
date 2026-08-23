@@ -35,6 +35,8 @@ import { NgxsStorageDeserializationError } from '../storage.plugin';
  * `localStorage`/`sessionStorage` — keys persisted through a custom
  * `StorageEngine` aren't covered, since there's no cross-tab notification
  * mechanism for the plugin to hook into for those.
+ *
+ * @experimental This API is experimental and may change in any release.
  */
 export function withNgxsStorageSync(): EnvironmentProviders {
   return provideEnvironmentInitializer(() => {
