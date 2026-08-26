@@ -7,13 +7,13 @@ All you have to do is call `withNgxsPlugin` with a plugin class. If your plugins
 Let's take a look at a basic example of a logger:
 
 ```ts
-import { makeEnvironmentProviders, InjectionToken, Injectable, Inject } from '@angular/core';
+import { makeEnvironmentProviders, InjectionToken, Service, Inject } from '@angular/core';
 import { withNgxsPlugin } from '@ngxs/store';
 import { NgxsPlugin, NgxsNextPluginFn } from '@ngxs/store/plugins';
 
 export const NGXS_LOGGER_PLUGIN_OPTIONS = new InjectionToken('NGXS_LOGGER_PLUGIN_OPTIONS');
 
-@Injectable()
+@Service({ autoProvided: false })
 export class LoggerPlugin implements NgxsPlugin {
   constructor(@Inject(NGXS_LOGGER_PLUGIN_OPTIONS) private options: any) {}
 

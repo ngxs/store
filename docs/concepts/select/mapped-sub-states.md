@@ -18,7 +18,7 @@ interface Animal {
     { type: 'panda', age: 'young', name: 'Jimmy' }
   ]
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   static getPandas(age: string) {
     return createSelector([ZooState], (state: Animal[]) => {
@@ -73,7 +73,7 @@ interface ZooStateModel {
     }
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   static getZooAnimals(zooName: string) {
     return createSelector([ZooState], (state: ZooStateModel) => state[zooName].animals);

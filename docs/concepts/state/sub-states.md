@@ -49,7 +49,7 @@ export interface CartStateModel {
   },
   children: [CartSavedState]
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class CartState {}
 ```
 
@@ -68,7 +68,7 @@ export interface CartSavedStateModel {
     items: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class CartSavedState {}
 ```
 
@@ -130,7 +130,7 @@ export class SetCheckedoutAndItems {
   },
   children: [CartSavedState]
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class CartState {
   @Action(SetCheckedoutAndItems)
   setCheckedoutAndItems(

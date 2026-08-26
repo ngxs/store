@@ -8,7 +8,7 @@ This is useful for canceling previous requests like in a typeahead.
 For basic scenarios, we can use the `cancelUncompleted` action decorator option.
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action } from '@ngxs/store';
 
 @State<ZooStateModel>({
@@ -16,7 +16,7 @@ import { State, Action } from '@ngxs/store';
     animals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   constructor(private animalService: AnimalService, private actions$: Actions) {}
 
@@ -34,7 +34,7 @@ export class ZooState {
 `cancelUncompleted` cancels the previous uncompleted invocation and lets the new dispatch proceed (similar to RxJS's `switchMap`). If instead you want to ignore new dispatches while the previous invocation is still uncompleted (similar to RxJS's `exhaustMap`), use the `ignoreUncompleted` option:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action } from '@ngxs/store';
 
 @State<ZooStateModel>({
@@ -42,7 +42,7 @@ import { State, Action } from '@ngxs/store';
     animals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 
@@ -75,7 +75,7 @@ The `AbortSignal` provides a standard browser API to detect and respond to cance
 When using async/await, check `ctx.abortSignal.aborted` after await points to handle cancellation:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 
 export class FetchAnimals {
@@ -87,7 +87,7 @@ export class FetchAnimals {
     animals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 
@@ -112,7 +112,7 @@ export class ZooState {
 The `AbortSignal` works seamlessly with the Fetch API:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 
 export class SearchAnimals {
@@ -126,7 +126,7 @@ export class SearchAnimals {
     loading: false
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   @Action(SearchAnimals, { cancelUncompleted: true })
   async searchAnimals(ctx: StateContext<ZooStateModel>, action: SearchAnimals) {
@@ -160,7 +160,7 @@ export class ZooState {
 When you return an Observable from an action handler, NGXS automatically unsubscribes when the `abortSignal` is aborted. You don't need to manually check the signal:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { tap } from 'rxjs';
 
@@ -169,7 +169,7 @@ import { tap } from 'rxjs';
     animals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 
@@ -188,7 +188,7 @@ export class ZooState {
 For more advanced cases, we can use normal Rx operators.
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, Actions, ofAction } from '@ngxs/store';
 import { tap } from 'rxjs';
 
@@ -197,7 +197,7 @@ import { tap } from 'rxjs';
     animals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   constructor(private animalService: AnimalService, private actions$: Actions) {}
 

@@ -46,7 +46,7 @@ An alternative solution is to create a [meta selector](./#meta-selectors). For e
 
 ```ts
 @State({...})
-@Injectable()
+@Service({ autoProvided: false })
 export class SomeState {
   @Selector()
   static getData(state: SomeStateModel) {

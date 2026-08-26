@@ -19,7 +19,7 @@ export interface ZooStateModel {
     animals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState implements NgxsOnChanges {
   ngxsOnChanges(change: NgxsSimpleChange) {
     console.log('prev state', change.previousValue);
@@ -45,7 +45,7 @@ export interface ZooStateModel {
     animals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState implements NgxsOnInit {
   ngxsOnInit(ctx: StateContext<ZooStateModel>) {
     console.log('State initialized, now getting animals');
@@ -69,7 +69,7 @@ export interface ZooStateModel {
     animals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState implements NgxsAfterBootstrap {
   ngxsAfterBootstrap(ctx: StateContext<ZooStateModel>) {
     console.log('The application has been fully rendered');
@@ -182,7 +182,7 @@ export class ConfigService {
   name: 'version',
   defaults: null
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class VersionState implements NgxsOnInit {
   private configService = inject(ConfigService);
 
@@ -220,7 +220,7 @@ There are different solutions. Let's look at the simplest. The first solution wo
   name: 'version',
   defaults: null
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class VersionState implements NgxsAfterBootstrap {
   private configService = inject(ConfigService);
 
@@ -243,7 +243,7 @@ export class SetVersion {
   name: 'version',
   defaults: null
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class VersionState {
   @Action(SetVersion)
   setVersion(ctx: StateContext<string | null>, action: SetVersion): void {

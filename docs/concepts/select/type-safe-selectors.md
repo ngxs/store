@@ -29,7 +29,7 @@ Using the token as the `name` in `@State` and as the selector source makes the m
 
 ```ts
 @State({ name: ZOO_STATE_TOKEN, defaults: { animals: [] } })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {}
 
 export class ZooSelectors {

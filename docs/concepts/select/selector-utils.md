@@ -16,7 +16,7 @@ These are the provided utils:
 Let's start with a common example. Here we have a small state containing animals. Check the snippet below:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { Selector, State } from '@ngxs/store';
 
 export interface AnimalsStateModel {
@@ -33,7 +33,7 @@ export interface AnimalsStateModel {
     monkeys: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class AnimalsState {}
 
 export class AnimalsSelectors {

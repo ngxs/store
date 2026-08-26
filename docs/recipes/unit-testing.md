@@ -173,7 +173,7 @@ it('should wait for completion of the asynchronous action', async () => {
     name: 'counter',
     defaults: 0
   })
-  @Injectable()
+  @Service({ autoProvided: false })
   class CounterState {
     @Selector()
     static getCounter(state: number) {

@@ -172,7 +172,7 @@ If you want to do some modifications to the state during the hmr lifecycle you c
 import { HmrInitAction, HmrBeforeDestroyAction } from '@ngxs/hmr-plugin';
 
 @State({ ... })
-@Injectable()
+@Service({ autoProvided: false })
 export class MyState {
   @Action(HmrInitAction)
   public hmrInit(ctx: StateContext, { payload }) {

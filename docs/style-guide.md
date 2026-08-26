@@ -67,7 +67,7 @@ export class Todo {
   name: 'todos',
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 class TodosState {
   @Selector()
   static getTodos(state: Todo[]) {
@@ -108,7 +108,7 @@ export interface TodoModel {
   name: 'todos',
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 class TodosState {
   @Selector()
   static getTodos(state: Todo[]) {
@@ -163,7 +163,7 @@ export interface GridCollectionStateModel {
     id: -1
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class RowState {}
 
 @State<GridStateModel>({
@@ -173,7 +173,7 @@ export class RowState {}
     rows: new Map<number, RowState>()
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class GridState {}
 
 @State<GridCollectionStateModel>({
@@ -182,7 +182,7 @@ export class GridState {}
     grids: new Map<number, GridState>()
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class GridCollectionState {}
 ```
 
@@ -214,7 +214,7 @@ export interface GridCollectionStateModel {
     id: -1
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class RowState {}
 
 @State<GridStateModel>({
@@ -224,7 +224,7 @@ export class RowState {}
     rows: {}
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class GridState {}
 
 @State<GridCollectionStateModel>({
@@ -233,6 +233,6 @@ export class GridState {}
     grids: {}
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class GridCollectionState {}
 ```

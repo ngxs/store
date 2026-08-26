@@ -32,7 +32,7 @@ How are feature states added to the global state graph? Assume you have a `ZoosS
   name: 'zoos',
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZoosState {}
 ```
 
@@ -43,7 +43,7 @@ And it's registered at the root level via `provideStore([ZoosState])`. Assume yo
   name: 'offices',
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class OfficesState {}
 ```
 

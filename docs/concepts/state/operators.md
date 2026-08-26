@@ -15,7 +15,7 @@ The basic idea of operators is that we could describe the modifications to the s
 From theory to practice - let's take the following example:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
@@ -36,7 +36,7 @@ export class CreateMonkeys {
     pandas: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class AnimalsState {
   @Action(CreateMonkeys)
   createMonkeys(ctx: StateContext<AnimalsStateModel>) {
@@ -76,7 +76,7 @@ safePatch<T extends object>(patchSpec: PatchSpec<T>): StateOperator<T>
 This is handy when a slice of state is optional and may not have been initialized yet. For example:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { patch, safePatch } from '@ngxs/store/operators';
 
@@ -102,7 +102,7 @@ export class SetTheme {
     preferences: null
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class UserState {
   @Action(SetTheme)
   setTheme(ctx: StateContext<UserStateModel>, action: SetTheme) {
@@ -143,7 +143,7 @@ updateItems<T>(selector: Predicate<T>, operator: T | StateOperator<T>): StateOpe
 For example, to mark every inactive animal as active in one `setState` call:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { patch, updateItems } from '@ngxs/store/operators';
 
@@ -164,7 +164,7 @@ export class ActivateAll {
   name: 'animals',
   defaults: { animals: [] }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class AnimalsState {
   @Action(ActivateAll)
   activateAll(ctx: StateContext<AnimalsStateModel>) {
@@ -192,7 +192,7 @@ removeItems<T>(selector: Predicate<T>): StateOperator<T[]>
 For example, to purge all inactive animals in one `setState` call:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { patch, removeItems } from '@ngxs/store/operators';
 
@@ -213,7 +213,7 @@ export class PurgeInactive {
   name: 'animals',
   defaults: { animals: [] }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class AnimalsState {
   @Action(PurgeInactive)
   purgeInactive(ctx: StateContext<AnimalsStateModel>) {
@@ -251,7 +251,7 @@ These operators introduce a new way of declarative state mutation.
 Let's look at more advanced examples:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { patch, append, removeItem, insertItem, updateItem } from '@ngxs/store/operators';
 
@@ -282,7 +282,7 @@ export class ChangePandaName {
     pandas: ['Michael', 'John']
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class AnimalsState {
   @Action(AddZebra)
   addZebra(ctx: StateContext<AnimalsStateModel>, action: AddZebra) {
@@ -350,7 +350,7 @@ export interface AddressStateModel {
     }
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class AddressState {
   @Action(UpdateLine1)
   updateLine1(ctx: StateContext<AddressStateModel>, action: UpdateLine1) {
@@ -420,7 +420,7 @@ interface CitiesStateModel {
     ids: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class CitiesState {
   @Action(AddCity)
   addCity(ctx: StateContext<CitiesStateModel>, action: AddCity) {

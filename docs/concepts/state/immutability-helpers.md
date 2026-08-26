@@ -28,7 +28,7 @@ export interface TrelloStateModel {
     tasks: {}
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class TrelloState {}
 ```
 

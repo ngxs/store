@@ -106,9 +106,10 @@ The application developer can choose to provide a custom `NgxsUnhandledErrorHand
 NGXS provides the `NgxsUnhandledErrorHandler` class, which you can override with your custom implementation to manage unhandled errors according to your requirements:
 
 ```ts
+import { Service } from '@angular/core';
 import { NgxsUnhandledErrorHandler, NgxsUnhandledErrorContext } from '@ngxs/store';
 
-@Injectable()
+@Service({ autoProvided: false })
 export class MyCustomNgxsUnhandledErrorHandler {
   handleError(error: any, unhandledErrorContext: NgxsUnhandledErrorContext): void {
     // Do something with these parameters
