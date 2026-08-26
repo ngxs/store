@@ -37,7 +37,15 @@ export function throwSelectorDecoratorError(): never {
 }
 
 export function getUndecoratedStateWithInjectableWarningMessage(name: string): string {
-  return `'${name}' class should be decorated with @Injectable() right after the @State() decorator`;
+  return `'${name}' class should be decorated with @Injectable() or @Service() right after the @State() decorator`;
+}
+
+export function getAutoProvidedServiceStateWarningMessage(name: string): string {
+  return (
+    `'${name}' class is decorated with @Service(), which defaults to being auto-provided at the root injector. ` +
+    `States are already provided explicitly by NGXS (via \`provideStates()\`, \`forRoot()\` or \`forFeature()\`), ` +
+    `so decorate it with @Service({ autoProvided: false }) instead.`
+  );
 }
 
 export function getInvalidInitializationOrderMessage(addedStates?: ɵPlainObject) {
