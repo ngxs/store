@@ -7,12 +7,13 @@ import { withNgxsWebSocketPlugin } from '@ngxs/websocket-plugin';
 import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
 
 import { CounterState } from './counter/counter.state';
+import { DummyState } from './dummy/dummy.state';
 
 declare const ngDevMode: boolean;
 
 export function provideNgxs() {
   return provideStore(
-    [CounterState],
+    [CounterState, DummyState],
     withNgxsReduxDevtoolsPlugin({
       disabled: typeof ngDevMode !== 'undefined' && !ngDevMode
     }),
