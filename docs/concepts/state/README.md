@@ -7,16 +7,18 @@ States are classes that define a state container.
 States are classes along with decorators to describe metadata and action mappings. To define a state container, let's create an ES2015 class and decorate it with the `State` decorator.
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State } from '@ngxs/store';
 
 @State<string[]>({
   name: 'animals',
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class AnimalsState {}
 ```
+
+`@Service()` is Angular's shorthand for `@Injectable()`, available from Angular v22 onwards — if you're on an older version, use `@Injectable()` instead. Pass `autoProvided: false` (rather than leaving it as the default `@Service()`, which is equivalent to `@Injectable({ providedIn: 'root' })`) since NGXS already provides your states explicitly through `provideStore()`/`provideStates()`; auto-providing them at the root injector too can leave a lazily-loaded feature state resolving to a different instance than the one NGXS registered.
 
 In the state decorator, we define some metadata about the state. These options include:
 
@@ -33,7 +35,7 @@ Our states can also participate in dependency injection. This is hooked up autom
     feed: false
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   constructor(private zooService: ZooService) {}
 }
@@ -52,7 +54,7 @@ const ZOO_STATE_TOKEN = new StateToken<ZooStateModel>('zoo');
     feed: false
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   constructor(private zooService: ZooService) {}
 }
@@ -69,7 +71,7 @@ Our states listen to actions via an `@Action` decorator. The action decorator ac
 Let's define a state that will listen to a `FeedAnimals` action to toggle whether the animals have been fed:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 
 export class FeedAnimals {
@@ -86,7 +88,7 @@ export interface ZooStateModel {
     feed: false
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   @Action(FeedAnimals)
   feedAnimals(ctx: StateContext<ZooStateModel>) {
@@ -114,7 +116,7 @@ It's important to note that the `getState()` method will always return the fresh
 Actions can also pass along metadata that has to do with the action. Say we want to pass along how much hay and carrots each zebra needs.
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 
 // This is an interface that is part of your domain model
@@ -142,7 +144,7 @@ export interface ZooStateModel {
     zebraFood: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   @Action(FeedZebra)
   feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
@@ -243,7 +245,7 @@ Typically in Redux your actions are pure functions and you have some other syste
 Let's take a look at a simple async action:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { tap } from 'rxjs';
 
@@ -263,7 +265,7 @@ export interface ZooStateModel {
     feedAnimals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 
@@ -289,7 +291,7 @@ You might notice we returned the Observable and just did a `tap`. If we return t
 Observables are not a requirement, you can use promises too. We could swap that observable chain to look like this:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action } from '@ngxs/store';
 
 export class FeedAnimals {
@@ -308,7 +310,7 @@ export interface ZooStateModel {
     feedAnimals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 
@@ -329,7 +331,7 @@ export class ZooState {
 When using `cancelUncompleted` with async/await, you can use the `abortSignal` property to gracefully handle cancellation:
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action } from '@ngxs/store';
 
 export class FeedAnimals {
@@ -348,7 +350,7 @@ export interface ZooStateModel {
     feedAnimals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 
@@ -375,7 +377,7 @@ export class ZooState {
 If you want your action to dispatch another action, you can use the `dispatch` function that is contained in the state context object.
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Action, StateContext } from '@ngxs/store';
 import { map } from 'rxjs';
 
@@ -389,7 +391,7 @@ export interface ZooStateModel {
     feedAnimals: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   constructor(private animalService: AnimalService) {}
 

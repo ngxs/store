@@ -65,7 +65,7 @@ export class GetNews {
     lastSearchedTitle: null
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class NewsState {
   @Selector()
   static getNews(state: NewsStateModel): News[] {
@@ -127,7 +127,7 @@ export class NewsPortalComponent {
     lastSearchedTitle: null
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class NewsState {
   @Selector()
   static getNews(state: NewsStateModel): News[] {

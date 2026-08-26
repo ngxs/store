@@ -58,7 +58,7 @@ We don't allow any options to be provided to the internal `computed` function, s
 On the store, there is a `selectSnapshot` function that allows you to pull out the raw value. This is helpful for cases where you need to get a static value but can't use Observables. A good use case for this would be an interceptor that needs to get the token from the auth state.
 
 ```ts
-@Injectable()
+@Service({ autoProvided: false })
 export class JWTInterceptor implements HttpInterceptor {
   constructor(private store: Store) {}
 
@@ -87,14 +87,14 @@ Selectors defined with `@Selector` are memoized: they recalculate only when thei
 Let's create a selector that will return a list of pandas from the animals.
 
 ```ts
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { State, Selector } from '@ngxs/store';
 
 @State<string[]>({
   name: 'animals',
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   @Selector()
   static getPandas(state: string[]) {
@@ -150,7 +150,7 @@ For instance, I can have a Lazy Selector that will filter my pandas to the provi
   name: 'animals',
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   @Selector()
   static getPandas(state: string[]) {
@@ -192,7 +192,7 @@ For instance, I can have a Dynamic Selector that will filter my pandas to the pr
   name: 'animals',
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   static getPandas(type: string) {
     return createSelector([ZooState], (state: string[]) => {
@@ -255,11 +255,11 @@ When defining a selector, you can also pass other selectors into the signature o
 
 ```ts
 @State<PreferencesStateModel>({ ... })
-@Injectable()
+@Service({ autoProvided: false })
 export class PreferencesState { ... }
 
 @State<string[]>({ ... })
-@Injectable()
+@Service({ autoProvided: false })
 export class ZooState {
   @Selector([ZooState, PreferencesState])
   static getFirstLocalPanda(state: string[], preferencesState: PreferencesStateModel) {
@@ -330,7 +330,7 @@ export interface UsersStateModel {
     entities: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class UsersState extends EntitiesState {
   //...
 }
@@ -345,7 +345,7 @@ export interface ProductsStateModel {
     entities: []
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class ProductsState extends EntitiesState {
   //...
 }

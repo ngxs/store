@@ -98,7 +98,7 @@ export interface Message {
   name: 'messages',
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class MessagesState {
   @Action(AddMessage)
   addMessage(ctx: StateContext<Message[]>, { from, message }: AddMessage) {

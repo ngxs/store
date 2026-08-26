@@ -73,7 +73,7 @@ The `keys` option is used to determine what states should be persisted in the st
   name: 'novels',
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class NovelsState {}
 
 // detectives.state.ts
@@ -81,7 +81,7 @@ export class NovelsState {}
   name: 'detectives',
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class DetectivesState {}
 ```
 
@@ -289,9 +289,10 @@ export const appConfig: ApplicationConfig = {
 You can add your own storage engine by implementing the `StorageEngine` interface:
 
 ```ts
+import { Service } from '@angular/core';
 import { withNgxsStoragePlugin, StorageEngine, STORAGE_ENGINE } from '@ngxs/storage-plugin';
 
-@Injectable()
+@Service({ autoProvided: false })
 export class MyStorageEngine implements StorageEngine {
   getItem(key: string): any {
     // Your logic here

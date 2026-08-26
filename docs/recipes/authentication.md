@@ -36,7 +36,7 @@ service.
     username: null
   }
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class AuthState {
   @Selector()
   static getToken(state: AuthStateModel): string | null {
@@ -106,7 +106,7 @@ Next, we want to make sure that our users can't go to any pages that require aut
 We can easily accomplish this with a router guard provided by Angular.
 
 ```ts
-@Injectable()
+@Service({ autoProvided: false })
 export class AuthGuard implements CanActivate {
   constructor(private store: Store) {}
 

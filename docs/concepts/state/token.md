@@ -29,7 +29,7 @@ export const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
   name: TODOS_STATE_TOKEN,
   defaults: []
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class TodosState {
   // ...
 }
@@ -51,7 +51,7 @@ export const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
   name: TODOS_STATE_TOKEN,
   defaults: [] // if you specify the wrong state type, will be a compilation error
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class TodosState {
   @Selector([TODOS_STATE_TOKEN]) // if you specify the wrong state type, will be a compilation error
   static getCompletedList(state: TodoStateModel[]): TodoStateModel[] {
@@ -69,7 +69,7 @@ export const TODOS_STATE_TOKEN = new StateToken<TodoStateModel[]>('todos');
   name: TODOS_STATE_TOKEN,
   defaults: {} // compilation error - array was expected, inferred from the token type
 })
-@Injectable()
+@Service({ autoProvided: false })
 export class TodosState {
   @Selector([TODOS_STATE_TOKEN]) // compilation error - TodoStateModel[] does not match string[]
   static getCompletedList(state: string[]): string[] {
