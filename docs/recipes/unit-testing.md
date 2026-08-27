@@ -327,6 +327,8 @@ only the current subscription and is not replayed to a later call to `start()`, 
 can subscribe again. For more context on this late-subscriber distinction, see [this comparison
 of RxJS Subject variants](https://frontendatlas.com/angular/trivia/rxjs-subject-vs-behaviorsubject-vs-replaysubject-vs-asyncsubject).
 
+### Example
+
 The actions collector snippet above was created by the NGXS team and has been successfully used in production apps for years. Now, let's examine an example of how to set up the collector and how to use it:
 
 ```ts
