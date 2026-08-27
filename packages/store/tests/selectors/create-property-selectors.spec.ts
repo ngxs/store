@@ -240,4 +240,66 @@ describe('createPropertySelectors', () => {
       expect(property1Value).toEqual('testValue');
     });
   });
+
+  describe('[Proxy get trap sanitization]', () => {
+    it('should return real working selectors for keys that collide with Object.prototype members', () => {
+      // Arrange
+      const exampleState = {
+        toString: 'a',
+        constructor: 'b',
+        hasOwnProperty: 'c',
+        valueOf: 'd'
+      } as any;
+      const slices = createPropertySelectors<any>(MyState);
+
+      // Act / Assert
+      // These names also exist on every plain object, so the old code handed
+      // back the built-in function instead of a real selector.
+      for (const key of ['toString', 'constructor', 'hasOwnProperty', 'valueOf']) {
+        const selector = slices[key];
+        expect(typeof selector).toBe('function');
+        expect(selector).not.toBe((Object.prototype as any)[key]);
+        expect(selector(exampleState)).toBe(exampleState[key]);
+      }
+    });
+
+    it('should not be a thenable (typeof .then is "undefined")', () => {
+      // Arrange
+      const slices = createPropertySelectors<MyStateModel>(MyState);
+      // Assert
+      expect(typeof (slices as any).then).toBe('undefined');
+    });
+
+    it('should resolve to itself when awaited / passed through Promise.resolve', async () => {
+      // Arrange
+      const slices = createPropertySelectors<MyStateModel>(MyState);
+      // Act
+      const awaited = await (slices as any);
+      const resolved = await Promise.resolve(slices as any);
+      // Assert
+      expect(awaited).toBe(slices);
+      expect(resolved).toBe(slices);
+    });
+
+    it('should return undefined for symbol keys without growing the cache', () => {
+      // Arrange
+      const slices = createPropertySelectors<MyStateModel>(MyState) as any;
+      // Act
+      const bySymbol = slices[Symbol.iterator];
+      const byToStringTag = slices[Symbol.toStringTag];
+      // Assert
+      expect(bySymbol).toBeUndefined();
+      expect(byToStringTag).toBeUndefined();
+      // Read it again: if the symbol had been cached, we'd get a selector now.
+      expect(slices[Symbol.iterator]).toBeUndefined();
+    });
+
+    it('should still memoize normal string keys (same reference on repeated access)', () => {
+      // Arrange
+      const slices = createPropertySelectors<MyStateModel>(MyState);
+      // Assert
+      expect(slices.property1).toBe(slices.property1);
+      expect(slices.emptyProperty).toBe(slices.emptyProperty);
+    });
+  });
 });
