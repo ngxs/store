@@ -52,7 +52,7 @@ export {
   type TypedSelector
 } from './selectors';
 
-export { withNgxsPendingTasks } from './pending-tasks';
+export { withNgxsPendingTasks, type NgxsPendingTasksOptions } from './pending-tasks';
 
 export { StateContextDestroyedError } from './internal/state-context-factory';
 
