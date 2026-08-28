@@ -80,7 +80,7 @@ export class InternalDispatcher {
         this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
         return this.createDispatchObservable(actionResult$);
       }
-    ])(prevState, action).pipe(shareReplay());
+    ])(prevState, action).pipe(shareReplay({ bufferSize: 1, refCount: true }));
   }
 
   private getActionResultStream(action: any): Observable<ActionContext> {
@@ -100,7 +100,7 @@ export class InternalDispatcher {
         },
         complete: () => !subscriber.closed && subscriber.complete()
       });
-    }).pipe(shareReplay());
+    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
   }
 
   private createDispatchObservable(
@@ -121,7 +121,7 @@ export class InternalDispatcher {
             return EMPTY;
         }
       }),
-      shareReplay()
+      shareReplay({ bufferSize: 1, refCount: true })
     );
   }
 }
