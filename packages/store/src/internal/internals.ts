@@ -177,10 +177,22 @@ export function findFullParentPath(
   out: ɵPlainObjectOf<string> = Object.create(null)
 ): ɵPlainObjectOf<string> {
   // Recursively find the full dotted parent path for a given key.
-  const find = (graph: StateKeyGraph, target: string): string | null => {
+  // `seen` tracks the keys we're already walking up through, so a cyclic
+  // graph (e.g. `a -> b -> a`) stops instead of recursing forever and
+  // blowing the stack. The clean "Circular dependency" error is still
+  // thrown earlier by `topologicalSort` in dev mode.
+  const find = (
+    graph: StateKeyGraph,
+    target: string,
+    seen: Set<string> = new Set()
+  ): string | null => {
     for (const key in graph) {
       if (graph[key]?.includes(target)) {
-        const parent = find(graph, key);
+        if (seen.has(key)) {
+          return key;
+        }
+        seen.add(key);
+        const parent = find(graph, key, seen);
         return parent ? `${parent}.${key}` : key;
       }
     }
