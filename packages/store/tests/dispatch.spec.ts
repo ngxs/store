@@ -878,6 +878,62 @@ describe('Dispatch', () => {
           'latest complete'
         ]);
       }));
+
+      it('should complete without emitting when one action in a batch is canceled', fakeAsync(() => {
+        // Arrange
+        const resolvers: (() => void)[] = [];
+        const events: string[] = [];
+
+        class Quick {
+          static type = 'Quick';
+        }
+        class Slow {
+          static type = 'Slow';
+        }
+
+        @State<number>({
+          name: 'counter',
+          defaults: 0
+        })
+        @Injectable()
+        class MyState {
+          @Action(Quick)
+          quick() {
+            events.push('quick');
+          }
+
+          @Action(Slow, { cancelUncompleted: true })
+          slow() {
+            events.push('slow');
+            return new Promise<void>(resolve => resolvers.push(resolve));
+          }
+        }
+
+        TestBed.configureTestingModule({
+          imports: [NgxsModule.forRoot([MyState])]
+        });
+
+        const store = TestBed.inject(Store);
+
+        // Act
+        store.dispatch([new Quick(), new Slow()]).subscribe({
+          next: () => events.push('batch next'),
+          error: () => events.push('batch error'),
+          complete: () => events.push('batch complete')
+        });
+        // A second `Slow` cancels the first batch's `Slow` handler.
+        store.dispatch(new Slow());
+        resolvers.forEach(resolve => resolve());
+        tick(0);
+
+        // Assert
+        // `Quick` ran and succeeded, but because `Slow` was canceled the
+        // `forkJoin` completes without emitting, so `next` never fires.
+        expect(events).toContain('quick');
+        expect(events).toContain('batch complete');
+        expect(events).not.toContain('batch next');
+        expect(events).not.toContain('batch error');
+      }));
     });
 
     describe('when the action is ignored because the previous action is uncompleted', () => {

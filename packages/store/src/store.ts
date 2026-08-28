@@ -52,6 +52,14 @@ export class Store {
 
   /**
    * Dispatches action(s).
+   *
+   * Note on cancellation: when a canceled action completes, its stream
+   * completes without emitting. For a single action this means a `next`
+   * callback passed to `.subscribe()` is not invoked. When an array is
+   * dispatched, the results are combined with `forkJoin`, so if *any* action
+   * in the batch is canceled the whole batch completes without emitting —
+   * `next` won't fire even if the other actions succeeded. The observable
+   * still completes (and still errors if an action errors).
    */
   dispatch<T>(actionOrActions: ActionOrArrayOfActions<T>): Observable<void> {
     if (typeof ngDevMode !== 'undefined' && ngDevMode) {

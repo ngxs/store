@@ -47,6 +47,11 @@ export class InternalDispatcher {
     if (Array.isArray(actionOrActions)) {
       if (actionOrActions.length === 0) return of(undefined);
 
+      // Note: a canceled action's stream completes without emitting, and
+      // `forkJoin` completes without emitting if any source does. So if any
+      // action in the batch is canceled, subscribers get `complete` but no
+      // `next`, even if the other actions succeeded. This is documented on
+      // `Store#dispatch`; kept as-is for consistency with single-action cancel.
       return forkJoin(actionOrActions.map(action => this.dispatchSingle(action))).pipe(
         map(() => undefined)
       );

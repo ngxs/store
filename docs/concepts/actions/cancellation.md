@@ -57,6 +57,28 @@ export class ZooState {
 
 `cancelUncompleted` and `ignoreUncompleted` are mutually exclusive - setting both on the same handler throws an error.
 
+## Effect on the dispatch stream
+
+When a handler is canceled, the observable returned by `dispatch()` **completes without emitting a value**. A `next` callback passed to `subscribe()` is not called; only `complete` runs.
+
+```ts
+store.dispatch(new FeedAnimals()).subscribe({
+  next: () => console.log('next'), // not called if this invocation is canceled
+  complete: () => console.log('complete') // always called
+});
+```
+
+This also applies when dispatching an array. The per-action streams are combined with `forkJoin`, which completes without emitting if **any** of its sources completes without emitting. So if one action in the batch is canceled, the whole `dispatch([...])` completes with no `next` - even if the other actions succeeded:
+
+```ts
+store.dispatch([new AddAnimal('Panda'), new FeedAnimals()]).subscribe({
+  next: () => this.form.reset(), // skipped if FeedAnimals is canceled
+  complete: () => console.log('done')
+});
+```
+
+If you need to run code once the batch settles regardless of cancellation, put it in the `complete` callback. Errors are unaffected - if any action errors, the dispatch stream still errors.
+
 ## Using AbortSignal
 
 Starting from NGXS v21, the `StateContext` includes an `abortSignal` property that provides a standardized way to handle cancellation of asynchronous operations. This is particularly useful when working with `cancelUncompleted` actions.

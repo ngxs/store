@@ -38,6 +38,8 @@ You can also dispatch multiple actions at the same time by passing an array of a
 this.store.dispatch([new AddAnimal('Panda'), new AddAnimal('Zebra')]);
 ```
 
+> Note: the array results are combined with `forkJoin`, so if any action in the batch is canceled, the returned observable completes without emitting - a `next` callback won't run even if the other actions succeeded. See [Canceling](../actions/cancellation.md#effect-on-the-dispatch-stream).
+
 Let's say after the action executes you want to clear the form. Our `dispatch` function actually returns an Observable, so we can subscribe to it and reset the form after it was successful.
 
 ```ts
