@@ -132,7 +132,7 @@ Note that the second parameter, `NgxsUnhandledErrorContext`, contains an object 
 
 ### NGXS Error Handling Detection in Observables
 
-In order to acheive the detection of `dispatch` call error handling, NGXS configures the RxJS [`onUnhandledError`](https://rxjs.dev/api/index/interface/GlobalConfig#onUnhandledError) callback. This property is accessible in RxJS versions 7 and above, which is why NGXS mandates a minimum RxJS version of 7.
+In order to achieve the detection of `dispatch` call error handling, NGXS configures the RxJS [`onUnhandledError`](https://rxjs.dev/api/index/interface/GlobalConfig#onUnhandledError) callback. This property is accessible in RxJS versions 7 and above, which is why NGXS mandates a minimum RxJS version of 7.
 
 The RxJS `onUnhandledError` callback triggers whenever an unhandled error occurs within an observable and no `error` callback has been supplied.
 
