@@ -16,3 +16,17 @@ export const appConfig: ApplicationConfig = {
   providers: [provideStore([], withNgxsPendingTasks())]
 };
 ```
+
+## Timeout
+
+`withNgxsPendingTasks` keeps the app unstable until every dispatched action has completed. If an action is dispatched during server-side rendering and its completion never arrives — for example, a handler that hangs on a request without its own timeout — the app never becomes stable and HTML serialization blocks indefinitely.
+
+Pass a `timeout` (in milliseconds) to put an upper bound on the wait. When the first pending task is added a timer starts, and if it fires before all actions have completed, the pending task is removed anyway so the server can still send a response. In development mode a warning is logged so the hanging action is easy to spot.
+
+```ts
+export const appConfig: ApplicationConfig = {
+  providers: [provideStore([], withNgxsPendingTasks({ timeout: 5000 }))]
+};
+```
+
+The timer is scheduled outside the Angular zone, so it doesn't itself count as pending work, and it's cleared as soon as the actions complete normally. The default is `0`, which disables the timeout and keeps the original behavior of waiting indefinitely.
