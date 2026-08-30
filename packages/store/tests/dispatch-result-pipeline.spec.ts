@@ -10,11 +10,15 @@ import {
   StateContext,
   Store
 } from '@ngxs/store';
-import { firstValueFrom, throwError } from 'rxjs';
+import { firstValueFrom, tap, throwError, timer } from 'rxjs';
 
 describe('dispatch result pipeline', () => {
   class Succeed {
     static readonly type = 'Succeed';
+  }
+
+  class SucceedAsync {
+    static readonly type = 'SucceedAsync';
   }
 
   class Fail {
@@ -27,6 +31,11 @@ describe('dispatch result pipeline', () => {
     @Action(Succeed)
     succeed(ctx: StateContext<number>) {
       ctx.setState(ctx.getState() + 1);
+    }
+
+    @Action(SucceedAsync)
+    succeedAsync(ctx: StateContext<number>) {
+      return timer(1).pipe(tap(() => ctx.setState(ctx.getState() + 1)));
     }
 
     @Action(Fail)
@@ -65,6 +74,19 @@ describe('dispatch result pipeline', () => {
 
     await expect(firstValueFrom(result$)).rejects.toThrow('boom');
     await expect(firstValueFrom(result$)).rejects.toThrow('boom');
+  });
+
+  it('delivers the value to every subscriber attached before an async action resolves', async () => {
+    const { store } = setup();
+
+    const result$ = store.dispatch(new SucceedAsync());
+    const first = firstValueFrom(result$);
+    const second = firstValueFrom(result$);
+    const third = firstValueFrom(result$);
+
+    expect(await first).toEqual({ counter: 1 });
+    expect(await second).toEqual({ counter: 1 });
+    expect(await third).toEqual({ counter: 1 });
   });
 
   it('runs the handler once no matter how many times you subscribe', () => {
