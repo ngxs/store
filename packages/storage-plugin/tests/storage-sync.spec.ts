@@ -156,4 +156,58 @@ describe('withNgxsStorageSync', () => {
       expect(store.snapshot()).toEqual({ counter: { count: 7 } });
     })
   );
+
+  describe('when persisting all states with the default state key', () => {
+    interface SessionStateModel {
+      token: string;
+    }
+
+    @State<SessionStateModel>({
+      name: 'session',
+      defaults: { token: 'local-only' }
+    })
+    @Injectable()
+    class SessionState {}
+
+    function bootstrapAllStates() {
+      const appConfig: ApplicationConfig = {
+        providers: [
+          provideStore(
+            [CounterState, SessionState],
+            withNgxsStoragePlugin({ keys: '*' }, withNgxsStorageSync())
+          )
+        ]
+      };
+
+      return skipConsoleLogging(() => bootstrapApplication(TestComponent, appConfig));
+    }
+
+    afterEach(() => {
+      localStorage.removeItem('@@STATE');
+    });
+
+    it(
+      'should merge the incoming snapshot instead of replacing the whole state',
+      freshPlatform(async () => {
+        // Arrange
+        const { injector } = await bootstrapAllStates();
+        const store = injector.get(Store);
+        expect(store.snapshot()).toEqual({
+          counter: { count: 0 },
+          session: { token: 'local-only' }
+        });
+
+        // Act — another tab writes a full snapshot that does not include the
+        // `session` slice (e.g. it never loaded that state, or stripped it in
+        // `beforeSerialize`).
+        writeFromAnotherTab('@@STATE', null, JSON.stringify({ counter: { count: 42 } }));
+
+        // Assert — the synced slice is updated, the local-only slice survives.
+        expect(store.snapshot()).toEqual({
+          counter: { count: 42 },
+          session: { token: 'local-only' }
+        });
+      })
+    );
+  });
 });

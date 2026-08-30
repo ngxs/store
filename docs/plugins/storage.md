@@ -458,6 +458,7 @@ That's it — there's nothing else to configure. As long as a key is being persi
 **A couple of things worth knowing:**
 
 - This only works for the two storage mechanisms the browser natively supports: `localStorage` and `sessionStorage`. If a key is persisted through your own custom `StorageEngine`, there's no `storage` event for that engine to hook into, so that key won't sync across tabs. (This is a limitation of the browser, not something the plugin could work around.)
+- When you persist everything with `keys: '*'`, an incoming change is shallow-merged into the current state, not swapped in wholesale. Slices that exist only in this tab (a lazily loaded feature state the other tab never registered, or state you drop in `beforeSerialize`) are left untouched.
 - This feature is currently marked `@experimental`, which means its behavior could still change in a future release.
 
 ### Feature States

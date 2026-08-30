@@ -80,7 +80,14 @@ export function withNgxsStorageSync(): EnvironmentProviders {
 
         const currentState = store.snapshot();
         const nextState =
-          key === ɵDEFAULT_STATE_KEY ? storedValue : setValue(currentState, key, storedValue);
+          key === ɵDEFAULT_STATE_KEY
+            ? // Shallow-merge rather than replace outright: the incoming value is
+              // another tab's full snapshot, which may be missing slices that
+              // exist only in this tab (e.g. lazy-loaded feature states, or
+              // transient state excluded by `beforeSerialize`). This mirrors the
+              // `{ ...state, ...storedValue }` merge the main hydration path uses.
+              { ...currentState, ...storedValue }
+            : setValue(currentState, key, storedValue);
 
         store.reset(nextState);
       }
