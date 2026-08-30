@@ -8,7 +8,11 @@ import {
 } from '@angular/core';
 import { EMPTY, forkJoin, Observable, map, mergeMap, shareReplay, of } from 'rxjs';
 
-import { getActionTypeFromInstance } from '@ngxs/store/plugins';
+import {
+  getActionTypeFromInstance,
+  NgxsNextPluginFn,
+  NgxsPluginFn
+} from '@ngxs/store/plugins';
 import { ɵPlainObject, ɵStateStream } from '@ngxs/store/internals';
 
 import { PluginManager } from '../plugin-manager';
@@ -74,18 +78,45 @@ export class InternalDispatcher {
     const prevState = this._stateStream.getValue();
     const plugins = this._pluginManager.plugins;
 
-    return compose(this._injector, this._destroyRef, [
-      ...plugins,
-      (nextState: any, nextAction: any) => {
-        if (nextState !== prevState) {
-          this._stateStream.next(nextState);
-        }
-        const actionResult$ = this.getActionResultStream(nextAction);
-        actionResult$.subscribe(ctx => this._actions.next(ctx));
-        this._actions.next({ action: nextAction, status: ActionStatus.Dispatched });
-        return this.createDispatchObservable(actionResult$);
-      }
-    ])(prevState, action).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    let dispatched$: Observable<any>;
+    if (this._destroyRef.destroyed) {
+      // Injector was already destroyed → no-op.
+      dispatched$ = EMPTY;
+    } else if (plugins.length === 0) {
+      // Fast path for the common case of no registered plugins: invoke the
+      // terminal handler directly and skip the `[...plugins, fn]` array, the
+      // `runPluginChain` closures and the `runInInjectionContext` frame — none
+      // of which do anything useful when there is no middleware to run.
+      dispatched$ = this._dispatchAndCollectResult(action, prevState, prevState);
+    } else {
+      dispatched$ = runPluginChain(
+        this._injector,
+        this._destroyRef,
+        plugins,
+        (chainState: any, chainAction: any) =>
+          this._dispatchAndCollectResult(chainAction, prevState, chainState),
+        prevState,
+        action
+      );
+    }
+
+    return dispatched$.pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  }
+
+  private _dispatchAndCollectResult(
+    action: any,
+    prevState: any,
+    chainState: any
+  ): Observable<ɵPlainObject> {
+    // A plugin may have transformed the state before the action runs; push it
+    // through only when it actually changed to avoid a redundant emission.
+    if (chainState !== prevState) {
+      this._stateStream.next(chainState);
+    }
+    const actionResult$ = this.getActionResultStream(action);
+    actionResult$.subscribe(ctx => this._actions.next(ctx));
+    this._actions.next({ action, status: ActionStatus.Dispatched });
+    return this.createDispatchObservable(actionResult$);
   }
 
   private getActionResultStream(action: any): Observable<ActionContext> {
@@ -131,38 +162,39 @@ export class InternalDispatcher {
   }
 }
 
-type StateFn = (...args: any[]) => Observable<void>;
-
 /**
- * Composes a array of functions from left to right. Example:
+ * Runs the registered plugin functions left to right as middleware around the
+ * terminal handler. Each plugin has the signature `(state, action, next)` and is
+ * expected to call `next(state, action)` to hand off to the next plugin (or the
+ * terminal handler once the plugins are exhausted).
  *
- *      compose([fn, final])(state, action);
- *
- * then the funcs have a signature like:
- *
- *      function fn (state, action, next) {
- *          console.log('here', state, action, next);
- *          return next(state, action);
- *      }
- *
- *      function final (state, action) {
- *          console.log('here', state, action);
- *          return state;
- *      }
- *
- * the last function should not call `next`.
+ * An index cursor walks `plugins` instead of mutating the array, so `next()` is
+ * O(1). The whole synchronous chain runs inside a single `runInInjectionContext`
+ * frame — every plugin resolves against the same injector anyway, so wrapping
+ * each level separately only added overhead.
  */
-const compose =
-  (injector: Injector, destroyRef: DestroyRef, fns: StateFn[]) =>
-  (...args: any[]) => {
-    const fn = fns.shift();
-
-    if (destroyRef.destroyed || !fn) {
-      // Injector was already destroyed → no-op
+function runPluginChain(
+  injector: Injector,
+  destroyRef: DestroyRef,
+  plugins: NgxsPluginFn[],
+  terminal: NgxsNextPluginFn,
+  state: any,
+  action: any
+): Observable<any> {
+  const invoke = (index: number, currentState: any, currentAction: any): any => {
+    if (destroyRef.destroyed) {
+      // Injector was destroyed (possibly by an earlier plugin) → no-op.
       return EMPTY;
     }
 
-    return runInInjectionContext(injector, () =>
-      fn(...args, (...nextArgs: any[]) => compose(injector, destroyRef, fns)(...nextArgs))
+    if (index === plugins.length) {
+      return terminal(currentState, currentAction);
+    }
+
+    return plugins[index](currentState, currentAction, (nextState: any, nextAction: any) =>
+      invoke(index + 1, nextState, nextAction)
     );
   };
+
+  return runInInjectionContext(injector, () => invoke(0, state, action));
+}
