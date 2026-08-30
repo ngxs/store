@@ -1,6 +1,13 @@
 import { ExistingState, NoInfer, StateOperator } from './types';
 
-import { isStateOperator, isPredicate, isNumber, invalidIndex, Predicate } from './utils';
+import {
+  isArray,
+  isStateOperator,
+  isPredicate,
+  isNumber,
+  invalidIndex,
+  Predicate
+} from './utils';
 
 /**
  * Replaces or transforms a single array element without cloning elements that
@@ -33,6 +40,13 @@ export function updateItem<T>(
   operatorOrValue: NoInfer<T> | NoInfer<StateOperator<T>>
 ): StateOperator<T[]> {
   return function updateItemOperator(existing: ExistingState<T[]>): T[] {
+    // Guard against a missing (`null`/`undefined`) slice so a predicate
+    // selector doesn't throw on `existing.findIndex`. Matches the no-op
+    // contract of `updateItems`, which returns `[]` for a non-array slice.
+    if (!isArray(existing)) {
+      return [] as T[];
+    }
+
     let index = -1;
 
     if (isPredicate(selector)) {

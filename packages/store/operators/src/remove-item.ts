@@ -1,5 +1,5 @@
 import { ExistingState, NoInfer, StateOperator } from './types';
-import { isPredicate, isNumber, invalidIndex, Predicate } from './utils';
+import { isArray, isPredicate, isNumber, invalidIndex, Predicate } from './utils';
 
 /**
  * Removes a single element from an array without mutating the original.
@@ -23,6 +23,13 @@ import { isPredicate, isNumber, invalidIndex, Predicate } from './utils';
  */
 export function removeItem<T>(selector: number | NoInfer<Predicate<T>>): StateOperator<T[]> {
   return function removeItemOperator(existing: ExistingState<T[]>): T[] {
+    // Guard against a missing (`null`/`undefined`) slice so a predicate
+    // selector doesn't throw on `existing.findIndex`. Matches the no-op
+    // contract of `removeItems`, which returns `[]` for a non-array slice.
+    if (!isArray(existing)) {
+      return [] as T[];
+    }
+
     let index = -1;
 
     if (isPredicate(selector)) {

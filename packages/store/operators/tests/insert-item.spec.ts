@@ -35,6 +35,24 @@ describe('insert item', () => {
     });
   });
 
+  describe('when null provided and the target array does not exist yet', () => {
+    it('is a no-op and does not materialise the property as [null]', () => {
+      // Arrange
+      const original: { a?: number[] } = {};
+
+      // Act
+      const newValue = patch<{ a?: number[] }>({
+        a: insertItem(null!)
+      })(original);
+
+      // Assert
+      expect(newValue).toBe(original);
+      expect('a' in newValue).toBe(false);
+      // Called directly, a nullish value leaves the (missing) slice untouched.
+      expect(insertItem(null!)(undefined!)).toBeUndefined();
+    });
+  });
+
   describe('when non-existing index provided', () => {
     it('returns a new root', () => {
       // Arrange
