@@ -6,7 +6,7 @@ import {
   NgZone,
   runInInjectionContext
 } from '@angular/core';
-import { EMPTY, forkJoin, Observable, map, mergeMap, shareReplay, of } from 'rxjs';
+import { EMPTY, forkJoin, Observable, ReplaySubject, map, share, shareReplay, of } from 'rxjs';
 
 import {
   getActionTypeFromInstance,
@@ -19,7 +19,7 @@ import { PluginManager } from '../plugin-manager';
 import { leaveNgxs } from '../operators/leave-ngxs';
 import { fallbackSubscriber } from './fallback-subscriber';
 import { InternalDispatchedActionResults } from './action-results';
-import { ActionContext, ActionStatus, InternalActions } from '../actions-stream';
+import { ActionStatus, InternalActions } from '../actions-stream';
 import { InternalNgxsExecutionStrategy } from '../execution/execution-strategy';
 
 @Injectable({ providedIn: 'root' })
@@ -83,18 +83,23 @@ export class InternalDispatcher {
       // Injector was already destroyed → no-op.
       dispatched$ = EMPTY;
     } else if (plugins.length === 0) {
-      // Fast path for the common case of no registered plugins: invoke the
-      // terminal handler directly and skip the `[...plugins, fn]` array, the
-      // `runPluginChain` closures and the `runInInjectionContext` frame — none
-      // of which do anything useful when there is no middleware to run.
-      dispatched$ = this._dispatchAndCollectResult(action, prevState, prevState);
+      // Fast path for the common case of no registered plugins: run the action
+      // directly and skip the `[...plugins, fn]` array, the `runPluginChain`
+      // closures and the `runInInjectionContext` frame.
+      dispatched$ = this._runAction(action);
     } else {
       dispatched$ = runPluginChain(
         this._injector,
         this._destroyRef,
         plugins,
-        (chainState: any, chainAction: any) =>
-          this._dispatchAndCollectResult(chainAction, prevState, chainState),
+        (state: any, action: any) => {
+          // A plugin may have replaced the state before the action runs; push
+          // it through only when it actually changed.
+          if (state !== prevState) {
+            this._stateStream.next(state);
+          }
+          return this._runAction(action);
+        },
         prevState,
         action
       );
@@ -103,98 +108,88 @@ export class InternalDispatcher {
     return dispatched$.pipe(shareReplay({ bufferSize: 1, refCount: true }));
   }
 
-  private _dispatchAndCollectResult(
-    action: any,
-    prevState: any,
-    chainState: any
-  ): Observable<ɵPlainObject> {
-    // A plugin may have transformed the state before the action runs; push it
-    // through only when it actually changed to avoid a redundant emission.
-    if (chainState !== prevState) {
-      this._stateStream.next(chainState);
-    }
-    const actionResult$ = this.getActionResultStream(action);
-    actionResult$.subscribe(ctx => this._actions.next(ctx));
-    this._actions.next({ action, status: ActionStatus.Dispatched });
-    return this.createDispatchObservable(actionResult$);
-  }
-
-  private getActionResultStream(action: any): Observable<ActionContext> {
-    // Hot path: avoid allocating `filter` + `take(1)` operator subscriber wrappers on every
-    // dispatch. Instead, subscribe directly and complete inline — functionally identical but
-    // without the intermediate operator chain objects.
-    // `subscriber.complete()` triggers the outer subscription's teardown synchronously, which
-    // calls `.unsubscribe()` on the inner `_actionResults` subscription (the returned
-    // TeardownLogic), so there is no leak even though unsubscription fires mid-callback.
-    return new Observable<ActionContext>(subscriber => {
-      return this._actionResults.subscribe({
+  private _runAction(action: any): Observable<ɵPlainObject> {
+    // Wait for this action's result on `_actionResults` and turn it into what
+    // `dispatch()` should emit. Also push the result status back onto the main
+    // action stream so `Actions` listeners (`ofActionSuccessful`, etc.) see it.
+    const result$ = new Observable<ɵPlainObject>(subscriber =>
+      this._actionResults.subscribe({
         next: ctx => {
-          if (ctx.action === action && ctx.status !== ActionStatus.Dispatched) {
-            subscriber.next(ctx);
-            subscriber.complete();
+          if (ctx.action !== action || ctx.status === ActionStatus.Dispatched) {
+            return;
+          }
+
+          this._actions.next(ctx);
+
+          switch (ctx.status) {
+            case ActionStatus.Successful:
+              // Emit the state, as plugins use it.
+              subscriber.next(this._stateStream.getValue());
+              subscriber.complete();
+              break;
+            case ActionStatus.Errored:
+              subscriber.error(ctx.error);
+              break;
+            default:
+              // Canceled: complete without a value.
+              subscriber.complete();
           }
         },
         complete: () => !subscriber.closed && subscriber.complete()
-      });
-    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
-  }
-
-  private createDispatchObservable(
-    actionResult$: Observable<ActionContext>
-  ): Observable<ɵPlainObject> {
-    return actionResult$.pipe(
-      mergeMap((ctx: ActionContext) => {
-        switch (ctx.status) {
-          case ActionStatus.Successful:
-            // The `createDispatchObservable` function should return the
-            // state, as its result is used by plugins.
-            return of(this._stateStream.getValue());
-          case ActionStatus.Errored:
-            throw ctx.error;
-          default:
-            // Once dispatched or canceled, we complete it immediately because
-            // `dispatch()` should emit (or error, or complete) as soon as it succeeds or fails.
-            return EMPTY;
-        }
-      }),
-      shareReplay({ bufferSize: 1, refCount: true })
+      })
+    ).pipe(
+      // Share the single result with every subscriber (the eager one below, the
+      // plugin chain, `forkJoin`, and the caller). The reset flags are off so
+      // the result - a value or an error - keeps replaying to late subscribers
+      // instead of re-running the source, which would just wait forever.
+      share({
+        connector: () => new ReplaySubject<ɵPlainObject>(1),
+        resetOnError: false,
+        resetOnComplete: false,
+        resetOnRefCountZero: false
+      })
     );
+
+    // Subscribe now, before `Dispatched` is sent, so a synchronous handler's
+    // result isn't missed. Consumers get any error from the shared result above;
+    // this subscription just keeps the source alive, so ignore errors here.
+    result$.subscribe({ error: () => {} });
+
+    this._actions.next({ action, status: ActionStatus.Dispatched });
+
+    return result$;
   }
 }
 
 /**
- * Runs the registered plugin functions left to right as middleware around the
- * terminal handler. Each plugin has the signature `(state, action, next)` and is
- * expected to call `next(state, action)` to hand off to the next plugin (or the
- * terminal handler once the plugins are exhausted).
+ * Runs the plugin functions as middleware around `handler`, left to right: each
+ * plugin gets `(state, action, next)` and calls `next(state, action)` to pass
+ * control on. Once the plugins are done, `handler(state, action)` runs.
  *
- * An index cursor walks `plugins` instead of mutating the array, so `next()` is
- * O(1). The whole synchronous chain runs inside a single `runInInjectionContext`
- * frame — every plugin resolves against the same injector anyway, so wrapping
- * each level separately only added overhead.
+ * Everything runs inside one injection context so plugins can use `inject()`.
  */
 function runPluginChain(
   injector: Injector,
   destroyRef: DestroyRef,
   plugins: NgxsPluginFn[],
-  terminal: NgxsNextPluginFn,
+  handler: NgxsNextPluginFn,
   state: any,
   action: any
 ): Observable<any> {
-  const invoke = (index: number, currentState: any, currentAction: any): any => {
+  const runFrom = (index: number, currentState: any, currentAction: any): any => {
     if (destroyRef.destroyed) {
-      // Injector was destroyed (possibly by an earlier plugin) → no-op.
+      // The injector is gone (maybe a plugin destroyed it) — do nothing.
       return EMPTY;
     }
 
     if (index === plugins.length) {
-      return terminal(currentState, currentAction);
+      return handler(currentState, currentAction);
     }
 
-    return plugins[index](currentState, currentAction, (nextState: any, nextAction: any) =>
-      invoke(index + 1, nextState, nextAction)
-    );
+    const next = (nextState: any, nextAction: any) =>
+      runFrom(index + 1, nextState, nextAction);
+    return plugins[index](currentState, currentAction, next);
   };
 
-  return runInInjectionContext(injector, () => invoke(0, state, action));
+  return runInInjectionContext(injector, () => runFrom(0, state, action));
 }
