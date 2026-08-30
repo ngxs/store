@@ -27,14 +27,19 @@ export function createRootSelectorFactory<T extends (...args: any[]) => any>(
     const { suppressErrors } = selectorOptions;
 
     return function selectFromRoot(rootState: any) {
-      // Determine arguments from the app state using the selectors
-      const results = argumentSelectorFunctions.map(argFn => argFn(rootState));
+      // Determine arguments from the app state using the selectors. Most
+      // selectors have a single argument selector, so skip the array
+      // allocation and the spread for that common case.
+      const singleArgument = argumentSelectorFunctions.length === 1;
+      const results = singleArgument
+        ? argumentSelectorFunctions[0](rootState)
+        : argumentSelectorFunctions.map(argFn => argFn(rootState));
 
       // If the lambda attempts to access something in the state that doesn't exist,
       // it will throw a `TypeError`. Since this behavior is common, we simply return
       // `undefined` in such cases.
       try {
-        return memoizedSelectorFn(...results);
+        return singleArgument ? memoizedSelectorFn(results) : memoizedSelectorFn(...results);
       } catch (ex) {
         if (suppressErrors && ex instanceof TypeError) {
           return undefined;
