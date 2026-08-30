@@ -78,6 +78,16 @@ export class StateFactory {
   private _statesByName: StatesByName = Object.create(null);
   private _statePaths: ɵPlainObjectOf<string> = Object.create(null);
 
+  // Bumped every time new states are registered. `Store` keys its cache of
+  // bound selector functions by this value, since the wiring of a bound
+  // selector (which container state to inject, which paths to read) depends
+  // on which states are known at the time it's built.
+  private _selectorGeneration = 0;
+
+  get selectorGeneration(): number {
+    return this._selectorGeneration;
+  }
+
   getRuntimeSelectorContext = ɵmemoize(() => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const stateFactory = this;
@@ -171,6 +181,9 @@ export class StateFactory {
       this._states.push(stateMap);
       this.hydrateActionMetasMap(stateMap);
     }
+
+    // New states became known — invalidate any cached bound selector functions.
+    this._selectorGeneration++;
 
     return bootstrappedStores;
   }
