@@ -22,6 +22,21 @@ import { InternalDispatchedActionResults } from './action-results';
 import { ActionStatus, InternalActions } from '../actions-stream';
 import { InternalNgxsExecutionStrategy } from '../execution/execution-strategy';
 
+// RxJS reads operator config at construction time and never keeps the object,
+// so these can be shared across every dispatch instead of rebuilt each call.
+const DISPATCH_SHARE_REPLAY = { bufferSize: 1, refCount: true };
+
+const ACTION_RESULT_SHARE = {
+  // A fresh subject per dispatch, but the same factory each time.
+  connector: () => new ReplaySubject<ɵPlainObject>(1),
+  // A dispatch result happens once; keep replaying it and never re-run.
+  resetOnError: false,
+  resetOnComplete: false,
+  resetOnRefCountZero: false
+};
+
+const IGNORE_ERRORS = { error: () => {} };
+
 @Injectable({ providedIn: 'root' })
 export class InternalDispatcher {
   private _ngZone = inject(NgZone);
@@ -64,7 +79,9 @@ export class InternalDispatcher {
     }
   }
 
-  private dispatchSingle(action: any): Observable<void> {
+  // Emits the resulting state (not `void`); `dispatchByEvents` narrows it back
+  // to `Observable<void>` for the public `dispatch()` contract.
+  private dispatchSingle(action: any): Observable<any> {
     if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       const type: string | undefined = getActionTypeFromInstance(action);
       if (!type) {
@@ -75,37 +92,42 @@ export class InternalDispatcher {
       }
     }
 
-    const prevState = this._stateStream.getValue();
-    const plugins = this._pluginManager.plugins;
-
-    let dispatched$: Observable<any>;
     if (this._destroyRef.destroyed) {
       // Injector was already destroyed → no-op.
-      dispatched$ = EMPTY;
-    } else if (plugins.length === 0) {
-      // Fast path for the common case of no registered plugins: run the action
-      // directly and skip the `[...plugins, fn]` array, the `runPluginChain`
-      // closures and the `runInInjectionContext` frame.
-      dispatched$ = this._runAction(action);
-    } else {
-      dispatched$ = runPluginChain(
-        this._injector,
-        this._destroyRef,
-        plugins,
-        (state: any, action: any) => {
-          // A plugin may have replaced the state before the action runs; push
-          // it through only when it actually changed.
-          if (state !== prevState) {
-            this._stateStream.next(state);
-          }
-          return this._runAction(action);
-        },
-        prevState,
-        action
-      );
+      return EMPTY;
     }
 
-    return dispatched$.pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    const plugins = this._pluginManager.plugins;
+
+    if (plugins.length === 0) {
+      // Fast path for the common case of no registered plugins: `_runAction`
+      // already returns a shared, replaying stream, so hand it back as-is.
+      // Skips the `runPluginChain` closures, the `runInInjectionContext` frame
+      // and a second `shareReplay` layer over the same value.
+      return this._runAction(action);
+    }
+
+    const prevState = this._stateStream.getValue();
+
+    const dispatched$ = runPluginChain(
+      this._injector,
+      this._destroyRef,
+      plugins,
+      (state: any, action: any) => {
+        // A plugin may have replaced the state before the action runs; push
+        // it through only when it actually changed.
+        if (state !== prevState) {
+          this._stateStream.next(state);
+        }
+        return this._runAction(action);
+      },
+      prevState,
+      action
+    );
+
+    // A plugin can wrap `_runAction`'s result in its own un-shared `.pipe(...)`,
+    // so multicast the chain output for the eager subscriber and the caller.
+    return dispatched$.pipe(shareReplay(DISPATCH_SHARE_REPLAY));
   }
 
   private _runAction(action: any): Observable<ɵPlainObject> {
@@ -139,21 +161,16 @@ export class InternalDispatcher {
       })
     ).pipe(
       // Share the single result with every subscriber (the eager one below, the
-      // plugin chain, `forkJoin`, and the caller). The reset flags are off so
-      // the result - a value or an error - keeps replaying to late subscribers
-      // instead of re-running the source, which would just wait forever.
-      share({
-        connector: () => new ReplaySubject<ɵPlainObject>(1),
-        resetOnError: false,
-        resetOnComplete: false,
-        resetOnRefCountZero: false
-      })
+      // plugin chain, `forkJoin`, and the caller). See `ACTION_RESULT_SHARE`:
+      // the reset flags are off so the result - a value or an error - keeps
+      // replaying to late subscribers instead of re-running the source.
+      share(ACTION_RESULT_SHARE)
     );
 
     // Subscribe now, before `Dispatched` is sent, so a synchronous handler's
     // result isn't missed. Consumers get any error from the shared result above;
     // this subscription just keeps the source alive, so ignore errors here.
-    result$.subscribe({ error: () => {} });
+    result$.subscribe(IGNORE_ERRORS);
 
     this._actions.next({ action, status: ActionStatus.Dispatched });
 
