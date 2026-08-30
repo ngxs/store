@@ -176,9 +176,39 @@ export class Store {
     this._internalStateOperations.getRootStateOperations().setState(state);
   }
 
+  // Caches the state-bound selector function per selector. Building it
+  // (`getRuntimeSelectorInfo` → `getSelectorsToApply` → argument-selector
+  // wiring → option spreads) runs on every `select`/`selectSnapshot`/
+  // `selectSignal`, which is wasteful for `selectSnapshot` in a loop or a
+  // component that doesn't hold on to the observable.
+  private _boundSelectorFnCache = new WeakMap<
+    object,
+    { generation: number; fn: (state: any) => any }
+  >();
+
   private getStoreBoundSelectorFn(selector: any) {
+    // Selector functions, state classes and `StateToken` instances are all
+    // valid WeakMap keys; a stray primitive selector falls through uncached.
+    const cacheable =
+      selector !== null && (typeof selector === 'object' || typeof selector === 'function');
+    const generation = this._stateFactory.selectorGeneration;
+
+    if (cacheable) {
+      const cached = this._boundSelectorFnCache.get(selector);
+      // Rebuild when a later `provideStates()` may have changed the wiring.
+      if (cached !== undefined && cached.generation === generation) {
+        return cached.fn;
+      }
+    }
+
     const makeSelectorFn = getRootSelectorFactory(selector);
     const runtimeContext = this._stateFactory.getRuntimeSelectorContext();
-    return makeSelectorFn(runtimeContext);
+    const fn = makeSelectorFn(runtimeContext);
+
+    if (cacheable) {
+      this._boundSelectorFnCache.set(selector, { generation, fn });
+    }
+
+    return fn;
   }
 }
