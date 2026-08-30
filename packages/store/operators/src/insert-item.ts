@@ -35,7 +35,10 @@ export function insertItem<T>(value: NoInfer<T>, beforePosition?: number): State
   return function insertItemOperator(existing: ExistingState<T[]>): T[] {
     // `== null` covers both `null` and `undefined` while letting falsy
     // values like `0` or `false` through, where `!value` would not.
-    if (value == null && existing) {
+    // A nullish value is a documented no-op, so the existing slice is
+    // returned untouched even when the array hasn't been initialised yet
+    // (previously this returned `[null]`, materialising the property).
+    if (value == null) {
       return existing as T[];
     }
 

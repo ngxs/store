@@ -46,6 +46,23 @@ describe('append', () => {
     });
   });
 
+  describe('when a nullish items argument is provided and the target array does not exist yet', () => {
+    it('is a no-op and does not materialise the property as null', () => {
+      // Arrange
+      const original: { a?: number[] } = {};
+
+      // Act
+      const withNull = patch<{ a?: number[] }>({ a: append(null!) })(original);
+      const withUndefined = patch<{ a?: number[] }>({ a: append(undefined!) })(original);
+
+      // Assert
+      expect(withNull).toBe(original);
+      expect(withUndefined).toBe(original);
+      expect('a' in withNull).toBe(false);
+      expect(append(null!)(undefined!)).toBeUndefined();
+    });
+  });
+
   describe('when object with primitive property values provided', () => {
     describe('with different values', () => {
       it('returns new root if non-empty array array provided', () => {

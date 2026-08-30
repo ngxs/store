@@ -1,6 +1,16 @@
 import { patch, updateItem } from '@ngxs/store/operators';
 
 describe('update item', () => {
+  describe('when existing is not an array', () => {
+    it('returns an empty array instead of throwing (matches updateItems)', () => {
+      // Assert — a predicate selector must not throw on `existing.findIndex`
+      expect(() => updateItem<number>(() => true, 0)(null!)).not.toThrow();
+      expect(() => updateItem<number>(0, 0)(undefined!)).not.toThrow();
+      expect(updateItem<number>(() => true, 0)(null!)).toEqual([]);
+      expect(updateItem<number>(0, 0)(undefined!)).toEqual([]);
+    });
+  });
+
   describe('when null provided', () => {
     it('returns the same root', () => {
       // Arrange

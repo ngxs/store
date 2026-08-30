@@ -22,10 +22,18 @@ import { isArray } from './utils';
  */
 export function append<T>(items: NoInfer<T[]>): StateOperator<T[]> {
   return function appendOperator(existing: ExistingState<T[]>): T[] {
-    // Nothing meaningful to append, so preserve the existing reference
-    // to avoid invalidating memoized selectors unnecessarily.
-    const itemsNotProvidedButExistingIs = (!items || !items.length) && existing;
-    if (itemsNotProvidedButExistingIs) {
+    // A nullish `items` is a pure pass-through no-op, so the existing slice
+    // is returned untouched even when it hasn't been initialised yet
+    // (previously `append(null)` on a missing slice returned `null` and
+    // materialised the property).
+    if (items == null) {
+      return existing as unknown as T[];
+    }
+
+    // An empty `items` array is a no-op when there is already an array to
+    // leave untouched. When the slice doesn't exist yet it falls through
+    // below and initialises the property to `[]`.
+    if (!items.length && existing) {
       return existing as unknown as T[];
     }
 
