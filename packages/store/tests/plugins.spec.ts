@@ -1,4 +1,4 @@
-import { assertInInjectionContext, Injectable } from '@angular/core';
+import { assertInInjectionContext, inject, Injectable, Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   NgxsModule,
@@ -175,5 +175,64 @@ describe('Plugins', () => {
     // Assert
     expect(next).toHaveBeenCalledTimes(1);
     expect(store.snapshot().counter).toBe(1);
+  });
+
+  // Whether an `@Action` handler runs inside an injection context must not
+  // depend on how many plugins happen to be registered. The no-plugin dispatch
+  // fast path takes a different code route than the plugin chain; this pins the
+  // two to the same behavior so a handler that calls `inject()` (directly, or
+  // from an RxJS operator it builds during `.pipe()`) doesn't silently break in
+  // a plugin-less setup such as a bare `NgxsModule.forRoot([...])` test.
+  async function runInjectionContextProbe(plugins: any[]) {
+    class Ping {
+      static readonly type = 'Ping';
+    }
+
+    const probe: { threw: unknown; injector: Injector | null } = {
+      threw: null,
+      injector: null
+    };
+
+    @State({ name: 'noop', defaults: 0 })
+    @Injectable()
+    class NoopState {
+      @Action(Ping)
+      ping() {
+        try {
+          assertInInjectionContext(this.ping);
+          probe.injector = inject(Injector);
+        } catch (error) {
+          probe.threw = error;
+        }
+      }
+    }
+
+    TestBed.configureTestingModule({
+      imports: [NgxsModule.forRoot([NoopState])],
+      providers: plugins.map(withNgxsPlugin)
+    });
+
+    const store = TestBed.inject(Store);
+    await firstValueFrom(store.dispatch(new Ping()));
+    return { ...probe, testBedInjector: TestBed.inject(Injector) };
+  }
+
+  it('should run an action handler in an injection context with no plugins registered (fast path)', async () => {
+    const { threw, injector, testBedInjector } = await runInjectionContextProbe([]);
+
+    expect(threw).toBeNull();
+    expect(injector).toBe(testBedInjector);
+  });
+
+  it('should run an action handler in an injection context the same way with a plugin registered', async () => {
+    const passThroughPlugin = (state: any, action: any, next: NgxsNextPluginFn) =>
+      next(state, action);
+
+    const { threw, injector, testBedInjector } = await runInjectionContextProbe([
+      passThroughPlugin
+    ]);
+
+    expect(threw).toBeNull();
+    expect(injector).toBe(testBedInjector);
   });
 });
