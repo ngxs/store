@@ -225,16 +225,19 @@ export class StateFactory {
                 function callback() {
                   ngxsUnhandledErrorHandler.handleError(error, { action });
                 }
-                // An arrow function here would share the `[[Context]]` of the enclosing `error =>`
-                // arrow function, which captures `this` (StateFactory), causing the error object to
-                // retain the entire instance. A named function declaration creates its own context and
-                // V8 only captures variables it actually references — `ngxsUnhandledErrorHandler`,
-                // `error`, `action` — so `this` is never captured. `.bind(null)` goes one step further:
-                // a JSBoundFunction has no `[[Context]]` slot at all, fully severing the retention chain.
-                // This matters because the callback is stored as a value in the
-                // `ɵɵunhandledRxjsErrorCallbacks` WeakMap, keyed by the error object. The error may be
-                // held by third-party code (e.g. error trackers, logging) for an indeterminate duration,
-                // and we have no control over when that key is released.
+                // Keep this a named function, not an arrow. An arrow shares the
+                // enclosing `error =>` scope, which closes over `this` (the
+                // StateFactory), so the error object would end up retaining the
+                // whole instance. A named function only closes over what it
+                // actually uses (`ngxsUnhandledErrorHandler`, `error`, `action`),
+                // never `this`. `.bind(null)` goes one further: a bound function
+                // has no scope slot at all, so the retention chain is fully cut.
+                //
+                // This matters because the callback is stored in the
+                // `ɵɵunhandledRxjsErrorCallbacks` WeakMap keyed by the error, and
+                // the error can be held by third-party code (error trackers,
+                // logging) for as long as it likes - we don't control when it's
+                // released.
                 const handleableError = assignUnhandledCallback(error, callback.bind(null));
                 subscriber.next(<ActionContext>{
                   action,

@@ -4,35 +4,35 @@ import { Observable } from 'rxjs';
 import { Store } from '../store';
 import { ActionDef } from '../actions/symbols';
 
-// Extends Observable so callers can subscribe to emission updates (e.g. progress, intermediate states),
-// while implementing PromiseLike so the JS engine treats it as a thenable when `await` is used —
-// without this dual nature, callers would have to choose upfront between async/await and reactive patterns.
+// It's an Observable so you can subscribe for progress / intermediate states,
+// and a PromiseLike so `await dispatch(...)` works too. Being both means callers
+// don't have to pick one style up front.
 export class AsyncReturnType<T> extends Observable<T> implements PromiseLike<void> {
   constructor(private dispatchResult$: Observable<T>) {
     super(subscriber => dispatchResult$.subscribe(subscriber));
   }
 
-  // Called automatically by the JS engine when `await dispatch(...)` is used.
-  // The PromiseLike contract requires full generics on TResult1/TResult2 to support
-  // promise chaining (e.g. `await dispatch(...).then(x => transform(x))`).
+  // The engine calls this on `await dispatch(...)`. The TResult1/TResult2
+  // generics are what let you keep chaining, e.g.
+  // `await dispatch(...).then(x => transform(x))`.
   then<TResult1 = void, TResult2 = never>(
     onfulfilled?: ((value: void) => TResult1 | PromiseLike<TResult1>) | null,
     onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null
   ): PromiseLike<TResult1 | TResult2> {
     return new Promise<void>((resolve, reject) => {
       this.dispatchResult$.subscribe({
-        // Propagate observable errors into the promise rejection path so
-        // `try/catch` around `await dispatch(...)` works as expected.
+        // Send observable errors down the reject path so `try/catch` around
+        // `await dispatch(...)` catches them.
         error: reject,
-        // Resolve on complete rather than on next emission — dispatch returns void,
-        // so the caller cares about the action finishing, not any intermediate values.
+        // Resolve on complete, not on the first emission: dispatch is void, so
+        // what matters is the action finishing, not any values along the way.
         complete: resolve
       });
     }).then(
-      // Bridge void → undefined because PromiseLike<void> resolves with no value,
-      // but `onfulfilled` still needs to be invoked to continue the chain correctly.
+      // `PromiseLike<void>` resolves with nothing, so pass `undefined` through
+      // to `onfulfilled` to keep the chain going.
       onfulfilled ? () => onfulfilled(undefined) : undefined,
-      // Normalize null to undefined since Promise.then doesn't accept null for rejection handler.
+      // `Promise.then` won't take `null` for the reject handler, so map it to undefined.
       onrejected ?? undefined
     );
   }

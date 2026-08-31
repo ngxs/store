@@ -51,12 +51,10 @@ export class InternalActionHandlerFactory {
 
       let result = handlerFn(stateContext, action);
 
-      // We need to use `isPromise` instead of checking whether
-      // `result instanceof Promise`. In zone.js patched environments, `global.Promise`
-      // is the `ZoneAwarePromise`. Some APIs, which are likely not patched by zone.js
-      // for certain reasons, might not work with `instanceof`. For instance, the dynamic
-      // import returns a native promise (not a `ZoneAwarePromise`), causing this check to
-      // be falsy.
+      // Use `isPromise` here, not `result instanceof Promise`. With zone.js
+      // loaded, `global.Promise` is `ZoneAwarePromise`, but a few APIs hand back
+      // a native promise instead - e.g. dynamic `import()` - and `instanceof`
+      // would miss those.
       if (ɵisPromise(result)) {
         result = from(result);
       }
@@ -79,9 +77,8 @@ export class InternalActionHandlerFactory {
             takeUntil(
               new Observable<void>(subscriber => {
                 return canceled.subscribe(() => {
-                  // Note that we shouldn't use `catchError` to catch abort errors
-                  // because the observable is canceled before the error is thrown,
-                  // so we don't need to handle it.
+                  // No `catchError` needed for abort errors here - we cancel the
+                  // observable before the error is ever thrown.
                   abortController.abort();
                   subscriber.next();
                 });
@@ -100,12 +97,10 @@ export class InternalActionHandlerFactory {
         }
 
         result = result.pipe(
-          // Note that we use the `finalize` operator only when the action handler
-          // explicitly returns an observable (or a promise) to wait for. This means
-          // the action handler is written in a "fire & wait" style. If the handler’s
-          // result is unsubscribed (either because the observable has completed or
-          // it was unsubscribed by `takeUntil` due to a new action being dispatched),
-          // we prevent writing to the state context.
+          // We only reach this `finalize` when the handler returned an
+          // observable or promise to wait on ("fire & wait" style). Once that
+          // result is done - completed, or cut off by `takeUntil` when a new
+          // action comes in - block any further writes to the state context.
           finalize(() => {
             if (typeof ngDevMode !== 'undefined' && ngDevMode) {
               function noopAndWarn() {

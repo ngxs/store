@@ -8,11 +8,10 @@ export function fallbackSubscriber<T>(ngZone: NgZone) {
     let subscription: Subscription | null = source.subscribe({
       error: error => {
         ngZone.runOutsideAngular(() => {
-          // This is necessary to schedule a microtask to ensure that synchronous
-          // errors are not reported before the real subscriber arrives. If an error
-          // is thrown synchronously in any action, it will be reported to the error
-          // handler regardless. Since RxJS reports unhandled errors asynchronously,
-          // implementing a microtask ensures that we are also safe in this scenario.
+          // Defer to a microtask so a synchronous error doesn't fire before the
+          // real subscriber has attached. If an action throws synchronously the
+          // error still reaches the error handler either way; RxJS reports
+          // unhandled errors a tick later, so waiting one tick keeps us in sync.
           queueMicrotask(() => {
             if (subscription) {
               executeUnhandledCallback(error);
@@ -23,7 +22,7 @@ export function fallbackSubscriber<T>(ngZone: NgZone) {
     });
 
     return new Observable<T>(subscriber => {
-      // Now that there is a real subscriber, we can unsubscribe our pro-active subscription
+      // A real subscriber turned up, so drop the eager stand-in we started with.
       subscription?.unsubscribe();
       subscription = null;
 
