@@ -102,9 +102,16 @@ export class InternalDispatcher {
     if (plugins.length === 0) {
       // Fast path for the common case of no registered plugins: `_runAction`
       // already returns a shared, replaying stream, so hand it back as-is.
-      // Skips the `runPluginChain` closures, the `runInInjectionContext` frame
-      // and a second `shareReplay` layer over the same value.
-      return this._runAction(action);
+      // Skips the `runPluginChain` closures and a second `shareReplay` layer
+      // over the same value.
+      //
+      // We still keep the `runInInjectionContext` frame: `_runAction` runs the
+      // synchronous part of the action handler (including any `.pipe(...)` it
+      // builds) before it returns, and a handler may call `inject()` there. The
+      // plugin path runs that same synchronous work inside an injection
+      // context, so whether it's available must not depend on how many plugins
+      // happen to be registered.
+      return runInInjectionContext(this._injector, () => this._runAction(action));
     }
 
     const prevState = this._stateStream.getValue();
