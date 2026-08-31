@@ -20,6 +20,7 @@ $ npm install @ngxs/store@dev
 - Fix(store): Sanitize keys in the `createPropertySelectors` proxy (prototype keys, symbols, `then`) [#2489](https://github.com/ngxs/store/pull/2489)
 - Fix(store): Prevent a stack overflow in `findFullParentPath` on a cyclic state graph [#2490](https://github.com/ngxs/store/pull/2490)
 - Fix(store): Use `refCount` `shareReplay` in the dispatch pipeline [#2491](https://github.com/ngxs/store/pull/2491)
+- Fix(store): Scope the dispatch injection context to plugin functions; `@Action` handlers no longer run in an injection context [#2506](https://github.com/ngxs/store/pull/2506)
 - Fix(store): Make `updateItem`/`removeItem`/`insertItem`/`append` consistent on a missing slice [#2496](https://github.com/ngxs/store/pull/2496)
 - Fix(storage-plugin): Type `STORAGE_ENGINE` as nullable to match its runtime contract [#2481](https://github.com/ngxs/store/pull/2481)
 - Fix(storage-plugin): Guard against `localStorage`/`sessionStorage` being undefined [#2482](https://github.com/ngxs/store/pull/2482)
