@@ -1,11 +1,4 @@
-import {
-  DestroyRef,
-  inject,
-  Injectable,
-  Injector,
-  NgZone,
-  runInInjectionContext
-} from '@angular/core';
+import { DestroyRef, inject, Injectable, NgZone } from '@angular/core';
 import { EMPTY, forkJoin, Observable, ReplaySubject, map, share, shareReplay, of } from 'rxjs';
 
 import {
@@ -45,7 +38,6 @@ export class InternalDispatcher {
   private _pluginManager = inject(PluginManager);
   private _stateStream = inject(ɵStateStream);
   private _ngxsExecutionStrategy = inject(InternalNgxsExecutionStrategy);
-  private _injector = inject(Injector);
   private _destroyRef = inject(DestroyRef);
 
   /**
@@ -105,19 +97,15 @@ export class InternalDispatcher {
       // Skips the `runPluginChain` closures and a second `shareReplay` layer
       // over the same value.
       //
-      // We still keep the `runInInjectionContext` frame: `_runAction` runs the
-      // synchronous part of the action handler (including any `.pipe(...)` it
-      // builds) before it returns, and a handler may call `inject()` there. The
-      // plugin path runs that same synchronous work inside an injection
-      // context, so whether it's available must not depend on how many plugins
-      // happen to be registered.
-      return runInInjectionContext(this._injector, () => this._runAction(action));
+      // No injection context here: an `@Action` handler is not one (only plugin
+      // functions get one, see `PluginManager`), and with no plugins there is
+      // nothing that needs it.
+      return this._runAction(action);
     }
 
     const prevState = this._stateStream.getValue();
 
     const dispatched$ = runPluginChain(
-      this._injector,
       this._destroyRef,
       plugins,
       (state: any, action: any) => {
@@ -190,10 +178,12 @@ export class InternalDispatcher {
  * plugin gets `(state, action, next)` and calls `next(state, action)` to pass
  * control on. Once the plugins are done, `handler(state, action)` runs.
  *
- * Everything runs inside one injection context so plugins can use `inject()`.
+ * This runner adds no injection context of its own: functional plugins that
+ * need one are wrapped when they are registered (see `PluginManager`), so with
+ * only class plugins (or none) `handler` - the action-handler invocation - runs
+ * without one.
  */
 function runPluginChain(
-  injector: Injector,
   destroyRef: DestroyRef,
   plugins: NgxsPluginFn[],
   handler: NgxsNextPluginFn,
@@ -215,5 +205,5 @@ function runPluginChain(
     return plugins[index](currentState, currentAction, next);
   };
 
-  return runInInjectionContext(injector, () => runFrom(0, state, action));
+  return runFrom(0, state, action);
 }
