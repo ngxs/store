@@ -33,9 +33,8 @@ export function executeUnhandledCallback(error: any) {
 }
 
 export function assignUnhandledCallback(error: any, callback: VoidFunction) {
-  // Since the error can be essentially anything, we must ensure that we only
-  // handle objects, as weak maps do not allow any other key type besides objects.
-  // The error can also be a string if thrown in the following manner: `throwError('My Error')`.
+  // The error can be anything - `throwError('My Error')` throws a plain string,
+  // for one. WeakMap keys have to be objects, so only handle it when it is one.
   if (error && typeof error === 'object') {
     let hasBeenCalled = false;
     ɵɵunhandledRxjsErrorCallbacks.set(error, () => {

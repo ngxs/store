@@ -28,9 +28,9 @@ export function withNgxsPlugin(plugin: Type<NgxsPlugin> | NgxsPluginFn): Environ
     ɵisPluginClass(plugin)
       ? { provide: NGXS_PLUGINS, useClass: plugin, multi: true }
       : { provide: NGXS_PLUGINS, useValue: plugin, multi: true },
-    // We should inject the `PluginManager` to retrieve `NGXS_PLUGINS` and
-    // register those plugins. The plugin can be added from inside the child
-    // route, so the plugin manager should be re-injected.
+    // Force `PluginManager` to be created so it reads `NGXS_PLUGINS` and
+    // registers these plugins. Plugins can also come from a child route, so
+    // re-inject it there.
     provideEnvironmentInitializer(() => inject(PluginManager))
   ]);
 }

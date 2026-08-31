@@ -33,19 +33,21 @@ export class PluginManager {
     const handlers: NgxsPlugin[] = this._pluginHandlers || [];
     const injector = this._injector;
     return handlers.map((plugin: NgxsPlugin) => {
-      // Class plugins inject their dependencies through the constructor, so they
-      // need no injection context at dispatch time.
+      // Class plugins get their deps from the constructor, so they don't need
+      // an injection context when they run.
       if (plugin.handle) {
         return plugin.handle.bind(plugin) as NgxsPluginFn;
       }
 
-      // Functional plugins can call `inject()` in their body while assembling
-      // the chain, so run them inside an injection context. Scoping it here -
-      // rather than around the whole chain - means that with only class plugins
-      // (or none) the action handler no longer runs in an injection context;
-      // `inject()` there belongs in a state's field initializers or constructor.
-      // (A functional plugin that calls `next()` synchronously still leaks its
-      // context into the handler - the chain runs inside this frame.)
+      // Functional plugins can call `inject()` in their body, so run them in an
+      // injection context. Doing it here, per plugin, instead of around the
+      // whole chain means that with only class plugins (or none) the action
+      // handler no longer runs in one - `inject()` in a handler belongs in the
+      // state's field initializers or constructor instead.
+      //
+      // Caveat: a functional plugin that calls `next()` synchronously still
+      // leaks its context into the handler, since the rest of the chain runs
+      // inside this frame.
       const pluginFn = plugin as unknown as NgxsPluginFn;
       return ((state, action, next) =>
         runInInjectionContext(injector, () => pluginFn(state, action, next))) as NgxsPluginFn;

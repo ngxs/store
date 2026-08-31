@@ -10,17 +10,14 @@ export class NgxsUnhandledErrorHandler {
   private _errorHandler = inject(ErrorHandler);
 
   /**
-   * The `_unhandledErrorContext` is left unused internally since we do not
-   * require it for internal operations. However, developers who wish to provide
-   * their own custom error handler may utilize this context information.
+   * We don't use `_unhandledErrorContext` ourselves - it's here for custom
+   * error handlers that want the extra context.
    */
   handleError(error: any, _unhandledErrorContext: NgxsUnhandledErrorContext): void {
-    // In order to avoid duplicate error handling, it is necessary to leave
-    // the Angular zone to ensure that errors are not caught twice. The `handleError`
-    // method may contain a `throw error` statement, which is used to re-throw the error.
-    // If the error is re-thrown within the Angular zone, it will be caught again by the
-    // Angular zone. By default, `@angular/core` leaves the Angular zone when invoking
-    // `handleError` (see `_callAndReportToErrorHandler`).
+    // Run outside the Angular zone so a re-thrown error isn't caught twice.
+    // `handleError` often ends with `throw error` to re-throw; do that inside
+    // the zone and the zone catches it again. `@angular/core` already leaves the
+    // zone before calling `handleError` (see `_callAndReportToErrorHandler`).
     this._ngZone.runOutsideAngular(() => this._errorHandler.handleError(error));
   }
 }
