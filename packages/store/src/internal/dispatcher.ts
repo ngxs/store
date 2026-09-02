@@ -15,18 +15,24 @@ import { InternalDispatchedActionResults } from './action-results';
 import { ActionStatus, InternalActions } from '../actions-stream';
 import { InternalNgxsExecutionStrategy } from '../execution/execution-strategy';
 
-// A dispatch happens once. Every reset flag is off, so whatever came out - a
-// value or an error - gets replayed to late subscribers, and subscribers coming
-// and going never re-run the source. No leak: the subject is per dispatch and
-// the source always terminates (success, error, or cancellation).
+// `share()` config for the dispatch streams below.
 //
-// shareReplay only allows to configure behavior for late subscribers, but does not expose behavior customization for errors.
+// `store.dispatch(new Foo())` gives you a stream. NGXS subscribes to it once to
+// run the action; you might `.subscribe()` on it too, or never. With the reset
+// flags off, whoever shows up late just gets the finished result (or the error)
+// replayed - the action never runs twice.
 //
-// RxJS copies these settings when it builds the operator and never looks at the
-// object again, so every dispatch can share the same one instead of making a new one.
+// `shareReplay` won't do that: after an error it tosses its buffer and re-runs
+// the source for the next subscriber. So it's plain `share()` plus our own
+// `ReplaySubject`.
+//
+// One object, reused for every dispatch - RxJS copies these flags when it builds
+// the operator and never looks at the object again.
 const SHARE_WITH_NO_RESETS = {
-  // New subject per dispatch, same factory every time.
+  // Fresh subject per dispatch (each holds its own result), same factory fn.
   connector: () => new ReplaySubject<ɵPlainObject>(1),
+  // Hang onto the result after error / complete / everyone leaving, so a late
+  // subscriber gets handed it instead of restarting the whole thing.
   resetOnError: false,
   resetOnComplete: false,
   resetOnRefCountZero: false
@@ -62,11 +68,11 @@ export class InternalDispatcher {
     if (Array.isArray(actionOrActions)) {
       if (actionOrActions.length === 0) return of(undefined);
 
-      // Heads up: a canceled action completes without emitting, and `forkJoin`
-      // does the same if any of its inputs do. So cancel one action in a batch
-      // and the caller gets `complete` with no `next`, even if the rest worked
-      // fine. It's the documented behavior on `Store#dispatch` and matches a
-      // single canceled dispatch, so we leave it alone.
+      // Say you `dispatch([A, B])` and A gets canceled. A canceled action
+      // completes without emitting, and `forkJoin` does the same if any of its
+      // inputs do - so the caller gets `complete` but no value, even though B
+      // was fine. It's documented on `Store#dispatch`, and it matches what a
+      // single canceled dispatch does, so leave it be.
       return forkJoin(actionOrActions.map(action => this.dispatchSingle(action))).pipe(
         map(() => undefined)
       );
@@ -75,8 +81,6 @@ export class InternalDispatcher {
     }
   }
 
-  // This one actually emits the new state, not `void` - `dispatchByEvents` maps
-  // it back down to `void` for the public `dispatch()` signature.
   private dispatchSingle(action: any): Observable<any> {
     if (typeof ngDevMode !== 'undefined' && ngDevMode) {
       const type: string | undefined = getActionTypeFromInstance(action);
@@ -89,20 +93,12 @@ export class InternalDispatcher {
     }
 
     if (this._destroyRef.destroyed) {
-      // Injector's already destroyed, nothing to do.
       return EMPTY;
     }
 
     const plugins = this._pluginManager.plugins;
 
     if (plugins.length === 0) {
-      // Most apps register no plugins, so go straight to `_runAction`. It
-      // already gives back a shared, replaying stream, so there's nothing left
-      // to wrap - no `runPluginChain` closures, no second `shareReplay`.
-      //
-      // Nothing sets up an injection context here, on purpose: `@Action`
-      // handlers don't run in one (only plugin functions do - see
-      // `PluginManager`), and with no plugins nothing needs one anyway.
       return this._runAction(action);
     }
 
@@ -112,8 +108,8 @@ export class InternalDispatcher {
       this._destroyRef,
       plugins,
       (state: any, action: any) => {
-        // A plugin may have replaced the state before the action runs; push
-        // it through only when it actually changed.
+        // A plugin might've swapped the state out before the action runs - only
+        // push it if it actually changed.
         if (state !== prevState) {
           this._stateStream.next(state);
         }
@@ -123,19 +119,23 @@ export class InternalDispatcher {
       action
     );
 
-    // A plugin might tack its own `.pipe(...)` onto `_runAction`'s result, and
-    // that isn't shared, so share the chain here - the eager subscriber and the
-    // caller both need to see the same single run. Re-subscribing this would
-    // dispatch the action again whenever a plugin calls `next()` lazily (from
-    // inside `mergeMap`, say), and `fallbackSubscriber` does drop to zero
-    // subscribers on its way to the caller - hence no resets.
+    // A plugin can wrap `_runAction`'s result in its own `.pipe(...)` that isn't
+    // shared, so share the whole chain here. Two things subscribe to it:
+    // `fallbackSubscriber` eagerly, then the real caller.
+    //
+    // The catch is it has to run exactly once. A plugin can call `next()`
+    // lazily - say `gate$.pipe(mergeMap(() => next(state, action)))` - and then
+    // `next()`, and the dispatch behind it, fires on every subscribe.
+    // `fallbackSubscriber` drops to zero subscribers for a beat during the
+    // handoff, so a `share` that resets would re-run the chain right there.
+    // That's why every reset flag is off.
     return dispatched$.pipe(share(SHARE_WITH_NO_RESETS));
   }
 
   private _runAction(action: any): Observable<ɵPlainObject> {
-    // Wait on `_actionResults` for this action to finish, then turn that into
-    // what `dispatch()` emits. We also re-broadcast the result on the main
-    // action stream so `Actions` listeners like `ofActionSuccessful` pick it up.
+    // Builds the stream `dispatch()` returns. Waits on `_actionResults` for this
+    // action to land, then emits the new state (or errors). Also forwards each
+    // status onto the main `Actions` stream so `ofActionSuccessful` & co. fire.
     const result$ = new Observable<ɵPlainObject>(subscriber =>
       this._actionResults.subscribe({
         next: ctx => {
@@ -147,7 +147,7 @@ export class InternalDispatcher {
 
           switch (ctx.status) {
             case ActionStatus.Successful:
-              // Hand back the current state - plugins read it.
+              // Emit the new state - downstream plugins read it.
               subscriber.next(this._stateStream.getValue());
               subscriber.complete();
               break;
@@ -162,15 +162,16 @@ export class InternalDispatcher {
         complete: () => !subscriber.closed && subscriber.complete()
       })
     ).pipe(
-      // One result, several subscribers (the keep-alive one below, the plugin
-      // chain, `forkJoin`, the caller), so share it.
+      // The one result feeds a few subscribers - the keep-alive below, the
+      // plugin chain, `forkJoin`, the caller - so share it.
       share(SHARE_WITH_NO_RESETS)
     );
 
-    // Subscribe before firing `Dispatched` below: a synchronous handler can
-    // finish right away and we'd miss the result otherwise. This subscription is
-    // only here to keep the stream running - the caller gets errors from the
-    // shared result above, so ignore them here.
+    // Subscribe now, before we send `Dispatched`. `result$` is lazy - nothing
+    // in it happens until someone subscribes - and a synchronous handler would
+    // be done and gone before the caller ever got there. This sub is just a
+    // keep-alive; real errors reach the caller through the shared `result$`, so
+    // swallow them here.
     result$.subscribe(IGNORE_ERRORS);
 
     this._actions.next({ action, status: ActionStatus.Dispatched });
@@ -180,14 +181,13 @@ export class InternalDispatcher {
 }
 
 /**
- * Runs the plugins as middleware around `handler`, left to right. Each plugin
- * gets `(state, action, next)` and calls `next(state, action)` to hand off to
- * the next one. After the last plugin, `handler(state, action)` runs.
+ * Runs the plugins as middleware around `handler`, left to right: each plugin
+ * gets `(state, action, next)` and calls `next(state, action)` to pass control
+ * along. After the last one, `handler(state, action)` runs.
  *
- * This function doesn't set up an injection context. Functional plugins that
- * need `inject()` get wrapped in one at registration time (see `PluginManager`),
- * so when every plugin is class-based (or there are none) the action handler
- * runs without one.
+ * Nothing sets up an injection context here. Functional plugins that need
+ * `inject()` get wrapped in one when they're registered (see `PluginManager`),
+ * so with only class plugins - or none - the action handler runs without one.
  */
 function runPluginChain(
   destroyRef: DestroyRef,
@@ -198,7 +198,7 @@ function runPluginChain(
 ): Observable<any> {
   const runFrom = (index: number, currentState: any, currentAction: any): any => {
     if (destroyRef.destroyed) {
-      // Injector's already gone (a plugin might have torn it down), so bail.
+      // Injector's gone (a plugin may have torn it down), so bail.
       return EMPTY;
     }
 
