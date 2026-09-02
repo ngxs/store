@@ -23,7 +23,13 @@ export function propGetter(paths: string[], config: NgxsConfig) {
 }
 
 function throwSelectFactoryNotConnectedError(): never {
-  throw new Error('You have forgotten to import the NGXS module!');
+  throw new Error(
+    "`@Select` is deprecated and doesn't work on its own anymore. Add " +
+      '`withNgxsSelectDecoratorSupport()` to `provideStore(...)`, or ' +
+      '`NgxsSelectDecoratorSupportModule.forRoot()` next to `NgxsModule.forRoot(...)`. ' +
+      'Better to move to `store.select()`, `select()` or `store.selectSignal()`: ' +
+      'https://ngxs.io/deprecations/select-decorator-deprecation'
+  );
 }
 
 const DOLLAR_CHAR_CODE = 36;

@@ -3,7 +3,16 @@ import { combineLatest, Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Component, Injectable, NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { Store, NgxsModule, State, Action, Selector, Select, StateContext } from '@ngxs/store';
+import {
+  Store,
+  NgxsModule,
+  NgxsSelectDecoratorSupportModule,
+  State,
+  Action,
+  Selector,
+  Select,
+  StateContext
+} from '@ngxs/store';
 import { skipConsoleLogging, freshPlatform } from '@ngxs/store/internals/testing';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
@@ -68,7 +77,7 @@ describe('Select', () => {
 
   const states = [MySubState, MySubSubState, MyState];
 
-  it('should throw an exception when the user has forgotten to import the NGXS module', () => {
+  it('should throw an exception when `@Select` support has not been connected', () => {
     // Arrange
     let message: string | null = null;
 
@@ -84,7 +93,7 @@ describe('Select', () => {
     }
 
     // Assert
-    expect(message).toEqual('You have forgotten to import the NGXS module!');
+    expect(message).toContain('withNgxsSelectDecoratorSupport()');
   });
 
   it('should throw an exception when the component class is frozen', () => {
@@ -111,7 +120,7 @@ describe('Select', () => {
       }
 
       TestBed.configureTestingModule({
-        imports: [NgxsModule.forRoot(states)],
+        imports: [NgxsModule.forRoot(states), NgxsSelectDecoratorSupportModule.forRoot()],
         declarations: [MySelectComponent]
       });
 
@@ -143,7 +152,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [NgxsModule.forRoot(states), NgxsSelectDecoratorSupportModule.forRoot()],
       declarations: [SelectComponent]
     });
 
@@ -170,7 +179,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [NgxsModule.forRoot(states), NgxsSelectDecoratorSupportModule.forRoot()],
       declarations: [StringSelectComponent]
     });
 
@@ -204,7 +213,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [NgxsModule.forRoot(states), NgxsSelectDecoratorSupportModule.forRoot()],
       declarations: [StoreSelectComponent]
     });
 
@@ -236,7 +245,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [NgxsModule.forRoot(states), NgxsSelectDecoratorSupportModule.forRoot()],
       declarations: [StoreSelectComponent]
     });
 
@@ -267,7 +276,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [NgxsModule.forRoot(states), NgxsSelectDecoratorSupportModule.forRoot()],
       declarations: [StoreSelectComponent]
     });
 
@@ -305,7 +314,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [NgxsModule.forRoot(states), NgxsSelectDecoratorSupportModule.forRoot()],
       declarations: [StoreSelectComponent]
     });
 
@@ -332,7 +341,7 @@ describe('Select', () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot(states)],
+      imports: [NgxsModule.forRoot(states), NgxsSelectDecoratorSupportModule.forRoot()],
       declarations: [StoreSelectComponent]
     });
 

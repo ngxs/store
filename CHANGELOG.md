@@ -6,6 +6,7 @@ $ npm install @ngxs/store@dev
 
 ### To become next version
 
+- Fix(store): The deprecated `@Select` decorator no longer works on its own (it held the request's `Store` in a module-level static, leaking on the server). Apps still using `@Select` must add `withNgxsSelectDecoratorSupport()` to `provideStore(...)`, or `NgxsSelectDecoratorSupportModule.forRoot()` next to `NgxsModule.forRoot(...)` - or move to `store.select()` / `select()` / `store.selectSignal()` [#XXXX](https://github.com/ngxs/store/pull/XXXX)
 - Feature(store): Warn when `setState`/`patchState` produce a new reference with an identical value [#2465](https://github.com/ngxs/store/pull/2465)
 - Feature(store): Warn on duplicate action types via `warnOnDuplicateActionTypes` [#2466](https://github.com/ngxs/store/pull/2466)
 - Feature(store): Add `ignoreUncompleted` action option [#2470](https://github.com/ngxs/store/pull/2470)

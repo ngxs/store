@@ -3,7 +3,7 @@
 {% hint style="danger" %}
 **DEPRECATED**
 
-[Find out why we are deprecating the select decorator](../../deprecations/select-decorator-deprecation.md)
+`@Select` is no longer enabled by default - it leaks on the server. Add `withNgxsSelectDecoratorSupport()` to `provideStore(...)` (or `NgxsSelectDecoratorSupportModule.forRoot()` next to `NgxsModule.forRoot(...)`) to keep using it, and see [why we are deprecating the select decorator](../../deprecations/select-decorator-deprecation.md).
 {% endhint %}
 
 You can select slices of data from the store using the `@Select` decorator. It has a few different ways to get your data out, whether passing the state class, a function, a different state class or a memoized selector.
