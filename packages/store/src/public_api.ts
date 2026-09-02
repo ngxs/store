@@ -3,6 +3,10 @@ export { Action } from './decorators/action';
 export { Store } from './store';
 export { State } from './decorators/state';
 export { Select } from './decorators/select/select';
+export {
+  withNgxsSelectDecoratorSupport,
+  NgxsSelectDecoratorSupportModule
+} from './decorators/select/select-decorator.module';
 export { SelectorOptions } from './decorators/selector-options';
 export { Actions, type ActionContext, ActionStatus } from './actions-stream';
 

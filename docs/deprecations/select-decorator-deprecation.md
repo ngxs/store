@@ -2,7 +2,28 @@
 
 The `@Select` decorator is slated for removal in the future due to its inherent risks. It lacks integration with Angular's dependency injection system, making it prone to failures in scenarios with multiple simultaneous applications, such as server-side rendering and microfrontend setups.
 
-Previously, the decorator stored the `Store` instance in a static variable, which could be overwritten by subsequent bootstrapped or removed applications. If a second application was created and destroyed before the first one, it could nullify the static variable, rendering the store inaccessible to the first application.
+The decorator stores the `Store` instance in a static variable, which could be overwritten by subsequent bootstrapped or removed applications. If a second application was created and destroyed before the first one, it could nullify the static variable, rendering the store inaccessible to the first application. On the server, that same static keeps the request's `Store` (and its whole state graph) alive for the life of the process, so an app that doesn't use `@Select` still pays for it with a memory leak.
+
+## `@Select` is no longer enabled by default
+
+Because of the leak above, NGXS no longer creates the machinery `@Select` relies on unless you ask for it. If you can't migrate right away, opt in:
+
+```ts
+// standalone
+provideStore([UsersState], withNgxsSelectDecoratorSupport());
+```
+
+```ts
+// NgModule
+@NgModule({
+  imports: [NgxsModule.forRoot([UsersState]), NgxsSelectDecoratorSupportModule.forRoot()]
+})
+export class AppModule {}
+```
+
+Without it, reading a `@Select` property throws. Migrating off `@Select` is still the recommended path.
+
+## Migrating away from `@Select`
 
 Every `@Select` usage should be replaced with the following:
 
