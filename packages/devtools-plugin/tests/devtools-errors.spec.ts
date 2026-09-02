@@ -137,16 +137,10 @@ describe('[TEST]: Devtools with errors', () => {
         newState: { count: 0 },
         jumped: false
       },
+      // One entry per action, error included: the dispatch result replays to the
+      // caller instead of re-subscribing the plugin's `catchError`.
       {
         id: 3,
-        type: 'error',
-        payload: undefined,
-        state: { count: 0 },
-        newState: { count: 0 },
-        jumped: false
-      },
-      {
-        id: 4,
         type: 'error',
         payload: undefined,
         state: { count: 0 },
@@ -198,14 +192,6 @@ describe('[TEST]: Devtools with errors', () => {
       },
       {
         id: 4,
-        type: 'error',
-        payload: undefined,
-        state: { count: 0 },
-        newState: { count: 0 },
-        jumped: false
-      },
-      {
-        id: 5,
         type: 'increment',
         payload: undefined,
         state: { count: 0 },
@@ -213,18 +199,10 @@ describe('[TEST]: Devtools with errors', () => {
         jumped: false
       },
       {
-        id: 6,
+        id: 5,
         type: 'error_2',
         payload: undefined,
         state: { count: 1 },
-        newState: { count: 11 },
-        jumped: false
-      },
-      {
-        id: 7,
-        type: 'error_2',
-        payload: undefined,
-        state: { count: 11 },
         newState: { count: 11 },
         jumped: false
       }

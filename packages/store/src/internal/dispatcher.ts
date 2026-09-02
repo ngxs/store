@@ -1,5 +1,5 @@
 import { DestroyRef, inject, Injectable, NgZone } from '@angular/core';
-import { EMPTY, forkJoin, Observable, ReplaySubject, map, share, shareReplay, of } from 'rxjs';
+import { EMPTY, forkJoin, Observable, ReplaySubject, map, share, of } from 'rxjs';
 
 import {
   getActionTypeFromInstance,
@@ -15,14 +15,18 @@ import { InternalDispatchedActionResults } from './action-results';
 import { ActionStatus, InternalActions } from '../actions-stream';
 import { InternalNgxsExecutionStrategy } from '../execution/execution-strategy';
 
+// A dispatch happens once. Every reset flag is off, so whatever came out - a
+// value or an error - gets replayed to late subscribers, and subscribers coming
+// and going never re-run the source. No leak: the subject is per dispatch and
+// the source always terminates (success, error, or cancellation).
+//
+// shareReplay only allows to configure behavior for late subscribers, but does not expose behavior customization for errors.
+//
 // RxJS copies these settings when it builds the operator and never looks at the
 // object again, so every dispatch can share the same one instead of making a new one.
-const DISPATCH_SHARE_REPLAY = { bufferSize: 1, refCount: true };
-
-const ACTION_RESULT_SHARE = {
+const SHARE_WITH_NO_RESETS = {
   // New subject per dispatch, same factory every time.
   connector: () => new ReplaySubject<ɵPlainObject>(1),
-  // An action result happens once - keep replaying it, never re-run the source.
   resetOnError: false,
   resetOnComplete: false,
   resetOnRefCountZero: false
@@ -120,9 +124,12 @@ export class InternalDispatcher {
     );
 
     // A plugin might tack its own `.pipe(...)` onto `_runAction`'s result, and
-    // that isn't shared, so `shareReplay` the chain here - the eager subscriber
-    // and the caller both need to see the same single run.
-    return dispatched$.pipe(shareReplay(DISPATCH_SHARE_REPLAY));
+    // that isn't shared, so share the chain here - the eager subscriber and the
+    // caller both need to see the same single run. Re-subscribing this would
+    // dispatch the action again whenever a plugin calls `next()` lazily (from
+    // inside `mergeMap`, say), and `fallbackSubscriber` does drop to zero
+    // subscribers on its way to the caller - hence no resets.
+    return dispatched$.pipe(share(SHARE_WITH_NO_RESETS));
   }
 
   private _runAction(action: any): Observable<ɵPlainObject> {
@@ -156,10 +163,8 @@ export class InternalDispatcher {
       })
     ).pipe(
       // One result, several subscribers (the keep-alive one below, the plugin
-      // chain, `forkJoin`, the caller), so share it. `ACTION_RESULT_SHARE` turns
-      // every reset flag off, so whatever came out - a value or an error - gets
-      // replayed to anyone who subscribes late instead of running again.
-      share(ACTION_RESULT_SHARE)
+      // chain, `forkJoin`, the caller), so share it.
+      share(SHARE_WITH_NO_RESETS)
     );
 
     // Subscribe before firing `Dispatched` below: a synchronous handler can
