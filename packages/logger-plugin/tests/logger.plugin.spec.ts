@@ -6,7 +6,8 @@ import {
   State,
   StateContext
 } from '@ngxs/store';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { delay, tap } from 'rxjs/operators';
 
 import { setupWithLogger, formatActionCallStack, LoggerSpy } from './helpers';
 
@@ -22,6 +23,16 @@ describe('NgxsLoggerPlugin', () => {
 
   class ErrorAction {
     static type = 'ERROR';
+  }
+
+  class AsyncAction {
+    static type = 'ASYNC_ACTION';
+    constructor(public bar?: string) {}
+  }
+
+  class AsyncError {
+    static type = 'ASYNC_ERROR';
+    constructor(public message: string) {}
   }
 
   interface StateModel {
@@ -46,6 +57,27 @@ describe('NgxsLoggerPlugin', () => {
     @Action(ErrorAction)
     error() {
       return throwError(new Error(thrownErrorMessage));
+    }
+
+    @Action(AsyncAction)
+    asyncAction({ patchState }: StateContext<StateModel>, { bar }: AsyncAction) {
+      patchState({ bar: '...' });
+      return of(null).pipe(
+        delay(1),
+        tap(() => patchState({ bar: bar || defaultBarValue }))
+      );
+    }
+
+    @Action(AsyncError)
+    asyncErrorAction({ patchState }: StateContext<StateModel>, { message }: AsyncError) {
+      patchState({ bar: '...' });
+      return of(null).pipe(
+        delay(1),
+        tap(() => {
+          patchState({ bar: 'erroring' });
+          throw new Error(message);
+        })
+      );
     }
   }
 
@@ -149,6 +181,99 @@ describe('NgxsLoggerPlugin', () => {
     ]);
 
     store.dispatch(new UpdateBarAction());
+
+    expect(logger.callStack).toEqual(expectedCallStack);
+  });
+
+  it('should log async success action', async () => {
+    const { store, logger } = setupWithLogger([TestState]);
+    const payload = 'qux';
+
+    const promise = store.dispatch(new AsyncAction(payload)).toPromise();
+    logger.log('Some other work');
+    await promise;
+
+    const expectedCallStack = LoggerSpy.createCallStack([
+      ...formatActionCallStack({ action: InitState.type, prevState: stateModelDefaults }),
+      ['group', 'action ASYNC_ACTION (started @ )'],
+      ['log', '%c payload', 'color: #9E9E9E; font-weight: bold', { bar: payload }],
+      [
+        'log',
+        '%c prev state',
+        'color: #9E9E9E; font-weight: bold',
+        { test: stateModelDefaults }
+      ],
+      [
+        'log',
+        '%c next state (synchronous)',
+        'color: #4CAF50; font-weight: bold',
+        { test: { bar: '...' } }
+      ],
+      [
+        'log',
+        '%c ( action doing async work... )',
+        'color: #4CAF50; font-weight: bold',
+        undefined
+      ],
+      ['groupEnd'],
+      ['log', 'Some other work'],
+      ['group', '(async work completed) action ASYNC_ACTION (started @ )'],
+      [
+        'log',
+        '%c next state',
+        'color: #4CAF50; font-weight: bold',
+        { test: { bar: payload } }
+      ],
+      ['groupEnd']
+    ]);
+
+    expect(logger.callStack).toEqual(expectedCallStack);
+  });
+
+  it('should log async error action', async () => {
+    const { store, logger } = setupWithLogger([TestState]);
+    const errorMessage = 'qux error';
+
+    const promise = store.dispatch(new AsyncError(errorMessage)).toPromise();
+    logger.log('Some other work');
+    try {
+      await promise;
+    } catch {}
+
+    const expectedCallStack = LoggerSpy.createCallStack([
+      ...formatActionCallStack({ action: InitState.type, prevState: stateModelDefaults }),
+      ['group', 'action ASYNC_ERROR (started @ )'],
+      ['log', '%c payload', 'color: #9E9E9E; font-weight: bold', { message: errorMessage }],
+      [
+        'log',
+        '%c prev state',
+        'color: #9E9E9E; font-weight: bold',
+        { test: stateModelDefaults }
+      ],
+      [
+        'log',
+        '%c next state (synchronous)',
+        'color: #4CAF50; font-weight: bold',
+        { test: { bar: '...' } }
+      ],
+      [
+        'log',
+        '%c ( action doing async work... )',
+        'color: #4CAF50; font-weight: bold',
+        undefined
+      ],
+      ['groupEnd'],
+      ['log', 'Some other work'],
+      ['group', '(async work error) action ASYNC_ERROR (started @ )'],
+      [
+        'log',
+        '%c next state after error',
+        'color: #FD8182; font-weight: bold',
+        { test: { bar: 'erroring' } }
+      ],
+      ['log', '%c error', 'color: #FD8182; font-weight: bold', new Error(errorMessage)],
+      ['groupEnd']
+    ]);
 
     expect(logger.callStack).toEqual(expectedCallStack);
   });
