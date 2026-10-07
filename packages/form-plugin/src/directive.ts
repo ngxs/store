@@ -8,18 +8,18 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
-import { Actions, ofActionDispatched, Store } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 import { getValue } from '@ngxs/store/plugins';
 import { Observable, debounceTime, distinctUntilChanged } from 'rxjs';
 
 import {
-  ResetForm,
   UpdateForm,
   UpdateFormDirty,
   UpdateFormErrors,
   UpdateFormStatus,
   UpdateFormValue
 } from './actions';
+import { InternalFormRegistry } from './form-registry';
 
 @Directive({ selector: '[ngxsForm]', standalone: true })
 export class NgxsFormDirective implements OnInit {
@@ -46,8 +46,8 @@ export class NgxsFormDirective implements OnInit {
 
   private _updating = false;
 
-  private _actions$ = inject(Actions);
   private _store = inject(Store);
+  private _formRegistry = inject(InternalFormRegistry);
   private _formGroupDirective = inject(FormGroupDirective);
   private _cd = inject(ChangeDetectorRef);
 
@@ -70,20 +70,26 @@ export class NgxsFormDirective implements OnInit {
   }
 
   ngOnInit() {
-    const resetForm$ = this._actions$.pipe(
-      ofActionDispatched(ResetForm),
-      takeUntilDestroyed(this._destroyRef)
-    );
-
-    resetForm$.subscribe((action: ResetForm) => {
-      if (action.payload.path !== this.path) {
-        return;
+    // The plugin calls this synchronously while handling `ResetForm` and writes
+    // the returned form state itself, so `ResetForm` only completes once the
+    // form has been reset.
+    const unregisterReset = this._formRegistry.register(this.path, value => {
+      this._updating = true;
+      try {
+        this.form.reset(value);
+      } finally {
+        this._updating = false;
       }
-
-      this.form.reset(action.payload.value);
-      this.updateFormStateWithRawValue(true);
       this._cd.markForCheck();
+
+      return {
+        value: this.form.getRawValue(),
+        dirty: this.form.dirty,
+        status: this.form.status,
+        errors: this.form.errors
+      };
     });
+    this._destroyRef.onDestroy(unregisterReset);
 
     this.getStateStream(`${this.path}.model`).subscribe(model => {
       if (this._updating || !model) {

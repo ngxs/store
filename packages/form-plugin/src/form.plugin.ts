@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   getActionTypeFromInstance,
   getValue,
@@ -18,9 +18,12 @@ import {
   UpdateFormStatus,
   UpdateFormValue
 } from './actions';
+import { InternalFormRegistry } from './form-registry';
 
 @Injectable()
 export class NgxsFormPlugin implements NgxsPlugin {
+  private _formRegistry = inject(InternalFormRegistry);
+
   handle(state: any, event: any, next: NgxsNextPluginFn) {
     const type = getActionTypeFromInstance(event);
 
@@ -38,8 +41,19 @@ export class NgxsFormPlugin implements NgxsPlugin {
     }
 
     if (type === ResetForm.type) {
-      const model = getValue(nextState, `${event.payload.path}.model`);
-      nextState = setValue(nextState, `${event.payload.path}`, { model: model });
+      const form = this._formRegistry.reset(event.payload.path, event.payload.value);
+
+      if (form) {
+        nextState = setValue(nextState, `${event.payload.path}`, {
+          model: form.value,
+          dirty: form.dirty,
+          status: form.status,
+          errors: { ...form.errors }
+        });
+      } else {
+        const model = getValue(nextState, `${event.payload.path}.model`);
+        nextState = setValue(nextState, `${event.payload.path}`, { model: model });
+      }
     }
 
     if (type === UpdateFormStatus.type || type === UpdateForm.type) {
