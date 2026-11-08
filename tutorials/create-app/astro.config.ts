@@ -6,5 +6,6 @@ export default defineConfig({
   devToolbar: {
     enabled: false
   },
-  integrations: [tutorialkit()]
+  integrations: [tutorialkit()],
+  site: 'https://ngxs.github.io/store'
 });
