@@ -61,7 +61,6 @@ The plugin has the following optional values:
 - `migrations`: Migration strategies
 - `beforeSerialize`: Interceptor executed before serialization
 - `afterDeserialize`: Interceptor executed after deserialization
-- `persistOnInit`: Write the value back to the storage engine right after rehydrating on init, even without a migration. Defaults to `false`. See [Persist On Init Option](#persist-on-init-option).
 
 ### Keys option
 
@@ -414,27 +413,55 @@ In the migration strategy, we define:
 
 Note: It's important to specify the strategies in the order of which they should progress.
 
-### Persist On Init Option
+### Server-Side Rendering
 
-By default, the plugin does not write back to the storage engine when rehydrating on init (unless a migration ran), since the value it just read is normally already what's in storage — writing it back would be redundant.
+When your app is server-side rendered, the storage plugin cannot help the server. There is no `localStorage` in Node, so `engineFactory` returns `null` and the server renders from plain default state. The browser then takes over, the plugin reads storage on `InitState`, and the state changes to whatever was saved there. The HTML the server sent was built from something else, so the user sees a flash of the wrong content.
 
-That assumption doesn't hold for a custom `StorageEngine` whose first read can come from somewhere other than the engine it wraps — for example, one that reads from Angular's `TransferState` on the client after SSR, then falls back to `localStorage`/`sessionStorage` for every read after that. Without `persistOnInit`, the value obtained from `TransferState` would never be written back into the wrapped engine until some later dispatched action happens to trigger a normal write, so a second read within the same session (or a future reload with no `TransferState` payload) could see stale data.
-
-Setting `persistOnInit: true` makes the plugin write the rehydrated value back to the storage engine right after init, going through the same `beforeSerialize`/`serialize` pipeline as every other write:
+`withNgxsStorageTransferState()` closes that gap. On the server it writes the state slices you choose into Angular's `TransferState`, which Angular embeds in the HTML. On the client it reads them back once, before the storage engine, so the browser starts from the same state the server rendered.
 
 ```ts
+import { provideStore } from '@ngxs/store';
+import { withNgxsStoragePlugin, withNgxsStorageTransferState } from '@ngxs/storage-plugin';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideStore(
       [],
-      withNgxsStoragePlugin({
-        keys: '*',
-        persistOnInit: true
-      })
+      withNgxsStoragePlugin(
+        { keys: ['auth'] },
+        withNgxsStorageTransferState({ keys: ['auth'] })
+      )
     )
   ]
 };
 ```
+
+The feature's `keys` must be a subset of the storage plugin's `keys`. It uses the plugin's `namespace`, `beforeSerialize`, and `afterDeserialize` options, so you do not need to set them again.
+
+For each key, the transferred value is used on the first read and saved to the storage engine. This means the value is also used after later page reloads.
+
+If you want to send a key from the server but never save it in browser storage, use `persist: false`:
+
+```ts
+withNgxsStoragePlugin(
+  { keys: ['auth', 'website'] },
+  withNgxsStorageTransferState({ keys: ['website'], persist: false })
+);
+```
+
+With `persist: false`, the plugin never reads or writes browser storage for that key. It only uses the transferred value to set the state.
+
+**A few things to know:**
+
+- **The transfer data is public.** Angular adds it to the HTML page. Anyone can read it using view-source, and a CDN may cache it. This is why `keys` must be an explicit list. Use `beforeSerialize` to remove tokens or any other data that should not be in the page.
+
+- **Prerendering saves the value at build time.** A prerendered page contains the state from the build, for example, a signed-out session. This value then replaces the visitor's actual stored value. The plugin cannot detect this because `ngServerMode` is also `true` during prerendering. `RenderMode.Prerender` belongs to `@angular/ssr` and has no runtime signal in `@angular/core`. Keys that depend on the visitor's session need server rendering for each request.
+
+- **It only works for state the server can get.** For example, the server can get auth state from a cookie and send it to the client. But it cannot send client-only state, such as a theme or a collapsed sidebar. In this case, the client still reads the value from storage after hydration. This feature sends stored values that the server already knows. It does not add SSR support to the whole storage plugin.
+
+- **`undefined` is not sent, but `null` is.** If a state value is `undefined` on the server, or `beforeSerialize` returns `undefined`, that key is not sent. The client then reads it from the storage engine. If `beforeSerialize` returns `null`, the client receives `null` and sets the state to `null`. So do not return `null` when you want to skip a key. It would replace the client's value.
+
+- **This feature is experimental.** Its behavior may change in a future release.
 
 ### Syncing Across Tabs
 

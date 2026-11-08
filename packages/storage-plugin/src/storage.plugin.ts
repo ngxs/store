@@ -19,6 +19,7 @@ import { tap } from 'rxjs';
 
 import { getStorageKey } from './internals';
 import { ɵNgxsStoragePluginKeysManager } from './keys-manager';
+import { ɵSTORAGE_TRANSFER_STATE } from './transfer-state';
 
 declare const ngDevMode: boolean;
 declare const ngServerMode: boolean;
@@ -86,6 +87,7 @@ export class NgxsStoragePlugin implements NgxsPlugin {
   private _keysManager = inject(ɵNgxsStoragePluginKeysManager);
   private _options = inject(ɵNGXS_STORAGE_PLUGIN_OPTIONS);
   private _allStatesPersisted = inject(ɵALL_STATES_PERSISTED);
+  private _transferState = inject(ɵSTORAGE_TRANSFER_STATE);
   private _errorHandler?: ErrorHandler;
 
   /**
@@ -109,36 +111,60 @@ export class NgxsStoragePlugin implements NgxsPlugin {
     const isUpdateAction = type === UpdateState.type;
     const isInitOrUpdateAction = isInitAction || isUpdateAction;
     let hasMigration = false;
+    const rehydratedFromTransfer = new Set<string>();
 
     if (isInitOrUpdateAction) {
       const addedStates: ɵPlainObject = isUpdateAction && event.addedStates;
 
       for (const { key, engine } of this._keysManager.getKeysWithEngines()) {
+        // Keys can point to nested properties using dot notation.
+        // For example, `keys: ['myState.myProperty']` is valid.
+        // The state name must always come first.
+        // This code gets the state name from the key.
+        // For `myState.myProperty`, `stateName` will be `myState`.
+        const dotNotationIndex = key.indexOf(DOT);
+        const stateName = dotNotationIndex > -1 ? key.slice(0, dotNotationIndex) : key;
+
         // We're checking what states have been added by NGXS and if any of these states should be handled by
         // the storage plugin. For instance, we only want to deserialize the `auth` state, NGXS has added
         // the `user` state, the storage plugin will be rerun and will do redundant deserialization.
         // `usesDefaultStateKey` is necessary to check since `event.addedStates` never contains `@@STATE`.
         if (!this._allStatesPersisted && addedStates) {
-          // We support providing keys that can be deeply nested via dot notation, for instance,
-          // `keys: ['myState.myProperty']` is a valid key.
-          // The state name should always go first. The below code checks if the `key` includes dot
-          // notation and extracts the state name out of the key.
-          // Given the `key` is `myState.myProperty`, the `addedStates` will only contain `myState`.
-          const dotNotationIndex = key.indexOf(DOT);
-          const stateName = dotNotationIndex > -1 ? key.slice(0, dotNotationIndex) : key;
           if (!ɵhasOwnProperty(addedStates, stateName)) continue;
         }
 
+        // We take a value only if its state is already in the store.
+        // During `InitState`, `addedStates` is empty, so the loop also sees keys
+        // for states that are not in the store yet. If we take a value too early,
+        // NGXS will replace it with the default value when that state is added.
+        // Later, when NGXS sends its `UpdateState`, the value is already gone.
+        const transferred = ɵhasOwnProperty(state, stateName)
+          ? this._transferState?.take(key)
+          : undefined;
+
+        // We still read `persist: false` keys from the transfer state.
+        // We just do not read or write them in the storage engine.
         // Guard against `engine` being falsy. Since it can be provided via DI,
         // we should assume it may be `null` or `undefined` at runtime and skip it safely.
-        if (!engine) continue;
+        const usesEngine = !!engine && this._transferState?.persists(key) !== false;
 
-        const storageKey = getStorageKey(key, this._options);
-        let storedValue: any = engine.getItem(storageKey);
+        let storedValue: any;
 
-        if (storedValue !== 'undefined' && storedValue != null) {
+        if (transferred !== undefined) {
+          // The transfer state already has a normal object, so we do not need
+          // to call `deserialize` here.
+          storedValue = this._options.afterDeserialize!(transferred, key);
+          rehydratedFromTransfer.add(key);
+        } else {
+          if (!usesEngine) continue;
+
+          const storageKey = getStorageKey(key, this._options);
+          const rawValue = engine!.getItem(storageKey);
+
+          if (rawValue === 'undefined' || rawValue == null) continue;
+
           try {
-            const newVal = this._options.deserialize!(storedValue);
+            const newVal = this._options.deserialize!(rawValue);
             storedValue = this._options.afterDeserialize!(newVal, key);
           } catch (error) {
             (this._errorHandler ??= this._injector.get(ErrorHandler)).handleError(
@@ -147,7 +173,12 @@ export class NgxsStoragePlugin implements NgxsPlugin {
 
             storedValue = {};
           }
+        }
 
+        // A transferred value comes from the current build, so it already has
+        // the new shape. The transfer state is also created again on every
+        // render, so the strategy would run again on every SSR load.
+        if (transferred === undefined) {
           this._options.migrations?.forEach(strategy => {
             const storedVersion = getValue(storedValue, strategy.versionKey || 'version') ?? 0;
             const versionMatch = strategy.version === storedVersion;
@@ -158,25 +189,63 @@ export class NgxsStoragePlugin implements NgxsPlugin {
               hasMigration = true;
             }
           });
+        }
 
-          if (this._allStatesPersisted) {
-            storedValue = this._hydrateSelectivelyOnUpdate(storedValue, addedStates);
-            state = { ...state, ...storedValue };
-          } else {
-            state = setValue(state, key, storedValue);
-          }
+        if (this._allStatesPersisted) {
+          storedValue = this._hydrateSelectivelyOnUpdate(storedValue, addedStates);
+          state = { ...state, ...storedValue };
+        } else {
+          state = setValue(state, key, storedValue);
+        }
+      }
+
+      // With `keys: '*'`, the loop above runs only for the `@@STATE` key,
+      // so it takes no values. After SSR, the storage engine is empty on the
+      // first visit. This is the case this feature is made for, so we add
+      // our states here.
+      if (this._allStatesPersisted && this._transferState) {
+        for (const sliceKey of this._transferState.coveredKeys()) {
+          const dotNotationIndex = sliceKey.indexOf(DOT);
+          const stateName =
+            dotNotationIndex > -1 ? sliceKey.slice(0, dotNotationIndex) : sliceKey;
+
+          // The same two checks like in the loop above, for the same reasons.
+          if (addedStates && !ɵhasOwnProperty(addedStates, stateName)) continue;
+          if (!ɵhasOwnProperty(state, stateName)) continue;
+
+          const transferred = this._transferState.take(sliceKey);
+          if (transferred === undefined) continue;
+
+          state = setValue(
+            state,
+            sliceKey,
+            this._options.afterDeserialize!(transferred, sliceKey)
+          );
+          // Here we write back the big object, not one state.
+          rehydratedFromTransfer.add(ɵDEFAULT_STATE_KEY);
         }
       }
     }
 
     return next(state, event).pipe(
       tap(nextState => {
-        if (isInitOrUpdateAction && !hasMigration && !this._options.persistOnInit) {
-          return;
+        let onlyKeys: Set<string> | null = null;
+
+        if (isInitOrUpdateAction && !hasMigration) {
+          // No values came from the transfer state.
+          // The values we read are already in the engine, so we do not need
+          // to write them again.
+          if (!rehydratedFromTransfer.size) return;
+
+          // Otherwise, we write back only the keys changed by the transfer state.
+          onlyKeys = rehydratedFromTransfer;
         }
 
         for (const { key, engine } of this._keysManager.getKeysWithEngines()) {
           if (!engine) continue;
+          // A transfer-only key is never saved to the storage engine.
+          if (this._transferState?.persists(key) === false) continue;
+          if (onlyKeys && !onlyKeys.has(key)) continue;
 
           let storedValue = nextState;
 

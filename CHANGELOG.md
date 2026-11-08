@@ -6,12 +6,12 @@ $ npm install @ngxs/store@dev
 
 ### To become next version
 
-- Fix(store): The deprecated `@Select` decorator no longer works on its own (it held the request's `Store` in a module-level static, leaking on the server). Apps still using `@Select` must add `withNgxsSelectDecoratorSupport()` to `provideStore(...)`, or `NgxsSelectDecoratorSupportModule.forRoot()` next to `NgxsModule.forRoot(...)` - or move to `store.select()` / `select()` / `store.selectSignal()` [#XXXX](https://github.com/ngxs/store/pull/XXXX)
+- Fix(store): The deprecated `@Select` decorator no longer works on its own (it held the request's `Store` in a module-level static, leaking on the server). Apps still using `@Select` must add `withNgxsSelectDecoratorSupport()` to `provideStore(...)`, or `NgxsSelectDecoratorSupportModule.forRoot()` next to `NgxsModule.forRoot(...)` - or move to `store.select()` / `select()` / `store.selectSignal()` [#2510](https://github.com/ngxs/store/pull/2510)
 - Feature(store): Warn when `setState`/`patchState` produce a new reference with an identical value [#2465](https://github.com/ngxs/store/pull/2465)
 - Feature(store): Warn on duplicate action types via `warnOnDuplicateActionTypes` [#2466](https://github.com/ngxs/store/pull/2466)
 - Feature(store): Add `ignoreUncompleted` action option [#2470](https://github.com/ngxs/store/pull/2470)
 - Feature(store): Add optional `timeout` to `withNgxsPendingTasks` [#2492](https://github.com/ngxs/store/pull/2492)
-- Feature(storage-plugin): Add `persistOnInit` option to persist rehydrated state on init [#2469](https://github.com/ngxs/store/pull/2469)
+- Feature(storage-plugin): Add `withNgxsStorageTransferState` for SSR rehydration from Angular's `TransferState` [#2513](https://github.com/ngxs/store/pull/2513)
 - Feature(storage-plugin): Add `withNgxsStorageSync` for cross-tab state sync [#2475](https://github.com/ngxs/store/pull/2475)
 - Feature(storage-plugin): Report deserialize/serialize/quota failures via `ErrorHandler` [#2476](https://github.com/ngxs/store/pull/2476) [#2477](https://github.com/ngxs/store/pull/2477)
 - Feature(router-plugin): Add derived selectors for query params, params, data, and title [#2471](https://github.com/ngxs/store/pull/2471)
