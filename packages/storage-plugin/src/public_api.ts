@@ -1,6 +1,8 @@
 export { NgxsStoragePluginModule, withNgxsStoragePlugin } from './storage.module';
 export { withStorageFeature } from './with-storage-feature';
 export { withNgxsStorageSync } from './features/with-ngxs-storage-sync';
+export { withNgxsStorageTransferState } from './features/with-ngxs-storage-transfer-state';
+export type { NgxsStorageTransferStateOptions } from './transfer-state';
 export {
   NgxsStoragePlugin,
   NgxsStorageDeserializationError,

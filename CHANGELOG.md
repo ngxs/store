@@ -11,7 +11,7 @@ $ npm install @ngxs/store@dev
 - Feature(store): Warn on duplicate action types via `warnOnDuplicateActionTypes` [#2466](https://github.com/ngxs/store/pull/2466)
 - Feature(store): Add `ignoreUncompleted` action option [#2470](https://github.com/ngxs/store/pull/2470)
 - Feature(store): Add optional `timeout` to `withNgxsPendingTasks` [#2492](https://github.com/ngxs/store/pull/2492)
-- Feature(storage-plugin): Add `persistOnInit` option to persist rehydrated state on init [#2469](https://github.com/ngxs/store/pull/2469)
+- Feature(storage-plugin): Add `withNgxsStorageTransferState` for SSR rehydration from Angular's `TransferState` [#2513](https://github.com/ngxs/store/pull/2513)
 - Feature(storage-plugin): Add `withNgxsStorageSync` for cross-tab state sync [#2475](https://github.com/ngxs/store/pull/2475)
 - Feature(storage-plugin): Report deserialize/serialize/quota failures via `ErrorHandler` [#2476](https://github.com/ngxs/store/pull/2476) [#2477](https://github.com/ngxs/store/pull/2477)
 - Feature(router-plugin): Add derived selectors for query params, params, data, and title [#2471](https://github.com/ngxs/store/pull/2471)
