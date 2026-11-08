@@ -436,9 +436,11 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-The feature's `keys` have to be a subset of the plugin's own `keys`. It reuses the plugin's `namespace`, `beforeSerialize` and `afterDeserialize`, so there's nothing to configure twice.
+The feature's `keys` must be a subset of the storage plugin's `keys`. It uses the plugin's `namespace`, `beforeSerialize`, and `afterDeserialize` options, so you do not need to set them again.
 
-For a covered key, the transferred value wins on the first read and is written back to the storage engine, so later reloads see it too. If you want a key seeded from the server but never stored in the browser, add `persist: false`:
+For each key, the transferred value is used on the first read and saved to the storage engine. This means the value is also used after later page reloads.
+
+If you want to send a key from the server but never save it in browser storage, use `persist: false`:
 
 ```ts
 withNgxsStoragePlugin(
@@ -447,15 +449,19 @@ withNgxsStoragePlugin(
 );
 ```
 
-With `persist: false` the plugin never reads or writes browser storage for that key. It only populates the state from the transfer payload.
+With `persist: false`, the plugin never reads or writes browser storage for that key. It only uses the transferred value to set the state.
 
-**A few things worth knowing:**
+**A few things to know:**
 
-- **The transfer payload is public.** Angular embeds it in the HTML, so anyone can read it with view-source, and a CDN may cache it. That's why `keys` is an explicit list, and why `beforeSerialize` is the right place to strip tokens or anything else that shouldn't end up in the page.
-- **Prerendering bakes the value in at build time.** A prerendered page ships whatever state your build had, a signed-out session for example, and that value then wins over the visitor's real stored value. The plugin can't detect this, because `ngServerMode` is `true` during prerendering too, and `RenderMode.Prerender` is an `@angular/ssr` routing concept with no runtime signal in `@angular/core`. Keys that depend on the visitor's session need per-request rendering.
-- **It only helps state the server can reconstruct.** An auth state the server resolves from a cookie works well. Purely client-side state, such as a theme or a collapsed sidebar, doesn't: the server has nothing to transfer, so the client still reads it from storage after hydration. Think of this as seeding the persisted keys the server already knows, not as SSR support for the whole plugin.
-- **`undefined` is not transferred, `null` is.** If a slice is `undefined` on the server, or your `beforeSerialize` returns `undefined`, nothing is transferred for that key and the client falls back to the storage engine. Returning `null` transfers `null`, and the client slice becomes `null`. So don't return `null` from `beforeSerialize` to mean "skip this key", because that would wipe the client's state.
-- This feature is currently marked `@experimental`, which means its behavior could still change in a future release.
+- **The transfer data is public.** Angular adds it to the HTML page. Anyone can read it using view-source, and a CDN may cache it. This is why `keys` must be an explicit list. Use `beforeSerialize` to remove tokens or any other data that should not be in the page.
+
+- **Prerendering saves the value at build time.** A prerendered page contains the state from the build, for example, a signed-out session. This value then replaces the visitor's actual stored value. The plugin cannot detect this because `ngServerMode` is also `true` during prerendering. `RenderMode.Prerender` belongs to `@angular/ssr` and has no runtime signal in `@angular/core`. Keys that depend on the visitor's session need server rendering for each request.
+
+- **It only works for state the server can get.** For example, the server can get auth state from a cookie and send it to the client. But it cannot send client-only state, such as a theme or a collapsed sidebar. In this case, the client still reads the value from storage after hydration. This feature sends stored values that the server already knows. It does not add SSR support to the whole storage plugin.
+
+- **`undefined` is not sent, but `null` is.** If a state value is `undefined` on the server, or `beforeSerialize` returns `undefined`, that key is not sent. The client then reads it from the storage engine. If `beforeSerialize` returns `null`, the client receives `null` and sets the state to `null`. So do not return `null` when you want to skip a key. It would replace the client's value.
+
+- **This feature is experimental.** Its behavior may change in a future release.
 
 ### Syncing Across Tabs
 
