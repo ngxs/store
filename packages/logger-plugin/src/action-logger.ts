@@ -5,6 +5,8 @@ import { formatTime } from './internals';
 import { LogWriter } from './log-writer';
 
 export class ActionLogger {
+  private _closed = false;
+
   constructor(
     private action: any,
     private store: Store,
@@ -12,6 +14,7 @@ export class ActionLogger {
   ) {}
 
   dispatched(state: any) {
+    this._closed = false;
     const actionName = getActionTypeFromInstance(this.action);
     const formattedTime = formatTime(new Date());
 
@@ -29,11 +32,26 @@ export class ActionLogger {
   completed(nextState: any) {
     this.logWriter.logGreen('next state', nextState);
     this.logWriter.endGroup();
+    this._closed = true;
   }
 
   errored(error: any) {
     this.logWriter.logRedish('next state after error', this.store.snapshot());
     this.logWriter.logRedish('error', error);
+    this.logWriter.endGroup();
+    this._closed = true;
+  }
+
+  cancelled() {
+    // The action stream was cut off before it completed or errored, e.g.
+    // by `@Action({ cancelUncompleted: true })` dispatching the same action
+    // again. The console group opened in `dispatched()` would otherwise
+    // stay open forever, leaving all subsequent logs indented.
+    // See https://github.com/ngxs/store/issues/1657
+    if (this._closed) {
+      return;
+    }
+    this._closed = true;
     this.logWriter.endGroup();
   }
 

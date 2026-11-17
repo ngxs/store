@@ -1,7 +1,7 @@
 import { inject, Injectable, Injector, runInInjectionContext } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { NgxsNextPluginFn, NgxsPlugin } from '@ngxs/store/plugins';
-import { catchError, tap } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs';
 
 import { LogWriter } from './log-writer';
 import { ActionLogger } from './action-logger';
@@ -35,6 +35,14 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
       catchError(error => {
         actionLogger.errored(error);
         throw error;
+      }),
+      // `finalize` runs when the stream completes, errors or is unsubscribed.
+      // With `@Action({ cancelUncompleted: true })` the stream is cut off by
+      // `takeUntil` without emitting, so neither `tap` nor `catchError` runs
+      // and the console group opened in `dispatched()` would stay open.
+      // `cancelled()` is a no-op when the group was already closed.
+      finalize(() => {
+        actionLogger.cancelled();
       })
     );
   }
