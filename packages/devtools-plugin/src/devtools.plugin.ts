@@ -62,6 +62,16 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
       return next(state, action);
     }
 
+    if (
+      this._options.logActionLifecycle &&
+      getActionTypeFromInstance(action) !== InitState.type
+    ) {
+      // Log the action at dispatch time (with the state as it is now) so the
+      // DevTools log reflects the dispatch order. The completion entry is
+      // still sent below, once the action's observable completes.
+      this.sendToDevTools(state, action, state, true);
+    }
+
     return next(state, action).pipe(
       catchError(error => {
         const newState = this.store.snapshot();
@@ -74,14 +84,17 @@ export class NgxsReduxDevtoolsPlugin implements NgxsPlugin {
     );
   }
 
-  private sendToDevTools(state: any, action: any, newState: any) {
+  private sendToDevTools(state: any, action: any, newState: any, isDispatch = false) {
     const type = getActionTypeFromInstance(action);
     // if init action, send initial state to dev tools
     const isInitAction = type === InitState.type;
     if (isInitAction) {
       this.devtoolsExtension!.init(state);
     } else {
-      this.devtoolsExtension!.send({ ...action, action: null, type }, newState);
+      this.devtoolsExtension!.send(
+        { ...action, action: null, type: isDispatch ? `${type} (dispatched)` : type },
+        newState
+      );
     }
   }
 
