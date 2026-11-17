@@ -76,6 +76,17 @@ export interface NgxsDevtoolsOptions {
   trace?: boolean | (() => string);
 
   /**
+   * If set to true, every action is also logged to the DevTools when it is
+   * dispatched (in addition to the existing entry when it completes), so
+   * actions appear in dispatch order instead of completion order. This is
+   * useful for the standard async pattern where a parent action dispatches
+   * a child action and only completes once the child completes — without
+   * this option the child is logged before the parent. Disabled by default.
+   * See https://github.com/ngxs/store/issues/139
+   */
+  logActionLifecycle?: boolean;
+
+  /**
    * Maximum stack trace frames to be stored (in case trace option was provided as true)
    */
   traceLimit?: number;

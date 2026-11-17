@@ -67,6 +67,7 @@ The plugin supports the following options passed via the `forRoot` method:
 - `stateSanitizer`: Reformat state before sending to devtools
 - `trace`: if set to `true`, will include stack trace for every dispatched action, so you can see it in trace tab jumping directly to that part of code
 - `traceLimit`: maximum stack trace frames to be stored (in case trace option was provided as true)
+- `logActionLifecycle`: if set to `true`, every action is also logged when it is dispatched (as `[Action] (dispatched)`), in addition to the entry sent when it completes. This makes actions appear in dispatch order instead of completion order, which is useful for the standard async pattern where a parent action dispatches a child action and only completes once the child completes. Disabled by default.
 
 ### Notes
 
