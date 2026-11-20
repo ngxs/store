@@ -1,6 +1,7 @@
 import {
   ɵmemoize,
   ɵRuntimeSelectorContext,
+  ɵSelectFromRootState,
   ɵSelectorFactory,
   ɵgetStoreMetadata,
   ɵgetSelectorMetadata,
@@ -12,12 +13,30 @@ import { CreationMetadata, RuntimeSelectorInfo } from './selector-models';
 
 declare const ngDevMode: boolean;
 
+const NO_ROOT_STATE = {};
+
 export function createRootSelectorFactory<T extends (...args: any[]) => any>(
   selectorMetaData: ɵSelectorMetaDataModel,
   selectors: any[] | undefined,
   memoizedSelectorFn: T
 ): ɵSelectorFactory {
+  // One runtime selector per runtime context (one context per store), shared
+  // by every parent selector and every `select`/`selectSnapshot`/`selectSignal`
+  // call. Without it, each parent and each caller gets its own copy of the
+  // selector graph, so a state change walks a selector once per path to it.
+  // Weak, so a context's entry goes away with its store.
+  const selectFromRootByContext = new WeakMap<ɵRuntimeSelectorContext, ɵSelectFromRootState>();
+
   return (context: ɵRuntimeSelectorContext) => {
+    let selectFromRoot = selectFromRootByContext.get(context);
+    if (!selectFromRoot) {
+      selectFromRoot = createSelectFromRoot(context);
+      selectFromRootByContext.set(context, selectFromRoot);
+    }
+    return selectFromRoot;
+  };
+
+  function createSelectFromRoot(context: ɵRuntimeSelectorContext): ɵSelectFromRootState {
     const { argumentSelectorFunctions, selectorOptions } = getRuntimeSelectorInfo(
       context,
       selectorMetaData,
@@ -26,7 +45,16 @@ export function createRootSelectorFactory<T extends (...args: any[]) => any>(
 
     const { suppressErrors } = selectorOptions;
 
+    let lastRootState: any = NO_ROOT_STATE;
+    let lastResult: any;
+
     return function selectFromRoot(rootState: any) {
+      // The state is immutable, so the same root object always selects the
+      // same value.
+      if (rootState === lastRootState) {
+        return lastResult;
+      }
+
       // Determine arguments from the app state using the selectors. Most
       // selectors have a single argument selector, so skip the array
       // allocation and the spread for that common case.
@@ -39,7 +67,14 @@ export function createRootSelectorFactory<T extends (...args: any[]) => any>(
       // it will throw a `TypeError`. Since this behavior is common, we simply return
       // `undefined` in such cases.
       try {
-        return singleArgument ? memoizedSelectorFn(results) : memoizedSelectorFn(...results);
+        const result = singleArgument
+          ? memoizedSelectorFn(results)
+          : memoizedSelectorFn(...results);
+        // Only successful results are remembered, so a failing selector runs
+        // again on the next call.
+        lastRootState = rootState;
+        lastResult = result;
+        return result;
       } catch (ex) {
         if (suppressErrors && ex instanceof TypeError) {
           return undefined;
@@ -63,7 +98,7 @@ export function createRootSelectorFactory<T extends (...args: any[]) => any>(
         throw ex;
       }
     };
-  };
+  }
 }
 
 export function createMemoizedSelectorFn<T extends (...args: any[]) => any>(
