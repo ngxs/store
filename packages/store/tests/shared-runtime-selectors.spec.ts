@@ -83,6 +83,91 @@ describe('Shared runtime selectors', () => {
     return { countProbe, sharedProjector, summary };
   }
 
+  describe('evaluation count', () => {
+    it('walks a selector shared by several parents once per state change', () => {
+      // Arrange
+      const { store, setCount } = setup();
+      const { countProbe, sharedProjector, summary } = createDiamondGraph();
+      store.selectSnapshot(summary);
+      countProbe.mockClear();
+      sharedProjector.mockClear();
+
+      // Act
+      for (let count = 1; count <= 5; count++) {
+        setCount(count);
+        store.selectSnapshot(summary);
+      }
+
+      // Assert
+      expect(countProbe).toHaveBeenCalledTimes(5);
+      expect(sharedProjector).toHaveBeenCalledTimes(5);
+      expect(store.selectSnapshot(summary)).toEqual({ d: 10, t: 15, l: 'count: 5' });
+    });
+
+    it('walks a shared selector once but skips its projector when an unrelated slice changes', () => {
+      // Arrange
+      const { store, setOther } = setup();
+      const { countProbe, sharedProjector, summary } = createDiamondGraph();
+      const before = store.selectSnapshot(summary);
+      countProbe.mockClear();
+      sharedProjector.mockClear();
+
+      // Act
+      setOther('changed');
+      const after = store.selectSnapshot(summary);
+
+      // Assert
+      expect(countProbe).toHaveBeenCalledTimes(1);
+      expect(sharedProjector).not.toHaveBeenCalled();
+      expect(after).toBe(before);
+    });
+
+    it('shares one evaluation per state change between select, selectSnapshot and selectSignal', () => {
+      // Arrange
+      const { store, setCount } = setup();
+      const countProbe = createCountProbe();
+      const selector = createSelector([countProbe], count => count);
+      const firstValues: number[] = [];
+      const secondValues: number[] = [];
+      const subscriptions = [
+        store.select(selector).subscribe(value => firstValues.push(value)),
+        store.select(selector).subscribe(value => secondValues.push(value))
+      ];
+      const signal = store.selectSignal(selector);
+      signal();
+      countProbe.mockClear();
+
+      // Act
+      for (let count = 1; count <= 3; count++) {
+        setCount(count);
+        store.selectSnapshot(selector);
+        signal();
+      }
+      subscriptions.forEach(subscription => subscription.unsubscribe());
+
+      // Assert
+      expect(countProbe).toHaveBeenCalledTimes(3);
+      expect(firstValues).toEqual([0, 1, 2, 3]);
+      expect(secondValues).toEqual([0, 1, 2, 3]);
+      expect(signal()).toBe(3);
+    });
+
+    it('does not walk the graph again when the same root state is selected again', () => {
+      // Arrange
+      const { store } = setup();
+      const { countProbe, summary } = createDiamondGraph();
+      store.selectSnapshot(summary);
+      countProbe.mockClear();
+
+      // Act
+      store.selectSnapshot(summary);
+      store.selectSnapshot(summary);
+
+      // Assert
+      expect(countProbe).not.toHaveBeenCalled();
+    });
+  });
+
   describe('results', () => {
     it('stays correct across many changes to the selected and unrelated slices', () => {
       // Arrange
@@ -295,7 +380,7 @@ describe('Shared runtime selectors', () => {
         // Arrange
         const first = await createStoreApp();
         const second = await createStoreApp();
-        const { summary } = createDiamondGraph();
+        const { countProbe, summary } = createDiamondGraph();
 
         // Act & Assert
         for (let step = 1; step <= 5; step++) {
@@ -311,6 +396,10 @@ describe('Shared runtime selectors', () => {
         }
         first.app.destroy();
         second.app.destroy();
+
+        // Each store walked its graph once per state change, and switching
+        // back to a store did not rebuild or walk its graph again.
+        expect(countProbe).toHaveBeenCalledTimes(10);
       })
     );
   });
