@@ -35,6 +35,7 @@ $ npm install @ngxs/store@dev
 - Performance(store): Fast path for single-argument selectors [#2501](https://github.com/ngxs/store/pull/2501)
 - Performance(store): Cache the resolved action type per action class [#2502](https://github.com/ngxs/store/pull/2502)
 - Performance(store): Hoist dispatch RxJS operator config and drop the fast-path replay layer [#2503](https://github.com/ngxs/store/pull/2503)
+- Performance(store): Share one runtime selector per selector and store, and reuse its result for the same root state [#2516](https://github.com/ngxs/store/pull/2516)
 - Refactor(store): Seed the state stream from the initial state token in its own constructor [#2473](https://github.com/ngxs/store/pull/2473)
 - Refactor(router-plugin): Move derived selectors to tree-shakable exports, add named-outlet variants [#2474](https://github.com/ngxs/store/pull/2474)
 
