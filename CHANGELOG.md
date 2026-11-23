@@ -18,6 +18,7 @@ $ npm install @ngxs/store@dev
 - Fix(router-plugin): Avoid re-serializing already-serialized state in equality check [#2468](https://github.com/ngxs/store/pull/2468)
 - Fix(store): Avoid `NG0205`/`ObjectUnsubscribedError` during `TestBed` teardown [#2480](https://github.com/ngxs/store/pull/2480)
 - Fix(store): Warn when a state uses `@Service()` without `autoProvided: false` [#2486](https://github.com/ngxs/store/pull/2486)
+- Fix(form-plugin): Reset bound forms before `ResetForm` completes [#2511](https://github.com/ngxs/store/pull/2511)
 - Fix(store): Sanitize keys in the `createPropertySelectors` proxy (prototype keys, symbols, `then`) [#2489](https://github.com/ngxs/store/pull/2489)
 - Fix(store): Prevent a stack overflow in `findFullParentPath` on a cyclic state graph [#2490](https://github.com/ngxs/store/pull/2490)
 - Fix(store): Use `refCount` `shareReplay` in the dispatch pipeline [#2491](https://github.com/ngxs/store/pull/2491)
