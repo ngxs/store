@@ -374,10 +374,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/platform-server@20.3.25":
-  version "20.3.25"
-  resolved "https://registry.npmjs.org/@angular/platform-server/-/platform-server-20.3.25.tgz#90f1a8b363c7436ddfee68ea209686b8b054712b"
-  integrity sha512-uOpLILe5QP9WLXhwshA3fbHc+Wx/4nrUBZNns/dw3t06bRHMbbkutF8eVs+n6Atl332y4mOcStzMX1ilBUSFHw==
+"@angular/platform-server@20.3.33":
+  version "20.3.33"
+  resolved "https://registry.npmjs.org/@angular/platform-server/-/platform-server-20.3.33.tgz#db3af14d33acf6666ac38eb6e2e49d085dbfd419"
+  integrity sha512-NWcg/SQr4MYOZ9rzZAYK4AFlBmW2/Iupq8v/BvlMKQKYz3/mV93Ldm0ANgA68nHQXpZZmHncDfSTWIZvK6zOog==
   dependencies:
     tslib "^2.3.0"
     xhr2 "^0.2.0"
