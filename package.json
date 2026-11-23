@@ -110,7 +110,7 @@
     "@angular/platform-browser-dynamic": "20.3.25",
     "@angular/platform-server": "20.3.25",
     "@angular/router": "20.3.25",
-    "@angular/ssr": "20.3.28",
+    "@angular/ssr": "20.3.36",
     "@commitlint/cli": "^17.6.0",
     "@commitlint/config-conventional": "^17.6.0",
     "@nx/angular": "22.7.5",
