@@ -1,7 +1,7 @@
 import { inject, Injectable, Injector, runInInjectionContext } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { NgxsNextPluginFn, NgxsPlugin } from '@ngxs/store/plugins';
-import { catchError, tap } from 'rxjs';
+import { catchError, defer, EMPTY, merge, Observable, tap } from 'rxjs';
 
 import { LogWriter } from './log-writer';
 import { ActionLogger } from './action-logger';
@@ -28,7 +28,7 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
 
     actionLogger.dispatched(state);
 
-    return next(state, event).pipe(
+    const result = next(state, event).pipe(
       tap(nextState => {
         actionLogger.completed(nextState);
       }),
@@ -37,6 +37,8 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
         throw error;
       })
     );
+
+    return afterSubscribe(result, () => actionLogger.syncWorkComplete());
   }
 
   private _skipLogging(state: any, event: any) {
@@ -49,4 +51,14 @@ export class NgxsLoggerPlugin implements NgxsPlugin {
 
     return !allowLogging;
   }
+}
+
+function afterSubscribe<T>(source: Observable<T>, callback: VoidFunction): Observable<T> {
+  return merge(
+    source,
+    defer(() => {
+      callback();
+      return EMPTY;
+    })
+  );
 }
